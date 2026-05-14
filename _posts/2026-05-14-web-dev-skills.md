@@ -1,4 +1,11 @@
-# 웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 보고서
+---
+layout: post
+title: "웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 보고서"
+date: 2026-05-14 00:00:00 +0900
+categories: [산업체특강, 수강소감]
+tags: [web, ai, cs, career]
+permalink: /posts/web-dev-skills/
+---
 
 ## 1. 강의 개요
 

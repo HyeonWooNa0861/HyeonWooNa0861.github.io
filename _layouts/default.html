@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title | default: site.title }}</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f8fa;
+        --panel: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --line: #d9dee7;
+        --accent: #2563eb;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.72;
+      }
+
+      .site-header {
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .site-header .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 64px;
+      }
+
+      .brand {
+        color: var(--text);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .nav-link {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      main {
+        padding: 40px 0 72px;
+      }
+
+      h1, h2, h3 {
+        line-height: 1.35;
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 34px;
+      }
+
+      h2 {
+        margin-top: 40px;
+        padding-top: 8px;
+        font-size: 24px;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .post-meta {
+        margin: -12px 0 32px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .post-list {
+        display: grid;
+        gap: 16px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .post-card {
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .post-card a {
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .post-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        <a class="nav-link" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io">GitHub</a>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        {{ content }}
+      </div>
+    </main>
+  </body>
+</html>
