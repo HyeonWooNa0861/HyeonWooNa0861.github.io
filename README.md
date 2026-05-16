@@ -10,3 +10,7 @@ gitblog
 [WIS 2026 참가 기업 분석: 써니웨이브텍과 C-IoT 기술](https://HyeonWooNa0861.github.io/posts/sunny-wave-tech-ciot/)
 
 [![Read Post](https://img.shields.io/badge/Read%20Post-sunny--wave--tech--ciot-green?style=for-the-badge)](https://HyeonWooNa0861.github.io/posts/sunny-wave-tech-ciot/)
+
+[AI EXPO 2026 참가 기업 분석: 씨이랩 XAIVA ON-DEVICE](https://HyeonWooNa0861.github.io/posts/xaiva-on-device/)
+
+[![Read Post](https://img.shields.io/badge/Read%20Post-xaiva--on--device-orange?style=for-the-badge)](https://HyeonWooNa0861.github.io/posts/xaiva-on-device/)
