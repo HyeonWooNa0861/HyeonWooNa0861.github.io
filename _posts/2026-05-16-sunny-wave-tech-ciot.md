@@ -85,7 +85,7 @@ WIS 2026에서 써니웨이브텍을 알게 되며, IoT 기술의 핵심이 단�
       <div class="image-frame">
         <img src="{{ "/_pics/wis_2026.jpeg" | relative_url }}" alt="WIS 2026 현장 사진">
       </div>
-      <figcaption class="image-caption">WIS 2026 현장 사진</figcaption>
+      <figcaption class="image-caption">현장 사진: KAIST-Drone</figcaption>
     </figure>
   </section>
 </div>
