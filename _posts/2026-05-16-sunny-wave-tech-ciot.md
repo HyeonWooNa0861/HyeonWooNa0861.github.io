@@ -75,3 +75,7 @@ WIS 2026에서 써니웨이브텍을 알게 되며, IoT 기술의 핵심이 단�
 - [Sunny Wave Tech - Company](https://sunnywt.com/page.php?p_id=about)
 - [Sunny Wave Tech - Technology Introduction](https://sunnywt.com/page.php?p_id=technology1)
 - [Sunny Wave Tech - C-IoT System Products](https://sunnywt.com/page.php?p_id=product1)
+
+## WIS 2026 현장 사진
+
+![WIS 2026 현장 사진]({{ "/_pics/WIS2026.HEIC" | relative_url }})

@@ -1,7 +1,9 @@
-title: HyeonWooNa0861 GitBlog
+title: GitBlog
 description: Study notes and lecture reflections
 url: "https://HyeonWooNa0861.github.io"
 timezone: Asia/Seoul
 future: true
 markdown: kramdown
 permalink: /:year/:month/:day/:title/
+include:
+  - _pics
