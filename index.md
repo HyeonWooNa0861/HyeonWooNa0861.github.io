@@ -3,8 +3,6 @@ layout: default
 title: HyeonWooNa0861 GitBlog
 ---
 
-# HyeonWooNa0861 GitBlog
-
 ## Posts
 
 <ul class="post-list">
