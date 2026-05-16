@@ -108,6 +108,49 @@
         color: var(--muted);
         font-size: 14px;
       }
+
+      .image-frame {
+        max-width: 100%;
+        margin: 0 0 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        aspect-ratio: 4 / 3;
+      }
+
+      .image-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .image-caption {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .post-resource-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+        gap: 24px;
+        align-items: start;
+        margin-top: 16px;
+      }
+
+      .post-resource-grid h2 {
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      @media (max-width: 720px) {
+        .post-resource-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>

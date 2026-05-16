@@ -69,6 +69,9 @@ WIS 2026에서 써니웨이브텍을 알게 되며, IoT 기술의 핵심이 단�
 
 써니웨이브텍의 C-IoT 기술은 화려한 소비자 서비스보다는 산업 현장의 구체적인 문제를 해결하는 기술에 가깝다. 금속 구조물, 차폐 공간, 복잡한 배선이라는 현실적인 제약을 정면으로 다루기 때문에, 스마트팩토리와 산업 안전 분야에서 활용 가능성이 있다. 앞으로 이런 기술이 더 넓은 산업 현장에서 검증되고 적용된다면, IoT의 사각지대를 줄이는 데 기여할 수 있을 것이라고 생각한다.
 
+<div class="post-resource-grid">
+  <section markdown="1">
+
 ## 참고 자료
 
 - [World IT Show 2026 공식 소개](https://www.worlditshow.co.kr/introduce/01.php)
@@ -76,6 +79,15 @@ WIS 2026에서 써니웨이브텍을 알게 되며, IoT 기술의 핵심이 단�
 - [Sunny Wave Tech - Technology Introduction](https://sunnywt.com/page.php?p_id=technology1)
 - [Sunny Wave Tech - C-IoT System Products](https://sunnywt.com/page.php?p_id=product1)
 
-## WIS 2026 현장 사진
+  </section>
+  <section>
+    <h2>WIS 2026 현장 사진</h2>
 
-![WIS 2026 현장 사진]({{ "/_pics/wis_2026.jpeg" | relative_url }})
+    <figure>
+      <div class="image-frame">
+        <img src="{{ "/_pics/wis_2026.jpeg" | relative_url }}" alt="WIS 2026 현장 사진">
+      </div>
+      <figcaption class="image-caption">WIS 2026 현장 사진</figcaption>
+    </figure>
+  </section>
+</div>
