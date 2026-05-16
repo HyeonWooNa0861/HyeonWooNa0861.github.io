@@ -47,10 +47,20 @@
         text-decoration: none;
       }
 
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
       .nav-link {
         color: var(--muted);
         text-decoration: none;
         font-size: 14px;
+      }
+
+      .nav-link:hover {
+        color: var(--text);
       }
 
       main {
@@ -109,6 +119,34 @@
         font-size: 14px;
       }
 
+      .about-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 24px;
+      }
+
+      .profile-list {
+        display: grid;
+        gap: 14px;
+        margin: 0;
+      }
+
+      .profile-list div {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr);
+        gap: 16px;
+      }
+
+      .profile-list dt {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .profile-list dd {
+        margin: 0;
+      }
+
       .image-frame {
         max-width: 100%;
         margin: 0 0 8px;
@@ -150,6 +188,11 @@
         .post-resource-grid {
           grid-template-columns: 1fr;
         }
+
+        .profile-list div {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
       }
     </style>
   </head>
@@ -157,7 +200,10 @@
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="{{ '/' | relative_url }}">GitBlog</a>
-        <a class="nav-link" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io">GitHub</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a class="nav-link" href="{{ '/about/' | relative_url }}">About</a>
+          <a class="nav-link" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io">GitHub</a>
+        </nav>
       </div>
     </header>
     <main>
