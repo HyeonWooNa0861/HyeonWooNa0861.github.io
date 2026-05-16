@@ -87,7 +87,7 @@ AI EXPO 2026에서 XAIVA ON-DEVICE를 살펴보며, 앞으로의 AI 활용 능�
       <div class="image-frame">
         <img src="{{ "/_pics/AI_expo.png" | relative_url }}" alt="AI EXPO 현장 사진">
       </div>
-      <figcaption class="image-caption">AI EXPO 현장 사진</figcaption>
+      <figcaption class="image-caption">현장 사진: 진도봇</figcaption>
     </figure>
   </section>
 </div>
