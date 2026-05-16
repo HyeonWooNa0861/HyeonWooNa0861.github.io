@@ -1,6 +1,6 @@
 ---
 layout: default
-title: HyeonWooNa0861 GitBlog
+title: GitBlog
 ---
 
 ## Posts
