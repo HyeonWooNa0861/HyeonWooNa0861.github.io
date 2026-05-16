@@ -1,20 +1,10 @@
 ---
 layout: default
-title: GitBlog
+title: Assignments
+permalink: /assignment/
 ---
 
-## Posts
-
-<ul class="post-list">
-  {% for post in site.posts %}
-    <li class="post-card">
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <p>{{ post.date | date: "%Y-%m-%d" }} · {{ post.categories | join: ", " }}</p>
-    </li>
-  {% endfor %}
-</ul>
-
-## Assignments
+# Assignments
 
 <ul class="post-list">
   {% assign assignments = site.assignment | sort: "title" %}

@@ -7,3 +7,8 @@ markdown: kramdown
 permalink: /:year/:month/:day/:title/
 include:
   - _pics
+
+collections:
+  assignment:
+    output: true
+    permalink: /assignment/:path/
