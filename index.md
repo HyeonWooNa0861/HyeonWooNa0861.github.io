@@ -3,7 +3,7 @@ layout: default
 title: GitBlog
 ---
 
-## Posts
+## Post
 
 <ul class="post-list">
   <li class="post-card">
@@ -11,7 +11,7 @@ title: GitBlog
   </li>
 </ul>
 
-## Assignments
+## Assignment
 
 <ul class="post-list">
   <li class="post-card">

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: C++ Assignments
+title: C++ Assignment
 permalink: /assignment/cpp/
 ---
 

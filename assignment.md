@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Assignments
+title: Assignment
 permalink: /assignment/
 ---
 
-# Assignments
+# Assignment
 
 <ul class="post-list">
   <li class="post-card">
