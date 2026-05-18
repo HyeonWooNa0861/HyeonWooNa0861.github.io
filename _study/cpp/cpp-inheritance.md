@@ -545,5 +545,5 @@ virtual 상속을 사용하면 `Lion`과 `Tiger`가 `Animal` 기본 클래스 �
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/C++ 상속.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 상속.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/cpp/C++ 상속.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 상속.pdf</a></li>
 </ul>

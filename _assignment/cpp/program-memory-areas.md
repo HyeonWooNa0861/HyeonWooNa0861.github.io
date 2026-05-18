@@ -59,5 +59,5 @@ C++에서는 `std::unique_ptr`, `std::shared_ptr` 같은 Smart Pointer를 사용
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/Code Data Stack Heap.pdf" | relative_url }}" target="_blank" rel="noopener">Code Data Stack Heap.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/assignment/cpp/Code Data Stack Heap.pdf" | relative_url }}" target="_blank" rel="noopener">Code Data Stack Heap.pdf</a></li>
 </ul>

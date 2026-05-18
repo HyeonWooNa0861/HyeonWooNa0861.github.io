@@ -73,5 +73,5 @@ int main() {
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/stdin, stdout, stderr, File Descriptor.pdf" | relative_url }}" target="_blank" rel="noopener">stdin, stdout, stderr, File Descriptor.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/assignment/cpp/stdin, stdout, stderr, File Descriptor.pdf" | relative_url }}" target="_blank" rel="noopener">stdin, stdout, stderr, File Descriptor.pdf</a></li>
 </ul>

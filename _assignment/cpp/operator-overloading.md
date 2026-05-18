@@ -76,5 +76,5 @@ C++ 구현에서는 `<numeric>` 헤더의 `std::gcd`를 사용해 분수를 약�
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/Operator Overloading.pdf" | relative_url }}" target="_blank" rel="noopener">Operator Overloading.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/assignment/cpp/Operator Overloading.pdf" | relative_url }}" target="_blank" rel="noopener">Operator Overloading.pdf</a></li>
 </ul>

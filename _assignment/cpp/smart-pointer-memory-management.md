@@ -66,5 +66,5 @@ C++ 스마트 포인터와 JVM GC는 모두 개발자가 직접 `delete`를 호�
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/Smart Pointer, RAII, Reference Counting.pdf" | relative_url }}" target="_blank" rel="noopener">Smart Pointer, RAII, Reference Counting.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/assignment/cpp/Smart Pointer, RAII, Reference Counting.pdf" | relative_url }}" target="_blank" rel="noopener">Smart Pointer, RAII, Reference Counting.pdf</a></li>
 </ul>

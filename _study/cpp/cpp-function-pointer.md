@@ -529,5 +529,5 @@ public:
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/C++ 함수포인터.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 함수포인터.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/cpp/C++ 함수포인터.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 함수포인터.pdf</a></li>
 </ul>

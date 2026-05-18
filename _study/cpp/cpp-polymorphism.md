@@ -365,5 +365,5 @@ class ImmutablePoint final {
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/C++ 다형성.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 다형성.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/cpp/C++ 다형성.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 다형성.pdf</a></li>
 </ul>

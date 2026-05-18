@@ -60,5 +60,5 @@ AI를 대하는 태도 역시 중요한 주제였다. Claude Code, Codex CLI, Cu
 ## 8. 참고 자료
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/web-dev-skills.pdf" | relative_url }}" target="_blank" rel="noopener">웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 PDF</a></li>
+  <li><a href="{{ "/assets/pdfs/post/industrial-special-lecture/web-dev-skills.pdf" | relative_url }}" target="_blank" rel="noopener">웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 PDF</a></li>
 </ul>
