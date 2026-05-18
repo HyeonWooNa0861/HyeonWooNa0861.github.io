@@ -82,8 +82,83 @@
         font-size: 24px;
       }
 
+      h3 {
+        margin-top: 28px;
+        font-size: 19px;
+      }
+
+      p {
+        margin: 14px 0;
+      }
+
       a {
         color: var(--accent);
+      }
+
+      ul, ol {
+        padding-left: 24px;
+      }
+
+      li + li {
+        margin-top: 6px;
+      }
+
+      code {
+        border: 1px solid #d7dce5;
+        border-radius: 5px;
+        background: #eef2f7;
+        padding: 2px 5px;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 0.92em;
+      }
+
+      pre {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #111827;
+        color: #e5e7eb;
+        padding: 16px;
+        line-height: 1.55;
+      }
+
+      pre code {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        font-size: 14px;
+      }
+
+      table {
+        display: block;
+        width: 100%;
+        margin: 18px 0;
+        overflow-x: auto;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th, td {
+        border: 1px solid var(--line);
+        padding: 9px 11px;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eef2f7;
+        font-weight: 700;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #fbfcfe;
+      }
+
+      blockquote {
+        margin: 18px 0;
+        border-left: 4px solid var(--line);
+        padding: 4px 0 4px 16px;
+        color: var(--muted);
       }
 
       .post-meta {
