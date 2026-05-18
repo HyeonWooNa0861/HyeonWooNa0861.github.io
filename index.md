@@ -3,25 +3,19 @@ layout: default
 title: GitBlog
 ---
 
-## Posts
+## Main
 
 <ul class="post-list">
-  {% for post in site.posts %}
-    <li class="post-card">
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <p>{{ post.date | date: "%Y-%m-%d" }} · {{ post.categories | join: ", " }}</p>
-    </li>
-  {% endfor %}
-</ul>
-
-## Assignments
-
-<ul class="post-list">
-  {% assign assignments = site.assignment | sort: "title" %}
-  {% for assignment in assignments %}
-    <li class="post-card">
-      <a href="{{ assignment.url | relative_url }}">{{ assignment.title }}</a>
-      <p>{{ assignment.course }} · {{ assignment.topic }}</p>
-    </li>
-  {% endfor %}
+  <li class="post-card">
+    <a href="{{ '/post/' | relative_url }}">Post</a>
+    <p>산업체 특강 및 탐방 보고서</p>
+  </li>
+  <li class="post-card">
+    <a href="{{ '/assignment/' | relative_url }}">Assignments</a>
+    <p>C++ 과제 정리</p>
+  </li>
+  <li class="post-card">
+    <a href="{{ '/study/' | relative_url }}">Study</a>
+    <p>C++ 강의자료 요약</p>
+  </li>
 </ul>
