@@ -378,29 +378,38 @@
     {% assign sidebar_kind = "" %}
     {% assign sidebar_current = "" %}
 
-    {% if page.url contains "/posts/" %}
+    {% if page.url == "/" %}
+      {% assign show_sidebar = false %}
+    {% elsif page.url == "/about/" %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "about" %}
+    {% elsif page.url == "/post/" %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "post" %}
+    {% elsif page.url contains "/posts/" %}
       {% assign show_sidebar = true %}
       {% assign sidebar_kind = "post" %}
     {% elsif page.url contains "/post/" %}
-      {% if page.url != "/post/" %}
-        {% assign show_sidebar = true %}
-        {% assign sidebar_kind = "post" %}
-      {% endif %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "post" %}
+    {% elsif page.url == "/study/" %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "study" %}
     {% elsif page.url contains "/study/" %}
-      {% if page.url != "/study/" %}
-        {% assign show_sidebar = true %}
-        {% assign sidebar_kind = "study" %}
-      {% endif %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "study" %}
+    {% elsif page.url == "/assignment/" %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "assignment" %}
     {% elsif page.url contains "/assignment/" %}
-      {% if page.url != "/assignment/" %}
-        {% assign show_sidebar = true %}
-        {% assign sidebar_kind = "assignment" %}
-      {% endif %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "assignment" %}
+    {% elsif page.url == "/research/" %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "research" %}
     {% elsif page.url contains "/research/" %}
-      {% if page.url != "/research/" %}
-        {% assign show_sidebar = true %}
-        {% assign sidebar_kind = "research" %}
-      {% endif %}
+      {% assign show_sidebar = true %}
+      {% assign sidebar_kind = "research" %}
     {% endif %}
 
     {% if sidebar_kind == "post" %}
@@ -420,9 +429,19 @@
         {% assign sidebar_current = "Study" %}
       {% endif %}
     {% elsif sidebar_kind == "assignment" %}
-      {% assign sidebar_current = "Assignment > C++" %}
+      {% if page.url == "/assignment/" %}
+        {% assign sidebar_current = "Assignment" %}
+      {% else %}
+        {% assign sidebar_current = "Assignment > C++" %}
+      {% endif %}
     {% elsif sidebar_kind == "research" %}
-      {% assign sidebar_current = "Research > QECO-Adapt" %}
+      {% if page.url == "/research/" %}
+        {% assign sidebar_current = "Research" %}
+      {% else %}
+        {% assign sidebar_current = "Research > QECO-Adapt" %}
+      {% endif %}
+    {% elsif sidebar_kind == "about" %}
+      {% assign sidebar_current = "About" %}
     {% endif %}
 
     <header class="site-header">
@@ -443,6 +462,14 @@
                 <span>Current</span>
                 {{ sidebar_current }}
               </p>
+              <section class="side-index-section">
+                <p class="side-index-title">Topbar</p>
+                <ul class="side-index-list">
+                  <li>
+                    <a class="side-index-link{% if page.url == "/about/" %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
+                  </li>
+                </ul>
+              </section>
               <section class="side-index-section">
                 <p class="side-index-title">Post</p>
                 <ul class="side-index-list">
