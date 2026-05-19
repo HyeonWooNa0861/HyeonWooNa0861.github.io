@@ -5,7 +5,7 @@ date: 2026-05-16 00:00:00 +0900
 categories: [AIEXPO2026, 기업분석]
 tags: [AI, on-device, computer-vision, GMP, smart-factory]
 permalink: /posts/xaiva-on-device/
-section: industrial-special-lecture
+section: industry-lectures
 ---
 
 ## 1. 조사 배경
@@ -79,7 +79,7 @@ AI EXPO 2026에서 XAIVA ON-DEVICE를 살펴보며, 앞으로의 AI 활용 능�
       <li><a href="https://www.aiexpo.co.kr/home/">AI EXPO KOREA 2026 공식 홈페이지</a></li>
       <li><a href="https://www.aiexpo.co.kr/home/v1.php">AI EXPO KOREA 2026 참관 안내</a></li>
       <li><a href="https://www.xiilab.com/product/xaivaondevice">씨이랩 - XAIVA ON-DEVICE 제품 소개</a></li>
-      <li><a href="{{ "/assets/pdfs/post/industrial-special-lecture/XAIVA-ON-DEVICE.pdf" | relative_url }}" target="_blank" rel="noopener">XAIVA-ON-DEVICE 제품 소개서(PDF)</a></li>
+      <li><a href="{{ "/assets/pdfs/post/industry-lectures/XAIVA-ON-DEVICE.pdf" | relative_url }}" target="_blank" rel="noopener">XAIVA-ON-DEVICE 제품 소개서(PDF)</a></li>
     </ul>
   </section>
   <section>

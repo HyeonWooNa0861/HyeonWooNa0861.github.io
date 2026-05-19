@@ -2,10 +2,10 @@
 layout: post
 title: "웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 보고서"
 date: 2026-05-14 00:00:00 +0900
-categories: [산업체특강, 수강소감]
+categories: [IndustryLectures, Reflection]
 tags: [web, ai, cs, career]
 permalink: /posts/web-dev-skills/
-section: industrial-special-lecture
+section: industry-lectures
 ---
 
 ## 1. 강의 개요
@@ -61,5 +61,5 @@ AI를 대하는 태도 역시 중요한 주제였다. Claude Code, Codex CLI, Cu
 ## 8. 참고 자료
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/post/industrial-special-lecture/web-dev-skills.pdf" | relative_url }}" target="_blank" rel="noopener">웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 PDF</a></li>
+  <li><a href="{{ "/assets/pdfs/post/industry-lectures/web-dev-skills.pdf" | relative_url }}" target="_blank" rel="noopener">웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 PDF</a></li>
 </ul>

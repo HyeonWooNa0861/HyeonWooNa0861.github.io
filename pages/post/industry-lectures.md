@@ -1,13 +1,13 @@
 ---
 layout: default
-title: 산업체 특강
-permalink: /post/industrial-special-lecture/
+title: Industry Lectures
+permalink: /post/industry-lectures/
 ---
 
-# 산업체 특강
+# Industry Lectures
 
 <ul class="post-list">
-  {% assign posts = site.posts | where: "section", "industrial-special-lecture" %}
+  {% assign posts = site.posts | where: "section", "industry-lectures" %}
   {% for post in posts %}
     <li class="post-card">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>

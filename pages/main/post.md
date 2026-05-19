@@ -8,8 +8,8 @@ permalink: /post/
 
 <ul class="post-list">
   <li class="post-card">
-    <a href="{{ '/post/industrial-special-lecture/' | relative_url }}">산업체 특강</a>
-    <p>2026년 산업체 특강 및 전시 탐방 보고서</p>
+    <a href="{{ '/post/industry-lectures/' | relative_url }}">Industry Lectures</a>
+    <p>2026 industry lecture and exhibition reports</p>
   </li>
   <li class="post-card">
     <a href="{{ '/posts/2026-kiit-summer-conference-qeco-adapt/' | relative_url }}">2026 KIIT Summer Conference</a>

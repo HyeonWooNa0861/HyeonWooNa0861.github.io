@@ -5,7 +5,7 @@ date: 2026-05-16 00:00:00 +0900
 categories: [WIS2026, 기업분석]
 tags: [IoT, C-IoT, surface-wave, smart-industry]
 permalink: /posts/sunny-wave-tech-ciot/
-section: industrial-special-lecture
+section: industry-lectures
 ---
 
 ## 1. 조사 배경
