@@ -387,9 +387,6 @@
         <div class="page-shell{% if show_sidebar %} has-sidebar{% endif %}">
           {% if show_sidebar %}
             <aside class="side-index" aria-label="Section index">
-              <section class="side-index-section single">
-                <a class="side-index-heading{% if page.url == "/about/" %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
-              </section>
               <section class="side-index-section">
                 <a class="side-index-heading{% if page.url == "/post/" %} active{% endif %}" href="{{ '/post/' | relative_url }}">Post</a>
                 <ul class="side-index-list">
