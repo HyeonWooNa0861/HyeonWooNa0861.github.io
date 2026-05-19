@@ -199,5 +199,5 @@ Max Heap에서 삽입은 보통 새 원소를 배열 끝에 붙인 뒤 위로 �
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS16_priority_queue_and_heap.pdf" | relative_url }}" target="_blank" rel="noopener">LS16_priority_queue_and_heap.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS16_priority_queue_and_heap.pdf" | relative_url }}" target="_blank" rel="noopener">LS16_priority_queue_and_heap.pdf</a></li>
 </ul>

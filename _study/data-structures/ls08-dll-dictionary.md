@@ -226,5 +226,5 @@ url       -> cachedPage
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS08_dll_dictionary.pdf" | relative_url }}" target="_blank" rel="noopener">LS08_dll_dictionary.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS08_dll_dictionary.pdf" | relative_url }}" target="_blank" rel="noopener">LS08_dll_dictionary.pdf</a></li>
 </ul>

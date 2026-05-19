@@ -233,5 +233,5 @@ BST 문제를 풀 때는 다음 질문을 계속 확인한다.
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS10_binary_search_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS10_binary_search_tree.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS10_binary_search_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS10_binary_search_tree.pdf</a></li>
 </ul>

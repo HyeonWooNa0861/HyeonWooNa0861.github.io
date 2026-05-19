@@ -228,5 +228,5 @@ D
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS09_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS09_tree.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS09_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS09_tree.pdf</a></li>
 </ul>

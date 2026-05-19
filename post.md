@@ -12,7 +12,7 @@ permalink: /post/
     <p>2026년 산업체 특강 및 전시 탐방 보고서</p>
   </li>
   <li class="post-card">
-    <a href="{{ '/post/presentation/' | relative_url }}">Presentation</a>
-    <p>Research presentation notes and materials</p>
+    <a href="{{ '/post/2026-kiit-summer-conference/' | relative_url }}">2026 KIIT Summer Conference</a>
+    <p>Conference preparation notes and presentation materials</p>
   </li>
 </ul>

@@ -235,5 +235,5 @@ load factor가 너무 커지면 한 슬롯에 몰리는 원소가 많아지고 �
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS18_hash_search.pdf" | relative_url }}" target="_blank" rel="noopener">LS18_hash_search.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS18_hash_search.pdf" | relative_url }}" target="_blank" rel="noopener">LS18_hash_search.pdf</a></li>
 </ul>

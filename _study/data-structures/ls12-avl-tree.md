@@ -224,5 +224,5 @@ AVL은 탐색 안정성을 얻는 대신 구현이 복잡하다. 높이 저장, 
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS12_AVL_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS12_AVL_tree.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS12_AVL_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS12_AVL_tree.pdf</a></li>
 </ul>

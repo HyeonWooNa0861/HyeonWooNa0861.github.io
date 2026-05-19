@@ -1,22 +1,22 @@
 ---
 layout: post
-title: "QECO-Adapt 발표 예상 질의응답"
+title: "QECO-Adapt Conference Preparation Notes"
 date: 2026-05-19 00:00:00 +0900
-categories: [Presentation, Research]
+categories: ["KIIT Summer Conference", Research]
 tags: [QECO-Adapt, MEC, offloading, D3QN, LSTM, QoE]
-permalink: /posts/qeco-adapt-presentation-qna/
-section: presentation
+permalink: /posts/2026-kiit-summer-conference-qeco-adapt/
+section: kiit-summer-conference
 ---
 
-# QECO-ADAPT 발표 예상 질의응답
+# QECO-ADAPT Conference Preparation Notes
 
-이 문서는 `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료를 함께 기준으로 작성한 질의응답 준비 노트이다. 답변의 핵심 방향은 다음 세 가지이다.
+이 문서는 `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료를 함께 기준으로 정리한 conference 준비 자료이다. 연구의 핵심 주장, 주요 수치, 예상 질문에 대한 답변 방향을 한곳에서 확인할 수 있도록 구성했다.
 
 - QECO-ADAPT는 QECO를 대체하는 범용 알고리즘이 아니라, dense MEC에서 QECO의 초기 수렴 손실을 줄이는 보완형 변형이다.
 - 핵심 기여는 effective load 기반 adaptive energy weight와 offloading gating을 QECO reward/action 흐름에 결합한 것이다.
 - 결과 해석은 최종 10% 성능이 아니라 전체 400 episode 평균과 warm-up 손실 완화 관점에서 해야 한다.
 
-## 1. 발표 핵심 문장
+## 1. 핵심 메시지
 
 질문이 넓게 들어오면 아래 문장으로 시작하면 안전하다.
 
@@ -327,7 +327,7 @@ C_i^adapt = 2 * (s_i * D_i + (1 - s_i) * w_E * E_i^scaled)
 
 > 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 `g(L_eff)`로 정규화하고, `w_0(1+g)^rho` 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
 
-## 9. 발표 중 피해야 할 표현
+## 9. 공유 시 피해야 할 표현
 
 아래 표현은 질의응답에서 공격 포인트가 될 수 있으므로 피하는 것이 좋다.
 
@@ -343,7 +343,7 @@ C_i^adapt = 2 * (s_i * D_i + (1 - s_i) * w_E * E_i^scaled)
 | drop probability가 개선됐다 | 평균 dropped-task count가 개선됐다 |
 | energy 최적화 알고리즘이다 | QoE-Delay-Energy-Drop 균형을 조정하는 알고리즘이다 |
 
-## 10. 빠른 답변 모음
+## 10. 핵심 답변 모음
 
 ### "한 문장으로 기여를 말하면?"
 
@@ -381,7 +381,7 @@ C_i^adapt = 2 * (s_i * D_i + (1 - s_i) * w_E * E_i^scaled)
 
 > 아닙니다. 신경망 초기값이 아니라 reward 계산에 계속 들어가는 energy cost 계수입니다.
 
-## 11. 최종 방어 논리
+## 11. 최종 정리 논리
 
 발표 마지막 질의에서 연구의 의미를 다시 정리해야 할 때는 다음 흐름으로 답하면 된다.
 
@@ -394,6 +394,6 @@ C_i^adapt = 2 * (s_i * D_i + (1 - s_i) * w_E * E_i^scaled)
 ## 참고자료
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/post/presentation/qeco-adapt-performance-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석 발표 PDF</a></li>
+  <li><a href="{{ "/assets/pdfs/post/2026-kiit-summer-conference/qeco-adapt-performance-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석 발표 PDF</a></li>
   <li><a href="{{ "/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf" | relative_url }}" target="_blank" rel="noopener">QECO-Adapt 연구 PDF</a></li>
 </ul>

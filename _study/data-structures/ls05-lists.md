@@ -185,5 +185,5 @@ after:  [10, 20, 40, 50, _]
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS05_lists_full.pdf" | relative_url }}" target="_blank" rel="noopener">LS05_lists_full.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS05_lists_full.pdf" | relative_url }}" target="_blank" rel="noopener">LS05_lists_full.pdf</a></li>
 </ul>

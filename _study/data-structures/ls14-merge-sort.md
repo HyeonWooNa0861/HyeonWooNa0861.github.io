@@ -230,5 +230,5 @@ result = [2, 3, 4, 5, 6, 7]
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS14_merge_sort.pdf" | relative_url }}" target="_blank" rel="noopener">LS14_merge_sort.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS14_merge_sort.pdf" | relative_url }}" target="_blank" rel="noopener">LS14_merge_sort.pdf</a></li>
 </ul>

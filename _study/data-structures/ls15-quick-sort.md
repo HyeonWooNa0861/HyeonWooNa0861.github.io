@@ -199,5 +199,5 @@ A[r]            pivot
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS15_quick_sort_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS15_quick_sort_R1.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS15_quick_sort_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS15_quick_sort_R1.pdf</a></li>
 </ul>

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Data Structures Study
-permalink: /study/data-structure/
+permalink: /study/data-structures/
 ---
 
 # Data Structures

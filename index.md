@@ -10,7 +10,7 @@ title: GitBlog
     <a href="{{ '/post/industrial-special-lecture/' | relative_url }}">산업체 특강</a>
   </li>
   <li class="post-card">
-    <a href="{{ '/post/presentation/' | relative_url }}">Presentation</a>
+    <a href="{{ '/post/2026-kiit-summer-conference/' | relative_url }}">2026 KIIT Summer Conference</a>
   </li>
 </ul>
 
@@ -37,6 +37,6 @@ title: GitBlog
     <a href="{{ '/study/cpp/' | relative_url }}">C++</a>
   </li>
   <li class="post-card">
-    <a href="{{ '/study/data-structure/' | relative_url }}">Data Structures</a>
+    <a href="{{ '/study/data-structures/' | relative_url }}">Data Structures</a>
   </li>
 </ul>

@@ -204,5 +204,5 @@ void insertionSort(int[] list) {
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS13_sorting.pdf" | relative_url }}" target="_blank" rel="noopener">LS13_sorting.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS13_sorting.pdf" | relative_url }}" target="_blank" rel="noopener">LS13_sorting.pdf</a></li>
 </ul>

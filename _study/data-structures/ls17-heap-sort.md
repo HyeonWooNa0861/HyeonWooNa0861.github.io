@@ -196,5 +196,5 @@ swap root and last
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS17_heap_sort.pdf" | relative_url }}" target="_blank" rel="noopener">LS17_heap_sort.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS17_heap_sort.pdf" | relative_url }}" target="_blank" rel="noopener">LS17_heap_sort.pdf</a></li>
 </ul>

@@ -165,5 +165,5 @@ Linked Stack
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS02_data_structures_and_algorithms_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS02_data_structures_and_algorithms_R1.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS02_data_structures_and_algorithms_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS02_data_structures_and_algorithms_R1.pdf</a></li>
 </ul>

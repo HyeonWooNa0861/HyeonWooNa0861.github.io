@@ -233,5 +233,5 @@ front = (front + 1) % capacity
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS07_stack_queue_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS07_stack_queue_R1.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS07_stack_queue_R1.pdf" | relative_url }}" target="_blank" rel="noopener">LS07_stack_queue_R1.pdf</a></li>
 </ul>

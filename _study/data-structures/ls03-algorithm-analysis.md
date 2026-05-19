@@ -179,5 +179,5 @@ for i = 0 to n - 1:
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS03_algorithm_analysis.pdf" | relative_url }}" target="_blank" rel="noopener">LS03_algorithm_analysis.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS03_algorithm_analysis.pdf" | relative_url }}" target="_blank" rel="noopener">LS03_algorithm_analysis.pdf</a></li>
 </ul>

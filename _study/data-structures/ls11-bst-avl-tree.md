@@ -204,5 +204,5 @@ x
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS11_BST_AVL_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS11_BST_AVL_tree.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS11_BST_AVL_tree.pdf" | relative_url }}" target="_blank" rel="noopener">LS11_BST_AVL_tree.pdf</a></li>
 </ul>

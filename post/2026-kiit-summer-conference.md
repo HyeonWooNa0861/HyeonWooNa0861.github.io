@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Presentation
-permalink: /post/presentation/
+title: 2026 KIIT Summer Conference
+permalink: /post/2026-kiit-summer-conference/
 ---
 
-# Presentation
+# 2026 KIIT Summer Conference
 
 <ul class="post-list">
-  {% assign posts = site.posts | where: "section", "presentation" %}
+  {% assign posts = site.posts | where: "section", "kiit-summer-conference" %}
   {% for post in posts %}
     <li class="post-card">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>

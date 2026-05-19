@@ -235,5 +235,5 @@ prev.next = target.next
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS06_linked_list.pdf" | relative_url }}" target="_blank" rel="noopener">LS06_linked_list.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS06_linked_list.pdf" | relative_url }}" target="_blank" rel="noopener">LS06_linked_list.pdf</a></li>
 </ul>

@@ -205,5 +205,5 @@ T(n) <= c * f(n) for all n >= n0
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/data-structure/LS04_asymptotic_analysis.pdf" | relative_url }}" target="_blank" rel="noopener">LS04_asymptotic_analysis.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/study/data-structures/LS04_asymptotic_analysis.pdf" | relative_url }}" target="_blank" rel="noopener">LS04_asymptotic_analysis.pdf</a></li>
 </ul>

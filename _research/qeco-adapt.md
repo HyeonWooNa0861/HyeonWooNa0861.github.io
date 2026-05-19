@@ -64,5 +64,5 @@ w_E = w_0 * (1 + g(L_eff))^rho
 
 <ul>
   <li><a href="{{ "/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf" | relative_url }}" target="_blank" rel="noopener">QECO-Adapt 연구 PDF</a></li>
-  <li><a href="{{ "/posts/qeco-adapt-presentation-qna/" | relative_url }}">QECO-Adapt 발표 예상 질의응답</a></li>
+  <li><a href="{{ "/posts/2026-kiit-summer-conference-qeco-adapt/" | relative_url }}">QECO-Adapt Conference Preparation Notes</a></li>
 </ul>
