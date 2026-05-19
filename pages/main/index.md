@@ -4,6 +4,14 @@ title: GitBlog
 permalink: /
 ---
 
+## About
+
+<ul class="post-list">
+  <li class="post-card">
+    <a href="{{ '/about/' | relative_url }}">About</a>
+  </li>
+</ul>
+
 ## Post
 
 <ul class="post-list">

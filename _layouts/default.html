@@ -103,33 +103,27 @@
         padding: 16px;
       }
 
-      .side-index-title {
+      .side-index-heading {
+        display: block;
         margin: 0 0 12px;
         color: var(--muted);
         font-size: 12px;
         font-weight: 700;
         line-height: 1.3;
+        text-decoration: none;
       }
 
-      .side-index-current {
-        margin: 0 0 16px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 14px;
+      .side-index-heading:hover,
+      .side-index-heading.active {
         color: var(--text);
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1.4;
-      }
-
-      .side-index-current span {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 600;
       }
 
       .side-index-section + .side-index-section {
         margin-top: 18px;
+      }
+
+      .side-index-section.single .side-index-heading {
+        margin-bottom: 0;
       }
 
       .side-index-list {
@@ -374,74 +368,9 @@
     </style>
   </head>
   <body>
-    {% assign show_sidebar = false %}
-    {% assign sidebar_kind = "" %}
-    {% assign sidebar_current = "" %}
-
+    {% assign show_sidebar = true %}
     {% if page.url == "/" %}
       {% assign show_sidebar = false %}
-    {% elsif page.url == "/about/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "about" %}
-    {% elsif page.url == "/post/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "post" %}
-    {% elsif page.url contains "/posts/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "post" %}
-    {% elsif page.url contains "/post/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "post" %}
-    {% elsif page.url == "/study/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "study" %}
-    {% elsif page.url contains "/study/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "study" %}
-    {% elsif page.url == "/assignment/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "assignment" %}
-    {% elsif page.url contains "/assignment/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "assignment" %}
-    {% elsif page.url == "/research/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "research" %}
-    {% elsif page.url contains "/research/" %}
-      {% assign show_sidebar = true %}
-      {% assign sidebar_kind = "research" %}
-    {% endif %}
-
-    {% if sidebar_kind == "post" %}
-      {% if page.section == "industry-lectures" or page.url contains "/post/industry-lectures/" %}
-        {% assign sidebar_current = "Post > Industry Lectures" %}
-      {% elsif page.section == "kiit-summer-conference" or page.url contains "/posts/2026-kiit-summer-conference-qeco-adapt/" %}
-        {% assign sidebar_current = "Post > 2026 KIIT Summer Conference" %}
-      {% else %}
-        {% assign sidebar_current = "Post" %}
-      {% endif %}
-    {% elsif sidebar_kind == "study" %}
-      {% if page.course == "C++" or page.url contains "/study/cpp/" %}
-        {% assign sidebar_current = "Study > C++" %}
-      {% elsif page.course == "Data Structures" or page.url contains "/study/data-structures/" %}
-        {% assign sidebar_current = "Study > Data Structures" %}
-      {% else %}
-        {% assign sidebar_current = "Study" %}
-      {% endif %}
-    {% elsif sidebar_kind == "assignment" %}
-      {% if page.url == "/assignment/" %}
-        {% assign sidebar_current = "Assignment" %}
-      {% else %}
-        {% assign sidebar_current = "Assignment > C++" %}
-      {% endif %}
-    {% elsif sidebar_kind == "research" %}
-      {% if page.url == "/research/" %}
-        {% assign sidebar_current = "Research" %}
-      {% else %}
-        {% assign sidebar_current = "Research > QECO-Adapt" %}
-      {% endif %}
-    {% elsif sidebar_kind == "about" %}
-      {% assign sidebar_current = "About" %}
     {% endif %}
 
     <header class="site-header">
@@ -458,20 +387,11 @@
         <div class="page-shell{% if show_sidebar %} has-sidebar{% endif %}">
           {% if show_sidebar %}
             <aside class="side-index" aria-label="Section index">
-              <p class="side-index-current">
-                <span>Current</span>
-                {{ sidebar_current }}
-              </p>
-              <section class="side-index-section">
-                <p class="side-index-title">Topbar</p>
-                <ul class="side-index-list">
-                  <li>
-                    <a class="side-index-link{% if page.url == "/about/" %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
-                  </li>
-                </ul>
+              <section class="side-index-section single">
+                <a class="side-index-heading{% if page.url == "/about/" %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
               </section>
               <section class="side-index-section">
-                <p class="side-index-title">Post</p>
+                <a class="side-index-heading{% if page.url == "/post/" or page.url contains "/post/" or page.url contains "/posts/" %} active{% endif %}" href="{{ '/post/' | relative_url }}">Post</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.section == "industry-lectures" or page.url contains "/post/industry-lectures/" %} active{% endif %}" href="{{ '/post/industry-lectures/' | relative_url }}">Industry Lectures</a>
@@ -482,26 +402,26 @@
                 </ul>
               </section>
               <section class="side-index-section">
-                <p class="side-index-title">Study</p>
+                <a class="side-index-heading{% if page.url == "/study/" or page.url contains "/study/" %} active{% endif %}" href="{{ '/study/' | relative_url }}">Study</a>
                 <ul class="side-index-list">
                   <li>
-                    <a class="side-index-link{% if page.course == "C++" or page.url contains "/study/cpp/" %} active{% endif %}" href="{{ '/study/cpp/' | relative_url }}">C++</a>
+                    <a class="side-index-link{% if page.url contains "/study/cpp/" %} active{% endif %}" href="{{ '/study/cpp/' | relative_url }}">C++</a>
                   </li>
                   <li>
-                    <a class="side-index-link{% if page.course == "Data Structures" or page.url contains "/study/data-structures/" %} active{% endif %}" href="{{ '/study/data-structures/' | relative_url }}">Data Structures</a>
+                    <a class="side-index-link{% if page.url contains "/study/data-structures/" %} active{% endif %}" href="{{ '/study/data-structures/' | relative_url }}">Data Structures</a>
                   </li>
                 </ul>
               </section>
               <section class="side-index-section">
-                <p class="side-index-title">Assignment</p>
+                <a class="side-index-heading{% if page.url == "/assignment/" or page.url contains "/assignment/" %} active{% endif %}" href="{{ '/assignment/' | relative_url }}">Assignment</a>
                 <ul class="side-index-list">
                   <li>
-                    <a class="side-index-link{% if page.course == "C++" or page.url contains "/assignment/cpp/" %} active{% endif %}" href="{{ '/assignment/cpp/' | relative_url }}">C++</a>
+                    <a class="side-index-link{% if page.url contains "/assignment/cpp/" %} active{% endif %}" href="{{ '/assignment/cpp/' | relative_url }}">C++</a>
                   </li>
                 </ul>
               </section>
               <section class="side-index-section">
-                <p class="side-index-title">Research</p>
+                <a class="side-index-heading{% if page.url == "/research/" or page.url contains "/research/" %} active{% endif %}" href="{{ '/research/' | relative_url }}">Research</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.url contains "/research/qeco-adapt/" %} active{% endif %}" href="{{ '/research/qeco-adapt/' | relative_url }}">QECO-Adapt</a>
