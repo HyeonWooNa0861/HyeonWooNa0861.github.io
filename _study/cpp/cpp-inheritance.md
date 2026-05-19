@@ -2,7 +2,8 @@
 layout: default
 title: "C++ 상속"
 course: "C++"
-topic: "상속"
+topic: "상속과 클래스 계층"
+order: 9
 ---
 
 # C++ 상속 요약

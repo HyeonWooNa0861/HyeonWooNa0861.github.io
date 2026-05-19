@@ -2,7 +2,8 @@
 layout: default
 title: "C++ 다형성"
 course: "C++"
-topic: "다형성"
+topic: "가상 함수와 동적 바인딩"
+order: 10
 ---
 
 # C++ 다형성 요약

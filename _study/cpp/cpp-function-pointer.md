@@ -2,7 +2,8 @@
 layout: default
 title: "C++ 함수 포인터"
 course: "C++"
-topic: "함수 포인터"
+topic: "함수 포인터와 콜백"
+order: 8
 ---
 
 # C++ 함수 포인터 요약
