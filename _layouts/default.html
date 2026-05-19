@@ -111,6 +111,27 @@
         line-height: 1.3;
       }
 
+      .side-index-current {
+        margin: 0 0 16px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 14px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .side-index-current span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .side-index-section + .side-index-section {
+        margin-top: 18px;
+      }
+
       .side-index-list {
         display: grid;
         gap: 6px;
@@ -355,6 +376,7 @@
   <body>
     {% assign show_sidebar = false %}
     {% assign sidebar_kind = "" %}
+    {% assign sidebar_current = "" %}
 
     {% if page.url contains "/posts/" %}
       {% assign show_sidebar = true %}
@@ -381,6 +403,28 @@
       {% endif %}
     {% endif %}
 
+    {% if sidebar_kind == "post" %}
+      {% if page.section == "industry-lectures" or page.url contains "/post/industry-lectures/" %}
+        {% assign sidebar_current = "Post > Industry Lectures" %}
+      {% elsif page.section == "kiit-summer-conference" or page.url contains "/posts/2026-kiit-summer-conference-qeco-adapt/" %}
+        {% assign sidebar_current = "Post > 2026 KIIT Summer Conference" %}
+      {% else %}
+        {% assign sidebar_current = "Post" %}
+      {% endif %}
+    {% elsif sidebar_kind == "study" %}
+      {% if page.course == "C++" or page.url contains "/study/cpp/" %}
+        {% assign sidebar_current = "Study > C++" %}
+      {% elsif page.course == "Data Structures" or page.url contains "/study/data-structures/" %}
+        {% assign sidebar_current = "Study > Data Structures" %}
+      {% else %}
+        {% assign sidebar_current = "Study" %}
+      {% endif %}
+    {% elsif sidebar_kind == "assignment" %}
+      {% assign sidebar_current = "Assignment > C++" %}
+    {% elsif sidebar_kind == "research" %}
+      {% assign sidebar_current = "Research > QECO-Adapt" %}
+    {% endif %}
+
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="{{ '/' | relative_url }}">GitBlog</a>
@@ -395,7 +439,11 @@
         <div class="page-shell{% if show_sidebar %} has-sidebar{% endif %}">
           {% if show_sidebar %}
             <aside class="side-index" aria-label="Section index">
-              {% if sidebar_kind == "post" %}
+              <p class="side-index-current">
+                <span>Current</span>
+                {{ sidebar_current }}
+              </p>
+              <section class="side-index-section">
                 <p class="side-index-title">Post</p>
                 <ul class="side-index-list">
                   <li>
@@ -405,7 +453,8 @@
                     <a class="side-index-link{% if page.section == "kiit-summer-conference" or page.url contains "/posts/2026-kiit-summer-conference-qeco-adapt/" %} active{% endif %}" href="{{ '/posts/2026-kiit-summer-conference-qeco-adapt/' | relative_url }}">2026 KIIT Summer Conference</a>
                   </li>
                 </ul>
-              {% elsif sidebar_kind == "study" %}
+              </section>
+              <section class="side-index-section">
                 <p class="side-index-title">Study</p>
                 <ul class="side-index-list">
                   <li>
@@ -415,21 +464,23 @@
                     <a class="side-index-link{% if page.course == "Data Structures" or page.url contains "/study/data-structures/" %} active{% endif %}" href="{{ '/study/data-structures/' | relative_url }}">Data Structures</a>
                   </li>
                 </ul>
-              {% elsif sidebar_kind == "assignment" %}
+              </section>
+              <section class="side-index-section">
                 <p class="side-index-title">Assignment</p>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.course == "C++" or page.url contains "/assignment/cpp/" %} active{% endif %}" href="{{ '/assignment/cpp/' | relative_url }}">C++</a>
                   </li>
                 </ul>
-              {% elsif sidebar_kind == "research" %}
+              </section>
+              <section class="side-index-section">
                 <p class="side-index-title">Research</p>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.url contains "/research/qeco-adapt/" %} active{% endif %}" href="{{ '/research/qeco-adapt/' | relative_url }}">QECO-Adapt</a>
                   </li>
                 </ul>
-              {% endif %}
+              </section>
             </aside>
           {% endif %}
           <div class="page-content">
