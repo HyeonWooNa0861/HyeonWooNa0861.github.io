@@ -391,7 +391,7 @@
                 <a class="side-index-heading{% if page.url == "/about/" %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
               </section>
               <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/post/" or page.url contains "/post/" or page.url contains "/posts/" %} active{% endif %}" href="{{ '/post/' | relative_url }}">Post</a>
+                <a class="side-index-heading{% if page.url == "/post/" %} active{% endif %}" href="{{ '/post/' | relative_url }}">Post</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.section == "industry-lectures" or page.url contains "/post/industry-lectures/" %} active{% endif %}" href="{{ '/post/industry-lectures/' | relative_url }}">Industry Lectures</a>
@@ -402,7 +402,7 @@
                 </ul>
               </section>
               <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/study/" or page.url contains "/study/" %} active{% endif %}" href="{{ '/study/' | relative_url }}">Study</a>
+                <a class="side-index-heading{% if page.url == "/study/" %} active{% endif %}" href="{{ '/study/' | relative_url }}">Study</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.url contains "/study/cpp/" %} active{% endif %}" href="{{ '/study/cpp/' | relative_url }}">C++</a>
@@ -413,7 +413,7 @@
                 </ul>
               </section>
               <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/assignment/" or page.url contains "/assignment/" %} active{% endif %}" href="{{ '/assignment/' | relative_url }}">Assignment</a>
+                <a class="side-index-heading{% if page.url == "/assignment/" %} active{% endif %}" href="{{ '/assignment/' | relative_url }}">Assignment</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.url contains "/assignment/cpp/" %} active{% endif %}" href="{{ '/assignment/cpp/' | relative_url }}">C++</a>
@@ -421,7 +421,7 @@
                 </ul>
               </section>
               <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/research/" or page.url contains "/research/" %} active{% endif %}" href="{{ '/research/' | relative_url }}">Research</a>
+                <a class="side-index-heading{% if page.url == "/research/" %} active{% endif %}" href="{{ '/research/' | relative_url }}">Research</a>
                 <ul class="side-index-list">
                   <li>
                     <a class="side-index-link{% if page.url contains "/research/qeco-adapt/" %} active{% endif %}" href="{{ '/research/qeco-adapt/' | relative_url }}">QECO-Adapt</a>
