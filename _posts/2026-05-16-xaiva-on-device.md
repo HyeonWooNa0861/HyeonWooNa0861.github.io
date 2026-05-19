@@ -5,6 +5,7 @@ date: 2026-05-16 00:00:00 +0900
 categories: [AIEXPO2026, 기업분석]
 tags: [AI, on-device, computer-vision, GMP, smart-factory]
 permalink: /posts/xaiva-on-device/
+section: industrial-special-lecture
 ---
 
 ## 1. 조사 배경

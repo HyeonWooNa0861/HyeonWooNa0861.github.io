@@ -12,6 +12,9 @@ collections:
   assignment:
     output: true
     permalink: /assignment/:path/
+  research:
+    output: true
+    permalink: /research/:path/
   study:
     output: true
     permalink: /study/:path/

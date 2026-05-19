@@ -9,6 +9,17 @@ title: GitBlog
   <li class="post-card">
     <a href="{{ '/post/industrial-special-lecture/' | relative_url }}">산업체 특강</a>
   </li>
+  <li class="post-card">
+    <a href="{{ '/post/presentation/' | relative_url }}">Presentation</a>
+  </li>
+</ul>
+
+## Research
+
+<ul class="post-list">
+  <li class="post-card">
+    <a href="{{ '/research/qeco-adapt/' | relative_url }}">QECO-Adapt</a>
+  </li>
 </ul>
 
 ## Assignment
