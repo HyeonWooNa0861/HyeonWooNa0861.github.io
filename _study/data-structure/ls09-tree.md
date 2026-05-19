@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS09 트리 기초"
-course: "자료구조"
-topic: "트리 기초"
+title: "LS09 Trees"
+course: "Data Structures"
+topic: "Trees"
 order: 9
 ---
 
-# LS09 트리 기초 요약
+# LS09 Trees
 
-원본 자료: `LS09_tree.pdf`
+Source PDF: `LS09_tree.pdf`
 
 ## 전체 흐름
 
@@ -139,9 +139,92 @@ inorder(v):
 
 ## 복습 질문
 
-1. 어떤 노드의 조상에는 부모 노드가 포함되는가?
-2. complete binary tree이지만 perfect binary tree가 아닌 예를 직접 그려보자.
-3. 다음 방문 순서를 외워보자: preorder, postorder, inorder.
+<details>
+<summary>1. 어떤 노드의 조상에는 부모 노드가 포함되는가?</summary>
+
+답변: 포함된다. 조상은 부모, 부모의 부모, 그 위의 모든 노드를 뜻한다. 따라서 어떤 노드의 바로 위 부모 노드는 가장 가까운 조상이다.
+
+</details>
+
+<details>
+<summary>2. complete binary tree이지만 perfect binary tree가 아닌 예를 직접 그려보자.</summary>
+
+답변: 마지막 레벨이 왼쪽부터 채워졌지만 전체가 꽉 차지는 않은 트리면 된다.
+
+```text
+    A
+   / \
+  B   C
+ /
+D
+```
+
+이 트리는 마지막 레벨이 왼쪽부터 채워져 complete binary tree지만, 모든 레벨이 꽉 차 있지는 않으므로 perfect binary tree는 아니다.
+
+</details>
+
+<details>
+<summary>3. 다음 방문 순서를 외워보자: preorder, postorder, inorder.</summary>
+
+답변: preorder는 Root - Left - Right, postorder는 Left - Right - Root, inorder는 Left - Root - Right다. 루트 방문이 앞이면 preorder, 가운데면 inorder, 뒤면 postorder로 기억하면 된다.
+
+</details>
+
+## Study Notes
+
+트리는 선형 자료구조와 다르게 계층 관계를 표현한다. 배열, 리스트, 스택, 큐는 원소가 한 줄로 이어지는 구조지만, 트리는 부모와 자식 관계를 가진다.
+
+```text
+        A
+      /   \
+     B     C
+    / \     \
+   D   E     F
+```
+
+이 예에서 `A`는 루트, `D`, `E`, `F`는 리프다. `B`의 자식은 `D`, `E`이고, `D`의 조상은 `B`, `A`다.
+
+트리 용어는 서로 연결해서 외우는 것이 좋다.
+
+| 용어 | 의미 |
+|---|---|
+| root | 부모가 없는 최상위 노드 |
+| parent | 어떤 노드 바로 위의 노드 |
+| child | 어떤 노드 바로 아래의 노드 |
+| sibling | 같은 부모를 가진 노드 |
+| ancestor | 부모, 부모의 부모처럼 위쪽에 있는 노드 |
+| descendant | 자식, 자식의 자식처럼 아래쪽에 있는 노드 |
+| leaf | 자식이 없는 노드 |
+| subtree | 어떤 노드를 루트로 보는 부분 트리 |
+
+이진 트리의 종류도 자주 헷갈린다.
+
+| 종류 | 핵심 조건 |
+|---|---|
+| full binary tree | 모든 노드의 자식 수가 0 또는 2 |
+| complete binary tree | 마지막 레벨을 제외하고 꽉 차며, 마지막 레벨은 왼쪽부터 채워짐 |
+| perfect binary tree | 모든 내부 노드가 자식 2개를 갖고 모든 리프가 같은 깊이 |
+
+순회는 방문 순서를 외우면 된다. 기준은 항상 루트다.
+
+| 순회 | 순서 | 자주 쓰는 상황 |
+|---|---|---|
+| preorder | Root - Left - Right | 트리 복사, 구조 먼저 출력 |
+| inorder | Left - Root - Right | BST에서 정렬된 순서 출력 |
+| postorder | Left - Right - Root | 하위 결과를 먼저 계산해야 하는 경우 |
+
+## Traversal Example
+
+위 그림에서 순회 결과는 다음과 같다.
+
+| 순회 | 결과 |
+|---|---|
+| preorder | `A B D E C F` |
+| inorder | `D B E A C F` |
+| postorder | `D E B F C A` |
+
+중위 순회는 일반 이진 트리에서는 단순한 방문 순서일 뿐이다. 하지만 BST에서는 왼쪽이 작고 오른쪽이 크다는 조건 때문에 정렬된 출력이 된다.
+
 ## PDF
 
 <ul>

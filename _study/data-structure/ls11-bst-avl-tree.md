@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS11 BST와 AVL 트리"
-course: "자료구조"
-topic: "BST와 AVL 트리"
+title: "LS11 BST and AVL Trees"
+course: "Data Structures"
+topic: "BST and AVL Trees"
 order: 11
 ---
 
-# LS11 BST와 AVL 트리 요약
+# LS11 BST and AVL Trees
 
-원본 자료: `LS11_BST_AVL_tree.pdf`
+Source PDF: `LS11_BST_AVL_tree.pdf`
 
 ## 전체 흐름
 
@@ -123,9 +123,84 @@ Left Rotation은 이 과정을 좌우 반대로 수행한다.
 
 ## 복습 질문
 
-1. BST에서 루트 노드를 삭제하는데 자식이 둘이면 어떤 노드를 새 루트 후보로 쓰는가?
-2. AVL 삽입에서 처음 불균형이 발생한 노드를 왜 찾는가?
-3. LR과 RL은 왜 회전이 두 번 필요한가?
+<details>
+<summary>1. BST에서 루트 노드를 삭제하는데 자식이 둘이면 어떤 노드를 새 루트 후보로 쓰는가?</summary>
+
+답변: 보통 오른쪽 서브트리의 최소 노드, 즉 inorder successor를 새 루트 후보로 쓴다. 또는 왼쪽 서브트리의 최대 노드인 inorder predecessor를 사용할 수도 있다.
+
+</details>
+
+<details>
+<summary>2. AVL 삽입에서 처음 불균형이 발생한 노드를 왜 찾는가?</summary>
+
+답변: 삽입으로 인해 균형이 깨진 가장 낮은 조상 노드를 기준으로 회전하면, 그 서브트리의 높이와 균형을 복구할 수 있기 때문이다. 삽입의 경우 보통 처음 불균형 노드에서 회전하면 위쪽 균형도 함께 해결된다.
+
+</details>
+
+<details>
+<summary>3. LR과 RL은 왜 회전이 두 번 필요한가?</summary>
+
+답변: LR과 RL은 트리가 한 방향으로 곧게 기울어진 것이 아니라 중간에서 꺾인 모양이다. 먼저 자식 쪽에서 회전해 직선 형태로 펴고, 그 다음 불균형 노드에서 반대 방향 회전을 해야 균형이 맞는다.
+
+</details>
+
+## Study Notes
+
+이 강의는 BST의 삭제와 AVL 트리의 필요성을 연결한다. BST는 균형만 잘 잡히면 빠르지만, 삽입 순서가 나쁘면 높이가 `n`까지 커진다. AVL 트리는 이 문제를 해결하기 위해 삽입과 삭제 후 균형을 복구한다.
+
+BST 삭제는 삭제할 노드의 자식 수에 따라 나뉜다.
+
+| 삭제 대상 | 처리 |
+|---|---|
+| leaf node | 그냥 제거한다. |
+| child가 1개 | 자식을 삭제 대상 위치로 올린다. |
+| child가 2개 | 오른쪽 서브트리의 최소 노드 또는 왼쪽 서브트리의 최대 노드로 대체한다. |
+
+자식이 둘인 경우 바로 노드를 지우면 BST 구조가 깨지기 쉽다. 그래서 현재 노드보다 크면서 가장 작은 값, 즉 inorder successor를 가져오는 방식이 자연스럽다.
+
+AVL 트리는 모든 노드에서 다음 조건을 유지한다.
+
+```text
+abs(height(left) - height(right)) <= 1
+```
+
+Balance Factor는 보통 다음처럼 정의한다.
+
+```text
+BF = height(left) - height(right)
+```
+
+AVL 조건에서는 BF가 `-1`, `0`, `1` 중 하나여야 한다.
+
+삽입 후 불균형이 생기면 새 노드에서 루트 방향으로 올라가며 처음으로 조건이 깨진 노드 `z`를 찾는다. `z`의 어느 쪽 자식 `y`로 내려갔는지, 다시 `y`의 어느 쪽 자식 `x`로 내려갔는지를 보면 LL, RR, LR, RL을 판별할 수 있다.
+
+```text
+z -> y -> x
+```
+
+| 경로 | 케이스 | 회전 |
+|---|---|---|
+| left -> left | LL | Right Rotation |
+| right -> right | RR | Left Rotation |
+| left -> right | LR | Left Rotation, Right Rotation |
+| right -> left | RL | Right Rotation, Left Rotation |
+
+## Rotation Intuition
+
+회전은 정렬 순서를 바꾸는 작업이 아니다. BST의 inorder 결과는 그대로 유지하면서 높이를 줄이는 포인터 재배치다. 그래서 회전 전후에 중위 순회를 해 보면 key 순서는 같다.
+
+```text
+LL case
+
+    z              y
+   /              / \
+  y      ->      x   z
+ /
+x
+```
+
+직선으로 기울어진 경우는 한 번의 반대 방향 회전으로 충분하다. 꺾인 모양은 먼저 직선에 가깝게 펴고, 그 다음 반대 방향 회전을 해야 한다.
+
 ## PDF
 
 <ul>

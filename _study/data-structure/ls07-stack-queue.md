@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS07 스택과 큐"
-course: "자료구조"
-topic: "스택과 큐"
+title: "LS07 Stacks and Queues"
+course: "Data Structures"
+topic: "Stacks and Queues"
 order: 7
 ---
 
-# LS07 스택과 큐 요약
+# LS07 Stacks and Queues
 
-원본 자료: `LS07_stack_queue_R1.pdf`
+Source PDF: `LS07_stack_queue_R1.pdf`
 
 ## 전체 흐름
 
@@ -168,9 +168,68 @@ private int size;
 
 ## 복습 질문
 
-1. `push(1), push(2), pop(), push(3), pop()`의 반환 순서는?
-2. `enqueue(1), enqueue(2), dequeue(), enqueue(3), dequeue()`의 반환 순서는?
-3. 배열 큐에서 원형 구조를 쓰지 않으면 어떤 공간 낭비가 생기는가?
+<details>
+<summary>1. `push(1), push(2), pop(), push(3), pop()`의 반환 순서는?</summary>
+
+답변: `2`, `3` 순서로 반환된다. 스택은 LIFO 구조이므로 가장 나중에 들어온 값이 먼저 나온다.
+
+</details>
+
+<details>
+<summary>2. `enqueue(1), enqueue(2), dequeue(), enqueue(3), dequeue()`의 반환 순서는?</summary>
+
+답변: `1`, `2` 순서로 반환된다. 큐는 FIFO 구조이므로 먼저 들어온 값이 먼저 나온다.
+
+</details>
+
+<details>
+<summary>3. 배열 큐에서 원형 구조를 쓰지 않으면 어떤 공간 낭비가 생기는가?</summary>
+
+답변: 앞쪽 원소를 `dequeue`한 뒤 배열 앞부분에 빈칸이 생겨도 `rear`가 계속 뒤로만 이동하면 그 빈칸을 재사용하기 어렵다. 원형 큐는 `% capacity`를 사용해 뒤쪽 끝 다음을 다시 0번 인덱스로 연결해 이 낭비를 줄인다.
+
+</details>
+
+## Study Notes
+
+스택과 큐는 리스트보다 제한된 ADT다. 제한이 있다는 것은 불편하다는 뜻이 아니라, 오히려 동작이 명확해진다는 뜻이다. 스택은 한쪽 끝에서만 넣고 빼므로 LIFO가 되고, 큐는 뒤로 넣고 앞으로 빼므로 FIFO가 된다.
+
+스택은 "가장 최근 작업"을 다룰 때 자연스럽다.
+
+| 예시 | 스택이 맞는 이유 |
+|---|---|
+| 함수 호출 | 가장 나중에 호출된 함수가 먼저 종료된다. |
+| 괄호 검사 | 가장 최근에 열린 괄호가 먼저 닫혀야 한다. |
+| 되돌리기 | 가장 최근 작업부터 취소한다. |
+| DFS | 최근에 발견한 경로를 먼저 깊게 탐색한다. |
+
+큐는 "도착 순서"를 지켜야 할 때 자연스럽다.
+
+| 예시 | 큐가 맞는 이유 |
+|---|---|
+| 프린터 대기열 | 먼저 요청한 작업을 먼저 처리한다. |
+| BFS | 가까운 노드부터 순서대로 방문한다. |
+| 네트워크 요청 | 먼저 들어온 요청부터 처리한다. |
+
+원형 큐는 배열 큐의 핵심이다. 단순 배열 큐에서 `dequeue`를 할 때마다 모든 원소를 앞으로 당기면 비용이 `O(n)`이 된다. 그래서 `front`와 `rear` 인덱스만 움직이고, 배열 끝에 도달하면 `% capacity`로 처음으로 돌아간다.
+
+```text
+rear = (rear + 1) % capacity
+front = (front + 1) % capacity
+```
+
+이 식은 인덱스가 배열 범위를 벗어나지 않게 한다. 예를 들어 `capacity = 5`이고 `rear = 4`이면 다음 위치는 `(4 + 1) % 5 = 0`이다.
+
+## Implementation Checklist
+
+| 구조 | 확인할 상태 |
+|---|---|
+| ArrayStack | `top`이 다음 삽입 위치인지, 마지막 원소 위치인지 확인 |
+| LinkedStack | `pop` 후 `top`과 `size` 갱신 |
+| ArrayQueue | full/empty 조건, `% capacity` 적용 |
+| LinkedQueue | 마지막 원소 삭제 시 `rear = null` 처리 |
+
+스택과 큐 문제는 연산 순서를 직접 써 보면 대부분 풀린다. 반환값을 묻는 문제에서는 삽입된 순서와 삭제되는 순서를 표로 적는 습관이 좋다.
+
 ## PDF
 
 <ul>

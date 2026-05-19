@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "C++ 열거형"
+title: "C++ Enumerations"
 course: "C++"
 topic: "enum과 enum class"
 order: 6
 ---
 
-# C++ 열거형 요약
+# C++ Enumerations
 
-원본 자료: `열거형 (Enum).pdf`
+Source PDF: `열거형 (Enum).pdf`
 
 ## 전체 흐름
 
@@ -189,6 +189,37 @@ EXECUTE = 100
 | 비트 플래그 | 여러 옵션 조합에 사용할 수 있다. |
 
 현대 C++에서는 특별한 이유가 없다면 C 스타일 enum보다 `enum class`를 사용하는 것이 더 안전하고 명확하다.
+
+## Study Guide
+
+이 문서는 "숫자에 의미를 부여하는 방법"에서 출발해 `enum class`의 타입 안전성으로 이어지는 흐름으로 읽으면 좋다. 먼저 매직 넘버가 왜 위험한지 이해하고, 그다음 C 스타일 `enum`이 어떤 편리함과 한계를 동시에 갖는지 확인한다.
+
+시험이나 코드 작성에서는 `enum`과 `enum class`의 차이를 정확히 말할 수 있어야 한다. 핵심은 스코프와 암묵 변환이다. C 스타일 `enum`은 열거자 이름이 바깥 스코프에 노출되고 정수처럼 쓰이기 쉽지만, `enum class`는 `Color::Red`처럼 소속을 명시하고 정수 변환도 제한한다.
+
+비트 플래그는 단순 상태 표현과 다르다. 상태 머신은 여러 값 중 하나만 가지는 경우에 적합하고, 권한 플래그는 여러 값을 조합해야 하므로 각 값을 서로 다른 비트에 배치한다. 이 차이를 구분하면 `enum class`를 언제 단순 상태로 쓰고 언제 연산자 오버로딩과 함께 써야 하는지 판단할 수 있다.
+
+## 복습 질문
+
+<details>
+<summary>1. C 스타일 `enum`보다 `enum class`가 더 안전한 이유는 무엇인가?</summary>
+
+답변: `enum class`는 열거자 이름이 enum 내부 스코프에 묶이고, 정수로 암묵 변환되지 않는다. 그래서 이름 충돌과 실수로 정수처럼 사용하는 문제를 줄일 수 있다.
+
+</details>
+
+<details>
+<summary>2. 열거형의 기반 타입을 직접 지정하는 이유는 무엇인가?</summary>
+
+답변: 저장 크기나 비트 표현을 명확히 하기 위해서다. 예를 들어 권한 플래그처럼 비트 단위 조합이 필요한 경우 `enum class Permission : unsigned int`처럼 기반 타입을 지정하면 의도가 더 분명해진다.
+
+</details>
+
+<details>
+<summary>3. `enum class`로 비트 플래그를 만들 때 `operator|` 같은 연산자를 직접 정의해야 하는 이유는 무엇인가?</summary>
+
+답변: `enum class`는 타입 안전성을 위해 정수로 자동 변환되지 않기 때문이다. 따라서 `READ | WRITE` 같은 비트 조합을 자연스럽게 쓰려면 해당 enum 타입에 맞는 비트 연산자 오버로딩을 직접 제공해야 한다.
+
+</details>
 
 ## PDF
 

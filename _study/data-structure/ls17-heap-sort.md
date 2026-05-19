@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS17 힙 정렬"
-course: "자료구조"
-topic: "힙 정렬"
+title: "LS17 Heap Sort"
+course: "Data Structures"
+topic: "Heap Sort"
 order: 17
 ---
 
-# LS17 힙 정렬 요약
+# LS17 Heap Sort
 
-원본 자료: `LS17_heap_sort.pdf`
+Source PDF: `LS17_heap_sort.pdf`
 
 ## 전체 흐름
 
@@ -117,9 +117,82 @@ swap root with last:
 
 ## 복습 질문
 
-1. Max Heap에서 루트와 마지막 원소를 교환하는 이유는?
-2. 힙 크기를 줄인 뒤 `siftDown`을 해야 하는 이유는?
-3. `buildHeap`을 단순히 `n log n`으로 보지 않는 이유는 무엇인가?
+<details>
+<summary>1. Max Heap에서 루트와 마지막 원소를 교환하는 이유는?</summary>
+
+답변: Max Heap의 루트는 현재 heap 영역의 최댓값이다. 루트와 마지막 원소를 교환하면 최댓값을 배열의 오른쪽 끝, 즉 정렬 완료 영역으로 보낼 수 있다.
+
+</details>
+
+<details>
+<summary>2. 힙 크기를 줄인 뒤 `siftDown`을 해야 하는 이유는?</summary>
+
+답변: 마지막 원소가 루트로 올라오면서 heap property가 깨질 수 있기 때문이다. 정렬 완료 영역은 제외하고 남은 heap 영역에서만 `siftDown`을 수행해 Max Heap 조건을 복구한다.
+
+</details>
+
+<details>
+<summary>3. `buildHeap`을 단순히 `n log n`으로 보지 않는 이유는 무엇인가?</summary>
+
+답변: 모든 노드가 높이 `log n`만큼 내려가는 것이 아니기 때문이다. 대부분의 노드는 리프 근처에 있어 내려갈 거리가 짧고, 루트 근처의 높은 노드는 수가 적다. 이 비용을 모두 합하면 `O(n)`이 된다.
+
+</details>
+
+## Study Notes
+
+힙 정렬은 "최댓값을 반복해서 꺼내 오른쪽부터 채우는 정렬"이다. 선택 정렬도 매번 최댓값 또는 최솟값을 고르지만, 선택 정렬은 찾는 데 `O(n)`이 걸린다. 힙 정렬은 Max Heap을 사용해 최댓값을 루트에서 바로 확인한다.
+
+과정은 다음처럼 영역을 나누어 보면 쉽다.
+
+```text
+[ heap area | sorted area ]
+```
+
+처음에는 전체 배열이 heap area다. 루트의 최댓값을 heap area의 마지막 원소와 바꾸면, 최댓값이 배열 오른쪽 끝으로 이동한다. 그 위치는 이제 sorted area가 된다.
+
+```text
+before
+[88, 85, 83, 60, 70]
+
+swap root and last
+[70, 85, 83, 60, 88]
+                 sorted
+```
+
+하지만 `70`이 루트로 올라오면서 heap property가 깨질 수 있다. 그래서 heap size를 하나 줄인 뒤, 남은 heap area에서 루트부터 `siftDown`을 수행한다.
+
+## Why Build Heap Is O(n)
+
+모든 노드에 `siftDown`을 하면 `n log n`처럼 보이지만, 실제로는 `O(n)`이다. 대부분의 노드가 아래쪽에 있기 때문이다.
+
+```text
+리프 근처: 노드 수 많음, 내려갈 거리 짧음
+루트 근처: 노드 수 적음, 내려갈 거리 김
+```
+
+각 노드의 높이를 모두 더하면 `n`에 비례한다. 그래서 heap을 만드는 단계는 `O(n)`이고, 이후 최댓값을 `n`번 제거하는 단계가 `O(n log n)`이다.
+
+## Properties
+
+| 항목 | 힙 정렬 |
+|---|---|
+| 시간 | 항상 `O(n log n)` |
+| 추가 공간 | `O(1)` in-place 가능 |
+| 안정성 | 일반 구현은 stable하지 않음 |
+| 장점 | 최악 시간 보장, 추가 배열 불필요 |
+| 단점 | 실제 캐시 효율은 quick sort보다 낮을 수 있음 |
+
+힙 정렬은 quick sort의 최악 `O(n^2)`이 부담스럽고, merge sort의 `O(n)` 추가 메모리도 부담스러운 상황에서 의미가 있다. 다만 안정 정렬이 필요하면 일반적인 heap sort는 적절하지 않을 수 있다.
+
+## Implementation Checklist
+
+1. 배열을 Max Heap으로 만든다.
+2. `end`를 배열 마지막 인덱스로 둔다.
+3. `swap(0, end)`로 최댓값을 오른쪽 끝으로 보낸다.
+4. heap size를 줄인다.
+5. 루트에서 `siftDown`한다.
+6. `end`가 0이 될 때까지 반복한다.
+
 ## PDF
 
 <ul>

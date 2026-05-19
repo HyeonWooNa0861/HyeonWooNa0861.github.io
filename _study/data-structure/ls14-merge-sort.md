@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS14 병합 정렬"
-course: "자료구조"
-topic: "병합 정렬"
+title: "LS14 Merge Sort"
+course: "Data Structures"
+topic: "Merge Sort"
 order: 14
 ---
 
-# LS14 병합 정렬 요약
+# LS14 Merge Sort
 
-원본 자료: `LS14_merge_sort.pdf`
+Source PDF: `LS14_merge_sort.pdf`
 
 ## 전체 흐름
 
@@ -147,9 +147,86 @@ List<Integer> merge(List<Integer> left, List<Integer> right) {
 
 ## 복습 질문
 
-1. `[4, 3, 9, 8, 7, 6, 5, 2]`를 처음 divide하면 어떤 두 배열로 나뉘는가?
-2. 병합 정렬은 왜 선택/삽입/버블 정렬보다 큰 입력에서 유리한가?
-3. 병합 정렬이 추가 메모리를 쓰는 지점은 어디인가?
+<details>
+<summary>1. `[4, 3, 9, 8, 7, 6, 5, 2]`를 처음 divide하면 어떤 두 배열로 나뉘는가?</summary>
+
+답변: 가운데를 기준으로 `[4, 3, 9, 8]`과 `[7, 6, 5, 2]`로 나뉜다. 병합 정렬은 리스트를 절반씩 나누는 방식으로 재귀를 진행한다.
+
+</details>
+
+<details>
+<summary>2. 병합 정렬은 왜 선택/삽입/버블 정렬보다 큰 입력에서 유리한가?</summary>
+
+답변: 병합 정렬은 `O(n log n)`이고, 선택/삽입/버블 정렬은 평균 또는 최악에서 보통 `O(n^2)`이다. 입력이 커질수록 `n^2`은 `n log n`보다 훨씬 빠르게 증가하므로 병합 정렬이 유리하다.
+
+</details>
+
+<details>
+<summary>3. 병합 정렬이 추가 메모리를 쓰는 지점은 어디인가?</summary>
+
+답변: 두 정렬된 부분 배열을 하나로 합치는 `merge` 단계에서 결과를 담을 보조 배열 또는 리스트가 필요하다. 강의 구현처럼 `left`, `right`, `result` 리스트를 만들면 추가 공간이 `O(n)` 든다.
+
+</details>
+
+## Study Notes
+
+병합 정렬은 분할 정복의 구조를 가장 깔끔하게 보여 주는 정렬 알고리즘이다. 정렬 문제를 절반씩 나누고, 작은 리스트가 될 때까지 내려간 뒤, 정렬된 두 리스트를 다시 합친다.
+
+```text
+[4, 3, 9, 8, 7, 6, 5, 2]
+
+divide
+[4, 3, 9, 8] [7, 6, 5, 2]
+
+divide
+[4, 3] [9, 8] [7, 6] [5, 2]
+
+divide
+[4] [3] [9] [8] [7] [6] [5] [2]
+```
+
+길이가 1인 리스트는 이미 정렬되어 있다. 이후 merge 단계에서 정렬된 작은 리스트들을 합쳐 큰 정렬 리스트를 만든다.
+
+병합의 핵심은 두 리스트가 이미 정렬되어 있다는 점이다. 그래서 맨 앞 원소끼리만 비교하면 된다.
+
+```text
+left  = [3, 4, 7]
+right = [2, 5, 6]
+
+compare 3 and 2 -> take 2
+compare 3 and 5 -> take 3
+compare 4 and 5 -> take 4
+compare 7 and 5 -> take 5
+compare 7 and 6 -> take 6
+right empty, append 7
+
+result = [2, 3, 4, 5, 6, 7]
+```
+
+각 merge는 원소를 한 번씩만 결과에 넣으므로 `O(n)`이다. 문제 크기를 절반씩 나누기 때문에 재귀 깊이는 `log n`이다. 따라서 전체는 `O(n log n)`이다.
+
+## Properties
+
+| 항목 | 병합 정렬 |
+|---|---|
+| 방식 | divide and conquer |
+| 시간 | 항상 `O(n log n)` |
+| 공간 | 보조 배열 때문에 보통 `O(n)` |
+| 안정성 | 안정 정렬로 구현 가능 |
+| 강점 | 최악의 경우에도 성능 보장 |
+| 약점 | 추가 메모리 사용 |
+
+병합 정렬은 quick sort보다 평균 실제 속도에서 불리할 수 있지만, 최악 시간 보장이 좋고 안정 정렬이 필요할 때 유용하다.
+
+## Recursive Thinking
+
+재귀 코드를 볼 때는 두 가지를 확인한다.
+
+1. 기저 조건: 더 나눌 필요가 없는가?
+2. 결합 조건: 작은 문제의 답을 어떻게 합치는가?
+
+병합 정렬의 기저 조건은 크기 0 또는 1이고, 결합 조건은 `merge(left, right)`이다.
+
 ## PDF
 
 <ul>

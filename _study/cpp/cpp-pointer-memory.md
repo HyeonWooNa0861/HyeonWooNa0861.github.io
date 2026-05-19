@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "C/C++ 포인터와 메모리"
+title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "포인터와 동적 할당"
 order: 3
 ---
 
-# C와 C++ 포인터 메모리 통합 요약
+# C and C++ Pointer Memory
 
-원본 자료:
+Source PDFs:
 
 - `C_동적할당.pdf`
 - `(심화) C++ 포인터.pdf`
@@ -341,7 +341,38 @@ auto sp = std::make_shared<T>(args...);
 | `shared_ptr` | 공유 소유, 참조 카운팅 |
 | `weak_ptr` | 비소유 관찰, 순환 참조 방지 |
 
-이 통합 요약의 핵심은 C의 수동 메모리 관리에서 C++의 RAII와 스마트 포인터로 발전하는 흐름이다. C++에서는 가능하면 원시 `new/delete`보다 스마트 포인터와 자동 수명 관리를 우선 고려하는 것이 안전하다.
+이 문서의 핵심은 C의 수동 메모리 관리에서 C++의 RAII와 스마트 포인터로 발전하는 흐름이다. C++에서는 가능하면 원시 `new/delete`보다 스마트 포인터와 자동 수명 관리를 우선 고려하는 것이 안전하다.
+
+## Study Guide
+
+이 문서는 메모리 수명 관리를 중심으로 읽어야 한다. Stack은 함수 호출과 함께 자동으로 관리되고, Heap은 실행 중 필요한 크기만큼 직접 확보하는 영역이다. C의 `malloc/free`와 C++의 `new/delete`는 모두 Heap을 다루지만, 객체의 생성자와 소멸자 호출 여부에서 큰 차이가 난다.
+
+포인터 문법은 기호보다 "무엇을 바꿀 수 있는가"로 정리하면 쉽다. `const int*`는 가리키는 값을 바꿀 수 없고, `int* const`는 포인터 자체의 목적지를 바꿀 수 없다. 이 구분은 함수 인자와 클래스 멤버를 읽을 때 반복해서 등장한다.
+
+스마트 포인터 부분은 소유권 모델로 외우는 것이 좋다. `unique_ptr`는 단독 소유, `shared_ptr`는 공유 소유, `weak_ptr`는 소유하지 않는 관찰자다. C++ 메모리 관리의 결론은 "가능하면 소유권을 타입으로 표현하고, 직접 `delete`하지 않는 구조를 만든다"는 것이다.
+
+## 복습 질문
+
+<details>
+<summary>1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇인가?</summary>
+
+답변: `malloc/free`는 단순히 메모리 블록을 할당하고 해제하며 생성자와 소멸자를 호출하지 않는다. `new/delete`는 메모리 할당과 함께 객체의 생성자/소멸자 호출까지 처리한다.
+
+</details>
+
+<details>
+<summary>2. `const int* p`와 `int* const p`는 어떻게 다르게 읽는가?</summary>
+
+답변: `const int* p`는 p가 가리키는 int 값을 수정할 수 없다는 뜻이다. 반면 `int* const p`는 포인터 p 자체가 const라서 다른 주소를 가리키도록 바꿀 수 없다는 뜻이다.
+
+</details>
+
+<details>
+<summary>3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결하는가?</summary>
+
+답변: `shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 객체가 해제되지 않을 수 있다. `weak_ptr`는 객체를 소유하지 않고 관찰만 하므로 참조 카운트를 증가시키지 않아 순환 소유를 끊을 수 있다.
+
+</details>
 
 ## PDF
 

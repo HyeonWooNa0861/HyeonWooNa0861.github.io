@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS15 퀵 정렬"
-course: "자료구조"
-topic: "퀵 정렬"
+title: "LS15 Quick Sort"
+course: "Data Structures"
+topic: "Quick Sort"
 order: 15
 ---
 
-# LS15 퀵 정렬 요약
+# LS15 Quick Sort
 
-원본 자료: `LS15_quick_sort_R1.pdf`
+Source PDF: `LS15_quick_sort_R1.pdf`
 
 ## 전체 흐름
 
@@ -129,9 +129,73 @@ Partition(A, p, r):
 
 ## 복습 질문
 
-1. `i`와 `j`가 partition에서 각각 무엇을 추적하는가?
-2. 피벗보다 작은 값이 발견되면 왜 `i`를 증가시키고 swap하는가?
-3. 병합 정렬보다 퀵 정렬이 메모리 측면에서 유리한 이유는 무엇인가?
+<details>
+<summary>1. `i`와 `j`가 partition에서 각각 무엇을 추적하는가?</summary>
+
+답변: Lomuto partition에서 `i`는 피벗 이하 값들이 모인 구간의 마지막 위치를 추적하고, `j`는 현재 검사 중인 원소의 위치를 추적한다.
+
+</details>
+
+<details>
+<summary>2. 피벗보다 작은 값이 발견되면 왜 `i`를 증가시키고 swap하는가?</summary>
+
+답변: 그 값을 피벗보다 작거나 같은 왼쪽 구간에 포함해야 하기 때문이다. `i`를 증가시켜 왼쪽 구간을 한 칸 넓히고, 현재 값 `A[j]`를 그 위치로 보내면 partition 불변식이 유지된다.
+
+</details>
+
+<details>
+<summary>3. 병합 정렬보다 퀵 정렬이 메모리 측면에서 유리한 이유는 무엇인가?</summary>
+
+답변: 퀵 정렬은 배열 내부에서 swap하며 partition을 수행하므로 큰 보조 배열이 필요하지 않다. 평균적으로 재귀 호출 스택 정도만 필요해 `O(log n)` 추가 공간으로 볼 수 있다. 반면 병합 정렬은 merge를 위한 `O(n)` 보조 공간이 필요하다.
+
+</details>
+
+## Study Notes
+
+퀵 정렬도 분할 정복이지만 병합 정렬과 결이 다르다. 병합 정렬은 먼저 반으로 나누고 나중에 정렬된 결과를 병합한다. 퀵 정렬은 partition 단계에서 피벗을 기준으로 작은 값과 큰 값을 나누기 때문에, 재귀 호출이 끝난 뒤 별도의 merge가 필요 없다.
+
+Lomuto partition에서는 마지막 원소를 피벗으로 잡는다.
+
+```text
+A = [31, 8, 48, 23, 7, 11, 20, 29, 65, 15]
+pivot = 15
+```
+
+반복 중 `i`는 피벗 이하 구간의 마지막 위치를 가리키고, `j`는 아직 검사 중인 위치를 가리킨다.
+
+```text
+A[p ... i]      <= pivot
+A[i+1 ... j-1]  > pivot
+A[j ... r-1]    unknown
+A[r]            pivot
+```
+
+`A[j] <= pivot`이면 그 값은 왼쪽 구간으로 가야 한다. 그래서 `i`를 하나 늘리고 `A[i]`와 `A[j]`를 바꾼다. 반복이 끝나면 `i + 1` 위치가 피벗이 들어갈 자리다.
+
+## Complexity by Partition Quality
+
+퀵 정렬의 시간은 partition이 얼마나 균형 있게 나뉘는지에 좌우된다.
+
+| 경우 | 분할 형태 | 시간 |
+|---|---|---|
+| 좋은 경우 | 절반 가까이 나뉨 | `O(n log n)` |
+| 평균적인 경우 | 대체로 적당히 나뉨 | `O(n log n)` |
+| 나쁜 경우 | 한쪽이 거의 비고 한쪽이 `n-1` | `O(n^2)` |
+
+이미 정렬된 배열에서 마지막 원소를 항상 피벗으로 고르면 피벗이 매번 최댓값이 될 수 있다. 그러면 한쪽 부분 배열만 계속 커져 재귀 깊이가 `n`이 된다.
+
+## Quick Sort vs Merge Sort
+
+| 기준 | Quick Sort | Merge Sort |
+|---|---|---|
+| 평균 시간 | 빠른 편, `O(n log n)` | `O(n log n)` |
+| 최악 시간 | `O(n^2)` 가능 | `O(n log n)` 보장 |
+| 추가 공간 | 평균 재귀 스택 `O(log n)` | 보조 배열 `O(n)` |
+| 안정성 | 일반 구현은 안정적이지 않음 | 안정 정렬로 구현 가능 |
+| 실제 성능 | 캐시 효율이 좋아 빠른 경우 많음 | 안정적이지만 메모리 사용 큼 |
+
+퀵 정렬은 피벗 선택 전략이 중요하다. random pivot이나 median-of-three 같은 방법은 최악 상황을 줄이기 위한 실용적 개선이다.
+
 ## PDF
 
 <ul>

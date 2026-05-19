@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LS08 이중 연결 리스트와 딕셔너리"
-course: "자료구조"
-topic: "이중 연결 리스트와 딕셔너리"
+title: "LS08 Doubly Linked Lists and Dictionaries"
+course: "Data Structures"
+topic: "Doubly Linked Lists and Dictionaries"
 order: 8
 ---
 
-# LS08 이중 연결 리스트와 딕셔너리 요약
+# LS08 Doubly Linked Lists and Dictionaries
 
-원본 자료: `LS08_dll_dictionary.pdf`
+Source PDF: `LS08_dll_dictionary.pdf`
 
 ## 전체 흐름
 
@@ -151,9 +151,78 @@ key       value
 
 ## 복습 질문
 
-1. `A <-> B` 사이에 `X`를 넣을 때 포인터 네 개를 어떤 순서로 바꾸는가?
-2. 딕셔너리에서 key는 중복될 수 있는가?
-3. 딕셔너리가 순서를 유지하지 않는다는 말은 정렬된 출력이 필요할 때 어떤 의미를 갖는가?
+<details>
+<summary>1. `A <-> B` 사이에 `X`를 넣을 때 포인터 네 개를 어떤 순서로 바꾸는가?</summary>
+
+답변: `X.prev = A`, `X.next = B`, `A.next = X`, `B.prev = X`로 연결한다. 핵심은 새 노드가 양쪽 노드를 가리키고, 양쪽 노드도 새 노드를 가리키게 만드는 것이다.
+
+</details>
+
+<details>
+<summary>2. 딕셔너리에서 key는 중복될 수 있는가?</summary>
+
+답변: key는 중복될 수 없다. 같은 key를 다시 넣으면 보통 새 항목을 추가하는 것이 아니라 기존 key의 value를 갱신한다. value는 중복될 수 있다.
+
+</details>
+
+<details>
+<summary>3. 딕셔너리가 순서를 유지하지 않는다는 말은 정렬된 출력이 필요할 때 어떤 의미를 갖는가?</summary>
+
+답변: 일반적인 해시 기반 딕셔너리는 key의 정렬 순서를 보장하지 않는다. 따라서 정렬된 출력이 필요하면 key를 따로 정렬하거나, 처음부터 트리 기반 맵처럼 순서를 유지하는 자료구조를 사용해야 한다.
+
+</details>
+
+## Study Notes
+
+이중 연결 리스트는 단일 연결 리스트의 약점을 줄이기 위해 각 노드가 이전 노드와 다음 노드를 모두 기억한다.
+
+```text
+null <- [A] <-> [B] <-> [C] -> null
+```
+
+이 구조의 장점은 뒤로도 이동할 수 있다는 점이다. 특정 노드를 이미 알고 있다면 그 앞뒤의 연결을 더 쉽게 바꿀 수 있다. 단점은 노드마다 `prev` 포인터가 하나 더 필요하고, 삽입/삭제 시 갱신해야 할 포인터가 많아진다는 점이다.
+
+중간 삽입은 네 연결을 맞춰야 한다.
+
+```text
+A <-> B 사이에 X 삽입
+
+X.prev = A
+X.next = B
+A.next = X
+B.prev = X
+```
+
+중간 삭제도 양쪽을 서로 직접 연결한다.
+
+```text
+A <-> X <-> B 에서 X 삭제
+
+A.next = B
+B.prev = A
+```
+
+단, 삭제 대상이 첫 노드이거나 마지막 노드라면 `head`, `tail`, `null` 처리를 따로 확인해야 한다. 그래서 실제 구현에서는 sentinel node를 두어 예외를 줄이는 경우도 많다.
+
+딕셔너리는 연결 리스트와 관점이 다르다. 리스트는 위치 중심이고, 딕셔너리는 key 중심이다. 사용자는 몇 번째 위치에 있는지보다 "이 key에 연결된 value가 무엇인가"를 묻는다.
+
+```text
+studentId -> studentName
+word      -> meaning
+url       -> cachedPage
+```
+
+딕셔너리는 보통 해시 테이블로 구현되어 평균 `O(1)` 탐색을 목표로 한다. 하지만 이 평균 성능은 충돌이 적고 해시 함수가 값을 고르게 분산시킨다는 조건 위에 있다.
+
+## Common Pitfalls
+
+| 실수 | 올바른 이해 |
+|---|---|
+| 이중 연결 리스트 삽입에서 `prev`만 바꾼다. | 양쪽 노드의 `next`, `prev`를 모두 맞춰야 한다. |
+| key와 value가 모두 유일하다고 생각한다. | key는 유일하지만 value는 중복될 수 있다. |
+| 딕셔너리를 항상 정렬된 구조로 생각한다. | 일반적인 해시 기반 딕셔너리는 정렬 순서를 보장하지 않는다. |
+| 평균 `O(1)`을 최악 `O(1)`로 이해한다. | 충돌이 심하면 최악 `O(n)`도 가능하다. |
+
 ## PDF
 
 <ul>

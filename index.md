@@ -26,6 +26,6 @@ title: GitBlog
     <a href="{{ '/study/cpp/' | relative_url }}">C++</a>
   </li>
   <li class="post-card">
-    <a href="{{ '/study/data-structure/' | relative_url }}">자료구조</a>
+    <a href="{{ '/study/data-structure/' | relative_url }}">Data Structures</a>
   </li>
 </ul>
