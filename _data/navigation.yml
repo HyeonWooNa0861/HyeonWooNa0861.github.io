@@ -21,6 +21,10 @@
       url: /research/qeco-adapt/
       description: Load-adaptive task offloading in dense MEC
       match: /research/qeco-adapt/
+    - title: SkySearch
+      url: /research/skysearch/
+      description: Satellite video search at scale
+      match: /research/skysearch/
 
 - title: Assignment
   url: /assignment/
