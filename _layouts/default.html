@@ -80,13 +80,22 @@
 
       .page-shell.has-sidebar {
         display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
+        grid-template-columns: minmax(190px, 220px) minmax(0, 1fr);
         gap: 32px;
         align-items: start;
       }
 
       .page-content {
         min-width: 0;
+        overflow-wrap: break-word;
+      }
+
+      .page-shell.has-sidebar > .side-index {
+        grid-column: 1;
+      }
+
+      .page-shell.has-sidebar > .page-content {
+        grid-column: 2;
       }
 
       .page-shell:not(.has-sidebar) .page-content {
@@ -95,11 +104,11 @@
       }
 
       .side-index {
-        position: fixed;
+        position: sticky;
         top: 88px;
-        left: max(24px, calc((100vw - 1180px) / 2));
+        align-self: start;
         box-sizing: border-box;
-        width: 220px;
+        width: 100%;
         max-height: calc(100vh - 112px);
         max-height: calc(100dvh - 112px);
         overflow-y: auto;
@@ -204,6 +213,7 @@
       }
 
       pre {
+        max-width: 100%;
         overflow-x: auto;
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -224,6 +234,7 @@
       table {
         display: block;
         width: 100%;
+        max-width: 100%;
         margin: 18px 0;
         overflow-x: auto;
         border-collapse: collapse;
@@ -335,6 +346,11 @@
         object-fit: cover;
       }
 
+      .page-content img {
+        max-width: 100%;
+        height: auto;
+      }
+
       .image-caption {
         margin: 8px 0 0;
         color: var(--muted);
@@ -355,9 +371,14 @@
         padding-top: 0;
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 860px) {
         .page-shell.has-sidebar {
           grid-template-columns: 1fr;
+        }
+
+        .page-shell.has-sidebar > .side-index,
+        .page-shell.has-sidebar > .page-content {
+          grid-column: auto;
         }
 
         .side-index {
@@ -441,7 +462,14 @@
 
         var activeItem = sideIndex.querySelector(".side-index-link.active, .side-index-heading.active");
         if (activeItem) {
-          activeItem.scrollIntoView({ block: "nearest" });
+          var activeTop = activeItem.offsetTop;
+          var activeBottom = activeTop + activeItem.offsetHeight;
+          var visibleTop = sideIndex.scrollTop;
+          var visibleBottom = visibleTop + sideIndex.clientHeight;
+
+          if (activeTop < visibleTop || activeBottom > visibleBottom) {
+            sideIndex.scrollTop = Math.max(0, activeTop - 16);
+          }
         }
       });
     </script>
