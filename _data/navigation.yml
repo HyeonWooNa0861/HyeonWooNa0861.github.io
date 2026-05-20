@@ -29,6 +29,14 @@
       url: /research/efficient-time-restricted-knn-search-mbi/
       description: Multi-Level Block Indexing for filtered kNN
       match: /research/efficient-time-restricted-knn-search-mbi/
+    - title: Bancroft
+      url: /research/bancroft-genomics-acceleration-beyond-on-device-memory/
+      description: Genomics acceleration beyond on-device memory
+      match: /research/bancroft-genomics-acceleration-beyond-on-device-memory/
+    - title: Labidus
+      url: /research/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/
+      description: RISC-V overlay with streaming asynchronous custom instructions
+      match: /research/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/
 
 - title: Assignment
   url: /assignment/
