@@ -47,3 +47,7 @@
       url: /study/machine-learning-basic/
       description: Machine Learning Basic lecture notes
       match: /study/machine-learning-basic/
+    - title: AIX
+      url: /study/aix/
+      description: AIX lecture notes
+      match: /study/aix/
