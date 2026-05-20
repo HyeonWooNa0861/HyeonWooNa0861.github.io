@@ -95,10 +95,13 @@
       }
 
       .side-index {
-        position: sticky;
+        position: fixed;
         top: 88px;
+        left: max(24px, calc((100vw - 1180px) / 2));
         box-sizing: border-box;
+        width: 220px;
         max-height: calc(100vh - 112px);
+        max-height: calc(100dvh - 112px);
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-gutter: stable;
@@ -359,8 +362,10 @@
 
         .side-index {
           position: static;
-          max-height: none;
-          overflow: visible;
+          width: auto;
+          max-height: 45vh;
+          max-height: 45dvh;
+          overflow-y: auto;
         }
 
         .post-resource-grid {
@@ -429,5 +434,16 @@
         </div>
       </div>
     </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var sideIndex = document.querySelector(".side-index");
+        if (!sideIndex) return;
+
+        var activeItem = sideIndex.querySelector(".side-index-link.active, .side-index-heading.active");
+        if (activeItem) {
+          activeItem.scrollIntoView({ block: "nearest" });
+        }
+      });
+    </script>
   </body>
 </html>
