@@ -25,6 +25,10 @@
       url: /research/skysearch/
       description: Satellite video search at scale
       match: /research/skysearch/
+    - title: Time-Restricted kNN Search
+      url: /research/efficient-time-restricted-knn-search-mbi/
+      description: Multi-Level Block Indexing for filtered kNN
+      match: /research/efficient-time-restricted-knn-search-mbi/
 
 - title: Assignment
   url: /assignment/
