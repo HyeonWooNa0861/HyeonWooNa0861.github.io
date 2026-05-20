@@ -97,6 +97,11 @@
       .side-index {
         position: sticky;
         top: 88px;
+        box-sizing: border-box;
+        max-height: calc(100vh - 112px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--panel);
@@ -354,6 +359,8 @@
 
         .side-index {
           position: static;
+          max-height: none;
+          overflow: visible;
         }
 
         .post-resource-grid {
