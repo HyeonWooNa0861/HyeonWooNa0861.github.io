@@ -7,12 +7,14 @@ permalink: /post/
 # Post
 
 <ul class="post-list">
-  <li class="post-card">
-    <a href="{{ '/post/industry-lectures/' | relative_url }}">Industry Lectures</a>
-    <p>2026 industry lecture and exhibition reports</p>
-  </li>
-  <li class="post-card">
-    <a href="{{ '/posts/2026-kiit-summer-conference-qeco-adapt/' | relative_url }}">2026 KIIT Summer Conference</a>
-    <p>Conference preparation notes and presentation materials</p>
-  </li>
+  {% for item in site.data.navigation %}
+    {% if item.title == "Post" %}
+      {% for child in item.children %}
+        <li class="post-card">
+          <a href="{{ child.url | relative_url }}">{{ child.title }}</a>
+          <p>{{ child.description }}</p>
+        </li>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
 </ul>

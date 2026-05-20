@@ -1,0 +1,49 @@
+- title: Post
+  url: /post/
+  description: Reports, lecture reflections, and presentation notes
+  children:
+    - title: Industry Lectures
+      url: /post/industry-lectures/
+      description: 2026 industry lecture and exhibition reports
+      match: /post/industry-lectures/
+      section: industry-lectures
+    - title: 2026 KIIT Summer Conference
+      url: /posts/2026-kiit-summer-conference-qeco-adapt/
+      description: Conference preparation notes and presentation materials
+      match: /posts/2026-kiit-summer-conference-qeco-adapt/
+      section: kiit-summer-conference
+
+- title: Research
+  url: /research/
+  description: Research projects and experiment summaries
+  children:
+    - title: QECO-Adapt
+      url: /research/qeco-adapt/
+      description: Load-adaptive task offloading in dense MEC
+      match: /research/qeco-adapt/
+
+- title: Assignment
+  url: /assignment/
+  description: Course assignment summaries and source PDFs
+  children:
+    - title: C++
+      url: /assignment/cpp/
+      description: C++ assignment summaries
+      match: /assignment/cpp/
+
+- title: Study
+  url: /study/
+  description: Lecture notes and study materials
+  children:
+    - title: C++
+      url: /study/cpp/
+      description: C++ lecture notes
+      match: /study/cpp/
+    - title: Data Structures
+      url: /study/data-structures/
+      description: Data Structures lecture notes
+      match: /study/data-structures/
+    - title: Machine Learning Basic
+      url: /study/machine-learning-basic/
+      description: Machine Learning Basic lecture notes
+      match: /study/machine-learning-basic/

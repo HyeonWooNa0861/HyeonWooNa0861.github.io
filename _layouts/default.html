@@ -387,44 +387,33 @@
         <div class="page-shell{% if show_sidebar %} has-sidebar{% endif %}">
           {% if show_sidebar %}
             <aside class="side-index" aria-label="Section index">
-              <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/post/" %} active{% endif %}" href="{{ '/post/' | relative_url }}">Post</a>
-                <ul class="side-index-list">
-                  <li>
-                    <a class="side-index-link{% if page.section == "industry-lectures" or page.url contains "/post/industry-lectures/" %} active{% endif %}" href="{{ '/post/industry-lectures/' | relative_url }}">Industry Lectures</a>
-                  </li>
-                  <li>
-                    <a class="side-index-link{% if page.section == "kiit-summer-conference" or page.url contains "/posts/2026-kiit-summer-conference-qeco-adapt/" %} active{% endif %}" href="{{ '/posts/2026-kiit-summer-conference-qeco-adapt/' | relative_url }}">2026 KIIT Summer Conference</a>
-                  </li>
-                </ul>
-              </section>
-              <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/research/" %} active{% endif %}" href="{{ '/research/' | relative_url }}">Research</a>
-                <ul class="side-index-list">
-                  <li>
-                    <a class="side-index-link{% if page.url contains "/research/qeco-adapt/" %} active{% endif %}" href="{{ '/research/qeco-adapt/' | relative_url }}">QECO-Adapt</a>
-                  </li>
-                </ul>
-              </section>
-              <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/assignment/" %} active{% endif %}" href="{{ '/assignment/' | relative_url }}">Assignment</a>
-                <ul class="side-index-list">
-                  <li>
-                    <a class="side-index-link{% if page.url contains "/assignment/cpp/" %} active{% endif %}" href="{{ '/assignment/cpp/' | relative_url }}">C++</a>
-                  </li>
-                </ul>
-              </section>
-              <section class="side-index-section">
-                <a class="side-index-heading{% if page.url == "/study/" %} active{% endif %}" href="{{ '/study/' | relative_url }}">Study</a>
-                <ul class="side-index-list">
-                  <li>
-                    <a class="side-index-link{% if page.url contains "/study/cpp/" %} active{% endif %}" href="{{ '/study/cpp/' | relative_url }}">C++</a>
-                  </li>
-                  <li>
-                    <a class="side-index-link{% if page.url contains "/study/data-structures/" %} active{% endif %}" href="{{ '/study/data-structures/' | relative_url }}">Data Structures</a>
-                  </li>
-                </ul>
-              </section>
+              {% for item in site.data.navigation %}
+                <section class="side-index-section">
+                  <a class="side-index-heading{% if page.url == item.url %} active{% endif %}" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+                  {% if item.children %}
+                    <ul class="side-index-list">
+                      {% for child in item.children %}
+                        {% assign child_active = false %}
+                        {% if page.url == child.url %}
+                          {% assign child_active = true %}
+                        {% elsif child.match %}
+                          {% if page.url contains child.match %}
+                            {% assign child_active = true %}
+                          {% endif %}
+                        {% endif %}
+                        {% if child.section %}
+                          {% if page.section == child.section %}
+                            {% assign child_active = true %}
+                          {% endif %}
+                        {% endif %}
+                        <li>
+                          <a class="side-index-link{% if child_active %} active{% endif %}" href="{{ child.url | relative_url }}">{{ child.title }}</a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </section>
+              {% endfor %}
             </aside>
           {% endif %}
           <div class="page-content">

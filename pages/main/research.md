@@ -7,11 +7,14 @@ permalink: /research/
 # Research
 
 <ul class="post-list">
-  {% assign research_items = site.research | sort: "order" %}
-  {% for item in research_items %}
-    <li class="post-card">
-      <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
-      <p>{{ item.topic }}</p>
-    </li>
+  {% for item in site.data.navigation %}
+    {% if item.title == "Research" %}
+      {% for child in item.children %}
+        <li class="post-card">
+          <a href="{{ child.url | relative_url }}">{{ child.title }}</a>
+          <p>{{ child.description }}</p>
+        </li>
+      {% endfor %}
+    {% endif %}
   {% endfor %}
 </ul>
