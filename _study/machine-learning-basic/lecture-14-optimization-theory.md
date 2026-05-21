@@ -149,9 +149,26 @@ $$
 
 ## 복습 질문
 
-1. Gradient descent가 zigzag로 느릴 때 momentum은 어떤 도움을 주는가?
-2. mini-batch가 작으면 gradient가 noisy해지는데도 실제 학습에서 유용할 수 있는 이유는?
-3. Convexity가 보장되지 않는 neural network 학습에서는 어떤 어려움이 생기는가?
+<details>
+<summary>1. Gradient descent가 zigzag로 느릴 때 momentum은 어떤 도움을 주는가?</summary>
+
+답변: momentum은 이전 update 방향을 누적해 현재 update에 반영한다. 같은 방향으로 계속 움직이는 성분은 강화하고, 좌우로 진동하는 성분은 상대적으로 줄인다. 그래서 좁고 긴 valley에서 zigzag를 완화하고 수렴을 빠르게 만들 수 있다.
+
+</details>
+
+<details>
+<summary>2. mini-batch가 작으면 gradient가 noisy해지는데도 실제 학습에서 유용할 수 있는 이유는?</summary>
+
+답변: 작은 mini-batch는 계산 비용이 낮아 update를 자주 할 수 있다. gradient noise가 local minimum이나 saddle point에서 빠져나오는 데 도움을 줄 수도 있다. 다만 너무 작으면 수렴이 불안정해질 수 있어 batch size 조절이 필요하다.
+
+</details>
+
+<details>
+<summary>3. Convexity가 보장되지 않는 neural network 학습에서는 어떤 어려움이 생기는가?</summary>
+
+답변: non-convex objective에서는 local minimum, saddle point, flat region이 존재할 수 있다. 따라서 찾은 해가 global optimum인지 보장하기 어렵고, initialization, optimizer, learning rate, regularization에 따라 학습 결과가 달라질 수 있다.
+
+</details>
 
 
 ## PDF

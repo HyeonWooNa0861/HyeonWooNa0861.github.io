@@ -109,9 +109,26 @@ $$
 
 ## 복습 질문
 
-1. 선형 종속인 열벡터를 가진 행렬의 determinant는 왜 0인가?
-2. 닮은 행렬이 같은 고유스펙트럼을 가진다는 말은 어떤 의미인가?
-3. 고유공간이 \\(\operatorname{Null}(A-\lambda I)\\)인 이유를 설명해보자.
+<details>
+<summary>1. 선형 종속인 열벡터를 가진 행렬의 determinant는 왜 0인가?</summary>
+
+답변: 열벡터가 선형 종속이면 행렬이 공간을 더 낮은 차원으로 눌러버린다. 이 경우 변환된 부피가 0이 되므로 determinant도 0이다. 대수적으로는 역행렬이 존재하지 않는 singular matrix다.
+
+</details>
+
+<details>
+<summary>2. 닮은 행렬이 같은 고유스펙트럼을 가진다는 말은 어떤 의미인가?</summary>
+
+답변: 닮은 행렬은 같은 선형 변환을 다른 좌표계에서 표현한 것이다. 좌표 표현은 달라도 변환의 본질적인 scale factor인 eigenvalue들의 집합은 같다. 이 eigenvalue들의 모음을 eigen spectrum이라고 볼 수 있다.
+
+</details>
+
+<details>
+<summary>3. 고유공간이 \\(\operatorname{Null}(A-\lambda I)\\)인 이유를 설명해보자.</summary>
+
+답변: eigenvector는 \\(Av=\lambda v\\)를 만족한다. 이를 옮기면 \\((A-\lambda I)v=0\\)이므로, 해당 \\(\lambda\\)에 대한 모든 eigenvector는 \\(A-\lambda I\\)의 null space에 속한다.
+
+</details>
 
 
 ## PDF

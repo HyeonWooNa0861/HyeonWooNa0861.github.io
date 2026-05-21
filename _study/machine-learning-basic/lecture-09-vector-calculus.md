@@ -107,9 +107,26 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 
 ## 복습 질문
 
-1. gradient는 함수값을 가장 빠르게 증가시키는 방향인가, 감소시키는 방향인가?
-2. 1차 Taylor 근사와 2차 Taylor 근사는 최적화에서 각각 어떤 알고리즘과 연결되는가?
-3. Jacobian에서 행과 열은 각각 무엇에 대응하는가?
+<details>
+<summary>1. gradient는 함수값을 가장 빠르게 증가시키는 방향인가, 감소시키는 방향인가?</summary>
+
+답변: gradient는 함수값이 가장 빠르게 증가하는 방향이다. 최소화 문제에서는 그 반대 방향인 negative gradient 방향으로 이동한다. 이것이 gradient descent의 기본 아이디어다.
+
+</details>
+
+<details>
+<summary>2. 1차 Taylor 근사와 2차 Taylor 근사는 최적화에서 각각 어떤 알고리즘과 연결되는가?</summary>
+
+답변: 1차 Taylor 근사는 gradient 정보를 사용하므로 gradient descent 같은 1차 최적화와 연결된다. 2차 Taylor 근사는 곡률 정보인 Hessian까지 사용하므로 Newton method 같은 2차 최적화와 연결된다.
+
+</details>
+
+<details>
+<summary>3. Jacobian에서 행과 열은 각각 무엇에 대응하는가?</summary>
+
+답변: \\(f:\mathbb{R}^n\to\mathbb{R}^m\\)이면 Jacobian은 보통 \\(m\times n\\) 행렬이다. 행은 출력 성분 \\(f_i\\), 열은 입력 변수 \\(x_j\\)에 대응하며, 원소는 \\(\partial f_i/\partial x_j\\)이다.
+
+</details>
 
 
 ## PDF

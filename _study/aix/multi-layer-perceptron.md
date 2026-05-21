@@ -179,9 +179,26 @@ Regularization은 모델이 지나치게 큰 weight나 복잡한 패턴에 의�
 
 ## 복습 질문
 
-1. ReLU 계열 activation이 깊은 신경망에서 자주 쓰이는 이유는 무엇인가?
-2. MLP가 XOR 문제를 풀 수 있는 이유를 hidden layer 관점에서 설명하라.
-3. Validation loss가 올라가고 training loss가 계속 내려가면 어떤 문제가 의심되는가?
+<details>
+<summary>1. ReLU 계열 activation이 깊은 신경망에서 자주 쓰이는 이유는 무엇인가?</summary>
+
+답변: ReLU는 양수 구간에서 gradient가 사라지지 않아 sigmoid나 tanh보다 깊은 네트워크 학습이 안정적인 편이다. 계산도 단순하고 sparse activation을 만들어 효율적이다. 다만 음수 구간에서 gradient가 0이 되는 dying ReLU 문제는 주의해야 한다.
+
+</details>
+
+<details>
+<summary>2. MLP가 XOR 문제를 풀 수 있는 이유를 hidden layer 관점에서 설명하라.</summary>
+
+답변: XOR은 입력 공간에서 하나의 직선으로 분리되지 않는다. hidden layer는 입력을 비선형 변환해 새로운 표현 공간을 만들고, 그 공간에서는 XOR 패턴을 선형적으로 나눌 수 있게 한다. 즉 hidden unit들이 여러 경계 조각을 만들어 비선형 decision boundary를 형성한다.
+
+</details>
+
+<details>
+<summary>3. Validation loss가 올라가고 training loss가 계속 내려가면 어떤 문제가 의심되는가?</summary>
+
+답변: overfitting이 의심된다. 모델이 training data에는 점점 더 잘 맞지만, unseen data를 대표하는 validation data에서는 성능이 나빠지는 상황이다. regularization, early stopping, data augmentation, 모델 크기 조정 등을 고려할 수 있다.
+
+</details>
 
 ## PDF
 

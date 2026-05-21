@@ -118,9 +118,26 @@ Projection은 벡터를 부분공간 위의 가장 가까운 벡터로 보내는
 
 ## 복습 질문
 
-1. dot product가 아닌 내적에서는 수직의 의미가 어떻게 달라질 수 있는가?
-2. \\(A^TA = I\\)이면 왜 \\(A^{-1} = A^T\\)인가?
-3. \\(Ax=b\\)에 해가 없을 때 projection 관점에서는 무엇을 찾는가?
+<details>
+<summary>1. dot product가 아닌 내적에서는 수직의 의미가 어떻게 달라질 수 있는가?</summary>
+
+답변: 수직은 내적값이 0이라는 조건으로 정의된다. 내적이 바뀌면 길이와 각도를 재는 방식이 달라지므로, 같은 두 벡터도 어떤 inner product를 쓰느냐에 따라 orthogonal 여부가 달라질 수 있다.
+
+</details>
+
+<details>
+<summary>2. \\(A^TA = I\\)이면 왜 \\(A^{-1} = A^T\\)인가?</summary>
+
+답변: \\(A^TA=I\\)는 \\(A^T\\)가 \\(A\\)의 left inverse라는 뜻이다. 정사각 orthogonal matrix에서는 left inverse와 inverse가 같으므로 \\(A^{-1}=A^T\\)가 된다. 기하적으로는 길이와 각도를 보존하는 변환이다.
+
+</details>
+
+<details>
+<summary>3. \\(Ax=b\\)에 해가 없을 때 projection 관점에서는 무엇을 찾는가?</summary>
+
+답변: \\(b\\)가 column space 밖에 있으면 정확한 해는 없다. 이때는 \\(b\\)를 column space 위로 projection한 점을 찾고, \\(Ax\\)가 그 projection에 가장 가까워지도록 하는 least squares 해를 구한다.
+
+</details>
 
 
 ## PDF

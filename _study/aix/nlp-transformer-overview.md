@@ -142,9 +142,26 @@ Transfer learning은 label이 적은 task에서도 강한 성능을 가능하게
 
 ## 복습 질문
 
-1. Word embedding이 one-hot vector보다 의미 표현에 유리한 이유는 무엇인가?
-2. Self-attention에서 query, key, value를 검색 과정에 비유해 설명하라.
-3. BERT와 GPT의 task 적합성이 다른 이유를 구조 관점에서 설명하라.
+<details>
+<summary>1. Word embedding이 one-hot vector보다 의미 표현에 유리한 이유는 무엇인가?</summary>
+
+답변: one-hot vector는 단어 간 거리가 모두 비슷해 의미적 유사성을 표현하지 못한다. word embedding은 단어를 연속 벡터 공간에 배치해 비슷한 문맥에서 쓰이는 단어가 가까워지도록 학습한다. 그래서 similarity, analogy, downstream task에 더 유용하다.
+
+</details>
+
+<details>
+<summary>2. Self-attention에서 query, key, value를 검색 과정에 비유해 설명하라.</summary>
+
+답변: query는 현재 token이 찾고 싶은 정보, key는 각 token이 가진 검색용 색인, value는 실제로 가져올 내용에 해당한다. query와 key의 유사도를 계산해 어떤 token을 얼마나 참고할지 정하고, 그 가중치로 value들을 합쳐 현재 token의 표현을 만든다.
+
+</details>
+
+<details>
+<summary>3. BERT와 GPT의 task 적합성이 다른 이유를 구조 관점에서 설명하라.</summary>
+
+답변: BERT는 encoder-only 구조로 양방향 문맥을 보므로 문장 이해, 분류, 추출형 QA에 강하다. GPT는 decoder-only 구조와 causal mask를 사용해 이전 token을 바탕으로 다음 token을 생성한다. 그래서 자연어 생성과 autoregressive completion에 적합하다.
+
+</details>
 
 ## PDF
 

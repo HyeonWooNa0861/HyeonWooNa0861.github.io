@@ -169,9 +169,26 @@ Modular stack은 문제를 module output으로 나눴고, occupancy는 더 조�
 
 ## 복습 질문
 
-1. Object detector가 높은 정확도를 가져도 occupancy가 필요한 이유는 무엇인가?
-2. Fixed query와 positional encoding이 3D occupancy attention에서 하는 역할을 설명하라.
-3. Fleet learning loop가 foundation model for driving의 일부로 봐야 하는 이유는 무엇인가?
+<details>
+<summary>1. Object detector가 높은 정확도를 가져도 occupancy가 필요한 이유는 무엇인가?</summary>
+
+답변: object detector는 정해진 객체 class와 bounding box 중심으로 환경을 본다. 그러나 주행에는 도로 위 점유 공간, 비정형 장애물, 가려진 영역, free space도 중요하다. occupancy는 객체가 무엇인지보다 어디가 차 있는지를 표현하므로 planning에 더 직접적인 정보를 제공한다.
+
+</details>
+
+<details>
+<summary>2. Fixed query와 positional encoding이 3D occupancy attention에서 하는 역할을 설명하라.</summary>
+
+답변: fixed query는 3D 공간의 각 위치나 voxel을 질의하는 기준점 역할을 한다. positional encoding은 그 query가 공간상 어디에 있는지 모델에 알려준다. attention은 이미지 feature와 이 공간 query를 연결해 2D 관측을 3D occupancy 표현으로 끌어올린다.
+
+</details>
+
+<details>
+<summary>3. Fleet learning loop가 foundation model for driving의 일부로 봐야 하는 이유는 무엇인가?</summary>
+
+답변: 실제 차량 fleet에서 수집되는 데이터는 드문 상황과 실패 사례를 계속 보강한다. 이 데이터가 labeling, training, validation을 거쳐 모델에 다시 반영되면 주행 모델은 점점 더 넓은 상황을 학습한다. 그래서 fleet learning loop는 단순 배포 과정이 아니라 driving foundation model을 키우는 핵심 학습 체계다.
+
+</details>
 
 ## PDF
 

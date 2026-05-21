@@ -98,9 +98,26 @@ Hessian은 점 근처에서 함수가 얼마나 휘어 있는지 나타낸다. �
 
 ## 복습 질문
 
-1. 신경망에서 parameter gradient가 필요한 이유는 무엇인가?
-2. Backpropagation과 automatic differentiation은 어떤 관계인가?
-3. Hessian이 positive definite이면 그 점 근처의 함수 모양은 어떻게 해석할 수 있는가?
+<details>
+<summary>1. 신경망에서 parameter gradient가 필요한 이유는 무엇인가?</summary>
+
+답변: parameter gradient는 loss를 줄이기 위해 각 parameter를 어느 방향으로 얼마나 바꿔야 하는지 알려준다. gradient가 없으면 수많은 parameter를 체계적으로 업데이트하기 어렵다.
+
+</details>
+
+<details>
+<summary>2. Backpropagation과 automatic differentiation은 어떤 관계인가?</summary>
+
+답변: automatic differentiation은 계산 그래프의 chain rule을 체계적으로 적용해 미분을 계산하는 일반 방법이다. backpropagation은 neural network 학습에서 loss의 gradient를 뒤에서 앞으로 전파하는 reverse-mode automatic differentiation의 대표적인 형태다.
+
+</details>
+
+<details>
+<summary>3. Hessian이 positive definite이면 그 점 근처의 함수 모양은 어떻게 해석할 수 있는가?</summary>
+
+답변: Hessian이 positive definite이면 모든 방향으로 곡률이 양수라는 뜻이다. 그 점 주변에서 함수는 bowl shape처럼 위로 볼록하며, gradient가 0이라면 local minimum으로 해석할 수 있다.
+
+</details>
 
 
 ## PDF

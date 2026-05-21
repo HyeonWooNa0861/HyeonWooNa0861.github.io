@@ -104,9 +104,26 @@ Rank-\\(k\\) approximation은 큰 데이터 행렬을 중요한 \\(k\\)개의 �
 
 ## 복습 질문
 
-1. 대칭행렬이 PCA에서 중요한 이유는 무엇인가?
-2. \\(A = U\Sigma V^T\\)에서 singular value가 큰 방향은 어떤 의미인가?
-3. low-rank approximation은 왜 데이터 압축으로 해석될 수 있는가?
+<details>
+<summary>1. 대칭행렬이 PCA에서 중요한 이유는 무엇인가?</summary>
+
+답변: PCA에서 covariance matrix는 대칭행렬이다. 대칭행렬은 orthogonal eigenvector basis를 가지므로 서로 직교하는 principal direction을 안정적으로 얻을 수 있다. 각 eigenvalue는 그 방향의 분산 크기를 나타낸다.
+
+</details>
+
+<details>
+<summary>2. \\(A = U\Sigma V^T\\)에서 singular value가 큰 방향은 어떤 의미인가?</summary>
+
+답변: singular value는 해당 singular vector 방향으로 데이터나 변환이 얼마나 큰 에너지를 가지는지 나타낸다. 값이 큰 방향은 정보량이나 분산이 큰 주요 방향이고, 작은 방향은 상대적으로 덜 중요한 성분으로 볼 수 있다.
+
+</details>
+
+<details>
+<summary>3. low-rank approximation은 왜 데이터 압축으로 해석될 수 있는가?</summary>
+
+답변: 큰 singular value에 해당하는 상위 \\(k\\)개 성분만 남기면 원래 행렬의 주요 구조를 보존하면서 저장해야 할 정보량을 줄일 수 있다. 작은 singular value 성분은 노이즈나 세부 정보로 보고 버리기 때문에 압축으로 해석된다.
+
+</details>
 
 
 ## PDF

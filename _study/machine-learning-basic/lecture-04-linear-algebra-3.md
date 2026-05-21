@@ -111,9 +111,26 @@ $$
 
 ## 복습 질문
 
-1. 모든 열이 pivot column이면 왜 선형 독립인가?
-2. 기저가 바뀌면 벡터 자체가 바뀌는가, 좌표 표현이 바뀌는가?
-3. \\(\operatorname{rank}(A) < n\\)이면 \\(Ax=0\\)은 어떤 해를 가지는가?
+<details>
+<summary>1. 모든 열이 pivot column이면 왜 선형 독립인가?</summary>
+
+답변: 모든 열이 pivot column이면 각 열이 이전 열들의 선형 결합으로 표현되지 않는다. 따라서 \\(Ax=0\\)의 해가 trivial solution \\(x=0\\)뿐이고, 열벡터들이 선형 독립이다.
+
+</details>
+
+<details>
+<summary>2. 기저가 바뀌면 벡터 자체가 바뀌는가, 좌표 표현이 바뀌는가?</summary>
+
+답변: 벡터 자체가 바뀌는 것이 아니라 그 벡터를 표현하는 좌표가 바뀐다. 같은 대상이라도 어떤 basis를 기준으로 보느냐에 따라 coordinate vector가 달라진다.
+
+</details>
+
+<details>
+<summary>3. \\(\operatorname{rank}(A) < n\\)이면 \\(Ax=0\\)은 어떤 해를 가지는가?</summary>
+
+답변: column 수 \\(n\\)보다 rank가 작으면 nullity가 양수다. 따라서 \\(Ax=0\\)은 \\(x=0\\) 외에도 non-trivial solution을 가지며, null space에 자유도가 존재한다.
+
+</details>
 
 
 ## PDF

@@ -175,9 +175,26 @@ Perceptron은 선형 score 뒤에 step function을 붙인 초기 신경망 단�
 
 ## 복습 질문
 
-1. 선형 회귀의 decision boundary와 logistic regression의 decision boundary는 어떤 점에서 같은가?
-2. Feature engineering이 underfitting과 overfitting에 각각 어떤 영향을 줄 수 있는가?
-3. Binary cross-entropy가 classification에 자연스러운 이유는 무엇인가?
+<details>
+<summary>1. 선형 회귀의 decision boundary와 logistic regression의 decision boundary는 어떤 점에서 같은가?</summary>
+
+답변: 둘 다 입력 feature의 선형 결합을 기반으로 한다. logistic regression은 그 선형 점수에 sigmoid를 적용하지만, class를 나누는 경계는 보통 \\(w^Tx+b=0\\) 같은 선형 초평면으로 결정된다. 따라서 feature 공간에서는 선형 decision boundary를 가진다.
+
+</details>
+
+<details>
+<summary>2. Feature engineering이 underfitting과 overfitting에 각각 어떤 영향을 줄 수 있는가?</summary>
+
+답변: 적절한 feature를 추가하면 단순한 모델도 데이터의 중요한 패턴을 표현할 수 있어 underfitting을 줄인다. 하지만 불필요하거나 너무 많은 feature를 넣으면 학습 데이터의 우연한 패턴까지 맞춰 overfitting이 커질 수 있다. 따라서 feature는 표현력과 일반화 사이의 균형이 필요하다.
+
+</details>
+
+<details>
+<summary>3. Binary cross-entropy가 classification에 자연스러운 이유는 무엇인가?</summary>
+
+답변: binary classification에서는 label을 Bernoulli 확률변수로 볼 수 있다. 모델이 예측한 확률이 실제 label에 높은 likelihood를 주도록 학습하면 negative log-likelihood가 binary cross-entropy 형태가 된다. 그래서 확률적 분류 모델의 목적 함수로 자연스럽다.
+
+</details>
 
 ## PDF
 

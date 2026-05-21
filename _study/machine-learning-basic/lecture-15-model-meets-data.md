@@ -306,11 +306,40 @@ $$
 
 ## 복습 질문
 
-1. Training error가 낮은데 validation error가 높다면 어떤 문제가 의심되는가?
-2. ERM에서 i.i.d. 가정이 왜 중요한가?
-3. Squared error를 쓰는 선형 회귀가 ERM의 예가 되는 이유를 설명하라.
-4. MLE에서 likelihood 곱 대신 log-likelihood 합을 쓰는 이유는 무엇인가?
-5. Gaussian prior와 L2 regularization이 어떻게 연결되는지 설명하라.
+<details>
+<summary>1. Training error가 낮은데 validation error가 높다면 어떤 문제가 의심되는가?</summary>
+
+답변: overfitting이 의심된다. 모델이 training data에는 잘 맞지만 unseen data를 대표하는 validation data에는 일반화하지 못하는 상황이다. regularization, early stopping, 데이터 보강, 모델 복잡도 조절을 고려한다.
+
+</details>
+
+<details>
+<summary>2. ERM에서 i.i.d. 가정이 왜 중요한가?</summary>
+
+답변: training data가 같은 분포에서 독립적으로 뽑혔다고 볼 수 있어야 empirical risk가 true risk의 근사로 의미를 가진다. 데이터가 편향되어 있거나 강하게 의존적이면 training 평균 loss가 실제 unseen data 성능을 잘 대표하지 못한다.
+
+</details>
+
+<details>
+<summary>3. Squared error를 쓰는 선형 회귀가 ERM의 예가 되는 이유를 설명하라.</summary>
+
+답변: 선형 회귀는 \\(f(x,\theta)=\theta^Tx+\theta_0\\) 같은 함수로 예측하고, squared error로 예측값과 실제값의 차이를 측정한다. training data 전체에 대한 평균 squared error를 최소화하는 parameter를 찾으므로 ERM의 한 예다.
+
+</details>
+
+<details>
+<summary>4. MLE에서 likelihood 곱 대신 log-likelihood 합을 쓰는 이유는 무엇인가?</summary>
+
+답변: i.i.d. sample의 likelihood는 확률들의 곱으로 표현된다. 곱은 수치적으로 작아져 underflow가 생기기 쉽고 미분도 불편하다. log를 취하면 곱이 합으로 바뀌어 계산과 최적화가 쉬워지며, log는 단조 증가 함수라 최댓값 위치가 유지된다.
+
+</details>
+
+<details>
+<summary>5. Gaussian prior와 L2 regularization이 어떻게 연결되는지 설명하라.</summary>
+
+답변: parameter에 zero-mean Gaussian prior를 두면 negative log prior가 parameter norm의 제곱에 비례한다. MAP objective에서 negative log-likelihood에 negative log prior를 더하면 \\(\lambda\lVert\theta\rVert^2\\) 같은 L2 penalty가 생긴다.
+
+</details>
 
 ## PDF
 

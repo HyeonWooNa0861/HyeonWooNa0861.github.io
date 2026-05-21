@@ -156,9 +156,26 @@ Computer vision은 의료, 안전, 과학, 보조 기술처럼 큰 가치를 만
 
 ## 복습 질문
 
-1. Hand-crafted feature 기반 vision과 representation learning 기반 vision의 차이를 설명하라.
-2. AlexNet이 과거 CNN 아이디어를 다시 강력하게 만든 조건은 무엇인가?
-3. Computer vision에서 bias와 robustness를 별도로 평가해야 하는 이유는 무엇인가?
+<details>
+<summary>1. Hand-crafted feature 기반 vision과 representation learning 기반 vision의 차이를 설명하라.</summary>
+
+답변: hand-crafted feature는 사람이 edge, corner, texture 같은 특징을 설계한 뒤 모델이 이를 사용한다. representation learning은 CNN이나 Transformer가 데이터에서 필요한 feature를 직접 학습한다. 후자는 더 큰 데이터와 compute가 필요하지만 복잡한 시각 패턴을 자동으로 포착할 수 있다.
+
+</details>
+
+<details>
+<summary>2. AlexNet이 과거 CNN 아이디어를 다시 강력하게 만든 조건은 무엇인가?</summary>
+
+답변: CNN 아이디어 자체는 오래전부터 있었지만, AlexNet은 대규모 ImageNet 데이터, GPU 학습, ReLU, dropout 같은 실용적 요소가 결합되면서 성능을 크게 끌어올렸다. 즉 모델 구조만이 아니라 데이터와 연산 자원의 성숙이 함께 작용했다.
+
+</details>
+
+<details>
+<summary>3. Computer vision에서 bias와 robustness를 별도로 평가해야 하는 이유는 무엇인가?</summary>
+
+답변: 평균 정확도가 높아도 특정 조명, 배경, 인종, 성별, 날씨, 카메라 조건에서 성능이 무너질 수 있다. bias는 데이터나 모델이 특정 분포에 치우친 문제이고, robustness는 분포 변화와 노이즈에도 안정적인지의 문제다. 실제 서비스에서는 둘 다 안전성과 신뢰성에 직접 영향을 준다.
+
+</details>
 
 ## PDF
 

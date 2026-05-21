@@ -92,9 +92,26 @@ ERM과 parameter estimation을 이해하려면 다음 수학이 필요하다.
 
 ## 복습 질문
 
-1. 평균 0, 분산 1로 feature를 조정하는 이유는 무엇인가?
-2. ERM은 어떤 종류의 모델 학습을 설명할 때 자연스러운가?
-3. 확률분포로서의 모델이 필요한 상황은 어떤 경우인가?
+<details>
+<summary>1. 평균 0, 분산 1로 feature를 조정하는 이유는 무엇인가?</summary>
+
+답변: feature마다 scale이 다르면 큰 값을 가진 feature가 학습을 과하게 지배할 수 있다. 평균 0, 분산 1로 맞추면 feature 간 scale 차이를 줄이고 gradient 기반 최적화를 더 안정적으로 만든다.
+
+</details>
+
+<details>
+<summary>2. ERM은 어떤 종류의 모델 학습을 설명할 때 자연스러운가?</summary>
+
+답변: ERM은 training data에서 관측한 평균 loss를 최소화하는 관점이므로 결정론적 예측 함수 학습을 설명할 때 자연스럽다. 예를 들어 선형 회귀에서 squared error를 최소화하는 과정은 ERM의 대표적인 예다.
+
+</details>
+
+<details>
+<summary>3. 확률분포로서의 모델이 필요한 상황은 어떤 경우인가?</summary>
+
+답변: 예측값 하나만으로 부족하고 불확실성을 함께 다뤄야 할 때 필요하다. 관측 noise가 있거나 데이터가 부족하거나 여러 가능한 결과가 존재하는 문제에서는 \\(p(y\mid x,\theta)\\)처럼 출력 분포를 모델링하는 편이 더 적절하다.
+
+</details>
 
 
 ## PDF

@@ -123,9 +123,26 @@ $$
 
 ## 복습 질문
 
-1. 공분산 행렬의 고유값이 큰 방향은 데이터 분포에서 어떤 의미인가?
-2. \\(x\\)와 \\(y\\)가 Gaussian이면 \\(x+y\\)는 항상 Gaussian인가? 어떤 조건이 필요한가?
-3. \\(y=x^2\\)처럼 여러 \\(x\\)가 같은 \\(y\\)로 가는 변환에서는 확률을 어떻게 모아야 하는가?
+<details>
+<summary>1. 공분산 행렬의 고유값이 큰 방향은 데이터 분포에서 어떤 의미인가?</summary>
+
+답변: 고유값이 큰 방향은 데이터가 그 방향으로 많이 퍼져 있다는 뜻이다. PCA에서는 이런 방향이 principal component가 되며, 데이터의 주요 변동을 설명하는 축으로 해석된다.
+
+</details>
+
+<details>
+<summary>2. \\(x\\)와 \\(y\\)가 Gaussian이면 \\(x+y\\)는 항상 Gaussian인가? 어떤 조건이 필요한가?</summary>
+
+답변: 독립인 Gaussian random variable들의 선형 결합은 Gaussian이다. 하지만 임의의 두 random variable이 각각 Gaussian이라는 사실만으로 항상 합이 Gaussian이라고 단정할 수는 없다. joint distribution의 구조가 중요하다.
+
+</details>
+
+<details>
+<summary>3. \\(y=x^2\\)처럼 여러 \\(x\\)가 같은 \\(y\\)로 가는 변환에서는 확률을 어떻게 모아야 하는가?</summary>
+
+답변: 같은 \\(y\\)를 만드는 모든 \\(x\\)의 확률 기여를 더해야 한다. 이산형이면 해당 preimage들의 확률을 합하고, 연속형이면 CDF를 먼저 구해 미분하거나 각 branch의 Jacobian 보정을 포함해 density를 합한다.
+
+</details>
 
 
 ## PDF

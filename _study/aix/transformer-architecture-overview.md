@@ -174,9 +174,26 @@ tokens
 
 ## 복습 질문
 
-1. Attention을 검색 엔진에 비유하면 query, key, value는 각각 무엇인가?
-2. Attention sublayer와 FFN sublayer의 역할 차이를 설명하라.
-3. Encoder-only 모델과 decoder-only 모델의 attention mask 차이를 설명하라.
+<details>
+<summary>1. Attention을 검색 엔진에 비유하면 query, key, value는 각각 무엇인가?</summary>
+
+답변: query는 검색어, key는 각 문서의 색인 또는 제목, value는 실제 문서 내용에 해당한다. query와 key의 유사도가 높을수록 해당 value를 더 많이 가져온다. Transformer에서는 이 과정을 token 표현 사이에서 수행한다.
+
+</details>
+
+<details>
+<summary>2. Attention sublayer와 FFN sublayer의 역할 차이를 설명하라.</summary>
+
+답변: attention sublayer는 token들 사이의 관계를 계산해 문맥 정보를 섞는다. FFN sublayer는 각 token 위치에서 독립적으로 비선형 변환을 적용해 표현력을 높인다. 즉 attention은 token 간 상호작용, FFN은 위치별 feature 변환에 가깝다.
+
+</details>
+
+<details>
+<summary>3. Encoder-only 모델과 decoder-only 모델의 attention mask 차이를 설명하라.</summary>
+
+답변: encoder-only 모델은 보통 입력 전체를 동시에 볼 수 있어 양방향 attention을 사용한다. decoder-only 모델은 다음 token 예측을 위해 미래 token을 보면 안 되므로 causal mask를 사용한다. 이 차이가 이해 중심 모델과 생성 중심 모델의 학습 방식 차이를 만든다.
+
+</details>
 
 ## PDF
 

@@ -129,9 +129,26 @@ $$
 
 ## 복습 질문
 
-1. 독립이면 상관관계는 0인가? 반대로 상관관계가 0이면 항상 독립인가?
-2. Bayesian ML에서 posterior는 언제 prior와 달라지는가?
-3. 공분산 행렬의 대각 원소와 비대각 원소는 각각 무엇을 뜻하는가?
+<details>
+<summary>1. 독립이면 상관관계는 0인가? 반대로 상관관계가 0이면 항상 독립인가?</summary>
+
+답변: 독립이면 일반적으로 covariance와 correlation은 0이다. 하지만 correlation이 0이라고 해서 항상 독립은 아니다. correlation은 선형 관계만 측정하므로 비선형 의존성이 남아 있을 수 있다.
+
+</details>
+
+<details>
+<summary>2. Bayesian ML에서 posterior는 언제 prior와 달라지는가?</summary>
+
+답변: 데이터를 관측하고 likelihood가 prior에 정보를 추가할 때 posterior가 prior와 달라진다. 데이터가 많고 likelihood가 강하면 posterior는 데이터가 지지하는 parameter 근처로 이동한다. 데이터가 거의 정보가 없으면 posterior는 prior와 비슷하게 남을 수 있다.
+
+</details>
+
+<details>
+<summary>3. 공분산 행렬의 대각 원소와 비대각 원소는 각각 무엇을 뜻하는가?</summary>
+
+답변: 대각 원소는 각 변수 자신의 분산이다. 비대각 원소는 서로 다른 두 변수가 함께 어떻게 변하는지를 나타내는 covariance다. 양수면 같이 증가하는 경향, 음수면 반대로 움직이는 경향을 뜻한다.
+
+</details>
 
 
 ## PDF

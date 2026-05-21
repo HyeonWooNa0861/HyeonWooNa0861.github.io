@@ -105,9 +105,26 @@ REF(Row Echelon Form)는 pivot이 아래 행으로 갈수록 오른쪽에 위치
 
 ## 복습 질문
 
-1. \\(Ax=b\\)가 해를 가지려면 \\(b\\)는 어떤 공간에 있어야 하는가?
-2. RREF에서 free variable은 언제 생기는가?
-3. 행렬곱이 교환법칙을 만족하지 않는다는 것은 모델 계산에서 어떤 주의점을 주는가?
+<details>
+<summary>1. \\(Ax=b\\)가 해를 가지려면 \\(b\\)는 어떤 공간에 있어야 하는가?</summary>
+
+답변: \\(b\\)는 \\(A\\)의 column space 안에 있어야 한다. \\(Ax\\)는 \\(A\\)의 열벡터들의 선형 결합이므로, 만들 수 있는 모든 \\(b\\)는 column space에 속한다.
+
+</details>
+
+<details>
+<summary>2. RREF에서 free variable은 언제 생기는가?</summary>
+
+답변: pivot이 없는 column이 있을 때 free variable이 생긴다. 이 변수는 다른 pivot variable에 의해 고정되지 않으므로 여러 값을 가질 수 있고, 해가 무한히 많아지는 원인이 된다.
+
+</details>
+
+<details>
+<summary>3. 행렬곱이 교환법칙을 만족하지 않는다는 것은 모델 계산에서 어떤 주의점을 주는가?</summary>
+
+답변: \\(AB\\)와 \\(BA\\)는 일반적으로 다르며, 심지어 한쪽만 정의될 수도 있다. 따라서 선형 변환을 합성할 때 순서가 의미를 바꾸고, neural network의 layer 순서도 임의로 바꿀 수 없다.
+
+</details>
 
 
 ## PDF

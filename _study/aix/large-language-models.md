@@ -156,9 +156,26 @@ $$
 
 ## 복습 질문
 
-1. LLM scaling에서 parameter, data, compute 중 하나만 키우면 왜 충분하지 않은가?
-2. Sparse MoE가 dense model보다 효율적인 이유를 token당 compute 관점에서 설명하라.
-3. Top-k sampling과 top-p sampling의 차이를 예시로 설명하라.
+<details>
+<summary>1. LLM scaling에서 parameter, data, compute 중 하나만 키우면 왜 충분하지 않은가?</summary>
+
+답변: parameter가 커도 데이터가 부족하면 overfitting이나 학습 부족이 생기고, 데이터가 많아도 compute가 부족하면 충분히 학습할 수 없다. compute만 늘려도 모델 용량이나 데이터 품질이 받쳐주지 않으면 성능 향상이 제한된다. LLM scaling은 세 요소의 균형이 중요하다.
+
+</details>
+
+<details>
+<summary>2. Sparse MoE가 dense model보다 효율적인 이유를 token당 compute 관점에서 설명하라.</summary>
+
+답변: dense model은 모든 token이 모든 parameter 경로를 통과한다. Sparse MoE는 많은 expert parameter를 가지고 있어도 token마다 일부 expert만 활성화한다. 그래서 전체 parameter 수는 크게 늘리면서도 token당 실제 계산량은 제한할 수 있다.
+
+</details>
+
+<details>
+<summary>3. Top-k sampling과 top-p sampling의 차이를 예시로 설명하라.</summary>
+
+답변: top-k는 확률이 높은 상위 \\(k\\)개 token만 후보로 남긴다. top-p는 누적 확률이 \\(p\\)에 도달할 때까지 후보를 남기므로 후보 개수가 상황에 따라 달라진다. 예를 들어 분포가 뾰족하면 top-p 후보는 적고, 분포가 평평하면 더 많은 token이 포함될 수 있다.
+
+</details>
 
 ## PDF
 
