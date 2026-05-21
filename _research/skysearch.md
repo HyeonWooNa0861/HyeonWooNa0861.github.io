@@ -61,25 +61,25 @@ query satellite video -> similar historical satellite videos
 
 논문은 satellite image dataset을 timestamp가 붙은 이미지 집합으로 본다.
 
-```text
-D = {(x_1, t_1), (x_2, t_2), ..., (x_n, t_n)}
-```
+$$
+\mathcal{D} = \{(x_1,t_1),(x_2,t_2),\ldots,(x_n,t_n)\}
+$$
 
-Satellite video는 1시간 간격으로 샘플링한 연속 이미지 `T`개의 sequence다. 논문 설정에서는 `T = 12`이므로 하나의 query video는 12시간짜리 위성 영상이다.
+Satellite video는 1시간 간격으로 샘플링한 연속 이미지 \(T\)개의 sequence다. 논문 설정에서는 \(T = 12\)이므로 하나의 query video는 12시간짜리 위성 영상이다.
 
-```text
-v = [(x_i, t_i), (x_{i+1}, t_{i+1}), ..., (x_{i+T-1}, t_{i+T-1})]
-```
+$$
+v = [(x_i,t_i),(x_{i+1},t_{i+1}),\ldots,(x_{i+T-1},t_{i+T-1})]
+$$
 
 검색 결과는 query video와 유사한 candidate video들의 ranked list다.
 
 | 기호 | 의미 |
 |---|---|
-| `D` | timestamp가 있는 전체 위성 이미지 DB |
-| `v` | DB에서 sliding window로 만든 satellite video |
-| `q` | 외부에서 들어온 query video |
-| `T` | video 길이, 기본 12시간 |
-| `C` | 검색된 candidate video 집합 |
+| \(\mathcal{D}\) | timestamp가 있는 전체 위성 이미지 DB |
+| \(v\) | DB에서 sliding window로 만든 satellite video |
+| \(q\) | 외부에서 들어온 query video |
+| \(T\) | video 길이, 기본 12시간 |
+| \(C\) | 검색된 candidate video 집합 |
 
 ## 3. Framework 개요
 
@@ -108,21 +108,32 @@ satellite videos
 
 위성 비디오에는 유사도 label이 없다. SkySearch는 기상 현상이 시간적으로 급격히 무작위로 바뀌지 않는다는 가정을 사용한다. 가까운 시간의 비디오는 positive pair, 먼 시간의 비디오는 negative pair로 둔다.
 
-```text
-P_v = {u : |time(v) - time(u)| <= delta}
-N_v = {u : |time(v) - time(u)| > delta}
-```
+$$
+P_v = \{u : \lvert \operatorname{time}(v)-\operatorname{time}(u)\rvert \le \delta\}
+$$
 
-논문에서는 `delta = 8 hours`를 기본값으로 사용한다.
+$$
+N_v = \{u : \lvert \operatorname{time}(v)-\operatorname{time}(u)\rvert > \delta\}
+$$
+
+논문에서는 \(\delta = 8\text{ hours}\)를 기본값으로 사용한다.
 
 Loss는 triplet/margin ranking loss처럼 이해하면 된다.
 
-```text
-L_v = E_{p in P_v, n in N_v}
-      max(||f(v) - f(p)||_2^2 - ||f(v) - f(n)||_2^2 + margin, 0)
-```
+$$
+L_v =
+\mathbb{E}_{p \in P_v,\ n \in N_v}
+\left[
+\max\left(
+\lVert f(v)-f(p)\rVert_2^2
+- \lVert f(v)-f(n)\rVert_2^2
++ \mathrm{margin},
+0
+\right)
+\right]
+$$
 
-즉, encoder `f`가 만든 embedding에서 시간적으로 가까운 video는 가깝게, 먼 video는 멀게 배치하도록 학습한다.
+즉, encoder \(f\)가 만든 embedding에서 시간적으로 가까운 video는 가깝게, 먼 video는 멀게 배치하도록 학습한다.
 
 ## 5. Encoder 구조
 
@@ -148,9 +159,9 @@ Spatial encoder는 convolution layer, max pooling, linear layer로 frame-level e
 
 원래 위성 비디오는 매우 크다. 논문 설정에서 한 video는 다음 크기를 가진다.
 
-```text
-600 x 748 pixels x 12 frames = 5,385,600 grayscale pixels
-```
+$$
+600 \times 748 \times 12 = 5{,}385{,}600
+$$
 
 반면 embedding은 256차원 float vector다.
 
@@ -159,7 +170,7 @@ Spatial encoder는 convolution layer, max pooling, linear layer로 frame-level e
 | 원본 12-frame video | 약 5.14 MB |
 | 256-d float embedding | 약 1 KB |
 
-논문은 이 압축이 약 `5260x`의 저장공간 감소를 만든다고 설명한다. 이 압축 덕분에 검색도 원본 pixel이 아니라 compact latent space에서 수행할 수 있다.
+논문은 이 압축이 약 \(5260\times\)의 저장공간 감소를 만든다고 설명한다. 이 압축 덕분에 검색도 원본 pixel이 아니라 compact latent space에서 수행할 수 있다.
 
 ## 7. Video Prediction과 Query Augmentation
 
@@ -327,7 +338,7 @@ Embedding distance는 배포용 기본값으로 적절하다. LPIPS/FSIM/SSIM은
 
 ## 15. Ablation과 추가 분석
 
-Temporal threshold `delta`는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 `delta = 8 hours`가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
+Temporal threshold \(\delta\)는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 \(\delta = 8\text{ hours}\)가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
 
 Video prediction ablation에서는 prediction이 없는 경우 초반 frame에서는 좋을 수 있지만 후반 frame으로 갈수록 성능이 떨어진다. Prediction을 붙인 SkySearch는 24시간 전체에서 안정적인 LPIPS를 유지하고, ground-truth future를 쓴 경우와도 큰 차이가 나지 않는다.
 
@@ -388,7 +399,7 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 | 질문 | 답의 방향 |
 |---|---|
 | SkySearch가 label-free인 이유는? | temporally close/far video pair를 이용한 self-supervised loss를 쓰기 때문 |
-| `delta = 8 hours`는 어디에 쓰이는가? | positive/negative video pair를 나누는 temporal threshold |
+| \(\delta = 8\text{ hours}\)는 어디에 쓰이는가? | positive/negative video pair를 나누는 temporal threshold |
 | Prediction-based query augmentation의 목적은? | 현재 상태뿐 아니라 예상 미래 전개까지 비슷한 과거 사례를 찾기 위해 |
 | MBI가 필요한 이유는? | time-restricted k-NN에서 시간 구간 밖 후보를 나중에 버리는 비효율을 줄이기 위해 |
 | Embedding ranking과 LPIPS ranking의 trade-off는? | embedding은 빠르고, LPIPS는 더 정밀하지만 매우 느리다. |

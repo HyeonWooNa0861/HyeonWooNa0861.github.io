@@ -65,9 +65,9 @@ Embedding의 장점은 sparse one-hot vector보다 의미적 유사성을 더 �
 
 RNN은 sequence를 왼쪽에서 오른쪽으로 읽으며 hidden state를 갱신한다.
 
-```text
+$$
 h_t = f(x_t, h_{t-1})
-```
+$$
 
 이 구조는 이전 단어의 정보를 다음 단어 처리에 전달할 수 있다. 하지만 긴 sequence에서는 gradient vanishing/exploding 문제가 생기고, 멀리 떨어진 단어 사이의 관계를 유지하기 어렵다.
 

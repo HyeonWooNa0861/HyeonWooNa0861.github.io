@@ -27,9 +27,9 @@ Source PDF: `3_Large_Language_Models.pdf`
 
 Language model은 token sequence에 확률을 부여하고 다음 token을 예측하는 모델이다. LLM은 이 모델이 대규모 parameter, 대규모 text data, 대규모 compute로 학습된 경우를 말한다.
 
-```text
-P(token_t | token_1, ..., token_{t-1})
-```
+$$
+P(\mathrm{token}_t \mid \mathrm{token}_1,\ldots,\mathrm{token}_{t-1})
+$$
 
 | 요소 | 의미 |
 |---|---|
@@ -123,9 +123,9 @@ target: A,     cute, teddy, bear, is, reading
 
 Temperature는 softmax 전에 logit을 조절해 분포의 날카로움을 바꾼다.
 
-```text
-softmax(logits / T)
-```
+$$
+\operatorname{softmax}\left(\frac{\mathrm{logits}}{T}\right)
+$$
 
 | Temperature | 효과 |
 |---|---|
@@ -138,9 +138,9 @@ softmax(logits / T)
 
 한 위치에서 모델은 vocabulary 전체에 대한 logit을 만들고 softmax로 확률을 계산한다. 정답 token의 확률이 높을수록 loss가 작아진다.
 
-```text
-L = -log P(correct token | context)
-```
+$$
+L = -\log P(\mathrm{correct\ token}\mid\mathrm{context})
+$$
 
 전체 sequence loss는 여러 위치의 cross-entropy를 평균하거나 합산한다. 이 단순한 objective가 대규모 데이터와 모델에서 다양한 언어 능력으로 확장된다.
 

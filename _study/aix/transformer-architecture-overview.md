@@ -37,9 +37,10 @@ Embedding matrix는 각 token id에 대응하는 dense vector를 저장한다. �
 
 Self-attention 자체는 token 집합을 순서 없이 보는 연산에 가깝다. 따라서 Transformer는 token의 위치 정보를 따로 넣어야 한다.
 
-```text
-input representation = token embedding + positional encoding
-```
+$$
+\mathrm{input\ representation}
+= \mathrm{token\ embedding} + \mathrm{positional\ encoding}
+$$
 
 | 방식 | 설명 |
 |---|---|
@@ -61,22 +62,24 @@ Attention은 검색 과정처럼 이해할 수 있다.
 
 각 token embedding은 서로 다른 선형 변환을 거쳐 query, key, value vector가 된다.
 
-```text
-Q = XW_Q
-K = XW_K
-V = XW_V
-```
+$$
+Q = XW_Q,\qquad K = XW_K,\qquad V = XW_V
+$$
 
 ## 4. Scaled Dot-Product Attention
 
 Attention score는 query와 key의 dot product로 계산한다.
 
-```text
-score = QK^T / sqrt(d_k)
-attention = softmax(score) V
-```
+$$
+\mathrm{score} = \frac{QK^T}{\sqrt{d_k}}
+$$
 
-`sqrt(d_k)`로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
+$$
+\mathrm{attention}
+= \operatorname{softmax}(\mathrm{score})V
+$$
+
+\(\sqrt{d_k}\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
 
 | 단계 | 설명 |
 |---|---|
@@ -89,10 +92,14 @@ attention = softmax(score) V
 
 하나의 attention head만 있으면 token 관계를 한 가지 관점으로만 본다. Multi-head attention은 여러 head가 서로 다른 projection을 통해 다양한 관계를 학습하게 한다.
 
-```text
-head_i = Attention(Q_i, K_i, V_i)
-MultiHead = concat(head_1, ..., head_h) W_O
-```
+$$
+\mathrm{head}_i = \operatorname{Attention}(Q_i,K_i,V_i)
+$$
+
+$$
+\operatorname{MultiHead}
+= \operatorname{concat}(\mathrm{head}_1,\ldots,\mathrm{head}_h)W_O
+$$
 
 어떤 head는 문법적 관계를, 다른 head는 의미적 관계나 긴 거리 의존성을 볼 수 있다. 중요한 점은 head를 나눔으로써 한 번의 attention block 안에서 여러 종류의 상호작용을 병렬로 계산한다는 것이다.
 
@@ -100,9 +107,10 @@ MultiHead = concat(head_1, ..., head_h) W_O
 
 Attention이 token 사이의 정보를 섞는 역할이라면, feed-forward network는 각 token 위치에서 representation을 비선형 변환한다.
 
-```text
-FFN(x) = W_2 activation(W_1 x + b_1) + b_2
-```
+$$
+\operatorname{FFN}(x)
+= W_2\phi(W_1x+b_1)+b_2
+$$
 
 Transformer block은 보통 attention sublayer와 FFN sublayer로 구성된다. Attention이 context를 모으고, FFN이 각 token representation을 더 풍부하게 가공한다.
 
@@ -110,10 +118,13 @@ Transformer block은 보통 attention sublayer와 FFN sublayer로 구성된다. 
 
 깊은 Transformer를 안정적으로 학습하기 위해 residual connection과 normalization을 사용한다.
 
-```text
-x = x + Attention(LN(x))
-x = x + FFN(LN(x))
-```
+$$
+x = x + \operatorname{Attention}(\operatorname{LN}(x))
+$$
+
+$$
+x = x + \operatorname{FFN}(\operatorname{LN}(x))
+$$
 
 | 장치 | 역할 |
 |---|---|

@@ -33,9 +33,9 @@ input x -> hidden layers -> output o
 
 각 layer는 보통 선형 변환과 activation function의 조합으로 구성된다.
 
-```text
-h = activation(Wx + b)
-```
+$$
+h = \phi(Wx+b)
+$$
 
 | Layer | 역할 |
 |---|---|
@@ -47,9 +47,10 @@ h = activation(Wx + b)
 
 Activation function은 신경망에 비선형성을 넣는다. 비선형성이 없다면 여러 선형 layer를 쌓아도 결국 하나의 선형 변환으로 합쳐진다.
 
-```text
-W2(W1x + b1) + b2 = (W2W1)x + (W2b1 + b2)
-```
+$$
+W_2(W_1x+b_1)+b_2
+= (W_2W_1)x + (W_2b_1+b_2)
+$$
 
 따라서 MLP의 표현력은 선형 변환을 여러 번 하는 데서만 나오지 않고, 각 층 사이에 들어가는 비선형 activation에서 나온다.
 
@@ -64,10 +65,13 @@ W2(W1x + b1) + b2 = (W2W1)x + (W2b1 + b2)
 
 Perceptron은 선형 score와 step activation을 결합한 초기 신경망 모델이다.
 
-```text
-z = w^T x + b
-output = step(z)
-```
+$$
+z = w^Tx + b
+$$
+
+$$
+\mathrm{output} = \operatorname{step}(z)
+$$
 
 학습 과정에서는 잘못 분류된 예제를 기준으로 weight를 갱신한다. 직관적으로는 decision boundary를 오분류된 데이터가 줄어드는 방향으로 움직이는 것이다.
 
@@ -114,9 +118,12 @@ x -> h1 -> h2 -> y_hat -> loss
 
 Backward pass에서는 loss에서 입력 방향으로 gradient를 전달한다.
 
-```text
-dL/dW2, dL/db2, dL/dW1, dL/db1
-```
+$$
+\frac{\partial L}{\partial W_2},\quad
+\frac{\partial L}{\partial b_2},\quad
+\frac{\partial L}{\partial W_1},\quad
+\frac{\partial L}{\partial b_1}
+$$
 
 각 layer는 자신의 local derivative만 알면 되고, 전체 gradient는 chain rule로 연결된다. 이 구조 덕분에 깊은 네트워크를 사람이 직접 미분하지 않고도 학습할 수 있다.
 

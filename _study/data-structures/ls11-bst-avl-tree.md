@@ -61,8 +61,8 @@ BST의 탐색, 삽입, 삭제는 루트에서 리프 방향으로 내려가며 �
 
 | 상황 | 높이 | 시간 복잡도 |
 |---|---|---|
-| 균형 트리 | `O(log n)` | `O(log n)` |
-| 편향 트리 | `O(n)` | `O(n)` |
+| 균형 트리 | \(O(\log n)\) | \(O(\log n)\) |
+| 편향 트리 | \(O(n)\) | \(O(n)\) |
 
 BST가 효율적이려면 균형이 중요하다. 이 문제를 해결하기 위해 등장하는 것이 AVL 트리다.
 
@@ -72,9 +72,11 @@ AVL 트리는 모든 노드에서 왼쪽 서브트리와 오른쪽 서브트리�
 
 Balance Factor는 보통 다음처럼 생각한다.
 
-```text
-BF(node) = height(left subtree) - height(right subtree)
-```
+$$
+\operatorname{BF}(\mathrm{node})
+= \operatorname{height}(\mathrm{left})
+- \operatorname{height}(\mathrm{right})
+$$
 
 AVL 조건은 모든 노드에서 Balance Factor가 `-1`, `0`, `1` 중 하나여야 한다는 뜻으로 볼 수 있다.
 
@@ -117,7 +119,7 @@ Left Rotation은 이 과정을 좌우 반대로 수행한다.
 | 질문 | 답의 방향 |
 |---|---|
 | BST 삭제에서 자식 둘인 노드는 어떻게 처리하는가? | 오른쪽 서브트리의 최소 노드로 대체 |
-| BST 최악 시간복잡도가 `O(n)`인 이유는? | 트리가 한쪽으로 편향되면 높이가 `n`이 됨 |
+| BST 최악 시간복잡도가 \(O(n)\)인 이유는? | 트리가 한쪽으로 편향되면 높이가 `n`이 됨 |
 | AVL 조건은? | 모든 노드의 좌우 서브트리 높이 차이가 최대 1 |
 | LL/RR/LR/RL 해결 회전은? | LL: Right, RR: Left, LR: Left+Right, RL: Right+Left |
 
@@ -160,15 +162,17 @@ BST 삭제는 삭제할 노드의 자식 수에 따라 나뉜다.
 
 AVL 트리는 모든 노드에서 다음 조건을 유지한다.
 
-```text
-abs(height(left) - height(right)) <= 1
-```
+$$
+\left|\operatorname{height}(\mathrm{left})-\operatorname{height}(\mathrm{right})\right| \le 1
+$$
 
 Balance Factor는 보통 다음처럼 정의한다.
 
-```text
-BF = height(left) - height(right)
-```
+$$
+\operatorname{BF}
+= \operatorname{height}(\mathrm{left})
+- \operatorname{height}(\mathrm{right})
+$$
 
 AVL 조건에서는 BF가 `-1`, `0`, `1` 중 하나여야 한다.
 

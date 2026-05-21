@@ -26,9 +26,9 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 
 에러를 가장 빠르게 증가시키는 방향은 gradient이고, 에러를 줄이려면 그 반대 방향으로 움직인다.
 
-```text
-parameter update ≈ current parameter - step size * gradient
-```
+$$
+\theta_{\text{new}} \approx \theta_{\text{current}} - \eta \nabla L(\theta)
+$$
 
 따라서 gradient 계산은 학습 알고리즘의 핵심이다.
 
@@ -48,13 +48,19 @@ Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사�
 
 ## 3. 편미분과 Gradient
 
-다변수 함수 `f(x1, ..., xn)`에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
+다변수 함수 \(f(x_1,\ldots,x_n)\)에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
 
 모든 편미분을 모은 것이 gradient다.
 
-```text
-gradient = [df/dx1, df/dx2, ..., df/dxn]
-```
+$$
+\nabla f =
+\left[
+\frac{\partial f}{\partial x_1},
+\frac{\partial f}{\partial x_2},
+\ldots,
+\frac{\partial f}{\partial x_n}
+\right]
+$$
 
 강의에서는 미분의 차원을 헷갈리지 않도록 첫 번째 차원을 함수 차원, 두 번째 차원을 입력 차원으로 두는 관점을 강조한다.
 
@@ -74,17 +80,20 @@ gradient = [df/dx1, df/dx2, ..., df/dxn]
 
 입력도 벡터이고 출력도 벡터인 함수에서는 미분 결과가 행렬이 된다. 이를 Jacobian matrix라고 한다.
 
-```text
-f: R^n -> R^m
-J in R^(m x n)
-J_ij = d f_i / d x_j
-```
+$$
+f:\mathbb{R}^n \to \mathbb{R}^m
+$$
+
+$$
+J \in \mathbb{R}^{m \times n}, \qquad
+J_{ij} = \frac{\partial f_i}{\partial x_j}
+$$
 
 Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담는다.
 
 ## 6. 행렬 미분
 
-머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 `x^T A x`, `||Ax-b||^2` 같은 식의 미분 공식이 자주 쓰인다.
+머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 \(x^TAx\), \(\lVert Ax-b\rVert^2\) 같은 식의 미분 공식이 자주 쓰인다.
 
 공식만 외우기보다 차원 검사를 함께 해야 한다. 미분 결과가 parameter와 같은 shape인지 확인하면 실수를 줄일 수 있다.
 
@@ -94,7 +103,7 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 |---|---|
 | gradient가 중요한 이유는? | loss를 줄이는 update 방향을 계산하기 위해 |
 | Taylor series의 역할은? | 복잡한 함수를 기준점 근처에서 근사 |
-| Jacobian의 shape은? | `f: R^n -> R^m`이면 `m x n` |
+| Jacobian의 shape은? | \(f:\mathbb{R}^n \to \mathbb{R}^m\)이면 \(m \times n\) |
 | chain rule이 중요한 이유는? | 합성 함수와 신경망 미분의 기반 |
 
 ## 복습 질문

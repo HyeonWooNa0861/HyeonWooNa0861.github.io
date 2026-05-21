@@ -23,21 +23,22 @@ QECO-Adapt는 이 문제를 단일 edge stress test로 관찰한다. 원문 QECO
 
 첫 번째 핵심 요소는 effective load이다. effective load는 사용자 수, 평균 task arrival profile, 평균 사용자 활동성, edge 수를 반영해 edge 하나가 감당해야 하는 task pressure를 단순화한 값이다.
 
-```text
-L_eff = N * b_bar * a_bar / M
-```
+$$
+L_{\mathrm{eff}} = \frac{N\bar{b}\bar{a}}{M}
+$$
 
 두 번째 요소는 gating strength이다. 부하가 커질수록 offloading action을 더 보수적으로 검토하도록 effective load를 control strength로 변환한다.
 
-```text
-g(L_eff) = L_eff / (L_eff + M * lambda)
-```
+$$
+g(L_{\mathrm{eff}})
+= \frac{L_{\mathrm{eff}}}{L_{\mathrm{eff}} + M\lambda}
+$$
 
 세 번째 요소는 adaptive energy weight이다. 기존 QECO reward의 energy cost 항에 부하 기반 가중치를 적용해 dense 환경에서 energy-aware behavior를 강화한다.
 
-```text
-w_E = w_0 * (1 + g(L_eff))^rho
-```
+$$
+w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^\rho
+$$
 
 이 방식은 policy-invariant reward shaping이 아니다. energy cost의 상대 가중치를 바꾸고, gating 조건에 따라 실제 offloading action을 local action으로 바꿀 수 있기 때문이다. 따라서 QECO-Adapt는 기존 QECO의 최적 정책을 보존한다고 주장하기보다, dense load 조건에 맞춘 load-adaptive reward/cost reweighting과 action-level gating으로 보는 것이 정확하다.
 

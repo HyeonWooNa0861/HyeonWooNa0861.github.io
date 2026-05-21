@@ -22,11 +22,11 @@ Source PDF: `machine-learning-basic-lecture-12.pdf`
 
 ## 1. 독립 확률변수
 
-두 확률변수 `X`, `Y`가 독립이면 결합분포가 각 주변분포의 곱으로 분해된다.
+두 확률변수 \(X\), \(Y\)가 독립이면 결합분포가 각 주변분포의 곱으로 분해된다.
 
-```text
-p(x, y) = p(x) p(y)
-```
+$$
+p(x,y) = p(x)p(y)
+$$
 
 연속확률변수도 joint PDF가 두 marginal PDF의 곱으로 분해되면 독립이다.
 
@@ -36,9 +36,10 @@ IID는 independent and identically distributed의 약자다. 서로 독립이고
 
 Bayes' theorem은 조건부 확률을 뒤집어 계산하는 규칙이다.
 
-```text
-posterior = likelihood * prior / evidence
-```
+$$
+\text{posterior}
+= \frac{\text{likelihood}\times\text{prior}}{\text{evidence}}
+$$
 
 이 정리는 관측 데이터가 들어왔을 때 기존 믿음을 어떻게 갱신할지 설명한다.
 
@@ -59,25 +60,27 @@ Bayesian ML에서는 모델 parameter 자체를 확률변수로 본다.
 
 기대값은 확률변수 함수의 평균적인 값을 의미한다.
 
-```text
-E[g(X)]
-```
+$$
+\mathbb{E}[g(X)]
+$$
 
-`g(x)=x`인 경우를 평균이라고 한다.
+\(g(x)=x\)인 경우를 평균이라고 한다.
 
 분산은 확률변수가 평균 주변에서 얼마나 퍼져 있는지 측정한다.
 
-```text
-Var(X) = E[(X - E[X])^2]
-```
+$$
+\operatorname{Var}(X)
+= \mathbb{E}\left[(X-\mathbb{E}[X])^2\right]
+$$
 
 ## 5. 공분산과 상관관계
 
 공분산은 두 확률변수가 함께 어떻게 변하는지 측정한다.
 
-```text
-Cov(X, Y) = E[(X - E[X])(Y - E[Y])]
-```
+$$
+\operatorname{Cov}(X,Y)
+= \mathbb{E}\left[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\right]
+$$
 
 상관관계는 공분산을 각 변수의 표준편차로 정규화한 값이다.
 
@@ -91,10 +94,14 @@ Cov(X, Y) = E[(X - E[X])(Y - E[Y])]
 
 다변수 확률변수에서는 평균은 벡터, 공분산은 행렬이 된다.
 
-```text
-mean vector: E[X]
-covariance matrix: E[(X - mu)(X - mu)^T]
-```
+$$
+\text{mean vector} = \mathbb{E}[X]
+$$
+
+$$
+\text{covariance matrix}
+= \mathbb{E}\left[(X-\mu)(X-\mu)^T\right]
+$$
 
 공분산 행렬은 feature 간 관계와 데이터 분포의 방향성을 담는다. PCA와 Gaussian model에서 매우 중요하다.
 
@@ -102,8 +109,8 @@ covariance matrix: E[(X - mu)(X - mu)^T]
 
 | 성질 | 의미 |
 |---|---|
-| 선형성 | `E[aX+bY] = aE[X]+bE[Y]` |
-| 독립이면 곱의 기대값 분리 | `E[XY] = E[X]E[Y]` |
+| 선형성 | \(\mathbb{E}[aX+bY] = a\mathbb{E}[X]+b\mathbb{E}[Y]\) |
+| 독립이면 곱의 기대값 분리 | \(\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]\) |
 | total variance | 조건부 분산과 조건부 평균의 분산으로 전체 분산 분해 |
 
 ## 시험 포인트

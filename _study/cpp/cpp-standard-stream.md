@@ -197,7 +197,7 @@ iss >> age >> name;
 | `./prog >> output.txt` | stdout을 파일에 추가 |
 | `./prog 2> error.txt` | stderr를 파일로 저장 |
 | `./prog > all.txt 2>&1` | stdout과 stderr를 같은 파일로 저장 |
-| `./producer | ./consumer` | producer의 stdout을 consumer의 stdin으로 연결 |
+| `./producer \| ./consumer` | producer의 stdout을 consumer의 stdin으로 연결 |
 
 Windows PowerShell은 리다이렉션 문법이 다를 수 있으므로, 강의 예제는 cmd 또는 POSIX 계열 쉘 기준으로 이해하는 것이 좋다.
 

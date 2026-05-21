@@ -25,19 +25,19 @@ Source PDF: `LS19_hash_search_2.pdf`
 
 ## 1. 해싱과 충돌 복습
 
-해싱은 해시 함수 `h(k)`를 사용해 key `k`를 해시 테이블의 특정 슬롯으로 매핑하는 방식이다.
+해싱은 해시 함수 \(h(k)\)를 사용해 key \(k\)를 해시 테이블의 특정 슬롯으로 매핑하는 방식이다.
 
-```text
-key k -> h(k) -> HT[h(k)]
-```
+$$
+k \to h(k) \to HT[h(k)]
+$$
 
-해시 테이블 `HT`는 크기 `m`의 배열이고, 해시 함수는 key를 `0`부터 `m - 1` 사이의 인덱스로 변환한다.
+해시 테이블 `HT`는 크기 \(m\)의 배열이고, 해시 함수는 key를 \(0\)부터 \(m - 1\) 사이의 인덱스로 변환한다.
 
 충돌 collision은 서로 다른 key가 같은 해시값을 갖는 상황이다.
 
-```text
-h(k1) == h(k2),  k1 != k2
-```
+$$
+h(k_1) = h(k_2),\qquad k_1 \ne k_2
+$$
 
 충돌이 발생하면 한 슬롯에 여러 아이템이 몰리므로 탐색, 삽입, 삭제에 추가 작업이 필요하다. 따라서 좋은 해시 함수뿐 아니라 충돌을 처리하는 collision resolution 전략이 필수다.
 
@@ -74,7 +74,7 @@ HT[2] -> (key, value)
 |---|---|
 | 추가 메모리 필요 | 리스트 노드와 포인터 저장 공간이 필요하다. |
 | 캐시 효율 낮음 | 노드가 메모리에 흩어질 수 있다. |
-| 특정 슬롯 집중 시 느려짐 | 한 체인이 길어지면 그 슬롯 탐색은 `O(length of chain)`이 된다. |
+| 특정 슬롯 집중 시 느려짐 | 한 체인이 길어지면 그 슬롯 탐색은 \(O(\text{length of chain})\)이 된다. |
 
 ## 4. Closed Hashing: Open Addressing
 
@@ -113,17 +113,17 @@ if occupied -> probe next candidate slot
 
 ## 6. Bucket Hashing
 
-Bucket Hashing은 해시 테이블의 `m`개 슬롯을 `b`개 버킷으로 나눈다.
+Bucket Hashing은 해시 테이블의 \(m\)개 슬롯을 \(b\)개 버킷으로 나눈다.
 
-```text
-bucket size = m / b
-```
+$$
+\text{bucket size} = \frac{m}{b}
+$$
 
 기본 방식에서는 해시 함수가 버킷 번호를 결정한다.
 
-```text
-h(k) = k mod b
-```
+$$
+h(k) = k \bmod b
+$$
 
 아이템은 해당 버킷의 첫 번째 빈 슬롯에 들어간다. 버킷이 가득 차면 overflow bucket을 사용한다.
 
@@ -144,7 +144,7 @@ h(k) = k mod m
 
 단, 실제 저장은 그 슬롯이 속한 버킷 안에서 처리한다.
 
-1. `h(k)` 슬롯이 비어 있으면 바로 삽입한다.
+1. \(h(k)\) 슬롯이 비어 있으면 바로 삽입한다.
 2. 차 있으면 같은 버킷 안의 다른 빈 슬롯을 찾는다.
 3. 버킷 전체가 차 있으면 overflow bucket에 넣는다.
 
@@ -160,13 +160,11 @@ h(k) = k mod m
 
 Linear Probing은 버킷 없이 closed hashing을 수행하는 방식이다. 충돌이 발생하면 다음 슬롯을 차례대로 검사한다.
 
-```text
-h_i(k) = (h(k) + i) mod m
+$$
+h_i(k) = (h(k)+i)\bmod m,\qquad i=0,1,2,3,\ldots
+$$
 
-i = 0, 1, 2, 3, ...
-```
-
-첫 번째 위치가 차 있으면 `h(k) + 1`, 그다음은 `h(k) + 2`, 이런 식으로 빈 슬롯을 찾는다.
+첫 번째 위치가 차 있으면 \(h(k)+1\), 그다음은 \(h(k)+2\), 이런 식으로 빈 슬롯을 찾는다.
 
 | 장점 | 설명 |
 |---|---|
@@ -190,23 +188,23 @@ linear probing에서는 어떤 key가 클러스터 안의 아무 위치로 해�
 
 ### 상수 간격 probing
 
-한 칸씩이 아니라 `c`칸씩 건너뛰는 방식이다.
+한 칸씩이 아니라 \(c\)칸씩 건너뛰는 방식이다.
 
-```text
-h_i(k) = (h(k) + i * c) mod m
-```
+$$
+h_i(k) = (h(k)+ic)\bmod m
+$$
 
-단, `c`와 `m`은 서로소여야 한다. 서로소가 아니면 특정 슬롯들만 반복 방문하고 나머지 슬롯은 영원히 방문하지 못할 수 있다.
+단, \(c\)와 \(m\)은 서로소여야 한다. 서로소가 아니면 특정 슬롯들만 반복 방문하고 나머지 슬롯은 영원히 방문하지 못할 수 있다.
 
-예를 들어 `m = 6`, `c = 2`라면 `0 -> 2 -> 4 -> 0`만 반복된다.
+예를 들어 \(m = 6\), \(c = 2\)라면 \(0 \to 2 \to 4 \to 0\)만 반복된다.
 
 ### Pseudo-random probing
 
-미리 섞어 둔 순열 `Perm`을 이용해 임의 순서로 슬롯을 탐색한다.
+미리 섞어 둔 순열 \(\mathrm{Perm}\)을 이용해 임의 순서로 슬롯을 탐색한다.
 
-```text
-h_i(k) = (h(k) + Perm[i]) mod m
-```
+$$
+h_i(k) = (h(k)+\mathrm{Perm}[i])\bmod m
+$$
 
 primary clustering은 완화되지만, 메모리 접근이 흩어져 캐시 효율은 낮아질 수 있다.
 
@@ -214,28 +212,28 @@ primary clustering은 완화되지만, 메모리 접근이 흩어져 캐시 효�
 
 probe 간격을 점점 크게 만드는 방식이다.
 
-```text
-h_i(k) = (h(k) + i^2) mod m
-```
+$$
+h_i(k) = (h(k)+i^2)\bmod m
+$$
 
 primary clustering은 줄어든다. 하지만 같은 해시값을 가진 key들은 같은 probe 경로를 따라가므로 secondary clustering은 남는다.
 
 ### Double hashing
 
-두 번째 해시 함수 `h2(k)`를 사용해 key마다 probe 간격을 다르게 만든다.
+두 번째 해시 함수 \(h_2(k)\)를 사용해 key마다 probe 간격을 다르게 만든다.
 
-```text
-h_i(k) = (h(k) + i * h2(k)) mod m
-```
+$$
+h_i(k) = (h(k)+i h_2(k))\bmod m
+$$
 
-같은 `h(k)`를 가진 key라도 `h2(k)`가 다르면 probe sequence가 달라진다. 그래서 secondary clustering을 줄이는 데 효과적이다.
+같은 \(h(k)\)를 가진 key라도 \(h_2(k)\)가 다르면 probe sequence가 달라진다. 그래서 secondary clustering을 줄이는 데 효과적이다.
 
 ## 12. Primary vs Secondary Clustering
 
 | 구분 | 원인 | 대표적으로 나타나는 방식 |
 |---|---|---|
 | Primary clustering | 연속된 점유 구간이 점점 커짐 | Linear probing |
-| Secondary clustering | 같은 `h(k)`를 가진 key가 같은 probe 경로를 공유 | Quadratic probing |
+| Secondary clustering | 같은 \(h(k)\)를 가진 key가 같은 probe 경로를 공유 | Quadratic probing |
 
 Double hashing은 key마다 다른 두 번째 해시값을 사용해 secondary clustering을 줄인다.
 
@@ -243,28 +241,28 @@ Double hashing은 key마다 다른 두 번째 해시값을 사용해 secondary c
 
 Closed hashing 성능은 load factor에 크게 좌우된다.
 
-```text
-alpha = s / m
+$$
+\alpha = \frac{s}{m}
+$$
 
-s = 저장된 아이템 수
-m = 해시 테이블 크기
-```
+여기서 \(s\)는 저장된 아이템 수, \(m\)은 해시 테이블 크기다.
 
-`alpha = 0.7`이면 테이블의 70%가 차 있다는 뜻이다.
+\(\alpha = 0.7\)이면 테이블의 70%가 차 있다는 뜻이다.
 
-균등한 probing을 가정하면, 삽입 시 빈 슬롯을 만날 확률은 `1 - alpha`이다. 따라서 평균 탐색 횟수는 대략 다음처럼 해석할 수 있다.
+균등한 probing을 가정하면, 삽입 시 빈 슬롯을 만날 확률은 \(1-\alpha\)이다. 따라서 평균 탐색 횟수는 대략 다음처럼 해석할 수 있다.
 
-```text
-expected probes ≈ 1 / (1 - alpha)
-```
+$$
+\mathbb{E}[\mathrm{probes}]
+\approx \frac{1}{1-\alpha}
+$$
 
-| load factor `alpha` | 평균 probe 해석 |
+| load factor \(\alpha\) | 평균 probe 해석 |
 |---|---|
-| `0.5` | 약 2번 |
-| `0.7` | 약 3.33번 |
-| `0.9` | 약 10번 |
+| \(0.5\) | 약 2번 |
+| \(0.7\) | 약 3.33번 |
+| \(0.9\) | 약 10번 |
 
-`alpha`가 1에 가까워질수록 빈 슬롯을 찾는 비용이 급격히 커진다. 그래서 closed hashing은 일정 적재율을 넘기 전에 resize 또는 rehashing이 필요하다.
+\(\alpha\)가 1에 가까워질수록 빈 슬롯을 찾는 비용이 급격히 커진다. 그래서 closed hashing은 일정 적재율을 넘기 전에 resize 또는 rehashing이 필요하다.
 
 ## 시험 포인트
 
@@ -295,16 +293,16 @@ expected probes ≈ 1 / (1 - alpha)
 </details>
 
 <details>
-<summary>3. `m = 6`, `c = 2`인 상수 간격 probing이 위험한 이유는?</summary>
+<summary>3. \(m = 6\), \(c = 2\)인 상수 간격 probing이 위험한 이유는?</summary>
 
-답변: `c`와 `m`이 서로소가 아니므로 `0 -> 2 -> 4 -> 0`처럼 일부 슬롯만 반복 방문할 수 있다. 모든 슬롯을 탐색하지 못해 빈 슬롯이 있어도 삽입에 실패할 수 있다.
+답변: \(c\)와 \(m\)이 서로소가 아니므로 \(0 \to 2 \to 4 \to 0\)처럼 일부 슬롯만 반복 방문할 수 있다. 모든 슬롯을 탐색하지 못해 빈 슬롯이 있어도 삽입에 실패할 수 있다.
 
 </details>
 
 <details>
 <summary>4. load factor가 `0.9`인 closed hashing에서 삽입이 느려지는 이유는?</summary>
 
-답변: 테이블의 90%가 이미 차 있으므로 빈 슬롯을 만날 확률이 낮다. 균등 probing을 가정하면 평균 probe 횟수는 `1 / (1 - 0.9) = 10` 정도로 커진다.
+답변: 테이블의 90%가 이미 차 있으므로 빈 슬롯을 만날 확률이 낮다. 균등 probing을 가정하면 평균 probe 횟수는 \(1/(1-0.9)=10\) 정도로 커진다.
 
 </details>
 
