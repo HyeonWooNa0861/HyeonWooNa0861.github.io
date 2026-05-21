@@ -79,7 +79,36 @@
 - 한계와 향후 과제
 - 참고자료
 
-## 4. Posts
+## 4. Assignment 자료
+
+대상: `_assignment/`
+
+목적: 과제 주제의 요약, 분석, 학습 성과 정리
+
+필수 기준:
+
+- 과제 원문을 그대로 붙이지 않고, 핵심 개념과 분석 결과를 블로그용으로 재구성한다.
+- Study 자료처럼 `시험 포인트`나 `복습 질문`을 넣지 않는다.
+- Research 자료처럼 논문 기여와 한계 중심으로 쓰지 않는다.
+- 과제의 주제, 개념 설명, 정리 결과, 원본 PDF 링크를 포함한다.
+- 코드나 실행 결과는 과제 이해에 필요한 범위에서만 넣는다.
+
+권장 구성:
+
+- 제목과 course/topic
+- 과제 개요
+- 주제별 정리
+- 핵심 정리
+- 결론 및 학습 성과
+- PDF 링크
+
+현재 구조:
+
+- C++ 과제 Markdown: `_assignment/cpp/`
+- C++ 과제 PDF: `assets/pdfs/assignment/cpp/`
+- URL: `/assignment/cpp/<slug>/`
+
+## 5. Posts
 
 대상: `_posts/`
 
@@ -88,12 +117,17 @@
 - Research 글처럼 분석 자료인 경우에는 Research 기준을 따른다.
 - permalink, categories, tags는 기존 post 형식을 따른다.
 
-## 5. PDF와 경로
+## 6. PDF와 경로
 
 Research:
 
 - PDF: `assets/pdfs/research/<slug>/<slug>.pdf`
 - Markdown: `_research/<slug>.md`
+
+Assignment:
+
+- PDF: `assets/pdfs/assignment/<course>/`
+- Markdown: `_assignment/<course>/<slug>.md`
 
 Study:
 
@@ -104,13 +138,14 @@ Study:
 
 PDF 파일명이 숫자 또는 임시명이면 전문을 확인한 뒤 제목 기반 slug로 rename한다.
 
-## 6. Navigation
+## 7. Navigation
 
 - 새 글은 기존 category의 `order`를 확인해 배치한다.
 - 새 section이나 category가 생기면 `_data/navigation.yml`을 갱신한다.
+- Assignment에 새 과목이 생기면 `pages/assignment/<course>.md`와 navigation children을 함께 만든다.
 - sidebar와 URL 규칙을 깨지 않는다.
 
-## 7. 검증
+## 8. 검증
 
 포스팅 후 가능한 한 확인한다.
 
@@ -122,7 +157,7 @@ PDF 파일명이 숫자 또는 임시명이면 전문을 확인한 뒤 제목 �
 
 Jekyll 실행 파일이나 Gemfile이 없으면 빌드 불가 사유를 결과에 명시한다.
 
-## 8. Git
+## 9. Git
 
 - 변경은 의미 있는 단위로 commit한다.
 - 포스팅 요청은 `main` branch push까지 진행한다.
