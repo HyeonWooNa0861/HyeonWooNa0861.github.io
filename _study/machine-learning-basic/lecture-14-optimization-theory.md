@@ -26,7 +26,7 @@ Source PDF: `machine-learning-basic-lecture-14.pdf`
 머신러닝 모델을 학습시킨다는 것은 모델 parameter 중 목적 함수 값이 좋은 parameter를 찾는 일이다.
 
 $$
-\text{training} = \min_{\theta} \ \text{objective}(\theta)
+\min_x f(x), \qquad f:\mathbb{R}^d \to \mathbb{R}
 $$
 
 목적 함수의 해석적 해를 구할 수 없거나 계산하기 어려울 때 최적화 알고리즘을 사용한다.
@@ -36,10 +36,10 @@ $$
 Gradient descent는 1차 최적화 알고리즘이다. 현재 위치에서 gradient의 반대 방향으로 이동한다.
 
 $$
-x_{t+1} = x_t - \eta \nabla f(x_t)
+x_{i+1} = x_i - \gamma_i(\nabla f(x_i))^T
 $$
 
-여기서 \\(\eta\\)는 step size 또는 learning rate다.
+여기서 \\(\gamma_i\\)는 step size 또는 learning rate다.
 
 gradient는 함수가 가장 빠르게 증가하는 방향이므로, 최소화를 위해서는 그 반대 방향으로 간다.
 
@@ -59,6 +59,15 @@ Step size는 경사 하강법에서 매우 중요하다.
 
 Momentum은 이전에 움직이던 방향을 유지하면서 update하는 방법이다.
 
+$$
+x_{i+1}=x_i-\gamma_i(\nabla f(x_i))^T+\alpha\Delta x_i
+$$
+
+$$
+\Delta x_i=x_i-x_{i-1}
+=\alpha\Delta x_{i-1}-\gamma_{i-1}(\nabla f(x_{i-1}))^T
+$$
+
 지그재그로 느리게 내려가는 상황에서 이전 이동 방향을 누적해 더 빠르고 안정적인 이동을 돕는다.
 
 직관적으로는 공이 경사면을 내려가며 관성을 가지는 것과 비슷하다.
@@ -67,9 +76,19 @@ Momentum은 이전에 움직이던 방향을 유지하면서 update하는 방법
 
 머신러닝 목적 함수는 보통 \\(N\\)개 데이터의 loss 합으로 구성된다.
 
+$$
+L(\theta)=\sum_{n=1}^{N}L_n(\theta)
+$$
+
 \\(N\\)이 매우 크면 전체 gradient 계산이 비싸다. SGD는 일부 데이터만 사용해 gradient의 noisy approximation을 계산한다.
 
 Mini-batch는 한 번의 update에 사용하는 데이터 부분집합이다.
+
+$$
+\theta_{i+1}
+\approx \theta_i-\gamma_i\frac{N}{\lvert B\rvert}
+\sum_{n\in B}\nabla L_n(\theta_i)^T
+$$
 
 | mini-batch 크기 | 장점 | 단점 |
 |---|---|---|
@@ -79,6 +98,10 @@ Mini-batch는 한 번의 update에 사용하는 데이터 부분집합이다.
 ## 6. Newton Method
 
 Newton method는 Hessian을 사용하는 2차 최적화 방법이다.
+
+$$
+\theta_{k+1} = \theta_k-\eta_k H_k^{-1}g_k
+$$
 
 2차 Taylor approximation으로 목적 함수를 근사하고, 그 근사의 최소점을 다음 위치로 선택한다.
 
@@ -95,7 +118,16 @@ Newton method는 곡률 정보를 쓰므로 빠를 수 있지만 Hessian 계산�
 
 Convex set은 두 점을 이은 선분이 모두 집합 안에 남는 집합이다.
 
+$$
+\lambda x + (1-\lambda)y \in C
+$$
+
 Convex function은 두 점 사이의 함수값이 선형 보간보다 아래에 있는 함수다.
+
+$$
+f(\lambda x+(1-\lambda)y)
+\le \lambda f(x)+(1-\lambda)f(y)
+$$
 
 중요한 성질:
 
@@ -109,7 +141,7 @@ Convex function은 두 점 사이의 함수값이 선형 보간보다 아래에 
 
 | 질문 | 답의 방향 |
 |---|---|
-| gradient descent update는? | \\(x \leftarrow x - \eta \nabla f(x)\\) |
+| gradient descent update는? | \\(x_{i+1}=x_i-\gamma_i(\nabla f(x_i))^T\\) |
 | step size가 너무 크면? | 발산하거나 수렴 실패 |
 | SGD가 필요한 이유는? | 전체 데이터 gradient 계산 비용을 줄이기 위해 |
 | Newton method가 추가로 쓰는 정보는? | Hessian |

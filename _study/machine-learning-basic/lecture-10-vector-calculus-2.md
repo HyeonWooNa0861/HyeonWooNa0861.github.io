@@ -56,7 +56,13 @@ Backpropagation은 neural network에 적용된 automatic differentiation의 대�
 Hessian matrix는 다변수 함수의 모든 2차 편미분을 모은 행렬이다.
 
 $$
-H_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j}
+\nabla^2_{x,y} f(x,y) =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x^2} &
+\frac{\partial^2 f}{\partial x\partial y} \\
+\frac{\partial^2 f}{\partial y\partial x} &
+\frac{\partial^2 f}{\partial y^2}
+\end{bmatrix}
 $$
 
 Hessian은 점 근처에서 함수가 얼마나 휘어 있는지 나타낸다. 최적화에서는 Newton method, convexity 판별, local minimum 분석에 사용된다.

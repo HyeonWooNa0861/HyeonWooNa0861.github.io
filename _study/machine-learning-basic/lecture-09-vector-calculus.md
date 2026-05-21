@@ -27,7 +27,7 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 에러를 가장 빠르게 증가시키는 방향은 gradient이고, 에러를 줄이려면 그 반대 방향으로 움직인다.
 
 $$
-\theta_{\text{new}} \approx \theta_{\text{current}} - \eta \nabla L(\theta)
+f:\mathbb{R}^D \to \mathbb{R}, \qquad x \mapsto f(x)
 $$
 
 따라서 gradient 계산은 학습 알고리즘의 핵심이다.
@@ -53,10 +53,9 @@ Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사�
 모든 편미분을 모은 것이 gradient다.
 
 $$
-\nabla f =
+\nabla_x f = \frac{df}{dx} =
 \left[
 \frac{\partial f}{\partial x_1},
-\frac{\partial f}{\partial x_2},
 \ldots,
 \frac{\partial f}{\partial x_n}
 \right]

@@ -26,6 +26,12 @@ Gaussian distribution, 또는 normal distribution은 실수 공간에서 정의�
 
 평균 \\(\mu\\)와 분산 \\(\sigma^2\\)가 분포의 위치와 퍼짐을 결정한다. 평균이 0이고 분산이 1인 경우를 standard normal distribution이라고 한다.
 
+$$
+p(x\mid\mu,\sigma^2)
+= \frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+$$
+
 Gaussian은 Gaussian process, variational inference, reinforcement learning, signal processing, control theory, random initialization, noise sampling 등에서 널리 사용된다.
 
 ## 2. Multivariate Gaussian
@@ -39,6 +45,10 @@ Gaussian은 Gaussian process, variational inference, reinforcement learning, sig
 
 공분산 행렬의 고유벡터는 분포가 늘어난 방향, 고유값은 그 방향의 분산 크기와 연결된다.
 
+$$
+x \sim \mathcal{N}(\mu,\Sigma)
+$$
+
 ## 3. Conditional and Marginal Distribution
 
 다변수 가우시안에서는 일부 변수만 보는 marginal distribution과, 일부 변수를 관측했을 때의 conditional distribution이 중요하다.
@@ -50,7 +60,11 @@ Gaussian의 큰 장점은 marginal과 conditional도 다시 Gaussian 형태가 �
 서로 독립인 Gaussian random variable의 선형 결합은 다시 Gaussian이다.
 
 $$
-z = ax + by
+z = x+y
+$$
+
+$$
+t = ax+by
 $$
 
 이때 평균과 분산은 선형성과 독립성을 이용해 계산된다.
@@ -58,7 +72,7 @@ $$
 주의할 점은 Gaussian distribution들의 weighted sum, 즉 mixture는 일반적으로 Gaussian이 아니라는 점이다.
 
 $$
-p(x) = ap_1(x) + (1-a)p_2(x)
+p(x) = a p_1(x) + (1-a)p_2(x)
 $$
 
 이는 Gaussian mixture model의 기반이다.
@@ -69,6 +83,10 @@ $$
 
 평균은 \\(A\mu\\), 공분산은 \\(A\Sigma A^T\\) 형태로 변환된다.
 
+$$
+p(y) = \mathcal{N}(y\mid A\mu, A\Sigma A^T)
+$$
+
 이 성질은 데이터를 회전, 스케일링, projection할 때 분포가 어떻게 바뀌는지 이해하게 해준다.
 
 ## 6. Sampling
@@ -76,14 +94,14 @@ $$
 표준 정규분포에서 sampling할 수 있다면, 선형 변환을 통해 원하는 평균과 공분산을 가진 Gaussian sample을 만들 수 있다.
 
 $$
-z \sim \mathcal{N}(0,I)
+x \sim \mathcal{N}(0,I)
 $$
 
 $$
-x = \mu + Lz
+y \sim \mathcal{N}(\mu,\Sigma)
 $$
 
-여기서 \\(LL^T = \Sigma\\)가 되도록 잡으면 \\(x\\)는 평균 \\(\mu\\), 공분산 \\(\Sigma\\)를 가진다.
+즉, 표준 정규분포에서 뽑을 수 있으면 선형 변환을 통해 원하는 평균과 공분산을 갖는 가우시안 샘플을 구성할 수 있다.
 
 ## 7. Change of Variable
 

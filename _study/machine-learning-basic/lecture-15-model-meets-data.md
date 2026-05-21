@@ -71,7 +71,7 @@ $$
 지도학습에서는 보통 다음과 같은 dataset을 가진다.
 
 $$
-\mathcal{D} = \{(x_1,y_1),\ldots,(x_N,y_N)\}
+\{(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N)\}
 $$
 
 우리가 알고 싶은 것은 관측하지 않은 임의의 \\(x\\)에 대한 \\(y\\)값이다.
@@ -81,16 +81,16 @@ $$
 결정론적 모델은 입력 \\(x\\)에 대해 하나의 예측값을 출력한다.
 
 $$
-\hat{y} = f_\theta(x)
+f:\mathbb{R}^D \to \mathbb{R}
 $$
 
 예를 들어 선형 회귀는 다음과 같은 함수로 볼 수 있다.
 
 $$
-f_\theta(x) = w^Tx + b
+f(x)=\theta^T x+\theta_0
 $$
 
-이 관점에서는 기존 데이터셋을 잘 설명하는 함수 \\(f_\theta\\)를 찾는 것이 학습이다.
+이 관점에서는 기존 데이터셋을 잘 설명하는 함수 \\(f\\)를 찾는 것이 학습이다.
 
 ## 6. 확률분포로서의 모델
 
@@ -136,21 +136,22 @@ unseen data에 좋은 예측을 주는 모델과 parameter를 찾는 과정
 학습 단계에서는 모델이 데이터를 얼마나 잘 맞추는지 측정하는 지표가 필요하다. 이를 loss function이라고 한다.
 
 $$
-\text{loss} = L(f_\theta(x_i), y_i)
+\ell(f(x_i,\theta),y_i)
 $$
 
 Training data 전체에 대한 평균 loss를 empirical risk라고 한다.
 
 $$
-R_{\mathrm{emp}}(\theta)
-= \frac{1}{N}\sum_i L(f_\theta(x_i),y_i)
+R_{\mathrm{emp}}(\theta,X,Y)
+= \frac{1}{N}\sum_{i=1}^{N}\ell(f(x_i,\theta),y_i)
 $$
 
 Empirical Risk Minimization(ERM)은 이 값을 최소화하는 parameter를 찾는 것이다.
 
 $$
-\hat{\theta}
-= \arg\min_{\theta} R_{\mathrm{emp}}(\theta)
+\theta^*
+= \arg\min_{\theta}
+\frac{1}{N}\sum_{i=1}^{N}\ell(f(\theta,x_i),y_i)
 $$
 
 여기에는 보통 training data가 i.i.d. sample이라는 가정이 들어간다. 즉 각 데이터가 같은 분포에서 독립적으로 샘플링되었다고 보는 것이다.
@@ -160,13 +161,18 @@ $$
 선형 회귀에서 squared error loss를 쓰면 ERM은 최소제곱법이 된다.
 
 $$
-L(f_\theta(x_i),y_i)
-= \left(y_i-f_\theta(x_i)\right)^2
+f(x,\theta)=\theta^T x+\theta_0
 $$
 
 $$
-\hat{\theta}
-= \arg\min_{\theta}\sum_i \left(y_i-f_\theta(x_i)\right)^2
+\theta^*
+= \arg\min_{\theta}
+\frac{1}{N}\sum_{i=1}^{N}\ell(y_i-f(x_i,\theta))^2
+$$
+
+$$
+= \arg\min_{\theta}
+\frac{1}{N}\sum_{i=1}^{N}(y_i-\theta^T x_i-\theta_0)^2
 $$
 
 즉, 선형 회귀의 최소제곱법은 ERM의 대표적인 예다.
@@ -176,7 +182,8 @@ $$
 우리가 원하는 것은 training data를 외우는 모델이 아니라 새로운 데이터에 잘 맞는 모델이다.
 
 $$
-\text{low training error} \ne \text{low test error}
+R_{\mathrm{true}}(f)
+= \mathbb{E}_{x,y}\ell(y,f(x))
 $$
 
 모델이 training data에만 지나치게 맞춰지면 overfitting이 발생한다. 그래서 training error뿐 아니라 validation error를 함께 봐야 한다.
@@ -192,8 +199,10 @@ $$
 Regularization은 overfitting을 줄이기 위해 loss에 penalty를 추가하는 방법이다.
 
 $$
-\text{objective}
-= R_{\mathrm{emp}}(\theta) + \lambda \cdot \operatorname{penalty}(\theta)
+\arg\min_{\theta}
+\frac{1}{N}\sum_{i=1}^{N}\ell(f(x_i,\theta),y_i)
++
+\lambda\lVert\theta\rVert^2
 $$
 
 대표적인 penalty는 parameter 크기를 제한하는 방식이다.
@@ -224,29 +233,38 @@ Validation set 하나만 쓰면 데이터 분할에 따라 성능 추정이 흔�
 예측값이 확률분포로 모델링되어 있으면 parameter estimation을 likelihood 관점에서 할 수 있다.
 
 $$
-\hat{\theta}
-= \arg\max_{\theta} p(\mathcal{D}\mid\theta)
+p(x\mid\theta)
+$$
+
+negative log-likelihood는 다음처럼 쓴다.
+
+$$
+\mathcal{L}_x(\theta) = -\log p(x\mid\theta)
+$$
+
+관측 오차가 가우시안이라고 두면 regression likelihood는 다음처럼 적는다.
+
+$$
+\epsilon_n \sim \mathcal{N}(0,\sigma^2)
+$$
+
+$$
+p(y_n\mid x_n,\theta)
+= \mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)
 $$
 
 i.i.d. 가정에서는 전체 likelihood가 각 sample likelihood의 곱으로 분해된다.
 
 $$
-p(\mathcal{D}\mid\theta)
-= \prod_i p(y_i \mid x_i,\theta)
+p(y\mid X,\theta)
+= \prod_{n=1}^{N}p(y_n\mid x_n,\theta)
 $$
 
-곱은 계산하기 불편하므로 log를 취한다.
+실제 최적화에서는 negative log-likelihood를 최소화한다.
 
 $$
-\log p(\mathcal{D}\mid\theta)
-= \sum_i \log p(y_i \mid x_i,\theta)
-$$
-
-MLE는 log-likelihood를 최대화하는 것이고, 실제 최적화에서는 negative log-likelihood를 최소화한다.
-
-$$
-\hat{\theta}
-= \arg\min_{\theta} -\sum_i \log p(y_i \mid x_i,\theta)
+\mathcal{L}(\theta)
+= -\sum_{n=1}^{N}\log p(y_n\mid x_n,\theta)
 $$
 
 ## 14. MAP와 Regularization
@@ -254,22 +272,21 @@ $$
 Maximum A Posteriori(MAP)는 parameter의 prior까지 고려한다.
 
 $$
-\hat{\theta}
-= \arg\max_{\theta} p(\theta \mid \mathcal{D})
+p(\theta\mid x)
+= \frac{p(x\mid\theta)p(\theta)}{p(x)}
 $$
 
 Bayes rule에 의해 다음과 같다.
 
 $$
-p(\theta \mid \mathcal{D})
-\propto p(\mathcal{D}\mid\theta)p(\theta)
+p(\theta\mid x) \propto p(x\mid\theta)p(\theta)
 $$
 
 negative log를 취하면 다음 형태가 된다.
 
 $$
-\text{objective}
-= \text{negative log-likelihood} - \log \text{prior}
+-\log p(x\mid\theta)-\log p(\theta)
+= \mathrm{NLL}-\log p(\theta)
 $$
 
 따라서 ERM에서 regularization을 추가하는 것은 확률 모델 관점에서 prior를 넣는 것과 연결된다. 예를 들어 Gaussian prior는 L2 regularization과 대응된다.

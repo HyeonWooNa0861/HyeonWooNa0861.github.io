@@ -37,8 +37,8 @@ IID는 independent and identically distributed의 약자다. 서로 독립이고
 Bayes' theorem은 조건부 확률을 뒤집어 계산하는 규칙이다.
 
 $$
-\text{posterior}
-= \frac{\text{likelihood}\times\text{prior}}{\text{evidence}}
+P(Y=y\mid X=x)
+= \frac{P(X=x\mid Y=y)P(Y=y)}{P(X=x)}
 $$
 
 이 정리는 관측 데이터가 들어왔을 때 기존 믿음을 어떻게 갱신할지 설명한다.
@@ -55,6 +55,11 @@ Bayesian ML에서는 모델 parameter 자체를 확률변수로 본다.
 | predictive distribution | 새 입력에 대한 예측값의 분포 |
 
 이 관점에서는 하나의 parameter estimate만 찾는 것이 아니라 uncertainty까지 함께 모델링한다.
+
+$$
+P(\theta\mid X)
+= \frac{P(X\mid\theta)p(\theta)}{p(X)}
+$$
 
 ## 4. 기대값, 평균, 분산
 
