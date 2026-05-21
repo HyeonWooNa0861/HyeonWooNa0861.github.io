@@ -136,14 +136,14 @@ unseen data에 좋은 예측을 주는 모델과 parameter를 찾는 과정
 학습 단계에서는 모델이 데이터를 얼마나 잘 맞추는지 측정하는 지표가 필요하다. 이를 loss function이라고 한다.
 
 $$
-L(f(x_i,\theta),y_i)
+\operatorname{loss}(f(x_i,\theta),y_i)
 $$
 
 Training data 전체에 대한 평균 loss를 empirical risk라고 한다.
 
 $$
 R_{\mathrm{emp}}(\theta,X,Y)
-= \frac{1}{N}\sum_{i=1}^{N}L(f(x_i,\theta),y_i)
+= \frac{1}{N}\sum_{i=1}^{N}\operatorname{loss}(f(x_i,\theta),y_i)
 $$
 
 Empirical Risk Minimization(ERM)은 이 값을 최소화하는 parameter를 찾는 것이다.
@@ -151,7 +151,7 @@ Empirical Risk Minimization(ERM)은 이 값을 최소화하는 parameter를 찾�
 $$
 \theta^*
 = \arg\min_{\theta}
-\frac{1}{N}\sum_{i=1}^{N}L(f(\theta,x_i),y_i)
+\frac{1}{N}\sum_{i=1}^{N}\operatorname{loss}(f(\theta,x_i),y_i)
 $$
 
 여기에는 보통 training data가 i.i.d. sample이라는 가정이 들어간다. 즉 각 데이터가 같은 분포에서 독립적으로 샘플링되었다고 보는 것이다.
@@ -165,7 +165,7 @@ f(x,\theta)=\theta^T x+\theta_0
 $$
 
 $$
-L(f(x_i,\theta),y_i)
+\operatorname{loss}(f(x_i,\theta),y_i)
 = (y_i-f(x_i,\theta))^2
 $$
 
@@ -183,7 +183,7 @@ $$
 
 $$
 R_{\mathrm{true}}(f)
-= \mathbb{E}_{x,y}L(y,f(x))
+= \mathbb{E}_{x,y}\operatorname{loss}(y,f(x))
 $$
 
 모델이 training data에만 지나치게 맞춰지면 overfitting이 발생한다. 그래서 training error뿐 아니라 validation error를 함께 봐야 한다.
@@ -200,7 +200,7 @@ Regularization은 overfitting을 줄이기 위해 loss에 penalty를 추가하�
 
 $$
 \arg\min_{\theta}
-\frac{1}{N}\sum_{i=1}^{N}L(f(x_i,\theta),y_i)
+\frac{1}{N}\sum_{i=1}^{N}\operatorname{loss}(f(x_i,\theta),y_i)
 +
 \lambda\lVert\theta\rVert^2
 $$
