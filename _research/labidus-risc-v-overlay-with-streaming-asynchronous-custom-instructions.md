@@ -82,9 +82,9 @@ Labidus는 RISC-V soft processor를 FPGA 위에 여러 개 올리고, 각 proces
 
 | Operator | 의미 |
 |---|---|
-| `sinsq(a, b)` | \(\sin^2((a-b)/2)\) |
-| `coscos(a, b)` | \(\cos(a)\cos(b)\) |
-| `arcsrt(a)` | \(2R\arcsin(\sqrt{a})\) |
+| `sinsq(a, b)` | \\(\sin^2((a-b)/2)\\) |
+| `coscos(a, b)` | \\(\cos(a)\cos(b)\\) |
+| `arcsrt(a)` | \\(2R\arcsin(\sqrt{a})\\) |
 
 이런 fused operator는 latency가 수십 cycle일 수 있지만, pipeline되어 매 cycle 새 input을 받을 수 있다. 따라서 문제는 "latency 자체"가 아니라 "어떻게 계속 input을 공급하고 결과를 기다리느냐"다.
 

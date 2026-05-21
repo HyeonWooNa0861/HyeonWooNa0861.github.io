@@ -79,7 +79,7 @@ $$
 = \operatorname{softmax}(\mathrm{score})V
 $$
 
-\(\sqrt{d_k}\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
+\\(\sqrt{d_k}\\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
 
 | 단계 | 설명 |
 |---|---|

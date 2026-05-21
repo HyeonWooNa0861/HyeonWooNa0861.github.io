@@ -8,7 +8,7 @@
 - 파일명과 폴더명은 영문 kebab-case를 사용한다.
 - 기존 collection, URL, sidebar 구조를 우선한다.
 - 수식은 MathJax 문법을 사용한다.
-  - inline: `\(...\)`
+  - inline: `\\(...\\)`
   - display: `$$...$$`
 - 실제 코드와 의사코드는 수식으로 바꾸지 않는다.
 - Markdown table 안의 `|`는 필요하면 `\|`로 escape한다.

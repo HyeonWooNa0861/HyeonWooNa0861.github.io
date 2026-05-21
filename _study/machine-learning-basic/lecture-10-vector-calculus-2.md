@@ -34,7 +34,7 @@ Source PDF: `machine-learning-basic-lecture-10.pdf`
 x -> A x + b -> nonlinear activation -> output
 ```
 
-신경망을 학습한다는 것은 주어진 \((x,y)\)에서 모델 출력이 \(y\)에 가까워지도록 \(A\), \(b\) 같은 parameter를 조정하는 것이다.
+신경망을 학습한다는 것은 주어진 \\((x,y)\\)에서 모델 출력이 \\(y\\)에 가까워지도록 \\(A\\), \\(b\\) 같은 parameter를 조정하는 것이다.
 
 loss에 대한 parameter gradient는 합성 함수의 chain rule을 통해 계산된다. 이 계산을 효율적으로 뒤에서 앞으로 전파하는 과정이 backpropagation이다.
 

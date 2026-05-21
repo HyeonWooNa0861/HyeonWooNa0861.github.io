@@ -33,7 +33,7 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 
 ## 2. 생성 집합과 span
 
-벡터 집합 \(A\)의 선형 조합으로 벡터공간 \(V\)의 모든 원소를 만들 수 있으면 \(A\)는 \(V\)의 생성 집합이다.
+벡터 집합 \\(A\\)의 선형 조합으로 벡터공간 \\(V\\)의 모든 원소를 만들 수 있으면 \\(A\\)는 \\(V\\)의 생성 집합이다.
 
 $$
 \operatorname{span}(A) = V
@@ -63,15 +63,15 @@ span은 "이 벡터들로 만들 수 있는 모든 방향과 위치"를 뜻한�
 |---|---|
 | column rank | 독립인 열의 수 |
 | row rank | 독립인 행의 수 |
-| full rank | \(\operatorname{rank}(A) = \min(m,n)\) |
+| full rank | \\(\operatorname{rank}(A) = \min(m,n)\\) |
 
 중요한 성질:
 
 | 성질 | 의미 |
 |---|---|
-| \(A\)가 정사각행렬일 때 invertible iff \(\operatorname{rank}(A)=n\) | full rank면 역행렬 존재 |
-| \(Ax=b\) 해 존재 iff \(\operatorname{rank}(A)=\operatorname{rank}([A\mid b])\) | augmented matrix rank로 consistency 확인 |
-| \(Ax=0\) 해 공간 차원은 \(n-\operatorname{rank}(A)\) | null space 차원 |
+| \\(A\\)가 정사각행렬일 때 invertible iff \\(\operatorname{rank}(A)=n\\) | full rank면 역행렬 존재 |
+| \\(Ax=b\\) 해 존재 iff \\(\operatorname{rank}(A)=\operatorname{rank}([A\mid b])\\) | augmented matrix rank로 consistency 확인 |
+| \\(Ax=0\\) 해 공간 차원은 \\(n-\operatorname{rank}(A)\\) | null space 차원 |
 
 ## 5. 선형 사상
 
@@ -106,14 +106,14 @@ $$
 |---|---|
 | 기저의 조건은? | span하면서 선형 독립 |
 | 차원이란? | 기저 벡터의 개수 |
-| rank-nullity 핵심은? | null space 차원은 \(n-\operatorname{rank}(A)\) |
+| rank-nullity 핵심은? | null space 차원은 \\(n-\operatorname{rank}(A)\\) |
 | 선형 사상의 조건은? | 덧셈과 스칼라곱 보존 |
 
 ## 복습 질문
 
 1. 모든 열이 pivot column이면 왜 선형 독립인가?
 2. 기저가 바뀌면 벡터 자체가 바뀌는가, 좌표 표현이 바뀌는가?
-3. \(\operatorname{rank}(A) < n\)이면 \(Ax=0\)은 어떤 해를 가지는가?
+3. \\(\operatorname{rank}(A) < n\\)이면 \\(Ax=0\\)은 어떤 해를 가지는가?
 
 
 ## PDF

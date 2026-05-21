@@ -39,7 +39,7 @@ $$
 x_{t+1} = x_t - \eta \nabla f(x_t)
 $$
 
-여기서 \(\eta\)는 step size 또는 learning rate다.
+여기서 \\(\eta\\)는 step size 또는 learning rate다.
 
 gradient는 함수가 가장 빠르게 증가하는 방향이므로, 최소화를 위해서는 그 반대 방향으로 간다.
 
@@ -65,9 +65,9 @@ Momentum은 이전에 움직이던 방향을 유지하면서 update하는 방법
 
 ## 5. Stochastic Gradient Descent와 Mini-batch
 
-머신러닝 목적 함수는 보통 \(N\)개 데이터의 loss 합으로 구성된다.
+머신러닝 목적 함수는 보통 \\(N\\)개 데이터의 loss 합으로 구성된다.
 
-\(N\)이 매우 크면 전체 gradient 계산이 비싸다. SGD는 일부 데이터만 사용해 gradient의 noisy approximation을 계산한다.
+\\(N\\)이 매우 크면 전체 gradient 계산이 비싸다. SGD는 일부 데이터만 사용해 gradient의 noisy approximation을 계산한다.
 
 Mini-batch는 한 번의 update에 사용하는 데이터 부분집합이다.
 
@@ -109,7 +109,7 @@ Convex function은 두 점 사이의 함수값이 선형 보간보다 아래에 
 
 | 질문 | 답의 방향 |
 |---|---|
-| gradient descent update는? | \(x \leftarrow x - \eta \nabla f(x)\) |
+| gradient descent update는? | \\(x \leftarrow x - \eta \nabla f(x)\\) |
 | step size가 너무 크면? | 발산하거나 수렴 실패 |
 | SGD가 필요한 이유는? | 전체 데이터 gradient 계산 비용을 줄이기 위해 |
 | Newton method가 추가로 쓰는 정보는? | Hessian |

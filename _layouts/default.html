@@ -407,14 +407,29 @@
       }
     </style>
     <script>
+      function restoreKramdownMathScripts() {
+        document.querySelectorAll('script[type^="math/tex"]').forEach(function (node) {
+          var isDisplay = node.type.indexOf("mode=display") !== -1;
+          var replacement = document.createElement(isDisplay ? "div" : "span");
+          replacement.textContent = (isDisplay ? "\\[" : "\\(") + node.textContent + (isDisplay ? "\\]" : "\\)");
+          node.parentNode.replaceChild(replacement, node);
+        });
+      }
+
       window.MathJax = {
         tex: {
           inlineMath: [["\\(", "\\)"]],
-          displayMath: [["$$", "$$"]],
+          displayMath: [["$$", "$$"], ["\\[", "\\]"]],
           processEscapes: true
         },
         options: {
           skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        },
+        startup: {
+          pageReady: function () {
+            restoreKramdownMathScripts();
+            return MathJax.startup.defaultPageReady();
+          }
         }
       };
     </script>

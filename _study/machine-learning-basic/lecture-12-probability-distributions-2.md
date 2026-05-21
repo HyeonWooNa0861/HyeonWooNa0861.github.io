@@ -22,7 +22,7 @@ Source PDF: `machine-learning-basic-lecture-12.pdf`
 
 ## 1. 독립 확률변수
 
-두 확률변수 \(X\), \(Y\)가 독립이면 결합분포가 각 주변분포의 곱으로 분해된다.
+두 확률변수 \\(X\\), \\(Y\\)가 독립이면 결합분포가 각 주변분포의 곱으로 분해된다.
 
 $$
 p(x,y) = p(x)p(y)
@@ -64,7 +64,7 @@ $$
 \mathbb{E}[g(X)]
 $$
 
-\(g(x)=x\)인 경우를 평균이라고 한다.
+\\(g(x)=x\\)인 경우를 평균이라고 한다.
 
 분산은 확률변수가 평균 주변에서 얼마나 퍼져 있는지 측정한다.
 
@@ -109,8 +109,8 @@ $$
 
 | 성질 | 의미 |
 |---|---|
-| 선형성 | \(\mathbb{E}[aX+bY] = a\mathbb{E}[X]+b\mathbb{E}[Y]\) |
-| 독립이면 곱의 기대값 분리 | \(\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]\) |
+| 선형성 | \\(\mathbb{E}[aX+bY] = a\mathbb{E}[X]+b\mathbb{E}[Y]\\) |
+| 독립이면 곱의 기대값 분리 | \\(\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]\\) |
 | total variance | 조건부 분산과 조건부 평균의 분산으로 전체 분산 분해 |
 
 ## 시험 포인트

@@ -65,7 +65,7 @@ $$
 \mathcal{D} = \{(x_1,t_1),(x_2,t_2),\ldots,(x_n,t_n)\}
 $$
 
-Satellite video는 1시간 간격으로 샘플링한 연속 이미지 \(T\)개의 sequence다. 논문 설정에서는 \(T = 12\)이므로 하나의 query video는 12시간짜리 위성 영상이다.
+Satellite video는 1시간 간격으로 샘플링한 연속 이미지 \\(T\\)개의 sequence다. 논문 설정에서는 \\(T = 12\\)이므로 하나의 query video는 12시간짜리 위성 영상이다.
 
 $$
 v = [(x_i,t_i),(x_{i+1},t_{i+1}),\ldots,(x_{i+T-1},t_{i+T-1})]
@@ -75,11 +75,11 @@ $$
 
 | 기호 | 의미 |
 |---|---|
-| \(\mathcal{D}\) | timestamp가 있는 전체 위성 이미지 DB |
-| \(v\) | DB에서 sliding window로 만든 satellite video |
-| \(q\) | 외부에서 들어온 query video |
-| \(T\) | video 길이, 기본 12시간 |
-| \(C\) | 검색된 candidate video 집합 |
+| \\(\mathcal{D}\\) | timestamp가 있는 전체 위성 이미지 DB |
+| \\(v\\) | DB에서 sliding window로 만든 satellite video |
+| \\(q\\) | 외부에서 들어온 query video |
+| \\(T\\) | video 길이, 기본 12시간 |
+| \\(C\\) | 검색된 candidate video 집합 |
 
 ## 3. Framework 개요
 
@@ -116,7 +116,7 @@ $$
 N_v = \{u : \lvert \operatorname{time}(v)-\operatorname{time}(u)\rvert > \delta\}
 $$
 
-논문에서는 \(\delta = 8\text{ hours}\)를 기본값으로 사용한다.
+논문에서는 \\(\delta = 8\text{ hours}\\)를 기본값으로 사용한다.
 
 Loss는 triplet/margin ranking loss처럼 이해하면 된다.
 
@@ -133,7 +133,7 @@ L_v =
 \right]
 $$
 
-즉, encoder \(f\)가 만든 embedding에서 시간적으로 가까운 video는 가깝게, 먼 video는 멀게 배치하도록 학습한다.
+즉, encoder \\(f\\)가 만든 embedding에서 시간적으로 가까운 video는 가깝게, 먼 video는 멀게 배치하도록 학습한다.
 
 ## 5. Encoder 구조
 
@@ -170,7 +170,7 @@ $$
 | 원본 12-frame video | 약 5.14 MB |
 | 256-d float embedding | 약 1 KB |
 
-논문은 이 압축이 약 \(5260\times\)의 저장공간 감소를 만든다고 설명한다. 이 압축 덕분에 검색도 원본 pixel이 아니라 compact latent space에서 수행할 수 있다.
+논문은 이 압축이 약 \\(5260\times\\)의 저장공간 감소를 만든다고 설명한다. 이 압축 덕분에 검색도 원본 pixel이 아니라 compact latent space에서 수행할 수 있다.
 
 ## 7. Video Prediction과 Query Augmentation
 
@@ -338,7 +338,7 @@ Embedding distance는 배포용 기본값으로 적절하다. LPIPS/FSIM/SSIM은
 
 ## 15. Ablation과 추가 분석
 
-Temporal threshold \(\delta\)는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 \(\delta = 8\text{ hours}\)가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
+Temporal threshold \\(\delta\\)는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 \\(\delta = 8\text{ hours}\\)가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
 
 Video prediction ablation에서는 prediction이 없는 경우 초반 frame에서는 좋을 수 있지만 후반 frame으로 갈수록 성능이 떨어진다. Prediction을 붙인 SkySearch는 24시간 전체에서 안정적인 LPIPS를 유지하고, ground-truth future를 쓴 경우와도 큰 차이가 나지 않는다.
 

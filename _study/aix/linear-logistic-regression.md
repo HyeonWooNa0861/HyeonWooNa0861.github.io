@@ -14,8 +14,8 @@ Source PDF: `1st_Regression.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 지도학습 문제 | 입력 \(x\)와 정답 \(y\) 사이의 관계를 어떻게 학습하는가? |
-| 2 | 선형 모델 | \(\mathrm{score}=w^Tx+b\)는 무엇을 표현하는가? |
+| 1 | 지도학습 문제 | 입력 \\(x\\)와 정답 \\(y\\) 사이의 관계를 어떻게 학습하는가? |
+| 2 | 선형 모델 | \\(\mathrm{score}=w^Tx+b\\)는 무엇을 표현하는가? |
 | 3 | 잔차와 손실 | residual과 squared error는 왜 학습 목표가 되는가? |
 | 4 | 최적화 | closed-form 해와 gradient descent는 어떻게 다른가? |
 | 5 | Feature engineering | 선형 모델의 표현력을 어떻게 확장하는가? |
@@ -24,7 +24,7 @@ Source PDF: `1st_Regression.pdf`
 
 ## 1. 지도학습과 데이터
 
-지도학습에서는 데이터가 입력 feature \(x\)와 정답 target \(y\)의 쌍으로 주어진다. 모델의 목표는 훈련 데이터에만 맞는 함수를 외우는 것이 아니라, 아직 보지 못한 입력에 대해서도 적절한 \(y\)를 예측하는 함수 \(f(x)\)를 찾는 것이다.
+지도학습에서는 데이터가 입력 feature \\(x\\)와 정답 target \\(y\\)의 쌍으로 주어진다. 모델의 목표는 훈련 데이터에만 맞는 함수를 외우는 것이 아니라, 아직 보지 못한 입력에 대해서도 적절한 \\(y\\)를 예측하는 함수 \\(f(x)\\)를 찾는 것이다.
 
 $$
 \mathcal{D} = \{(x_1,y_1),(x_2,y_2),\ldots,(x_n,y_n)\}
@@ -44,14 +44,14 @@ $$
 \mathrm{score} = w^Tx + b
 $$
 
-\(w\)는 각 feature가 예측에 얼마나 영향을 주는지를 나타내고, \(b\)는 전체 기준점을 이동시키는 bias다. 2차원에서는 직선, 고차원에서는 hyperplane으로 볼 수 있다.
+\\(w\\)는 각 feature가 예측에 얼마나 영향을 주는지를 나타내고, \\(b\\)는 전체 기준점을 이동시키는 bias다. 2차원에서는 직선, 고차원에서는 hyperplane으로 볼 수 있다.
 
 | 구성 요소 | 의미 |
 |---|---|
-| \(x\) | 입력 feature vector |
-| \(w\) | feature별 가중치 |
-| \(b\) | bias 또는 intercept |
-| \(\mathrm{score}\) | 모델이 만든 선형 예측값 |
+| \\(x\\) | 입력 feature vector |
+| \\(w\\) | feature별 가중치 |
+| \\(b\\) | bias 또는 intercept |
+| \\(\mathrm{score}\\) | 모델이 만든 선형 예측값 |
 
 분류 문제에서도 같은 선형 score를 사용할 수 있다. 다만 score 자체를 최종 답으로 쓰지 않고, 뒤에서 sigmoid나 softmax 같은 link function을 붙인다.
 
@@ -75,7 +75,7 @@ $$
 | absolute error | 오차 크기를 직접 반영하지만 미분이 까다로운 지점이 있다. |
 | squared error | 미분이 쉽고 큰 오차를 강하게 벌한다. |
 
-학습은 손실 함수가 작아지도록 \(w\), \(b\)를 고르는 과정이다.
+학습은 손실 함수가 작아지도록 \\(w\\), \\(b\\)를 고르는 과정이다.
 
 ## 4. Closed-form과 Gradient Descent
 
@@ -110,7 +110,7 @@ $$
 raw x -> feature map phi(x) -> linear model
 ```
 
-예를 들어 \(x\), \(x^2\), \(x^3\) 같은 feature를 추가하면 모델은 parameter에 대해서는 여전히 선형이지만, 원래 입력 \(x\)에 대해서는 비선형 곡선을 표현할 수 있다.
+예를 들어 \\(x\\), \\(x^2\\), \\(x^3\\) 같은 feature를 추가하면 모델은 parameter에 대해서는 여전히 선형이지만, 원래 입력 \\(x\\)에 대해서는 비선형 곡선을 표현할 수 있다.
 
 다만 feature를 너무 많이 만들면 훈련 데이터에는 잘 맞지만 새 데이터에는 약한 overfitting이 생긴다.
 
@@ -118,7 +118,7 @@ raw x -> feature map phi(x) -> linear model
 
 분류에서는 예측값을 class probability로 해석하고 싶다. 하지만 선형 score는 음수나 1보다 큰 값이 될 수 있어 확률로 바로 쓸 수 없다.
 
-Logistic regression은 선형 score를 sigmoid 함수에 통과시켜 \(0\)과 \(1\) 사이의 확률로 만든다.
+Logistic regression은 선형 score를 sigmoid 함수에 통과시켜 \\(0\\)과 \\(1\\) 사이의 확률로 만든다.
 
 $$
 z = w^Tx + b
@@ -130,12 +130,12 @@ $$
 
 | 값 | 의미 |
 |---|---|
-| \(z\) | 선형 score |
-| \(p\) | \(P(y=1\mid x)\) |
-| \(p \ge 0.5\) | class 1로 분류 |
-| \(p < 0.5\) | class 0으로 분류 |
+| \\(z\\) | 선형 score |
+| \\(p\\) | \\(P(y=1\mid x)\\) |
+| \\(p \ge 0.5\\) | class 1로 분류 |
+| \\(p < 0.5\\) | class 0으로 분류 |
 
-Logistic regression의 decision boundary는 여전히 \(w^Tx + b = 0\)인 선형 경계다. 달라지는 점은 score를 확률로 해석하고, classification에 맞는 손실 함수를 사용한다는 것이다.
+Logistic regression의 decision boundary는 여전히 \\(w^Tx + b = 0\\)인 선형 경계다. 달라지는 점은 score를 확률로 해석하고, classification에 맞는 손실 함수를 사용한다는 것이다.
 
 ## 7. Binary Cross-Entropy
 
@@ -145,7 +145,7 @@ $$
 L = -\left[y\log p + (1-y)\log(1-p)\right]
 $$
 
-정답이 \(1\)이면 \(p\)가 커질수록 손실이 작아지고, 정답이 \(0\)이면 \(p\)가 작아질수록 손실이 작아진다. 따라서 squared error보다 classification의 확률적 해석에 더 자연스럽다.
+정답이 \\(1\\)이면 \\(p\\)가 커질수록 손실이 작아지고, 정답이 \\(0\\)이면 \\(p\\)가 작아질수록 손실이 작아진다. 따라서 squared error보다 classification의 확률적 해석에 더 자연스럽다.
 
 ## 8. Softmax와 Perceptron으로의 연결
 
@@ -159,7 +159,7 @@ $$
 p_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 $$
 
-Softmax의 핵심은 모든 class probability의 합이 \(1\)이 되도록 score를 정규화한다는 것이다.
+Softmax의 핵심은 모든 class probability의 합이 \\(1\\)이 되도록 score를 정규화한다는 것이다.
 
 Perceptron은 선형 score 뒤에 step function을 붙인 초기 신경망 단위로 볼 수 있다. Logistic regression은 step function 대신 sigmoid를 사용하여 미분 가능한 확률 모델로 만든다. 이후 MLP는 이런 단위를 여러 층으로 쌓고 비선형성을 추가해 표현력을 확장한다.
 

@@ -70,7 +70,7 @@ $$
 v \in \mathbb{R}^d,\qquad t \in \mathcal{T}
 $$
 
-시간 구간 \([t_a,t_b)\)에 속한 데이터만 모으면 다음처럼 쓴다.
+시간 구간 \\([t_a,t_b)\\)에 속한 데이터만 모으면 다음처럼 쓴다.
 
 $$
 \mathcal{D}[t_a:t_b]
@@ -85,12 +85,12 @@ $$
 
 | 기호 | 의미 |
 |---|---|
-| \(w\) | query vector |
-| \(k\) | 반환할 이웃 수 |
-| \(t_s, t_e\) | 검색할 시작/끝 timestamp |
-| \(\mathcal{D}[t_s:t_e]\) | 시간 조건을 만족하는 후보 집합 |
+| \\(w\\) | query vector |
+| \\(k\\) | 반환할 이웃 수 |
+| \\(t_s, t_e\\) | 검색할 시작/끝 timestamp |
+| \\(\mathcal{D}[t_s:t_e]\\) | 시간 조건을 만족하는 후보 집합 |
 
-목표는 \(\mathcal{D}[t_s:t_e]\) 안에서 \(w\)와 가장 가까운 \(k\)개를 찾는 것이다.
+목표는 \\(\mathcal{D}[t_s:t_e]\\) 안에서 \\(w\\)와 가장 가까운 \\(k\\)개를 찾는 것이다.
 
 논문은 이를 더 일반화해 m-Attribute Filtering kNN, 즉 m-AkNN도 정의한다. timestamp 하나가 아니라 나이, 키, 몸무게, 논문 인용수, 출판일처럼 여러 수치 속성에 범위 조건을 걸고 kNN을 수행하는 문제다.
 
@@ -98,7 +98,7 @@ $$
 q = (w,k,a_{\mathrm{lower}},a_{\mathrm{upper}})
 $$
 
-T kNN은 filtering attribute가 timestamp 하나인 \(m = 1\) 특수 사례로 볼 수 있다.
+T kNN은 filtering attribute가 timestamp 하나인 \\(m = 1\\) 특수 사례로 볼 수 있다.
 
 ## 3. 단순 접근의 한계
 
@@ -133,7 +133,7 @@ timestamp-sorted vectors
 | vector set | 해당 block의 timestamp 범위에 속한 데이터 |
 | graph index | block 내부에서 approximate kNN을 빠르게 수행하기 위한 graph-based index |
 
-root block은 전체 데이터를 담고, leaf block은 최대 \(S_L\)개 정도의 작은 데이터만 담는다. 중간 block은 인접한 child block을 합친 timestamp 구간을 표현한다.
+root block은 전체 데이터를 담고, leaf block은 최대 \\(S_L\\)개 정도의 작은 데이터만 담는다. 중간 block은 인접한 child block을 합친 timestamp 구간을 표현한다.
 
 이 구조의 직관은 다음과 같다.
 
@@ -153,7 +153,7 @@ T kNN 설정에서 데이터는 timestamp가 증가하는 순서로 들어온다
 |---|---|
 | 최신 leaf block이 아직 가득 차지 않음 | 해당 block에 vector 추가 |
 | leaf block이 가득 참 | 새 leaf block 생성 |
-| leaf block이 \(S_L\)개를 채움 | 해당 leaf의 graph index 생성 후 ancestor block을 bottom-up으로 merge |
+| leaf block이 \\(S_L\\)개를 채움 | 해당 leaf의 graph index 생성 후 ancestor block을 bottom-up으로 merge |
 
 bottom-up merge는 child block의 vector set을 합쳐 parent block을 만들고, parent block의 graph index를 새로 만든다. 논문은 block 번호를 postorder traversal 순서로 부여해 sibling과 parent를 효율적으로 찾는다.
 
@@ -174,23 +174,23 @@ block 선택은 overlap ratio로 결정된다.
 overlap ratio = query window와 block window가 겹치는 비율
 ```
 
-논문은 threshold \(\tau\)를 사용한다.
+논문은 threshold \\(\tau\\)를 사용한다.
 
 | 조건 | 처리 |
 |---|---|
 | overlap ratio가 0 | 해당 block 제외 |
-| leaf block이거나 overlap ratio가 \(\tau\) 이상 | 해당 block 선택 |
-| non-leaf이고 overlap ratio가 \(\tau\)보다 작음 | child block으로 내려감 |
+| leaf block이거나 overlap ratio가 \\(\tau\\) 이상 | 해당 block 선택 |
+| non-leaf이고 overlap ratio가 \\(\tau\\)보다 작음 | child block으로 내려감 |
 
-\(\tau\)는 block 선택의 보수성을 조절한다.
+\\(\tau\\)는 block 선택의 보수성을 조절한다.
 
-| \(\tau\) 값 | 선택 경향 | 장단점 |
+| \\(\tau\\) 값 | 선택 경향 | 장단점 |
 |---|---|---|
 | 낮음 | root에 가까운 큰 block 선택 | 긴 query window에 유리하지만 짧은 window에서는 filter 비용 증가 |
 | 높음 | leaf에 가까운 작은 block 선택 | 짧은 window에 유리하지만 block 수가 많아짐 |
 | 약 0.5 | 실험상 무난한 기본값 | 대부분의 dataset에서 안정적 |
 
-논문은 \(\tau \le 0.5\)이면 T kNN query를 처리하는 block 수가 최대 2개임을 보인다. 이것이 MBI가 다양한 query window 길이에서 안정적인 속도를 보이는 핵심 이유다.
+논문은 \\(\tau \le 0.5\\)이면 T kNN query를 처리하는 block 수가 최대 2개임을 보인다. 이것이 MBI가 다양한 query window 길이에서 안정적인 속도를 보이는 핵심 이유다.
 
 ## 7. m-AkNN으로 확장
 
@@ -202,9 +202,9 @@ height in [160, 180)
 weight in [50, 80)
 ```
 
-이 경우 MBI는 \(2^m\)-ary tree로 확장된다.
+이 경우 MBI는 \\(2^m\\)-ary tree로 확장된다.
 
-| \(m\) | 구조 |
+| \\(m\\) | 구조 |
 |---:|---|
 | 1 | binary tree |
 | 2 | quadtree |
@@ -227,11 +227,11 @@ T kNN과 다른 중요한 제약도 있다.
 
 | 항목 | 결과 | 해석 |
 |---|---|---|
-| index size | \(O(n\log n)\) | 여러 level의 block index를 모두 저장하므로 SF보다 큼 |
-| total indexing time | \(O(n^{1.14})\) | NNDescent의 경험적 복잡도 \(O(n^{1.14})\)를 block별 합산 |
-| amortized insertion time | \(O(n^{0.14})\) | 시간순으로 누적되는 데이터에서 삽입 비용 증가가 완만함 |
-| T kNN query, \(\tau \le 0.5\) | \(O(\log(b/\tau)+k/\tau)\) | \(b\)는 query time window 안의 데이터 수 |
-| m-AkNN query upper bound | \(O\left(\frac{b}{S_L\tau}\left(\log S_L+\frac{k}{\tau}\right)\right)\) | 최악의 경우 leaf block 위주로 처리한다고 보는 거친 상한 |
+| index size | \\(O(n\log n)\\) | 여러 level의 block index를 모두 저장하므로 SF보다 큼 |
+| total indexing time | \\(O(n^{1.14})\\) | NNDescent의 경험적 복잡도 \\(O(n^{1.14})\\)를 block별 합산 |
+| amortized insertion time | \\(O(n^{0.14})\\) | 시간순으로 누적되는 데이터에서 삽입 비용 증가가 완만함 |
+| T kNN query, \\(\tau \le 0.5\\) | \\(O(\log(b/\tau)+k/\tau)\\) | \\(b\\)는 query time window 안의 데이터 수 |
+| m-AkNN query upper bound | \\(O\left(\frac{b}{S_L\tau}\left(\log S_L+\frac{k}{\tau}\right)\right)\\) | 최악의 경우 leaf block 위주로 처리한다고 보는 거친 상한 |
 
 분석상 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점이다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적이다.
 
@@ -265,8 +265,8 @@ T kNN에서 MBI는 query time window의 길이에 관계없이 BSBF와 SF보다 
 |---|---|
 | up to 10.88x faster | BSBF와 SF 중 더 빠른 것을 고르는 가상 baseline보다도 최대 10.88배 빠름 |
 | recall@k 0.995 조건 비교 | 정확도를 높게 맞춘 상태에서 속도 우위 확인 |
-| \(k = 10, 50, 100\) 모두 유사한 경향 | k가 커지면 전체 속도는 떨어지지만 MBI의 상대적 장점은 유지 |
-| SIFT1M scalability slope 약 1.29 | 데이터가 커질수록 이론적 \(n^{1.14}\)에 가까워지는 경향 |
+| \\(k = 10, 50, 100\\) 모두 유사한 경향 | k가 커지면 전체 속도는 떨어지지만 MBI의 상대적 장점은 유지 |
+| SIFT1M scalability slope 약 1.29 | 데이터가 커질수록 이론적 \\(n^{1.14}\\)에 가까워지는 경향 |
 | parallel indexing | block index를 병렬 생성하면 indexing time이 최대 5.08배 감소 |
 
 m-AkNN에서도 MBI는 AFBF와 SF의 약점을 줄인다.
@@ -287,7 +287,7 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 | T kNN 문제화 | 고차원 ANN에 timestamp range constraint를 결합한 문제를 명확히 다룸 |
 | MBI 구조 | block별 graph index와 hierarchical time partition을 결합 |
 | incremental insertion | 시간순 데이터 누적 환경에서 bottom-up merge로 index 갱신 |
-| query block selection | overlap ratio와 \(\tau\)로 큰 block과 작은 block을 섞어 선택 |
+| query block selection | overlap ratio와 \\(\tau\\)로 큰 block과 작은 block을 섞어 선택 |
 | m-AkNN 일반화 | timestamp 하나를 여러 numerical attribute constraint로 확장 |
 | 이론과 실험 연결 | index size, indexing time, query time 분석을 실험 결과와 비교 |
 
@@ -298,8 +298,8 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 | 관점 | 질문 |
 |---|---|
 | Filtering-first vs search-first | 먼저 조건을 거르고 찾을 것인가, 먼저 찾고 조건을 거를 것인가? |
-| Block granularity | leaf size \(S_L\)이 작거나 클 때 어떤 비용이 커지는가? |
-| Threshold \(\tau\) | query window 길이에 따라 큰 block과 작은 block 중 무엇을 고를 것인가? |
+| Block granularity | leaf size \\(S_L\\)이 작거나 클 때 어떤 비용이 커지는가? |
+| Threshold \\(\tau\\) | query window 길이에 따라 큰 block과 작은 block 중 무엇을 고를 것인가? |
 | Memory trade-off | block마다 graph index를 저장하는 추가 비용을 감당할 수 있는가? |
 | Dynamic workload | timestamp 순서 삽입이라는 가정이 실제 서비스에 맞는가? |
 

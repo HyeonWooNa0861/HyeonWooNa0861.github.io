@@ -48,7 +48,7 @@ Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사�
 
 ## 3. 편미분과 Gradient
 
-다변수 함수 \(f(x_1,\ldots,x_n)\)에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
+다변수 함수 \\(f(x_1,\ldots,x_n)\\)에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
 
 모든 편미분을 모은 것이 gradient다.
 
@@ -93,7 +93,7 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 
 ## 6. 행렬 미분
 
-머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 \(x^TAx\), \(\lVert Ax-b\rVert^2\) 같은 식의 미분 공식이 자주 쓰인다.
+머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 \\(x^TAx\\), \\(\lVert Ax-b\rVert^2\\) 같은 식의 미분 공식이 자주 쓰인다.
 
 공식만 외우기보다 차원 검사를 함께 해야 한다. 미분 결과가 parameter와 같은 shape인지 확인하면 실수를 줄일 수 있다.
 
@@ -103,7 +103,7 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 |---|---|
 | gradient가 중요한 이유는? | loss를 줄이는 update 방향을 계산하기 위해 |
 | Taylor series의 역할은? | 복잡한 함수를 기준점 근처에서 근사 |
-| Jacobian의 shape은? | \(f:\mathbb{R}^n \to \mathbb{R}^m\)이면 \(m \times n\) |
+| Jacobian의 shape은? | \\(f:\mathbb{R}^n \to \mathbb{R}^m\\)이면 \\(m \times n\\) |
 | chain rule이 중요한 이유는? | 합성 함수와 신경망 미분의 기반 |
 
 ## 복습 질문
