@@ -62,23 +62,23 @@ query satellite video -> similar historical satellite videos
 논문은 satellite image dataset을 timestamp가 붙은 이미지 집합으로 본다.
 
 $$
-\mathcal{D} = \{(x_1,t_1),(x_2,t_2),\ldots,(x_n,t_n)\}
+D = \{(x_1,t_1),\ldots,(x_{\lvert D\rvert},t_{\lvert D\rvert})\}
 $$
 
-Satellite video는 1시간 간격으로 샘플링한 연속 이미지 \\(T\\)개의 sequence다. 논문 설정에서는 \\(T = 12\\)이므로 하나의 query video는 12시간짜리 위성 영상이다.
+Satellite video는 1시간 간격으로 샘플링한 연속 이미지 \\(L\\)개의 sequence다. 논문 설정에서는 \\(L = 12\\)이므로 하나의 query video는 12시간짜리 위성 영상이다.
 
 $$
-v = [(x_i,t_i),(x_{i+1},t_{i+1}),\ldots,(x_{i+T-1},t_{i+T-1})]
+v = ((x_{i+1},t_{i+1}),(x_{i+2},t_{i+2}),\ldots,(x_{i+L},t_{i+L}))
 $$
 
 검색 결과는 query video와 유사한 candidate video들의 ranked list다.
 
 | 기호 | 의미 |
 |---|---|
-| \\(\mathcal{D}\\) | timestamp가 있는 전체 위성 이미지 DB |
+| \\(D\\) | timestamp가 있는 전체 위성 이미지 DB |
 | \\(v\\) | DB에서 sliding window로 만든 satellite video |
 | \\(q\\) | 외부에서 들어온 query video |
-| \\(T\\) | video 길이, 기본 12시간 |
+| \\(L\\) | video 길이, 기본 12시간 |
 | \\(C\\) | 검색된 candidate video 집합 |
 
 ## 3. Framework 개요
@@ -109,25 +109,25 @@ satellite videos
 위성 비디오에는 유사도 label이 없다. SkySearch는 기상 현상이 시간적으로 급격히 무작위로 바뀌지 않는다는 가정을 사용한다. 가까운 시간의 비디오는 positive pair, 먼 시간의 비디오는 negative pair로 둔다.
 
 $$
-P_v = \{u : \lvert \operatorname{time}(v)-\operatorname{time}(u)\rvert \le \delta\}
+P_v = \{v' : \lvert t_v - t_{v'}\rvert \le \Delta\}
 $$
 
 $$
-N_v = \{u : \lvert \operatorname{time}(v)-\operatorname{time}(u)\rvert > \delta\}
+N_v = \{v' : \lvert t_v - t_{v'}\rvert > \Delta\}
 $$
 
-논문에서는 \\(\delta = 8\text{ hours}\\)를 기본값으로 사용한다.
+논문에서는 \\(\Delta = 8\text{ hours}\\)를 기본값으로 사용한다.
 
 Loss는 triplet/margin ranking loss처럼 이해하면 된다.
 
 $$
 L_v =
-\mathbb{E}_{p \in P_v,\ n \in N_v}
+\mathbb{E}_{p \sim P_v,\ n \sim N_v}
 \left[
 \max\left(
 \lVert f(v)-f(p)\rVert_2^2
 - \lVert f(v)-f(n)\rVert_2^2
-+ \mathrm{margin},
++ \gamma,
 0
 \right)
 \right]
@@ -338,7 +338,7 @@ Embedding distance는 배포용 기본값으로 적절하다. LPIPS/FSIM/SSIM은
 
 ## 15. Ablation과 추가 분석
 
-Temporal threshold \\(\delta\\)는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 \\(\delta = 8\text{ hours}\\)가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
+Temporal threshold \\(\Delta\\)는 positive/negative pair를 나누는 기준이다. 논문은 여러 variant에서 \\(\Delta = 8\text{ hours}\\)가 가장 낮은 LPIPS를 보여 기본값으로 채택한다.
 
 Video prediction ablation에서는 prediction이 없는 경우 초반 frame에서는 좋을 수 있지만 후반 frame으로 갈수록 성능이 떨어진다. Prediction을 붙인 SkySearch는 24시간 전체에서 안정적인 LPIPS를 유지하고, ground-truth future를 쓴 경우와도 큰 차이가 나지 않는다.
 

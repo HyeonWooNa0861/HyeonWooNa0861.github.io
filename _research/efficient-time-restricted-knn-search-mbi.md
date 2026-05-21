@@ -227,10 +227,10 @@ T kNN과 다른 중요한 제약도 있다.
 
 | 항목 | 결과 | 해석 |
 |---|---|---|
-| index size | \\(O(n\log n)\\) | 여러 level의 block index를 모두 저장하므로 SF보다 큼 |
-| total indexing time | \\(O(n^{1.14})\\) | NNDescent의 경험적 복잡도 \\(O(n^{1.14})\\)를 block별 합산 |
-| amortized insertion time | \\(O(n^{0.14})\\) | 시간순으로 누적되는 데이터에서 삽입 비용 증가가 완만함 |
-| T kNN query, \\(\tau \le 0.5\\) | \\(O(\log(b/\tau)+k/\tau)\\) | \\(b\\)는 query time window 안의 데이터 수 |
+| index size | \\(O(\lvert D\rvert\log \lvert D\rvert)\\) | 여러 level의 block index를 모두 저장하므로 SF보다 큼 |
+| total indexing time | \\(O(\lvert D\rvert^{1.14})\\) | NNDescent의 경험적 복잡도 \\(O(n^{1.14})\\)를 block별 합산 |
+| amortized insertion time | \\(O(\lvert D\rvert^{0.14})\\) | 시간순으로 누적되는 데이터에서 삽입 비용 증가가 완만함 |
+| T kNN query, \\(\tau \le 0.5\\) | \\(O(\log b/\tau+k/\tau)\\) | \\(b=\lvert D[t_s:t_e]\rvert\\), query time window 안의 데이터 수 |
 | m-AkNN query upper bound | \\(O\left(\frac{b}{S_L\tau}\left(\log S_L+\frac{k}{\tau}\right)\right)\\) | 최악의 경우 leaf block 위주로 처리한다고 보는 거친 상한 |
 
 분석상 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점이다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적이다.
