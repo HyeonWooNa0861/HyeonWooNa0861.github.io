@@ -233,7 +233,7 @@ T kNN과 다른 중요한 제약도 있다.
 | T kNN query, \(\tau \le 0.5\) | \(O(\log(b/\tau)+k/\tau)\) | \(b\)는 query time window 안의 데이터 수 |
 | m-AkNN query upper bound | \(O\left(\frac{b}{S_L\tau}\left(\log S_L+\frac{k}{\tau}\right)\right)\) | 최악의 경우 leaf block 위주로 처리한다고 보는 거친 상한 |
 
-공부할 때 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점이다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적이다.
+분석상 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점이다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적이다.
 
 ## 9. 실험 설정
 
@@ -282,7 +282,7 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 ## 11. 논문의 핵심 기여
 
-| 기여 | 공부 포인트 |
+| 기여 | 해석 포인트 |
 |---|---|
 | T kNN 문제화 | 고차원 ANN에 timestamp range constraint를 결합한 문제를 명확히 다룸 |
 | MBI 구조 | block별 graph index와 hierarchical time partition을 결합 |
@@ -315,27 +315,6 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 | formal optimality open | MBI block selection이 이론적으로 최적인지에 대한 분석은 남아 있다. |
 
 가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시된다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향이다.
-
-## 시험 포인트
-
-| 질문 | 답의 방향 |
-|---|---|
-| T kNN이 일반 kNN과 다른 점은? | query vector와 가까워야 할 뿐 아니라 timestamp가 query time window 안에 있어야 한다. |
-| BSBF가 긴 window에서 느린 이유는? | window 안의 vector가 많아져 brute-force distance 계산량이 커진다. |
-| SF가 짧은 window에서 느린 이유는? | graph search 후보 대부분이 시간 조건을 만족하지 않아 계속 더 넓게 탐색해야 한다. |
-| MBI의 block은 무엇을 저장하는가? | timestamp 범위의 vector set과 그 vector set에 대한 graph-based kNN index를 저장한다. |
-| \(\tau\)의 역할은? | query window와 block window의 overlap ratio 기준으로 block 선택을 조절한다. |
-| \(\tau \le 0.5\)의 의미는? | T kNN에서 query를 처리하는 block 수가 최대 2개로 제한됨을 보인다. |
-| m-AkNN 확장은 어떤 구조를 쓰는가? | \(m = 2\)는 quadtree, \(m = 3\)은 octree 기반의 count-based space partitioning을 사용한다. |
-| 가장 큰 trade-off는? | query speed와 update 효율을 얻는 대신 index size가 커진다. |
-
-## 복습 질문
-
-1. 시간 조건이 있는 kNN에서 "검색 후 filtering"이 항상 좋은 전략이 아닌 이유를 설명하라.
-2. MBI가 BSBF처럼 동작하는 상황과 SF처럼 동작하는 상황을 각각 설명하라.
-3. leaf size \(S_L\)을 작게 설정하면 query, indexing, index size에 어떤 변화가 생기는가?
-4. m-AkNN에서 uniform grid 방식이 비효율적일 수 있는 이유는 무엇인가?
-5. MBI를 실제 서비스에 적용할 때 memory budget과 update pattern을 어떻게 점검해야 하는가?
 
 ## 참고자료
 

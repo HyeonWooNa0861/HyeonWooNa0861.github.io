@@ -204,7 +204,7 @@ Labidus는 매우 규칙적인 matrix multiplication보다, control이 복잡하
 
 ## 11. 논문의 핵심 기여
 
-| 기여 | 공부 포인트 |
+| 기여 | 해석 포인트 |
 |---|---|
 | RISC-V overlay architecture | pure software programming model을 FPGA accelerator로 연결 |
 | Static custom instruction generation | kernel 분석으로 fused operator와 instruction을 자동 생성 |
@@ -234,26 +234,6 @@ Labidus는 매우 규칙적인 matrix multiplication보다, control이 복잡하
 | Static analysis 의존 | fused operator와 trimming 품질이 분석 도구에 좌우된다. |
 | RISC-V softcore overhead | 아무리 줄여도 pure custom datapath 대비 control overhead가 남는다. |
 | Legacy code 자동 추출은 future work | 논문은 legacy software에서 custom kernel을 자동 추출하는 방향을 향후 과제로 제시한다. |
-
-## 시험 포인트
-
-| 질문 | 답의 방향 |
-|---|---|
-| FPGA overlay가 필요한 이유는? | RTL/HLS의 높은 개발 난이도를 줄이고 software programming model을 제공하기 위해 |
-| 기존 soft processor overlay가 느린 이유는? | instruction decode, control logic, pipeline 관리 등 general-purpose overhead가 크기 때문 |
-| Labidus의 custom instruction은 어떻게 만들어지는가? | static analysis가 loop body operation tree를 분석하고 fused operator를 생성한다. |
-| completion queue의 역할은? | long-latency operator 결과를 비동기적으로 받아 latency를 숨기고 순서를 정리한다. |
-| stream-semantic register는 왜 쓰는가? | burst memory I/O를 반복 load/store instruction 없이 stream처럼 처리하기 위해 |
-| operator pool trimming의 목적은? | 덜 쓰는 operator instance를 줄여 LUT를 절약하고 utilization을 높이기 위해 |
-| Labidus가 특히 유리한 workload는? | control이 복잡하고 hardware 전문 최적화 비용이 큰 scientific/irregular kernel |
-
-## 복습 질문
-
-1. Completion queue가 FPGA에서 reorder buffer보다 resource efficient할 수 있는 이유를 설명하라.
-2. Haversine distance 예시에서 fused operator가 instruction overhead를 어떻게 줄이는지 설명하라.
-3. Stream-semantic memory access와 일반 load/store의 차이를 예로 들어 설명하라.
-4. Labidus가 matrix multiplication보다 Cholesky 같은 workload에 더 잘 맞는 이유는 무엇인가?
-5. Labidus의 productivity-performance trade-off를 RTL, HLS, Microblaze와 비교해 설명하라.
 
 ## 참고자료
 

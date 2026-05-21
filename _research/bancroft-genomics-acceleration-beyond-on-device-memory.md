@@ -218,7 +218,7 @@ Seed-and-extend alignment에서는 seeding 단계가 많은 후보 match를 만�
 
 ## 12. 논문의 핵심 기여
 
-| 기여 | 공부 포인트 |
+| 기여 | 해석 포인트 |
 |---|---|
 | Capacity 문제 재정의 | HBM 용량 부족을 compression과 streaming decompression 문제로 바꿈 |
 | Hardware-friendly format | fixed header, fixed payload, fixed K-mer로 decoder를 단순화 |
@@ -248,27 +248,6 @@ Seed-and-extend alignment에서는 seeding 단계가 많은 후보 match를 만�
 | Host software 의존 | compression에서는 큰 cuckoo table과 reference comparison을 host가 담당한다. |
 | Platform sensitivity | HBM power throttling, HBM channel 수, PCIe 세대에 따라 성능이 달라진다. |
 | Domain specificity | FASTA/FASTQ genomics format에 최적화된 설계다. |
-
-## 시험 포인트
-
-| 질문 | 답의 방향 |
-|---|---|
-| Bancroft가 해결하려는 핵심 병목은? | accelerator on-device memory capacity와 PCIe data movement 병목 |
-| Compression이 acceleration에 도움이 되는 이유는? | PCIe로 이동할 byte 수를 줄여 effective bandwidth를 키우기 때문 |
-| FASTA와 FASTQ의 차이는? | FASTA는 base sequence만, FASTQ는 base별 quality score도 포함 |
-| 왜 fixed-width 32-bit payload를 쓰는가? | decoder datapath와 header parsing을 단순화하기 위해 |
-| Continuation header의 의미는? | 이전 reference match 바로 다음 위치가 이어져 offset payload를 생략할 수 있음 |
-| Quality score에서 p1/p2 mask는 무엇인가? | 가장 빈번한 두 score만으로 된 구간을 bit mask로 표현하는 방식 |
-| Probabilistic filter의 역할은? | host가 확인해야 할 cuckoo hash 후보를 줄여 CPU와 memory pressure를 낮춤 |
-| 가장 큰 trade-off는? | 높은 effective bandwidth를 얻기 위해 format과 hardware를 genomics에 특화한다는 점 |
-
-## 복습 질문
-
-1. Bancroft가 단순히 HBM 용량을 늘리는 방식이 아니라 compression을 선택한 이유를 설명하라.
-2. \(K = 64\), \(S = 16\) 같은 고정 파라미터가 hardware decoder에 주는 이점을 설명하라.
-3. Reference-based compression에서 reverse complement match가 필요한 이유는 무엇인가?
-4. Compression path와 decompression path 중 어느 쪽이 더 accelerator 내부에 적합한지, 그 이유를 설명하라.
-5. Pre-alignment filtering에서 PCIe 병목이 system-level utilization을 어떻게 낮추는지 설명하라.
 
 ## 참고자료
 

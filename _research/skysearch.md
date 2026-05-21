@@ -374,7 +374,7 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 
 ## 17. 논문의 핵심 기여
 
-| 기여 | 공부 포인트 |
+| 기여 | 해석 포인트 |
 |---|---|
 | 실사용 시스템 | 단순 benchmark가 아니라 KMA 예보 업무에 배포된 retrieval system이다. |
 | Label-free embedding | 유사도 label 없이 temporal proximity를 이용해 video representation을 학습한다. |
@@ -393,25 +393,6 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 | Forecasting workflow | 검색 결과가 forecaster의 판단을 어떻게 보조하는가? |
 | Evaluation | LPIPS/FSIM/SSIM이 실제 기상 유사도를 얼마나 잘 대변하는가? |
 | Deployment | 속도, memory, update, UI까지 고려했는가? |
-
-## 시험 포인트
-
-| 질문 | 답의 방향 |
-|---|---|
-| SkySearch가 label-free인 이유는? | temporally close/far video pair를 이용한 self-supervised loss를 쓰기 때문 |
-| \(\delta = 8\text{ hours}\)는 어디에 쓰이는가? | positive/negative video pair를 나누는 temporal threshold |
-| Prediction-based query augmentation의 목적은? | 현재 상태뿐 아니라 예상 미래 전개까지 비슷한 과거 사례를 찾기 위해 |
-| MBI가 필요한 이유는? | time-restricted k-NN에서 시간 구간 밖 후보를 나중에 버리는 비효율을 줄이기 위해 |
-| Embedding ranking과 LPIPS ranking의 trade-off는? | embedding은 빠르고, LPIPS는 더 정밀하지만 매우 느리다. |
-| SkySearch가 NWP를 대체하는가? | 아니다. 유사 과거 사례 검색으로 forecaster의 판단을 보조한다. |
-
-## 복습 질문
-
-1. 위성 비디오 검색에서 image retrieval baseline을 그대로 쓰기 어려운 이유는 무엇인가?
-2. Temporal proximity를 positive pair로 쓰는 self-supervised 학습은 어떤 implicit assumption에 의존하는가?
-3. Query augmentation이 short-term 성능보다 long-term 성능에 더 중요한 이유는 무엇인가?
-4. Time-restricted search에서 PyNNDescent가 좁은 query interval에 약해지는 이유를 설명하라.
-5. LPIPS가 평가에는 유용하지만 supervision으로는 제한적인 이유를 기상 현상 관점에서 설명하라.
 
 ## 참고자료
 
