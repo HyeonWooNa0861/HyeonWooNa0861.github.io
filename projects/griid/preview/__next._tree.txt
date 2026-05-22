@@ -1,0 +1,3 @@
+:HL["/projects/griid/_next/static/chunks/8a2fb892f1d0c2f1.css","style"]
+:HL["/projects/griid/logo/Griid_Brand_Logo_Toolkit/IG_Feed_WH/Griid_IG_Feed_Left_WH.png","image"]
+0:{"buildId":"HrbrRfHZdGsCp1cUmp2fX","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"preview","paramType":null,"paramKey":"preview","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false},"modal":{"name":"__DEFAULT__","paramType":null,"paramKey":"__DEFAULT__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

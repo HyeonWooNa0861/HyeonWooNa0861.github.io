@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[2971,["/projects/griid/_next/static/chunks/0a0089d71cd43ce5.js"],"default"]
+3:I[97367,["/projects/griid/_next/static/chunks/ff1a16fafef87110.js","/projects/griid/_next/static/chunks/247eb132b7f7b574.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"buildId":"HrbrRfHZdGsCp1cUmp2fX","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-gray-50 pt-20 pb-16","children":[["$","$L2",null,{}],["$","main",null,{"className":"max-w-7xl mx-auto px-6","children":[["$","div",null,{"className":"mb-10 text-center","children":[["$","h1",null,{"className":"text-3xl font-semibold text-gray-900","children":"Craft"}],["$","p",null,{"className":"mt-3 text-sm text-gray-500","children":[0," items"]}]]}],["$","p",null,{"className":"text-center text-sm text-gray-400","children":"해당 카테고리에 등록된 상품이 없습니다."}]]}]]}],[["$","script","script-0",{"src":"/projects/griid/_next/static/chunks/0a0089d71cd43ce5.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+5:null
