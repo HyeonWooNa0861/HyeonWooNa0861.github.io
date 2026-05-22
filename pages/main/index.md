@@ -9,8 +9,12 @@ permalink: /
 
 <ul class="post-list">
   {% for child in item.children %}
+    {% assign child_href = child.url %}
+    {% unless child.url contains "://" %}
+      {% assign child_href = child.url | relative_url %}
+    {% endunless %}
     <li class="post-card">
-      <a href="{{ child.url | relative_url }}">{{ child.title }}</a>
+      <a href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ child.title }}</a>
       <p>{{ child.description }}</p>
     </li>
   {% endfor %}

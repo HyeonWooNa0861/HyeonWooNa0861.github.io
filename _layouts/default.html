@@ -474,8 +474,12 @@
                             {% assign child_active = true %}
                           {% endif %}
                         {% endif %}
+                        {% assign child_href = child.url %}
+                        {% unless child.url contains "://" %}
+                          {% assign child_href = child.url | relative_url %}
+                        {% endunless %}
                         <li>
-                          <a class="side-index-link{% if child_active %} active{% endif %}" href="{{ child.url | relative_url }}">{{ child.title }}</a>
+                          <a class="side-index-link{% if child_active %} active{% endif %}" href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ child.title }}</a>
                         </li>
                       {% endfor %}
                     </ul>

@@ -7,8 +7,6 @@ markdown: kramdown
 permalink: /:year/:month/:day/:title/
 include:
   - _pics
-  - projects/griid
-  - projects/griid/_next
 
 collections:
   assignment:

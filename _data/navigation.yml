@@ -3,12 +3,14 @@
   description: Web interaction prototypes
   children:
     - title: gri:d
-      url: /projects/griid/
+      url: https://proj-griid.vercel.app/
       description: Web interaction prototype
-      match: /projects/griid/
     - title: FollowSync
       url: https://followsync.vercel.app
       description: Instagram follower/following comparison utility
+    - title: Open-ER
+      url: https://open-er.vercel.app/
+      description: External Vercel project
 
 - title: Post
   url: /post/
