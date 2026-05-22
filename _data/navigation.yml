@@ -1,3 +1,12 @@
+- title: Project
+  url: /project/
+  description: Web interaction prototypes
+  children:
+    - title: gri:d
+      url: /projects/griid/
+      description: Web interaction prototype
+      match: /projects/griid/
+
 - title: Post
   url: /post/
   description: Reports, lecture reflections, and presentation notes
