@@ -4,13 +4,13 @@
   children:
     - title: gri:d
       url: https://proj-griid.vercel.app/
-      description: Web interaction prototype
+      description: Fashion catalog prototype with category, designer, search, and lounge flows
     - title: FollowSync
       url: https://followsync.vercel.app
-      description: Instagram follower/following comparison utility
+      description: Instagram export ZIP analyzer for comparing followers and following without login
     - title: Open-ER
       url: https://open-er.vercel.app/
-      description: External Vercel project
+      description: Wine discovery with advanced filtering and comparison tools
 
 - title: Post
   url: /post/
