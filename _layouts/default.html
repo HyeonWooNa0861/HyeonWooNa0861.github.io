@@ -400,34 +400,34 @@
       .section-pager-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        gap: 18px;
       }
 
       .section-pager-card {
-        display: flex;
-        min-height: 56px;
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        min-height: 0;
         flex-direction: column;
-        justify-content: center;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        background: var(--panel);
-        padding: 10px 12px;
+        justify-content: flex-start;
+        border: 0;
+        background: transparent;
+        padding: 0;
         color: var(--text);
         text-decoration: none;
       }
 
       .section-pager-card:hover {
-        border-color: #b9c2d2;
-        background: #fbfcfe;
+        color: var(--accent);
       }
 
       .section-pager-card.next {
+        justify-self: end;
         align-items: flex-end;
         text-align: right;
       }
 
       .section-pager-card.disabled {
-        background: transparent;
         color: var(--muted);
         opacity: 0.45;
       }
@@ -478,6 +478,7 @@
         }
 
         .section-pager-card.next {
+          justify-self: start;
           align-items: flex-start;
           text-align: left;
         }
