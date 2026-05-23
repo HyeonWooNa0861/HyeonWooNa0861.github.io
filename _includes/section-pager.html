@@ -66,9 +66,6 @@
 
 {% if pager_prev or pager_next %}
   <nav class="section-pager" aria-label="Sibling navigation">
-    {% if pager_parent_url %}
-      <a class="section-pager-parent" href="{{ pager_parent_url | relative_url }}">Back to {{ pager_parent_title }}</a>
-    {% endif %}
     <div class="section-pager-grid">
       {% if pager_prev %}
         <a class="section-pager-card previous" href="{{ pager_prev.url | relative_url }}">
@@ -80,6 +77,12 @@
           <span class="section-pager-label">Previous</span>
           <strong>Start</strong>
         </span>
+      {% endif %}
+
+      {% if pager_parent_url %}
+        <a class="section-pager-parent" href="{{ pager_parent_url | relative_url }}">Back to {{ pager_parent_title }}</a>
+      {% else %}
+        <span class="section-pager-parent disabled" aria-hidden="true"></span>
       {% endif %}
 
       {% if pager_next %}
