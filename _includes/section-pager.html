@@ -1,0 +1,98 @@
+{% assign pager_items = nil %}
+{% assign pager_parent_title = nil %}
+{% assign pager_parent_url = nil %}
+
+{% if page.collection == "study" and page.course %}
+  {% assign pager_items = site.study | where: "course", page.course | sort: "order" %}
+  {% assign pager_parent_title = page.course %}
+  {% for nav_item in site.data.navigation %}
+    {% if nav_item.title == "Study" %}
+      {% for nav_child in nav_item.children %}
+        {% if nav_child.title == page.course %}
+          {% assign pager_parent_url = nav_child.url %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% elsif page.collection == "assignment" and page.course %}
+  {% assign pager_items = site.assignment | where: "course", page.course | sort: "title" %}
+  {% assign pager_parent_title = page.course %}
+  {% for nav_item in site.data.navigation %}
+    {% if nav_item.title == "Assignment" %}
+      {% for nav_child in nav_item.children %}
+        {% if nav_child.title == page.course %}
+          {% assign pager_parent_url = nav_child.url %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% elsif page.collection == "research" %}
+  {% assign pager_items = site.research | sort: "order" %}
+  {% assign pager_parent_title = "Research" %}
+  {% assign pager_parent_url = "/research/" %}
+{% elsif page.section %}
+  {% assign pager_items = site.posts | where: "section", page.section | sort: "date" %}
+  {% for nav_item in site.data.navigation %}
+    {% if nav_item.title == "Post" %}
+      {% for nav_child in nav_item.children %}
+        {% if nav_child.section == page.section %}
+          {% assign pager_parent_title = nav_child.title %}
+          {% assign pager_parent_url = nav_child.url %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign pager_prev = nil %}
+{% assign pager_next = nil %}
+{% assign pager_found_current = false %}
+{% assign pager_previous_item = nil %}
+
+{% if pager_items %}
+  {% for pager_item in pager_items %}
+    {% if pager_found_current and pager_next == nil %}
+      {% assign pager_next = pager_item %}
+    {% endif %}
+
+    {% if pager_item.url == page.url %}
+      {% assign pager_prev = pager_previous_item %}
+      {% assign pager_found_current = true %}
+    {% endif %}
+
+    {% assign pager_previous_item = pager_item %}
+  {% endfor %}
+{% endif %}
+
+{% if pager_prev or pager_next %}
+  <nav class="section-pager" aria-label="Sibling navigation">
+    {% if pager_parent_url %}
+      <a class="section-pager-parent" href="{{ pager_parent_url | relative_url }}">Back to {{ pager_parent_title }}</a>
+    {% endif %}
+    <div class="section-pager-grid">
+      {% if pager_prev %}
+        <a class="section-pager-card previous" href="{{ pager_prev.url | relative_url }}">
+          <span class="section-pager-label">Previous</span>
+          <strong>{{ pager_prev.title }}</strong>
+        </a>
+      {% else %}
+        <span class="section-pager-card previous disabled" aria-hidden="true">
+          <span class="section-pager-label">Previous</span>
+          <strong>Start</strong>
+        </span>
+      {% endif %}
+
+      {% if pager_next %}
+        <a class="section-pager-card next" href="{{ pager_next.url | relative_url }}">
+          <span class="section-pager-label">Next</span>
+          <strong>{{ pager_next.title }}</strong>
+        </a>
+      {% else %}
+        <span class="section-pager-card next disabled" aria-hidden="true">
+          <span class="section-pager-label">Next</span>
+          <strong>End</strong>
+        </span>
+      {% endif %}
+    </div>
+  </nav>
+{% endif %}
