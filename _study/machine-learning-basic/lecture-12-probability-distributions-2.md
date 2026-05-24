@@ -232,7 +232,7 @@ $$
 Bayes' theorem을 parameter에 적용하면 posterior distribution을 얻는다.
 
 $$
-P(\theta\mid X)=\frac{P(X\mid\theta)p(\theta)}{p(X)}
+P(\theta\mid X)=\frac{P(X\mid\theta)P(\theta)}{P(X)}
 $$
 
 각 항은 다음처럼 읽으면 된다.
