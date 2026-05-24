@@ -595,19 +595,103 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var sideIndex = document.querySelector(".side-index");
-        if (!sideIndex) return;
+        if (sideIndex) {
+          var activeItem = sideIndex.querySelector(".side-index-link.active, .side-index-heading.active");
+          if (activeItem) {
+            var activeTop = activeItem.offsetTop;
+            var activeBottom = activeTop + activeItem.offsetHeight;
+            var visibleTop = sideIndex.scrollTop;
+            var visibleBottom = visibleTop + sideIndex.clientHeight;
 
-        var activeItem = sideIndex.querySelector(".side-index-link.active, .side-index-heading.active");
-        if (activeItem) {
-          var activeTop = activeItem.offsetTop;
-          var activeBottom = activeTop + activeItem.offsetHeight;
-          var visibleTop = sideIndex.scrollTop;
-          var visibleBottom = visibleTop + sideIndex.clientHeight;
-
-          if (activeTop < visibleTop || activeBottom > visibleBottom) {
-            sideIndex.scrollTop = Math.max(0, activeTop - 16);
+            if (activeTop < visibleTop || activeBottom > visibleBottom) {
+              sideIndex.scrollTop = Math.max(0, activeTop - 16);
+            }
           }
         }
+
+        var sectionPager = document.querySelector(".section-pager");
+        if (!sectionPager) return;
+
+        var previousLink = sectionPager.querySelector(".section-pager-card.previous[href]");
+        var nextLink = sectionPager.querySelector(".section-pager-card.next[href]");
+        if (!previousLink && !nextLink) return;
+
+        var navigationLocked = false;
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var touchStartedAt = 0;
+        var wheelDeltaX = 0;
+        var wheelResetTimer = null;
+
+        function navigateTo(link) {
+          if (!link || navigationLocked) return;
+          navigationLocked = true;
+          window.location.href = link.href;
+        }
+
+        function isInteractiveTarget(target) {
+          if (!target || typeof target.closest !== "function") return false;
+          return Boolean(target.closest("a, button, input, textarea, select, summary, [contenteditable='true']"));
+        }
+
+        function isInsideHorizontalScroller(target) {
+          var startNode = target && target.nodeType === 1 ? target : target && target.parentElement;
+          for (var node = startNode; node && node !== document.body; node = node.parentElement) {
+            var style = window.getComputedStyle(node);
+            var canScrollX = /(auto|scroll)/.test(style.overflowX);
+            if (canScrollX && node.scrollWidth > node.clientWidth + 1) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        function hasHorizontalIntent(target, deltaX, deltaY) {
+          if (isInteractiveTarget(target) || isInsideHorizontalScroller(target)) return false;
+          return Math.abs(deltaX) > Math.abs(deltaY) * 1.4;
+        }
+
+        function shouldUseHorizontalNavigation(target, deltaX, deltaY) {
+          return hasHorizontalIntent(target, deltaX, deltaY) && Math.abs(deltaX) >= 60;
+        }
+
+        document.addEventListener("wheel", function (event) {
+          if (!hasHorizontalIntent(event.target, event.deltaX, event.deltaY)) return;
+          event.preventDefault();
+
+          wheelDeltaX += event.deltaX;
+          window.clearTimeout(wheelResetTimer);
+          wheelResetTimer = window.setTimeout(function () {
+            wheelDeltaX = 0;
+          }, 180);
+
+          if (Math.abs(wheelDeltaX) < 90) return;
+          navigateTo(wheelDeltaX > 0 ? nextLink : previousLink);
+        }, { passive: false });
+
+        document.addEventListener("touchstart", function (event) {
+          if (event.touches.length !== 1 || isInteractiveTarget(event.target)) return;
+          touchStartX = event.touches[0].clientX;
+          touchStartY = event.touches[0].clientY;
+          touchStartedAt = Date.now();
+        }, { passive: true });
+
+        document.addEventListener("touchend", function (event) {
+          if (!touchStartX || !event.changedTouches.length) return;
+          if (isInsideHorizontalScroller(event.target)) return;
+
+          var touch = event.changedTouches[0];
+          var deltaX = touch.clientX - touchStartX;
+          var deltaY = touch.clientY - touchStartY;
+          var elapsed = Date.now() - touchStartedAt;
+
+          touchStartX = 0;
+          touchStartY = 0;
+          touchStartedAt = 0;
+
+          if (elapsed > 800 || !shouldUseHorizontalNavigation(event.target, deltaX, deltaY)) return;
+          navigateTo(deltaX < 0 ? nextLink : previousLink);
+        }, { passive: true });
       });
     </script>
   </body>
