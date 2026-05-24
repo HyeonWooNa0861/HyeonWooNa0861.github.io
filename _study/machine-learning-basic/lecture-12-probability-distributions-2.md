@@ -214,7 +214,7 @@ $$
 Bayesian machine learning에서는 모델 parameter \\(\theta\\)를 하나의 고정된 미지수로만 보지 않고, 확률변수처럼 다룬다. 데이터를 보기 전에는 parameter에 대한 믿음인 prior distribution을 둔다.
 
 $$
-p(\theta)
+P(\theta)
 $$
 
 데이터 \\(X=\{x_i\}_{i=1}^{n}\\)이 parameter \\(\theta\\)를 가진 모델에서 생성되었다고 가정하면, 조건부 확률 \\(P(X\mid\theta)\\)를 likelihood라고 부른다.
