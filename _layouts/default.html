@@ -677,20 +677,22 @@
         var wheelDeltaX = 0;
         var wheelResetTimer = null;
         var wheelQuietTimer = null;
-        var pagerGestureConsumedKey = "sectionPagerGestureConsumed";
-        var wheelQuietMs = 360;
+        var pagerWheelCarryoverKey = "sectionPagerWheelCarryover";
+        var wheelCarryoverWindowMs = 1200;
+        var wheelQuietMs = 280;
         var wheelTriggerThreshold = 220;
         var touchTriggerThreshold = 90;
         var horizontalIntentRatio = 1.8;
         var transitionDurationMs = 180;
 
-        function navigateTo(link, direction, triggeredByGesture) {
+        function navigateTo(link, direction, source) {
           if (!link || navigationLocked) return;
-          if (triggeredByGesture && isGestureConsumed()) return;
           navigationLocked = true;
           wheelDeltaX = 0;
-          if (triggeredByGesture) {
-            markGestureConsumed();
+          if (source === "wheel") {
+            markWheelCarryover(direction);
+          } else {
+            clearWheelCarryover();
           }
 
           if (!shouldAnimatePageExit()) {
@@ -704,35 +706,57 @@
           }, transitionDurationMs);
         }
 
-        function isGestureConsumed() {
+        function getWheelCarryover() {
           try {
-            return sessionStorage.getItem(pagerGestureConsumedKey) === "1";
+            var rawCarryover = sessionStorage.getItem(pagerWheelCarryoverKey);
+            if (!rawCarryover) return null;
+
+            var carryover = JSON.parse(rawCarryover);
+            if (!carryover || !carryover.direction || !carryover.createdAt) {
+              clearWheelCarryover();
+              return null;
+            }
+
+            if (Date.now() - carryover.createdAt > wheelCarryoverWindowMs) {
+              clearWheelCarryover();
+              return null;
+            }
+
+            return carryover;
           } catch (error) {
-            return false;
+            clearWheelCarryover();
+            return null;
           }
         }
 
-        function markGestureConsumed() {
+        function markWheelCarryover(direction) {
           try {
-            sessionStorage.setItem(pagerGestureConsumedKey, "1");
+            sessionStorage.setItem(pagerWheelCarryoverKey, JSON.stringify({
+              direction: direction,
+              createdAt: Date.now()
+            }));
           } catch (error) {
             return;
           }
         }
 
-        function clearConsumedGesture() {
+        function clearWheelCarryover() {
           try {
-            sessionStorage.removeItem(pagerGestureConsumedKey);
+            sessionStorage.removeItem(pagerWheelCarryoverKey);
           } catch (error) {
             return;
           }
         }
 
-        function scheduleGestureRelease() {
+        function scheduleWheelCarryoverRelease() {
           window.clearTimeout(wheelQuietTimer);
           wheelQuietTimer = window.setTimeout(function () {
-            clearConsumedGesture();
+            clearWheelCarryover();
           }, wheelQuietMs);
+        }
+
+        function getWheelDirection(deltaX) {
+          return deltaX > 0 ? "next" : "previous";
         }
 
         function shouldAnimatePageExit() {
@@ -765,19 +789,21 @@
           return hasHorizontalIntent(target, deltaX, deltaY) && Math.abs(deltaX) >= threshold;
         }
 
-        if (isGestureConsumed()) {
-          scheduleGestureRelease();
-        }
+        getWheelCarryover();
 
         document.addEventListener("wheel", function (event) {
           if (!hasHorizontalIntent(event.target, event.deltaX, event.deltaY)) return;
           event.preventDefault();
-          if (isGestureConsumed()) {
+
+          var carryover = getWheelCarryover();
+          var wheelDirection = getWheelDirection(event.deltaX);
+          if (carryover && carryover.direction === wheelDirection) {
             wheelDeltaX = 0;
             window.clearTimeout(wheelResetTimer);
-            scheduleGestureRelease();
+            scheduleWheelCarryoverRelease();
             return;
           }
+          if (carryover) clearWheelCarryover();
 
           wheelDeltaX += event.deltaX;
           window.clearTimeout(wheelResetTimer);
@@ -786,20 +812,20 @@
           }, 240);
 
           if (Math.abs(wheelDeltaX) < wheelTriggerThreshold) return;
-          navigateTo(wheelDeltaX > 0 ? nextLink : previousLink, wheelDeltaX > 0 ? "next" : "previous", true);
+          navigateTo(wheelDeltaX > 0 ? nextLink : previousLink, wheelDeltaX > 0 ? "next" : "previous", "wheel");
         }, { passive: false });
 
         if (previousLink) {
           previousLink.addEventListener("click", function (event) {
             event.preventDefault();
-            navigateTo(previousLink, "previous", false);
+            navigateTo(previousLink, "previous", "link");
           });
         }
 
         if (nextLink) {
           nextLink.addEventListener("click", function (event) {
             event.preventDefault();
-            navigateTo(nextLink, "next", false);
+            navigateTo(nextLink, "next", "link");
           });
         }
 
@@ -824,7 +850,7 @@
           touchStartedAt = 0;
 
           if (elapsed > 800 || !shouldUseHorizontalNavigation(event.target, deltaX, deltaY, touchTriggerThreshold)) return;
-          navigateTo(deltaX < 0 ? nextLink : previousLink, deltaX < 0 ? "next" : "previous", true);
+          navigateTo(deltaX < 0 ? nextLink : previousLink, deltaX < 0 ? "next" : "previous", "touch");
         }, { passive: true });
       });
     </script>
