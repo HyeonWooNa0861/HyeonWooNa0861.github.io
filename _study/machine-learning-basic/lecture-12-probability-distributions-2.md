@@ -239,10 +239,10 @@ $$
 
 | 개념 | 의미 | 직관 |
 |---|---|---|
-| prior \\(p(\theta)\\) | 데이터를 보기 전 parameter에 대한 믿음 | 어떤 parameter가 그럴듯한가? |
+| prior \\(P(\theta)\\) | 데이터를 보기 전 parameter에 대한 믿음 | 어떤 parameter가 그럴듯한가? |
 | likelihood \\(P(X\mid\theta)\\) | parameter가 주어졌을 때 현재 데이터가 나올 가능성 | 이 parameter가 데이터를 잘 설명하는가? |
 | posterior \\(P(\theta\mid X)\\) | 데이터를 본 뒤 parameter에 대한 믿음 | 데이터까지 반영하면 어떤 parameter가 그럴듯한가? |
-| evidence \\(p(X)\\) | 데이터가 나타날 전체 확률 | posterior를 정규화하는 값 |
+| evidence \\(P(X)\\) | 데이터가 나타날 전체 확률 | posterior를 정규화하는 값 |
 
 일반적인 point estimate 방식은 가장 좋은 parameter 하나를 찾는 데 집중한다. Bayesian 관점은 가능한 parameter들의 분포를 유지하므로, 예측의 불확실성까지 표현할 수 있다.
 
