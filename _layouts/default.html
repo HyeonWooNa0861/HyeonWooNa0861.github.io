@@ -456,6 +456,59 @@
         overflow-wrap: anywhere;
       }
 
+      @media (prefers-reduced-motion: no-preference) {
+        .page-content {
+          animation: page-content-enter 180ms ease-out both;
+          will-change: opacity, transform;
+        }
+
+        .page-content.is-page-exiting-next {
+          animation: page-content-exit-next 180ms ease-in both;
+          pointer-events: none;
+        }
+
+        .page-content.is-page-exiting-previous {
+          animation: page-content-exit-previous 180ms ease-in both;
+          pointer-events: none;
+        }
+
+        @keyframes page-content-enter {
+          from {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes page-content-exit-next {
+          from {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          to {
+            opacity: 0;
+            transform: translateX(-16px);
+          }
+        }
+
+        @keyframes page-content-exit-previous {
+          from {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          to {
+            opacity: 0;
+            transform: translateX(16px);
+          }
+        }
+      }
+
       @media (max-width: 860px) {
         .page-shell.has-sidebar {
           grid-template-columns: 1fr;
@@ -612,6 +665,7 @@
         var sectionPager = document.querySelector(".section-pager");
         if (!sectionPager) return;
 
+        var pageContent = document.querySelector(".page-content");
         var previousLink = sectionPager.querySelector(".section-pager-card.previous[href]");
         var nextLink = sectionPager.querySelector(".section-pager-card.next[href]");
         if (!previousLink && !nextLink) return;
@@ -622,11 +676,52 @@
         var touchStartedAt = 0;
         var wheelDeltaX = 0;
         var wheelResetTimer = null;
+        var pagerLockKey = "sectionPagerNavigationLockedUntil";
+        var pagerCooldownMs = 1100;
+        var wheelTriggerThreshold = 220;
+        var touchTriggerThreshold = 90;
+        var horizontalIntentRatio = 1.8;
+        var transitionDurationMs = 180;
 
-        function navigateTo(link) {
+        function navigateTo(link, direction, shouldRespectCooldown) {
           if (!link || navigationLocked) return;
+          if (shouldRespectCooldown && isPagerCoolingDown()) return;
           navigationLocked = true;
-          window.location.href = link.href;
+          setPagerCooldown();
+
+          if (!shouldAnimatePageExit()) {
+            window.location.href = link.href;
+            return;
+          }
+
+          pageContent.classList.add("is-page-exiting-" + direction);
+          window.setTimeout(function () {
+            window.location.href = link.href;
+          }, transitionDurationMs);
+        }
+
+        function getPagerLockedUntil() {
+          try {
+            return Number(sessionStorage.getItem(pagerLockKey)) || 0;
+          } catch (error) {
+            return 0;
+          }
+        }
+
+        function setPagerCooldown() {
+          try {
+            sessionStorage.setItem(pagerLockKey, String(Date.now() + pagerCooldownMs));
+          } catch (error) {
+            return;
+          }
+        }
+
+        function isPagerCoolingDown() {
+          return Date.now() < getPagerLockedUntil();
+        }
+
+        function shouldAnimatePageExit() {
+          return pageContent && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         }
 
         function isInteractiveTarget(target) {
@@ -648,26 +743,41 @@
 
         function hasHorizontalIntent(target, deltaX, deltaY) {
           if (isInteractiveTarget(target) || isInsideHorizontalScroller(target)) return false;
-          return Math.abs(deltaX) > Math.abs(deltaY) * 1.4;
+          return Math.abs(deltaX) > Math.abs(deltaY) * horizontalIntentRatio;
         }
 
-        function shouldUseHorizontalNavigation(target, deltaX, deltaY) {
-          return hasHorizontalIntent(target, deltaX, deltaY) && Math.abs(deltaX) >= 60;
+        function shouldUseHorizontalNavigation(target, deltaX, deltaY, threshold) {
+          return hasHorizontalIntent(target, deltaX, deltaY) && Math.abs(deltaX) >= threshold;
         }
 
         document.addEventListener("wheel", function (event) {
           if (!hasHorizontalIntent(event.target, event.deltaX, event.deltaY)) return;
           event.preventDefault();
+          if (isPagerCoolingDown()) return;
 
           wheelDeltaX += event.deltaX;
           window.clearTimeout(wheelResetTimer);
           wheelResetTimer = window.setTimeout(function () {
             wheelDeltaX = 0;
-          }, 180);
+          }, 240);
 
-          if (Math.abs(wheelDeltaX) < 90) return;
-          navigateTo(wheelDeltaX > 0 ? nextLink : previousLink);
+          if (Math.abs(wheelDeltaX) < wheelTriggerThreshold) return;
+          navigateTo(wheelDeltaX > 0 ? nextLink : previousLink, wheelDeltaX > 0 ? "next" : "previous", true);
         }, { passive: false });
+
+        if (previousLink) {
+          previousLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            navigateTo(previousLink, "previous", false);
+          });
+        }
+
+        if (nextLink) {
+          nextLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            navigateTo(nextLink, "next", false);
+          });
+        }
 
         document.addEventListener("touchstart", function (event) {
           if (event.touches.length !== 1 || isInteractiveTarget(event.target)) return;
@@ -689,8 +799,9 @@
           touchStartY = 0;
           touchStartedAt = 0;
 
-          if (elapsed > 800 || !shouldUseHorizontalNavigation(event.target, deltaX, deltaY)) return;
-          navigateTo(deltaX < 0 ? nextLink : previousLink);
+          if (isPagerCoolingDown()) return;
+          if (elapsed > 800 || !shouldUseHorizontalNavigation(event.target, deltaX, deltaY, touchTriggerThreshold)) return;
+          navigateTo(deltaX < 0 ? nextLink : previousLink, deltaX < 0 ? "next" : "previous", true);
         }, { passive: true });
       });
     </script>
