@@ -51,6 +51,10 @@
       url: /research/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/
       description: RISC-V overlay with streaming asynchronous custom instructions
       match: /research/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/
+    - title: Attention Is All You Need
+      url: /research/attention-is-all-you-need/
+      description: Transformer paper analysis and v1-v7 revision notes
+      match: /research/attention-is-all-you-need/
 
 - title: Assignment
   url: /assignment/
