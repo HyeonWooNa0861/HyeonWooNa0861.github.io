@@ -4,6 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | default: site.title }}</title>
+    <script>
+      (function () {
+        var theme = "light";
+
+        try {
+          var savedTheme = localStorage.getItem("gitblogTheme");
+          var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          theme = savedTheme || (prefersDark ? "dark" : "light");
+        } catch (error) {
+          theme = "light";
+        }
+
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <style>
       :root {
         color-scheme: light;
@@ -13,6 +28,30 @@
         --muted: #6b7280;
         --line: #d9dee7;
         --accent: #2563eb;
+        --hover-bg: #eef2f7;
+        --code-bg: #eef2f7;
+        --code-border: #d7dce5;
+        --table-head: #eef2f7;
+        --table-row-alt: #fbfcfe;
+        --pre-bg: #111827;
+        --pre-text: #e5e7eb;
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0f172a;
+        --panel: #111827;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #334155;
+        --accent: #93c5fd;
+        --hover-bg: #1f2937;
+        --code-bg: #1e293b;
+        --code-border: #475569;
+        --table-head: #1e293b;
+        --table-row-alt: #111c2d;
+        --pre-bg: #020617;
+        --pre-text: #e5e7eb;
       }
 
       body {
@@ -67,6 +106,23 @@
       }
 
       .nav-link:hover {
+        color: var(--text);
+      }
+
+      .theme-toggle {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: transparent;
+        padding: 5px 9px;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        line-height: 1.2;
+        cursor: pointer;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--muted);
         color: var(--text);
       }
 
@@ -163,7 +219,7 @@
 
       .side-index-link:hover,
       .side-index-link.active {
-        background: #eef2f7;
+        background: var(--hover-bg);
         color: var(--text);
       }
 
@@ -204,9 +260,9 @@
       }
 
       code {
-        border: 1px solid #d7dce5;
+        border: 1px solid var(--code-border);
         border-radius: 5px;
-        background: #eef2f7;
+        background: var(--code-bg);
         padding: 2px 5px;
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
         font-size: 0.92em;
@@ -217,8 +273,8 @@
         overflow-x: auto;
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: #111827;
-        color: #e5e7eb;
+        background: var(--pre-bg);
+        color: var(--pre-text);
         padding: 16px;
         line-height: 1.55;
       }
@@ -248,12 +304,12 @@
       }
 
       th {
-        background: #eef2f7;
+        background: var(--table-head);
         font-weight: 700;
       }
 
       tbody tr:nth-child(even) {
-        background: #fbfcfe;
+        background: var(--table-row-alt);
       }
 
       blockquote {
@@ -597,6 +653,7 @@
         <nav class="site-nav" aria-label="Primary navigation">
           <a class="nav-link" href="{{ '/about/' | relative_url }}">About</a>
           <a class="nav-link" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io">GitHub</a>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode">Dark</button>
         </nav>
       </div>
     </header>
@@ -660,6 +717,37 @@
               sideIndex.scrollTop = Math.max(0, activeTop - 16);
             }
           }
+        }
+
+        var themeToggle = document.querySelector("[data-theme-toggle]");
+        var themeStorageKey = "gitblogTheme";
+
+        function getCurrentTheme() {
+          return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+        }
+
+        function updateThemeToggleLabel() {
+          if (!themeToggle) return;
+
+          var isDark = getCurrentTheme() === "dark";
+          themeToggle.textContent = isDark ? "Light" : "Dark";
+          themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+        }
+
+        if (themeToggle) {
+          updateThemeToggleLabel();
+          themeToggle.addEventListener("click", function () {
+            var nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+            document.documentElement.dataset.theme = nextTheme;
+
+            try {
+              localStorage.setItem(themeStorageKey, nextTheme);
+            } catch (error) {
+              // Theme still changes for the current page even when storage is blocked.
+            }
+
+            updateThemeToggleLabel();
+          });
         }
 
         var sectionPager = document.querySelector(".section-pager");
