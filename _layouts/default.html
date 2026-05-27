@@ -114,10 +114,10 @@
 
       body::before {
         position: fixed;
-        inset: 76px 0 auto auto;
+        inset: var(--fracture-top, 76px) 0 auto auto;
         z-index: 0;
-        width: min(52vw, 680px);
-        height: 46vh;
+        width: min(var(--fracture-width, 52vw), 680px);
+        height: var(--fracture-height, 46vh);
         pointer-events: none;
         content: "";
         background:
@@ -125,7 +125,7 @@
           linear-gradient(28deg, transparent 0 50%, var(--fracture-strong) 50% 51%, transparent 51% 100%) 0 0 / 320px 320px;
         mask-image: linear-gradient(90deg, transparent, #000 28%, transparent 100%);
         -webkit-mask-image: linear-gradient(90deg, transparent, #000 28%, transparent 100%);
-        opacity: 0.62;
+        opacity: var(--fracture-opacity, 0.62);
       }
 
       .site-header {
@@ -209,7 +209,7 @@
         pointer-events: none;
         background: var(--fracture-strong);
         content: "";
-        transform: rotate(-12deg);
+        transform: rotate(var(--main-fracture-rotate, -12deg));
         transform-origin: right center;
       }
 
@@ -227,6 +227,7 @@
         pointer-events: none;
         background: linear-gradient(180deg, transparent, var(--fracture), transparent);
         content: "";
+        transform: translateX(var(--page-axis-shift, 0px));
       }
 
       .page-shell.has-sidebar {
@@ -261,7 +262,7 @@
         height: 1px;
         background: var(--accent);
         content: "";
-        transform: rotate(-7deg);
+        transform: rotate(var(--content-fracture-rotate, -7deg));
         transform-origin: left center;
       }
 
@@ -281,7 +282,7 @@
       .side-index {
         position: sticky;
         top: 88px;
-        transform: translateY(18px);
+        transform: translateY(var(--side-index-offset, 18px));
         align-self: start;
         box-sizing: border-box;
         width: 100%;
@@ -502,16 +503,16 @@
         height: 1px;
         background: var(--line);
         content: "";
-        transform: skewY(-1.2deg);
+        transform: skewY(var(--card-skew, -1.2deg));
         transform-origin: left center;
       }
 
       .post-card:nth-child(even) {
-        padding-left: 18px;
+        padding-left: var(--card-offset-left, 18px);
       }
 
       .post-card:nth-child(3n) {
-        padding-right: 14px;
+        padding-right: var(--card-offset-right, 14px);
       }
 
       .post-card::before {
@@ -659,7 +660,7 @@
         width: 240px;
         height: 1px;
         background: var(--fracture-strong);
-        transform: rotate(-17deg);
+        transform: rotate(var(--hero-fracture-a, -17deg));
       }
 
       .home-hero::after {
@@ -668,7 +669,7 @@
         width: 128px;
         height: 1px;
         background: var(--line-strong);
-        transform: rotate(11deg);
+        transform: rotate(var(--hero-fracture-b, 11deg));
       }
 
       .home-eyebrow {
@@ -682,7 +683,7 @@
         margin: 0;
         font-size: 76px;
         line-height: 0.96;
-        transform: translateX(-8px);
+        transform: translateX(var(--hero-title-shift, -8px));
       }
 
       .home-directory {
@@ -699,11 +700,11 @@
       }
 
       .directory-section:nth-child(even) {
-        margin-top: 34px;
+        margin-top: var(--section-offset-y, 34px);
       }
 
       .directory-section:nth-child(3n) {
-        padding-left: 22px;
+        padding-left: var(--section-offset-x, 22px);
       }
 
       .directory-section::before {
@@ -714,7 +715,7 @@
         height: 1px;
         background: var(--fracture-strong);
         content: "";
-        transform: rotate(-9deg);
+        transform: rotate(var(--section-fracture-rotate, -9deg));
         transform-origin: left center;
       }
 
@@ -1127,6 +1128,41 @@
     </main>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        function applySpatialRandomness() {
+          if (window.matchMedia("(max-width: 860px)").matches) return;
+
+          var root = document.documentElement;
+          var randomRange = function (min, max, unit) {
+            return (min + Math.random() * (max - min)).toFixed(2) + unit;
+          };
+
+          root.style.setProperty("--fracture-top", randomRange(58, 118, "px"));
+          root.style.setProperty("--fracture-width", randomRange(42, 56, "vw"));
+          root.style.setProperty("--fracture-height", randomRange(34, 50, "vh"));
+          root.style.setProperty("--fracture-opacity", randomRange(0.38, 0.64, ""));
+          root.style.setProperty("--main-fracture-rotate", randomRange(-18, -7, "deg"));
+          root.style.setProperty("--content-fracture-rotate", randomRange(-10, -3, "deg"));
+          root.style.setProperty("--side-index-offset", randomRange(10, 24, "px"));
+          root.style.setProperty("--page-axis-shift", randomRange(-18, 22, "px"));
+          root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
+          root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
+          root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
+
+          document.querySelectorAll(".directory-section").forEach(function (section) {
+            section.style.setProperty("--section-offset-y", randomRange(18, 46, "px"));
+            section.style.setProperty("--section-offset-x", randomRange(10, 28, "px"));
+            section.style.setProperty("--section-fracture-rotate", randomRange(-14, -4, "deg"));
+          });
+
+          document.querySelectorAll(".post-card").forEach(function (card) {
+            card.style.setProperty("--card-skew", randomRange(-1.8, 1.2, "deg"));
+            card.style.setProperty("--card-offset-left", randomRange(8, 24, "px"));
+            card.style.setProperty("--card-offset-right", randomRange(6, 20, "px"));
+          });
+        }
+
+        applySpatialRandomness();
+
         var sideIndex = document.querySelector(".side-index");
         if (sideIndex) {
           var activeItem = sideIndex.querySelector(".side-index-link.active, .side-index-heading.active");
