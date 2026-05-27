@@ -8,7 +8,7 @@ order: 11
 
 # C++ Templates
 
-Source PDF: [C++ 템플릿.pdf]({{ '/assets/pdfs/study/cpp/C++ 템플릿.pdf' | relative_url }})
+Source PDF: `C++ 템플릿.pdf`
 
 ## 전체 흐름
 
@@ -325,21 +325,38 @@ T Box<T>::get() const {
 
 ## 9. 비타입 템플릿 매개변수
 
-템플릿 매개변수에는 타입뿐 아니라 컴파일 타임에 결정되는 값도 사용할 수 있다.
+템플릿 매개변수에는 타입뿐 아니라 **컴파일 타임에 결정되는 값**도 사용할 수 있다. 이것을 비타입 템플릿 매개변수라고 한다.
 
 ```cpp
 template <typename T, int N>
-class StaticArray {
+```
+
+위 선언에서 `T`는 타입 매개변수이고, `N`은 값 매개변수다.
+
+| 매개변수 | 예 | 의미 |
+|---|---|---|
+| 타입 템플릿 매개변수 | `typename T` | `int`, `double`, `std::string` 같은 타입을 받음 |
+| 비타입 템플릿 매개변수 | `int N` | `3`, `10`, `100` 같은 컴파일 타임 상수 값을 받음 |
+
+PDF의 핵심 예시는 크기를 컴파일 타임 상수로 고정하는 `Vector<T, N>`과 `Matrix<T, R, C>`다. 여기서 `N`, `R`, `C`는 객체를 만들고 나서 정해지는 값이 아니라, 타입을 만들 때 이미 정해지는 값이다.
+
+### 9.1 `Vector<T, N>` 예제
+
+다음 코드는 원소 타입 `T`와 크기 `N`을 템플릿 인자로 받는 고정 크기 벡터다.
+
+```cpp
+template <typename T, int N>
+class Vector {
 private:
     T data_[N];
 
 public:
-    T& operator[](int index) {
-        return data_[index];
+    T& operator()(int i) {
+        return data_[i];
     }
 
-    const T& operator[](int index) const {
-        return data_[index];
+    const T& operator()(int i) const {
+        return data_[i];
     }
 
     int size() const {
@@ -348,25 +365,166 @@ public:
 };
 ```
 
-사용 예:
+사용 예는 다음과 같다.
 
 ```cpp
-StaticArray<int, 5> scores;
-StaticArray<double, 3> points;
+Vector<int, 3> v;
+v(0) = 1;
+v(1) = 2;
+v(2) = 3;
 
-scores[0] = 90;
-points[0] = 3.14;
+Vector<float, 2> vf;
+vf(0) = 1.5f;
+vf(1) = 2.5f;
 ```
 
-여기서 `N`은 런타임 변수가 아니라 컴파일 타임 상수다.
+이 예제에서 `Vector<int, 3>`은 `int` 원소 3개를 가지는 타입이고, `Vector<float, 2>`는 `float` 원소 2개를 가지는 타입이다.
 
 | 코드 | 의미 |
 |---|---|
-| `StaticArray<int, 5>` | `int` 5개를 저장하는 배열 타입 |
-| `StaticArray<int, 10>` | `int` 10개를 저장하는 배열 타입 |
-| `StaticArray<double, 5>` | `double` 5개를 저장하는 배열 타입 |
+| `Vector<int, 3>` | `int` 원소 3개를 저장하는 벡터 타입 |
+| `Vector<float, 2>` | `float` 원소 2개를 저장하는 벡터 타입 |
+| `T data_[N]` | `T` 타입 배열을 `N`개만큼 고정 크기로 확보 |
+| `size()` | 멤버 변수를 세지 않고 템플릿 인자 `N`을 반환 |
 
-주의할 점은 `StaticArray<int, 5>`와 `StaticArray<int, 10>`도 서로 다른 타입이라는 것이다. 크기 `5`와 `10`이 템플릿 인자에 포함되기 때문이다.
+`N`이 템플릿 인자이므로 `size()`는 객체 안에 저장된 크기 변수를 읽는 것이 아니다. 컴파일러가 `Vector<int, 3>`을 만들 때 이미 `N = 3`이라는 사실을 알고 있다.
+
+### 9.2 읽기와 쓰기 접근
+
+PDF 예제의 `Vector`와 `Matrix`는 `operator()`를 이용해 원소에 접근한다.
+
+```cpp
+T& operator()(int i) {
+    return data_[i];
+}
+
+const T& operator()(int i) const {
+    return data_[i];
+}
+```
+
+두 버전이 있는 이유는 읽기와 쓰기를 구분하기 위해서다.
+
+```cpp
+Vector<int, 3> v;
+v(0) = 10;           // 비-const 객체: T& 반환, 쓰기 가능
+
+const Vector<int, 3> cv = v;
+int x = cv(0);       // const 객체: const T& 반환, 읽기만 가능
+// cv(0) = 20;       // 오류: const T&에는 대입할 수 없음
+```
+
+C++은 Python의 `__getitem__`, `__setitem__`처럼 읽기/쓰기 함수를 이름으로 분리하지 않는다. 대신 `const` 객체인지 아닌지와 반환 타입이 `T&`인지 `const T&`인지로 접근 가능성을 나눈다.
+
+### 9.3 `Matrix<T, R, C>` 예제
+
+행렬은 원소 타입 `T`, 행 개수 `R`, 열 개수 `C`를 템플릿 인자로 받을 수 있다.
+
+```cpp
+template <typename T, int R, int C>
+class Matrix {
+private:
+    T data_[R][C];
+
+public:
+    T& operator()(int r, int c) {
+        return data_[r][c];
+    }
+
+    const T& operator()(int r, int c) const {
+        return data_[r][c];
+    }
+
+    int rows() const {
+        return R;
+    }
+
+    int cols() const {
+        return C;
+    }
+};
+```
+
+사용 예:
+
+```cpp
+Matrix<int, 2, 3> A;
+
+A(0, 0) = 1;
+A(0, 1) = 2;
+A(0, 2) = 3;
+A(1, 0) = 4;
+A(1, 1) = 5;
+A(1, 2) = 6;
+```
+
+`Matrix<int, 2, 3>`은 `int` 원소를 가지는 2행 3열 행렬 타입이다. 여기서 `2`와 `3`도 단순한 생성자 인자가 아니라 타입의 일부다.
+
+| 코드 | 의미 |
+|---|---|
+| `Matrix<int, 2, 3>` | `int` 원소를 가지는 2행 3열 행렬 타입 |
+| `Matrix<int, 3, 2>` | `int` 원소를 가지는 3행 2열 행렬 타입 |
+| `Matrix<float, 2, 3>` | `float` 원소를 가지는 2행 3열 행렬 타입 |
+
+`Matrix<int, 2, 3>`과 `Matrix<int, 3, 2>`는 저장하는 전체 원소 수가 같더라도 서로 다른 타입이다. 행과 열의 크기가 템플릿 인자로 들어갔기 때문이다.
+
+### 9.4 비타입 인자는 컴파일 타임 상수여야 한다
+
+비타입 템플릿 인자는 컴파일 시점에 값이 확정되어야 한다.
+
+```cpp
+Vector<int, 3> a;       // 가능: 3은 컴파일 타임 상수
+
+constexpr int n = 4;
+Vector<int, n> b;       // 가능: constexpr 값
+
+int size = 5;
+// Vector<int, size> c; // 오류: size는 런타임 변수
+```
+
+`size`는 실행 중 값이 들어가는 일반 변수이므로 템플릿 인자로 사용할 수 없다. 실행 중 크기가 달라져야 하는 자료구조라면 비타입 템플릿 매개변수보다 `std::vector<T>`처럼 런타임 크기를 관리하는 컨테이너가 더 적합하다.
+
+### 9.5 생성자 인자와 다른 점
+
+다음 두 방식은 겉으로는 둘 다 크기를 정하는 것처럼 보이지만 의미가 다르다.
+
+```cpp
+Vector<int, 3> a;       // 크기 3이 타입에 포함됨
+std::vector<int> b(3);  // 크기 3은 객체 생성 시 전달되는 값
+```
+
+| 구분 | 비타입 템플릿 인자 | 생성자 인자 |
+|---|---|---|
+| 예 | `Vector<int, 3>` | `std::vector<int> v(3)` |
+| 결정 시점 | 컴파일 타임 | 런타임 |
+| 타입에 포함 여부 | 포함됨 | 포함되지 않음 |
+| 크기 변경 | 보통 불가 | 가능 |
+| 적합한 상황 | 고정 크기 벡터, 행렬, 버퍼 | 실행 중 크기가 바뀌는 배열 |
+
+즉, `Vector<int, 3>`에서 `3`은 객체의 초기값이 아니라 타입을 구성하는 정보다. 그래서 `Vector<int, 3>`과 `Vector<int, 4>`는 서로 다른 타입으로 취급된다.
+
+### 9.6 `using`으로 긴 템플릿 타입 줄이기
+
+PDF는 비타입 템플릿 매개변수와 함께 `using` 별칭도 보여 준다. `Vector<int, 3>`이나 `Matrix<float, 4, 4>`처럼 템플릿 인자가 길어지면 코드를 읽기 어려워지기 때문이다.
+
+```cpp
+using Vec2i = Vector<int, 2>;
+using Vec3f = Vector<float, 3>;
+using Mat2x3i = Matrix<int, 2, 3>;
+using Mat4f = Matrix<float, 4, 4>;
+```
+
+이제 다음처럼 짧게 쓸 수 있다.
+
+```cpp
+Vec2i position;
+Vec3f velocity;
+Mat2x3i transform;
+```
+
+`using`은 새 타입을 만드는 것이 아니라 기존 타입에 읽기 쉬운 이름을 붙이는 것이다.
+
+비타입 템플릿 매개변수의 핵심은 **크기나 차원 같은 값을 타입 수준으로 끌어올린다**는 점이다. 이렇게 하면 고정 크기 벡터나 행렬처럼 크기가 명확한 자료구조를 타입 안전하게 표현할 수 있다.
 
 ## 10. 템플릿 특수화
 
@@ -579,54 +737,6 @@ render(c); // 가능
 
 템플릿은 편리하지만 컴파일러가 만들어내는 코드가 많아질 수 있고, 오류 메시지가 길어질 수 있다. 따라서 처음에는 단순한 함수 템플릿과 클래스 템플릿부터 익히는 것이 좋다.
 
-## Study Guide
-
-템플릿을 공부할 때는 다음 순서로 이해하면 좋다.
-
-1. 타입만 다른 함수 중복을 직접 확인한다.
-2. 함수 템플릿으로 중복을 줄인다.
-3. 템플릿이 호출 시점에 타입별 함수로 인스턴스화된다는 점을 이해한다.
-4. 클래스 템플릿으로 `Box<T>`, `Array<T>` 같은 타입 독립적 구조를 만든다.
-5. STL의 `vector<int>`가 클래스 템플릿의 실제 사례임을 연결한다.
-6. 템플릿은 런타임 다형성이 아니라 컴파일 타임 다형성임을 구분한다.
-
-## 복습 질문
-
-<details>
-<summary>Q1. 템플릿은 왜 필요한가?</summary>
-
-템플릿은 타입만 다르고 구조가 같은 코드를 하나의 틀로 작성하기 위해 필요하다. `int`, `double`, `std::string` 등 여러 타입에 대해 같은 로직을 반복 작성하지 않아도 되므로 중복을 줄이고 유지보수를 쉽게 만든다.
-
-</details>
-
-<details>
-<summary>Q2. 함수 템플릿은 언제 실제 함수가 되는가?</summary>
-
-함수 템플릿은 정의만으로는 실제 함수가 아니다. `max_value(3, 5)`처럼 특정 타입으로 호출될 때 컴파일러가 `max_value<int>` 같은 구체적인 함수를 생성한다. 이 과정을 인스턴스화라고 한다.
-
-</details>
-
-<details>
-<summary>Q3. `template <typename T>`와 `template <class T>`는 다른가?</summary>
-
-타입 매개변수를 선언하는 문맥에서는 거의 같은 의미다. 둘 다 `T`가 어떤 타입을 대표한다는 뜻이다. 현대 C++에서는 의미가 더 직접적인 `typename`을 선호하는 경우가 많지만, `class`도 여전히 사용할 수 있다.
-
-</details>
-
-<details>
-<summary>Q4. 템플릿 정의를 헤더에 두는 이유는 무엇인가?</summary>
-
-컴파일러가 템플릿을 실제 타입으로 인스턴스화하려면 템플릿의 선언뿐 아니라 함수 본문이나 클래스 멤버 함수 정의까지 볼 수 있어야 한다. 그래서 템플릿은 보통 `.cpp`에 숨기지 않고 헤더에 정의까지 함께 작성한다.
-
-</details>
-
-<details>
-<summary>Q5. 템플릿과 가상 함수의 차이는 무엇인가?</summary>
-
-템플릿은 컴파일 타임에 타입별 코드를 생성하는 정적 다형성이다. 가상 함수는 런타임에 실제 객체 타입을 보고 호출 함수를 결정하는 동적 다형성이다. 템플릿은 상속 관계가 없어도 사용할 수 있지만, 필요한 연산이나 멤버 함수가 타입에 존재해야 한다.
-
-</details>
-
 ## 마지막 핵심 정리
 
 | 개념 | 꼭 기억할 점 |
@@ -642,3 +752,65 @@ render(c); // 가능
 | STL | `vector<T>`, `pair<T, U>`, `sort` 등은 템플릿 기반 |
 
 템플릿의 핵심은 C++ 코드에서 타입을 고정하지 않고, **컴파일러가 실제 사용 타입에 맞는 코드를 만들어내도록 설계하는 것**이다. 이 기능 덕분에 C++은 `std::vector<int>`, `std::vector<double>`, `std::sort`처럼 타입 안전하면서도 재사용 가능한 라이브러리를 만들 수 있다.
+
+## Study Guide
+
+템플릿을 공부할 때는 다음 순서로 이해하면 좋다.
+
+1. 타입만 다른 함수 중복을 직접 확인한다.
+2. 함수 템플릿으로 중복을 줄인다.
+3. 템플릿이 호출 시점에 타입별 함수로 인스턴스화된다는 점을 이해한다.
+4. 클래스 템플릿으로 `Box<T>`, `Array<T>` 같은 타입 독립적 구조를 만든다.
+5. `Vector<T, N>`과 `Matrix<T, R, C>`를 통해 비타입 템플릿 매개변수가 크기와 차원을 타입에 포함한다는 점을 확인한다.
+6. STL의 `vector<int>`가 클래스 템플릿의 실제 사례임을 연결한다.
+7. 템플릿은 런타임 다형성이 아니라 컴파일 타임 다형성임을 구분한다.
+
+## 복습 질문
+
+<details>
+<summary>1. 템플릿은 왜 필요한가?</summary>
+
+답변: 템플릿은 타입만 다르고 구조가 같은 코드를 하나의 틀로 작성하기 위해 필요하다. `int`, `double`, `std::string` 등 여러 타입에 대해 같은 로직을 반복 작성하지 않아도 되므로 중복을 줄이고 유지보수를 쉽게 만든다.
+
+</details>
+
+<details>
+<summary>2. 함수 템플릿은 언제 실제 함수가 되는가?</summary>
+
+답변: 함수 템플릿은 정의만으로는 실제 함수가 아니다. `max_value(3, 5)`처럼 특정 타입으로 호출될 때 컴파일러가 `max_value<int>` 같은 구체적인 함수를 생성한다. 이 과정을 인스턴스화라고 한다.
+
+</details>
+
+<details>
+<summary>3. `template <typename T>`와 `template <class T>`는 다른가?</summary>
+
+답변: 타입 매개변수를 선언하는 문맥에서는 거의 같은 의미다. 둘 다 `T`가 어떤 타입을 대표한다는 뜻이다. 현대 C++에서는 의미가 더 직접적인 `typename`을 선호하는 경우가 많지만, `class`도 여전히 사용할 수 있다.
+
+</details>
+
+<details>
+<summary>4. 비타입 템플릿 매개변수에서 `Vector<int, 3>`의 `3`은 무엇을 의미하는가?</summary>
+
+답변: `3`은 생성자에 전달되는 런타임 값이 아니라 컴파일 타임에 정해지는 템플릿 인자다. 따라서 `Vector<int, 3>`은 `int` 원소 3개를 가지는 벡터 타입이고, `Vector<int, 4>`와는 서로 다른 타입이다.
+
+</details>
+
+<details>
+<summary>5. 템플릿 정의를 헤더에 두는 이유는 무엇인가?</summary>
+
+답변: 컴파일러가 템플릿을 실제 타입으로 인스턴스화하려면 템플릿의 선언뿐 아니라 함수 본문이나 클래스 멤버 함수 정의까지 볼 수 있어야 한다. 그래서 템플릿은 보통 `.cpp`에 숨기지 않고 헤더에 정의까지 함께 작성한다.
+
+</details>
+
+<details>
+<summary>6. 템플릿과 가상 함수의 차이는 무엇인가?</summary>
+
+답변: 템플릿은 컴파일 타임에 타입별 코드를 생성하는 정적 다형성이다. 가상 함수는 런타임에 실제 객체 타입을 보고 호출 함수를 결정하는 동적 다형성이다. 템플릿은 상속 관계가 없어도 사용할 수 있지만, 필요한 연산이나 멤버 함수가 타입에 존재해야 한다.
+
+</details>
+
+## PDF
+
+<ul>
+  <li><a href="{{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 템플릿.pdf</a></li>
+</ul>
