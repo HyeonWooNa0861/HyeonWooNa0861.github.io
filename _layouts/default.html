@@ -51,6 +51,16 @@
         --media-radius: 12px;
         --code-radius: 12px;
         --component-moment: 160ms;
+        --halftone-dot: rgba(15, 23, 42, 0.2);
+        --halftone-shadow: rgba(15, 118, 110, 0.2);
+        --halftone-size: 7px;
+        --halftone-dot-size: 1.1px;
+        --hover-shadow-x: 10px;
+        --hover-shadow-y: 10px;
+        --rough-hover-shadow:
+          var(--hover-shadow-x) var(--hover-shadow-y) 0 var(--halftone-shadow),
+          calc(var(--hover-shadow-x) + 5px) calc(var(--hover-shadow-y) - 4px) 0 -4px var(--halftone-dot),
+          calc(var(--hover-shadow-x) - 5px) calc(var(--hover-shadow-y) + 4px) 0 -5px var(--halftone-dot);
         --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
       }
 
@@ -85,6 +95,12 @@
         --media-radius: 12px;
         --code-radius: 12px;
         --component-moment: 160ms;
+        --halftone-dot: rgba(226, 232, 240, 0.24);
+        --halftone-shadow: rgba(94, 234, 212, 0.18);
+        --halftone-size: 7px;
+        --halftone-dot-size: 1.1px;
+        --hover-shadow-x: 10px;
+        --hover-shadow-y: 10px;
         --shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
       }
 
@@ -185,6 +201,7 @@
 
       .nav-link:hover {
         color: var(--text);
+        text-shadow: 3px 3px 0 var(--halftone-shadow);
       }
 
       .theme-toggle {
@@ -201,6 +218,10 @@
 
       .theme-toggle:hover {
         border-color: var(--muted);
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          var(--hover-bg);
+        box-shadow: var(--rough-hover-shadow);
         color: var(--text);
       }
 
@@ -354,11 +375,18 @@
         text-decoration: none;
       }
 
-      .side-index-link:hover,
       .side-index-link.active {
         color: var(--text);
         border-left-color: var(--accent);
         background: linear-gradient(90deg, var(--hover-bg), transparent);
+      }
+
+      .side-index-link:hover {
+        color: var(--text);
+        border-left-color: var(--accent);
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          linear-gradient(90deg, var(--hover-bg), transparent);
       }
 
       h1, h2, h3 {
@@ -538,7 +566,10 @@
 
       .post-card:hover {
         border-color: var(--line-strong);
-        background: linear-gradient(90deg, var(--hover-bg), transparent 72%);
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          linear-gradient(90deg, var(--hover-bg), transparent 72%);
+        box-shadow: var(--rough-hover-shadow);
       }
 
       .post-card a {
@@ -747,6 +778,7 @@
 
       .directory-link:hover {
         color: var(--accent);
+        text-shadow: 3px 3px 0 var(--halftone-shadow);
       }
 
       .home-directory .post-card {
@@ -781,6 +813,7 @@
 
       .section-pager-parent:hover {
         color: var(--text);
+        text-shadow: 3px 3px 0 var(--halftone-shadow);
       }
 
       .section-pager-parent.disabled {
@@ -810,6 +843,7 @@
 
       .section-pager-card:hover {
         color: var(--accent);
+        text-shadow: 3px 3px 0 var(--halftone-shadow);
       }
 
       .section-pager-card.next {
@@ -1151,6 +1185,10 @@
           root.style.setProperty("--media-radius", randomRange(4, 20, "px"));
           root.style.setProperty("--code-radius", randomRange(2, 14, "px"));
           root.style.setProperty("--component-moment", randomRange(120, 260, "ms"));
+          root.style.setProperty("--halftone-size", randomRange(5, 9, "px"));
+          root.style.setProperty("--halftone-dot-size", randomRange(0.9, 1.6, "px"));
+          root.style.setProperty("--hover-shadow-x", randomRange(6, 14, "px"));
+          root.style.setProperty("--hover-shadow-y", randomRange(6, 14, "px"));
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
             section.style.setProperty("--section-offset-y", randomRange(18, 46, "px"));
