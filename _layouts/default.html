@@ -681,7 +681,7 @@
         display: flex;
         min-height: 280px;
         flex-direction: column;
-        justify-content: flex-end;
+        justify-content: center;
         margin: 0 0 70px;
         border-bottom: 1px solid var(--line);
         padding: 36px 0 42px;
@@ -713,18 +713,90 @@
         transform: rotate(var(--hero-fracture-b, 11deg));
       }
 
-      .home-eyebrow {
-        margin: 0 0 16px;
-        color: var(--accent);
-        font-size: 13px;
-        font-weight: 760;
+      .home-logo {
+        position: relative;
+        isolation: isolate;
+        display: inline-flex;
+        width: fit-content;
+        align-items: flex-end;
+        color: var(--text);
+        font-size: clamp(82px, 15vw, 168px);
+        font-weight: 820;
+        letter-spacing: 0;
+        line-height: 0.78;
+        text-decoration: none;
+        text-transform: none;
+        transform: translateX(var(--hero-title-shift, -8px));
       }
 
-      .home-hero h1 {
-        margin: 0;
-        font-size: 76px;
-        line-height: 0.96;
-        transform: translateX(var(--hero-title-shift, -8px));
+      .home-logo::before,
+      .home-logo::after {
+        position: absolute;
+        z-index: -1;
+        pointer-events: none;
+        content: "";
+        transform-origin: left center;
+      }
+
+      .home-logo::before {
+        top: 14%;
+        left: 7%;
+        width: 78%;
+        height: 10px;
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          var(--hover-bg);
+        opacity: 0.92;
+        transform: rotate(var(--logo-slice-a, -6deg)) translateY(var(--logo-slice-y, 2px));
+      }
+
+      .home-logo::after {
+        right: -8%;
+        bottom: 8%;
+        width: 46%;
+        height: 1px;
+        background: var(--fracture-strong);
+        transform: rotate(var(--logo-slice-b, 9deg));
+      }
+
+      .logo-fragment {
+        position: relative;
+        display: inline-block;
+        transform: translate(var(--logo-fragment-x, 0px), var(--logo-fragment-y, 0px)) rotate(var(--logo-fragment-rotate, 0deg));
+      }
+
+      .logo-fragment::after {
+        position: absolute;
+        inset: 0;
+        color: var(--accent);
+        content: attr(data-fragment);
+        clip-path: polygon(0 38%, 100% 24%, 100% 54%, 0 68%);
+        opacity: 0.58;
+        transform: translate(var(--logo-echo-x, 8px), var(--logo-echo-y, -6px));
+      }
+
+      .logo-fragment:nth-child(1) {
+        --logo-fragment-x: 0px;
+        --logo-fragment-y: 0px;
+        --logo-fragment-rotate: -2deg;
+        --logo-echo-x: 7px;
+        --logo-echo-y: -5px;
+      }
+
+      .logo-fragment:nth-child(2) {
+        --logo-fragment-x: 8px;
+        --logo-fragment-y: -12px;
+        --logo-fragment-rotate: 3deg;
+        --logo-echo-x: -6px;
+        --logo-echo-y: 7px;
+      }
+
+      .logo-fragment:nth-child(3) {
+        --logo-fragment-x: -2px;
+        --logo-fragment-y: 8px;
+        --logo-fragment-rotate: -4deg;
+        --logo-echo-x: 10px;
+        --logo-echo-y: 5px;
       }
 
       .home-directory {
@@ -769,11 +841,18 @@
         font-size: 32px;
       }
 
+      .directory-section h2 span {
+        display: inline-block;
+        transform: translate(var(--section-title-x, 0px), var(--section-title-y, 0px)) rotate(var(--section-title-rotate, 0deg));
+      }
+
       .directory-link {
+        display: inline-block;
         color: var(--muted);
         font-size: 13px;
         font-weight: 700;
         text-decoration: none;
+        transform: translate(var(--section-link-x, 0px), var(--section-link-y, 0px)) rotate(var(--section-link-rotate, 0deg));
       }
 
       .directory-link:hover {
@@ -782,13 +861,21 @@
       }
 
       .home-directory .post-card {
-        grid-template-columns: 40px minmax(0, 1fr);
-        gap: 12px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
         padding: 16px 0;
       }
 
+      .home-directory .post-card::before {
+        display: none;
+        content: none;
+      }
+
       .home-directory .post-card a {
+        grid-column: 1;
+        width: fit-content;
         font-size: 16px;
+        transform: translate(var(--home-card-title-x, 0px), var(--home-card-title-y, 0px)) rotate(var(--home-card-title-rotate, 0deg));
       }
 
       .section-pager {
@@ -996,8 +1083,9 @@
           padding: 36px 0 40px;
         }
 
-        .home-hero h1 {
-          font-size: 52px;
+        .home-logo {
+          font-size: clamp(62px, 22vw, 104px);
+          transform: none;
         }
 
         .directory-section h2 {
@@ -1006,12 +1094,10 @@
           font-size: 26px;
         }
 
-        .home-hero h1 {
-          transform: none;
-        }
-
         .home-hero::before,
         .home-hero::after,
+        .home-logo::before,
+        .home-logo::after,
         .directory-section::before {
           display: none;
         }
@@ -1038,6 +1124,12 @@
         .post-card:nth-child(3n) {
           padding-right: 0;
           padding-left: 0;
+        }
+
+        .directory-section h2 span,
+        .directory-link,
+        .home-directory .post-card a {
+          transform: none;
         }
 
         .post-card a {
@@ -1180,6 +1272,9 @@
           root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
           root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
           root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
+          root.style.setProperty("--logo-slice-a", randomRange(-9, -3, "deg"));
+          root.style.setProperty("--logo-slice-b", randomRange(5, 14, "deg"));
+          root.style.setProperty("--logo-slice-y", randomRange(-4, 6, "px"));
           root.style.setProperty("--panel-radius", randomRange(0, 18, "px"));
           root.style.setProperty("--side-radius", randomRange(0, 14, "px"));
           root.style.setProperty("--media-radius", randomRange(4, 20, "px"));
@@ -1194,12 +1289,21 @@
             section.style.setProperty("--section-offset-y", randomRange(18, 46, "px"));
             section.style.setProperty("--section-offset-x", randomRange(10, 28, "px"));
             section.style.setProperty("--section-fracture-rotate", randomRange(-14, -4, "deg"));
+            section.style.setProperty("--section-title-x", randomRange(-10, 14, "px"));
+            section.style.setProperty("--section-title-y", randomRange(-4, 8, "px"));
+            section.style.setProperty("--section-title-rotate", randomRange(-2.6, 2.2, "deg"));
+            section.style.setProperty("--section-link-x", randomRange(-6, 12, "px"));
+            section.style.setProperty("--section-link-y", randomRange(-6, 6, "px"));
+            section.style.setProperty("--section-link-rotate", randomRange(-2, 2, "deg"));
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
             card.style.setProperty("--card-skew", randomRange(-1.8, 1.2, "deg"));
             card.style.setProperty("--card-offset-left", randomRange(8, 24, "px"));
             card.style.setProperty("--card-offset-right", randomRange(6, 20, "px"));
+            card.style.setProperty("--home-card-title-x", randomRange(-8, 14, "px"));
+            card.style.setProperty("--home-card-title-y", randomRange(-3, 6, "px"));
+            card.style.setProperty("--home-card-title-rotate", randomRange(-1.6, 1.4, "deg"));
           });
         }
 

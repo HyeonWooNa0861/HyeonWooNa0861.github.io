@@ -5,8 +5,11 @@ permalink: /
 ---
 
 <section class="home-hero">
-  <p class="home-eyebrow">AI / Research / Engineering</p>
-  <h1>GitBlog</h1>
+  <a class="home-logo" href="{{ '/' | relative_url }}" aria-label="NaHW home">
+    <span class="logo-fragment" data-fragment="Na">Na</span>
+    <span class="logo-fragment" data-fragment="H">H</span>
+    <span class="logo-fragment" data-fragment="W">W</span>
+  </a>
 </section>
 
 <div class="home-directory">
