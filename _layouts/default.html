@@ -540,33 +540,17 @@
       }
 
       .home-hero {
-        position: relative;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
-        gap: 40px;
-        align-items: end;
-        min-height: 360px;
-        margin: 10px 0 64px;
+        display: flex;
+        min-height: 280px;
+        flex-direction: column;
+        justify-content: flex-end;
+        margin: 0 0 70px;
         border-bottom: 1px solid var(--line);
-        padding: 58px 0 52px;
-      }
-
-      .home-hero::after {
-        display: block;
-        width: 100%;
-        min-height: 220px;
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        background:
-          linear-gradient(90deg, transparent 0 48%, var(--line) 48% 49%, transparent 49% 100%) 0 0 / 32px 32px,
-          linear-gradient(0deg, transparent 0 48%, var(--line) 48% 49%, transparent 49% 100%) 0 0 / 32px 32px,
-          linear-gradient(145deg, rgba(15, 118, 110, 0.12), rgba(37, 99, 235, 0.08) 54%, rgba(132, 204, 22, 0.12));
-        box-shadow: var(--shadow);
-        content: "";
+        padding: 36px 0 42px;
       }
 
       .home-eyebrow {
-        margin: 0 0 18px;
+        margin: 0 0 16px;
         color: var(--accent);
         font-size: 13px;
         font-weight: 760;
@@ -578,17 +562,10 @@
         line-height: 0.96;
       }
 
-      .home-hero-copy {
-        max-width: 620px;
-        margin: 22px 0 0;
-        color: var(--muted);
-        font-size: 18px;
-        line-height: 1.65;
-      }
-
       .home-directory {
         display: grid;
-        gap: 54px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 62px 56px;
       }
 
       .directory-section h2 {
@@ -602,12 +579,6 @@
         font-size: 32px;
       }
 
-      .directory-description {
-        margin: 0 0 18px;
-        color: var(--muted);
-        font-size: 15px;
-      }
-
       .directory-link {
         color: var(--muted);
         font-size: 13px;
@@ -617,6 +588,16 @@
 
       .directory-link:hover {
         color: var(--accent);
+      }
+
+      .home-directory .post-card {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 12px;
+        padding: 16px 0;
+      }
+
+      .home-directory .post-card a {
+        font-size: 16px;
       }
 
       .section-pager {
@@ -791,8 +772,6 @@
         }
 
         .home-hero {
-          grid-template-columns: 1fr;
-          gap: 28px;
           min-height: 0;
           margin-bottom: 46px;
           padding: 36px 0 40px;
@@ -802,19 +781,15 @@
           font-size: 52px;
         }
 
-        .home-hero-copy {
-          font-size: 16px;
-        }
-
-        .home-hero::after {
-          min-height: 150px;
-          border-radius: 14px;
-        }
-
         .directory-section h2 {
           grid-template-columns: 1fr;
           gap: 4px;
           font-size: 26px;
+        }
+
+        .home-directory {
+          grid-template-columns: 1fr;
+          gap: 44px;
         }
 
         .post-card {
