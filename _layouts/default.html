@@ -46,6 +46,11 @@
         --ambient-2: rgba(37, 99, 235, 0.028);
         --fracture: rgba(15, 23, 42, 0.09);
         --fracture-strong: rgba(15, 118, 110, 0.26);
+        --panel-radius: 0px;
+        --side-radius: 0px;
+        --media-radius: 12px;
+        --code-radius: 12px;
+        --component-moment: 160ms;
         --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
       }
 
@@ -75,6 +80,11 @@
         --ambient-2: rgba(147, 197, 253, 0.035);
         --fracture: rgba(148, 163, 184, 0.11);
         --fracture-strong: rgba(94, 234, 212, 0.24);
+        --panel-radius: 0px;
+        --side-radius: 0px;
+        --media-radius: 12px;
+        --code-radius: 12px;
+        --component-moment: 160ms;
         --shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
       }
 
@@ -245,7 +255,7 @@
       .page-shell.has-sidebar > .page-content {
         position: relative;
         border: 1px solid var(--line);
-        border-radius: 0;
+        border-radius: var(--panel-radius);
         background: var(--panel);
         box-shadow: var(--shadow);
         backdrop-filter: blur(14px);
@@ -291,7 +301,7 @@
         overflow-y: auto;
         overscroll-behavior: contain;
         border: 1px solid var(--line);
-        border-radius: 0;
+        border-radius: var(--side-radius);
         background: var(--panel);
         box-shadow: var(--shadow);
         backdrop-filter: blur(16px);
@@ -412,7 +422,7 @@
         max-width: 100%;
         overflow-x: auto;
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: var(--code-radius);
         background: var(--pre-bg);
         color: var(--pre-text);
         padding: 16px;
@@ -488,7 +498,7 @@
         border-top: 0;
         background: transparent;
         padding: 24px 0;
-        transition: background-color 160ms ease, border-color 160ms ease;
+        transition: background-color var(--component-moment) ease, border-color var(--component-moment) ease, padding var(--component-moment) ease;
       }
 
       .post-card:last-child {
@@ -589,7 +599,7 @@
         margin: 0 0 8px;
         overflow: hidden;
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: var(--media-radius);
         background: var(--panel);
         aspect-ratio: 4 / 3;
         box-shadow: var(--shadow);
@@ -933,6 +943,7 @@
           border: 0;
           border-radius: 0;
           background: transparent;
+          --panel-radius: 0px;
           clip-path: none;
           box-shadow: none;
           padding: 0;
@@ -948,6 +959,7 @@
           max-height: 45vh;
           max-height: 45dvh;
           overflow-y: auto;
+          --side-radius: 0px;
           clip-path: none;
           transform: none;
         }
@@ -1147,6 +1159,11 @@
           root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
           root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
           root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
+          root.style.setProperty("--panel-radius", randomRange(0, 18, "px"));
+          root.style.setProperty("--side-radius", randomRange(0, 14, "px"));
+          root.style.setProperty("--media-radius", randomRange(4, 20, "px"));
+          root.style.setProperty("--code-radius", randomRange(2, 14, "px"));
+          root.style.setProperty("--component-moment", randomRange(120, 260, "ms"));
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
             section.style.setProperty("--section-offset-y", randomRange(18, 46, "px"));
