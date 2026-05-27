@@ -86,6 +86,27 @@
         line-height: 1.72;
       }
 
+      html,
+      body,
+      .side-index,
+      pre,
+      table,
+      mjx-container[display="true"] {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar,
+      .side-index::-webkit-scrollbar,
+      pre::-webkit-scrollbar,
+      table::-webkit-scrollbar,
+      mjx-container[display="true"]::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+
       body::before {
         position: fixed;
         inset: 0;
@@ -222,7 +243,6 @@
         max-height: calc(100dvh - 112px);
         overflow-y: auto;
         overscroll-behavior: contain;
-        scrollbar-gutter: stable;
         border: 1px solid var(--line);
         border-radius: 12px;
         background: var(--panel);
