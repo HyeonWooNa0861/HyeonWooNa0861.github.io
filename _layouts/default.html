@@ -57,6 +57,15 @@
         --halftone-dot-size: 1.1px;
         --hover-shadow-x: 10px;
         --hover-shadow-y: 10px;
+        --glass-pane: rgba(255, 255, 255, 0.38);
+        --glass-edge: rgba(15, 23, 42, 0.18);
+        --glass-prism: rgba(37, 99, 235, 0.16);
+        --glass-glare: rgba(255, 255, 255, 0.72);
+        --glass-shadow: rgba(15, 23, 42, 0.12);
+        --logo-glass-rotate: -4deg;
+        --logo-glass-shift-x: 0px;
+        --logo-glass-shift-y: 0px;
+        --logo-glass-angle: 118deg;
         --rough-hover-shadow:
           var(--hover-shadow-x) var(--hover-shadow-y) 0 var(--halftone-shadow),
           calc(var(--hover-shadow-x) + 5px) calc(var(--hover-shadow-y) - 4px) 0 -4px var(--halftone-dot),
@@ -101,6 +110,11 @@
         --halftone-dot-size: 1.1px;
         --hover-shadow-x: 10px;
         --hover-shadow-y: 10px;
+        --glass-pane: rgba(15, 23, 42, 0.42);
+        --glass-edge: rgba(226, 232, 240, 0.2);
+        --glass-prism: rgba(94, 234, 212, 0.14);
+        --glass-glare: rgba(226, 232, 240, 0.36);
+        --glass-shadow: rgba(0, 0, 0, 0.32);
         --shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
       }
 
@@ -724,8 +738,12 @@
         font-weight: 820;
         letter-spacing: 0;
         line-height: 0.78;
+        padding: 10px 12px 14px 0;
         text-decoration: none;
         text-transform: none;
+        text-shadow:
+          1px 1px 0 var(--glass-glare),
+          12px 12px 0 var(--halftone-shadow);
         transform: translateX(var(--hero-title-shift, -8px));
       }
 
@@ -739,35 +757,73 @@
       }
 
       .home-logo::before {
-        top: 14%;
-        left: 7%;
-        width: 78%;
-        height: 10px;
+        top: -14%;
+        left: -4%;
+        width: 111%;
+        height: 112%;
+        border: 1px solid var(--glass-edge);
         background:
           radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
-          var(--hover-bg);
-        opacity: 0.92;
-        transform: rotate(var(--logo-slice-a, -6deg)) translateY(var(--logo-slice-y, 2px));
+          linear-gradient(var(--logo-glass-angle), transparent 0 17%, var(--glass-glare) 17% 18%, transparent 18% 42%, var(--glass-prism) 42% 49%, transparent 49% 100%),
+          linear-gradient(32deg, transparent 0 30%, var(--glass-edge) 30% 31%, transparent 31% 100%),
+          var(--glass-pane);
+        box-shadow:
+          inset 0 1px 0 var(--glass-glare),
+          inset 18px -18px 34px var(--glass-shadow),
+          18px 18px 0 var(--halftone-shadow);
+        clip-path: polygon(0 16%, 24% 0, 56% 10%, 100% 0, 93% 54%, 100% 100%, 58% 88%, 17% 100%);
+        opacity: 0.82;
+        transform: translate(var(--logo-glass-shift-x), var(--logo-glass-shift-y)) rotate(var(--logo-glass-rotate));
+        backdrop-filter: blur(10px) saturate(1.35);
+        -webkit-backdrop-filter: blur(10px) saturate(1.35);
       }
 
       .home-logo::after {
-        right: -8%;
-        bottom: 8%;
-        width: 46%;
-        height: 1px;
-        background: var(--fracture-strong);
+        right: -10%;
+        bottom: -4%;
+        width: 72%;
+        height: 58%;
+        border-top: 1px solid var(--glass-edge);
+        border-right: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(126deg, transparent 0 28%, var(--glass-glare) 28% 29%, transparent 29% 100%),
+          linear-gradient(52deg, transparent 0 42%, var(--fracture-strong) 42% 43%, transparent 43% 100%),
+          linear-gradient(14deg, transparent 0 60%, var(--glass-prism) 60% 71%, transparent 71% 100%);
+        clip-path: polygon(7% 6%, 100% 0, 86% 42%, 100% 100%, 38% 72%, 0 100%);
+        opacity: 0.74;
         transform: rotate(var(--logo-slice-b, 9deg));
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
       }
 
       .logo-fragment {
         position: relative;
+        isolation: isolate;
         display: inline-block;
         transform: translate(var(--logo-fragment-x, 0px), var(--logo-fragment-y, 0px)) rotate(var(--logo-fragment-rotate, 0deg));
+      }
+
+      .logo-fragment::before {
+        position: absolute;
+        inset: 6% -7% 4%;
+        z-index: -1;
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(126deg, transparent 0 32%, var(--glass-glare) 32% 33%, transparent 33% 100%),
+          linear-gradient(58deg, transparent 0 54%, var(--glass-edge) 54% 55%, transparent 55% 100%),
+          linear-gradient(138deg, var(--glass-pane), transparent 46%, var(--glass-prism));
+        content: "";
+        clip-path: polygon(9% 0, 100% 14%, 88% 100%, 0 84%);
+        opacity: 0.7;
+        transform: rotate(var(--fragment-glass-rotate, -3deg)) translate(var(--fragment-glass-x, 0px), var(--fragment-glass-y, 0px));
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
       }
 
       .logo-fragment::after {
         position: absolute;
         inset: 0;
+        z-index: 1;
         color: var(--accent);
         content: attr(data-fragment);
         clip-path: polygon(0 38%, 100% 24%, 100% 54%, 0 68%);
@@ -781,6 +837,9 @@
         --logo-fragment-rotate: -2deg;
         --logo-echo-x: 7px;
         --logo-echo-y: -5px;
+        --fragment-glass-rotate: -4deg;
+        --fragment-glass-x: 2px;
+        --fragment-glass-y: -2px;
       }
 
       .logo-fragment:nth-child(2) {
@@ -789,6 +848,9 @@
         --logo-fragment-rotate: 3deg;
         --logo-echo-x: -6px;
         --logo-echo-y: 7px;
+        --fragment-glass-rotate: 5deg;
+        --fragment-glass-x: -3px;
+        --fragment-glass-y: 3px;
       }
 
       .logo-fragment:nth-child(3) {
@@ -797,6 +859,9 @@
         --logo-fragment-rotate: -4deg;
         --logo-echo-x: 10px;
         --logo-echo-y: 5px;
+        --fragment-glass-rotate: -6deg;
+        --fragment-glass-x: 4px;
+        --fragment-glass-y: 1px;
       }
 
       .home-directory {
@@ -1275,6 +1340,10 @@
           root.style.setProperty("--logo-slice-a", randomRange(-9, -3, "deg"));
           root.style.setProperty("--logo-slice-b", randomRange(5, 14, "deg"));
           root.style.setProperty("--logo-slice-y", randomRange(-4, 6, "px"));
+          root.style.setProperty("--logo-glass-rotate", randomRange(-6, 4, "deg"));
+          root.style.setProperty("--logo-glass-shift-x", randomRange(-8, 8, "px"));
+          root.style.setProperty("--logo-glass-shift-y", randomRange(-5, 6, "px"));
+          root.style.setProperty("--logo-glass-angle", randomRange(104, 132, "deg"));
           root.style.setProperty("--panel-radius", randomRange(0, 18, "px"));
           root.style.setProperty("--side-radius", randomRange(0, 14, "px"));
           root.style.setProperty("--media-radius", randomRange(4, 20, "px"));
@@ -1295,6 +1364,12 @@
             section.style.setProperty("--section-link-x", randomRange(-6, 12, "px"));
             section.style.setProperty("--section-link-y", randomRange(-6, 6, "px"));
             section.style.setProperty("--section-link-rotate", randomRange(-2, 2, "deg"));
+          });
+
+          document.querySelectorAll(".logo-fragment").forEach(function (fragment) {
+            fragment.style.setProperty("--fragment-glass-rotate", randomRange(-7, 7, "deg"));
+            fragment.style.setProperty("--fragment-glass-x", randomRange(-5, 5, "px"));
+            fragment.style.setProperty("--fragment-glass-y", randomRange(-4, 5, "px"));
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
