@@ -60,7 +60,7 @@ order: 1
 
 # English Title
 
-원문 PDF 자료: [원문 파일명.pdf]({{ "/assets/pdfs/study/<course>/<원문 파일명.pdf>" | relative_url }})
+Source PDF: [원문 파일명.pdf]({{ "/assets/pdfs/study/<course>/<원문 파일명.pdf>" | relative_url }})
 
 ## 전체 흐름
 
@@ -91,8 +91,6 @@ order: 1
 
 ## PDF
 
-원문 PDF 자료는 아래 링크에서 확인할 수 있다.
-
 <ul>
   <li><a href="{{ "/assets/pdfs/study/<course>/<원문 파일명.pdf>" | relative_url }}" target="_blank" rel="noopener">원문 파일명.pdf</a></li>
 </ul>
@@ -102,11 +100,11 @@ Study 구조 규칙:
 
 - 제목은 영어로 작성하고, 파일명은 영문 kebab-case를 사용한다.
 - 제목과 파일명에서 `요약`, `정리본` 같은 표현은 가능하면 빼고 주제명만 남긴다.
-- 상단에는 `원문 PDF 자료:` 형식으로 원문 PDF 링크를 명시한다.
+- 상단에는 `Source PDF:` 형식으로 원문 PDF 링크를 명시한다.
 - 하단에는 `## PDF` 섹션을 두고 같은 원문 PDF 링크를 다시 제공한다.
 - 본문 순서는 `전체 흐름` → 개념별 본문 → `마지막 핵심 정리` → `Study Guide` → `복습 질문` → `PDF`를 기본으로 한다.
 - 복습 질문은 반드시 `<details>` / `<summary>` toggle 형식으로 작성하고, 답변은 `답변:`으로 시작한다.
-- 원문 PDF가 여러 개라면 상단에는 `원문 PDF 자료:` 아래 목록을 두고, 하단 `## PDF`에도 같은 파일들을 모두 링크한다.
+- 원문 PDF가 여러 개라면 상단에는 `Source PDFs:` 아래 목록을 두고, 하단 `## PDF`에도 같은 파일들을 모두 링크한다.
 
 ## 3. Research 자료
 

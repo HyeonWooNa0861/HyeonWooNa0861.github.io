@@ -8,7 +8,7 @@ order: 11
 
 # C++ Templates
 
-원문 PDF 자료: [C++ 템플릿.pdf]({{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf" | relative_url }})
+Source PDF: [C++ 템플릿.pdf]({{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf" | relative_url }})
 
 ## 전체 흐름
 
@@ -810,8 +810,6 @@ render(c); // 가능
 </details>
 
 ## PDF
-
-원문 PDF 자료는 아래 링크에서 확인할 수 있다.
 
 <ul>
   <li><a href="{{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf" | relative_url }}" target="_blank" rel="noopener">C++ 템플릿.pdf</a></li>
