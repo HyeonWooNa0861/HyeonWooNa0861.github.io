@@ -1015,21 +1015,21 @@ render(c); // 가능
 <details>
 <summary>2. 함수 템플릿은 언제 실제 함수가 되는가?</summary>
 
-답변: 함수 템플릿은 정의만으로는 실제 함수가 아니다. `max_value(3, 5)`처럼 특정 타입으로 호출될 때 컴파일러가 `max_value<int>` 같은 구체적인 함수를 생성한다. 이 과정을 인스턴스화라고 한다.
+답변: 함수 템플릿은 정의만으로는 실제 함수가 아니다. <code>max_value(3, 5)</code>처럼 특정 타입으로 호출될 때 컴파일러가 <code>max_value&lt;int&gt;</code> 같은 구체적인 함수를 생성한다. 이 과정을 인스턴스화라고 한다.
 
 </details>
 
 <details>
-<summary>3. `template <typename T>`와 `template <class T>`는 다른가?</summary>
+<summary>3. <code>template &lt;typename T&gt;</code>와 <code>template &lt;class T&gt;</code>는 다른가?</summary>
 
-답변: 타입 매개변수를 선언하는 문맥에서는 거의 같은 의미다. 둘 다 `T`가 어떤 타입을 대표한다는 뜻이다. 현대 C++에서는 의미가 더 직접적인 `typename`을 선호하는 경우가 많지만, `class`도 여전히 사용할 수 있다.
+답변: 타입 매개변수를 선언하는 문맥에서는 거의 같은 의미다. 둘 다 <code>T</code>가 어떤 타입을 대표한다는 뜻이다. 현대 C++에서는 의미가 더 직접적인 <code>typename</code>을 선호하는 경우가 많지만, <code>class</code>도 여전히 사용할 수 있다.
 
 </details>
 
 <details>
-<summary>4. 비타입 템플릿 매개변수에서 `Vector<int, 3>`의 `3`은 무엇을 의미하는가?</summary>
+<summary>4. 비타입 템플릿 매개변수에서 <code>Vector&lt;int, 3&gt;</code>의 <code>3</code>은 무엇을 의미하는가?</summary>
 
-답변: `3`은 생성자에 전달되는 런타임 값이 아니라 컴파일 타임에 정해지는 템플릿 인자다. 따라서 `Vector<int, 3>`은 `int` 원소 3개를 가지는 벡터 타입이고, `Vector<int, 4>`와는 서로 다른 타입이다.
+답변: <code>3</code>은 생성자에 전달되는 런타임 값이 아니라 컴파일 타임에 정해지는 템플릿 인자다. 따라서 <code>Vector&lt;int, 3&gt;</code>은 <code>int</code> 원소 3개를 가지는 벡터 타입이고, <code>Vector&lt;int, 4&gt;</code>와는 서로 다른 타입이다.
 
 </details>
 
@@ -1048,16 +1048,16 @@ render(c); // 가능
 </details>
 
 <details>
-<summary>7. `cpp_template.cpp`에서 `T& operator()(int i)`가 참조를 반환하는 이유는 무엇인가?</summary>
+<summary>7. <code>cpp_template.cpp</code>에서 <code>T&amp; operator()(int i)</code>가 참조를 반환하는 이유는 무엇인가?</summary>
 
-답변: `v(0) = 3`처럼 원소에 값을 대입하려면 `v(0)`이 실제 배열 원소를 가리키는 왼쪽 값이어야 한다. `T&`를 반환하면 `data[i]`의 참조가 반환되므로 대입이 가능하다. 만약 `T`를 값으로 반환하면 복사본이 반환되어 원소 수정에 사용할 수 없다.
+답변: <code>v(0) = 3</code>처럼 원소에 값을 대입하려면 <code>v(0)</code>이 실제 배열 원소를 가리키는 왼쪽 값이어야 한다. <code>T&amp;</code>를 반환하면 <code>data[i]</code>의 참조가 반환되므로 대입이 가능하다. 만약 <code>T</code>를 값으로 반환하면 복사본이 반환되어 원소 수정에 사용할 수 없다.
 
 </details>
 
 <details>
-<summary>8. `operator<<` 함수도 `template<typename T, int N>`으로 작성한 이유는 무엇인가?</summary>
+<summary>8. <code>operator&lt;&lt;</code> 함수도 <code>template&lt;typename T, int N&gt;</code>으로 작성한 이유는 무엇인가?</summary>
 
-답변: 출력 함수가 `Vector<int, 3>`만 출력하는 것이 아니라 `Vector<float, 2>`, `Vector<std::string, 3>`처럼 타입과 크기가 다른 모든 `Vector<T, N>`을 출력해야 하기 때문이다. 그래서 클래스 템플릿과 같은 템플릿 매개변수 `T`, `N`을 받아 전역 함수 템플릿으로 작성한다.
+답변: 출력 함수가 <code>Vector&lt;int, 3&gt;</code>만 출력하는 것이 아니라 <code>Vector&lt;float, 2&gt;</code>, <code>Vector&lt;std::string, 3&gt;</code>처럼 타입과 크기가 다른 모든 <code>Vector&lt;T, N&gt;</code>을 출력해야 하기 때문이다. 그래서 클래스 템플릿과 같은 템플릿 매개변수 <code>T</code>, <code>N</code>을 받아 전역 함수 템플릿으로 작성한다.
 
 </details>
 
