@@ -23,6 +23,7 @@ Source PDF: `C++ 템플릿.pdf`
 | 7 | 템플릿 특수화 | 특정 타입만 별도로 다르게 처리할 수 있는가? |
 | 8 | 템플릿과 헤더 파일 | 왜 템플릿 정의는 보통 헤더에 함께 작성하는가? |
 | 9 | STL과 템플릿 | `vector<int>`와 `vector<double>`은 어떤 원리로 가능한가? |
+| 10 | `cpp_template.cpp` 코드 분석 | 비타입 템플릿, 출력 연산자, 타입 별칭이 실제 코드에서 어떻게 연결되는가? |
 
 ## 1. 템플릿이 필요한 이유
 
@@ -526,7 +527,242 @@ Mat2x3i transform;
 
 비타입 템플릿 매개변수의 핵심은 **크기나 차원 같은 값을 타입 수준으로 끌어올린다**는 점이다. 이렇게 하면 고정 크기 벡터나 행렬처럼 크기가 명확한 자료구조를 타입 안전하게 표현할 수 있다.
 
-## 10. 템플릿 특수화
+## 10. `cpp_template.cpp` 코드 분석
+
+`cpp_template.cpp`는 이 장에서 시험에 나오기 좋은 핵심 요소를 한 번에 담고 있는 예제다. 이 코드는 `Vector<T, N>` 클래스 템플릿을 만들고, `int`, `float`, `std::string` 벡터를 같은 코드 구조로 사용하는 흐름을 보여 준다.
+
+### 10.1 코드 전문
+
+```cpp
+#include <iostream>
+#include <string>
+
+template<typename T, int N>
+class Vector {
+    T data[N];
+
+public:
+    Vector() { }
+    T& operator()(int i) { return data[i]; }
+    T operator()(int i) const { return data[i]; }
+
+    int size() const { return N; }
+};
+
+template<typename T, int N>
+std::ostream& operator<<(std::ostream& os, const Vector<T,N>& v)
+{
+    os << "( ";
+    for (int i=0; i<N; ++i)
+        os << v(i) << "    ";
+
+    os << ")";
+
+    return os;
+}
+
+using Vec3i = Vector<int, 3>;
+using Vec2f = Vector<float, 2>;
+using Vec3s = Vector<std::string, 3>;
+
+int main()
+{
+    Vec3i v;
+    v(0) = 3;  v(1) = -1,  v(2) = 2;
+    std::cout << "v = " << v << std::endl;
+
+    Vec2f x;
+    x(0) = 10.0f, x(1) = -0.1f;
+    std::cout << "x = " << x << std::endl;
+
+    Vec3s s;
+    s(0) = "Kookmin";   s(1) = "University",   s(2) = "C++ Programming";
+    std::cout << "s = " << s << std::endl;
+
+    return 0;
+}
+```
+
+### 10.2 `template<typename T, int N>`
+
+```cpp
+template<typename T, int N>
+class Vector {
+    T data[N];
+};
+```
+
+이 선언에서 `T`와 `N`의 역할은 다르다.
+
+| 템플릿 인자 | 종류 | 예 | 역할 |
+|---|---|---|---|
+| `T` | 타입 템플릿 매개변수 | `int`, `float`, `std::string` | 배열 원소의 타입을 결정 |
+| `N` | 비타입 템플릿 매개변수 | `2`, `3` | 배열의 크기를 컴파일 타임에 결정 |
+
+따라서 `Vector<int, 3>`은 `int` 3개짜리 벡터 타입이고, `Vector<float, 2>`는 `float` 2개짜리 벡터 타입이다. 두 타입은 같은 템플릿에서 만들어졌지만 서로 다른 타입이다.
+
+```cpp
+Vector<int, 3> a;
+Vector<float, 2> b;
+```
+
+`N`은 런타임에 입력받는 값이 아니다. `T data[N];`처럼 배열 크기로 쓰이므로 컴파일 시점에 값이 확정되어 있어야 한다.
+
+### 10.3 `operator()`와 원소 접근
+
+```cpp
+T& operator()(int i) { return data[i]; }
+T operator()(int i) const { return data[i]; }
+```
+
+이 클래스는 `operator()`를 오버로딩해서 객체를 함수처럼 호출하게 만든다.
+
+```cpp
+v(0) = 3;
+```
+
+위 코드는 실제로 다음 함수 호출처럼 해석된다.
+
+```cpp
+v.operator()(0) = 3;
+```
+
+비-`const` 버전이 `T&`를 반환하기 때문에 `v(0)`이 배열 원소의 별명처럼 동작한다. 그래서 왼쪽 값으로 사용할 수 있고, 대입이 가능하다.
+
+| 함수 | 호출 상황 | 반환 타입 | 의미 |
+|---|---|---|---|
+| `T& operator()(int i)` | 일반 객체 | `T&` | 원소 수정 가능 |
+| `T operator()(int i) const` | `const` 객체 | `T` | 값 읽기용 |
+
+주의할 점은 이 코드의 `const` 버전은 `T`를 값으로 반환한다는 것이다. `int`, `float`처럼 작은 타입은 부담이 거의 없지만, `std::string`처럼 복사 비용이 있는 타입에서는 `const T&` 반환이 더 효율적일 수 있다.
+
+```cpp
+const T& operator()(int i) const { return data[i]; }
+```
+
+시험에서는 “왜 `T&`를 반환해야 `v(0) = 3`이 가능한가?”를 묻기 쉽다. 답은 `T&`가 실제 원소에 대한 참조이기 때문이다.
+
+### 10.4 `size()`가 멤버 변수를 쓰지 않는 이유
+
+```cpp
+int size() const { return N; }
+```
+
+`N`은 템플릿 인자이므로 각 타입에 이미 포함되어 있다. 따라서 객체마다 `size_` 같은 멤버 변수를 따로 저장할 필요가 없다.
+
+```cpp
+Vec3i v;   // Vector<int, 3>
+Vec2f x;   // Vector<float, 2>
+```
+
+`v.size()`는 `3`을 반환하고, `x.size()`는 `2`를 반환한다. 이 값은 실행 중 바뀌는 크기가 아니라 타입에 박혀 있는 크기다.
+
+### 10.5 출력 연산자 `operator<<`
+
+```cpp
+template<typename T, int N>
+std::ostream& operator<<(std::ostream& os, const Vector<T,N>& v)
+{
+    os << "( ";
+    for (int i=0; i<N; ++i)
+        os << v(i) << "    ";
+
+    os << ")";
+
+    return os;
+}
+```
+
+이 함수도 템플릿이다. 이유는 `Vector<int, 3>`, `Vector<float, 2>`, `Vector<std::string, 3>`을 모두 출력해야 하기 때문이다.
+
+| 부분 | 의미 |
+|---|---|
+| `template<typename T, int N>` | 어떤 원소 타입과 크기의 `Vector`든 받을 수 있게 함 |
+| `std::ostream& os` | `std::cout` 같은 출력 스트림 |
+| `const Vector<T,N>& v` | 출력할 벡터, 복사하지 않고 읽기 전용 참조로 받음 |
+| `return os;` | `std::cout << "v = " << v` 같은 체이닝 가능 |
+
+`operator<<`가 멤버 함수가 아니라 전역 함수인 이유도 중요하다. `std::cout << v`에서 왼쪽 피연산자는 `std::cout`이다. `std::ostream` 클래스를 우리가 수정할 수 없으므로, 출력 연산자는 보통 전역 함수로 만든다.
+
+또한 매개변수 `v`가 `const Vector<T,N>&`이므로 함수 내부의 `v(i)`는 `const` 버전의 `operator()`를 호출한다.
+
+```cpp
+T operator()(int i) const { return data[i]; }
+```
+
+### 10.6 `using` 별칭
+
+```cpp
+using Vec3i = Vector<int, 3>;
+using Vec2f = Vector<float, 2>;
+using Vec3s = Vector<std::string, 3>;
+```
+
+`using`은 긴 템플릿 타입에 짧은 이름을 붙인다.
+
+| 별칭 | 실제 타입 | 의미 |
+|---|---|---|
+| `Vec3i` | `Vector<int, 3>` | 정수 3차원 벡터 |
+| `Vec2f` | `Vector<float, 2>` | 실수 2차원 벡터 |
+| `Vec3s` | `Vector<std::string, 3>` | 문자열 3개짜리 벡터 |
+
+`using`은 새 클래스를 만드는 것이 아니다. 기존 타입에 다른 이름을 붙이는 것이다.
+
+### 10.7 `main()` 실행 흐름
+
+```cpp
+Vec3i v;
+v(0) = 3;  v(1) = -1,  v(2) = 2;
+std::cout << "v = " << v << std::endl;
+```
+
+이 부분에서 `Vec3i`는 `Vector<int, 3>`이므로 컴파일러는 `T = int`, `N = 3`인 벡터 클래스를 만든다. `v(0)`, `v(1)`, `v(2)`는 각각 내부 배열 `data[0]`, `data[1]`, `data[2]`에 접근한다.
+
+```cpp
+Vec2f x;
+x(0) = 10.0f, x(1) = -0.1f;
+```
+
+`Vec2f`는 `Vector<float, 2>`이므로 `float` 원소 2개를 가진다.
+
+```cpp
+Vec3s s;
+s(0) = "Kookmin";
+s(1) = "University";
+s(2) = "C++ Programming";
+```
+
+`Vec3s`는 `Vector<std::string, 3>`이므로 문자열 3개를 저장한다.
+
+실행 결과는 다음과 같은 형태다.
+
+```text
+v = ( 3    -1    2    )
+x = ( 10    -0.1    )
+s = ( Kookmin    University    C++ Programming    )
+```
+
+코드에서 `v(1) = -1, v(2) = 2;`처럼 쉼표가 쓰인 부분은 쉼표 연산자에 의해 왼쪽 표현식이 먼저 실행되고 오른쪽 표현식이 이어서 실행된다. 다만 가독성 측면에서는 다음처럼 세미콜론으로 나누는 편이 더 좋다.
+
+```cpp
+v(1) = -1;
+v(2) = 2;
+```
+
+### 10.8 시험 포인트
+
+| 포인트 | 꼭 이해할 내용 |
+|---|---|
+| `template<typename T, int N>` | `T`는 타입, `N`은 컴파일 타임 값 |
+| `T data[N]` | `N`이 컴파일 타임 상수라서 고정 배열 크기로 사용 가능 |
+| `T& operator()(int i)` | 원소를 수정하려면 참조 반환이 필요 |
+| `operator()(int i) const` | `const Vector`나 출력 함수에서 읽기용으로 호출 |
+| `std::ostream& operator<<` | 출력 체이닝을 위해 스트림 참조를 반환 |
+| `const Vector<T,N>&` | 모든 `Vector<T,N>`을 복사 없이 읽기 전용으로 받음 |
+| `using Vec3i = ...` | 긴 템플릿 타입에 별칭을 붙임 |
+| 인스턴스화 | `Vec3i`, `Vec2f`, `Vec3s`는 서로 다른 구체 타입 |
+
+## 11. 템플릿 특수화
 
 템플릿 특수화는 일반 템플릿과 달리, 특정 타입에 대해서만 별도 구현을 제공하는 기능이다.
 
@@ -570,7 +806,7 @@ p2.print(true);     // bool 특수화 사용
 
 특수화는 강력하지만 너무 많이 사용하면 코드 흐름이 흩어진다. 일반 구현으로 해결하기 어려운 타입별 예외가 있을 때 제한적으로 쓰는 것이 좋다.
 
-## 11. 템플릿과 헤더 파일
+## 12. 템플릿과 헤더 파일
 
 일반 함수는 보통 헤더에는 선언만 두고, `.cpp` 파일에 구현을 둔다.
 
@@ -618,7 +854,7 @@ int main() {
 
 그래서 템플릿 코드는 헤더 파일이 길어지는 경우가 많다.
 
-## 12. STL과 템플릿
+## 13. STL과 템플릿
 
 C++ 표준 라이브러리의 많은 기능은 템플릿으로 만들어져 있다.
 
@@ -655,7 +891,7 @@ std::sort(v.begin(), v.end());
 
 템플릿은 C++ 표준 라이브러리의 기반이라고 볼 수 있다.
 
-## 13. 템플릿과 오버로딩 비교
+## 14. 템플릿과 오버로딩 비교
 
 템플릿과 함수 오버로딩은 모두 여러 타입을 다룰 수 있지만 목적이 다르다.
 
@@ -689,7 +925,7 @@ void print(T x) {
 
 동작이 타입마다 완전히 다르면 오버로딩이 더 명확하다. 반대로 타입만 다르고 구조가 같다면 템플릿이 더 적합하다.
 
-## 14. 템플릿과 런타임 다형성 비교
+## 15. 템플릿과 런타임 다형성 비교
 
 템플릿은 정적 다형성의 대표적인 예다. 컴파일 시점에 타입이 결정되고, 타입별 코드가 생성된다.
 
@@ -726,7 +962,7 @@ render(c); // 가능
 
 템플릿은 “이 타입이 어떤 클래스 계층에 속하는가”보다 “이 타입이 필요한 연산을 제공하는가”에 관심을 둔다.
 
-## 15. 자주 발생하는 실수
+## 16. 자주 발생하는 실수
 
 | 실수 | 설명 | 해결 |
 |---|---|---|
@@ -747,6 +983,7 @@ render(c); // 가능
 | 인스턴스화 | 템플릿에 실제 타입을 넣어 코드를 생성하는 과정 |
 | `typename` / `class` | 템플릿 타입 매개변수 선언에서는 거의 같은 의미 |
 | 비타입 매개변수 | `int N`처럼 컴파일 타임 값을 템플릿 인자로 사용 |
+| `cpp_template.cpp` | 비타입 템플릿, 호출 연산자, 출력 연산자, 타입 별칭을 함께 보여 주는 시험 핵심 예제 |
 | 특수화 | 특정 타입에 대해서만 별도 구현 제공 |
 | 헤더 정의 | 컴파일러가 인스턴스화하려면 템플릿 정의를 볼 수 있어야 함 |
 | STL | `vector<T>`, `pair<T, U>`, `sort` 등은 템플릿 기반 |
@@ -762,8 +999,9 @@ render(c); // 가능
 3. 템플릿이 호출 시점에 타입별 함수로 인스턴스화된다는 점을 이해한다.
 4. 클래스 템플릿으로 `Box<T>`, `Array<T>` 같은 타입 독립적 구조를 만든다.
 5. `Vector<T, N>`과 `Matrix<T, R, C>`를 통해 비타입 템플릿 매개변수가 크기와 차원을 타입에 포함한다는 점을 확인한다.
-6. STL의 `vector<int>`가 클래스 템플릿의 실제 사례임을 연결한다.
-7. 템플릿은 런타임 다형성이 아니라 컴파일 타임 다형성임을 구분한다.
+6. `cpp_template.cpp`에서 `operator()`, `operator<<`, `using`이 어떻게 함께 쓰이는지 코드 흐름으로 확인한다.
+7. STL의 `vector<int>`가 클래스 템플릿의 실제 사례임을 연결한다.
+8. 템플릿은 런타임 다형성이 아니라 컴파일 타임 다형성임을 구분한다.
 
 ## 복습 질문
 
@@ -806,6 +1044,20 @@ render(c); // 가능
 <summary>6. 템플릿과 가상 함수의 차이는 무엇인가?</summary>
 
 답변: 템플릿은 컴파일 타임에 타입별 코드를 생성하는 정적 다형성이다. 가상 함수는 런타임에 실제 객체 타입을 보고 호출 함수를 결정하는 동적 다형성이다. 템플릿은 상속 관계가 없어도 사용할 수 있지만, 필요한 연산이나 멤버 함수가 타입에 존재해야 한다.
+
+</details>
+
+<details>
+<summary>7. `cpp_template.cpp`에서 `T& operator()(int i)`가 참조를 반환하는 이유는 무엇인가?</summary>
+
+답변: `v(0) = 3`처럼 원소에 값을 대입하려면 `v(0)`이 실제 배열 원소를 가리키는 왼쪽 값이어야 한다. `T&`를 반환하면 `data[i]`의 참조가 반환되므로 대입이 가능하다. 만약 `T`를 값으로 반환하면 복사본이 반환되어 원소 수정에 사용할 수 없다.
+
+</details>
+
+<details>
+<summary>8. `operator<<` 함수도 `template<typename T, int N>`으로 작성한 이유는 무엇인가?</summary>
+
+답변: 출력 함수가 `Vector<int, 3>`만 출력하는 것이 아니라 `Vector<float, 2>`, `Vector<std::string, 3>`처럼 타입과 크기가 다른 모든 `Vector<T, N>`을 출력해야 하기 때문이다. 그래서 클래스 템플릿과 같은 템플릿 매개변수 `T`, `N`을 받아 전역 함수 템플릿으로 작성한다.
 
 </details>
 
