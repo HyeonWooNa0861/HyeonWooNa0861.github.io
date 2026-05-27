@@ -31,7 +31,7 @@
   {% assign pager_parent_title = "Research" %}
   {% assign pager_parent_url = "/research/" %}
 {% elsif page.section %}
-  {% assign pager_items = site.posts | where: "section", page.section | sort: "date" %}
+  {% assign pager_items = site.posts | where: "section", page.section | sort: "date" | reverse %}
   {% for nav_item in site.data.navigation %}
     {% if nav_item.title == "Post" %}
       {% for nav_child in nav_item.children %}

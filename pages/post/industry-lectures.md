@@ -7,7 +7,7 @@ permalink: /post/industry-lectures/
 # Industry Lectures
 
 <ul class="post-list">
-  {% assign posts = site.posts | where: "section", "industry-lectures" %}
+  {% assign posts = site.posts | where: "section", "industry-lectures" | sort: "date" | reverse %}
   {% for post in posts %}
     <li class="post-card">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
