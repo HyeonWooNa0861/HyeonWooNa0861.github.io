@@ -697,7 +697,6 @@
       }
 
       .home-directory {
-        counter-reset: directory-section;
         display: grid;
         grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
         gap: 62px 56px;
@@ -706,7 +705,6 @@
 
       .directory-section {
         position: relative;
-        counter-increment: directory-section;
       }
 
       .directory-section:nth-child(even) {
@@ -727,16 +725,6 @@
         content: "";
         transform: rotate(var(--section-fracture-rotate, -9deg));
         transform-origin: left center;
-      }
-
-      .directory-section::after {
-        position: absolute;
-        top: -34px;
-        right: 0;
-        color: var(--fracture-strong);
-        content: counter(directory-section, decimal-leading-zero);
-        font-size: 12px;
-        font-weight: 760;
       }
 
       .directory-section h2 {
@@ -990,8 +978,7 @@
 
         .home-hero::before,
         .home-hero::after,
-        .directory-section::before,
-        .directory-section::after {
+        .directory-section::before {
           display: none;
         }
 
