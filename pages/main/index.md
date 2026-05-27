@@ -14,7 +14,7 @@ permalink: /
   <section class="directory-section">
     <h2>
       <span>{{ item.title }}</span>
-      <a class="directory-link" href="{{ item.url | relative_url }}">Open</a>
+      <a class="directory-link" href="{{ item.url | relative_url }}">Index</a>
     </h2>
 
     <ul class="post-list">

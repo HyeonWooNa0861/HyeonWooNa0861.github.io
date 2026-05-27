@@ -214,13 +214,25 @@
       }
 
       .page-shell {
+        position: relative;
         display: block;
+      }
+
+      .page-shell::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 18%;
+        width: 1px;
+        pointer-events: none;
+        background: linear-gradient(180deg, transparent, var(--fracture), transparent);
+        content: "";
       }
 
       .page-shell.has-sidebar {
         display: grid;
-        grid-template-columns: minmax(205px, 244px) minmax(0, 1fr);
-        gap: 58px;
+        grid-template-columns: minmax(180px, 226px) minmax(0, 1fr);
+        gap: 72px;
         align-items: start;
       }
 
@@ -232,11 +244,12 @@
       .page-shell.has-sidebar > .page-content {
         position: relative;
         border: 1px solid var(--line);
-        border-radius: 16px;
+        border-radius: 0;
         background: var(--panel);
         box-shadow: var(--shadow);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
+        clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
         padding: 34px 38px 40px;
       }
 
@@ -277,11 +290,12 @@
         overflow-y: auto;
         overscroll-behavior: contain;
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: 0;
         background: var(--panel);
         box-shadow: var(--shadow);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
         padding: 14px;
       }
 
@@ -672,6 +686,7 @@
       }
 
       .home-directory {
+        counter-reset: directory-section;
         display: grid;
         grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
         gap: 62px 56px;
@@ -680,6 +695,7 @@
 
       .directory-section {
         position: relative;
+        counter-increment: directory-section;
       }
 
       .directory-section:nth-child(even) {
@@ -700,6 +716,16 @@
         content: "";
         transform: rotate(-9deg);
         transform-origin: left center;
+      }
+
+      .directory-section::after {
+        position: absolute;
+        top: -34px;
+        right: 0;
+        color: var(--fracture-strong);
+        content: counter(directory-section, decimal-leading-zero);
+        font-size: 12px;
+        font-weight: 760;
       }
 
       .directory-section h2 {
@@ -893,6 +919,10 @@
           gap: 28px;
         }
 
+        .page-shell::before {
+          display: none;
+        }
+
         .page-shell.has-sidebar > .side-index,
         .page-shell.has-sidebar > .page-content {
           grid-column: auto;
@@ -902,6 +932,7 @@
           border: 0;
           border-radius: 0;
           background: transparent;
+          clip-path: none;
           box-shadow: none;
           padding: 0;
         }
@@ -916,6 +947,7 @@
           max-height: 45vh;
           max-height: 45dvh;
           overflow-y: auto;
+          clip-path: none;
           transform: none;
         }
 
@@ -945,7 +977,8 @@
 
         .home-hero::before,
         .home-hero::after,
-        .directory-section::before {
+        .directory-section::before,
+        .directory-section::after {
           display: none;
         }
 
