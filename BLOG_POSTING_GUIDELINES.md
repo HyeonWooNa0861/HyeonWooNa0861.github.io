@@ -39,13 +39,74 @@
 
 권장 구성:
 
-- 제목과 source PDF
+- 제목과 원문 PDF 자료 링크
 - 전체 흐름
 - 개념별 정리
 - 핵심 수식 또는 코드 예제
 - 시험 포인트
 - 복습 질문
 - PDF 링크
+
+Study 공통 구조 참고:
+
+```md
+---
+layout: default
+title: "English Title"
+course: "Course Name"
+topic: "한국어 주제"
+order: 1
+---
+
+# English Title
+
+원문 PDF 자료: [원문 파일명.pdf]({{ "/assets/pdfs/study/<course>/<원문 파일명.pdf>" | relative_url }})
+
+## 전체 흐름
+
+| 순서 | 주제 | 핵심 질문 |
+|---|---|---|
+| 1 | ... | ... |
+
+## 1. 첫 번째 개념
+
+본문을 원문 순서 그대로 옮기지 말고, 공부 흐름에 맞게 재구성한다.
+
+## 마지막 핵심 정리
+
+핵심 개념을 표나 짧은 문단으로 정리한다.
+
+## Study Guide
+
+읽는 순서, 시험 대비 포인트, 헷갈리기 쉬운 개념을 정리한다.
+
+## 복습 질문
+
+<details>
+<summary>1. 질문을 쓴다.</summary>
+
+답변: 간결하지만 충분하게 설명한다.
+
+</details>
+
+## PDF
+
+원문 PDF 자료는 아래 링크에서 확인할 수 있다.
+
+<ul>
+  <li><a href="{{ "/assets/pdfs/study/<course>/<원문 파일명.pdf>" | relative_url }}" target="_blank" rel="noopener">원문 파일명.pdf</a></li>
+</ul>
+```
+
+Study 구조 규칙:
+
+- 제목은 영어로 작성하고, 파일명은 영문 kebab-case를 사용한다.
+- 제목과 파일명에서 `요약`, `정리본` 같은 표현은 가능하면 빼고 주제명만 남긴다.
+- 상단에는 `원문 PDF 자료:` 형식으로 원문 PDF 링크를 명시한다.
+- 하단에는 `## PDF` 섹션을 두고 같은 원문 PDF 링크를 다시 제공한다.
+- 본문 순서는 `전체 흐름` → 개념별 본문 → `마지막 핵심 정리` → `Study Guide` → `복습 질문` → `PDF`를 기본으로 한다.
+- 복습 질문은 반드시 `<details>` / `<summary>` toggle 형식으로 작성하고, 답변은 `답변:`으로 시작한다.
+- 원문 PDF가 여러 개라면 상단에는 `원문 PDF 자료:` 아래 목록을 두고, 하단 `## PDF`에도 같은 파일들을 모두 링크한다.
 
 ## 3. Research 자료
 
