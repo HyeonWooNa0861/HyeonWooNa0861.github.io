@@ -55,6 +55,10 @@
       url: /research/attention-is-all-you-need/
       description: Transformer paper analysis and v1-v7 revision notes
       match: /research/attention-is-all-you-need/
+    - title: ComVi
+      url: /research/comvi-context-aware-comment-display/
+      description: Context-aware optimized comment display in video playback
+      match: /research/comvi-context-aware-comment-display/
 
 - title: Assignment
   url: /assignment/
