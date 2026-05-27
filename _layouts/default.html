@@ -42,8 +42,8 @@
         --pre-bg: #111827;
         --pre-text: #e5e7eb;
         --header-bg: rgba(246, 248, 251, 0.82);
-        --grid-line: rgba(15, 23, 42, 0.045);
-        --mesh-line: rgba(15, 118, 110, 0.13);
+        --ambient-1: rgba(15, 118, 110, 0.035);
+        --ambient-2: rgba(37, 99, 235, 0.028);
         --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
       }
 
@@ -69,8 +69,8 @@
         --pre-bg: #020617;
         --pre-text: #e5e7eb;
         --header-bg: rgba(8, 11, 18, 0.82);
-        --grid-line: rgba(148, 163, 184, 0.06);
-        --mesh-line: rgba(94, 234, 212, 0.13);
+        --ambient-1: rgba(94, 234, 212, 0.045);
+        --ambient-2: rgba(147, 197, 253, 0.035);
         --shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
       }
 
@@ -78,8 +78,8 @@
         margin: 0;
         min-height: 100vh;
         background:
-          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 56px 56px,
-          linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 56px 56px,
+          radial-gradient(circle at 14% 0%, var(--ambient-1), transparent 34%),
+          radial-gradient(circle at 86% 8%, var(--ambient-2), transparent 30%),
           linear-gradient(145deg, var(--bg) 0%, var(--bg-alt) 100%);
         color: var(--text);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -105,20 +105,6 @@
         display: none;
         width: 0;
         height: 0;
-      }
-
-      body::before {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        content: "";
-        background:
-          linear-gradient(120deg, transparent 0 46%, var(--mesh-line) 46% 47%, transparent 47% 100%) 0 0 / 220px 220px,
-          linear-gradient(60deg, transparent 0 48%, var(--mesh-line) 48% 49%, transparent 49% 100%) 0 0 / 260px 260px;
-        mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
-        -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
-        opacity: 0.58;
       }
 
       .site-header {
@@ -218,6 +204,16 @@
       .page-content {
         min-width: 0;
         overflow-wrap: break-word;
+      }
+
+      .page-shell.has-sidebar > .page-content {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        padding: 34px 38px 40px;
       }
 
       .page-shell.has-sidebar > .side-index {
@@ -785,6 +781,14 @@
         .page-shell.has-sidebar > .side-index,
         .page-shell.has-sidebar > .page-content {
           grid-column: auto;
+        }
+
+        .page-shell.has-sidebar > .page-content {
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          padding: 0;
         }
 
         .side-index {
