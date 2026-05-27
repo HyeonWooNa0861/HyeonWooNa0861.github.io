@@ -8,7 +8,7 @@ order: 11
 
 # C++ Templates
 
-Source PDF: [C++ 템플릿.pdf]({{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf" | relative_url }})
+Source PDF: `C++ 템플릿.pdf`
 
 ## 전체 흐름
 
