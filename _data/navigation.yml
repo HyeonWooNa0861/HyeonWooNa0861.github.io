@@ -59,6 +59,10 @@
       url: /research/comvi-context-aware-comment-display/
       description: Context-aware optimized comment display in video playback
       match: /research/comvi-context-aware-comment-display/
+    - title: Highlight Videos with MRD
+      url: /research/generating-highlight-videos-most-replayed-data/
+      description: User-specified length highlight generation using Most Replayed Data
+      match: /research/generating-highlight-videos-most-replayed-data/
 
 - title: Assignment
   url: /assignment/
