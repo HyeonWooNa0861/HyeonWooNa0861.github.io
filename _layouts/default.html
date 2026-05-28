@@ -49,6 +49,8 @@
         --component-moment: 160ms;
         --halftone-dot: rgba(15, 23, 42, 0.2);
         --halftone-shadow: rgba(138, 206, 0, 0.24);
+        --halftone-shadow-strong: rgba(138, 206, 0, 0.34);
+        --hover-ink-shadow: rgba(15, 23, 42, 0.18);
         --halftone-size: 7px;
         --halftone-dot-size: 1.1px;
         --hover-shadow-x: 10px;
@@ -65,9 +67,19 @@
         --logo-glass-shift-y: 0px;
         --logo-glass-angle: 118deg;
         --rough-hover-shadow:
-          var(--hover-shadow-x) var(--hover-shadow-y) 0 var(--halftone-shadow),
-          calc(var(--hover-shadow-x) + 5px) calc(var(--hover-shadow-y) - 4px) 0 -4px var(--halftone-dot),
-          calc(var(--hover-shadow-x) - 5px) calc(var(--hover-shadow-y) + 4px) 0 -5px var(--halftone-dot);
+          var(--hover-shadow-x) var(--hover-shadow-y) 0 var(--halftone-shadow-strong),
+          calc(var(--hover-shadow-x) + 5px) calc(var(--hover-shadow-y) - 4px) 0 -3px var(--halftone-dot),
+          calc(var(--hover-shadow-x) - 5px) calc(var(--hover-shadow-y) + 5px) 0 -4px var(--glass-prism),
+          calc(var(--hover-shadow-x) + 12px) calc(var(--hover-shadow-y) + 9px) 0 -7px var(--hover-ink-shadow),
+          0 22px 44px -28px var(--hover-ink-shadow);
+        --compact-hover-shadow:
+          6px 6px 0 var(--halftone-shadow-strong),
+          10px 3px 0 -4px var(--halftone-dot),
+          2px 10px 0 -4px var(--glass-prism);
+        --rough-hover-text-shadow:
+          1px 1px 0 var(--glass-glare),
+          4px 4px 0 var(--halftone-shadow-strong),
+          7px 7px 0 var(--hover-ink-shadow);
         --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
         --container-shadow:
           18px 18px 0 rgba(138, 206, 0, 0.12),
@@ -106,6 +118,8 @@
         --component-moment: 160ms;
         --halftone-dot: rgba(226, 232, 240, 0.24);
         --halftone-shadow: rgba(138, 206, 0, 0.24);
+        --halftone-shadow-strong: rgba(138, 206, 0, 0.42);
+        --hover-ink-shadow: rgba(0, 0, 0, 0.44);
         --halftone-size: 7px;
         --halftone-dot-size: 1.1px;
         --hover-shadow-x: 10px;
@@ -484,7 +498,7 @@
         background:
           linear-gradient(118deg, transparent 0 28%, var(--glass-glare) 28% 29%, transparent 29% 100%),
           linear-gradient(90deg, var(--hover-bg), transparent);
-        box-shadow: 8px 8px 0 var(--halftone-shadow);
+        box-shadow: var(--compact-hover-shadow);
         transform: translateX(calc(var(--map-link-x, 0px) + 4px)) rotate(var(--map-link-rotate, 0deg));
       }
 
@@ -494,7 +508,7 @@
         background:
           radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
           linear-gradient(90deg, var(--hover-bg), transparent);
-        box-shadow: 6px 6px 0 var(--halftone-shadow);
+        box-shadow: var(--compact-hover-shadow);
       }
 
       h1, h2, h3 {
@@ -635,7 +649,7 @@
         border-top: 0;
         background: transparent;
         padding: 24px 0;
-        transition: background-color var(--component-moment) ease, border-color var(--component-moment) ease, padding var(--component-moment) ease;
+        transition: background-color var(--component-moment) ease, border-color var(--component-moment) ease, box-shadow var(--component-moment) ease, padding var(--component-moment) ease, transform var(--component-moment) ease;
       }
 
       .post-card:last-child {
@@ -690,10 +704,12 @@
         line-height: 1.28;
         overflow-wrap: anywhere;
         text-decoration: none;
+        transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease;
       }
 
       .post-card a:hover {
         color: var(--accent);
+        text-shadow: var(--rough-hover-text-shadow);
       }
 
       .post-card p {
@@ -791,6 +807,7 @@
           radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
           linear-gradient(118deg, var(--glass-prism), transparent 34%),
           var(--panel);
+        box-shadow: var(--rough-hover-shadow);
         transform: translateX(calc(var(--list-card-shift, 0px) + 8px)) rotate(var(--list-card-rotate, 0deg));
       }
 
@@ -1169,6 +1186,7 @@
         position: absolute;
         pointer-events: none;
         content: "";
+        transition: box-shadow var(--component-moment) ease, opacity var(--component-moment) ease, transform var(--component-moment) ease;
       }
 
       .branch-card-link::before {
@@ -1195,6 +1213,15 @@
         transform: translate(var(--branch-card-echo-x, 4px), var(--branch-card-echo-y, -3px));
       }
 
+      .branch-card-link:hover::before {
+        opacity: 0.52;
+        box-shadow: var(--compact-hover-shadow);
+      }
+
+      .branch-card-link:hover::after {
+        opacity: 0.42;
+      }
+
       .directory-link {
         display: inline-block;
         color: var(--muted);
@@ -1206,7 +1233,7 @@
 
       .directory-link:hover {
         color: var(--accent);
-        text-shadow: 3px 3px 0 var(--halftone-shadow);
+        text-shadow: var(--rough-hover-text-shadow);
       }
 
       .home-directory .post-card {
@@ -1249,7 +1276,7 @@
 
       .section-pager-parent:hover {
         color: var(--text);
-        text-shadow: 3px 3px 0 var(--halftone-shadow);
+        text-shadow: var(--rough-hover-text-shadow);
       }
 
       .section-pager-parent.disabled {
@@ -1279,7 +1306,7 @@
 
       .section-pager-card:hover {
         color: var(--accent);
-        text-shadow: 3px 3px 0 var(--halftone-shadow);
+        text-shadow: var(--rough-hover-text-shadow);
       }
 
       .section-pager-card.next {
