@@ -1787,6 +1787,10 @@
           animation-delay: var(--home-slide-delay, 0ms);
         }
 
+        .home-cards-ready .home-directory .post-card {
+          animation: none;
+        }
+
         .directory-plus {
           animation: directory-plus-breathe 3.8s ease-in-out infinite alternate;
         }
@@ -2849,6 +2853,19 @@
         }
 
         applySpatialRandomness();
+
+        var homeCards = document.querySelectorAll(".home-directory .post-card");
+        if (homeCards.length) {
+          var homeCardEntryMs = Math.min(1800, ((homeCards.length - 1) * 78) + 620);
+          var markHomeCardsReady = function () {
+            document.documentElement.classList.add("home-cards-ready");
+          };
+
+          window.setTimeout(markHomeCardsReady, homeCardEntryMs);
+          homeCards.forEach(function (card) {
+            card.addEventListener("mouseenter", markHomeCardsReady, { once: true });
+          });
+        }
 
         var sideIndex = document.querySelector(".side-index");
         if (sideIndex) {
