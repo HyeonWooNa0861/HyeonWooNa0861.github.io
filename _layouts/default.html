@@ -962,7 +962,7 @@
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
         padding: 28px 24px 30px 0;
         box-shadow: 12px 12px 0 var(--halftone-shadow);
-        transform: translateX(var(--list-card-shift, 0px)) rotate(var(--list-card-rotate, 0deg));
+        transform: translate(var(--list-card-shift, 0px), var(--list-card-y, 0px)) rotate(var(--list-card-rotate, 0deg));
       }
 
       .content-page .page-content > h1 + .post-list .post-card::before {
@@ -1010,7 +1010,7 @@
           linear-gradient(118deg, var(--glass-prism), transparent 34%),
           var(--panel);
         box-shadow: var(--rough-hover-shadow);
-        transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), var(--hover-card-y, 0px)) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+        transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), calc(var(--list-card-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
       .about-stage {
@@ -1461,6 +1461,7 @@
 
       .directory-section {
         position: relative;
+        transform: translate(var(--section-block-x, 0px), var(--section-block-y, 0px)) rotate(var(--section-block-rotate, 0deg));
       }
 
       .directory-section:nth-child(even) {
@@ -1730,6 +1731,8 @@
         -webkit-box-flex: 0;
         -webkit-flex: 0 0 auto;
         flex: 0 0 auto;
+        margin-top: var(--home-card-rail-margin-top, 0px);
+        margin-bottom: var(--home-card-rail-margin-bottom, 0px);
         min-height: 132px;
         height: auto;
         scroll-snap-align: start;
@@ -1814,7 +1817,7 @@
         overflow-x: auto;
         overflow-y: hidden;
         overscroll-behavior-x: contain;
-        padding: 8px 0 20px;
+        padding: 18px 0 32px;
         scroll-padding-inline: var(--home-slide-gutter);
         scroll-snap-type: x mandatory;
         touch-action: auto;
@@ -2330,17 +2333,17 @@
         @keyframes list-card-hover-drift {
           0% {
             filter: saturate(1);
-            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), var(--hover-card-y, 0px)) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), calc(var(--list-card-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
           }
 
           55% {
             filter: saturate(1.1);
-            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x, 3px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x, 3px)), calc(var(--list-card-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
           }
 
           100% {
             filter: saturate(1.04);
-            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x-alt, -2px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x-alt, -2px)), calc(var(--list-card-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
           }
         }
       }
@@ -3141,8 +3144,11 @@
           });
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
-            section.style.setProperty("--section-offset-y", randomRange(18, 46, "px"));
-            section.style.setProperty("--section-offset-x", randomRange(10, 28, "px"));
+            section.style.setProperty("--section-offset-y", randomRange(14, 72, "px"));
+            section.style.setProperty("--section-offset-x", randomRange(8, 40, "px"));
+            section.style.setProperty("--section-block-x", randomRange(-14, 20, "px"));
+            section.style.setProperty("--section-block-y", randomRange(-8, 18, "px"));
+            section.style.setProperty("--section-block-rotate", randomRange(-0.8, 0.8, "deg"));
             section.style.setProperty("--section-fracture-rotate", randomRange(-14, -4, "deg"));
             section.style.setProperty("--section-title-x", randomRange(-10, 14, "px"));
             section.style.setProperty("--section-title-y", randomRange(-4, 8, "px"));
@@ -3215,21 +3221,24 @@
             card.style.setProperty("--home-card-title-x", randomRange(-8, 14, "px"));
             card.style.setProperty("--home-card-title-y", randomRange(-3, 6, "px"));
             card.style.setProperty("--home-card-title-rotate", randomRange(-1.6, 1.4, "deg"));
-            card.style.setProperty("--list-card-shift", randomRange(-10, 16, "px"));
-            card.style.setProperty("--list-card-rotate", randomRange(-1.4, 1.4, "deg"));
-            card.style.setProperty("--list-card-notch", randomRange(14, 32, "px"));
-            card.style.setProperty("--list-number-rotate", randomRange(-12, 10, "deg"));
-            card.style.setProperty("--list-title-shift", randomRange(-4, 10, "px"));
+            card.style.setProperty("--list-card-shift", randomRange(-22, 30, "px"));
+            card.style.setProperty("--list-card-y", randomRange(-8, 12, "px"));
+            card.style.setProperty("--list-card-rotate", randomRange(-2.4, 2.2, "deg"));
+            card.style.setProperty("--list-card-notch", randomRange(12, 38, "px"));
+            card.style.setProperty("--list-number-rotate", randomRange(-16, 14, "deg"));
+            card.style.setProperty("--list-title-shift", randomRange(-8, 16, "px"));
             applyHoverProfile(card, false);
           });
 
           document.querySelectorAll(".home-directory .post-card").forEach(function (card, index) {
             card.style.setProperty("--home-slide-delay", (index * 78).toFixed(0) + "ms");
-            card.style.setProperty("--home-card-rail-x", randomRange(-4, 10, "px"));
-            card.style.setProperty("--home-card-rail-y", randomRange(-3, 5, "px"));
-            card.style.setProperty("--home-card-rail-rotate", randomRange(-1.5, 1.5, "deg"));
-            card.style.setProperty("--home-card-line-rotate", randomRange(-14, 8, "deg"));
-            applyTrimProfile(card, 8, 22);
+            card.style.setProperty("--home-card-rail-x", randomRange(-12, 20, "px"));
+            card.style.setProperty("--home-card-rail-y", randomRange(-5, 12, "px"));
+            card.style.setProperty("--home-card-rail-rotate", randomRange(-2.6, 2.4, "deg"));
+            card.style.setProperty("--home-card-rail-margin-top", randomRange(0, 24, "px"));
+            card.style.setProperty("--home-card-rail-margin-bottom", randomRange(0, 12, "px"));
+            card.style.setProperty("--home-card-line-rotate", randomRange(-22, 14, "deg"));
+            applyTrimProfile(card, 8, 28);
             applyHoverProfile(card, true);
           });
 
