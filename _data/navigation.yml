@@ -63,6 +63,10 @@
       url: /research/generating-highlight-videos-most-replayed-data/
       description: User-specified length highlight generation using Most Replayed Data
       match: /research/generating-highlight-videos-most-replayed-data/
+    - title: Temporal Pointing
+      url: /research/user-performance-in-consecutive-temporal-pointing/
+      description: User performance in consecutive temporal pointing
+      match: /research/user-performance-in-consecutive-temporal-pointing/
 
 - title: Assignment
   url: /assignment/
