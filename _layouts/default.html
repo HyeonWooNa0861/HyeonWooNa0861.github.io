@@ -1107,20 +1107,6 @@
         word-break: normal;
       }
 
-      .about-field {
-        position: absolute;
-        right: 10%;
-        bottom: 0;
-        margin: 0;
-        color: var(--accent);
-        font-family: var(--about-field-font, inherit);
-        font-size: var(--about-field-size, clamp(42px, 8vw, 92px));
-        font-weight: var(--about-field-weight, 880);
-        line-height: var(--about-field-line, 0.78);
-        opacity: 0.2;
-        transform: rotate(var(--about-field-rotate, -10deg));
-      }
-
       .about-grid {
         position: relative;
         z-index: 1;
@@ -2015,10 +2001,6 @@
           will-change: opacity, transform;
         }
 
-        .about-field {
-          animation: about-field-drift 6.4s ease-in-out infinite alternate;
-        }
-
         .about-card:hover {
           animation: about-card-hover-drift var(--hover-motion-duration, 760ms) steps(2, end) infinite alternate;
         }
@@ -2200,18 +2182,6 @@
           to {
             opacity: 0.7;
             transform: translate(calc(var(--about-glass-x, 0px) + var(--about-glass-motion-x, 8px)), calc(var(--about-glass-y, 0px) + var(--about-glass-motion-y, -6px))) rotate(calc(var(--about-glass-rotate, -5deg) + var(--about-glass-motion-rotate, 4deg)));
-          }
-        }
-
-        @keyframes about-field-drift {
-          from {
-            opacity: 0.18;
-            transform: rotate(var(--about-field-rotate, -10deg)) translate(0, 0);
-          }
-
-          to {
-            opacity: 0.28;
-            transform: rotate(calc(var(--about-field-rotate, -10deg) + var(--about-field-motion-rotate, 4deg))) translate(var(--about-field-motion-x, 8px), var(--about-field-motion-y, -6px));
           }
         }
 
@@ -2654,16 +2624,6 @@
           font-size: 11px;
           font-weight: 760;
           transform: none;
-        }
-
-        .about-field {
-          position: static;
-          margin-top: 18px;
-          font-size: clamp(42px, 18vw, 78px);
-          font-family: inherit;
-          font-weight: 880;
-          line-height: 0.78;
-          opacity: 0.16;
         }
 
         .about-grid {
@@ -3172,10 +3132,6 @@
             container.style.setProperty("--about-line-top", randomRange(38, 62, "%"));
             container.style.setProperty("--about-line-y", randomRange(-8, 8, "px"));
             container.style.setProperty("--about-line-rotate", randomRange(-13, 8, "deg"));
-            container.style.setProperty("--about-field-rotate", randomRange(-14, -4, "deg"));
-            container.style.setProperty("--about-field-motion-x", randomRange(-8, 10, "px"));
-            container.style.setProperty("--about-field-motion-y", randomRange(-7, 6, "px"));
-            container.style.setProperty("--about-field-motion-rotate", randomRange(-4, 5, "deg"));
             container.style.setProperty("--about-grid-margin-top", randomRange(-12, 18, "px"));
             container.style.setProperty("--about-kicker-font", randomChoice(aboutFonts));
             container.style.setProperty("--about-kicker-size", randomRange(10, 13, "px"));
@@ -3186,10 +3142,6 @@
             container.style.setProperty("--about-logo-font", randomChoice(aboutFonts));
             container.style.setProperty("--about-logo-size", randomRange(72, 118, "px"));
             container.style.setProperty("--about-logo-weight", randomInt(760, 940));
-            container.style.setProperty("--about-field-font", randomChoice(aboutFonts));
-            container.style.setProperty("--about-field-size", randomRange(62, 104, "px"));
-            container.style.setProperty("--about-field-weight", randomInt(760, 940));
-            container.style.setProperty("--about-field-line", randomRange(0.72, 0.88, ""));
           });
 
           document.querySelectorAll(".about-card").forEach(function (card) {
