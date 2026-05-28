@@ -1734,7 +1734,7 @@
         display: inline-grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 0;
-        width: clamp(244px, 76vw, 320px);
+        width: min(var(--home-card-width, clamp(244px, 76vw, 320px)), calc(100vw - 64px));
         max-width: none;
         min-width: 0;
         -webkit-box-flex: 0;
@@ -1742,7 +1742,7 @@
         flex: 0 0 auto;
         margin-top: var(--home-card-rail-margin-top, 0px);
         margin-bottom: var(--home-card-rail-margin-bottom, 0px);
-        min-height: 132px;
+        min-height: var(--home-card-min-height, 132px);
         height: auto;
         scroll-snap-align: start;
         overflow: hidden;
@@ -1754,14 +1754,14 @@
           linear-gradient(126deg, var(--glass-pane), transparent 56%),
           var(--panel);
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
-        padding: 18px 18px 20px;
+        padding: var(--home-card-pad-y, 18px) var(--home-card-pad-x, 18px) var(--home-card-pad-bottom, 20px);
         box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
         transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
       }
 
       .home-directory .post-list > .post-card:nth-child(even),
       .home-directory .post-list > .post-card:nth-child(3n) {
-        padding: 18px 18px 20px;
+        padding: var(--home-card-pad-y, 18px) var(--home-card-pad-x, 18px) var(--home-card-pad-bottom, 20px);
       }
 
       .home-directory .post-card::before {
@@ -1793,8 +1793,8 @@
 
       .home-directory .post-card p {
         grid-column: 1;
-        max-width: 26ch;
-        margin: 12px 0 0;
+        max-width: var(--home-card-desc-max, 26ch);
+        margin: var(--home-card-desc-gap, 12px) 0 0;
         font-size: 13px;
         line-height: 1.45;
         overflow-wrap: anywhere;
@@ -3419,8 +3419,22 @@
             var descriptionLength = description ? description.textContent.trim().length : 0;
             var longTitle = titleLength > 18;
             var longDescription = descriptionLength > 58;
+            var compactCard = titleLength < 9 && descriptionLength < 42;
+            var homeCardWidthMin = longDescription ? 312 : (longTitle ? 286 : (compactCard ? 238 : 256));
+            var homeCardWidthMax = longDescription ? 368 : (longTitle ? 348 : (compactCard ? 304 : 326));
+            var homeCardHeightMin = longDescription ? 156 : (longTitle ? 144 : 128);
+            var homeCardHeightMax = longDescription ? 196 : (longTitle ? 178 : 160);
+            var homeCardPadXMin = longDescription ? 20 : 16;
+            var homeCardPadXMax = longDescription ? 26 : 23;
 
             card.style.setProperty("--home-slide-delay", (index * 78).toFixed(0) + "ms");
+            card.style.setProperty("--home-card-width", randomRange(homeCardWidthMin, homeCardWidthMax, "px"));
+            card.style.setProperty("--home-card-min-height", randomRange(homeCardHeightMin, homeCardHeightMax, "px"));
+            card.style.setProperty("--home-card-pad-y", randomRange(16, 24, "px"));
+            card.style.setProperty("--home-card-pad-x", randomRange(homeCardPadXMin, homeCardPadXMax, "px"));
+            card.style.setProperty("--home-card-pad-bottom", randomRange(18, 30, "px"));
+            card.style.setProperty("--home-card-desc-gap", randomRange(10, 16, "px"));
+            card.style.setProperty("--home-card-desc-max", randomRange(longDescription ? 28 : 22, longDescription ? 34 : 28, "ch"));
             card.style.setProperty("--home-card-rail-x", randomRange(-12, 20, "px"));
             card.style.setProperty("--home-card-rail-y", randomRange(-5, 12, "px"));
             card.style.setProperty("--home-card-rail-rotate", randomRange(-2.6, 2.4, "deg"));
