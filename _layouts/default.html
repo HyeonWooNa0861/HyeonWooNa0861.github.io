@@ -293,9 +293,12 @@
 
       .page-shell.has-sidebar > .page-content {
         position: relative;
+        isolation: isolate;
+        overflow: hidden;
         border: 1px solid var(--line);
         border-radius: var(--panel-radius);
         background: var(--panel);
+        background-clip: padding-box;
         box-shadow: var(--shadow);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
@@ -305,14 +308,21 @@
 
       .page-shell.has-sidebar > .page-content::before {
         position: absolute;
-        top: -1px;
+        top: 0;
         left: 28px;
+        z-index: 0;
         width: 112px;
         height: 1px;
+        pointer-events: none;
         background: var(--accent);
         content: "";
         transform: rotate(var(--content-fracture-rotate, -7deg));
         transform-origin: left center;
+      }
+
+      .page-shell.has-sidebar > .page-content > * {
+        position: relative;
+        z-index: 1;
       }
 
       .page-shell.has-sidebar > .side-index {
