@@ -53,8 +53,17 @@
         --hover-ink-shadow: rgba(15, 23, 42, 0.18);
         --halftone-size: 7px;
         --halftone-dot-size: 1.1px;
+        --hover-halftone-size: var(--halftone-size);
+        --hover-halftone-dot-size: var(--halftone-dot-size);
         --hover-shadow-x: 10px;
         --hover-shadow-y: 10px;
+        --compact-shadow-x: 6px;
+        --compact-shadow-y: 6px;
+        --hover-card-x: 0px;
+        --hover-card-y: 0px;
+        --hover-card-rotate: 0deg;
+        --hover-text-x: 4px;
+        --hover-text-y: 4px;
         --glass-pane: rgba(255, 255, 255, 0.38);
         --glass-edge: rgba(15, 23, 42, 0.18);
         --glass-prism: rgba(138, 206, 0, 0.18);
@@ -73,13 +82,13 @@
           calc(var(--hover-shadow-x) + 12px) calc(var(--hover-shadow-y) + 9px) 0 -7px var(--hover-ink-shadow),
           0 22px 44px -28px var(--hover-ink-shadow);
         --compact-hover-shadow:
-          6px 6px 0 var(--halftone-shadow-strong),
-          10px 3px 0 -4px var(--halftone-dot),
-          2px 10px 0 -4px var(--glass-prism);
+          var(--compact-shadow-x) var(--compact-shadow-y) 0 var(--halftone-shadow-strong),
+          calc(var(--compact-shadow-x) + 4px) calc(var(--compact-shadow-y) - 3px) 0 -4px var(--halftone-dot),
+          calc(var(--compact-shadow-x) - 4px) calc(var(--compact-shadow-y) + 4px) 0 -4px var(--glass-prism);
         --rough-hover-text-shadow:
           1px 1px 0 var(--glass-glare),
-          4px 4px 0 var(--halftone-shadow-strong),
-          7px 7px 0 var(--hover-ink-shadow);
+          var(--hover-text-x) var(--hover-text-y) 0 var(--halftone-shadow-strong),
+          calc(var(--hover-text-x) + 3px) calc(var(--hover-text-y) + 3px) 0 var(--hover-ink-shadow);
         --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
         --container-shadow:
           18px 18px 0 rgba(138, 206, 0, 0.12),
@@ -250,12 +259,13 @@
         line-height: 1.2;
         cursor: pointer;
         clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        transition: background-color var(--component-moment) ease, border-color var(--component-moment) ease, color var(--component-moment) ease;
       }
 
       .theme-toggle:hover {
         border-color: var(--muted);
         background:
-          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          radial-gradient(circle at var(--hover-halftone-dot-size) var(--hover-halftone-dot-size), var(--halftone-dot) var(--hover-halftone-dot-size), transparent calc(var(--hover-halftone-dot-size) + 0.8px)) 0 0 / var(--hover-halftone-size) var(--hover-halftone-size),
           var(--hover-bg);
         color: var(--text);
       }
@@ -478,6 +488,7 @@
         font-size: 13px;
         line-height: 1.35;
         text-decoration: none;
+        transition: background-color var(--component-moment) ease, border-color var(--component-moment) ease, box-shadow var(--component-moment) ease, color var(--component-moment) ease, transform var(--component-moment) ease;
         transform: translateX(var(--map-link-x, 0px)) rotate(var(--map-link-rotate, 0deg));
       }
 
@@ -506,9 +517,10 @@
         color: var(--text);
         border-color: var(--accent);
         background:
-          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          radial-gradient(circle at var(--hover-halftone-dot-size) var(--hover-halftone-dot-size), var(--halftone-dot) var(--hover-halftone-dot-size), transparent calc(var(--hover-halftone-dot-size) + 0.8px)) 0 0 / var(--hover-halftone-size) var(--hover-halftone-size),
           linear-gradient(90deg, var(--hover-bg), transparent);
         box-shadow: var(--compact-hover-shadow);
+        transform: translateX(calc(var(--map-link-x, 0px) + var(--hover-card-x, 3px))) translateY(var(--hover-card-y, 0px)) rotate(calc(var(--map-link-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
       h1, h2, h3 {
@@ -690,9 +702,10 @@
       .post-card:hover {
         border-color: var(--line-strong);
         background:
-          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          radial-gradient(circle at var(--hover-halftone-dot-size) var(--hover-halftone-dot-size), var(--halftone-dot) var(--hover-halftone-dot-size), transparent calc(var(--hover-halftone-dot-size) + 0.8px)) 0 0 / var(--hover-halftone-size) var(--hover-halftone-size),
           linear-gradient(90deg, var(--hover-bg), transparent 72%);
         box-shadow: var(--rough-hover-shadow);
+        transform: translate(var(--hover-card-x, 0px), var(--hover-card-y, 0px)) rotate(var(--hover-card-rotate, 0deg));
       }
 
       .post-card a {
@@ -804,11 +817,11 @@
 
       .content-page .page-content > h1 + .post-list .post-card:hover {
         background:
-          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          radial-gradient(circle at var(--hover-halftone-dot-size) var(--hover-halftone-dot-size), var(--halftone-dot) var(--hover-halftone-dot-size), transparent calc(var(--hover-halftone-dot-size) + 0.8px)) 0 0 / var(--hover-halftone-size) var(--hover-halftone-size),
           linear-gradient(118deg, var(--glass-prism), transparent 34%),
           var(--panel);
         box-shadow: var(--rough-hover-shadow);
-        transform: translateX(calc(var(--list-card-shift, 0px) + 8px)) rotate(var(--list-card-rotate, 0deg));
+        transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), var(--hover-card-y, 0px)) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
       .about-panel {
@@ -1216,6 +1229,7 @@
       .branch-card-link:hover::before {
         opacity: 0.52;
         box-shadow: var(--compact-hover-shadow);
+        transform: translate(calc(var(--branch-card-glass-x, 0px) + var(--hover-card-x, 0px)), calc(var(--branch-card-glass-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--branch-card-glass-rotate, -3deg) + var(--hover-card-rotate, 0deg)));
       }
 
       .branch-card-link:hover::after {
@@ -1228,6 +1242,7 @@
         font-size: 13px;
         font-weight: 700;
         text-decoration: none;
+        transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease, transform var(--component-moment) ease;
         transform: translate(var(--section-link-x, 0px), var(--section-link-y, 0px)) rotate(var(--section-link-rotate, 0deg));
       }
 
@@ -1272,6 +1287,7 @@
         overflow-wrap: anywhere;
         text-align: center;
         text-decoration: none;
+        transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease;
       }
 
       .section-pager-parent:hover {
@@ -1302,6 +1318,7 @@
         padding: 0;
         color: var(--text);
         text-decoration: none;
+        transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease;
       }
 
       .section-pager-card:hover {
@@ -1696,6 +1713,20 @@
             return (min + Math.random() * (max - min)).toFixed(2) + unit;
           };
 
+          var applyHoverProfile = function (element, compact) {
+            element.style.setProperty("--hover-shadow-x", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
+            element.style.setProperty("--hover-shadow-y", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
+            element.style.setProperty("--compact-shadow-x", randomRange(4, 10, "px"));
+            element.style.setProperty("--compact-shadow-y", randomRange(4, 10, "px"));
+            element.style.setProperty("--hover-halftone-size", randomRange(compact ? 4.5 : 5.5, compact ? 8 : 11, "px"));
+            element.style.setProperty("--hover-halftone-dot-size", randomRange(0.8, compact ? 1.4 : 1.9, "px"));
+            element.style.setProperty("--hover-card-x", randomRange(compact ? -2 : -4, compact ? 5 : 10, "px"));
+            element.style.setProperty("--hover-card-y", randomRange(compact ? -2 : -4, compact ? 3 : 6, "px"));
+            element.style.setProperty("--hover-card-rotate", randomRange(compact ? -0.9 : -1.8, compact ? 0.9 : 1.8, "deg"));
+            element.style.setProperty("--hover-text-x", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
+            element.style.setProperty("--hover-text-y", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
+          };
+
           root.style.setProperty("--fracture-top", randomRange(58, 118, "px"));
           root.style.setProperty("--fracture-width", randomRange(42, 56, "vw"));
           root.style.setProperty("--fracture-height", randomRange(34, 50, "vh"));
@@ -1739,6 +1770,7 @@
           document.querySelectorAll(".side-index-link").forEach(function (link) {
             link.style.setProperty("--map-link-x", randomRange(-3, 4, "px"));
             link.style.setProperty("--map-link-rotate", randomRange(-1.2, 1.2, "deg"));
+            applyHoverProfile(link, true);
           });
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
@@ -1775,6 +1807,7 @@
             link.style.setProperty("--branch-card-glass-angle", randomRange(108, 130, "deg"));
             link.style.setProperty("--branch-card-echo-x", randomRange(-3, 6, "px"));
             link.style.setProperty("--branch-card-echo-y", randomRange(-5, 4, "px"));
+            applyHoverProfile(link, true);
           });
 
           document.querySelectorAll(".logo-fragment").forEach(function (fragment) {
@@ -1795,6 +1828,11 @@
             card.style.setProperty("--list-card-notch", randomRange(14, 32, "px"));
             card.style.setProperty("--list-number-rotate", randomRange(-12, 10, "deg"));
             card.style.setProperty("--list-title-shift", randomRange(-4, 10, "px"));
+            applyHoverProfile(card, false);
+          });
+
+          document.querySelectorAll(".directory-link, .section-pager-card, .section-pager-parent, .theme-toggle").forEach(function (element) {
+            applyHoverProfile(element, true);
           });
         }
 
