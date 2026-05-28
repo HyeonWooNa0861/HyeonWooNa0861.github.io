@@ -2483,13 +2483,6 @@
           }
         }
 
-        function clearLoadingScreenImmediately() {
-          loadingReleased = true;
-          clearLoadingTimers();
-          if (loadingScreen) loadingScreen.hidden = true;
-          loadingRoot.classList.remove("loading-active", "loading-done");
-        }
-
         function showLoadingScreen() {
           if (!loadingScreen) return;
           loadingReleased = false;
@@ -2518,6 +2511,11 @@
           loadingCleanupTimer = setTimeout(cleanup, 520);
         }
 
+        function playRestoredLoadingScreen() {
+          showLoadingScreen();
+          setTimeout(releaseLoadingScreen, 620);
+        }
+
         function finishInitialLoading() {
           var elapsed = Date.now() - loadingStart;
           var remaining = Math.max(0, 560 - elapsed);
@@ -2532,8 +2530,10 @@
         }
 
         window.addEventListener("pageshow", function (event) {
-          if (event.persisted || loadingRoot.classList.contains("loading-active")) {
-            clearLoadingScreenImmediately();
+          if (event.persisted) {
+            playRestoredLoadingScreen();
+          } else if (loadingRoot.classList.contains("loading-active") && document.readyState === "complete") {
+            finishInitialLoading();
           }
         });
 
