@@ -1559,6 +1559,7 @@
         grid-template-columns: minmax(0, 1fr);
         gap: 0;
         min-width: min(320px, 76vw);
+        flex: 0 0 min(320px, 76vw);
         min-height: 132px;
         scroll-snap-align: start;
         overflow: hidden;
@@ -1618,13 +1619,18 @@
         --home-slide-fade: 24px;
         --home-slide-gutter: calc(var(--home-slide-fade) + 8px);
         display: flex;
+        flex-wrap: nowrap;
         gap: 16px;
         margin: 0;
+        max-width: 100%;
         overflow-x: auto;
+        overflow-y: hidden;
         overscroll-behavior-x: contain;
         padding: 8px 0 20px;
         scroll-padding-inline: var(--home-slide-gutter);
         scroll-snap-type: x mandatory;
+        touch-action: pan-x;
+        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
         mask-image: linear-gradient(90deg, transparent 0, #000 var(--home-slide-fade), #000 calc(100% - var(--home-slide-fade)), transparent 100%);
@@ -2237,16 +2243,25 @@
         .home-directory .post-list {
           --home-slide-fade: 28px;
           --home-slide-gutter: calc(var(--home-slide-fade) + 8px);
+          display: flex;
+          flex-wrap: nowrap;
           gap: 12px;
           margin: 0 -20px;
+          max-width: calc(100% + 40px);
+          overflow-x: auto;
+          overflow-y: hidden;
           padding: 6px 0 16px;
           scroll-padding-inline: var(--home-slide-gutter);
+          scroll-snap-type: x mandatory;
+          touch-action: pan-x;
+          -webkit-overflow-scrolling: touch;
         }
 
         .home-directory .post-card,
         .home-directory .post-card:nth-child(even),
         .home-directory .post-card:nth-child(3n) {
           min-width: min(78vw, 300px);
+          flex: 0 0 min(78vw, 300px);
           min-height: 124px;
           border: 1px solid var(--line);
           background: var(--panel);
