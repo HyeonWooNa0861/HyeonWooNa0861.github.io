@@ -1099,9 +1099,12 @@
       .about-logo {
         margin: 0 0 22px;
         font-family: var(--about-logo-font, inherit);
-        font-size: var(--about-logo-size, clamp(52px, 10vw, 116px));
+        font-size: clamp(52px, 10vw, var(--about-logo-size, 116px));
         font-weight: var(--about-logo-weight, 840);
         line-height: 0.78;
+        overflow-wrap: normal;
+        white-space: nowrap;
+        word-break: normal;
       }
 
       .about-field {
@@ -2641,6 +2644,9 @@
           font-size: clamp(44px, 18vw, 72px);
           font-family: inherit;
           font-weight: 840;
+          overflow-wrap: normal;
+          white-space: nowrap;
+          word-break: normal;
         }
 
         .about-kicker {
