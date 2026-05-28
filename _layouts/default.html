@@ -2470,17 +2470,34 @@
         var loadingStart = window.__gitblogLoadingStarted || Date.now();
         var loadingReleased = false;
         var loadingCleanupTimer = null;
+        var loadingFailSafeTimer = null;
 
-        function showLoadingScreen() {
-          if (!loadingScreen) return;
-          loadingReleased = false;
+        function clearLoadingTimers() {
           if (loadingCleanupTimer) {
             clearTimeout(loadingCleanupTimer);
             loadingCleanupTimer = null;
           }
+          if (loadingFailSafeTimer) {
+            clearTimeout(loadingFailSafeTimer);
+            loadingFailSafeTimer = null;
+          }
+        }
+
+        function clearLoadingScreenImmediately() {
+          loadingReleased = true;
+          clearLoadingTimers();
+          if (loadingScreen) loadingScreen.hidden = true;
+          loadingRoot.classList.remove("loading-active", "loading-done");
+        }
+
+        function showLoadingScreen() {
+          if (!loadingScreen) return;
+          loadingReleased = false;
+          clearLoadingTimers();
           loadingScreen.hidden = false;
           loadingRoot.classList.remove("loading-done");
           loadingRoot.classList.add("loading-active");
+          loadingFailSafeTimer = setTimeout(releaseLoadingScreen, 5000);
         }
 
         function releaseLoadingScreen() {
@@ -2489,10 +2506,7 @@
           loadingRoot.classList.add("loading-done");
 
           var cleanup = function () {
-            if (loadingCleanupTimer) {
-              clearTimeout(loadingCleanupTimer);
-              loadingCleanupTimer = null;
-            }
+            clearLoadingTimers();
             if (loadingScreen) loadingScreen.hidden = true;
             loadingRoot.classList.remove("loading-active", "loading-done");
           };
@@ -2516,6 +2530,16 @@
           window.addEventListener("load", finishInitialLoading, { once: true });
           setTimeout(finishInitialLoading, 2400);
         }
+
+        window.addEventListener("pageshow", function (event) {
+          if (event.persisted || loadingRoot.classList.contains("loading-active")) {
+            clearLoadingScreenImmediately();
+          }
+        });
+
+        window.addEventListener("pagehide", function () {
+          clearLoadingTimers();
+        });
 
         document.addEventListener("click", function (event) {
           var link = event.target.closest("a[href]");
