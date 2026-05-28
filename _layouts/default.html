@@ -1556,13 +1556,19 @@
         --trim-br-y: 0px;
         --trim-bl-x: 12px;
         --trim-bl-y: 12px;
+        display: inline-grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 0;
-        min-width: min(320px, 76vw);
-        flex: 0 0 min(320px, 76vw);
+        width: 320px;
+        max-width: 76vw;
+        min-width: 0;
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 auto;
+        flex: 0 0 auto;
         min-height: 132px;
         scroll-snap-align: start;
         overflow: hidden;
+        vertical-align: top;
         border: 1px solid var(--line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 56%),
@@ -1618,7 +1624,12 @@
       .home-directory .post-list {
         --home-slide-fade: 24px;
         --home-slide-gutter: calc(var(--home-slide-fade) + 8px);
+        display: -webkit-box;
+        display: -webkit-flex;
         display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -webkit-flex-wrap: nowrap;
         flex-wrap: nowrap;
         gap: 16px;
         margin: 0;
@@ -1633,14 +1644,16 @@
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        white-space: nowrap;
         mask-image: linear-gradient(90deg, transparent 0, #000 var(--home-slide-fade), #000 calc(100% - var(--home-slide-fade)), transparent 100%);
         -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--home-slide-fade), #000 calc(100% - var(--home-slide-fade)), transparent 100%);
       }
 
       .home-directory .post-list::before,
       .home-directory .post-list::after {
-        display: block;
+        display: inline-block;
         flex: 0 0 var(--home-slide-gutter);
+        width: var(--home-slide-gutter);
         content: "";
       }
 
@@ -2243,7 +2256,12 @@
         .home-directory .post-list {
           --home-slide-fade: 28px;
           --home-slide-gutter: calc(var(--home-slide-fade) + 8px);
+          display: -webkit-box;
+          display: -webkit-flex;
           display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -webkit-flex-wrap: nowrap;
           flex-wrap: nowrap;
           gap: 12px;
           margin: 0 -20px;
@@ -2260,14 +2278,19 @@
         .home-directory .post-card,
         .home-directory .post-card:nth-child(even),
         .home-directory .post-card:nth-child(3n) {
-          min-width: min(78vw, 300px);
-          flex: 0 0 min(78vw, 300px);
+          width: 78vw;
+          max-width: 300px;
+          min-width: 0;
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 0 auto;
+          flex: 0 0 auto;
           min-height: 124px;
           border: 1px solid var(--line);
           background: var(--panel);
           padding: 16px;
           box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
           transform: none;
+          white-space: normal;
         }
 
         .home-directory .post-card::after {
