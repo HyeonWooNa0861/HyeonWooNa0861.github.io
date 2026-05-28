@@ -1089,14 +1089,18 @@
       .about-kicker {
         margin: 0 0 18px;
         color: var(--accent);
-        font-size: 11px;
-        font-weight: 760;
+        font-family: var(--about-kicker-font, inherit);
+        font-size: var(--about-kicker-size, 11px);
+        font-weight: var(--about-kicker-weight, 760);
         text-transform: uppercase;
+        transform: translate(var(--about-kicker-x, 0px), var(--about-kicker-y, 0px)) rotate(var(--about-kicker-rotate, 0deg));
       }
 
       .about-logo {
         margin: 0 0 22px;
-        font-size: clamp(52px, 10vw, 116px);
+        font-family: var(--about-logo-font, inherit);
+        font-size: var(--about-logo-size, clamp(52px, 10vw, 116px));
+        font-weight: var(--about-logo-weight, 840);
         line-height: 0.78;
       }
 
@@ -1104,10 +1108,12 @@
         max-width: 10ch;
         margin: 0;
         color: var(--text);
-        font-size: clamp(24px, 4vw, 46px);
-        font-weight: 820;
-        line-height: 0.96;
+        font-family: var(--about-name-font, inherit);
+        font-size: var(--about-name-size, clamp(24px, 4vw, 46px));
+        font-weight: var(--about-name-weight, 820);
+        line-height: var(--about-name-line, 0.96);
         overflow-wrap: anywhere;
+        transform: translate(var(--about-name-x, 0px), var(--about-name-y, 0px)) rotate(var(--about-name-rotate, 0deg));
       }
 
       .about-name span {
@@ -1124,9 +1130,10 @@
         bottom: 0;
         margin: 0;
         color: var(--accent);
-        font-size: clamp(42px, 8vw, 92px);
-        font-weight: 880;
-        line-height: 0.78;
+        font-family: var(--about-field-font, inherit);
+        font-size: var(--about-field-size, clamp(42px, 8vw, 92px));
+        font-weight: var(--about-field-weight, 880);
+        line-height: var(--about-field-line, 0.78);
         opacity: 0.2;
         transform: rotate(var(--about-field-rotate, -10deg));
       }
@@ -1184,23 +1191,27 @@
 
       .about-card dt {
         color: var(--accent);
-        font-size: 11px;
-        font-weight: 760;
+        font-family: var(--about-card-label-font, inherit);
+        font-size: var(--about-card-label-size, 11px);
+        font-weight: var(--about-card-label-weight, 760);
         letter-spacing: 0;
         text-transform: uppercase;
+        transform: translate(var(--about-card-label-x, 0px), var(--about-card-label-y, 0px)) rotate(var(--about-card-label-rotate, 0deg));
       }
 
       .about-card dd {
         margin: 18px 0 0;
         color: var(--text);
-        font-size: clamp(18px, 2.5vw, 30px);
-        font-weight: 720;
-        line-height: 1.02;
+        font-family: var(--about-card-value-font, inherit);
+        font-size: var(--about-card-value-size, clamp(18px, 2.5vw, 30px));
+        font-weight: var(--about-card-value-weight, 720);
+        line-height: var(--about-card-value-line, 1.02);
         overflow-wrap: anywhere;
+        transform: translate(var(--about-card-value-x, 0px), var(--about-card-value-y, 0px)) rotate(var(--about-card-value-rotate, 0deg));
       }
 
       .about-card:not(.about-card-primary) dd {
-        font-size: clamp(16px, 1.8vw, 22px);
+        font-size: var(--about-card-small-value-size, clamp(16px, 1.8vw, 22px));
       }
 
       .about-card a {
@@ -2633,17 +2644,33 @@
 
         .about-logo {
           font-size: clamp(44px, 18vw, 72px);
+          font-family: inherit;
+          font-weight: 840;
+        }
+
+        .about-kicker {
+          font-family: inherit;
+          font-size: 11px;
+          font-weight: 760;
+          transform: none;
         }
 
         .about-name {
           max-width: 100%;
           font-size: clamp(24px, 9vw, 38px);
+          font-family: inherit;
+          font-weight: 820;
+          line-height: 0.96;
+          transform: none;
         }
 
         .about-field {
           position: static;
           margin-top: 18px;
           font-size: clamp(42px, 18vw, 78px);
+          font-family: inherit;
+          font-weight: 880;
+          line-height: 0.78;
           opacity: 0.16;
         }
 
@@ -2664,6 +2691,24 @@
           animation: none;
           box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
           transform: none;
+        }
+
+        .about-card dt,
+        .about-card dd {
+          font-family: inherit;
+          transform: none;
+        }
+
+        .about-card dt {
+          font-size: 11px;
+          font-weight: 760;
+        }
+
+        .about-card dd,
+        .about-card:not(.about-card-primary) dd {
+          font-size: clamp(16px, 5vw, 22px);
+          font-weight: 720;
+          line-height: 1.12;
         }
 
         .section-pager-grid {
@@ -2947,6 +2992,22 @@
             return min + Math.random() * (max - min);
           };
 
+          var randomInt = function (min, max) {
+            return String(Math.round(randomNumber(min, max)));
+          };
+
+          var randomChoice = function (values) {
+            return values[Math.floor(Math.random() * values.length)];
+          };
+
+          var aboutFonts = [
+            "inherit",
+            "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+            "\"Helvetica Neue\", Arial, sans-serif",
+            "ui-serif, Georgia, \"Times New Roman\", serif",
+            "ui-monospace, \"SFMono-Regular\", Menlo, Consolas, monospace"
+          ];
+
           var randomPercentPair = function (min, max, thicknessMin, thicknessMax) {
             var start = randomNumber(min, max);
             var end = start + randomNumber(thicknessMin, thicknessMax);
@@ -3124,6 +3185,26 @@
             container.style.setProperty("--about-field-motion-y", randomRange(-7, 6, "px"));
             container.style.setProperty("--about-field-motion-rotate", randomRange(-4, 5, "deg"));
             container.style.setProperty("--about-grid-margin-top", randomRange(-12, 18, "px"));
+            container.style.setProperty("--about-kicker-font", randomChoice(aboutFonts));
+            container.style.setProperty("--about-kicker-size", randomRange(10, 13, "px"));
+            container.style.setProperty("--about-kicker-weight", randomInt(620, 860));
+            container.style.setProperty("--about-kicker-x", randomRange(-5, 6, "px"));
+            container.style.setProperty("--about-kicker-y", randomRange(-3, 4, "px"));
+            container.style.setProperty("--about-kicker-rotate", randomRange(-1.8, 1.8, "deg"));
+            container.style.setProperty("--about-logo-font", randomChoice(aboutFonts));
+            container.style.setProperty("--about-logo-size", randomRange(72, 118, "px"));
+            container.style.setProperty("--about-logo-weight", randomInt(760, 940));
+            container.style.setProperty("--about-name-font", randomChoice(aboutFonts));
+            container.style.setProperty("--about-name-size", randomRange(34, 54, "px"));
+            container.style.setProperty("--about-name-weight", randomInt(740, 900));
+            container.style.setProperty("--about-name-line", randomRange(0.86, 1.04, ""));
+            container.style.setProperty("--about-name-x", randomRange(-8, 10, "px"));
+            container.style.setProperty("--about-name-y", randomRange(-5, 6, "px"));
+            container.style.setProperty("--about-name-rotate", randomRange(-2.2, 2.2, "deg"));
+            container.style.setProperty("--about-field-font", randomChoice(aboutFonts));
+            container.style.setProperty("--about-field-size", randomRange(62, 104, "px"));
+            container.style.setProperty("--about-field-weight", randomInt(760, 940));
+            container.style.setProperty("--about-field-line", randomRange(0.72, 0.88, ""));
           });
 
           document.querySelectorAll(".about-card").forEach(function (card) {
@@ -3131,6 +3212,20 @@
             card.style.setProperty("--about-card-y", randomRange(-12, 18, "px"));
             card.style.setProperty("--about-card-rotate", randomRange(-2.2, 2.2, "deg"));
             card.style.setProperty("--about-card-line-rotate", randomRange(-16, 10, "deg"));
+            card.style.setProperty("--about-card-label-font", randomChoice(aboutFonts));
+            card.style.setProperty("--about-card-label-size", randomRange(10, 13, "px"));
+            card.style.setProperty("--about-card-label-weight", randomInt(620, 860));
+            card.style.setProperty("--about-card-label-x", randomRange(-4, 5, "px"));
+            card.style.setProperty("--about-card-label-y", randomRange(-3, 4, "px"));
+            card.style.setProperty("--about-card-label-rotate", randomRange(-1.4, 1.4, "deg"));
+            card.style.setProperty("--about-card-value-font", randomChoice(aboutFonts));
+            card.style.setProperty("--about-card-value-size", randomRange(22, 34, "px"));
+            card.style.setProperty("--about-card-small-value-size", randomRange(16, 24, "px"));
+            card.style.setProperty("--about-card-value-weight", randomInt(620, 860));
+            card.style.setProperty("--about-card-value-line", randomRange(0.94, 1.16, ""));
+            card.style.setProperty("--about-card-value-x", randomRange(-6, 8, "px"));
+            card.style.setProperty("--about-card-value-y", randomRange(-4, 7, "px"));
+            card.style.setProperty("--about-card-value-rotate", randomRange(-1.8, 1.8, "deg"));
             applyTrimProfile(card, 6, 30);
             applyHoverProfile(card, true);
           });
