@@ -71,6 +71,11 @@
         --glass-shadow: rgba(15, 23, 42, 0.12);
         --map-texture-line: rgba(15, 23, 42, 0.045);
         --map-texture-soft: rgba(138, 206, 0, 0.05);
+        --paper-panel-bg: rgba(255, 255, 255, 0.68);
+        --paper-text-bg: rgba(255, 255, 255, 0.46);
+        --paper-float-shadow:
+          14px 18px 0 rgba(138, 206, 0, 0.08),
+          0 34px 96px rgba(15, 23, 42, 0.1);
         --logo-glass-rotate: -4deg;
         --logo-glass-shift-x: 0px;
         --logo-glass-shift-y: 0px;
@@ -140,6 +145,11 @@
         --glass-shadow: rgba(0, 0, 0, 0.32);
         --map-texture-line: rgba(226, 232, 240, 0.055);
         --map-texture-soft: rgba(138, 206, 0, 0.045);
+        --paper-panel-bg: rgba(15, 23, 42, 0.62);
+        --paper-text-bg: rgba(15, 23, 42, 0.42);
+        --paper-float-shadow:
+          14px 18px 0 rgba(138, 206, 0, 0.12),
+          0 36px 108px rgba(0, 0, 0, 0.38);
         --shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
         --container-shadow:
           18px 18px 0 rgba(138, 206, 0, 0.16),
@@ -357,6 +367,31 @@
       .page-shell.has-sidebar > .page-content > * {
         position: relative;
         z-index: 1;
+      }
+
+      .collection-research .page-shell.has-sidebar > .page-content {
+        background:
+          linear-gradient(126deg, var(--paper-text-bg), transparent 48%),
+          var(--paper-panel-bg);
+        box-shadow:
+          var(--paper-float-shadow),
+          var(--container-shadow);
+      }
+
+      .collection-research .page-shell.has-sidebar > .page-content::before {
+        position: absolute;
+        inset: 20px 24px 24px;
+        z-index: 0;
+        display: block;
+        pointer-events: none;
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(115deg, var(--paper-text-bg), transparent 42%),
+          linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% 18px,
+          var(--glass-pane);
+        clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+        content: "";
+        opacity: 0.46;
       }
 
       .page-shell.has-sidebar > .side-index {
@@ -1551,6 +1586,18 @@
           display: none;
         }
 
+        .collection-research .page-shell.has-sidebar > .page-content {
+          background: var(--paper-panel-bg);
+          box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
+        }
+
+        .collection-research .page-shell.has-sidebar > .page-content::before {
+          inset: 12px;
+          display: block;
+          clip-path: none;
+          opacity: 0.28;
+        }
+
         .side-index {
           --trim-tl-x: 0px;
           --trim-tl-y: 0px;
@@ -1832,7 +1879,7 @@
     </script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   </head>
-  <body class="{% if page.url == '/' %}home-page{% else %}content-page{% endif %}">
+  <body class="{% if page.url == '/' %}home-page{% else %}content-page{% endif %}{% if page.collection %} collection-{{ page.collection }}{% endif %}">
     {% assign show_sidebar = true %}
     {% if page.url == "/" %}
       {% assign show_sidebar = false %}
