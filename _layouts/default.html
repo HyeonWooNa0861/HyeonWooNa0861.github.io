@@ -1621,6 +1621,7 @@
       }
 
       .home-directory .post-list {
+        --home-slide-fade: 24px;
         display: flex;
         gap: 16px;
         margin: 0;
@@ -1631,8 +1632,8 @@
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        mask-image: linear-gradient(90deg, #000 0 calc(100% - 24px), transparent 100%);
-        -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - 24px), transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0, #000 var(--home-slide-fade), #000 calc(100% - var(--home-slide-fade)), transparent 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--home-slide-fade), #000 calc(100% - var(--home-slide-fade)), transparent 100%);
       }
 
       .home-directory .post-list::-webkit-scrollbar {
@@ -2238,6 +2239,7 @@
         }
 
         .home-directory .post-list {
+          --home-slide-fade: 28px;
           gap: 12px;
           margin: 0 -20px;
           padding: 6px 20px 16px;
