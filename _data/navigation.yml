@@ -1,6 +1,5 @@
 - title: Project
   url: /project/
-  description: Web interaction prototypes
   children:
     - title: gri:d
       url: https://proj-griid.vercel.app/
@@ -14,7 +13,6 @@
 
 - title: Post
   url: /post/
-  description: Reports, lecture reflections, and presentation notes
   children:
     - title: Industry Lectures
       url: /post/industry-lectures/
@@ -29,7 +27,6 @@
 
 - title: Research
   url: /research/
-  description: Research projects and experiment summaries
   children:
     - title: QECO-Adapt
       url: /research/qeco-adapt/
@@ -70,7 +67,6 @@
 
 - title: Assignment
   url: /assignment/
-  description: Course assignment summaries and source PDFs
   children:
     - title: C++
       url: /assignment/cpp/
@@ -79,7 +75,6 @@
 
 - title: Study
   url: /study/
-  description: Lecture notes and study materials
   children:
     - title: C++
       url: /study/cpp/
