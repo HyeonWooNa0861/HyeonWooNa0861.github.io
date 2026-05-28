@@ -17,6 +17,8 @@
         }
 
         document.documentElement.dataset.theme = theme;
+        document.documentElement.classList.add("loading-active");
+        window.__gitblogLoadingStarted = Date.now();
       })();
     </script>
     <style>
@@ -172,6 +174,10 @@
         line-height: 1.72;
       }
 
+      .loading-active body {
+        overflow: hidden;
+      }
+
       html,
       body,
       .side-index,
@@ -207,6 +213,109 @@
         mask-image: linear-gradient(90deg, transparent, #000 var(--fracture-mask-start, 28%), transparent 100%);
         -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fracture-mask-start, 28%), transparent 100%);
         opacity: var(--fracture-opacity, 0.62);
+      }
+
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: none;
+        place-items: center;
+        overflow: hidden;
+        background:
+          linear-gradient(116deg, transparent 0 44%, var(--fracture-strong) 44% 44.5%, transparent 44.5% 100%) 7vw 18vh / min(520px, 58vw) min(360px, 46vh) no-repeat,
+          radial-gradient(circle at 18% 12%, var(--ambient-1), transparent 34%),
+          radial-gradient(circle at 84% 24%, var(--ambient-2), transparent 32%),
+          linear-gradient(145deg, var(--bg), var(--bg-alt));
+        opacity: 1;
+        transition: opacity 320ms ease, visibility 320ms ease, transform 320ms ease;
+      }
+
+      .loading-active .loading-screen {
+        display: grid;
+      }
+
+      .loading-done .loading-screen {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      .loading-screen::before,
+      .loading-screen::after {
+        position: absolute;
+        pointer-events: none;
+        content: "";
+        transform-origin: left center;
+      }
+
+      .loading-screen::before {
+        width: min(620px, 72vw);
+        height: min(320px, 42vh);
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(126deg, transparent 0 28%, var(--glass-glare) 28% 28.8%, transparent 28.8% 100%),
+          var(--glass-pane);
+        clip-path: polygon(0 18%, 19% 0, 56% 8%, 100% 0, 91% 62%, 100% 100%, 54% 88%, 8% 100%);
+        opacity: 0.42;
+        transform: rotate(-4deg);
+        backdrop-filter: blur(14px) saturate(1.25);
+        -webkit-backdrop-filter: blur(14px) saturate(1.25);
+      }
+
+      .loading-screen::after {
+        width: min(380px, 56vw);
+        height: 1px;
+        background: var(--fracture-strong);
+        opacity: 0.72;
+        transform: translateY(92px) rotate(-9deg);
+      }
+
+      .loading-mark {
+        position: relative;
+        isolation: isolate;
+        display: inline-flex;
+        align-items: flex-end;
+        color: var(--text);
+        font-size: clamp(64px, 13vw, 136px);
+        font-weight: 820;
+        letter-spacing: 0;
+        line-height: 0.78;
+        text-shadow:
+          1px 1px 0 var(--glass-glare),
+          10px 10px 0 var(--halftone-shadow);
+      }
+
+      .loading-mark .logo-fragment {
+        --logo-motion-x: 3px;
+        --logo-motion-y: -4px;
+        --logo-motion-rotate: 1.8deg;
+      }
+
+      .loading-mark::before {
+        position: absolute;
+        inset: -14% -6% -10%;
+        z-index: -1;
+        border: 1px solid var(--glass-edge);
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / var(--halftone-size) var(--halftone-size),
+          linear-gradient(118deg, transparent 0 20%, var(--glass-glare) 20% 20.8%, transparent 20.8% 48%, var(--glass-prism) 48% 58%, transparent 58% 100%),
+          var(--glass-pane);
+        clip-path: polygon(0 14%, 25% 0, 62% 12%, 100% 0, 91% 58%, 100% 100%, 56% 86%, 12% 100%);
+        content: "";
+        opacity: 0.72;
+        transform: rotate(-4deg);
+        backdrop-filter: blur(8px) saturate(1.35);
+        -webkit-backdrop-filter: blur(8px) saturate(1.35);
+      }
+
+      .loading-status {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
       }
 
       .site-header {
@@ -1534,6 +1643,18 @@
       }
 
       @media (prefers-reduced-motion: no-preference) {
+        .loading-mark {
+          animation: loading-mark-pulse 1.15s ease-in-out infinite alternate;
+        }
+
+        .loading-mark::before {
+          animation: loading-glass-shift 1.4s ease-in-out infinite alternate;
+        }
+
+        .loading-screen::before {
+          animation: loading-pane-drift 1.8s ease-in-out infinite alternate;
+        }
+
         .home-logo {
           animation: home-logo-drift 7.2s ease-in-out infinite alternate;
         }
@@ -1682,6 +1803,44 @@
             transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
           }
         }
+
+        @keyframes loading-mark-pulse {
+          from {
+            text-shadow:
+              1px 1px 0 var(--glass-glare),
+              8px 8px 0 var(--halftone-shadow);
+            transform: translateY(0) skewX(-1deg);
+          }
+
+          to {
+            text-shadow:
+              1px 1px 0 var(--glass-glare),
+              15px 12px 0 var(--halftone-shadow-strong);
+            transform: translateY(-7px) skewX(1.4deg);
+          }
+        }
+
+        @keyframes loading-glass-shift {
+          from {
+            opacity: 0.56;
+            transform: rotate(-5deg) translate(-4px, 3px);
+          }
+
+          to {
+            opacity: 0.82;
+            transform: rotate(2deg) translate(6px, -5px);
+          }
+        }
+
+        @keyframes loading-pane-drift {
+          from {
+            transform: rotate(-5deg) translate(-10px, 8px);
+          }
+
+          to {
+            transform: rotate(4deg) translate(12px, -6px);
+          }
+        }
       }
 
       @media (max-width: 860px) {
@@ -1703,6 +1862,36 @@
           background: var(--header-bg);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
+        }
+
+        .loading-screen {
+          background:
+            radial-gradient(circle at 20% 16%, var(--ambient-1), transparent 38%),
+            linear-gradient(145deg, var(--bg), var(--bg-alt));
+        }
+
+        .loading-screen::before {
+          width: 74vw;
+          height: 32vh;
+          opacity: 0.28;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+
+        .loading-screen::after {
+          width: 48vw;
+          opacity: 0.48;
+          transform: translateY(72px) rotate(-8deg);
+        }
+
+        .loading-mark {
+          font-size: clamp(56px, 21vw, 96px);
+        }
+
+        .loading-mark::before {
+          opacity: 0.42;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
         }
 
         main {
@@ -2090,6 +2279,14 @@
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   </head>
   <body class="{% if page.url == '/' %}home-page{% else %}content-page{% endif %}{% if page.collection %} posted-page collection-{{ page.collection }}{% endif %}">
+    <div class="loading-screen" data-loading-screen role="status" aria-live="polite" aria-label="Loading">
+      <div class="loading-mark" aria-hidden="true">
+        <span class="logo-fragment" data-fragment="Na">Na</span>
+        <span class="logo-fragment" data-fragment="H">H</span>
+        <span class="logo-fragment" data-fragment="W">W</span>
+      </div>
+      <span class="loading-status">Loading</span>
+    </div>
     {% assign show_sidebar = true %}
     {% if page.url == "/" %}
       {% assign show_sidebar = false %}
@@ -2152,6 +2349,79 @@
     </main>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        var loadingScreen = document.querySelector("[data-loading-screen]");
+        var loadingRoot = document.documentElement;
+        var loadingStart = window.__gitblogLoadingStarted || Date.now();
+        var loadingReleased = false;
+        var loadingCleanupTimer = null;
+
+        function showLoadingScreen() {
+          if (!loadingScreen) return;
+          loadingReleased = false;
+          if (loadingCleanupTimer) {
+            clearTimeout(loadingCleanupTimer);
+            loadingCleanupTimer = null;
+          }
+          loadingScreen.hidden = false;
+          loadingRoot.classList.remove("loading-done");
+          loadingRoot.classList.add("loading-active");
+        }
+
+        function releaseLoadingScreen() {
+          if (loadingReleased) return;
+          loadingReleased = true;
+          loadingRoot.classList.add("loading-done");
+
+          var cleanup = function () {
+            if (loadingCleanupTimer) {
+              clearTimeout(loadingCleanupTimer);
+              loadingCleanupTimer = null;
+            }
+            if (loadingScreen) loadingScreen.hidden = true;
+            loadingRoot.classList.remove("loading-active", "loading-done");
+          };
+
+          if (loadingScreen) {
+            loadingScreen.addEventListener("transitionend", cleanup, { once: true });
+          }
+
+          loadingCleanupTimer = setTimeout(cleanup, 520);
+        }
+
+        function finishInitialLoading() {
+          var elapsed = Date.now() - loadingStart;
+          var remaining = Math.max(0, 560 - elapsed);
+          setTimeout(releaseLoadingScreen, remaining);
+        }
+
+        if (document.readyState === "complete") {
+          finishInitialLoading();
+        } else {
+          window.addEventListener("load", finishInitialLoading, { once: true });
+          setTimeout(finishInitialLoading, 2400);
+        }
+
+        document.addEventListener("click", function (event) {
+          var link = event.target.closest("a[href]");
+          if (!link) return;
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          if (link.target || link.hasAttribute("download")) return;
+
+          try {
+            var nextUrl = new URL(link.href, window.location.href);
+            var currentUrl = new URL(window.location.href);
+            var samePageHash = nextUrl.origin === currentUrl.origin &&
+              nextUrl.pathname === currentUrl.pathname &&
+              nextUrl.search === currentUrl.search &&
+              nextUrl.hash !== currentUrl.hash;
+
+            if (nextUrl.origin !== currentUrl.origin || samePageHash) return;
+            showLoadingScreen();
+          } catch (error) {
+            return;
+          }
+        });
+
         function applySpatialRandomness() {
           if (window.matchMedia("(max-width: 860px), (hover: none), (pointer: coarse)").matches) return;
 
