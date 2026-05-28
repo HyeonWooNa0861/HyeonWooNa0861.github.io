@@ -41,15 +41,11 @@
         --table-row-alt: rgba(37, 99, 235, 0.04);
         --pre-bg: #111827;
         --pre-text: #e5e7eb;
-        --header-bg: rgba(246, 248, 251, 0.82);
+        --header-bg: rgba(246, 248, 251, 0.56);
         --ambient-1: rgba(138, 206, 0, 0.05);
         --ambient-2: rgba(138, 206, 0, 0.03);
         --fracture: rgba(15, 23, 42, 0.09);
         --fracture-strong: rgba(138, 206, 0, 0.32);
-        --panel-radius: 0px;
-        --side-radius: 0px;
-        --media-radius: 12px;
-        --code-radius: 12px;
         --component-moment: 160ms;
         --halftone-dot: rgba(15, 23, 42, 0.2);
         --halftone-shadow: rgba(138, 206, 0, 0.24);
@@ -96,15 +92,11 @@
         --table-row-alt: rgba(147, 197, 253, 0.05);
         --pre-bg: #020617;
         --pre-text: #e5e7eb;
-        --header-bg: rgba(8, 11, 18, 0.82);
+        --header-bg: rgba(8, 11, 18, 0.56);
         --ambient-1: rgba(138, 206, 0, 0.055);
         --ambient-2: rgba(183, 255, 0, 0.035);
         --fracture: rgba(148, 163, 184, 0.11);
         --fracture-strong: rgba(183, 255, 0, 0.26);
-        --panel-radius: 0px;
-        --side-radius: 0px;
-        --media-radius: 12px;
-        --code-radius: 12px;
         --component-moment: 160ms;
         --halftone-dot: rgba(226, 232, 240, 0.24);
         --halftone-shadow: rgba(138, 206, 0, 0.24);
@@ -224,7 +216,7 @@
 
       .theme-toggle {
         border: 1px solid var(--line);
-        border-radius: 999px;
+        border-radius: 0;
         background: transparent;
         padding: 5px 10px;
         color: var(--muted);
@@ -232,6 +224,7 @@
         font-size: 12px;
         line-height: 1.2;
         cursor: pointer;
+        clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
       }
 
       .theme-toggle:hover {
@@ -296,7 +289,7 @@
         isolation: isolate;
         overflow: hidden;
         border: 1px solid var(--line);
-        border-radius: var(--panel-radius);
+        border-radius: 0;
         background: var(--panel);
         background-clip: padding-box;
         box-shadow: var(--shadow);
@@ -337,7 +330,7 @@
         overflow-y: auto;
         overscroll-behavior: contain;
         border: 1px solid var(--line-strong);
-        border-radius: var(--side-radius);
+        border-radius: 0;
         background:
           linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% 13px,
           linear-gradient(90deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 21px 100%,
@@ -543,7 +536,7 @@
 
       code {
         border: 1px solid var(--code-border);
-        border-radius: 5px;
+        border-radius: 0;
         background: var(--code-bg);
         padding: 2px 5px;
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -554,12 +547,13 @@
         max-width: 100%;
         overflow-x: auto;
         border: 1px solid var(--line);
-        border-radius: var(--code-radius);
+        border-radius: 0;
         background: var(--pre-bg);
         color: var(--pre-text);
         padding: 16px;
         line-height: 1.55;
         box-shadow: var(--shadow);
+        clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
       }
 
       pre code {
@@ -822,10 +816,11 @@
         margin: 0 0 8px;
         overflow: hidden;
         border: 1px solid var(--line);
-        border-radius: var(--media-radius);
+        border-radius: 0;
         background: var(--panel);
         aspect-ratio: 4 / 3;
         box-shadow: var(--shadow);
+        clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
       }
 
       .image-frame img {
@@ -1295,7 +1290,6 @@
           border: 0;
           border-radius: 0;
           background: transparent;
-          --panel-radius: 0px;
           clip-path: none;
           box-shadow: none;
           padding: 0;
@@ -1311,7 +1305,6 @@
           max-height: 45vh;
           max-height: 45dvh;
           overflow-y: auto;
-          --side-radius: 0px;
           box-shadow: var(--shadow);
           clip-path: none;
           transform: none;
@@ -1570,10 +1563,6 @@
           root.style.setProperty("--logo-glass-shift-x", randomRange(-8, 8, "px"));
           root.style.setProperty("--logo-glass-shift-y", randomRange(-5, 6, "px"));
           root.style.setProperty("--logo-glass-angle", randomRange(104, 132, "deg"));
-          root.style.setProperty("--panel-radius", randomRange(0, 18, "px"));
-          root.style.setProperty("--side-radius", randomRange(0, 14, "px"));
-          root.style.setProperty("--media-radius", randomRange(4, 20, "px"));
-          root.style.setProperty("--code-radius", randomRange(2, 14, "px"));
           root.style.setProperty("--component-moment", randomRange(120, 260, "ms"));
           root.style.setProperty("--halftone-size", randomRange(5, 9, "px"));
           root.style.setProperty("--halftone-dot-size", randomRange(0.9, 1.6, "px"));
