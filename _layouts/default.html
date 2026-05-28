@@ -1566,9 +1566,12 @@
         -webkit-flex: 0 0 auto;
         flex: 0 0 auto;
         min-height: 132px;
+        height: auto;
         scroll-snap-align: start;
         overflow: hidden;
+        overflow-wrap: anywhere;
         vertical-align: top;
+        white-space: normal;
         border: 1px solid var(--line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 56%),
@@ -1606,6 +1609,8 @@
         width: auto;
         font-size: 18px;
         line-height: 1.14;
+        overflow-wrap: anywhere;
+        white-space: normal;
         transform: translate(var(--home-card-title-x, 0px), var(--home-card-title-y, 0px)) rotate(var(--home-card-title-rotate, 0deg));
       }
 
@@ -1615,6 +1620,8 @@
         margin: 12px 0 0;
         font-size: 13px;
         line-height: 1.45;
+        overflow-wrap: anywhere;
+        white-space: normal;
       }
 
       .home-directory .post-card:hover {
