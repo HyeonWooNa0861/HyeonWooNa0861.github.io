@@ -367,10 +367,10 @@
         border: 1px solid var(--line-strong);
         border-radius: 0;
         background:
-          linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% 13px,
-          linear-gradient(90deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 21px 100%,
-          linear-gradient(118deg, transparent 0 39%, var(--glass-glare) 39% 39.5%, transparent 39.5% 100%),
-          linear-gradient(34deg, transparent 0 57%, var(--map-texture-soft) 57% 60%, transparent 60% 100%),
+          linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% var(--map-grid-y, 13px),
+          linear-gradient(90deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / var(--map-grid-x, 21px) 100%,
+          linear-gradient(var(--map-glare-angle, 118deg), transparent 0 var(--map-glare-start, 39%), var(--glass-glare) var(--map-glare-start, 39%) var(--map-glare-end, 39.5%), transparent var(--map-glare-end, 39.5%) 100%),
+          linear-gradient(var(--map-soft-angle, 34deg), transparent 0 var(--map-soft-start, 57%), var(--map-texture-soft) var(--map-soft-start, 57%) var(--map-soft-end, 60%), transparent var(--map-soft-end, 60%) 100%),
           var(--panel);
         box-shadow:
           var(--shadow),
@@ -391,27 +391,28 @@
       }
 
       .side-index::before {
-        top: 38px;
-        left: -12px;
-        width: 112%;
-        height: 1px;
+        top: var(--map-fracture-top, 38px);
+        left: var(--map-fracture-left, -12px);
+        width: var(--map-fracture-width, 112%);
+        height: var(--map-fracture-thickness, 1px);
         background: var(--fracture-strong);
-        transform: rotate(var(--map-fracture-a, -13deg));
+        opacity: var(--map-fracture-opacity, 1);
+        transform: translateY(var(--map-fracture-y, 0px)) rotate(var(--map-fracture-a, -13deg));
       }
 
       .side-index::after {
-        right: -18px;
-        bottom: 38px;
-        width: 72%;
-        height: 58%;
+        right: var(--map-glass-right, -18px);
+        bottom: var(--map-glass-bottom, 38px);
+        width: var(--map-glass-width, 72%);
+        height: var(--map-glass-height, 58%);
         border-top: 1px solid var(--glass-edge);
         border-right: 1px solid var(--glass-edge);
         background:
-          linear-gradient(126deg, transparent 0 32%, var(--glass-prism) 32% 42%, transparent 42% 100%),
-          linear-gradient(54deg, transparent 0 58%, var(--glass-glare) 58% 59%, transparent 59% 100%);
-        clip-path: polygon(12% 0, 100% 14%, 86% 100%, 0 78%);
-        opacity: 0.58;
-        transform: rotate(var(--map-fracture-b, 9deg));
+          linear-gradient(var(--map-glass-angle-a, 126deg), transparent 0 var(--map-glass-a-start, 32%), var(--glass-prism) var(--map-glass-a-start, 32%) var(--map-glass-a-end, 42%), transparent var(--map-glass-a-end, 42%) 100%),
+          linear-gradient(var(--map-glass-angle-b, 54deg), transparent 0 var(--map-glass-b-start, 58%), var(--glass-glare) var(--map-glass-b-start, 58%) var(--map-glass-b-end, 59%), transparent var(--map-glass-b-end, 59%) 100%);
+        clip-path: polygon(var(--map-glass-cut-a, 12%) 0, 100% var(--map-glass-cut-b, 14%), var(--map-glass-cut-c, 86%) 100%, 0 var(--map-glass-cut-d, 78%));
+        opacity: var(--map-glass-opacity, 0.58);
+        transform: translate(var(--map-glass-x, 0px), var(--map-glass-y, 0px)) rotate(var(--map-fracture-b, 9deg));
       }
 
       .side-index-heading {
@@ -454,13 +455,14 @@
 
       .side-index-section + .side-index-section::before {
         position: absolute;
-        top: 0;
-        left: -6px;
-        width: calc(100% + 12px);
+        top: var(--map-section-line-top, 0px);
+        left: var(--map-section-line-left, -6px);
+        width: var(--map-section-line-width, calc(100% + 12px));
         height: 1px;
         background: var(--line-strong);
         content: "";
-        transform: rotate(var(--map-section-rotate, -2deg));
+        opacity: var(--map-section-line-opacity, 1);
+        transform: rotate(var(--map-section-rotate, -2deg)) skewX(var(--map-section-skew, 0deg));
         transform-origin: left center;
       }
 
@@ -744,18 +746,18 @@
 
       .content-page .page-content > h1 + .post-list::before {
         position: absolute;
-        top: -18px;
-        left: -26px;
+        top: var(--list-field-top, -18px);
+        left: var(--list-field-left, -26px);
         z-index: 0;
-        width: min(62vw, 680px);
-        height: calc(100% + 42px);
+        width: min(var(--list-field-width, 62vw), var(--list-field-max, 680px));
+        height: calc(100% + var(--list-field-height-extra, 42px));
         pointer-events: none;
         background:
-          linear-gradient(117deg, transparent 0 44%, var(--fracture-strong) 44% 45%, transparent 45% 100%) 0 0 / 220px 220px,
-          linear-gradient(28deg, transparent 0 52%, var(--glass-edge) 52% 53%, transparent 53% 100%);
+          linear-gradient(var(--list-field-angle-a, 117deg), transparent 0 var(--list-field-stop-a, 44%), var(--fracture-strong) var(--list-field-stop-a, 44%) var(--list-field-stop-b, 45%), transparent var(--list-field-stop-b, 45%) 100%) 0 0 / var(--list-field-size-a, 220px) var(--list-field-size-b, 220px),
+          linear-gradient(var(--list-field-angle-b, 28deg), transparent 0 var(--list-field-stop-c, 52%), var(--glass-edge) var(--list-field-stop-c, 52%) var(--list-field-stop-d, 53%), transparent var(--list-field-stop-d, 53%) 100%);
         content: "";
-        opacity: 0.42;
-        transform: rotate(var(--list-field-rotate, -4deg));
+        opacity: var(--list-field-opacity, 0.42);
+        transform: translate(var(--list-field-x, 0px), var(--list-field-y, 0px)) rotate(var(--list-field-rotate, -4deg)) skewY(var(--list-field-skew, 0deg));
       }
 
       .content-page .page-content > h1 + .post-list .post-card {
@@ -1499,6 +1501,13 @@
           text-shadow: none;
         }
 
+        .side-index-section + .side-index-section::before {
+          left: 0;
+          width: 100%;
+          opacity: 0.52;
+          transform: none;
+        }
+
         .side-index-link.active,
         .side-index-link:hover {
           box-shadow: none;
@@ -1788,6 +1797,16 @@
             return (min + Math.random() * (max - min)).toFixed(2) + unit;
           };
 
+          var randomNumber = function (min, max) {
+            return min + Math.random() * (max - min);
+          };
+
+          var randomPercentPair = function (min, max, thicknessMin, thicknessMax) {
+            var start = randomNumber(min, max);
+            var end = start + randomNumber(thicknessMin, thicknessMax);
+            return [start.toFixed(2) + "%", end.toFixed(2) + "%"];
+          };
+
           var applyHoverProfile = function (element, compact) {
             element.style.setProperty("--hover-shadow-x", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
             element.style.setProperty("--hover-shadow-y", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
@@ -1822,10 +1841,63 @@
           root.style.setProperty("--side-index-offset", randomRange(10, 24, "px"));
           root.style.setProperty("--map-fracture-a", randomRange(-17, -8, "deg"));
           root.style.setProperty("--map-fracture-b", randomRange(5, 15, "deg"));
-          root.style.setProperty("--map-section-rotate", randomRange(-3.5, 2.5, "deg"));
+          root.style.setProperty("--map-grid-x", randomRange(16, 30, "px"));
+          root.style.setProperty("--map-grid-y", randomRange(9, 18, "px"));
+          var mapGlare = randomPercentPair(31, 48, 0.4, 1.1);
+          root.style.setProperty("--map-glare-angle", randomRange(104, 134, "deg"));
+          root.style.setProperty("--map-glare-start", mapGlare[0]);
+          root.style.setProperty("--map-glare-end", mapGlare[1]);
+          var mapSoft = randomPercentPair(49, 66, 2.1, 5.2);
+          root.style.setProperty("--map-soft-angle", randomRange(22, 48, "deg"));
+          root.style.setProperty("--map-soft-start", mapSoft[0]);
+          root.style.setProperty("--map-soft-end", mapSoft[1]);
+          root.style.setProperty("--map-fracture-top", randomRange(24, 62, "px"));
+          root.style.setProperty("--map-fracture-left", randomRange(-24, -4, "px"));
+          root.style.setProperty("--map-fracture-width", randomRange(102, 128, "%"));
+          root.style.setProperty("--map-fracture-thickness", randomRange(1, 2.4, "px"));
+          root.style.setProperty("--map-fracture-y", randomRange(-5, 8, "px"));
+          root.style.setProperty("--map-fracture-opacity", randomRange(0.62, 0.96, ""));
+          root.style.setProperty("--map-glass-right", randomRange(-30, -8, "px"));
+          root.style.setProperty("--map-glass-bottom", randomRange(24, 64, "px"));
+          root.style.setProperty("--map-glass-width", randomRange(58, 84, "%"));
+          root.style.setProperty("--map-glass-height", randomRange(42, 66, "%"));
+          root.style.setProperty("--map-glass-angle-a", randomRange(112, 142, "deg"));
+          root.style.setProperty("--map-glass-angle-b", randomRange(42, 72, "deg"));
+          var mapGlassA = randomPercentPair(24, 42, 6, 13);
+          root.style.setProperty("--map-glass-a-start", mapGlassA[0]);
+          root.style.setProperty("--map-glass-a-end", mapGlassA[1]);
+          var mapGlassB = randomPercentPair(52, 66, 0.5, 1.6);
+          root.style.setProperty("--map-glass-b-start", mapGlassB[0]);
+          root.style.setProperty("--map-glass-b-end", mapGlassB[1]);
+          root.style.setProperty("--map-glass-cut-a", randomRange(6, 20, "%"));
+          root.style.setProperty("--map-glass-cut-b", randomRange(8, 24, "%"));
+          root.style.setProperty("--map-glass-cut-c", randomRange(76, 92, "%"));
+          root.style.setProperty("--map-glass-cut-d", randomRange(68, 88, "%"));
+          root.style.setProperty("--map-glass-opacity", randomRange(0.42, 0.68, ""));
+          root.style.setProperty("--map-glass-x", randomRange(-8, 8, "px"));
+          root.style.setProperty("--map-glass-y", randomRange(-6, 9, "px"));
           root.style.setProperty("--page-axis-left", randomRange(12, 28, "%"));
           root.style.setProperty("--page-axis-shift", randomRange(-18, 22, "px"));
           root.style.setProperty("--list-field-rotate", randomRange(-6, 3, "deg"));
+          root.style.setProperty("--list-field-skew", randomRange(-2.6, 2.8, "deg"));
+          root.style.setProperty("--list-field-top", randomRange(-34, -8, "px"));
+          root.style.setProperty("--list-field-left", randomRange(-54, -10, "px"));
+          root.style.setProperty("--list-field-width", randomRange(48, 74, "vw"));
+          root.style.setProperty("--list-field-max", randomRange(560, 760, "px"));
+          root.style.setProperty("--list-field-height-extra", randomRange(26, 72, "px"));
+          root.style.setProperty("--list-field-x", randomRange(-12, 14, "px"));
+          root.style.setProperty("--list-field-y", randomRange(-10, 10, "px"));
+          root.style.setProperty("--list-field-opacity", randomRange(0.28, 0.52, ""));
+          root.style.setProperty("--list-field-angle-a", randomRange(100, 132, "deg"));
+          root.style.setProperty("--list-field-angle-b", randomRange(18, 42, "deg"));
+          var listFieldA = randomPercentPair(36, 54, 0.6, 1.8);
+          root.style.setProperty("--list-field-stop-a", listFieldA[0]);
+          root.style.setProperty("--list-field-stop-b", listFieldA[1]);
+          var listFieldB = randomPercentPair(46, 62, 0.5, 1.4);
+          root.style.setProperty("--list-field-stop-c", listFieldB[0]);
+          root.style.setProperty("--list-field-stop-d", listFieldB[1]);
+          root.style.setProperty("--list-field-size-a", randomRange(172, 286, "px"));
+          root.style.setProperty("--list-field-size-b", randomRange(168, 302, "px"));
           root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
           root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
           root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
@@ -1846,6 +1918,15 @@
             link.style.setProperty("--map-link-x", randomRange(-3, 4, "px"));
             link.style.setProperty("--map-link-rotate", randomRange(-1.2, 1.2, "deg"));
             applyHoverProfile(link, true);
+          });
+
+          document.querySelectorAll(".side-index-section").forEach(function (section) {
+            section.style.setProperty("--map-section-line-top", randomRange(-2, 3, "px"));
+            section.style.setProperty("--map-section-line-left", randomRange(-12, 2, "px"));
+            section.style.setProperty("--map-section-line-width", "calc(100% + " + randomRange(8, 28, "px") + ")");
+            section.style.setProperty("--map-section-rotate", randomRange(-4.4, 3.2, "deg"));
+            section.style.setProperty("--map-section-skew", randomRange(-6, 6, "deg"));
+            section.style.setProperty("--map-section-line-opacity", randomRange(0.48, 0.9, ""));
           });
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
