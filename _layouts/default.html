@@ -874,9 +874,12 @@
         counter-increment: post-card;
         content: counter(post-card, decimal-leading-zero);
         color: var(--accent);
-        font-size: 12px;
-        font-weight: 760;
+        font-family: var(--card-index-font, inherit);
+        font-size: var(--card-index-size, 12px);
+        font-style: var(--card-index-style, normal);
+        font-weight: var(--card-index-weight, 760);
         line-height: 1.4;
+        transform: translate(var(--card-index-x, 0px), var(--card-index-y, 0px)) rotate(var(--card-index-rotate, 0deg));
       }
 
       .post-card:hover {
@@ -892,11 +895,14 @@
         grid-column: 2;
         min-width: 0;
         color: var(--text);
-        font-size: 20px;
-        font-weight: 690;
-        line-height: 1.28;
+        font-family: var(--card-title-font, inherit);
+        font-size: var(--card-title-size, 20px);
+        font-style: var(--card-title-style, normal);
+        font-weight: var(--card-title-weight, 690);
+        line-height: var(--card-title-line, 1.28);
         overflow-wrap: anywhere;
         text-decoration: none;
+        transform: translate(var(--card-title-x, 0px), var(--card-title-y, 0px)) rotate(var(--card-title-rotate, 0deg));
         transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease;
       }
 
@@ -910,9 +916,13 @@
         min-width: 0;
         margin: 8px 0 0;
         color: var(--muted);
-        font-size: 14px;
-        line-height: 1.55;
+        font-family: var(--card-desc-font, inherit);
+        font-size: var(--card-desc-size, 14px);
+        font-style: var(--card-desc-style, normal);
+        font-weight: var(--card-desc-weight, 400);
+        line-height: var(--card-desc-line, 1.55);
         overflow-wrap: anywhere;
+        transform: translate(var(--card-desc-x, 0px), var(--card-desc-y, 0px)) rotate(var(--card-desc-rotate, 0deg));
       }
 
       .content-page .page-content > h1 + .post-list {
@@ -2559,7 +2569,29 @@
         }
 
         .post-card a {
+          font-family: inherit;
           font-size: 17px;
+          font-style: normal;
+          font-weight: 690;
+          line-height: 1.28;
+          transform: none;
+        }
+
+        .post-card p {
+          font-family: inherit;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 1.55;
+          transform: none;
+        }
+
+        .post-card::before {
+          font-family: inherit;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 760;
+          transform: none;
         }
 
         .content-page .page-content > h1 + .post-list {
@@ -3381,6 +3413,13 @@
           });
 
           document.querySelectorAll(".home-directory .post-card").forEach(function (card, index) {
+            var title = card.querySelector("a");
+            var description = card.querySelector("p");
+            var titleLength = title ? title.textContent.trim().length : 0;
+            var descriptionLength = description ? description.textContent.trim().length : 0;
+            var longTitle = titleLength > 18;
+            var longDescription = descriptionLength > 58;
+
             card.style.setProperty("--home-slide-delay", (index * 78).toFixed(0) + "ms");
             card.style.setProperty("--home-card-rail-x", randomRange(-12, 20, "px"));
             card.style.setProperty("--home-card-rail-y", randomRange(-5, 12, "px"));
@@ -3388,6 +3427,29 @@
             card.style.setProperty("--home-card-rail-margin-top", randomRange(0, 24, "px"));
             card.style.setProperty("--home-card-rail-margin-bottom", randomRange(0, 12, "px"));
             card.style.setProperty("--home-card-line-rotate", randomRange(-22, 14, "deg"));
+            card.style.setProperty("--card-index-font", randomChoice(aboutFonts));
+            card.style.setProperty("--card-index-size", randomRange(10.5, 13.5, "px"));
+            card.style.setProperty("--card-index-style", randomChoice(["normal", "normal", "italic"]));
+            card.style.setProperty("--card-index-weight", randomInt(620, 880));
+            card.style.setProperty("--card-index-x", randomRange(-2, 3, "px"));
+            card.style.setProperty("--card-index-y", randomRange(-2, 3, "px"));
+            card.style.setProperty("--card-index-rotate", randomRange(-6, 6, "deg"));
+            card.style.setProperty("--card-title-font", randomChoice(aboutFonts));
+            card.style.setProperty("--card-title-size", randomRange(longTitle ? 17 : 18, longTitle ? 21 : 23, "px"));
+            card.style.setProperty("--card-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            card.style.setProperty("--card-title-weight", randomInt(620, 840));
+            card.style.setProperty("--card-title-line", randomRange(1.18, 1.36, ""));
+            card.style.setProperty("--card-title-x", randomRange(-5, 7, "px"));
+            card.style.setProperty("--card-title-y", randomRange(-3, 4, "px"));
+            card.style.setProperty("--card-title-rotate", randomRange(-1.6, 1.6, "deg"));
+            card.style.setProperty("--card-desc-font", randomChoice(aboutFonts));
+            card.style.setProperty("--card-desc-size", randomRange(longDescription ? 12.5 : 13, longDescription ? 14.5 : 15.5, "px"));
+            card.style.setProperty("--card-desc-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            card.style.setProperty("--card-desc-weight", randomInt(360, 560));
+            card.style.setProperty("--card-desc-line", randomRange(1.42, 1.68, ""));
+            card.style.setProperty("--card-desc-x", randomRange(-4, 5, "px"));
+            card.style.setProperty("--card-desc-y", randomRange(-2, 4, "px"));
+            card.style.setProperty("--card-desc-rotate", randomRange(-1.2, 1.2, "deg"));
             applyTrimProfile(card, 8, 28);
             applyHoverProfile(card, true);
           });
