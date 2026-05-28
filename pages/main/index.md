@@ -17,7 +17,12 @@ permalink: /
   <section class="directory-section">
     <h2>
       <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
-      <a class="directory-link" href="{{ item.url | relative_url }}">Index</a>
+      <a class="directory-link" href="{{ item.url | relative_url }}" aria-label="{{ item.title }} index">
+        <svg class="directory-plus" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path class="plus-axis plus-axis-horizontal" d="M7 16H25" />
+          <path class="plus-axis plus-axis-vertical" d="M16 7V25" />
+        </svg>
+      </a>
     </h2>
     {% if item.description %}
       <p class="section-description">{{ item.description }}</p>

@@ -1458,18 +1458,99 @@
       }
 
       .directory-link {
-        display: inline-block;
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 700;
+        --trim-tl-x: 0px;
+        --trim-tl-y: 6px;
+        --trim-tr-x: 10px;
+        --trim-tr-y: 10px;
+        --trim-br-x: 5px;
+        --trim-br-y: 0px;
+        --trim-bl-x: 8px;
+        --trim-bl-y: 8px;
+        position: relative;
+        isolation: isolate;
+        display: inline-grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        color: var(--text);
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(128deg, var(--glass-pane), transparent 62%),
+          transparent;
+        clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
         text-decoration: none;
-        transition: color var(--component-moment) ease, text-shadow var(--component-moment) ease, transform var(--component-moment) ease;
+        transition: border-color var(--component-moment) ease, box-shadow var(--component-moment) ease, color var(--component-moment) ease, transform var(--component-moment) ease;
         transform: translate(var(--section-link-x, 0px), var(--section-link-y, 0px)) rotate(var(--section-link-rotate, 0deg));
+      }
+
+      .directory-link::before,
+      .directory-link::after {
+        position: absolute;
+        pointer-events: none;
+        content: "";
+      }
+
+      .directory-link::before {
+        inset: -7px;
+        z-index: -1;
+        border: 1px solid var(--glass-edge);
+        background:
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / calc(var(--halftone-size) + 2px) calc(var(--halftone-size) + 2px),
+          var(--glass-pane);
+        clip-path: polygon(0 18%, 24% 0, 100% 10%, 86% 100%, 8% 86%);
+        opacity: 0.28;
+        transform: translate(var(--plus-glass-x, 0px), var(--plus-glass-y, 0px)) rotate(var(--plus-glass-rotate, -5deg));
+      }
+
+      .directory-link::after {
+        right: -7px;
+        bottom: 7px;
+        width: 20px;
+        height: 1px;
+        background: var(--fracture-strong);
+        opacity: 0.72;
+        transform: rotate(var(--plus-line-rotate, -12deg));
+      }
+
+      .directory-plus {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 22px;
+        height: 22px;
+        overflow: visible;
+        transform: rotate(var(--plus-rotate, 0deg));
+        transition: transform var(--component-moment) ease;
+      }
+
+      .plus-axis {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: square;
+        stroke-width: 2.4;
+        vector-effect: non-scaling-stroke;
+        transition: transform var(--component-moment) ease, stroke var(--component-moment) ease;
+        transform-origin: center;
       }
 
       .directory-link:hover {
         color: var(--accent);
-        text-shadow: var(--rough-hover-text-shadow);
+        border-color: var(--line-strong);
+        box-shadow: var(--compact-hover-shadow);
+        transform: translate(calc(var(--section-link-x, 0px) + var(--hover-card-x, 0px)), calc(var(--section-link-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--section-link-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+      }
+
+      .directory-link:hover .directory-plus {
+        animation: none;
+        transform: rotate(calc(var(--plus-rotate, 0deg) + 90deg));
+      }
+
+      .directory-link:hover .plus-axis-horizontal {
+        transform: translateY(var(--plus-axis-shift, -1px));
+      }
+
+      .directory-link:hover .plus-axis-vertical {
+        transform: translateX(calc(var(--plus-axis-shift, -1px) * -1));
       }
 
       .home-directory .post-card {
@@ -1684,6 +1765,10 @@
           animation-delay: var(--home-slide-delay, 0ms);
         }
 
+        .directory-plus {
+          animation: directory-plus-breathe 3.8s ease-in-out infinite alternate;
+        }
+
         .page-content {
           animation: page-content-enter 180ms ease-out both;
           will-change: opacity, transform;
@@ -1801,6 +1886,16 @@
           to {
             opacity: 1;
             transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
+          }
+        }
+
+        @keyframes directory-plus-breathe {
+          from {
+            transform: rotate(var(--plus-rotate, 0deg)) scale(0.92);
+          }
+
+          to {
+            transform: rotate(calc(var(--plus-rotate, 0deg) + 18deg)) scale(1.08);
           }
         }
 
@@ -2118,6 +2213,26 @@
           transform: none;
         }
 
+        .directory-link {
+          width: 38px;
+          height: 38px;
+          box-shadow: none;
+        }
+
+        .directory-link::before {
+          opacity: 0.18;
+        }
+
+        .directory-link::after {
+          opacity: 0.48;
+        }
+
+        .directory-plus {
+          width: 20px;
+          height: 20px;
+          animation: none;
+        }
+
         .post-card a {
           font-size: 17px;
         }
@@ -2235,6 +2350,7 @@
       @media (hover: none), (pointer: coarse) {
         .theme-toggle:hover,
         .side-index-link:hover,
+        .directory-link:hover,
         .post-card:hover,
         .content-page .page-content > h1 + .post-list .post-card:hover {
           box-shadow: none;
@@ -2619,6 +2735,16 @@
             section.style.setProperty("--branch-glass-angle", randomRange(104, 132, "deg"));
             section.style.setProperty("--branch-echo-x", randomRange(-5, 9, "px"));
             section.style.setProperty("--branch-echo-y", randomRange(-8, 7, "px"));
+          });
+
+          document.querySelectorAll(".directory-link").forEach(function (link) {
+            link.style.setProperty("--plus-rotate", randomRange(-14, 16, "deg"));
+            link.style.setProperty("--plus-axis-shift", randomRange(-2, 2, "px"));
+            link.style.setProperty("--plus-glass-rotate", randomRange(-9, 7, "deg"));
+            link.style.setProperty("--plus-glass-x", randomRange(-4, 4, "px"));
+            link.style.setProperty("--plus-glass-y", randomRange(-4, 4, "px"));
+            link.style.setProperty("--plus-line-rotate", randomRange(-18, 8, "deg"));
+            applyTrimProfile(link, 4, 14);
           });
 
           document.querySelectorAll(".page-branch-logo").forEach(function (logo) {
