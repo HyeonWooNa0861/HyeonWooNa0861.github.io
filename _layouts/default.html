@@ -1960,6 +1960,71 @@
         }
       }
 
+      @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+        .post-card:hover {
+          animation: card-hover-drift var(--hover-motion-duration, 720ms) steps(2, end) infinite alternate;
+        }
+
+        .home-directory .post-card:hover {
+          animation: home-card-hover-drift var(--hover-motion-duration, 720ms) steps(2, end) infinite alternate;
+        }
+
+        .content-page .page-content > h1 + .post-list .post-card:hover {
+          animation: list-card-hover-drift var(--hover-motion-duration, 720ms) steps(2, end) infinite alternate;
+        }
+
+        @keyframes card-hover-drift {
+          0% {
+            filter: saturate(1);
+            transform: translate(var(--hover-card-x, 0px), var(--hover-card-y, 0px)) rotate(var(--hover-card-rotate, 0deg));
+          }
+
+          55% {
+            filter: saturate(1.1);
+            transform: translate(calc(var(--hover-card-x, 0px) + var(--hover-drift-x, 3px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
+          }
+
+          100% {
+            filter: saturate(1.04);
+            transform: translate(calc(var(--hover-card-x, 0px) + var(--hover-drift-x-alt, -2px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
+          }
+        }
+
+        @keyframes home-card-hover-drift {
+          0% {
+            filter: saturate(1);
+            transform: translate(calc(var(--home-card-rail-x, 0px) + var(--hover-card-x, 0px)), calc(var(--home-card-rail-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--home-card-rail-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+          }
+
+          55% {
+            filter: saturate(1.1);
+            transform: translate(calc(var(--home-card-rail-x, 0px) + var(--hover-card-x, 0px) + var(--hover-drift-x, 3px)), calc(var(--home-card-rail-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--home-card-rail-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
+          }
+
+          100% {
+            filter: saturate(1.04);
+            transform: translate(calc(var(--home-card-rail-x, 0px) + var(--hover-card-x, 0px) + var(--hover-drift-x-alt, -2px)), calc(var(--home-card-rail-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--home-card-rail-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
+          }
+        }
+
+        @keyframes list-card-hover-drift {
+          0% {
+            filter: saturate(1);
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px)), var(--hover-card-y, 0px)) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+          }
+
+          55% {
+            filter: saturate(1.1);
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x, 3px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
+          }
+
+          100% {
+            filter: saturate(1.04);
+            transform: translate(calc(var(--list-card-shift, 0px) + var(--hover-card-x, 8px) + var(--hover-drift-x-alt, -2px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--list-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
+          }
+        }
+      }
+
       @media (max-width: 860px) {
         :root {
           --component-moment: 120ms;
@@ -2156,6 +2221,7 @@
         }
 
         .post-card:hover {
+          animation: none;
           background: transparent;
           box-shadow: none;
           transform: none;
@@ -2220,6 +2286,7 @@
         }
 
         .content-page .page-content > h1 + .post-list .post-card:hover {
+          animation: none;
           background: var(--panel);
           box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
           transform: none;
@@ -2256,6 +2323,7 @@
         .directory-link:hover,
         .post-card:hover,
         .content-page .page-content > h1 + .post-list .post-card:hover {
+          animation: none;
           box-shadow: none;
           transform: none;
         }
@@ -2525,6 +2593,13 @@
             element.style.setProperty("--hover-card-x", randomRange(compact ? -2 : -4, compact ? 5 : 10, "px"));
             element.style.setProperty("--hover-card-y", randomRange(compact ? -2 : -4, compact ? 3 : 6, "px"));
             element.style.setProperty("--hover-card-rotate", randomRange(compact ? -0.9 : -1.8, compact ? 0.9 : 1.8, "deg"));
+            element.style.setProperty("--hover-motion-duration", randomRange(compact ? 520 : 640, compact ? 880 : 1040, "ms"));
+            element.style.setProperty("--hover-drift-x", randomRange(compact ? -2 : -4, compact ? 4 : 7, "px"));
+            element.style.setProperty("--hover-drift-y", randomRange(compact ? -2 : -4, compact ? 3 : 5, "px"));
+            element.style.setProperty("--hover-drift-rotate", randomRange(compact ? -0.7 : -1.2, compact ? 0.7 : 1.2, "deg"));
+            element.style.setProperty("--hover-drift-x-alt", randomRange(compact ? -3 : -6, compact ? 2 : 4, "px"));
+            element.style.setProperty("--hover-drift-y-alt", randomRange(compact ? -1 : -3, compact ? 3 : 5, "px"));
+            element.style.setProperty("--hover-drift-rotate-alt", randomRange(compact ? -0.6 : -1, compact ? 0.6 : 1, "deg"));
             element.style.setProperty("--hover-text-x", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
             element.style.setProperty("--hover-text-y", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
           };
