@@ -1375,6 +1375,21 @@
         transform: translate(var(--logo-fragment-x, 0px), var(--logo-fragment-y, 0px)) rotate(var(--logo-fragment-rotate, 0deg));
       }
 
+      .logo-letter {
+        display: inline-block;
+        font-family: var(--logo-letter-font, inherit);
+        font-size: var(--logo-letter-size, 1em);
+        font-style: var(--logo-letter-style, normal);
+        font-weight: var(--logo-letter-weight, inherit);
+        line-height: inherit;
+        transform: translate(var(--logo-letter-x, 0px), var(--logo-letter-y, 0px)) rotate(var(--logo-letter-rotate, 0deg));
+        transform-origin: center;
+      }
+
+      .logo-space {
+        width: var(--logo-space-width, 0.28em);
+      }
+
       .logo-fragment::before {
         position: absolute;
         inset: 6% -7% 4%;
@@ -2657,6 +2672,14 @@
           transform: none;
         }
 
+        .logo-letter {
+          font-family: inherit;
+          font-size: 1em;
+          font-style: normal;
+          font-weight: inherit;
+          transform: none;
+        }
+
         .about-card dt {
           font-size: 11px;
           font-weight: 760;
@@ -3004,6 +3027,53 @@
             element.style.setProperty("--trim-bl-y", randomRange(min, max, "px"));
           };
 
+          var splitLogoLetters = function (element) {
+            if (element.dataset.logoLetterized === "true") return;
+
+            var label = element.getAttribute("data-label") || element.getAttribute("data-fragment") || element.textContent.trim();
+            if (!label) return;
+
+            element.setAttribute("aria-label", label);
+            element.textContent = "";
+
+            Array.from(label).forEach(function (character) {
+              var letter = document.createElement("span");
+              var isSpace = character.trim() === "";
+              letter.className = isSpace ? "logo-letter logo-space" : "logo-letter";
+              letter.setAttribute("aria-hidden", "true");
+              letter.textContent = isSpace ? "\u00a0" : character;
+              element.appendChild(letter);
+            });
+
+            element.dataset.logoLetterized = "true";
+          };
+
+          var applyLogoLetterProfile = function (element) {
+            splitLogoLetters(element);
+
+            var isAboutLogo = element.classList.contains("about-logo");
+            var isHomeFragment = element.classList.contains("logo-fragment");
+            var sizeMin = isAboutLogo ? 0.88 : (isHomeFragment ? 0.9 : 0.92);
+            var sizeMax = isAboutLogo ? 1.12 : (isHomeFragment ? 1.1 : 1.08);
+            var rotateMax = isAboutLogo ? 3.2 : (isHomeFragment ? 3.8 : 2.6);
+            var yMax = isAboutLogo ? 5 : (isHomeFragment ? 6 : 4);
+
+            element.querySelectorAll(".logo-letter").forEach(function (letter) {
+              if (letter.classList.contains("logo-space")) {
+                letter.style.setProperty("--logo-space-width", randomRange(0.24, 0.42, "em"));
+                return;
+              }
+
+              letter.style.setProperty("--logo-letter-font", randomChoice(aboutFonts));
+              letter.style.setProperty("--logo-letter-size", randomRange(sizeMin, sizeMax, "em"));
+              letter.style.setProperty("--logo-letter-style", randomChoice(["normal", "normal", "normal", "italic"]));
+              letter.style.setProperty("--logo-letter-weight", randomInt(isAboutLogo ? 720 : 680, 960));
+              letter.style.setProperty("--logo-letter-x", randomRange(-3, 3, "px"));
+              letter.style.setProperty("--logo-letter-y", randomRange(-yMax, yMax, "px"));
+              letter.style.setProperty("--logo-letter-rotate", randomRange(-rotateMax, rotateMax, "deg"));
+            });
+          };
+
           root.style.setProperty("--fracture-top", randomRange(58, 118, "px"));
           root.style.setProperty("--fracture-width", randomRange(42, 56, "vw"));
           root.style.setProperty("--fracture-height", randomRange(34, 50, "vh"));
@@ -3288,6 +3358,10 @@
             fragment.style.setProperty("--logo-motion-x", randomRange(-4, 6, "px"));
             fragment.style.setProperty("--logo-motion-y", randomRange(-5, 4, "px"));
             fragment.style.setProperty("--logo-motion-rotate", randomRange(-2.2, 2.2, "deg"));
+          });
+
+          document.querySelectorAll(".branch-logo, .logo-fragment").forEach(function (logo) {
+            applyLogoLetterProfile(logo);
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
