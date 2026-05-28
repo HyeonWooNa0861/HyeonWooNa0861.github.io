@@ -19,6 +19,9 @@ permalink: /
       <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
       <a class="directory-link" href="{{ item.url | relative_url }}">Index</a>
     </h2>
+    {% if item.description %}
+      <p class="section-description">{{ item.description }}</p>
+    {% endif %}
 
     <ul class="post-list">
       {% for child in item.children %}
@@ -28,6 +31,9 @@ permalink: /
         {% endunless %}
         <li class="post-card">
           <a href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ child.title }}</a>
+          {% if child.description %}
+            <p>{{ child.description }}</p>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>

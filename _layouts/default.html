@@ -1057,6 +1057,7 @@
           1px 1px 0 var(--glass-glare),
           12px 12px 0 var(--halftone-shadow);
         transform: translateX(var(--hero-title-shift, -8px));
+        will-change: transform, text-shadow;
       }
 
       .home-logo::before,
@@ -1223,6 +1224,13 @@
         transform: translate(var(--section-title-x, 0px), var(--section-title-y, 0px)) rotate(var(--section-title-rotate, 0deg));
       }
 
+      .directory-section > .section-description {
+        max-width: 28ch;
+        margin: -2px 0 12px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
       .branch-logo {
         position: relative;
         isolation: isolate;
@@ -1356,9 +1364,28 @@
       }
 
       .home-directory .post-card {
+        --trim-tl-x: 0px;
+        --trim-tl-y: 10px;
+        --trim-tr-x: 18px;
+        --trim-tr-y: 18px;
+        --trim-br-x: 8px;
+        --trim-br-y: 0px;
+        --trim-bl-x: 12px;
+        --trim-bl-y: 12px;
         grid-template-columns: minmax(0, 1fr);
         gap: 0;
-        padding: 16px 0;
+        min-width: min(320px, 76vw);
+        min-height: 132px;
+        scroll-snap-align: start;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--glass-pane), transparent 56%),
+          var(--panel);
+        clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
+        padding: 18px 18px 20px;
+        box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
+        transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
       }
 
       .home-directory .post-card::before {
@@ -1366,11 +1393,62 @@
         content: none;
       }
 
+      .home-directory .post-card::after {
+        top: auto;
+        right: 16px;
+        bottom: 16px;
+        left: auto;
+        width: 62px;
+        height: 1px;
+        background: var(--fracture-strong);
+        opacity: 0.72;
+        transform: rotate(var(--home-card-line-rotate, -8deg));
+      }
+
       .home-directory .post-card a {
         grid-column: 1;
-        width: fit-content;
-        font-size: 16px;
+        width: auto;
+        font-size: 18px;
+        line-height: 1.14;
         transform: translate(var(--home-card-title-x, 0px), var(--home-card-title-y, 0px)) rotate(var(--home-card-title-rotate, 0deg));
+      }
+
+      .home-directory .post-card p {
+        grid-column: 1;
+        max-width: 26ch;
+        margin: 12px 0 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .home-directory .post-card:hover {
+        background:
+          radial-gradient(circle at var(--hover-halftone-dot-size) var(--hover-halftone-dot-size), var(--halftone-dot) var(--hover-halftone-dot-size), transparent calc(var(--hover-halftone-dot-size) + 0.8px)) 0 0 / var(--hover-halftone-size) var(--hover-halftone-size),
+          linear-gradient(126deg, var(--glass-prism), transparent 54%),
+          var(--panel);
+        box-shadow: var(--compact-hover-shadow);
+        transform: translate(calc(var(--home-card-rail-x, 0px) + var(--hover-card-x, 0px)), calc(var(--home-card-rail-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--home-card-rail-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+      }
+
+      .home-directory .post-list {
+        display: flex;
+        gap: 16px;
+        margin: 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 8px 0 20px;
+        scroll-padding-inline: 4px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        mask-image: linear-gradient(90deg, #000 0 calc(100% - 24px), transparent 100%);
+        -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - 24px), transparent 100%);
+      }
+
+      .home-directory .post-list::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
       }
 
       .section-pager {
@@ -1456,6 +1534,35 @@
       }
 
       @media (prefers-reduced-motion: no-preference) {
+        .home-logo {
+          animation: home-logo-drift 7.2s ease-in-out infinite alternate;
+        }
+
+        .home-logo::before {
+          animation: home-logo-prism 5.8s ease-in-out infinite alternate;
+        }
+
+        .home-logo::after {
+          animation: home-logo-slice 4.8s ease-in-out infinite alternate;
+        }
+
+        .logo-fragment {
+          animation: logo-fragment-drift 6.4s ease-in-out infinite alternate;
+        }
+
+        .logo-fragment:nth-child(2) {
+          animation-delay: -1.3s;
+        }
+
+        .logo-fragment:nth-child(3) {
+          animation-delay: -2.1s;
+        }
+
+        .home-directory .post-card {
+          animation: home-card-slide-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+          animation-delay: var(--home-slide-delay, 0ms);
+        }
+
         .page-content {
           animation: page-content-enter 180ms ease-out both;
           will-change: opacity, transform;
@@ -1504,6 +1611,75 @@
           to {
             opacity: 0;
             transform: translateX(16px);
+          }
+        }
+
+        @keyframes home-logo-drift {
+          0% {
+            text-shadow:
+              1px 1px 0 var(--glass-glare),
+              12px 12px 0 var(--halftone-shadow);
+            transform: translateX(var(--hero-title-shift, -8px)) skewX(0deg);
+          }
+
+          48% {
+            text-shadow:
+              1px 1px 0 var(--glass-glare),
+              16px 10px 0 var(--halftone-shadow-strong);
+            transform: translateX(calc(var(--hero-title-shift, -8px) + 6px)) skewX(-2deg);
+          }
+
+          100% {
+            text-shadow:
+              1px 1px 0 var(--glass-glare),
+              8px 16px 0 var(--halftone-shadow);
+            transform: translateX(calc(var(--hero-title-shift, -8px) - 3px)) skewX(1.5deg);
+          }
+        }
+
+        @keyframes home-logo-prism {
+          from {
+            opacity: 0.72;
+            transform: translate(var(--logo-glass-shift-x), var(--logo-glass-shift-y)) rotate(var(--logo-glass-rotate));
+          }
+
+          to {
+            opacity: 0.9;
+            transform: translate(calc(var(--logo-glass-shift-x) + 8px), calc(var(--logo-glass-shift-y) - 4px)) rotate(calc(var(--logo-glass-rotate) + 3deg));
+          }
+        }
+
+        @keyframes home-logo-slice {
+          from {
+            opacity: 0.55;
+            transform: rotate(var(--logo-slice-b, 9deg)) translateY(0);
+          }
+
+          to {
+            opacity: 0.82;
+            transform: rotate(calc(var(--logo-slice-b, 9deg) - 5deg)) translateY(-7px);
+          }
+        }
+
+        @keyframes logo-fragment-drift {
+          from {
+            transform: translate(var(--logo-fragment-x, 0px), var(--logo-fragment-y, 0px)) rotate(var(--logo-fragment-rotate, 0deg));
+          }
+
+          to {
+            transform: translate(calc(var(--logo-fragment-x, 0px) + var(--logo-motion-x, 4px)), calc(var(--logo-fragment-y, 0px) + var(--logo-motion-y, -3px))) rotate(calc(var(--logo-fragment-rotate, 0deg) + var(--logo-motion-rotate, 1.6deg)));
+          }
+        }
+
+        @keyframes home-card-slide-in {
+          from {
+            opacity: 0;
+            transform: translate(calc(var(--home-card-rail-x, 0px) + 34px), calc(var(--home-card-rail-y, 0px) + 8px)) rotate(calc(var(--home-card-rail-rotate, 0deg) + 2.4deg));
+          }
+
+          to {
+            opacity: 1;
+            transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
           }
         }
       }
@@ -1755,6 +1931,41 @@
 
         .post-card a {
           font-size: 17px;
+        }
+
+        .home-directory .post-list {
+          gap: 12px;
+          margin: 0 -20px;
+          padding: 6px 20px 16px;
+          scroll-padding-inline: 20px;
+        }
+
+        .home-directory .post-card,
+        .home-directory .post-card:nth-child(even),
+        .home-directory .post-card:nth-child(3n) {
+          min-width: min(78vw, 300px);
+          min-height: 124px;
+          border: 1px solid var(--line);
+          background: var(--panel);
+          padding: 16px;
+          box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
+          transform: none;
+        }
+
+        .home-directory .post-card::after {
+          display: block;
+          opacity: 0.46;
+        }
+
+        .home-directory .post-card a {
+          font-size: 16px;
+          line-height: 1.18;
+        }
+
+        .home-directory .post-card p {
+          max-width: none;
+          font-size: 12px;
+          line-height: 1.45;
         }
 
         .content-page .page-content > h1 + .post-list {
@@ -2164,6 +2375,9 @@
             fragment.style.setProperty("--fragment-glass-rotate", randomRange(-7, 7, "deg"));
             fragment.style.setProperty("--fragment-glass-x", randomRange(-5, 5, "px"));
             fragment.style.setProperty("--fragment-glass-y", randomRange(-4, 5, "px"));
+            fragment.style.setProperty("--logo-motion-x", randomRange(-4, 6, "px"));
+            fragment.style.setProperty("--logo-motion-y", randomRange(-5, 4, "px"));
+            fragment.style.setProperty("--logo-motion-rotate", randomRange(-2.2, 2.2, "deg"));
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
@@ -2179,6 +2393,16 @@
             card.style.setProperty("--list-number-rotate", randomRange(-12, 10, "deg"));
             card.style.setProperty("--list-title-shift", randomRange(-4, 10, "px"));
             applyHoverProfile(card, false);
+          });
+
+          document.querySelectorAll(".home-directory .post-card").forEach(function (card, index) {
+            card.style.setProperty("--home-slide-delay", (index * 78).toFixed(0) + "ms");
+            card.style.setProperty("--home-card-rail-x", randomRange(-4, 10, "px"));
+            card.style.setProperty("--home-card-rail-y", randomRange(-3, 5, "px"));
+            card.style.setProperty("--home-card-rail-rotate", randomRange(-1.5, 1.5, "deg"));
+            card.style.setProperty("--home-card-line-rotate", randomRange(-14, 8, "deg"));
+            applyTrimProfile(card, 8, 22);
+            applyHoverProfile(card, true);
           });
 
           document.querySelectorAll(".content-page .page-content > h1 + .post-list .post-card").forEach(function (card) {
