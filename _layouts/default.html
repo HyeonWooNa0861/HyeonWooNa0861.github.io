@@ -798,9 +798,12 @@
         height: calc(100% + var(--list-field-height-extra, 42px));
         pointer-events: none;
         background:
-          linear-gradient(var(--list-field-angle-a, 117deg), transparent 0 var(--list-field-stop-a, 44%), var(--fracture-strong) var(--list-field-stop-a, 44%) var(--list-field-stop-b, 45%), transparent var(--list-field-stop-b, 45%) 100%) 0 0 / var(--list-field-size-a, 220px) var(--list-field-size-b, 220px),
-          linear-gradient(var(--list-field-angle-b, 28deg), transparent 0 var(--list-field-stop-c, 52%), var(--glass-edge) var(--list-field-stop-c, 52%) var(--list-field-stop-d, 53%), transparent var(--list-field-stop-d, 53%) 100%);
+          linear-gradient(var(--list-field-angle-a, 117deg), transparent 0 var(--list-field-stop-a, 44%), var(--fracture-strong) var(--list-field-stop-a, 44%) var(--list-field-stop-b, 45%), transparent var(--list-field-stop-b, 45%) 100%) var(--list-field-pos-a-x, 0%) var(--list-field-pos-a-y, 0%) / var(--list-field-size-a-x, 76%) var(--list-field-size-a-y, 64%) no-repeat,
+          linear-gradient(var(--list-field-angle-b, 28deg), transparent 0 var(--list-field-stop-c, 52%), var(--glass-edge) var(--list-field-stop-c, 52%) var(--list-field-stop-d, 53%), transparent var(--list-field-stop-d, 53%) 100%) var(--list-field-pos-b-x, 18%) var(--list-field-pos-b-y, 22%) / var(--list-field-size-b-x, 68%) var(--list-field-size-b-y, 86%) no-repeat,
+          linear-gradient(var(--list-field-angle-c, 142deg), transparent 0 var(--list-field-stop-e, 26%), var(--map-texture-soft) var(--list-field-stop-e, 26%) var(--list-field-stop-f, 34%), transparent var(--list-field-stop-f, 34%) 100%) var(--list-field-pos-c-x, 34%) var(--list-field-pos-c-y, 8%) / var(--list-field-size-c-x, 42%) var(--list-field-size-c-y, 74%) no-repeat;
         content: "";
+        mask-image: linear-gradient(var(--list-field-mask-angle, 96deg), transparent 0, #000 var(--list-field-mask-start, 12%), #000 var(--list-field-mask-end, 88%), transparent 100%);
+        -webkit-mask-image: linear-gradient(var(--list-field-mask-angle, 96deg), transparent 0, #000 var(--list-field-mask-start, 12%), #000 var(--list-field-mask-end, 88%), transparent 100%);
         opacity: var(--list-field-opacity, 0.42);
         transform: translate(var(--list-field-x, 0px), var(--list-field-y, 0px)) rotate(var(--list-field-rotate, -4deg)) skewY(var(--list-field-skew, 0deg));
       }
@@ -2010,8 +2013,25 @@
           var listFieldB = randomPercentPair(46, 62, 0.5, 1.4);
           root.style.setProperty("--list-field-stop-c", listFieldB[0]);
           root.style.setProperty("--list-field-stop-d", listFieldB[1]);
-          root.style.setProperty("--list-field-size-a", randomRange(172, 286, "px"));
-          root.style.setProperty("--list-field-size-b", randomRange(168, 302, "px"));
+          var listFieldC = randomPercentPair(20, 38, 4, 12);
+          root.style.setProperty("--list-field-stop-e", listFieldC[0]);
+          root.style.setProperty("--list-field-stop-f", listFieldC[1]);
+          root.style.setProperty("--list-field-pos-a-x", randomRange(-14, 18, "%"));
+          root.style.setProperty("--list-field-pos-a-y", randomRange(-12, 24, "%"));
+          root.style.setProperty("--list-field-pos-b-x", randomRange(8, 42, "%"));
+          root.style.setProperty("--list-field-pos-b-y", randomRange(6, 38, "%"));
+          root.style.setProperty("--list-field-pos-c-x", randomRange(24, 68, "%"));
+          root.style.setProperty("--list-field-pos-c-y", randomRange(-8, 34, "%"));
+          root.style.setProperty("--list-field-size-a-x", randomRange(54, 92, "%"));
+          root.style.setProperty("--list-field-size-a-y", randomRange(38, 82, "%"));
+          root.style.setProperty("--list-field-size-b-x", randomRange(42, 78, "%"));
+          root.style.setProperty("--list-field-size-b-y", randomRange(50, 104, "%"));
+          root.style.setProperty("--list-field-size-c-x", randomRange(28, 56, "%"));
+          root.style.setProperty("--list-field-size-c-y", randomRange(42, 94, "%"));
+          root.style.setProperty("--list-field-angle-c", randomRange(124, 164, "deg"));
+          root.style.setProperty("--list-field-mask-angle", randomRange(78, 112, "deg"));
+          root.style.setProperty("--list-field-mask-start", randomRange(6, 18, "%"));
+          root.style.setProperty("--list-field-mask-end", randomRange(78, 96, "%"));
           root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
           root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
           root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
