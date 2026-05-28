@@ -1136,9 +1136,9 @@
         z-index: 1;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(12px, 2vw, 18px);
+        gap: clamp(16px, 3vw, 34px) clamp(12px, 2vw, 22px);
         align-content: end;
-        margin: 0;
+        margin: var(--about-grid-margin-top, 0px) 0 0;
       }
 
       .about-card {
@@ -1162,6 +1162,7 @@
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
         padding: 18px 18px 20px;
         box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
+        transform: translate(var(--about-card-x, 0px), var(--about-card-y, 0px)) rotate(var(--about-card-rotate, 0deg));
       }
 
       .about-card::after {
@@ -1215,7 +1216,7 @@
           linear-gradient(126deg, var(--glass-prism), transparent 56%),
           var(--panel);
         box-shadow: var(--compact-hover-shadow);
-        transform: translate(var(--hover-card-x, 0px), var(--hover-card-y, 0px)) rotate(var(--hover-card-rotate, 0deg));
+        transform: translate(calc(var(--about-card-x, 0px) + var(--hover-card-x, 0px)), calc(var(--about-card-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--about-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
       .image-frame {
@@ -2208,17 +2209,17 @@
         @keyframes about-card-hover-drift {
           0% {
             filter: saturate(1);
-            transform: translate(var(--hover-card-x, 0px), var(--hover-card-y, 0px)) rotate(var(--hover-card-rotate, 0deg));
+            transform: translate(calc(var(--about-card-x, 0px) + var(--hover-card-x, 0px)), calc(var(--about-card-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--about-card-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
           }
 
           55% {
             filter: saturate(1.1);
-            transform: translate(calc(var(--hover-card-x, 0px) + var(--hover-drift-x, 3px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
+            transform: translate(calc(var(--about-card-x, 0px) + var(--hover-card-x, 0px) + var(--hover-drift-x, 3px)), calc(var(--about-card-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y, -2px))) rotate(calc(var(--about-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate, 0.7deg)));
           }
 
           100% {
             filter: saturate(1.04);
-            transform: translate(calc(var(--hover-card-x, 0px) + var(--hover-drift-x-alt, -2px)), calc(var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
+            transform: translate(calc(var(--about-card-x, 0px) + var(--hover-card-x, 0px) + var(--hover-drift-x-alt, -2px)), calc(var(--about-card-y, 0px) + var(--hover-card-y, 0px) + var(--hover-drift-y-alt, 2px))) rotate(calc(var(--about-card-rotate, 0deg) + var(--hover-card-rotate, 0deg) + var(--hover-drift-rotate-alt, -0.5deg)));
           }
         }
 
@@ -2648,12 +2649,15 @@
 
         .about-grid {
           grid-template-columns: 1fr;
+          gap: 12px;
+          margin-top: 0;
         }
 
         .about-card,
         .about-card-primary {
           grid-column: auto;
           min-height: auto;
+          transform: none;
         }
 
         .about-card:hover {
@@ -3119,11 +3123,15 @@
             container.style.setProperty("--about-field-motion-x", randomRange(-8, 10, "px"));
             container.style.setProperty("--about-field-motion-y", randomRange(-7, 6, "px"));
             container.style.setProperty("--about-field-motion-rotate", randomRange(-4, 5, "deg"));
+            container.style.setProperty("--about-grid-margin-top", randomRange(-12, 18, "px"));
           });
 
           document.querySelectorAll(".about-card").forEach(function (card) {
+            card.style.setProperty("--about-card-x", randomRange(-18, 24, "px"));
+            card.style.setProperty("--about-card-y", randomRange(-12, 18, "px"));
+            card.style.setProperty("--about-card-rotate", randomRange(-2.2, 2.2, "deg"));
             card.style.setProperty("--about-card-line-rotate", randomRange(-16, 10, "deg"));
-            applyTrimProfile(card, 6, 26);
+            applyTrimProfile(card, 6, 30);
             applyHoverProfile(card, true);
           });
 
