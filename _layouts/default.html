@@ -785,6 +785,22 @@
         padding: 16px 0 12px;
       }
 
+      .content-page .page-content > h1 + .post-list::before {
+        position: absolute;
+        top: var(--list-field-top, -18px);
+        left: var(--list-field-left, -26px);
+        z-index: 0;
+        width: min(var(--list-field-width, 62vw), var(--list-field-max, 680px));
+        height: calc(100% + var(--list-field-height-extra, 42px));
+        pointer-events: none;
+        background:
+          linear-gradient(var(--list-field-angle-a, 117deg), transparent 0 var(--list-field-stop-a, 44%), var(--fracture-strong) var(--list-field-stop-a, 44%) var(--list-field-stop-b, 45%), transparent var(--list-field-stop-b, 45%) 100%) 0 0 / var(--list-field-size-a, 220px) var(--list-field-size-b, 220px),
+          linear-gradient(var(--list-field-angle-b, 28deg), transparent 0 var(--list-field-stop-c, 52%), var(--glass-edge) var(--list-field-stop-c, 52%) var(--list-field-stop-d, 53%), transparent var(--list-field-stop-d, 53%) 100%);
+        content: "";
+        opacity: var(--list-field-opacity, 0.42);
+        transform: translate(var(--list-field-x, 0px), var(--list-field-y, 0px)) rotate(var(--list-field-rotate, -4deg)) skewY(var(--list-field-skew, 0deg));
+      }
+
       .content-page .page-content > h1 + .post-list .post-card {
         --trim-tl-x: 0px;
         --trim-tl-y: 0px;
@@ -801,7 +817,6 @@
         overflow: hidden;
         border: 1px solid var(--line-strong);
         background:
-          linear-gradient(124deg, transparent 0 22%, var(--glass-glare) 22% 23%, transparent 23% 100%),
           linear-gradient(90deg, var(--hover-bg), transparent 78%),
           var(--panel);
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
@@ -826,8 +841,7 @@
         inset: 0;
         height: auto;
         background:
-          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / calc(var(--halftone-size) + 3px) calc(var(--halftone-size) + 3px),
-          linear-gradient(31deg, transparent 0 60%, var(--fracture-strong) 60% 61%, transparent 61% 100%);
+          radial-gradient(circle at var(--halftone-dot-size) var(--halftone-dot-size), var(--halftone-dot) var(--halftone-dot-size), transparent calc(var(--halftone-dot-size) + 0.8px)) 0 0 / calc(var(--halftone-size) + 3px) calc(var(--halftone-size) + 3px);
         opacity: 0.24;
         pointer-events: none;
         transform: none;
@@ -1257,9 +1271,7 @@
         inset: -10% -2% -12%;
         z-index: -1;
         border: 1px solid var(--glass-edge);
-        background:
-          linear-gradient(var(--branch-card-glass-angle, 118deg), transparent 0 28%, var(--glass-glare) 28% 29%, transparent 29% 58%, var(--glass-prism) 58% 66%, transparent 66% 100%),
-          var(--glass-pane);
+        background: var(--glass-pane);
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
         opacity: 0.36;
         transform: translate(var(--branch-card-glass-x, 0px), var(--branch-card-glass-y, 0px)) rotate(var(--branch-card-glass-rotate, -3deg));
@@ -1698,6 +1710,10 @@
           padding-top: 4px;
         }
 
+        .content-page .page-content > h1 + .post-list::before {
+          display: none;
+        }
+
         .content-page .page-content > h1 + .post-list .post-card {
           --trim-tl-x: 0px;
           --trim-tl-y: 0px;
@@ -1710,9 +1726,7 @@
           grid-template-columns: 48px minmax(0, 1fr);
           gap: 12px;
           border-color: var(--line);
-          background:
-            linear-gradient(116deg, transparent 0 20%, var(--glass-glare) 20% 20.6%, transparent 20.6% 100%),
-            var(--panel);
+          background: var(--panel);
           clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
           padding: 18px 14px 18px 0;
           box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
@@ -1735,9 +1749,7 @@
         }
 
         .content-page .page-content > h1 + .post-list .post-card:hover {
-          background:
-            linear-gradient(116deg, transparent 0 20%, var(--glass-glare) 20% 20.6%, transparent 20.6% 100%),
-            var(--panel);
+          background: var(--panel);
           box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
           transform: none;
         }
@@ -1976,6 +1988,26 @@
           root.style.setProperty("--map-glass-y", randomRange(-6, 9, "px"));
           root.style.setProperty("--page-axis-left", randomRange(12, 28, "%"));
           root.style.setProperty("--page-axis-shift", randomRange(-18, 22, "px"));
+          root.style.setProperty("--list-field-rotate", randomRange(-6, 3, "deg"));
+          root.style.setProperty("--list-field-skew", randomRange(-2.6, 2.8, "deg"));
+          root.style.setProperty("--list-field-top", randomRange(-34, -8, "px"));
+          root.style.setProperty("--list-field-left", randomRange(-54, -10, "px"));
+          root.style.setProperty("--list-field-width", randomRange(48, 74, "vw"));
+          root.style.setProperty("--list-field-max", randomRange(560, 760, "px"));
+          root.style.setProperty("--list-field-height-extra", randomRange(26, 72, "px"));
+          root.style.setProperty("--list-field-x", randomRange(-12, 14, "px"));
+          root.style.setProperty("--list-field-y", randomRange(-10, 10, "px"));
+          root.style.setProperty("--list-field-opacity", randomRange(0.28, 0.52, ""));
+          root.style.setProperty("--list-field-angle-a", randomRange(100, 132, "deg"));
+          root.style.setProperty("--list-field-angle-b", randomRange(18, 42, "deg"));
+          var listFieldA = randomPercentPair(36, 54, 0.6, 1.8);
+          root.style.setProperty("--list-field-stop-a", listFieldA[0]);
+          root.style.setProperty("--list-field-stop-b", listFieldA[1]);
+          var listFieldB = randomPercentPair(46, 62, 0.5, 1.4);
+          root.style.setProperty("--list-field-stop-c", listFieldB[0]);
+          root.style.setProperty("--list-field-stop-d", listFieldB[1]);
+          root.style.setProperty("--list-field-size-a", randomRange(172, 286, "px"));
+          root.style.setProperty("--list-field-size-b", randomRange(168, 302, "px"));
           root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
           root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
           root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
