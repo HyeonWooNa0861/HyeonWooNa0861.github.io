@@ -227,7 +227,15 @@ $$
 
 ## 6. 최적해 구하기
 
-NLL에서 상수와 양의 배율을 제외하고 squared error만 생각하면 다음 objective를 최소화하면 된다.
+NLL에서 상수와 양의 배율을 제외하고 squared error만 생각하면 다음 objective를 최소화하면 된다. 여기서는 column vector convention을 사용한다.
+
+$$
+X\in\mathbb{R}^{N\times D},
+\qquad
+\theta\in\mathbb{R}^{D},
+\qquad
+y\in\mathbb{R}^{N}
+$$
 
 $$
 J(\theta)
@@ -235,20 +243,51 @@ J(\theta)
 (y-X\theta)^T(y-X\theta)
 $$
 
-전개하면
+이 식을 전개하면 다음과 같다.
 
 $$
 J(\theta)
 =
 y^Ty
--2y^TX\theta
+-y^TX\theta
+-\theta^TX^Ty
 +\theta^TX^TX\theta
 $$
 
-gradient를 0으로 두면 normal equation이 나온다.
+여기서 \\(y^TX\theta\\)와 \\(\theta^TX^Ty\\)는 둘 다 scalar이고 서로 같은 값이다. 따라서 다음처럼 정리할 수 있다.
 
 $$
-\frac{dJ}{d\theta}=0
+J(\theta)
+=
+y^Ty
+-2\theta^TX^Ty
++\theta^TX^TX\theta
+$$
+
+각 항을 \\(\theta\\)에 대해 미분하면
+
+$$
+\nabla_\theta J(\theta)
+=
+-2X^Ty
++2X^TX\theta
+$$
+
+이다. NLL \\(L(\theta)=\frac{1}{2\sigma^2}J(\theta)+\mathrm{const}\\)를 직접 미분하면 같은 조건이 다음처럼 나온다.
+
+$$
+\nabla_\theta L(\theta)
+=
+\frac{1}{\sigma^2}
+\left(
+X^TX\theta-X^Ty
+\right)
+$$
+
+최적점에서는 gradient가 0이므로 normal equation을 얻는다.
+
+$$
+\nabla_\theta L(\theta)=0
 \quad\Longleftrightarrow\quad
 X^TX\theta=X^Ty
 $$
@@ -261,7 +300,19 @@ $$
 (X^TX)^{-1}X^Ty
 $$
 
-이 식은 선형 회귀의 대표적인 normal equation이다. 다만 \\(X^TX\\)가 invertible이려면 \\(X\\)의 column들이 충분히 독립적이어야 한다.
+이 식은 선형 회귀의 대표적인 normal equation solution이다. 다만 \\(X^TX\\)가 invertible이려면 \\(X\\)가 full column rank여야 한다.
+
+$$
+\operatorname{rank}(X)=D
+$$
+
+만약 \\(X^TX\\)가 invertible하지 않으면 이 inverse 식을 그대로 사용할 수 없다. 이때는 normal equation을 만족하는 minimizer가 하나로 정해지지 않을 수 있으며, 최소제곱 관점에서는 Moore-Penrose pseudoinverse \\(X^+\\)를 이용한 최소 norm 해를 사용할 수 있다.
+
+$$
+\theta_{\mathrm{ML}}=X^+y
+$$
+
+이 rank 문제가 뒤에서 MAP 또는 ridge regression을 쓰는 이유와도 연결된다. \\(\Phi^T\Phi+\lambda I\\)처럼 양의 항을 더하면 matrix가 더 안정적으로 invertible해진다.
 
 ## 7. 선형 회귀를 넘어서: Basis Function
 
