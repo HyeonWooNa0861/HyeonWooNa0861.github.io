@@ -1128,15 +1128,18 @@
         --trim-bl-y: 14px;
         position: relative;
         isolation: isolate;
+        justify-self: var(--about-card-justify, stretch);
+        align-self: var(--about-card-align, stretch);
+        width: min(100%, var(--about-card-width, 100%));
         min-width: 0;
-        min-height: 132px;
+        min-height: var(--about-card-min-height, 132px);
         overflow: hidden;
         border: 1px solid var(--line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 62%),
           var(--panel-strong);
         clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
-        padding: 18px 18px 20px;
+        padding: var(--about-card-pad-y, 18px) var(--about-card-pad-x, 18px) var(--about-card-pad-bottom, 20px);
         box-shadow: 8px 8px 0 rgba(138, 206, 0, 0.08);
         transform: translate(var(--about-card-x, 0px), var(--about-card-y, 0px)) rotate(var(--about-card-rotate, 0deg));
       }
@@ -1155,7 +1158,7 @@
 
       .about-card-primary {
         grid-column: span 2;
-        min-height: 154px;
+        min-height: var(--about-card-primary-height, 154px);
       }
 
       .about-card dt {
@@ -1169,7 +1172,7 @@
       }
 
       .about-card dd {
-        margin: 18px 0 0;
+        margin: var(--about-card-content-gap, 18px) 0 0;
         color: var(--text);
         font-family: var(--about-card-value-font, inherit);
         font-size: var(--about-card-value-size, clamp(18px, 2.5vw, 30px));
@@ -2635,7 +2638,10 @@
         .about-card,
         .about-card-primary {
           grid-column: auto;
+          justify-self: stretch;
+          width: 100%;
           min-height: auto;
+          padding: 16px 16px 18px;
           transform: none;
         }
 
@@ -3145,6 +3151,25 @@
           });
 
           document.querySelectorAll(".about-card").forEach(function (card) {
+            var value = card.querySelector("dd");
+            var valueLength = value ? value.textContent.trim().length : 0;
+            var isPrimary = card.classList.contains("about-card-primary");
+            var isLongValue = valueLength > 18;
+            var cardWidthMin = isPrimary ? 90 : (isLongValue ? 94 : 82);
+            var cardWidthMax = isPrimary ? 100 : (isLongValue ? 100 : 98);
+            var cardHeightMin = isLongValue ? 136 : 124;
+            var cardHeightMax = isLongValue ? 166 : 154;
+            var cardPadXMin = isLongValue ? 18 : 14;
+            var cardPadXMax = isLongValue ? 24 : 22;
+
+            card.style.setProperty("--about-card-width", randomRange(cardWidthMin, cardWidthMax, "%"));
+            card.style.setProperty("--about-card-justify", randomChoice(["start", "center", "end"]));
+            card.style.setProperty("--about-card-min-height", randomRange(cardHeightMin, cardHeightMax, "px"));
+            card.style.setProperty("--about-card-primary-height", randomRange(154, 188, "px"));
+            card.style.setProperty("--about-card-pad-y", randomRange(16, 23, "px"));
+            card.style.setProperty("--about-card-pad-x", randomRange(cardPadXMin, cardPadXMax, "px"));
+            card.style.setProperty("--about-card-pad-bottom", randomRange(18, 27, "px"));
+            card.style.setProperty("--about-card-content-gap", randomRange(14, 22, "px"));
             card.style.setProperty("--about-card-x", randomRange(-18, 24, "px"));
             card.style.setProperty("--about-card-y", randomRange(-12, 18, "px"));
             card.style.setProperty("--about-card-rotate", randomRange(-2.2, 2.2, "deg"));
@@ -3157,7 +3182,7 @@
             card.style.setProperty("--about-card-label-rotate", randomRange(-1.4, 1.4, "deg"));
             card.style.setProperty("--about-card-value-font", randomChoice(aboutFonts));
             card.style.setProperty("--about-card-value-size", randomRange(22, 34, "px"));
-            card.style.setProperty("--about-card-small-value-size", randomRange(16, 24, "px"));
+            card.style.setProperty("--about-card-small-value-size", randomRange(isLongValue ? 15.5 : 16, isLongValue ? 21 : 24, "px"));
             card.style.setProperty("--about-card-value-weight", randomInt(620, 860));
             card.style.setProperty("--about-card-value-line", randomRange(0.94, 1.16, ""));
             card.style.setProperty("--about-card-value-x", randomRange(-6, 8, "px"));
