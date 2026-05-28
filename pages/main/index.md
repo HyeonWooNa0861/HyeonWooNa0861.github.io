@@ -16,7 +16,7 @@ permalink: /
 {% for item in site.data.navigation %}
   <section class="directory-section">
     <h2>
-      <span>{{ item.title }}</span>
+      <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
       <a class="directory-link" href="{{ item.url | relative_url }}">Index</a>
     </h2>
 
