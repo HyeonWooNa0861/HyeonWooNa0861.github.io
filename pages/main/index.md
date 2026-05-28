@@ -36,9 +36,6 @@ permalink: /
         {% endunless %}
         <li class="post-card">
           <a href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ child.title }}</a>
-          {% if child.description %}
-            <p>{{ child.description }}</p>
-          {% endif %}
         </li>
       {% endfor %}
     </ul>
