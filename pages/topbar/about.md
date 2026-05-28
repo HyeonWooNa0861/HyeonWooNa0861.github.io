@@ -8,7 +8,6 @@ permalink: /about/
   <div class="about-identity">
     <p class="about-kicker">Profile</p>
     <h1 id="about-title" class="branch-logo page-branch-logo about-logo" data-label="About">About</h1>
-    <p class="about-name">H.W. Na. <span>(羅現禹)</span></p>
     <p class="about-field">AI</p>
   </div>
 

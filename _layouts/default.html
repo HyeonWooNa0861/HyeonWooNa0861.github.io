@@ -1104,26 +1104,6 @@
         line-height: 0.78;
       }
 
-      .about-name {
-        max-width: 10ch;
-        margin: 0;
-        color: var(--text);
-        font-family: var(--about-name-font, inherit);
-        font-size: var(--about-name-size, clamp(24px, 4vw, 46px));
-        font-weight: var(--about-name-weight, 820);
-        line-height: var(--about-name-line, 0.96);
-        overflow-wrap: anywhere;
-        transform: translate(var(--about-name-x, 0px), var(--about-name-y, 0px)) rotate(var(--about-name-rotate, 0deg));
-      }
-
-      .about-name span {
-        display: block;
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 0.42em;
-        font-weight: 640;
-      }
-
       .about-field {
         position: absolute;
         right: 10%;
@@ -2017,6 +1997,21 @@
           animation: about-glass-drift 5.8s ease-in-out infinite alternate;
         }
 
+        .about-logo {
+          animation: branch-logo-drift 6.2s ease-in-out infinite alternate;
+          will-change: transform, text-shadow;
+        }
+
+        .about-logo::before {
+          animation: branch-logo-glass-drift 5.1s ease-in-out infinite alternate;
+          will-change: opacity, transform;
+        }
+
+        .about-logo::after {
+          animation: branch-logo-echo-drift 4.3s ease-in-out infinite alternate;
+          will-change: opacity, transform;
+        }
+
         .about-field {
           animation: about-field-drift 6.4s ease-in-out infinite alternate;
         }
@@ -2655,15 +2650,6 @@
           transform: none;
         }
 
-        .about-name {
-          max-width: 100%;
-          font-size: clamp(24px, 9vw, 38px);
-          font-family: inherit;
-          font-weight: 820;
-          line-height: 0.96;
-          transform: none;
-        }
-
         .about-field {
           position: static;
           margin-top: 18px;
@@ -3194,13 +3180,6 @@
             container.style.setProperty("--about-logo-font", randomChoice(aboutFonts));
             container.style.setProperty("--about-logo-size", randomRange(72, 118, "px"));
             container.style.setProperty("--about-logo-weight", randomInt(760, 940));
-            container.style.setProperty("--about-name-font", randomChoice(aboutFonts));
-            container.style.setProperty("--about-name-size", randomRange(34, 54, "px"));
-            container.style.setProperty("--about-name-weight", randomInt(740, 900));
-            container.style.setProperty("--about-name-line", randomRange(0.86, 1.04, ""));
-            container.style.setProperty("--about-name-x", randomRange(-8, 10, "px"));
-            container.style.setProperty("--about-name-y", randomRange(-5, 6, "px"));
-            container.style.setProperty("--about-name-rotate", randomRange(-2.2, 2.2, "deg"));
             container.style.setProperty("--about-field-font", randomChoice(aboutFonts));
             container.style.setProperty("--about-field-size", randomRange(62, 104, "px"));
             container.style.setProperty("--about-field-weight", randomInt(760, 940));
@@ -3295,6 +3274,17 @@
             logo.style.setProperty("--branch-glass-angle", randomRange(104, 132, "deg"));
             logo.style.setProperty("--branch-echo-x", randomRange(-6, 10, "px"));
             logo.style.setProperty("--branch-echo-y", randomRange(-8, 8, "px"));
+            logo.style.setProperty("--branch-motion-x", randomRange(-5, 7, "px"));
+            logo.style.setProperty("--branch-motion-y", randomRange(-4, 5, "px"));
+            logo.style.setProperty("--branch-motion-rotate", randomRange(-1.8, 1.8, "deg"));
+            logo.style.setProperty("--branch-motion-x-alt", randomRange(-6, 5, "px"));
+            logo.style.setProperty("--branch-motion-y-alt", randomRange(-3, 6, "px"));
+            logo.style.setProperty("--branch-motion-rotate-alt", randomRange(-1.6, 1.6, "deg"));
+            logo.style.setProperty("--branch-glass-motion-x", randomRange(-4, 7, "px"));
+            logo.style.setProperty("--branch-glass-motion-y", randomRange(-5, 5, "px"));
+            logo.style.setProperty("--branch-glass-motion-rotate", randomRange(-2.2, 2.6, "deg"));
+            logo.style.setProperty("--branch-echo-motion-x", randomRange(-5, 6, "px"));
+            logo.style.setProperty("--branch-echo-motion-y", randomRange(-5, 5, "px"));
           });
 
           document.querySelectorAll(".branch-card-link").forEach(function (link) {
