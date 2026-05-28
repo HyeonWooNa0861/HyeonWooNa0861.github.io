@@ -17,7 +17,6 @@
         }
 
         document.documentElement.dataset.theme = theme;
-        document.documentElement.classList.add("loading-active");
         window.__gitblogLoadingStarted = Date.now();
       })();
     </script>
@@ -2469,10 +2468,19 @@
         var loadingRoot = document.documentElement;
         var loadingStart = window.__gitblogLoadingStarted || Date.now();
         var loadingReleased = false;
+        var loadingShownAt = 0;
+        var loadingRevealTimer = null;
         var loadingCleanupTimer = null;
         var loadingFailSafeTimer = null;
+        var initialLoadingDelay = 420;
+        var navigationLoadingDelay = 180;
+        var minimumLoadingVisible = 420;
 
         function clearLoadingTimers() {
+          if (loadingRevealTimer) {
+            clearTimeout(loadingRevealTimer);
+            loadingRevealTimer = null;
+          }
           if (loadingCleanupTimer) {
             clearTimeout(loadingCleanupTimer);
             loadingCleanupTimer = null;
@@ -2483,17 +2491,42 @@
           }
         }
 
+        function clearLoadingScreenImmediately() {
+          loadingReleased = true;
+          clearLoadingTimers();
+          if (loadingScreen) loadingScreen.hidden = true;
+          loadingRoot.classList.remove("loading-active", "loading-done");
+        }
+
         function showLoadingScreen() {
           if (!loadingScreen) return;
           loadingReleased = false;
           clearLoadingTimers();
+          loadingShownAt = Date.now();
           loadingScreen.hidden = false;
           loadingRoot.classList.remove("loading-done");
           loadingRoot.classList.add("loading-active");
           loadingFailSafeTimer = setTimeout(releaseLoadingScreen, 5000);
         }
 
+        function scheduleLoadingScreen(delay) {
+          if (!loadingScreen) return;
+          loadingReleased = false;
+          clearLoadingTimers();
+
+          if (delay <= 0) {
+            showLoadingScreen();
+            return;
+          }
+
+          loadingRevealTimer = setTimeout(showLoadingScreen, delay);
+        }
+
         function releaseLoadingScreen() {
+          if (!loadingRoot.classList.contains("loading-active")) {
+            clearLoadingScreenImmediately();
+            return;
+          }
           if (loadingReleased) return;
           loadingReleased = true;
           loadingRoot.classList.add("loading-done");
@@ -2511,27 +2544,25 @@
           loadingCleanupTimer = setTimeout(cleanup, 520);
         }
 
-        function playRestoredLoadingScreen() {
-          showLoadingScreen();
-          setTimeout(releaseLoadingScreen, 620);
-        }
-
         function finishInitialLoading() {
-          var elapsed = Date.now() - loadingStart;
-          var remaining = Math.max(0, 560 - elapsed);
+          var elapsed = Date.now() - loadingShownAt;
+          var remaining = loadingRoot.classList.contains("loading-active")
+            ? Math.max(0, minimumLoadingVisible - elapsed)
+            : 0;
           setTimeout(releaseLoadingScreen, remaining);
         }
 
         if (document.readyState === "complete") {
-          finishInitialLoading();
+          clearLoadingScreenImmediately();
         } else {
+          scheduleLoadingScreen(Math.max(0, initialLoadingDelay - (Date.now() - loadingStart)));
           window.addEventListener("load", finishInitialLoading, { once: true });
           setTimeout(finishInitialLoading, 2400);
         }
 
         window.addEventListener("pageshow", function (event) {
           if (event.persisted) {
-            playRestoredLoadingScreen();
+            clearLoadingScreenImmediately();
           } else if (loadingRoot.classList.contains("loading-active") && document.readyState === "complete") {
             finishInitialLoading();
           }
@@ -2556,7 +2587,7 @@
               nextUrl.hash !== currentUrl.hash;
 
             if (nextUrl.origin !== currentUrl.origin || samePageHash) return;
-            showLoadingScreen();
+            scheduleLoadingScreen(navigationLoadingDelay);
           } catch (error) {
             return;
           }
