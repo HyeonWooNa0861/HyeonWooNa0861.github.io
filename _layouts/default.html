@@ -431,6 +431,33 @@
         display: none;
       }
 
+      .home-page {
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .home-page main {
+        min-height: calc(100vh - 64px);
+        min-height: calc(100dvh - 64px);
+        padding: 0;
+      }
+
+      .home-page main::after {
+        display: none;
+      }
+
+      .home-page .main-wrap {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+      }
+
+      .home-page .page-shell,
+      .home-page .page-content {
+        min-height: calc(100vh - 64px);
+        min-height: calc(100dvh - 64px);
+      }
+
       .page-shell.has-sidebar {
         display: grid;
         grid-template-columns: minmax(180px, 226px) minmax(0, 1fr);
@@ -2140,30 +2167,93 @@
 
       .home-orbit {
         --orbit-core-x: 50%;
-        --orbit-core-y: 49%;
+        --orbit-core-y: 50%;
+        --orbit-pan-x: 0px;
+        --orbit-pan-y: 0px;
+        --orbit-zoom: 1;
         position: relative;
         isolation: isolate;
-        min-height: clamp(760px, 92vh, 980px);
-        margin: clamp(0px, 2vw, 20px) 0 clamp(42px, 7vw, 76px);
-        overflow: visible;
+        height: calc(100vh - 64px);
+        height: calc(100dvh - 64px);
+        min-height: 620px;
+        margin: 0;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 22%, rgba(138, 206, 0, 0.13), transparent 26%),
+          radial-gradient(circle at 78% 72%, rgba(138, 206, 0, 0.08), transparent 30%),
+          linear-gradient(128deg, rgba(255, 255, 255, 0.46), transparent 56%),
+          var(--bg);
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
       }
 
       .home-orbit::before,
       .home-orbit::after {
         position: absolute;
+        z-index: 20;
         pointer-events: none;
         content: "";
       }
 
       .home-orbit::before {
+        inset: 0;
+        background:
+          linear-gradient(90deg, var(--bg) 0, transparent clamp(36px, 8vw, 140px), transparent calc(100% - clamp(36px, 8vw, 140px)), var(--bg) 100%),
+          linear-gradient(180deg, var(--bg) 0, transparent clamp(24px, 6vw, 100px), transparent calc(100% - clamp(24px, 6vw, 100px)), var(--bg) 100%);
+        opacity: 0.72;
+      }
+
+      .home-orbit::after {
+        top: clamp(20px, 4vw, 48px);
+        right: clamp(20px, 5vw, 72px);
+        width: clamp(86px, 14vw, 168px);
+        height: 2px;
+        background:
+          linear-gradient(90deg, transparent 0, var(--accent) 18%, var(--accent) 82%, transparent 100%);
+        opacity: 0.58;
+        transform: rotate(var(--orbit-viewport-mark-rotate, -9deg));
+      }
+
+      .home-orbit.is-dragging {
+        cursor: grabbing;
+      }
+
+      .home-orbit.is-dragging .orbit-map {
+        transition: none;
+      }
+
+      .home-orbit .orbit-map {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: max(188vw, 1760px);
+        height: max(168vh, 1320px);
+        isolation: isolate;
+        transform: translate(calc(-50% + var(--orbit-pan-x)), calc(-50% + var(--orbit-pan-y))) scale(var(--orbit-zoom));
+        transform-origin: center;
+        transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
+        will-change: transform;
+      }
+
+      .home-orbit .orbit-map::before,
+      .home-orbit .orbit-map::after {
+        position: absolute;
+        pointer-events: none;
+        content: "";
+      }
+
+      .home-orbit .orbit-map::before {
         inset: var(--orbit-plane-top, 4%) var(--orbit-plane-right, 4%) var(--orbit-plane-bottom, 5%) var(--orbit-plane-left, 4%);
         z-index: -2;
         border: 1px solid var(--glass-edge);
         background:
-          radial-gradient(ellipse at var(--orbit-ring-a-x, 50%) var(--orbit-ring-a-y, 50%), transparent 0 38%, var(--map-texture-soft) 39% 40%, transparent 41% 100%),
-          radial-gradient(ellipse at var(--orbit-ring-b-x, 50%) var(--orbit-ring-b-y, 50%), transparent 0 54%, var(--glass-edge) 55% 55.5%, transparent 56% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-a-x, 50%) var(--orbit-ring-a-y, 50%), transparent 0 37%, var(--map-texture-soft) 38% 39%, transparent 40% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-b-x, 50%) var(--orbit-ring-b-y, 50%), transparent 0 53%, var(--glass-edge) 54% 54.5%, transparent 55% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-c-x, 50%) var(--orbit-ring-c-y, 50%), transparent 0 64%, rgba(138, 206, 0, 0.12) 65% 65.5%, transparent 66% 100%),
           linear-gradient(var(--orbit-plane-a, 118deg), transparent 0 var(--orbit-plane-a-start, 30%), var(--glass-glare) var(--orbit-plane-a-start, 30%) var(--orbit-plane-a-end, 31%), transparent var(--orbit-plane-a-end, 31%) 100%),
           linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
+          linear-gradient(var(--orbit-plane-c, 166deg), transparent 0 var(--orbit-plane-c-start, 17%), rgba(138, 206, 0, 0.18) var(--orbit-plane-c-start, 17%) var(--orbit-plane-c-end, 18%), transparent var(--orbit-plane-c-end, 18%) 100%),
           var(--glass-pane);
         clip-path: polygon(var(--trim-tl-x, 28px) 0, calc(100% - var(--trim-tr-x, 48px)) 0, 100% var(--trim-tr-y, 18px), 100% calc(100% - var(--trim-br-y, 46px)), calc(100% - var(--trim-br-x, 20px)) 100%, var(--trim-bl-x, 58px) 100%, 0 calc(100% - var(--trim-bl-y, 22px)), 0 var(--trim-tl-y, 52px));
         opacity: 0.34;
@@ -2172,7 +2262,7 @@
         -webkit-backdrop-filter: blur(8px) saturate(1.08);
       }
 
-      .home-orbit::after {
+      .home-orbit .orbit-map::after {
         top: var(--orbit-axis-top, 48%);
         left: var(--orbit-axis-left, 8%);
         z-index: -1;
@@ -2207,9 +2297,10 @@
       }
 
       .home-orbit .home-directory {
-        position: relative;
+        position: absolute;
+        inset: 0;
         display: block;
-        min-height: inherit;
+        min-height: 0;
       }
 
       .home-orbit .directory-section {
@@ -2230,6 +2321,7 @@
           var(--posted-text-bg);
         clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
         box-shadow: var(--container-shadow);
+        cursor: grab;
         transform: translate(-50%, -50%) translate(var(--orbit-node-x), var(--orbit-node-y)) rotate(var(--orbit-node-rotate, 0deg));
       }
 
@@ -3103,53 +3195,20 @@
         }
 
         .home-orbit {
-          min-height: auto;
-          margin: 0 0 34px;
-          overflow: visible;
+          height: calc(100vh - 64px);
+          height: calc(100dvh - 64px);
+          min-height: 540px;
+          margin: 0;
+          overflow: hidden;
         }
 
-        .home-orbit::before,
-        .home-orbit::after {
-          display: none;
-        }
-
-        .home-orbit .home-hero {
-          position: relative;
-          top: auto;
-          left: auto;
-          min-height: clamp(160px, 38vw, 220px);
-          margin: 0 0 32px;
-          padding: 28px 0 22px;
-          transform: none;
+        .home-orbit .orbit-map {
+          width: max(245vw, 1180px);
+          height: max(190vh, 960px);
         }
 
         .home-orbit .home-logo {
-          font-size: clamp(58px, 20vw, 108px);
-        }
-
-        .home-orbit .home-directory {
-          display: grid;
-          min-height: 0;
-          gap: 34px;
-        }
-
-        .home-orbit .directory-section {
-          position: relative;
-          top: auto;
-          left: auto;
-          width: auto;
-          min-width: 0;
-          border: 0;
-          background: transparent;
-          clip-path: none;
-          box-shadow: none;
-          padding: 0;
-          transform: none;
-        }
-
-        .home-orbit .directory-section::before,
-        .home-orbit .directory-section::after {
-          display: none;
+          font-size: clamp(58px, 18vw, 112px);
         }
 
         .home-orbit .post-list {
@@ -3167,9 +3226,8 @@
           display: inline-grid;
           grid-template-columns: minmax(0, 1fr);
           gap: 0;
-          width: min(100%, 180px);
+          width: min(var(--orbit-chip-width, 160px), 100%);
           padding: 10px 12px 11px;
-          transform: none;
         }
 
         .home-orbit .post-card a {
@@ -3638,7 +3696,7 @@
         });
 
         function applySpatialRandomness() {
-          if (window.matchMedia("(max-width: 860px), (hover: none), (pointer: coarse)").matches) return;
+          var compactInteraction = window.matchMedia("(max-width: 860px), (hover: none), (pointer: coarse)").matches;
 
           var root = document.documentElement;
           var randomRange = function (min, max, unit) {
@@ -3891,46 +3949,62 @@
           });
 
           document.querySelectorAll(".home-orbit").forEach(function (orbit) {
-            var bounds = orbit.getBoundingClientRect();
-            var orbitWidth = bounds.width || window.innerWidth;
-            var radiusX = Math.max(250, Math.min(orbitWidth * 0.3, 390));
-            var radiusY = Math.max(210, Math.min(window.innerHeight * 0.3, 330));
+            var map = orbit.querySelector(".orbit-map") || orbit;
+            var viewportBounds = orbit.getBoundingClientRect();
+            var mapBounds = map.getBoundingClientRect();
+            var orbitWidth = mapBounds.width || viewportBounds.width || window.innerWidth;
+            var orbitHeight = mapBounds.height || viewportBounds.height || window.innerHeight;
+            var radiusX = compactInteraction
+              ? Math.max(300, Math.min(orbitWidth * 0.28, 520))
+              : Math.max(440, Math.min(orbitWidth * 0.27, 700));
+            var radiusY = compactInteraction
+              ? Math.max(250, Math.min(orbitHeight * 0.26, 430))
+              : Math.max(360, Math.min(orbitHeight * 0.25, 580));
             var orbitAngles = [-142, -38, 24, 142, 90, -92, 0, 180];
             var orbitA = randomPercentPair(24, 42, 4, 11);
             var orbitB = randomPercentPair(52, 68, 0.6, 1.8);
+            var orbitC = randomPercentPair(12, 28, 0.6, 1.6);
 
-            applyTrimProfile(orbit, 14, 62);
+            applyTrimProfile(map, 18, 82);
             orbit.style.setProperty("--orbit-core-y", randomRange(45, 53, "%"));
             orbit.style.setProperty("--orbit-core-shift-x", randomRange(-12, 12, "px"));
             orbit.style.setProperty("--orbit-core-shift-y", randomRange(-10, 14, "px"));
             orbit.style.setProperty("--orbit-core-rotate", randomRange(-3.8, 2.8, "deg"));
-            orbit.style.setProperty("--orbit-plane-top", randomRange(1, 6, "%"));
-            orbit.style.setProperty("--orbit-plane-right", randomRange(1, 7, "%"));
-            orbit.style.setProperty("--orbit-plane-bottom", randomRange(3, 9, "%"));
-            orbit.style.setProperty("--orbit-plane-left", randomRange(1, 7, "%"));
-            orbit.style.setProperty("--orbit-ring-a-x", randomRange(44, 56, "%"));
-            orbit.style.setProperty("--orbit-ring-a-y", randomRange(44, 56, "%"));
-            orbit.style.setProperty("--orbit-ring-b-x", randomRange(42, 58, "%"));
-            orbit.style.setProperty("--orbit-ring-b-y", randomRange(42, 58, "%"));
+            orbit.style.setProperty("--orbit-plane-top", randomRange(6, 14, "%"));
+            orbit.style.setProperty("--orbit-plane-right", randomRange(6, 15, "%"));
+            orbit.style.setProperty("--orbit-plane-bottom", randomRange(7, 16, "%"));
+            orbit.style.setProperty("--orbit-plane-left", randomRange(5, 14, "%"));
+            orbit.style.setProperty("--orbit-ring-a-x", randomRange(40, 58, "%"));
+            orbit.style.setProperty("--orbit-ring-a-y", randomRange(39, 59, "%"));
+            orbit.style.setProperty("--orbit-ring-b-x", randomRange(38, 62, "%"));
+            orbit.style.setProperty("--orbit-ring-b-y", randomRange(38, 62, "%"));
+            orbit.style.setProperty("--orbit-ring-c-x", randomRange(37, 63, "%"));
+            orbit.style.setProperty("--orbit-ring-c-y", randomRange(37, 63, "%"));
             orbit.style.setProperty("--orbit-plane-a", randomRange(104, 136, "deg"));
             orbit.style.setProperty("--orbit-plane-a-start", orbitA[0]);
             orbit.style.setProperty("--orbit-plane-a-end", orbitA[1]);
             orbit.style.setProperty("--orbit-plane-b", randomRange(18, 48, "deg"));
             orbit.style.setProperty("--orbit-plane-b-start", orbitB[0]);
             orbit.style.setProperty("--orbit-plane-b-end", orbitB[1]);
-            orbit.style.setProperty("--orbit-plane-x", randomRange(-10, 12, "px"));
-            orbit.style.setProperty("--orbit-plane-y", randomRange(-8, 12, "px"));
-            orbit.style.setProperty("--orbit-plane-rotate", randomRange(-2.4, 2.2, "deg"));
+            orbit.style.setProperty("--orbit-plane-c", randomRange(148, 184, "deg"));
+            orbit.style.setProperty("--orbit-plane-c-start", orbitC[0]);
+            orbit.style.setProperty("--orbit-plane-c-end", orbitC[1]);
+            orbit.style.setProperty("--orbit-plane-x", randomRange(-26, 28, "px"));
+            orbit.style.setProperty("--orbit-plane-y", randomRange(-18, 24, "px"));
+            orbit.style.setProperty("--orbit-plane-rotate", randomRange(-3.6, 3.2, "deg"));
             orbit.style.setProperty("--orbit-axis-top", randomRange(43, 55, "%"));
-            orbit.style.setProperty("--orbit-axis-left", randomRange(5, 10, "%"));
-            orbit.style.setProperty("--orbit-axis-width", randomRange(82, 94, "%"));
-            orbit.style.setProperty("--orbit-axis-y", randomRange(-8, 8, "px"));
-            orbit.style.setProperty("--orbit-axis-rotate", randomRange(-7, 5, "deg"));
+            orbit.style.setProperty("--orbit-axis-left", randomRange(9, 17, "%"));
+            orbit.style.setProperty("--orbit-axis-width", randomRange(70, 84, "%"));
+            orbit.style.setProperty("--orbit-axis-y", randomRange(-16, 16, "px"));
+            orbit.style.setProperty("--orbit-axis-rotate", randomRange(-9, 7, "deg"));
+            orbit.style.setProperty("--orbit-viewport-mark-rotate", randomRange(-15, 10, "deg"));
 
             orbit.querySelectorAll(".directory-section").forEach(function (section, index) {
               var angle = (orbitAngles[index % orbitAngles.length] || 0) + randomNumber(-9, 9);
               var radians = angle * Math.PI / 180;
-              var nodeWidth = Math.max(248, Math.min(orbitWidth * randomNumber(0.22, 0.3), 370));
+              var nodeWidth = compactInteraction
+                ? Math.max(228, Math.min(orbitWidth * randomNumber(0.16, 0.22), 320))
+                : Math.max(260, Math.min(orbitWidth * randomNumber(0.13, 0.18), 390));
               var x = Math.cos(radians) * radiusX * randomNumber(0.9, 1.1);
               var y = Math.sin(radians) * radiusY * randomNumber(0.9, 1.12);
 
@@ -4301,6 +4375,103 @@
         }
 
         applySpatialRandomness();
+
+        function setupOrbitMapPan() {
+          document.querySelectorAll("[data-orbit-viewport]").forEach(function (viewport) {
+            var map = viewport.querySelector("[data-orbit-map]");
+            if (!map) return;
+
+            var panX = 0;
+            var panY = 0;
+            var startX = 0;
+            var startY = 0;
+            var startPanX = 0;
+            var startPanY = 0;
+            var activePointerId = null;
+
+            viewport.setAttribute("tabindex", "0");
+
+            function getLimits() {
+              var scale = parseFloat(window.getComputedStyle(viewport).getPropertyValue("--orbit-zoom")) || 1;
+              var maxX = Math.max(0, ((map.offsetWidth * scale) - viewport.clientWidth) / 2);
+              var maxY = Math.max(0, ((map.offsetHeight * scale) - viewport.clientHeight) / 2);
+              return { x: maxX, y: maxY };
+            }
+
+            function clamp(value, min, max) {
+              return Math.min(max, Math.max(min, value));
+            }
+
+            function setPan(nextX, nextY) {
+              var limits = getLimits();
+              panX = clamp(nextX, -limits.x, limits.x);
+              panY = clamp(nextY, -limits.y, limits.y);
+              viewport.style.setProperty("--orbit-pan-x", panX.toFixed(2) + "px");
+              viewport.style.setProperty("--orbit-pan-y", panY.toFixed(2) + "px");
+            }
+
+            function stopDragging() {
+              if (activePointerId === null) return;
+              activePointerId = null;
+              viewport.classList.remove("is-dragging");
+            }
+
+            setPan(0, 0);
+
+            viewport.addEventListener("pointerdown", function (event) {
+              if (event.button && event.button !== 0) return;
+              if (event.target.closest("a, button, input, textarea, select, summary, [contenteditable='true']")) return;
+
+              activePointerId = event.pointerId;
+              startX = event.clientX;
+              startY = event.clientY;
+              startPanX = panX;
+              startPanY = panY;
+              viewport.classList.add("is-dragging");
+              viewport.setPointerCapture(event.pointerId);
+            });
+
+            viewport.addEventListener("pointermove", function (event) {
+              if (activePointerId !== event.pointerId) return;
+              setPan(startPanX + event.clientX - startX, startPanY + event.clientY - startY);
+            });
+
+            viewport.addEventListener("pointerup", stopDragging);
+            viewport.addEventListener("pointercancel", stopDragging);
+            viewport.addEventListener("lostpointercapture", stopDragging);
+
+            viewport.addEventListener("wheel", function (event) {
+              if (!event.cancelable) return;
+              if (Math.abs(event.deltaX) < 0.5 && Math.abs(event.deltaY) < 0.5) return;
+
+              event.preventDefault();
+              setPan(panX - event.deltaX, panY - event.deltaY);
+            }, { passive: false });
+
+            viewport.addEventListener("keydown", function (event) {
+              var keyStep = event.shiftKey ? 92 : 46;
+              if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                setPan(panX + keyStep, panY);
+              } else if (event.key === "ArrowRight") {
+                event.preventDefault();
+                setPan(panX - keyStep, panY);
+              } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setPan(panX, panY + keyStep);
+              } else if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setPan(panX, panY - keyStep);
+              }
+            });
+
+            window.addEventListener("resize", function () {
+              setPan(panX, panY);
+            });
+          });
+        }
+
+        setupOrbitMapPan();
 
         var homeCards = document.querySelectorAll(".home-directory .post-card");
         if (homeCards.length) {
