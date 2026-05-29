@@ -456,11 +456,8 @@
       }
 
       .home-page main {
-        --home-edge-fade-x: clamp(34px, 6vw, 86px);
-        --home-edge-fade-y: clamp(24px, 5vh, 70px);
         position: fixed;
-        top: var(--app-viewport-top, 0px);
-        left: var(--app-viewport-left, 0px);
+        inset: 0;
         width: var(--app-viewport-width, 100vw);
         height: var(--app-viewport-height, 100vh);
         min-height: 0;
@@ -469,15 +466,8 @@
       }
 
       .home-page main::before {
-        position: absolute;
-        inset: 0;
-        z-index: 40;
-        pointer-events: none;
-        background:
-          linear-gradient(90deg, var(--bg) 0, transparent var(--home-edge-fade-x), transparent calc(100% - var(--home-edge-fade-x)), var(--bg) 100%),
-          linear-gradient(180deg, var(--bg) 0, transparent var(--home-edge-fade-y), transparent calc(100% - var(--home-edge-fade-y)), var(--bg) 100%);
-        content: "";
-        opacity: 0.72;
+        display: none;
+        content: none;
       }
 
       .home-page main::after {
@@ -3762,10 +3752,8 @@
           var height = viewport && viewport.height ? viewport.height : layoutHeight;
 
           return {
-            width: Math.max(1, Math.ceil(width || document.documentElement.clientWidth || 1)),
-            height: Math.max(1, Math.ceil(height || document.documentElement.clientHeight || 1)),
-            left: viewport && typeof viewport.offsetLeft === "number" ? Math.floor(viewport.offsetLeft) : 0,
-            top: viewport && typeof viewport.offsetTop === "number" ? Math.floor(viewport.offsetTop) : 0
+            width: Math.max(1, Math.ceil(Math.max(width, layoutWidth))),
+            height: Math.max(1, Math.ceil(height || layoutHeight))
           };
         }
 
@@ -3776,8 +3764,6 @@
           var root = document.documentElement;
           root.style.setProperty("--app-viewport-width", size.width + "px");
           root.style.setProperty("--app-viewport-height", size.height + "px");
-          root.style.setProperty("--app-viewport-left", size.left + "px");
-          root.style.setProperty("--app-viewport-top", size.top + "px");
 
           document.querySelectorAll(".home-orbit .orbit-map").forEach(function (map) {
             map.style.setProperty("--orbit-map-width", Math.max(size.width * 3.6, 3200).toFixed(2) + "px");
