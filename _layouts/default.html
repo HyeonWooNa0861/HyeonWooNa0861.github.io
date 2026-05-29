@@ -2292,6 +2292,7 @@
         clip-path: none;
         box-shadow: none;
         cursor: grab;
+        pointer-events: none;
         transform: translate(-50%, -50%) translate(var(--orbit-node-x), var(--orbit-node-y)) rotate(var(--orbit-node-rotate, 0deg));
       }
 
@@ -2352,6 +2353,7 @@
         clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
         padding: var(--orbit-node-pad-y, 14px) var(--orbit-node-pad-x, 16px) var(--orbit-node-pad-bottom, 15px);
         box-shadow: var(--container-shadow);
+        pointer-events: auto;
         transform: translate(-50%, -50%) rotate(var(--orbit-branch-node-rotate, 0deg));
       }
 
@@ -2409,6 +2411,7 @@
         clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
         box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
+        pointer-events: auto;
         scroll-snap-align: none;
         transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px))) rotate(var(--orbit-chip-rotate, 0deg));
       }
@@ -4437,6 +4440,13 @@
             var draggedDuringPointer = false;
             var suppressNextClick = false;
             var dragThreshold = 10;
+            var interactionMode = "idle";
+            var modeReleaseTimer = null;
+            var browserGestureActive = false;
+            var wheelMode = "idle";
+            var lastWheelModeAt = 0;
+            var wheelModeWindowMs = 180;
+            var wheelIntentRatio = 1.18;
 
             viewport.setAttribute("tabindex", "0");
 
@@ -4448,6 +4458,53 @@
 
             function clamp(value, min, max) {
               return Math.min(max, Math.max(min, value));
+            }
+
+            function canUseMode(mode) {
+              return interactionMode === "idle" || interactionMode === mode;
+            }
+
+            function setMode(mode) {
+              if (modeReleaseTimer) {
+                window.clearTimeout(modeReleaseTimer);
+                modeReleaseTimer = null;
+              }
+              interactionMode = mode;
+            }
+
+            function releaseModeSoon(mode, delay) {
+              if (modeReleaseTimer) window.clearTimeout(modeReleaseTimer);
+              modeReleaseTimer = window.setTimeout(function () {
+                if (interactionMode === mode && activePointerId === null && pinchStartDistance === 0 && !browserGestureActive) {
+                  interactionMode = "idle";
+                }
+              }, delay);
+            }
+
+            function beginTransientMode(mode, delay) {
+              if (!canUseMode(mode)) return false;
+              setMode(mode);
+              releaseModeSoon(mode, delay);
+              return true;
+            }
+
+            function getWheelMode(event) {
+              var absX = Math.abs(event.deltaX);
+              var absY = Math.abs(event.deltaY);
+              var now = Date.now();
+
+              if (event.ctrlKey || event.metaKey || event.altKey) {
+                wheelMode = "zoom";
+              } else if (absY > absX * wheelIntentRatio) {
+                wheelMode = "zoom";
+              } else if (absX > absY * wheelIntentRatio) {
+                wheelMode = "pan";
+              } else if (now - lastWheelModeAt > wheelModeWindowMs) {
+                wheelMode = "idle";
+              }
+
+              lastWheelModeAt = now;
+              return wheelMode;
             }
 
             function setPan(nextX, nextY) {
@@ -4520,7 +4577,7 @@
             }
 
             function stopDragging() {
-              if (activePointerId === null && pinchStartDistance === 0) return;
+              if (activePointerId === null && pinchStartDistance === 0 && !viewport.classList.contains("is-dragging")) return;
               if (draggedDuringPointer) {
                 suppressNextClick = true;
                 window.setTimeout(function () {
@@ -4529,6 +4586,7 @@
               }
               activePointerId = null;
               pinchStartDistance = 0;
+              releaseModeSoon(interactionMode, 120);
               viewport.classList.remove("is-dragging");
             }
 
@@ -4537,9 +4595,11 @@
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
               if (event.target.closest(".directory-link, button, input, textarea, select, summary, [contenteditable='true']")) return;
+              if (browserGestureActive) return;
 
               activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
               if (activePointers.size >= 2) {
+                setMode("zoom");
                 var pair = getPointerPair();
                 pinchStartDistance = getPointerDistance(pair);
                 pinchStartZoom = zoom;
@@ -4550,6 +4610,11 @@
                 return;
               }
 
+              if (!canUseMode("pan")) {
+                activePointers.delete(event.pointerId);
+                return;
+              }
+              setMode("pan");
               activePointerId = event.pointerId;
               startX = event.clientX;
               startY = event.clientY;
@@ -4561,11 +4626,15 @@
             });
 
             viewport.addEventListener("pointermove", function (event) {
+              if (browserGestureActive) return;
+
               if (activePointers.has(event.pointerId)) {
                 activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
               }
 
               if (activePointers.size >= 2 && pinchStartDistance > 0) {
+                if (!canUseMode("zoom")) return;
+                setMode("zoom");
                 if (event.cancelable) event.preventDefault();
                 var pair = getPointerPair();
                 var center = getPointerCenter(pair);
@@ -4575,6 +4644,7 @@
               }
 
               if (activePointerId !== event.pointerId) return;
+              if (interactionMode !== "pan") return;
               if (event.cancelable) event.preventDefault();
               var deltaX = event.clientX - startX;
               var deltaY = event.clientY - startY;
@@ -4587,13 +4657,9 @@
             function finishPointer(event) {
               activePointers.delete(event.pointerId);
               if (activePointers.size === 1) {
-                var remaining = Array.from(activePointers.entries())[0];
-                activePointerId = remaining[0];
-                startX = remaining[1].x;
-                startY = remaining[1].y;
-                startPanX = panX;
-                startPanY = panY;
+                activePointerId = null;
                 pinchStartDistance = 0;
+                releaseModeSoon("zoom", 160);
                 return;
               }
 
@@ -4612,19 +4678,27 @@
               if (Math.abs(event.deltaX) < 0.5 && Math.abs(event.deltaY) < 0.5) return;
 
               event.preventDefault();
-              if (event.ctrlKey || event.metaKey || event.altKey || Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
+              var mode = getWheelMode(event);
+              if (mode === "zoom") {
+                if (!beginTransientMode("zoom", 150)) return;
                 var wheelAmount = event.deltaY || event.deltaX;
                 var zoomSpeed = event.ctrlKey || event.metaKey || event.altKey ? 0.003 : 0.0018;
                 setZoom(zoom * Math.exp(-wheelAmount * zoomSpeed), event.clientX, event.clientY);
                 return;
               }
 
+              if (mode !== "pan" || !beginTransientMode("pan", 90)) return;
               setPan(panX - event.deltaX, panY - event.deltaY);
             }, { passive: false });
 
             viewport.addEventListener("gesturestart", function (event) {
               if (!event.cancelable) return;
               event.preventDefault();
+              browserGestureActive = true;
+              activePointers.clear();
+              activePointerId = null;
+              pinchStartDistance = 0;
+              setMode("zoom");
               gestureStartZoom = zoom;
             }, { passive: false });
 
@@ -4632,6 +4706,18 @@
               if (!event.cancelable) return;
               event.preventDefault();
               setZoom(gestureStartZoom * event.scale, event.clientX, event.clientY);
+            }, { passive: false });
+
+            viewport.addEventListener("gestureend", function (event) {
+              if (event.cancelable) event.preventDefault();
+              browserGestureActive = false;
+              releaseModeSoon("zoom", 160);
+            }, { passive: false });
+
+            viewport.addEventListener("gesturecancel", function (event) {
+              if (event.cancelable) event.preventDefault();
+              browserGestureActive = false;
+              releaseModeSoon("zoom", 160);
             }, { passive: false });
 
             viewport.addEventListener("click", function (event) {
