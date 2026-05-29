@@ -2020,6 +2020,124 @@
         padding-top: 14px;
       }
 
+      .home-index-board {
+        --index-core-width: clamp(250px, 28vw, 390px);
+        --index-board-gap: clamp(34px, 6vw, 84px);
+        position: relative;
+        isolation: isolate;
+        display: grid;
+        grid-template-columns: minmax(220px, var(--index-core-width)) minmax(0, 1fr);
+        gap: var(--index-board-gap);
+        align-items: start;
+        min-height: clamp(640px, 86vh, 920px);
+        margin: clamp(4px, 2vw, 22px) 0 clamp(40px, 7vw, 78px);
+        padding: clamp(24px, 4vw, 44px) clamp(4px, 2vw, 18px);
+      }
+
+      .home-index-board::before,
+      .home-index-board::after {
+        position: absolute;
+        pointer-events: none;
+        content: "";
+      }
+
+      .home-index-board::before {
+        inset: var(--index-plane-top, 2%) var(--index-plane-right, 0%) var(--index-plane-bottom, 4%) var(--index-plane-left, 2%);
+        z-index: -2;
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(var(--index-plane-a, 112deg), transparent 0 var(--index-plane-a-start, 31%), var(--glass-glare) var(--index-plane-a-start, 31%) var(--index-plane-a-end, 32%), transparent var(--index-plane-a-end, 32%) 100%),
+          linear-gradient(var(--index-plane-b, 28deg), transparent 0 var(--index-plane-b-start, 58%), var(--fracture-strong) var(--index-plane-b-start, 58%) var(--index-plane-b-end, 59%), transparent var(--index-plane-b-end, 59%) 100%),
+          var(--glass-pane);
+        clip-path: polygon(var(--trim-tl-x, 18px) 0, calc(100% - var(--trim-tr-x, 42px)) 0, 100% var(--trim-tr-y, 22px), 100% calc(100% - var(--trim-br-y, 54px)), calc(100% - var(--trim-br-x, 16px)) 100%, var(--trim-bl-x, 50px) 100%, 0 calc(100% - var(--trim-bl-y, 18px)), 0 var(--trim-tl-y, 42px));
+        opacity: 0.36;
+        transform: translate(var(--index-plane-x, 0px), var(--index-plane-y, 0px)) rotate(var(--index-plane-rotate, -1deg));
+        backdrop-filter: blur(9px) saturate(1.08);
+        -webkit-backdrop-filter: blur(9px) saturate(1.08);
+      }
+
+      .home-index-board::after {
+        top: var(--index-axis-top, 18%);
+        bottom: var(--index-axis-bottom, 8%);
+        left: var(--index-axis-left, 38%);
+        z-index: -1;
+        width: 1px;
+        background:
+          linear-gradient(180deg, transparent 0, var(--fracture-strong) 12%, var(--fracture-strong) 84%, transparent 100%);
+        opacity: 0.58;
+        transform: translateX(var(--index-axis-x, 0px)) rotate(var(--index-axis-rotate, 4deg));
+        transform-origin: top center;
+      }
+
+      .home-index-board .home-hero {
+        position: sticky;
+        top: 118px;
+        display: flex;
+        min-height: clamp(300px, 48vh, 520px);
+        align-items: center;
+        margin: 0;
+        padding: clamp(18px, 3vw, 30px) 0;
+        transform: translate(var(--index-core-x, 0px), var(--index-core-y, 0px)) rotate(var(--index-core-rotate, -2deg));
+      }
+
+      .home-index-board .home-logo {
+        font-size: clamp(62px, 10vw, 132px);
+      }
+
+      .home-index-board .home-directory {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: clamp(30px, 5vw, 54px);
+        align-items: stretch;
+      }
+
+      .home-index-board .directory-section {
+        --index-section-pad-x: clamp(12px, 2vw, 24px);
+        --index-section-pad-y: clamp(12px, 2vw, 20px);
+        position: relative;
+        isolation: isolate;
+        margin: 0;
+        padding: var(--index-section-pad-y) var(--index-section-pad-x) clamp(10px, 2vw, 18px);
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--glass-pane), transparent 62%),
+          var(--posted-text-bg);
+        clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 22px)) 0, 100% var(--trim-tr-y, 16px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 8px));
+        box-shadow: var(--container-shadow);
+        transform: translate(var(--section-block-x, 0px), var(--section-block-y, 0px)) rotate(var(--section-block-rotate, 0deg));
+      }
+
+      .home-index-board .directory-section:nth-child(even),
+      .home-index-board .directory-section:nth-child(3n) {
+        margin-top: 0;
+        padding-left: var(--index-section-pad-x);
+      }
+
+      .home-index-board .directory-section::before {
+        top: var(--index-section-line-top, 50%);
+        left: calc(var(--index-section-rail-left, -54px));
+        z-index: -1;
+        width: var(--index-section-rail-width, 88px);
+        height: 1px;
+        background:
+          linear-gradient(90deg, transparent 0, var(--fracture-strong) 18%, var(--fracture-strong) 86%, transparent 100%);
+        opacity: var(--index-section-rail-opacity, 0.62);
+        transform: rotate(var(--index-section-rail-rotate, -7deg));
+        transform-origin: right center;
+      }
+
+      .home-index-board .directory-section h2 {
+        margin-bottom: 8px;
+      }
+
+      .home-index-board .branch-logo {
+        font-size: clamp(28px, 4.2vw, 54px);
+      }
+
+      .home-index-board .post-list {
+        padding-top: 12px;
+      }
+
       .section-pager {
         margin-top: 44px;
         border-top: 1px solid var(--line);
@@ -2745,6 +2863,49 @@
           display: none;
         }
 
+        .home-index-board {
+          display: block;
+          min-height: auto;
+          margin: 0 0 34px;
+          padding: 0;
+        }
+
+        .home-index-board::before,
+        .home-index-board::after {
+          display: none;
+        }
+
+        .home-index-board .home-hero {
+          position: relative;
+          top: auto;
+          min-height: clamp(160px, 38vw, 220px);
+          margin: 0 0 32px;
+          padding: 28px 0 22px;
+          transform: none;
+        }
+
+        .home-index-board .home-logo {
+          font-size: clamp(58px, 20vw, 108px);
+        }
+
+        .home-index-board .home-directory {
+          display: grid;
+          gap: 34px;
+        }
+
+        .home-index-board .directory-section {
+          border: 0;
+          background: transparent;
+          clip-path: none;
+          box-shadow: none;
+          padding: 0;
+          transform: none;
+        }
+
+        .home-index-board .directory-section::before {
+          display: none;
+        }
+
         .branch-card-link::after {
           display: none;
         }
@@ -3429,6 +3590,36 @@
           root.style.setProperty("--hover-shadow-x", randomRange(6, 14, "px"));
           root.style.setProperty("--hover-shadow-y", randomRange(6, 14, "px"));
 
+          document.querySelectorAll(".home-index-board").forEach(function (board) {
+            var boardA = randomPercentPair(24, 42, 4, 11);
+            var boardB = randomPercentPair(52, 68, 0.6, 1.8);
+
+            applyTrimProfile(board, 12, 58);
+            board.style.setProperty("--index-board-gap", randomRange(46, 92, "px"));
+            board.style.setProperty("--index-core-width", randomRange(250, 410, "px"));
+            board.style.setProperty("--index-core-x", randomRange(-16, 12, "px"));
+            board.style.setProperty("--index-core-y", randomRange(-10, 16, "px"));
+            board.style.setProperty("--index-core-rotate", randomRange(-3.8, 2.4, "deg"));
+            board.style.setProperty("--index-plane-top", randomRange(0, 6, "%"));
+            board.style.setProperty("--index-plane-right", randomRange(-2, 4, "%"));
+            board.style.setProperty("--index-plane-bottom", randomRange(2, 8, "%"));
+            board.style.setProperty("--index-plane-left", randomRange(0, 5, "%"));
+            board.style.setProperty("--index-plane-a", randomRange(104, 136, "deg"));
+            board.style.setProperty("--index-plane-a-start", boardA[0]);
+            board.style.setProperty("--index-plane-a-end", boardA[1]);
+            board.style.setProperty("--index-plane-b", randomRange(18, 48, "deg"));
+            board.style.setProperty("--index-plane-b-start", boardB[0]);
+            board.style.setProperty("--index-plane-b-end", boardB[1]);
+            board.style.setProperty("--index-plane-x", randomRange(-10, 12, "px"));
+            board.style.setProperty("--index-plane-y", randomRange(-8, 12, "px"));
+            board.style.setProperty("--index-plane-rotate", randomRange(-2.2, 2, "deg"));
+            board.style.setProperty("--index-axis-top", randomRange(14, 24, "%"));
+            board.style.setProperty("--index-axis-bottom", randomRange(6, 14, "%"));
+            board.style.setProperty("--index-axis-left", randomRange(31, 39, "%"));
+            board.style.setProperty("--index-axis-x", randomRange(-10, 12, "px"));
+            board.style.setProperty("--index-axis-rotate", randomRange(-5, 6, "deg"));
+          });
+
           document.querySelectorAll(".home-mindmap").forEach(function (map) {
             var bounds = map.getBoundingClientRect();
             var mapWidth = bounds.width || window.innerWidth;
@@ -3604,6 +3795,17 @@
             section.style.setProperty("--branch-glass-motion-rotate", randomRange(-3, 4, "deg"));
             section.style.setProperty("--branch-echo-motion-x", randomRange(-4, 6, "px"));
             section.style.setProperty("--branch-echo-motion-y", randomRange(-5, 4, "px"));
+          });
+
+          document.querySelectorAll(".home-index-board .directory-section").forEach(function (section) {
+            applyTrimProfile(section, 8, 32);
+            section.style.setProperty("--index-section-pad-x", randomRange(14, 28, "px"));
+            section.style.setProperty("--index-section-pad-y", randomRange(12, 24, "px"));
+            section.style.setProperty("--index-section-line-top", randomRange(34, 62, "%"));
+            section.style.setProperty("--index-section-rail-left", randomRange(-76, -42, "px"));
+            section.style.setProperty("--index-section-rail-width", randomRange(62, 128, "px"));
+            section.style.setProperty("--index-section-rail-opacity", randomRange(0.44, 0.78, ""));
+            section.style.setProperty("--index-section-rail-rotate", randomRange(-14, 8, "deg"));
           });
 
           document.querySelectorAll(".directory-link").forEach(function (link) {

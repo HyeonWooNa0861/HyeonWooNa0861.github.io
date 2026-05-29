@@ -4,8 +4,8 @@ title: GitBlog
 permalink: /
 ---
 
-<div class="home-mindmap">
-  <section class="home-hero mindmap-core" aria-label="NaHW">
+<div class="home-index-board">
+  <section class="home-hero index-core" aria-label="NaHW">
     <a class="home-logo" href="{{ '/' | relative_url }}" aria-label="NaHW home">
       <span class="logo-fragment" data-fragment="Na">Na</span>
       <span class="logo-fragment" data-fragment="H">H</span>
@@ -13,7 +13,7 @@ permalink: /
     </a>
   </section>
 
-  <div class="home-directory mindmap-ring">
+  <div class="home-directory index-lanes">
   {% for item in site.data.navigation %}
     <section class="directory-section">
       <h2>
