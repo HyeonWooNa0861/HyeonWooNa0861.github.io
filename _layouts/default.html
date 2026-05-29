@@ -2138,6 +2138,202 @@
         padding-top: 12px;
       }
 
+      .home-orbit {
+        --orbit-core-x: 50%;
+        --orbit-core-y: 49%;
+        position: relative;
+        isolation: isolate;
+        min-height: clamp(760px, 92vh, 980px);
+        margin: clamp(0px, 2vw, 20px) 0 clamp(42px, 7vw, 76px);
+        overflow: visible;
+      }
+
+      .home-orbit::before,
+      .home-orbit::after {
+        position: absolute;
+        pointer-events: none;
+        content: "";
+      }
+
+      .home-orbit::before {
+        inset: var(--orbit-plane-top, 4%) var(--orbit-plane-right, 4%) var(--orbit-plane-bottom, 5%) var(--orbit-plane-left, 4%);
+        z-index: -2;
+        border: 1px solid var(--glass-edge);
+        background:
+          radial-gradient(ellipse at var(--orbit-ring-a-x, 50%) var(--orbit-ring-a-y, 50%), transparent 0 38%, var(--map-texture-soft) 39% 40%, transparent 41% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-b-x, 50%) var(--orbit-ring-b-y, 50%), transparent 0 54%, var(--glass-edge) 55% 55.5%, transparent 56% 100%),
+          linear-gradient(var(--orbit-plane-a, 118deg), transparent 0 var(--orbit-plane-a-start, 30%), var(--glass-glare) var(--orbit-plane-a-start, 30%) var(--orbit-plane-a-end, 31%), transparent var(--orbit-plane-a-end, 31%) 100%),
+          linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
+          var(--glass-pane);
+        clip-path: polygon(var(--trim-tl-x, 28px) 0, calc(100% - var(--trim-tr-x, 48px)) 0, 100% var(--trim-tr-y, 18px), 100% calc(100% - var(--trim-br-y, 46px)), calc(100% - var(--trim-br-x, 20px)) 100%, var(--trim-bl-x, 58px) 100%, 0 calc(100% - var(--trim-bl-y, 22px)), 0 var(--trim-tl-y, 52px));
+        opacity: 0.34;
+        transform: translate(var(--orbit-plane-x, 0px), var(--orbit-plane-y, 0px)) rotate(var(--orbit-plane-rotate, -1.2deg));
+        backdrop-filter: blur(8px) saturate(1.08);
+        -webkit-backdrop-filter: blur(8px) saturate(1.08);
+      }
+
+      .home-orbit::after {
+        top: var(--orbit-axis-top, 48%);
+        left: var(--orbit-axis-left, 8%);
+        z-index: -1;
+        width: var(--orbit-axis-width, 86%);
+        height: 1px;
+        background:
+          linear-gradient(90deg, transparent 0, var(--fracture-strong) 12%, var(--fracture-strong) 88%, transparent 100%);
+        opacity: 0.5;
+        transform: translateY(var(--orbit-axis-y, 0px)) rotate(var(--orbit-axis-rotate, -4deg));
+        transform-origin: left center;
+      }
+
+      .home-orbit .home-hero {
+        position: absolute;
+        top: var(--orbit-core-y);
+        left: var(--orbit-core-x);
+        z-index: 5;
+        display: block;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        transform: translate(-50%, -50%) translate(var(--orbit-core-shift-x, 0px), var(--orbit-core-shift-y, 0px)) rotate(var(--orbit-core-rotate, -2deg));
+      }
+
+      .home-orbit .home-hero::before,
+      .home-orbit .home-hero::after {
+        display: none;
+      }
+
+      .home-orbit .home-logo {
+        font-size: clamp(68px, 12vw, 148px);
+      }
+
+      .home-orbit .home-directory {
+        position: relative;
+        display: block;
+        min-height: inherit;
+      }
+
+      .home-orbit .directory-section {
+        --orbit-node-x: 0px;
+        --orbit-node-y: 0px;
+        --orbit-node-width: min(30vw, 360px);
+        position: absolute;
+        top: var(--orbit-core-y);
+        left: var(--orbit-core-x);
+        z-index: 2;
+        width: var(--orbit-node-width);
+        min-width: 248px;
+        margin: 0;
+        padding: var(--orbit-node-pad-y, 16px) var(--orbit-node-pad-x, 18px) var(--orbit-node-pad-bottom, 18px);
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--glass-pane), transparent 60%),
+          var(--posted-text-bg);
+        clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
+        box-shadow: var(--container-shadow);
+        transform: translate(-50%, -50%) translate(var(--orbit-node-x), var(--orbit-node-y)) rotate(var(--orbit-node-rotate, 0deg));
+      }
+
+      .home-orbit .directory-section:nth-child(even),
+      .home-orbit .directory-section:nth-child(3n) {
+        margin-top: 0;
+        padding-left: var(--orbit-node-pad-x, 18px);
+      }
+
+      .home-orbit .directory-section::before {
+        inset: var(--orbit-node-glass-inset, -10px);
+        z-index: -1;
+        width: auto;
+        height: auto;
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(var(--orbit-node-glass-angle, 124deg), transparent 0 34%, var(--glass-glare) 34% 35%, transparent 35% 100%),
+          var(--glass-pane);
+        clip-path: polygon(0 18%, 24% 0, 100% 10%, 88% 100%, 7% 84%);
+        opacity: 0.22;
+        transform: translate(var(--orbit-node-glass-x, 0px), var(--orbit-node-glass-y, 0px)) rotate(var(--orbit-node-glass-rotate, -4deg));
+      }
+
+      .home-orbit .directory-section::after {
+        position: absolute;
+        right: var(--orbit-node-mark-right, 18px);
+        bottom: var(--orbit-node-mark-bottom, 16px);
+        width: var(--orbit-node-mark-width, 58px);
+        height: 1px;
+        background: var(--fracture-strong);
+        content: "";
+        opacity: 0.68;
+        transform: rotate(var(--orbit-node-mark-rotate, -8deg));
+      }
+
+      .home-orbit .directory-section h2 {
+        grid-template-columns: minmax(0, 1fr) auto;
+        margin-bottom: 10px;
+      }
+
+      .home-orbit .branch-logo {
+        font-size: clamp(25px, 3.2vw, 46px);
+      }
+
+      .home-orbit .post-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--orbit-chip-gap, 10px);
+        margin: 0;
+        max-width: 100%;
+        overflow: visible;
+        padding: var(--orbit-link-pad-top, 12px) 0 0;
+        scroll-snap-type: none;
+        white-space: normal;
+        mask-image: none;
+        -webkit-mask-image: none;
+      }
+
+      .home-orbit .post-list::before,
+      .home-orbit .post-list::after {
+        display: none;
+        content: none;
+      }
+
+      .home-orbit .post-card {
+        display: inline-grid;
+        width: min(var(--orbit-chip-width, 160px), 100%);
+        min-height: auto;
+        flex: 0 0 auto;
+        margin: 0;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--glass-pane), transparent 58%),
+          var(--panel);
+        padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
+        box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
+        scroll-snap-align: none;
+        transform: translate(var(--orbit-chip-x, 0px), var(--orbit-chip-y, 0px)) rotate(var(--orbit-chip-rotate, 0deg));
+      }
+
+      .home-orbit .post-card::after {
+        right: 10px;
+        bottom: 9px;
+        width: var(--orbit-chip-line-width, 34px);
+        opacity: 0.52;
+        transform: rotate(var(--orbit-chip-line-rotate, -8deg));
+      }
+
+      .home-orbit .post-card a {
+        font-size: var(--orbit-chip-title-size, 15px);
+        line-height: 1.16;
+        transform: translate(var(--home-card-title-x, 0px), var(--home-card-title-y, 0px)) rotate(var(--home-card-title-rotate, 0deg));
+      }
+
+      .home-orbit .post-card p {
+        display: none;
+      }
+
+      .home-orbit .home-directory .post-card:hover {
+        animation: none;
+        box-shadow: var(--compact-hover-shadow);
+        transform: translate(calc(var(--orbit-chip-x, 0px) + var(--hover-card-x, 0px)), calc(var(--orbit-chip-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--orbit-chip-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+      }
+
       .section-pager {
         margin-top: 44px;
         border-top: 1px solid var(--line);
@@ -2906,6 +3102,80 @@
           display: none;
         }
 
+        .home-orbit {
+          min-height: auto;
+          margin: 0 0 34px;
+          overflow: visible;
+        }
+
+        .home-orbit::before,
+        .home-orbit::after {
+          display: none;
+        }
+
+        .home-orbit .home-hero {
+          position: relative;
+          top: auto;
+          left: auto;
+          min-height: clamp(160px, 38vw, 220px);
+          margin: 0 0 32px;
+          padding: 28px 0 22px;
+          transform: none;
+        }
+
+        .home-orbit .home-logo {
+          font-size: clamp(58px, 20vw, 108px);
+        }
+
+        .home-orbit .home-directory {
+          display: grid;
+          min-height: 0;
+          gap: 34px;
+        }
+
+        .home-orbit .directory-section {
+          position: relative;
+          top: auto;
+          left: auto;
+          width: auto;
+          min-width: 0;
+          border: 0;
+          background: transparent;
+          clip-path: none;
+          box-shadow: none;
+          padding: 0;
+          transform: none;
+        }
+
+        .home-orbit .directory-section::before,
+        .home-orbit .directory-section::after {
+          display: none;
+        }
+
+        .home-orbit .post-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          overflow: visible;
+          padding: 12px 0 0;
+          white-space: normal;
+          mask-image: none;
+          -webkit-mask-image: none;
+        }
+
+        .home-orbit .post-card {
+          display: inline-grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+          width: min(100%, 180px);
+          padding: 10px 12px 11px;
+          transform: none;
+        }
+
+        .home-orbit .post-card a {
+          font-size: 15px;
+        }
+
         .branch-card-link::after {
           display: none;
         }
@@ -3620,6 +3890,72 @@
             board.style.setProperty("--index-axis-rotate", randomRange(-5, 6, "deg"));
           });
 
+          document.querySelectorAll(".home-orbit").forEach(function (orbit) {
+            var bounds = orbit.getBoundingClientRect();
+            var orbitWidth = bounds.width || window.innerWidth;
+            var radiusX = Math.max(250, Math.min(orbitWidth * 0.3, 390));
+            var radiusY = Math.max(210, Math.min(window.innerHeight * 0.3, 330));
+            var orbitAngles = [-142, -38, 24, 142, 90, -92, 0, 180];
+            var orbitA = randomPercentPair(24, 42, 4, 11);
+            var orbitB = randomPercentPair(52, 68, 0.6, 1.8);
+
+            applyTrimProfile(orbit, 14, 62);
+            orbit.style.setProperty("--orbit-core-y", randomRange(45, 53, "%"));
+            orbit.style.setProperty("--orbit-core-shift-x", randomRange(-12, 12, "px"));
+            orbit.style.setProperty("--orbit-core-shift-y", randomRange(-10, 14, "px"));
+            orbit.style.setProperty("--orbit-core-rotate", randomRange(-3.8, 2.8, "deg"));
+            orbit.style.setProperty("--orbit-plane-top", randomRange(1, 6, "%"));
+            orbit.style.setProperty("--orbit-plane-right", randomRange(1, 7, "%"));
+            orbit.style.setProperty("--orbit-plane-bottom", randomRange(3, 9, "%"));
+            orbit.style.setProperty("--orbit-plane-left", randomRange(1, 7, "%"));
+            orbit.style.setProperty("--orbit-ring-a-x", randomRange(44, 56, "%"));
+            orbit.style.setProperty("--orbit-ring-a-y", randomRange(44, 56, "%"));
+            orbit.style.setProperty("--orbit-ring-b-x", randomRange(42, 58, "%"));
+            orbit.style.setProperty("--orbit-ring-b-y", randomRange(42, 58, "%"));
+            orbit.style.setProperty("--orbit-plane-a", randomRange(104, 136, "deg"));
+            orbit.style.setProperty("--orbit-plane-a-start", orbitA[0]);
+            orbit.style.setProperty("--orbit-plane-a-end", orbitA[1]);
+            orbit.style.setProperty("--orbit-plane-b", randomRange(18, 48, "deg"));
+            orbit.style.setProperty("--orbit-plane-b-start", orbitB[0]);
+            orbit.style.setProperty("--orbit-plane-b-end", orbitB[1]);
+            orbit.style.setProperty("--orbit-plane-x", randomRange(-10, 12, "px"));
+            orbit.style.setProperty("--orbit-plane-y", randomRange(-8, 12, "px"));
+            orbit.style.setProperty("--orbit-plane-rotate", randomRange(-2.4, 2.2, "deg"));
+            orbit.style.setProperty("--orbit-axis-top", randomRange(43, 55, "%"));
+            orbit.style.setProperty("--orbit-axis-left", randomRange(5, 10, "%"));
+            orbit.style.setProperty("--orbit-axis-width", randomRange(82, 94, "%"));
+            orbit.style.setProperty("--orbit-axis-y", randomRange(-8, 8, "px"));
+            orbit.style.setProperty("--orbit-axis-rotate", randomRange(-7, 5, "deg"));
+
+            orbit.querySelectorAll(".directory-section").forEach(function (section, index) {
+              var angle = (orbitAngles[index % orbitAngles.length] || 0) + randomNumber(-9, 9);
+              var radians = angle * Math.PI / 180;
+              var nodeWidth = Math.max(248, Math.min(orbitWidth * randomNumber(0.22, 0.3), 370));
+              var x = Math.cos(radians) * radiusX * randomNumber(0.9, 1.1);
+              var y = Math.sin(radians) * radiusY * randomNumber(0.9, 1.12);
+
+              applyTrimProfile(section, 8, 32);
+              section.style.setProperty("--orbit-node-x", x.toFixed(2) + "px");
+              section.style.setProperty("--orbit-node-y", y.toFixed(2) + "px");
+              section.style.setProperty("--orbit-node-width", nodeWidth.toFixed(2) + "px");
+              section.style.setProperty("--orbit-node-rotate", randomRange(-3, 3, "deg"));
+              section.style.setProperty("--orbit-node-pad-y", randomRange(14, 22, "px"));
+              section.style.setProperty("--orbit-node-pad-x", randomRange(15, 24, "px"));
+              section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
+              section.style.setProperty("--orbit-node-glass-inset", randomRange(-14, -7, "px"));
+              section.style.setProperty("--orbit-node-glass-angle", randomRange(108, 136, "deg"));
+              section.style.setProperty("--orbit-node-glass-x", randomRange(-5, 5, "px"));
+              section.style.setProperty("--orbit-node-glass-y", randomRange(-5, 5, "px"));
+              section.style.setProperty("--orbit-node-glass-rotate", randomRange(-6, 5, "deg"));
+              section.style.setProperty("--orbit-node-mark-right", randomRange(12, 24, "px"));
+              section.style.setProperty("--orbit-node-mark-bottom", randomRange(10, 22, "px"));
+              section.style.setProperty("--orbit-node-mark-width", randomRange(38, 72, "px"));
+              section.style.setProperty("--orbit-node-mark-rotate", randomRange(-16, 12, "deg"));
+              section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
+              section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
+            });
+          });
+
           document.querySelectorAll(".home-mindmap").forEach(function (map) {
             var bounds = map.getBoundingClientRect();
             var mapWidth = bounds.width || window.innerWidth;
@@ -3932,6 +4268,23 @@
             card.style.setProperty("--card-desc-rotate", randomRange(-1.2, 1.2, "deg"));
             applyTrimProfile(card, 8, 28);
             applyHoverProfile(card, true);
+          });
+
+          document.querySelectorAll(".home-orbit .post-card").forEach(function (card) {
+            var title = card.querySelector("a");
+            var titleLength = title ? title.textContent.trim().length : 0;
+            var wideChip = titleLength > 18;
+
+            card.style.setProperty("--orbit-chip-width", randomRange(wideChip ? 156 : 118, wideChip ? 210 : 168, "px"));
+            card.style.setProperty("--orbit-chip-pad-y", randomRange(8, 12, "px"));
+            card.style.setProperty("--orbit-chip-pad-x", randomRange(10, 15, "px"));
+            card.style.setProperty("--orbit-chip-pad-bottom", randomRange(9, 14, "px"));
+            card.style.setProperty("--orbit-chip-title-size", randomRange(wideChip ? 13.5 : 14, wideChip ? 15.5 : 16.5, "px"));
+            card.style.setProperty("--orbit-chip-x", randomRange(-6, 8, "px"));
+            card.style.setProperty("--orbit-chip-y", randomRange(-5, 7, "px"));
+            card.style.setProperty("--orbit-chip-rotate", randomRange(-2.8, 2.8, "deg"));
+            card.style.setProperty("--orbit-chip-line-width", randomRange(22, 44, "px"));
+            card.style.setProperty("--orbit-chip-line-rotate", randomRange(-16, 12, "deg"));
           });
 
           document.querySelectorAll(".content-page .page-content > h1 + .post-list .post-card").forEach(function (card) {
