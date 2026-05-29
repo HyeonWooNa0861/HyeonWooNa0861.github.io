@@ -50,7 +50,6 @@
         --pre-bg: #111827;
         --pre-text: #e5e7eb;
         --header-bg: rgba(246, 248, 251, 0.56);
-        --ambient-2: rgba(138, 206, 0, 0.03);
         --fracture: rgba(15, 23, 42, 0.09);
         --fracture-strong: rgba(138, 206, 0, 0.32);
         --component-moment: 160ms;
@@ -139,7 +138,6 @@
         --pre-bg: #020617;
         --pre-text: #e5e7eb;
         --header-bg: rgba(8, 11, 18, 0.56);
-        --ambient-2: rgba(183, 255, 0, 0.035);
         --fracture: rgba(148, 163, 184, 0.11);
         --fracture-strong: rgba(183, 255, 0, 0.26);
         --component-moment: 160ms;
@@ -177,7 +175,6 @@
         margin: 0;
         min-height: 100vh;
         background:
-          radial-gradient(circle at var(--ambient-2-x, 86%) var(--ambient-2-y, 8%), var(--ambient-2), transparent var(--ambient-2-spread, 30%)),
           linear-gradient(145deg, var(--bg) 0%, var(--bg-alt) 100%);
         color: var(--text);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -233,7 +230,6 @@
         place-items: center;
         overflow: hidden;
         background:
-          radial-gradient(circle at 84% 24%, var(--ambient-2), transparent 32%),
           linear-gradient(145deg, var(--bg), var(--bg-alt));
         opacity: 1;
         transition: opacity 320ms ease, visibility 320ms ease, transform 320ms ease;
@@ -2195,7 +2191,6 @@
         margin: 0;
         overflow: hidden;
         background:
-          radial-gradient(circle at 78% 72%, rgba(138, 206, 0, 0.08), transparent 30%),
           linear-gradient(128deg, rgba(255, 255, 255, 0.46), transparent 56%),
           var(--bg);
         cursor: grab;
@@ -3851,9 +3846,6 @@
           root.style.setProperty("--fracture-grid-a", randomRange(190, 280, "px"));
           root.style.setProperty("--fracture-grid-b", randomRange(260, 390, "px"));
           root.style.setProperty("--fracture-mask-start", randomRange(22, 36, "%"));
-          root.style.setProperty("--ambient-2-x", randomRange(74, 94, "%"));
-          root.style.setProperty("--ambient-2-y", randomRange(0, 18, "%"));
-          root.style.setProperty("--ambient-2-spread", randomRange(24, 38, "%"));
           root.style.setProperty("--main-fracture-rotate", randomRange(-18, -7, "deg"));
           root.style.setProperty("--main-line-top", randomRange(96, 162, "px"));
           root.style.setProperty("--main-line-width", randomRange(150, 270, "px"));
