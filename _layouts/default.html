@@ -4524,8 +4524,17 @@
             var lastWheelModeAt = 0;
             var wheelModeWindowMs = 180;
             var wheelIntentRatio = 1.18;
+            var userAdjustedMap = false;
 
             viewport.setAttribute("tabindex", "0");
+
+            function getInitialPanOffset() {
+              var size = getHomeViewportSize();
+              return {
+                x: -Math.min(120, Math.max(24, size.width * 0.07)),
+                y: 0
+              };
+            }
 
             function getLimits() {
               var maxX = Math.max(0, ((map.offsetWidth * zoom) - viewport.clientWidth) / 2);
@@ -4667,7 +4676,8 @@
               viewport.classList.remove("is-dragging");
             }
 
-            setPanImmediately(0, 0);
+            var initialPan = getInitialPanOffset();
+            setPanImmediately(initialPan.x, initialPan.y);
 
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
@@ -4681,6 +4691,7 @@
                 pinchStartDistance = getPointerDistance(pair);
                 pinchStartZoom = zoom;
                 activePointerId = null;
+                userAdjustedMap = true;
                 draggedDuringPointer = true;
                 viewport.classList.add("is-dragging");
                 viewport.setPointerCapture(event.pointerId);
@@ -4727,6 +4738,7 @@
               var deltaY = event.clientY - startY;
               if (Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)) > dragThreshold) {
                 draggedDuringPointer = true;
+                userAdjustedMap = true;
               }
               setPan(startPanX + deltaX, startPanY + deltaY);
             });
@@ -4760,11 +4772,13 @@
                 if (!beginTransientMode("zoom", 150)) return;
                 var wheelAmount = event.deltaY || event.deltaX;
                 var zoomSpeed = event.ctrlKey || event.metaKey || event.altKey ? 0.003 : 0.0018;
+                userAdjustedMap = true;
                 setZoom(zoom * Math.exp(-wheelAmount * zoomSpeed), event.clientX, event.clientY);
                 return;
               }
 
               if (mode !== "pan" || !beginTransientMode("pan", 90)) return;
+              userAdjustedMap = true;
               setPan(panX - event.deltaX, panY - event.deltaY);
             }, { passive: false });
 
@@ -4777,6 +4791,7 @@
               pinchStartDistance = 0;
               setMode("zoom");
               gestureStartZoom = zoom;
+              userAdjustedMap = true;
             }, { passive: false });
 
             viewport.addEventListener("gesturechange", function (event) {
@@ -4808,31 +4823,45 @@
               var keyStep = event.shiftKey ? 92 : 46;
               if (event.key === "ArrowLeft") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setPan(panX + keyStep, panY);
               } else if (event.key === "ArrowRight") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setPan(panX - keyStep, panY);
               } else if (event.key === "ArrowUp") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setPan(panX, panY + keyStep);
               } else if (event.key === "ArrowDown") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setPan(panX, panY - keyStep);
               } else if (event.key === "+" || event.key === "=") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setZoom(zoom * 1.14);
               } else if (event.key === "-" || event.key === "_") {
                 event.preventDefault();
+                userAdjustedMap = true;
                 setZoom(zoom / 1.14);
               } else if (event.key === "0") {
                 event.preventDefault();
                 zoom = 1;
-                setPanImmediately(0, 0);
+                userAdjustedMap = false;
+                var resetPan = getInitialPanOffset();
+                setPanImmediately(resetPan.x, resetPan.y);
               }
             });
 
             function syncViewportAndPan() {
               syncHomeViewport();
+              if (!userAdjustedMap && Math.abs(zoom - 1) < 0.001) {
+                var freshInitialPan = getInitialPanOffset();
+                setPanImmediately(freshInitialPan.x, freshInitialPan.y);
+                return;
+              }
+
               setPanImmediately(panX, panY);
             }
 
