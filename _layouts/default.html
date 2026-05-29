@@ -2171,6 +2171,10 @@
         --orbit-pan-x: 0px;
         --orbit-pan-y: 0px;
         --orbit-zoom: 1;
+        --unknown-edge-x: clamp(64px, 12vw, 220px);
+        --unknown-edge-y: clamp(48px, 9vw, 170px);
+        --unknown-edge-opacity: 0.92;
+        --unknown-edge-glow: 0.08;
         position: relative;
         isolation: isolate;
         height: calc(100vh - 64px);
@@ -2183,6 +2187,9 @@
           radial-gradient(circle at 78% 72%, rgba(138, 206, 0, 0.08), transparent 30%),
           linear-gradient(128deg, rgba(255, 255, 255, 0.46), transparent 56%),
           var(--bg);
+        box-shadow:
+          inset 0 0 clamp(72px, 14vw, 240px) rgba(15, 23, 42, 0.08),
+          inset 0 0 clamp(38px, 8vw, 140px) rgba(138, 206, 0, 0.06);
         cursor: grab;
         touch-action: none;
         user-select: none;
@@ -2199,9 +2206,10 @@
       .home-orbit::before {
         inset: 0;
         background:
-          linear-gradient(90deg, var(--bg) 0, transparent clamp(36px, 8vw, 140px), transparent calc(100% - clamp(36px, 8vw, 140px)), var(--bg) 100%),
-          linear-gradient(180deg, var(--bg) 0, transparent clamp(24px, 6vw, 100px), transparent calc(100% - clamp(24px, 6vw, 100px)), var(--bg) 100%);
-        opacity: 0.72;
+          linear-gradient(90deg, var(--bg) 0, var(--bg) calc(var(--unknown-edge-x) * 0.24), transparent var(--unknown-edge-x), transparent calc(100% - var(--unknown-edge-x)), var(--bg) calc(100% - (var(--unknown-edge-x) * 0.24)), var(--bg) 100%),
+          linear-gradient(180deg, var(--bg) 0, var(--bg) calc(var(--unknown-edge-y) * 0.28), transparent var(--unknown-edge-y), transparent calc(100% - var(--unknown-edge-y)), var(--bg) calc(100% - (var(--unknown-edge-y) * 0.28)), var(--bg) 100%),
+          radial-gradient(ellipse at 50% 50%, transparent 0 54%, rgba(138, 206, 0, var(--unknown-edge-glow)) 72%, var(--bg) 100%);
+        opacity: var(--unknown-edge-opacity);
       }
 
       .home-orbit::after {
@@ -4059,6 +4067,10 @@
             orbit.style.setProperty("--orbit-axis-y", randomRange(-16, 16, "px"));
             orbit.style.setProperty("--orbit-axis-rotate", randomRange(-9, 7, "deg"));
             orbit.style.setProperty("--orbit-viewport-mark-rotate", randomRange(-15, 10, "deg"));
+            orbit.style.setProperty("--unknown-edge-x", compactInteraction ? randomRange(54, 120, "px") : randomRange(92, 220, "px"));
+            orbit.style.setProperty("--unknown-edge-y", compactInteraction ? randomRange(46, 104, "px") : randomRange(74, 178, "px"));
+            orbit.style.setProperty("--unknown-edge-opacity", randomRange(0.86, 0.96, ""));
+            orbit.style.setProperty("--unknown-edge-glow", randomRange(0.04, 0.1, ""));
 
             orbit.querySelectorAll(".directory-section").forEach(function (section, index) {
               var angle = (orbitAngles[index % orbitAngles.length] || 0) + randomNumber(-9, 9);
