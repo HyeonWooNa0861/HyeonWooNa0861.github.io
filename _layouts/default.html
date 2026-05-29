@@ -3972,12 +3972,14 @@
             var orbitWidth = mapBounds.width || viewportBounds.width || window.innerWidth;
             var orbitHeight = mapBounds.height || viewportBounds.height || window.innerHeight;
             var radiusX = compactInteraction
-              ? Math.max(300, Math.min(orbitWidth * 0.28, 520))
-              : Math.max(440, Math.min(orbitWidth * 0.27, 700));
+              ? Math.max(430, Math.min(orbitWidth * 0.2, 680))
+              : Math.max(720, Math.min(orbitWidth * 0.22, 980));
             var radiusY = compactInteraction
-              ? Math.max(250, Math.min(orbitHeight * 0.26, 430))
-              : Math.max(360, Math.min(orbitHeight * 0.25, 580));
-            var orbitAngles = [-142, -38, 24, 142, 90, -92, 0, 180];
+              ? Math.max(370, Math.min(orbitHeight * 0.2, 590))
+              : Math.max(610, Math.min(orbitHeight * 0.22, 840));
+            var branchSections = Array.prototype.slice.call(orbit.querySelectorAll(".directory-section"));
+            var branchStep = 360 / Math.max(branchSections.length, 1);
+            var branchStartAngle = -124 + randomNumber(-8, 8);
 
             applyTrimProfile(map, 18, 82);
             orbit.style.setProperty("--orbit-core-y", randomRange(45, 53, "%"));
@@ -3989,19 +3991,28 @@
             orbit.style.setProperty("--unknown-edge-opacity", randomRange(0.86, 0.96, ""));
             orbit.style.setProperty("--unknown-edge-glow", randomRange(0.04, 0.1, ""));
 
-            orbit.querySelectorAll(".directory-section").forEach(function (section, index) {
-              var angle = (orbitAngles[index % orbitAngles.length] || 0) + randomNumber(-9, 9);
+            branchSections.forEach(function (section, index) {
+              var angle = branchStartAngle + (branchStep * index) + randomNumber(-4.5, 4.5);
               var radians = angle * Math.PI / 180;
+              var outwardX = Math.cos(radians);
+              var outwardY = Math.sin(radians);
+              var tangentX = -outwardY;
+              var tangentY = outwardX;
               var childCards = section.querySelectorAll(".post-card");
               var childCount = Math.max(childCards.length, 1);
-              var clusterSize = compactInteraction
-                ? Math.max(340, Math.min(orbitWidth * randomNumber(0.3, 0.38), 460 + childCount * 24))
-                : Math.max(430, Math.min(orbitWidth * randomNumber(0.22, 0.3), 560 + childCount * 34));
+              var childColumns = childCount >= 7 ? 3 : (childCount >= 2 ? 2 : 1);
+              var childRows = Math.ceil(childCount / childColumns);
+              var tangentialGap = compactInteraction ? 174 : 238;
+              var radialGap = compactInteraction ? 108 : 136;
               var branchNodeWidth = compactInteraction
-                ? Math.max(168, Math.min(clusterSize * randomNumber(0.44, 0.54), 230))
-                : Math.max(190, Math.min(clusterSize * randomNumber(0.38, 0.48), 280));
-              var x = Math.cos(radians) * radiusX * randomNumber(0.9, 1.1);
-              var y = Math.sin(radians) * radiusY * randomNumber(0.9, 1.12);
+                ? Math.max(168, Math.min(220 + childCount * 4, 238))
+                : Math.max(198, Math.min(250 + childCount * 5, 294));
+              var radialBase = (branchNodeWidth * 0.58) + (compactInteraction ? 112 : 148);
+              var radialReach = radialBase + ((childRows - 1) * radialGap) + 150;
+              var tangentialReach = (((childColumns - 1) * tangentialGap) / 2) + 150;
+              var clusterSize = Math.max(compactInteraction ? 430 : 560, Math.max(radialReach, tangentialReach) * 2);
+              var x = outwardX * radiusX * randomNumber(0.96, 1.05);
+              var y = outwardY * radiusY * randomNumber(0.96, 1.06);
 
               applyTrimProfile(section, 8, 32);
               section.style.setProperty("--orbit-node-x", x.toFixed(2) + "px");
@@ -4021,13 +4032,15 @@
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
 
               childCards.forEach(function (card, childIndex) {
-                var orbitStep = 360 / childCount;
-                var childAngle = -92 + (orbitStep * childIndex) + randomNumber(-16, 16);
-                var childRadians = childAngle * Math.PI / 180;
-                var childRadiusX = clusterSize * randomNumber(compactInteraction ? 0.31 : 0.34, compactInteraction ? 0.43 : 0.48);
-                var childRadiusY = clusterSize * randomNumber(compactInteraction ? 0.28 : 0.31, compactInteraction ? 0.4 : 0.45);
-                var childX = Math.cos(childRadians) * childRadiusX;
-                var childY = Math.sin(childRadians) * childRadiusY;
+                var row = Math.floor(childIndex / childColumns);
+                var col = childIndex % childColumns;
+                var rowStart = row * childColumns;
+                var rowItems = Math.min(childColumns, childCount - rowStart);
+                var centeredColumn = col - ((rowItems - 1) / 2);
+                var radialDistance = radialBase + (row * radialGap) + randomNumber(-10, 14);
+                var tangentialDistance = (centeredColumn * tangentialGap) + randomNumber(-18, 18);
+                var childX = (outwardX * radialDistance) + (tangentX * tangentialDistance);
+                var childY = (outwardY * radialDistance) + (tangentY * tangentialDistance);
 
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
