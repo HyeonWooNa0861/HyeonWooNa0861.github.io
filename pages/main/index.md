@@ -43,8 +43,7 @@ permalink: /
 {% endfor %}
 </div>
 
-<section class="visual-map-section" aria-labelledby="visual-map-title">
-  <h2 id="visual-map-title" class="visual-map-title">Visual Map</h2>
+<section class="visual-map-section" aria-label="Visual map">
   <div class="home-orbit visual-map-fit" data-orbit-fit aria-label="Visual map">
     <div class="orbit-map" data-orbit-map>
       <section class="home-hero orbit-core" aria-label="NaHW">

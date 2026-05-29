@@ -1434,25 +1434,11 @@
 
       .visual-map-section {
         position: relative;
-        left: 50%;
-        width: 100vw;
-        max-width: none;
+        box-sizing: border-box;
+        width: 100%;
         margin: clamp(74px, 10vw, 132px) 0 0;
         overflow: hidden;
-        padding: clamp(28px, 4vw, 56px) clamp(18px, 4vw, 54px) clamp(54px, 7vw, 96px);
-        transform: translateX(-50%);
-      }
-
-      .visual-map-title {
-        width: fit-content;
-        margin: 0 0 clamp(18px, 3vw, 30px);
-        color: var(--muted);
-        font-size: clamp(15px, 1.5vw, 20px);
-        font-weight: 720;
-        letter-spacing: 0;
-        line-height: 1;
-        text-transform: uppercase;
-        transform: translate(var(--visual-map-title-x, 0px), var(--visual-map-title-y, 0px)) rotate(var(--visual-map-title-rotate, -1deg));
+        padding: clamp(20px, 3vw, 42px) 0 clamp(54px, 7vw, 96px);
       }
 
       .visual-map-section .home-orbit {
@@ -4666,13 +4652,6 @@
 
           document.querySelectorAll(".theme-toggle").forEach(function (element) {
             applyTrimProfile(element, 3, 9);
-          });
-
-          document.querySelectorAll(".visual-map-title").forEach(function (element) {
-            applyTrimProfile(element, 4, 16);
-            element.style.setProperty("--visual-map-title-x", randomRange(-8, 16, "px"));
-            element.style.setProperty("--visual-map-title-y", randomRange(-4, 10, "px"));
-            element.style.setProperty("--visual-map-title-rotate", randomRange(-2.2, 1.8, "deg"));
           });
 
           document.querySelectorAll(".directory-link, .section-pager-card, .section-pager-parent, .theme-toggle").forEach(function (element) {
