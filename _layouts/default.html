@@ -2183,6 +2183,12 @@
         margin: 0;
         overflow: hidden;
         background:
+          radial-gradient(ellipse at var(--orbit-ring-a-x, 48%) var(--orbit-ring-a-y, 48%), transparent 0 37%, var(--map-texture-soft) 38% 39%, transparent 40% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-b-x, 54%) var(--orbit-ring-b-y, 50%), transparent 0 53%, var(--glass-edge) 54% 54.5%, transparent 55% 100%),
+          radial-gradient(ellipse at var(--orbit-ring-c-x, 50%) var(--orbit-ring-c-y, 56%), transparent 0 64%, rgba(138, 206, 0, 0.1) 65% 65.5%, transparent 66% 100%),
+          linear-gradient(var(--orbit-plane-a, 118deg), transparent 0 var(--orbit-plane-a-start, 30%), var(--glass-glare) var(--orbit-plane-a-start, 30%) var(--orbit-plane-a-end, 31%), transparent var(--orbit-plane-a-end, 31%) 100%),
+          linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
+          linear-gradient(var(--orbit-plane-c, 166deg), transparent 0 var(--orbit-plane-c-start, 17%), rgba(138, 206, 0, 0.16) var(--orbit-plane-c-start, 17%) var(--orbit-plane-c-end, 18%), transparent var(--orbit-plane-c-end, 18%) 100%),
           radial-gradient(circle at 18% 22%, rgba(138, 206, 0, 0.13), transparent 26%),
           radial-gradient(circle at 78% 72%, rgba(138, 206, 0, 0.08), transparent 30%),
           linear-gradient(128deg, rgba(255, 255, 255, 0.46), transparent 56%),
@@ -2253,20 +2259,8 @@
       }
 
       .home-orbit .orbit-map::before {
-        inset: var(--orbit-plane-top, 4%) var(--orbit-plane-right, 4%) var(--orbit-plane-bottom, 5%) var(--orbit-plane-left, 4%);
-        z-index: -2;
-        border: 0;
-        background:
-          radial-gradient(ellipse at var(--orbit-ring-a-x, 50%) var(--orbit-ring-a-y, 50%), transparent 0 37%, var(--map-texture-soft) 38% 39%, transparent 40% 100%),
-          radial-gradient(ellipse at var(--orbit-ring-b-x, 50%) var(--orbit-ring-b-y, 50%), transparent 0 53%, var(--glass-edge) 54% 54.5%, transparent 55% 100%),
-          radial-gradient(ellipse at var(--orbit-ring-c-x, 50%) var(--orbit-ring-c-y, 50%), transparent 0 64%, rgba(138, 206, 0, 0.12) 65% 65.5%, transparent 66% 100%),
-          linear-gradient(var(--orbit-plane-a, 118deg), transparent 0 var(--orbit-plane-a-start, 30%), var(--glass-glare) var(--orbit-plane-a-start, 30%) var(--orbit-plane-a-end, 31%), transparent var(--orbit-plane-a-end, 31%) 100%),
-          linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
-          linear-gradient(var(--orbit-plane-c, 166deg), transparent 0 var(--orbit-plane-c-start, 17%), rgba(138, 206, 0, 0.18) var(--orbit-plane-c-start, 17%) var(--orbit-plane-c-end, 18%), transparent var(--orbit-plane-c-end, 18%) 100%),
-          var(--glass-pane);
-        clip-path: none;
-        opacity: 0.24;
-        transform: translate(var(--orbit-plane-x, 0px), var(--orbit-plane-y, 0px)) rotate(var(--orbit-plane-rotate, -1.2deg));
+        display: none;
+        content: none;
       }
 
       .home-orbit .orbit-map::after {
@@ -4015,10 +4009,6 @@
             orbit.style.setProperty("--orbit-core-shift-x", randomRange(-12, 12, "px"));
             orbit.style.setProperty("--orbit-core-shift-y", randomRange(-10, 14, "px"));
             orbit.style.setProperty("--orbit-core-rotate", randomRange(-3.8, 2.8, "deg"));
-            orbit.style.setProperty("--orbit-plane-top", randomRange(-12, -3, "%"));
-            orbit.style.setProperty("--orbit-plane-right", randomRange(-14, -4, "%"));
-            orbit.style.setProperty("--orbit-plane-bottom", randomRange(-13, -3, "%"));
-            orbit.style.setProperty("--orbit-plane-left", randomRange(-12, -4, "%"));
             orbit.style.setProperty("--orbit-ring-a-x", randomRange(40, 58, "%"));
             orbit.style.setProperty("--orbit-ring-a-y", randomRange(39, 59, "%"));
             orbit.style.setProperty("--orbit-ring-b-x", randomRange(38, 62, "%"));
@@ -4034,9 +4024,6 @@
             orbit.style.setProperty("--orbit-plane-c", randomRange(148, 184, "deg"));
             orbit.style.setProperty("--orbit-plane-c-start", orbitC[0]);
             orbit.style.setProperty("--orbit-plane-c-end", orbitC[1]);
-            orbit.style.setProperty("--orbit-plane-x", randomRange(-26, 28, "px"));
-            orbit.style.setProperty("--orbit-plane-y", randomRange(-18, 24, "px"));
-            orbit.style.setProperty("--orbit-plane-rotate", randomRange(-3.6, 3.2, "deg"));
             orbit.style.setProperty("--orbit-axis-top", randomRange(43, 55, "%"));
             orbit.style.setProperty("--orbit-axis-left", randomRange(9, 17, "%"));
             orbit.style.setProperty("--orbit-axis-width", randomRange(70, 84, "%"));
