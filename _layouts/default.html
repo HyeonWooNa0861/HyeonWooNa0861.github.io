@@ -2235,12 +2235,13 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: max(188vw, 1760px);
-        height: max(168vh, 1320px);
+        width: max(320vw, 3200px);
+        height: max(280vh, 2400px);
         isolation: isolate;
-        transform: translate(calc(-50% + var(--orbit-pan-x)), calc(-50% + var(--orbit-pan-y))) scale(var(--orbit-zoom));
+        backface-visibility: hidden;
+        transform: translate3d(calc(-50% + var(--orbit-pan-x)), calc(-50% + var(--orbit-pan-y)), 0) scale(var(--orbit-zoom));
         transform-origin: center;
-        transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
+        transition: none;
         will-change: transform;
       }
 
@@ -2254,7 +2255,7 @@
       .home-orbit .orbit-map::before {
         inset: var(--orbit-plane-top, 4%) var(--orbit-plane-right, 4%) var(--orbit-plane-bottom, 5%) var(--orbit-plane-left, 4%);
         z-index: -2;
-        border: 1px solid var(--glass-edge);
+        border: 0;
         background:
           radial-gradient(ellipse at var(--orbit-ring-a-x, 50%) var(--orbit-ring-a-y, 50%), transparent 0 37%, var(--map-texture-soft) 38% 39%, transparent 40% 100%),
           radial-gradient(ellipse at var(--orbit-ring-b-x, 50%) var(--orbit-ring-b-y, 50%), transparent 0 53%, var(--glass-edge) 54% 54.5%, transparent 55% 100%),
@@ -2263,11 +2264,9 @@
           linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
           linear-gradient(var(--orbit-plane-c, 166deg), transparent 0 var(--orbit-plane-c-start, 17%), rgba(138, 206, 0, 0.18) var(--orbit-plane-c-start, 17%) var(--orbit-plane-c-end, 18%), transparent var(--orbit-plane-c-end, 18%) 100%),
           var(--glass-pane);
-        clip-path: polygon(var(--trim-tl-x, 28px) 0, calc(100% - var(--trim-tr-x, 48px)) 0, 100% var(--trim-tr-y, 18px), 100% calc(100% - var(--trim-br-y, 46px)), calc(100% - var(--trim-br-x, 20px)) 100%, var(--trim-bl-x, 58px) 100%, 0 calc(100% - var(--trim-bl-y, 22px)), 0 var(--trim-tl-y, 52px));
-        opacity: 0.34;
+        clip-path: none;
+        opacity: 0.24;
         transform: translate(var(--orbit-plane-x, 0px), var(--orbit-plane-y, 0px)) rotate(var(--orbit-plane-rotate, -1.2deg));
-        backdrop-filter: blur(8px) saturate(1.08);
-        -webkit-backdrop-filter: blur(8px) saturate(1.08);
       }
 
       .home-orbit .orbit-map::after {
@@ -3272,8 +3271,8 @@
         }
 
         .home-orbit .orbit-map {
-          width: max(245vw, 1180px);
-          height: max(190vh, 960px);
+          width: max(360vw, 1800px);
+          height: max(300vh, 1500px);
         }
 
         .home-orbit .home-logo {
@@ -4039,10 +4038,10 @@
             orbit.style.setProperty("--orbit-core-shift-x", randomRange(-12, 12, "px"));
             orbit.style.setProperty("--orbit-core-shift-y", randomRange(-10, 14, "px"));
             orbit.style.setProperty("--orbit-core-rotate", randomRange(-3.8, 2.8, "deg"));
-            orbit.style.setProperty("--orbit-plane-top", randomRange(6, 14, "%"));
-            orbit.style.setProperty("--orbit-plane-right", randomRange(6, 15, "%"));
-            orbit.style.setProperty("--orbit-plane-bottom", randomRange(7, 16, "%"));
-            orbit.style.setProperty("--orbit-plane-left", randomRange(5, 14, "%"));
+            orbit.style.setProperty("--orbit-plane-top", randomRange(-12, -3, "%"));
+            orbit.style.setProperty("--orbit-plane-right", randomRange(-14, -4, "%"));
+            orbit.style.setProperty("--orbit-plane-bottom", randomRange(-13, -3, "%"));
+            orbit.style.setProperty("--orbit-plane-left", randomRange(-12, -4, "%"));
             orbit.style.setProperty("--orbit-ring-a-x", randomRange(40, 58, "%"));
             orbit.style.setProperty("--orbit-ring-a-y", randomRange(39, 59, "%"));
             orbit.style.setProperty("--orbit-ring-b-x", randomRange(38, 62, "%"));
@@ -4490,6 +4489,7 @@
             var startPanX = 0;
             var startPanY = 0;
             var activePointerId = null;
+            var pendingFrame = null;
 
             viewport.setAttribute("tabindex", "0");
 
@@ -4508,6 +4508,22 @@
               var limits = getLimits();
               panX = clamp(nextX, -limits.x, limits.x);
               panY = clamp(nextY, -limits.y, limits.y);
+              if (pendingFrame) return;
+              pendingFrame = window.requestAnimationFrame(function () {
+                pendingFrame = null;
+                viewport.style.setProperty("--orbit-pan-x", panX.toFixed(2) + "px");
+                viewport.style.setProperty("--orbit-pan-y", panY.toFixed(2) + "px");
+              });
+            }
+
+            function setPanImmediately(nextX, nextY) {
+              var limits = getLimits();
+              panX = clamp(nextX, -limits.x, limits.x);
+              panY = clamp(nextY, -limits.y, limits.y);
+              if (pendingFrame) {
+                window.cancelAnimationFrame(pendingFrame);
+                pendingFrame = null;
+              }
               viewport.style.setProperty("--orbit-pan-x", panX.toFixed(2) + "px");
               viewport.style.setProperty("--orbit-pan-y", panY.toFixed(2) + "px");
             }
@@ -4518,7 +4534,7 @@
               viewport.classList.remove("is-dragging");
             }
 
-            setPan(0, 0);
+            setPanImmediately(0, 0);
 
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
@@ -4535,6 +4551,7 @@
 
             viewport.addEventListener("pointermove", function (event) {
               if (activePointerId !== event.pointerId) return;
+              if (event.cancelable) event.preventDefault();
               setPan(startPanX + event.clientX - startX, startPanY + event.clientY - startY);
             });
 
@@ -4568,7 +4585,7 @@
             });
 
             window.addEventListener("resize", function () {
-              setPan(panX, panY);
+              setPanImmediately(panX, panY);
             });
           });
         }
