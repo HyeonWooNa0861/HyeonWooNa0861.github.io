@@ -437,6 +437,11 @@
         display: none;
       }
 
+      body.home-page::before {
+        display: none;
+        content: none;
+      }
+
       .home-page {
         min-height: 100vh;
         overflow: hidden;
@@ -445,6 +450,7 @@
       .home-page .site-header {
         position: fixed;
         inset: 0 0 auto;
+        border-bottom: 0;
       }
 
       .home-page main {
