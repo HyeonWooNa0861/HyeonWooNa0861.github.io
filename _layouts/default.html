@@ -2183,12 +2183,6 @@
         margin: 0;
         overflow: hidden;
         background:
-          radial-gradient(ellipse at var(--orbit-ring-a-x, 48%) var(--orbit-ring-a-y, 48%), transparent 0 37%, var(--map-texture-soft) 38% 39%, transparent 40% 100%),
-          radial-gradient(ellipse at var(--orbit-ring-b-x, 54%) var(--orbit-ring-b-y, 50%), transparent 0 53%, var(--glass-edge) 54% 54.5%, transparent 55% 100%),
-          radial-gradient(ellipse at var(--orbit-ring-c-x, 50%) var(--orbit-ring-c-y, 56%), transparent 0 64%, rgba(138, 206, 0, 0.1) 65% 65.5%, transparent 66% 100%),
-          linear-gradient(var(--orbit-plane-a, 118deg), transparent 0 var(--orbit-plane-a-start, 30%), var(--glass-glare) var(--orbit-plane-a-start, 30%) var(--orbit-plane-a-end, 31%), transparent var(--orbit-plane-a-end, 31%) 100%),
-          linear-gradient(var(--orbit-plane-b, 34deg), transparent 0 var(--orbit-plane-b-start, 58%), var(--fracture-strong) var(--orbit-plane-b-start, 58%) var(--orbit-plane-b-end, 59%), transparent var(--orbit-plane-b-end, 59%) 100%),
-          linear-gradient(var(--orbit-plane-c, 166deg), transparent 0 var(--orbit-plane-c-start, 17%), rgba(138, 206, 0, 0.16) var(--orbit-plane-c-start, 17%) var(--orbit-plane-c-end, 18%), transparent var(--orbit-plane-c-end, 18%) 100%),
           radial-gradient(circle at 18% 22%, rgba(138, 206, 0, 0.13), transparent 26%),
           radial-gradient(circle at 78% 72%, rgba(138, 206, 0, 0.08), transparent 30%),
           linear-gradient(128deg, rgba(255, 255, 255, 0.46), transparent 56%),
@@ -2219,14 +2213,8 @@
       }
 
       .home-orbit::after {
-        top: clamp(20px, 4vw, 48px);
-        right: clamp(20px, 5vw, 72px);
-        width: clamp(86px, 14vw, 168px);
-        height: 2px;
-        background:
-          linear-gradient(90deg, transparent 0, var(--accent) 18%, var(--accent) 82%, transparent 100%);
-        opacity: 0.58;
-        transform: rotate(var(--orbit-viewport-mark-rotate, -9deg));
+        display: none;
+        content: none;
       }
 
       .home-orbit.is-dragging {
@@ -2264,16 +2252,8 @@
       }
 
       .home-orbit .orbit-map::after {
-        top: var(--orbit-axis-top, 48%);
-        left: var(--orbit-axis-left, 8%);
-        z-index: -1;
-        width: var(--orbit-axis-width, 86%);
-        height: 1px;
-        background:
-          linear-gradient(90deg, transparent 0, var(--fracture-strong) 12%, var(--fracture-strong) 88%, transparent 100%);
-        opacity: 0.5;
-        transform: translateY(var(--orbit-axis-y, 0px)) rotate(var(--orbit-axis-rotate, -4deg));
-        transform-origin: left center;
+        display: none;
+        content: none;
       }
 
       .home-orbit .home-hero {
@@ -2338,10 +2318,10 @@
         z-index: -1;
         width: auto;
         height: auto;
-        border: 1px solid var(--glass-edge);
+        border: 0;
         background:
-          radial-gradient(ellipse at 50% 50%, transparent 0 56%, var(--map-texture-soft) 57% 58%, transparent 59% 100%),
-          linear-gradient(var(--orbit-node-glass-angle, 124deg), transparent 0 42%, var(--glass-glare) 42% 43%, transparent 43% 100%);
+          radial-gradient(ellipse at 50% 50%, rgba(138, 206, 0, 0.08), transparent 64%),
+          var(--glass-pane);
         clip-path: polygon(8% 16%, 34% 0, 96% 12%, 88% 86%, 42% 100%, 0 72%);
         content: "";
         opacity: 0.34;
@@ -2373,6 +2353,11 @@
 
       .home-orbit .branch-logo {
         font-size: clamp(21px, 2.6vw, 38px);
+      }
+
+      .home-orbit .directory-link::after {
+        display: none;
+        content: none;
       }
 
       .home-orbit .post-list {
@@ -2430,15 +2415,8 @@
       }
 
       .home-orbit .post-card::after {
-        top: auto;
-        z-index: 1;
-        right: 10px;
-        bottom: 9px;
-        left: auto;
-        width: var(--orbit-chip-line-width, 34px);
-        height: 1px;
-        opacity: 0.52;
-        transform: rotate(var(--orbit-chip-line-rotate, -8deg));
+        display: none;
+        content: none;
       }
 
       .home-orbit .post-card a {
@@ -4000,36 +3978,12 @@
               ? Math.max(250, Math.min(orbitHeight * 0.26, 430))
               : Math.max(360, Math.min(orbitHeight * 0.25, 580));
             var orbitAngles = [-142, -38, 24, 142, 90, -92, 0, 180];
-            var orbitA = randomPercentPair(24, 42, 4, 11);
-            var orbitB = randomPercentPair(52, 68, 0.6, 1.8);
-            var orbitC = randomPercentPair(12, 28, 0.6, 1.6);
 
             applyTrimProfile(map, 18, 82);
             orbit.style.setProperty("--orbit-core-y", randomRange(45, 53, "%"));
             orbit.style.setProperty("--orbit-core-shift-x", randomRange(-12, 12, "px"));
             orbit.style.setProperty("--orbit-core-shift-y", randomRange(-10, 14, "px"));
             orbit.style.setProperty("--orbit-core-rotate", randomRange(-3.8, 2.8, "deg"));
-            orbit.style.setProperty("--orbit-ring-a-x", randomRange(40, 58, "%"));
-            orbit.style.setProperty("--orbit-ring-a-y", randomRange(39, 59, "%"));
-            orbit.style.setProperty("--orbit-ring-b-x", randomRange(38, 62, "%"));
-            orbit.style.setProperty("--orbit-ring-b-y", randomRange(38, 62, "%"));
-            orbit.style.setProperty("--orbit-ring-c-x", randomRange(37, 63, "%"));
-            orbit.style.setProperty("--orbit-ring-c-y", randomRange(37, 63, "%"));
-            orbit.style.setProperty("--orbit-plane-a", randomRange(104, 136, "deg"));
-            orbit.style.setProperty("--orbit-plane-a-start", orbitA[0]);
-            orbit.style.setProperty("--orbit-plane-a-end", orbitA[1]);
-            orbit.style.setProperty("--orbit-plane-b", randomRange(18, 48, "deg"));
-            orbit.style.setProperty("--orbit-plane-b-start", orbitB[0]);
-            orbit.style.setProperty("--orbit-plane-b-end", orbitB[1]);
-            orbit.style.setProperty("--orbit-plane-c", randomRange(148, 184, "deg"));
-            orbit.style.setProperty("--orbit-plane-c-start", orbitC[0]);
-            orbit.style.setProperty("--orbit-plane-c-end", orbitC[1]);
-            orbit.style.setProperty("--orbit-axis-top", randomRange(43, 55, "%"));
-            orbit.style.setProperty("--orbit-axis-left", randomRange(9, 17, "%"));
-            orbit.style.setProperty("--orbit-axis-width", randomRange(70, 84, "%"));
-            orbit.style.setProperty("--orbit-axis-y", randomRange(-16, 16, "px"));
-            orbit.style.setProperty("--orbit-axis-rotate", randomRange(-9, 7, "deg"));
-            orbit.style.setProperty("--orbit-viewport-mark-rotate", randomRange(-15, 10, "deg"));
             orbit.style.setProperty("--unknown-edge-x", compactInteraction ? randomRange(54, 120, "px") : randomRange(92, 220, "px"));
             orbit.style.setProperty("--unknown-edge-y", compactInteraction ? randomRange(46, 104, "px") : randomRange(74, 178, "px"));
             orbit.style.setProperty("--unknown-edge-opacity", randomRange(0.86, 0.96, ""));
@@ -4060,7 +4014,6 @@
               section.style.setProperty("--orbit-node-pad-x", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-node-glass-inset", randomRange(13, 23, "%"));
-              section.style.setProperty("--orbit-node-glass-angle", randomRange(108, 136, "deg"));
               section.style.setProperty("--orbit-node-glass-x", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-y", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-rotate", randomRange(-6, 5, "deg"));
@@ -4409,8 +4362,6 @@
             card.style.setProperty("--orbit-chip-x", randomRange(-6, 8, "px"));
             card.style.setProperty("--orbit-chip-y", randomRange(-5, 7, "px"));
             card.style.setProperty("--orbit-chip-rotate", randomRange(-2.8, 2.8, "deg"));
-            card.style.setProperty("--orbit-chip-line-width", randomRange(22, 44, "px"));
-            card.style.setProperty("--orbit-chip-line-rotate", randomRange(-16, 12, "deg"));
           });
 
           document.querySelectorAll(".content-page .page-content > h1 + .post-list .post-card").forEach(function (card) {
