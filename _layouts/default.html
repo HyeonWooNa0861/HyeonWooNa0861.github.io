@@ -1852,6 +1852,174 @@
         height: 0;
       }
 
+      .home-mindmap {
+        --mindmap-core-x: 50%;
+        --mindmap-core-y: 48%;
+        position: relative;
+        isolation: isolate;
+        min-height: clamp(760px, 92vh, 980px);
+        margin: clamp(4px, 2vw, 24px) 0 clamp(34px, 7vw, 72px);
+        overflow: visible;
+      }
+
+      .home-mindmap::before,
+      .home-mindmap::after {
+        position: absolute;
+        z-index: -1;
+        pointer-events: none;
+        content: "";
+      }
+
+      .home-mindmap::before {
+        inset: 4% 7% 6% 4%;
+        border: 1px solid var(--glass-edge);
+        background:
+          linear-gradient(var(--mindmap-plane-a, 118deg), transparent 0 var(--mindmap-plane-a-start, 33%), var(--map-texture-soft) var(--mindmap-plane-a-start, 33%) var(--mindmap-plane-a-end, 42%), transparent var(--mindmap-plane-a-end, 42%) 100%),
+          linear-gradient(var(--mindmap-plane-b, 28deg), transparent 0 var(--mindmap-plane-b-start, 54%), var(--fracture-strong) var(--mindmap-plane-b-start, 54%) var(--mindmap-plane-b-end, 55%), transparent var(--mindmap-plane-b-end, 55%) 100%),
+          var(--glass-pane);
+        clip-path: polygon(var(--trim-tl-x, 18px) 0, calc(100% - var(--trim-tr-x, 38px)) 0, 100% var(--trim-tr-y, 18px), 100% calc(100% - var(--trim-br-y, 42px)), calc(100% - var(--trim-br-x, 12px)) 100%, var(--trim-bl-x, 44px) 100%, 0 calc(100% - var(--trim-bl-y, 18px)), 0 var(--trim-tl-y, 38px));
+        opacity: 0.34;
+        transform: translate(var(--mindmap-plane-x, 0px), var(--mindmap-plane-y, 0px)) rotate(var(--mindmap-plane-rotate, -1.2deg));
+        backdrop-filter: blur(8px) saturate(1.08);
+        -webkit-backdrop-filter: blur(8px) saturate(1.08);
+      }
+
+      .home-mindmap::after {
+        top: var(--mindmap-axis-top, 49%);
+        left: var(--mindmap-axis-left, 6%);
+        width: var(--mindmap-axis-width, 88%);
+        height: 1px;
+        background: var(--fracture-strong);
+        opacity: 0.58;
+        transform: translateY(var(--mindmap-axis-y, 0px)) rotate(var(--mindmap-axis-rotate, -5deg));
+        transform-origin: left center;
+      }
+
+      .home-mindmap .home-hero {
+        position: absolute;
+        top: var(--mindmap-core-y);
+        left: var(--mindmap-core-x);
+        z-index: 4;
+        display: block;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        transform: translate(-50%, -50%) rotate(var(--mindmap-core-rotate, -2deg));
+      }
+
+      .home-mindmap .home-hero::before,
+      .home-mindmap .home-hero::after {
+        display: none;
+      }
+
+      .home-mindmap .home-logo {
+        font-size: clamp(66px, 11vw, 132px);
+      }
+
+      .home-mindmap .home-directory {
+        position: relative;
+        display: block;
+        min-height: inherit;
+      }
+
+      .home-mindmap .directory-section {
+        --mind-node-x: 0px;
+        --mind-node-y: 0px;
+        --mind-node-width: min(32vw, 380px);
+        --mind-node-angle: 0deg;
+        --mind-link-length: 220px;
+        position: absolute;
+        top: var(--mindmap-core-y);
+        left: var(--mindmap-core-x);
+        z-index: 2;
+        width: var(--mind-node-width);
+        min-width: 270px;
+        margin: 0;
+        padding: 0;
+        transform: translate(-50%, -50%) translate(var(--mind-node-x), var(--mind-node-y)) rotate(var(--mind-node-rotate, 0deg));
+      }
+
+      .home-mindmap .directory-section:nth-child(1) {
+        --mind-node-x: -310px;
+        --mind-node-y: -220px;
+        --mind-node-angle: -144deg;
+        --mind-link-length: 310px;
+      }
+
+      .home-mindmap .directory-section:nth-child(2) {
+        --mind-node-x: 330px;
+        --mind-node-y: -205px;
+        --mind-node-angle: -32deg;
+        --mind-link-length: 320px;
+      }
+
+      .home-mindmap .directory-section:nth-child(3) {
+        --mind-node-x: 350px;
+        --mind-node-y: 170px;
+        --mind-node-angle: 26deg;
+        --mind-link-length: 330px;
+      }
+
+      .home-mindmap .directory-section:nth-child(4) {
+        --mind-node-x: -340px;
+        --mind-node-y: 180px;
+        --mind-node-angle: 152deg;
+        --mind-link-length: 320px;
+      }
+
+      .home-mindmap .directory-section:nth-child(5) {
+        --mind-node-x: 0px;
+        --mind-node-y: 300px;
+        --mind-node-angle: 90deg;
+        --mind-link-length: 250px;
+      }
+
+      .home-mindmap .directory-section:nth-child(even),
+      .home-mindmap .directory-section:nth-child(3n) {
+        margin-top: 0;
+        padding-left: 0;
+      }
+
+      .home-mindmap .directory-section::before {
+        top: 50%;
+        left: 50%;
+        z-index: -1;
+        width: var(--mind-link-length, 220px);
+        height: 1px;
+        background:
+          linear-gradient(90deg, transparent 0, var(--fracture-strong) 12%, var(--fracture-strong) 76%, transparent 100%);
+        opacity: var(--mind-link-opacity, 0.58);
+        transform: rotate(calc(var(--mind-node-angle, 0deg) + 180deg)) translateX(var(--mind-link-offset, 54px));
+      }
+
+      .home-mindmap .directory-section::after {
+        position: absolute;
+        top: calc(50% - 4px);
+        left: calc(50% - 4px);
+        z-index: -1;
+        width: 8px;
+        height: 8px;
+        border: 1px solid var(--glass-edge);
+        background: var(--accent);
+        clip-path: polygon(0 18%, 70% 0, 100% 70%, 26% 100%);
+        content: "";
+        opacity: 0.72;
+        transform: translate(var(--mind-dot-x, 0px), var(--mind-dot-y, 0px)) rotate(var(--mind-node-dot-rotate, 18deg));
+      }
+
+      .home-mindmap .directory-section h2 {
+        grid-template-columns: minmax(0, 1fr) auto;
+        margin-bottom: 10px;
+      }
+
+      .home-mindmap .branch-logo {
+        font-size: clamp(26px, 3.4vw, 48px);
+      }
+
+      .home-mindmap .post-list {
+        padding-top: 14px;
+      }
+
       .section-pager {
         margin-top: 44px;
         border-top: 1px solid var(--line);
@@ -2530,6 +2698,51 @@
         .page-branch-logo {
           margin-bottom: 24px;
           font-size: clamp(34px, 16vw, 54px);
+        }
+
+        .home-mindmap {
+          min-height: auto;
+          margin: 0 0 34px;
+          overflow: visible;
+        }
+
+        .home-mindmap::before,
+        .home-mindmap::after {
+          display: none;
+        }
+
+        .home-mindmap .home-hero {
+          position: relative;
+          top: auto;
+          left: auto;
+          min-height: clamp(160px, 38vw, 220px);
+          margin: 0 0 32px;
+          padding: 28px 0 22px;
+          transform: none;
+        }
+
+        .home-mindmap .home-logo {
+          font-size: clamp(58px, 20vw, 108px);
+        }
+
+        .home-mindmap .home-directory {
+          display: grid;
+          min-height: 0;
+          gap: 34px;
+        }
+
+        .home-mindmap .directory-section {
+          position: relative;
+          top: auto;
+          left: auto;
+          width: auto;
+          min-width: 0;
+          transform: none;
+        }
+
+        .home-mindmap .directory-section::before,
+        .home-mindmap .directory-section::after {
+          display: none;
         }
 
         .branch-card-link::after {
@@ -3215,6 +3428,57 @@
           root.style.setProperty("--halftone-dot-size", randomRange(0.9, 1.6, "px"));
           root.style.setProperty("--hover-shadow-x", randomRange(6, 14, "px"));
           root.style.setProperty("--hover-shadow-y", randomRange(6, 14, "px"));
+
+          document.querySelectorAll(".home-mindmap").forEach(function (map) {
+            var bounds = map.getBoundingClientRect();
+            var mapWidth = bounds.width || window.innerWidth;
+            var baseRadiusX = Math.max(220, Math.min(mapWidth * 0.28, 370));
+            var baseRadiusY = Math.max(190, Math.min(window.innerHeight * 0.28, 310));
+            var nodeAngles = [-146, -38, 28, 148, 92, -92, 0, 180];
+            var planeA = randomPercentPair(28, 42, 5, 12);
+            var planeB = randomPercentPair(50, 66, 0.6, 1.8);
+
+            applyTrimProfile(map, 12, 58);
+            map.style.setProperty("--mindmap-core-y", randomRange(45, 52, "%"));
+            map.style.setProperty("--mindmap-core-rotate", randomRange(-3.4, 2.6, "deg"));
+            map.style.setProperty("--mindmap-axis-top", randomRange(43, 55, "%"));
+            map.style.setProperty("--mindmap-axis-left", randomRange(4, 10, "%"));
+            map.style.setProperty("--mindmap-axis-width", randomRange(82, 94, "%"));
+            map.style.setProperty("--mindmap-axis-y", randomRange(-8, 8, "px"));
+            map.style.setProperty("--mindmap-axis-rotate", randomRange(-8, 5, "deg"));
+            map.style.setProperty("--mindmap-plane-a", randomRange(104, 134, "deg"));
+            map.style.setProperty("--mindmap-plane-a-start", planeA[0]);
+            map.style.setProperty("--mindmap-plane-a-end", planeA[1]);
+            map.style.setProperty("--mindmap-plane-b", randomRange(18, 48, "deg"));
+            map.style.setProperty("--mindmap-plane-b-start", planeB[0]);
+            map.style.setProperty("--mindmap-plane-b-end", planeB[1]);
+            map.style.setProperty("--mindmap-plane-x", randomRange(-10, 10, "px"));
+            map.style.setProperty("--mindmap-plane-y", randomRange(-8, 12, "px"));
+            map.style.setProperty("--mindmap-plane-rotate", randomRange(-2.6, 2.4, "deg"));
+
+            map.querySelectorAll(".directory-section").forEach(function (section, index) {
+              var angle = (nodeAngles[index % nodeAngles.length] || 0) + randomNumber(-8, 8);
+              var radians = angle * Math.PI / 180;
+              var radiusX = baseRadiusX * randomNumber(0.9, 1.08);
+              var radiusY = baseRadiusY * randomNumber(0.9, 1.12);
+              var x = Math.cos(radians) * radiusX;
+              var y = Math.sin(radians) * radiusY;
+              var distance = Math.sqrt(x * x + y * y);
+              var nodeWidth = Math.max(270, Math.min(mapWidth * randomNumber(0.24, 0.31), 390));
+
+              section.style.setProperty("--mind-node-x", x.toFixed(2) + "px");
+              section.style.setProperty("--mind-node-y", y.toFixed(2) + "px");
+              section.style.setProperty("--mind-node-width", nodeWidth.toFixed(2) + "px");
+              section.style.setProperty("--mind-node-angle", angle.toFixed(2) + "deg");
+              section.style.setProperty("--mind-node-rotate", randomRange(-2.8, 2.4, "deg"));
+              section.style.setProperty("--mind-dot-x", (x * -0.04).toFixed(2) + "px");
+              section.style.setProperty("--mind-dot-y", (y * -0.04).toFixed(2) + "px");
+              section.style.setProperty("--mind-node-dot-rotate", randomRange(-28, 34, "deg"));
+              section.style.setProperty("--mind-link-length", Math.max(120, distance - nodeWidth * 0.34).toFixed(2) + "px");
+              section.style.setProperty("--mind-link-offset", randomRange(nodeWidth * 0.14, nodeWidth * 0.28, "px"));
+              section.style.setProperty("--mind-link-opacity", randomRange(0.42, 0.72, ""));
+            });
+          });
 
           document.querySelectorAll(".page-shell.has-sidebar > .page-content").forEach(function (container) {
             applyTrimProfile(container, 10, 34);
