@@ -2301,23 +2301,8 @@
       }
 
       .home-orbit .directory-section::before {
-        position: absolute;
-        inset: var(--orbit-node-glass-inset, 18%);
-        z-index: 1;
-        width: auto;
-        height: auto;
-        border: 1px solid var(--node-line-soft);
-        background:
-          radial-gradient(ellipse at 50% 50%, var(--node-accent-surface), transparent 66%),
-          linear-gradient(126deg, var(--node-surface), transparent 66%);
-        clip-path: polygon(8% 16%, 34% 0, 96% 12%, 88% 86%, 42% 100%, 0 72%);
-        box-shadow:
-          0 0 0 1px var(--node-line-soft),
-          12px 14px 0 var(--node-halo),
-          0 26px 72px var(--node-halo);
-        content: "";
-        opacity: 0.88;
-        transform: translate(var(--orbit-node-glass-x, 0px), var(--orbit-node-glass-y, 0px)) rotate(var(--orbit-node-glass-rotate, -4deg));
+        display: none;
+        content: none;
       }
 
       .home-orbit .directory-section::after {
@@ -4031,10 +4016,6 @@
               section.style.setProperty("--orbit-node-pad-y", randomRange(14, 22, "px"));
               section.style.setProperty("--orbit-node-pad-x", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
-              section.style.setProperty("--orbit-node-glass-inset", randomRange(13, 23, "%"));
-              section.style.setProperty("--orbit-node-glass-x", randomRange(-5, 5, "px"));
-              section.style.setProperty("--orbit-node-glass-y", randomRange(-5, 5, "px"));
-              section.style.setProperty("--orbit-node-glass-rotate", randomRange(-6, 5, "deg"));
               section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
 
