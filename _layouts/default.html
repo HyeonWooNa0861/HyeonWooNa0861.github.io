@@ -2422,6 +2422,7 @@
         clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
         box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
+        cursor: pointer;
         pointer-events: auto;
         scroll-snap-align: none;
         transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px))) rotate(var(--orbit-chip-rotate, 0deg));
@@ -2446,6 +2447,7 @@
       .home-orbit .post-card a {
         position: relative;
         z-index: 2;
+        display: block;
         grid-column: 1;
         font-size: var(--orbit-chip-title-size, 15px);
         line-height: 1.16;
@@ -4064,8 +4066,8 @@
               });
               var childColumns = childCount >= 7 ? 3 : (childCount >= 2 ? 2 : 1);
               var childRows = Math.ceil(childCount / childColumns);
-              var tangentialGap = compactInteraction ? 174 : 238;
-              var radialGap = compactInteraction ? 108 : 136;
+              var tangentialGap = compactInteraction ? 212 : 264;
+              var radialGap = compactInteraction ? 132 : 154;
               var branchNodeWidth = compactInteraction
                 ? Math.max(168, Math.min(220 + childCount * 4, 238))
                 : Math.max(198, Math.min(250 + childCount * 5, 294));
@@ -4102,8 +4104,8 @@
                 var rowStart = row * childColumns;
                 var rowItems = Math.min(childColumns, childCount - rowStart);
                 var centeredColumn = col - ((rowItems - 1) / 2);
-                var radialDistance = radialBase + (row * radialGap) + randomNumber(-10, 14);
-                var tangentialDistance = (centeredColumn * tangentialGap) + randomNumber(-18, 18);
+                var radialDistance = radialBase + (row * radialGap) + randomNumber(-4, 8);
+                var tangentialDistance = (centeredColumn * tangentialGap) + randomNumber(-8, 8);
                 var childX = (outwardX * radialDistance) + (tangentX * tangentialDistance);
                 var childY = (outwardY * radialDistance) + (tangentY * tangentialDistance);
                 var childDistance = Math.sqrt(childX * childX + childY * childY);
@@ -4449,15 +4451,20 @@
             var title = card.querySelector("a");
             var titleLength = title ? title.textContent.trim().length : 0;
             var wideChip = titleLength > 18;
+            var chipMin = compactInteraction ? (wideChip ? 142 : 108) : (wideChip ? 154 : 118);
+            var chipMax = compactInteraction ? (wideChip ? 182 : 150) : (wideChip ? 204 : 164);
 
-            card.style.setProperty("--orbit-chip-width", randomRange(wideChip ? 156 : 118, wideChip ? 210 : 168, "px"));
+            card.style.setProperty("--orbit-chip-width", randomRange(chipMin, chipMax, "px"));
             card.style.setProperty("--orbit-chip-pad-y", randomRange(8, 12, "px"));
             card.style.setProperty("--orbit-chip-pad-x", randomRange(10, 15, "px"));
             card.style.setProperty("--orbit-chip-pad-bottom", randomRange(9, 14, "px"));
             card.style.setProperty("--orbit-chip-title-size", randomRange(wideChip ? 13.5 : 14, wideChip ? 15.5 : 16.5, "px"));
-            card.style.setProperty("--orbit-chip-x", randomRange(-6, 8, "px"));
-            card.style.setProperty("--orbit-chip-y", randomRange(-5, 7, "px"));
-            card.style.setProperty("--orbit-chip-rotate", randomRange(-2.8, 2.8, "deg"));
+            card.style.setProperty("--orbit-chip-x", randomRange(-3, 4, "px"));
+            card.style.setProperty("--orbit-chip-y", randomRange(-3, 4, "px"));
+            card.style.setProperty("--orbit-chip-rotate", randomRange(-2.2, 2.2, "deg"));
+            card.style.setProperty("--hover-card-x", randomRange(-2, 3, "px"));
+            card.style.setProperty("--hover-card-y", randomRange(-2, 3, "px"));
+            card.style.setProperty("--hover-card-rotate", randomRange(-0.9, 0.9, "deg"));
           });
 
           document.querySelectorAll(".content-page .page-content > h1 + .post-list .post-card").forEach(function (card) {
@@ -4681,7 +4688,7 @@
 
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
-              if (event.target.closest(".directory-link, button, input, textarea, select, summary, [contenteditable='true']")) return;
+              if (event.target.closest(".post-card, a[href], button, input, textarea, select, summary, [contenteditable='true']")) return;
               if (browserGestureActive) return;
 
               activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -4889,6 +4896,20 @@
           window.setTimeout(markHomeCardsReady, homeCardEntryMs);
           homeCards.forEach(function (card) {
             card.addEventListener("mouseenter", markHomeCardsReady, { once: true });
+            card.addEventListener("click", function (event) {
+              if (event.defaultPrevented || event.target.closest("a[href]")) return;
+
+              var link = card.querySelector("a[href]");
+              if (!link) return;
+
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                window.open(link.href, "_blank", "noopener");
+                return;
+              }
+
+              scheduleLoadingScreen(navigationLoadingDelay);
+              window.location.href = link.href;
+            });
           });
         }
 
