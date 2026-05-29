@@ -446,9 +446,14 @@
         overflow: hidden;
       }
 
+      .home-page .site-header {
+        position: fixed;
+        inset: 0 0 auto;
+      }
+
       .home-page main {
-        min-height: calc(100vh - 64px);
-        min-height: calc(100dvh - 64px);
+        min-height: 100vh;
+        min-height: 100dvh;
         padding: 0;
       }
 
@@ -464,8 +469,8 @@
 
       .home-page .page-shell,
       .home-page .page-content {
-        min-height: calc(100vh - 64px);
-        min-height: calc(100dvh - 64px);
+        min-height: 100vh;
+        min-height: 100dvh;
       }
 
       .page-shell.has-sidebar {
@@ -2183,9 +2188,10 @@
         --orbit-zoom: 1;
         position: relative;
         isolation: isolate;
-        height: calc(100vh - 64px);
-        height: calc(100dvh - 64px);
-        min-height: 620px;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
         margin: 0;
         overflow: hidden;
         background:
@@ -3224,9 +3230,10 @@
         }
 
         .home-orbit {
-          height: calc(100vh - 64px);
-          height: calc(100dvh - 64px);
-          min-height: 540px;
+          height: 100vh;
+          height: 100dvh;
+          min-height: 100vh;
+          min-height: 100dvh;
           margin: 0;
           overflow: hidden;
         }
@@ -4418,6 +4425,9 @@
             var startPanY = 0;
             var activePointerId = null;
             var pendingFrame = null;
+            var draggedDuringPointer = false;
+            var suppressNextClick = false;
+            var dragThreshold = 6;
 
             viewport.setAttribute("tabindex", "0");
 
@@ -4458,6 +4468,12 @@
 
             function stopDragging() {
               if (activePointerId === null) return;
+              if (draggedDuringPointer) {
+                suppressNextClick = true;
+                window.setTimeout(function () {
+                  suppressNextClick = false;
+                }, 120);
+              }
               activePointerId = null;
               viewport.classList.remove("is-dragging");
             }
@@ -4466,13 +4482,14 @@
 
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
-              if (event.target.closest("a, button, input, textarea, select, summary, [contenteditable='true']")) return;
+              if (event.target.closest("button, input, textarea, select, summary, [contenteditable='true']")) return;
 
               activePointerId = event.pointerId;
               startX = event.clientX;
               startY = event.clientY;
               startPanX = panX;
               startPanY = panY;
+              draggedDuringPointer = false;
               viewport.classList.add("is-dragging");
               viewport.setPointerCapture(event.pointerId);
             });
@@ -4480,7 +4497,12 @@
             viewport.addEventListener("pointermove", function (event) {
               if (activePointerId !== event.pointerId) return;
               if (event.cancelable) event.preventDefault();
-              setPan(startPanX + event.clientX - startX, startPanY + event.clientY - startY);
+              var deltaX = event.clientX - startX;
+              var deltaY = event.clientY - startY;
+              if (Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)) > dragThreshold) {
+                draggedDuringPointer = true;
+              }
+              setPan(startPanX + deltaX, startPanY + deltaY);
             });
 
             viewport.addEventListener("pointerup", stopDragging);
@@ -4494,6 +4516,13 @@
               event.preventDefault();
               setPan(panX - event.deltaX, panY - event.deltaY);
             }, { passive: false });
+
+            viewport.addEventListener("click", function (event) {
+              if (!suppressNextClick) return;
+              event.preventDefault();
+              event.stopPropagation();
+              suppressNextClick = false;
+            }, true);
 
             viewport.addEventListener("keydown", function (event) {
               var keyStep = event.shiftKey ? 92 : 46;
