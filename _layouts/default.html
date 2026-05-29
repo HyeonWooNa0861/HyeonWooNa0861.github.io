@@ -2306,21 +2306,21 @@
       .home-orbit .directory-section {
         --orbit-node-x: 0px;
         --orbit-node-y: 0px;
-        --orbit-node-width: min(30vw, 360px);
+        --orbit-cluster-size: 440px;
+        --orbit-branch-node-width: 210px;
         position: absolute;
         top: var(--orbit-core-y);
         left: var(--orbit-core-x);
         z-index: 2;
-        width: var(--orbit-node-width);
-        min-width: 248px;
+        width: var(--orbit-cluster-size);
+        min-width: 0;
+        height: var(--orbit-cluster-size);
         margin: 0;
-        padding: var(--orbit-node-pad-y, 16px) var(--orbit-node-pad-x, 18px) var(--orbit-node-pad-bottom, 18px);
-        border: 1px solid var(--line);
-        background:
-          linear-gradient(126deg, var(--glass-pane), transparent 60%),
-          var(--posted-text-bg);
-        clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
-        box-shadow: var(--container-shadow);
+        padding: 0;
+        border: 0;
+        background: transparent;
+        clip-path: none;
+        box-shadow: none;
         cursor: grab;
         transform: translate(-50%, -50%) translate(var(--orbit-node-x), var(--orbit-node-y)) rotate(var(--orbit-node-rotate, 0deg));
       }
@@ -2328,52 +2328,70 @@
       .home-orbit .directory-section:nth-child(even),
       .home-orbit .directory-section:nth-child(3n) {
         margin-top: 0;
-        padding-left: var(--orbit-node-pad-x, 18px);
+        padding-left: 0;
       }
 
       .home-orbit .directory-section::before {
-        inset: var(--orbit-node-glass-inset, -10px);
+        position: absolute;
+        inset: var(--orbit-node-glass-inset, 18%);
         z-index: -1;
         width: auto;
         height: auto;
         border: 1px solid var(--glass-edge);
         background:
-          linear-gradient(var(--orbit-node-glass-angle, 124deg), transparent 0 34%, var(--glass-glare) 34% 35%, transparent 35% 100%),
-          var(--glass-pane);
-        clip-path: polygon(0 18%, 24% 0, 100% 10%, 88% 100%, 7% 84%);
-        opacity: 0.22;
+          radial-gradient(ellipse at 50% 50%, transparent 0 56%, var(--map-texture-soft) 57% 58%, transparent 59% 100%),
+          linear-gradient(var(--orbit-node-glass-angle, 124deg), transparent 0 42%, var(--glass-glare) 42% 43%, transparent 43% 100%);
+        clip-path: polygon(8% 16%, 34% 0, 96% 12%, 88% 86%, 42% 100%, 0 72%);
+        content: "";
+        opacity: 0.34;
         transform: translate(var(--orbit-node-glass-x, 0px), var(--orbit-node-glass-y, 0px)) rotate(var(--orbit-node-glass-rotate, -4deg));
       }
 
       .home-orbit .directory-section::after {
         position: absolute;
-        right: var(--orbit-node-mark-right, 18px);
-        bottom: var(--orbit-node-mark-bottom, 16px);
-        width: var(--orbit-node-mark-width, 58px);
+        top: 50%;
+        left: 50%;
+        z-index: -2;
+        width: var(--orbit-root-line-length, 180px);
         height: 1px;
-        background: var(--fracture-strong);
+        background:
+          linear-gradient(90deg, var(--fracture-strong) 0, rgba(138, 206, 0, 0.25) 58%, transparent 100%);
         content: "";
-        opacity: 0.68;
-        transform: rotate(var(--orbit-node-mark-rotate, -8deg));
+        opacity: var(--orbit-root-line-opacity, 0.46);
+        transform: rotate(var(--orbit-root-line-angle, 180deg));
+        transform-origin: left center;
       }
 
       .home-orbit .directory-section h2 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 5;
         grid-template-columns: minmax(0, 1fr) auto;
-        margin-bottom: 10px;
+        width: var(--orbit-branch-node-width);
+        margin: 0;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--glass-pane), transparent 60%),
+          var(--posted-text-bg);
+        clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
+        padding: var(--orbit-node-pad-y, 14px) var(--orbit-node-pad-x, 16px) var(--orbit-node-pad-bottom, 15px);
+        box-shadow: var(--container-shadow);
+        transform: translate(-50%, -50%) rotate(var(--orbit-branch-node-rotate, 0deg));
       }
 
       .home-orbit .branch-logo {
-        font-size: clamp(25px, 3.2vw, 46px);
+        font-size: clamp(21px, 2.6vw, 38px);
       }
 
       .home-orbit .post-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--orbit-chip-gap, 10px);
+        position: absolute;
+        inset: 0;
+        display: block;
         margin: 0;
         max-width: 100%;
         overflow: visible;
-        padding: var(--orbit-link-pad-top, 12px) 0 0;
+        padding: 0;
         scroll-snap-type: none;
         white-space: normal;
         mask-image: none;
@@ -2388,29 +2406,67 @@
 
       .home-orbit .post-card {
         display: inline-grid;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 3;
+        isolation: isolate;
         width: min(var(--orbit-chip-width, 160px), 100%);
         min-height: auto;
         flex: 0 0 auto;
         margin: 0;
+        overflow: visible;
         border: 1px solid var(--line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 58%),
           var(--panel);
+        clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
         box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
         scroll-snap-align: none;
-        transform: translate(var(--orbit-chip-x, 0px), var(--orbit-chip-y, 0px)) rotate(var(--orbit-chip-rotate, 0deg));
+        transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px))) rotate(var(--orbit-chip-rotate, 0deg));
+      }
+
+      .home-orbit .home-directory .post-list > .post-card:nth-child(even),
+      .home-orbit .home-directory .post-list > .post-card:nth-child(3n) {
+        padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
+      }
+
+      .home-orbit .post-card::before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        display: block;
+        grid-column: auto;
+        grid-row: auto;
+        width: var(--orbit-child-line-length, 96px);
+        height: 1px;
+        background:
+          linear-gradient(90deg, var(--fracture-strong) 0, rgba(138, 206, 0, 0.28) 48%, transparent 100%);
+        counter-increment: none;
+        content: "";
+        opacity: var(--orbit-child-line-opacity, 0.58);
+        transform: rotate(var(--orbit-child-line-angle, 180deg)) translateX(var(--orbit-child-line-offset, 0px));
+        transform-origin: left center;
       }
 
       .home-orbit .post-card::after {
+        top: auto;
+        z-index: 1;
         right: 10px;
         bottom: 9px;
+        left: auto;
         width: var(--orbit-chip-line-width, 34px);
+        height: 1px;
         opacity: 0.52;
         transform: rotate(var(--orbit-chip-line-rotate, -8deg));
       }
 
       .home-orbit .post-card a {
+        position: relative;
+        z-index: 2;
+        grid-column: 1;
         font-size: var(--orbit-chip-title-size, 15px);
         line-height: 1.16;
         transform: translate(var(--home-card-title-x, 0px), var(--home-card-title-y, 0px)) rotate(var(--home-card-title-rotate, 0deg));
@@ -2423,7 +2479,7 @@
       .home-orbit .home-directory .post-card:hover {
         animation: none;
         box-shadow: var(--compact-hover-shadow);
-        transform: translate(calc(var(--orbit-chip-x, 0px) + var(--hover-card-x, 0px)), calc(var(--orbit-chip-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--orbit-chip-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
+        transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px) + var(--hover-card-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--orbit-chip-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
       .section-pager {
@@ -2613,6 +2669,11 @@
         }
 
         .home-cards-ready .home-directory .post-card {
+          animation: none;
+        }
+
+        .home-orbit .home-directory .post-card,
+        .home-cards-ready .home-orbit .home-directory .post-card {
           animation: none;
         }
 
@@ -4002,31 +4063,60 @@
             orbit.querySelectorAll(".directory-section").forEach(function (section, index) {
               var angle = (orbitAngles[index % orbitAngles.length] || 0) + randomNumber(-9, 9);
               var radians = angle * Math.PI / 180;
-              var nodeWidth = compactInteraction
-                ? Math.max(228, Math.min(orbitWidth * randomNumber(0.16, 0.22), 320))
-                : Math.max(260, Math.min(orbitWidth * randomNumber(0.13, 0.18), 390));
+              var childCards = section.querySelectorAll(".post-card");
+              var childCount = Math.max(childCards.length, 1);
+              var clusterSize = compactInteraction
+                ? Math.max(340, Math.min(orbitWidth * randomNumber(0.3, 0.38), 460 + childCount * 24))
+                : Math.max(430, Math.min(orbitWidth * randomNumber(0.22, 0.3), 560 + childCount * 34));
+              var branchNodeWidth = compactInteraction
+                ? Math.max(168, Math.min(clusterSize * randomNumber(0.44, 0.54), 230))
+                : Math.max(190, Math.min(clusterSize * randomNumber(0.38, 0.48), 280));
               var x = Math.cos(radians) * radiusX * randomNumber(0.9, 1.1);
               var y = Math.sin(radians) * radiusY * randomNumber(0.9, 1.12);
+              var rootDistance = Math.sqrt(x * x + y * y);
+              var rootLineAngle = Math.atan2(-y, -x) * 180 / Math.PI;
+              var rootLineLength = Math.max(96, rootDistance - (clusterSize * randomNumber(0.28, 0.38)));
 
               applyTrimProfile(section, 8, 32);
               section.style.setProperty("--orbit-node-x", x.toFixed(2) + "px");
               section.style.setProperty("--orbit-node-y", y.toFixed(2) + "px");
-              section.style.setProperty("--orbit-node-width", nodeWidth.toFixed(2) + "px");
+              section.style.setProperty("--orbit-cluster-size", clusterSize.toFixed(2) + "px");
+              section.style.setProperty("--orbit-branch-node-width", branchNodeWidth.toFixed(2) + "px");
               section.style.setProperty("--orbit-node-rotate", randomRange(-3, 3, "deg"));
+              section.style.setProperty("--orbit-branch-node-rotate", randomRange(-2.6, 2.6, "deg"));
               section.style.setProperty("--orbit-node-pad-y", randomRange(14, 22, "px"));
               section.style.setProperty("--orbit-node-pad-x", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
-              section.style.setProperty("--orbit-node-glass-inset", randomRange(-14, -7, "px"));
+              section.style.setProperty("--orbit-node-glass-inset", randomRange(13, 23, "%"));
               section.style.setProperty("--orbit-node-glass-angle", randomRange(108, 136, "deg"));
               section.style.setProperty("--orbit-node-glass-x", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-y", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-rotate", randomRange(-6, 5, "deg"));
-              section.style.setProperty("--orbit-node-mark-right", randomRange(12, 24, "px"));
-              section.style.setProperty("--orbit-node-mark-bottom", randomRange(10, 22, "px"));
-              section.style.setProperty("--orbit-node-mark-width", randomRange(38, 72, "px"));
-              section.style.setProperty("--orbit-node-mark-rotate", randomRange(-16, 12, "deg"));
+              section.style.setProperty("--orbit-root-line-angle", rootLineAngle.toFixed(2) + "deg");
+              section.style.setProperty("--orbit-root-line-length", rootLineLength.toFixed(2) + "px");
+              section.style.setProperty("--orbit-root-line-opacity", randomRange(0.32, 0.58, ""));
               section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
+
+              childCards.forEach(function (card, childIndex) {
+                var orbitStep = 360 / childCount;
+                var childAngle = -92 + (orbitStep * childIndex) + randomNumber(-16, 16);
+                var childRadians = childAngle * Math.PI / 180;
+                var childRadiusX = clusterSize * randomNumber(compactInteraction ? 0.31 : 0.34, compactInteraction ? 0.43 : 0.48);
+                var childRadiusY = clusterSize * randomNumber(compactInteraction ? 0.28 : 0.31, compactInteraction ? 0.4 : 0.45);
+                var childX = Math.cos(childRadians) * childRadiusX;
+                var childY = Math.sin(childRadians) * childRadiusY;
+                var childDistance = Math.sqrt(childX * childX + childY * childY);
+                var lineAngle = Math.atan2(-childY, -childX) * 180 / Math.PI;
+                var lineLength = Math.max(52, childDistance - (branchNodeWidth * randomNumber(0.28, 0.38)));
+
+                card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
+                card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
+                card.style.setProperty("--orbit-child-line-angle", lineAngle.toFixed(2) + "deg");
+                card.style.setProperty("--orbit-child-line-length", lineLength.toFixed(2) + "px");
+                card.style.setProperty("--orbit-child-line-offset", randomRange(8, 18, "px"));
+                card.style.setProperty("--orbit-child-line-opacity", randomRange(0.42, 0.72, ""));
+              });
             });
           });
 
