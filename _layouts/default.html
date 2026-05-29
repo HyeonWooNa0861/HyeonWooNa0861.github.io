@@ -31,11 +31,13 @@
         --muted: #667085;
         --line: rgba(15, 23, 42, 0.14);
         --line-strong: rgba(15, 23, 42, 0.24);
-        --node-line: rgba(15, 23, 42, 0.68);
-        --node-line-soft: rgba(15, 23, 42, 0.36);
+        --node-line: rgba(138, 206, 0, 0.76);
+        --node-line-soft: rgba(138, 206, 0, 0.36);
+        --node-path: rgba(138, 206, 0, 0.56);
+        --node-path-soft: rgba(138, 206, 0, 0.22);
         --node-surface: rgba(255, 255, 255, 0.9);
         --node-accent-surface: rgba(138, 206, 0, 0.16);
-        --node-halo: rgba(15, 23, 42, 0.12);
+        --node-halo: rgba(138, 206, 0, 0.14);
         --accent: #5f8f00;
         --accent-2: #8ace00;
         --signal: #8ace00;
@@ -118,11 +120,13 @@
         --muted: #9aa4b2;
         --line: rgba(148, 163, 184, 0.18);
         --line-strong: rgba(148, 163, 184, 0.32);
-        --node-line: rgba(241, 245, 249, 0.72);
-        --node-line-soft: rgba(241, 245, 249, 0.4);
+        --node-line: rgba(183, 255, 0, 0.82);
+        --node-line-soft: rgba(183, 255, 0, 0.42);
+        --node-path: rgba(183, 255, 0, 0.62);
+        --node-path-soft: rgba(183, 255, 0, 0.22);
         --node-surface: rgba(15, 23, 42, 0.86);
         --node-accent-surface: rgba(183, 255, 0, 0.14);
-        --node-halo: rgba(241, 245, 249, 0.12);
+        --node-halo: rgba(183, 255, 0, 0.16);
         --accent: #b7ff00;
         --accent-2: #8ace00;
         --signal: #b7ff00;
@@ -2316,8 +2320,19 @@
       }
 
       .home-orbit .directory-section::after {
-        display: none;
-        content: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        width: var(--orbit-spine-length, 260px);
+        height: 2px;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, transparent 0, var(--node-path-soft) 14%, var(--node-path) 58%, transparent 100%);
+        content: "";
+        opacity: var(--orbit-spine-opacity, 0.72);
+        transform: translate(0, -50%) rotate(calc(var(--orbit-node-angle, 0deg) + 180deg)) translateX(var(--orbit-spine-offset, 22px));
+        transform-origin: left center;
       }
 
       .home-orbit .directory-section h2 {
@@ -2396,9 +2411,20 @@
       }
 
       .home-orbit .post-card::before {
-        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: -1;
+        width: var(--orbit-card-link-length, 86px);
+        height: 1.5px;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, var(--node-path) 0, var(--node-path-soft) 72%, transparent 100%);
         counter-increment: none;
-        content: none;
+        content: "";
+        opacity: var(--orbit-card-link-opacity, 0.5);
+        transform: translate(0, -50%) rotate(calc(var(--orbit-card-angle, 0deg) + 180deg));
+        transform-origin: left center;
       }
 
       .home-orbit .post-card::after {
@@ -3991,10 +4017,14 @@
               var clusterSize = Math.max(compactInteraction ? 430 : 560, Math.max(radialReach, tangentialReach) * 2);
               var x = outwardX * radiusX * randomNumber(0.96, 1.05);
               var y = outwardY * radiusY * randomNumber(0.96, 1.06);
+              var branchDistance = Math.sqrt(x * x + y * y);
 
               applyTrimProfile(section, 8, 32);
               section.style.setProperty("--orbit-node-x", x.toFixed(2) + "px");
               section.style.setProperty("--orbit-node-y", y.toFixed(2) + "px");
+              section.style.setProperty("--orbit-node-angle", angle.toFixed(2) + "deg");
+              section.style.setProperty("--orbit-spine-length", Math.max(160, Math.min(branchDistance * 0.58, compactInteraction ? 280 : 380)).toFixed(2) + "px");
+              section.style.setProperty("--orbit-spine-opacity", randomRange(0.5, 0.74, ""));
               section.style.setProperty("--orbit-cluster-size", clusterSize.toFixed(2) + "px");
               section.style.setProperty("--orbit-branch-node-width", branchNodeWidth.toFixed(2) + "px");
               section.style.setProperty("--orbit-node-rotate", randomRange(-3, 3, "deg"));
@@ -4019,9 +4049,14 @@
                 var tangentialDistance = (centeredColumn * tangentialGap) + randomNumber(-18, 18);
                 var childX = (outwardX * radialDistance) + (tangentX * tangentialDistance);
                 var childY = (outwardY * radialDistance) + (tangentY * tangentialDistance);
+                var childDistance = Math.sqrt(childX * childX + childY * childY);
+                var childAngle = Math.atan2(childY, childX) * 180 / Math.PI;
 
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
+                card.style.setProperty("--orbit-card-angle", childAngle.toFixed(2) + "deg");
+                card.style.setProperty("--orbit-card-link-length", Math.max(42, childDistance - 48).toFixed(2) + "px");
+                card.style.setProperty("--orbit-card-link-opacity", randomRange(0.32, 0.54, ""));
               });
             });
           });
