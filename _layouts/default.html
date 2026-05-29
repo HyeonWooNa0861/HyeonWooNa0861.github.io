@@ -1434,24 +1434,40 @@
 
       .visual-map-section {
         --map-edge-fade: clamp(34px, 7vw, 92px);
+        --map-outer-fade: clamp(90px, 16vw, 210px);
         position: relative;
         isolation: isolate;
         box-sizing: border-box;
         width: 100%;
         margin: clamp(74px, 10vw, 132px) 0 0;
         overflow: hidden;
+        background:
+          radial-gradient(ellipse at 50% 52%, var(--posted-text-bg) 0 30%, transparent 72%),
+          linear-gradient(180deg, transparent 0, var(--map-texture-soft) 45%, transparent 100%);
         padding: clamp(20px, 3vw, 42px) 0 clamp(54px, 7vw, 96px);
       }
 
+      .visual-map-section::before,
       .visual-map-section::after {
         position: absolute;
         inset: clamp(20px, 3vw, 42px) 0 clamp(54px, 7vw, 96px);
-        z-index: 12;
         pointer-events: none;
+        content: "";
+      }
+
+      .visual-map-section::before {
+        z-index: 0;
+        background:
+          linear-gradient(90deg, var(--bg) 0, transparent var(--map-outer-fade), transparent calc(100% - var(--map-outer-fade)), var(--bg) 100%),
+          linear-gradient(180deg, var(--bg) 0, transparent var(--map-outer-fade), transparent calc(100% - var(--map-outer-fade)), var(--bg) 100%);
+        opacity: 0.76;
+      }
+
+      .visual-map-section::after {
+        z-index: 12;
         background:
           linear-gradient(90deg, var(--bg) 0, transparent var(--map-edge-fade), transparent calc(100% - var(--map-edge-fade)), var(--bg) 100%),
           linear-gradient(180deg, var(--bg) 0, transparent var(--map-edge-fade), transparent calc(100% - var(--map-edge-fade)), var(--bg) 100%);
-        content: "";
       }
 
       .visual-map-section .home-orbit {
@@ -1466,7 +1482,7 @@
           linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% 21px,
           linear-gradient(90deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 28px 100%,
           var(--posted-panel-bg);
-        box-shadow: var(--container-shadow);
+        box-shadow: none;
         cursor: default;
         touch-action: auto;
       }
