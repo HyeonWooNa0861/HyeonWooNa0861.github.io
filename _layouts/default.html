@@ -31,8 +31,11 @@
         --muted: #667085;
         --line: rgba(15, 23, 42, 0.14);
         --line-strong: rgba(15, 23, 42, 0.24);
-        --node-line: rgba(15, 23, 42, 0.48);
-        --node-line-soft: rgba(15, 23, 42, 0.24);
+        --node-line: rgba(15, 23, 42, 0.68);
+        --node-line-soft: rgba(15, 23, 42, 0.36);
+        --node-surface: rgba(255, 255, 255, 0.9);
+        --node-accent-surface: rgba(138, 206, 0, 0.16);
+        --node-halo: rgba(15, 23, 42, 0.12);
         --accent: #5f8f00;
         --accent-2: #8ace00;
         --signal: #8ace00;
@@ -115,8 +118,11 @@
         --muted: #9aa4b2;
         --line: rgba(148, 163, 184, 0.18);
         --line-strong: rgba(148, 163, 184, 0.32);
-        --node-line: rgba(241, 245, 249, 0.56);
-        --node-line-soft: rgba(241, 245, 249, 0.3);
+        --node-line: rgba(241, 245, 249, 0.72);
+        --node-line-soft: rgba(241, 245, 249, 0.4);
+        --node-surface: rgba(15, 23, 42, 0.86);
+        --node-accent-surface: rgba(183, 255, 0, 0.14);
+        --node-halo: rgba(241, 245, 249, 0.12);
         --accent: #b7ff00;
         --accent-2: #8ace00;
         --signal: #b7ff00;
@@ -2272,6 +2278,7 @@
         width: var(--orbit-cluster-size);
         min-width: 0;
         height: var(--orbit-cluster-size);
+        isolation: isolate;
         margin: 0;
         padding: 0;
         border: 0;
@@ -2291,16 +2298,20 @@
       .home-orbit .directory-section::before {
         position: absolute;
         inset: var(--orbit-node-glass-inset, 18%);
-        z-index: -1;
+        z-index: 1;
         width: auto;
         height: auto;
         border: 1px solid var(--node-line-soft);
         background:
-          radial-gradient(ellipse at 50% 50%, rgba(138, 206, 0, 0.08), transparent 64%),
-          var(--glass-pane);
+          radial-gradient(ellipse at 50% 50%, var(--node-accent-surface), transparent 66%),
+          linear-gradient(126deg, var(--node-surface), transparent 66%);
         clip-path: polygon(8% 16%, 34% 0, 96% 12%, 88% 86%, 42% 100%, 0 72%);
+        box-shadow:
+          0 0 0 1px var(--node-line-soft),
+          12px 14px 0 var(--node-halo),
+          0 26px 72px var(--node-halo);
         content: "";
-        opacity: 0.34;
+        opacity: 0.88;
         transform: translate(var(--orbit-node-glass-x, 0px), var(--orbit-node-glass-y, 0px)) rotate(var(--orbit-node-glass-rotate, -4deg));
       }
 
@@ -2317,10 +2328,10 @@
         grid-template-columns: minmax(0, 1fr) auto;
         width: var(--orbit-branch-node-width);
         margin: 0;
-        border: 1px solid var(--node-line);
+        border: 1.5px solid var(--node-line);
         background:
-          linear-gradient(126deg, var(--glass-pane), transparent 60%),
-          var(--posted-text-bg);
+          linear-gradient(126deg, var(--node-surface), transparent 60%),
+          var(--posted-panel-bg);
         clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
         padding: var(--orbit-node-pad-y, 14px) var(--orbit-node-pad-x, 16px) var(--orbit-node-pad-bottom, 15px);
         box-shadow: var(--container-shadow);
@@ -2368,9 +2379,9 @@
         flex: 0 0 auto;
         margin: 0;
         overflow: visible;
-        border: 1px solid var(--node-line);
+        border: 1.5px solid var(--node-line);
         background:
-          linear-gradient(126deg, var(--glass-pane), transparent 58%),
+          linear-gradient(126deg, var(--node-surface), transparent 58%),
           var(--panel);
         clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
@@ -3940,15 +3951,14 @@
           document.querySelectorAll(".home-orbit").forEach(function (orbit) {
             var map = orbit.querySelector(".orbit-map") || orbit;
             var viewportBounds = orbit.getBoundingClientRect();
-            var mapBounds = map.getBoundingClientRect();
-            var orbitWidth = mapBounds.width || viewportBounds.width || window.innerWidth;
-            var orbitHeight = mapBounds.height || viewportBounds.height || window.innerHeight;
+            var visibleWidth = viewportBounds.width || window.innerWidth;
+            var visibleHeight = viewportBounds.height || window.innerHeight;
             var radiusX = compactInteraction
-              ? Math.max(430, Math.min(orbitWidth * 0.2, 680))
-              : Math.max(720, Math.min(orbitWidth * 0.22, 980));
+              ? Math.max(260, Math.min(visibleWidth * 0.34, 430))
+              : Math.max(380, Math.min(visibleWidth * 0.34, 560));
             var radiusY = compactInteraction
-              ? Math.max(370, Math.min(orbitHeight * 0.2, 590))
-              : Math.max(610, Math.min(orbitHeight * 0.22, 840));
+              ? Math.max(230, Math.min(visibleHeight * 0.3, 350))
+              : Math.max(300, Math.min(visibleHeight * 0.32, 440));
             var branchSections = Array.prototype.slice.call(orbit.querySelectorAll(".directory-section"));
             var branchStep = 360 / Math.max(branchSections.length, 1);
             var branchStartAngle = -124 + randomNumber(-8, 8);
