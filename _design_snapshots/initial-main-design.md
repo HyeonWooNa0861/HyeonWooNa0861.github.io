@@ -1,12 +1,13 @@
 ---
-title: Main Design Snapshot Before Mindmap
+title: Initial Main Design
 snapshot_commit: 055fe33
 date: 2026-05-29
+category: initial-design
 ---
 
-# Main Design Snapshot Before Mindmap
+# Initial Main Design
 
-This snapshot records the rollback point before converting the main page to a mind-map layout.
+This snapshot records the initial main-page structure before the mind-map and orbit-map experiments.
 
 Rollback reference:
 
