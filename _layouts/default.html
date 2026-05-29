@@ -2355,18 +2355,8 @@
       }
 
       .home-orbit .directory-section::after {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: -2;
-        width: var(--orbit-root-line-length, 180px);
-        height: 1px;
-        background:
-          linear-gradient(90deg, var(--fracture-strong) 0, rgba(138, 206, 0, 0.25) 58%, transparent 100%);
-        content: "";
-        opacity: var(--orbit-root-line-opacity, 0.46);
-        transform: rotate(var(--orbit-root-line-angle, 180deg));
-        transform-origin: left center;
+        display: none;
+        content: none;
       }
 
       .home-orbit .directory-section h2 {
@@ -2440,22 +2430,9 @@
       }
 
       .home-orbit .post-card::before {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 0;
-        display: block;
-        grid-column: auto;
-        grid-row: auto;
-        width: var(--orbit-child-line-length, 96px);
-        height: 1px;
-        background:
-          linear-gradient(90deg, var(--fracture-strong) 0, rgba(138, 206, 0, 0.28) 48%, transparent 100%);
+        display: none;
         counter-increment: none;
-        content: "";
-        opacity: var(--orbit-child-line-opacity, 0.58);
-        transform: rotate(var(--orbit-child-line-angle, 180deg)) translateX(var(--orbit-child-line-offset, 0px));
-        transform-origin: left center;
+        content: none;
       }
 
       .home-orbit .post-card::after {
@@ -4084,9 +4061,6 @@
                 : Math.max(190, Math.min(clusterSize * randomNumber(0.38, 0.48), 280));
               var x = Math.cos(radians) * radiusX * randomNumber(0.9, 1.1);
               var y = Math.sin(radians) * radiusY * randomNumber(0.9, 1.12);
-              var rootDistance = Math.sqrt(x * x + y * y);
-              var rootLineAngle = Math.atan2(-y, -x) * 180 / Math.PI;
-              var rootLineLength = Math.max(96, rootDistance - (clusterSize * randomNumber(0.28, 0.38)));
 
               applyTrimProfile(section, 8, 32);
               section.style.setProperty("--orbit-node-x", x.toFixed(2) + "px");
@@ -4103,9 +4077,6 @@
               section.style.setProperty("--orbit-node-glass-x", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-y", randomRange(-5, 5, "px"));
               section.style.setProperty("--orbit-node-glass-rotate", randomRange(-6, 5, "deg"));
-              section.style.setProperty("--orbit-root-line-angle", rootLineAngle.toFixed(2) + "deg");
-              section.style.setProperty("--orbit-root-line-length", rootLineLength.toFixed(2) + "px");
-              section.style.setProperty("--orbit-root-line-opacity", randomRange(0.32, 0.58, ""));
               section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
 
@@ -4117,16 +4088,9 @@
                 var childRadiusY = clusterSize * randomNumber(compactInteraction ? 0.28 : 0.31, compactInteraction ? 0.4 : 0.45);
                 var childX = Math.cos(childRadians) * childRadiusX;
                 var childY = Math.sin(childRadians) * childRadiusY;
-                var childDistance = Math.sqrt(childX * childX + childY * childY);
-                var lineAngle = Math.atan2(-childY, -childX) * 180 / Math.PI;
-                var lineLength = Math.max(52, childDistance - (branchNodeWidth * randomNumber(0.28, 0.38)));
 
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
-                card.style.setProperty("--orbit-child-line-angle", lineAngle.toFixed(2) + "deg");
-                card.style.setProperty("--orbit-child-line-length", lineLength.toFixed(2) + "px");
-                card.style.setProperty("--orbit-child-line-offset", randomRange(8, 18, "px"));
-                card.style.setProperty("--orbit-child-line-opacity", randomRange(0.42, 0.72, ""));
               });
             });
           });
