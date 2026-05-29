@@ -2665,6 +2665,35 @@
           animation: none;
         }
 
+        .home-orbit .directory-section {
+          animation: orbit-branch-organic var(--orbit-life-duration, 9200ms) ease-in-out infinite alternate;
+          animation-delay: var(--orbit-life-delay, 0ms);
+          will-change: translate, rotate;
+        }
+
+        .home-orbit .directory-section h2 {
+          animation: orbit-node-breathe var(--orbit-node-breathe-duration, 6400ms) ease-in-out infinite alternate;
+          animation-delay: var(--orbit-node-breathe-delay, 0ms);
+          will-change: scale, filter;
+        }
+
+        .home-orbit .orbit-card-connector {
+          animation: orbit-connector-pulse var(--orbit-pulse-duration, 4200ms) ease-in-out infinite alternate;
+          animation-delay: var(--orbit-pulse-delay, 0ms);
+          will-change: opacity, filter;
+        }
+
+        .home-orbit .home-directory .post-card,
+        .home-cards-ready .home-orbit .home-directory .post-card {
+          animation: orbit-chip-organic var(--orbit-chip-life-duration, 7200ms) ease-in-out infinite alternate;
+          animation-delay: var(--orbit-chip-life-delay, 0ms);
+          will-change: translate, rotate, scale, filter;
+        }
+
+        .home-orbit .home-directory .post-card:hover {
+          animation: orbit-chip-alert var(--hover-motion-duration, 760ms) ease-in-out infinite alternate;
+        }
+
         .directory-plus {
           animation: directory-plus-breathe 3.8s ease-in-out infinite alternate;
         }
@@ -2862,6 +2891,96 @@
           to {
             opacity: 1;
             transform: translate(var(--home-card-rail-x, 0px), var(--home-card-rail-y, 0px)) rotate(var(--home-card-rail-rotate, 0deg));
+          }
+        }
+
+        @keyframes orbit-branch-organic {
+          0% {
+            translate: 0 0;
+            rotate: 0deg;
+          }
+
+          48% {
+            translate: var(--orbit-life-x, 4px) var(--orbit-life-y, -3px);
+            rotate: var(--orbit-life-rotate, 0.7deg);
+          }
+
+          100% {
+            translate: var(--orbit-life-x-alt, -3px) var(--orbit-life-y-alt, 4px);
+            rotate: var(--orbit-life-rotate-alt, -0.6deg);
+          }
+        }
+
+        @keyframes orbit-node-breathe {
+          0% {
+            scale: 1;
+            filter: saturate(1) brightness(1);
+          }
+
+          52% {
+            scale: var(--orbit-node-breathe-scale, 1.018);
+            filter: saturate(1.12) brightness(1.04);
+          }
+
+          100% {
+            scale: 0.992;
+            filter: saturate(1.02) brightness(1);
+          }
+        }
+
+        @keyframes orbit-connector-pulse {
+          0% {
+            opacity: var(--orbit-connector-opacity, 0.48);
+            filter: saturate(0.92);
+          }
+
+          45% {
+            opacity: var(--orbit-connector-opacity-high, 0.78);
+            filter: saturate(1.45) brightness(1.12);
+          }
+
+          100% {
+            opacity: var(--orbit-connector-opacity-low, 0.36);
+            filter: saturate(1.05);
+          }
+        }
+
+        @keyframes orbit-chip-organic {
+          0% {
+            translate: 0 0;
+            rotate: 0deg;
+            scale: 1;
+            filter: saturate(1);
+          }
+
+          50% {
+            translate: var(--orbit-chip-life-x, 3px) var(--orbit-chip-life-y, -2px);
+            rotate: var(--orbit-chip-life-rotate, 0.5deg);
+            scale: var(--orbit-chip-life-scale, 1.012);
+            filter: saturate(1.08) brightness(1.02);
+          }
+
+          100% {
+            translate: var(--orbit-chip-life-x-alt, -2px) var(--orbit-chip-life-y-alt, 3px);
+            rotate: var(--orbit-chip-life-rotate-alt, -0.5deg);
+            scale: 0.996;
+            filter: saturate(1.02);
+          }
+        }
+
+        @keyframes orbit-chip-alert {
+          from {
+            translate: var(--hover-card-x, 0px) var(--hover-card-y, 0px);
+            rotate: var(--hover-card-rotate, 0deg);
+            scale: 1.012;
+            filter: saturate(1.08);
+          }
+
+          to {
+            translate: var(--hover-drift-x, 2px) var(--hover-drift-y, -2px);
+            rotate: var(--hover-drift-rotate, 0.6deg);
+            scale: 1.024;
+            filter: saturate(1.18) brightness(1.03);
           }
         }
 
@@ -4105,6 +4224,17 @@
               section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
+              section.style.setProperty("--orbit-life-duration", randomRange(7600, 12400, "ms"));
+              section.style.setProperty("--orbit-life-delay", randomRange(-6800, -400, "ms"));
+              section.style.setProperty("--orbit-life-x", randomRange(-5, 6, "px"));
+              section.style.setProperty("--orbit-life-y", randomRange(-5, 6, "px"));
+              section.style.setProperty("--orbit-life-rotate", randomRange(-0.9, 0.9, "deg"));
+              section.style.setProperty("--orbit-life-x-alt", randomRange(-5, 6, "px"));
+              section.style.setProperty("--orbit-life-y-alt", randomRange(-5, 6, "px"));
+              section.style.setProperty("--orbit-life-rotate-alt", randomRange(-0.9, 0.9, "deg"));
+              section.style.setProperty("--orbit-node-breathe-duration", randomRange(5200, 8600, "ms"));
+              section.style.setProperty("--orbit-node-breathe-delay", randomRange(-4600, -200, "ms"));
+              section.style.setProperty("--orbit-node-breathe-scale", randomRange(1.008, 1.022, ""));
 
               childCards.forEach(function (card, childIndex) {
                 var row = Math.floor(childIndex / childColumns);
@@ -4132,11 +4262,24 @@
                 connector.style.setProperty("--orbit-connector-angle", childAngle.toFixed(2) + "deg");
                 connector.style.setProperty("--orbit-connector-length", connectorLength.toFixed(2) + "px");
                 connector.style.setProperty("--orbit-connector-opacity", randomRange(0.34, 0.58, ""));
+                connector.style.setProperty("--orbit-connector-opacity-high", randomRange(0.62, 0.86, ""));
+                connector.style.setProperty("--orbit-connector-opacity-low", randomRange(0.24, 0.42, ""));
+                connector.style.setProperty("--orbit-pulse-duration", randomRange(3400, 6200, "ms"));
+                connector.style.setProperty("--orbit-pulse-delay", randomRange(-4200, -200, "ms"));
                 section.insertBefore(connector, section.querySelector(".post-list"));
 
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
                 card.style.setProperty("--orbit-card-z", String(8 + childIndex));
+                card.style.setProperty("--orbit-chip-life-duration", randomRange(5800, 9800, "ms"));
+                card.style.setProperty("--orbit-chip-life-delay", randomRange(-6200, -300, "ms"));
+                card.style.setProperty("--orbit-chip-life-x", randomRange(-3, 4, "px"));
+                card.style.setProperty("--orbit-chip-life-y", randomRange(-3, 4, "px"));
+                card.style.setProperty("--orbit-chip-life-rotate", randomRange(-0.7, 0.7, "deg"));
+                card.style.setProperty("--orbit-chip-life-x-alt", randomRange(-3, 4, "px"));
+                card.style.setProperty("--orbit-chip-life-y-alt", randomRange(-3, 4, "px"));
+                card.style.setProperty("--orbit-chip-life-rotate-alt", randomRange(-0.7, 0.7, "deg"));
+                card.style.setProperty("--orbit-chip-life-scale", randomRange(1.004, 1.014, ""));
               });
             });
           });
