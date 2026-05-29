@@ -2322,6 +2322,21 @@
         transform-origin: left center;
       }
 
+      .home-orbit .orbit-card-connector {
+        position: absolute;
+        top: calc(50% + var(--orbit-connector-y, 0px));
+        left: calc(50% + var(--orbit-connector-x, 0px));
+        z-index: 3;
+        width: var(--orbit-connector-length, 80px);
+        height: 1.5px;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, transparent 0, var(--node-path-soft) 10%, var(--node-path) 46%, var(--node-path-soft) 84%, transparent 100%);
+        opacity: var(--orbit-connector-opacity, 0.52);
+        transform: translate(-50%, -50%) rotate(var(--orbit-connector-angle, 0deg));
+        transform-origin: center;
+      }
+
       .home-orbit .directory-section h2 {
         position: absolute;
         top: 50%;
@@ -2404,20 +2419,9 @@
       }
 
       .home-orbit .post-card::before {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: -1;
-        width: var(--orbit-card-link-length, 86px);
-        height: 1.5px;
-        pointer-events: none;
-        background:
-          linear-gradient(90deg, var(--node-path) 0, var(--node-path-soft) 72%, transparent 100%);
+        display: none;
         counter-increment: none;
-        content: "";
-        opacity: var(--orbit-card-link-opacity, 0.5);
-        transform: translate(0, -50%) rotate(calc(var(--orbit-card-angle, 0deg) + 180deg));
-        transform-origin: left center;
+        content: none;
       }
 
       .home-orbit .post-card::after {
@@ -3995,6 +3999,9 @@
               var tangentY = outwardX;
               var childCards = section.querySelectorAll(".post-card");
               var childCount = Math.max(childCards.length, 1);
+              section.querySelectorAll(".orbit-card-connector").forEach(function (connector) {
+                connector.remove();
+              });
               var childColumns = childCount >= 7 ? 3 : (childCount >= 2 ? 2 : 1);
               var childRows = Math.ceil(childCount / childColumns);
               var tangentialGap = compactInteraction ? 174 : 238;
@@ -4040,12 +4047,24 @@
                 var childY = (outwardY * radialDistance) + (tangentY * tangentialDistance);
                 var childDistance = Math.sqrt(childX * childX + childY * childY);
                 var childAngle = Math.atan2(childY, childX) * 180 / Math.PI;
+                var connectorStart = branchNodeWidth * (compactInteraction ? 0.43 : 0.46);
+                var connectorEnd = Math.max(connectorStart + 32, childDistance - (compactInteraction ? 58 : 72));
+                var connectorLength = Math.max(30, connectorEnd - connectorStart);
+                var connectorMid = connectorStart + (connectorLength / 2);
+                var connectorX = Math.cos(childAngle * Math.PI / 180) * connectorMid;
+                var connectorY = Math.sin(childAngle * Math.PI / 180) * connectorMid;
+                var connector = document.createElement("span");
+                connector.className = "orbit-card-connector";
+                connector.setAttribute("aria-hidden", "true");
+                connector.style.setProperty("--orbit-connector-x", connectorX.toFixed(2) + "px");
+                connector.style.setProperty("--orbit-connector-y", connectorY.toFixed(2) + "px");
+                connector.style.setProperty("--orbit-connector-angle", childAngle.toFixed(2) + "deg");
+                connector.style.setProperty("--orbit-connector-length", connectorLength.toFixed(2) + "px");
+                connector.style.setProperty("--orbit-connector-opacity", randomRange(0.34, 0.58, ""));
+                section.insertBefore(connector, section.querySelector(".post-list"));
 
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
-                card.style.setProperty("--orbit-card-angle", childAngle.toFixed(2) + "deg");
-                card.style.setProperty("--orbit-card-link-length", Math.max(42, childDistance - 48).toFixed(2) + "px");
-                card.style.setProperty("--orbit-card-link-opacity", randomRange(0.32, 0.54, ""));
                 card.style.setProperty("--orbit-card-z", String(8 + childIndex));
               });
             });
