@@ -31,6 +31,8 @@
         --muted: #667085;
         --line: rgba(15, 23, 42, 0.14);
         --line-strong: rgba(15, 23, 42, 0.24);
+        --node-line: rgba(15, 23, 42, 0.48);
+        --node-line-soft: rgba(15, 23, 42, 0.24);
         --accent: #5f8f00;
         --accent-2: #8ace00;
         --signal: #8ace00;
@@ -114,6 +116,8 @@
         --muted: #9aa4b2;
         --line: rgba(148, 163, 184, 0.18);
         --line-strong: rgba(148, 163, 184, 0.32);
+        --node-line: rgba(241, 245, 249, 0.56);
+        --node-line-soft: rgba(241, 245, 249, 0.3);
         --accent: #b7ff00;
         --accent-2: #8ace00;
         --signal: #b7ff00;
@@ -2295,7 +2299,7 @@
         z-index: -1;
         width: auto;
         height: auto;
-        border: 0;
+        border: 1px solid var(--node-line-soft);
         background:
           radial-gradient(ellipse at 50% 50%, rgba(138, 206, 0, 0.08), transparent 64%),
           var(--glass-pane);
@@ -2318,7 +2322,7 @@
         grid-template-columns: minmax(0, 1fr) auto;
         width: var(--orbit-branch-node-width);
         margin: 0;
-        border: 1px solid var(--line);
+        border: 1px solid var(--node-line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 60%),
           var(--posted-text-bg);
@@ -2369,7 +2373,7 @@
         flex: 0 0 auto;
         margin: 0;
         overflow: visible;
-        border: 1px solid var(--line);
+        border: 1px solid var(--node-line);
         background:
           linear-gradient(126deg, var(--glass-pane), transparent 58%),
           var(--panel);
