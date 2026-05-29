@@ -185,10 +185,6 @@
         overflow: hidden;
       }
 
-      body.map-modal-open {
-        overflow: hidden;
-      }
-
       html,
       body,
       .side-index,
@@ -1436,82 +1432,48 @@
         -webkit-backdrop-filter: blur(7px);
       }
 
-      .map-launch,
-      .map-close {
-        --trim-tl-x: 0px;
-        --trim-tl-y: 0px;
-        --trim-tr-x: 13px;
-        --trim-tr-y: 13px;
-        --trim-br-x: 0px;
-        --trim-br-y: 0px;
-        --trim-bl-x: 9px;
-        --trim-bl-y: 9px;
-        border: 1.5px solid var(--node-line);
-        border-radius: 0;
-        background:
-          linear-gradient(126deg, var(--node-surface), transparent 64%),
-          var(--panel);
-        color: var(--text);
-        font: inherit;
-        font-size: 13px;
+      .visual-map-section {
+        position: relative;
+        left: 50%;
+        width: 100vw;
+        max-width: none;
+        margin: clamp(74px, 10vw, 132px) 0 0;
+        overflow: hidden;
+        padding: clamp(28px, 4vw, 56px) clamp(18px, 4vw, 54px) clamp(54px, 7vw, 96px);
+        transform: translateX(-50%);
+      }
+
+      .visual-map-title {
+        width: fit-content;
+        margin: 0 0 clamp(18px, 3vw, 30px);
+        color: var(--muted);
+        font-size: clamp(15px, 1.5vw, 20px);
         font-weight: 720;
         letter-spacing: 0;
         line-height: 1;
         text-transform: uppercase;
-        clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
-        cursor: pointer;
+        transform: translate(var(--visual-map-title-x, 0px), var(--visual-map-title-y, 0px)) rotate(var(--visual-map-title-rotate, -1deg));
       }
 
-      .map-launch {
-        width: fit-content;
-        margin-top: 28px;
-        padding: 12px 16px 13px;
-        box-shadow: 9px 9px 0 rgba(138, 206, 0, 0.12);
-        transform: translate(var(--map-launch-x, 10px), var(--map-launch-y, 0px)) rotate(var(--map-launch-rotate, -1deg));
-        transition: box-shadow var(--component-moment) ease, transform var(--component-moment) ease, filter var(--component-moment) ease;
+      .visual-map-section .home-orbit {
+        --orbit-fit-scale: 0.72;
+        --orbit-zoom: var(--orbit-fit-scale);
+        min-height: clamp(660px, 84vh, 1020px);
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(126deg, var(--posted-text-bg), transparent 52%),
+          linear-gradient(0deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 100% 21px,
+          linear-gradient(90deg, transparent 0 calc(100% - 1px), var(--map-texture-line) calc(100% - 1px) 100%) 0 0 / 28px 100%,
+          var(--posted-panel-bg);
+        box-shadow: var(--container-shadow);
+        cursor: default;
+        touch-action: auto;
       }
 
-      .map-launch:hover,
-      .map-close:hover {
-        box-shadow: var(--compact-hover-shadow);
-        filter: saturate(1.12);
-      }
-
-      .map-modal {
-        position: fixed;
-        inset: 0;
-        z-index: 850;
-        display: block;
-        overflow: hidden;
-        background: var(--bg);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 180ms ease;
-      }
-
-      .map-modal[hidden] {
-        display: none;
-      }
-
-      .map-modal.is-open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .map-modal-panel {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        background: var(--bg);
-      }
-
-      .map-close {
-        position: absolute;
-        top: max(16px, env(safe-area-inset-top));
-        right: max(18px, env(safe-area-inset-right));
-        z-index: 80;
-        padding: 11px 14px 12px;
-        box-shadow: 7px 7px 0 rgba(138, 206, 0, 0.1);
+      .visual-map-section .orbit-map {
+        top: calc(50% + var(--orbit-fit-y, 0px));
+        left: calc(50% + var(--orbit-fit-x, 0px));
+        transform: translate3d(calc(-50% + var(--orbit-pan-x)), calc(-50% + var(--orbit-pan-y)), 0) scale(var(--orbit-fit-scale));
       }
 
       .logo-fragment {
@@ -4706,19 +4668,69 @@
             applyTrimProfile(element, 3, 9);
           });
 
-          document.querySelectorAll(".map-launch, .map-close").forEach(function (element) {
+          document.querySelectorAll(".visual-map-title").forEach(function (element) {
             applyTrimProfile(element, 4, 16);
-            element.style.setProperty("--map-launch-x", randomRange(-8, 16, "px"));
-            element.style.setProperty("--map-launch-y", randomRange(-4, 10, "px"));
-            element.style.setProperty("--map-launch-rotate", randomRange(-2.2, 1.8, "deg"));
+            element.style.setProperty("--visual-map-title-x", randomRange(-8, 16, "px"));
+            element.style.setProperty("--visual-map-title-y", randomRange(-4, 10, "px"));
+            element.style.setProperty("--visual-map-title-rotate", randomRange(-2.2, 1.8, "deg"));
           });
 
-          document.querySelectorAll(".directory-link, .section-pager-card, .section-pager-parent, .theme-toggle, .map-launch, .map-close").forEach(function (element) {
+          document.querySelectorAll(".directory-link, .section-pager-card, .section-pager-parent, .theme-toggle").forEach(function (element) {
             applyHoverProfile(element, true);
           });
         }
 
+        function fitStaticOrbitMaps() {
+          document.querySelectorAll("[data-orbit-fit]").forEach(function (viewport) {
+            var map = viewport.querySelector("[data-orbit-map]");
+            if (!map) return;
+
+            viewport.style.setProperty("--orbit-fit-scale", "1");
+            viewport.style.setProperty("--orbit-fit-x", "0px");
+            viewport.style.setProperty("--orbit-fit-y", "0px");
+            viewport.style.setProperty("--orbit-pan-x", "0px");
+            viewport.style.setProperty("--orbit-pan-y", "0px");
+
+            var viewportBounds = viewport.getBoundingClientRect();
+            var measuredItems = Array.prototype.slice.call(map.querySelectorAll(".orbit-core .home-logo, .directory-section h2, .orbit-chip"));
+            var minX = Infinity;
+            var minY = Infinity;
+            var maxX = -Infinity;
+            var maxY = -Infinity;
+
+            measuredItems.forEach(function (element) {
+              var rect = element.getBoundingClientRect();
+              if (!rect.width || !rect.height) return;
+              minX = Math.min(minX, rect.left);
+              minY = Math.min(minY, rect.top);
+              maxX = Math.max(maxX, rect.right);
+              maxY = Math.max(maxY, rect.bottom);
+            });
+
+            if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) return;
+
+            var contentWidth = Math.max(1, maxX - minX);
+            var contentHeight = Math.max(1, maxY - minY);
+            var padding = Math.max(28, Math.min(viewportBounds.width, viewportBounds.height) * 0.07);
+            var availableWidth = Math.max(1, viewportBounds.width - (padding * 2));
+            var availableHeight = Math.max(1, viewportBounds.height - (padding * 2));
+            var scale = Math.min(0.94, availableWidth / contentWidth, availableHeight / contentHeight);
+            scale = Math.max(0.16, scale);
+            var viewportCenterX = viewportBounds.left + (viewportBounds.width / 2);
+            var viewportCenterY = viewportBounds.top + (viewportBounds.height / 2);
+            var contentCenterX = minX + (contentWidth / 2);
+            var contentCenterY = minY + (contentHeight / 2);
+            var offsetX = (viewportCenterX - contentCenterX) * scale;
+            var offsetY = (viewportCenterY - contentCenterY) * scale;
+
+            viewport.style.setProperty("--orbit-fit-scale", scale.toFixed(3));
+            viewport.style.setProperty("--orbit-fit-x", offsetX.toFixed(2) + "px");
+            viewport.style.setProperty("--orbit-fit-y", offsetY.toFixed(2) + "px");
+          });
+        }
+
         applySpatialRandomness();
+        fitStaticOrbitMaps();
 
         var homeOrbitRelayoutTimer = null;
         function requestHomeOrbitRelayout() {
@@ -4727,6 +4739,7 @@
           homeOrbitRelayoutTimer = window.setTimeout(function () {
             syncHomeViewport();
             applySpatialRandomness();
+            fitStaticOrbitMaps();
           }, 180);
         }
 
@@ -4734,6 +4747,11 @@
         window.addEventListener("orientationchange", function () {
           requestHomeOrbitRelayout();
           window.setTimeout(requestHomeOrbitRelayout, 180);
+        });
+        window.addEventListener("load", function () {
+          syncHomeViewport();
+          fitStaticOrbitMaps();
+          window.setTimeout(fitStaticOrbitMaps, 140);
         });
         if (window.visualViewport) {
           window.visualViewport.addEventListener("resize", requestHomeOrbitRelayout);
@@ -5122,59 +5140,6 @@
         }
 
         setupOrbitMapPan();
-
-        var mapModal = document.querySelector("[data-map-modal]");
-        var mapOpen = document.querySelector("[data-map-open]");
-        var mapClose = document.querySelector("[data-map-close]");
-
-        function openMapModal() {
-          if (!mapModal) return;
-
-          mapModal.hidden = false;
-          document.body.classList.add("map-modal-open");
-          window.requestAnimationFrame(function () {
-            mapModal.classList.add("is-open");
-            syncHomeViewport();
-            applySpatialRandomness();
-            window.dispatchEvent(new Event("resize"));
-
-            var modalViewport = mapModal.querySelector("[data-orbit-viewport]");
-            if (modalViewport && typeof modalViewport.focus === "function") {
-              modalViewport.focus({ preventScroll: true });
-            }
-          });
-        }
-
-        function closeMapModal() {
-          if (!mapModal) return;
-
-          mapModal.classList.remove("is-open");
-          document.body.classList.remove("map-modal-open");
-          window.setTimeout(function () {
-            if (!mapModal.classList.contains("is-open")) {
-              mapModal.hidden = true;
-            }
-          }, 190);
-
-          if (mapOpen && typeof mapOpen.focus === "function") {
-            mapOpen.focus({ preventScroll: true });
-          }
-        }
-
-        if (mapOpen) {
-          mapOpen.addEventListener("click", openMapModal);
-        }
-
-        if (mapClose) {
-          mapClose.addEventListener("click", closeMapModal);
-        }
-
-        document.addEventListener("keydown", function (event) {
-          if (event.key !== "Escape") return;
-          if (!mapModal || mapModal.hidden) return;
-          event.preventDefault();
-          closeMapModal();
-        });
 
         var homeCards = document.querySelectorAll(".home-directory .post-card");
         if (homeCards.length) {

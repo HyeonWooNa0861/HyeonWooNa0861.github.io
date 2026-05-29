@@ -10,9 +10,6 @@ permalink: /
     <span class="logo-fragment" data-fragment="H">H</span>
     <span class="logo-fragment" data-fragment="W">W</span>
   </a>
-  <button class="map-launch" type="button" data-map-open aria-haspopup="dialog" aria-controls="visual-map-modal">
-    Visual Map
-  </button>
 </section>
 
 <div class="home-directory">
@@ -46,46 +43,44 @@ permalink: /
 {% endfor %}
 </div>
 
-<div class="map-modal" id="visual-map-modal" data-map-modal hidden>
-  <div class="map-modal-panel" role="dialog" aria-modal="true" aria-label="Visual map">
-    <button class="map-close" type="button" data-map-close aria-label="Close visual map">Close</button>
-    <div class="home-orbit" data-orbit-viewport aria-label="Visual map">
-      <div class="orbit-map" data-orbit-map>
-        <section class="home-hero orbit-core" aria-label="NaHW">
-          <div class="home-logo" role="img" aria-label="NaHW">
-            <span class="logo-fragment" data-fragment="Na">Na</span>
-            <span class="logo-fragment" data-fragment="H">H</span>
-            <span class="logo-fragment" data-fragment="W">W</span>
-          </div>
-        </section>
-
-        <div class="home-directory orbit-field">
-        {% for item in site.data.navigation %}
-          <section class="directory-section orbit-node">
-            <h2>
-              <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
-              <span class="directory-link" aria-hidden="true">
-                <svg class="directory-plus" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-                  <path class="plus-axis plus-axis-horizontal" d="M7 16H25" />
-                  <path class="plus-axis plus-axis-vertical" d="M16 7V25" />
-                </svg>
-              </span>
-            </h2>
-
-            <ul class="post-list orbit-links">
-              {% for child in item.children %}
-                <li class="post-card orbit-chip">
-                  <span class="orbit-chip-label">{{ child.title }}</span>
-                  {% if child.description %}
-                    <p>{{ child.description }}</p>
-                  {% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-          </section>
-        {% endfor %}
+<section class="visual-map-section" aria-labelledby="visual-map-title">
+  <h2 id="visual-map-title" class="visual-map-title">Visual Map</h2>
+  <div class="home-orbit visual-map-fit" data-orbit-fit aria-label="Visual map">
+    <div class="orbit-map" data-orbit-map>
+      <section class="home-hero orbit-core" aria-label="NaHW">
+        <div class="home-logo" role="img" aria-label="NaHW">
+          <span class="logo-fragment" data-fragment="Na">Na</span>
+          <span class="logo-fragment" data-fragment="H">H</span>
+          <span class="logo-fragment" data-fragment="W">W</span>
         </div>
+      </section>
+
+      <div class="home-directory orbit-field">
+      {% for item in site.data.navigation %}
+        <section class="directory-section orbit-node">
+          <h2>
+            <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
+            <span class="directory-link" aria-hidden="true">
+              <svg class="directory-plus" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                <path class="plus-axis plus-axis-horizontal" d="M7 16H25" />
+                <path class="plus-axis plus-axis-vertical" d="M16 7V25" />
+              </svg>
+            </span>
+          </h2>
+
+          <ul class="post-list orbit-links">
+            {% for child in item.children %}
+              <li class="post-card orbit-chip">
+                <span class="orbit-chip-label">{{ child.title }}</span>
+                {% if child.description %}
+                  <p>{{ child.description }}</p>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endfor %}
       </div>
     </div>
   </div>
-</div>
+</section>
