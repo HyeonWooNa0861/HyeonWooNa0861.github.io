@@ -2326,7 +2326,7 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        z-index: var(--orbit-branch-z, 4);
+        z-index: var(--orbit-branch-z, 80);
         grid-template-columns: minmax(0, 1fr) auto;
         width: var(--orbit-branch-node-width);
         margin: 0;
@@ -2342,6 +2342,12 @@
 
       .home-orbit .branch-logo {
         font-size: clamp(21px, 2.6vw, 38px);
+      }
+
+      .home-orbit .directory-link {
+        position: relative;
+        z-index: 2;
+        pointer-events: auto;
       }
 
       .home-orbit .directory-link::after {
@@ -4009,7 +4015,7 @@
               section.style.setProperty("--orbit-node-y", y.toFixed(2) + "px");
               section.style.setProperty("--orbit-node-angle", angle.toFixed(2) + "deg");
               section.style.setProperty("--orbit-section-z", String(10 + (index * 8)));
-              section.style.setProperty("--orbit-branch-z", "4");
+              section.style.setProperty("--orbit-branch-z", "80");
               section.style.setProperty("--orbit-spine-length", Math.max(160, Math.min(branchDistance * 0.58, compactInteraction ? 280 : 380)).toFixed(2) + "px");
               section.style.setProperty("--orbit-spine-opacity", randomRange(0.5, 0.74, ""));
               section.style.setProperty("--orbit-cluster-size", clusterSize.toFixed(2) + "px");
@@ -4411,7 +4417,7 @@
             var pendingFrame = null;
             var draggedDuringPointer = false;
             var suppressNextClick = false;
-            var dragThreshold = 6;
+            var dragThreshold = 10;
 
             viewport.setAttribute("tabindex", "0");
 
@@ -4511,7 +4517,7 @@
 
             viewport.addEventListener("pointerdown", function (event) {
               if (event.button && event.button !== 0) return;
-              if (event.target.closest("button, input, textarea, select, summary, [contenteditable='true']")) return;
+              if (event.target.closest(".directory-link, button, input, textarea, select, summary, [contenteditable='true']")) return;
 
               activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
               if (activePointers.size >= 2) {
