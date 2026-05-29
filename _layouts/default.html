@@ -4020,8 +4020,9 @@
               var radialReach = radialBase + ((childRows - 1) * radialGap) + 150;
               var tangentialReach = (((childColumns - 1) * tangentialGap) / 2) + 150;
               var clusterSize = Math.max(compactInteraction ? 430 : 560, Math.max(radialReach, tangentialReach) * 2);
-              var x = outwardX * radiusX * randomNumber(0.96, 1.05);
-              var y = outwardY * radiusY * randomNumber(0.96, 1.06);
+              var branchSpread = compactInteraction ? 1.07 : 1.08;
+              var x = outwardX * radiusX * branchSpread * randomNumber(0.96, 1.05);
+              var y = outwardY * radiusY * branchSpread * randomNumber(0.96, 1.06);
               var branchDistance = Math.sqrt(x * x + y * y);
 
               applyTrimProfile(section, 8, 32);
