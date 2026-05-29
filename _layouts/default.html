@@ -1838,7 +1838,8 @@
         transform: rotate(var(--home-card-line-rotate, -8deg));
       }
 
-      .home-directory .post-card a {
+      .home-directory .post-card a,
+      .home-directory .orbit-chip-label {
         grid-column: 1;
         width: auto;
         font-size: 18px;
@@ -2370,7 +2371,7 @@
         clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
         padding: var(--orbit-node-pad-y, 14px) var(--orbit-node-pad-x, 16px) var(--orbit-node-pad-bottom, 15px);
         box-shadow: var(--container-shadow);
-        pointer-events: auto;
+        pointer-events: none;
         transform: translate(-50%, -50%) rotate(var(--orbit-branch-node-rotate, 0deg));
       }
 
@@ -2381,7 +2382,7 @@
       .home-orbit .directory-link {
         position: relative;
         z-index: 2;
-        pointer-events: auto;
+        pointer-events: none;
       }
 
       .home-orbit .directory-link::after {
@@ -2428,8 +2429,8 @@
         clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
         box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
-        cursor: pointer;
-        pointer-events: auto;
+        cursor: grab;
+        pointer-events: none;
         scroll-snap-align: none;
         transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px))) rotate(var(--orbit-chip-rotate, 0deg));
       }
@@ -2450,7 +2451,7 @@
         content: none;
       }
 
-      .home-orbit .post-card a {
+      .home-orbit .orbit-chip-label {
         position: relative;
         z-index: 2;
         display: block;
@@ -3398,7 +3399,7 @@
           padding: 10px 12px 11px;
         }
 
-        .home-orbit .post-card a {
+        .home-orbit .orbit-chip-label {
           font-size: 15px;
         }
 
@@ -4224,17 +4225,17 @@
               section.style.setProperty("--orbit-node-pad-bottom", randomRange(15, 24, "px"));
               section.style.setProperty("--orbit-chip-gap", randomRange(8, 13, "px"));
               section.style.setProperty("--orbit-link-pad-top", randomRange(10, 16, "px"));
-              section.style.setProperty("--orbit-life-duration", randomRange(7600, 12400, "ms"));
-              section.style.setProperty("--orbit-life-delay", randomRange(-6800, -400, "ms"));
-              section.style.setProperty("--orbit-life-x", randomRange(-5, 6, "px"));
-              section.style.setProperty("--orbit-life-y", randomRange(-5, 6, "px"));
-              section.style.setProperty("--orbit-life-rotate", randomRange(-0.9, 0.9, "deg"));
-              section.style.setProperty("--orbit-life-x-alt", randomRange(-5, 6, "px"));
-              section.style.setProperty("--orbit-life-y-alt", randomRange(-5, 6, "px"));
-              section.style.setProperty("--orbit-life-rotate-alt", randomRange(-0.9, 0.9, "deg"));
-              section.style.setProperty("--orbit-node-breathe-duration", randomRange(5200, 8600, "ms"));
+              section.style.setProperty("--orbit-life-duration", randomRange(6200, 11800, "ms"));
+              section.style.setProperty("--orbit-life-delay", randomRange(-7200, -300, "ms"));
+              section.style.setProperty("--orbit-life-x", randomRange(-14, 16, "px"));
+              section.style.setProperty("--orbit-life-y", randomRange(-12, 14, "px"));
+              section.style.setProperty("--orbit-life-rotate", randomRange(-1.7, 1.7, "deg"));
+              section.style.setProperty("--orbit-life-x-alt", randomRange(-14, 16, "px"));
+              section.style.setProperty("--orbit-life-y-alt", randomRange(-12, 14, "px"));
+              section.style.setProperty("--orbit-life-rotate-alt", randomRange(-1.7, 1.7, "deg"));
+              section.style.setProperty("--orbit-node-breathe-duration", randomRange(4400, 7600, "ms"));
               section.style.setProperty("--orbit-node-breathe-delay", randomRange(-4600, -200, "ms"));
-              section.style.setProperty("--orbit-node-breathe-scale", randomRange(1.008, 1.022, ""));
+              section.style.setProperty("--orbit-node-breathe-scale", randomRange(1.018, 1.042, ""));
 
               childCards.forEach(function (card, childIndex) {
                 var row = Math.floor(childIndex / childColumns);
@@ -4271,15 +4272,15 @@
                 card.style.setProperty("--orbit-child-x", childX.toFixed(2) + "px");
                 card.style.setProperty("--orbit-child-y", childY.toFixed(2) + "px");
                 card.style.setProperty("--orbit-card-z", String(8 + childIndex));
-                card.style.setProperty("--orbit-chip-life-duration", randomRange(5800, 9800, "ms"));
-                card.style.setProperty("--orbit-chip-life-delay", randomRange(-6200, -300, "ms"));
-                card.style.setProperty("--orbit-chip-life-x", randomRange(-3, 4, "px"));
-                card.style.setProperty("--orbit-chip-life-y", randomRange(-3, 4, "px"));
-                card.style.setProperty("--orbit-chip-life-rotate", randomRange(-0.7, 0.7, "deg"));
-                card.style.setProperty("--orbit-chip-life-x-alt", randomRange(-3, 4, "px"));
-                card.style.setProperty("--orbit-chip-life-y-alt", randomRange(-3, 4, "px"));
-                card.style.setProperty("--orbit-chip-life-rotate-alt", randomRange(-0.7, 0.7, "deg"));
-                card.style.setProperty("--orbit-chip-life-scale", randomRange(1.004, 1.014, ""));
+                card.style.setProperty("--orbit-chip-life-duration", randomRange(4600, 9200, "ms"));
+                card.style.setProperty("--orbit-chip-life-delay", randomRange(-6800, -200, "ms"));
+                card.style.setProperty("--orbit-chip-life-x", randomRange(-9, 11, "px"));
+                card.style.setProperty("--orbit-chip-life-y", randomRange(-8, 10, "px"));
+                card.style.setProperty("--orbit-chip-life-rotate", randomRange(-1.35, 1.35, "deg"));
+                card.style.setProperty("--orbit-chip-life-x-alt", randomRange(-9, 11, "px"));
+                card.style.setProperty("--orbit-chip-life-y-alt", randomRange(-8, 10, "px"));
+                card.style.setProperty("--orbit-chip-life-rotate-alt", randomRange(-1.35, 1.35, "deg"));
+                card.style.setProperty("--orbit-chip-life-scale", randomRange(1.012, 1.028, ""));
               });
             });
           });
@@ -4543,7 +4544,7 @@
           });
 
           document.querySelectorAll(".home-directory .post-card").forEach(function (card, index) {
-            var title = card.querySelector("a");
+            var title = card.querySelector(".orbit-chip-label, a");
             var description = card.querySelector("p");
             var titleLength = title ? title.textContent.trim().length : 0;
             var descriptionLength = description ? description.textContent.trim().length : 0;
@@ -4599,7 +4600,7 @@
           });
 
           document.querySelectorAll(".home-orbit .post-card").forEach(function (card) {
-            var title = card.querySelector("a");
+            var title = card.querySelector(".orbit-chip-label, a");
             var titleLength = title ? title.textContent.trim().length : 0;
             var wideChip = titleLength > 18;
             var chipMin = compactInteraction ? (wideChip ? 142 : 108) : (wideChip ? 154 : 118);
@@ -5046,20 +5047,6 @@
           window.setTimeout(markHomeCardsReady, homeCardEntryMs);
           homeCards.forEach(function (card) {
             card.addEventListener("mouseenter", markHomeCardsReady, { once: true });
-            card.addEventListener("click", function (event) {
-              if (event.defaultPrevented || event.target.closest("a[href]")) return;
-
-              var link = card.querySelector("a[href]");
-              if (!link) return;
-
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-                window.open(link.href, "_blank", "noopener");
-                return;
-              }
-
-              scheduleLoadingScreen(navigationLoadingDelay);
-              window.location.href = link.href;
-            });
           });
         }
 
