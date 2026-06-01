@@ -2415,7 +2415,7 @@
           var(--posted-panel-bg);
         clip-path: polygon(var(--trim-tl-x, 0px) 0, calc(100% - var(--trim-tr-x, 20px)) 0, 100% var(--trim-tr-y, 14px), 100% calc(100% - var(--trim-br-y, 10px)), calc(100% - var(--trim-br-x, 10px)) 100%, var(--trim-bl-x, 18px) 100%, 0 calc(100% - var(--trim-bl-y, 14px)), 0 var(--trim-tl-y, 10px));
         padding: var(--orbit-node-pad-y, 14px) var(--orbit-node-pad-x, 16px) var(--orbit-node-pad-bottom, 15px);
-        box-shadow: var(--container-shadow);
+        box-shadow: none;
         pointer-events: none;
         transform: translate(-50%, -50%) rotate(var(--orbit-branch-node-rotate, 0deg));
       }
@@ -2473,7 +2473,7 @@
           var(--panel);
         clip-path: none;
         padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
-        box-shadow: 6px 6px 0 rgba(138, 206, 0, 0.08);
+        box-shadow: none;
         cursor: grab;
         pointer-events: none;
         scroll-snap-align: none;
@@ -2512,7 +2512,7 @@
 
       .home-orbit .home-directory .post-card:hover {
         animation: none;
-        box-shadow: var(--compact-hover-shadow);
+        box-shadow: none;
         transform: translate(-50%, -50%) translate(calc(var(--orbit-child-x, 0px) + var(--orbit-chip-x, 0px) + var(--hover-card-x, 0px)), calc(var(--orbit-child-y, 0px) + var(--orbit-chip-y, 0px) + var(--hover-card-y, 0px))) rotate(calc(var(--orbit-chip-rotate, 0deg) + var(--hover-card-rotate, 0deg)));
       }
 
