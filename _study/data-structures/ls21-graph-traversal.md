@@ -255,7 +255,76 @@ DFS는 directed graph에서 간선을 여러 종류로 분류할 수 있다. 강
 | forward edge | ancestor에서 descendant로 향하지만 tree edge는 아닌 간선 |
 | cross edge | 서로 다른 DFS subtree 또는 ancestor-descendant 관계가 아닌 정점 사이의 간선 |
 
-특히 directed graph에서 back edge는 cycle 존재와 연결된다. 탐색 중인 GRAY ancestor로 돌아가는 간선이 있다면, 그 경로와 back edge가 합쳐져 directed cycle을 만든다.
+DFS edge 분류는 "간선 \\((u,v)\\)를 검사하는 순간 \\(v\\)가 어떤 상태인가"와 "DFS tree에서 \\(u\\), \\(v\\)가 어떤 관계인가"로 이해하면 쉽다.
+
+| edge 종류 | 검사 시점의 \\(v\\) 상태 | DFS tree 관계 | discovery/finish time 관계 |
+|---|---|---|---|
+| tree edge | WHITE | \\(u\\)가 \\(v\\)를 처음 발견 | \\(u.d < v.d < v.f < u.f\\) |
+| back edge | GRAY | \\(v\\)가 \\(u\\)의 ancestor | \\(v.d < u.d < u.f < v.f\\) |
+| forward edge | BLACK | \\(v\\)가 \\(u\\)의 descendant이지만 tree edge는 아님 | \\(u.d < v.d < v.f < u.f\\) |
+| cross edge | BLACK | ancestor-descendant 관계가 아님 | 두 time interval이 서로 겹치지 않음 |
+
+### Back Edge
+
+Back edge는 현재 정점 \\(u\\)에서 DFS tree의 ancestor \\(v\\)로 돌아가는 간선이다.
+
+```text
+ancestor v
+   |
+   ...
+   |
+current u  --back edge-->  v
+```
+
+DFS 중 \\(u\\)에서 이웃 \\(v\\)를 보았는데 \\(v\\)가 아직 BLACK이 아니라 GRAY라면, \\(v\\)는 현재 recursion stack 위에 있다. 즉, \\(v\\)는 \\(u\\)의 ancestor다.
+
+그래서 back edge의 time interval은 ancestor interval이 descendant interval을 감싼다.
+
+$$
+v.d < u.d < u.f < v.f
+$$
+
+특히 directed graph에서 back edge는 cycle 존재와 연결된다. 이미 \\(v\\)에서 \\(u\\)까지 내려온 tree path가 있고, 다시 \\(u\\to v\\)로 돌아가는 edge가 있으므로 directed cycle이 만들어진다.
+
+### Forward Edge
+
+Forward edge는 ancestor에서 descendant로 향하지만, 그 descendant를 처음 발견하게 만든 tree edge는 아닌 간선이다.
+
+```text
+ancestor u  --forward edge-->  descendant v
+```
+
+예를 들어 \\(u\\)에서 다른 경로를 통해 이미 \\(v\\)를 발견했고, 이후 \\(u\\)의 adjacency list를 보다가 \\(v\\)로 가는 추가 간선을 확인하면 forward edge가 될 수 있다.
+
+Forward edge도 ancestor-descendant 관계이므로 time interval은 tree edge와 같은 포함 관계를 가진다.
+
+$$
+u.d < v.d < v.f < u.f
+$$
+
+차이는 \\(v\\)를 처음 발견하게 만든 간선이면 tree edge이고, 이미 DFS tree 안에 descendant로 들어간 뒤 발견된 추가 간선이면 forward edge라는 점이다.
+
+### Cross Edge
+
+Cross edge는 서로 ancestor-descendant 관계가 아닌 정점 사이의 간선이다. 보통 서로 다른 DFS subtree 사이를 잇거나, 이미 탐색이 끝난 정점으로 향하는 간선으로 나타난다.
+
+```text
+subtree A의 u  --cross edge-->  subtree B의 v
+```
+
+Cross edge에서는 두 정점의 DFS time interval이 포함 관계를 만들지 않는다. 한쪽 정점의 탐색이 완전히 끝난 뒤 다른 정점의 탐색이 시작된 형태로 볼 수 있다.
+
+$$
+v.d < v.f < u.d < u.f
+\quad\text{or}\quad
+u.d < u.f < v.d < v.f
+$$
+
+단, 실제 DFS에서 \\((u,v)\\)를 검사하는 시점에는 \\(u\\)가 GRAY이므로, 이미 끝난 \\(v\\)를 보는 경우가 cross edge로 자주 나타난다.
+
+### 무향 그래프에서의 주의점
+
+무향 그래프에서는 같은 간선이 양쪽 adjacency list에 모두 나타난다. 그래서 DFS edge 분류가 directed graph처럼 네 종류로 깔끔하게 나뉘지 않는다. 표준 DFS 관점에서는 무향 그래프의 간선은 보통 tree edge 또는 back edge로만 나타난다고 이해하면 된다. Forward edge와 cross edge는 directed graph에서 특히 의미가 크다.
 
 ## 11. DFS의 시간 복잡도
 
@@ -304,6 +373,9 @@ BFS는 거리와 level을 알고 싶을 때 강하다. DFS는 그래프의 깊�
 | DFS | recursion/backtracking으로 가능한 깊게 내려가는 탐색 |
 | DFS discovery time | 정점을 처음 발견한 시각 |
 | DFS finish time | 정점의 모든 이웃 처리가 끝난 시각 |
+| back edge | DFS tree의 descendant에서 ancestor로 돌아가는 간선 |
+| forward edge | ancestor에서 descendant로 가지만 tree edge는 아닌 간선 |
+| cross edge | ancestor-descendant 관계가 아닌 정점 사이의 간선 |
 | WHITE | 아직 발견되지 않은 정점 |
 | GRAY | 발견되었지만 아직 완료되지 않은 정점 |
 | BLACK | 이웃 처리가 끝난 정점 |
@@ -325,7 +397,7 @@ BFS는 거리와 level을 알고 싶을 때 강하다. DFS는 그래프의 깊�
 | DFS time | discovery time과 finish time의 기록 시점 |
 | color state | WHITE, GRAY, BLACK의 정확한 의미 |
 | complexity | 정점과 간선을 각각 몇 번 보는지 |
-| edge classification | tree, back, forward, cross edge 구분 |
+| edge classification | tree, back, forward, cross edge의 DFS tree 관계와 time interval |
 
 ## 복습 질문
 
@@ -382,6 +454,13 @@ BFS는 거리와 level을 알고 싶을 때 강하다. DFS는 그래프의 깊�
 <summary>8. Unweighted shortest path를 찾을 때 DFS보다 BFS가 적합한 이유는?</summary>
 
 답변: BFS는 시작 정점에서 거리 0, 1, 2 순서로 level별 탐색을 하므로 어떤 정점을 처음 발견하는 순간의 거리값이 최단 간선 수다. DFS는 한 경로를 깊게 따라가기 때문에 먼저 발견한 경로가 최단 경로라는 보장이 없다.
+
+</details>
+
+<details>
+<summary>9. Forward edge와 cross edge는 어떻게 구분하는가?</summary>
+
+답변: Forward edge는 \\(u\\)에서 descendant \\(v\\)로 향하지만 tree edge는 아닌 간선이다. 따라서 \\(u.d < v.d < v.f < u.f\\)처럼 \\(v\\)의 time interval이 \\(u\\) 안에 포함된다. Cross edge는 ancestor-descendant 관계가 아닌 정점 사이의 간선이므로 두 정점의 time interval이 서로 겹치지 않는다.
 
 </details>
 
