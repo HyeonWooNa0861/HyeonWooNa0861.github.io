@@ -25,9 +25,9 @@ Source PDFs:
 | 범위 | 예상 문항 수 | 연결 강의 | 공부 우선순위 |
 |---|---:|---|---|
 | 확률과 분포 | 3 | Lecture 11, 12, 13 | 계산 규칙, Bayes, Gaussian을 가장 먼저 정리 |
-| 최적화 이론 | 2 | Lecture 14 | SGD, mini-batch, convex function 중심 |
-| Model and Data | 1 | Lecture 15, 16 | MLE, MAP, DGM의 연결 관계 |
-| 선형회귀 | 1 | Lecture 17 | Gaussian likelihood에서 MLE, Gaussian prior에서 MAP |
+| 최적화 이론 | 2 | Lecture 14 | GD update, step size, momentum, mini-batch, Newton, convex 중심 |
+| Model and Data | 1 | Lecture 15, 16 | 결정론적 모델과 확률 모델, ERM, MLE, MAP, CV, DGM |
+| 선형회귀 | 1 | Lecture 17 | 모델식, 해 구하기, 예측, MLE, MAP |
 
 시험 대비의 큰 흐름은 다음과 같다.
 
@@ -38,13 +38,15 @@ Source PDFs:
 5. MLE와 MAP는 negative log를 취했을 때 어떤 최적화 문제로 바뀌는지 설명할 수 있어야 한다.
 6. 선형회귀는 Gaussian noise 가정에서 squared error가 나오고, Gaussian prior에서 ridge 형태가 나오는 흐름을 잡아야 한다.
 
+메모 반영 기준으로 보면 우선순위는 더 분명하다. 확률의 정의와 조건은 개념적으로 반드시 알아야 하고, 11강, 12강, 13강 확률 PDF에서 각각 1문제씩 나온다고 생각하고 준비한다. 최적화 2문제는 gradient descent update, step size, mini-batch, momentum, Newton method, convex 증명 또는 반례를 중심으로 본다. Model and Data는 결정론적 모델과 확률 모델의 차이, ERM, MLE, cross validation, regularization, MAP, DGM을 한 묶음으로 정리한다. 선형회귀는 모델식에서 시작해 최적해, 예측, MLE, MAP 계산까지 이어서 연습한다.
+
 ## 1. 확률과 분포: 3문제 범위
 
 확률과 분포 파트는 가장 넓게 출제된다. 단순 정의 문제보다 joint table에서 주변확률, 조건부확률, 독립성, Bayes 정리를 계산하는 문제가 나올 가능성이 높다.
 
 ### 1.1 확률의 조건
 
-확률은 표본공간 \\(S\\)의 사건 \\(A\\)에 숫자를 붙이는 함수다. 아무 숫자나 붙일 수 없고 다음 조건을 만족해야 한다.
+확률은 표본공간 \\(S\\)의 사건 \\(A\\)에 숫자를 붙이는 함수다. 더 정확히 말하면 사건을 \\([0,1]\\) 사이의 수로 보내면서, 아래의 기본 구조를 만족하는 함수를 확률이라고 부른다. 따라서 확률의 정의와 조건은 계산보다 먼저 개념적으로 반드시 알아야 한다. 아무 숫자나 붙인다고 확률이 되는 것이 아니라, nonnegativity, normalization, additivity를 만족해야 한다.
 
 | 조건 | 수식 | 의미 |
 |---|---|---|
@@ -71,7 +73,7 @@ P(A\cup B)
 =P(A)+P(B)-P(A\cap B)
 $$
 
-시험에서는 "확률의 세 조건을 쓰라"보다, 이 조건을 사용해 여사건이나 합집합 확률을 계산하는 문제가 더 자연스럽다.
+시험에서는 "확률의 세 조건을 쓰라"는 직접 정의형 문제도 가능하고, 이 조건을 사용해 여사건이나 합집합 확률을 계산하는 문제도 가능하다. 확률의 조건은 이후 PMF, PDF, joint distribution이 "정상적인 확률분포인지" 판단하는 기준이 된다.
 
 ### 1.2 확률의 예시
 
@@ -107,7 +109,7 @@ $$
 
 ### 1.3 이산확률변수와 PMF
 
-확률변수는 표본공간의 결과를 숫자로 보내는 함수다. 가능한 값이 유한하거나 셀 수 있으면 이산확률변수라고 한다.
+확률변수는 표본공간의 결과를 숫자로 보내는 함수다. 가능한 값이 유한하거나 셀 수 있으면 이산확률변수라고 한다. 즉, 확률이 이미 정의된 표본공간 위에서 어떤 결과들을 숫자 값으로 묶어 보는 함수가 확률변수다.
 
 이산확률변수 \\(X\\)의 확률분포는 PMF(probability mass function)로 표현한다.
 
@@ -139,6 +141,16 @@ P(X\ge 1)
 =\frac{1}{2}+\frac{1}{4}
 =\frac{3}{4}
 $$
+
+조금 더 일반적으로 쓰면, 확률변수 \\(X\\)가 어떤 값들의 집합 \\(B\\)에 들어갈 확률은 그 값에 해당하는 표본공간 원소들의 확률을 모두 더한 것이다.
+
+$$
+P(X\in B)
+=
+\sum_{x\in B}p_X(x)
+$$
+
+따라서 이산확률변수 문제는 "확률변수 값에 해당하는 친구들의 확률의 합"으로 계산한다고 기억하면 된다.
 
 ### 1.4 결합 확률 질량함수
 
@@ -248,7 +260,7 @@ $$
 
 ### 1.6 연속확률변수와 CDF
 
-연속확률변수는 값이 연속적인 구간 위에 있는 확률변수다. 연속확률변수에서는 한 점의 확률이 0이다.
+연속확률변수는 값이 연속적인 구간 또는 \\(d\\)차원 실수공간 위에 있는 확률변수다. 연속확률변수에서는 한 점의 확률이 0이다.
 
 $$
 P(X=x)=0
@@ -272,6 +284,14 @@ $$
 P(a<X\le b)
 =F_X(b)-F_X(a)
 =\int_a^b f_X(x)\,dx
+$$
+
+\\(d\\)차원 연속확률변수 \\(X\in\mathbb{R}^d\\)에서는 구간 대신 영역 \\(A\\) 위에서 적분한다.
+
+$$
+P(X\in A)
+=
+\int_A f_X(x)\,dx
 $$
 
 주의할 점은 PDF 값은 확률 자체가 아니라 density라는 것이다. 따라서 \\(f_X(x)\\) 값은 1보다 클 수 있다. 1보다 클 수 없는 것은 확률값과 CDF 값이다.
@@ -310,7 +330,7 @@ $$
 
 ### 1.8 Bayes 정리와 likelihood
 
-Bayes 정리는 조건부 확률의 방향을 바꾸는 규칙이다.
+Bayes 정리는 조건부 확률의 방향을 바꾸는 규칙이다. 시험에서는 식을 무조건 외우고, 각 항의 의미까지 말로 설명할 수 있어야 한다.
 
 $$
 P(Y\mid X)
@@ -442,7 +462,7 @@ $$
 
 ### 1.11 Gaussian distribution
 
-Gaussian distribution 또는 normal distribution은 평균 \\(\mu\\), 분산 \\(\sigma^2\\)로 결정되는 대표적인 연속확률분포다.
+Gaussian distribution 또는 normal distribution은 평균 \\(\mu\\), 분산 \\(\sigma^2\\)로 결정되는 대표적인 연속확률분포다. 이 PDF 공식은 중요도가 높으므로 반드시 외워야 한다.
 
 $$
 X\sim\mathcal{N}(\mu,\sigma^2)
@@ -564,6 +584,18 @@ $$
 
 따라서 "Gaussian random variable의 합"과 "Gaussian distribution의 mixture"를 반드시 구분해야 한다.
 
+Gaussian이 보장되지 않는 조건도 같이 정리해야 한다.
+
+| 상황 | Gaussian 보장 여부 | 이유 |
+|---|---|---|
+| Joint Gaussian의 선형결합 | 보장 | joint Gaussian은 선형결합에 닫혀 있다. |
+| 서로 독립인 Gaussian 확률변수의 합 | 보장 | 독립이면 평균과 분산을 더해 Gaussian이 된다. |
+| 각각의 marginal만 Gaussian임 | 보장되지 않음 | 두 변수가 joint Gaussian이라는 정보가 없으면 합이 Gaussian이라고 할 수 없다. |
+| Gaussian mixture | 보장되지 않음 | density를 더한 mixture는 일반적으로 하나의 Gaussian이 아니다. |
+| Nonlinear transformation | 보장되지 않음 | 선형변환과 달리 일반 nonlinear 함수는 Gaussian을 보존하지 않는다. |
+
+즉, "Gaussian이다"가 자동으로 유지되는 대표 조건은 joint Gaussian의 선형변환 또는 독립 Gaussian의 합이다. 그 외에는 반례가 가능하다고 생각해야 한다.
+
 ### 1.14 변수변환과 선형변환
 
 변수변환은 확률변수 \\(X\\)를 다른 함수 \\(Y=g(X)\\)로 바꾸었을 때, \\(Y\\)의 분포를 구하는 과정이다. 일대일 변환에서는 density의 면적이 보존되도록 Jacobian 보정이 들어간다.
@@ -577,7 +609,7 @@ p_X(g^{-1}(y))
 \right\rvert
 $$
 
-시험 제외로 표시되어 있어도 Gaussian의 선형변환은 이해해두는 편이 좋다.
+변수변환 자체는 기말 범위에서 제외될 수 있지만, Gaussian의 선형변환 공식은 중요도가 높으므로 외워두는 편이 안전하다.
 
 $$
 X\sim\mathcal{N}(\mu,\Sigma),
@@ -709,7 +741,78 @@ $$
 
 시험에서는 mini-batch가 단순히 "데이터를 작게 나눔"이 아니라, 전체 gradient를 일부 sample 평균으로 근사하는 방법이라는 점을 써야 한다.
 
-### 2.4 Convex function
+Batch size에 따른 직관도 기억해야 한다.
+
+| mini-batch 크기 | 해석 |
+|---|---|
+| 큼 | 전체 데이터를 더 잘 대표하므로 gradient가 안정적이다. 대신 update 하나가 비싸다. |
+| 작음 | 계산은 빠르지만 gradient noise가 커진다. 항상 나쁜 것은 아니며, 적당한 noise는 탐색에 도움이 될 수 있다. |
+
+### 2.4 Momentum Gradient Descent
+
+Momentum gradient descent는 현재 gradient뿐 아니라 이전 update 방향을 함께 사용한다. 기본 gradient descent가 매 순간의 경사만 보고 움직인다면, momentum은 이전에 움직이던 방향에 관성을 더한다.
+
+$$
+\Delta\theta_t
+=
+-\eta\nabla_\theta L(\theta_t)
++\alpha\Delta\theta_{t-1}
+$$
+
+$$
+\theta_{t+1}
+=
+\theta_t+\Delta\theta_t
+$$
+
+여기서 \\(\alpha\\)는 momentum coefficient다.
+
+Momentum의 핵심 효과는 다음과 같다.
+
+| 상황 | Momentum 효과 |
+|---|---|
+| 같은 방향 gradient가 반복됨 | update가 누적되어 더 빠르게 이동 |
+| 좌우로 진동하는 방향 | 반대 방향 update가 일부 상쇄 |
+| 길고 좁은 valley | zigzag를 줄이고 valley 방향 이동을 강화 |
+
+시험에서 자세한 유도까지 요구하지 않더라도, momentum이 "이전 update를 반영해 zigzag를 줄이고 수렴을 빠르게 하는 방법"이라는 점은 알아두어야 한다.
+
+### 2.5 Newton-Raphson Method
+
+Newton method 또는 Newton-Raphson method는 gradient뿐 아니라 Hessian, 즉 2차 미분 정보를 사용한다. 현재 위치 \\(\theta_t\\) 근처에서 목적함수를 2차 Taylor approximation으로 근사한 뒤, 그 근사의 최소점을 다음 위치로 선택한다.
+
+Gradient와 Hessian을 다음처럼 두자.
+
+$$
+g_t=\nabla f(\theta_t),
+\qquad
+H_t=\nabla^2 f(\theta_t)
+$$
+
+Newton update는 다음과 같다.
+
+$$
+\theta_{t+1}
+=
+\theta_t-H_t^{-1}g_t
+$$
+
+Step size 또는 damping을 넣으면 다음처럼 쓸 수 있다.
+
+$$
+\theta_{t+1}
+=
+\theta_t-\eta H_t^{-1}g_t
+$$
+
+Gradient descent는 기울기 방향만 보고 움직인다. Newton method는 Hessian으로 곡률까지 반영하므로 적절한 조건에서는 빠르게 수렴할 수 있다. 대신 Hessian 계산과 inverse가 비싸고, Hessian이 invertible하지 않거나 positive definite가 아니면 update가 불안정할 수 있다.
+
+| 방법 | 사용하는 정보 | 장점 | 단점 |
+|---|---|---|---|
+| Gradient Descent | 1차 미분 | 단순하고 큰 모델에 적용 가능 | 수렴이 느릴 수 있음 |
+| Newton Method | 1차 미분과 2차 미분 | 곡률을 반영해 빠르게 이동 가능 | Hessian 계산과 inverse가 비쌈 |
+
+### 2.6 Convex function
 
 함수 \\(f\\)가 convex라는 것은 두 점을 잇는 직선 위의 함수값이 양 끝 함수값을 선형 보간한 값보다 크지 않다는 뜻이다.
 
@@ -743,11 +846,95 @@ $$
 
 에서 \\(A\\)가 positive semidefinite이면 convex다.
 
+Convex를 증명해야 한다면 정의를 그대로 사용한다.
+
+1. 임의의 두 점 \\(x,y\\)와 \\(0\le\lambda\le 1\\)를 둔다.
+2. \\(f(\lambda x+(1-\lambda)y)\\)를 전개한다.
+3. 이것이 \\(\lambda f(x)+(1-\lambda)f(y)\\)보다 작거나 같음을 보인다.
+
+Convex가 아님을 보이면 한 쌍의 반례만 찾으면 된다. 즉, 어떤 \\(x,y,\lambda\\)에 대해
+
+$$
+f(\lambda x+(1-\lambda)y)
+>
+\lambda f(x)+(1-\lambda)f(y)
+$$
+
+가 성립하면 convex가 아니다. 시험에서 "성립하지 않는 예시를 보이라"는 형태로 나오면 이 반례 전략을 쓰면 된다.
+
 ## 3. Model and Data: 1문제 범위
 
-이 범위는 "모델과 데이터가 만났을 때 parameter를 어떻게 추정하는가"를 묻는다. 핵심은 MLE, MAP, DGM을 하나의 흐름으로 연결하는 것이다.
+이 범위는 "모델과 데이터가 만났을 때 parameter를 어떻게 추정하는가"를 묻는다. 핵심은 결정론적 모델과 확률 모델의 차이, ERM, MLE, MAP, cross validation, regularization, DGM을 하나의 흐름으로 연결하는 것이다.
 
-### 3.1 변수 추정
+### 3.1 결정론적 함수와 확률분포로서의 모델
+
+결정론적 함수로서의 모델은 입력 \\(x\\)가 주어지면 하나의 예측값을 출력한다.
+
+$$
+\hat{y}=f_\theta(x)
+$$
+
+예를 들어 선형 모델은 다음처럼 쓸 수 있다.
+
+$$
+f_\theta(x)=\theta^Tx+\theta_0
+$$
+
+반면 확률분포로서의 모델은 하나의 값만 예측하지 않고, 출력이 어떤 분포를 따르는지 표현한다.
+
+$$
+p(y\mid x,\theta)
+$$
+
+회귀 문제에서 observation noise를 고려하면 다음처럼 쓸 수 있다.
+
+$$
+y=f_\theta(x)+\epsilon,
+\qquad
+\epsilon\sim\mathcal{N}(0,\sigma^2)
+$$
+
+그러면
+
+$$
+p(y\mid x,\theta)
+=
+\mathcal{N}(y\mid f_\theta(x),\sigma^2)
+$$
+
+이다.
+
+| 관점 | 출력 | 장점 |
+|---|---|---|
+| 결정론적 모델 | 하나의 예측값 \\(\hat{y}\\) | 단순하고 loss 기반 학습과 연결이 쉽다. |
+| 확률 모델 | 예측 분포 \\(p(y\mid x,\theta)\\) | noise와 불확실성을 표현하고 likelihood, posterior와 연결된다. |
+
+### 3.2 ERM
+
+Empirical Risk Minimization(ERM)은 training data에 대한 평균 loss를 최소화하는 방식이다.
+
+$$
+R_{\mathrm{emp}}(\theta)
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\ell(f_\theta(x_i),y_i)
+$$
+
+ERM은 다음 parameter를 찾는다.
+
+$$
+\theta^*
+=
+\arg\min_{\theta}
+\frac{1}{N}
+\sum_{i=1}^{N}
+\ell(f_\theta(x_i),y_i)
+$$
+
+ERM은 결정론적 모델의 학습 원리로 이해할 수 있지만, 확률 모델과도 연결된다. 예를 들어 Gaussian observation noise를 가정하면 MLE의 negative log-likelihood가 squared error loss가 되므로, 선형회귀의 최소제곱은 ERM이면서 MLE다.
+
+### 3.3 변수 추정
 
 확률적 모델에서는 데이터가 어떤 분포에서 생성되었다고 가정하고, 그 분포의 parameter \\(\theta\\)를 추정한다.
 
@@ -804,7 +991,7 @@ $$
 \log p(y_n\mid x_n,\theta)
 $$
 
-### 3.2 MAP
+### 3.4 MAP
 
 MAP는 likelihood에 prior를 추가한다.
 
@@ -880,7 +1067,58 @@ $$
 +\mathrm{const}
 $$
 
-### 3.3 Directed Graphical Models
+### 3.5 Regularization
+
+Regularization은 training data에 너무 과하게 맞는 parameter를 피하기 위해 objective에 penalty를 더하는 방법이다.
+
+$$
+\arg\min_{\theta}
+\frac{1}{N}
+\sum_{i=1}^{N}
+\ell(f_\theta(x_i),y_i)
++
+\lambda\Omega(\theta)
+$$
+
+대표적으로 L2 regularization은 다음과 같다.
+
+$$
+\Omega(\theta)=\lVert\theta\rVert_2^2
+$$
+
+L1 regularization은 다음과 같다.
+
+$$
+\Omega(\theta)=\lVert\theta\rVert_1
+$$
+
+공통점은 둘 다 복잡하거나 큰 parameter를 억제해 overfitting을 줄이려는 목적을 가진다는 것이다. 차이점은 L2는 parameter를 부드럽게 작게 만들고, L1은 일부 parameter를 정확히 0으로 만들어 sparse solution을 유도할 수 있다는 점이다.
+
+MAP와 regularization의 연결도 중요하다. MAP의 negative log objective에서 \\(-\log p(\theta)\\)가 penalty 역할을 한다. Gaussian prior는 L2 penalty와 연결되고, Laplace prior는 L1 penalty와 연결된다.
+
+### 3.6 Cross Validation과 validation loss 해석
+
+Cross validation은 모델 선택 또는 hyperparameter 선택을 더 안정적으로 하기 위해 training data를 여러 fold로 나누어 반복 검증하는 방법이다.
+
+K-fold cross validation의 기본 절차는 다음과 같다.
+
+1. 데이터를 \\(K\\)개의 fold로 나눈다.
+2. \\(K-1\\)개 fold로 학습하고 남은 1개 fold로 validation loss를 계산한다.
+3. validation fold를 바꾸어 \\(K\\)번 반복한다.
+4. \\(K\\)개의 validation score 평균으로 모델을 비교한다.
+
+Training loss와 validation loss의 조합은 다음처럼 해석한다.
+
+| training loss | validation loss | 해석 | 대응 |
+|---|---|---|---|
+| 낮음 | 낮음 | 학습과 일반화가 모두 비교적 잘 됨 | 좋은 후보 |
+| 낮음 | 높음 | training data에 과적합 | regularization, 모델 단순화, 데이터 보강 |
+| 높음 | 높음 | 모델이 패턴을 충분히 못 잡음 | 모델 복잡도 증가, feature 개선, 학습 개선 |
+| 높음 | 낮음 | 일반적이지 않은 상황 | 데이터 분리나 metric을 다시 확인 |
+
+모델 선택에서 가장 중요한 것은 test data를 보고 모델을 고르지 않는 것이다. Validation data는 모델 선택용이고, test data는 최종 평가용이다.
+
+### 3.7 Directed Graphical Models
 
 Directed Graphical Model(DGM)은 확률변수 사이의 조건부 의존 관계를 방향 그래프로 표현한 모델이다.
 
@@ -1097,6 +1335,48 @@ $$
 
 이 식은 ridge regression과 같은 형태다. Prior variance \\(b^2\\)가 작으면 parameter가 0 근처에 있어야 한다는 믿음이 강해져 regularization이 강해진다. Observation noise variance \\(\sigma^2\\)가 크면 데이터 자체를 덜 신뢰하게 되어 prior의 영향이 상대적으로 커진다.
 
+### 4.4 최적해로 예측하기
+
+MLE 또는 MAP로 parameter \\(\hat{\theta}\\)를 구했다면 새 입력 \\(x_*\\)에 대한 점 예측은 다음과 같다.
+
+$$
+\hat{y}_*
+=
+x_*^T\hat{\theta}
+$$
+
+Basis function을 쓰는 경우에는 다음과 같다.
+
+$$
+\hat{y}_*
+=
+\phi(x_*)^T\hat{\theta}
+$$
+
+확률 모델로 보면 예측값 하나만 내는 것이 아니라 예측 분포를 쓸 수 있다.
+
+$$
+p(y_*\mid x_*,\hat{\theta})
+=
+\mathcal{N}(y_*\mid x_*^T\hat{\theta},\sigma^2)
+$$
+
+Basis function을 쓰면 다음과 같다.
+
+$$
+p(y_*\mid x_*,\hat{\theta})
+=
+\mathcal{N}(y_*\mid \phi(x_*)^T\hat{\theta},\sigma^2)
+$$
+
+따라서 선형회귀 문제는 다음 순서로 답안을 구성하면 안정적이다.
+
+1. 모델식 \\(y=x^T\theta+\epsilon\\) 또는 \\(y=\phi(x)^T\theta+\epsilon\\)을 쓴다.
+2. Gaussian noise 가정으로 likelihood를 세운다.
+3. MLE는 NLL을 최소화해 normal equation과 closed-form solution을 얻는다.
+4. MAP는 Gaussian prior를 추가해 L2 penalty가 들어간 solution을 얻는다.
+5. 구한 \\(\hat{\theta}\\)로 새 입력의 점 예측 또는 예측 분포를 쓴다.
+
 ## 5. 출제 배분에 맞춘 7문제 모의 구성
 
 아래 7문제는 사용자가 정리한 출제 조건을 그대로 반영한 예상 구성이다.
@@ -1123,23 +1403,23 @@ $$
 </details>
 
 <details>
-<summary>4. Mini-batch SGD update 식을 쓰고 full-batch GD와 비교하라.</summary>
+<summary>4. Gradient descent update, step size, mini-batch, momentum을 설명하라.</summary>
 
-답변: Mini-batch \\(B\\)에 대해 \\(g_B(\theta_t)=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n(\theta_t)\\)를 계산하고 \\(\theta_{t+1}=\theta_t-\eta g_B(\theta_t)\\)로 update한다. Full-batch는 전체 데이터를 모두 써서 안정적이지만 비싸고, mini-batch는 일부 데이터로 gradient를 근사해 더 빠르지만 noise가 있다.
-
-</details>
-
-<details>
-<summary>5. Convex function의 정의와 convex optimization에서 local minimum의 의미를 설명하라.</summary>
-
-답변: Convex function은 \\(f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\\), \\(0\le\lambda\le 1\\)을 만족하는 함수다. Convex function에서는 local minimum이 global minimum이다. 따라서 미분 가능한 convex function에서 gradient가 0인 점을 찾으면 global optimum으로 해석할 수 있다.
+답변: 기본 gradient descent는 \\(\theta_{t+1}=\theta_t-\eta\nabla_\theta L(\theta_t)\\)이다. Step size \\(\eta\\)가 너무 작으면 느리고, 너무 크면 overshooting이나 발산이 생긴다. Mini-batch는 \\(g_B(\theta_t)=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n(\theta_t)\\)로 일부 데이터의 평균 gradient를 계산해 update한다. Batch가 크면 안정적이고, 작으면 noisy하지만 빠르다. Momentum은 이전 update \\(\Delta\theta_{t-1}\\)를 현재 update에 반영해 zigzag를 줄인다.
 
 </details>
 
 <details>
-<summary>6. MLE와 MAP의 차이를 parameter estimation 관점에서 설명하라.</summary>
+<summary>5. Newton method와 convex function의 정의, 증명 또는 반례 방법을 설명하라.</summary>
 
-답변: MLE는 \\(\theta_{\mathrm{MLE}}=\arg\max_\theta p(\mathcal{D}\mid\theta)\\)로 likelihood만 최대화한다. MAP는 \\(\theta_{\mathrm{MAP}}=\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\\)로 likelihood와 prior를 함께 본다. Negative log를 취하면 MAP objective는 \\(\text{NLL}-\log p(\theta)\\)가 되고, \\(-\log p(\theta)\\)는 regularization penalty처럼 작동한다.
+답변: Newton method는 \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\)처럼 gradient와 Hessian을 함께 사용한다. 곡률을 반영하므로 빠르게 수렴할 수 있지만 Hessian 계산과 inverse가 비싸다. Convex function은 \\(f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\\), \\(0\le\lambda\le 1\\)을 만족하는 함수다. Convex를 증명하려면 정의를 전개해 부등식을 보이고, convex가 아님을 보이려면 이 부등식을 깨는 \\(x,y,\lambda\\) 반례 하나를 제시하면 된다.
+
+</details>
+
+<details>
+<summary>6. Model and Data에서 ERM, MLE, MAP, CV, regularization, DGM을 연결해 설명하라.</summary>
+
+답변: 결정론적 모델은 \\(\hat{y}=f_\theta(x)\\)처럼 하나의 예측값을 내고, 확률 모델은 \\(p(y\mid x,\theta)\\)처럼 예측 분포를 낸다. ERM은 training 평균 loss를 최소화한다. MLE는 \\(\theta_{\mathrm{MLE}}=\arg\max_\theta p(\mathcal{D}\mid\theta)\\)로 likelihood를 최대화하고, MAP는 \\(\theta_{\mathrm{MAP}}=\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\\)로 prior까지 반영한다. Negative log를 취하면 prior 항이 regularization penalty처럼 작동한다. Cross validation은 validation loss로 모델을 고르는 절차이며, DGM은 joint distribution을 조건부 분포의 곱으로 factorization한다.
 
 </details>
 
@@ -1163,21 +1443,27 @@ $$
 | Gaussian transform | \\(AX+b\sim\mathcal{N}(A\mu+b,A\Sigma A^T)\\) | Gaussian은 선형변환 후에도 Gaussian |
 | SGD | \\(\theta_{t+1}=\theta_t-\eta\nabla_\theta L_i(\theta_t)\\) | 일부 sample로 빠르게 update |
 | Mini-batch | \\(g_B=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n\\) | 전체 gradient를 subset 평균으로 근사 |
+| Momentum | \\(\Delta\theta_t=-\eta\nabla L(\theta_t)+\alpha\Delta\theta_{t-1}\\) | 이전 update를 반영해 zigzag 완화 |
+| Newton | \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\) | Hessian으로 곡률까지 반영 |
 | Convex | \\(f(\lambda x+(1-\lambda)y)\le\lambda f(x)+(1-\lambda)f(y)\\) | local minimum이 global minimum |
+| ERM | \\(\arg\min_\theta \frac{1}{N}\sum_i \ell(f_\theta(x_i),y_i)\\) | training 평균 loss 최소화 |
 | MLE | \\(\arg\max_\theta p(\mathcal{D}\mid\theta)\\) | 데이터를 가장 그럴듯하게 하는 parameter |
 | MAP | \\(\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\\) | likelihood에 prior를 추가 |
+| Cross validation | validation loss 평균 비교 | 모델 선택을 더 안정적으로 수행 |
+| Regularization | loss \\(+\lambda\Omega(\theta)\\) | 큰 parameter나 복잡한 해를 억제 |
 | Linear MLE | \\((X^TX)^{-1}X^Ty\\) | Gaussian noise에서 최소제곱 해 |
 | Linear MAP | \\((\Phi^T\Phi+\frac{\sigma^2}{b^2}I)^{-1}\Phi^Ty\\) | Gaussian prior가 L2 penalty를 만든 해 |
+| Linear prediction | \\(\hat{y}_*=x_*^T\hat{\theta}\\) | 구한 parameter로 새 입력 예측 |
 
 ## Study Guide
 
 1. 먼저 확률과 분포 파트를 계산 중심으로 공부한다. Joint PMF table 하나를 놓고 marginal, conditional, independence, Bayes를 모두 계산할 수 있으면 3문제 중 상당 부분을 커버할 수 있다.
 2. Bayes 정리는 이름을 외우는 것보다 posterior, likelihood, prior, evidence의 역할을 말로 설명하는 연습이 중요하다. 특히 MAP에서 log를 취하면 prior가 penalty로 추가되는 흐름을 연결한다.
 3. Gaussian은 PDF 공식보다 성질이 중요하다. 주변분포와 조건부분포가 다시 Gaussian이라는 점, 확률변수의 합과 mixture가 다르다는 점, 선형변환에서 평균과 공분산이 어떻게 바뀌는지 정리한다.
-4. 최적화는 update 식을 직접 쓸 수 있어야 한다. Full-batch, SGD, mini-batch의 차이는 "얼마나 많은 데이터로 gradient를 계산하는가"와 "noise와 비용의 trade-off"로 정리한다.
-5. Convex function은 정의식과 local minimum/global minimum 관계를 함께 암기한다. 시험 답안에서는 그림 설명보다 부등식 정의를 먼저 쓰는 편이 안전하다.
-6. Model and Data는 MLE와 MAP의 차이를 한 줄로 압축할 수 있어야 한다. MLE는 likelihood, MAP는 likelihood plus prior다.
-7. 선형회귀는 Gaussian noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나오는 두 문장을 중심으로 유도식을 붙인다.
+4. 최적화는 update 식을 직접 쓸 수 있어야 한다. Full-batch, SGD, mini-batch의 차이는 "얼마나 많은 데이터로 gradient를 계산하는가"와 "noise와 비용의 trade-off"로 정리한다. Momentum은 이전 update 반영, Newton은 Hessian 반영으로 구분한다.
+5. Convex function은 정의식과 local minimum/global minimum 관계를 함께 암기한다. 증명 문제는 정의를 전개하고, 반례 문제는 정의 부등식을 깨는 점 두 개와 \\(\lambda\\)를 제시한다.
+6. Model and Data는 결정론적 모델과 확률 모델, ERM과 MLE의 연결, validation loss 해석, regularization과 MAP의 연결을 한 흐름으로 정리한다.
+7. 선형회귀는 Gaussian noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나오는 두 문장을 중심으로 유도식을 붙인다. 마지막에는 구한 \\(\hat{\theta}\\)로 \\(\hat{y}_*=x_*^T\hat{\theta}\\)를 예측한다.
 
 헷갈리기 쉬운 부분은 다음처럼 구분한다.
 
@@ -1249,14 +1535,35 @@ $$
 </details>
 
 <details>
-<summary>9. MAP에서 log를 취하면 prior가 왜 추가 항처럼 보이는가?</summary>
+<summary>9. Newton method는 gradient descent와 무엇이 다른가?</summary>
+
+답변: Gradient descent는 \\(\theta_{t+1}=\theta_t-\eta\nabla f(\theta_t)\\)처럼 1차 미분만 사용한다. Newton method는 \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\)처럼 gradient \\(g_t\\)와 Hessian \\(H_t\\)를 함께 사용한다. 곡률 정보를 반영하므로 빠를 수 있지만 Hessian 계산과 inverse 비용이 크다.
+
+</details>
+
+<details>
+<summary>10. Training loss와 validation loss 조합은 어떻게 해석하는가?</summary>
+
+답변: training loss와 validation loss가 모두 낮으면 좋은 후보로 볼 수 있다. Training loss는 낮지만 validation loss가 높으면 overfitting 가능성이 크다. 둘 다 높으면 underfitting 또는 학습 부족일 수 있다. Training loss가 높은데 validation loss가 낮다면 데이터 분리, metric, 구현을 다시 확인해야 한다.
+
+</details>
+
+<details>
+<summary>11. DGM은 무엇을 표현하고 왜 쓰는가?</summary>
+
+답변: Directed Graphical Model은 node로 확률변수를, arrow로 조건부 의존 관계를 표현한다. DGM을 쓰면 복잡한 joint distribution을 작은 conditional distribution들의 곱으로 factorization할 수 있다. 예를 들어 \\(p(x_1,x_2,x_3)=p(x_1)p(x_2\mid x_1)p(x_3\mid x_2)\\)처럼 구조를 드러낼 수 있다.
+
+</details>
+
+<details>
+<summary>12. MAP에서 log를 취하면 prior가 왜 추가 항처럼 보이는가?</summary>
 
 답변: MAP는 \\(p(\mathcal{D}\mid\theta)p(\theta)\\)를 최대화한다. Log를 취하면 곱이 \\(\log p(\mathcal{D}\mid\theta)+\log p(\theta)\\)라는 합으로 바뀐다. Negative log minimization으로 바꾸면 \\(-\log p(\mathcal{D}\mid\theta)-\log p(\theta)\\)가 되어, \\(-\log p(\theta)\\)가 regularization penalty처럼 추가된다.
 
 </details>
 
 <details>
-<summary>10. 선형회귀 MLE에서 squared error가 나오는 이유는 무엇인가?</summary>
+<summary>13. 선형회귀 MLE에서 squared error가 나오는 이유는 무엇인가?</summary>
 
 답변: 관측 noise를 \\(\epsilon\sim\mathcal{N}(0,\sigma^2)\\)로 가정하면 \\(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\\)이다. Gaussian density의 negative log를 취하면 \\((y_n-x_n^T\theta)^2/(2\sigma^2)\\) 항이 나오므로, 전체 NLL 최소화는 squared error 합 최소화와 같은 문제가 된다.
 
