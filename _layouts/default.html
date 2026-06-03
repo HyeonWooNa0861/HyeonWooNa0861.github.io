@@ -206,6 +206,69 @@
         height: 0;
       }
 
+      .scroll-progress {
+        --scroll-progress: 0;
+        --scroll-thumb-height: 56px;
+        --scroll-thumb-y: 0px;
+        position: fixed;
+        top: max(88px, calc(env(safe-area-inset-top) + 76px));
+        right: max(11px, env(safe-area-inset-right));
+        bottom: max(26px, env(safe-area-inset-bottom));
+        z-index: 90;
+        width: 14px;
+        pointer-events: none;
+        opacity: 0.82;
+        transform: translateX(var(--scroll-rail-x, 0px)) rotate(var(--scroll-rail-rotate, -0.6deg));
+        transform-origin: center;
+        transition: opacity var(--component-moment) ease;
+      }
+
+      .loading-active .scroll-progress,
+      .scroll-progress.is-static {
+        opacity: 0;
+      }
+
+      .scroll-progress::before,
+      .scroll-progress::after,
+      .scroll-progress-thumb {
+        position: absolute;
+        left: 50%;
+        pointer-events: none;
+        content: "";
+        transform: translateX(-50%);
+      }
+
+      .scroll-progress::before {
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background:
+          linear-gradient(180deg, transparent 0, var(--line-strong) 9%, transparent 19%, var(--line-strong) 28%, var(--line-strong) 44%, transparent 52%, var(--line-strong) 63%, var(--line-strong) 86%, transparent 100%);
+        opacity: 0.46;
+      }
+
+      .scroll-progress::after {
+        top: var(--scroll-node-y, 0px);
+        width: 9px;
+        height: 9px;
+        border: 1px solid var(--accent);
+        background: var(--bg);
+        clip-path: polygon(0 22%, 72% 0, 100% 74%, 24% 100%);
+        opacity: 0.86;
+        transform: translate(-50%, -50%) rotate(var(--scroll-node-rotate, 16deg));
+      }
+
+      .scroll-progress-thumb {
+        top: 0;
+        width: 3px;
+        height: var(--scroll-thumb-height);
+        background:
+          linear-gradient(180deg, transparent 0, var(--accent) 12%, var(--accent) 88%, transparent 100%);
+        clip-path: polygon(0 var(--scroll-cut-a, 5px), 100% 0, 100% calc(100% - var(--scroll-cut-b, 8px)), 0 100%);
+        opacity: 0.9;
+        transform: translate(-50%, var(--scroll-thumb-y)) skewY(var(--scroll-thumb-skew, -8deg));
+      }
+
       body::before {
         position: fixed;
         inset: var(--fracture-top, 76px) 0 auto auto;
@@ -3718,6 +3781,9 @@
       </div>
       <span class="loading-status">Loading</span>
     </div>
+    <div class="scroll-progress is-static" data-scroll-progress aria-hidden="true">
+      <span class="scroll-progress-thumb"></span>
+    </div>
     {% assign show_sidebar = true %}
     {% if page.url == "/" %}
       {% assign show_sidebar = false %}
@@ -4081,6 +4147,12 @@
           root.style.setProperty("--main-line-top", randomRange(96, 162, "px"));
           root.style.setProperty("--main-line-width", randomRange(150, 270, "px"));
           root.style.setProperty("--content-fracture-rotate", randomRange(-10, -3, "deg"));
+          root.style.setProperty("--scroll-rail-x", randomRange(-3, 2, "px"));
+          root.style.setProperty("--scroll-rail-rotate", randomRange(-1.8, 1.2, "deg"));
+          root.style.setProperty("--scroll-node-rotate", randomRange(-22, 28, "deg"));
+          root.style.setProperty("--scroll-thumb-skew", randomRange(-12, 10, "deg"));
+          root.style.setProperty("--scroll-cut-a", randomRange(3, 9, "px"));
+          root.style.setProperty("--scroll-cut-b", randomRange(4, 12, "px"));
           root.style.setProperty("--side-index-offset", randomRange(10, 24, "px"));
           root.style.setProperty("--map-fracture-a", randomRange(-17, -8, "deg"));
           root.style.setProperty("--map-fracture-b", randomRange(5, 15, "deg"));
@@ -5137,6 +5209,61 @@
         }
 
         setupOrbitMapPan();
+
+        var scrollProgress = document.querySelector("[data-scroll-progress]");
+        var scrollProgressFrame = null;
+
+        function syncScrollProgress() {
+          if (!scrollProgress) return;
+
+          var doc = document.documentElement;
+          var body = document.body;
+          var viewportHeight = window.innerHeight || doc.clientHeight || 1;
+          var scrollHeight = Math.max(doc.scrollHeight, body ? body.scrollHeight : 0, viewportHeight);
+          var maxScroll = Math.max(0, scrollHeight - viewportHeight);
+
+          if (maxScroll <= 4) {
+            scrollProgress.classList.add("is-static");
+            scrollProgress.style.setProperty("--scroll-progress", "0");
+            scrollProgress.style.setProperty("--scroll-node-y", "0px");
+            scrollProgress.style.setProperty("--scroll-thumb-y", "0px");
+            scrollProgress.style.setProperty("--scroll-thumb-height", "56px");
+            return;
+          }
+
+          var railHeight = scrollProgress.getBoundingClientRect().height || viewportHeight;
+          var scrollTop = window.scrollY || doc.scrollTop || (body ? body.scrollTop : 0) || 0;
+          var progress = Math.min(1, Math.max(0, scrollTop / maxScroll));
+          var thumbHeight = Math.max(44, Math.min(railHeight, (viewportHeight / scrollHeight) * railHeight));
+          var thumbY = (railHeight - thumbHeight) * progress;
+          var nodeY = railHeight * progress;
+
+          scrollProgress.classList.remove("is-static");
+          scrollProgress.style.setProperty("--scroll-progress", progress.toFixed(4));
+          scrollProgress.style.setProperty("--scroll-node-y", nodeY.toFixed(2) + "px");
+          scrollProgress.style.setProperty("--scroll-thumb-height", thumbHeight.toFixed(2) + "px");
+          scrollProgress.style.setProperty("--scroll-thumb-y", thumbY.toFixed(2) + "px");
+        }
+
+        function requestScrollProgressSync() {
+          if (scrollProgressFrame) return;
+          scrollProgressFrame = window.requestAnimationFrame(function () {
+            scrollProgressFrame = null;
+            syncScrollProgress();
+          });
+        }
+
+        syncScrollProgress();
+        window.addEventListener("scroll", requestScrollProgressSync, { passive: true });
+        window.addEventListener("resize", requestScrollProgressSync);
+        window.addEventListener("orientationchange", function () {
+          requestScrollProgressSync();
+          window.setTimeout(requestScrollProgressSync, 160);
+        });
+        window.addEventListener("load", requestScrollProgressSync);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener("resize", requestScrollProgressSync);
+        }
 
         var homeCards = document.querySelectorAll(".home-directory .post-card");
         if (homeCards.length) {
