@@ -170,7 +170,7 @@ Study 구조 규칙:
 
 과제 자료가 시험 대비, 기출문제, 기말과제 풀이, 예상문제 풀이처럼 평가 대비 성격을 가지면 Study 자료처럼 공부에 초점을 맞춘 구조를 허용한다. 이 경우에도 collection은 `_assignment/`를 사용하고, `_study/`로 분류하지 않는다.
 
-이 예외에 해당하는 글은 `_assignment/<course>/final-assignment.md`처럼 문제풀이형 학습 자료로 구성할 수 있다.
+이 예외에 해당하는 글은 `_assignment/<course>/assignment.md`처럼 문제풀이형 학습 자료로 구성할 수 있다.
 
 허용:
 
