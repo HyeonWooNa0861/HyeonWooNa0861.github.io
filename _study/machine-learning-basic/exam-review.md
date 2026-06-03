@@ -1502,12 +1502,6 @@ $$
 
 </details>
 
-## 6. 기출문제 추가 자료
-
-기말과제 기반 기출문제 풀이와 변형 문제는 별도 Study 글로 분리했다. 계산형 문제를 연습할 때는 [Machine Learning Basic Past Exam Problems]({{ "/study/machine-learning-basic/exam-review-2/" | relative_url }})를 함께 확인한다.
-
-해당 글에서는 Bayes 정리, 조건부 이항분포, gradient descent update, convex 판정, polynomial regression MLE와 예측분포를 원문 문제와 유사 기출 변형까지 포함해 정리했다.
-
 ## 마지막 핵심 정리
 
 | 범위 | 반드시 기억할 식 | 한 줄 해석 |
@@ -1545,8 +1539,6 @@ $$
 5. Convex function은 정의식과 local minimum/global minimum 관계를 함께 암기한다. 증명 문제는 정의를 전개하고, 반례 문제는 정의 부등식을 깨는 점 두 개와 \\(\lambda\\)를 제시한다.
 6. Model and Data는 결정론적 모델과 확률 모델, ERM과 MLE의 연결, validation loss 해석, regularization과 MAP의 연결을 한 흐름으로 정리한다.
 7. 선형회귀는 Gaussian noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나오는 두 문장을 중심으로 유도식을 붙인다. 마지막에는 구한 \\(\hat{\theta}\\)로 \\(\hat{y}_*=x_*^T\hat{\theta}\\)를 예측한다.
-8. 기출문제 기반 계산 연습은 [Machine Learning Basic Past Exam Problems]({{ "/study/machine-learning-basic/exam-review-2/" | relative_url }})에서 따로 풀어본다. 특히 Bayes 정리의 분모 계산, GD update의 부호, convex 반례, \\(\Phi\\) 행렬 구성은 실수하기 쉬운 지점이다.
-
 헷갈리기 쉬운 부분은 다음처럼 구분한다.
 
 | 헷갈리는 쌍 | 구분 |

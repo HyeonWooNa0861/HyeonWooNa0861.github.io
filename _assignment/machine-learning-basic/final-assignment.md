@@ -1,27 +1,26 @@
 ---
 layout: default
-title: "Machine Learning Basic Past Exam Problems"
+title: "Machine Learning Basic Final Assignment"
 course: "Machine Learning Basic"
-topic: "Past Exam Problems"
-order: 91
+topic: "Final Assignment"
 ---
 
-# Machine Learning Basic Past Exam Problems
+# Machine Learning Basic Final Assignment
 
 Source PDF: `machine-learning-basic-final-assignment.pdf`
 
-이 글은 `기말과제.pdf`를 기출문제형 시험 대비 자료로 다시 작성한 것이다. 단순 정답만 적지 않고, 각 문항이 어떤 개념을 묻는지, 풀이를 어떻게 시작해야 하는지, 어떤 변형 문제가 나올 수 있는지까지 함께 정리한다.
+이 글은 `기말과제.pdf`를 평가 대비형 과제 자료로 다시 작성한 것이다. 단순 정답만 적지 않고, 각 문항이 어떤 개념을 묻는지, 풀이를 어떻게 시작해야 하는지, 어떤 변형 문제가 나올 수 있는지까지 함께 정리한다.
 
 ## 전체 흐름
 
-| 문항 | 핵심 주제 | 시험에서 묻는 능력 |
+| 문항 | 핵심 주제 | 평가 대비 학습 목표 |
 |---:|---|---|
 | 1 | Bayes 정리, 조건부 확률, 이항분포 | 검사 결과를 본 뒤 posterior를 계산하고, 조건부 확률을 이항분포 문제로 확장 |
 | 2 | Gradient descent | Gradient를 구하고 step size를 적용해 parameter를 한 번 update |
 | 3 | Convex function | 정의로 convex를 증명하거나 반례로 non-convex를 판단 |
 | 4 | Polynomial regression, MLE, predictive distribution | Feature matrix를 만들고 MLE 해와 예측분포를 계산 |
 
-이 기출형 자료의 핵심은 다음 네 가지다.
+이 과제형 자료의 핵심은 다음 네 가지다.
 
 1. 확률 문제는 Bayes 정리의 분모, 즉 evidence를 정확히 계산해야 한다.
 2. 최적화 문제는 gradient 부호와 row/column convention을 헷갈리지 않아야 한다.
@@ -183,7 +182,7 @@ $$
 
 </details>
 
-### 관련 기출 변형
+### 관련 변형 문제
 
 <details>
 <summary>변형 1. 음성 판정을 받은 부품이 실제 불량일 확률 \\(P(D\mid T=-)\\)를 구하라.</summary>
@@ -403,7 +402,7 @@ $$
 
 </details>
 
-### 관련 기출 변형
+### 관련 변형 문제
 
 <details>
 <summary>변형 1. 이 함수의 stationary point와 global minimum 여부를 판단하라.</summary>
@@ -639,7 +638,7 @@ Convex라면 \\(1\le 0\\)이어야 하는데 이는 거짓이다.
 
 </details>
 
-### 관련 기출 변형
+### 관련 변형 문제
 
 <details>
 <summary>변형 1. \\(g(x)=\sin x\\)는 구간 \\([\pi,2\pi]\\)에서 convex인가?</summary>
@@ -860,7 +859,7 @@ $$
 
 </details>
 
-### 관련 기출 변형
+### 관련 변형 문제
 
 <details>
 <summary>변형 1. 같은 데이터에서 \\(x_*=3\\)의 점 예측은 무엇인가?</summary>
@@ -1034,5 +1033,5 @@ $$
 ## PDF
 
 <ul>
-  <li><a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-final-assignment.pdf" | relative_url }}" target="_blank" rel="noopener">machine-learning-basic-final-assignment.pdf</a></li>
+  <li><a href="{{ "/assets/pdfs/assignment/machine-learning-basic/machine-learning-basic-final-assignment.pdf" | relative_url }}" target="_blank" rel="noopener">machine-learning-basic-final-assignment.pdf</a></li>
 </ul>

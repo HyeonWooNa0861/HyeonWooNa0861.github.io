@@ -72,6 +72,10 @@
       url: /assignment/cpp/
       description: C++ assignment summaries
       match: /assignment/cpp/
+    - title: Machine Learning Basic
+      url: /assignment/machine-learning-basic/
+      description: Machine Learning Basic assignments
+      match: /assignment/machine-learning-basic/
 
 - title: Study
   url: /study/

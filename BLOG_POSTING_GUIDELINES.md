@@ -152,7 +152,7 @@ Study 구조 규칙:
 필수 기준:
 
 - 과제 원문을 그대로 붙이지 않고, 핵심 개념과 분석 결과를 블로그용으로 재구성한다.
-- Study 자료처럼 `시험 포인트`나 `복습 질문`을 넣지 않는다.
+- Study 자료처럼 `시험 포인트`나 `복습 질문`을 넣지 않는다. 단, 아래의 `시험 대비형 Assignment 예외`에 해당하면 공부 중심 구조를 사용할 수 있다.
 - Research 자료처럼 논문 기여와 한계 중심으로 쓰지 않는다.
 - 과제의 주제, 개념 설명, 정리 결과, 원본 PDF 링크를 포함한다.
 - 코드나 실행 결과는 과제 이해에 필요한 범위에서만 넣는다.
@@ -166,11 +166,56 @@ Study 구조 규칙:
 - 결론 및 학습 성과
 - PDF 링크
 
+### 시험 대비형 Assignment 예외
+
+과제 자료가 시험 대비, 기출문제, 기말과제 풀이, 예상문제 풀이처럼 평가 대비 성격을 가지면 Study 자료처럼 공부에 초점을 맞춘 구조를 허용한다. 이 경우에도 collection은 `_assignment/`를 사용하고, `_study/`로 분류하지 않는다.
+
+이 예외에 해당하는 글은 `_assignment/<course>/final-assignment.md`처럼 문제풀이형 학습 자료로 구성할 수 있다.
+
+허용:
+
+- `출제 의도`
+- `원문 문제 재구성`
+- `풀이과정`
+- `정답`
+- `관련 변형 문제`
+- `실수 포인트`
+- `마지막 핵심 정리`
+- `Study Guide`
+- `복습 질문`
+
+필수 기준:
+
+- 과제 원문 문제를 그대로 붙이지 않고, 학습 흐름에 맞춰 재구성한다.
+- 풀이과정과 정답은 HTML `<details>` / `<summary>` toggle 형식으로 작성한다.
+- Toggle 내부 답변은 `풀이과정:` 또는 `답변:`으로 시작한다.
+- 관련 변형 문제를 추가할 수 있지만, 원문 과제와 어떤 개념으로 연결되는지 설명한다.
+- 제목과 본문에서는 `Past Exam`, `기출문제`로 단정하지 않는다. 실제 자료가 과제라면 `Assignment`, `Final Assignment`, `과제`로 정의한다.
+- PDF는 `assets/pdfs/assignment/<course>/` 아래에 둔다.
+
+권장 구성:
+
+- 제목과 Source PDF 파일명 표기
+- 과제 개요
+- 전체 흐름
+- 문항별 출제 의도 또는 학습 목표
+- 원문 문제 재구성
+- 풀이과정 및 정답 toggle
+- 관련 변형 문제 toggle
+- 실수 포인트
+- 마지막 핵심 정리
+- Study Guide
+- 복습 질문
+- PDF 링크
+
 현재 구조:
 
 - C++ 과제 Markdown: `_assignment/cpp/`
 - C++ 과제 PDF: `assets/pdfs/assignment/cpp/`
 - URL: `/assignment/cpp/<slug>/`
+- Machine Learning Basic 과제 Markdown: `_assignment/machine-learning-basic/`
+- Machine Learning Basic 과제 PDF: `assets/pdfs/assignment/machine-learning-basic/`
+- URL: `/assignment/machine-learning-basic/<slug>/`
 
 ## 5. Posts
 
