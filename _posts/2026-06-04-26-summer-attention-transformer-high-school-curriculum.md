@@ -8,9 +8,9 @@ permalink: /posts/26-summer-attention-transformer-high-school-curriculum/
 section: ai-education
 ---
 
-이 교육 과정은 「Attention Is All You Need」 논문을 고등학생 대상 수업으로 재구성한 4일 과정이다. 원 논문은 Transformer, self-attention, multi-head attention, positional encoding, machine translation 성능 등을 다루지만, 이 커리큘럼에서는 복잡한 수식보다 “AI가 문장 속 단어 관계를 어떻게 읽는가”를 중심으로 설명한다.
+본 교육 자료는 고등학생이 Attention과 Transformer의 핵심 개념을 단계적으로 이해할 수 있도록 설계한 4일 커리큘럼이다. 「Attention Is All You Need」 논문을 이론적 출발점으로 삼되, 복잡한 수식 전개보다 “AI가 문장 속 단어 관계를 어떻게 읽는가”를 직관적으로 설명하는 데 초점을 둔다.
 
-총 학습 시간은 4일 × 4시간, 총 16시간이다. 각 일자는 3-4시간 내외 조건을 만족하도록 4시간으로 구성했다.
+수업은 하루 4시간씩 총 16시간으로 구성되며, Transformer, self-attention, multi-head attention, positional encoding, machine translation 등의 주요 개념을 강의, 손활동, 시각화, 토론, 미니 프로젝트로 연결한다. 학습자는 이 과정을 통해 생성형 AI의 기반 구조를 단순 암기가 아니라 자신의 언어로 설명할 수 있도록 훈련한다.
 
 ## 1. 과정 개요
 
