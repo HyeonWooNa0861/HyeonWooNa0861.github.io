@@ -8,7 +8,7 @@ permalink: /posts/2026-kiit-summer-conference-qeco-adapt/
 section: kiit-summer-conference
 ---
 
-이 문서는 `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료를 함께 기준으로 정리한 conference 준비 자료이다. 연구의 핵심 주장, 주요 수치, 예상 질문에 대한 답변 방향을 한곳에서 확인할 수 있도록 구성했다.
+이 포스트는 2026 한국정보기술학회 하계 종합학술대회에서 발표한 QECO-ADAPT 연구를 정리한 해설 자료이다. `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료를 바탕으로, 연구의 문제의식, 방법론, 실험 결과, 발표 과정에서 중요하게 다뤄야 할 해석 포인트를 함께 정리한다.
 
 - QECO-ADAPT는 QECO를 대체하는 범용 알고리즘이 아니라, dense MEC에서 QECO의 초기 수렴 손실을 줄이는 보완형 변형이다.
 - 핵심 기여는 effective load 기반 adaptive energy weight와 offloading gating을 QECO reward/action 흐름에 결합한 것이다.
@@ -16,7 +16,7 @@ section: kiit-summer-conference
 
 ## 1. 핵심 메시지
 
-질문이 넓게 들어오면 아래 문장으로 시작하면 안전하다.
+발표의 핵심 메시지는 다음 문장으로 요약할 수 있다.
 
 > 본 연구는 원문 QECO의 edge당 사용자 밀도 10 MDs/EN을 기준점으로 삼아, 단일 edge에 사용자 부하가 집중될 때 QECO-ADAPT가 어떤 구간에서 유효한지 검토한 실험입니다. QECO-ADAPT는 기존 QECO의 D3QN/LSTM 구조와 action space를 유지하되, effective load를 이용해 energy cost와 offloading gating을 조정하여 dense 환경의 초기 warm-up 손실과 dropped-task 누적을 줄이는 보완형 알고리즘입니다.
 
@@ -39,7 +39,7 @@ section: kiit-summer-conference
 
 기존 QECO는 QoE, delay, energy를 함께 고려하는 D3QN/LSTM 기반 알고리즘이지만, 단일 edge에 사용자가 몰리는 dense stress 조건에서는 초기 학습 구간에서 QoE 손실과 dropped-task 누적이 커질 수 있다. QECO-ADAPT는 QECO의 구조를 바꾸기보다, effective load에 따라 energy cost와 offloading 선택을 더 조심스럽게 조정해 dense 환경의 warm-up 손실을 줄이기 위해 설계했다.
 
-짧게 답하면:
+요약:
 
 > QECO의 장점은 유지하되, 단일 edge dense 환경에서 초반 수렴 손실과 dropped-task 누적을 줄이기 위한 부하 적응형 보완입니다.
 
@@ -53,7 +53,7 @@ section: kiit-summer-conference
 
 ### Q4. 원문 QECO와 직접 비교했다고 말해도 되는가?
 
-주의해서 말해야 한다. 본 실험은 원문 QECO의 전체 multi-edge 환경을 그대로 재현한 것이 아니라, 원문에서 제시된 edge당 사용자 밀도를 기준으로 단일 edge dense stress 조건을 구성한 것이다. 따라서 "QECO 원문보다 우수하다"가 아니라 "원문 기준 edge당 밀도보다 부하가 증가하는 단일 edge 조건에서 QECO 대비 어떤 변화가 나타나는지 분석했다"라고 말하는 것이 정확하다.
+주의해서 해석해야 한다. 본 실험은 원문 QECO의 전체 multi-edge 환경을 그대로 재현한 것이 아니라, 원문에서 제시된 edge당 사용자 밀도를 기준으로 단일 edge dense stress 조건을 구성한 것이다. 따라서 "QECO 원문보다 우수하다"가 아니라 "원문 기준 edge당 밀도보다 부하가 증가하는 단일 edge 조건에서 QECO 대비 어떤 변화가 나타나는지 분석했다"라고 설명하는 것이 정확하다.
 
 ## 4. 방법론 및 수식 관련 질문
 
@@ -123,7 +123,7 @@ $$
 
 ### Q11. QECO-ADAPT는 policy-invariant reward shaping인가?
 
-아니다. 이 점은 분명히 말해야 한다. policy-invariant reward shaping은 reward를 바꾸더라도 최적 정책이 보존되는 형태를 의미한다. 그러나 QECO-ADAPT는 energy cost의 상대 가중치를 바꾸고, offloading action도 gating으로 local action으로 바꿀 수 있다. 따라서 기존 QECO의 최적 정책이 그대로 유지된다고 보장할 수 없다.
+아니다. 이 점은 분명히 구분해야 한다. policy-invariant reward shaping은 reward를 바꾸더라도 최적 정책이 보존되는 형태를 의미한다. 그러나 QECO-ADAPT는 energy cost의 상대 가중치를 바꾸고, offloading action도 gating으로 local action으로 바꿀 수 있다. 따라서 기존 QECO의 최적 정책이 그대로 유지된다고 보장할 수 없다.
 
 정확한 표현은 다음과 같다.
 
@@ -156,7 +156,7 @@ action space 자체는 기존 QECO와 같다. 다만 QECO-ADAPT는 DQN이 선택
 
 ### Q16. QECO-ADAPT가 DROO보다 항상 좋은가?
 
-항상 좋다고 말하면 안 된다. 8x smoothed time-series 기준으로 QoE, Delay, Dropped tasks에서는 episode 진행 후 QECO-ADAPT가 우세한 구간이 나타나지만, Energy만 보면 DROO가 더 낮은 구간이 있다. 따라서 QECO-ADAPT의 장점은 energy 단독 최적화가 아니라 QoE-Delay-Drop 균형과 수렴 안정성 관점에서 해석해야 한다.
+항상 우수하다고 해석해서는 안 된다. 8x smoothed time-series 기준으로 QoE, Delay, Dropped tasks에서는 episode 진행 후 QECO-ADAPT가 우세한 구간이 나타나지만, Energy만 보면 DROO가 더 낮은 구간이 있다. 따라서 QECO-ADAPT의 장점은 energy 단독 최적화가 아니라 QoE-Delay-Drop 균형과 수렴 안정성 관점에서 해석해야 한다.
 
 ### Q17. 왜 final 10%가 아니라 전체 400 episode 평균을 주 지표로 삼았는가?
 
@@ -208,7 +208,7 @@ QECO-ADAPT의 목적은 최종 안정 구간에서 QECO를 크게 압도하는 �
 
 ### Q27. 8x에서 QoE 개선이 89.51%로 큰데 과장 아닌가?
 
-비율이 큰 이유는 QECO의 8x 평균 QoE 기준값이 낮기 때문이다. 절대 변화량은 `+3.3372`이고, 이를 QECO 평균 대비 비율로 환산하면 `+89.51%`가 된다. 따라서 발표에서는 비율만 강조하기보다 절대 변화량과 함께 설명하는 것이 안전하다.
+비율이 큰 이유는 QECO의 8x 평균 QoE 기준값이 낮기 때문이다. 절대 변화량은 `+3.3372`이고, 이를 QECO 평균 대비 비율로 환산하면 `+89.51%`가 된다. 따라서 발표에서는 비율만 강조하기보다 절대 변화량과 함께 제시하는 편이 정확하다.
 
 ### Q28. QECO-ADAPT의 정책이 기존 QECO의 최적 정책과 다른가?
 
@@ -218,7 +218,7 @@ QECO-ADAPT의 목적은 최종 안정 구간에서 QECO를 크게 압도하는 �
 
 ### Q29. QECO-ADAPT와 유사한 QECO 기반 부하 적응형 알고리즘 논문이 존재하는가?
 
-QECO의 저널 발간 이후 문헌으로 범위를 좁혀 다시 보면, 현재 확인한 범위에서는 "QECO를 직접 기반으로 삼아 effective load, offloading gating, adaptive energy weight를 추가한 동일 구조의 QECO 기반 부하 적응형 알고리즘"은 명확히 확인되지 않았다. 따라서 발표에서는 다음처럼 답하는 것이 가장 안전하다.
+QECO의 저널 발간 이후 문헌으로 범위를 좁혀 다시 보면, 현재 확인한 범위에서는 "QECO를 직접 기반으로 삼아 effective load, offloading gating, adaptive energy weight를 추가한 동일 구조의 QECO 기반 부하 적응형 알고리즘"은 명확히 확인되지 않았다. 따라서 발표에서는 다음과 같은 위치 설정이 가장 적절하다.
 
 > QECO 발간 이후 논문 중에서도 본 연구처럼 QECO의 D3QN/LSTM 구조를 유지한 채 effective-load 기반 gating과 adaptive energy weight를 결합한 동일 구조의 QECO 기반 변형은 확인하지 못했습니다. 다만 2026년 이후 문헌에서 dynamic edge load, adaptive reward/weighting, workload-aware scheduling을 다루는 인접 연구는 확인되며, 본 연구는 그런 문제의식을 QECO 구조 위에 lightweight하게 결합했다는 점에서 차별화됩니다.
 
@@ -231,7 +231,7 @@ QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참�
 
 코멘트:
 
-> QECO 이후에도 dynamic load와 adaptive weighting을 다루는 연구는 존재한다. 그러나 확인된 발간 이후 문헌들은 QECO를 그대로 보완하는 구조가 아니라 별도 알고리즘 구조를 제안한다. 따라서 QECO-ADAPT는 "완전히 새로운 문제"라기보다 "QECO 구조를 유지하면서 부하 적응형 reward/cost reweighting과 gating을 결합한 lightweight variant"로 포지셔닝하는 것이 가장 안전하다.
+> QECO 이후에도 dynamic load와 adaptive weighting을 다루는 연구는 존재한다. 그러나 확인된 발간 이후 문헌들은 QECO를 그대로 보완하는 구조가 아니라 별도 알고리즘 구조를 제안한다. 따라서 QECO-ADAPT는 "완전히 새로운 문제"라기보다 "QECO 구조를 유지하면서 부하 적응형 reward/cost reweighting과 gating을 결합한 lightweight variant"로 포지셔닝하는 것이 적절하다.
 
 참고:
 
@@ -254,7 +254,7 @@ QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참�
 | edge backlog | time slot마다 변화 | 환경 상태이며 gating 조건과 DQN observation에 반영 |
 | DQN/LSTM 내부 weight | 학습 중 변화 | reward signal에 따라 Q-network가 업데이트됨 |
 
-짧게 답하면:
+요약:
 
 > 평균 부하 자체가 학습 중 계속 갱신되는 구조는 아닙니다. 현재는 시나리오 단위의 부하 계수로 계산하고, 딥러닝 과정에서 변하는 것은 DQN/LSTM의 내부 파라미터와 매 time slot의 관측 상태입니다.
 
@@ -271,7 +271,7 @@ QECO-ADAPT에서 gating이 추가된 이유는 dense 환경의 초기 학습 구
 - task size가 작아 offloading 이득이 제한적인 경우
 - local processing time이 transmission time보다 짧거나 같은 경우
 
-짧게 답하면:
+요약:
 
 > QECO에는 없는 action-level 보정 계층입니다. 기존 QECO가 DQN action을 그대로 실행한다면, QECO-ADAPT는 dense load 조건에서 불리한 offloading을 줄이기 위해 effective-load 기반 gating으로 action을 한 번 더 점검합니다.
 
@@ -290,7 +290,7 @@ $$
 
 현재 구현에서는 \\(w_E\\)가 episode마다 재학습되는 값은 아니지만, reward가 저장되는 모든 시점에 적용된다. 즉 "초기값"이 아니라 "학습 전 과정의 reward landscape를 바꾸는 scenario-level coefficient"이다.
 
-짧게 답하면:
+요약:
 
 > adaptive energy weight는 딥러닝 모델의 초기 가중치가 아니라 reward 계산에 계속 들어가는 비용 계수입니다. 따라서 전체 학습 과정에서 Q-value가 어떤 action을 더 좋게 평가할지에 지속적으로 영향을 줍니다.
 
@@ -325,7 +325,7 @@ $$
 
 셋째, \\(\rho = 0.35 < 1\\)을 사용해 증가 곡선을 sublinear하게 만들었다. 부하가 커진다고 energy penalty가 과도하게 폭증하면 QoE와 dropped-task가 악화될 수 있으므로, 완만하게 증가하도록 설계한 것이다.
 
-짧게 답하면:
+요약:
 
 > 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 \\(g(L_{\mathrm{eff}})\\)로 정규화하고, \\(w_0(1+g)^\rho\\) 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
 
