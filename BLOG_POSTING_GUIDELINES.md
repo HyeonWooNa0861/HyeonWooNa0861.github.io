@@ -26,12 +26,15 @@ Markdown table은 화면 폭이 좁아져도 의미 구조가 유지되게 작�
 - 긴 URL, 긴 영문 토큰, 코드 식별자는 본문 셀에서만 필요한 경우 줄바꿈되게 둔다.
 - 표 전체가 화면보다 넓어질 경우 페이지 전체 비율을 줄이지 말고, 표 내부 가로 스크롤로 처리한다.
 - header가 길어 두 줄로 깨질 것 같으면 header를 축약하고, 자세한 설명은 본문 셀이나 표 아래 문단에 둔다.
+- 4열 이상 표에서는 앞쪽의 짧은 기준 컬럼(예: 일자, 시간, 번호, 구분)은 compact하게 유지하고, 뒤쪽 설명 컬럼에서 줄바꿈되게 구성한다.
 - 모바일에서는 표를 억지로 축소하지 않고, header 가독성과 본문 설명성을 우선한다.
 
 현재 디자인 기준:
 
 - `th`: `white-space: nowrap`
 - `td`: `white-space: normal`, `overflow-wrap: break-word`, `word-break: keep-all`
+- 4열 이상 표의 1-2열: compact width, `white-space: nowrap`
+- 4열 이상 표의 3열 이후: 설명 컬럼으로 보고 자연 줄바꿈 허용
 - `table`: `overflow-x: auto`
 
 ## 3. Study 자료
