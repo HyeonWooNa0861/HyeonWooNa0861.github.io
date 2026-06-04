@@ -929,19 +929,13 @@
       }
 
       td {
-        min-width: min(24ch, 52vw);
+        max-width: min(46ch, 62vw);
         overflow-wrap: break-word;
         white-space: normal;
       }
 
-      table:has(tr > :nth-child(4)) :is(th, td):nth-child(-n+2) {
-        width: 1%;
-        min-width: max-content;
-        white-space: nowrap;
-      }
-
       table:has(tr > :nth-child(4)) :is(th, td):nth-child(n+3) {
-        min-width: min(28ch, 48vw);
+        max-width: min(34ch, 48vw);
       }
 
       tbody tr:nth-child(even) {
