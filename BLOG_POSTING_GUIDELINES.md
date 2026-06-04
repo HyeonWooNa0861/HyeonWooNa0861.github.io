@@ -17,7 +17,24 @@
 - 실제 코드와 의사코드는 수식으로 바꾸지 않는다.
 - Markdown table 안의 `|`는 필요하면 `\|`로 escape한다.
 
-## 2. Study 자료
+## 2. 표 작성 및 표시 규칙
+
+Markdown table은 화면 폭이 좁아져도 의미 구조가 유지되게 작성한다.
+
+- 표의 header(`th`)는 기준 축이므로 가능하면 짧게 쓰고 한 줄로 유지한다.
+- 본문 셀(`td`)에는 설명이 길어질 수 있으므로 자연 줄바꿈을 허용한다.
+- 긴 URL, 긴 영문 토큰, 코드 식별자는 본문 셀에서만 필요한 경우 줄바꿈되게 둔다.
+- 표 전체가 화면보다 넓어질 경우 페이지 전체 비율을 줄이지 말고, 표 내부 가로 스크롤로 처리한다.
+- header가 길어 두 줄로 깨질 것 같으면 header를 축약하고, 자세한 설명은 본문 셀이나 표 아래 문단에 둔다.
+- 모바일에서는 표를 억지로 축소하지 않고, header 가독성과 본문 설명성을 우선한다.
+
+현재 디자인 기준:
+
+- `th`: `white-space: nowrap`
+- `td`: `white-space: normal`, `overflow-wrap: break-word`, `word-break: keep-all`
+- `table`: `overflow-x: auto`
+
+## 3. Study 자료
 
 대상: `_study/`
 
@@ -107,7 +124,7 @@ Study 구조 규칙:
 - `<details>` 내부에서 `Vector<int>`처럼 `<`, `>`가 들어간 코드는 HTML 태그로 오해될 수 있으므로 `<code>Vector&lt;int&gt;</code>`처럼 HTML escape하여 쓴다.
 - 원문 PDF가 여러 개라면 상단에는 `Source PDFs:` 아래 목록을 두고, 하단 `## PDF`에도 같은 파일들을 모두 링크한다.
 
-## 3. Research 자료
+## 4. Research 자료
 
 대상: `_research/`
 
@@ -143,7 +160,7 @@ Study 구조 규칙:
 - 한계와 향후 과제
 - 참고자료
 
-## 4. Assignment 자료
+## 5. Assignment 자료
 
 대상: `_assignment/`
 
@@ -217,7 +234,7 @@ Study 구조 규칙:
 - Machine Learning Basic 과제 PDF: `assets/pdfs/assignment/machine-learning-basic/`
 - URL: `/assignment/machine-learning-basic/<slug>/`
 
-## 5. Posts
+## 6. Posts
 
 대상: `_posts/`
 
@@ -226,7 +243,7 @@ Study 구조 규칙:
 - Research 글처럼 분석 자료인 경우에는 Research 기준을 따른다.
 - permalink, categories, tags는 기존 post 형식을 따른다.
 
-## 6. PDF와 경로
+## 7. PDF와 경로
 
 Research:
 
@@ -247,14 +264,14 @@ Study:
 
 PDF 파일명이 숫자 또는 임시명이면 전문을 확인한 뒤 제목 기반 slug로 rename한다.
 
-## 7. Navigation
+## 8. Navigation
 
 - 새 글은 기존 category의 `order`를 확인해 배치한다.
 - 새 section이나 category가 생기면 `_data/navigation.yml`을 갱신한다.
 - Assignment에 새 과목이 생기면 `pages/assignment/<course>.md`와 navigation children을 함께 만든다.
 - sidebar와 URL 규칙을 깨지 않는다.
 
-## 8. 검증
+## 9. 검증
 
 포스팅 후 가능한 한 확인한다.
 
@@ -266,7 +283,7 @@ PDF 파일명이 숫자 또는 임시명이면 전문을 확인한 뒤 제목 �
 
 Jekyll 실행 파일이나 Gemfile이 없으면 빌드 불가 사유를 결과에 명시한다.
 
-## 9. Git
+## 10. Git
 
 - 변경은 의미 있는 단위로 commit한다.
 - 포스팅 요청은 `main` branch push까지 진행한다.
