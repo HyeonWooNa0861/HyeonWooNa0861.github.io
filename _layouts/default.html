@@ -913,20 +913,25 @@
         border-collapse: separate;
         border-spacing: 0;
         font-size: clamp(12px, 1.35vw, 14px);
-        white-space: nowrap;
       }
 
       th, td {
         border: 1px solid var(--line);
         padding: 10px 12px;
         vertical-align: top;
-        white-space: nowrap;
         word-break: keep-all;
       }
 
       th {
         background: var(--table-head);
         font-weight: 700;
+        white-space: nowrap;
+      }
+
+      td {
+        min-width: min(24ch, 52vw);
+        overflow-wrap: break-word;
+        white-space: normal;
       }
 
       tbody tr:nth-child(even) {
