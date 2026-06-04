@@ -909,15 +909,19 @@
         max-width: 100%;
         margin: 22px 0;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: 14px;
+        font-size: clamp(12px, 1.35vw, 14px);
+        white-space: nowrap;
       }
 
       th, td {
         border: 1px solid var(--line);
         padding: 10px 12px;
         vertical-align: top;
+        white-space: nowrap;
+        word-break: keep-all;
       }
 
       th {
@@ -1772,12 +1776,14 @@
       }
 
       .branch-card-link::after {
-        inset: 0;
+        right: -10px;
+        bottom: 18%;
         z-index: 1;
-        color: var(--accent);
-        content: attr(data-label);
-        clip-path: polygon(0 39%, 100% 28%, 100% 52%, 0 66%);
-        opacity: 0.26;
+        width: min(92px, 36%);
+        height: 1px;
+        background: var(--fracture-strong);
+        content: "";
+        opacity: 0.64;
         transform: translate(var(--branch-card-echo-x, 4px), var(--branch-card-echo-y, -3px));
       }
 
