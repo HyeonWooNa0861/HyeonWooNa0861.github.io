@@ -24,6 +24,11 @@
       description: Conference preparation notes and presentation materials
       match: /posts/2026-kiit-summer-conference-qeco-adapt/
       section: kiit-summer-conference
+    - title: AI Education
+      url: /post/ai-education/
+      description: AI concepts and paper-based curriculum materials
+      match: /post/ai-education/
+      section: ai-education
 
 - title: Research
   url: /research/
