@@ -1,14 +1,12 @@
 ---
 layout: post
-title: "Attention and Transformer: 4-Day High School AI Curriculum"
+title: "26-Summer Attention and Transformer: 4-Day High School AI Curriculum"
 date: 2026-06-04 00:00:00 +0900
 categories: [AIEducation, Curriculum]
 tags: [Transformer, Attention, AI, Education, NLP]
-permalink: /posts/attention-transformer-high-school-curriculum/
+permalink: /posts/26-summer-attention-transformer-high-school-curriculum/
 section: ai-education
 ---
-
-# Attention and Transformer: 4-Day High School AI Curriculum
 
 이 교육 과정은 「Attention Is All You Need」 논문을 고등학생 대상 수업으로 재구성한 4일 과정이다. 원 논문은 Transformer, self-attention, multi-head attention, positional encoding, machine translation 성능 등을 다루지만, 이 커리큘럼에서는 복잡한 수식보다 “AI가 문장 속 단어 관계를 어떻게 읽는가”를 중심으로 설명한다.
 

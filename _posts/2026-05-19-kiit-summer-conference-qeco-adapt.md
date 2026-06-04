@@ -8,8 +8,6 @@ permalink: /posts/2026-kiit-summer-conference-qeco-adapt/
 section: kiit-summer-conference
 ---
 
-# QECO-ADAPT Conference Preparation Notes
-
 이 문서는 `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료를 함께 기준으로 정리한 conference 준비 자료이다. 연구의 핵심 주장, 주요 수치, 예상 질문에 대한 답변 방향을 한곳에서 확인할 수 있도록 구성했다.
 
 - QECO-ADAPT는 QECO를 대체하는 범용 알고리즘이 아니라, dense MEC에서 QECO의 초기 수렴 손실을 줄이는 보완형 변형이다.
