@@ -158,6 +158,40 @@ action space 자체는 기존 QECO와 같다. 다만 QECO-ADAPT는 DQN이 선택
 
 항상 우수하다고 해석해서는 안 된다. 8x smoothed time-series 기준으로 QoE, Delay, Dropped tasks에서는 episode 진행 후 QECO-ADAPT가 우세한 구간이 나타나지만, Energy만 보면 DROO가 더 낮은 구간이 있다. 따라서 QECO-ADAPT의 장점은 energy 단독 최적화가 아니라 QoE-Delay-Drop 균형과 수렴 안정성 관점에서 해석해야 한다.
 
+### Q16-1. DROO는 딥러닝 기반인데 왜 common QoE 차트에서 수렴성이 뚜렷하지 않은가?
+
+DROO가 딥러닝 기반이라는 점과, 본 자료의 common QoE 차트가 DROO 내부 학습 loss를 보여주는 곡선이 아니라는 점을 분리해서 설명해야 한다. 추가 검증 run에서는 DROO가 QECO common MEC 환경 안에서도 `MemoryDNN` 학습을 실제로 수행했음이 확인되었다.
+
+검증 결과:
+
+| 항목 | 값 |
+|---|---:|
+| 공통 환경 | users 10, edge 1, episodes 400 |
+| encoded frames | 44,000 |
+| MemoryDNN training updates | 4,400 |
+| first loss | 0.612546 |
+| last loss | 0.156065 |
+| min loss | 0.086969 |
+
+따라서 "DROO가 학습하지 않았다"라고 해석하면 안 된다. 다만 DROO의 내부 학습 목표는 channel state \\(h\\)를 입력으로 binary offloading mode를 예측하는 것이다. 반면 본 연구의 QoE 지표는 channel뿐 아니라 task arrival, queue/backlog, deadline, delay, energy, unfinished task까지 포함한다.
+
+즉 현재 common QoE 차트에는 다음 요인이 함께 섞인다.
+
+- DROO `MemoryDNN`의 학습 진행
+- 매 episode마다 달라지는 task arrival 난이도
+- channel trace 변동
+- queue/backlog 누적 상태
+- adaptive \\(K\\) 변화
+- QoE/Delay/Energy/Drop이라는 외부 평가 지표
+
+이 때문에 DROO 내부 loss가 감소하더라도, common QoE 차트가 단조 증가하거나 매끄럽게 수렴하는 형태를 보장하지 않는다. 본 실험에서 DROO는 학습을 수행했지만, 그 학습 신호와 본 연구의 QoE 평가 지표가 완전히 일치하지 않기 때문에 수렴성이 눈에 띄게 나타나기 어렵다.
+
+발표 답변은 다음처럼 정리하는 것이 안전하다.
+
+> DROO는 공통 환경에서 실제 DNN 학습을 수행했습니다. 다만 DROO의 내부 학습 목표는 channel 기반 binary offloading mode 예측이고, 본 연구의 QoE 지표는 task, queue, deadline, delay, energy, unfinished task까지 포함합니다. 따라서 common QoE 차트에서 DROO가 뚜렷한 수렴 곡선을 보이지 않는 것은 학습 부재가 아니라 학습 목표와 평가 지표의 불일치, 그리고 stochastic common 환경의 영향으로 해석하는 것이 맞습니다.
+
+향후 더 엄밀하게 보이려면 DROO에 대해 학습 phase와 평가 phase를 분리해야 한다. 예를 들어 일정 episode 동안 `MemoryDNN`을 학습한 뒤 모델을 고정하고, 동일 task/channel trace에서 평가하는 방식이 필요하다. 또한 다중 seed 평균, moving average, DROO 내부 loss curve와 common QoE curve의 병기, 목표 QoE 도달 episode 같은 직접 수렴 지표를 추가하면 해석이 더 안정적이다.
+
 ### Q17. 왜 final 10%가 아니라 전체 400 episode 평균을 주 지표로 삼았는가?
 
 QECO-ADAPT의 목적은 최종 안정 구간에서 QECO를 크게 압도하는 것이 아니라, 초기 warm-up 과정에서 쌓이는 QoE 손실과 dropped-task 누적을 줄이는 것이다. final 10%만 보면 후반에 QECO와 유사하게 수렴하는 특성 때문에 개선 폭이 과소평가될 수 있다. 그래서 전체 episode 평균을 주 지표로 삼고, final 10%는 안정 구간 추종성을 확인하는 보조 지표로 사용했다.
@@ -344,6 +378,8 @@ $$
 | 평균 부하가 학습 중 자동으로 계속 업데이트된다 | 현재 구현에서는 시나리오 단위 고정 계수이며, 변하는 것은 observation과 DQN/LSTM 파라미터이다 |
 | drop probability가 개선됐다 | 평균 dropped-task count가 개선됐다 |
 | energy 최적화 알고리즘이다 | QoE-Delay-Energy-Drop 균형을 조정하는 알고리즘이다 |
+| DROO가 학습하지 않았다 | DROO는 common 환경에서도 MemoryDNN 학습을 수행했지만, 내부 loss와 common QoE 평가지표가 다르다 |
+| DROO가 수렴하지 않는다 | common QoE 차트에서 뚜렷한 수렴 곡선이 보이지 않았다고 표현한다 |
 
 ## 10. 핵심 답변 모음
 
@@ -358,6 +394,10 @@ $$
 ### "왜 전체 평균을 보나?"
 
 > QECO-ADAPT의 핵심 가치는 final-window 최고 성능이 아니라 초기 수렴 손실 완화이기 때문에, 전체 episode 평균이 알고리즘의 목적을 더 잘 반영합니다.
+
+### "DROO는 딥러닝 기반인데 왜 QoE 차트에서 수렴이 뚜렷하지 않나?"
+
+> DROO는 common 환경에서도 MemoryDNN 학습을 수행했습니다. 다만 DROO의 내부 학습 목표는 channel 기반 binary offloading mode 예측이고, 본 연구의 QoE는 task, queue, deadline, delay, energy까지 포함하는 외부 평가 지표입니다. 따라서 QoE 차트에서 수렴성이 뚜렷하지 않은 것은 학습 부재가 아니라 학습 목표와 평가 지표의 불일치, stochastic 환경 변동 때문입니다.
 
 ### "가장 큰 한계는?"
 
