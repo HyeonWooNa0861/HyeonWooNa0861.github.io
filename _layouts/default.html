@@ -7,6 +7,10 @@
     <script>
       (function () {
         var theme = "light";
+        var studyGateKey = "gitblogStudyGatePassed";
+        var path = window.location.pathname;
+        var isHomePath = path === "/" || path === "/index.html";
+        var isStudyPath = /^\/study(\/|$)/.test(path);
 
         try {
           var savedTheme = localStorage.getItem("gitblogTheme");
@@ -17,6 +21,21 @@
         }
 
         document.documentElement.dataset.theme = theme;
+
+        try {
+          if (isHomePath) {
+            sessionStorage.removeItem(studyGateKey);
+          }
+
+          if (isStudyPath) {
+            document.documentElement.dataset.studyGate = sessionStorage.getItem(studyGateKey) === "true" ? "unlocked" : "locked";
+          }
+        } catch (error) {
+          if (isStudyPath) {
+            document.documentElement.dataset.studyGate = "locked";
+          }
+        }
+
         window.__gitblogLoadingStarted = Date.now();
       })();
     </script>
@@ -379,6 +398,138 @@
         overflow: hidden;
         clip: rect(0 0 0 0);
         white-space: nowrap;
+      }
+
+      .study-gate {
+        position: fixed;
+        inset: 0;
+        z-index: 940;
+        display: none;
+        place-items: center;
+        padding: 28px;
+        background:
+          linear-gradient(145deg, rgba(246, 248, 251, 0.92), rgba(238, 244, 245, 0.94));
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+
+      :root[data-theme="dark"] .study-gate {
+        background:
+          linear-gradient(145deg, rgba(8, 11, 18, 0.92), rgba(16, 24, 39, 0.94));
+      }
+
+      html[data-study-gate="locked"] main,
+      html[data-study-gate="locked"] .scroll-progress {
+        visibility: hidden;
+      }
+
+      html[data-study-gate="locked"] body {
+        overflow: hidden;
+      }
+
+      html[data-study-gate="locked"] .study-gate {
+        display: grid;
+      }
+
+      .study-gate-panel {
+        --trim-tl-x: 0px;
+        --trim-tl-y: 24px;
+        --trim-tr-x: 38px;
+        --trim-tr-y: 0px;
+        --trim-br-x: 0px;
+        --trim-br-y: 32px;
+        --trim-bl-x: 28px;
+        --trim-bl-y: 0px;
+        position: relative;
+        isolation: isolate;
+        width: min(420px, 100%);
+        border: 1px solid var(--line-strong);
+        background:
+          linear-gradient(126deg, var(--glass-prism), transparent 42%),
+          var(--panel);
+        clip-path: polygon(var(--trim-tl-x) 0, calc(100% - var(--trim-tr-x)) 0, 100% var(--trim-tr-y), 100% calc(100% - var(--trim-br-y)), calc(100% - var(--trim-br-x)) 100%, var(--trim-bl-x) 100%, 0 calc(100% - var(--trim-bl-y)), 0 var(--trim-tl-y));
+        box-shadow: var(--container-shadow);
+        padding: 34px 30px 32px;
+      }
+
+      .study-gate-panel::before {
+        position: absolute;
+        top: 18px;
+        right: 24px;
+        left: 28px;
+        height: 1px;
+        background: var(--fracture-strong);
+        content: "";
+        opacity: 0.72;
+        transform: rotate(-4deg);
+      }
+
+      .study-gate-title {
+        margin: 0 0 10px;
+        font-size: clamp(32px, 9vw, 54px);
+        font-weight: 840;
+        line-height: 0.9;
+        text-transform: uppercase;
+        text-shadow:
+          1px 1px 0 var(--glass-glare),
+          7px 7px 0 var(--halftone-shadow);
+      }
+
+      .study-gate-copy {
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .study-gate-form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .study-gate-input {
+        border: 1px solid var(--line-strong);
+        border-radius: 0;
+        background: var(--posted-text-bg);
+        padding: 13px 14px;
+        color: var(--text);
+        font: inherit;
+        font-size: 18px;
+        letter-spacing: 0.18em;
+        text-align: center;
+      }
+
+      .study-gate-input:focus {
+        border-color: var(--accent);
+        outline: 0;
+        box-shadow: var(--compact-hover-shadow);
+      }
+
+      .study-gate-button {
+        border: 1px solid var(--line-strong);
+        border-radius: 0;
+        background:
+          linear-gradient(118deg, var(--hover-bg), transparent 68%),
+          transparent;
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 760;
+        padding: 12px 14px;
+        text-transform: uppercase;
+      }
+
+      .study-gate-button:hover {
+        border-color: var(--accent);
+        box-shadow: var(--compact-hover-shadow);
+        color: var(--accent);
+      }
+
+      .study-gate-error {
+        min-height: 1.4em;
+        margin: 0;
+        color: var(--warm);
+        font-size: 13px;
       }
 
       .site-header {
@@ -3796,6 +3947,17 @@
       </div>
       <span class="loading-status">Loading</span>
     </div>
+    <div class="study-gate" data-study-gate role="dialog" aria-modal="true" aria-labelledby="study-gate-title">
+      <section class="study-gate-panel">
+        <h1 class="study-gate-title" id="study-gate-title">Study</h1>
+        <p class="study-gate-copy">Enter the 4-digit passcode.</p>
+        <form class="study-gate-form" data-study-gate-form>
+          <input class="study-gate-input" data-study-gate-input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Study passcode">
+          <button class="study-gate-button" type="submit">Open</button>
+          <p class="study-gate-error" data-study-gate-error aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
     <div class="scroll-progress is-static" data-scroll-progress aria-hidden="true">
       <span class="scroll-progress-thumb"></span>
     </div>
@@ -3872,6 +4034,68 @@
         var initialLoadingDelay = 420;
         var navigationLoadingDelay = 180;
         var minimumLoadingVisible = 420;
+        var studyGateKey = "gitblogStudyGatePassed";
+        var studyGatePassword = "0311";
+        var currentPath = window.location.pathname;
+        var isHomePath = currentPath === "/" || currentPath === "/index.html";
+        var isStudyPath = /^\/study(\/|$)/.test(currentPath);
+        var studyGateForm = document.querySelector("[data-study-gate-form]");
+        var studyGateInput = document.querySelector("[data-study-gate-input]");
+        var studyGateError = document.querySelector("[data-study-gate-error]");
+
+        function unlockStudyGate() {
+          try {
+            sessionStorage.setItem(studyGateKey, "true");
+          } catch (error) {
+            /* Allow the current page to open even if sessionStorage is blocked. */
+          }
+
+          loadingRoot.dataset.studyGate = "unlocked";
+          if (studyGateError) studyGateError.textContent = "";
+          if (studyGateInput) studyGateInput.value = "";
+        }
+
+        function setupStudyGate() {
+          if (isHomePath) {
+            try {
+              sessionStorage.removeItem(studyGateKey);
+            } catch (error) {
+              return;
+            }
+          }
+
+          if (!isStudyPath || !studyGateForm || !studyGateInput) return;
+
+          try {
+            if (sessionStorage.getItem(studyGateKey) === "true") {
+              unlockStudyGate();
+              return;
+            }
+          } catch (error) {
+            loadingRoot.dataset.studyGate = "locked";
+          }
+
+          studyGateForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            if (studyGateInput.value === studyGatePassword) {
+              unlockStudyGate();
+              return;
+            }
+
+            studyGateInput.value = "";
+            studyGateInput.focus();
+            if (studyGateError) studyGateError.textContent = "Invalid passcode.";
+          });
+
+          window.setTimeout(function () {
+            if (loadingRoot.dataset.studyGate === "locked") {
+              studyGateInput.focus();
+            }
+          }, 120);
+        }
+
+        setupStudyGate();
 
         function clearLoadingTimers() {
           if (loadingRevealTimer) {
