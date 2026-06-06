@@ -7,10 +7,10 @@
     <script>
       (function () {
         var theme = "light";
-        var studyGateKey = "gitblogStudyGatePassed";
+        var protectedGateKey = "gitblogProtectedGatePassed";
         var path = window.location.pathname;
         var isHomePath = path === "/" || path === "/index.html";
-        var isStudyPath = /^\/study(\/|$)/.test(path);
+        var isProtectedPath = /^\/(study|assignment)(\/|$)/.test(path);
 
         try {
           var savedTheme = localStorage.getItem("gitblogTheme");
@@ -24,14 +24,14 @@
 
         try {
           if (isHomePath) {
-            sessionStorage.removeItem(studyGateKey);
+            sessionStorage.removeItem(protectedGateKey);
           }
 
-          if (isStudyPath) {
-            document.documentElement.dataset.studyGate = sessionStorage.getItem(studyGateKey) === "true" ? "unlocked" : "locked";
+          if (isProtectedPath) {
+            document.documentElement.dataset.studyGate = sessionStorage.getItem(protectedGateKey) === "true" ? "unlocked" : "locked";
           }
         } catch (error) {
-          if (isStudyPath) {
+          if (isProtectedPath) {
             document.documentElement.dataset.studyGate = "locked";
           }
         }
@@ -3949,10 +3949,10 @@
     </div>
     <div class="study-gate" data-study-gate role="dialog" aria-modal="true" aria-labelledby="study-gate-title">
       <section class="study-gate-panel">
-        <h1 class="study-gate-title" id="study-gate-title">Study</h1>
+        <h1 class="study-gate-title" id="study-gate-title" data-study-gate-title>Study</h1>
         <p class="study-gate-copy">Enter the 4-digit passcode.</p>
         <form class="study-gate-form" data-study-gate-form>
-          <input class="study-gate-input" data-study-gate-input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Study passcode">
+          <input class="study-gate-input" data-study-gate-input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Protected section passcode">
           <button class="study-gate-button" type="submit">Open</button>
           <p class="study-gate-error" data-study-gate-error aria-live="polite"></p>
         </form>
@@ -4034,18 +4034,19 @@
         var initialLoadingDelay = 420;
         var navigationLoadingDelay = 180;
         var minimumLoadingVisible = 420;
-        var studyGateKey = "gitblogStudyGatePassed";
+        var protectedGateKey = "gitblogProtectedGatePassed";
         var studyGatePassword = "0311";
         var currentPath = window.location.pathname;
         var isHomePath = currentPath === "/" || currentPath === "/index.html";
-        var isStudyPath = /^\/study(\/|$)/.test(currentPath);
+        var isProtectedPath = /^\/(study|assignment)(\/|$)/.test(currentPath);
         var studyGateForm = document.querySelector("[data-study-gate-form]");
         var studyGateInput = document.querySelector("[data-study-gate-input]");
         var studyGateError = document.querySelector("[data-study-gate-error]");
+        var studyGateTitle = document.querySelector("[data-study-gate-title]");
 
         function unlockStudyGate() {
           try {
-            sessionStorage.setItem(studyGateKey, "true");
+            sessionStorage.setItem(protectedGateKey, "true");
           } catch (error) {
             /* Allow the current page to open even if sessionStorage is blocked. */
           }
@@ -4058,16 +4059,20 @@
         function setupStudyGate() {
           if (isHomePath) {
             try {
-              sessionStorage.removeItem(studyGateKey);
+              sessionStorage.removeItem(protectedGateKey);
             } catch (error) {
               return;
             }
           }
 
-          if (!isStudyPath || !studyGateForm || !studyGateInput) return;
+          if (!isProtectedPath || !studyGateForm || !studyGateInput) return;
+
+          if (studyGateTitle) {
+            studyGateTitle.textContent = /^\/assignment(\/|$)/.test(currentPath) ? "Assignment" : "Study";
+          }
 
           try {
-            if (sessionStorage.getItem(studyGateKey) === "true") {
+            if (sessionStorage.getItem(protectedGateKey) === "true") {
               unlockStudyGate();
               return;
             }
