@@ -7,6 +7,8 @@ topic: "Operator Overloading"
 
 # 연산자 오버로딩
 
+Source PDF: `Operator Overloading.pdf`
+
 ## 과제 개요
 
 이 과제는 C++의 연산자 오버로딩을 Python의 특수 메서드와 비교하며 정리한 내용이다. 연산자 오버로딩은 사용자가 정의한 타입도 기본 타입처럼 자연스럽게 연산할 수 있도록 만드는 기능이다. C++에서는 연산자를 함수 호출로 해석하고, Python에서는 `__add__`, `__eq__`, `__getitem__` 같은 특수 메서드를 통해 연산 동작을 정의한다.

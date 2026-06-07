@@ -7,6 +7,8 @@ topic: "Code/Data/Stack/Heap"
 
 # 프로그램 메모리 영역
 
+Source PDF: `Code Data Stack Heap.pdf`
+
 ## 과제 개요
 
 이 과제는 C++ 프로그램이 실행될 때 메모리가 어떤 영역으로 나뉘어 관리되는지 정리한 내용이다. 핵심 주제는 Code, Data, Stack, Heap 영역의 역할과 차이이며, Stack과 Heap이 서로 반대 방향으로 확장되는 이유, 메모리 단편화, 메모리 누수와 해결 방법까지 함께 다룬다.

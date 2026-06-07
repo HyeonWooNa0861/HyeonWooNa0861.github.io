@@ -7,6 +7,8 @@ topic: "stdin, stdout, stderr, File Descriptor"
 
 # 표준입출력과 파일 디스크립터
 
+Source PDF: `stdin, stdout, stderr, File Descriptor.pdf`
+
 ## 과제 개요
 
 이 과제는 표준입출력과 파일 디스크립터의 관계를 정리하고, 리다이렉션과 파이프가 어떤 원리로 동작하는지 분석한 내용이다. C++ 코드에서는 `std::cin`, `std::cout`, `std::cerr`를 사용하지만, 운영체제 관점에서는 이들이 각각 파일 디스크립터 0, 1, 2번과 연결된다.

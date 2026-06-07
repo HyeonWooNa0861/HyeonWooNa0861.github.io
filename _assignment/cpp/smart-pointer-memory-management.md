@@ -7,6 +7,8 @@ topic: "Smart Pointer, RAII, Reference Counting"
 
 # 스마트 포인터와 메모리 관리
 
+Source PDF: `Smart Pointer, RAII, Reference Counting.pdf`
+
 ## 과제 개요
 
 이 과제는 C++의 스마트 포인터가 왜 필요한지, `std::shared_ptr`의 reference counting이 어떻게 동작하는지, 그리고 JVM의 Garbage Collection과 어떤 차이가 있는지 정리한 내용이다. C++은 직접 메모리를 제어할 수 있다는 장점이 있지만, 그만큼 메모리 누수, dangling pointer, double deletion 같은 위험도 함께 가진다.
