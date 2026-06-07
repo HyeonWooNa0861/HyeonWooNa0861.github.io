@@ -1,12 +1,12 @@
 ---
 layout: default
-title: "AIX Quiz Review"
+title: "AIX Quiz Review After Midterm"
 course: "AIX"
-topic: "Quiz Review"
-order: 1
+topic: "After Midterm Quiz Review"
+order: 2
 ---
 
-# AIX Quiz Review
+# AIX Quiz Review After Midterm
 
 Source PDFs:
 
@@ -16,7 +16,7 @@ Source PDFs:
 - `aix-quiz-20260605-1.pdf`
 - `aix-quiz-20260605-2.pdf`
 
-이 글은 AIX Quiz PDF 5개를 시험 대비용으로 다시 정리한 자료다. 원문 선택지를 그대로 나열하기보다, 각 문항이 묻는 개념과 정답을 고르는 기준을 중심으로 재구성했다.
+이 글은 중간고사 이후부터 기말고사 전까지의 AIX Quiz PDF 5개를 시험 대비용으로 다시 정리한 자료다. 원문 선택지를 그대로 나열하기보다, 각 문항이 묻는 개념과 정답을 고르는 기준을 중심으로 재구성했다.
 
 ## 전체 흐름
 
