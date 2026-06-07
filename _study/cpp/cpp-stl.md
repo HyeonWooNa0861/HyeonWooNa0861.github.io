@@ -22,7 +22,7 @@ Source PDF: `C++ STL.pdf`
 | 6 | `std::set` | 중복 없는 집합과 빠른 존재 확인은 어떻게 처리하는가? |
 | 7 | `std::map` | 키-값 데이터를 어떻게 저장하고 검색하는가? |
 | 8 | 함수 객체와 람다 | 알고리즘에 조건과 동작을 어떻게 전달하는가? |
-| 9 | STL 알고리즘 | 검색, 정렬, 변환, 집계는 어떤 패턴으로 조합하는가? |
+| 9 | STL 알고리즘 | 검색, 정렬, 변환, 제거, 집계는 어떤 패턴으로 조합하는가? |
 | 10 | 실전 조합 | 학생 성적 데이터를 STL로 어떻게 처리하는가? |
 
 ## 1. STL이란?
@@ -794,11 +794,13 @@ l.sort(); // list 전용 정렬
 
 | 분류 | 대표 함수 | 헤더 |
 |---|---|---|
-| 검색 | `find`, `find_if`, `count`, `count_if`, `any_of`, `all_of`, `none_of` | `<algorithm>` |
+| 검색 | `find`, `find_if`, `find_if_not`, `count`, `count_if`, `any_of`, `all_of`, `none_of` | `<algorithm>` |
 | 정렬 | `sort`, `stable_sort`, `partial_sort`, `nth_element`, `is_sorted` | `<algorithm>` |
 | 변환 | `transform`, `copy`, `copy_if`, `fill`, `generate` | `<algorithm>` |
 | 제거 | `remove`, `remove_if`, `unique` | `<algorithm>` |
-| 집계 | `accumulate`, `max_element`, `min_element`, `iota` | `<numeric>` |
+| 순회/뒤집기 | `for_each`, `reverse` | `<algorithm>` |
+| 이진 검색 | `binary_search`, `lower_bound`, `upper_bound` | `<algorithm>` |
+| 집계 | `accumulate`, `max_element`, `min_element`, `minmax_element`, `iota` | `<numeric>` |
 
 ## 18. 검색 알고리즘
 
@@ -839,7 +841,7 @@ auto it = std::find_if(v.begin(), v.end(),
 
 ## 19. 정렬 알고리즘
 
-기본 정렬은 `std::sort`다.
+정렬 알고리즘은 모두 iterator 범위를 받는다. 가장 기본은 `std::sort`이며, 오름차순 정렬이 기본 동작이다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
@@ -848,26 +850,28 @@ std::sort(v.begin(), v.end());
 // {1, 1, 2, 3, 4, 5, 6, 9}
 ```
 
-내림차순 정렬은 비교 함수를 전달한다.
+`sort`의 세 번째 인자로 비교 기준을 전달하면 정렬 방향이나 기준을 바꿀 수 있다.
 
 ```cpp
 std::sort(v.begin(), v.end(), std::greater<int>());
+// {9, 6, 5, 4, 3, 2, 1, 1}
 
 std::sort(v.begin(), v.end(),
     [](int a, int b){ return a > b; });
+// 람다로 직접 내림차순 기준 전달
 ```
 
-정렬 알고리즘의 차이는 다음과 같다.
+비교 함수는 “앞 원소가 뒤 원소보다 먼저 와야 하는가?”를 `bool`로 반환한다.
 
-| 함수 | 의미 |
-|---|---|
-| `sort` | 전체 범위를 정렬한다. 동일 값의 상대 순서는 보장하지 않는다. |
-| `stable_sort` | 전체 범위를 정렬하되, 같은 값의 기존 상대 순서를 유지한다. |
-| `partial_sort` | 앞 N개만 정렬된 상태로 만든다. |
-| `nth_element` | n번째 위치에 들어갈 원소를 제자리로 보낸다. 전체 정렬은 아니다. |
-| `is_sorted` | 이미 정렬되어 있는지 확인한다. |
+```cpp
+[](int a, int b) {
+    return a > b;
+}
+```
 
-`stable_sort`는 점수가 같은 학생들의 기존 순서를 유지해야 할 때 유용하다.
+이 람다는 `a`가 `b`보다 앞에 와야 할 조건을 뜻한다. `a > b`이면 큰 값이 앞에 오므로 내림차순이 된다.
+
+`stable_sort`는 정렬 기준이 같은 원소들의 **기존 상대 순서**를 유지한다. 예를 들어 같은 점수의 학생들이 원래 `A`, `B` 순서였다면, 점수 기준 정렬 후에도 `A`, `B` 순서가 유지된다.
 
 ```cpp
 struct Student {
@@ -883,9 +887,57 @@ std::stable_sort(students.begin(), students.end(),
     [](const Student& a, const Student& b) {
         return a.score > b.score;
     });
+
+// score가 같은 A와 B의 상대 순서 유지
+// 결과 순서: A(90), B(90), C(80)
 ```
 
-## 20. 변환과 제거 알고리즘
+`partial_sort`는 전체를 정렬하지 않고, 앞쪽 N개만 정렬된 상태로 만든다. “상위 3개만 필요하다”처럼 전체 정렬이 낭비인 상황에 쓴다.
+
+```cpp
+std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
+
+std::partial_sort(v.begin(), v.begin() + 3, v.end());
+
+// 앞 3개는 정렬된 최소 3개
+// {1, 1, 2, ...}
+// 나머지 뒤쪽 순서는 보장하지 않음
+```
+
+`nth_element`는 n번째 위치에 들어갈 원소만 제자리로 보낸다. 전체 정렬이 아니라 “n번째 기준으로 왼쪽은 작거나 같고, 오른쪽은 크거나 같은 상태”를 만든다.
+
+```cpp
+std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
+
+std::nth_element(v.begin(), v.begin() + 3, v.end());
+
+// v[3]에는 정렬했을 때 4번째에 올 원소가 위치
+// v[3] 왼쪽은 v[3] 이하
+// v[3] 오른쪽은 v[3] 이상
+// 전체가 정렬된 것은 아님
+```
+
+`is_sorted`는 범위가 이미 정렬되어 있는지 확인한다.
+
+```cpp
+std::vector<int> a = {1, 2, 3, 4, 5};
+std::vector<int> b = {3, 1, 2};
+
+std::is_sorted(a.begin(), a.end()); // true
+std::is_sorted(b.begin(), b.end()); // false
+```
+
+정렬 계열은 이렇게 구분한다.
+
+| 함수 | 결과 | 주 용도 |
+|---|---|---|
+| `sort` | 전체 정렬 | 일반적인 정렬 |
+| `stable_sort` | 전체 정렬 + 같은 원소의 기존 순서 유지 | 점수는 같지만 입력 순서를 보존해야 할 때 |
+| `partial_sort` | 앞 N개만 정렬 | 상위 N개 또는 하위 N개만 필요할 때 |
+| `nth_element` | n번째 원소만 제자리 배치 | 중앙값, 상위 기준값처럼 순위 위치만 필요할 때 |
+| `is_sorted` | 정렬 여부를 bool로 반환 | 정렬 전제 알고리즘 사용 전 확인 |
+
+## 20. 변환 알고리즘
 
 `transform`은 각 원소에 함수를 적용해 결과를 저장한다.
 
@@ -906,9 +958,35 @@ std::transform(v.begin(), v.end(),
 std::transform(v.begin(), v.end(),
                v.begin(),
                [](int x){ return x * 2; });
+// v: {2, 4, 6, 8, 10}
 ```
 
-조건을 만족하는 원소만 복사할 때는 `copy_if`와 `back_inserter`를 자주 함께 쓴다.
+두 범위를 함께 읽어서 새 결과를 만들 수도 있다.
+
+```cpp
+std::vector<int> a = {1, 2, 3};
+std::vector<int> b = {4, 5, 6};
+std::vector<int> c(3);
+
+std::transform(a.begin(), a.end(),
+               b.begin(),
+               c.begin(),
+               [](int x, int y){ return x + y; });
+
+// c: {5, 7, 9}
+```
+
+`copy`는 범위를 그대로 복사한다. 이때 목적지에는 충분한 공간이 있어야 한다.
+
+```cpp
+std::vector<int> src = {1, 2, 3, 4, 5};
+std::vector<int> dst(5);
+
+std::copy(src.begin(), src.end(), dst.begin());
+// dst: {1, 2, 3, 4, 5}
+```
+
+조건을 만족하는 원소만 복사할 때는 `copy_if`와 `back_inserter`를 자주 함께 쓴다. 조건을 만족하는 원소 개수를 미리 알기 어렵기 때문이다.
 
 ```cpp
 std::vector<int> src = {1, 2, 3, 4, 5};
@@ -919,6 +997,39 @@ std::copy_if(src.begin(), src.end(),
              [](int x){ return x % 2 == 0; });
 // evens: {2, 4}
 ```
+
+`fill`은 이미 존재하는 범위를 같은 값으로 채운다.
+
+```cpp
+std::vector<int> dst(5);
+
+std::fill(dst.begin(), dst.end(), 0);
+// dst: {0, 0, 0, 0, 0}
+```
+
+`generate`는 함수를 호출한 결과로 범위를 채운다.
+
+```cpp
+std::vector<int> dst(5);
+int n = 0;
+
+std::generate(dst.begin(), dst.end(),
+              [&n]{ return n++; });
+
+// dst: {0, 1, 2, 3, 4}
+```
+
+정리하면 다음과 같다.
+
+| 함수 | 역할 | 주의점 |
+|---|---|---|
+| `transform` | 원소를 변환해 다른 범위 또는 자기 자신에 저장 | 목적지 iterator가 유효해야 함 |
+| `copy` | 범위를 그대로 복사 | 목적지 크기 확보 필요 |
+| `copy_if` | 조건을 만족하는 원소만 복사 | 결과 개수를 모르면 `back_inserter` 사용 |
+| `fill` | 이미 있는 범위를 같은 값으로 채움 | 새 원소를 추가하지는 않음 |
+| `generate` | 함수 호출 결과로 범위를 채움 | 람다 캡처로 상태를 만들 수 있음 |
+
+## 21. 제거와 중복 처리 알고리즘
 
 `remove`와 `unique`는 이름과 다르게 실제 컨테이너 크기를 줄이지 않는다.
 
@@ -937,7 +1048,20 @@ v.erase(new_end, v.end());
 v.erase(std::remove(v.begin(), v.end(), 2), v.end());
 ```
 
-이것을 erase-remove 관용구라고 한다.
+이것을 erase-remove 관용구라고 한다. `std::remove`는 지울 값을 뒤로 밀고, “남겨야 할 원소들의 끝”을 반환한다. 그래서 컨테이너 크기를 실제로 줄이는 작업은 `erase`가 맡는다.
+
+`remove_if`는 조건으로 제거 대상을 정한다.
+
+```cpp
+std::vector<int> v = {1, 2, 3, 4, 5, 6};
+
+v.erase(
+    std::remove_if(v.begin(), v.end(),
+        [](int x){ return x % 2 == 0; }),
+    v.end());
+
+// v: {1, 3, 5}
+```
 
 중복 제거는 `sort`와 `unique`를 조합한다.
 
@@ -949,7 +1073,76 @@ v.erase(std::unique(v.begin(), v.end()), v.end());
 // {1, 2, 3, 4, 5, 6, 9}
 ```
 
-## 21. 집계와 이진 검색
+`unique`는 **연속된 중복**만 처리한다. 따라서 전체 중복을 제거하려면 먼저 정렬해서 같은 값들이 붙어 있게 만든 뒤 `unique`를 적용한다.
+
+| 함수 | 실제 삭제 여부 | 핵심 |
+|---|---|---|
+| `remove` | 삭제하지 않음 | 특정 값을 뒤쪽으로 밀고 새 끝 iterator 반환 |
+| `remove_if` | 삭제하지 않음 | 조건을 만족하는 원소를 제거 대상으로 처리 |
+| `unique` | 삭제하지 않음 | 연속 중복을 뒤쪽으로 밀고 새 끝 iterator 반환 |
+| `erase` | 실제 삭제 | 컨테이너 크기를 줄임 |
+
+## 22. 순회, 뒤집기, 이진 검색
+
+`for_each`는 각 원소에 동작을 적용한다. 단순 출력에도 쓸 수 있고, 참조 매개변수를 사용하면 원소 수정도 가능하다.
+
+```cpp
+std::vector<int> v = {1, 2, 3, 4, 5};
+
+std::for_each(v.begin(), v.end(),
+    [](int x){ std::cout << x << " "; });
+// 1 2 3 4 5
+
+std::for_each(v.begin(), v.end(),
+    [](int& x){ x *= 2; });
+// v: {2, 4, 6, 8, 10}
+```
+
+`reverse`는 범위의 순서를 뒤집는다.
+
+```cpp
+std::vector<int> v = {1, 2, 3, 4, 5};
+
+std::reverse(v.begin(), v.end());
+// v: {5, 4, 3, 2, 1}
+
+std::string s = "hello";
+std::reverse(s.begin(), s.end());
+// s: "olleh"
+```
+
+`binary_search`, `lower_bound`, `upper_bound`는 정렬된 범위에서만 올바르게 동작한다.
+
+```cpp
+std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+std::binary_search(v.begin(), v.end(), 5);  // true
+std::binary_search(v.begin(), v.end(), 99); // false
+
+auto lb = std::lower_bound(v.begin(), v.end(), 5);
+auto ub = std::upper_bound(v.begin(), v.end(), 5);
+
+// *lb == 5
+// *ub == 6
+```
+
+| 함수 | 반환 | 의미 |
+|---|---|---|
+| `binary_search` | bool | 값이 존재하는지 여부 |
+| `lower_bound` | iterator | key 이상인 첫 위치 |
+| `upper_bound` | iterator | key 초과인 첫 위치 |
+
+값이 없으면 `lower_bound`도 `end()`를 반환할 수 있다.
+
+```cpp
+auto it = std::lower_bound(v.begin(), v.end(), 99);
+
+if (it == v.end()) {
+    std::cout << "없음\n";
+}
+```
+
+## 23. 집계 알고리즘
 
 `accumulate`는 범위를 하나의 값으로 접는다.
 
@@ -966,14 +1159,46 @@ int product = std::accumulate(v.begin(), v.end(), 1,
 // 120
 ```
 
+`accumulate`의 세 번째 인자는 **초기값**이다. 합계에서는 0, 곱에서는 1처럼 연산의 항등원을 넣어야 자연스럽다.
+
+```cpp
+int wrong_product = std::accumulate(v.begin(), v.end(), 0,
+    [](int acc, int x){ return acc * x; });
+
+// 0에서 곱하기 시작하므로 결과는 항상 0
+```
+
+문자열 연결도 가능하다.
+
+```cpp
+std::vector<std::string> words = {"C++", " ", "STL"};
+
+std::string sentence = std::accumulate(
+    words.begin(), words.end(), std::string{});
+
+// sentence == "C++ STL"
+```
+
 최댓값과 최솟값은 iterator로 반환된다.
 
 ```cpp
+std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
+
 auto max_it = std::max_element(v.begin(), v.end());
 auto min_it = std::min_element(v.begin(), v.end());
 
-std::cout << *max_it;
-std::cout << *min_it;
+std::cout << *max_it;              // 9
+std::cout << (max_it - v.begin()); // 5
+std::cout << *min_it;              // 1
+```
+
+최솟값과 최댓값을 한 번에 찾고 싶으면 `minmax_element`를 쓴다.
+
+```cpp
+auto [lo, hi] = std::minmax_element(v.begin(), v.end());
+
+std::cout << *lo << ", " << *hi;
+// 1, 9
 ```
 
 `iota`는 순차 값을 채운다.
@@ -984,18 +1209,17 @@ std::iota(v.begin(), v.end(), 1);
 // {1, 2, 3, 4, 5}
 ```
 
-`binary_search`, `lower_bound`, `upper_bound`는 **정렬된 범위에서만** 올바르게 동작한다.
+집계 계열은 다음처럼 정리할 수 있다.
 
-```cpp
-std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+| 함수 | 반환 | 의미 |
+|---|---|---|
+| `accumulate` | 누적 결과값 | 범위를 하나의 값으로 접음 |
+| `max_element` | iterator | 최댓값 위치 |
+| `min_element` | iterator | 최솟값 위치 |
+| `minmax_element` | pair 형태의 iterator 두 개 | 최솟값 위치와 최댓값 위치 |
+| `iota` | 없음 | 범위에 순차 값을 채움 |
 
-std::binary_search(v.begin(), v.end(), 5); // true
-
-auto lb = std::lower_bound(v.begin(), v.end(), 5);
-auto ub = std::upper_bound(v.begin(), v.end(), 5);
-```
-
-## 22. 함수 객체와 람다
+## 24. 함수 객체와 람다
 
 STL 알고리즘은 조건이나 동작을 함수처럼 받는다. 이때 함수 객체(functor)나 람다를 사용할 수 있다.
 
@@ -1086,7 +1310,7 @@ auto it = std::find_if(v.begin(), v.end(),
 | `[=, &x]` | 기본은 값 캡처, `x`만 참조 캡처 |
 | `[&, x]` | 기본은 참조 캡처, `x`만 값 캡처 |
 
-## 23. 알고리즘 조합 예제
+## 25. 알고리즘 조합 예제
 
 STL의 진짜 힘은 여러 알고리즘을 조합할 때 드러난다.
 
@@ -1166,8 +1390,14 @@ int main() {
 | iterator category | 알고리즘 사용 가능 여부를 결정 |
 | `set` | 중복 없는 정렬 집합, 존재 확인에 유리 |
 | `map` | 키-값 저장소, `[]` 읽기는 자동 삽입 주의 |
-| `sort` | random access iterator 필요 |
+| `sort` | 전체 정렬, random access iterator 필요 |
+| `stable_sort` | 같은 기준값을 가진 원소의 기존 상대 순서 유지 |
+| `partial_sort` | 앞 N개만 정렬해 상위/하위 일부만 필요할 때 사용 |
+| `nth_element` | n번째 위치의 원소만 제자리로 보내며 전체 정렬은 아님 |
 | `remove`/`unique` | 실제 삭제가 아니므로 `erase`와 함께 사용 |
+| `binary_search` | 정렬된 범위에서만 올바르게 동작 |
+| `accumulate` | 초기값에서 시작해 범위를 하나의 값으로 누적 |
+| `max_element`/`minmax_element` | 값이 아니라 iterator를 반환 |
 | 람다 | 알고리즘에 조건과 동작을 즉석에서 전달하는 문법 |
 
 ## Study Guide
@@ -1176,9 +1406,10 @@ int main() {
 
 1. 먼저 `vector`, `list`, `array`의 메모리 구조와 시간 복잡도를 비교한다.
 2. 그다음 `begin()`과 `end()`가 `[first, last)` 범위를 만든다는 점을 익힌다.
-3. `find`, `sort`, `count_if`, `accumulate`처럼 자주 쓰는 알고리즘을 같은 패턴으로 읽는다.
-4. `set::find`와 `std::find`의 차이, `map["key"]`의 자동 삽입, `remove`가 실제 삭제가 아니라는 점을 따로 표시해 둔다.
-5. 시험에서는 컨테이너 선택 이유, iterator 범위, 람다 매개변수 형태, erase-remove 관용구가 자주 질문될 수 있다.
+3. `find`, `sort`, `count_if`, `transform`, `accumulate`처럼 자주 쓰는 알고리즘을 같은 iterator 범위 패턴으로 읽는다.
+4. `sort`/`stable_sort`/`partial_sort`/`nth_element`의 결과 차이를 예제로 구분한다.
+5. `set::find`와 `std::find`의 차이, `map["key"]`의 자동 삽입, `remove`가 실제 삭제가 아니라는 점을 따로 표시해 둔다.
+6. `accumulate`의 초기값, `binary_search`의 정렬 전제, `copy_if`와 `back_inserter`의 조합은 시험에 바로 나오기 좋은 부분이다.
 
 ## 복습 질문
 
@@ -1263,6 +1494,41 @@ int main() {
 <summary>12. `copy_if`에서 `back_inserter`를 쓰는 이유는 무엇인가?</summary>
 
 답변: 조건을 만족하는 원소 개수를 미리 모를 때 결과 vector의 크기를 정확히 준비하기 어렵다. <code>std::back_inserter</code>를 사용하면 알고리즘이 결과를 쓸 때마다 내부적으로 <code>push_back</code>을 호출하므로, 빈 vector에도 안전하게 원소를 추가할 수 있다.
+
+</details>
+
+<details>
+<summary>13. `sort`와 `stable_sort`의 차이는 무엇인가?</summary>
+
+답변: 둘 다 전체 범위를 정렬하지만, <code>sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 보장하지 않는다. <code>stable_sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 유지한다. 예를 들어 점수 90점인 A, B가 원래 A 다음 B 순서였다면, 점수 기준 안정 정렬 후에도 A, B 순서가 유지된다.
+
+</details>
+
+<details>
+<summary>14. `partial_sort`와 `nth_element`는 전체 정렬과 어떻게 다른가?</summary>
+
+답변: <code>partial_sort</code>는 앞 N개만 정렬된 상태로 만들고, 뒤쪽 나머지 순서는 보장하지 않는다. <code>nth_element</code>는 n번째 위치에 들어갈 원소만 제자리로 보내며, 그 왼쪽은 n번째 원소 이하, 오른쪽은 n번째 원소 이상이 되게 한다. 둘 다 전체 정렬이 필요 없는 상황에서 비용을 줄이기 위해 사용한다.
+
+</details>
+
+<details>
+<summary>15. `accumulate`에서 초기값이 중요한 이유는 무엇인가?</summary>
+
+답변: <code>accumulate</code>는 세 번째 인자인 초기값에서 누적을 시작한다. 합계는 0에서 시작하는 것이 자연스럽지만, 곱은 1에서 시작해야 한다. 곱셈 누적의 초기값을 0으로 두면 이후 어떤 값을 곱해도 결과가 계속 0이 된다.
+
+</details>
+
+<details>
+<summary>16. `transform`, `fill`, `generate`는 각각 언제 쓰는가?</summary>
+
+답변: <code>transform</code>은 각 원소에 함수를 적용해 변환 결과를 저장할 때 쓴다. <code>fill</code>은 이미 존재하는 범위를 같은 값으로 채울 때 쓴다. <code>generate</code>는 함수를 매번 호출한 결과로 범위를 채울 때 쓰며, 람다 캡처를 이용해 0, 1, 2처럼 상태가 변하는 값을 만들 수 있다.
+
+</details>
+
+<details>
+<summary>17. `binary_search`, `lower_bound`, `upper_bound`의 공통 전제는 무엇인가?</summary>
+
+답변: 세 함수 모두 정렬된 범위에서만 올바르게 동작한다. <code>binary_search</code>는 값의 존재 여부를 bool로 반환하고, <code>lower_bound</code>는 key 이상인 첫 위치, <code>upper_bound</code>는 key 초과인 첫 위치를 iterator로 반환한다.
 
 </details>
 
