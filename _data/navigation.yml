@@ -81,6 +81,10 @@
       url: /assignment/machine-learning-basic/
       description: Machine Learning Basic assignments
       match: /assignment/machine-learning-basic/
+    - title: AIX
+      url: /assignment/aix/
+      description: AIX quiz review and solution notes
+      match: /assignment/aix/
 
 - title: Study
   url: /study/
