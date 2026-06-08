@@ -14,9 +14,11 @@ Source Materials:
   <li><a href="{{ "/assignment/aix/aix-quiz-review-before-midterm/" | relative_url }}">AIX Quiz Review Before Midterm</a></li>
   <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX Midterm Review</a></li>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-after-midterm/" | relative_url }}">AIX Quiz Review After Midterm</a></li>
+  <li><a href="{{ "/study/aix/robotics-1/" | relative_url }}">Robotics 1</a></li>
+  <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
 
-이 자료는 위의 3개 파일을 기말고사 대비용으로 다시 묶은 최종 정리본이다. 다른 AIX 강의자료도 개념 보강용으로 참고했지만, 문제는 `AIX Quiz Review Before Midterm`, `AIX Midterm Review`, `AIX Quiz Review After Midterm`에서 중점적으로 나온다는 전제로 정리한다.
+이 자료는 기말고사 대비용 최종 정리본이다. 문제의 중심은 `AIX Quiz Review Before Midterm`, `AIX Midterm Review`, `AIX Quiz Review After Midterm`에 두되, 새로 정리한 `Robotics 1`, `Robotics 2`는 imitation learning과 robotics scaling 파트를 깊게 이해하기 위한 핵심 보강 자료로 사용한다.
 
 핵심 전략은 간단하다. 중간고사 전 범위는 기본 개념과 오답 제거 기준을 빠르게 확인하고, 중간고사 이후 범위는 LLM, 자율주행, imitation learning, robotics scaling을 더 깊게 본다.
 
@@ -43,9 +45,10 @@ Source Materials:
 | 우선순위 | 자료 | 공부 방식 |
 |---|---|---|
 | 1 | After Midterm Quiz Review | 기말 직전 퀴즈 범위이므로 문항별 정답 기준을 거의 그대로 암기한다. |
-| 2 | Midterm Review | 이미 출제된 핵심 개념의 오답 제거 기준을 다시 본다. 같은 개념이 기말에 변형될 수 있다. |
-| 3 | Before Midterm Quiz Review | 기본 정의와 구조를 빠르게 복습한다. 특히 Transformer 이전 흐름을 잊지 않는다. |
-| 4 | 개별 AIX 강의자료 | 헷갈리는 개념을 배경 설명으로 보강한다. 문제 우선순위는 위 3개 파일이 더 높다. |
+| 2 | Robotics 1, Robotics 2 | after-midterm의 imitation learning, DAggER, VLA, world model, physical RL 문항을 설명형으로 풀 수 있게 보강한다. |
+| 3 | Midterm Review | 이미 출제된 핵심 개념의 오답 제거 기준을 다시 본다. 같은 개념이 기말에 변형될 수 있다. |
+| 4 | Before Midterm Quiz Review | 기본 정의와 구조를 빠르게 복습한다. 특히 Transformer 이전 흐름을 잊지 않는다. |
+| 5 | 개별 AIX 강의자료 | 헷갈리는 개념을 배경 설명으로 보강한다. 문제 우선순위는 위 자료들이 더 높다. |
 
 기말에서 특히 강하게 잡아야 할 축은 다음 네 가지다.
 
@@ -367,6 +370,17 @@ $$
 \text{retrain}
 $$
 
+Robotics 1은 이 파트를 가장 직접적으로 보강한다. 특히 behavioral cloning의 한계가 "모델이 약해서"가 아니라 expert distribution 밖 recovery data가 부족해서 생긴다는 점을 잡아야 한다.
+
+| Robotics 1 활용 지점 | Final Review에서 연결되는 개념 |
+|---|---|
+| Why imitation became attractive | physical robot에서 RL trial-and-error가 비싸고 느림 |
+| Behavioral cloning | expert trajectory를 observation-to-action supervised learning으로 변환 |
+| Covariate shift | learner action이 다음 state distribution을 바꿈 |
+| Error growth | independent error보다 sequential error가 더 크게 누적 가능 |
+| DAggER | learner-visited state에 expert label을 붙여 aggregate/retrain |
+| Remaining bottleneck | task-specific imitation의 한계가 foundation model, world model, VLA로 이어짐 |
+
 ## 11. Robotics Scaling과 VLA
 
 로보틱스는 AI scaling의 다음 frontier로 설명된다. LLM에서 대규모 데이터와 foundation model이 성능 향상을 만들었듯이, 로봇도 대규모 비디오, world model, action data, physical RL을 결합하는 방향으로 이동한다.
@@ -390,6 +404,18 @@ Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 �
 기말에서는 이 흐름을 하나의 문장으로 정리하면 좋다.
 
 > 로보틱스는 pre-trained world/foundation model 위에 action 적응과 실제 환경 학습을 더하는 방향으로 scaling된다.
+
+Robotics 2는 이 문장을 세 단계로 더 구체화한다.
+
+| Robotics 2 활용 지점 | Final Review에서 연결되는 개념 |
+|---|---|
+| LLM-to-robotics parallel | pre-training, action fine-tuning, physical RL의 대응 관계 |
+| VLA | vision-language-action을 연결하는 robot backbone |
+| Video pre-training | internet video와 ego-video가 dynamics, contact, affordance 단서를 제공 |
+| WAM | 단순 action mapping보다 world modeling을 first-class로 둠 |
+| Data engines | teleoperation, autonomous rollout, ego-video의 trade-off |
+| Physical RL | teleoperation imitation을 넘어서는 surpassing phase |
+| Real2Sim2Real | digital twins/cousins로 training universe를 확장 |
 
 ## 12. 오답 제거 기준
 
@@ -437,6 +463,8 @@ Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 �
 
 먼저 `After Midterm Quiz Review`를 외운다. 20260521부터 20260605까지의 퀴즈는 기말 직전 범위이므로, 문항별 핵심 정답 키워드를 먼저 잡는 것이 효율적이다.
 
+그다음 `Robotics 1`, `Robotics 2`를 읽어 after-midterm quiz의 로보틱스 문항을 설명형으로 바꿔 말해 본다. `Robotics 1`은 behavioral cloning과 DAggER, `Robotics 2`는 VLA, world model, data engine, physical RL을 보강한다.
+
 그다음 `Midterm Review`의 전체 정답 체크리스트를 빠르게 훑는다. 이미 중간고사에서 다룬 기본 개념이라도, 기말에서는 LLM과 자율주행, 로보틱스 개념을 이해하기 위한 기반으로 다시 등장할 수 있다.
 
 마지막으로 `Before Midterm Quiz Review`에서 기본 정의를 보강한다. 특히 logistic regression, MLP, RNN, attention, Transformer는 뒤쪽 범위의 언어모델과 로봇 foundation model을 이해하는 뼈대다.
@@ -444,10 +472,11 @@ Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 �
 | 공부 순서 | 할 일 |
 |---:|---|
 | 1 | After-midterm 5개 quiz의 핵심 정답 키워드를 암기한다. |
-| 2 | LLM, 자율주행, imitation learning, robotics scaling을 설명형 문장으로 말해 본다. |
-| 3 | Midterm Review의 오답 제거 기준을 보고 헷갈리는 선택지를 제거하는 연습을 한다. |
-| 4 | Before-midterm의 기본 ML/CV/NLP/Transformer 정의를 빠르게 복습한다. |
-| 5 | 복습 질문을 닫은 상태로 먼저 답하고, 펼쳐서 답변을 확인한다. |
+| 2 | Robotics 1/2로 imitation learning, DAggER, VLA, WAM, physical RL을 보강한다. |
+| 3 | LLM, 자율주행, imitation learning, robotics scaling을 설명형 문장으로 말해 본다. |
+| 4 | Midterm Review의 오답 제거 기준을 보고 헷갈리는 선택지를 제거하는 연습을 한다. |
+| 5 | Before-midterm의 기본 ML/CV/NLP/Transformer 정의를 빠르게 복습한다. |
+| 6 | 복습 질문을 닫은 상태로 먼저 답하고, 펼쳐서 답변을 확인한다. |
 
 ## 복습 질문
 
@@ -597,4 +626,6 @@ Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 �
   <li><a href="{{ "/assignment/aix/aix-quiz-review-before-midterm/" | relative_url }}">AIX Quiz Review Before Midterm</a></li>
   <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX Midterm Review</a></li>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-after-midterm/" | relative_url }}">AIX Quiz Review After Midterm</a></li>
+  <li><a href="{{ "/study/aix/robotics-1/" | relative_url }}">Robotics 1</a></li>
+  <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
