@@ -37,6 +37,17 @@ Source Images:
 | 오답 제거 | 선택지가 완전히 틀렸는지, 다른 개념에는 맞지만 현재 문항에는 맞지 않는지 구분한다. |
 | 추가 개념 | 정답을 이해하기 위해 필요한 배경 개념을 짧게 보강한다. |
 
+## 원문 대조 결과
+
+중간고사 정답지 이미지는 1번부터 50번까지 답과 짧은 해설이 붙어 있는 형태다. 현재 문서는 정답지의 문항 순서를 그대로 복사하지 않고, 같은 개념을 묻는 문제들을 묶어 다시 공부할 수 있게 재구성했다.
+
+| 원문 범위 | 현재 문서 반영 위치 | 점검 결과 |
+|---|---|---|
+| 정답지 1, Q1-Q12 | RNN과 Attention, Logistic Regression, MLP와 Deep Learning, Computer Vision, NLP와 Word2Vec | 핵심 정답과 오답 제거 기준이 반영되어 있다. |
+| 정답지 1, Q13-Q25 | Regression과 Optimization, Transformer와 Self-Attention, Computer Vision, Modern AI | 수식, 역할, 대표 키워드가 개념별로 재정리되어 있다. |
+| 정답지 2, Q26-Q37 | Transformer와 Self-Attention, Logistic Regression, Regression, Computer Vision, NLP, RNN | 차원 조건, objective, residual, task-specific NLP 등 혼동 지점이 보강되어 있다. |
+| 정답지 2, Q38-Q50 | Regression, Attention, Transformer, Word Embedding, Diffusion, MLP, Deep Learning | feature/target, positional encoding, softmax, fine-tuning, generalization까지 체크리스트에 반영되어 있다. |
+
 ## 1. Regression과 Optimization
 
 ### 핵심 정리
@@ -347,6 +358,86 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 | 48 | pre-trained model을 특정 task에 맞게 조정 |
 | 49 | loss를 줄이도록 parameter를 반복 update |
 | 50 | expressivity, regularization, bias-variance 균형으로 generalize |
+
+## 마지막 핵심 정리
+
+| 범위 | 반드시 남겨야 할 문장 |
+|---|---|
+| Regression | feature \\(x\\)로 target \\(y\\)를 예측하고, residual은 \\(y-\hat{y}\\)이다. |
+| Optimization | gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다. |
+| Logistic Regression | linear score \\(w^Tx+b\\)에 sigmoid를 붙여 class probability로 해석한다. |
+| MLP | hidden layer와 nonlinearity가 single perceptron보다 복잡한 pattern을 표현하게 한다. |
+| Computer Vision | high-level 목표는 pixel을 meaning으로 연결하는 것이다. |
+| NLP | tokenizer는 token으로 나누고, embedding은 token을 dense vector로 표현한다. |
+| RNN | sequential data를 시간 순서대로 처리하지만 긴 문맥과 병렬 처리에 약하다. |
+| Transformer | self-attention은 token 간 관계를 보고, positional encoding은 순서 정보를 보강한다. |
+| Modern AI | pre-training은 일반 표현 학습, fine-tuning은 특정 task 적응이다. |
+
+## Study Guide
+
+1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기한다.
+2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인한다.
+3. 수식형 문항은 \\(score=w^Tx+b\\), \\(residual=y-\hat{y}\\), sigmoid, softmax, gradient update를 손으로 다시 써 본다.
+4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 본다.
+5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교한다.
+
+## 복습 질문
+
+<details>
+<summary>1. Linear regression에서 feature, target, score, residual을 한 번에 구분하면?</summary>
+
+답변: feature는 입력 \\(x\\), target은 맞혀야 하는 정답 \\(y\\), score 또는 prediction은 \\(\hat{y}=w^Tx+b\\), residual은 실제값과 예측값의 차이 \\(y-\hat{y}\\)이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
+
+</details>
+
+<details>
+<summary>2. Gradient descent에서 왜 gradient의 반대 방향으로 이동하는가?</summary>
+
+답변: gradient \\(\nabla L\)은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 \\(\theta \leftarrow \theta-\eta\nabla L(\theta)\\)처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
+
+</details>
+
+<details>
+<summary>3. Logistic regression이 linear regression과 비슷하면서도 classification 모델인 이유는?</summary>
+
+답변: logistic regression도 먼저 \\(w^Tx+b\\)라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 \\(0\\)과 \\(1\\) 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
+
+</details>
+
+<details>
+<summary>4. Single perceptron은 XOR을 못 풀고 MLP는 풀 수 있는 이유는?</summary>
+
+답변: single perceptron은 하나의 선형 decision boundary를 만들기 때문에 linearly separable한 문제에만 적합하다. XOR은 하나의 직선으로 두 class를 나눌 수 없다. MLP는 hidden layer와 nonlinear activation을 통해 입력을 새로운 표현 공간으로 바꾸고, 여러 경계 조각을 조합해 XOR 같은 비선형 패턴을 표현할 수 있다.
+
+</details>
+
+<details>
+<summary>5. Backpropagation과 gradient descent는 같은 말인가?</summary>
+
+답변: 아니다. backpropagation은 chain rule을 이용해 각 parameter의 gradient를 계산하는 절차다. gradient descent는 계산된 gradient를 이용해 parameter를 실제로 업데이트하는 최적화 방법이다. 즉 backpropagation은 “기울기를 구하는 법”, gradient descent는 “그 기울기로 움직이는 법”에 가깝다.
+
+</details>
+
+<details>
+<summary>6. Tokenizer, one-hot vector, embedding은 어떻게 이어지는가?</summary>
+
+답변: tokenizer는 문장을 token으로 나누고 vocabulary의 항목에 대응시킨다. one-hot vector는 token을 vocabulary 크기의 희소 벡터로 표현한다. embedding은 token을 더 낮은 차원의 dense vector로 바꾸어 의미적 유사성을 담을 수 있게 한다. 따라서 tokenizer와 embedding은 같은 단계가 아니라 순차적으로 연결되는 단계다.
+
+</details>
+
+<details>
+<summary>7. RNN이 sequence에 맞지만 긴 문장에서 약해지는 이유는?</summary>
+
+답변: RNN은 현재 hidden state가 이전 hidden state에 의존하므로 시간 순서가 있는 데이터를 처리하기 좋다. 그러나 긴 문장에서는 앞부분 정보가 hidden state에 반복적으로 압축되면서 영향이 희미해질 수 있고, 이전 시점 계산이 끝나야 다음 시점을 계산할 수 있어 병렬화도 어렵다.
+
+</details>
+
+<details>
+<summary>8. Self-attention에서 Q, K, V와 positional encoding의 역할은?</summary>
+
+답변: Q와 K의 내적은 token 사이 관련도 점수를 계산하는 데 쓰이고, V는 그 점수로 가중합해 실제 출력 표현을 만드는 데 쓰인다. self-attention은 token 간 관계를 잘 보지만 그 자체만으로 순서 정보를 자연스럽게 알기 어렵다. 그래서 positional encoding을 더해 각 token의 위치 정보를 보강한다.
+
+</details>
 
 ## Source Images
 
