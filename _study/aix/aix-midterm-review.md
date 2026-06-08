@@ -3,7 +3,7 @@ layout: default
 title: "AIX Midterm Review"
 course: "AIX"
 topic: "중간고사 핵심 개념 복습"
-order: 9
+order: 11
 ---
 
 # AIX Midterm Review

@@ -3,7 +3,7 @@ layout: default
 title: "AIX Final Review"
 course: "AIX"
 topic: "기말고사 준비 자료"
-order: 10
+order: 12
 ---
 
 # AIX Final Review
