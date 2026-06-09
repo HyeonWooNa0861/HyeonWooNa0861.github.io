@@ -1557,13 +1557,18 @@
         max-width: min(1780px, calc(100vw - 56px));
       }
 
-      body.pdf-reader-active .visual-map-section {
+      body.pdf-reader-active .page-shell.has-sidebar {
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 44vw);
+        gap: clamp(24px, 3vw, 52px);
+      }
+
+      body.pdf-reader-active .page-shell::before,
+      body.pdf-reader-active .page-shell.has-sidebar > .side-index {
         display: none;
       }
 
-      body.pdf-reader-active .page-shell.has-sidebar {
-        grid-template-columns: minmax(160px, 206px) minmax(0, 1fr) minmax(340px, 44vw);
-        gap: clamp(24px, 3vw, 52px);
+      body.pdf-reader-active .page-shell.has-sidebar > .page-content {
+        grid-column: 1;
       }
 
       .pdf-reader-backdrop {
@@ -1582,7 +1587,7 @@
         position: sticky;
         top: 88px;
         z-index: 15;
-        grid-column: 3;
+        grid-column: 2;
         align-self: start;
         box-sizing: border-box;
         min-width: 0;
