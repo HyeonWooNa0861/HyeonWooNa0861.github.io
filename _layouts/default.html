@@ -11,6 +11,13 @@
         var path = window.location.pathname;
         var isHomePath = path === "/" || path === "/index.html";
         var isProtectedPath = /^\/(study|assignment)(\/|$)/.test(path);
+        var isReaderEmbed = false;
+
+        try {
+          isReaderEmbed = new URLSearchParams(window.location.search).get("embed") === "1";
+        } catch (error) {
+          isReaderEmbed = false;
+        }
 
         try {
           var savedTheme = localStorage.getItem("gitblogTheme");
@@ -21,6 +28,9 @@
         }
 
         document.documentElement.dataset.theme = theme;
+        if (isReaderEmbed) {
+          document.documentElement.dataset.readerEmbed = "true";
+        }
 
         try {
           if (isHomePath) {
@@ -1569,6 +1579,57 @@
 
       body.pdf-reader-active .page-shell.has-sidebar > .page-content {
         grid-column: 1;
+      }
+
+      html[data-reader-embed="true"] body {
+        min-height: auto;
+        background: var(--panel-solid);
+      }
+
+      html[data-reader-embed="true"] body::before,
+      html[data-reader-embed="true"] main::after,
+      html[data-reader-embed="true"] .site-header,
+      html[data-reader-embed="true"] .side-index,
+      html[data-reader-embed="true"] .visual-map-section,
+      html[data-reader-embed="true"] .section-pager,
+      html[data-reader-embed="true"] .scroll-progress,
+      html[data-reader-embed="true"] .page-shell::before {
+        display: none;
+      }
+
+      html[data-reader-embed="true"] main {
+        padding: 0;
+      }
+
+      html[data-reader-embed="true"] .wrap,
+      html[data-reader-embed="true"] .main-wrap {
+        max-width: none;
+        padding: 0;
+      }
+
+      html[data-reader-embed="true"] .page-shell,
+      html[data-reader-embed="true"] .page-shell.has-sidebar {
+        display: block;
+      }
+
+      html[data-reader-embed="true"] .page-shell.has-sidebar > .page-content,
+      html[data-reader-embed="true"] .page-shell:not(.has-sidebar) .page-content {
+        grid-column: auto;
+        max-width: none;
+        margin: 0;
+        border: 0;
+        background: var(--panel-solid);
+        box-shadow: none;
+        filter: none;
+        clip-path: none;
+        padding: 28px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      html[data-reader-embed="true"] .page-shell.has-sidebar > .page-content::before,
+      html[data-reader-embed="true"] .posted-page .page-shell.has-sidebar > .page-content::before {
+        display: none;
       }
 
       .pdf-reader-backdrop {
@@ -5790,48 +5851,100 @@
           });
         }
 
-        function initPdfReader() {
+        function initResourceReader() {
+          if (document.documentElement.dataset.readerEmbed === "true") return;
+
           var pageShell = document.querySelector(".page-shell");
           var readerContent = document.querySelector(".page-content");
           if (!pageShell || !readerContent) return;
 
-          var pdfLinks = Array.prototype.slice.call(readerContent.querySelectorAll("a[href]")).filter(isPdfLink);
-          if (!pdfLinks.length) return;
+          var readerLinks = Array.prototype.slice.call(readerContent.querySelectorAll("a[href]")).filter(getReaderResource);
+          if (!readerLinks.length) return;
 
           var readerBackdrop = null;
           var readerPanel = null;
+          var readerKicker = null;
           var readerTitle = null;
           var readerFrame = null;
           var readerOpen = null;
           var readerFallback = null;
           var readerClose = null;
-          var lastPdfTrigger = null;
+          var lastReaderTrigger = null;
 
-          function isPdfLink(link) {
+          function getLinkUrl(link) {
             if (!link || link.hasAttribute("download")) return false;
 
             try {
-              var url = new URL(link.getAttribute("href"), window.location.href);
-              return url.pathname.toLowerCase().endsWith(".pdf");
+              return new URL(link.getAttribute("href"), window.location.href);
             } catch (error) {
               return false;
             }
           }
 
-          function getPdfLabel(link) {
+          function isPdfUrl(url) {
+            return url.pathname.toLowerCase().endsWith(".pdf");
+          }
+
+          function isFileUrl(url) {
+            return /\.(avif|csv|doc|docx|gif|heic|jpeg|jpg|json|md|mov|mp3|mp4|png|ppt|pptx|svg|txt|webm|webp|xls|xlsx|zip)$/i.test(url.pathname);
+          }
+
+          function isReaderExcludedLink(link) {
+            return Boolean(link.closest(".post-list, .section-pager, .pdf-reader-panel, [data-no-resource-reader]"));
+          }
+
+          function isInternalPageUrl(url) {
+            if (url.origin !== window.location.origin) return false;
+            if (isPdfUrl(url) || isFileUrl(url)) return false;
+            if (url.pathname === window.location.pathname && url.hash) return false;
+            return true;
+          }
+
+          function toEmbedUrl(url) {
+            var embedUrl = new URL(url.href);
+            embedUrl.searchParams.set("embed", "1");
+            return embedUrl.href;
+          }
+
+          function getReaderResource(link) {
+            if (isReaderExcludedLink(link)) return null;
+
+            var url = getLinkUrl(link);
+            if (!url) return null;
+
+            if (isPdfUrl(url)) {
+              return {
+                type: "PDF",
+                sourceUrl: url.href,
+                frameUrl: url.href
+              };
+            }
+
+            if (isInternalPageUrl(url)) {
+              return {
+                type: "PAGE",
+                sourceUrl: url.href,
+                frameUrl: toEmbedUrl(url)
+              };
+            }
+
+            return null;
+          }
+
+          function getResourceLabel(link, resource) {
             var label = link.textContent.trim();
             if (label) return label;
 
             try {
-              var url = new URL(link.href, window.location.href);
-              var fileName = decodeURIComponent(url.pathname.split("/").pop() || "PDF");
-              return fileName.replace(/\.pdf$/i, "");
+              var url = new URL(resource.sourceUrl, window.location.href);
+              var fileName = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || resource.type);
+              return fileName.replace(/\.pdf$/i, "") || resource.type;
             } catch (error) {
-              return "PDF";
+              return resource.type;
             }
           }
 
-          function ensurePdfReader() {
+          function ensureResourceReader() {
             if (readerPanel) return;
 
             readerBackdrop = document.createElement("div");
@@ -5843,88 +5956,94 @@
             readerPanel.className = "pdf-reader-panel";
             readerPanel.setAttribute("data-pdf-reader-panel", "");
             readerPanel.setAttribute("role", "dialog");
-            readerPanel.setAttribute("aria-label", "PDF preview");
+            readerPanel.setAttribute("aria-label", "Resource preview");
             readerPanel.hidden = true;
 
             readerPanel.innerHTML = [
               '<div class="pdf-reader-inner">',
               '  <div class="pdf-reader-toolbar">',
               '    <div>',
-              '      <p class="pdf-reader-kicker">PDF</p>',
-              '      <h2 class="pdf-reader-title" data-pdf-reader-title>PDF</h2>',
+              '      <p class="pdf-reader-kicker" data-resource-reader-kicker>RESOURCE</p>',
+              '      <h2 class="pdf-reader-title" data-pdf-reader-title>Resource</h2>',
               '    </div>',
               '    <div class="pdf-reader-actions">',
               '      <a class="pdf-reader-open" data-pdf-reader-open href="#" target="_blank" rel="noopener">Open</a>',
-              '      <button class="pdf-reader-close" data-pdf-reader-close type="button" aria-label="Close PDF preview">Close</button>',
+              '      <button class="pdf-reader-close" data-pdf-reader-close type="button" aria-label="Close resource preview">Close</button>',
               '    </div>',
               '  </div>',
               '  <div class="pdf-reader-frame-wrap">',
-              '    <iframe class="pdf-reader-frame" data-pdf-reader-frame title="PDF preview"></iframe>',
-              '    <p class="pdf-reader-fallback">Preview unavailable? <a data-pdf-reader-fallback href="#" target="_blank" rel="noopener">Open PDF in a new tab</a>.</p>',
+              '    <iframe class="pdf-reader-frame" data-pdf-reader-frame title="Resource preview"></iframe>',
+              '    <p class="pdf-reader-fallback">Preview unavailable? <a data-pdf-reader-fallback href="#" target="_blank" rel="noopener">Open in a new tab</a>.</p>',
               '  </div>',
               '</div>'
             ].join("");
 
+            readerKicker = readerPanel.querySelector("[data-resource-reader-kicker]");
             readerTitle = readerPanel.querySelector("[data-pdf-reader-title]");
             readerFrame = readerPanel.querySelector("[data-pdf-reader-frame]");
             readerOpen = readerPanel.querySelector("[data-pdf-reader-open]");
             readerFallback = readerPanel.querySelector("[data-pdf-reader-fallback]");
             readerClose = readerPanel.querySelector("[data-pdf-reader-close]");
 
-            readerBackdrop.addEventListener("click", closePdfReader);
-            readerClose.addEventListener("click", closePdfReader);
+            readerBackdrop.addEventListener("click", closeResourceReader);
+            readerClose.addEventListener("click", closeResourceReader);
 
             document.body.appendChild(readerBackdrop);
             pageShell.appendChild(readerPanel);
           }
 
-          function openPdfReader(link) {
-            ensurePdfReader();
+          function openResourceReader(link, resource) {
+            ensureResourceReader();
 
-            var pdfUrl = link.href;
-            var label = getPdfLabel(link);
-            lastPdfTrigger = link;
+            var label = getResourceLabel(link, resource);
+            lastReaderTrigger = link;
 
+            readerKicker.textContent = resource.type;
             readerTitle.textContent = label;
-            readerOpen.href = pdfUrl;
-            readerFallback.href = pdfUrl;
-            readerFrame.title = label + " PDF preview";
-            readerFrame.src = pdfUrl;
+            readerOpen.href = resource.sourceUrl;
+            readerFallback.href = resource.sourceUrl;
+            readerFrame.title = label + " preview";
+            readerFrame.src = resource.frameUrl;
             readerPanel.hidden = false;
             document.body.classList.add("pdf-reader-active");
             readerClose.focus({ preventScroll: true });
           }
 
-          function closePdfReader() {
+          function closeResourceReader() {
             if (!readerPanel || readerPanel.hidden) return;
 
             readerFrame.removeAttribute("src");
             readerPanel.hidden = true;
             document.body.classList.remove("pdf-reader-active");
 
-            if (lastPdfTrigger && document.contains(lastPdfTrigger)) {
-              lastPdfTrigger.focus({ preventScroll: true });
+            if (lastReaderTrigger && document.contains(lastReaderTrigger)) {
+              lastReaderTrigger.focus({ preventScroll: true });
             }
           }
 
-          pdfLinks.forEach(function (link) {
+          readerLinks.forEach(function (link) {
             link.setAttribute("data-pdf-reader-link", "");
             link.addEventListener("click", function (event) {
               if (event.defaultPrevented) return;
               if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
+              var resource = getReaderResource(link);
+              if (!resource) return;
+
               event.preventDefault();
-              openPdfReader(link);
+              openResourceReader(link, resource);
             });
           });
 
           document.addEventListener("keydown", function (event) {
             if (event.key !== "Escape") return;
-            closePdfReader();
+            closeResourceReader();
           });
         }
 
-        initPdfReader();
+        initResourceReader();
+
+        if (document.documentElement.dataset.readerEmbed === "true") return;
 
         var sectionPager = document.querySelector(".section-pager");
         if (!sectionPager) return;
