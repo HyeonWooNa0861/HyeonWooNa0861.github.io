@@ -873,6 +873,33 @@
         min-width: 0;
       }
 
+      .home-page .page-content > .home-directory > .directory-section {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-height: clamp(360px, 38vw, 500px);
+      }
+
+      .home-page .page-content > .home-directory > .directory-section > h2 {
+        min-height: clamp(86px, 9vw, 126px);
+        align-items: flex-start;
+        margin-bottom: 18px;
+        padding: 2px 0 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .home-page .page-content > .home-directory > .directory-section > .post-list {
+        min-height: 0;
+        align-content: start;
+      }
+
+      .home-page .page-content > .home-directory > .directory-section.has-card-scroll > .post-list {
+        max-height: clamp(242px, 32vh, 360px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-right: 8px;
+        scrollbar-gutter: stable;
+      }
+
       .branch-logo {
         color: var(--text);
         font-size: clamp(26px, 4.6vw, 52px);
@@ -914,6 +941,106 @@
         stroke-linecap: round;
       }
 
+      .branch-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 240;
+        display: none;
+        place-items: center;
+        padding: clamp(18px, 4vw, 40px);
+        background: rgba(0, 0, 0, 0.18);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+      }
+
+      body.branch-modal-active {
+        overflow: hidden;
+      }
+
+      body.branch-modal-active .branch-modal-backdrop {
+        display: grid;
+      }
+
+      .branch-modal-panel {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        width: min(100%, 760px);
+        max-height: min(760px, calc(100vh - 56px));
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: var(--panel-strong);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .branch-modal-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: start;
+        padding: clamp(20px, 4vw, 30px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .branch-modal-title {
+        margin: 0;
+        color: var(--text);
+        font-family: var(--title-font, inherit);
+        font-size: clamp(30px, 6vw, 54px);
+        font-style: var(--title-style, normal);
+        font-weight: var(--title-weight, 760);
+        letter-spacing: -0.05em;
+        line-height: 0.98;
+        overflow-wrap: anywhere;
+      }
+
+      .branch-modal-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .branch-modal-open,
+      .branch-modal-close {
+        display: inline-flex;
+        min-height: 34px;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: color-mix(in srgb, var(--text), transparent 92%);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 680;
+      }
+
+      .branch-modal-open:hover,
+      .branch-modal-close:hover {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .branch-modal-body {
+        min-height: 0;
+        overflow: hidden;
+        padding: clamp(18px, 4vw, 26px);
+      }
+
+      .branch-modal-list {
+        max-height: 100%;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-right: 8px;
+        scrollbar-gutter: stable;
+      }
+
+      .branch-modal-list .post-card {
+        background: color-mix(in srgb, var(--bg-elevated), transparent 4%);
+      }
+
       .post-list {
         display: grid;
         gap: 14px;
@@ -953,6 +1080,17 @@
         overflow-wrap: anywhere;
         word-break: keep-all;
         hyphens: auto;
+      }
+
+      .page-content .post-card a {
+        min-height: 2.65em;
+        padding: 2px 0 10px;
+      }
+
+      .content-page .page-content > h1 + .post-list .post-card a,
+      .home-page .page-content > .home-directory .post-card a {
+        display: flex;
+        align-items: flex-start;
       }
 
       .post-card a:hover {
@@ -1887,6 +2025,7 @@
           if (!link) return;
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           if (link.target || link.hasAttribute("download")) return;
+          if (link.hasAttribute("data-branch-modal-trigger")) return;
 
           try {
             var nextUrl = new URL(link.href, window.location.href);
@@ -3276,6 +3415,108 @@
             updateThemeToggleLabel();
           });
         }
+
+        function initBranchModal() {
+          if (!document.body.classList.contains("home-page")) return;
+
+          var triggers = Array.prototype.slice.call(document.querySelectorAll("[data-branch-modal-trigger]"));
+          if (!triggers.length) return;
+
+          var modal = null;
+          var modalTitle = null;
+          var modalOpen = null;
+          var modalListWrap = null;
+          var modalClose = null;
+          var lastTrigger = null;
+
+          function ensureBranchModal() {
+            if (modal) return;
+
+            modal = document.createElement("div");
+            modal.className = "branch-modal-backdrop";
+            modal.setAttribute("data-branch-modal", "");
+            modal.setAttribute("role", "dialog");
+            modal.setAttribute("aria-modal", "true");
+            modal.setAttribute("aria-labelledby", "branch-modal-title");
+
+            modal.innerHTML = [
+              '<section class="branch-modal-panel">',
+              '  <header class="branch-modal-header">',
+              '    <h2 class="branch-modal-title" id="branch-modal-title">Tabs</h2>',
+              '    <div class="branch-modal-actions">',
+              '      <a class="branch-modal-open" data-branch-modal-open href="#">Open page</a>',
+              '      <button class="branch-modal-close" data-branch-modal-close type="button" aria-label="Close tabs modal">Close</button>',
+              '    </div>',
+              '  </header>',
+              '  <div class="branch-modal-body" data-branch-modal-list></div>',
+              '</section>'
+            ].join("");
+
+            modalTitle = modal.querySelector("#branch-modal-title");
+            modalOpen = modal.querySelector("[data-branch-modal-open]");
+            modalListWrap = modal.querySelector("[data-branch-modal-list]");
+            modalClose = modal.querySelector("[data-branch-modal-close]");
+
+            modal.addEventListener("click", function (event) {
+              if (event.target === modal) closeBranchModal();
+            });
+
+            modalClose.addEventListener("click", closeBranchModal);
+            document.body.appendChild(modal);
+          }
+
+          function getBranchTitle(section) {
+            var title = section.querySelector(".branch-logo");
+            return title ? title.textContent.trim() : "Tabs";
+          }
+
+          function openBranchModal(trigger) {
+            var section = trigger.closest(".directory-section");
+            var sourceList = section ? section.querySelector(":scope > .post-list") : null;
+            if (!section || !sourceList) return false;
+
+            ensureBranchModal();
+
+            lastTrigger = trigger;
+            modalTitle.textContent = getBranchTitle(section);
+            modalOpen.href = trigger.href;
+            modalOpen.setAttribute("aria-label", "Open " + modalTitle.textContent + " page");
+
+            var clonedList = sourceList.cloneNode(true);
+            clonedList.classList.add("branch-modal-list");
+            modalListWrap.replaceChildren(clonedList);
+
+            document.body.classList.add("branch-modal-active");
+            modalClose.focus({ preventScroll: true });
+            return true;
+          }
+
+          function closeBranchModal() {
+            if (!modal || !document.body.classList.contains("branch-modal-active")) return;
+            document.body.classList.remove("branch-modal-active");
+            if (modalListWrap) modalListWrap.replaceChildren();
+            if (lastTrigger && document.contains(lastTrigger)) {
+              lastTrigger.focus({ preventScroll: true });
+            }
+          }
+
+          triggers.forEach(function (trigger) {
+            trigger.addEventListener("click", function (event) {
+              if (event.defaultPrevented) return;
+              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+              if (openBranchModal(trigger)) {
+                event.preventDefault();
+              }
+            });
+          });
+
+          document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") closeBranchModal();
+          });
+        }
+
+        initBranchModal();
 
         function initResourceReader() {
           if (document.documentElement.dataset.readerEmbed === "true") return;
