@@ -206,7 +206,7 @@
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transition: opacity 280ms var(--ease), visibility 280ms var(--ease);
+        transition: opacity 180ms var(--ease), visibility 180ms var(--ease);
       }
 
       .loading-screen[hidden] {
@@ -1922,9 +1922,9 @@
         var loadingRevealTimer = null;
         var loadingCleanupTimer = null;
         var loadingFailSafeTimer = null;
-        var initialLoadingDelay = 420;
-        var navigationLoadingDelay = 180;
-        var minimumLoadingVisible = 420;
+        var initialLoadingDelay = 650;
+        var navigationLoadingDelay = 320;
+        var minimumLoadingVisible = 160;
         var protectedGateKey = "gitblogProtectedGatePassed";
         var studyGatePassword = "0311";
         var currentPath = window.location.pathname;
@@ -2023,7 +2023,7 @@
           loadingScreen.hidden = false;
           loadingRoot.classList.remove("loading-done");
           loadingRoot.classList.add("loading-active");
-          loadingFailSafeTimer = setTimeout(releaseLoadingScreen, 5000);
+          loadingFailSafeTimer = setTimeout(releaseLoadingScreen, 2600);
         }
 
         function scheduleLoadingScreen(delay) {
@@ -2058,7 +2058,7 @@
             loadingScreen.addEventListener("transitionend", cleanup, { once: true });
           }
 
-          loadingCleanupTimer = setTimeout(cleanup, 520);
+          loadingCleanupTimer = setTimeout(cleanup, 240);
         }
 
         function finishInitialLoading() {
@@ -2074,7 +2074,7 @@
         } else {
           scheduleLoadingScreen(Math.max(0, initialLoadingDelay - (Date.now() - loadingStart)));
           window.addEventListener("load", finishInitialLoading, { once: true });
-          setTimeout(finishInitialLoading, 2400);
+          setTimeout(finishInitialLoading, 1400);
         }
 
         window.addEventListener("pageshow", function (event) {
