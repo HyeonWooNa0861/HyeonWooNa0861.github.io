@@ -272,10 +272,10 @@
       .logo-fragment,
       .logo-letter {
         display: inline-block;
-        font-family: inherit !important;
+        font-family: var(--logo-letter-font, inherit);
         font-size: 1em !important;
-        font-style: normal !important;
-        font-weight: inherit !important;
+        font-style: var(--logo-letter-style, normal);
+        font-weight: var(--logo-letter-weight, inherit);
         transform: none !important;
       }
 
@@ -513,7 +513,10 @@
         gap: 10px;
         border-radius: 12px;
         color: var(--muted);
+        font-family: var(--nav-title-font, inherit);
+        font-style: var(--nav-title-style, normal);
         font-size: 13px;
+        font-weight: var(--nav-title-weight, 560);
         line-height: 1.35;
         transition: background 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
       }
@@ -588,6 +591,9 @@
       .page-content h3,
       .page-content h4 {
         color: var(--text);
+        font-family: var(--title-font, inherit);
+        font-style: var(--title-style, normal);
+        font-weight: var(--title-weight, 760);
         letter-spacing: -0.035em;
         line-height: 1.12;
       }
@@ -939,8 +945,10 @@
         display: inline-block;
         max-width: 100%;
         color: var(--text);
-        font-weight: 700;
-        line-height: 1.24;
+        font-family: var(--card-title-font, inherit);
+        font-style: var(--card-title-style, normal);
+        font-weight: var(--card-title-weight, 700);
+        line-height: var(--card-title-line, 1.24);
         letter-spacing: -0.02em;
         overflow-wrap: anywhere;
         word-break: keep-all;
@@ -1030,8 +1038,10 @@
 
       .about-card dt {
         color: var(--muted);
+        font-family: var(--about-card-label-font, inherit);
         font-size: 12px;
-        font-weight: 740;
+        font-style: var(--about-card-label-style, normal);
+        font-weight: var(--about-card-label-weight, 740);
         letter-spacing: 0.07em;
         text-transform: uppercase;
       }
@@ -1039,8 +1049,10 @@
       .about-card dd {
         margin: 10px 0 0;
         color: var(--text);
+        font-family: var(--about-card-value-font, inherit);
         font-size: clamp(20px, 3vw, 32px);
-        font-weight: 680;
+        font-style: var(--about-card-value-style, normal);
+        font-weight: var(--about-card-value-weight, 680);
         letter-spacing: -0.035em;
         line-height: 1.16;
         overflow-wrap: anywhere;
@@ -2430,12 +2442,14 @@
             card.style.setProperty("--about-card-rotate", randomRange(-2.2, 2.2, "deg"));
             card.style.setProperty("--about-card-line-rotate", randomRange(-16, 10, "deg"));
             card.style.setProperty("--about-card-label-font", randomChoice(aboutFonts));
+            card.style.setProperty("--about-card-label-style", randomChoice(["normal", "normal", "normal", "italic"]));
             card.style.setProperty("--about-card-label-size", randomRange(10, 13, "px"));
             card.style.setProperty("--about-card-label-weight", randomInt(620, 860));
             card.style.setProperty("--about-card-label-x", randomRange(-4, 5, "px"));
             card.style.setProperty("--about-card-label-y", randomRange(-3, 4, "px"));
             card.style.setProperty("--about-card-label-rotate", randomRange(-1.4, 1.4, "deg"));
             card.style.setProperty("--about-card-value-font", randomChoice(aboutFonts));
+            card.style.setProperty("--about-card-value-style", randomChoice(["normal", "normal", "normal", "italic"]));
             card.style.setProperty("--about-card-value-size", randomRange(22, 34, "px"));
             card.style.setProperty("--about-card-small-value-size", randomRange(isLongValue ? 15.5 : 16, isLongValue ? 21 : 24, "px"));
             card.style.setProperty("--about-card-value-weight", randomInt(620, 860));
@@ -2450,8 +2464,17 @@
           document.querySelectorAll(".side-index-link").forEach(function (link) {
             link.style.setProperty("--map-link-x", randomRange(-3, 4, "px"));
             link.style.setProperty("--map-link-rotate", randomRange(-1.2, 1.2, "deg"));
+            link.style.setProperty("--nav-title-font", randomChoice(aboutFonts));
+            link.style.setProperty("--nav-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            link.style.setProperty("--nav-title-weight", randomInt(460, 680));
             applyTrimProfile(link, 3, 10);
             applyHoverProfile(link, true);
+          });
+
+          document.querySelectorAll(".side-index-heading").forEach(function (heading) {
+            heading.style.setProperty("--nav-title-font", randomChoice(aboutFonts));
+            heading.style.setProperty("--nav-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            heading.style.setProperty("--nav-title-weight", randomInt(620, 820));
           });
 
           document.querySelectorAll(".side-index-section").forEach(function (section) {
@@ -2561,9 +2584,16 @@
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
+            var cardTitle = card.querySelector(".orbit-chip-label, a");
+            var cardTitleLength = cardTitle ? cardTitle.textContent.trim().length : 0;
+            var cardTitleIsLong = cardTitleLength > 20;
             card.style.setProperty("--card-skew", randomRange(-1.8, 1.2, "deg"));
             card.style.setProperty("--card-offset-left", randomRange(8, 24, "px"));
             card.style.setProperty("--card-offset-right", randomRange(6, 20, "px"));
+            card.style.setProperty("--card-title-font", randomChoice(aboutFonts));
+            card.style.setProperty("--card-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            card.style.setProperty("--card-title-weight", randomInt(cardTitleIsLong ? 600 : 640, cardTitleIsLong ? 780 : 860));
+            card.style.setProperty("--card-title-line", randomRange(cardTitleIsLong ? 1.22 : 1.16, cardTitleIsLong ? 1.38 : 1.3, ""));
             card.style.setProperty("--home-card-title-x", randomRange(-8, 14, "px"));
             card.style.setProperty("--home-card-title-y", randomRange(-3, 6, "px"));
             card.style.setProperty("--home-card-title-rotate", randomRange(-1.6, 1.4, "deg"));
@@ -2662,6 +2692,13 @@
 
           document.querySelectorAll(".directory-link, .section-pager-card, .section-pager-parent, .theme-toggle").forEach(function (element) {
             applyHoverProfile(element, true);
+          });
+
+          document.querySelectorAll(".page-content h1, .page-content h2, .page-content h3, .page-content h4").forEach(function (title) {
+            var isMainTitle = title.tagName === "H1";
+            title.style.setProperty("--title-font", randomChoice(aboutFonts));
+            title.style.setProperty("--title-style", randomChoice(["normal", "normal", "normal", "italic"]));
+            title.style.setProperty("--title-weight", randomInt(isMainTitle ? 720 : 620, isMainTitle ? 900 : 820));
           });
         }
 
