@@ -245,10 +245,21 @@
         white-space: nowrap;
       }
 
+      .directory-section .branch-logo,
+      .page-branch-logo,
+      .about-logo {
+        min-width: 0;
+        max-width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
+      }
+
       .loading-mark {
         font-size: clamp(48px, 10vw, 124px);
         font-weight: 740;
-        animation: applePulse 1400ms var(--ease) infinite alternate;
       }
 
       .loading-status {
@@ -270,11 +281,6 @@
 
       .logo-space {
         width: 0.28em;
-      }
-
-      @keyframes applePulse {
-        from { transform: translateY(4px) scale(0.985); opacity: 0.72; }
-        to { transform: translateY(0) scale(1); opacity: 1; }
       }
 
       .study-gate {
@@ -310,7 +316,6 @@
         background: var(--panel-strong);
         box-shadow: var(--shadow-lg);
         text-align: center;
-        animation: panelMaterialize 520ms var(--ease-spring) both;
       }
 
       .study-gate-title {
@@ -417,7 +422,6 @@
         background: color-mix(in srgb, var(--bg), transparent 24%);
         backdrop-filter: var(--blur);
         -webkit-backdrop-filter: var(--blur);
-        animation: headerDrop 620ms var(--ease-spring) both;
         transition: background 260ms var(--ease), border-color 260ms var(--ease);
       }
 
@@ -492,7 +496,6 @@
         backdrop-filter: var(--blur);
         -webkit-backdrop-filter: var(--blur);
         box-shadow: var(--shadow-sm);
-        animation: sideRailIn 680ms var(--ease-spring) 80ms both;
       }
 
       .side-index-section + .side-index-section {
@@ -561,7 +564,6 @@
         box-shadow: var(--shadow-md);
         backdrop-filter: var(--blur);
         -webkit-backdrop-filter: var(--blur);
-        animation: pageMaterialize 720ms var(--ease-spring) 60ms both;
         transition: background 260ms var(--ease), border-color 260ms var(--ease), box-shadow 260ms var(--ease);
       }
 
@@ -774,7 +776,6 @@
         place-items: center;
         min-height: clamp(180px, 30vw, 340px);
         margin-bottom: clamp(28px, 6vw, 72px);
-        animation: heroSettle 820ms var(--ease-spring) both;
       }
 
       .home-logo {
@@ -782,101 +783,6 @@
         font-weight: 780;
         color: var(--text);
         filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.08));
-        animation:
-          logoMaterialize 780ms var(--ease-spring) both,
-          logoFloat 6200ms var(--ease) 820ms infinite alternate;
-      }
-
-      @keyframes logoFloat {
-        from { transform: translate3d(0, 6px, 0) scale(0.995); }
-        to { transform: translate3d(0, -6px, 0) scale(1.005); }
-      }
-
-      @keyframes headerDrop {
-        from {
-          opacity: 0;
-          transform: translate3d(0, -14px, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-      }
-
-      @keyframes panelMaterialize {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 16px, 0) scale(0.985);
-          filter: blur(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0) scale(1);
-          filter: blur(0);
-        }
-      }
-
-      @keyframes pageMaterialize {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 18px, 0) scale(0.992);
-          filter: blur(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0) scale(1);
-          filter: blur(0);
-        }
-      }
-
-      @keyframes sideRailIn {
-        from {
-          opacity: 0;
-          transform: translate3d(-14px, 10px, 0);
-          filter: blur(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-          filter: blur(0);
-        }
-      }
-
-      @keyframes heroSettle {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 22px, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-      }
-
-      @keyframes logoMaterialize {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 24px, 0) scale(0.94);
-          filter: blur(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0) scale(1);
-          filter: blur(0);
-        }
-      }
-
-      @keyframes cardMaterialize {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 22px, 0) scale(0.975);
-          filter: blur(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0) scale(1);
-          filter: blur(0);
-        }
       }
 
       @keyframes readerSlideIn {
@@ -889,35 +795,6 @@
           opacity: 1;
           transform: translate3d(0, 0, 0) scale(1);
           filter: blur(0);
-        }
-      }
-
-      @keyframes mapBreathe {
-        from {
-          transform: scale(0.996);
-          background-position: 50% 46%, 0 0;
-        }
-        to {
-          transform: scale(1.004);
-          background-position: 52% 44%, 0 0;
-        }
-      }
-
-      @keyframes mapChipDrift {
-        from {
-          transform: translate3d(0, 0, 0);
-        }
-        to {
-          transform: translate3d(0, -4px, 0);
-        }
-      }
-
-      @keyframes mapCoreDrift {
-        from {
-          transform: translate3d(0, 5px, 0) scale(0.995);
-        }
-        to {
-          transform: translate3d(0, -5px, 0) scale(1.005);
         }
       }
 
@@ -972,8 +849,6 @@
         box-shadow: var(--shadow-sm);
         backdrop-filter: var(--blur);
         -webkit-backdrop-filter: var(--blur);
-        animation: cardMaterialize 640ms var(--ease-spring) both;
-        animation-delay: var(--entry-delay, 0ms);
         transition: transform 240ms var(--ease-spring), box-shadow 240ms var(--ease), border-color 220ms var(--ease), background 220ms var(--ease);
       }
 
@@ -989,11 +864,12 @@
         justify-content: space-between;
         gap: 18px;
         margin: 0 0 18px;
+        min-width: 0;
       }
 
       .branch-logo {
         color: var(--text);
-        font-size: clamp(30px, 5vw, 56px);
+        font-size: clamp(26px, 4.6vw, 52px);
         font-weight: 760;
       }
 
@@ -1042,13 +918,12 @@
 
       .post-card {
         min-width: 0;
+        max-width: 100%;
         padding: 18px 18px 16px;
         border: 1px solid var(--line);
         border-radius: 22px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 8%);
         box-shadow: none;
-        animation: cardMaterialize 620ms var(--ease-spring) both;
-        animation-delay: var(--entry-delay, 0ms);
         transition: transform 220ms var(--ease-spring), box-shadow 220ms var(--ease), border-color 180ms var(--ease), background 180ms var(--ease);
       }
 
@@ -1062,10 +937,14 @@
       .post-card a,
       .post-card .orbit-chip-label {
         display: inline-block;
+        max-width: 100%;
         color: var(--text);
         font-weight: 700;
         line-height: 1.24;
         letter-spacing: -0.02em;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
+        hyphens: auto;
       }
 
       .post-card a:hover {
@@ -1077,6 +956,8 @@
         color: var(--muted);
         font-size: 14px;
         line-height: 1.45;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
       }
 
       .content-page .page-content > h1 + .post-list {
@@ -1091,6 +972,9 @@
 
       .branch-card-link {
         display: inline-block;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
       }
 
       .about-stage {
@@ -1131,8 +1015,6 @@
         border-radius: 24px;
         background: var(--bg-elevated);
         box-shadow: var(--shadow-sm);
-        animation: cardMaterialize 620ms var(--ease-spring) both;
-        animation-delay: var(--entry-delay, 0ms);
         transition: transform 220ms var(--ease-spring), box-shadow 220ms var(--ease), border-color 180ms var(--ease);
       }
 
@@ -1178,73 +1060,166 @@
       .visual-map-section .home-orbit {
         position: relative;
         overflow: hidden;
-        min-height: clamp(360px, 54vw, 720px);
+        min-height: clamp(520px, 70vw, 840px);
         border-radius: var(--radius-lg);
         background:
-          radial-gradient(circle at 50% 46%, var(--accent-soft), transparent 26rem),
+          radial-gradient(circle at 50% 50%, var(--accent-soft), transparent 24rem),
           color-mix(in srgb, var(--panel), transparent 12%);
-        animation: mapBreathe 9000ms var(--ease) infinite alternate;
       }
 
       .visual-map-section .orbit-map {
         position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        padding: clamp(28px, 6vw, 76px);
+        top: 50%;
+        left: 50%;
+        width: min(3200px, 260vw);
+        height: min(2400px, 210vw);
+        transform:
+          translate3d(
+            calc(-50% + var(--orbit-fit-x, 0px) + var(--orbit-pan-x, 0px)),
+            calc(-50% + var(--orbit-fit-y, 0px) + var(--orbit-pan-y, 0px)),
+            0
+          )
+          scale(var(--orbit-fit-scale, 0.72));
+        transform-origin: center;
       }
 
       .visual-map-section .orbit-core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
         min-height: 0;
         margin: 0;
+        transform: translate(-50%, -50%);
       }
 
       .visual-map-section .home-logo {
         font-size: clamp(54px, 10vw, 128px);
-        opacity: 0.2;
-        animation: mapCoreDrift 7600ms var(--ease) infinite alternate;
+        opacity: 0.32;
       }
 
       .visual-map-section .orbit-field {
         position: absolute;
-        inset: clamp(28px, 6vw, 74px);
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        align-content: center;
-        gap: 16px;
+        inset: 0;
         pointer-events: none;
       }
 
       .visual-map-section .directory-section {
-        padding: 16px;
-        border-radius: 22px;
-        background: color-mix(in srgb, var(--bg-elevated), transparent 16%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: var(--orbit-section-z, 20);
+        width: var(--orbit-cluster-size, 560px);
+        height: var(--orbit-cluster-size, 560px);
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         box-shadow: none;
+        overflow: visible;
+        pointer-events: none;
+        transform:
+          translate3d(
+            calc(-50% + var(--orbit-node-x, 0px)),
+            calc(-50% + var(--orbit-node-y, 0px)),
+            0
+          )
+          rotate(var(--orbit-node-rotate, 0deg));
+      }
+
+      .visual-map-section .directory-section::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        width: var(--orbit-spine-length, 240px);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent), transparent 24%));
+        opacity: var(--orbit-spine-opacity, 0.56);
+        transform:
+          rotate(var(--orbit-node-angle, 0deg))
+          translateX(calc(-1 * var(--orbit-spine-length, 240px)));
+        transform-origin: right center;
       }
 
       .visual-map-section .directory-section h2 {
-        margin-bottom: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: var(--orbit-branch-z, 80);
+        display: flex;
+        width: var(--orbit-branch-node-width, 240px);
+        min-height: 76px;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: var(--orbit-node-pad-y, 16px) var(--orbit-node-pad-x, 18px) var(--orbit-node-pad-bottom, 18px);
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: color-mix(in srgb, var(--bg-elevated), transparent 4%);
+        box-shadow: var(--shadow-sm);
+        transform:
+          translate(-50%, -50%)
+          rotate(var(--orbit-branch-node-rotate, 0deg));
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
       }
 
       .visual-map-section .branch-logo {
-        font-size: 24px;
+        justify-content: center;
+        text-align: center;
+        font-size: clamp(20px, 2.6vw, 30px);
+        letter-spacing: -0.045em;
       }
 
       .visual-map-section .post-list {
-        gap: 8px;
+        position: absolute;
+        inset: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
       }
 
       .visual-map-section .post-card {
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: color-mix(in srgb, var(--bg-elevated), transparent 22%);
-        animation-name: cardMaterialize, mapChipDrift;
-        animation-duration: 620ms, 7200ms;
-        animation-timing-function: var(--ease-spring), var(--ease);
-        animation-delay: var(--entry-delay, 0ms), var(--drift-delay, -1200ms);
-        animation-fill-mode: both, both;
-        animation-iteration-count: 1, infinite;
-        animation-direction: normal, alternate;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: var(--orbit-card-z, 8);
+        width: var(--orbit-chip-width, 150px);
+        min-height: auto;
+        padding: var(--orbit-chip-pad-y, 10px) var(--orbit-chip-pad-x, 12px) var(--orbit-chip-pad-bottom, 11px);
+        border-radius: 16px;
+        background: color-mix(in srgb, var(--bg-elevated), transparent 8%);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+        transform:
+          translate3d(
+            calc(-50% + var(--orbit-child-x, 0px)),
+            calc(-50% + var(--orbit-child-y, 0px)),
+            0
+          )
+          rotate(var(--orbit-chip-rotate, 0deg));
+        pointer-events: none;
+      }
+
+      .visual-map-section .orbit-card-connector {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+        width: var(--orbit-connector-length, 72px);
+        height: 1px;
+        background: color-mix(in srgb, var(--accent), transparent 26%);
+        opacity: var(--orbit-connector-opacity, 0.45);
+        transform:
+          translate3d(
+            calc(-50% + var(--orbit-connector-x, 0px)),
+            calc(-50% + var(--orbit-connector-y, 0px)),
+            0
+          )
+          rotate(var(--orbit-connector-angle, 0deg));
+        transform-origin: center;
       }
 
       .visual-map-section .post-card p {
