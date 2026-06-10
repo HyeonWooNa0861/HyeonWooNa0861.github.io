@@ -1067,9 +1067,13 @@
       }
 
       .post-card {
+        display: grid;
+        grid-template-columns: minmax(9rem, 0.4fr) minmax(0, 1fr);
+        gap: 8px 14px;
+        align-items: start;
         min-width: 0;
         max-width: 100%;
-        padding: 18px 18px 16px;
+        padding: 12px 14px;
         border: 1px solid var(--line);
         border-radius: 22px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 8%);
@@ -1088,6 +1092,7 @@
       .post-card .orbit-chip-label {
         display: inline-block;
         max-width: 100%;
+        min-width: 0;
         color: var(--text);
         font-family: var(--card-title-font, inherit);
         font-style: var(--card-title-style, normal);
@@ -1099,9 +1104,14 @@
         hyphens: auto;
       }
 
+      .post-card a:last-child,
+      .post-card .orbit-chip-label:last-child {
+        grid-column: 1 / -1;
+      }
+
       .page-content .post-card a {
-        min-height: 2.65em;
-        padding: 2px 0 10px;
+        min-height: 0;
+        padding: 0;
       }
 
       .content-page .page-content > h1 + .post-list .post-card a,
@@ -1115,7 +1125,9 @@
       }
 
       .post-card p {
-        margin: 8px 0 0;
+        margin: 0;
+        padding-left: 14px;
+        border-left: 1px solid var(--line);
         color: var(--muted);
         font-size: 14px;
         line-height: 1.45;
@@ -1125,12 +1137,12 @@
 
       .content-page .page-content > h1 + .post-list {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-        gap: 18px;
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
 
       .content-page .page-content > h1 + .post-list .post-card {
-        min-height: 132px;
+        min-height: 0;
       }
 
       .branch-card-link {
@@ -1226,19 +1238,28 @@
 
       .visual-map-section .home-orbit {
         position: relative;
+        isolation: isolate;
         overflow: hidden;
         min-height: clamp(500px, 64vw, 760px);
         border: 1px solid var(--line);
         border-radius: 28px;
-        background:
-          radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent-soft), transparent 24%), transparent 22rem),
-          color-mix(in srgb, var(--panel-strong), transparent 16%);
+        background: color-mix(in srgb, var(--panel-strong), transparent 16%);
+      }
+
+      .visual-map-section .home-orbit::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent-soft), transparent 24%), transparent 22rem);
+        pointer-events: none;
       }
 
       .visual-map-section .orbit-map {
         position: absolute;
         top: 50%;
         left: 50%;
+        z-index: 1;
         width: var(--orbit-map-width, min(3200px, 260vw));
         height: var(--orbit-map-height, min(2400px, 210vw));
         transform:
@@ -1358,6 +1379,7 @@
       }
 
       .visual-map-section .post-card {
+        display: block;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -1735,6 +1757,16 @@
 
         .section-pager-parent {
           justify-self: start;
+        }
+
+        .post-card {
+          grid-template-columns: minmax(7.25rem, 0.42fr) minmax(0, 1fr);
+          gap: 7px 10px;
+          padding: 11px 12px;
+        }
+
+        .post-card p {
+          padding-left: 10px;
         }
 
         .scroll-progress {
