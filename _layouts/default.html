@@ -2089,7 +2089,14 @@
           clearLoadingTimers();
         });
 
+        function hasActiveOverlay() {
+          return document.body.classList.contains("branch-modal-active") ||
+            document.body.classList.contains("pdf-reader-active") ||
+            loadingRoot.dataset.studyGate === "locked";
+        }
+
         document.addEventListener("click", function (event) {
+          if (event.defaultPrevented) return;
           var link = event.target.closest("a[href]");
           if (!link) return;
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -2970,391 +2977,6 @@
         if (window.visualViewport) {
           window.visualViewport.addEventListener("resize", requestHomeOrbitRelayout);
         }
-
-        function setupOrbitMapPan() {
-          document.querySelectorAll("[data-orbit-viewport]").forEach(function (viewport) {
-            var map = viewport.querySelector("[data-orbit-map]");
-            if (!map) return;
-
-            var panX = 0;
-            var panY = 0;
-            var zoom = 1;
-            var minZoom = 0.62;
-            var maxZoom = 1.8;
-            var startX = 0;
-            var startY = 0;
-            var startPanX = 0;
-            var startPanY = 0;
-            var activePointerId = null;
-            var activePointers = new Map();
-            var pinchStartDistance = 0;
-            var pinchStartZoom = 1;
-            var gestureStartZoom = 1;
-            var pendingFrame = null;
-            var draggedDuringPointer = false;
-            var suppressNextClick = false;
-            var dragThreshold = 10;
-            var interactionMode = "idle";
-            var modeReleaseTimer = null;
-            var browserGestureActive = false;
-            var wheelMode = "idle";
-            var lastWheelModeAt = 0;
-            var wheelModeWindowMs = 180;
-            var wheelIntentRatio = 1.18;
-            var userAdjustedMap = false;
-
-            viewport.setAttribute("tabindex", "0");
-
-            function getInitialPanOffset() {
-              return {
-                x: 0,
-                y: 0
-              };
-            }
-
-            function getLimits() {
-              var maxX = Math.max(0, ((map.offsetWidth * zoom) - viewport.clientWidth) / 2);
-              var maxY = Math.max(0, ((map.offsetHeight * zoom) - viewport.clientHeight) / 2);
-              return { x: maxX, y: maxY };
-            }
-
-            function clamp(value, min, max) {
-              return Math.min(max, Math.max(min, value));
-            }
-
-            function canUseMode(mode) {
-              return interactionMode === "idle" || interactionMode === mode;
-            }
-
-            function setMode(mode) {
-              if (modeReleaseTimer) {
-                window.clearTimeout(modeReleaseTimer);
-                modeReleaseTimer = null;
-              }
-              interactionMode = mode;
-            }
-
-            function releaseModeSoon(mode, delay) {
-              if (modeReleaseTimer) window.clearTimeout(modeReleaseTimer);
-              modeReleaseTimer = window.setTimeout(function () {
-                if (interactionMode === mode && activePointerId === null && pinchStartDistance === 0 && !browserGestureActive) {
-                  interactionMode = "idle";
-                }
-              }, delay);
-            }
-
-            function beginTransientMode(mode, delay) {
-              if (!canUseMode(mode)) return false;
-              setMode(mode);
-              releaseModeSoon(mode, delay);
-              return true;
-            }
-
-            function getWheelMode(event) {
-              var absX = Math.abs(event.deltaX);
-              var absY = Math.abs(event.deltaY);
-              var now = Date.now();
-
-              if (event.ctrlKey || event.metaKey || event.altKey) {
-                wheelMode = "zoom";
-              } else if (absY > absX * wheelIntentRatio) {
-                wheelMode = "zoom";
-              } else if (absX > absY * wheelIntentRatio) {
-                wheelMode = "pan";
-              } else if (now - lastWheelModeAt > wheelModeWindowMs) {
-                wheelMode = "idle";
-              }
-
-              lastWheelModeAt = now;
-              return wheelMode;
-            }
-
-            function setPan(nextX, nextY) {
-              var limits = getLimits();
-              panX = clamp(nextX, -limits.x, limits.x);
-              panY = clamp(nextY, -limits.y, limits.y);
-              if (pendingFrame) return;
-              pendingFrame = window.requestAnimationFrame(function () {
-                pendingFrame = null;
-                viewport.style.setProperty("--orbit-pan-x", panX.toFixed(2) + "px");
-                viewport.style.setProperty("--orbit-pan-y", panY.toFixed(2) + "px");
-                viewport.style.setProperty("--orbit-zoom", zoom.toFixed(3));
-              });
-            }
-
-            function setPanImmediately(nextX, nextY) {
-              var limits = getLimits();
-              panX = clamp(nextX, -limits.x, limits.x);
-              panY = clamp(nextY, -limits.y, limits.y);
-              if (pendingFrame) {
-                window.cancelAnimationFrame(pendingFrame);
-                pendingFrame = null;
-              }
-              viewport.style.setProperty("--orbit-pan-x", panX.toFixed(2) + "px");
-              viewport.style.setProperty("--orbit-pan-y", panY.toFixed(2) + "px");
-              viewport.style.setProperty("--orbit-zoom", zoom.toFixed(3));
-            }
-
-            function setZoom(nextZoom, originX, originY, immediate) {
-              var previousZoom = zoom;
-              var next = clamp(nextZoom, minZoom, maxZoom);
-              if (Math.abs(next - previousZoom) < 0.001) return;
-
-              var bounds = viewport.getBoundingClientRect();
-              var anchorX = (typeof originX === "number" ? originX : bounds.left + (bounds.width / 2)) - bounds.left - (bounds.width / 2);
-              var anchorY = (typeof originY === "number" ? originY : bounds.top + (bounds.height / 2)) - bounds.top - (bounds.height / 2);
-              var ratio = next / previousZoom;
-
-              zoom = next;
-              if (immediate) {
-                setPanImmediately((panX * ratio) + (anchorX * (1 - ratio)), (panY * ratio) + (anchorY * (1 - ratio)));
-              } else {
-                setPan((panX * ratio) + (anchorX * (1 - ratio)), (panY * ratio) + (anchorY * (1 - ratio)));
-              }
-            }
-
-            function getPointerPair() {
-              return Array.from(activePointers.values()).slice(0, 2);
-            }
-
-            function getPointerDistance(pair) {
-              if (pair.length < 2) return 0;
-              var dx = pair[0].x - pair[1].x;
-              var dy = pair[0].y - pair[1].y;
-              return Math.sqrt((dx * dx) + (dy * dy));
-            }
-
-            function getPointerCenter(pair) {
-              if (pair.length < 2) {
-                return {
-                  x: pair[0] ? pair[0].x : undefined,
-                  y: pair[0] ? pair[0].y : undefined
-                };
-              }
-
-              return {
-                x: (pair[0].x + pair[1].x) / 2,
-                y: (pair[0].y + pair[1].y) / 2
-              };
-            }
-
-            function stopDragging() {
-              if (activePointerId === null && pinchStartDistance === 0 && !viewport.classList.contains("is-dragging")) return;
-              if (draggedDuringPointer) {
-                suppressNextClick = true;
-                window.setTimeout(function () {
-                  suppressNextClick = false;
-                }, 120);
-              }
-              activePointerId = null;
-              pinchStartDistance = 0;
-              releaseModeSoon(interactionMode, 120);
-              viewport.classList.remove("is-dragging");
-            }
-
-            var initialPan = getInitialPanOffset();
-            setPanImmediately(initialPan.x, initialPan.y);
-
-            viewport.addEventListener("pointerdown", function (event) {
-              if (event.button && event.button !== 0) return;
-              if (event.target.closest(".post-card, a[href], button, input, textarea, select, summary, [contenteditable='true']")) return;
-              if (browserGestureActive) return;
-
-              activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-              if (activePointers.size >= 2) {
-                setMode("zoom");
-                var pair = getPointerPair();
-                pinchStartDistance = getPointerDistance(pair);
-                pinchStartZoom = zoom;
-                activePointerId = null;
-                userAdjustedMap = true;
-                draggedDuringPointer = true;
-                viewport.classList.add("is-dragging");
-                viewport.setPointerCapture(event.pointerId);
-                return;
-              }
-
-              if (!canUseMode("pan")) {
-                activePointers.delete(event.pointerId);
-                return;
-              }
-              setMode("pan");
-              activePointerId = event.pointerId;
-              startX = event.clientX;
-              startY = event.clientY;
-              startPanX = panX;
-              startPanY = panY;
-              draggedDuringPointer = false;
-              viewport.classList.add("is-dragging");
-              viewport.setPointerCapture(event.pointerId);
-            });
-
-            viewport.addEventListener("pointermove", function (event) {
-              if (browserGestureActive) return;
-
-              if (activePointers.has(event.pointerId)) {
-                activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-              }
-
-              if (activePointers.size >= 2 && pinchStartDistance > 0) {
-                if (!canUseMode("zoom")) return;
-                setMode("zoom");
-                if (event.cancelable) event.preventDefault();
-                var pair = getPointerPair();
-                var center = getPointerCenter(pair);
-                setZoom(pinchStartZoom * (getPointerDistance(pair) / pinchStartDistance), center.x, center.y);
-                draggedDuringPointer = true;
-                return;
-              }
-
-              if (activePointerId !== event.pointerId) return;
-              if (interactionMode !== "pan") return;
-              if (event.cancelable) event.preventDefault();
-              var deltaX = event.clientX - startX;
-              var deltaY = event.clientY - startY;
-              if (Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)) > dragThreshold) {
-                draggedDuringPointer = true;
-                userAdjustedMap = true;
-              }
-              setPan(startPanX + deltaX, startPanY + deltaY);
-            });
-
-            function finishPointer(event) {
-              activePointers.delete(event.pointerId);
-              if (activePointers.size === 1) {
-                activePointerId = null;
-                pinchStartDistance = 0;
-                releaseModeSoon("zoom", 160);
-                return;
-              }
-
-              stopDragging();
-            }
-
-            viewport.addEventListener("pointerup", finishPointer);
-            viewport.addEventListener("pointercancel", finishPointer);
-            viewport.addEventListener("lostpointercapture", function (event) {
-              activePointers.delete(event.pointerId);
-              stopDragging();
-            });
-
-            viewport.addEventListener("wheel", function (event) {
-              if (!event.cancelable) return;
-              if (Math.abs(event.deltaX) < 0.5 && Math.abs(event.deltaY) < 0.5) return;
-
-              event.preventDefault();
-              var mode = getWheelMode(event);
-              if (mode === "zoom") {
-                if (!beginTransientMode("zoom", 150)) return;
-                var wheelAmount = event.deltaY || event.deltaX;
-                var zoomSpeed = event.ctrlKey || event.metaKey || event.altKey ? 0.003 : 0.0018;
-                userAdjustedMap = true;
-                setZoom(zoom * Math.exp(-wheelAmount * zoomSpeed), event.clientX, event.clientY);
-                return;
-              }
-
-              if (mode !== "pan" || !beginTransientMode("pan", 90)) return;
-              userAdjustedMap = true;
-              setPan(panX - event.deltaX, panY - event.deltaY);
-            }, { passive: false });
-
-            viewport.addEventListener("gesturestart", function (event) {
-              if (!event.cancelable) return;
-              event.preventDefault();
-              browserGestureActive = true;
-              activePointers.clear();
-              activePointerId = null;
-              pinchStartDistance = 0;
-              setMode("zoom");
-              gestureStartZoom = zoom;
-              userAdjustedMap = true;
-            }, { passive: false });
-
-            viewport.addEventListener("gesturechange", function (event) {
-              if (!event.cancelable) return;
-              event.preventDefault();
-              setZoom(gestureStartZoom * event.scale, event.clientX, event.clientY);
-            }, { passive: false });
-
-            viewport.addEventListener("gestureend", function (event) {
-              if (event.cancelable) event.preventDefault();
-              browserGestureActive = false;
-              releaseModeSoon("zoom", 160);
-            }, { passive: false });
-
-            viewport.addEventListener("gesturecancel", function (event) {
-              if (event.cancelable) event.preventDefault();
-              browserGestureActive = false;
-              releaseModeSoon("zoom", 160);
-            }, { passive: false });
-
-            viewport.addEventListener("click", function (event) {
-              if (!suppressNextClick) return;
-              event.preventDefault();
-              event.stopPropagation();
-              suppressNextClick = false;
-            }, true);
-
-            viewport.addEventListener("keydown", function (event) {
-              var keyStep = event.shiftKey ? 92 : 46;
-              if (event.key === "ArrowLeft") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setPan(panX + keyStep, panY);
-              } else if (event.key === "ArrowRight") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setPan(panX - keyStep, panY);
-              } else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setPan(panX, panY + keyStep);
-              } else if (event.key === "ArrowDown") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setPan(panX, panY - keyStep);
-              } else if (event.key === "+" || event.key === "=") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setZoom(zoom * 1.14);
-              } else if (event.key === "-" || event.key === "_") {
-                event.preventDefault();
-                userAdjustedMap = true;
-                setZoom(zoom / 1.14);
-              } else if (event.key === "0") {
-                event.preventDefault();
-                zoom = 1;
-                userAdjustedMap = false;
-                var resetPan = getInitialPanOffset();
-                setPanImmediately(resetPan.x, resetPan.y);
-              }
-            });
-
-            function syncViewportAndPan() {
-              syncHomeViewport();
-              if (!userAdjustedMap && Math.abs(zoom - 1) < 0.001) {
-                var freshInitialPan = getInitialPanOffset();
-                setPanImmediately(freshInitialPan.x, freshInitialPan.y);
-                return;
-              }
-
-              setPanImmediately(panX, panY);
-            }
-
-            window.addEventListener("resize", syncViewportAndPan);
-            window.addEventListener("orientationchange", function () {
-              syncViewportAndPan();
-              window.setTimeout(syncViewportAndPan, 120);
-            });
-            if (window.visualViewport) {
-              window.visualViewport.addEventListener("resize", syncViewportAndPan);
-              window.visualViewport.addEventListener("scroll", syncViewportAndPan);
-            }
-          });
-        }
-
-        setupOrbitMapPan();
-
         var scrollProgress = document.querySelector("[data-scroll-progress]");
         var scrollProgressFrame = null;
 
@@ -3789,7 +3411,7 @@
         var transitionDurationMs = 180;
 
         function navigateTo(link, direction, source) {
-          if (!link || navigationLocked) return;
+          if (!link || navigationLocked || hasActiveOverlay()) return;
           navigationLocked = true;
           wheelDeltaX = 0;
           if (source === "wheel") {
@@ -3851,6 +3473,18 @@
           }
         }
 
+        function resetWheelState() {
+          wheelDeltaX = 0;
+          window.clearTimeout(wheelResetTimer);
+          clearWheelCarryover();
+        }
+
+        function resetTouchState() {
+          touchStartX = 0;
+          touchStartY = 0;
+          touchStartedAt = 0;
+        }
+
         function scheduleWheelCarryoverRelease() {
           window.clearTimeout(wheelQuietTimer);
           wheelQuietTimer = window.setTimeout(function () {
@@ -3884,7 +3518,7 @@
         }
 
         function hasHorizontalIntent(target, deltaX, deltaY) {
-          if (isInteractiveTarget(target) || isInsideHorizontalScroller(target)) return false;
+          if (hasActiveOverlay() || isInteractiveTarget(target) || isInsideHorizontalScroller(target)) return false;
           return Math.abs(deltaX) > Math.abs(deltaY) * horizontalIntentRatio;
         }
 
@@ -3896,6 +3530,10 @@
 
         document.addEventListener("wheel", function (event) {
           if (event.defaultPrevented) return;
+          if (hasActiveOverlay()) {
+            resetWheelState();
+            return;
+          }
           if (!hasHorizontalIntent(event.target, event.deltaX, event.deltaY)) return;
           event.preventDefault();
 
@@ -3934,6 +3572,10 @@
         }
 
         document.addEventListener("touchstart", function (event) {
+          if (hasActiveOverlay()) {
+            resetTouchState();
+            return;
+          }
           if (event.touches.length !== 1 || isInteractiveTarget(event.target)) return;
           touchStartX = event.touches[0].clientX;
           touchStartY = event.touches[0].clientY;
@@ -3941,6 +3583,10 @@
         }, { passive: true });
 
         document.addEventListener("touchend", function (event) {
+          if (hasActiveOverlay()) {
+            resetTouchState();
+            return;
+          }
           if (!touchStartX || !event.changedTouches.length) return;
           if (isInsideHorizontalScroller(event.target)) return;
 
@@ -3949,9 +3595,7 @@
           var deltaY = touch.clientY - touchStartY;
           var elapsed = Date.now() - touchStartedAt;
 
-          touchStartX = 0;
-          touchStartY = 0;
-          touchStartedAt = 0;
+          resetTouchState();
 
           if (elapsed > 800 || !shouldUseHorizontalNavigation(event.target, deltaX, deltaY, touchTriggerThreshold)) return;
           navigateTo(deltaX < 0 ? nextLink : previousLink, deltaX < 0 ? "next" : "previous", "touch");
