@@ -17,7 +17,10 @@ permalink: /
   {% assign child_count = item.children | size %}
   <section class="directory-section{% if child_count > 4 %} has-card-scroll{% endif %}" data-child-count="{{ child_count }}">
     <h2>
-      <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
+      <span class="branch-heading">
+        <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
+        <span class="branch-meta">{{ child_count }} item{% if child_count != 1 %}s{% endif %}</span>
+      </span>
       <a class="directory-link" data-branch-modal-trigger href="{{ item.url | relative_url }}" aria-label="Open {{ item.title }} tabs only">
         <svg class="directory-plus" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
           <path class="plus-axis plus-axis-horizontal" d="M7 16H25" />

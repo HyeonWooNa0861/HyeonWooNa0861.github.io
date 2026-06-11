@@ -758,11 +758,11 @@
 
       .home-page main {
         min-height: calc(100vh - var(--header-height));
-        padding-top: clamp(54px, 8vw, 92px);
+        padding-top: clamp(38px, 6vw, 72px);
       }
 
       .home-page .wrap {
-        width: min(100% - 28px, 1280px);
+        width: min(100% - 28px, 1320px);
       }
 
       .home-page .page-content {
@@ -772,8 +772,8 @@
       .home-hero {
         display: grid;
         place-items: center;
-        min-height: clamp(180px, 30vw, 340px);
-        margin-bottom: clamp(28px, 6vw, 72px);
+        min-height: clamp(140px, 24vw, 280px);
+        margin-bottom: clamp(26px, 5vw, 56px);
       }
 
       .home-logo {
@@ -820,8 +820,8 @@
 
       .home-directory {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-        gap: 22px;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+        gap: clamp(16px, 2.4vw, 24px);
         align-items: stretch;
       }
 
@@ -890,14 +890,20 @@
       .home-page .page-content > .home-directory > .directory-section {
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
-        min-height: clamp(320px, 34vw, 440px);
+        min-height: clamp(300px, 32vw, 420px);
+        padding: clamp(20px, 3vw, 28px);
+        border-color: color-mix(in srgb, var(--line-strong), transparent 22%);
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--panel-strong), transparent 4%), color-mix(in srgb, var(--panel), transparent 8%));
+        box-shadow: 0 16px 46px rgba(0, 0, 0, 0.07);
       }
 
       .home-page .page-content > .home-directory > .directory-section > h2 {
-        min-height: clamp(86px, 9vw, 126px);
-        align-items: flex-start;
-        margin-bottom: 18px;
-        padding: 2px 0 18px;
+        min-height: 0;
+        align-items: center;
+        margin-bottom: clamp(16px, 2.5vw, 22px);
+        padding: 0 0 clamp(14px, 2vw, 18px);
+        border-bottom: 1px solid var(--line);
       }
 
       .home-page .page-content > .home-directory > .directory-section > .post-list {
@@ -907,17 +913,52 @@
 
       .home-page .page-content > .home-directory > .directory-section.has-card-scroll > .post-list {
         align-self: stretch;
-        max-height: min(100%, clamp(220px, 28vh, 320px));
+        max-height: min(100%, clamp(232px, 32vh, 348px));
         overflow-y: auto;
         overscroll-behavior: contain;
-        padding: 0 8px 2px 0;
+        padding: 0 6px 2px 0;
         scrollbar-gutter: stable;
+      }
+
+      .branch-heading {
+        display: grid;
+        min-width: 0;
+        gap: 8px;
+      }
+
+      .branch-meta {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-transform: uppercase;
       }
 
       .branch-logo {
         color: var(--text);
         font-size: clamp(26px, 4.6vw, 52px);
         font-weight: 760;
+      }
+
+      .home-page .page-content > .home-directory .branch-logo {
+        display: flex;
+        justify-content: flex-start;
+        color: var(--text);
+        font-family: inherit;
+        font-size: clamp(30px, 4vw, 46px);
+        font-style: normal;
+        font-weight: 760;
+        letter-spacing: -0.045em;
+        line-height: 0.98;
+        white-space: normal;
+      }
+
+      .home-page .page-content > .home-directory .branch-logo .logo-letter {
+        font-family: inherit !important;
+        font-style: normal !important;
+        font-weight: inherit !important;
+        transform: none !important;
       }
 
       .page-branch-logo {
@@ -928,13 +969,15 @@
       .directory-link {
         display: inline-grid;
         flex: 0 0 auto;
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         place-items: center;
+        align-self: start;
+        border: 1px solid color-mix(in srgb, var(--accent), transparent 72%);
         border-radius: 999px;
         background: var(--accent-soft);
         color: var(--accent);
-        transition: transform 220ms var(--ease-spring), background 160ms var(--ease), color 160ms var(--ease);
+        transition: transform 220ms var(--ease-spring), background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease);
       }
 
       .directory-link:hover {
@@ -1135,6 +1178,55 @@
         word-break: keep-all;
       }
 
+      .home-page .page-content > .home-directory .post-list {
+        gap: 10px;
+      }
+
+      .home-page .page-content > .home-directory .post-card {
+        grid-template-columns: minmax(8.5rem, 0.36fr) minmax(0, 1fr);
+        gap: 8px 14px;
+        align-items: center;
+        min-height: 76px;
+        padding: 13px 14px;
+        border-radius: 18px;
+        background: color-mix(in srgb, var(--bg-elevated), transparent 7%);
+        box-shadow: none;
+        transform: none;
+      }
+
+      .home-page .page-content > .home-directory .post-card:hover {
+        transform: translateY(-2px);
+        background: var(--bg-elevated);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      .home-page .page-content > .home-directory .post-card a {
+        display: block;
+        color: var(--text);
+        font-family: inherit;
+        font-size: clamp(15px, 1.5vw, 17px);
+        font-style: normal;
+        font-weight: 700;
+        letter-spacing: -0.012em;
+        line-height: 1.22;
+        overflow-wrap: anywhere;
+        transform: none;
+      }
+
+      .home-page .page-content > .home-directory .post-card p {
+        display: block;
+        min-width: 0;
+        padding-left: 14px;
+        color: var(--text-soft);
+        font-family: inherit;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 450;
+        line-height: 1.42;
+        max-width: 46ch;
+        transform: none;
+      }
+
       .content-page .page-content > h1 + .post-list {
         display: grid;
         grid-template-columns: 1fr;
@@ -1243,16 +1335,13 @@
         min-height: clamp(500px, 64vw, 760px);
         border: 1px solid var(--line);
         border-radius: 28px;
-        background: color-mix(in srgb, var(--panel-strong), transparent 16%);
+        background:
+          radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent-soft), transparent 24%), transparent 22rem),
+          color-mix(in srgb, var(--panel-strong), transparent 16%);
       }
 
       .visual-map-section .home-orbit::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent-soft), transparent 24%), transparent 22rem);
-        pointer-events: none;
+        content: none;
       }
 
       .visual-map-section .orbit-map {
@@ -1746,6 +1835,14 @@
           padding: 20px;
         }
 
+        .home-page .page-content > .home-directory > .directory-section {
+          min-height: auto;
+        }
+
+        .home-page .page-content > .home-directory .post-card {
+          grid-template-columns: minmax(7.5rem, 0.38fr) minmax(0, 1fr);
+        }
+
         .section-pager-grid {
           grid-template-columns: 1fr;
           gap: 12px;
@@ -1769,6 +1866,10 @@
           padding-left: 10px;
         }
 
+        .home-page .page-content > .home-directory .post-card p {
+          padding-left: 12px;
+        }
+
         .scroll-progress {
           display: none;
         }
@@ -1785,6 +1886,21 @@
         .pdf-reader-close {
           flex: 1;
           text-align: center;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .home-page .page-content > .home-directory .post-card {
+          grid-template-columns: 1fr;
+          gap: 6px;
+          align-items: start;
+        }
+
+        .home-page .page-content > .home-directory .post-card p {
+          padding: 8px 0 0;
+          border-left: 0;
+          border-top: 1px solid var(--line);
+          max-width: none;
         }
       }
 
@@ -2193,6 +2309,14 @@
             "ui-serif, Georgia, \"Times New Roman\", serif",
             "ui-monospace, \"SFMono-Regular\", Menlo, Consolas, monospace"
           ];
+
+          var isReadableHomeElement = function (element) {
+            return Boolean(element && element.closest && element.closest(".home-page .page-content > .home-directory"));
+          };
+
+          var isVisualMapElement = function (element) {
+            return Boolean(element && element.closest && element.closest(".visual-map-section"));
+          };
 
           var randomPercentPair = function (min, max, thicknessMin, thicknessMax) {
             var start = randomNumber(min, max);
@@ -2685,6 +2809,7 @@
           });
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
+            if (isReadableHomeElement(section) || isVisualMapElement(section)) return;
             section.style.setProperty("--section-offset-y", randomRange(14, 72, "px"));
             section.style.setProperty("--section-offset-x", randomRange(8, 40, "px"));
             section.style.setProperty("--section-block-x", randomRange(-14, 20, "px"));
@@ -2728,6 +2853,7 @@
           });
 
           document.querySelectorAll(".directory-link").forEach(function (link) {
+            if (isReadableHomeElement(link)) return;
             link.style.setProperty("--plus-rotate", randomRange(-14, 16, "deg"));
             link.style.setProperty("--plus-axis-shift", randomRange(-2, 2, "px"));
             link.style.setProperty("--plus-glass-rotate", randomRange(-9, 7, "deg"));
@@ -2778,10 +2904,12 @@
           });
 
           document.querySelectorAll(".branch-logo, .logo-fragment").forEach(function (logo) {
+            if (logo.classList.contains("branch-logo") && (isReadableHomeElement(logo) || isVisualMapElement(logo))) return;
             applyLogoLetterProfile(logo);
           });
 
           document.querySelectorAll(".post-card").forEach(function (card) {
+            if (isReadableHomeElement(card) || isVisualMapElement(card)) return;
             var cardTitle = card.querySelector(".orbit-chip-label, a");
             var cardTitleLength = cardTitle ? cardTitle.textContent.trim().length : 0;
             var cardTitleIsLong = cardTitleLength > 20;
@@ -2805,59 +2933,8 @@
           });
 
           document.querySelectorAll(".home-directory .post-card").forEach(function (card, index) {
-            var title = card.querySelector(".orbit-chip-label, a");
-            var description = card.querySelector("p");
-            var titleLength = title ? title.textContent.trim().length : 0;
-            var descriptionLength = description ? description.textContent.trim().length : 0;
-            var longTitle = titleLength > 18;
-            var longDescription = descriptionLength > 58;
-            var compactCard = titleLength < 9 && descriptionLength < 42;
-            var homeCardWidthMin = longDescription ? 312 : (longTitle ? 286 : (compactCard ? 238 : 256));
-            var homeCardWidthMax = longDescription ? 368 : (longTitle ? 348 : (compactCard ? 304 : 326));
-            var homeCardHeightMin = longDescription ? 156 : (longTitle ? 144 : 128);
-            var homeCardHeightMax = longDescription ? 196 : (longTitle ? 178 : 160);
-            var homeCardPadXMin = longDescription ? 20 : 16;
-            var homeCardPadXMax = longDescription ? 26 : 23;
-
+            if (!isReadableHomeElement(card)) return;
             card.style.setProperty("--home-slide-delay", (index * 78).toFixed(0) + "ms");
-            card.style.setProperty("--home-card-width", randomRange(homeCardWidthMin, homeCardWidthMax, "px"));
-            card.style.setProperty("--home-card-min-height", randomRange(homeCardHeightMin, homeCardHeightMax, "px"));
-            card.style.setProperty("--home-card-pad-y", randomRange(16, 24, "px"));
-            card.style.setProperty("--home-card-pad-x", randomRange(homeCardPadXMin, homeCardPadXMax, "px"));
-            card.style.setProperty("--home-card-pad-bottom", randomRange(18, 30, "px"));
-            card.style.setProperty("--home-card-desc-gap", randomRange(10, 16, "px"));
-            card.style.setProperty("--home-card-desc-max", randomRange(longDescription ? 28 : 22, longDescription ? 34 : 28, "ch"));
-            card.style.setProperty("--home-card-rail-x", randomRange(-12, 20, "px"));
-            card.style.setProperty("--home-card-rail-y", randomRange(-5, 12, "px"));
-            card.style.setProperty("--home-card-rail-rotate", randomRange(-2.6, 2.4, "deg"));
-            card.style.setProperty("--home-card-rail-margin-top", randomRange(0, 24, "px"));
-            card.style.setProperty("--home-card-rail-margin-bottom", randomRange(0, 12, "px"));
-            card.style.setProperty("--home-card-line-rotate", randomRange(-22, 14, "deg"));
-            card.style.setProperty("--card-index-font", randomChoice(aboutFonts));
-            card.style.setProperty("--card-index-size", randomRange(10.5, 13.5, "px"));
-            card.style.setProperty("--card-index-style", randomChoice(["normal", "normal", "italic"]));
-            card.style.setProperty("--card-index-weight", randomInt(620, 880));
-            card.style.setProperty("--card-index-x", randomRange(-2, 3, "px"));
-            card.style.setProperty("--card-index-y", randomRange(-2, 3, "px"));
-            card.style.setProperty("--card-index-rotate", randomRange(-6, 6, "deg"));
-            card.style.setProperty("--card-title-font", randomChoice(aboutFonts));
-            card.style.setProperty("--card-title-size", randomRange(longTitle ? 17 : 18, longTitle ? 21 : 23, "px"));
-            card.style.setProperty("--card-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            card.style.setProperty("--card-title-weight", randomInt(620, 840));
-            card.style.setProperty("--card-title-line", randomRange(1.18, 1.36, ""));
-            card.style.setProperty("--card-title-x", randomRange(-5, 7, "px"));
-            card.style.setProperty("--card-title-y", randomRange(-3, 4, "px"));
-            card.style.setProperty("--card-title-rotate", randomRange(-1.6, 1.6, "deg"));
-            card.style.setProperty("--card-desc-font", randomChoice(aboutFonts));
-            card.style.setProperty("--card-desc-size", randomRange(longDescription ? 12.5 : 13, longDescription ? 14.5 : 15.5, "px"));
-            card.style.setProperty("--card-desc-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            card.style.setProperty("--card-desc-weight", randomInt(360, 560));
-            card.style.setProperty("--card-desc-line", randomRange(1.42, 1.68, ""));
-            card.style.setProperty("--card-desc-x", randomRange(-4, 5, "px"));
-            card.style.setProperty("--card-desc-y", randomRange(-2, 4, "px"));
-            card.style.setProperty("--card-desc-rotate", randomRange(-1.2, 1.2, "deg"));
-            applyTrimProfile(card, 8, 28);
-            applyHoverProfile(card, true);
           });
 
           document.querySelectorAll(".home-orbit .post-card").forEach(function (card) {
