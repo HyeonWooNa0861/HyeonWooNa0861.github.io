@@ -48,7 +48,7 @@ permalink: /
 </div>
 
 <section class="visual-map-section" aria-label="Visual map">
-  <div class="home-orbit visual-map-fit" data-orbit-fit aria-label="Visual map">
+  <div class="home-orbit visual-map-fit" aria-label="Visual map">
     <div class="orbit-map" data-orbit-map>
       <section class="home-hero orbit-core" aria-label="NaHW">
         <div class="home-logo" role="img" aria-label="NaHW">
