@@ -889,16 +889,18 @@
       }
 
       .home-page .page-content > .home-directory > .directory-section {
-        --home-branch-card-width: clamp(320px, 32vw, 460px);
+        --home-branch-padding: clamp(20px, 3vw, 28px);
+        --home-branch-content-width: clamp(320px, 32vw, 460px);
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto auto;
-        width: fit-content;
+        width: min(100%, calc(var(--home-branch-content-width) + var(--home-branch-padding) + var(--home-branch-padding) + 2px));
         max-width: 100%;
         height: fit-content;
         min-height: 0;
         align-self: start;
         justify-self: start;
-        padding: clamp(20px, 3vw, 28px);
+        padding: var(--home-branch-padding);
         border-width: 1px;
         border-color: color-mix(in srgb, var(--line-strong), transparent 22%);
         background:
@@ -907,6 +909,8 @@
       }
 
       .home-page .page-content > .home-directory > .directory-section > h2 {
+        width: 100%;
+        min-width: 0;
         min-height: 0;
         align-items: center;
         margin-bottom: clamp(16px, 2.5vw, 22px);
@@ -915,7 +919,7 @@
       }
 
       .home-page .page-content > .home-directory > .directory-section > .post-list {
-        width: var(--home-branch-card-width);
+        width: 100%;
         max-width: 100%;
         min-height: 0;
         align-content: start;
@@ -1382,16 +1386,18 @@
 
       .visual-map-section .directory-section {
         --map-card-width: clamp(68px, 5.4vw, 86px);
+        --map-branch-padding: 6px;
         --map-branch-inner-width: var(--map-card-width);
         position: relative;
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         align-content: start;
         flex: 0 0 auto;
-        width: calc(var(--map-branch-inner-width) + 12px);
+        width: calc(var(--map-branch-inner-width) + var(--map-branch-padding) + var(--map-branch-padding) + 2px);
         max-width: 100%;
         height: auto;
         min-width: 0;
-        padding: 6px;
+        padding: var(--map-branch-padding);
         border: 1px solid color-mix(in srgb, var(--line), transparent 12%);
         border-radius: 12px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 20%);
@@ -1408,8 +1414,9 @@
       .visual-map-section .directory-section h2 {
         position: relative;
         display: inline-flex;
-        width: var(--map-branch-inner-width);
+        width: 100%;
         max-width: 100%;
+        min-width: 0;
         min-height: 0;
         align-items: flex-start;
         justify-content: flex-start;
@@ -1427,7 +1434,7 @@
         justify-content: flex-start;
         text-align: left;
         width: 100%;
-        max-width: var(--map-branch-inner-width);
+        max-width: 100%;
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
@@ -1450,8 +1457,8 @@
       .visual-map-section .post-list {
         position: relative;
         display: grid;
-        grid-template-columns: repeat(var(--map-card-columns, 1), minmax(0, var(--map-card-width)));
-        width: var(--map-branch-inner-width);
+        grid-template-columns: repeat(var(--map-card-columns, 1), minmax(0, 1fr));
+        width: 100%;
         max-width: 100%;
         gap: 4px;
         margin: 5px 0 0;
@@ -1462,7 +1469,7 @@
       .visual-map-section .post-card {
         display: block;
         position: relative;
-        width: var(--map-card-width);
+        width: 100%;
         max-width: 100%;
         min-height: auto;
         padding: 4px 6px;
