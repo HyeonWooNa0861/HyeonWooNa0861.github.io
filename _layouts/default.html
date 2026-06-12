@@ -81,6 +81,9 @@
         --apple-hairline: rgba(0, 0, 0, 0.08);
         --apple-card-bg: rgba(255, 255, 255, 0.88);
         --apple-nav-bg: rgba(251, 251, 253, 0.78);
+        --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        --apple-text-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        --apple-mono-font: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
         --content-width: 980px;
         --header-height: 52px;
         --ease: cubic-bezier(0.2, 0, 0, 1);
@@ -134,7 +137,7 @@
           radial-gradient(circle at 50% -8%, rgba(0, 113, 227, 0.08), transparent 30rem),
           linear-gradient(180deg, #fbfbfd 0%, var(--bg) 34rem);
         color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        font-family: var(--apple-text-font);
         font-size: 16px;
         line-height: 1.72;
         overflow-x: hidden;
@@ -275,9 +278,9 @@
       .logo-fragment,
       .logo-letter {
         display: inline-block;
-        font-family: var(--logo-letter-font, inherit);
+        font-family: var(--apple-font);
         font-size: 1em !important;
-        font-style: var(--logo-letter-style, normal);
+        font-style: normal;
         font-weight: var(--logo-letter-weight, inherit);
         transform: none !important;
       }
@@ -520,8 +523,8 @@
         gap: 10px;
         border-radius: 999px;
         color: var(--muted);
-        font-family: var(--nav-title-font, inherit);
-        font-style: var(--nav-title-style, normal);
+        font-family: var(--apple-text-font);
+        font-style: normal;
         font-size: 13px;
         font-weight: var(--nav-title-weight, 500);
         line-height: 1.35;
@@ -598,8 +601,8 @@
       .page-content h3,
       .page-content h4 {
         color: var(--text);
-        font-family: var(--title-font, inherit);
-        font-style: var(--title-style, normal);
+        font-family: var(--apple-font);
+        font-style: normal;
         font-weight: var(--title-weight, 760);
         letter-spacing: -0.035em;
         line-height: 1.12;
@@ -654,7 +657,7 @@
         border-radius: 7px;
         background: var(--code-bg);
         color: var(--text);
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-family: var(--apple-mono-font);
         font-size: 0.9em;
       }
 
@@ -1076,9 +1079,9 @@
       .branch-modal-title {
         margin: 0;
         color: var(--text);
-        font-family: var(--title-font, inherit);
+        font-family: var(--apple-font);
         font-size: clamp(30px, 6vw, 54px);
-        font-style: var(--title-style, normal);
+        font-style: normal;
         font-weight: var(--title-weight, 760);
         letter-spacing: -0.05em;
         line-height: 0.98;
@@ -1168,8 +1171,8 @@
         max-width: 100%;
         min-width: 0;
         color: var(--text);
-        font-family: var(--card-title-font, inherit);
-        font-style: var(--card-title-style, normal);
+        font-family: var(--apple-text-font);
+        font-style: normal;
         font-weight: var(--card-title-weight, 650);
         line-height: var(--card-title-line, 1.24);
         letter-spacing: -0.02em;
@@ -1329,9 +1332,9 @@
 
       .about-card dt {
         color: var(--muted);
-        font-family: var(--about-card-label-font, inherit);
+        font-family: var(--apple-text-font);
         font-size: 12px;
-        font-style: var(--about-card-label-style, normal);
+        font-style: normal;
         font-weight: var(--about-card-label-weight, 650);
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -1340,9 +1343,9 @@
       .about-card dd {
         margin: 10px 0 0;
         color: var(--text);
-        font-family: var(--about-card-value-font, inherit);
+        font-family: var(--apple-text-font);
         font-size: clamp(20px, 3vw, 32px);
-        font-style: var(--about-card-value-style, normal);
+        font-style: normal;
         font-weight: var(--about-card-value-weight, 680);
         letter-spacing: -0.035em;
         line-height: 1.16;
@@ -2374,33 +2377,29 @@
           document.fonts.ready.then(requestHomeDirectoryMasonry).catch(function () {});
         }
 
-        function applySpatialRandomness() {
+        function applySpatialProfiles() {
           var compactInteraction = window.matchMedia("(max-width: 860px), (hover: none), (pointer: coarse)").matches;
 
           var root = document.documentElement;
-          var randomRange = function (min, max, unit) {
-            return (min + Math.random() * (max - min)).toFixed(2) + unit;
+          var midpoint = function (min, max) {
+            return min + ((max - min) / 2);
           };
 
-          var randomNumber = function (min, max) {
-            return min + Math.random() * (max - min);
+          var fixedRange = function (min, max, unit) {
+            return midpoint(min, max).toFixed(2) + unit;
           };
 
-          var randomInt = function (min, max) {
-            return String(Math.round(randomNumber(min, max)));
+          var fixedNumber = function (min, max) {
+            return midpoint(min, max);
           };
 
-          var randomChoice = function (values) {
-            return values[Math.floor(Math.random() * values.length)];
+          var fixedInt = function (min, max) {
+            return String(Math.round(fixedNumber(min, max)));
           };
 
-          var aboutFonts = [
-            "inherit",
-            "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
-            "\"Helvetica Neue\", Arial, sans-serif",
-            "ui-serif, Georgia, \"Times New Roman\", serif",
-            "ui-monospace, \"SFMono-Regular\", Menlo, Consolas, monospace"
-          ];
+          var fixedChoice = function (values) {
+            return values[Math.floor(values.length / 2)];
+          };
 
           var isReadableHomeElement = function (element) {
             return Boolean(element && element.closest && element.closest(".home-page .page-content > .home-directory"));
@@ -2410,42 +2409,42 @@
             return Boolean(element && element.closest && element.closest(".visual-map-section"));
           };
 
-          var randomPercentPair = function (min, max, thicknessMin, thicknessMax) {
-            var start = randomNumber(min, max);
-            var end = start + randomNumber(thicknessMin, thicknessMax);
+          var fixedPercentPair = function (min, max, thicknessMin, thicknessMax) {
+            var start = fixedNumber(min, max);
+            var end = start + fixedNumber(thicknessMin, thicknessMax);
             return [start.toFixed(2) + "%", end.toFixed(2) + "%"];
           };
 
           var applyHoverProfile = function (element, compact) {
-            element.style.setProperty("--hover-shadow-x", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
-            element.style.setProperty("--hover-shadow-y", randomRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
-            element.style.setProperty("--compact-shadow-x", randomRange(4, 10, "px"));
-            element.style.setProperty("--compact-shadow-y", randomRange(4, 10, "px"));
-            element.style.setProperty("--hover-halftone-size", randomRange(compact ? 4.5 : 5.5, compact ? 8 : 11, "px"));
-            element.style.setProperty("--hover-halftone-dot-size", randomRange(0.8, compact ? 1.4 : 1.9, "px"));
-            element.style.setProperty("--hover-card-x", randomRange(compact ? -2 : -4, compact ? 5 : 10, "px"));
-            element.style.setProperty("--hover-card-y", randomRange(compact ? -2 : -4, compact ? 3 : 6, "px"));
-            element.style.setProperty("--hover-card-rotate", randomRange(compact ? -0.9 : -1.8, compact ? 0.9 : 1.8, "deg"));
-            element.style.setProperty("--hover-motion-duration", randomRange(compact ? 520 : 640, compact ? 880 : 1040, "ms"));
-            element.style.setProperty("--hover-drift-x", randomRange(compact ? -2 : -4, compact ? 4 : 7, "px"));
-            element.style.setProperty("--hover-drift-y", randomRange(compact ? -2 : -4, compact ? 3 : 5, "px"));
-            element.style.setProperty("--hover-drift-rotate", randomRange(compact ? -0.7 : -1.2, compact ? 0.7 : 1.2, "deg"));
-            element.style.setProperty("--hover-drift-x-alt", randomRange(compact ? -3 : -6, compact ? 2 : 4, "px"));
-            element.style.setProperty("--hover-drift-y-alt", randomRange(compact ? -1 : -3, compact ? 3 : 5, "px"));
-            element.style.setProperty("--hover-drift-rotate-alt", randomRange(compact ? -0.6 : -1, compact ? 0.6 : 1, "deg"));
-            element.style.setProperty("--hover-text-x", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
-            element.style.setProperty("--hover-text-y", randomRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
+            element.style.setProperty("--hover-shadow-x", fixedRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
+            element.style.setProperty("--hover-shadow-y", fixedRange(compact ? 4 : 7, compact ? 10 : 17, "px"));
+            element.style.setProperty("--compact-shadow-x", fixedRange(4, 10, "px"));
+            element.style.setProperty("--compact-shadow-y", fixedRange(4, 10, "px"));
+            element.style.setProperty("--hover-halftone-size", fixedRange(compact ? 4.5 : 5.5, compact ? 8 : 11, "px"));
+            element.style.setProperty("--hover-halftone-dot-size", fixedRange(0.8, compact ? 1.4 : 1.9, "px"));
+            element.style.setProperty("--hover-card-x", fixedRange(compact ? -2 : -4, compact ? 5 : 10, "px"));
+            element.style.setProperty("--hover-card-y", fixedRange(compact ? -2 : -4, compact ? 3 : 6, "px"));
+            element.style.setProperty("--hover-card-rotate", fixedRange(compact ? -0.9 : -1.8, compact ? 0.9 : 1.8, "deg"));
+            element.style.setProperty("--hover-motion-duration", fixedRange(compact ? 520 : 640, compact ? 880 : 1040, "ms"));
+            element.style.setProperty("--hover-drift-x", fixedRange(compact ? -2 : -4, compact ? 4 : 7, "px"));
+            element.style.setProperty("--hover-drift-y", fixedRange(compact ? -2 : -4, compact ? 3 : 5, "px"));
+            element.style.setProperty("--hover-drift-rotate", fixedRange(compact ? -0.7 : -1.2, compact ? 0.7 : 1.2, "deg"));
+            element.style.setProperty("--hover-drift-x-alt", fixedRange(compact ? -3 : -6, compact ? 2 : 4, "px"));
+            element.style.setProperty("--hover-drift-y-alt", fixedRange(compact ? -1 : -3, compact ? 3 : 5, "px"));
+            element.style.setProperty("--hover-drift-rotate-alt", fixedRange(compact ? -0.6 : -1, compact ? 0.6 : 1, "deg"));
+            element.style.setProperty("--hover-text-x", fixedRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
+            element.style.setProperty("--hover-text-y", fixedRange(compact ? 2 : 3, compact ? 5 : 8, "px"));
           };
 
           var applyTrimProfile = function (element, min, max) {
-            element.style.setProperty("--trim-tl-x", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-tl-y", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-tr-x", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-tr-y", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-br-x", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-br-y", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-bl-x", randomRange(min, max, "px"));
-            element.style.setProperty("--trim-bl-y", randomRange(min, max, "px"));
+            element.style.setProperty("--trim-tl-x", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-tl-y", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-tr-x", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-tr-y", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-br-x", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-br-y", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-bl-x", fixedRange(min, max, "px"));
+            element.style.setProperty("--trim-bl-y", fixedRange(min, max, "px"));
           };
 
           var splitLogoLetters = function (element) {
@@ -2481,158 +2480,156 @@
 
             element.querySelectorAll(".logo-letter").forEach(function (letter) {
               if (letter.classList.contains("logo-space")) {
-                letter.style.setProperty("--logo-space-width", randomRange(0.24, 0.42, "em"));
+                letter.style.setProperty("--logo-space-width", fixedRange(0.24, 0.42, "em"));
                 return;
               }
 
-              letter.style.setProperty("--logo-letter-font", randomChoice(aboutFonts));
-              letter.style.setProperty("--logo-letter-size", randomRange(sizeMin, sizeMax, "em"));
-              letter.style.setProperty("--logo-letter-style", randomChoice(["normal", "normal", "normal", "italic"]));
-              letter.style.setProperty("--logo-letter-weight", randomInt(isAboutLogo ? 720 : 680, 960));
-              letter.style.setProperty("--logo-letter-x", randomRange(-3, 3, "px"));
-              letter.style.setProperty("--logo-letter-y", randomRange(-yMax, yMax, "px"));
-              letter.style.setProperty("--logo-letter-rotate", randomRange(-rotateMax, rotateMax, "deg"));
+              letter.style.setProperty("--logo-letter-size", fixedRange(sizeMin, sizeMax, "em"));
+              letter.style.setProperty("--logo-letter-weight", fixedInt(isAboutLogo ? 720 : 680, 960));
+              letter.style.setProperty("--logo-letter-x", fixedRange(-3, 3, "px"));
+              letter.style.setProperty("--logo-letter-y", fixedRange(-yMax, yMax, "px"));
+              letter.style.setProperty("--logo-letter-rotate", fixedRange(-rotateMax, rotateMax, "deg"));
             });
           };
 
-          root.style.setProperty("--fracture-top", randomRange(58, 118, "px"));
-          root.style.setProperty("--fracture-width", randomRange(42, 56, "vw"));
-          root.style.setProperty("--fracture-height", randomRange(34, 50, "vh"));
-          root.style.setProperty("--fracture-opacity", randomRange(0.38, 0.64, ""));
-          root.style.setProperty("--fracture-grid-a", randomRange(190, 280, "px"));
-          root.style.setProperty("--fracture-grid-b", randomRange(260, 390, "px"));
-          root.style.setProperty("--fracture-mask-start", randomRange(22, 36, "%"));
-          root.style.setProperty("--main-fracture-rotate", randomRange(-18, -7, "deg"));
-          root.style.setProperty("--main-line-top", randomRange(96, 162, "px"));
-          root.style.setProperty("--main-line-width", randomRange(150, 270, "px"));
-          root.style.setProperty("--content-fracture-rotate", randomRange(-10, -3, "deg"));
-          root.style.setProperty("--scroll-rail-x", randomRange(-3, 2, "px"));
-          root.style.setProperty("--scroll-rail-rotate", randomRange(-1.8, 1.2, "deg"));
-          root.style.setProperty("--scroll-node-rotate", randomRange(-22, 28, "deg"));
-          root.style.setProperty("--scroll-thumb-skew", randomRange(-12, 10, "deg"));
-          root.style.setProperty("--scroll-cut-a", randomRange(3, 9, "px"));
-          root.style.setProperty("--scroll-cut-b", randomRange(4, 12, "px"));
-          root.style.setProperty("--side-index-offset", randomRange(10, 24, "px"));
-          root.style.setProperty("--map-fracture-a", randomRange(-17, -8, "deg"));
-          root.style.setProperty("--map-fracture-b", randomRange(5, 15, "deg"));
-          root.style.setProperty("--map-grid-x", randomRange(16, 30, "px"));
-          root.style.setProperty("--map-grid-y", randomRange(9, 18, "px"));
-          var mapGlare = randomPercentPair(31, 48, 0.4, 1.1);
-          root.style.setProperty("--map-glare-angle", randomRange(104, 134, "deg"));
+          root.style.setProperty("--fracture-top", fixedRange(58, 118, "px"));
+          root.style.setProperty("--fracture-width", fixedRange(42, 56, "vw"));
+          root.style.setProperty("--fracture-height", fixedRange(34, 50, "vh"));
+          root.style.setProperty("--fracture-opacity", fixedRange(0.38, 0.64, ""));
+          root.style.setProperty("--fracture-grid-a", fixedRange(190, 280, "px"));
+          root.style.setProperty("--fracture-grid-b", fixedRange(260, 390, "px"));
+          root.style.setProperty("--fracture-mask-start", fixedRange(22, 36, "%"));
+          root.style.setProperty("--main-fracture-rotate", fixedRange(-18, -7, "deg"));
+          root.style.setProperty("--main-line-top", fixedRange(96, 162, "px"));
+          root.style.setProperty("--main-line-width", fixedRange(150, 270, "px"));
+          root.style.setProperty("--content-fracture-rotate", fixedRange(-10, -3, "deg"));
+          root.style.setProperty("--scroll-rail-x", fixedRange(-3, 2, "px"));
+          root.style.setProperty("--scroll-rail-rotate", fixedRange(-1.8, 1.2, "deg"));
+          root.style.setProperty("--scroll-node-rotate", fixedRange(-22, 28, "deg"));
+          root.style.setProperty("--scroll-thumb-skew", fixedRange(-12, 10, "deg"));
+          root.style.setProperty("--scroll-cut-a", fixedRange(3, 9, "px"));
+          root.style.setProperty("--scroll-cut-b", fixedRange(4, 12, "px"));
+          root.style.setProperty("--side-index-offset", fixedRange(10, 24, "px"));
+          root.style.setProperty("--map-fracture-a", fixedRange(-17, -8, "deg"));
+          root.style.setProperty("--map-fracture-b", fixedRange(5, 15, "deg"));
+          root.style.setProperty("--map-grid-x", fixedRange(16, 30, "px"));
+          root.style.setProperty("--map-grid-y", fixedRange(9, 18, "px"));
+          var mapGlare = fixedPercentPair(31, 48, 0.4, 1.1);
+          root.style.setProperty("--map-glare-angle", fixedRange(104, 134, "deg"));
           root.style.setProperty("--map-glare-start", mapGlare[0]);
           root.style.setProperty("--map-glare-end", mapGlare[1]);
-          var mapSoft = randomPercentPair(49, 66, 2.1, 5.2);
-          root.style.setProperty("--map-soft-angle", randomRange(22, 48, "deg"));
+          var mapSoft = fixedPercentPair(49, 66, 2.1, 5.2);
+          root.style.setProperty("--map-soft-angle", fixedRange(22, 48, "deg"));
           root.style.setProperty("--map-soft-start", mapSoft[0]);
           root.style.setProperty("--map-soft-end", mapSoft[1]);
-          root.style.setProperty("--map-fracture-top", randomRange(24, 62, "px"));
-          root.style.setProperty("--map-fracture-left", randomRange(-24, -4, "px"));
-          root.style.setProperty("--map-fracture-width", randomRange(102, 128, "%"));
-          root.style.setProperty("--map-fracture-thickness", randomRange(1, 2.4, "px"));
-          root.style.setProperty("--map-fracture-y", randomRange(-5, 8, "px"));
-          root.style.setProperty("--map-fracture-opacity", randomRange(0.62, 0.96, ""));
-          root.style.setProperty("--map-glass-right", randomRange(-30, -8, "px"));
-          root.style.setProperty("--map-glass-bottom", randomRange(24, 64, "px"));
-          root.style.setProperty("--map-glass-width", randomRange(58, 84, "%"));
-          root.style.setProperty("--map-glass-height", randomRange(42, 66, "%"));
-          root.style.setProperty("--map-glass-angle-a", randomRange(112, 142, "deg"));
-          root.style.setProperty("--map-glass-angle-b", randomRange(42, 72, "deg"));
-          var mapGlassA = randomPercentPair(24, 42, 6, 13);
+          root.style.setProperty("--map-fracture-top", fixedRange(24, 62, "px"));
+          root.style.setProperty("--map-fracture-left", fixedRange(-24, -4, "px"));
+          root.style.setProperty("--map-fracture-width", fixedRange(102, 128, "%"));
+          root.style.setProperty("--map-fracture-thickness", fixedRange(1, 2.4, "px"));
+          root.style.setProperty("--map-fracture-y", fixedRange(-5, 8, "px"));
+          root.style.setProperty("--map-fracture-opacity", fixedRange(0.62, 0.96, ""));
+          root.style.setProperty("--map-glass-right", fixedRange(-30, -8, "px"));
+          root.style.setProperty("--map-glass-bottom", fixedRange(24, 64, "px"));
+          root.style.setProperty("--map-glass-width", fixedRange(58, 84, "%"));
+          root.style.setProperty("--map-glass-height", fixedRange(42, 66, "%"));
+          root.style.setProperty("--map-glass-angle-a", fixedRange(112, 142, "deg"));
+          root.style.setProperty("--map-glass-angle-b", fixedRange(42, 72, "deg"));
+          var mapGlassA = fixedPercentPair(24, 42, 6, 13);
           root.style.setProperty("--map-glass-a-start", mapGlassA[0]);
           root.style.setProperty("--map-glass-a-end", mapGlassA[1]);
-          var mapGlassB = randomPercentPair(52, 66, 0.5, 1.6);
+          var mapGlassB = fixedPercentPair(52, 66, 0.5, 1.6);
           root.style.setProperty("--map-glass-b-start", mapGlassB[0]);
           root.style.setProperty("--map-glass-b-end", mapGlassB[1]);
-          root.style.setProperty("--map-glass-cut-a", randomRange(6, 20, "%"));
-          root.style.setProperty("--map-glass-cut-b", randomRange(8, 24, "%"));
-          root.style.setProperty("--map-glass-cut-c", randomRange(76, 92, "%"));
-          root.style.setProperty("--map-glass-cut-d", randomRange(68, 88, "%"));
-          root.style.setProperty("--map-glass-opacity", randomRange(0.42, 0.68, ""));
-          root.style.setProperty("--map-glass-x", randomRange(-8, 8, "px"));
-          root.style.setProperty("--map-glass-y", randomRange(-6, 9, "px"));
-          root.style.setProperty("--page-axis-left", randomRange(12, 28, "%"));
-          root.style.setProperty("--page-axis-shift", randomRange(-18, 22, "px"));
-          root.style.setProperty("--list-field-rotate", randomRange(-6, 3, "deg"));
-          root.style.setProperty("--list-field-skew", randomRange(-2.6, 2.8, "deg"));
-          root.style.setProperty("--list-field-top", randomRange(-34, -8, "px"));
-          root.style.setProperty("--list-field-left", randomRange(-54, -10, "px"));
-          root.style.setProperty("--list-field-width", randomRange(48, 74, "vw"));
-          root.style.setProperty("--list-field-max", randomRange(560, 760, "px"));
-          root.style.setProperty("--list-field-height-extra", randomRange(26, 72, "px"));
-          root.style.setProperty("--list-field-x", randomRange(-12, 14, "px"));
-          root.style.setProperty("--list-field-y", randomRange(-10, 10, "px"));
-          root.style.setProperty("--list-field-opacity", randomRange(0.28, 0.52, ""));
-          root.style.setProperty("--list-field-angle-a", randomRange(100, 132, "deg"));
-          root.style.setProperty("--list-field-angle-b", randomRange(18, 42, "deg"));
-          var listFieldA = randomPercentPair(36, 54, 0.6, 1.8);
+          root.style.setProperty("--map-glass-cut-a", fixedRange(6, 20, "%"));
+          root.style.setProperty("--map-glass-cut-b", fixedRange(8, 24, "%"));
+          root.style.setProperty("--map-glass-cut-c", fixedRange(76, 92, "%"));
+          root.style.setProperty("--map-glass-cut-d", fixedRange(68, 88, "%"));
+          root.style.setProperty("--map-glass-opacity", fixedRange(0.42, 0.68, ""));
+          root.style.setProperty("--map-glass-x", fixedRange(-8, 8, "px"));
+          root.style.setProperty("--map-glass-y", fixedRange(-6, 9, "px"));
+          root.style.setProperty("--page-axis-left", fixedRange(12, 28, "%"));
+          root.style.setProperty("--page-axis-shift", fixedRange(-18, 22, "px"));
+          root.style.setProperty("--list-field-rotate", fixedRange(-6, 3, "deg"));
+          root.style.setProperty("--list-field-skew", fixedRange(-2.6, 2.8, "deg"));
+          root.style.setProperty("--list-field-top", fixedRange(-34, -8, "px"));
+          root.style.setProperty("--list-field-left", fixedRange(-54, -10, "px"));
+          root.style.setProperty("--list-field-width", fixedRange(48, 74, "vw"));
+          root.style.setProperty("--list-field-max", fixedRange(560, 760, "px"));
+          root.style.setProperty("--list-field-height-extra", fixedRange(26, 72, "px"));
+          root.style.setProperty("--list-field-x", fixedRange(-12, 14, "px"));
+          root.style.setProperty("--list-field-y", fixedRange(-10, 10, "px"));
+          root.style.setProperty("--list-field-opacity", fixedRange(0.28, 0.52, ""));
+          root.style.setProperty("--list-field-angle-a", fixedRange(100, 132, "deg"));
+          root.style.setProperty("--list-field-angle-b", fixedRange(18, 42, "deg"));
+          var listFieldA = fixedPercentPair(36, 54, 0.6, 1.8);
           root.style.setProperty("--list-field-stop-a", listFieldA[0]);
           root.style.setProperty("--list-field-stop-b", listFieldA[1]);
-          var listFieldB = randomPercentPair(46, 62, 0.5, 1.4);
+          var listFieldB = fixedPercentPair(46, 62, 0.5, 1.4);
           root.style.setProperty("--list-field-stop-c", listFieldB[0]);
           root.style.setProperty("--list-field-stop-d", listFieldB[1]);
-          var listFieldC = randomPercentPair(20, 38, 4, 12);
+          var listFieldC = fixedPercentPair(20, 38, 4, 12);
           root.style.setProperty("--list-field-stop-e", listFieldC[0]);
           root.style.setProperty("--list-field-stop-f", listFieldC[1]);
-          root.style.setProperty("--list-field-pos-a-x", randomRange(-14, 18, "%"));
-          root.style.setProperty("--list-field-pos-a-y", randomRange(-12, 24, "%"));
-          root.style.setProperty("--list-field-pos-b-x", randomRange(8, 42, "%"));
-          root.style.setProperty("--list-field-pos-b-y", randomRange(6, 38, "%"));
-          root.style.setProperty("--list-field-pos-c-x", randomRange(24, 68, "%"));
-          root.style.setProperty("--list-field-pos-c-y", randomRange(-8, 34, "%"));
-          root.style.setProperty("--list-field-size-a-x", randomRange(54, 92, "%"));
-          root.style.setProperty("--list-field-size-a-y", randomRange(38, 82, "%"));
-          root.style.setProperty("--list-field-size-b-x", randomRange(42, 78, "%"));
-          root.style.setProperty("--list-field-size-b-y", randomRange(50, 104, "%"));
-          root.style.setProperty("--list-field-size-c-x", randomRange(28, 56, "%"));
-          root.style.setProperty("--list-field-size-c-y", randomRange(42, 94, "%"));
-          root.style.setProperty("--list-field-angle-c", randomRange(124, 164, "deg"));
-          root.style.setProperty("--list-field-mask-angle", randomRange(78, 112, "deg"));
-          root.style.setProperty("--list-field-mask-start", randomRange(6, 18, "%"));
-          root.style.setProperty("--list-field-mask-end", randomRange(78, 96, "%"));
-          root.style.setProperty("--hero-fracture-a", randomRange(-22, -9, "deg"));
-          root.style.setProperty("--hero-fracture-b", randomRange(6, 17, "deg"));
-          root.style.setProperty("--hero-title-shift", randomRange(-12, 2, "px"));
-          root.style.setProperty("--logo-slice-a", randomRange(-9, -3, "deg"));
-          root.style.setProperty("--logo-slice-b", randomRange(5, 14, "deg"));
-          root.style.setProperty("--logo-slice-y", randomRange(-4, 6, "px"));
-          root.style.setProperty("--logo-glass-rotate", randomRange(-6, 4, "deg"));
-          root.style.setProperty("--logo-glass-shift-x", randomRange(-8, 8, "px"));
-          root.style.setProperty("--logo-glass-shift-y", randomRange(-5, 6, "px"));
-          root.style.setProperty("--logo-glass-angle", randomRange(104, 132, "deg"));
-          root.style.setProperty("--component-moment", randomRange(120, 260, "ms"));
-          root.style.setProperty("--halftone-size", randomRange(5, 9, "px"));
-          root.style.setProperty("--halftone-dot-size", randomRange(0.9, 1.6, "px"));
-          root.style.setProperty("--hover-shadow-x", randomRange(6, 14, "px"));
-          root.style.setProperty("--hover-shadow-y", randomRange(6, 14, "px"));
+          root.style.setProperty("--list-field-pos-a-x", fixedRange(-14, 18, "%"));
+          root.style.setProperty("--list-field-pos-a-y", fixedRange(-12, 24, "%"));
+          root.style.setProperty("--list-field-pos-b-x", fixedRange(8, 42, "%"));
+          root.style.setProperty("--list-field-pos-b-y", fixedRange(6, 38, "%"));
+          root.style.setProperty("--list-field-pos-c-x", fixedRange(24, 68, "%"));
+          root.style.setProperty("--list-field-pos-c-y", fixedRange(-8, 34, "%"));
+          root.style.setProperty("--list-field-size-a-x", fixedRange(54, 92, "%"));
+          root.style.setProperty("--list-field-size-a-y", fixedRange(38, 82, "%"));
+          root.style.setProperty("--list-field-size-b-x", fixedRange(42, 78, "%"));
+          root.style.setProperty("--list-field-size-b-y", fixedRange(50, 104, "%"));
+          root.style.setProperty("--list-field-size-c-x", fixedRange(28, 56, "%"));
+          root.style.setProperty("--list-field-size-c-y", fixedRange(42, 94, "%"));
+          root.style.setProperty("--list-field-angle-c", fixedRange(124, 164, "deg"));
+          root.style.setProperty("--list-field-mask-angle", fixedRange(78, 112, "deg"));
+          root.style.setProperty("--list-field-mask-start", fixedRange(6, 18, "%"));
+          root.style.setProperty("--list-field-mask-end", fixedRange(78, 96, "%"));
+          root.style.setProperty("--hero-fracture-a", fixedRange(-22, -9, "deg"));
+          root.style.setProperty("--hero-fracture-b", fixedRange(6, 17, "deg"));
+          root.style.setProperty("--hero-title-shift", fixedRange(-12, 2, "px"));
+          root.style.setProperty("--logo-slice-a", fixedRange(-9, -3, "deg"));
+          root.style.setProperty("--logo-slice-b", fixedRange(5, 14, "deg"));
+          root.style.setProperty("--logo-slice-y", fixedRange(-4, 6, "px"));
+          root.style.setProperty("--logo-glass-rotate", fixedRange(-6, 4, "deg"));
+          root.style.setProperty("--logo-glass-shift-x", fixedRange(-8, 8, "px"));
+          root.style.setProperty("--logo-glass-shift-y", fixedRange(-5, 6, "px"));
+          root.style.setProperty("--logo-glass-angle", fixedRange(104, 132, "deg"));
+          root.style.setProperty("--component-moment", fixedRange(120, 260, "ms"));
+          root.style.setProperty("--halftone-size", fixedRange(5, 9, "px"));
+          root.style.setProperty("--halftone-dot-size", fixedRange(0.9, 1.6, "px"));
+          root.style.setProperty("--hover-shadow-x", fixedRange(6, 14, "px"));
+          root.style.setProperty("--hover-shadow-y", fixedRange(6, 14, "px"));
 
           document.querySelectorAll(".home-index-board").forEach(function (board) {
-            var boardA = randomPercentPair(24, 42, 4, 11);
-            var boardB = randomPercentPair(52, 68, 0.6, 1.8);
+            var boardA = fixedPercentPair(24, 42, 4, 11);
+            var boardB = fixedPercentPair(52, 68, 0.6, 1.8);
 
             applyTrimProfile(board, 12, 58);
-            board.style.setProperty("--index-board-gap", randomRange(46, 92, "px"));
-            board.style.setProperty("--index-core-width", randomRange(250, 410, "px"));
-            board.style.setProperty("--index-core-x", randomRange(-16, 12, "px"));
-            board.style.setProperty("--index-core-y", randomRange(-10, 16, "px"));
-            board.style.setProperty("--index-core-rotate", randomRange(-3.8, 2.4, "deg"));
-            board.style.setProperty("--index-plane-top", randomRange(0, 6, "%"));
-            board.style.setProperty("--index-plane-right", randomRange(-2, 4, "%"));
-            board.style.setProperty("--index-plane-bottom", randomRange(2, 8, "%"));
-            board.style.setProperty("--index-plane-left", randomRange(0, 5, "%"));
-            board.style.setProperty("--index-plane-a", randomRange(104, 136, "deg"));
+            board.style.setProperty("--index-board-gap", fixedRange(46, 92, "px"));
+            board.style.setProperty("--index-core-width", fixedRange(250, 410, "px"));
+            board.style.setProperty("--index-core-x", fixedRange(-16, 12, "px"));
+            board.style.setProperty("--index-core-y", fixedRange(-10, 16, "px"));
+            board.style.setProperty("--index-core-rotate", fixedRange(-3.8, 2.4, "deg"));
+            board.style.setProperty("--index-plane-top", fixedRange(0, 6, "%"));
+            board.style.setProperty("--index-plane-right", fixedRange(-2, 4, "%"));
+            board.style.setProperty("--index-plane-bottom", fixedRange(2, 8, "%"));
+            board.style.setProperty("--index-plane-left", fixedRange(0, 5, "%"));
+            board.style.setProperty("--index-plane-a", fixedRange(104, 136, "deg"));
             board.style.setProperty("--index-plane-a-start", boardA[0]);
             board.style.setProperty("--index-plane-a-end", boardA[1]);
-            board.style.setProperty("--index-plane-b", randomRange(18, 48, "deg"));
+            board.style.setProperty("--index-plane-b", fixedRange(18, 48, "deg"));
             board.style.setProperty("--index-plane-b-start", boardB[0]);
             board.style.setProperty("--index-plane-b-end", boardB[1]);
-            board.style.setProperty("--index-plane-x", randomRange(-10, 12, "px"));
-            board.style.setProperty("--index-plane-y", randomRange(-8, 12, "px"));
-            board.style.setProperty("--index-plane-rotate", randomRange(-2.2, 2, "deg"));
-            board.style.setProperty("--index-axis-top", randomRange(14, 24, "%"));
-            board.style.setProperty("--index-axis-bottom", randomRange(6, 14, "%"));
-            board.style.setProperty("--index-axis-left", randomRange(31, 39, "%"));
-            board.style.setProperty("--index-axis-x", randomRange(-10, 12, "px"));
-            board.style.setProperty("--index-axis-rotate", randomRange(-5, 6, "deg"));
+            board.style.setProperty("--index-plane-x", fixedRange(-10, 12, "px"));
+            board.style.setProperty("--index-plane-y", fixedRange(-8, 12, "px"));
+            board.style.setProperty("--index-plane-rotate", fixedRange(-2.2, 2, "deg"));
+            board.style.setProperty("--index-axis-top", fixedRange(14, 24, "%"));
+            board.style.setProperty("--index-axis-bottom", fixedRange(6, 14, "%"));
+            board.style.setProperty("--index-axis-left", fixedRange(31, 39, "%"));
+            board.style.setProperty("--index-axis-x", fixedRange(-10, 12, "px"));
+            board.style.setProperty("--index-axis-rotate", fixedRange(-5, 6, "deg"));
           });
 
           document.querySelectorAll(".home-orbit[data-orbit-layout='radial']").forEach(function (orbit) {
@@ -2750,48 +2747,48 @@
             var baseRadiusX = Math.max(220, Math.min(mapWidth * 0.28, 370));
             var baseRadiusY = Math.max(190, Math.min(window.innerHeight * 0.28, 310));
             var nodeAngles = [-146, -38, 28, 148, 92, -92, 0, 180];
-            var planeA = randomPercentPair(28, 42, 5, 12);
-            var planeB = randomPercentPair(50, 66, 0.6, 1.8);
+            var planeA = fixedPercentPair(28, 42, 5, 12);
+            var planeB = fixedPercentPair(50, 66, 0.6, 1.8);
 
             applyTrimProfile(map, 12, 58);
-            map.style.setProperty("--mindmap-core-y", randomRange(45, 52, "%"));
-            map.style.setProperty("--mindmap-core-rotate", randomRange(-3.4, 2.6, "deg"));
-            map.style.setProperty("--mindmap-axis-top", randomRange(43, 55, "%"));
-            map.style.setProperty("--mindmap-axis-left", randomRange(4, 10, "%"));
-            map.style.setProperty("--mindmap-axis-width", randomRange(82, 94, "%"));
-            map.style.setProperty("--mindmap-axis-y", randomRange(-8, 8, "px"));
-            map.style.setProperty("--mindmap-axis-rotate", randomRange(-8, 5, "deg"));
-            map.style.setProperty("--mindmap-plane-a", randomRange(104, 134, "deg"));
+            map.style.setProperty("--mindmap-core-y", fixedRange(45, 52, "%"));
+            map.style.setProperty("--mindmap-core-rotate", fixedRange(-3.4, 2.6, "deg"));
+            map.style.setProperty("--mindmap-axis-top", fixedRange(43, 55, "%"));
+            map.style.setProperty("--mindmap-axis-left", fixedRange(4, 10, "%"));
+            map.style.setProperty("--mindmap-axis-width", fixedRange(82, 94, "%"));
+            map.style.setProperty("--mindmap-axis-y", fixedRange(-8, 8, "px"));
+            map.style.setProperty("--mindmap-axis-rotate", fixedRange(-8, 5, "deg"));
+            map.style.setProperty("--mindmap-plane-a", fixedRange(104, 134, "deg"));
             map.style.setProperty("--mindmap-plane-a-start", planeA[0]);
             map.style.setProperty("--mindmap-plane-a-end", planeA[1]);
-            map.style.setProperty("--mindmap-plane-b", randomRange(18, 48, "deg"));
+            map.style.setProperty("--mindmap-plane-b", fixedRange(18, 48, "deg"));
             map.style.setProperty("--mindmap-plane-b-start", planeB[0]);
             map.style.setProperty("--mindmap-plane-b-end", planeB[1]);
-            map.style.setProperty("--mindmap-plane-x", randomRange(-10, 10, "px"));
-            map.style.setProperty("--mindmap-plane-y", randomRange(-8, 12, "px"));
-            map.style.setProperty("--mindmap-plane-rotate", randomRange(-2.6, 2.4, "deg"));
+            map.style.setProperty("--mindmap-plane-x", fixedRange(-10, 10, "px"));
+            map.style.setProperty("--mindmap-plane-y", fixedRange(-8, 12, "px"));
+            map.style.setProperty("--mindmap-plane-rotate", fixedRange(-2.6, 2.4, "deg"));
 
             map.querySelectorAll(".directory-section").forEach(function (section, index) {
-              var angle = (nodeAngles[index % nodeAngles.length] || 0) + randomNumber(-8, 8);
+              var angle = (nodeAngles[index % nodeAngles.length] || 0) + fixedNumber(-8, 8);
               var radians = angle * Math.PI / 180;
-              var radiusX = baseRadiusX * randomNumber(0.9, 1.08);
-              var radiusY = baseRadiusY * randomNumber(0.9, 1.12);
+              var radiusX = baseRadiusX * fixedNumber(0.9, 1.08);
+              var radiusY = baseRadiusY * fixedNumber(0.9, 1.12);
               var x = Math.cos(radians) * radiusX;
               var y = Math.sin(radians) * radiusY;
               var distance = Math.sqrt(x * x + y * y);
-              var nodeWidth = Math.max(270, Math.min(mapWidth * randomNumber(0.24, 0.31), 390));
+              var nodeWidth = Math.max(270, Math.min(mapWidth * fixedNumber(0.24, 0.31), 390));
 
               section.style.setProperty("--mind-node-x", x.toFixed(2) + "px");
               section.style.setProperty("--mind-node-y", y.toFixed(2) + "px");
               section.style.setProperty("--mind-node-width", nodeWidth.toFixed(2) + "px");
               section.style.setProperty("--mind-node-angle", angle.toFixed(2) + "deg");
-              section.style.setProperty("--mind-node-rotate", randomRange(-2.8, 2.4, "deg"));
+              section.style.setProperty("--mind-node-rotate", fixedRange(-2.8, 2.4, "deg"));
               section.style.setProperty("--mind-dot-x", (x * -0.04).toFixed(2) + "px");
               section.style.setProperty("--mind-dot-y", (y * -0.04).toFixed(2) + "px");
-              section.style.setProperty("--mind-node-dot-rotate", randomRange(-28, 34, "deg"));
+              section.style.setProperty("--mind-node-dot-rotate", fixedRange(-28, 34, "deg"));
               section.style.setProperty("--mind-link-length", Math.max(120, distance - nodeWidth * 0.34).toFixed(2) + "px");
-              section.style.setProperty("--mind-link-offset", randomRange(nodeWidth * 0.14, nodeWidth * 0.28, "px"));
-              section.style.setProperty("--mind-link-opacity", randomRange(0.42, 0.72, ""));
+              section.style.setProperty("--mind-link-offset", fixedRange(nodeWidth * 0.14, nodeWidth * 0.28, "px"));
+              section.style.setProperty("--mind-link-opacity", fixedRange(0.42, 0.72, ""));
             });
           });
 
@@ -2809,26 +2806,24 @@
 
           document.querySelectorAll(".about-stage").forEach(function (container) {
             applyTrimProfile(container, 10, 54);
-            container.style.setProperty("--about-glass-angle", randomRange(108, 142, "deg"));
-            container.style.setProperty("--about-glass-x", randomRange(-8, 8, "px"));
-            container.style.setProperty("--about-glass-y", randomRange(-6, 8, "px"));
-            container.style.setProperty("--about-glass-rotate", randomRange(-8, 4, "deg"));
-            container.style.setProperty("--about-glass-motion-x", randomRange(-6, 10, "px"));
-            container.style.setProperty("--about-glass-motion-y", randomRange(-8, 6, "px"));
-            container.style.setProperty("--about-glass-motion-rotate", randomRange(-4, 5, "deg"));
-            container.style.setProperty("--about-line-top", randomRange(38, 62, "%"));
-            container.style.setProperty("--about-line-y", randomRange(-8, 8, "px"));
-            container.style.setProperty("--about-line-rotate", randomRange(-13, 8, "deg"));
-            container.style.setProperty("--about-grid-margin-top", randomRange(-12, 18, "px"));
-            container.style.setProperty("--about-kicker-font", randomChoice(aboutFonts));
-            container.style.setProperty("--about-kicker-size", randomRange(10, 13, "px"));
-            container.style.setProperty("--about-kicker-weight", randomInt(620, 860));
-            container.style.setProperty("--about-kicker-x", randomRange(-5, 6, "px"));
-            container.style.setProperty("--about-kicker-y", randomRange(-3, 4, "px"));
-            container.style.setProperty("--about-kicker-rotate", randomRange(-1.8, 1.8, "deg"));
-            container.style.setProperty("--about-logo-font", randomChoice(aboutFonts));
-            container.style.setProperty("--about-logo-size", randomRange(72, 118, "px"));
-            container.style.setProperty("--about-logo-weight", randomInt(760, 940));
+            container.style.setProperty("--about-glass-angle", fixedRange(108, 142, "deg"));
+            container.style.setProperty("--about-glass-x", fixedRange(-8, 8, "px"));
+            container.style.setProperty("--about-glass-y", fixedRange(-6, 8, "px"));
+            container.style.setProperty("--about-glass-rotate", fixedRange(-8, 4, "deg"));
+            container.style.setProperty("--about-glass-motion-x", fixedRange(-6, 10, "px"));
+            container.style.setProperty("--about-glass-motion-y", fixedRange(-8, 6, "px"));
+            container.style.setProperty("--about-glass-motion-rotate", fixedRange(-4, 5, "deg"));
+            container.style.setProperty("--about-line-top", fixedRange(38, 62, "%"));
+            container.style.setProperty("--about-line-y", fixedRange(-8, 8, "px"));
+            container.style.setProperty("--about-line-rotate", fixedRange(-13, 8, "deg"));
+            container.style.setProperty("--about-grid-margin-top", fixedRange(-12, 18, "px"));
+            container.style.setProperty("--about-kicker-size", fixedRange(10, 13, "px"));
+            container.style.setProperty("--about-kicker-weight", fixedInt(620, 860));
+            container.style.setProperty("--about-kicker-x", fixedRange(-5, 6, "px"));
+            container.style.setProperty("--about-kicker-y", fixedRange(-3, 4, "px"));
+            container.style.setProperty("--about-kicker-rotate", fixedRange(-1.8, 1.8, "deg"));
+            container.style.setProperty("--about-logo-size", fixedRange(72, 118, "px"));
+            container.style.setProperty("--about-logo-weight", fixedInt(760, 940));
           });
 
           document.querySelectorAll(".about-card").forEach(function (card) {
@@ -2843,156 +2838,148 @@
             var cardPadXMin = isLongValue ? 18 : 14;
             var cardPadXMax = isLongValue ? 24 : 22;
 
-            card.style.setProperty("--about-card-width", randomRange(cardWidthMin, cardWidthMax, "%"));
-            card.style.setProperty("--about-card-justify", randomChoice(["start", "center", "end"]));
-            card.style.setProperty("--about-card-min-height", randomRange(cardHeightMin, cardHeightMax, "px"));
-            card.style.setProperty("--about-card-primary-height", randomRange(154, 188, "px"));
-            card.style.setProperty("--about-card-pad-y", randomRange(16, 23, "px"));
-            card.style.setProperty("--about-card-pad-x", randomRange(cardPadXMin, cardPadXMax, "px"));
-            card.style.setProperty("--about-card-pad-bottom", randomRange(18, 27, "px"));
-            card.style.setProperty("--about-card-content-gap", randomRange(14, 22, "px"));
-            card.style.setProperty("--about-card-x", randomRange(-18, 24, "px"));
-            card.style.setProperty("--about-card-y", randomRange(-12, 18, "px"));
-            card.style.setProperty("--about-card-rotate", randomRange(-2.2, 2.2, "deg"));
-            card.style.setProperty("--about-card-line-rotate", randomRange(-16, 10, "deg"));
-            card.style.setProperty("--about-card-label-font", randomChoice(aboutFonts));
-            card.style.setProperty("--about-card-label-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            card.style.setProperty("--about-card-label-size", randomRange(10, 13, "px"));
-            card.style.setProperty("--about-card-label-weight", randomInt(620, 860));
-            card.style.setProperty("--about-card-label-x", randomRange(-4, 5, "px"));
-            card.style.setProperty("--about-card-label-y", randomRange(-3, 4, "px"));
-            card.style.setProperty("--about-card-label-rotate", randomRange(-1.4, 1.4, "deg"));
-            card.style.setProperty("--about-card-value-font", randomChoice(aboutFonts));
-            card.style.setProperty("--about-card-value-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            card.style.setProperty("--about-card-value-size", randomRange(22, 34, "px"));
-            card.style.setProperty("--about-card-small-value-size", randomRange(isLongValue ? 15.5 : 16, isLongValue ? 21 : 24, "px"));
-            card.style.setProperty("--about-card-value-weight", randomInt(620, 860));
-            card.style.setProperty("--about-card-value-line", randomRange(0.94, 1.16, ""));
-            card.style.setProperty("--about-card-value-x", randomRange(-6, 8, "px"));
-            card.style.setProperty("--about-card-value-y", randomRange(-4, 7, "px"));
-            card.style.setProperty("--about-card-value-rotate", randomRange(-1.8, 1.8, "deg"));
+            card.style.setProperty("--about-card-width", fixedRange(cardWidthMin, cardWidthMax, "%"));
+            card.style.setProperty("--about-card-justify", fixedChoice(["start", "center", "end"]));
+            card.style.setProperty("--about-card-min-height", fixedRange(cardHeightMin, cardHeightMax, "px"));
+            card.style.setProperty("--about-card-primary-height", fixedRange(154, 188, "px"));
+            card.style.setProperty("--about-card-pad-y", fixedRange(16, 23, "px"));
+            card.style.setProperty("--about-card-pad-x", fixedRange(cardPadXMin, cardPadXMax, "px"));
+            card.style.setProperty("--about-card-pad-bottom", fixedRange(18, 27, "px"));
+            card.style.setProperty("--about-card-content-gap", fixedRange(14, 22, "px"));
+            card.style.setProperty("--about-card-x", fixedRange(-18, 24, "px"));
+            card.style.setProperty("--about-card-y", fixedRange(-12, 18, "px"));
+            card.style.setProperty("--about-card-rotate", fixedRange(-2.2, 2.2, "deg"));
+            card.style.setProperty("--about-card-line-rotate", fixedRange(-16, 10, "deg"));
+            card.style.setProperty("--about-card-label-size", fixedRange(10, 13, "px"));
+            card.style.setProperty("--about-card-label-weight", fixedInt(620, 860));
+            card.style.setProperty("--about-card-label-x", fixedRange(-4, 5, "px"));
+            card.style.setProperty("--about-card-label-y", fixedRange(-3, 4, "px"));
+            card.style.setProperty("--about-card-label-rotate", fixedRange(-1.4, 1.4, "deg"));
+            card.style.setProperty("--about-card-value-size", fixedRange(22, 34, "px"));
+            card.style.setProperty("--about-card-small-value-size", fixedRange(isLongValue ? 15.5 : 16, isLongValue ? 21 : 24, "px"));
+            card.style.setProperty("--about-card-value-weight", fixedInt(620, 860));
+            card.style.setProperty("--about-card-value-line", fixedRange(0.94, 1.16, ""));
+            card.style.setProperty("--about-card-value-x", fixedRange(-6, 8, "px"));
+            card.style.setProperty("--about-card-value-y", fixedRange(-4, 7, "px"));
+            card.style.setProperty("--about-card-value-rotate", fixedRange(-1.8, 1.8, "deg"));
             applyTrimProfile(card, 6, 30);
             applyHoverProfile(card, true);
           });
 
           document.querySelectorAll(".side-index-link").forEach(function (link) {
-            link.style.setProperty("--map-link-x", randomRange(-3, 4, "px"));
-            link.style.setProperty("--map-link-rotate", randomRange(-1.2, 1.2, "deg"));
-            link.style.setProperty("--nav-title-font", randomChoice(aboutFonts));
-            link.style.setProperty("--nav-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            link.style.setProperty("--nav-title-weight", randomInt(460, 680));
+            link.style.setProperty("--map-link-x", fixedRange(-3, 4, "px"));
+            link.style.setProperty("--map-link-rotate", fixedRange(-1.2, 1.2, "deg"));
+            link.style.setProperty("--nav-title-weight", fixedInt(460, 680));
             applyTrimProfile(link, 3, 10);
             applyHoverProfile(link, true);
           });
 
           document.querySelectorAll(".side-index-heading").forEach(function (heading) {
-            heading.style.setProperty("--nav-title-font", randomChoice(aboutFonts));
-            heading.style.setProperty("--nav-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            heading.style.setProperty("--nav-title-weight", randomInt(620, 820));
+            heading.style.setProperty("--nav-title-weight", fixedInt(620, 820));
           });
 
           document.querySelectorAll(".side-index-section").forEach(function (section) {
-            section.style.setProperty("--map-section-line-top", randomRange(-2, 3, "px"));
-            section.style.setProperty("--map-section-line-left", randomRange(-12, 2, "px"));
-            section.style.setProperty("--map-section-line-width", "calc(100% + " + randomRange(8, 28, "px") + ")");
-            section.style.setProperty("--map-section-rotate", randomRange(-4.4, 3.2, "deg"));
-            section.style.setProperty("--map-section-skew", randomRange(-6, 6, "deg"));
-            section.style.setProperty("--map-section-line-opacity", randomRange(0.48, 0.9, ""));
+            section.style.setProperty("--map-section-line-top", fixedRange(-2, 3, "px"));
+            section.style.setProperty("--map-section-line-left", fixedRange(-12, 2, "px"));
+            section.style.setProperty("--map-section-line-width", "calc(100% + " + fixedRange(8, 28, "px") + ")");
+            section.style.setProperty("--map-section-rotate", fixedRange(-4.4, 3.2, "deg"));
+            section.style.setProperty("--map-section-skew", fixedRange(-6, 6, "deg"));
+            section.style.setProperty("--map-section-line-opacity", fixedRange(0.48, 0.9, ""));
           });
 
           document.querySelectorAll(".directory-section").forEach(function (section) {
             if (isReadableHomeElement(section) || isVisualMapElement(section)) return;
-            section.style.setProperty("--section-offset-y", randomRange(14, 72, "px"));
-            section.style.setProperty("--section-offset-x", randomRange(8, 40, "px"));
-            section.style.setProperty("--section-block-x", randomRange(-14, 20, "px"));
-            section.style.setProperty("--section-block-y", randomRange(-8, 18, "px"));
-            section.style.setProperty("--section-block-rotate", randomRange(-0.8, 0.8, "deg"));
-            section.style.setProperty("--section-fracture-rotate", randomRange(-14, -4, "deg"));
-            section.style.setProperty("--section-title-x", randomRange(-10, 14, "px"));
-            section.style.setProperty("--section-title-y", randomRange(-4, 8, "px"));
-            section.style.setProperty("--section-title-rotate", randomRange(-2.6, 2.2, "deg"));
-            section.style.setProperty("--section-link-x", randomRange(-6, 12, "px"));
-            section.style.setProperty("--section-link-y", randomRange(-6, 6, "px"));
-            section.style.setProperty("--section-link-rotate", randomRange(-2, 2, "deg"));
-            section.style.setProperty("--branch-glass-rotate", randomRange(-7, 5, "deg"));
-            section.style.setProperty("--branch-glass-x", randomRange(-6, 7, "px"));
-            section.style.setProperty("--branch-glass-y", randomRange(-4, 6, "px"));
-            section.style.setProperty("--branch-glass-angle", randomRange(104, 132, "deg"));
-            section.style.setProperty("--branch-echo-x", randomRange(-5, 9, "px"));
-            section.style.setProperty("--branch-echo-y", randomRange(-8, 7, "px"));
-            section.style.setProperty("--branch-motion-x", randomRange(-3, 7, "px"));
-            section.style.setProperty("--branch-motion-y", randomRange(-5, 4, "px"));
-            section.style.setProperty("--branch-motion-rotate", randomRange(-1.6, 1.8, "deg"));
-            section.style.setProperty("--branch-motion-x-alt", randomRange(-6, 3, "px"));
-            section.style.setProperty("--branch-motion-y-alt", randomRange(-2, 6, "px"));
-            section.style.setProperty("--branch-motion-rotate-alt", randomRange(-1.4, 1.4, "deg"));
-            section.style.setProperty("--branch-glass-motion-x", randomRange(-4, 7, "px"));
-            section.style.setProperty("--branch-glass-motion-y", randomRange(-5, 5, "px"));
-            section.style.setProperty("--branch-glass-motion-rotate", randomRange(-3, 4, "deg"));
-            section.style.setProperty("--branch-echo-motion-x", randomRange(-4, 6, "px"));
-            section.style.setProperty("--branch-echo-motion-y", randomRange(-5, 4, "px"));
+            section.style.setProperty("--section-offset-y", fixedRange(14, 72, "px"));
+            section.style.setProperty("--section-offset-x", fixedRange(8, 40, "px"));
+            section.style.setProperty("--section-block-x", fixedRange(-14, 20, "px"));
+            section.style.setProperty("--section-block-y", fixedRange(-8, 18, "px"));
+            section.style.setProperty("--section-block-rotate", fixedRange(-0.8, 0.8, "deg"));
+            section.style.setProperty("--section-fracture-rotate", fixedRange(-14, -4, "deg"));
+            section.style.setProperty("--section-title-x", fixedRange(-10, 14, "px"));
+            section.style.setProperty("--section-title-y", fixedRange(-4, 8, "px"));
+            section.style.setProperty("--section-title-rotate", fixedRange(-2.6, 2.2, "deg"));
+            section.style.setProperty("--section-link-x", fixedRange(-6, 12, "px"));
+            section.style.setProperty("--section-link-y", fixedRange(-6, 6, "px"));
+            section.style.setProperty("--section-link-rotate", fixedRange(-2, 2, "deg"));
+            section.style.setProperty("--branch-glass-rotate", fixedRange(-7, 5, "deg"));
+            section.style.setProperty("--branch-glass-x", fixedRange(-6, 7, "px"));
+            section.style.setProperty("--branch-glass-y", fixedRange(-4, 6, "px"));
+            section.style.setProperty("--branch-glass-angle", fixedRange(104, 132, "deg"));
+            section.style.setProperty("--branch-echo-x", fixedRange(-5, 9, "px"));
+            section.style.setProperty("--branch-echo-y", fixedRange(-8, 7, "px"));
+            section.style.setProperty("--branch-motion-x", fixedRange(-3, 7, "px"));
+            section.style.setProperty("--branch-motion-y", fixedRange(-5, 4, "px"));
+            section.style.setProperty("--branch-motion-rotate", fixedRange(-1.6, 1.8, "deg"));
+            section.style.setProperty("--branch-motion-x-alt", fixedRange(-6, 3, "px"));
+            section.style.setProperty("--branch-motion-y-alt", fixedRange(-2, 6, "px"));
+            section.style.setProperty("--branch-motion-rotate-alt", fixedRange(-1.4, 1.4, "deg"));
+            section.style.setProperty("--branch-glass-motion-x", fixedRange(-4, 7, "px"));
+            section.style.setProperty("--branch-glass-motion-y", fixedRange(-5, 5, "px"));
+            section.style.setProperty("--branch-glass-motion-rotate", fixedRange(-3, 4, "deg"));
+            section.style.setProperty("--branch-echo-motion-x", fixedRange(-4, 6, "px"));
+            section.style.setProperty("--branch-echo-motion-y", fixedRange(-5, 4, "px"));
           });
 
           document.querySelectorAll(".home-index-board .directory-section").forEach(function (section) {
             applyTrimProfile(section, 8, 32);
-            section.style.setProperty("--index-section-pad-x", randomRange(14, 28, "px"));
-            section.style.setProperty("--index-section-pad-y", randomRange(12, 24, "px"));
-            section.style.setProperty("--index-section-line-top", randomRange(34, 62, "%"));
-            section.style.setProperty("--index-section-rail-left", randomRange(-76, -42, "px"));
-            section.style.setProperty("--index-section-rail-width", randomRange(62, 128, "px"));
-            section.style.setProperty("--index-section-rail-opacity", randomRange(0.44, 0.78, ""));
-            section.style.setProperty("--index-section-rail-rotate", randomRange(-14, 8, "deg"));
+            section.style.setProperty("--index-section-pad-x", fixedRange(14, 28, "px"));
+            section.style.setProperty("--index-section-pad-y", fixedRange(12, 24, "px"));
+            section.style.setProperty("--index-section-line-top", fixedRange(34, 62, "%"));
+            section.style.setProperty("--index-section-rail-left", fixedRange(-76, -42, "px"));
+            section.style.setProperty("--index-section-rail-width", fixedRange(62, 128, "px"));
+            section.style.setProperty("--index-section-rail-opacity", fixedRange(0.44, 0.78, ""));
+            section.style.setProperty("--index-section-rail-rotate", fixedRange(-14, 8, "deg"));
           });
 
           document.querySelectorAll(".directory-link").forEach(function (link) {
             if (isReadableHomeElement(link)) return;
-            link.style.setProperty("--plus-rotate", randomRange(-14, 16, "deg"));
-            link.style.setProperty("--plus-axis-shift", randomRange(-2, 2, "px"));
-            link.style.setProperty("--plus-glass-rotate", randomRange(-9, 7, "deg"));
-            link.style.setProperty("--plus-glass-x", randomRange(-4, 4, "px"));
-            link.style.setProperty("--plus-glass-y", randomRange(-4, 4, "px"));
-            link.style.setProperty("--plus-line-rotate", randomRange(-18, 8, "deg"));
+            link.style.setProperty("--plus-rotate", fixedRange(-14, 16, "deg"));
+            link.style.setProperty("--plus-axis-shift", fixedRange(-2, 2, "px"));
+            link.style.setProperty("--plus-glass-rotate", fixedRange(-9, 7, "deg"));
+            link.style.setProperty("--plus-glass-x", fixedRange(-4, 4, "px"));
+            link.style.setProperty("--plus-glass-y", fixedRange(-4, 4, "px"));
+            link.style.setProperty("--plus-line-rotate", fixedRange(-18, 8, "deg"));
             applyTrimProfile(link, 4, 14);
           });
 
           document.querySelectorAll(".page-branch-logo").forEach(function (logo) {
-            logo.style.setProperty("--branch-glass-rotate", randomRange(-7, 5, "deg"));
-            logo.style.setProperty("--branch-glass-x", randomRange(-8, 8, "px"));
-            logo.style.setProperty("--branch-glass-y", randomRange(-5, 7, "px"));
-            logo.style.setProperty("--branch-glass-angle", randomRange(104, 132, "deg"));
-            logo.style.setProperty("--branch-echo-x", randomRange(-6, 10, "px"));
-            logo.style.setProperty("--branch-echo-y", randomRange(-8, 8, "px"));
-            logo.style.setProperty("--branch-motion-x", randomRange(-5, 7, "px"));
-            logo.style.setProperty("--branch-motion-y", randomRange(-4, 5, "px"));
-            logo.style.setProperty("--branch-motion-rotate", randomRange(-1.8, 1.8, "deg"));
-            logo.style.setProperty("--branch-motion-x-alt", randomRange(-6, 5, "px"));
-            logo.style.setProperty("--branch-motion-y-alt", randomRange(-3, 6, "px"));
-            logo.style.setProperty("--branch-motion-rotate-alt", randomRange(-1.6, 1.6, "deg"));
-            logo.style.setProperty("--branch-glass-motion-x", randomRange(-4, 7, "px"));
-            logo.style.setProperty("--branch-glass-motion-y", randomRange(-5, 5, "px"));
-            logo.style.setProperty("--branch-glass-motion-rotate", randomRange(-2.2, 2.6, "deg"));
-            logo.style.setProperty("--branch-echo-motion-x", randomRange(-5, 6, "px"));
-            logo.style.setProperty("--branch-echo-motion-y", randomRange(-5, 5, "px"));
+            logo.style.setProperty("--branch-glass-rotate", fixedRange(-7, 5, "deg"));
+            logo.style.setProperty("--branch-glass-x", fixedRange(-8, 8, "px"));
+            logo.style.setProperty("--branch-glass-y", fixedRange(-5, 7, "px"));
+            logo.style.setProperty("--branch-glass-angle", fixedRange(104, 132, "deg"));
+            logo.style.setProperty("--branch-echo-x", fixedRange(-6, 10, "px"));
+            logo.style.setProperty("--branch-echo-y", fixedRange(-8, 8, "px"));
+            logo.style.setProperty("--branch-motion-x", fixedRange(-5, 7, "px"));
+            logo.style.setProperty("--branch-motion-y", fixedRange(-4, 5, "px"));
+            logo.style.setProperty("--branch-motion-rotate", fixedRange(-1.8, 1.8, "deg"));
+            logo.style.setProperty("--branch-motion-x-alt", fixedRange(-6, 5, "px"));
+            logo.style.setProperty("--branch-motion-y-alt", fixedRange(-3, 6, "px"));
+            logo.style.setProperty("--branch-motion-rotate-alt", fixedRange(-1.6, 1.6, "deg"));
+            logo.style.setProperty("--branch-glass-motion-x", fixedRange(-4, 7, "px"));
+            logo.style.setProperty("--branch-glass-motion-y", fixedRange(-5, 5, "px"));
+            logo.style.setProperty("--branch-glass-motion-rotate", fixedRange(-2.2, 2.6, "deg"));
+            logo.style.setProperty("--branch-echo-motion-x", fixedRange(-5, 6, "px"));
+            logo.style.setProperty("--branch-echo-motion-y", fixedRange(-5, 5, "px"));
           });
 
           document.querySelectorAll(".branch-card-link").forEach(function (link) {
-            link.style.setProperty("--branch-card-glass-rotate", randomRange(-5, 5, "deg"));
-            link.style.setProperty("--branch-card-glass-x", randomRange(-4, 5, "px"));
-            link.style.setProperty("--branch-card-glass-y", randomRange(-3, 4, "px"));
-            link.style.setProperty("--branch-card-glass-angle", randomRange(108, 130, "deg"));
-            link.style.setProperty("--branch-card-echo-x", randomRange(-3, 6, "px"));
-            link.style.setProperty("--branch-card-echo-y", randomRange(-5, 4, "px"));
+            link.style.setProperty("--branch-card-glass-rotate", fixedRange(-5, 5, "deg"));
+            link.style.setProperty("--branch-card-glass-x", fixedRange(-4, 5, "px"));
+            link.style.setProperty("--branch-card-glass-y", fixedRange(-3, 4, "px"));
+            link.style.setProperty("--branch-card-glass-angle", fixedRange(108, 130, "deg"));
+            link.style.setProperty("--branch-card-echo-x", fixedRange(-3, 6, "px"));
+            link.style.setProperty("--branch-card-echo-y", fixedRange(-5, 4, "px"));
             applyTrimProfile(link, 4, 14);
             applyHoverProfile(link, true);
           });
 
           document.querySelectorAll(".logo-fragment").forEach(function (fragment) {
-            fragment.style.setProperty("--fragment-glass-rotate", randomRange(-7, 7, "deg"));
-            fragment.style.setProperty("--fragment-glass-x", randomRange(-5, 5, "px"));
-            fragment.style.setProperty("--fragment-glass-y", randomRange(-4, 5, "px"));
-            fragment.style.setProperty("--logo-motion-x", randomRange(-4, 6, "px"));
-            fragment.style.setProperty("--logo-motion-y", randomRange(-5, 4, "px"));
-            fragment.style.setProperty("--logo-motion-rotate", randomRange(-2.2, 2.2, "deg"));
+            fragment.style.setProperty("--fragment-glass-rotate", fixedRange(-7, 7, "deg"));
+            fragment.style.setProperty("--fragment-glass-x", fixedRange(-5, 5, "px"));
+            fragment.style.setProperty("--fragment-glass-y", fixedRange(-4, 5, "px"));
+            fragment.style.setProperty("--logo-motion-x", fixedRange(-4, 6, "px"));
+            fragment.style.setProperty("--logo-motion-y", fixedRange(-5, 4, "px"));
+            fragment.style.setProperty("--logo-motion-rotate", fixedRange(-2.2, 2.2, "deg"));
           });
 
           document.querySelectorAll(".branch-logo, .logo-fragment").forEach(function (logo) {
@@ -3005,22 +2992,20 @@
             var cardTitle = card.querySelector(".orbit-chip-label, a");
             var cardTitleLength = cardTitle ? cardTitle.textContent.trim().length : 0;
             var cardTitleIsLong = cardTitleLength > 20;
-            card.style.setProperty("--card-skew", randomRange(-1.8, 1.2, "deg"));
-            card.style.setProperty("--card-offset-left", randomRange(8, 24, "px"));
-            card.style.setProperty("--card-offset-right", randomRange(6, 20, "px"));
-            card.style.setProperty("--card-title-font", randomChoice(aboutFonts));
-            card.style.setProperty("--card-title-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            card.style.setProperty("--card-title-weight", randomInt(cardTitleIsLong ? 600 : 640, cardTitleIsLong ? 780 : 860));
-            card.style.setProperty("--card-title-line", randomRange(cardTitleIsLong ? 1.22 : 1.16, cardTitleIsLong ? 1.38 : 1.3, ""));
-            card.style.setProperty("--home-card-title-x", randomRange(-8, 14, "px"));
-            card.style.setProperty("--home-card-title-y", randomRange(-3, 6, "px"));
-            card.style.setProperty("--home-card-title-rotate", randomRange(-1.6, 1.4, "deg"));
-            card.style.setProperty("--list-card-shift", randomRange(-22, 30, "px"));
-            card.style.setProperty("--list-card-y", randomRange(-8, 12, "px"));
-            card.style.setProperty("--list-card-rotate", randomRange(-2.4, 2.2, "deg"));
-            card.style.setProperty("--list-card-notch", randomRange(12, 38, "px"));
-            card.style.setProperty("--list-number-rotate", randomRange(-16, 14, "deg"));
-            card.style.setProperty("--list-title-shift", randomRange(-8, 16, "px"));
+            card.style.setProperty("--card-skew", fixedRange(-1.8, 1.2, "deg"));
+            card.style.setProperty("--card-offset-left", fixedRange(8, 24, "px"));
+            card.style.setProperty("--card-offset-right", fixedRange(6, 20, "px"));
+            card.style.setProperty("--card-title-weight", fixedInt(cardTitleIsLong ? 600 : 640, cardTitleIsLong ? 780 : 860));
+            card.style.setProperty("--card-title-line", fixedRange(cardTitleIsLong ? 1.22 : 1.16, cardTitleIsLong ? 1.38 : 1.3, ""));
+            card.style.setProperty("--home-card-title-x", fixedRange(-8, 14, "px"));
+            card.style.setProperty("--home-card-title-y", fixedRange(-3, 6, "px"));
+            card.style.setProperty("--home-card-title-rotate", fixedRange(-1.6, 1.4, "deg"));
+            card.style.setProperty("--list-card-shift", fixedRange(-22, 30, "px"));
+            card.style.setProperty("--list-card-y", fixedRange(-8, 12, "px"));
+            card.style.setProperty("--list-card-rotate", fixedRange(-2.4, 2.2, "deg"));
+            card.style.setProperty("--list-card-notch", fixedRange(12, 38, "px"));
+            card.style.setProperty("--list-number-rotate", fixedRange(-16, 14, "deg"));
+            card.style.setProperty("--list-title-shift", fixedRange(-8, 16, "px"));
             applyHoverProfile(card, false);
           });
 
@@ -3064,9 +3049,7 @@
 
           document.querySelectorAll(".page-content h1, .page-content h2, .page-content h3, .page-content h4").forEach(function (title) {
             var isMainTitle = title.tagName === "H1";
-            title.style.setProperty("--title-font", randomChoice(aboutFonts));
-            title.style.setProperty("--title-style", randomChoice(["normal", "normal", "normal", "italic"]));
-            title.style.setProperty("--title-weight", randomInt(isMainTitle ? 720 : 620, isMainTitle ? 900 : 820));
+            title.style.setProperty("--title-weight", fixedInt(isMainTitle ? 720 : 620, isMainTitle ? 900 : 820));
           });
         }
 
@@ -3119,7 +3102,7 @@
           });
         }
 
-        applySpatialRandomness();
+        applySpatialProfiles();
         requestHomeDirectoryMasonry();
         fitStaticOrbitMaps();
 
@@ -3129,7 +3112,7 @@
           if (homeOrbitRelayoutTimer) window.clearTimeout(homeOrbitRelayoutTimer);
           homeOrbitRelayoutTimer = window.setTimeout(function () {
             syncHomeViewport();
-            applySpatialRandomness();
+            applySpatialProfiles();
             requestHomeDirectoryMasonry();
             fitStaticOrbitMaps();
           }, 180);
