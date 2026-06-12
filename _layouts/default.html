@@ -1330,15 +1330,13 @@
 
       .visual-map-section .home-orbit {
         position: relative;
-        overflow: auto;
-        max-height: clamp(420px, 62vw, 620px);
-        padding: clamp(18px, 3vw, 28px);
+        overflow: visible;
+        padding: clamp(14px, 2.4vw, 22px);
         border: 1px solid var(--line);
-        border-radius: 28px;
+        border-radius: 24px;
         background:
           linear-gradient(135deg, color-mix(in srgb, var(--accent-soft), transparent 70%), transparent 28%),
           color-mix(in srgb, var(--panel-strong), transparent 16%);
-        overscroll-behavior: contain;
       }
 
       .visual-map-section .home-orbit::before {
@@ -1348,19 +1346,16 @@
       .visual-map-section .orbit-map {
         position: relative;
         display: grid;
-        grid-template-columns: minmax(120px, auto) minmax(0, 1fr);
-        gap: clamp(18px, 3vw, 34px);
+        grid-template-columns: minmax(72px, 0.14fr) minmax(0, 1fr);
+        gap: clamp(10px, 2vw, 18px);
         align-items: start;
         width: 100%;
-        min-width: min(860px, 100%);
         height: auto;
         transform: none;
       }
 
       .visual-map-section .orbit-core {
-        position: sticky;
-        top: 0;
-        left: 0;
+        position: relative;
         min-height: auto;
         margin: 0;
         padding: 0;
@@ -1368,24 +1363,23 @@
       }
 
       .visual-map-section .home-logo {
-        font-size: clamp(42px, 7vw, 82px);
-        opacity: 0.42;
+        font-size: clamp(28px, 4.4vw, 52px);
+        opacity: 0.34;
       }
 
       .visual-map-section .orbit-field {
         position: relative;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+        gap: 8px;
         align-items: flex-start;
         pointer-events: none;
       }
 
       .visual-map-section .directory-section {
         position: relative;
-        flex: 0 1 auto;
-        width: fit-content;
-        max-width: min(260px, 82vw);
+        width: 100%;
+        max-width: none;
         height: auto;
         min-width: 0;
         padding: 0;
@@ -1399,31 +1393,23 @@
       }
 
       .visual-map-section .directory-section::before {
-        content: "";
-        position: absolute;
-        top: 20px;
-        right: calc(100% + 8px);
-        width: 22px;
-        height: 1px;
-        background: color-mix(in srgb, var(--accent), transparent 42%);
-        opacity: 0.48;
-        transform: none;
+        content: none;
       }
 
       .visual-map-section .directory-section h2 {
         position: relative;
         display: inline-flex;
-        width: fit-content;
+        width: 100%;
         max-width: 100%;
         min-height: 0;
         align-items: center;
         justify-content: flex-start;
         margin: 0;
-        padding: 9px 12px;
+        padding: 5px 7px;
         border: 1px solid var(--line);
-        border-radius: 999px;
+        border-radius: 10px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 2%);
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+        box-shadow: none;
         transform: none;
         backdrop-filter: var(--blur);
         -webkit-backdrop-filter: var(--blur);
@@ -1437,10 +1423,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
         font-family: inherit;
-        font-size: clamp(15px, 1.6vw, 18px);
+        font-size: clamp(10px, 1.05vw, 12px);
         font-style: normal;
         font-weight: 720;
-        letter-spacing: -0.02em;
+        letter-spacing: 0;
       }
 
       .visual-map-section .logo-letter {
@@ -1452,21 +1438,19 @@
       .visual-map-section .post-list {
         position: relative;
         display: grid;
-        gap: 6px;
-        max-height: 184px;
-        margin: 8px 0 0;
-        padding: 0 4px 0 0;
-        overflow-y: auto;
-        overscroll-behavior: contain;
+        gap: 4px;
+        margin: 5px 0 0;
+        padding: 0;
+        overflow: visible;
       }
 
       .visual-map-section .post-card {
         display: block;
         position: relative;
-        width: min(100%, 220px);
+        width: 100%;
         min-height: auto;
-        padding: 8px 10px;
-        border-radius: 13px;
+        padding: 4px 6px;
+        border-radius: 8px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 10%);
         box-shadow: none;
         transform: none;
@@ -1483,10 +1467,10 @@
 
       .visual-map-section .post-card .orbit-chip-label {
         font-family: inherit;
-        font-size: 13px;
+        font-size: clamp(9px, 0.9vw, 10.5px);
         font-style: normal;
-        font-weight: 650;
-        line-height: 1.24;
+        font-weight: 620;
+        line-height: 1.18;
       }
 
       .section-pager {
@@ -1841,7 +1825,7 @@
         }
 
         .visual-map-section .orbit-map {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(54px, 0.12fr) minmax(0, 1fr);
         }
 
         .visual-map-section .orbit-core {
@@ -1849,11 +1833,12 @@
         }
 
         .visual-map-section .orbit-field {
-          gap: 10px;
+          grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+          gap: 7px;
         }
 
         .visual-map-section .directory-section {
-          max-width: min(230px, 82vw);
+          max-width: none;
         }
 
         .scroll-progress {

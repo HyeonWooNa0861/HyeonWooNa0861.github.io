@@ -438,4 +438,5 @@ $$
 <ul>
   <li><a href="{{ "/assets/pdfs/post/2026-kiit-summer-conference/qeco-adapt-performance-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석 발표 PDF</a></li>
   <li><a href="{{ "/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf" | relative_url }}" target="_blank" rel="noopener">QECO-Adapt 연구 PDF</a></li>
+  <li><a href="{{ "/assets/pdfs/post/2026-kiit-summer-conference/kiit-2026-summer-award.pdf" | relative_url }}" target="_blank" rel="noopener">2026 KIIT Summer Conference Award PDF</a></li>
 </ul>

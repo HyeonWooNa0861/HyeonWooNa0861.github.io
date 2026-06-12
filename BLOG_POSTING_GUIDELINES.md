@@ -8,6 +8,7 @@
 - 정리본은 원문 자료의 주요 범위와 논지를 충실히 따라야 한다. 읽기 쉽게 재구성하되, 원문에서 비중 있게 다룬 장, 절, 코드 예제, 수식, 표, 결론을 임의로 누락하지 않는다.
 - 파일명과 폴더명은 영문 kebab-case를 사용한다.
 - 기존 collection, URL, sidebar 구조를 우선한다.
+- 수상 실적, 증명서, 확인서처럼 본문 해설 대상이 아닌 증빙 PDF는 별도 포스트를 만들지 않고, 관련 포스트의 하단 참고자료/source 목록에 첨부한다.
 - 수식은 MathJax 문법을 사용한다.
   - inline: `\\(...\\)`
   - display: `$$...$$`
@@ -282,6 +283,12 @@ Study:
 - AIX: `assets/pdfs/study/aix/`
 - Data Structures: `assets/pdfs/study/data-structures/`
 - CPP: `assets/pdfs/study/cpp/`
+
+Post 증빙/참고자료:
+
+- 발표 자료, 행사 자료, 수상 실적 PDF: `assets/pdfs/post/<section>/`
+- 증빙 PDF는 제목 기반 영문 kebab-case 파일명으로 저장한다.
+- 증빙 PDF만 추가하는 경우 navigation과 새 Markdown 포스트는 만들지 않는다.
 
 PDF 파일명이 숫자 또는 임시명이면 전문을 확인한 뒤 제목 기반 slug로 rename한다.
 

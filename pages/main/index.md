@@ -5,11 +5,11 @@ permalink: /
 ---
 
 <section class="home-hero">
-  <a class="home-logo" href="{{ '/' | relative_url }}" aria-label="NaHW home">
+  <div class="home-logo" role="img" aria-label="NaHW">
     <span class="logo-fragment" data-fragment="Na">Na</span>
     <span class="logo-fragment" data-fragment="H">H</span>
     <span class="logo-fragment" data-fragment="W">W</span>
-  </a>
+  </div>
 </section>
 
 <div class="home-directory">
