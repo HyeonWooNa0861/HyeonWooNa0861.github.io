@@ -1382,11 +1382,12 @@
 
       .visual-map-section .directory-section {
         --map-card-width: clamp(68px, 5.4vw, 86px);
+        --map-branch-inner-width: var(--map-card-width);
         position: relative;
         display: grid;
         align-content: start;
         flex: 0 0 auto;
-        width: fit-content;
+        width: calc(var(--map-branch-inner-width) + 12px);
         max-width: 100%;
         height: auto;
         min-width: 0;
@@ -1407,10 +1408,10 @@
       .visual-map-section .directory-section h2 {
         position: relative;
         display: inline-flex;
-        width: 100%;
+        width: var(--map-branch-inner-width);
         max-width: 100%;
         min-height: 0;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-start;
         margin: 0;
         padding: 0 0 5px;
@@ -1425,14 +1426,18 @@
       .visual-map-section .branch-logo {
         justify-content: flex-start;
         text-align: left;
-        white-space: nowrap;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        width: 100%;
+        max-width: var(--map-branch-inner-width);
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
         font-family: inherit;
         font-size: clamp(10px, 1.05vw, 12px);
         font-style: normal;
         font-weight: 720;
+        line-height: 1.12;
         letter-spacing: 0;
       }
 
@@ -1446,7 +1451,7 @@
         position: relative;
         display: grid;
         grid-template-columns: repeat(var(--map-card-columns, 1), minmax(0, var(--map-card-width)));
-        width: fit-content;
+        width: var(--map-branch-inner-width);
         max-width: 100%;
         gap: 4px;
         margin: 5px 0 0;
@@ -1488,6 +1493,7 @@
       .visual-map-section .directory-section[data-child-count="5"],
       .visual-map-section .directory-section[data-child-count="6"] {
         --map-card-columns: 2;
+        --map-branch-inner-width: calc(var(--map-card-width) + var(--map-card-width) + 4px);
       }
 
       .visual-map-section .directory-section[data-child-count="7"],
@@ -1495,6 +1501,7 @@
       .visual-map-section .directory-section[data-child-count="9"],
       .visual-map-section .directory-section[data-child-count="10"] {
         --map-card-columns: 3;
+        --map-branch-inner-width: calc(var(--map-card-width) + var(--map-card-width) + var(--map-card-width) + 8px);
       }
 
       .section-pager {
