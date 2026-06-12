@@ -15,7 +15,7 @@ permalink: /
 <div class="home-directory">
 {% for item in site.data.navigation %}
   {% assign child_count = item.children | size %}
-  <section class="directory-section{% if child_count > 4 %} has-card-scroll{% endif %}" data-child-count="{{ child_count }}">
+  <section class="directory-section" data-child-count="{{ child_count }}">
     <h2>
       <span class="branch-heading">
         <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
@@ -60,7 +60,8 @@ permalink: /
 
       <div class="home-directory orbit-field">
       {% for item in site.data.navigation %}
-        <section class="directory-section orbit-node">
+        {% assign child_count = item.children | size %}
+        <section class="directory-section orbit-node" data-child-count="{{ child_count }}">
           <h2>
             <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
           </h2>
