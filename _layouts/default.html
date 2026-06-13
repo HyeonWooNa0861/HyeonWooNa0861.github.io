@@ -1605,7 +1605,8 @@
         inset: 0;
         z-index: 180;
         display: none;
-        background: rgba(0, 0, 0, 0.06);
+        background: transparent;
+        pointer-events: none;
       }
 
       .pdf-reader-panel {
@@ -1614,24 +1615,33 @@
       }
 
       body.pdf-reader-active .pdf-reader-backdrop {
-        display: block;
+        display: none;
       }
 
-      body.pdf-reader-active .page-shell.has-sidebar {
-        grid-template-columns: minmax(0, 1fr) minmax(320px, min(38vw, 520px));
-        gap: 20px;
+      body.pdf-reader-active .main-wrap {
+        width: calc(100% - 32px);
+        max-width: none;
+      }
+
+      body.pdf-reader-active .page-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+        gap: clamp(12px, 2vw, 20px);
       }
 
       body.pdf-reader-active .page-shell.has-sidebar > .side-index {
         display: none;
       }
 
-      body.pdf-reader-active .page-shell.has-sidebar > .page-content {
+      body.pdf-reader-active .page-shell > .page-content {
         width: 100%;
       }
 
       body.pdf-reader-active .content-page .page-content {
+        max-width: none;
         padding-inline: clamp(18px, 3vw, 34px);
+        box-shadow: none;
       }
 
       body.pdf-reader-active .pdf-reader-panel {
@@ -1644,7 +1654,7 @@
         border: 1px solid var(--apple-hairline);
         border-radius: var(--apple-card-radius);
         background: var(--apple-card-bg);
-        box-shadow: var(--apple-card-hover-shadow);
+        box-shadow: none;
         backdrop-filter: saturate(180%) blur(18px);
         -webkit-backdrop-filter: saturate(180%) blur(18px);
         animation: readerSlideIn 420ms var(--ease-spring) both;
@@ -1722,7 +1732,7 @@
         background: var(--panel-strong);
         color: var(--muted);
         font-size: 12px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: none;
       }
 
       a[data-pdf-reader-link] {
@@ -1803,7 +1813,7 @@
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
 
-        body.pdf-reader-active .page-shell.has-sidebar {
+        body.pdf-reader-active .page-shell {
           grid-template-columns: 1fr;
         }
 
