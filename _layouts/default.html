@@ -86,8 +86,15 @@
         --apple-mono-font: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
         --content-width: 980px;
         --header-height: 52px;
+        --viewport-height: 100vh;
         --ease: cubic-bezier(0.2, 0, 0, 1);
         --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @supports (height: 100svh) {
+        :root {
+          --viewport-height: 100svh;
+        }
       }
 
       :root[data-theme="dark"] {
@@ -131,7 +138,7 @@
       }
 
       body {
-        min-height: 100vh;
+        min-height: var(--viewport-height);
         margin: 0;
         background:
           radial-gradient(circle at 50% -8%, rgba(0, 113, 227, 0.08), transparent 30rem),
@@ -475,7 +482,7 @@
       }
 
       main {
-        min-height: calc(100vh - var(--header-height));
+        min-height: calc(var(--viewport-height) - var(--header-height));
         padding: 42px 0 72px;
       }
 
@@ -497,7 +504,7 @@
       .side-index {
         position: sticky;
         top: calc(var(--header-height) + 24px);
-        max-height: calc(100vh - var(--header-height) - 48px);
+        max-height: calc(var(--viewport-height) - var(--header-height) - 48px);
         overflow: auto;
         padding: 16px;
         border: 1px solid var(--apple-hairline);
@@ -776,7 +783,7 @@
       }
 
       .home-page main {
-        min-height: calc(100vh - var(--header-height));
+        min-height: calc(var(--viewport-height) - var(--header-height));
         padding-top: clamp(38px, 6vw, 72px);
       }
 
@@ -1057,7 +1064,7 @@
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
         width: min(100%, 760px);
-        max-height: min(760px, calc(100vh - 56px));
+        max-height: min(760px, calc(var(--viewport-height) - 56px));
         overflow: hidden;
         border: 1px solid var(--apple-hairline);
         border-radius: var(--apple-card-radius);
@@ -1649,7 +1656,7 @@
         top: calc(var(--header-height) + 22px);
         z-index: 190;
         display: block;
-        height: calc(100vh - var(--header-height) - 44px);
+        height: calc(var(--viewport-height) - var(--header-height) - 44px);
         overflow: hidden;
         border: 1px solid var(--apple-hairline);
         border-radius: var(--apple-card-radius);
@@ -1793,9 +1800,20 @@
         to { opacity: 0; transform: translateX(18px); }
       }
 
-      @media (max-width: 980px) {
+      @media (max-width: 980px), (hover: none), (pointer: coarse) {
         .wrap {
           width: min(100% - 28px, 1180px);
+        }
+
+        .site-header,
+        .study-gate,
+        .side-index,
+        .content-page .page-content,
+        .directory-section,
+        .branch-modal-backdrop,
+        body.pdf-reader-active .pdf-reader-panel {
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
         }
 
         .page-shell.has-sidebar {
@@ -2281,8 +2299,13 @@
           }
         });
 
+        var compactViewportQuery = window.matchMedia("(max-width: 860px), (hover: none), (pointer: coarse)");
+        function isCompactViewport() {
+          return compactViewportQuery.matches;
+        }
+
         function getHomeViewportSize() {
-          var viewport = window.visualViewport;
+          var viewport = isCompactViewport() ? null : window.visualViewport;
           var layoutWidth = window.innerWidth || document.documentElement.clientWidth || 1;
           var layoutHeight = window.innerHeight || document.documentElement.clientHeight || 1;
           var width = viewport && viewport.width ? viewport.width : layoutWidth;
@@ -2311,7 +2334,8 @@
         syncHomeViewport();
 
         var homeViewportFrame = null;
-        function requestHomeViewportSync() {
+        function requestHomeViewportSync(force) {
+          if (!force && isCompactViewport()) return;
           if (homeViewportFrame) return;
           homeViewportFrame = window.requestAnimationFrame(function () {
             homeViewportFrame = null;
@@ -2319,14 +2343,19 @@
           });
         }
 
-        window.addEventListener("resize", requestHomeViewportSync);
+        window.addEventListener("resize", function () {
+          requestHomeViewportSync(false);
+        });
         window.addEventListener("orientationchange", function () {
-          requestHomeViewportSync();
-          window.setTimeout(requestHomeViewportSync, 120);
+          requestHomeViewportSync(true);
+          window.setTimeout(function () {
+            requestHomeViewportSync(true);
+          }, 120);
         });
         if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", requestHomeViewportSync);
-          window.visualViewport.addEventListener("scroll", requestHomeViewportSync);
+          window.visualViewport.addEventListener("resize", function () {
+            requestHomeViewportSync(false);
+          });
         }
 
         var homeDirectoryMasonryFrame = null;
@@ -2362,7 +2391,8 @@
           });
         }
 
-        function requestHomeDirectoryMasonry() {
+        function requestHomeDirectoryMasonry(force) {
+          if (!force && isCompactViewport()) return;
           if (homeDirectoryMasonryFrame) window.cancelAnimationFrame(homeDirectoryMasonryFrame);
           homeDirectoryMasonryFrame = window.requestAnimationFrame(function () {
             homeDirectoryMasonryFrame = null;
@@ -2370,21 +2400,31 @@
           });
         }
 
-        requestHomeDirectoryMasonry();
+        requestHomeDirectoryMasonry(true);
         window.addEventListener("load", function () {
-          requestHomeDirectoryMasonry();
-          window.setTimeout(requestHomeDirectoryMasonry, 160);
+          requestHomeDirectoryMasonry(true);
+          window.setTimeout(function () {
+            requestHomeDirectoryMasonry(true);
+          }, 160);
         });
-        window.addEventListener("resize", requestHomeDirectoryMasonry);
+        window.addEventListener("resize", function () {
+          requestHomeDirectoryMasonry(false);
+        });
         window.addEventListener("orientationchange", function () {
-          requestHomeDirectoryMasonry();
-          window.setTimeout(requestHomeDirectoryMasonry, 180);
+          requestHomeDirectoryMasonry(true);
+          window.setTimeout(function () {
+            requestHomeDirectoryMasonry(true);
+          }, 180);
         });
         if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", requestHomeDirectoryMasonry);
+          window.visualViewport.addEventListener("resize", function () {
+            requestHomeDirectoryMasonry(false);
+          });
         }
         if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(requestHomeDirectoryMasonry).catch(function () {});
+          document.fonts.ready.then(function () {
+            requestHomeDirectoryMasonry(true);
+          }).catch(function () {});
         }
 
         function applySpatialProfiles() {
@@ -3113,41 +3153,59 @@
         }
 
         applySpatialProfiles();
-        requestHomeDirectoryMasonry();
+        requestHomeDirectoryMasonry(true);
         fitStaticOrbitMaps();
 
         var homeOrbitRelayoutTimer = null;
-        function requestHomeOrbitRelayout() {
+        function requestHomeOrbitRelayout(force) {
           if (!document.body.classList.contains("home-page")) return;
+          if (!force && isCompactViewport()) return;
           if (homeOrbitRelayoutTimer) window.clearTimeout(homeOrbitRelayoutTimer);
           homeOrbitRelayoutTimer = window.setTimeout(function () {
             syncHomeViewport();
             applySpatialProfiles();
-            requestHomeDirectoryMasonry();
+            requestHomeDirectoryMasonry(true);
             fitStaticOrbitMaps();
           }, 180);
         }
 
-        window.addEventListener("resize", requestHomeOrbitRelayout);
+        window.addEventListener("resize", function () {
+          requestHomeOrbitRelayout(false);
+        });
         window.addEventListener("orientationchange", function () {
-          requestHomeOrbitRelayout();
-          window.setTimeout(requestHomeOrbitRelayout, 180);
+          requestHomeOrbitRelayout(true);
+          window.setTimeout(function () {
+            requestHomeOrbitRelayout(true);
+          }, 180);
         });
         window.addEventListener("load", function () {
           syncHomeViewport();
-          requestHomeDirectoryMasonry();
+          requestHomeDirectoryMasonry(true);
           fitStaticOrbitMaps();
           window.setTimeout(fitStaticOrbitMaps, 140);
-          window.setTimeout(requestHomeDirectoryMasonry, 140);
+          window.setTimeout(function () {
+            requestHomeDirectoryMasonry(true);
+          }, 140);
         });
         if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", requestHomeOrbitRelayout);
+          window.visualViewport.addEventListener("resize", function () {
+            requestHomeOrbitRelayout(false);
+          });
         }
         var scrollProgress = document.querySelector("[data-scroll-progress]");
         var scrollProgressFrame = null;
 
         function syncScrollProgress() {
           if (!scrollProgress) return;
+
+          if (isCompactViewport()) {
+            scrollProgress.classList.add("is-static");
+            scrollProgress.style.setProperty("--scroll-progress", "0");
+            scrollProgress.style.setProperty("--scroll-node-y", "0px");
+            scrollProgress.style.setProperty("--scroll-thumb-y", "0px");
+            scrollProgress.style.setProperty("--scroll-thumb-height", "56px");
+            return;
+          }
 
           var doc = document.documentElement;
           var body = document.body;
@@ -3187,15 +3245,17 @@
         }
 
         syncScrollProgress();
-        window.addEventListener("scroll", requestScrollProgressSync, { passive: true });
-        window.addEventListener("resize", requestScrollProgressSync);
-        window.addEventListener("orientationchange", function () {
-          requestScrollProgressSync();
-          window.setTimeout(requestScrollProgressSync, 160);
-        });
-        window.addEventListener("load", requestScrollProgressSync);
-        if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", requestScrollProgressSync);
+        if (!isCompactViewport()) {
+          window.addEventListener("scroll", requestScrollProgressSync, { passive: true });
+          window.addEventListener("resize", requestScrollProgressSync);
+          window.addEventListener("orientationchange", function () {
+            requestScrollProgressSync();
+            window.setTimeout(requestScrollProgressSync, 160);
+          });
+          window.addEventListener("load", requestScrollProgressSync);
+          if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", requestScrollProgressSync);
+          }
         }
 
         var homeCards = document.querySelectorAll(".home-directory .post-card");
