@@ -1456,16 +1456,18 @@
       }
 
       .visual-map-section .directory-section {
-        --map-card-width: clamp(68px, 5.4vw, 86px);
+        --map-card-width: clamp(54px, 4.1vw, 66px);
         --map-branch-padding: 6px;
-        --map-branch-inner-width: var(--map-card-width);
+        --map-card-columns: 1;
+        --map-grid-columns: 1;
+        --map-grid-gap: 4px;
         position: relative;
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         align-content: start;
         flex: 0 0 auto;
-        width: calc(var(--map-branch-inner-width) + var(--map-branch-padding) + var(--map-branch-padding) + 2px);
-        max-width: 100%;
+        width: fit-content;
+        max-width: min(100%, 360px);
         height: auto;
         min-width: 0;
         padding: var(--map-branch-padding);
@@ -1525,14 +1527,26 @@
         font-weight: inherit;
       }
 
+      .visual-map-section .branch-grid-stack {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(var(--map-grid-columns, 1), minmax(0, max-content));
+        gap: var(--map-grid-gap);
+        width: max-content;
+        max-width: 100%;
+        min-width: 0;
+        margin-top: 5px;
+        overflow: visible;
+      }
+
       .visual-map-section .post-list {
         position: relative;
         display: grid;
-        grid-template-columns: repeat(var(--map-card-columns, 1), minmax(0, 1fr));
-        width: 100%;
+        grid-template-columns: repeat(var(--map-card-columns, 1), var(--map-card-width));
+        width: max-content;
         max-width: 100%;
         gap: 4px;
-        margin: 5px 0 0;
+        margin: 0;
         padding: 0;
         overflow: visible;
       }
@@ -1543,7 +1557,7 @@
         width: 100%;
         max-width: 100%;
         min-height: auto;
-        padding: 4px 6px;
+        padding: 3px 5px;
         border-radius: 8px;
         background: color-mix(in srgb, var(--bg-elevated), transparent 6%);
         box-shadow: none;
@@ -1561,7 +1575,7 @@
 
       .visual-map-section .post-card .orbit-chip-label {
         font-family: inherit;
-        font-size: clamp(9px, 0.9vw, 10.5px);
+        font-size: clamp(8.5px, 0.78vw, 9.8px);
         font-style: normal;
         font-weight: 620;
         line-height: 1.18;
@@ -1571,15 +1585,31 @@
       .visual-map-section .directory-section[data-child-count="5"],
       .visual-map-section .directory-section[data-child-count="6"] {
         --map-card-columns: 2;
-        --map-branch-inner-width: calc(var(--map-card-width) + var(--map-card-width) + 4px);
       }
 
       .visual-map-section .directory-section[data-child-count="7"],
       .visual-map-section .directory-section[data-child-count="8"],
       .visual-map-section .directory-section[data-child-count="9"],
       .visual-map-section .directory-section[data-child-count="10"] {
-        --map-card-columns: 3;
-        --map-branch-inner-width: calc(var(--map-card-width) + var(--map-card-width) + var(--map-card-width) + 8px);
+        --map-card-columns: 2;
+      }
+
+      .visual-map-section .directory-section[data-child-groups="2"] {
+        --map-card-width: clamp(46px, 3.3vw, 56px);
+        --map-card-columns: 2;
+        --map-grid-columns: 2;
+      }
+
+      .visual-map-section .directory-section[data-child-groups="3"] {
+        --map-card-width: clamp(42px, 3vw, 52px);
+        --map-card-columns: 2;
+        --map-grid-columns: 3;
+      }
+
+      .visual-map-section .directory-section[data-child-groups="4"] {
+        --map-card-width: clamp(42px, 3vw, 52px);
+        --map-card-columns: 2;
+        --map-grid-columns: 2;
       }
 
       .section-pager {
@@ -1981,6 +2011,16 @@
 
         .visual-map-section .directory-section {
           max-width: 100%;
+        }
+
+        .visual-map-section .branch-grid-stack {
+          grid-template-columns: 1fr;
+          width: 100%;
+        }
+
+        .visual-map-section .post-list {
+          grid-template-columns: repeat(var(--map-card-columns, 1), minmax(0, 1fr));
+          width: 100%;
         }
 
         .scroll-progress {

@@ -74,21 +74,38 @@ permalink: /
       <div class="home-directory orbit-field">
       {% for item in site.data.navigation %}
         {% assign child_count = item.children | size %}
-        <section class="directory-section orbit-node" data-child-count="{{ child_count }}">
+        {% if child_count > 0 %}
+          {% assign child_group_count = child_count | minus: 1 | divided_by: 10 | plus: 1 %}
+        {% else %}
+          {% assign child_group_count = 1 %}
+        {% endif %}
+        {% assign map_grid_columns = child_group_count %}
+        {% if map_grid_columns > 3 %}
+          {% assign map_grid_columns = 3 %}
+        {% endif %}
+        <section class="directory-section orbit-node" data-child-count="{{ child_count }}" data-child-groups="{{ child_group_count }}" style="--map-grid-count: {{ child_group_count }}; --map-grid-columns: {{ map_grid_columns }};">
           <h2>
             <span class="branch-logo" data-label="{{ item.title }}">{{ item.title }}</span>
           </h2>
 
-          <ul class="post-list orbit-links">
+          <div class="branch-grid-stack orbit-links-stack">
             {% for child in item.children %}
+              {% assign group_mod = forloop.index0 | modulo: 10 %}
+              {% if group_mod == 0 %}
+                {% assign group_number = forloop.index0 | divided_by: 10 | plus: 1 %}
+                <ul class="post-list branch-grid orbit-links" data-branch-grid="{{ group_number }}">
+              {% endif %}
               <li class="post-card orbit-chip">
                 <span class="orbit-chip-label">{{ child.title }}</span>
                 {% if child.description %}
                   <p>{{ child.description }}</p>
                 {% endif %}
               </li>
+              {% if group_mod == 9 or forloop.last %}
+                </ul>
+              {% endif %}
             {% endfor %}
-          </ul>
+          </div>
         </section>
       {% endfor %}
       </div>
