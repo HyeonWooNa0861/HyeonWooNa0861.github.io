@@ -37,6 +37,74 @@
       url: /research/qeco-adapt/
       description: Load-adaptive task offloading in dense MEC
       match: /research/qeco-adapt/
+    - title: FedAgg
+      url: /research/agglomerative-federated-learning-end-edge-cloud-collaboration/
+      description: End-edge-cloud federated learning for larger model training
+      match: /research/agglomerative-federated-learning-end-edge-cloud-collaboration/
+    - title: CCM-MADRL
+      url: /research/combinatorial-client-master-madrl-task-offloading-mec/
+      description: Client-master multiagent DRL for MEC task offloading
+      match: /research/combinatorial-client-master-madrl-task-offloading-mec/
+    - title: Double DQN
+      url: /research/deep-reinforcement-learning-double-q-learning/
+      description: Overestimation reduction in deep Q-learning
+      match: /research/deep-reinforcement-learning-double-q-learning/
+    - title: DROO
+      url: /research/droo-online-computation-offloading-wireless-powered-mec/
+      description: Online computation offloading in wireless powered MEC
+      match: /research/droo-online-computation-offloading-wireless-powered-mec/
+    - title: DRL Task Offloading
+      url: /research/drl-task-offloading-mobile-edge-computing-systems/
+      description: Distributed MEC offloading with LSTM, dueling DQN, and double DQN
+      match: /research/drl-task-offloading-mobile-edge-computing-systems/
+    - title: Dueling DQN
+      url: /research/dueling-network-architectures-deep-reinforcement-learning/
+      description: Value and advantage decomposition in deep reinforcement learning
+      match: /research/dueling-network-architectures-deep-reinforcement-learning/
+    - title: Human-Level DQN
+      url: /research/human-level-control-deep-reinforcement-learning/
+      description: Deep Q-network for Atari control
+      match: /research/human-level-control-deep-reinforcement-learning/
+    - title: Spatial-Temporal MEC
+      url: /research/joint-task-offloading-channel-allocation-spatial-temporal-mec/
+      description: Joint task offloading and channel allocation with D3QN
+      match: /research/joint-task-offloading-channel-allocation-spatial-temporal-mec/
+    - title: JTORA
+      url: /research/joint-task-offloading-resource-allocation-multi-server-mec/
+      description: Joint task offloading and resource allocation in multi-server MEC
+      match: /research/joint-task-offloading-resource-allocation-multi-server-mec/
+    - title: LSTM Odyssey
+      url: /research/lstm-search-space-odyssey/
+      description: Large-scale empirical analysis of LSTM variants
+      match: /research/lstm-search-space-odyssey/
+    - title: Learning to Optimize
+      url: /research/learning-to-optimize-wireless-resource-management/
+      description: DNN approximation for wireless resource management
+      match: /research/learning-to-optimize-wireless-resource-management/
+    - title: Long Short-Term Memory
+      url: /research/long-short-term-memory/
+      description: Original LSTM architecture for long time lag learning
+      match: /research/long-short-term-memory/
+    - title: LyDROO
+      url: /research/lydroo-stable-online-computation-offloading-mec/
+      description: Lyapunov-guided DRL for stable online offloading
+      match: /research/lydroo-stable-online-computation-offloading-mec/
+    - title: EEDO HAP-MEC
+      url: /research/eedo-hap-assisted-mec/
+      description: Energy-efficient dynamic offloading in HAP-assisted MEC
+      match: /research/eedo-hap-assisted-mec/
+    - title: LyDROP
+      url: /research/lydrop-online-partial-computation-offloading-wp-mec/
+      description: Online partial offloading in wireless powered MEC
+      match: /research/lydrop-online-partial-computation-offloading-wp-mec/
+    - title: QECO
+      url: /research/qeco-qoe-oriented-computation-offloading/
+      description: QoE-oriented computation offloading with DRL
+      match: /research/qeco-qoe-oriented-computation-offloading/
+    - title: User-Centric MEC
+      url: /research/decentralized-task-offloading-resource-allocation-ucmec/
+      description: Decentralized task offloading and resource allocation in UCMEC
+      match: /research/decentralized-task-offloading-resource-allocation-ucmec/
     - title: SkySearch
       url: /research/skysearch/
       description: Satellite video search at scale

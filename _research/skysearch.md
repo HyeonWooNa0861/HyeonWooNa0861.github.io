@@ -394,6 +394,20 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 | Evaluation | LPIPS/FSIM/SSIM이 실제 기상 유사도를 얼마나 잘 대변하는가? |
 | Deployment | 속도, memory, update, UI까지 고려했는가? |
 
+## 한국어 번역형 해설
+
+이 절은 SkySearch 논문의 원문 전체를 그대로 옮긴 번역이 아니라, 논문 전체 흐름을 한국어로 재구성한 번역형 해설이다. Satellite video, self-supervised video compression, query augmentation, MBI, LPIPS 같은 핵심 용어와 수치는 원문 기준을 유지했다.
+
+논문은 기상 예보에서 과거의 유사한 위성 영상 사례를 빠르게 찾는 문제를 다룬다. 현재 구름 패턴과 유사하게 전개된 과거 사례를 찾으면 forecaster가 수치예보모델만으로 설명하기 어려운 cloud dynamics를 보조적으로 판단할 수 있다. 하지만 위성 비디오는 라벨이 없고, 고해상도이며, 시간적 변화를 포함하고, 예보 업무에서는 몇 초 안에 결과가 필요하므로 일반 image retrieval보다 어렵다.
+
+SkySearch는 위성 이미지 시퀀스를 satellite video로 보고, self-supervised 방식으로 256차원 embedding으로 압축한다. 시간적으로 가까운 비디오는 positive pair, 먼 비디오는 negative pair로 두어 embedding space에서 가까운 시간 패턴은 가깝게, 먼 패턴은 멀게 배치한다. 이 구조는 별도의 similarity label 없이도 기상적으로 자연스러운 temporal proximity를 supervision으로 활용한다.
+
+현재 query만으로는 미래 전개까지 고려하기 어렵기 때문에 SkySearch는 video prediction을 사용해 query를 확장한다. 12시간 현재 query에 예측된 미래 frame을 붙여 24시간 augmented query를 만들고, 장기적으로 비슷한 과거 사례를 찾는다. Predictor는 MSE와 adversarial learning을 함께 사용해 blurry prediction을 줄이려 한다.
+
+검색 단계에서는 모든 embedding을 brute-force로 비교하지 않고, graph-based candidate search를 사용한다. 시간 제한 검색이 필요한 경우에는 Multi-level Block Indexing(MBI)을 사용해 timestamp interval과 graph search를 결합한다. 검색 후 filter하는 방식이 아니라 index 자체가 시간 구간 조건을 반영하므로, 좁은 query interval에서도 QPS를 유지할 수 있다.
+
+Ranking은 기본적으로 embedding distance를 사용하지만, 더 정밀한 비교에는 LPIPS, FSIM, SSIM 같은 perceptual metric을 사용할 수 있다. 다만 이 metric들은 계산 비용이 크므로 배포 환경에서는 embedding distance가 실용적이다. 논문의 한계는 기상 유사도를 정확히 대변하는 표준 metric이 없고, scattered cloud prediction이나 prediction uncertainty, index memory trade-off가 남는다는 점이다. SkySearch는 하나의 모델보다 실제 KMA workflow에 맞춘 retrieval system으로 읽는 것이 핵심이다.
+
 ## 참고자료
 
 <ul>

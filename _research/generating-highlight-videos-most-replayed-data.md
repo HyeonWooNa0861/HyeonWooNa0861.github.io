@@ -255,6 +255,20 @@ $$
 
 마지막으로 narrative-driven highlight에는 추가적인 semantic understanding이 필요하다. MRD peak가 높은 구간은 관심도가 높은 순간을 알려주지만, 스토리의 시작, 갈등, 전환, 결말을 의도적으로 구성하는 편집까지 자동으로 보장하지는 않는다.
 
+## 한국어 번역형 해설
+
+이 절은 원문 전체의 축어 번역이 아니라, 논문의 핵심 논지와 방법, 실험, 한계를 한국어로 이어 읽을 수 있게 정리한 번역형 해설이다. Most Replayed Data, dynamic programming, reward 설계와 같은 기술 용어는 원문 의미를 유지했다.
+
+논문은 자동 highlight video 생성에서 두 가지 요구가 동시에 필요하다고 본다. 하나는 시청자가 중요하다고 느끼는 장면을 고르는 것이고, 다른 하나는 사용자가 지정한 정확한 길이에 맞추는 것이다. 기존 방법은 frame importance가 높은 구간을 모으는 데 강하지만, 결과 길이가 임의로 정해지거나 너무 짧은 cut이 반복되어 맥락이 깨질 수 있다.
+
+제안 방법은 YouTube의 Most Replayed Data를 crowd-sourced attention signal로 사용한다. 많은 시청자가 다시 본 구간은 영상 안에서 관심도가 높은 순간일 가능성이 크다. 논문은 이 신호가 live chat frequency나 sound intensity보다 key moment를 더 안정적으로 반영할 수 있다고 보고, MRD를 highlight reward의 핵심 입력으로 사용한다.
+
+Highlight 생성은 그래프 위의 path optimization으로 모델링된다. 각 node는 원본 영상의 timestamp \\(t\\)와 현재 segment duration \\(d\\)를 가진다. Edge는 같은 segment를 1초 더 이어가는 동작 또는 다른 구간으로 cut transition하는 동작을 표현한다. 최적 path의 길이를 사용자가 지정한 \\(L_{user}\\)와 같게 두면, 결과 highlight는 정확히 원하는 길이를 갖는다.
+
+Reward는 MRD 기반 관심도와 duration reward를 결합한다. Duration reward는 너무 짧은 segment를 벌점 처리하고, 최소 맥락을 유지하는 길이 이상에서는 안정적인 보상을 준다. 이 설계 때문에 시스템은 MRD peak만 짧게 찍고 넘어가지 않고, 시청자가 상황을 이해할 수 있는 장면 단위를 유지하려 한다. 사용자가 특정 timestamp를 포함하거나 제외하고 싶을 때는 Gaussian reward를 더하거나 빼서 같은 최적화 구조 안에서 반영한다.
+
+실험에서는 제안 방법이 threshold-based method와 random method보다 appropriateness, key moment inclusion, satisfaction에서 더 좋은 평가를 받았다. 사람 편집본과의 비교에서는 통계적으로 강한 선호 차이가 나타나지 않았으므로, 논문은 사람보다 우월하다고 주장하기보다 유사한 viewing experience에 도달할 가능성을 보였다고 해석하는 것이 적절하다. 한계로는 MRD availability, 긴 영상의 계산량, shot boundary 미반영, short-form aspect ratio 변환, narrative understanding 부족이 남는다.
+
 ## 참고자료
 
 <ul>

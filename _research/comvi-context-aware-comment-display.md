@@ -304,6 +304,20 @@ Friedman test 결과, 네 질문 모두에서 다섯 interface 간 유의미한 
 
 넷째, 댓글은 화면 하단에 표시되므로 subtitle이나 중요한 시각 정보와 겹칠 수 있다. Dynamic placement, summarization, keyword highlighting, eye-tracking 기반 주의 분산 분석이 후속 연구로 제시된다.
 
+## 한국어 번역형 해설
+
+이 절은 원문 전체를 그대로 옮긴 번역이 아니라, ComVi 논문의 문제 설정부터 사용자 연구까지를 한국어로 다시 따라갈 수 있게 재구성한 번역형 해설이다. 시스템명, 수식, 실험 조건, DOI와 같은 고유 정보는 원문 기준을 유지했다.
+
+초록과 서론에서 논문은 일반 동영상 댓글이 영상 재생 맥락과 분리되어 있다는 문제를 제기한다. YouTube식 댓글 목록은 현재 장면과 관계없는 내용이나 spoiler를 먼저 노출할 수 있고, Danmaku식 댓글은 timestamp metadata가 있는 경우에 강하지만 일반 댓글에는 그대로 적용하기 어렵다. ComVi는 timestamp가 없는 일반 댓글을 영상 장면과 의미적으로 맞는 시간에 배치하고, 사용자가 읽을 수 있는 방식으로 정렬하는 시스템으로 제안된다.
+
+ComVi의 방법은 댓글과 영상 timestamp 사이의 audio-visual correlation을 계산하는 데서 시작한다. Subtitle 또는 speech-to-text 결과는 audio context를 제공하고, shot segmentation과 video captioning 결과는 visual context를 제공한다. 댓글과 각 timestamp의 관련성은 Sentence-BERT embedding 기반 cosine similarity로 계산되며, threshold를 넘는 댓글은 timed comment 후보가 된다. 명시적인 timestamp reference가 있는 댓글은 작성자의 의도를 우선해 해당 시점에 직접 배치된다.
+
+댓글을 어느 시점에 얼마나 오래 보여줄지는 최적화 문제로 다룬다. 각 댓글에는 의미 관련성, 좋아요 수, 읽기 시간이 반영된 score가 부여되고, 댓글이 서로 겹치지 않으면서 총점이 최대가 되는 sequence를 dynamic programming으로 선택한다. 이 구조는 weighted interval scheduling과 유사하며, 단순히 관련성 높은 댓글을 많이 보여주는 것이 아니라 읽기 가능성과 화면 부담까지 함께 고려한다.
+
+평가에서는 ComVi가 random 배치보다 높은 semantic correlation과 popularity를 보였고, reading speed나 동시 표시 개수 설정에 따라 선택되는 댓글 수가 자연스럽게 조절되었다. 사용자 연구에서는 ComVi가 YouTube, Danmaku, 단일 댓글 표시 baseline보다 mental demand와 physical demand를 낮추고 contextual alignment와 engagement를 높인 것으로 보고된다.
+
+결론적으로 ComVi의 기여는 새로운 deep learning model 자체보다 video comment consumption을 하나의 HCI 최적화 문제로 재정의한 데 있다. 한계도 명확하다. 전체 감상 댓글처럼 특정 timestamp에 대응되지 않는 댓글, Sentence-BERT의 lexical overlap bias, 장면 복잡도에 따른 cognitive load, subtitle과 댓글의 충돌 문제는 후속 연구가 필요하다.
+
 ## 참고자료
 
 <ul>

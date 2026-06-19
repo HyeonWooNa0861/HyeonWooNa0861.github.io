@@ -316,6 +316,20 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시된다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향이다.
 
+## 한국어 번역형 해설
+
+이 절은 MBI 논문 원문을 그대로 옮긴 번역이 아니라, 논문의 전체 주장을 한국어로 다시 따라갈 수 있게 구성한 번역형 해설이다. Time-Restricted kNN, m-AkNN, Multi-Level Block Indexing, \\(\tau\\) threshold와 같은 핵심 용어와 수식은 원문 의미를 유지했다.
+
+논문은 고차원 embedding 데이터에서 kNN 검색을 수행할 때, similarity 조건뿐 아니라 timestamp나 수치 속성 범위 조건이 함께 붙는 상황을 다룬다. 일반 ANN index는 전체 database에서 가까운 vector를 빠르게 찾는 데 적합하지만, 사용자가 특정 기간 안의 결과만 요구하면 검색 후 filter 과정에서 많은 후보가 버려질 수 있다. 반대로 먼저 시간 구간을 잘라 brute-force로 찾으면 구간이 길 때 계산량이 커진다.
+
+이 문제를 해결하기 위해 논문은 Multi-Level Block Indexing(MBI)을 제안한다. Timestamp 순서로 정렬된 데이터를 leaf block에 넣고, 인접 block을 계층적으로 합쳐 parent block을 만든다. 각 block은 자체 graph index를 가진다. Query time window가 짧으면 작은 block을 사용하고, 길면 큰 block을 사용하므로 BSBF와 SF의 약점을 절충할 수 있다.
+
+질의 처리는 query window를 덮는 search block set을 고르는 단계와 각 block에서 kNN search를 수행한 뒤 결과를 merge하는 단계로 나뉜다. Block 선택은 overlap ratio와 threshold \\(\tau\\)로 결정된다. \\(\tau\\)가 낮으면 큰 block을 선택해 graph search 이점을 살리고, \\(\tau\\)가 높으면 작은 block을 선택해 filter 비용을 줄인다. 논문은 \\(\tau \le 0.5\\) 조건에서 T kNN query를 처리하는 block 수가 최대 2개임을 보이며, 이것이 query window 길이에 따른 성능 변동을 줄이는 핵심 근거가 된다.
+
+논문은 timestamp 하나만 다루는 T kNN을 여러 numerical attribute constraint가 있는 m-AkNN으로 확장한다. 이 경우 binary tree는 \\(2^m\\)-ary tree로 일반화되고, 데이터 분포가 균일하지 않기 때문에 count-based recursive partitioning을 사용한다. 다만 T kNN은 timestamp 증가 순서 삽입을 가정하는 반면, m-AkNN은 static dataset 중심이라는 차이가 있다.
+
+실험에서는 MovieLens, COMS, GloVe, SIFT1M, GIST1M, DEEP1B subset 등 다양한 dataset에서 MBI가 BSBF와 SF보다 안정적인 query speed를 보였다. Index size는 더 커지지만, 속도를 위해 block별 graph index를 저장하는 trade-off로 해석할 수 있다. 남은 과제는 arbitrary insertion/deletion, sliding-window deletion, m-AkNN dynamic update, block selection의 formal optimality 분석이다.
+
 ## 참고자료
 
 <ul>

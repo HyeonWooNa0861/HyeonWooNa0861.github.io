@@ -178,6 +178,20 @@ TTS가 길면 무조건 쉬워진다고 보기 어렵다. 짧은 TTS는 운동�
 
 따라서 이 결과를 모든 연속 입력 인터랙션에 그대로 일반화하기보다는, CTP가 기존 temporal pointing과 다른 구조를 가진다는 근거로 읽는 편이 적절하다.
 
+## 한국어 번역형 해설
+
+이 절은 논문 원문을 축어적으로 번역한 것이 아니라, Consecutive Temporal Pointing 연구의 전체 흐름을 한국어로 재구성한 번역형 해설이다. TTF, TTS, Type I/II CTP, Press-Press, Press-Release 같은 핵심 용어는 원문 기준을 유지했다.
+
+논문은 temporal pointing을 한 번의 입력이 아니라 짧은 시간 안에 연속으로 수행되는 두 입력의 문제로 확장한다. 리듬 게임의 롱 노트, 더블 클릭, 차지 공격처럼 첫 번째 입력과 두 번째 입력 사이의 관계가 중요한 인터랙션에서는 단순히 ordinary temporal pointing 두 번을 이어 붙이는 설명이 충분하지 않을 수 있다.
+
+CTP는 TTF와 TTS라는 두 시간 변수로 정리된다. TTF는 과제가 시작된 뒤 첫 번째 입력 목표까지의 시간이고, TTS는 첫 번째 입력 목표에서 두 번째 입력 목표까지의 시간이다. Type I CTP는 첫 번째 입력을 사용자가 시작하고 두 번째 입력에 시간 조건이 붙는 형태이며, Type II CTP는 두 입력 모두 외부 목표 시점에 맞춰야 하는 형태다.
+
+기존 temporal pointing 모델은 입력 주기 \\(P\\)와 표적 관찰 시간 \\(t_c\\)를 사용해 입력 타이밍의 정밀도 \\(\sigma\\)를 설명한다. 논문은 이 모델을 CTP에 적용해 첫 번째 입력과 두 번째 입력이 모두 ordinary temporal pointing처럼 설명되는지 검토한다. 결과적으로 첫 번째 입력은 기존 모델과 비교적 잘 맞지만, 두 번째 입력은 기존 모델의 예측과 다르게 움직인다.
+
+핵심 해석은 두 번째 입력이 첫 번째 입력과의 상대적 시간 간격인 TTS를 독립적인 단서로 활용한다는 점이다. 짧은 TTS는 운동적으로 어려울 수 있지만 내부 시계 관점에서는 더 정밀하게 부호화될 수 있고, 긴 TTS에서는 이 단서의 신뢰도가 낮아져 시각 단서 의존이 커질 수 있다. Press-Press는 일반적으로 정밀하지만 매우 짧은 간격에서는 Down-Up-Down 운동 제약을 만들고, Press-Release는 짧은 간격에서 더 자연스러운 경로가 될 수 있다.
+
+논문의 결론은 CTP를 독립적인 두 temporal pointing으로 환원하지 말아야 한다는 것이다. 후속 모델은 두 입력 사이의 관계, 평균 오차 \\(\mu\\), 정밀도 \\(\sigma\\), 운동 지연, 보상 전략을 함께 설명해야 한다. 게임 난이도 설계나 입력 인터페이스 설계에서는 TTS, press/release 이벤트, visual cue의 역할을 분리해서 고려하는 것이 중요하다.
+
 ## PDF 및 참고자료
 
 - [PDF 원문](/assets/pdfs/research/user-performance-in-consecutive-temporal-pointing/user-performance-in-consecutive-temporal-pointing.pdf)

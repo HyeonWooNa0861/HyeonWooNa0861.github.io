@@ -61,6 +61,18 @@ $$
 
 따라서 QECO-Adapt의 의미는 “모든 MEC 환경에서 QECO를 대체하는 범용 알고리즘”이 아니라, 단일 edge에 부하가 집중되는 dense 조건에서 QECO의 초기 손실을 줄이는 lightweight adaptive variant로 정리하는 것이 적절하다.
 
+## 한국어 본문 해설
+
+QECO-Adapt 자료는 외부 논문 번역본이 아니라 자체 연구 정리 자료이므로, 이 절은 전체 내용을 다시 읽기 위한 본문 해설로 둔다. 핵심은 dense Mobile Edge Computing 환경에서 기존 QECO의 구조를 크게 바꾸지 않고 초기 수렴 손실과 dropped-task 누적을 줄일 수 있는지를 검토하는 것이다.
+
+문제 상황은 edge node에 사용자가 몰릴 때 발생한다. 모바일 디바이스가 task를 edge로 offloading하면 로컬 연산 부담은 줄어들 수 있지만, edge backlog와 transmission delay가 커지면 deadline miss와 dropped task가 증가한다. 특히 학습 초기에는 policy가 안정되지 않아 불리한 offloading action이 누적될 수 있다.
+
+QECO-Adapt는 기존 QECO의 D3QN/LSTM 구조와 action space를 유지하면서 dense-load-aware control layer를 더한다. Effective load는 사용자 수, 평균 task arrival, 활동성, edge 수를 반영해 edge 하나가 받는 task pressure를 나타낸다. 이 값은 gating strength와 adaptive energy weight를 계산하는 기준이 된다.
+
+Gating은 부하가 높을 때 offloading action을 더 보수적으로 검토하게 만들고, adaptive energy weight는 dense 조건에서 energy-aware behavior를 강화한다. 이 변화는 policy-invariant reward shaping이 아니므로, 기존 QECO의 최적 정책을 보존한다고 주장하기보다 dense 환경에 맞춘 reward/cost reweighting과 action-level gating으로 보는 것이 정확하다.
+
+실험 결과는 저부하 1x 조건에서는 QECO-Adapt가 일부 손실을 보일 수 있지만, 3x 이상 dense 조건에서는 QoE, delay, energy, dropped task 측면에서 개선되는 경향을 보인다. 따라서 이 연구의 의미는 범용 대체 알고리즘이라기보다, 단일 edge dense stress 조건에서 QECO의 warm-up 손실과 dropped-task 누적을 줄이는 lightweight adaptive variant로 정리된다.
+
 ## 참고자료
 
 <ul>

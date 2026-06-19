@@ -216,6 +216,20 @@ Transformer의 self-attention은 sequence 내 모든 token pair를 계산하므�
 
 마지막으로 attention visualization은 모델 해석 가능성을 보여주는 흥미로운 자료지만, attention weight가 곧바로 인과적 설명을 의미한다고 단정하기는 어렵다. 따라서 attention map은 분석의 출발점이지 최종 설명으로 읽으면 안 된다.
 
+## 한국어 번역형 해설
+
+이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, 논문의 흐름을 한국어로 따라 읽을 수 있도록 재구성한 번역형 해설이다. 원문의 핵심 용어와 수식, 실험 수치, v1-v7 비교 정보는 유지하되 문장 구성은 학습용 설명에 맞게 다시 정리했다.
+
+초록과 서론의 핵심은 sequence transduction에서 recurrence와 convolution이 필수라는 기존 가정을 뒤집는 데 있다. 기존 RNN 계열 모델은 입력 token을 순서대로 처리하므로 병렬화에 불리하고, 멀리 떨어진 token 관계를 여러 단계의 hidden state를 통해 전달해야 한다. Transformer는 이 병목을 줄이기 위해 self-attention을 중심 연산으로 두고, 모든 token이 다른 token을 직접 참고할 수 있게 만든다.
+
+모델 구조는 encoder와 decoder stack으로 구성된다. Encoder는 입력 문장의 token 관계를 self-attention으로 계산하고, decoder는 masked self-attention과 encoder-decoder attention을 통해 이전 출력과 입력 문맥을 함께 사용한다. Scaled Dot-Product Attention은 query와 key의 내적으로 관련성을 구하고, softmax weight를 value에 곱해 필요한 정보를 모은다. \\(\sqrt{d_k}\\) scaling은 dot product가 커져 softmax gradient가 작아지는 문제를 줄이기 위한 안정화 장치다.
+
+Multi-Head Attention은 하나의 attention map만 사용하는 대신 여러 projection 공간에서 token 관계를 병렬로 본다. 이 설계는 문장 안의 문법 관계, 의미 관계, 장거리 참조처럼 서로 다른 패턴을 여러 head가 나누어 포착할 수 있게 한다. 또한 recurrence가 없으면 token 순서가 사라지므로, Transformer는 sinusoidal positional encoding을 embedding에 더해 위치 정보를 주입한다.
+
+실험에서는 WMT 2014 English-German과 English-French translation에서 Transformer가 높은 BLEU와 낮은 training cost를 보였다. 논문은 self-attention이 계산 병렬성, 짧은 path length, 장거리 관계 포착 측면에서 RNN/CNN과 다른 inductive bias를 가진다고 설명한다. 다만 모든 token pair를 비교하는 구조 때문에 긴 sequence에서는 quadratic cost가 발생하고, autoregressive decoder에서는 inference가 여전히 순차적으로 진행된다는 한계가 남는다.
+
+v1에서 v7로의 변화는 architecture 변경이 아니라 논문 정보의 정리와 보강에 가깝다. 학회 정보, figure/table 재사용 문구, 저자 기여, reference, code availability, positional embedding ablation, 일부 실험 표기가 정리되었다. 따라서 v7은 Transformer의 핵심 아이디어가 바뀐 버전이라기보다, 최종 인용과 구현 맥락을 더 명확히 제공하는 판본으로 읽는 것이 적절하다.
+
 ## 참고자료
 
 <ul>

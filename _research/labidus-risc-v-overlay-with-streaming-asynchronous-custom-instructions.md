@@ -235,6 +235,20 @@ Labidus는 매우 규칙적인 matrix multiplication보다, control이 복잡하
 | RISC-V softcore overhead | 아무리 줄여도 pure custom datapath 대비 control overhead가 남는다. |
 | Legacy code 자동 추출은 future work | 논문은 legacy software에서 custom kernel을 자동 추출하는 방향을 향후 과제로 제시한다. |
 
+## 한국어 번역형 해설
+
+이 절은 Labidus 논문을 축어적으로 번역한 것이 아니라, 논문의 전체 구조를 한국어로 재구성한 번역형 해설이다. RISC-V overlay, custom instruction, completion queue, stream-semantic memory 같은 핵심 용어는 원문의 의미를 유지했다.
+
+논문은 FPGA의 productivity-performance trade-off를 문제로 제기한다. RTL은 최고 성능을 낼 수 있지만 개발 난도가 높고, HLS는 C/C++ 기반 개발을 돕지만 irregular control이 많은 경우 많은 최적화 지식이 필요하다. Soft processor overlay는 software처럼 프로그래밍할 수 있지만 일반 softcore는 resource 대비 성능이 낮다. Labidus는 이 중간 지점에서 software programming model을 유지하면서 성능 격차를 줄이는 것을 목표로 한다.
+
+Labidus의 구조는 RV32I soft core 여러 개와 application-specific custom operator pool을 결합한다. 개발자는 C kernel을 작성하고, static analysis tool은 compute-heavy region을 찾아 fused operator와 custom instruction을 생성한다. 이 방식은 pure software code를 FPGA overlay 위의 custom datapath와 연결하는 흐름으로 볼 수 있다.
+
+긴 latency를 가진 custom operator를 효율적으로 쓰기 위해 Labidus는 asynchronous completion queue를 사용한다. Core는 custom instruction을 발행하고 queue slot을 예약한 뒤 다른 작업을 계속 진행할 수 있다. 결과가 준비되면 queue에 채워지고, 필요한 시점에 순서대로 읽힌다. FPGA에서 BRAM이 LUT보다 density가 높다는 점을 이용해 deep reorder buffer보다 비용이 낮은 latency hiding 구조를 만든 것이 핵심이다.
+
+Memory access도 일반 load/store 반복이 아니라 stream-semantic access로 재정의된다. Burst request와 stream register를 통해 instruction overhead를 줄이고, operator pool에 계속 input을 공급한다. 또한 custom operator를 core마다 복제하지 않고 tile 단위 shared operator pool로 두어 utilization을 높이며, static trimming으로 덜 쓰는 operator instance를 줄인다.
+
+평가 결과 Labidus는 irregular scientific workload에서 RTL/HLS와 경쟁 가능한 효율을 보였고, Microblaze나 soft GPU 계열보다 높은 performance per resource를 보였다. 그러나 dense matrix multiplication이나 DNN처럼 expert RTL이 이미 잘 맞는 regular kernel에서는 불리할 수 있다. 따라서 Labidus는 FPGA 최고 성능을 대체하는 구조라기보다, 빠른 prototyping과 충분한 성능 효율을 동시에 원하는 영역에 적합한 overlay architecture로 해석하는 것이 정확하다.
+
 ## 참고자료
 
 <ul>
