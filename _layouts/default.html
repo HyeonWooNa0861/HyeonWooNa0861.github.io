@@ -846,7 +846,7 @@
 
       .home-directory {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
         gap: clamp(16px, 2.4vw, 24px);
         align-items: start;
         justify-items: start;
@@ -921,12 +921,15 @@
 
       .home-page .page-content > .home-directory > .directory-section {
         --home-branch-padding: clamp(20px, 3vw, 28px);
-        --home-branch-content-width: clamp(320px, 32vw, 460px);
+        --home-branch-content-width: clamp(300px, 28vw, 430px);
+        --branch-grid-count: 1;
+        --branch-grid-gap: clamp(12px, 1.6vw, 18px);
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto auto;
-        width: min(100%, calc(var(--home-branch-content-width) + var(--home-branch-padding) + var(--home-branch-padding) + 2px));
-        max-width: 100%;
+        grid-column: span var(--branch-grid-span, 1);
+        width: 100%;
+        max-width: none;
         height: fit-content;
         min-height: 0;
         align-self: start;
@@ -937,6 +940,18 @@
         background:
           linear-gradient(180deg, color-mix(in srgb, var(--apple-card-bg), #ffffff 8%), var(--apple-card-bg));
         box-shadow: var(--apple-card-shadow);
+      }
+
+      .home-page .page-content > .home-directory > .directory-section[data-child-groups="2"] {
+        grid-column: span 2;
+      }
+
+      .home-page .page-content > .home-directory > .directory-section[data-child-groups="3"] {
+        grid-column: span 3;
+      }
+
+      .home-page .page-content > .home-directory > .directory-section[data-child-groups="4"] {
+        grid-column: span 4;
       }
 
       .home-page .page-content > .home-directory.is-masonry-ready > .directory-section {
@@ -953,11 +968,20 @@
         border-bottom: 1px solid var(--apple-hairline);
       }
 
-      .home-page .page-content > .home-directory > .directory-section > .post-list {
+      .home-page .page-content > .home-directory > .directory-section > .branch-grid-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+        gap: var(--branch-grid-gap);
         width: 100%;
         max-width: 100%;
+        min-width: 0;
         min-height: 0;
+        align-items: start;
+      }
+
+      .home-page .page-content > .home-directory > .directory-section .branch-grid {
         align-content: start;
+        min-width: 0;
       }
 
       .branch-heading {
@@ -1136,6 +1160,17 @@
         overscroll-behavior: contain;
         padding-right: 8px;
         scrollbar-gutter: stable;
+      }
+
+      .branch-modal-list.branch-grid-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+        gap: 12px;
+        align-items: start;
+      }
+
+      .branch-modal-list.branch-grid-stack .branch-grid {
+        gap: 10px;
       }
 
       .branch-modal-list .post-card {
@@ -1843,6 +1878,13 @@
         }
       }
 
+      @media (max-width: 960px) {
+        .home-page .page-content > .home-directory > .directory-section[data-child-groups="3"],
+        .home-page .page-content > .home-directory > .directory-section[data-child-groups="4"] {
+          grid-column: span 2;
+        }
+      }
+
       @media (max-width: 720px) {
         body {
           font-size: 15px;
@@ -1886,6 +1928,11 @@
         .home-page .page-content > .home-directory > .directory-section {
           min-height: auto;
           grid-column: auto;
+        }
+
+        .home-page .page-content > .home-directory > .directory-section > .branch-grid-stack,
+        .branch-modal-list.branch-grid-stack {
+          grid-template-columns: 1fr;
         }
 
         .home-page .page-content > .home-directory .post-card {
@@ -3373,7 +3420,7 @@
 
           function openBranchModal(trigger) {
             var section = trigger.closest(".directory-section");
-            var sourceList = section ? section.querySelector(":scope > .post-list") : null;
+            var sourceList = section ? (section.querySelector(":scope > .branch-grid-stack") || section.querySelector(":scope > .post-list")) : null;
             if (!section || !sourceList) return false;
 
             ensureBranchModal();
