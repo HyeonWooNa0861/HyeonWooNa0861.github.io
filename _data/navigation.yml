@@ -137,6 +137,10 @@
       url: /research/user-performance-in-consecutive-temporal-pointing/
       description: User performance in consecutive temporal pointing
       match: /research/user-performance-in-consecutive-temporal-pointing/
+    - title: EPTQ
+      url: /research/eptq-cikm/
+      description: Fast 2-bit LLM post-training quantization with Factored E8 lattice
+      match: /research/eptq-cikm/
 
 - title: Assignment
   url: /assignment/
