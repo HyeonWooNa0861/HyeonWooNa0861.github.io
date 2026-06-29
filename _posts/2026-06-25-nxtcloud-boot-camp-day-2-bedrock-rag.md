@@ -2,7 +2,7 @@
 layout: post
 title: "nxtcloud Boot Camp 2일차: Amazon Bedrock RAG Workshop"
 nav_title: "2일차"
-date: 2026-06-29 00:00:01 +0900
+date: 2026-06-25 00:00:00 +0900
 categories: [BootCamp, AWS, Bedrock]
 tags: [Amazon Bedrock, RAG, Knowledge Bases, Vector Search, RetrieveAndGenerate]
 permalink: /posts/nxtcloud-boot-camp-day-2-bedrock-rag/

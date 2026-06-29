@@ -31,7 +31,7 @@
       section: ai-education
     - title: nxtcloud Boot Camp
       url: /post/nxtcloud-boot-camp/
-      description: Amazon Bedrock chatbot hands-on boot camp notes
+      description: AWS Bedrock and AI engineering boot camp notes
       match: /post/nxtcloud-boot-camp/
       section: nxtcloud-boot-camp
 
