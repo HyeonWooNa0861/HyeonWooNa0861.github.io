@@ -29,6 +29,11 @@
       description: AI concepts and paper-based curriculum materials
       match: /post/ai-education/
       section: ai-education
+    - title: nxtcloud Boot Camp
+      url: /post/nxtcloud-boot-camp/
+      description: Amazon Bedrock chatbot hands-on boot camp notes
+      match: /post/nxtcloud-boot-camp/
+      section: nxtcloud-boot-camp
 
 - title: Research
   url: /research/
