@@ -10,6 +10,11 @@
     - title: Open-ER
       url: https://open-er.vercel.app/
       description: prototype
+    - title: AWS Charting
+      url: https://sigebert111-boot-charting.vercel.app/
+      description: AI-powered US stock risk dashboard for news, market indicators, and risk analysis
+      source_url: https://htmlpreview.github.io/?https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html
+      source_label: Project overview
 
 - title: Post
   url: /post/

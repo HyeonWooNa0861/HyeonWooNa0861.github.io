@@ -1,0 +1,4 @@
+interface:
+  display_name: "Post"
+  short_description: "Create linked GitHub Pages posts"
+  default_prompt: "Use $post to draft and publish a GitHub Pages post from the URLs I provide."

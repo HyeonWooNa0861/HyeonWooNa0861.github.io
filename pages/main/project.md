@@ -13,6 +13,9 @@ permalink: /project/
         <li class="post-card">
           <a class="branch-card-link" data-label="{{ child.title | escape }}" href="{{ child.url }}" target="_blank" rel="noopener">{{ child.title }}</a>
           <p>{{ child.description }}</p>
+          {% if child.source_url %}
+            <p><a href="{{ child.source_url }}" target="_blank" rel="noopener">{{ child.source_label | default: "Source" }}</a></p>
+          {% endif %}
         </li>
       {% endfor %}
     {% endif %}
