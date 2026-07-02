@@ -106,4 +106,5 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
   <li><a href="https://sigebert111-boot-charting.vercel.app/" target="_blank" rel="noopener">AWS Charting 배포 페이지</a></li>
   <li><a href="https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html" target="_blank" rel="noopener">GitHub Source: team5.html</a></li>
   <li><a href="https://htmlpreview.github.io/?https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html" target="_blank" rel="noopener">HTMLPreview: team5.html</a></li>
+  <li><a href="{{ "/assets/pdfs/post/nxtcloud-boot-camp/nxtcloud-certificate.pdf" | relative_url }}" target="_blank" rel="noopener">nxtcloud Boot Camp 수료증</a></li>
 </ul>
