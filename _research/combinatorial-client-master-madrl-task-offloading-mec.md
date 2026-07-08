@@ -58,7 +58,7 @@ MEC에서는 사용자 단말이 계산 집약적 task를 edge server로 offload
 
 QECO-Adapt와 비교하면, 이 논문은 offloading action의 agent 구조 자체를 다루고 QECO는 개별 device의 QoE 중심 decision을 강화한다. Dense MEC 환경에서는 server resource constraint와 dropped task가 중요하므로, client-master coordination은 QECO-Adapt의 load-aware control과 함께 읽을 가치가 있다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 MEC task offloading이 단순히 각 사용자 단말의 선택 문제가 아니라는 점에서 출발한다. 여러 사용자가 동시에 offload하면 서버 저장공간, 처리 능력, 통신 resource가 함께 제한되며, 한 사용자의 결정이 다른 사용자의 성능에도 영향을 준다.
 

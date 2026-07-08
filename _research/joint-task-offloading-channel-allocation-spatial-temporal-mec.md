@@ -54,7 +54,7 @@ Multi-user multi-server MEC에서는 사용자의 이동으로 computing request
 
 QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 spatial mobility와 temporal dependency를 강조한다. 두 관점은 상호 보완적이며, 실제 MEC 시스템에서는 부하 집중, 이동성, channel competition이 함께 발생한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 MEC 네트워크의 동적 특성을 공간과 시간 두 방향으로 나누어 본다. 사용자가 이동하면 어느 edge server에 요청이 몰리는지가 바뀌고, task dependency가 있으면 이전 task와 다음 task의 resource 경쟁이 서로 영향을 준다.
 

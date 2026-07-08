@@ -51,7 +51,7 @@ Wireless resource management는 power control, beamformer design, admission cont
 
 MEC offloading에서도 일부 subproblem은 매번 최적화를 풀기 어렵다. DROO나 QECO 계열은 DRL을 사용하지만, 이 논문은 최적화 알고리즘 자체를 neural approximation으로 대체하는 별도의 설계 축을 제공한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 wireless resource management에서 최적화가 너무 느릴 때 neural network가 어떤 역할을 할 수 있는지 설명한다. 전통적 최적화 알고리즘은 정확하지만 여러 iteration이 필요하고, channel state가 빠르게 변하면 계산이 끝나기 전에 환경이 바뀔 수 있다.
 

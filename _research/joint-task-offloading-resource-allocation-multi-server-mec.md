@@ -52,7 +52,7 @@ JTORA의 의미는 MEC offloading gain을 단순 delay만이 아니라 energy re
 
 QECO 계열 연구는 DRL 기반 online/distributed decision에 초점을 둔다. JTORA는 그 이전 단계에서 MEC offloading problem을 최적화 문제로 엄밀하게 정식화한 기준점으로 볼 수 있다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 multi-server MEC에서 task offloading과 resource allocation을 하나의 결합 문제로 다룬다. 사용자가 edge로 task를 보내더라도 uplink power가 부족하거나 MEC server resource가 부족하면 실제 gain은 줄어든다.
 

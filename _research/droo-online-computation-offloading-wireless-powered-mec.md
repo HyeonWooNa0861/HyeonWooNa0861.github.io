@@ -58,7 +58,7 @@ DROO는 DNN을 이용해 channel state와 queue/resource 상태로부터 offload
 
 DROO는 QECO 계열 offloading 연구의 중요한 선행 흐름이다. QECO가 QoE와 distributed decision을 강조한다면, DROO는 binary offloading을 빠르게 근사하는 learning-to-optimize 관점을 제공한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 wireless powered MEC에서 매 순간 최적 offloading 조합을 직접 계산하기 어렵다는 문제를 다룬다. Wireless device는 에너지 수확, task 계산, uplink transmission을 동시에 고려해야 하며, channel condition은 계속 변한다.
 

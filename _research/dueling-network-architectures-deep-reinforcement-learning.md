@@ -53,7 +53,7 @@ Dueling architecture는 neural network의 마지막 부분을 두 stream으로 �
 
 MEC offloading에서도 많은 action이 비슷한 cost를 가질 수 있다. 예를 들어 부하가 낮은 상태에서는 local과 edge offloading의 차이가 작을 수 있고, 특정 edge 간 차이가 미세할 수 있다. Dueling architecture는 이런 상황에서 state quality와 action-specific advantage를 분리해 학습 안정성을 높인다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 DQN의 network architecture를 바꾸는 방식으로 reinforcement learning 성능을 개선한다. 핵심 아이디어는 모든 상태에서 action 차이가 중요한 것은 아니라는 점이다. 어떤 상태는 action 선택보다 state 자체가 유리한지 불리한지가 더 중요하다.
 

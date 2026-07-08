@@ -57,7 +57,7 @@ LyDROO는 Lyapunov optimization과 DRL을 결합한다.
 
 QECO-Adapt는 dropped task와 dense load 문제를 다루며, LyDROO는 queue stability 보장 관점에서 중요한 비교 축이다. 두 연구 모두 online MEC 환경에서 단기 reward보다 장기 안정성이 중요하다는 문제의식을 공유한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 online computation offloading에서 성능만 높이는 것이 아니라 queue가 안정적으로 유지되어야 한다는 점을 강조한다. Task가 계속 도착하는 상황에서 처리량이 순간적으로 높아도 backlog가 계속 증가하면 시스템은 결국 불안정해진다.
 

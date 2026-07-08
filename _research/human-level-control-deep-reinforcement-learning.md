@@ -53,7 +53,7 @@ DQN은 convolutional neural network로 Q-function을 근사한다. 입력은 최
 
 QECO, DROO, LyDROO 같은 MEC offloading 연구에서 DQN 계열을 사용하는 배경에는 이 논문이 있다. MEC 상태는 pixel은 아니지만 channel, queue, energy, deadline 등 고차원 상태를 action value로 연결해야 한다는 점에서 DQN의 function approximation 관점이 이어진다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 deep reinforcement learning의 대표적 출발점으로 볼 수 있다. 기존 RL은 사람이 설계한 feature를 사용하거나 작은 state space에 머무는 경우가 많았지만, DQN은 raw pixel에서 직접 action value를 학습한다.
 

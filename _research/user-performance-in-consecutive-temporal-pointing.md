@@ -178,7 +178,7 @@ TTS가 길면 무조건 쉬워진다고 보기 어렵다. 짧은 TTS는 운동�
 
 따라서 이 결과를 모든 연속 입력 인터랙션에 그대로 일반화하기보다는, CTP가 기존 temporal pointing과 다른 구조를 가진다는 근거로 읽는 편이 적절하다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 논문 원문을 축어적으로 번역한 것이 아니라, Consecutive Temporal Pointing 연구의 전체 흐름을 한국어로 재구성한 번역형 해설이다. TTF, TTS, Type I/II CTP, Press-Press, Press-Release 같은 핵심 용어는 원문 기준을 유지했다.
 

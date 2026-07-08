@@ -54,7 +54,7 @@ EEDO는 system stability를 유지하면서 energy consumption을 줄이는 것�
 
 QECO-Adapt가 dense terrestrial MEC를 다룬다면, 이 연구는 infrastructure-limited environment에서 aerial MEC의 역할을 강조한다. Offloading decision의 목적 함수도 QoE나 delay뿐 아니라 energy efficiency와 service coverage로 확장된다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 지상 통신 인프라가 충분하지 않은 환경에서 MEC를 어떻게 제공할 것인지 다룬다. HAP는 높은 고도에서 넓은 지역을 커버할 수 있으므로, ground device가 AI task나 computing task를 offload할 수 있는 aerial edge node가 된다.
 

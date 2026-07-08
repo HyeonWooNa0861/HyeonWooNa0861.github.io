@@ -394,7 +394,7 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 | Evaluation | LPIPS/FSIM/SSIM이 실제 기상 유사도를 얼마나 잘 대변하는가? |
 | Deployment | 속도, memory, update, UI까지 고려했는가? |
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 SkySearch 논문의 원문 전체를 그대로 옮긴 번역이 아니라, 논문 전체 흐름을 한국어로 재구성한 번역형 해설이다. Satellite video, self-supervised video compression, query augmentation, MBI, LPIPS 같은 핵심 용어와 수치는 원문 기준을 유지했다.
 

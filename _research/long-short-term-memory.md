@@ -55,7 +55,7 @@ LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant err
 
 MEC offloading에서 LSTM은 task arrival, edge load, queue length처럼 시간적 의존성이 있는 state를 기억하기 위해 사용된다. 원 논문은 LSTM이 왜 장기 상태 추적에 적합한지 이론적 출발점을 제공한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 RNN이 원칙적으로 과거 정보를 저장할 수 있지만 실제 학습에서는 긴 시간 간격을 다루기 어렵다는 문제에서 시작한다. Gradient가 반복적으로 곱해지며 작아지면 과거 정보가 현재 loss에 거의 영향을 주지 못하고, 모델은 long-term dependency를 학습하지 못한다.
 

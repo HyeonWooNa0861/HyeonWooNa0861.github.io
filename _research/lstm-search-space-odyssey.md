@@ -53,7 +53,7 @@ LSTM은 long-term dependency를 다루는 대표적인 recurrent architecture지
 
 MEC offloading 연구에서 LSTM은 edge load, queue, task arrival의 시간적 변화를 기억하는 데 사용된다. 이 논문은 왜 LSTM을 사용할 때 gate 구성과 activation choice가 중요한지 empirical background를 제공한다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 LSTM 변형을 단순히 하나씩 소개하는 것이 아니라, 대규모 실험으로 어떤 변형이 실제로 유리한지 검토한다. LSTM은 long-term memory를 다루기 위해 gate 구조를 갖는데, 시간이 지나며 여러 변형이 제안되면서 어떤 구성이 필수인지 불명확해졌다.
 

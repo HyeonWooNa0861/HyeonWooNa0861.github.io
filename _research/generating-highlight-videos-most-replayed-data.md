@@ -255,7 +255,7 @@ $$
 
 마지막으로 narrative-driven highlight에는 추가적인 semantic understanding이 필요하다. MRD peak가 높은 구간은 관심도가 높은 순간을 알려주지만, 스토리의 시작, 갈등, 전환, 결말을 의도적으로 구성하는 편집까지 자동으로 보장하지는 않는다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 원문 전체의 축어 번역이 아니라, 논문의 핵심 논지와 방법, 실험, 한계를 한국어로 이어 읽을 수 있게 정리한 번역형 해설이다. Most Replayed Data, dynamic programming, reward 설계와 같은 기술 용어는 원문 의미를 유지했다.
 

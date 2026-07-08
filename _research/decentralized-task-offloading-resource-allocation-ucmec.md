@@ -53,7 +53,7 @@ order: 26
 
 QECO-Adapt가 dense load에 초점을 둔다면, 이 논문은 cell edge 통신 품질 문제를 다룬다. 실제 MEC에서는 edge load와 radio link quality가 함께 task completion을 좌우하므로, user-centric architecture는 offloading 연구의 중요한 확장 방향이다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 사용자가 cell boundary 근처에 있을 때 MEC offloading이 어려워지는 문제를 다룬다. Cell edge에서는 interference와 signal attenuation이 커져 uplink transmission rate가 낮아지고, task를 edge server로 보내는 과정이 불안정해질 수 있다.
 

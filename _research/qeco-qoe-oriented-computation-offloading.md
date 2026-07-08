@@ -54,7 +54,7 @@ QECO는 computation offloading을 MDP로 정식화하고, 각 mobile device가 �
 
 QECO-Adapt는 이 QECO를 기반으로 dense MEC 조건에서 load-adaptive control을 추가한 확장으로 볼 수 있다. 따라서 QECO 원 논문은 QECO-Adapt의 baseline, reward structure, network architecture를 이해하는 핵심 자료다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 QECO는 MEC offloading을 단순 delay minimization 문제가 아니라 사용자 QoE maximization 문제로 재정의한다. 사용자는 task가 완료되기를 원하지만, 동시에 delay와 energy consumption도 낮아야 한다. 이 요소들을 하나의 reward로 묶어 long-term QoE를 최대화하도록 학습한다.
 

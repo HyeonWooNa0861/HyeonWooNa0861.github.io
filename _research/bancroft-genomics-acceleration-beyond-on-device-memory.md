@@ -249,7 +249,7 @@ Seed-and-extend alignment에서는 seeding 단계가 많은 후보 match를 만�
 | Platform sensitivity | HBM power throttling, HBM channel 수, PCIe 세대에 따라 성능이 달라진다. |
 | Domain specificity | FASTA/FASTQ genomics format에 최적화된 설계다. |
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 Bancroft 논문 원문을 그대로 번역한 것이 아니라, 논문의 전체 전개를 한국어로 다시 읽을 수 있게 만든 번역형 해설이다. 논문에서 쓰는 FASTA, FASTQ, HBM, PCIe, reference-based compression 같은 핵심 용어는 원문 표현을 유지했다.
 

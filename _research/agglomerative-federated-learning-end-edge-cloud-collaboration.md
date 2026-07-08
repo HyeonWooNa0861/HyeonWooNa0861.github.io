@@ -58,7 +58,7 @@ FedAgg는 end, edge, cloud가 계층별로 다른 크기의 모델을 가질 수
 
 QECO-Adapt 관점에서 이 논문은 edge-cloud 협업 구조를 학습 문제에 적용한 사례로 볼 수 있다. Task offloading은 계산 task를 어디에서 처리할지 결정하고, FedAgg는 model training knowledge를 어떤 계층에서 어떻게 교환할지 다룬다. 둘 다 edge 환경에서 자원 차이를 숨기기보다 계층별 capability 차이를 모델링한다는 공통점이 있다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 end device, edge server, cloud가 함께 AI 모델을 학습하는 상황에서 기존 federated learning의 한계를 다룬다. 기존 계층형 FL은 여러 계층을 사용하더라도 같은 모델 구조를 공유하는 경우가 많아, 최종 모델 크기가 가장 약한 장치에 맞춰지는 문제가 있었다.
 

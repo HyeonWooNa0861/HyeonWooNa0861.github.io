@@ -304,7 +304,7 @@ Friedman test 결과, 네 질문 모두에서 다섯 interface 간 유의미한 
 
 넷째, 댓글은 화면 하단에 표시되므로 subtitle이나 중요한 시각 정보와 겹칠 수 있다. Dynamic placement, summarization, keyword highlighting, eye-tracking 기반 주의 분산 분석이 후속 연구로 제시된다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 원문 전체를 그대로 옮긴 번역이 아니라, ComVi 논문의 문제 설정부터 사용자 연구까지를 한국어로 다시 따라갈 수 있게 재구성한 번역형 해설이다. 시스템명, 수식, 실험 조건, DOI와 같은 고유 정보는 원문 기준을 유지했다.
 

@@ -53,7 +53,7 @@ Double DQN은 online network로 다음 action을 선택하고, target network로
 
 QECO 및 MEC offloading 연구에서 DQN 계열을 사용할 때 target overestimation은 불안정한 action 선택으로 이어질 수 있다. Deadline, queue, energy cost가 얽힌 환경에서는 잘못 과대평가된 offloading action이 dropped task 누적으로 연결될 수 있으므로 Double DQN은 안정성 측면에서 중요하다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 논문은 DQN이 강력하지만 Q-learning의 오래된 문제인 overestimation bias를 그대로 가질 수 있음을 보여준다. Max 연산은 여러 추정값 중 가장 큰 값을 고르기 때문에, 실제로 좋은 action이 아니라 우연히 높게 추정된 action을 target으로 삼을 수 있다.
 

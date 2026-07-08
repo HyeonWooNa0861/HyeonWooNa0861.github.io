@@ -235,7 +235,7 @@ Labidus는 매우 규칙적인 matrix multiplication보다, control이 복잡하
 | RISC-V softcore overhead | 아무리 줄여도 pure custom datapath 대비 control overhead가 남는다. |
 | Legacy code 자동 추출은 future work | 논문은 legacy software에서 custom kernel을 자동 추출하는 방향을 향후 과제로 제시한다. |
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 Labidus 논문을 축어적으로 번역한 것이 아니라, 논문의 전체 구조를 한국어로 재구성한 번역형 해설이다. RISC-V overlay, custom instruction, completion queue, stream-semantic memory 같은 핵심 용어는 원문의 의미를 유지했다.
 

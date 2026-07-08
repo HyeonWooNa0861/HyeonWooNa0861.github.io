@@ -316,7 +316,7 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시된다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향이다.
 
-## 한국어 번역형 해설
+## 핵심 내용
 
 이 절은 MBI 논문 원문을 그대로 옮긴 번역이 아니라, 논문의 전체 주장을 한국어로 다시 따라갈 수 있게 구성한 번역형 해설이다. Time-Restricted kNN, m-AkNN, Multi-Level Block Indexing, \\(\tau\\) threshold와 같은 핵심 용어와 수식은 원문 의미를 유지했다.
 
