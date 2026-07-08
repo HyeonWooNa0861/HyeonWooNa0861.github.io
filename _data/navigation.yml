@@ -34,6 +34,11 @@
       description: AI concepts and paper-based curriculum materials
       match: /post/ai-education/
       section: ai-education
+    - title: AI Agents
+      url: /post/ai-agents/
+      description: Agent harness, workflow, and self-improvement notes
+      match: /post/ai-agents/
+      section: ai-agents
     - title: nxtcloud Boot Camp
       url: /post/nxtcloud-boot-camp/
       description: AWS Bedrock and AI engineering boot camp notes
