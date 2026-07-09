@@ -10,8 +10,10 @@
 - 기존 collection, URL, sidebar 구조를 우선한다.
 - 수상 실적, 증명서, 확인서처럼 본문 해설 대상이 아닌 증빙 PDF는 별도 포스트를 만들지 않고, 관련 포스트의 하단 참고자료/source 목록에 첨부한다.
 - 수식은 MathJax 문법을 사용한다.
-  - inline: `\\(...\\)`
+  - inline: `\(...\)` (Markdown source 기준으로 backslash를 한 번만 쓴다)
   - display: `$$...$$`
+- 수식 내부 LaTeX 명령도 source 기준 단일 backslash만 사용한다. 예: `\odot`, `\top`, `\widehat{W}`, `\mathrm{diag}`. `\\odot`, `\\top`처럼 이중 escape하면 GitBlog/MathJax 렌더링에서 `odot`, `top`이 문자처럼 보일 수 있다.
+- superscript/subscript가 LaTeX 명령이나 여러 token을 포함하면 항상 brace로 묶는다. 예: `h^{\top}`, `XX^{\top}`, `w_0(1+g)^{\rho}`, `\lVert x\rVert_2^{2}`.
 - 수식 기호와 변수명은 원본 PDF notation을 우선한다.
 - 강의 중 정정된 수식이 확인되면 원본 PDF보다 정정 사항을 우선한다.
 - 정정 내용이 "불필요한 변수 제거"라면 다른 문자로 단순 치환하지 말고 수식을 재작성한다.
