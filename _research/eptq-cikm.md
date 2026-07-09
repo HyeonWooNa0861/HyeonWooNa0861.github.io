@@ -54,7 +54,7 @@ EPTQ의 목표는 단순히 PPL을 낮추는 것이 아니라, 2-bit PTQ에서 a
 논문은 linear layer의 full-precision weight matrix를 \\(W\\), calibration input을 \\(X\\)로 두고, quantized matrix \\(\\widehat{W}\\)가 layer output을 최대한 보존하도록 문제를 정의한다.
 
 $$
-\\arg\\min_{\\widehat{W}} \\lVert WX - \\widehat{W}X \\rVert_F^{2}
+\\underset{\\widehat{W}}{\\arg\\min}\\ \\lVert WX - \\widehat{W}X \\rVert_F^{2}
 \\quad
 \\text{s.t.}
 \\quad
@@ -99,7 +99,7 @@ FE8 quantization은 weight가 Gaussian-like distribution을 따른다는 가정�
 논문은 weight matrix를 다음처럼 factorize한다.
 
 $$
-W = W' \\odot (g h^\\top)
+W = W' \\odot (g h^{\\top})
 $$
 
 | 기호 | 의미 |
@@ -123,7 +123,7 @@ $$
 S_{b,j}
 =
 \\frac{\\lVert v_{b,j}-\\widehat{v}_{b,j}\\rVert_2^{2}}
-{[XX^\\top]^{-1}_{j,j}}
+{[XX^{\\top}]^{-1}_{j,j}}
 $$
 
 이 score는 quantization error가 크고 Hessian 관점에서 민감한 vector일수록 커진다. 단순히 top \\(p\\%\\)를 고르는 fixed-ratio 방식은 layer별 score distribution이 다르면 잘 맞지 않는다. 논문은 Kneedle algorithm을 사용해 각 matrix마다 score curve의 knee point를 찾고, 그 지점을 threshold \\(\\tau\\)로 사용한다.
@@ -147,7 +147,7 @@ EPTQ 전체 흐름은 다음과 같다.
 | 3 | \\(X'\\) 기반 Hessian inverse와 Cholesky decomposition을 계산한다. |
 | 4 | adaptive critical vector masking으로 preservation mask \\(M\\)을 만든다. |
 | 5 | 각 column을 block-wise로 처리하며 FE8 quantization과 Hessian error compensation을 수행한다. |
-| 6 | 마지막에 \\(\\widehat{W}\\leftarrow \\widehat{W}\\odot(gh^\\top)\\)로 scale을 복원한다. |
+| 6 | 마지막에 \\(\\widehat{W}\\leftarrow \\widehat{W}\\odot(gh^{\\top})\\)로 scale을 복원한다. |
 
 이 구조는 GPTQ 계열의 Hessian-based compensation을 활용하면서, quantization function 자체를 FE8 lattice lookup으로 바꾸고, scale normalization과 adaptive preservation을 결합한 형태다.
 
@@ -234,7 +234,7 @@ EPTQ의 기여는 2-bit compression을 단순한 quantization level 문제로 �
 
 방법의 첫 번째 축은 Factored-E8 quantization이다. E8 lattice는 8D 공간에서 weight vector의 spherical distribution을 잘 표현할 수 있지만, full codebook은 1 MB 규모라 GPU L1 cache에 올리기 어렵다. EPTQ는 8D vector를 두 개의 4D half로 나누고, 같은 coset type끼리 결합하는 구조를 이용해 65,536개 point capacity를 유지하면서도 codebook을 4 KB로 줄인다. 이 설계는 lookup을 cache-friendly하게 만들어 decode throughput을 크게 높인다.
 
-두 번째 축은 weight scale normalization이다. Weight matrix 전체는 Gaussian처럼 보일 수 있지만 row와 column 단위로 보면 variance가 균일하지 않다. EPTQ는 \\(W=W'\\odot(gh^\\top)\\)로 weight를 분해하고, Sinkhorn-Knopp 방식의 반복 scaling으로 \\(W'\\)의 row/column magnitude를 맞춘다. 이 단계는 FE8 lattice quantization이 가정하는 분포 조건에 weight를 더 가깝게 만든다.
+두 번째 축은 weight scale normalization이다. Weight matrix 전체는 Gaussian처럼 보일 수 있지만 row와 column 단위로 보면 variance가 균일하지 않다. EPTQ는 \\(W=W'\\odot(gh^{\\top})\\)로 weight를 분해하고, Sinkhorn-Knopp 방식의 반복 scaling으로 \\(W'\\)의 row/column magnitude를 맞춘다. 이 단계는 FE8 lattice quantization이 가정하는 분포 조건에 weight를 더 가깝게 만든다.
 
 세 번째 축은 adaptive critical weight preservation이다. 일부 8D vector는 quantization되면 output error를 크게 키우므로 full precision으로 남기는 것이 유리하다. EPTQ는 Hessian 기반 importance score를 계산하고, 각 matrix별 score distribution에서 Kneedle algorithm으로 knee point를 찾아 preservation threshold를 정한다. 이 방식은 fixed threshold나 fixed ratio보다 layer별 sensitivity 차이를 더 잘 반영한다. 또한 reserved codebook index를 mask marker로 사용해 별도 mask bit를 저장하지 않는다.
 

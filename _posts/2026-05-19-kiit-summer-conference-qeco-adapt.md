@@ -91,7 +91,7 @@ $$
 adaptive energy weight는 QECO reward의 energy cost 항에 곱해지는 동적 가중치이다.
 
 $$
-w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^\rho
+w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^{\rho}
 $$
 
 현재 설정은 \\(w_0 = 1.20\\), \\(\rho = 0.35\\), \\(\lambda = 10.0\\)이다. \\(w_0\\)는 기본 energy emphasis이고, \\(\rho\\)는 부하 증가에 따른 energy weight 증가 곡률을 조절한다. \\(\rho < 1\\)이므로 부하가 증가해도 energy penalty가 과도하게 폭증하지 않도록 완만하게 증가한다.
@@ -341,7 +341,7 @@ $$
 QECO-ADAPT:
 
 $$
-w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^\rho
+w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^{\rho}
 $$
 
 $$
@@ -361,7 +361,7 @@ $$
 
 요약:
 
-> 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 \\(g(L_{\mathrm{eff}})\\)로 정규화하고, \\(w_0(1+g)^\rho\\) 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
+> 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 \\(g(L_{\mathrm{eff}})\\)로 정규화하고, \\(w_0(1+g)^{\rho}\\) 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
 
 ## 9. 공유 시 피해야 할 표현
 
