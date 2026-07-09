@@ -246,4 +246,5 @@ EPTQ의 기여는 2-bit compression을 단순한 quantization level 문제로 �
 
 <ul>
   <li><a href="{{ "/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf" | relative_url }}" target="_blank" rel="noopener">eptq-cikm.pdf</a></li>
+  <li><a href="https://www.together.ai/blog/yaqa" target="_blank" rel="noopener">Together AI Blog: Model-Preserving Adaptive Rounding with YAQA</a> - EPTQ 후속연구에서 original-output KL divergence 평가축을 추가할 때 참고할 자료</li>
 </ul>

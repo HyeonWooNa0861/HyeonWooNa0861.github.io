@@ -188,6 +188,14 @@
       url: /research/quip-2-bit-quantization-of-large-language-models-with-guarantees/
       description: 2-bit LLM quantization with incoherence processing and LDLQ
       match: /research/quip-2-bit-quantization-of-large-language-models-with-guarantees/
+    - title: YAQA
+      url: /research/yaqa-model-preserving-adaptive-rounding/
+      description: Model-preserving adaptive rounding for LLM PTQ
+      match: /research/yaqa-model-preserving-adaptive-rounding/
+    - title: Minions
+      url: /research/minions-on-device-cloud-collaboration/
+      description: On-device small LM and cloud model collaboration
+      match: /research/minions-on-device-cloud-collaboration/
 
 - title: Assignment
   url: /assignment/

@@ -78,4 +78,5 @@ Gating은 부하가 높을 때 offloading action을 더 보수적으로 검토�
 <ul>
   <li><a href="{{ "/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf" | relative_url }}" target="_blank" rel="noopener">QECO-Adapt 연구 PDF</a></li>
   <li><a href="{{ "/posts/2026-kiit-summer-conference-qeco-adapt/" | relative_url }}">QECO-Adapt Conference Preparation Notes</a></li>
+  <li><a href="https://www.together.ai/blog/minions" target="_blank" rel="noopener">Together AI Blog: Minions</a> - local small model과 cloud frontier model의 역할 분담을 통해 edge/cloud split framing을 확장할 때 참고할 자료</li>
 </ul>
