@@ -59,6 +59,10 @@ MEC offloading에서도 일부 subproblem은 매번 최적화를 풀기 어렵�
 
 이 관점은 MEC offloading에도 직접 연결된다. Offloading decision과 resource allocation을 매번 최적화하는 대신, 과거 최적화 결과나 simulation data를 이용해 빠른 decision model을 학습할 수 있기 때문이다.
 
+핵심 가치는 "learning replaces optimization"이 아니라 "반복 최적화 solver의 입출력 관계를 학습해 inference-time latency를 줄인다"는 데 있다. Wireless system은 channel이 계속 변하므로 매번 WMMSE 같은 iterative solver를 돌리면 지연이 커질 수 있다. DNN은 offline에서 solver의 solution pattern을 학습하고, online에서는 빠른 forward pass로 근사 decision을 낸다.
+
+다만 이 접근은 학습 분포 밖의 channel condition이나 system constraint 변화에 취약할 수 있다. 따라서 DNN이 낸 solution의 feasibility, optimality gap, retraining cost를 함께 봐야 한다. MEC offloading 연구에서 DRL/DNN을 사용할 때도 같은 문제가 반복된다. 빠른 decision이 장점이지만, 환경 분포가 바뀌면 learned optimizer의 안정성이 핵심 이슈가 된다.
+
 ## 참고자료
 
 <ul>

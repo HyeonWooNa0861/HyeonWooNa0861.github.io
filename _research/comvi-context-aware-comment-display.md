@@ -84,7 +84,7 @@ Corr(C_{i,t})
 Norm\left(
 \sqrt{
 \frac{
-Corr_A(C_{i,t})^2 + Corr_V(C_{i,t})^2
+Corr_A(C_{i,t})^{2} + Corr_V(C_{i,t})^{2}
 }{2}
 }
 \right)
@@ -159,7 +159,7 @@ $$
 BoxCox(l_i)
 =
 \begin{cases}
-\frac{l_i^\lambda - 1}{\lambda} & \lambda \ne 0 \\
+\frac{l_i^{\lambda} - 1}{\lambda} & \lambda \ne 0 \\
 \ln(l_i) & \lambda = 0
 \end{cases}
 $$
@@ -169,7 +169,7 @@ $$
 최종 목표는 sequence \\(S\\) 안의 timed comment 점수 합을 최대화하는 것이다.
 
 $$
-S^*
+S^{*}
 =
 \arg\max_S
 \sum_{k=1}^{n}

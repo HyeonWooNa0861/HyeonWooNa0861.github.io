@@ -156,6 +156,38 @@
       url: /research/eptq-cikm/
       description: Fast 2-bit LLM post-training quantization with Factored E8 lattice
       match: /research/eptq-cikm/
+    - title: GPTQ
+      url: /research/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/
+      description: Accurate PTQ for generative pretrained transformers
+      match: /research/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/
+    - title: QuaRot
+      url: /research/quarot-outlier-free-4-bit-inference-in-rotated-llms/
+      description: Outlier-free 4-bit LLM inference with Hadamard rotations
+      match: /research/quarot-outlier-free-4-bit-inference-in-rotated-llms/
+    - title: QTIP
+      url: /research/qtip/
+      description: Trellis-coded LLM quantization with incoherence processing
+      match: /research/qtip/
+    - title: DECENT
+      url: /research/deep-reinforcement-learning-for-online-latency/
+      description: Latency-aware online offloading and resource management in MEC
+      match: /research/deep-reinforcement-learning-for-online-latency/
+    - title: Energy-Aware MEC
+      url: /research/energy-aware-multi-server-mobile-edge-computing/
+      description: Energy-aware task offloading in multi-server MEC
+      match: /research/energy-aware-multi-server-mobile-edge-computing/
+    - title: General Task Graph Offloading
+      url: /research/offloading-and-resource-allocation-with-general-task/
+      description: Offloading and resource allocation for general task graphs
+      match: /research/offloading-and-resource-allocation-with-general-task/
+    - title: PIQA
+      url: /research/piqa-reasoning-about-physical-commonsense-in-natural-language/
+      description: Physical commonsense reasoning benchmark in natural language
+      match: /research/piqa-reasoning-about-physical-commonsense-in-natural-language/
+    - title: QuIP
+      url: /research/quip-2-bit-quantization-of-large-language-models-with-guarantees/
+      description: 2-bit LLM quantization with incoherence processing and LDLQ
+      match: /research/quip-2-bit-quantization-of-large-language-models-with-guarantees/
 
 - title: Assignment
   url: /assignment/

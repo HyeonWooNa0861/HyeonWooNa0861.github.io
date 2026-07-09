@@ -62,6 +62,10 @@ QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 s
 
 이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요하다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문이다.
 
+핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 어떤 channel을 할당받는지에 따라 transmission delay와 interference가 달라진다. 따라서 task offloading과 channel allocation을 joint action으로 묶어야 실제 completion delay를 줄일 수 있다.
+
+D3QN 구조는 이런 결합 action에서 value estimation을 안정화하려는 선택이다. Dueling 구조는 state 자체가 좋은지와 특정 action이 얼마나 이득인지 분리하고, double Q-learning은 과대평가를 줄인다. 이 논문은 MEC에서 spatial-temporal dynamics를 다룰 때 "edge 선택"만으로는 부족하고 radio resource까지 함께 decision surface에 올려야 한다는 점을 보여준다.
+
 ## 참고자료
 
 <ul>

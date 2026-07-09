@@ -62,6 +62,10 @@ QECO-Adapt가 dense terrestrial MEC를 다룬다면, 이 연구는 infrastructur
 
 이 연구는 MEC offloading이 지상 edge server에만 제한되지 않는다는 점에서 중요하다. 재난 지역, 농촌, 해상, 산악 지역처럼 인프라가 약한 환경에서는 HAP-assisted MEC가 practical deployment option이 될 수 있다.
 
+EEDO의 핵심은 HAP를 단순한 더 높은 위치의 edge server로 보지 않는다는 점이다. HAP는 coverage 측면에서는 유리하지만, wireless link와 onboard computing resource, energy constraint가 함께 얽힌다. 따라서 offloading decision은 "HAP로 보낼 것인가"만이 아니라 언제, 얼마나, 어떤 resource와 함께 보낼 것인가의 문제로 확장된다.
+
+이 연구는 queue stability와 online decision 관점에서도 읽을 가치가 있다. Random channel과 task arrival을 완전히 예측하기 어렵기 때문에, 매 slot의 최적 선택보다 장기 평균 성능과 안정성을 함께 보는 구조가 필요하다. QECO-Adapt처럼 dense stress를 다루는 연구와 연결하면, HAP-MEC에서는 load뿐 아니라 aerial link variability까지 control target이 된다는 차이가 드러난다.
+
 ## 참고자료
 
 <ul>

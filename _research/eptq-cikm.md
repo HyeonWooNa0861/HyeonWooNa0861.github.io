@@ -54,7 +54,7 @@ EPTQ의 목표는 단순히 PPL을 낮추는 것이 아니라, 2-bit PTQ에서 a
 논문은 linear layer의 full-precision weight matrix를 \\(W\\), calibration input을 \\(X\\)로 두고, quantized matrix \\(\\widehat{W}\\)가 layer output을 최대한 보존하도록 문제를 정의한다.
 
 $$
-\\arg\\min_{\\widehat{W}} \\lVert WX - \\widehat{W}X \\rVert_F^2
+\\arg\\min_{\\widehat{W}} \\lVert WX - \\widehat{W}X \\rVert_F^{2}
 \\quad
 \\text{s.t.}
 \\quad
@@ -122,7 +122,7 @@ $$
 $$
 S_{b,j}
 =
-\\frac{\\lVert v_{b,j}-\\widehat{v}_{b,j}\\rVert_2^2}
+\\frac{\\lVert v_{b,j}-\\widehat{v}_{b,j}\\rVert_2^{2}}
 {[XX^\\top]^{-1}_{j,j}}
 $$
 

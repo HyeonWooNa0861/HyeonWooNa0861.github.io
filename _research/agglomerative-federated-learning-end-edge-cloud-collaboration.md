@@ -66,6 +66,10 @@ FedAgg는 이 제약을 완화하기 위해 계층마다 다른 크기의 모델
 
 이 방식의 핵심은 privacy와 flexibility를 동시에 유지하는 것이다. 원본 데이터는 device 밖으로 나가지 않지만, 모델이 생성한 지식은 bridge sample response 형태로 계층 간에 전달된다. 따라서 FedAgg는 EECC 환경에서 상위 node의 계산 능력을 활용하면서도 FL의 기본 목적을 유지하려는 설계로 이해할 수 있다.
 
+FedAgg를 읽을 때는 일반적인 federated averaging과 distillation 기반 협업의 차이를 분명히 해야 한다. FedAvg는 같은 architecture의 parameter를 평균하는 방식이므로, end device가 작은 모델밖에 학습하지 못하면 전체 federation도 그 모델 크기에 묶인다. FedAgg는 서로 다른 크기의 모델을 허용하고, bridge sample에 대한 output response를 통해 지식을 맞춘다.
+
+이 접근은 edge-cloud collaboration에서 중요한 의미를 가진다. Edge와 cloud는 end device보다 큰 모델을 다룰 수 있으므로, 상위 계층의 capacity를 활용하면 전체 성능을 높일 수 있다. 하지만 bridge sample이 data distribution을 충분히 대표하지 못하면 distillation이 잘못된 방향으로 진행될 수 있다. 따라서 FedAgg의 성패는 계층 구조 자체뿐 아니라 bridge sample의 품질과 non-IID 상황에서의 robustness에 달려 있다.
+
 ## 참고자료
 
 <ul>

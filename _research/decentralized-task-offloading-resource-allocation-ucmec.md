@@ -61,6 +61,10 @@ QECO-Adapt가 dense load에 초점을 둔다면, 이 논문은 cell edge 통신 
 
 Decentralized MADRL scheme은 cooperation과 non-cooperation 상황을 모두 고려한다. 이 논문은 MEC offloading이 computing resource만의 문제가 아니라 wireless access architecture와 밀접하게 연결되어 있음을 보여준다.
 
+핵심 해석은 user-centric MEC가 offloading decision의 전제를 바꾼다는 점이다. 기존 cellular MEC에서는 사용자가 어느 cell에 속하는지가 먼저 정해지고, 그 안에서 offloading과 resource allocation을 최적화한다. 반면 UCMEC는 cell edge 사용자가 여러 node와 더 유연하게 연결될 수 있다고 보고, radio link 품질과 computing resource를 동시에 decision 변수로 다룬다.
+
+따라서 이 논문은 "분산 DRL로 delay를 줄였다"보다 "offloading 문제의 병목이 edge CPU만이 아니라 uplink reliability에도 있다"는 관점에서 읽는 것이 중요하다. 특히 dense MEC에서는 edge server load가 낮아도 radio interference가 크면 task completion이 지연될 수 있다. Cooperation scheme과 non-cooperation scheme의 차이는 이 wireless-side coupling을 얼마나 명시적으로 다루는지에 있다.
+
 ## 참고자료
 
 <ul>

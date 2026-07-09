@@ -37,7 +37,7 @@ $$
 세 번째 요소는 adaptive energy weight이다. 기존 QECO reward의 energy cost 항에 부하 기반 가중치를 적용해 dense 환경에서 energy-aware behavior를 강화한다.
 
 $$
-w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^\rho
+w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^{\rho}
 $$
 
 이 방식은 policy-invariant reward shaping이 아니다. energy cost의 상대 가중치를 바꾸고, gating 조건에 따라 실제 offloading action을 local action으로 바꿀 수 있기 때문이다. 따라서 QECO-Adapt는 기존 QECO의 최적 정책을 보존한다고 주장하기보다, dense load 조건에 맞춘 load-adaptive reward/cost reweighting과 action-level gating으로 보는 것이 정확하다.
@@ -61,7 +61,7 @@ $$
 
 따라서 QECO-Adapt의 의미는 “모든 MEC 환경에서 QECO를 대체하는 범용 알고리즘”이 아니라, 단일 edge에 부하가 집중되는 dense 조건에서 QECO의 초기 손실을 줄이는 lightweight adaptive variant로 정리하는 것이 적절하다.
 
-## 한국어 본문 해설
+## 핵심 내용
 
 QECO-Adapt 자료는 외부 논문 번역본이 아니라 자체 연구 정리 자료이므로, 이 절은 전체 내용을 다시 읽기 위한 본문 해설로 둔다. 핵심은 dense Mobile Edge Computing 환경에서 기존 QECO의 구조를 크게 바꾸지 않고 초기 수렴 손실과 dropped-task 누적을 줄일 수 있는지를 검토하는 것이다.
 

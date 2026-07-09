@@ -82,7 +82,7 @@ Labidus는 RISC-V soft processor를 FPGA 위에 여러 개 올리고, 각 proces
 
 | Operator | 의미 |
 |---|---|
-| `sinsq(a, b)` | \\(\sin^2((x-y)/2)\\) |
+| `sinsq(a, b)` | \\(\sin^{2}((x-y)/2)\\) |
 | `coscos(a, b)` | \\(\cos(a)\cos(b)\\) |
 | `arcsrt(a)` | \\(2R\arcsin(\sqrt{a})\\) |
 

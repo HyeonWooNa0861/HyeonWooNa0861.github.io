@@ -61,6 +61,10 @@ Double DQN은 이 문제를 줄이기 위해 action을 고르는 network와 그 
 
 논문의 핵심은 이 아이디어가 tabular setting을 넘어 deep neural network function approximation에서도 작동한다는 점이다. MEC offloading처럼 action value가 queue state와 channel state에 따라 크게 변하는 문제에서도 이 원리는 안정적인 target 추정의 기본 장치로 볼 수 있다.
 
+Double DQN을 이해할 때는 target을 낮추는 것이 목적이 아니라 bias를 줄이는 것이 목적이라는 점이 중요하다. Vanilla DQN의 max 연산은 noisy estimate 중 큰 값을 선택하므로 평균적으로 낙관적인 target을 만든다. 이 낙관성이 exploration에는 도움이 될 수 있지만, function approximation과 결합하면 잘못된 action을 계속 강화할 수 있다.
+
+MEC offloading에서는 이 문제가 특히 실용적이다. 어떤 edge node가 우연히 높은 Q-value로 추정되면 많은 task가 그쪽으로 몰리는 policy가 강화될 수 있고, 이는 queue backlog와 dropped task 증가로 이어질 수 있다. Double DQN은 action selection과 evaluation을 분리해 이런 잘못된 확신을 줄이는 안정화 장치로 읽어야 한다.
+
 ## 참고자료
 
 <ul>

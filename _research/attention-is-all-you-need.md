@@ -98,7 +98,7 @@ Transformer의 기본 attention은 query, key, value로 표현된다. Query와 k
 $$
 \mathrm{Attention}(Q,K,V)
 =
-\mathrm{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\mathrm{softmax}\left(\frac{QK^{T}}{\sqrt{d_k}}\right)V
 $$
 
 여기서 \\(\sqrt{d_k}\\)로 나누는 이유는 dot product 값이 너무 커져 softmax gradient가 작아지는 문제를 줄이기 위해서다.
@@ -117,13 +117,13 @@ Multi-head attention은 하나의 attention을 크게 쓰는 대신 여러 head�
 $$
 \mathrm{MultiHead}(Q,K,V)
 =
-\mathrm{Concat}(\mathrm{head}_1,\ldots,\mathrm{head}_h)W^O
+\mathrm{Concat}(\mathrm{head}_1,\ldots,\mathrm{head}_h)W^{O}
 $$
 
 $$
 \mathrm{head}_i
 =
-\mathrm{Attention}(QW_i^Q,KW_i^K,VW_i^V)
+\mathrm{Attention}(QW_i^{Q},KW_i^{K},VW_i^{V})
 $$
 
 이 구조의 해석 포인트는 하나의 문장 안에서도 관계의 종류가 다양하다는 점이다. 어떤 head는 근처 단어의 local relation을 보고, 어떤 head는 long-distance dependency나 anaphora relation을 볼 수 있다.

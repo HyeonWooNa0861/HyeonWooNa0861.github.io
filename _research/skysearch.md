@@ -125,8 +125,8 @@ L_v =
 \mathbb{E}_{p \sim P_v,\ n \sim N_v}
 \left[
 \max\left(
-\lVert f(v)-f(p)\rVert_2^2
-- \lVert f(v)-f(n)\rVert_2^2
+\lVert f(v)-f(p)\rVert_2^{2}
+- \lVert f(v)-f(n)\rVert_2^{2}
 + \gamma,
 0
 \right)

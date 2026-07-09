@@ -61,6 +61,10 @@ MEC offloading 연구에서 LSTM은 edge load, queue, task arrival의 시간적 
 
 이 논문은 QECO의 LSTM 사용을 해석할 때도 유용하다. LSTM을 넣었다는 사실보다, sequence state를 어떤 gate와 activation으로 안정적으로 유지하는지가 중요하기 때문이다.
 
+논문의 가치가 큰 이유는 LSTM 변형 논쟁을 단일 task의 anecdotal result가 아니라 대규모 random search와 fANOVA로 정리했다는 점이다. 특정 변형이 한 실험에서 좋아 보이더라도 hyperparameter tuning 정도가 다르면 공정한 비교가 어렵다. 이 논문은 variant별로 search budget을 주고, 성능 차이가 architecture 때문인지 hyperparameter 때문인지 분리해서 보려 한다.
+
+MEC offloading 맥락에서는 LSTM을 temporal feature extractor로 사용할 때 과도한 구조 변경보다 기본 LSTM을 잘 tuning하는 것이 더 중요할 수 있다는 교훈을 준다. Edge load, queue length, task arrival은 모두 시간 의존성을 갖지만, 그 패턴이 항상 복잡한 LSTM variant를 요구하는 것은 아니다. 따라서 QECO류 모델에서 LSTM component를 해석할 때는 "장기 의존성 처리"와 "과한 architecture 복잡도" 사이의 균형을 함께 봐야 한다.
+
 ## 참고자료
 
 <ul>

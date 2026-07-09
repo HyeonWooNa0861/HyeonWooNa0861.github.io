@@ -66,6 +66,10 @@ QECO-Adapt와 비교하면, 이 논문은 offloading action의 agent 구조 자�
 
 핵심 기여는 resource constraint를 reward penalty로만 처리하지 않고, 의사결정 구조 속에 넣었다는 점이다. 이 접근은 dense MEC나 server bottleneck이 큰 상황에서 특히 중요하다. 반면 master agent가 너무 많은 정보를 요구하면 scalability와 통신 비용 문제가 발생할 수 있으므로, 실제 배포에서는 coordination cost를 함께 평가해야 한다.
 
+Client-master 구조의 해석 포인트는 MEC의 제약이 계층적이라는 점이다. User device는 자신의 battery, task size, latency requirement를 중심으로 판단하지만, MEC server는 여러 사용자의 task를 동시에 받아 storage와 computation resource를 나눠야 한다. 두 관점을 하나의 homogeneous agent로 처리하면 제약의 위치가 흐려질 수 있다.
+
+이 논문은 multiagent DRL을 "여러 agent가 같은 일을 나눠 하는 방식"이 아니라 "서로 다른 역할을 가진 agent들이 조합 decision을 만드는 방식"으로 사용한다. QECO-Adapt처럼 dense condition을 다루는 연구에서는 dropped task가 단순 policy 미숙이 아니라 resource bottleneck의 결과일 수 있으므로, client-master coordination은 중요한 비교 축이 된다.
+
 ## 참고자료
 
 <ul>

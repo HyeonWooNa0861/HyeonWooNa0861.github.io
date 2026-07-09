@@ -64,6 +64,10 @@ QECO 논문과 QECO-Adapt는 이 연구의 구조적 영향을 직접적으로 �
 
 결론적으로 이 연구는 QECO 계열 논문의 핵심 선행 배경이다. 특히 dropped task와 average delay를 줄이는 목적은 dense MEC 환경에서 QECO-Adapt가 다시 다루는 문제와 직접 연결된다.
 
+이 논문이 다루는 offloading은 단일 사용자의 local/edge binary choice보다 복잡하다. Edge node가 여러 개이고 각 node의 load가 시간에 따라 변하므로, 어떤 edge로 보내는지가 task completion에 직접 영향을 준다. LSTM은 이런 load dynamics를 state representation에 반영하고, dueling/double DQN은 action value 추정의 안정성을 보완한다.
+
+읽을 때 주의할 점은 distributed DRL이 global optimum을 보장한다는 뜻은 아니라는 것이다. 각 device가 local observation으로 decision을 내리기 때문에 정보가 제한되고, 다른 device의 action과 환경 변화가 non-stationarity를 만든다. 그럼에도 중앙 controller 없이 delay와 dropped task를 줄일 수 있다는 점이 이 연구의 실용적 의미다.
+
 ## 참고자료
 
 <ul>

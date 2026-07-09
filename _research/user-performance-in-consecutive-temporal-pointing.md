@@ -47,7 +47,7 @@ Temporal pointing은 사용자가 특정 공간 위치가 아니라 특정 시�
 두 입력의 실제 타이밍 분포는 각각 정규분포로 표현된다.
 
 $$
-N_1(\mu_1,\sigma_1^2),\quad N_2(\mu_2,\sigma_2^2)
+N_1(\mu_1,\sigma_1^{2}),\quad N_2(\mu_2,\sigma_2^{2})
 $$
 
 여기서 $$\mu$$는 목표 시점 대비 평균 오차, 즉 정확도에 가깝고, $$\sigma$$는 입력 타이밍의 퍼짐, 즉 정밀도에 가깝다. CTP에서는 첫 번째 입력과 두 번째 입력을 따로 보아야 하므로 $$\mu_1,\mu_2,\sigma_1,\sigma_2$$가 모두 분석 대상이 된다.
@@ -85,8 +85,8 @@ $$
 c_1P\left(c_2+\frac{1}{e^{c_3t_c}-1}\right)
 }{
 \sqrt{
-(c_1P)^2+
-\left(c_2+\frac{1}{e^{c_3t_c}-1}\right)^2
+(c_1P)^{2}+
+\left(c_2+\frac{1}{e^{c_3t_c}-1}\right)^{2}
 }
 }
 $$
@@ -124,7 +124,7 @@ $$
 
 ### 1. 첫 번째 입력은 기존 모델과 비교적 잘 맞는다
 
-Variation 2에서 첫 번째 입력의 표준편차 $$\sigma_1$$은 기존 temporal pointing 모델로 잘 설명되었다. 논문은 이 경우 $$R^2 = 0.93$$의 높은 적합도를 보고한다.
+Variation 2에서 첫 번째 입력의 표준편차 $$\sigma_1$$은 기존 temporal pointing 모델로 잘 설명되었다. 논문은 이 경우 $$R^{2} = 0.93$$의 높은 적합도를 보고한다.
 
 이 결과는 첫 번째 입력이 일반 temporal pointing과 유사한 구조를 가질 수 있음을 보여준다. 즉, 목표가 나타나고 사용자가 첫 번째 판정 시점을 예측하는 과정은 기존 모델의 cue-viewing time 기반 설명과 크게 충돌하지 않는다.
 
@@ -192,7 +192,7 @@ CTP는 TTF와 TTS라는 두 시간 변수로 정리된다. TTF는 과제가 시�
 
 논문의 결론은 CTP를 독립적인 두 temporal pointing으로 환원하지 말아야 한다는 것이다. 후속 모델은 두 입력 사이의 관계, 평균 오차 \\(\mu\\), 정밀도 \\(\sigma\\), 운동 지연, 보상 전략을 함께 설명해야 한다. 게임 난이도 설계나 입력 인터페이스 설계에서는 TTS, press/release 이벤트, visual cue의 역할을 분리해서 고려하는 것이 중요하다.
 
-## PDF 및 참고자료
+## 참고자료
 
 - [PDF 원문](/assets/pdfs/research/user-performance-in-consecutive-temporal-pointing/user-performance-in-consecutive-temporal-pointing.pdf)
 - [ACM DOI](https://doi.org/10.1145/3613904.3642904)

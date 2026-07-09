@@ -67,7 +67,7 @@ $$
 $$
 
 $$
-v \in \mathbb{R}^d,\qquad t \in \mathcal{T}
+v \in \mathbb{R}^{d},\qquad t \in \mathcal{T}
 $$
 
 시간 구간 \\([t_a,t_b)\\)에 속한 데이터만 모으면 다음처럼 쓴다.
@@ -202,7 +202,7 @@ height in [160, 180)
 weight in [50, 80)
 ```
 
-이 경우 MBI는 \\(2^m\\)-ary tree로 확장된다.
+이 경우 MBI는 \\(2^{m}\\)-ary tree로 확장된다.
 
 | \\(m\\) | 구조 |
 |---:|---|
@@ -326,7 +326,7 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 질의 처리는 query window를 덮는 search block set을 고르는 단계와 각 block에서 kNN search를 수행한 뒤 결과를 merge하는 단계로 나뉜다. Block 선택은 overlap ratio와 threshold \\(\tau\\)로 결정된다. \\(\tau\\)가 낮으면 큰 block을 선택해 graph search 이점을 살리고, \\(\tau\\)가 높으면 작은 block을 선택해 filter 비용을 줄인다. 논문은 \\(\tau \le 0.5\\) 조건에서 T kNN query를 처리하는 block 수가 최대 2개임을 보이며, 이것이 query window 길이에 따른 성능 변동을 줄이는 핵심 근거가 된다.
 
-논문은 timestamp 하나만 다루는 T kNN을 여러 numerical attribute constraint가 있는 m-AkNN으로 확장한다. 이 경우 binary tree는 \\(2^m\\)-ary tree로 일반화되고, 데이터 분포가 균일하지 않기 때문에 count-based recursive partitioning을 사용한다. 다만 T kNN은 timestamp 증가 순서 삽입을 가정하는 반면, m-AkNN은 static dataset 중심이라는 차이가 있다.
+논문은 timestamp 하나만 다루는 T kNN을 여러 numerical attribute constraint가 있는 m-AkNN으로 확장한다. 이 경우 binary tree는 \\(2^{m}\\)-ary tree로 일반화되고, 데이터 분포가 균일하지 않기 때문에 count-based recursive partitioning을 사용한다. 다만 T kNN은 timestamp 증가 순서 삽입을 가정하는 반면, m-AkNN은 static dataset 중심이라는 차이가 있다.
 
 실험에서는 MovieLens, COMS, GloVe, SIFT1M, GIST1M, DEEP1B subset 등 다양한 dataset에서 MBI가 BSBF와 SF보다 안정적인 query speed를 보였다. Index size는 더 커지지만, 속도를 위해 block별 graph index를 저장하는 trade-off로 해석할 수 있다. 남은 과제는 arbitrary insertion/deletion, sliding-window deletion, m-AkNN dynamic update, block selection의 formal optimality 분석이다.
 
