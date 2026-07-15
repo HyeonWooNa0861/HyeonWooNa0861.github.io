@@ -196,6 +196,38 @@
       url: /research/minions-on-device-cloud-collaboration/
       description: On-device small LM and cloud model collaboration
       match: /research/minions-on-device-cloud-collaboration/
+    - title: CoverCal
+      url: /research/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/
+      description: Coverage-based calibration selection for LLM PTQ
+      match: /research/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/
+    - title: Dataset Pruning
+      url: /research/dataset-pruning-reducing-training-data-by-examining-generalization-influence/
+      description: Training data reduction through generalization influence
+      match: /research/dataset-pruning-reducing-training-data-by-examining-generalization-influence/
+    - title: OWQ
+      url: /research/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/
+      description: Outlier-aware weight quantization for efficient LLM tuning and inference
+      match: /research/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/
+    - title: Calibration Data Curation
+      url: /research/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/
+      description: Preserving LLM capabilities through calibration data curation
+      match: /research/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/
+    - title: QuIP#
+      url: /research/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/
+      description: Hadamard incoherence and E8 lattice codebooks for LLM quantization
+      match: /research/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/
+    - title: Self-Calibration
+      url: /research/self-calibration-for-language-model-quantization-and-pruning/
+      description: Synthetic calibration data for language model quantization and pruning
+      match: /research/self-calibration-for-language-model-quantization-and-pruning/
+    - title: SqueezeLLM
+      url: /research/squeezellm-dense-and-sparse-quantization/
+      description: Dense-and-sparse quantization for LLM inference
+      match: /research/squeezellm-dense-and-sparse-quantization/
+    - title: VPTQ
+      url: /research/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/
+      description: Extreme low-bit vector PTQ for large language models
+      match: /research/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/
 
 - title: Assignment
   url: /assignment/

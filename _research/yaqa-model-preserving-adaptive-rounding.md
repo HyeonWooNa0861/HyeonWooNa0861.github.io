@@ -7,6 +7,8 @@ order: 36
 
 # YAQA
 
+Source PDF: `model-preserving-adaptive-rounding.pdf`
+
 Source URL: `https://www.together.ai/blog/yaqa`
 
 ## 자료 정보
@@ -115,6 +117,7 @@ YAQA는 EPTQ의 경쟁 방법이라기보다 평가 철학을 바꾸는 자료�
 ## 참고자료
 
 <ul>
+  <li><a href="{{ "/assets/pdfs/research/model-preserving-adaptive-rounding/model-preserving-adaptive-rounding.pdf" | relative_url }}" target="_blank" rel="noopener">model-preserving-adaptive-rounding.pdf</a></li>
   <li><a href="https://www.together.ai/blog/yaqa" target="_blank" rel="noopener">Together AI Blog: Model-Preserving Adaptive Rounding with YAQA</a></li>
   <li><a href="https://arxiv.org/abs/2505.22988" target="_blank" rel="noopener">Model-Preserving Adaptive Rounding paper</a></li>
 </ul>
