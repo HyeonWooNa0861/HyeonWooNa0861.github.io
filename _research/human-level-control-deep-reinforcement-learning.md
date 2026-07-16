@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Human-Level Control with DQN"
+title: "Human-Level DQN"
 topic: "Deep Q-network for Atari control"
 order: 16
 ---

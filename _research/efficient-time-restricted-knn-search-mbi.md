@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Time-Restricted kNN Search with MBI"
+title: "Time-Restricted kNN Search"
 topic: "Multi-Level Block Indexing for high-dimensional filtered kNN"
 order: 3
 ---

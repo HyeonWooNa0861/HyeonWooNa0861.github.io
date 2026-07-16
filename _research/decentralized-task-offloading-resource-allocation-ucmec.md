@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "User-Centric MEC Offloading"
+title: "User-Centric MEC"
 topic: "Decentralized task offloading and resource allocation in UCMEC"
 order: 26
 ---

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Agglomerative Federated Learning"
+title: "FedAgg"
 topic: "End-edge-cloud federated learning for larger model training"
 order: 10
 ---

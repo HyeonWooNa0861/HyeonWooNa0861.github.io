@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Combinatorial Client-Master MADRL"
+title: "CCM-MADRL"
 topic: "Multiagent task offloading in mobile edge computing"
 order: 11
 ---

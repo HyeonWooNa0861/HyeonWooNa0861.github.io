@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Spatial-Temporal MEC Offloading"
+title: "Spatial-Temporal MEC"
 topic: "Joint task offloading and channel allocation with D3QN"
 order: 17
 ---

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Energy-Aware Multi-Server MEC"
+title: "Energy-Aware MEC"
 topic: "Energy-aware multi-agent DRL for mobile edge computation offloading"
 order: 32
 ---

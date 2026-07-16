@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "LSTM: A Search Space Odyssey"
+title: "LSTM Odyssey"
 topic: "Large-scale empirical analysis of LSTM variants"
 order: 19
 ---

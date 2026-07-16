@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "User Performance in Consecutive Temporal Pointing"
+title: "Temporal Pointing"
 topic: Research
 order: 9
 ---

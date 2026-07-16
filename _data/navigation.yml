@@ -260,6 +260,10 @@
       url: /study/machine-learning-basic/
       description: Machine Learning Basic lecture notes
       match: /study/machine-learning-basic/
+    - title: CS231N
+      url: /study/cs231n/
+      description: Stanford CS231N deep learning for computer vision lecture notes
+      match: /study/cs231n/
     - title: AIX
       url: /study/aix/
       description: AIX lecture notes

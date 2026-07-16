@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Generating Highlight Videos with Most Replayed Data"
+title: "Highlight Videos with MRD"
 topic: "User-specified length highlight generation using Most Replayed Data"
 order: 8
 ---

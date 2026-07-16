@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "EEDO for HAP-Assisted MEC"
+title: "EEDO HAP-MEC"
 topic: "Online dynamic offloading and resource allocation in HAP-assisted MEC"
 order: 23
 ---

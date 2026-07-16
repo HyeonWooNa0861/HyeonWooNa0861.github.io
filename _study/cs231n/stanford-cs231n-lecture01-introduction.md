@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "Stanford CS231N Lecture 1: Introduction"
-course: "AIX"
+course: "CS231N"
 topic: "컴퓨터 비전과 딥러닝의 출발점"
-order: 13
+order: 1
 ---
 
 # Stanford CS231N Lecture 1: Introduction
@@ -126,4 +126,3 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 ## 참고자료
 
 - [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture 1](https://youtu.be/2fq9wYslV0A?si=YXCKanCTWpZFstJ2){:target="_blank" rel="noopener"}
-- Local source note: `research_files/stanford-cs231n-lecture1-introduction/stanford-cs231n-lecture1-introduction_번역본.md`

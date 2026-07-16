@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "DRL Task Offloading in MEC"
+title: "DRL Task Offloading"
 topic: "Distributed task offloading with LSTM, dueling DQN, and double DQN"
 order: 14
 ---
