@@ -60,6 +60,8 @@ permalink: /
 {% endfor %}
 </div>
 
+{% comment %}
+Visual map is intentionally hidden but kept in place for possible restoration.
 <section class="visual-map-section" aria-label="Visual map">
   <div class="home-orbit visual-map-fit" aria-label="Visual map">
     <div class="orbit-map" data-orbit-map>
@@ -112,3 +114,4 @@ permalink: /
     </div>
   </div>
 </section>
+{% endcomment %}
