@@ -208,7 +208,7 @@
       url: /research/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/
       description: Outlier-aware weight quantization for efficient LLM tuning and inference
       match: /research/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/
-    - title: Calibration Data Curation
+    - title: CoLA
       url: /research/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/
       description: Preserving LLM capabilities through calibration data curation
       match: /research/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/

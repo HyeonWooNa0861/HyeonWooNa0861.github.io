@@ -7,6 +7,8 @@
 - 원본 자료는 보존하고, 블로그에는 읽기 쉬운 Markdown 정리본과 PDF 링크를 제공한다.
 - 정리본은 원문 자료의 주요 범위와 논지를 충실히 따라야 한다. 읽기 쉽게 재구성하되, 원문에서 비중 있게 다룬 장, 절, 코드 예제, 수식, 표, 결론을 임의로 누락하지 않는다.
 - 파일명과 폴더명은 영문 kebab-case를 사용한다.
+- `research_files` 원천 자료에 논문 별칭이 있으면 최종 원문 PDF와 최종 번역본 Markdown 파일명은 별칭을 맨 앞에 둔다. 이 별칭 우선 규칙은 제목 기반 slug 규칙보다 우선한다. 예: `cola-preserving-..._원문.pdf`, `cola-preserving-..._번역본.md`.
+- 별칭 우선 파일명 규칙은 `*_원문.pdf`와 `*_번역본.md` 같은 최종 산출물에만 적용하고, 추출 후보, review packet, report, sidecar metadata 같은 중간 산출물에는 적용하지 않는다.
 - 기존 collection, URL, sidebar 구조를 우선한다.
 - 수상 실적, 증명서, 확인서처럼 본문 해설 대상이 아닌 증빙 PDF는 별도 포스트를 만들지 않고, 관련 포스트의 하단 참고자료/source 목록에 첨부한다.
 - 수식은 MathJax 문법을 사용한다.
@@ -164,6 +166,8 @@ Study 구조 규칙:
 
 - 연구 글은 문제집처럼 만들지 않는다.
 - `공부 포인트` 대신 `해석 포인트`를 사용한다.
+- 논문에 별칭이 있으면 Research post의 front matter `title`과 `_data/navigation.yml`의 tab/sidebar 제목은 별칭을 우선한다. 이 규칙은 긴 논문 제목을 그대로 tab 제목으로 쓰는 규칙보다 우선한다.
+- 긴 논문 원제는 본문 H1, `논문 정보` 표, `참고자료`에 보존한다. 예: tab/front matter title은 `CoLA`, 본문 H1은 `Preserving LLM Capabilities through Calibration Data Curation: From Analysis to Optimization`.
 - 논문 주장과 작성자의 해석을 구분한다.
 - 실험 수치는 결과와 해석을 함께 적되 과장하지 않는다.
 - 질문형 섹션을 쓰더라도 시험 문제가 아니라 분석 관점이어야 한다.

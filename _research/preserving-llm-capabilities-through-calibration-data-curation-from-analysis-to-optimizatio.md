@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Calibration Data Curation"
+title: "CoLA"
 topic: "Preserving LLM capabilities through calibration data curation"
 order: 41
 ---
