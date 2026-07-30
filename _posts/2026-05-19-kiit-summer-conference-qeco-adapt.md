@@ -258,10 +258,11 @@ QECO의 저널 발간 이후 문헌으로 범위를 좁혀 다시 보면, 현재
 
 QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참고문헌 후보는 다음과 같다.
 
-| 논문 | 참고문헌 정보 | 유사성 | 차별점 |
+| 논문 | 유사성 | 차별점 | 참고문헌 정보 |
 |---|---|---|---|
-| D3QN-LMA | Y. Mao, X. Tang, J. Lu, H. Li, and C. Wang, "D3QN-LMA: A memory-augmented deep reinforcement learning framework for energy-latency tradeoff optimization in mobile edge computing," Advanced Engineering Informatics, vol. 72, article 104431, 2026, doi: 10.1016/j.aei.2026.104431. ScienceDirect: https://www.sciencedirect.com/science/article/pii/S1474034626001230 | D3QN, LSTM, dynamic edge load, adaptive weight adjustment, QECO를 baseline으로 비교한다는 점에서 가장 가까운 발간 이후 유사 연구 | QECO를 직접 확장한 구조가 아니라 multi-head attention과 hierarchical optimization을 포함한 별도 알고리즘이다. 또한 QECO-ADAPT의 \\(L_{\mathrm{eff}} \to g(L_{\mathrm{eff}}) \to w_E\\) 수식 및 action-level gating 구조와는 다르다 |
-| PreAlloc-A2C | C. Wang, X. Tang, J. Lu, J. Yang, and P. Yuan, "A Deep Reinforcement Learning-Based Pre-Allocation Mechanism for Efficient Task Offloading in Mobile Edge Computing," Computers, Materials & Continua, vol. 88, no. 1, article 45, 2026, doi: 10.32604/cmc.2026.078998. Tech Science: https://www.techscience.com/cmc/v88n1/67307/html | workload 변화, LSTM 기반 server load 예측, delay-energy-drop rate를 함께 최적화한다는 점에서 문제의식이 유사하다 | QECO 기반이 아니며 D3QN 계열도 아니다. actor-critic 기반 pre-allocation/task-server matching 구조이므로, QECO-ADAPT의 QECO reward 보완형 설계와 직접 겹치지 않는다 |
+| D3QN-LMA | D3QN, LSTM, dynamic edge load, adaptive weight adjustment, QECO를 baseline으로 비교한다는 점에서 가장 가까운 발간 이후 유사 연구 | QECO를 직접 확장한 구조가 아니라 multi-head attention과 hierarchical optimization을 포함한 별도 알고리즘이다. 또한 QECO-ADAPT의 \(L_{\mathrm{eff}} \to g(L_{\mathrm{eff}}) \to w_E\) 수식 및 action-level gating 구조와는 다르다 | Y. Mao, X. Tang, J. Lu, H. Li, and C. Wang, "D3QN-LMA: A memory-augmented deep reinforcement learning framework for energy-latency tradeoff optimization in mobile edge computing," Advanced Engineering Informatics, vol. 72, article 104431, 2026. DOI: [10.1016/j.aei.2026.104431](https://doi.org/10.1016/j.aei.2026.104431){:target="_blank" rel="noopener"}. [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1474034626001230){:target="_blank" rel="noopener"} |
+| PreAlloc-A2C | workload 변화, LSTM 기반 server load 예측, delay-energy-drop rate를 함께 최적화한다는 점에서 문제의식이 유사하다 | QECO 기반이 아니며 D3QN 계열도 아니다. actor-critic 기반 pre-allocation/task-server matching 구조이므로, QECO-ADAPT의 QECO reward 보완형 설계와 직접 겹치지 않는다 | C. Wang, X. Tang, J. Lu, J. Yang, and P. Yuan, "A Deep Reinforcement Learning-Based Pre-Allocation Mechanism for Efficient Task Offloading in Mobile Edge Computing," Computers, Materials & Continua, vol. 88, no. 1, article 45, 2026. DOI: [10.32604/cmc.2026.078998](https://doi.org/10.32604/cmc.2026.078998){:target="_blank" rel="noopener"}. [Tech Science](https://www.techscience.com/cmc/v88n1/67307/html){:target="_blank" rel="noopener"} |
+{: .reference-candidate-table }
 
 코멘트:
 

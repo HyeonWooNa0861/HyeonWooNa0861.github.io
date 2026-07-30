@@ -742,6 +742,20 @@
         white-space: nowrap;
       }
 
+      .page-content table.reference-candidate-table {
+        display: table;
+        table-layout: fixed;
+      }
+
+      .page-content table.reference-candidate-table th,
+      .page-content table.reference-candidate-table td {
+        min-width: 0;
+        width: auto;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
+      }
+
       .page-content tbody tr:nth-child(even) td {
         background: var(--table-row);
       }
