@@ -18,6 +18,8 @@
     - title: PinSpot
       url: https://pinspot.vercel.app/
       description: Mobile-first PWA for exploring curated K-content locations with maps, on-device photo matching, multilingual guides, and walking routes
+      source_url: /posts/pinspot-k-content-place-discovery-pwa/
+      source_label: Project note
 
 - title: Post
   url: /post/
