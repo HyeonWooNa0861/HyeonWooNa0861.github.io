@@ -16,8 +16,8 @@
       source_url: https://htmlpreview.github.io/?https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html
       source_label: Project overview
     - title: PinSpot
-      url: https://pinspot.vercel.app/
-      description: Mobile-first PWA for exploring curated K-content locations with maps, on-device photo matching, multilingual guides, and walking routes
+      url: https://pinspot-kmu.vercel.app/
+      description: K-content location discovery PWA with curated maps and on-device photo matching
       source_url: /posts/pinspot-k-content-place-discovery-pwa/
       source_label: Project note
 
