@@ -18,7 +18,6 @@ permalink: /
         <span class="index-title__mark">NaHW</span>
         <span class="index-title__name">Working Index</span>
       </h1>
-      <p class="index-summary">프로젝트, 연구 해설, 강의 노트를 다시 찾고 이어 읽기 위한 개인 기술 아카이브입니다.</p>
     </div>
 
     <dl class="index-stats">
@@ -47,11 +46,11 @@ permalink: /
           <circle cx="11" cy="11" r="6.5"></circle>
           <path d="m16 16 4 4"></path>
         </svg>
-        <input id="library-search-input" type="search" autocomplete="off" placeholder="제목, 강의, 연구 주제 검색" data-library-search-input aria-controls="library-search-results">
+        <input id="library-search-input" type="search" autocomplete="off" placeholder="Search titles, lectures, and research topics" data-library-search-input aria-controls="library-search-results">
         <span class="library-search__key" aria-hidden="true">/</span>
         <button class="library-search__submit" type="submit">Open</button>
       </div>
-      <p class="library-search__status" data-library-search-status aria-live="polite">프로젝트와 공개 아카이브를 검색합니다.</p>
+      <p class="library-search__status" data-library-search-status aria-live="polite">Search projects and the public archive.</p>
       <div class="library-search__results" id="library-search-results" data-library-search-results hidden>
         <ul>
           {% for item in site.data.navigation %}
@@ -128,7 +127,7 @@ permalink: /
   <section class="workstreams index-rule" data-index-rule aria-labelledby="workstreams-title">
     <header class="index-section-heading">
       <h2 id="workstreams-title">Browse the library</h2>
-      <p>전체 목록 대신 각 분기의 대표 진입점을 먼저 보여줍니다.</p>
+      <p>Start with representative entry points from each branch.</p>
     </header>
     <div class="workstreams__grid">
       {% for item in site.data.navigation %}
