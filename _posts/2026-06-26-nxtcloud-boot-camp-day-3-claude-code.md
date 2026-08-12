@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "nxtcloud Boot Camp 3일차: Claude Code Workshop"
-nav_title: "3일차"
+title: "nxtcloud Boot Camp Day 3: Claude Code Workshop"
+nav_title: "Day 3"
 date: 2026-06-26 00:00:00 +0900
 categories: [BootCamp, ClaudeCode, AIEngineering]
 tags: [Claude Code, AI Coding Agent, CLI, MCP, Hooks, Permissions]

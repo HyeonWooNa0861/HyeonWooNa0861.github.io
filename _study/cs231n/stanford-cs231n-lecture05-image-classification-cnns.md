@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 5: Image Classification with CNNs"
 course: "CS231N"
-topic: "CNN 기반 이미지 분류"
+topic: "CNN-Based Image Classification"
 order: 5
 ---
 

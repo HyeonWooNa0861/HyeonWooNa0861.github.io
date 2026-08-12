@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
-topic: "LLM 사전학습, 학습 최적화, 지도 미세조정과 LoRA"
+topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
 order: 4
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "nxtcloud Boot Camp 4일차: AI Workflow Automation"
-nav_title: "4일차"
+title: "nxtcloud Boot Camp Day 4: AI Workflow Automation"
+nav_title: "Day 4"
 date: 2026-06-27 00:00:00 +0900
 categories: [BootCamp, AIWorkflow, Automation]
 tags: [AI Workflow, Automation, Prompting, Project Workflow, Team Project]

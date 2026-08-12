@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "AWS Charting: AI 기반 미국 주식 위험 분석 대시보드"
+title: "AWS Charting: AI-Powered U.S. Stock Risk Dashboard"
 nav_title: "AWS Charting"
 date: 2026-06-30 00:00:00 +0900
 categories: [BootCamp, Project, AIWorkflow]

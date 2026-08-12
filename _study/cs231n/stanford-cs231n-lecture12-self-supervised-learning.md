@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
-topic: "자기지도학습"
+topic: "Self-Supervised Learning"
 order: 12
 ---
 

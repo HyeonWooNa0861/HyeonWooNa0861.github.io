@@ -2,7 +2,7 @@
 layout: default
 title: "Robotics 1"
 course: "AIX"
-topic: "Imitation Learning과 DAggER"
+topic: "Imitation Learning and DAggER"
 order: 9
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
-topic: "비전-언어 모델"
+topic: "Vision-Language Models"
 order: 16
 ---
 

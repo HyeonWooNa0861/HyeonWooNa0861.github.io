@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
-topic: "비디오 이해"
+topic: "Video Understanding"
 order: 10
 ---
 

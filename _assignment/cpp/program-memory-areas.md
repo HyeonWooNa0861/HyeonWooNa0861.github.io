@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "프로그램 메모리 영역"
+title: "Program Memory Areas"
 course: "C++"
 topic: "Code/Data/Stack/Heap"
 ---

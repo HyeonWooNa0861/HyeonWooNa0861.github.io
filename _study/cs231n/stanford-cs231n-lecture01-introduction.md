@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
-topic: "컴퓨터 비전과 딥러닝의 출발점"
+topic: "Foundations of Computer Vision and Deep Learning"
 order: 1
 ---
 

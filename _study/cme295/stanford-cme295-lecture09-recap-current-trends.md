@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
-topic: "CME295 전체 복습, 2025년 LLM 트렌드, 앞으로의 학습 방향"
+topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
 order: 9
 ---
 

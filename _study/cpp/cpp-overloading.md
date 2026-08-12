@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Classes and Operator Overloading"
 course: "C++"
-topic: "함수와 연산자 오버로딩"
+topic: "Function and Operator Overloading"
 order: 7
 ---
 

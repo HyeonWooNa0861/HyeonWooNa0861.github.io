@@ -2,7 +2,7 @@
 layout: default
 title: "Large Language Models"
 course: "AIX"
-topic: "Decoder-only LLM과 생성"
+topic: "Decoder-Only LLMs and Generation"
 order: 6
 ---
 

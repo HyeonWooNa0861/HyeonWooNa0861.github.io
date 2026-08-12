@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
-topic: "LLM 출력 품질 평가, LLM-as-a-Judge, 에이전트 및 벤치마크 평가"
+topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
 order: 8
 ---
 

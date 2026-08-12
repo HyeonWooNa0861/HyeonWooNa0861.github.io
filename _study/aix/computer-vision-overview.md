@@ -2,7 +2,7 @@
 layout: default
 title: "Computer Vision Overview"
 course: "AIX"
-topic: "시각 지능과 딥러닝 비전"
+topic: "Visual Intelligence and Deep Learning Vision"
 order: 3
 ---
 

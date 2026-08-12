@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
-topic: "인간 중심 AI"
+topic: "Human-Centered AI"
 order: 18
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "NLP and Transformer Overview"
 course: "AIX"
-topic: "NLP 역사와 Transformer"
+topic: "NLP History and Transformers"
 order: 4
 ---
 

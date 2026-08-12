@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Enumerations"
 course: "C++"
-topic: "enum과 enum class"
+topic: "Enums and enum class"
 order: 6
 ---
 

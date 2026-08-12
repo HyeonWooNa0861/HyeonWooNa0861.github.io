@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "gri:d: 디자이너와 컬렉터를 연결하는 큐레이션 마켓"
+title: "gri:d: Curated Marketplace for Designers and Collectors"
 nav_title: "gri:d"
 date: 2026-08-12 00:00:00 +0900
 categories: [Project, Marketplace, Fashion]

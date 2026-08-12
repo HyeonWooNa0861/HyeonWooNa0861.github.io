@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Inheritance"
 course: "C++"
-topic: "상속과 클래스 계층"
+topic: "Inheritance and Class Hierarchies"
 order: 9
 ---
 

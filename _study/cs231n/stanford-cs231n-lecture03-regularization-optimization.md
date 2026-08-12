@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
-topic: "정규화와 최적화"
+topic: "Regularization and Optimization"
 order: 3
 ---
 

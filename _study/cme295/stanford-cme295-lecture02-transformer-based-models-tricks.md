@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
-topic: "Transformer 변형, 위치 정보, attention 최적화, BERT 계열"
+topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
 order: 2
 ---
 

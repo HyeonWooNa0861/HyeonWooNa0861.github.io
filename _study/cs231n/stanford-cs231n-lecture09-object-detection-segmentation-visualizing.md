@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
-topic: "객체 검출, 분할, 시각화"
+topic: "Object Detection, Segmentation, and Visualization"
 order: 9
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "FollowSync: 공식 Instagram ZIP으로 팔로우 관계를 점검하는 웹앱"
+title: "FollowSync: Instagram Follow Relationship Analyzer"
 nav_title: "FollowSync"
 date: 2026-08-12 00:10:00 +0900
 categories: [Project, NextJS, Privacy]

@@ -2,7 +2,7 @@
 layout: default
 title: "Autonomous Driving 2"
 course: "AIX"
-topic: "Tesla occupancy와 driving foundation model"
+topic: "Tesla Occupancy and Driving Foundation Models"
 order: 8
 ---
 

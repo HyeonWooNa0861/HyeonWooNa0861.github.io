@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
-topic: "Attention과 Transformer"
+topic: "Attention and Transformers"
 order: 8
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
-topic: "순환 신경망"
+topic: "Recurrent Neural Networks"
 order: 7
 ---
 

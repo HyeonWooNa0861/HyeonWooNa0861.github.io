@@ -2,7 +2,7 @@
 layout: default
 title: "C and C++ Pointer Memory"
 course: "C++"
-topic: "포인터와 동적 할당"
+topic: "Pointers and Dynamic Allocation"
 order: 3
 ---
 

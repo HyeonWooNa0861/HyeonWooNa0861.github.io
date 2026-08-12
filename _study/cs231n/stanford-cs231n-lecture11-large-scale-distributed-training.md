@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
-topic: "대규모 분산 학습"
+topic: "Large-Scale Distributed Training"
 order: 11
 ---
 

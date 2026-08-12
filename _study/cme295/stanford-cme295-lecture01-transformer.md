@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
-topic: "NLP 기초에서 Transformer 구조까지"
+topic: "From NLP Fundamentals to Transformer Architecture"
 order: 1
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Data Structures Final Review"
 course: "Data Structures"
-topic: "기말고사 대비 자료"
+topic: "Final Exam Review"
 order: 24
 ---
 

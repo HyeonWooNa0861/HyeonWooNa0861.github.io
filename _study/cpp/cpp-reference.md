@@ -2,7 +2,7 @@
 layout: default
 title: "C++ References"
 course: "C++"
-topic: "참조와 값 전달"
+topic: "References and Value Passing"
 order: 5
 ---
 

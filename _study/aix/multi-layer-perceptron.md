@@ -2,7 +2,7 @@
 layout: default
 title: "Multi-Layer Perceptron"
 course: "AIX"
-topic: "MLP와 일반화"
+topic: "MLPs and Generalization"
 order: 2
 ---
 

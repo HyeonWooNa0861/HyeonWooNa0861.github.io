@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
-topic: "생성 모델 1"
+topic: "Generative Models 1"
 order: 13
 ---
 

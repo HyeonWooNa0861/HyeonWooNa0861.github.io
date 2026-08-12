@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "웹 개발자를 위한 실무 역량과 웹서비스 현황 강의 보고서"
+title: "Practical Web Developer Skills and Web Service Trends"
 date: 2026-05-14 00:00:00 +0900
 categories: [IndustryLectures, Reflection]
 tags: [web, ai, cs, career]

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "표준입출력과 파일 디스크립터"
+title: "Standard I/O and File Descriptors"
 course: "C++"
 topic: "stdin, stdout, stderr, File Descriptor"
 ---

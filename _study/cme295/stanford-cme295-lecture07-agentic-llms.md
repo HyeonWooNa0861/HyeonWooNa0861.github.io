@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
-topic: "RAG, 도구 호출, MCP, 에이전트 워크플로"
+topic: "RAG, Tool Calling, MCP, and Agent Workflows"
 order: 7
 ---
 

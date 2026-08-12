@@ -2,7 +2,7 @@
 layout: default
 title: "C Structs and C++ Classes"
 course: "C++"
-topic: "구조체와 클래스"
+topic: "Structs and Classes"
 order: 2
 ---
 

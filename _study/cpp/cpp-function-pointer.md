@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Function Pointers"
 course: "C++"
-topic: "함수 포인터와 콜백"
+topic: "Function Pointers and Callbacks"
 order: 8
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Autonomous Driving 1"
 course: "AIX"
-topic: "모듈형 자율주행과 occupancy 전환"
+topic: "Modular Autonomous Driving and Occupancy Transition"
 order: 7
 ---
 

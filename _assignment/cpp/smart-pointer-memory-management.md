@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "스마트 포인터와 메모리 관리"
+title: "Smart Pointers and Memory Management"
 course: "C++"
 topic: "Smart Pointer, RAII, Reference Counting"
 ---

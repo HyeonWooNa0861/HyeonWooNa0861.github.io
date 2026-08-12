@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
-topic: "LLM 정의, MoE, decoding, prompting, inference optimization"
+topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
 order: 3
 ---
 

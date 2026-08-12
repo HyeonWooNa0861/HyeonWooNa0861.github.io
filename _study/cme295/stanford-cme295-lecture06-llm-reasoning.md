@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
-topic: "Reasoning model, benchmark, GRPO, DeepSeek R1 계열 학습 파이프라인"
+topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
 order: 6
 ---
 

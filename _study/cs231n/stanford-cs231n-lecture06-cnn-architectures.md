@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
-topic: "CNN 아키텍처"
+topic: "CNN Architectures"
 order: 6
 ---
 

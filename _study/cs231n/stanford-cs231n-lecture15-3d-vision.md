@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
-topic: "3D 비전"
+topic: "3D Vision"
 order: 15
 ---
 

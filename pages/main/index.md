@@ -106,7 +106,7 @@ permalink: /
   <section class="recent-work index-rule" data-index-rule aria-labelledby="recent-work-title">
     <header class="index-section-heading">
       <h2 id="recent-work-title">Latest accessions</h2>
-      <a href="{{ '/post/' | relative_url }}">View post index</a>
+      <a href="{{ '/log/' | relative_url }}">View accession log</a>
     </header>
     <ol class="recent-work__list">
       {% for post in recent_posts limit: 6 %}

@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Polymorphism"
 course: "C++"
-topic: "가상 함수와 동적 바인딩"
+topic: "Virtual Functions and Dynamic Binding"
 order: 10
 ---
 

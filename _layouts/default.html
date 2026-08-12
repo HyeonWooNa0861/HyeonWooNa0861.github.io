@@ -159,7 +159,21 @@
           linear-gradient(180deg, #070707 0%, #000000 34rem);
       }
 
-      .reader-index,
+      html,
+      body,
+      .reader-index {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar,
+      .reader-index::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+
       .page-content pre,
       .page-content table,
       .post-list,
@@ -171,7 +185,6 @@
         scrollbar-width: thin;
       }
 
-      .reader-index::-webkit-scrollbar,
       .page-content pre::-webkit-scrollbar,
       .page-content table::-webkit-scrollbar,
       .post-list::-webkit-scrollbar,
@@ -183,7 +196,6 @@
         height: 8px;
       }
 
-      .reader-index::-webkit-scrollbar-thumb,
       .page-content pre::-webkit-scrollbar-thumb,
       .page-content table::-webkit-scrollbar-thumb,
       .post-list::-webkit-scrollbar-thumb,
@@ -197,7 +209,6 @@
         background-clip: padding-box;
       }
 
-      .reader-index::-webkit-scrollbar-track,
       .page-content pre::-webkit-scrollbar-track,
       .page-content table::-webkit-scrollbar-track,
       .post-list::-webkit-scrollbar-track,

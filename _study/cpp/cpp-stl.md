@@ -2,7 +2,7 @@
 layout: default
 title: "C++ STL"
 course: "C++"
-topic: "표준 템플릿 라이브러리"
+topic: "Standard Template Library"
 order: 12
 ---
 

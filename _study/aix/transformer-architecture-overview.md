@@ -2,7 +2,7 @@
 layout: default
 title: "Transformer Architecture Overview"
 course: "AIX"
-topic: "Transformer 구조 개요"
+topic: "Transformer Architecture Overview"
 order: 5
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "C Programming Fundamentals"
 course: "C++"
-topic: "C 기초 문법"
+topic: "C Syntax Fundamentals"
 order: 1
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
-topic: "로봇 학습"
+topic: "Robot Learning"
 order: 17
 ---
 

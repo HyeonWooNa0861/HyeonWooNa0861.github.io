@@ -2,7 +2,7 @@
 layout: default
 title: "Linear and Logistic Regression"
 course: "AIX"
-topic: "선형 회귀와 로지스틱 회귀"
+topic: "Linear and Logistic Regression"
 order: 1
 ---
 

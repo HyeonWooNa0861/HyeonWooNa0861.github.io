@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
-topic: "신경망과 역전파"
+topic: "Neural Networks and Backpropagation"
 order: 4
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "nxtcloud Boot Camp 1일차: Amazon Bedrock Chatbot Workshop"
-nav_title: "1일차"
+title: "nxtcloud Boot Camp Day 1: Amazon Bedrock Chatbot Workshop"
+nav_title: "Day 1"
 date: 2026-06-24 00:00:00 +0900
 categories: [BootCamp, AWS, Bedrock]
 tags: [Amazon Bedrock, Chatbot, Converse, Streaming, API]

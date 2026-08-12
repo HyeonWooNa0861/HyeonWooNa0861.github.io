@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "연산자 오버로딩"
+title: "Operator Overloading"
 course: "C++"
 topic: "Operator Overloading"
 ---

@@ -2,7 +2,7 @@
 layout: default
 title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
-topic: "이미지 분류와 선형 분류기"
+topic: "Image Classification and Linear Classifiers"
 order: 2
 ---
 

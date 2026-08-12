@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PinSpot: K-콘텐츠 장소를 발견하는 모바일 PWA"
+title: "PinSpot: K-Content Location Discovery PWA"
 nav_title: "PinSpot"
 date: 2026-08-11 00:00:00 +0900
 categories: [Project, PWA, KContent]

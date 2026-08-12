@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Open-ER: 와인 탐색과 입문 학습을 연결하는 서비스"
+title: "Open-ER: Wine Discovery and Learning Platform"
 nav_title: "Open-ER"
 date: 2026-08-12 00:20:00 +0900
 categories: [Project, Web, Wine]

@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Standard Streams"
 course: "C++"
-topic: "입출력 스트림"
+topic: "Input and Output Streams"
 order: 4
 ---
 

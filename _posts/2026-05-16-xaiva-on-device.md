@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "AI EXPO 2026 참가 기업 분석: 씨이랩 XAIVA ON-DEVICE"
+title: "AI EXPO 2026 Company Analysis: XIILAB XAIVA ON-DEVICE"
 date: 2026-05-16 00:00:00 +0900
-categories: [AIEXPO2026, 기업분석]
+categories: [AIEXPO2026, CompanyAnalysis]
 tags: [AI, on-device, computer-vision, GMP, smart-factory]
 permalink: /posts/xaiva-on-device/
 section: industry-lectures

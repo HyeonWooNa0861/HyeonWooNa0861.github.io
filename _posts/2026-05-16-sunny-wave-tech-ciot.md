@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "WIS 2026 참가 기업 분석: 써니웨이브텍과 C-IoT 기술"
+title: "WIS 2026 Company Analysis: Sunny Wave Tech and C-IoT Technology"
 date: 2026-05-16 00:00:00 +0900
-categories: [WIS2026, 기업분석]
+categories: [WIS2026, CompanyAnalysis]
 tags: [IoT, C-IoT, surface-wave, smart-industry]
 permalink: /posts/sunny-wave-tech-ciot/
 section: industry-lectures

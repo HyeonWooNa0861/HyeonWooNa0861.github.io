@@ -2,7 +2,7 @@
 layout: default
 title: "C++ Templates"
 course: "C++"
-topic: "템플릿과 제네릭 프로그래밍"
+topic: "Templates and Generic Programming"
 order: 11
 ---
 

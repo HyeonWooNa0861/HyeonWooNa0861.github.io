@@ -2,7 +2,7 @@
 layout: default
 title: "AIX Final Review"
 course: "AIX"
-topic: "기말고사 준비 자료"
+topic: "Final Exam Preparation Materials"
 order: 12
 ---
 
