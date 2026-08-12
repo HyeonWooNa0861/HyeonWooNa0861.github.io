@@ -46,8 +46,7 @@ permalink: /
           <circle cx="11" cy="11" r="6.5"></circle>
           <path d="m16 16 4 4"></path>
         </svg>
-        <input id="library-search-input" type="search" autocomplete="off" placeholder="Search titles, lectures, and research topics" data-library-search-input aria-controls="library-search-results">
-        <span class="library-search__key" aria-hidden="true">/</span>
+        <input id="library-search-input" type="search" autocomplete="off" placeholder="Press / to search titles, lectures, and research topics" data-library-search-input aria-controls="library-search-results" aria-keyshortcuts="/">
         <button class="library-search__submit" type="submit">Open</button>
       </div>
       <p class="library-search__status" data-library-search-status aria-live="polite">Search projects and the public archive.</p>
