@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "nxtcloud Boot Camp 5일차: AWS Charting Project"
-nav_title: "5일차"
+title: "AWS Charting: AI 기반 미국 주식 위험 분석 대시보드"
+nav_title: "AWS Charting"
 date: 2026-06-30 00:00:00 +0900
 categories: [BootCamp, Project, AIWorkflow]
 tags: [AWS Charting, AI Workflow, Stock Dashboard, Groq AI, Next.js]
@@ -9,13 +9,17 @@ permalink: /posts/nxtcloud-boot-camp-day-5-aws-charting/
 section: nxtcloud-boot-camp
 ---
 
-## 1. 프로젝트 개요
+AWS Charting은 미국 주식 초보자가 시장 전체의 흐름과 개별 종목의 위험을 한 화면에서 이해하도록 만든 AI 기반 대시보드다. S&P 500, 종목 차트, 뉴스, 기술 지표와 AI 요약을 연결해 흩어진 정보를 빠르게 비교하고 다음에 확인할 근거를 찾도록 돕는다.
+
+이 서비스는 nxtcloud Boot Camp 5일차 AI Workflow 프로젝트로 시작했다. 데이터 수집부터 뉴스 분류, 위험 분석, 시각화와 배포까지 하나의 경험으로 완성해 AI가 금융 정보를 어떻게 해석 보조 도구로 바꿀 수 있는지 보여준다.
+
+## 1. 서비스 개요
 
 nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 위험 분석 대시보드다. 이 프로젝트는 주식 데이터를 단순히 차트로 보여주는 데서 멈추지 않고, 뉴스, 시장 지표, 기술적 지표, AI 분석을 결합해 사용자가 종목 위험을 빠르게 파악할 수 있게 구성한 교육용 서비스다.
 
-이 글은 배포 링크와 GitHub의 `team5.html` 원본 코드를 기준으로 프로젝트의 목적, 기능, 데이터 흐름, 기술 구성, 개선 가능성을 정리한 자료다. 배포 페이지는 참고자료로 연결하고, 본문 분석은 공개 GitHub 원본 HTML에서 확인된 구조를 중심으로 작성했다.
+이 글은 배포 서비스와 공개 저장소를 기준으로 서비스 가치, 기능, 데이터 흐름, 기술 구성과 확장 로드맵을 정리한다.
 
-## 2. 핵심 문제 정의
+## 2. 서비스가 해결하는 문제
 
 주식 투자 판단에는 가격 변화뿐 아니라 시장 전체에 영향을 주는 거시 요인과 개별 종목에 영향을 주는 뉴스가 함께 작용한다. 그러나 초보 사용자가 금리, 달러, 반도체 이슈, 종목별 뉴스, PER, RSI, 변동성 같은 정보를 한 화면에서 해석하기는 쉽지 않다.
 
@@ -29,7 +33,7 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
 | 종목 차트 | 장기 캔들스틱 차트와 이동평균선 | 개별 종목의 가격 흐름을 시각적으로 확인한다. |
 | 뉴스 수집 | Google News RSS 기반 기사 수집 | 시장 이슈와 종목별 뉴스를 위험 판단의 근거로 사용한다. |
 | AI 분석 | Groq AI 기반 뉴스 및 종목 분석 | 호재, 악재, 중립 분류와 종목별 판단 이유를 생성한다. |
-| 자동 갱신 | 1분 단위 데이터 새로고침 | 사용자가 최신 시장 상태를 계속 확인할 수 있게 한다. |
+| 자동 갱신 | 1분 단위 데이터 새로고침 | 사용자가 주기적으로 갱신된 시장 상태를 확인할 수 있게 한다. |
 
 ## 4. 체계적 위험과 비체계적 위험
 
@@ -39,9 +43,9 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
 
 ## 5. AI 종목 분석 구조
 
-`AWS Charting`의 주요 특징은 단순 규칙 기반 점수 계산이 아니라, 여러 지표와 뉴스를 함께 묶어 AI가 종합 판단을 제공한다는 점이다. 원본 HTML 기준으로 AI 분석에는 PER, RSI, SML 알파, 변동성, 리스크 점수, 최신 뉴스가 포함된다. 모델은 Groq AI의 `llama-3.1-8b-instant`를 사용하는 것으로 설명되어 있으며, AI 분석 실패 시 규칙 기반 분석으로 전환되는 구조도 명시되어 있다.
+`AWS Charting`의 주요 특징은 단순 규칙 기반 점수 계산이 아니라, 여러 지표와 뉴스를 함께 묶어 AI가 종합 판단을 제공한다는 점이다. 원본 HTML 기준으로 AI 분석에는 PER, RSI, SML 알파, 변동성, 리스크 점수, 최신 뉴스가 포함된다. 모델은 Groq AI의 `llama-3.1-8b-instant`를 사용하는 것으로 설명되어 있으며, AI 분석을 사용할 수 없을 때는 규칙 기반 분석으로 전환한다.
 
-이 접근은 실제 서비스 관점에서 중요하다. 외부 AI API는 응답 실패, 지연, 비용 제한, rate limit 문제가 생길 수 있다. 따라서 AI 분석이 실패했을 때 전체 서비스가 멈추는 것이 아니라, 최소한의 규칙 기반 분석으로 fallback하는 설계가 필요하다. 프로젝트는 이 점을 기능 설명에 포함해 안정성 관점을 고려하고 있다.
+이 fallback은 외부 AI API의 지연이나 호출 제한 속에서도 핵심 분석 경험을 유지하는 해결책이다. 분석 계층이 분리되어 있어 향후 복수 모델 provider, 섹터별 판단 기준, 모델 상태 표시로 확장할 수 있다.
 
 ## 6. 데이터 흐름
 
@@ -53,7 +57,7 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
 4. 주가 지표와 뉴스를 종합해 Groq AI가 종목별 판단과 이유를 생성한다.
 5. 브라우저는 API를 주기적으로 호출해 대시보드 화면을 갱신한다.
 
-이 흐름은 프론트엔드 화면만 만든 프로젝트가 아니라, 여러 외부 데이터 소스와 AI 분석 단계를 연결하는 통합형 프로젝트라는 점을 보여준다. 특히 Twelve Data와 Alpha Vantage를 함께 쓰는 방식은 데이터 제공자 장애나 API 제한에 대응하기 위한 백업 전략으로 해석할 수 있다.
+이 흐름은 프론트엔드 화면만 만든 프로젝트가 아니라, 여러 외부 데이터 소스와 AI 분석 단계를 연결하는 통합형 프로젝트라는 점을 보여준다. 특히 Twelve Data와 Alpha Vantage를 함께 쓰는 방식은 데이터 제공자의 호출 제한에도 조회 경로를 유지하는 해결책이며, provider 상태와 데이터 신선도 표시를 더해 다중 데이터 운영 구조로 확장할 수 있다.
 
 ## 7. 기술 스택
 
@@ -76,17 +80,16 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
 
 또한 QR 코드 영역을 제공해 모바일 접속도 고려했다. 교육용 발표나 부트캠프 데모에서는 청중이 바로 서비스에 접근할 수 있어야 하므로, QR 연결은 실제 시연 환경에서 유용한 요소다.
 
-## 9. 개선 관점
+## 9. 신뢰성과 확장 로드맵
 
-프로젝트는 기능 설명과 구조가 명확하지만, 실제 운영형 서비스로 확장하려면 몇 가지 보완점이 필요하다.
+| 현재 제공 기반 | 해결 방향 | 확장 가능성 |
+|---|---|---|
+| 뉴스와 지표를 결합한 AI 판단 | 사용 뉴스, 지표, 점수 요인을 판단 카드에 함께 표시 | 종목별 근거 리포트와 공유 가능한 분석 기록 |
+| 교육용 위험 분석 경험 | 화면과 분석 카드에 교육 목적, 데이터 출처, 기준 시각을 명확히 표시 | 초보자용 금융 리터러시 모드와 설명 패널 |
+| 데이터 제공자 fallback과 캐시 | provider 상태, 데이터 신선도, 빈 응답 안내를 UI에 노출 | 다중 provider 모니터링과 장애 알림 |
+| AI 실패 시 규칙 기반 분석 | 분류 기준과 사용 지표를 사용자에게 설명 | 섹터·위험 성향별 분석 기준과 비교 리포트 |
 
-- AI 판단 결과의 근거 뉴스 링크와 사용 지표를 더 명확히 노출해야 한다.
-- 투자 판단으로 오해되지 않도록 교육용 데모라는 안내를 화면 전반에서 유지해야 한다.
-- API 장애, rate limit, 빈 데이터 응답에 대한 fallback UI가 필요하다.
-- AI가 호재와 악재를 분류하는 기준을 사용자가 이해할 수 있게 설명해야 한다.
-- 최신 데이터와 지연 데이터가 섞일 수 있으므로 데이터 기준 시각을 표시해야 한다.
-
-이 개선점들은 프로젝트의 완성도가 낮다는 의미가 아니라, 실제 데이터 기반 AI 서비스가 가져야 할 신뢰성과 설명 가능성의 기준이다.
+AWS Charting은 이미 provider fallback, 캐시와 로컬 규칙 분석을 갖추고 있어, 근거와 데이터 상태를 더 투명하게 보여주는 방향으로 운영 신뢰성과 교육 가치를 함께 확장할 수 있다.
 
 ## 10. 5일차 핵심 정리
 
@@ -104,6 +107,7 @@ nxtcloud Boot Camp 5일차 작업물은 `AWS Charting`이라는 미국 주식 �
 
 <ul>
   <li><a href="https://sigebert111-boot-charting.vercel.app/" target="_blank" rel="noopener">AWS Charting 배포 페이지</a></li>
+  <li><a href="https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5" target="_blank" rel="noopener">AWS Charting GitHub 저장소</a></li>
   <li><a href="https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html" target="_blank" rel="noopener">GitHub Source: team5.html</a></li>
   <li><a href="https://htmlpreview.github.io/?https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html" target="_blank" rel="noopener">HTMLPreview: team5.html</a></li>
   <li><a href="{{ "/assets/pdfs/post/nxtcloud-boot-camp/nxtcloud-certificate.pdf" | relative_url }}" target="_blank" rel="noopener">nxtcloud Boot Camp 수료증</a></li>

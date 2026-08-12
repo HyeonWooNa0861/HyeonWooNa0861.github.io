@@ -3,18 +3,24 @@
   children:
     - title: gri:d
       url: https://proj-griid.vercel.app/
-      description: prototype
+      description: Curated designer-item discovery and auction-style marketplace experience
+      source_url: /posts/griid-curated-design-marketplace/
+      source_label: Project note
     - title: FollowSync
       url: https://followsync.vercel.app
       description: Instagram export ZIP analyzer for comparing followers and following without login
+      source_url: /posts/followsync-instagram-export-analyzer/
+      source_label: Project note
     - title: Open-ER
       url: https://open-er.vercel.app/
-      description: prototype
+      description: Wine discovery and comparison guide with filters, tasting profiles, and aroma analysis
+      source_url: /posts/open-er-wine-discovery-education-app/
+      source_label: Project note
     - title: AWS Charting
       url: https://sigebert111-boot-charting.vercel.app/
       description: AI-powered US stock risk dashboard for news, market indicators, and risk analysis
-      source_url: https://htmlpreview.github.io/?https://github.com/nxtcloud-edu/2026-kookmin-ai-workflow-team5/blob/main/team5.html
-      source_label: Project overview
+      source_url: /posts/nxtcloud-boot-camp-day-5-aws-charting/
+      source_label: Project note
     - title: PinSpot
       url: https://pinspot-kmu.vercel.app/
       description: K-content location discovery PWA with curated maps and on-device photo matching
