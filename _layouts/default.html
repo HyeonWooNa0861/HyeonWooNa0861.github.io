@@ -85,6 +85,7 @@
         --apple-text-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
         --apple-mono-font: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
         --content-width: 980px;
+        --article-paragraph-indent: clamp(0.85rem, 1.5vw, 1.1rem);
         --header-height: 52px;
         --viewport-height: 100vh;
         --ease: cubic-bezier(0.2, 0, 0, 1);
@@ -640,6 +641,11 @@
 
       .page-content p {
         margin: 0 0 1.05em;
+      }
+
+      .posted-page .page-content > p + p,
+      .posted-page .page-content > .post > p:not(.post-meta) + p {
+        text-indent: var(--article-paragraph-indent);
       }
 
       .page-content ul,
