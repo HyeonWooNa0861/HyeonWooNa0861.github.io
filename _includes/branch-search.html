@@ -1,5 +1,6 @@
 {% assign branch_search_collection = include.collection | default: page.collection %}
 {% assign branch_search_course = include.course | default: "" %}
+{% assign branch_search_section = include.section | default: "" %}
 {% assign branch_search_items = nil %}
 
 {% if branch_search_collection == "research" %}
@@ -13,6 +14,25 @@
   {% endif %}
   {% assign branch_search_label = "Search study notes" %}
   {% assign branch_search_placeholder = "Search courses, topics, or keywords" %}
+{% elsif branch_search_collection == "assignment" %}
+  {% assign branch_search_items = site.assignment | sort: "title" %}
+  {% if branch_search_course != "" %}
+    {% assign branch_search_items = branch_search_items | where: "course", branch_search_course %}
+  {% endif %}
+  {% assign branch_search_label = "Search assignments" %}
+  {% assign branch_search_placeholder = "Search assignment titles or topics" %}
+{% elsif branch_search_collection == "posts" %}
+  {% assign branch_search_items = site.posts | sort: "date" | reverse %}
+  {% if branch_search_section != "" %}
+    {% assign branch_search_items = branch_search_items | where: "section", branch_search_section %}
+  {% endif %}
+  {% if branch_search_section == "projects" %}
+    {% assign branch_search_label = "Search projects" %}
+    {% assign branch_search_placeholder = "Search project titles or topics" %}
+  {% else %}
+    {% assign branch_search_label = "Search related posts" %}
+    {% assign branch_search_placeholder = "Search post titles or topics" %}
+  {% endif %}
 {% endif %}
 
 {% if branch_search_items %}
@@ -30,11 +50,15 @@
     <div class="library-search__results" id="library-search-results" role="listbox" aria-label="Search results" data-library-search-results hidden>
       <ul role="presentation">
         {% for item in branch_search_items %}
-          <li data-library-search-item data-search-text="{{ item.title | escape }} {{ item.course | default: '' | escape }} {{ item.major_topic | default: '' | escape }} {{ item.topic | default: '' | escape }} {{ item.keywords | join: ' ' | escape }}">
+          <li data-library-search-item data-search-text="{{ item.title | escape }} {{ item.course | default: '' | escape }} {{ item.section | default: '' | replace: '-', ' ' | escape }} {{ item.description | default: '' | escape }} {{ item.major_topic | default: '' | escape }} {{ item.topic | default: '' | escape }} {{ item.keywords | join: ' ' | escape }}">
             <a href="{{ item.url | relative_url }}">
               <span data-library-search-result-title>{{ item.title | escape }}</span>
               <small>
-                {% if item.course %}{{ item.course | escape }} · {% endif %}{{ item.major_topic | default: item.topic | escape }}
+                {% if branch_search_collection == "posts" %}
+                  {% if item.section == "projects" %}Project{% else %}Post{% endif %}{% if item.section %} · {{ item.section | replace: '-', ' ' | escape }}{% endif %}
+                {% else %}
+                  {% if item.course %}{{ item.course | escape }} · {% endif %}{{ item.major_topic | default: item.topic | escape }}
+                {% endif %}
               </small>
               {% if item.keywords %}
                 <span class="library-search__result-tags" aria-hidden="true">

@@ -218,12 +218,12 @@
       }
 
       .library-search__results {
-        scrollbar-color: var(--line-strong) var(--bg-elevated);
+        scrollbar-color: var(--line-strong) var(--search-surface);
         scrollbar-width: thin;
       }
 
       .library-search__results::-webkit-scrollbar-track {
-        background: var(--bg-elevated);
+        background: var(--search-surface);
       }
 
       a {
@@ -2153,6 +2153,8 @@
         --apple-card-bg: #ffffff;
         --apple-nav-bg: rgba(250, 251, 255, 0.96);
         --apple-hairline: rgba(32, 75, 124, 0.15);
+        --search-surface: #ffffff;
+        --search-surface-active: #e8f3ff;
         --reader-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
         --reader-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
         --reader-mono: "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
@@ -2178,6 +2180,8 @@
         --apple-card-bg: #111821;
         --apple-nav-bg: rgba(9, 13, 18, 0.96);
         --apple-hairline: rgba(184, 210, 238, 0.15);
+        --search-surface: #111821;
+        --search-surface-active: #172a3d;
       }
 
       body {
@@ -2341,6 +2345,10 @@
         grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
         gap: clamp(30px, 5vw, 72px);
         padding-top: clamp(28px, 4vw, 48px);
+      }
+
+      .index-board > .index-masthead {
+        z-index: 2;
       }
 
       .index-masthead__identity {
@@ -2510,7 +2518,7 @@
 
       .library-search__results {
         position: absolute;
-        z-index: 1;
+        z-index: 100;
         top: calc(100% + 8px);
         right: 0;
         width: min(100%, 760px);
@@ -2518,7 +2526,7 @@
         overflow: auto;
         overscroll-behavior: contain;
         border: 1px solid var(--line-strong);
-        background-color: var(--bg-elevated);
+        background-color: var(--search-surface);
         background-image: none;
         box-shadow: var(--shadow-md);
         opacity: 1;
@@ -2536,13 +2544,13 @@
         display: grid;
         margin: 0;
         padding: 0;
-        background: var(--bg-elevated);
+        background: var(--search-surface);
         list-style: none;
       }
 
       .library-search__results li,
       .library-search__results a {
-        background: var(--bg-elevated);
+        background: var(--search-surface);
       }
 
       .library-search__results li + li {
@@ -2560,7 +2568,7 @@
       .library-search__results a:hover,
       .library-search__results a:focus-visible,
       .library-search__results li.is-active > a {
-        background: color-mix(in srgb, var(--bg-elevated) 88%, var(--accent) 12%);
+        background: var(--search-surface-active);
         color: var(--accent-strong);
       }
 
@@ -2585,7 +2593,7 @@
         padding: 2px 7px;
         border: 1px solid var(--line);
         border-radius: 999px;
-        background: var(--bg-elevated);
+        background: var(--search-surface);
         color: var(--muted);
         font-family: var(--reader-mono);
         font-size: 10px;
@@ -3515,25 +3523,38 @@
             </aside>
           {% endif %}
           <div class="page-content reader-content">
+            {% assign entry_search_enabled = false %}
             {% if page.collection == "research" %}
+              {% assign entry_search_enabled = true %}
               <div class="collection-entry-tools" data-collection-entry-tools>
                 {% include branch-search.html collection="research" %}
                 {% include content-taxonomy.html item=page mode="entry" %}
               </div>
             {% elsif page.collection == "study" %}
+              {% assign entry_search_enabled = true %}
               <div class="collection-entry-tools" data-collection-entry-tools>
                 {% include branch-search.html collection="study" course=page.course %}
                 {% include content-taxonomy.html item=page mode="entry" %}
               </div>
+            {% elsif page.collection == "assignment" %}
+              {% assign entry_search_enabled = true %}
+              <div class="collection-entry-tools" data-collection-entry-tools>
+                {% include branch-search.html collection="assignment" course=page.course %}
+              </div>
+            {% elsif page.collection == "posts" %}
+              {% assign entry_search_enabled = true %}
+              <div class="collection-entry-tools" data-collection-entry-tools>
+                {% include branch-search.html collection="posts" section=page.section %}
+              </div>
             {% endif %}
             {{ content }}
-            {% if page.collection == "research" or page.collection == "study" %}
+            {% if entry_search_enabled %}
               <script>
                 (function (script) {
                   var contentRoot = script.parentElement;
                   var entryTools = contentRoot.querySelector("[data-collection-entry-tools]");
-                  var entryHeading = contentRoot.querySelector("h1");
-                  if (entryTools && entryHeading) entryHeading.insertAdjacentElement("afterend", entryTools);
+                  var entryAnchor = contentRoot.querySelector(".post > .post-meta") || contentRoot.querySelector("h1");
+                  if (entryTools && entryAnchor) entryAnchor.insertAdjacentElement("afterend", entryTools);
                   script.remove();
                 })(document.currentScript);
               </script>
