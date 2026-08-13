@@ -2503,14 +2503,17 @@
 
       .library-search__results {
         position: absolute;
+        z-index: 1;
         top: calc(100% + 8px);
         right: 0;
         width: min(100%, 760px);
         max-height: min(480px, 60vh);
         overflow: auto;
+        overscroll-behavior: contain;
         border: 1px solid var(--line-strong);
-        background: var(--panel-strong);
-        box-shadow: 0 24px 60px -38px color-mix(in srgb, var(--text), transparent 10%);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-md);
+        isolation: isolate;
       }
 
       .library-search__results[hidden],
@@ -2538,9 +2541,14 @@
       }
 
       .library-search__results a:hover,
-      .library-search__results a:focus-visible {
+      .library-search__results a:focus-visible,
+      .library-search__results li.is-active > a {
         background: var(--accent-soft);
         color: var(--accent-strong);
+      }
+
+      .library-search__results li.is-active > a {
+        box-shadow: inset 3px 0 0 var(--accent);
       }
 
       .library-search__results small {
@@ -3435,22 +3443,88 @@
 
           var searchItems = Array.prototype.slice.call(searchResults.querySelectorAll("[data-library-search-item]"));
           var visibleLimit = 12;
+          var activeItem = null;
 
-          searchItems.forEach(function (item) {
+          searchItems.forEach(function (item, index) {
             item.hidden = true;
+            item.id = item.id || "library-search-option-" + (index + 1);
+            item.setAttribute("role", "option");
+            item.setAttribute("aria-selected", "false");
+
+            item.addEventListener("pointerenter", function () {
+              if (!item.hidden) setActiveItem(item, false);
+            });
           });
 
           function normalizeSearchText(value) {
             return String(value || "").trim().toLocaleLowerCase();
           }
 
+          function getVisibleItems() {
+            return searchItems.filter(function (item) {
+              return !item.hidden;
+            });
+          }
+
+          function clearActiveItem() {
+            if (activeItem) {
+              activeItem.classList.remove("is-active");
+              activeItem.setAttribute("aria-selected", "false");
+            }
+
+            activeItem = null;
+            searchInput.removeAttribute("aria-activedescendant");
+          }
+
+          function setActiveItem(item, announceSelection) {
+            if (!item || item.hidden) {
+              clearActiveItem();
+              return;
+            }
+
+            clearActiveItem();
+            activeItem = item;
+            activeItem.classList.add("is-active");
+            activeItem.setAttribute("aria-selected", "true");
+            searchInput.setAttribute("aria-activedescendant", activeItem.id);
+            activeItem.scrollIntoView({ block: "nearest" });
+
+            if (announceSelection) {
+              var visibleItems = getVisibleItems();
+              var activeLink = activeItem.querySelector("a");
+              var activeLabel = activeLink ? activeLink.textContent.trim().replace(/\s+/g, " ") : "Result";
+              searchStatus.textContent = activeLabel + " · " + (visibleItems.indexOf(activeItem) + 1) + " of " + visibleItems.length + " · Press Enter to open.";
+            }
+          }
+
+          function moveActiveItem(direction) {
+            var visibleItems = getVisibleItems();
+            if (!visibleItems.length) return;
+
+            var currentIndex = visibleItems.indexOf(activeItem);
+            var nextIndex = currentIndex === -1
+              ? (direction > 0 ? 0 : visibleItems.length - 1)
+              : (currentIndex + direction + visibleItems.length) % visibleItems.length;
+
+            setActiveItem(visibleItems[nextIndex], true);
+          }
+
+          function openActiveItem() {
+            var visibleItems = getVisibleItems();
+            var selectedItem = activeItem && !activeItem.hidden ? activeItem : visibleItems[0];
+            var selectedLink = selectedItem ? selectedItem.querySelector("a") : null;
+            if (selectedLink) selectedLink.click();
+          }
+
           function closeSearchResults() {
+            clearActiveItem();
             searchResults.hidden = true;
             searchInput.setAttribute("aria-expanded", "false");
           }
 
           function updateSearchResults() {
             var query = normalizeSearchText(searchInput.value);
+            clearActiveItem();
             if (!query) {
               searchItems.forEach(function (item) {
                 item.hidden = true;
@@ -3472,7 +3546,7 @@
             searchResults.hidden = matchCount === 0;
             searchInput.setAttribute("aria-expanded", matchCount ? "true" : "false");
             searchStatus.textContent = matchCount
-              ? matchCount + (matchCount === 1 ? " result" : " results") + (matchCount > visibleLimit ? " · Showing the first " + visibleLimit : "")
+              ? matchCount + (matchCount === 1 ? " result" : " results") + (matchCount > visibleLimit ? " · Showing the first " + visibleLimit : "") + " · Use ↑ and ↓ to choose, Enter to open."
               : "No matching public entries.";
           }
 
@@ -3482,6 +3556,19 @@
             if (searchInput.value.trim()) updateSearchResults();
           });
 
+          searchInput.addEventListener("keydown", function (event) {
+            if (event.isComposing) return;
+
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              if (!searchInput.value.trim()) return;
+              if (searchResults.hidden) updateSearchResults();
+              if (!getVisibleItems().length) return;
+
+              event.preventDefault();
+              moveActiveItem(event.key === "ArrowDown" ? 1 : -1);
+            }
+          });
+
           searchForm.addEventListener("submit", function (event) {
             event.preventDefault();
             if (!searchInput.value.trim()) {
@@ -3489,9 +3576,8 @@
               return;
             }
 
-            updateSearchResults();
-            var firstVisibleLink = searchResults.querySelector("li:not([hidden]) a");
-            if (firstVisibleLink) firstVisibleLink.click();
+            if (searchResults.hidden || !getVisibleItems().length) updateSearchResults();
+            openActiveItem();
           });
 
           document.addEventListener("keydown", function (event) {

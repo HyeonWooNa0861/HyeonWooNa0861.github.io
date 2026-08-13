@@ -46,12 +46,12 @@ permalink: /
           <circle cx="11" cy="11" r="6.5"></circle>
           <path d="m16 16 4 4"></path>
         </svg>
-        <input id="library-search-input" type="search" autocomplete="off" placeholder="Press / to search titles, lectures, and research topics" data-library-search-input aria-controls="library-search-results" aria-keyshortcuts="/">
+        <input id="library-search-input" type="search" role="combobox" autocomplete="off" placeholder="Press / to search titles, lectures, and research topics" data-library-search-input aria-autocomplete="list" aria-haspopup="listbox" aria-controls="library-search-results" aria-describedby="library-search-status" aria-expanded="false" aria-keyshortcuts="/ ArrowUp ArrowDown Enter Escape">
         <button class="library-search__submit" type="submit">Open</button>
       </div>
-      <p class="library-search__status" data-library-search-status aria-live="polite">Search projects and the public archive.</p>
-      <div class="library-search__results" id="library-search-results" data-library-search-results hidden>
-        <ul>
+      <p class="library-search__status" id="library-search-status" data-library-search-status aria-live="polite">Search projects and the public archive.</p>
+      <div class="library-search__results" id="library-search-results" role="listbox" aria-label="Search results" data-library-search-results hidden>
+        <ul role="presentation">
           {% for item in site.data.navigation %}
             {% if item.title == "Project" %}
               {% for child in item.children %}
