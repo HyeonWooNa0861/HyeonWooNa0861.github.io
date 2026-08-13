@@ -3,6 +3,12 @@ layout: default
 title: "GNRL Offloading"
 topic: "Graph neural reinforcement learning for MEC offloading"
 order: 56
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "Graph neural RL"
+  - "MEC offloading"
+  - "Task dependency"
+  - "Resource allocation"
 ---
 
 # Offloading Strategy Based on Graph Neural Reinforcement Learning in Mobile Edge Computing

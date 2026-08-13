@@ -3,6 +3,12 @@ layout: default
 title: "Bancroft"
 topic: "Genomics acceleration beyond on-device memory"
 order: 4
+major_topic: "Computer Systems & Architecture"
+keywords:
+  - "Bancroft"
+  - "Genomics acceleration"
+  - "On-device memory"
+  - "Memory hierarchy"
 ---
 
 # Bancroft: Genomics Acceleration Beyond On-Device Memory

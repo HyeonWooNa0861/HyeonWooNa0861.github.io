@@ -3,6 +3,12 @@ layout: default
 title: "Energy-Aware MEC"
 topic: "Energy-aware multi-agent DRL for mobile edge computation offloading"
 order: 32
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "Energy-aware offloading"
+  - "Multi-server MEC"
+  - "Multi-agent DRL"
+  - "Computation offloading"
 ---
 
 # Energy-Aware Multi-Server MEC

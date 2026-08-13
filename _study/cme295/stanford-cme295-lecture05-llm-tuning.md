@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
 order: 5
+major_topic: "Large Language Models"
+keywords:
+  - "Instruction Tuning"
+  - "SFT"
+  - "RLHF"
+  - "DPO"
+  - "Preference Data"
 ---
 
 # Stanford CME295 Lecture 5: LLM tuning

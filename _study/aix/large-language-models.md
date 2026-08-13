@@ -4,6 +4,13 @@ title: "Large Language Models"
 course: "AIX"
 topic: "Decoder-Only LLMs and Generation"
 order: 6
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Decoder-Only Transformer"
+  - "Mixture of Experts"
+  - "Next-Token Prediction"
+  - "Decoding"
+  - "Temperature"
 ---
 
 # Large Language Models

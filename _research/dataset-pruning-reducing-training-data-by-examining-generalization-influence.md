@@ -3,6 +3,12 @@ layout: default
 title: "Dataset Pruning"
 topic: "Reducing training data by examining generalization influence"
 order: 39
+major_topic: "Machine Learning & Data Curation"
+keywords:
+  - "Dataset pruning"
+  - "Generalization influence"
+  - "Training data selection"
+  - "Data efficiency"
 ---
 
 # Dataset Pruning: Reducing Training Data by Examining Generalization Influence

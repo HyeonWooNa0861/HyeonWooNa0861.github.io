@@ -3,6 +3,12 @@ layout: default
 title: "Human-Level DQN"
 topic: "Deep Q-network for Atari control"
 order: 16
+major_topic: "Reinforcement Learning"
+keywords:
+  - "DQN"
+  - "Atari"
+  - "Experience replay"
+  - "Deep Q-network"
 ---
 
 # Human-Level Control through Deep Reinforcement Learning

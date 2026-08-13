@@ -3,6 +3,12 @@ layout: default
 title: "General Task Graph Offloading"
 topic: "DRL-based offloading and resource allocation for general task graphs in MEC"
 order: 33
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "MEC"
+  - "task graph offloading"
+  - "DRL"
+  - "resource allocation"
 ---
 
 # General Task Graph Offloading

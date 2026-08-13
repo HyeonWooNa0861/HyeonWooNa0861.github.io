@@ -3,6 +3,12 @@ layout: default
 title: "LyDROP"
 topic: "Online partial offloading in wireless powered MEC"
 order: 24
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "LyDROP"
+  - "Partial offloading"
+  - "Wireless powered MEC"
+  - "Lyapunov optimization"
 ---
 
 # LyDROP: Online Partial Computation Offloading in WP-MEC

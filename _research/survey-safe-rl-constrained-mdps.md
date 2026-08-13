@@ -3,6 +3,12 @@ layout: default
 title: "Safe RL and CMDPs"
 topic: "Safe RL, constrained MDPs, and multi-agent safety"
 order: 63
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "safe RL"
+  - "constrained MDP"
+  - "multi-agent safety"
+  - "CMDP"
 ---
 
 # A Survey of Safe Reinforcement Learning and Constrained MDPs: A Technical Survey on Single-Agent and Multi-Agent Safety

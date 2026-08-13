@@ -3,6 +3,12 @@ layout: default
 title: "Long Short-Term Memory"
 topic: "Original LSTM architecture for long time lag learning"
 order: 21
+major_topic: "Deep Learning Architectures"
+keywords:
+  - "LSTM"
+  - "Long time lags"
+  - "Recurrent neural networks"
+  - "Gradient flow"
 ---
 
 # Long Short-Term Memory

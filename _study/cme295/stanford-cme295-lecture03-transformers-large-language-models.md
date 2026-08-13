@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
 order: 3
+major_topic: "Large Language Models"
+keywords:
+  - "Decoder-Only Models"
+  - "Scaling"
+  - "In-Context Learning"
+  - "Instruction Tuning"
+  - "GPT"
 ---
 
 # Stanford CME295 Lecture 3: Transformers & Large Language Models

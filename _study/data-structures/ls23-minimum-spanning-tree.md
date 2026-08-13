@@ -4,6 +4,13 @@ title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"
 order: 23
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Minimum Spanning Tree"
+  - "Kruskal Algorithm"
+  - "Prim Algorithm"
+  - "Union-Find"
+  - "Weighted Graphs"
 ---
 
 # LS23 Minimum Spanning Tree

@@ -4,6 +4,13 @@ title: "LS09 Trees"
 course: "Data Structures"
 topic: "Trees"
 order: 9
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Trees"
+  - "Tree Traversal"
+  - "Rooted Trees"
+  - "Binary Trees"
+  - "Height"
 ---
 
 # LS09 Trees

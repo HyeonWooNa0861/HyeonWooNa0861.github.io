@@ -4,6 +4,13 @@ title: "Lecture 04 Linear Algebra 3"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 3"
 order: 4
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Eigenvalues"
+  - "Eigenvectors"
+  - "Diagonalization"
+  - "Linear Maps"
+  - "Matrix Powers"
 ---
 
 # Lecture 04 Linear Algebra 3

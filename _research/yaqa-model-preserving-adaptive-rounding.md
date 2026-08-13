@@ -3,6 +3,13 @@ layout: default
 title: "YAQA"
 topic: "Model-preserving adaptive rounding for LLM post-training quantization"
 order: 36
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "YAQA"
+  - "adaptive rounding"
+  - "KL divergence"
+  - "LLM PTQ"
+  - "model preservation"
 ---
 
 # YAQA

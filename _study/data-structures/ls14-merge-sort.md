@@ -4,6 +4,13 @@ title: "LS14 Merge Sort"
 course: "Data Structures"
 topic: "Merge Sort"
 order: 14
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Merge Sort"
+  - "Divide and Conquer"
+  - "Merging"
+  - "Recurrence"
+  - "Stable Sorting"
 ---
 
 # LS14 Merge Sort

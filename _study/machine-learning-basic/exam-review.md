@@ -4,6 +4,13 @@ title: "Machine Learning Basic Exam Review"
 course: "Machine Learning Basic"
 topic: "Exam Review"
 order: 90
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Linear Algebra"
+  - "Matrix Decomposition"
+  - "Probability"
+  - "Optimization"
+  - "Linear Regression"
 ---
 
 # Machine Learning Basic Exam Review

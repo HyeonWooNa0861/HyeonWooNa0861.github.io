@@ -4,6 +4,13 @@ title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"
 order: 11
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Probability"
+  - "Random Variables"
+  - "Distributions"
+  - "Expectation"
+  - "Variance"
 ---
 
 # Lecture 11 Probability Distributions 1

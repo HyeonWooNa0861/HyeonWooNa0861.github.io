@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
 order: 4
+major_topic: "Large Language Models"
+keywords:
+  - "Pretraining"
+  - "Data Curation"
+  - "Tokenization"
+  - "Distributed Training"
+  - "Loss Scaling"
 ---
 
 # Stanford CME295 Lecture 4: LLM Training

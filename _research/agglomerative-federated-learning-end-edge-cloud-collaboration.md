@@ -3,6 +3,12 @@ layout: default
 title: "FedAgg"
 topic: "End-edge-cloud federated learning for larger model training"
 order: 10
+major_topic: "Federated & Distributed Learning"
+keywords:
+  - "Federated learning"
+  - "End-edge-cloud"
+  - "Model training"
+  - "Agglomerative aggregation"
 ---
 
 # Agglomerative Federated Learning: End-Edge-Cloud Collaboration

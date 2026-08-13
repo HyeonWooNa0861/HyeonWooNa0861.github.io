@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 14: Generative Models 2"
 course: "CS231N"
 topic: "Generative Models 2"
 order: 14
+major_topic: "Computer Vision"
+keywords:
+  - "Diffusion Models"
+  - "Score Matching"
+  - "Denoising"
+  - "Sampling"
+  - "Generative Models"
 ---
 
 # Stanford CS231N Lecture 14: Generative Models 2

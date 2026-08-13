@@ -3,6 +3,13 @@ layout: default
 title: "TOMAC-PPO"
 topic: "Multi-agent PPO for MEC task offloading and resource allocation"
 order: 65
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "TOMAC-PPO"
+  - "MARL"
+  - "MEC"
+  - "resource allocation"
+  - "task offloading"
 ---
 
 # A Task Offloading and Resource Allocation Strategy Based on Multi-Agent Reinforcement Learning in Mobile Edge Computing

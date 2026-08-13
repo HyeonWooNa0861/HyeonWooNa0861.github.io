@@ -3,6 +3,12 @@ layout: default
 title: "GPTQ"
 topic: "Accurate post-training quantization for generative pretrained transformers"
 order: 28
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "GPTQ"
+  - "Post-training quantization"
+  - "Large language models"
+  - "Weight quantization"
 ---
 
 # GPTQ: Accurate Post-Training Quantization for Generative Pre-Trained Transformers

@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
 topic: "Robot Learning"
 order: 17
+major_topic: "Computer Vision"
+keywords:
+  - "Robot Learning"
+  - "Imitation Learning"
+  - "Reinforcement Learning"
+  - "Control"
+  - "Embodied AI"
 ---
 
 # Stanford CS231N Lecture 17: Robot Learning

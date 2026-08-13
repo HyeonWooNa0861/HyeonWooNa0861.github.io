@@ -4,6 +4,13 @@ title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"
 order: 21
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Graph Traversal"
+  - "BFS"
+  - "DFS"
+  - "Visited Set"
+  - "Traversal Order"
 ---
 
 # LS21 Graph Traversal

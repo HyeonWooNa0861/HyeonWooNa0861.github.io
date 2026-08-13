@@ -61,7 +61,7 @@ permalink: /
                 {% endunless %}
                 <li data-library-search-item data-search-text="Project {{ child.title | escape }} {{ child.description | default: '' | escape }}">
                   <a href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>
-                    <span>{{ child.title }}</span>
+                    <span data-library-search-result-title>{{ child.title }}</span>
                     <small>Project{% if child.description %} · {{ child.description }}{% endif %}</small>
                   </a>
                 </li>
@@ -73,7 +73,7 @@ permalink: /
               {% for child in item.children %}
                 <li data-library-search-item data-search-text="{{ item.title }} {{ child.title | escape }}">
                   <a href="{{ child.url | relative_url }}">
-                    <span>{{ child.title }}</span>
+                    <span data-library-search-result-title>{{ child.title }}</span>
                     <small>{{ item.title }} · Protected index</small>
                   </a>
                 </li>
@@ -83,16 +83,16 @@ permalink: /
           {% for post in recent_posts %}
             <li data-library-search-item data-search-text="Post {{ post.title | escape }} {{ post.section | default: '' | escape }}">
               <a href="{{ post.url | relative_url }}">
-                <span>{{ post.title }}</span>
+                <span data-library-search-result-title>{{ post.title }}</span>
                 <small>Post{% if post.section %} · {{ post.section | replace: '-', ' ' }}{% endif %}</small>
               </a>
             </li>
           {% endfor %}
           {% assign searchable_research = site.research | sort: "title" %}
           {% for note in searchable_research %}
-            <li data-library-search-item data-search-text="Research {{ note.title | escape }} {{ note.topic | default: '' | escape }}">
+            <li data-library-search-item data-search-text="Research {{ note.title | escape }} {{ note.major_topic | default: '' | escape }} {{ note.topic | default: '' | escape }} {{ note.keywords | join: ' ' | escape }}">
               <a href="{{ note.url | relative_url }}">
-                <span>{{ note.title }}</span>
+                <span data-library-search-result-title>{{ note.title }}</span>
                 <small>Research{% if note.topic %} · {{ note.topic }}{% endif %}</small>
               </a>
             </li>

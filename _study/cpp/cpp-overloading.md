@@ -4,6 +4,13 @@ title: "C++ Classes and Operator Overloading"
 course: "C++"
 topic: "Function and Operator Overloading"
 order: 7
+major_topic: "C++ Programming"
+keywords:
+  - "Operator Overloading"
+  - "Function Overloading"
+  - "Constructors"
+  - "Member Functions"
+  - "this Pointer"
 ---
 
 # C++ Classes and Operator Overloading

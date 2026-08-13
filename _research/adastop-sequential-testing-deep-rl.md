@@ -3,6 +3,12 @@ layout: default
 title: "AdaStop"
 topic: "Sequential statistical testing for Deep RL reproducibility"
 order: 46
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "AdaStop"
+  - "DRL reproducibility"
+  - "Sequential testing"
+  - "Statistical evaluation"
 ---
 
 # AdaStop: adaptive statistical testing for sound comparisons of Deep RL agents

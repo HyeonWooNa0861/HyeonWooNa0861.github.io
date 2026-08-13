@@ -3,6 +3,12 @@ layout: default
 title: "DMRO"
 topic: "Meta reinforcement learning for edge-cloud task offloading"
 order: 52
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "DMRO"
+  - "Meta RL"
+  - "Task offloading"
+  - "Edge-cloud computing"
 ---
 
 # DMRO: A Deep Meta Reinforcement Learning-Based Task Offloading Framework for Edge-Cloud Computing

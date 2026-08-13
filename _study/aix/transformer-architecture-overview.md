@@ -4,6 +4,13 @@ title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
 order: 5
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Tokenization"
+  - "Positional Encoding"
+  - "QKV Attention"
+  - "Multi-Head Attention"
+  - "Layer Normalization"
 ---
 
 # Transformer Architecture Overview

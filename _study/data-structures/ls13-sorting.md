@@ -4,6 +4,13 @@ title: "LS13 Basic Sorting Algorithms"
 course: "Data Structures"
 topic: "Basic Sorting Algorithms"
 order: 13
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Sorting"
+  - "Bubble Sort"
+  - "Insertion Sort"
+  - "Selection Sort"
+  - "Algorithm Stability"
 ---
 
 # LS13 Basic Sorting Algorithms

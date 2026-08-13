@@ -3,6 +3,12 @@ layout: default
 title: "LyDROO"
 topic: "Lyapunov-guided DRL for stable online computation offloading"
 order: 22
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "LyDROO"
+  - "Lyapunov optimization"
+  - "DRL offloading"
+  - "MEC stability"
 ---
 
 # LyDROO: Stable Online Computation Offloading in MEC

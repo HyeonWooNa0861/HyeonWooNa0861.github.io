@@ -4,6 +4,13 @@ title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
 order: 7
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Stacks"
+  - "Queues"
+  - "LIFO"
+  - "FIFO"
+  - "Deque"
 ---
 
 # LS07 Stacks and Queues

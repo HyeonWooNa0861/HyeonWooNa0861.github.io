@@ -3,6 +3,12 @@ layout: default
 title: "CCM-MADRL"
 topic: "Multiagent task offloading in mobile edge computing"
 order: 11
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "MEC"
+  - "Multi-agent DRL"
+  - "Task offloading"
+  - "Resource allocation"
 ---
 
 # Combinatorial Client-Master MADRL for Task Offloading in MEC

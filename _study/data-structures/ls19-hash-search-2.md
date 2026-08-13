@@ -4,6 +4,13 @@ title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
 order: 19
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Hash Tables"
+  - "Probing"
+  - "Linear Probing"
+  - "Quadratic Probing"
+  - "Double Hashing"
 ---
 
 # LS19 Hash Search 2

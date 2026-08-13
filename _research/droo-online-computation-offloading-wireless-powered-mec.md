@@ -3,6 +3,12 @@ layout: default
 title: "DROO"
 topic: "Online offloading in wireless powered MEC"
 order: 13
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "DROO"
+  - "Wireless powered MEC"
+  - "Online offloading"
+  - "Resource allocation"
 ---
 
 # DROO: Online Computation Offloading in Wireless Powered MEC

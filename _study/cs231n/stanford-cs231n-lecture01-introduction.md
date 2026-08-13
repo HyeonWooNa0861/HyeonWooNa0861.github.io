@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
 order: 1
+major_topic: "Computer Vision"
+keywords:
+  - "Visual Intelligence"
+  - "CNN"
+  - "ImageNet"
+  - "AlexNet"
+  - "Vision Tasks"
 ---
 
 # Stanford CS231N Lecture 1: Introduction

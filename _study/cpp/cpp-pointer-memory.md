@@ -4,6 +4,13 @@ title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
 order: 3
+major_topic: "C++ Programming"
+keywords:
+  - "Pointers"
+  - "Dynamic Allocation"
+  - "Memory Management"
+  - "Addresses"
+  - "delete Operator"
 ---
 
 # C and C++ Pointer Memory

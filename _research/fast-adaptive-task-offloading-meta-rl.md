@@ -3,6 +3,12 @@ layout: default
 title: "Fast Meta Offloading"
 topic: "Fast task offloading adaptation with meta reinforcement learning"
 order: 54
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "Meta RL"
+  - "Task offloading"
+  - "MEC adaptation"
+  - "Online optimization"
 ---
 
 # Fast Adaptive Task Offloading in Edge Computing based on Meta Reinforcement Learning

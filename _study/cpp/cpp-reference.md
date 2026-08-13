@@ -4,6 +4,13 @@ title: "C++ References"
 course: "C++"
 topic: "References and Value Passing"
 order: 5
+major_topic: "C++ Programming"
+keywords:
+  - "References"
+  - "Value Passing"
+  - "Pass by Reference"
+  - "Aliases"
+  - "Function Parameters"
 ---
 
 # C++ References

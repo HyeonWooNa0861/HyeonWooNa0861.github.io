@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
 topic: "3D Vision"
 order: 15
+major_topic: "Computer Vision"
+keywords:
+  - "3D Vision"
+  - "Depth Estimation"
+  - "Point Clouds"
+  - "NeRF"
+  - "Geometry"
 ---
 
 # Stanford CS231N Lecture 15: 3D Vision

@@ -4,6 +4,13 @@ title: "Computer Vision Overview"
 course: "AIX"
 topic: "Visual Intelligence and Deep Learning Vision"
 order: 3
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Visual Intelligence"
+  - "CNN"
+  - "ImageNet"
+  - "Vision Tasks"
+  - "Generative Vision"
 ---
 
 # Computer Vision Overview

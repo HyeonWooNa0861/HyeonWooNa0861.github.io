@@ -3,6 +3,12 @@ layout: default
 title: "DRL That Matters"
 topic: "Reproducibility and statistical reporting in deep reinforcement learning"
 order: 51
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "DRL reproducibility"
+  - "Statistical reporting"
+  - "Benchmarking"
+  - "Random seeds"
 ---
 
 # Deep Reinforcement Learning that Matters

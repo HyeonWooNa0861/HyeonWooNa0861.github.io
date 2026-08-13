@@ -4,6 +4,13 @@ title: "LS04 Asymptotic Analysis"
 course: "Data Structures"
 topic: "Asymptotic Analysis"
 order: 4
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Asymptotic Notation"
+  - "Big O"
+  - "Big Omega"
+  - "Big Theta"
+  - "Complexity"
 ---
 
 # LS04 Asymptotic Analysis

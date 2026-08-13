@@ -4,6 +4,13 @@ title: "Lecture 07 Matrix Decomposition 1"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 1"
 order: 7
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Matrix Decomposition"
+  - "LU Decomposition"
+  - "Gaussian Elimination"
+  - "Matrix Factorization"
+  - "Linear Solvers"
 ---
 
 # Lecture 07 Matrix Decomposition 1

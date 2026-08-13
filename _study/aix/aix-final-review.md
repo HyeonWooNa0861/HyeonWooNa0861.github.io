@@ -4,6 +4,13 @@ title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"
 order: 12
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Optimization"
+  - "Deep Learning"
+  - "Self-Attention"
+  - "Autonomous Driving"
+  - "Robot Learning"
 ---
 
 # AIX Final Review

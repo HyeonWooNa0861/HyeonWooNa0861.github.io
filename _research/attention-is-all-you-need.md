@@ -3,6 +3,12 @@ layout: default
 title: "Attention Is All You Need"
 topic: "Transformer architecture and v1-v7 revision notes"
 order: 6
+major_topic: "Deep Learning Architectures"
+keywords:
+  - "Transformer"
+  - "Self-attention"
+  - "Sequence modeling"
+  - "Neural machine translation"
 ---
 
 # Attention Is All You Need

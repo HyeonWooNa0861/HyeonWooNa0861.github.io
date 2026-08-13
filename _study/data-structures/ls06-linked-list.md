@@ -4,6 +4,13 @@ title: "LS06 Linked Lists"
 course: "Data Structures"
 topic: "Linked Lists"
 order: 6
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Linked Lists"
+  - "Nodes"
+  - "Pointers"
+  - "Insertion"
+  - "Deletion"
 ---
 
 # LS06 Linked Lists

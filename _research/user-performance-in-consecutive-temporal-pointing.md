@@ -3,6 +3,12 @@ layout: default
 title: "Temporal Pointing"
 topic: Research
 order: 9
+major_topic: "Human–Computer Interaction & Media"
+keywords:
+  - "temporal pointing"
+  - "user performance"
+  - "HCI"
+  - "interactive video"
 ---
 
 # User Performance in Consecutive Temporal Pointing: An Exploratory Study

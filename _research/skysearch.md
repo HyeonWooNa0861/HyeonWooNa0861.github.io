@@ -3,6 +3,12 @@ layout: default
 title: "SkySearch"
 topic: "Satellite video search at scale"
 order: 2
+major_topic: "Data Systems & Search"
+keywords:
+  - "SkySearch"
+  - "satellite video search"
+  - "geospatial indexing"
+  - "large-scale retrieval"
 ---
 
 # SkySearch: Satellite Video Search at Scale

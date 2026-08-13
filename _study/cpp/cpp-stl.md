@@ -4,6 +4,13 @@ title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"
 order: 12
+major_topic: "C++ Programming"
+keywords:
+  - "STL"
+  - "Containers"
+  - "Iterators"
+  - "Algorithms"
+  - "Standard Library"
 ---
 
 # C++ STL

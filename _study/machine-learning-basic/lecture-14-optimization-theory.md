@@ -4,6 +4,13 @@ title: "Lecture 14 Optimization Theory"
 course: "Machine Learning Basic"
 topic: "Optimization Theory"
 order: 14
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Optimization"
+  - "Convexity"
+  - "Gradient Descent"
+  - "Lagrange Multipliers"
+  - "Objective Functions"
 ---
 
 # Lecture 14 Optimization Theory

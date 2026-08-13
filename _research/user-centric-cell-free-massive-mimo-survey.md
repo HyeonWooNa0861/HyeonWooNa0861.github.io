@@ -3,6 +3,12 @@ layout: default
 title: "UC Cell-Free Survey"
 topic: "Survey of user-centric cell-free massive MIMO"
 order: 67
+major_topic: "Wireless Networks & Massive MIMO"
+keywords:
+  - "cell-free massive MIMO"
+  - "user-centric networks"
+  - "distributed APs"
+  - "survey"
 ---
 
 # User-centric Cell-free Massive MIMO Networks: A Survey of Opportunities, Challenges and Solutions

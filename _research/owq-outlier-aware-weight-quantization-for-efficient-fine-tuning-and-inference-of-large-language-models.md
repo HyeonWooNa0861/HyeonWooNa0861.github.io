@@ -3,6 +3,13 @@ layout: default
 title: "OWQ"
 topic: "Outlier-aware weight quantization for efficient LLM tuning and inference"
 order: 40
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "OWQ"
+  - "outlier-aware quantization"
+  - "weight quantization"
+  - "LLM inference"
+  - "fine-tuning"
 ---
 
 # OWQ: Outlier-Aware Weight Quantization for Efficient Fine-Tuning and Inference of Large Language Models

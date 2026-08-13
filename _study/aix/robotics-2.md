@@ -4,6 +4,13 @@ title: "Robotics 2"
 course: "AIX"
 topic: "VLA, World Models, Physical RL"
 order: 10
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Physical AI"
+  - "VLA"
+  - "World Models"
+  - "Action Fine-Tuning"
+  - "Physical RL"
 ---
 
 # Robotics 2

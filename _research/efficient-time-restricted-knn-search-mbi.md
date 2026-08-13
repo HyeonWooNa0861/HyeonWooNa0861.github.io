@@ -3,6 +3,12 @@ layout: default
 title: "Time-Restricted kNN Search"
 topic: "Multi-Level Block Indexing for high-dimensional filtered kNN"
 order: 3
+major_topic: "Data Systems & Search"
+keywords:
+  - "kNN search"
+  - "Multi-Level Block Indexing"
+  - "High-dimensional data"
+  - "Time-restricted queries"
 ---
 
 # Efficient Time-Restricted kNN Search with MBI

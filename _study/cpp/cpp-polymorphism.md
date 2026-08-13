@@ -4,6 +4,13 @@ title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
 order: 10
+major_topic: "C++ Programming"
+keywords:
+  - "Virtual Functions"
+  - "Dynamic Binding"
+  - "Abstract Classes"
+  - "Vtables"
+  - "Runtime Polymorphism"
 ---
 
 # C++ Polymorphism

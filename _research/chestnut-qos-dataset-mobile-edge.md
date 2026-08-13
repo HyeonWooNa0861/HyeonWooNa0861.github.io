@@ -3,6 +3,12 @@ layout: default
 title: "CHESTNUT"
 topic: "QoS dataset for mobile edge service forecasting"
 order: 48
+major_topic: "Machine Learning & Data Curation"
+keywords:
+  - "CHESTNUT dataset"
+  - "QoS forecasting"
+  - "Mobile edge services"
+  - "Service latency"
 ---
 
 # CHESTNUT: A QoS Dataset for Mobile Edge Environments

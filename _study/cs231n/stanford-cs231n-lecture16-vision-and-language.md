@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
 order: 16
+major_topic: "Computer Vision"
+keywords:
+  - "Vision-Language"
+  - "CLIP"
+  - "Image Captioning"
+  - "Visual Question Answering"
+  - "Multimodal Models"
 ---
 
 # Stanford CS231N Lecture 16: Vision and Language

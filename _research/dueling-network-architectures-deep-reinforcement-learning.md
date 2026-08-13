@@ -3,6 +3,12 @@ layout: default
 title: "Dueling DQN"
 topic: "Value and advantage decomposition in deep reinforcement learning"
 order: 15
+major_topic: "Reinforcement Learning"
+keywords:
+  - "Dueling DQN"
+  - "Advantage function"
+  - "Value function"
+  - "Atari control"
 ---
 
 # Dueling Network Architectures for Deep Reinforcement Learning

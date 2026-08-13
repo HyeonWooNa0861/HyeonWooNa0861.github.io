@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visuali
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"
 order: 9
+major_topic: "Computer Vision"
+keywords:
+  - "Object Detection"
+  - "Image Segmentation"
+  - "Visualization"
+  - "Region Proposals"
+  - "Feature Attribution"
 ---
 
 # Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing

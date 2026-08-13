@@ -4,6 +4,13 @@ title: "LS05 Lists"
 course: "Data Structures"
 topic: "Lists"
 order: 5
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Lists"
+  - "Array List"
+  - "Linked List"
+  - "List ADT"
+  - "Sequential Access"
 ---
 
 # LS05 Lists

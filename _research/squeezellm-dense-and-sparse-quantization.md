@@ -3,6 +3,12 @@ layout: default
 title: "SqueezeLLM"
 topic: "Dense-and-sparse post-training quantization for LLM inference"
 order: 44
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "SqueezeLLM"
+  - "dense-sparse quantization"
+  - "PTQ"
+  - "LLM inference"
 ---
 
 # SqueezeLLM: Dense-and-Sparse Quantization

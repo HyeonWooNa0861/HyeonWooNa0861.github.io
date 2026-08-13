@@ -3,6 +3,12 @@ layout: default
 title: "CoverCal"
 topic: "Coverage-based calibration for LLM post-training quantization"
 order: 38
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "LLM quantization"
+  - "Calibration data"
+  - "Outlier channels"
+  - "Weighted set cover"
 ---
 
 # Coverage-Based Calibration for Post-Training Quantization via Weighted Set Cover over Outlier Channels

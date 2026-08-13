@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
 order: 6
+major_topic: "Computer Vision"
+keywords:
+  - "AlexNet"
+  - "VGG"
+  - "ResNet"
+  - "Inception"
+  - "CNN Architectures"
 ---
 
 # Stanford CS231N Lecture 6: CNN Architectures

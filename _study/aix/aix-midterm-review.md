@@ -4,6 +4,13 @@ title: "AIX Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
 order: 11
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Linear Regression"
+  - "Logistic Regression"
+  - "MLP"
+  - "Computer Vision"
+  - "NLP"
 ---
 
 # AIX Midterm Review

@@ -4,6 +4,13 @@ title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"
 order: 20
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Graphs"
+  - "Vertices"
+  - "Edges"
+  - "Adjacency Matrix"
+  - "Adjacency List"
 ---
 
 # LS20 Graph

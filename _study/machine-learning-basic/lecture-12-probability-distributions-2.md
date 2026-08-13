@@ -4,6 +4,13 @@ title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
 order: 12
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Gaussian Distribution"
+  - "Covariance"
+  - "Bayes Rule"
+  - "Conditional Probability"
+  - "Independence"
 ---
 
 # Lecture 12 Probability Distributions 2

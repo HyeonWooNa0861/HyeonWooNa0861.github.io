@@ -4,6 +4,13 @@ title: "C Structs and C++ Classes"
 course: "C++"
 topic: "Structs and Classes"
 order: 2
+major_topic: "C++ Programming"
+keywords:
+  - "Structs"
+  - "Classes"
+  - "Encapsulation"
+  - "Constructors"
+  - "Objects"
 ---
 
 # C Structs and C++ Classes

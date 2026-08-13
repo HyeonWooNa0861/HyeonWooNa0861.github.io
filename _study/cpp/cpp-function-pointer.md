@@ -4,6 +4,13 @@ title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"
 order: 8
+major_topic: "C++ Programming"
+keywords:
+  - "Function Pointers"
+  - "Callbacks"
+  - "Function Tables"
+  - "Pointer Syntax"
+  - "Higher-Order Functions"
 ---
 
 # C++ Function Pointers

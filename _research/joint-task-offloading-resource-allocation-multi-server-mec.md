@@ -3,6 +3,12 @@ layout: default
 title: "JTORA"
 topic: "Joint task offloading and resource allocation in multi-server MEC"
 order: 18
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "JTORA"
+  - "Task offloading"
+  - "Resource allocation"
+  - "Multi-server MEC"
 ---
 
 # Joint Task Offloading and Resource Allocation for Multi-Server MEC

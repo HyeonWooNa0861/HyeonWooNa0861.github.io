@@ -4,6 +4,13 @@ title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"
 order: 4
+major_topic: "Artificial Intelligence"
+keywords:
+  - "NLP"
+  - "Word Embeddings"
+  - "Seq2Seq Attention"
+  - "Transformer"
+  - "Transfer Learning"
 ---
 
 # NLP and Transformer Overview

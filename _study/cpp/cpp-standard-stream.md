@@ -4,6 +4,13 @@ title: "C++ Standard Streams"
 course: "C++"
 topic: "Input and Output Streams"
 order: 4
+major_topic: "C++ Programming"
+keywords:
+  - "iostream"
+  - "cin"
+  - "cout"
+  - "File Streams"
+  - "Formatting"
 ---
 
 # C++ Standard Streams

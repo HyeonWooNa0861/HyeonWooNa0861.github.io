@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
 order: 12
+major_topic: "Computer Vision"
+keywords:
+  - "Self-Supervised Learning"
+  - "Contrastive Learning"
+  - "Pretext Tasks"
+  - "Representation Learning"
+  - "Masked Modeling"
 ---
 
 # Stanford CS231N Lecture 12: Self-Supervised Learning

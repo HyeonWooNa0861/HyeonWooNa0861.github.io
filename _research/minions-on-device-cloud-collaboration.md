@@ -3,6 +3,12 @@ layout: default
 title: "Minions"
 topic: "On-device small LM and cloud frontier model collaboration"
 order: 37
+major_topic: "Language Models & NLP"
+keywords:
+  - "on-device LLM"
+  - "cloud collaboration"
+  - "long-context reasoning"
+  - "cost-efficient inference"
 ---
 
 # Minions

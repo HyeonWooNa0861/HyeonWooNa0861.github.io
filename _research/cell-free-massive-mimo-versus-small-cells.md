@@ -3,6 +3,12 @@ layout: default
 title: "Cell-Free Massive MIMO"
 topic: "Distributed access points and max-min power control"
 order: 47
+major_topic: "Wireless Networks & Massive MIMO"
+keywords:
+  - "Cell-free Massive MIMO"
+  - "Small cells"
+  - "Distributed APs"
+  - "Max-min power control"
 ---
 
 # Cell-Free Massive MIMO versus Small Cells

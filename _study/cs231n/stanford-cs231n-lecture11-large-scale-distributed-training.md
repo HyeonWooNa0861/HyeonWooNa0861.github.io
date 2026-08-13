@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
 order: 11
+major_topic: "Computer Vision"
+keywords:
+  - "Distributed Training"
+  - "Data Parallelism"
+  - "Model Parallelism"
+  - "Batch Size"
+  - "Training Systems"
 ---
 
 # Stanford CS231N Lecture 11: Large Scale Distributed Training

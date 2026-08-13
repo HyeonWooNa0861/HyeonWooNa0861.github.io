@@ -4,6 +4,13 @@ title: "Lecture 05 Linear Algebra 4"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 4"
 order: 5
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Orthogonality"
+  - "Projections"
+  - "Least Squares"
+  - "Inner Products"
+  - "Subspaces"
 ---
 
 # Lecture 05 Linear Algebra 4

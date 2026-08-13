@@ -3,6 +3,12 @@ layout: default
 title: "Shielded RL"
 topic: "Formal-methods shielding for safe reinforcement learning"
 order: 62
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "safe RL"
+  - "shielding"
+  - "formal methods"
+  - "runtime safety"
 ---
 
 # Safe Reinforcement Learning via Shielding

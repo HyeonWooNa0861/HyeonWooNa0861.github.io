@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
 topic: "Video Understanding"
 order: 10
+major_topic: "Computer Vision"
+keywords:
+  - "Video Understanding"
+  - "Temporal Modeling"
+  - "Optical Flow"
+  - "Action Recognition"
+  - "Spatiotemporal Features"
 ---
 
 # Stanford CS231N Lecture 10: Video Understanding

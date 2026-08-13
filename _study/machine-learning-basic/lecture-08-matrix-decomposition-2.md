@@ -4,6 +4,13 @@ title: "Lecture 08 Matrix Decomposition 2"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 2"
 order: 8
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Matrix Decomposition"
+  - "Eigen Decomposition"
+  - "SVD"
+  - "Principal Components"
+  - "Low-Rank Approximation"
 ---
 
 # Lecture 08 Matrix Decomposition 2

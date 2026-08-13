@@ -4,6 +4,13 @@ title: "Lecture 02 Linear Algebra 1"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 1"
 order: 2
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Vectors"
+  - "Matrices"
+  - "Linear Systems"
+  - "Vector Spaces"
+  - "Basis"
 ---
 
 # Lecture 02 Linear Algebra 1

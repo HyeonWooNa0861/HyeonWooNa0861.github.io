@@ -4,6 +4,13 @@ title: "LS10 Binary Search Trees"
 course: "Data Structures"
 topic: "Binary Search Trees"
 order: 10
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Binary Search Trees"
+  - "BST Search"
+  - "Tree Insertion"
+  - "Tree Deletion"
+  - "Ordered Keys"
 ---
 
 # LS10 Binary Search Trees

@@ -4,6 +4,13 @@ title: "LS12 AVL Trees"
 course: "Data Structures"
 topic: "AVL Trees"
 order: 12
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "AVL Trees"
+  - "Tree Rotations"
+  - "Rebalancing"
+  - "Balance Factor"
+  - "Height"
 ---
 
 # LS12 AVL Trees

@@ -4,6 +4,13 @@ title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
 order: 13
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Multivariate Gaussian"
+  - "Exponential Family"
+  - "MLE"
+  - "Conjugacy"
+  - "Distribution Parameters"
 ---
 
 # Lecture 13 Probability Distributions 3

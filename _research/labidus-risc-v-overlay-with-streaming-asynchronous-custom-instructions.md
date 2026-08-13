@@ -3,6 +3,12 @@ layout: default
 title: "Labidus"
 topic: "RISC-V overlay with streaming asynchronous custom instructions"
 order: 5
+major_topic: "Computer Systems & Architecture"
+keywords:
+  - "RISC-V"
+  - "Custom instructions"
+  - "Streaming execution"
+  - "Overlay architecture"
 ---
 
 # Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions

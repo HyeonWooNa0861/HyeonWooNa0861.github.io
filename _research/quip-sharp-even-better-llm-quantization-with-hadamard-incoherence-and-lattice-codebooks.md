@@ -3,6 +3,12 @@ layout: default
 title: "QuIP#"
 topic: "Hadamard incoherence and E8 lattice codebooks for LLM quantization"
 order: 42
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "QuIP#"
+  - "Hadamard incoherence"
+  - "E8 lattice codebooks"
+  - "LLM quantization"
 ---
 
 # QuIP#: Even Better LLM Quantization with Hadamard Incoherence and Lattice Codebooks

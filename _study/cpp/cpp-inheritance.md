@@ -4,6 +4,13 @@ title: "C++ Inheritance"
 course: "C++"
 topic: "Inheritance and Class Hierarchies"
 order: 9
+major_topic: "C++ Programming"
+keywords:
+  - "Inheritance"
+  - "Class Hierarchies"
+  - "Access Control"
+  - "Overriding"
+  - "Constructors"
 ---
 
 # C++ Inheritance

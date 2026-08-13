@@ -3,6 +3,12 @@ layout: default
 title: "DL UC Clustering"
 topic: "User-centric AP clustering with deep learning"
 order: 50
+major_topic: "Wireless Networks & Massive MIMO"
+keywords:
+  - "User-centric clustering"
+  - "Cell-free Massive MIMO"
+  - "Access points"
+  - "Deep learning"
 ---
 
 # Deep Learning User-Centric Clustering for Cell-Free Massive MIMO Systems

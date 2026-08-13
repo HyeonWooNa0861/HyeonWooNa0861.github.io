@@ -4,6 +4,13 @@ title: "Lecture 03 Linear Algebra 2"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 2"
 order: 3
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Matrix Operations"
+  - "Linear Independence"
+  - "Rank"
+  - "Span"
+  - "Transformations"
 ---
 
 # Lecture 03 Linear Algebra 2

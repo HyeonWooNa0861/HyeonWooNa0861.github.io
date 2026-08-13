@@ -4,6 +4,13 @@ title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"
 order: 17
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Heap Sort"
+  - "Max Heap"
+  - "Heapify"
+  - "Selection Sorting"
+  - "In-Place Sorting"
 ---
 
 # LS17 Heap Sort

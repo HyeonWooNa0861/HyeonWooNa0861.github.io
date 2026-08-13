@@ -3,6 +3,12 @@ layout: default
 title: "Hierarchical V2I Offloading"
 topic: "Hierarchical reinforcement learning for V2I task offloading"
 order: 57
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "Hierarchical RL"
+  - "V2I"
+  - "Task offloading"
+  - "Vehicular networks"
 ---
 
 # Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks

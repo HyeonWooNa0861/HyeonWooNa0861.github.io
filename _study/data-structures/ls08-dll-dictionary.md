@@ -4,6 +4,13 @@ title: "LS08 Doubly Linked Lists and Dictionaries"
 course: "Data Structures"
 topic: "Doubly Linked Lists and Dictionaries"
 order: 8
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Doubly Linked Lists"
+  - "Dictionaries"
+  - "List Nodes"
+  - "Search"
+  - "Key-Value Pairs"
 ---
 
 # LS08 Doubly Linked Lists and Dictionaries

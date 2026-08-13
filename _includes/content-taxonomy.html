@@ -1,0 +1,34 @@
+{% assign taxonomy_item = include.item | default: page %}
+{% assign taxonomy_major = taxonomy_item.major_topic | default: taxonomy_item.course %}
+
+{% if include.mode == "entry" %}
+  <section class="content-taxonomy" aria-label="Content classification">
+    {% if taxonomy_major %}
+      <div class="content-taxonomy__row">
+        <span class="content-taxonomy__label">Major topic</span>
+        <span class="content-tag content-tag--major">{{ taxonomy_major | escape }}</span>
+      </div>
+    {% endif %}
+    {% if taxonomy_item.topic %}
+      <div class="content-taxonomy__row">
+        <span class="content-taxonomy__label">Topic</span>
+        <span class="content-taxonomy__topic">{{ taxonomy_item.topic | escape }}</span>
+      </div>
+    {% endif %}
+    {% if taxonomy_item.keywords %}
+      <div class="content-taxonomy__row">
+        <span class="content-taxonomy__label">Keywords</span>
+        <span class="content-tags">
+          {% for keyword in taxonomy_item.keywords %}<span class="content-tag">#{{ keyword | escape }}</span>{% endfor %}
+        </span>
+      </div>
+    {% endif %}
+  </section>
+{% else %}
+  <div class="content-tags content-tags--compact" aria-label="Content tags">
+    {% if taxonomy_major %}<span class="content-tag content-tag--major">{{ taxonomy_major | escape }}</span>{% endif %}
+    {% if taxonomy_item.keywords %}
+      {% for keyword in taxonomy_item.keywords limit: 5 %}<span class="content-tag">#{{ keyword | escape }}</span>{% endfor %}
+    {% endif %}
+  </div>
+{% endif %}

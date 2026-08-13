@@ -3,6 +3,12 @@ layout: default
 title: "PIQA"
 topic: "Physical commonsense reasoning benchmark in natural language"
 order: 34
+major_topic: "Language Models & NLP"
+keywords:
+  - "PIQA"
+  - "physical commonsense"
+  - "natural language reasoning"
+  - "benchmark"
 ---
 
 # PIQA

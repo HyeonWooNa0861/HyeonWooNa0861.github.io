@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
 topic: "Generative Models 1"
 order: 13
+major_topic: "Computer Vision"
+keywords:
+  - "Generative Models"
+  - "Autoregressive Models"
+  - "VAE"
+  - "GAN"
+  - "Latent Variables"
 ---
 
 # Stanford CS231N Lecture 13: Generative Models 1

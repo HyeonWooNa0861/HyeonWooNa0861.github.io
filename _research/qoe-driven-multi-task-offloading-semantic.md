@@ -3,6 +3,12 @@ layout: default
 title: "Semantic QoE Offloading"
 topic: "QoE-driven semantic-aware edge offloading"
 order: 61
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "semantic-aware offloading"
+  - "QoE"
+  - "MEC"
+  - "multi-task offloading"
 ---
 
 # QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems

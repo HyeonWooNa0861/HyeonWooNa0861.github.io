@@ -3,6 +3,12 @@ layout: default
 title: "Reward Shaping"
 topic: "Potential-based reward shaping theory"
 order: 60
+major_topic: "Reinforcement Learning"
+keywords:
+  - "reward shaping"
+  - "policy invariance"
+  - "potential-based rewards"
+  - "MDP"
 ---
 
 # Policy Invariance under Reward Transformations: Theory and Application to Reward Shaping

@@ -4,6 +4,13 @@ title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
 order: 15
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Model Fitting"
+  - "Empirical Risk"
+  - "Training Data"
+  - "Loss Functions"
+  - "Generalization"
 ---
 
 # Lecture 15 Model Meets Data

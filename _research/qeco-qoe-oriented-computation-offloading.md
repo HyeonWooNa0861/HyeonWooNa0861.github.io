@@ -3,6 +3,13 @@ layout: default
 title: "QECO"
 topic: "QoE-oriented computation offloading with DRL"
 order: 25
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "QECO"
+  - "QoE"
+  - "DRL"
+  - "MEC"
+  - "computation offloading"
 ---
 
 # QECO: QoE-Oriented Computation Offloading with DRL

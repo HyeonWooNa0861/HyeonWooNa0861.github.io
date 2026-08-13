@@ -3,6 +3,12 @@ layout: default
 title: "Highlight Videos with MRD"
 topic: "User-specified length highlight generation using Most Replayed Data"
 order: 8
+major_topic: "Human–Computer Interaction & Media"
+keywords:
+  - "Highlight generation"
+  - "Most Replayed Data"
+  - "Video summarization"
+  - "User-specified length"
 ---
 
 # Generating Highlight Videos of a User-Specified Length using Most Replayed Data

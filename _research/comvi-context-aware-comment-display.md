@@ -3,6 +3,12 @@ layout: default
 title: "ComVi"
 topic: "Context-aware optimized comment display in video playback"
 order: 7
+major_topic: "Human–Computer Interaction & Media"
+keywords:
+  - "ComVi"
+  - "Comment display"
+  - "Video playback"
+  - "Context awareness"
 ---
 
 # ComVi: Context-Aware Optimized Comment Display in Video Playback

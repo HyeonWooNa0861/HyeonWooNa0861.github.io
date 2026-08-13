@@ -3,6 +3,12 @@ layout: default
 title: "DECENT"
 topic: "Latency-aware online workload offloading and resource management in MEC"
 order: 31
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "DECENT"
+  - "MEC"
+  - "Online offloading"
+  - "Latency optimization"
 ---
 
 # DECENT

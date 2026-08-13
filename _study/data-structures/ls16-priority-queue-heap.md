@@ -4,6 +4,13 @@ title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"
 order: 16
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Priority Queues"
+  - "Heaps"
+  - "Heap Order"
+  - "Binary Heap"
+  - "Heap Operations"
 ---
 
 # LS16 Priority Queues and Heaps

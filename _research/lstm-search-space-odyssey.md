@@ -3,6 +3,12 @@ layout: default
 title: "LSTM Odyssey"
 topic: "Large-scale empirical analysis of LSTM variants"
 order: 19
+major_topic: "Deep Learning Architectures"
+keywords:
+  - "LSTM variants"
+  - "Architecture search"
+  - "Recurrent networks"
+  - "Empirical analysis"
 ---
 
 # LSTM: A Search Space Odyssey

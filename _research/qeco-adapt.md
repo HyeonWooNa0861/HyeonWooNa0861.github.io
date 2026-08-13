@@ -3,6 +3,13 @@ layout: default
 title: "QECO-Adapt"
 topic: "Load-adaptive task offloading in dense MEC"
 order: 1
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "QECO-Adapt"
+  - "MEC"
+  - "load-adaptive offloading"
+  - "D3QN"
+  - "QoE"
 ---
 
 # QECO-Adapt

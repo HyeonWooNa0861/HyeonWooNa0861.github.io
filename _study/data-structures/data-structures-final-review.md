@@ -4,6 +4,13 @@ title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"
 order: 24
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Stacks"
+  - "Trees"
+  - "Sorting"
+  - "Graphs"
+  - "Shortest Paths"
 ---
 
 # Data Structures Final Review

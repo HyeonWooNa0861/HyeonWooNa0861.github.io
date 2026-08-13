@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
 order: 9
+major_topic: "Large Language Models"
+keywords:
+  - "Current Trends"
+  - "Scaling"
+  - "Agents"
+  - "Multimodal LLMs"
+  - "Inference Optimization"
 ---
 
 # Stanford CME295 Lecture 9: Recap & Current Trends

@@ -4,6 +4,13 @@ title: "Lecture 09 Vector Calculus"
 course: "Machine Learning Basic"
 topic: "Vector Calculus"
 order: 9
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Vector Calculus"
+  - "Gradients"
+  - "Partial Derivatives"
+  - "Jacobian"
+  - "Chain Rule"
 ---
 
 # Lecture 09 Vector Calculus

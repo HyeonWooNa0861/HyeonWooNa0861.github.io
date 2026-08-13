@@ -4,6 +4,13 @@ title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"
 order: 90
+major_topic: "C++ Programming"
+keywords:
+  - "C++ Review"
+  - "Object-Oriented Programming"
+  - "Pointers"
+  - "Templates"
+  - "STL"
 ---
 
 # C++ Final Exam Review

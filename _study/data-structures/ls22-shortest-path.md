@@ -4,6 +4,13 @@ title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"
 order: 22
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Shortest Path"
+  - "Dijkstra Algorithm"
+  - "Weighted Graphs"
+  - "Relaxation"
+  - "Priority Queue"
 ---
 
 # LS22 Shortest Path

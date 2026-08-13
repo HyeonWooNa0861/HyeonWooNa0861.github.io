@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
 topic: "Recurrent Neural Networks"
 order: 7
+major_topic: "Computer Vision"
+keywords:
+  - "RNN"
+  - "LSTM"
+  - "Sequence Modeling"
+  - "Vanishing Gradients"
+  - "Captioning"
 ---
 
 # Stanford CS231N Lecture 7: Recurrent Neural Networks

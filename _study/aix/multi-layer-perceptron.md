@@ -4,6 +4,13 @@ title: "Multi-Layer Perceptron"
 course: "AIX"
 topic: "MLPs and Generalization"
 order: 2
+major_topic: "Artificial Intelligence"
+keywords:
+  - "MLP"
+  - "Backpropagation"
+  - "Activation Functions"
+  - "XOR Problem"
+  - "Regularization"
 ---
 
 # Multi-Layer Perceptron

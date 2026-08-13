@@ -3,6 +3,12 @@ layout: default
 title: "Statistical Precipice"
 topic: "Reliable statistical evaluation for deep reinforcement learning"
 order: 53
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "DRL evaluation"
+  - "Statistical reliability"
+  - "Performance reporting"
+  - "Benchmark variance"
 ---
 
 # Deep Reinforcement Learning at the Edge of the Statistical Precipice

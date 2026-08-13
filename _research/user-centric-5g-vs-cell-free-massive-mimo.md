@@ -3,6 +3,12 @@ layout: default
 title: "User-Centric 5G"
 topic: "User-centric 5G cellular networks versus cell-free massive MIMO"
 order: 66
+major_topic: "Wireless Networks & Massive MIMO"
+keywords:
+  - "user-centric 5G"
+  - "cell-free massive MIMO"
+  - "resource allocation"
+  - "network comparison"
 ---
 
 # User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach

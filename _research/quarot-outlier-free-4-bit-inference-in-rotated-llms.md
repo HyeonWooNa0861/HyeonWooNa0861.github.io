@@ -3,6 +3,12 @@ layout: default
 title: "QuaRot"
 topic: "Outlier-free 4-bit inference in rotated LLMs"
 order: 29
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "QuaRot"
+  - "4-bit inference"
+  - "rotated LLMs"
+  - "outlier-free quantization"
 ---
 
 # QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs

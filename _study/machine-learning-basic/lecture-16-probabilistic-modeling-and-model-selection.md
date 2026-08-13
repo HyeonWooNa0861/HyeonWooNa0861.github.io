@@ -4,6 +4,13 @@ title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
 order: 16
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Probabilistic Modeling"
+  - "Model Selection"
+  - "Bayesian Inference"
+  - "Likelihood"
+  - "Information Criteria"
 ---
 
 # Lecture 16 Probabilistic Modeling and Model Selection

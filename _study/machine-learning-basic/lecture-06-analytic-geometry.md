@@ -4,6 +4,13 @@ title: "Lecture 06 Analytic Geometry"
 course: "Machine Learning Basic"
 topic: "Analytic Geometry"
 order: 6
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Analytic Geometry"
+  - "Norms"
+  - "Angles"
+  - "Distances"
+  - "Hyperplanes"
 ---
 
 # Lecture 06 Analytic Geometry

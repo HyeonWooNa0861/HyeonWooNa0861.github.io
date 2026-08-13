@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
 topic: "Neural Networks and Backpropagation"
 order: 4
+major_topic: "Computer Vision"
+keywords:
+  - "Neural Networks"
+  - "Backpropagation"
+  - "Activation Functions"
+  - "Computational Graphs"
+  - "Gradients"
 ---
 
 # Stanford CS231N Lecture 4: Neural Networks and Backpropagation

@@ -3,6 +3,12 @@ layout: default
 title: "CoLA"
 topic: "Preserving LLM capabilities through calibration data curation"
 order: 41
+major_topic: "Machine Learning & Data Curation"
+keywords:
+  - "calibration data"
+  - "LLM quantization"
+  - "capability preservation"
+  - "CoLA"
 ---
 
 # Preserving LLM Capabilities through Calibration Data Curation: From Analysis to Optimization

@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
 order: 2
+major_topic: "Large Language Models"
+keywords:
+  - "RoPE"
+  - "RMSNorm"
+  - "GQA"
+  - "BERT"
+  - "Position Embeddings"
 ---
 
 # Stanford CME295 Lecture 2: Transformer-Based Models & Tricks

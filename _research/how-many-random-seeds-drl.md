@@ -3,6 +3,12 @@ layout: default
 title: "Random Seeds in DRL"
 topic: "Statistical power analysis for Deep RL seed counts"
 order: 58
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "Random seeds"
+  - "Statistical power"
+  - "DRL evaluation"
+  - "Reproducibility"
 ---
 
 # How Many Random Seeds? Statistical Power Analysis in Deep Reinforcement Learning Experiments

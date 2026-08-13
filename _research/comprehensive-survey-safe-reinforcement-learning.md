@@ -3,6 +3,12 @@ layout: default
 title: "Safe RL Survey"
 topic: "Safe reinforcement learning taxonomy"
 order: 49
+major_topic: "Safe & Reliable Reinforcement Learning"
+keywords:
+  - "Safe RL"
+  - "Constrained MDPs"
+  - "Risk sensitivity"
+  - "Safety taxonomy"
 ---
 
 # A Comprehensive Survey on Safe Reinforcement Learning

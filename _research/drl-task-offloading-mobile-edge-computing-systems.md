@@ -3,6 +3,13 @@ layout: default
 title: "DRL Task Offloading"
 topic: "Distributed task offloading with LSTM, dueling DQN, and double DQN"
 order: 14
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "MEC"
+  - "Task offloading"
+  - "LSTM"
+  - "Dueling DQN"
+  - "Double DQN"
 ---
 
 # Deep Reinforcement Learning for Task Offloading in MEC Systems

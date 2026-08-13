@@ -4,6 +4,13 @@ title: "LS03 Algorithm Analysis"
 course: "Data Structures"
 topic: "Algorithm Analysis"
 order: 3
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Algorithm Analysis"
+  - "Time Complexity"
+  - "Recursion"
+  - "Growth Rates"
+  - "Pseudocode"
 ---
 
 # LS03 Algorithm Analysis

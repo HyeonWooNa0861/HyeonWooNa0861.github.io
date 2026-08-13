@@ -4,6 +4,12 @@ title: "LS02 Data Structures and Algorithms"
 course: "Data Structures"
 topic: "Data Structures and Algorithms"
 order: 2
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Abstract Data Types"
+  - "Algorithms"
+  - "Data Structures"
+  - "Problem Solving"
 ---
 
 # LS02 Data Structures and Algorithms

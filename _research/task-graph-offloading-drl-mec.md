@@ -3,6 +3,12 @@ layout: default
 title: "Task-Graph DRL Offloading"
 topic: "DRL offloading for dependent task graphs"
 order: 64
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "task graph offloading"
+  - "DRL"
+  - "MEC"
+  - "dependent tasks"
 ---
 
 # Task Graph offloading via Deep Reinforcement Learning in Mobile Edge Computing

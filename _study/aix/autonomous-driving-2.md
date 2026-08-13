@@ -4,6 +4,13 @@ title: "Autonomous Driving 2"
 course: "AIX"
 topic: "Tesla Occupancy and Driving Foundation Models"
 order: 8
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Occupancy Networks"
+  - "Voxel Representation"
+  - "End-to-End Driving"
+  - "Fleet Learning"
+  - "Foundation Models"
 ---
 
 # Autonomous Driving 2

@@ -4,6 +4,13 @@ title: "LS15 Quick Sort"
 course: "Data Structures"
 topic: "Quick Sort"
 order: 15
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Quick Sort"
+  - "Partitioning"
+  - "Pivot Selection"
+  - "Divide and Conquer"
+  - "In-Place Sorting"
 ---
 
 # LS15 Quick Sort

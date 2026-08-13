@@ -4,6 +4,13 @@ title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"
 order: 11
+major_topic: "C++ Programming"
+keywords:
+  - "Templates"
+  - "Generic Programming"
+  - "Function Templates"
+  - "Class Templates"
+  - "STL"
 ---
 
 # C++ Templates

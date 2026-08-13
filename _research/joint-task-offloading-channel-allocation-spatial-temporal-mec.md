@@ -3,6 +3,12 @@ layout: default
 title: "Spatial-Temporal MEC"
 topic: "Joint task offloading and channel allocation with D3QN"
 order: 17
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "D3QN"
+  - "Task offloading"
+  - "Channel allocation"
+  - "Spatial-temporal MEC"
 ---
 
 # Joint Task Offloading and Channel Allocation in Spatial-Temporal Dynamic MEC

@@ -4,6 +4,13 @@ title: "Lecture 10 Vector Calculus 2"
 course: "Machine Learning Basic"
 topic: "Vector Calculus 2"
 order: 10
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Hessian"
+  - "Taylor Expansion"
+  - "Optimization"
+  - "Gradient Descent"
+  - "Multivariable Calculus"
 ---
 
 # Lecture 10 Vector Calculus 2

@@ -4,6 +4,13 @@ title: "C Programming Fundamentals"
 course: "C++"
 topic: "C Syntax Fundamentals"
 order: 1
+major_topic: "C++ Programming"
+keywords:
+  - "C Syntax"
+  - "Compilation"
+  - "Variables"
+  - "Control Flow"
+  - "Pointers"
 ---
 
 # C Programming Fundamentals

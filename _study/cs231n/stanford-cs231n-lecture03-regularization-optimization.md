@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
 topic: "Regularization and Optimization"
 order: 3
+major_topic: "Computer Vision"
+keywords:
+  - "Regularization"
+  - "Optimization"
+  - "Gradient Descent"
+  - "Learning Rate"
+  - "Overfitting"
 ---
 
 # Stanford CS231N Lecture 3: Regularization and Optimization

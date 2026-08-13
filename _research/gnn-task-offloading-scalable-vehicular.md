@@ -3,6 +3,12 @@ layout: default
 title: "GNN Vehicular Offloading"
 topic: "Scalable vehicular edge offloading with GNNs"
 order: 55
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "Vehicular edge computing"
+  - "GNN"
+  - "Task offloading"
+  - "Scalability"
 ---
 
 # Graph Neural Network-Based Task Offloading and Resource Allocation for Scalable Vehicular Networks

@@ -4,6 +4,13 @@ title: "C++ Enumerations"
 course: "C++"
 topic: "Enums and enum class"
 order: 6
+major_topic: "C++ Programming"
+keywords:
+  - "Enums"
+  - "enum class"
+  - "Scoped Enumerations"
+  - "Switch Statements"
+  - "Constants"
 ---
 
 # C++ Enumerations

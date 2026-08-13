@@ -3,6 +3,12 @@ layout: default
 title: "User-Centric MEC"
 topic: "Decentralized task offloading and resource allocation in UCMEC"
 order: 26
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "UCMEC"
+  - "Task offloading"
+  - "Resource allocation"
+  - "Decentralized optimization"
 ---
 
 # Decentralized Task Offloading and Resource Allocation in User-Centric MEC

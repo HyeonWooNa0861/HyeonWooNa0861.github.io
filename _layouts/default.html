@@ -2557,6 +2557,183 @@
         line-height: 1.4;
       }
 
+      .library-search__result-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 3px;
+      }
+
+      .library-search__result-tags span {
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--muted);
+        font-family: var(--reader-mono);
+        font-size: 10px;
+        line-height: 1.4;
+      }
+
+      .branch-search {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+        margin: 0 0 clamp(26px, 5vw, 42px);
+        padding: 18px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .branch-search .library-search__label {
+        font-family: var(--reader-sans);
+        font-size: 12px;
+        font-weight: 760;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .branch-search .library-search__status {
+        grid-column: 1;
+      }
+
+      .branch-search .library-search__results {
+        width: 100%;
+      }
+
+      .collection-entry-tools {
+        display: grid;
+        gap: 18px;
+        margin: 4px 0 clamp(30px, 5vw, 48px);
+      }
+
+      .collection-entry-tools .branch-search {
+        margin-bottom: 0;
+      }
+
+      .content-taxonomy {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        background: var(--bg-elevated);
+      }
+
+      .content-taxonomy__row {
+        display: grid;
+        grid-template-columns: minmax(86px, 0.18fr) minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .content-taxonomy__label {
+        padding-top: 3px;
+        color: var(--muted);
+        font-family: var(--reader-mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .content-taxonomy__topic {
+        color: var(--text-soft);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .content-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .content-tags--compact {
+        margin-top: 3px;
+      }
+
+      .content-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 9px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--muted);
+        font-family: var(--reader-mono);
+        font-size: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .content-tag--major {
+        border-color: color-mix(in srgb, var(--accent), transparent 68%);
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      .branch-catalog {
+        display: grid;
+        gap: clamp(34px, 6vw, 58px);
+      }
+
+      .branch-catalog__group {
+        display: grid;
+        gap: 16px;
+      }
+
+      .branch-catalog__heading {
+        display: flex;
+        gap: 18px;
+        align-items: end;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line-strong);
+      }
+
+      .page-content .branch-catalog__heading h2 {
+        margin: 0;
+        font-size: clamp(22px, 3vw, 32px);
+      }
+
+      .branch-catalog__heading > span {
+        flex: none;
+        color: var(--muted);
+        font-family: var(--reader-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+
+      .content-catalog-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .content-card {
+        align-content: start;
+      }
+
+      @media (max-width: 720px) {
+        .content-catalog-list {
+          grid-template-columns: 1fr;
+        }
+
+        .content-taxonomy__row {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .branch-catalog__heading {
+          align-items: start;
+          flex-direction: column;
+          gap: 6px;
+        }
+      }
+
       .index-section-heading {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -3321,7 +3498,29 @@
             </aside>
           {% endif %}
           <div class="page-content reader-content">
+            {% if page.collection == "research" %}
+              <div class="collection-entry-tools" data-collection-entry-tools>
+                {% include branch-search.html collection="research" %}
+                {% include content-taxonomy.html item=page mode="entry" %}
+              </div>
+            {% elsif page.collection == "study" %}
+              <div class="collection-entry-tools" data-collection-entry-tools>
+                {% include branch-search.html collection="study" course=page.course %}
+                {% include content-taxonomy.html item=page mode="entry" %}
+              </div>
+            {% endif %}
             {{ content }}
+            {% if page.collection == "research" or page.collection == "study" %}
+              <script>
+                (function (script) {
+                  var contentRoot = script.parentElement;
+                  var entryTools = contentRoot.querySelector("[data-collection-entry-tools]");
+                  var entryHeading = contentRoot.querySelector("h1");
+                  if (entryTools && entryHeading) entryHeading.insertAdjacentElement("afterend", entryTools);
+                  script.remove();
+                })(document.currentScript);
+              </script>
+            {% endif %}
             {% include section-pager.html %}
           </div>
         </div>
@@ -3444,6 +3643,7 @@
           var searchItems = Array.prototype.slice.call(searchResults.querySelectorAll("[data-library-search-item]"));
           var visibleLimit = 12;
           var activeItem = null;
+          var emptyStatus = searchForm.getAttribute("data-library-search-empty-status") || "Search projects and the public archive.";
 
           searchItems.forEach(function (item, index) {
             item.hidden = true;
@@ -3491,8 +3691,8 @@
 
             if (announceSelection) {
               var visibleItems = getVisibleItems();
-              var activeLink = activeItem.querySelector("a");
-              var activeLabel = activeLink ? activeLink.textContent.trim().replace(/\s+/g, " ") : "Result";
+              var activeLabelNode = activeItem.querySelector("[data-library-search-result-title]") || activeItem.querySelector("a");
+              var activeLabel = activeLabelNode ? activeLabelNode.textContent.trim().replace(/\s+/g, " ") : "Result";
               searchStatus.textContent = activeLabel + " · " + (visibleItems.indexOf(activeItem) + 1) + " of " + visibleItems.length + " · Press Enter to open.";
             }
           }
@@ -3524,12 +3724,13 @@
 
           function updateSearchResults() {
             var query = normalizeSearchText(searchInput.value);
+            var queryTerms = query.split(/\s+/).filter(Boolean);
             clearActiveItem();
             if (!query) {
               searchItems.forEach(function (item) {
                 item.hidden = true;
               });
-              searchStatus.textContent = "Search projects and the public archive.";
+              searchStatus.textContent = emptyStatus;
               closeSearchResults();
               return;
             }
@@ -3537,7 +3738,10 @@
             var matchCount = 0;
             var visibleCount = 0;
             searchItems.forEach(function (item) {
-              var matches = normalizeSearchText(item.getAttribute("data-search-text")).indexOf(query) !== -1;
+              var searchText = normalizeSearchText(item.getAttribute("data-search-text"));
+              var matches = queryTerms.every(function (term) {
+                return searchText.indexOf(term) !== -1;
+              });
               if (matches) matchCount += 1;
               item.hidden = !matches || visibleCount >= visibleLimit;
               if (matches && visibleCount < visibleLimit) visibleCount += 1;
@@ -3582,7 +3786,7 @@
 
           document.addEventListener("keydown", function (event) {
             var target = event.target;
-            var isTyping = target && (target.matches("input, textarea, select") || target.isContentEditable);
+            var isTyping = target && ((target.matches && target.matches("input, textarea, select")) || target.isContentEditable);
 
             if (event.key === "/" && !isTyping && !event.metaKey && !event.ctrlKey && !event.altKey) {
               event.preventDefault();

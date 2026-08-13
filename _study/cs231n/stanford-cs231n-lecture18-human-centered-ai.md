@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"
 order: 18
+major_topic: "Computer Vision"
+keywords:
+  - "Human-Centered AI"
+  - "Bias"
+  - "Fairness"
+  - "Interpretability"
+  - "Responsible AI"
 ---
 
 # Stanford CS231N Lecture 18: Human-Centered AI

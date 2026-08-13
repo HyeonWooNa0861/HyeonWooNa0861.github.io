@@ -3,6 +3,12 @@ layout: default
 title: "EPTQ"
 topic: "Fast and accurate 2-bit post-training quantization via Factored E8 lattice"
 order: 27
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "EPTQ"
+  - "2-bit quantization"
+  - "Post-training quantization"
+  - "Factored E8 lattice"
 ---
 
 # EPTQ: Fast and Accurate 2-bit Post-Training Quantization via Factored E8 Lattice

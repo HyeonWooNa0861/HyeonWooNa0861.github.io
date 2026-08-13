@@ -4,6 +4,13 @@ title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
 order: 9
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Imitation Learning"
+  - "Behavioral Cloning"
+  - "Covariate Shift"
+  - "DAggER"
+  - "Robot Control"
 ---
 
 # Robotics 1

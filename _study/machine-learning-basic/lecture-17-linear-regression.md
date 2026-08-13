@@ -4,6 +4,13 @@ title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
 order: 17
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Linear Regression"
+  - "Least Squares"
+  - "Normal Equation"
+  - "Regularization"
+  - "Prediction"
 ---
 
 # Lecture 17 Linear Regression

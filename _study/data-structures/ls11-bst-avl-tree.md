@@ -4,6 +4,13 @@ title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"
 order: 11
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "BST"
+  - "AVL Trees"
+  - "Rotations"
+  - "Balance Factor"
+  - "Height Balance"
 ---
 
 # LS11 BST and AVL Trees

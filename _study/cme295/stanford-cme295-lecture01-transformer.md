@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
 order: 1
+major_topic: "Large Language Models"
+keywords:
+  - "Self-Attention"
+  - "QKV Projections"
+  - "Multi-Head Attention"
+  - "Encoder-Decoder"
+  - "Attention Complexity"
 ---
 
 # Stanford CME295 Lecture 1: Transformer

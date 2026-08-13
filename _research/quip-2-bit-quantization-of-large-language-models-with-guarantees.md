@@ -3,6 +3,12 @@ layout: default
 title: "QuIP"
 topic: "2-bit LLM quantization with incoherence processing and LDLQ"
 order: 35
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "QuIP"
+  - "2-bit quantization"
+  - "incoherence processing"
+  - "LDLQ"
 ---
 
 # QuIP

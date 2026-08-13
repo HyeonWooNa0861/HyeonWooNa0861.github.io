@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
 order: 6
+major_topic: "Large Language Models"
+keywords:
+  - "Chain-of-Thought"
+  - "Self-Consistency"
+  - "Reasoning Traces"
+  - "Tool Use"
+  - "Test-Time Compute"
 ---
 
 # Stanford CME295 Lecture 6: LLM Reasoning

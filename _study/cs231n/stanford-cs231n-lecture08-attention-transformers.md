@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
 topic: "Attention and Transformers"
 order: 8
+major_topic: "Computer Vision"
+keywords:
+  - "Attention"
+  - "Transformers"
+  - "Self-Attention"
+  - "Vision Transformer"
+  - "QKV"
 ---
 
 # Stanford CS231N Lecture 8: Attention and Transformers

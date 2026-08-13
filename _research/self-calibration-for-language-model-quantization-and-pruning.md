@@ -3,6 +3,12 @@ layout: default
 title: "Self-Calibration"
 topic: "Synthetic calibration data for language model quantization and pruning"
 order: 43
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "self-calibration"
+  - "synthetic calibration"
+  - "language model pruning"
+  - "LLM quantization"
 ---
 
 # Self-calibration for Language Model Quantization and Pruning

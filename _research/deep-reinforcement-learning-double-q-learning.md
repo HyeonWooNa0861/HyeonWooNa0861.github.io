@@ -3,6 +3,12 @@ layout: default
 title: "Double DQN"
 topic: "Overestimation reduction in deep Q-learning"
 order: 12
+major_topic: "Reinforcement Learning"
+keywords:
+  - "Double DQN"
+  - "Q-learning"
+  - "Overestimation bias"
+  - "Value estimation"
 ---
 
 # Deep Reinforcement Learning with Double Q-learning

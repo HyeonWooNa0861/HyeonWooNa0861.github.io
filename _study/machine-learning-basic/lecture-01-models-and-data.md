@@ -4,6 +4,13 @@ title: "Lecture 01 Models and Data"
 course: "Machine Learning Basic"
 topic: "Models and Data"
 order: 1
+major_topic: "Machine Learning Foundations"
+keywords:
+  - "Models"
+  - "Data"
+  - "Features"
+  - "Labels"
+  - "Prediction"
 ---
 
 # Lecture 01 Models and Data

@@ -4,6 +4,13 @@ title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"
 order: 7
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Modular ADS"
+  - "Sensor Fusion"
+  - "HD Map"
+  - "RSS"
+  - "Occupancy"
 ---
 
 # Autonomous Driving 1

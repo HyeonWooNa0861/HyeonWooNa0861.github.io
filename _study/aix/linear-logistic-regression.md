@@ -4,6 +4,13 @@ title: "Linear and Logistic Regression"
 course: "AIX"
 topic: "Linear and Logistic Regression"
 order: 1
+major_topic: "Artificial Intelligence"
+keywords:
+  - "Linear Regression"
+  - "Logistic Regression"
+  - "Gradient Descent"
+  - "Feature Engineering"
+  - "Softmax"
 ---
 
 # Linear and Logistic Regression

@@ -4,6 +4,13 @@ title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
 topic: "Image Classification and Linear Classifiers"
 order: 2
+major_topic: "Computer Vision"
+keywords:
+  - "Image Classification"
+  - "k-NN"
+  - "Linear Classifier"
+  - "SVM Loss"
+  - "Softmax Loss"
 ---
 
 # Stanford CS231N Lecture 2: Image Classification with Linear Classifiers

@@ -3,6 +3,12 @@ layout: default
 title: "EEDO HAP-MEC"
 topic: "Online dynamic offloading and resource allocation in HAP-assisted MEC"
 order: 23
+major_topic: "Edge Computing & Task Offloading"
+keywords:
+  - "HAP-assisted MEC"
+  - "Dynamic offloading"
+  - "Resource allocation"
+  - "Energy efficiency"
 ---
 
 # Online Dynamic Multi-User Offloading for HAP-Assisted MEC

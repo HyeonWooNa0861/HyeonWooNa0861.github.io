@@ -3,6 +3,12 @@ layout: default
 title: "QTIP"
 topic: "Quantization with trellises and incoherence processing"
 order: 30
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "QTIP"
+  - "trellis quantization"
+  - "incoherence processing"
+  - "LLM compression"
 ---
 
 # QTIP: Quantization with Trellises and Incoherence Processing

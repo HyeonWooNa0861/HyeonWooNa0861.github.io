@@ -3,6 +3,12 @@ layout: default
 title: "Invalid Action Masking"
 topic: "Policy gradient with invalid action masking"
 order: 59
+major_topic: "Reinforcement Learning"
+keywords:
+  - "Invalid action masking"
+  - "Policy gradient"
+  - "Action spaces"
+  - "Sampling efficiency"
 ---
 
 # A Closer Look at Invalid Action Masking in Policy Gradient Algorithms

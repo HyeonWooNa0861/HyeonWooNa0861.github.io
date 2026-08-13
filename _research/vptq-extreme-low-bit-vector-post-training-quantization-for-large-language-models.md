@@ -3,6 +3,12 @@ layout: default
 title: "VPTQ"
 topic: "Extreme low-bit vector post-training quantization for LLMs"
 order: 45
+major_topic: "LLM Quantization & Compression"
+keywords:
+  - "VPTQ"
+  - "vector quantization"
+  - "low-bit PTQ"
+  - "LLM compression"
 ---
 
 # VPTQ: Extreme Low-bit Vector Post-Training Quantization for Large Language Models

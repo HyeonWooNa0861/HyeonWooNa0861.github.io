@@ -4,6 +4,13 @@ title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
 order: 8
+major_topic: "Large Language Models"
+keywords:
+  - "LLM Evaluation"
+  - "Benchmarks"
+  - "Human Evaluation"
+  - "Safety Evaluation"
+  - "Evals"
 ---
 
 # Stanford CME295 Lecture 8: LLM Evaluation

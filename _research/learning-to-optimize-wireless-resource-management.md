@@ -3,6 +3,12 @@ layout: default
 title: "Learning to Optimize"
 topic: "DNN approximation for wireless resource management"
 order: 20
+major_topic: "Wireless Networks & Massive MIMO"
+keywords:
+  - "Wireless resource management"
+  - "DNN approximation"
+  - "Optimization"
+  - "Power allocation"
 ---
 
 # Learning to Optimize for Wireless Resource Management

@@ -4,6 +4,13 @@ title: "LS18 Hash Search"
 course: "Data Structures"
 topic: "Hash Search"
 order: 18
+major_topic: "Data Structures & Algorithms"
+keywords:
+  - "Hash Tables"
+  - "Hash Functions"
+  - "Collision Resolution"
+  - "Open Addressing"
+  - "Chaining"
 ---
 
 # LS18 Hash Search
