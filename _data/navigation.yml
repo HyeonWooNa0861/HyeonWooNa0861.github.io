@@ -239,6 +239,94 @@
       url: /research/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/
       description: Extreme low-bit vector PTQ for large language models
       match: /research/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/
+    - title: AdaStop
+      url: /research/adastop-sequential-testing-deep-rl/
+      description: Sequential statistical testing for Deep RL reproducibility
+      match: /research/adastop-sequential-testing-deep-rl/
+    - title: Cell-Free Massive MIMO
+      url: /research/cell-free-massive-mimo-versus-small-cells/
+      description: Distributed access points and max-min power control
+      match: /research/cell-free-massive-mimo-versus-small-cells/
+    - title: CHESTNUT
+      url: /research/chestnut-qos-dataset-mobile-edge/
+      description: QoS dataset for mobile edge service forecasting
+      match: /research/chestnut-qos-dataset-mobile-edge/
+    - title: Safe RL Survey
+      url: /research/comprehensive-survey-safe-reinforcement-learning/
+      description: Safe reinforcement learning taxonomy
+      match: /research/comprehensive-survey-safe-reinforcement-learning/
+    - title: DL UC Clustering
+      url: /research/deep-learning-user-centric-clustering-cf-mimo/
+      description: User-centric AP clustering with deep learning
+      match: /research/deep-learning-user-centric-clustering-cf-mimo/
+    - title: DRL That Matters
+      url: /research/deep-reinforcement-learning-that-matters/
+      description: Reproducibility and evaluation practice in Deep RL
+      match: /research/deep-reinforcement-learning-that-matters/
+    - title: DMRO
+      url: /research/dmro-deep-meta-rl-task-offloading/
+      description: Meta-RL task offloading in edge-cloud computing
+      match: /research/dmro-deep-meta-rl-task-offloading/
+    - title: Statistical Precipice
+      url: /research/drl-statistical-precipice/
+      description: Reliable aggregate metrics for Deep RL evaluation
+      match: /research/drl-statistical-precipice/
+    - title: Fast Meta Offloading
+      url: /research/fast-adaptive-task-offloading-meta-rl/
+      description: Fast task offloading adaptation with meta reinforcement learning
+      match: /research/fast-adaptive-task-offloading-meta-rl/
+    - title: GNN Vehicular Offloading
+      url: /research/gnn-task-offloading-scalable-vehicular/
+      description: Scalable vehicular edge offloading with GNNs
+      match: /research/gnn-task-offloading-scalable-vehicular/
+    - title: GNRL Offloading
+      url: /research/graph-neural-rl-offloading-mec/
+      description: Graph neural reinforcement learning for MEC offloading
+      match: /research/graph-neural-rl-offloading-mec/
+    - title: Hierarchical V2I Offloading
+      url: /research/hierarchical-rl-task-offloading-v2i/
+      description: Hierarchical reinforcement learning for V2I task offloading
+      match: /research/hierarchical-rl-task-offloading-v2i/
+    - title: Random Seeds in DRL
+      url: /research/how-many-random-seeds-drl/
+      description: Statistical power analysis for Deep RL seed counts
+      match: /research/how-many-random-seeds-drl/
+    - title: Invalid Action Masking
+      url: /research/invalid-action-masking-policy-gradient/
+      description: Policy gradient with invalid action masking
+      match: /research/invalid-action-masking-policy-gradient/
+    - title: Reward Shaping
+      url: /research/policy-invariance-reward-transformations-shaping/
+      description: Potential-based reward shaping theory
+      match: /research/policy-invariance-reward-transformations-shaping/
+    - title: Semantic QoE Offloading
+      url: /research/qoe-driven-multi-task-offloading-semantic/
+      description: QoE-driven semantic-aware edge offloading
+      match: /research/qoe-driven-multi-task-offloading-semantic/
+    - title: Shielded RL
+      url: /research/safe-reinforcement-learning-via-shielding/
+      description: Formal-methods shielding for safe reinforcement learning
+      match: /research/safe-reinforcement-learning-via-shielding/
+    - title: Safe RL and CMDPs
+      url: /research/survey-safe-rl-constrained-mdps/
+      description: Safe RL, constrained MDPs, and multi-agent safety
+      match: /research/survey-safe-rl-constrained-mdps/
+    - title: Task-Graph DRL Offloading
+      url: /research/task-graph-offloading-drl-mec/
+      description: DRL offloading for dependent task graphs
+      match: /research/task-graph-offloading-drl-mec/
+    - title: TOMAC-PPO
+      url: /research/tomac-ppo-task-offloading-marl/
+      description: Multi-agent PPO for task offloading and resource allocation
+      match: /research/tomac-ppo-task-offloading-marl/
+    - title: User-Centric 5G
+      url: /research/user-centric-5g-vs-cell-free-massive-mimo/
+      description: User-centric 5G cellular networks versus cell-free massive MIMO
+      match: /research/user-centric-5g-vs-cell-free-massive-mimo/
+    - title: UC Cell-Free Survey
+      url: /research/user-centric-cell-free-massive-mimo-survey/
+      description: Survey of user-centric cell-free massive MIMO
+      match: /research/user-centric-cell-free-massive-mimo-survey/
 
 - title: Assignment
   url: /assignment/
