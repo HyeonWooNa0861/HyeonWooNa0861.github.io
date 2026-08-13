@@ -179,7 +179,6 @@
       .post-list,
       .branch-modal-list,
       .pdf-reader-frame-wrap,
-      .library-search__results,
       .site-nav {
         scrollbar-color: var(--line-strong) transparent;
         scrollbar-width: thin;
@@ -214,9 +213,17 @@
       .post-list::-webkit-scrollbar-track,
       .branch-modal-list::-webkit-scrollbar-track,
       .pdf-reader-frame-wrap::-webkit-scrollbar-track,
-      .library-search__results::-webkit-scrollbar-track,
       .site-nav::-webkit-scrollbar-track {
         background: transparent;
+      }
+
+      .library-search__results {
+        scrollbar-color: var(--line-strong) var(--bg-elevated);
+        scrollbar-width: thin;
+      }
+
+      .library-search__results::-webkit-scrollbar-track {
+        background: var(--bg-elevated);
       }
 
       a {
@@ -2511,9 +2518,13 @@
         overflow: auto;
         overscroll-behavior: contain;
         border: 1px solid var(--line-strong);
-        background: var(--bg-elevated);
+        background-color: var(--bg-elevated);
+        background-image: none;
         box-shadow: var(--shadow-md);
+        opacity: 1;
         isolation: isolate;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
       }
 
       .library-search__results[hidden],
@@ -2525,7 +2536,13 @@
         display: grid;
         margin: 0;
         padding: 0;
+        background: var(--bg-elevated);
         list-style: none;
+      }
+
+      .library-search__results li,
+      .library-search__results a {
+        background: var(--bg-elevated);
       }
 
       .library-search__results li + li {
@@ -2543,7 +2560,7 @@
       .library-search__results a:hover,
       .library-search__results a:focus-visible,
       .library-search__results li.is-active > a {
-        background: var(--accent-soft);
+        background: color-mix(in srgb, var(--bg-elevated) 88%, var(--accent) 12%);
         color: var(--accent-strong);
       }
 
@@ -2568,7 +2585,7 @@
         padding: 2px 7px;
         border: 1px solid var(--line);
         border-radius: 999px;
-        background: var(--panel);
+        background: var(--bg-elevated);
         color: var(--muted);
         font-family: var(--reader-mono);
         font-size: 10px;
