@@ -387,6 +387,10 @@
       url: /study/cs231n/
       description: Stanford CS231N deep learning for computer vision lecture notes
       match: /study/cs231n/
+    - title: CS236
+      url: /study/cs236/
+      description: Stanford CS236 deep generative models lecture notes
+      match: /study/cs236/
     - title: AIX
       url: /study/aix/
       description: AIX lecture notes
