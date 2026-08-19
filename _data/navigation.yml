@@ -327,6 +327,26 @@
       url: /research/user-centric-cell-free-massive-mimo-survey/
       description: Survey of user-centric cell-free massive MIMO
       match: /research/user-centric-cell-free-massive-mimo-survey/
+    - title: Cooperative MARL Offloading
+      url: /research/multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing/
+      description: Cooperative device-edge and edge-edge offloading under partial observability
+      match: /research/multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing/
+    - title: Federated DRL Offloading
+      url: /research/federated-drl-continuous-improving-intradependente-task-offloading-mobile-edge-computing/
+      description: Federated learning for dependency-aware MEC offloading
+      match: /research/federated-drl-continuous-improving-intradependente-task-offloading-mobile-edge-computing/
+    - title: Meta-RL Edge Scheduling
+      url: /research/meta-reinforcement-learning-optimized-task-scheduling-heterogeneous-edge-computing-systems/
+      description: Fast adaptation across heterogeneous edge scheduling layers
+      match: /research/meta-reinforcement-learning-optimized-task-scheduling-heterogeneous-edge-computing-systems/
+    - title: iDEAS
+      url: /research/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/
+      description: Energy-efficient DVFS, scheduling, and offloading for big.LITTLE mobile devices
+      match: /research/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/
+    - title: QoE-Driven SIM
+      url: /research/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/
+      description: Meta-CQL resource allocation for multimedia QoE with stacked intelligent metasurfaces
+      match: /research/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/
 
 - title: Assignment
   url: /assignment/
