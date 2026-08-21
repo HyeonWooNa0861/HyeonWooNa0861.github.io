@@ -347,6 +347,30 @@
       url: /research/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/
       description: Meta-CQL resource allocation for multimedia QoE with stacked intelligent metasurfaces
       match: /research/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/
+    - title: UniCon
+      url: /research/unicon-unified-star-operation-connected-components/
+      description: Unified star operations for distributed connected components on commodity clusters
+      match: /research/unicon-unified-star-operation-connected-components/
+    - title: PTE
+      url: /research/pte-enumerating-trillion-triangles-distributed-systems/
+      description: Pre-partitioned enumeration of trillion-scale graph triangles
+      match: /research/pte-enumerating-trillion-triangles-distributed-systems/
+    - title: Graph Matching Patent
+      url: /research/graph-matching-method-and-apparatus/
+      description: Symmetry-breaking node ordering for duplicate-free graph matching
+      match: /research/graph-matching-method-and-apparatus/
+    - title: PACC
+      url: /research/pacc-large-scale-connected-component-computation/
+      description: Partition-aware connected components on Hadoop and Spark
+      match: /research/pacc-large-scale-connected-component-computation/
+    - title: SEED
+      url: /research/seed-scalable-distributed-subgraph-enumeration/
+      description: Cost-based distributed enumeration of arbitrary graph patterns
+      match: /research/seed-scalable-distributed-subgraph-enumeration/
+    - title: Billion-Node Subgraph Matching
+      url: /research/efficient-subgraph-matching-billion-node-graphs/
+      description: Index-free distributed matching with STwig query units
+      match: /research/efficient-subgraph-matching-billion-node-graphs/
 
 - title: Assignment
   url: /assignment/
