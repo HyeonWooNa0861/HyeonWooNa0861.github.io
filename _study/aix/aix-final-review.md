@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-08 18:13:14 +0900
 title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"

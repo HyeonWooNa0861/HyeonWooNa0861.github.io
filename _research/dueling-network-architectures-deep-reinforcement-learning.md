@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "Dueling DQN"
 topic: "Value and advantage decomposition in deep reinforcement learning"
 order: 15

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "QuaRot"
 topic: "Outlier-free 4-bit inference in rotated LLMs"
 order: 29

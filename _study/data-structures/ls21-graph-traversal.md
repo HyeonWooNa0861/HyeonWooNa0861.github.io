@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-01 12:25:13 +0900
 title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"

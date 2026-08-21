@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Safe RL and CMDPs"
 topic: "Safe RL, constrained MDPs, and multi-agent safety"
 order: 63

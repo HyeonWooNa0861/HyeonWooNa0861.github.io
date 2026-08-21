@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 12:30:12 +0900
 title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"

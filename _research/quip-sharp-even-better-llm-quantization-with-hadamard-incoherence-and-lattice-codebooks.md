@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "QuIP#"
 topic: "Hadamard incoherence and E8 lattice codebooks for LLM quantization"
 order: 42

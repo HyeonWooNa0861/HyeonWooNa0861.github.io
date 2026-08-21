@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 15:35:29 +0900
 title: "Labidus"
 topic: "RISC-V overlay with streaming asynchronous custom instructions"
 order: 5

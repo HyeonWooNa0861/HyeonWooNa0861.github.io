@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS13 Basic Sorting Algorithms"
 course: "Data Structures"
 topic: "Basic Sorting Algorithms"

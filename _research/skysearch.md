@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 14:12:07 +0900
 title: "SkySearch"
 topic: "Satellite video search at scale"
 order: 2

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"

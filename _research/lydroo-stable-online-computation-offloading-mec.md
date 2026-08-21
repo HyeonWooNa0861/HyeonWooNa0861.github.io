@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "LyDROO"
 topic: "Lyapunov-guided DRL for stable online computation offloading"
 order: 22

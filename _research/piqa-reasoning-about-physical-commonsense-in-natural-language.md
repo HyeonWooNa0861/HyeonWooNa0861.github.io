@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "PIQA"
 topic: "Physical commonsense reasoning benchmark in natural language"
 order: 34

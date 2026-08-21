@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-07 19:10:42 +0900
 title: "AIX Quiz Review After Midterm"
 course: "AIX"
 topic: "After Midterm Quiz Review"

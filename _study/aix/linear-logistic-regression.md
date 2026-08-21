@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 13:52:05 +0900
 title: "Linear and Logistic Regression"
 course: "AIX"
 topic: "Linear and Logistic Regression"

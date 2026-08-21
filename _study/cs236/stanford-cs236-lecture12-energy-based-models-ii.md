@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 15:27:32 +0900
 title: "Stanford CS236 Lecture 12: Energy-Based Models II"
 course: "CS236"
 topic: "Score Matching, Noise Contrastive Estimation, and Sampling-Free EBM Training"

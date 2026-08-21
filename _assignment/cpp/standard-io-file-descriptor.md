@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-17 01:14:20 +0900
 title: "Standard I/O and File Descriptors"
 course: "C++"
 topic: "stdin, stdout, stderr, File Descriptor"

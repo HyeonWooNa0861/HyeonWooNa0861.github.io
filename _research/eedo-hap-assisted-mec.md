@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "EEDO HAP-MEC"
 topic: "Online dynamic offloading and resource allocation in HAP-assisted MEC"
 order: 23

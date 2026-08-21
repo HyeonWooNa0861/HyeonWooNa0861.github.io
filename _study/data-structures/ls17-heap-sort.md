@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "DL UC Clustering"
 topic: "User-centric AP clustering with deep learning"
 order: 50

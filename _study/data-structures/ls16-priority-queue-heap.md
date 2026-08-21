@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"

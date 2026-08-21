@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-17 01:14:20 +0900
 title: "Smart Pointers and Memory Management"
 course: "C++"
 topic: "Smart Pointer, RAII, Reference Counting"

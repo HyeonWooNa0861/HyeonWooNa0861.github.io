@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 14:02:37 +0900
 title: "Federated DRL Offloading"
 topic: "Federated learning for dependency-aware MEC offloading"
 order: 69

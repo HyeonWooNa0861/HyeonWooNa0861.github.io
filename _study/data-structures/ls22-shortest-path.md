@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-04 13:25:48 +0900
 title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"

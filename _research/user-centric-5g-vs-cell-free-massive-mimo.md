@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "User-Centric 5G"
 topic: "User-centric 5G cellular networks versus cell-free massive MIMO"
 order: 66

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-26 14:31:45 +0900
 title: "Attention Is All You Need"
 topic: "Transformer architecture and v1-v7 revision notes"
 order: 6

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 15:27:32 +0900
 title: "Stanford CS236 Lecture 11: Energy-Based Models I"
 course: "CS236"
 topic: "Partition Functions, Product of Experts, RBMs, and Contrastive Divergence"

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 00:03:27 +0900
 title: "QECO-Adapt"
 topic: "Load-adaptive task offloading in dense MEC"
 order: 1

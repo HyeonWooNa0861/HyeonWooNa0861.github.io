@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "AdaStop"
 topic: "Sequential statistical testing for Deep RL reproducibility"
 order: 46

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-09 18:22:09 +0900
 title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"

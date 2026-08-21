@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "CCM-MADRL"
 topic: "Multiagent task offloading in mobile edge computing"
 order: 11

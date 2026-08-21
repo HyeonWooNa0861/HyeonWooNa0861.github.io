@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-18 11:56:08 +0900
 title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"

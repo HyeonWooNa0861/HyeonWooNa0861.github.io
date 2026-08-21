@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-21 09:57:18 +0900
 title: "UniCon"
 topic: "Unified partition-aware star operations for connected components on commodity clusters"
 order: 73

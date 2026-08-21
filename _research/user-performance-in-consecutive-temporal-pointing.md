@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-28 14:44:35 +0900
 title: "Temporal Pointing"
 topic: Research
 order: 9

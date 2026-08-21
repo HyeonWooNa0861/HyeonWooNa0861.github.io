@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 13:52:05 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"

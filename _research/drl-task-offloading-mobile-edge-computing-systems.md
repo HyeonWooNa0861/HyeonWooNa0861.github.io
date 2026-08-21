@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "DRL Task Offloading"
 topic: "Distributed task offloading with LSTM, dueling DQN, and double DQN"
 order: 14

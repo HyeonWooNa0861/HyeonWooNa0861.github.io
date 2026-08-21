@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 15:27:32 +0900
 title: "Stanford CS236 Lecture 4: Maximum Likelihood Learning"
 course: "CS236"
 topic: "Maximum Likelihood Learning"

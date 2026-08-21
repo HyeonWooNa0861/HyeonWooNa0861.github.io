@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-27 11:31:26 +0900
 title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "Energy-Aware MEC"
 topic: "Energy-aware multi-agent DRL for mobile edge computation offloading"
 order: 32

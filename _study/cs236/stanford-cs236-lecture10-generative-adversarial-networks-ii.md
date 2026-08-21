@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 15:27:32 +0900
 title: "Stanford CS236 Lecture 10: Generative Adversarial Networks II"
 course: "CS236"
 topic: "f-GANs, Wasserstein GANs, BiGANs, and Cycle-Consistent Translation"

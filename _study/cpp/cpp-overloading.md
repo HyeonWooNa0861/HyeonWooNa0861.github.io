@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-18 11:56:08 +0900
 title: "C++ Classes and Operator Overloading"
 course: "C++"
 topic: "Function and Operator Overloading"

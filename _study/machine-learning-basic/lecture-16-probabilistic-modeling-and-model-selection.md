@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-26 12:19:51 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"

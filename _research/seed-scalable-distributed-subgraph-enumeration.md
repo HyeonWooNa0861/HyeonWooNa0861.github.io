@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-21 09:57:18 +0900
 title: "SEED"
 topic: "Cost-based distributed enumeration of arbitrary graph patterns"
 order: 77

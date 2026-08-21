@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 13:52:05 +0900
 title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"

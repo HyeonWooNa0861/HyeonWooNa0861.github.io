@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 12:13:13 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"

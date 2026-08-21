@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"

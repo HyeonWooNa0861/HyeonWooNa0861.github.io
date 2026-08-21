@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "TOMAC-PPO"
 topic: "Multi-agent PPO for MEC task offloading and resource allocation"
 order: 65

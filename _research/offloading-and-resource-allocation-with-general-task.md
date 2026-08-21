@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "General Task Graph Offloading"
 topic: "DRL-based offloading and resource allocation for general task graphs in MEC"
 order: 33

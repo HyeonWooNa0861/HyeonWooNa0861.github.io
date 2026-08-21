@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"

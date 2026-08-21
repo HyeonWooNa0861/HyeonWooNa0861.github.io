@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-04 16:37:00 +0900
 title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"

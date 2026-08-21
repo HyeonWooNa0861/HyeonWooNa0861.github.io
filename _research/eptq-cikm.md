@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-22 13:57:48 +0900
 title: "EPTQ"
 topic: "Fast and accurate 2-bit post-training quantization via Factored E8 lattice"
 order: 27

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 19:59:33 +0900
 title: "YAQA"
 topic: "Model-preserving adaptive rounding for LLM post-training quantization"
 order: 36

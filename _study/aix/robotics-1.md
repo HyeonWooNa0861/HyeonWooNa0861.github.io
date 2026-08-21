@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-08 21:44:38 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"

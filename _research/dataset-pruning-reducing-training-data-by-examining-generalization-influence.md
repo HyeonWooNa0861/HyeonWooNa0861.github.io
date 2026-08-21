@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "Dataset Pruning"
 topic: "Reducing training data by examining generalization influence"
 order: 39

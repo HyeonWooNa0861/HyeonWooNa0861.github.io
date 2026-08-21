@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-21 09:57:18 +0900
 title: "Graph Matching Method and Apparatus"
 topic: "Symmetry-breaking node ordering for duplicate-free subgraph matching"
 order: 75

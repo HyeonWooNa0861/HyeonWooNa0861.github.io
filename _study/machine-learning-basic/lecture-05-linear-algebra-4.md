@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 12:30:12 +0900
 title: "Lecture 05 Linear Algebra 4"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 4"

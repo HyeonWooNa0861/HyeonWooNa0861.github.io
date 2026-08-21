@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "QuIP"
 topic: "2-bit LLM quantization with incoherence processing and LDLQ"
 order: 35

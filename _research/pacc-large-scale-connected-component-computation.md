@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-21 09:57:18 +0900
 title: "PACC"
 topic: "Partition-aware connected components on Hadoop and Spark"
 order: 76

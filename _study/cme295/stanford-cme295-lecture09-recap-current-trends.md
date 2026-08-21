@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"

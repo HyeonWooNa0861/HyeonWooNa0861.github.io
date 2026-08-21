@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "User-Centric MEC"
 topic: "Decentralized task offloading and resource allocation in UCMEC"
 order: 26

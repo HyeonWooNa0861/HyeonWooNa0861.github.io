@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "DECENT"
 topic: "Latency-aware online workload offloading and resource management in MEC"
 order: 31

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"

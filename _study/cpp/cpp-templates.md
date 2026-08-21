@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-27 10:51:57 +0900
 title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"

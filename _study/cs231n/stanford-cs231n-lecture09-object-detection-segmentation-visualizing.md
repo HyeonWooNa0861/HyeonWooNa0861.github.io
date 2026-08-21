@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-16 16:07:00 +0900
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"

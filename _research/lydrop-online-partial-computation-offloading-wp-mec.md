@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "LyDROP"
 topic: "Online partial offloading in wireless powered MEC"
 order: 24

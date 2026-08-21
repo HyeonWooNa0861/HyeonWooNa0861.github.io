@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "GNRL Offloading"
 topic: "Graph neural reinforcement learning for MEC offloading"
 order: 56

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 11:50:48 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"

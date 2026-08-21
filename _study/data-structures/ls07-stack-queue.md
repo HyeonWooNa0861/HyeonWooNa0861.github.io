@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"

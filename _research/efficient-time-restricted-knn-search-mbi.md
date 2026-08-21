@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 14:45:05 +0900
 title: "Time-Restricted kNN Search"
 topic: "Multi-Level Block Indexing for high-dimensional filtered kNN"
 order: 3

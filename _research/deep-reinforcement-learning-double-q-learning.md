@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "Double DQN"
 topic: "Overestimation reduction in deep Q-learning"
 order: 12

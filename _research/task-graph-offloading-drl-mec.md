@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Task-Graph DRL Offloading"
 topic: "DRL offloading for dependent task graphs"
 order: 64

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-09 18:16:19 +0900
 title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"

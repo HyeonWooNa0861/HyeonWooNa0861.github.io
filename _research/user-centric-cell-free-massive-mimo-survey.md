@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "UC Cell-Free Survey"
 topic: "Survey of user-centric cell-free massive MIMO"
 order: 67

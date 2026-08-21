@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "Long Short-Term Memory"
 topic: "Original LSTM architecture for long time lag learning"
 order: 21

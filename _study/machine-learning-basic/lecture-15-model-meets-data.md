@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-21 12:29:52 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"

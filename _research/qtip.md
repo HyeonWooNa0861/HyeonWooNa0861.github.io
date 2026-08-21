@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "QTIP"
 topic: "Quantization with trellises and incoherence processing"
 order: 30

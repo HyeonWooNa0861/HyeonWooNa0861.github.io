@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Statistical Precipice"
 topic: "Reliable statistical evaluation for deep reinforcement learning"
 order: 53

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 15:35:29 +0900
 title: "Bancroft"
 topic: "Genomics acceleration beyond on-device memory"
 order: 4

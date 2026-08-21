@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-21 09:57:18 +0900
 title: "Billion-Node Subgraph Matching"
 topic: "Index-free distributed subgraph matching with STwig query units"
 order: 78

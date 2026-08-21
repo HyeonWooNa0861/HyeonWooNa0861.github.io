@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 12:11:10 +0900
 title: "LS08 Doubly Linked Lists and Dictionaries"
 course: "Data Structures"
 topic: "Doubly Linked Lists and Dictionaries"

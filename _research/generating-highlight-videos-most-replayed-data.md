@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-27 19:04:07 +0900
 title: "Highlight Videos with MRD"
 topic: "User-specified length highlight generation using Most Replayed Data"
 order: 8

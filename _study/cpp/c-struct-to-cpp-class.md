@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-19 11:50:48 +0900
 title: "C Structs and C++ Classes"
 course: "C++"
 topic: "Structs and Classes"

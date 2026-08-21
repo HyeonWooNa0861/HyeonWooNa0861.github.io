@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 14:02:37 +0900
 title: "iDEAS"
 topic: "Energy-efficient DVFS, task scheduling, and edge offloading for big.LITTLE mobile devices"
 order: 71

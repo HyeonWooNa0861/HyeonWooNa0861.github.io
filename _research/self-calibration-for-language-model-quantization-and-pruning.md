@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "Self-Calibration"
 topic: "Synthetic calibration data for language model quantization and pruning"
 order: 43

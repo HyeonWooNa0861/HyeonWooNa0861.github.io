@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Fast Meta Offloading"
 topic: "Fast task offloading adaptation with meta reinforcement learning"
 order: 54

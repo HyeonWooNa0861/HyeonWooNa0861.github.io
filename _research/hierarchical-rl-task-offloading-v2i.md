@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Hierarchical V2I Offloading"
 topic: "Hierarchical reinforcement learning for V2I task offloading"
 order: 57

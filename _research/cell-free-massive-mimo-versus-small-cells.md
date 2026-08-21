@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Cell-Free Massive MIMO"
 topic: "Distributed access points and max-min power control"
 order: 47

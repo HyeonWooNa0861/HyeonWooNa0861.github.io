@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-16 16:07:00 +0900
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"

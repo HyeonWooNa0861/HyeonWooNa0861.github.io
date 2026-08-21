@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"

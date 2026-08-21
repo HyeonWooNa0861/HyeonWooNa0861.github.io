@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-05 01:51:19 +0900
 title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"

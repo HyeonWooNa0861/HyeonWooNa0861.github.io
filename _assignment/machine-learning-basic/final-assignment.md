@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-03 19:46:42 +0900
 title: "Machine Learning Basic Final Assignment"
 course: "Machine Learning Basic"
 topic: "Final Assignment"

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "DRL That Matters"
 topic: "Reproducibility and statistical reporting in deep reinforcement learning"
 order: 51

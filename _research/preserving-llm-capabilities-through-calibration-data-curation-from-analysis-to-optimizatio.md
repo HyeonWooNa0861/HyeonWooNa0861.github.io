@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "CoLA"
 topic: "Preserving LLM capabilities through calibration data curation"
 order: 41

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 14:02:37 +0900
 title: "Cooperative MARL Offloading"
 topic: "Cooperative task offloading under partial observability"
 order: 68

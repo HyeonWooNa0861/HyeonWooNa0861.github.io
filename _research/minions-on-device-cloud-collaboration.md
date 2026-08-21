@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 19:59:33 +0900
 title: "Minions"
 topic: "On-device small LM and cloud frontier model collaboration"
 order: 37

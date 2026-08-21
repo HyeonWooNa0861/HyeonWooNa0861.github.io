@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"

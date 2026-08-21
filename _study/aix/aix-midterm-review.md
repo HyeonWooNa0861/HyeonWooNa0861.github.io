@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-07 19:26:36 +0900
 title: "AIX Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"

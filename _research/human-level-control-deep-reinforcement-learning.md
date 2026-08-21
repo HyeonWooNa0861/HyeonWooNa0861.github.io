@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "Human-Level DQN"
 topic: "Deep Q-network for Atari control"
 order: 16

@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-15 22:57:10 +0900
 title: "CoverCal"
 topic: "Coverage-based calibration for LLM post-training quantization"
 order: 38

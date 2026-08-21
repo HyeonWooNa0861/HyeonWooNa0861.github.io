@@ -4,7 +4,7 @@ title: Accession Log
 permalink: /log/
 ---
 
-{% assign accession_posts = site.posts | sort: "date" | reverse %}
+{% assign accession_entries = site.posts | concat: site.research | concat: site.study | concat: site.assignment | sort: "date" | reverse %}
 
 <section class="index-board" data-index-board aria-labelledby="accession-log-title">
   <header class="index-masthead index-rule" data-index-rule>
@@ -18,7 +18,7 @@ permalink: /log/
     <dl class="index-stats">
       <div>
         <dt>Entries</dt>
-        <dd>{{ accession_posts | size }}</dd>
+        <dd>{{ accession_entries | size }}</dd>
       </div>
     </dl>
   </header>
@@ -29,14 +29,18 @@ permalink: /log/
       <a href="{{ '/' | relative_url }}">Back to working index</a>
     </header>
     <ol class="recent-work__list">
-      {% for post in accession_posts %}
+      {% for entry in accession_entries %}
+        {% assign accession_label = entry.collection | capitalize %}
+        {% if entry.collection == "posts" %}
+          {% assign accession_label = entry.section | default: "Post" | replace: "-", " " %}
+        {% endif %}
         <li class="recent-work__item">
-          <a href="{{ post.url | relative_url }}">
-            <span class="recent-work__number">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
-            <span class="recent-work__title">{{ post.title }}</span>
+          <a href="{{ entry.url | relative_url }}">
+            <span class="recent-work__number">{{ forloop.index | prepend: '000' | slice: -3, 3 }}</span>
+            <span class="recent-work__title">{{ entry.title }}</span>
             <span class="recent-work__meta">
-              {% if post.section %}{{ post.section | replace: '-', ' ' }} · {% endif %}
-              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+              {{ accession_label }} ·
+              <time datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: "%Y.%m.%d" }}</time>
             </span>
           </a>
         </li>

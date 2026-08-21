@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-13 09:45:28 +0900
 title: "Invalid Action Masking"
 topic: "Policy gradient with invalid action masking"
 order: 59

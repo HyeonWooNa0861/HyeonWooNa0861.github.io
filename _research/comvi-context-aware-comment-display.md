@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-27 17:35:55 +0900
 title: "ComVi"
 topic: "Context-aware optimized comment display in video playback"
 order: 7

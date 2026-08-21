@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 14:02:37 +0900
 title: "Meta-RL Edge Scheduling"
 topic: "Fast adaptation across heterogeneous edge scheduling layers"
 order: 70

@@ -5,6 +5,7 @@ permalink: /
 ---
 
 {% assign recent_posts = site.posts | sort: "date" | reverse %}
+{% assign accession_entries = recent_posts | concat: site.research | concat: site.study | concat: site.assignment | sort: "date" | reverse %}
 {% assign study_groups = site.study | group_by: "course" | sort: "name" %}
 {% assign research_count = site.research | size %}
 {% assign study_count = site.study | size %}
@@ -108,14 +109,18 @@ permalink: /
       <a href="{{ '/log/' | relative_url }}">View accession log</a>
     </header>
     <ol class="recent-work__list">
-      {% for post in recent_posts limit: 6 %}
+      {% for entry in accession_entries limit: 6 %}
+        {% assign accession_label = entry.collection | capitalize %}
+        {% if entry.collection == "posts" %}
+          {% assign accession_label = entry.section | default: "Post" | replace: "-", " " %}
+        {% endif %}
         <li class="recent-work__item">
-          <a href="{{ post.url | relative_url }}">
+          <a href="{{ entry.url | relative_url }}">
             <span class="recent-work__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-            <span class="recent-work__title">{{ post.title }}</span>
+            <span class="recent-work__title">{{ entry.title }}</span>
             <span class="recent-work__meta">
-              {% if post.section %}{{ post.section | replace: '-', ' ' }} · {% endif %}
-              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+              {{ accession_label }} ·
+              <time datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: "%Y.%m.%d" }}</time>
             </span>
           </a>
         </li>

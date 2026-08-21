@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "FedAgg"
 topic: "End-edge-cloud federated learning for larger model training"
 order: 10

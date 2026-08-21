@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-07-09 14:09:04 +0900
 title: "GPTQ"
 topic: "Accurate post-training quantization for generative pretrained transformers"
 order: 28

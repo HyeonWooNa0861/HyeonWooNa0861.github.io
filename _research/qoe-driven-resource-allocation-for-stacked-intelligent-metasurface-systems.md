@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-19 14:02:37 +0900
 title: "QoE-Driven SIM"
 topic: "QoE-driven resource allocation for stacked intelligent metasurface systems"
 order: 72

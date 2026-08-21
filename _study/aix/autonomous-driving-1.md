@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-20 13:52:05 +0900
 title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"

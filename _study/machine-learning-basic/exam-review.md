@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-02 13:12:04 +0900
 title: "Machine Learning Basic Exam Review"
 course: "Machine Learning Basic"
 topic: "Exam Review"

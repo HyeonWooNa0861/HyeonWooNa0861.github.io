@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-06-19 18:09:01 +0900
 title: "Spatial-Temporal MEC"
 topic: "Joint task offloading and channel allocation with D3QN"
 order: 17

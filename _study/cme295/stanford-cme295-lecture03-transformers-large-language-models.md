@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-08-12 10:07:20 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"

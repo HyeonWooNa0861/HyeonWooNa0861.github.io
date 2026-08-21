@@ -10,6 +10,7 @@
 - `research_files` 원천 자료에 논문 별칭이 있으면 최종 원문 PDF와 최종 번역본 Markdown 파일명은 별칭을 맨 앞에 둔다. 이 별칭 우선 규칙은 제목 기반 slug 규칙보다 우선한다. 예: `cola-preserving-..._원문.pdf`, `cola-preserving-..._번역본.md`.
 - 별칭 우선 파일명 규칙은 `*_원문.pdf`와 `*_번역본.md` 같은 최종 산출물에만 적용하고, 추출 후보, review packet, report, sidecar metadata 같은 중간 산출물에는 적용하지 않는다.
 - 기존 collection, URL, sidebar 구조를 우선한다.
+- `_posts`, `_research`, `_study`, `_assignment`의 모든 공개 문서는 front matter에 `date: YYYY-MM-DD HH:MM:SS +0900` 형식의 최초 등록 시각을 둔다. 이 값은 `Latest accessions`와 `Accession Log`의 collection 통합 정렬 기준이며, 기존 문서를 수정할 때 임의로 갱신하지 않는다.
 - 실질적인 게시물 본문을 제외한 공개 UI와 콘텐츠 메타데이터는 영어로 작성한다. 여기에는 front matter의 `title`, `nav_title`, `topic`, 공개되는 category/tag, navigation title/description, index와 card의 제목·설명, tab/sidebar label, 버튼, 상태 문구가 포함된다.
 - 본문이 한국어여도 posting title과 index에 노출되는 이름은 영어로 유지한다. 한국어는 본문의 해설, 표, 예제, 인용 맥락처럼 실제 내용을 전달하는 영역에서만 사용한다.
 - 수상 실적, 증명서, 확인서처럼 본문 해설 대상이 아닌 증빙 PDF는 별도 포스트를 만들지 않고, 관련 포스트의 하단 참고자료/source 목록에 첨부한다.

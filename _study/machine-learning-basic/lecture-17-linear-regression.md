@@ -1,5 +1,6 @@
 ---
 layout: default
+date: 2026-05-28 12:20:48 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
