@@ -1411,13 +1411,18 @@
 
       .about-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+        grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: 16px;
         margin: 0;
       }
 
       .about-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        grid-column: span 6;
         min-width: 0;
+        min-height: 132px;
         margin: 0;
         padding: 22px;
         border: 1px solid var(--apple-hairline);
@@ -1433,8 +1438,26 @@
         box-shadow: var(--apple-card-hover-shadow);
       }
 
+      .about-card:focus-within {
+        border-color: color-mix(in srgb, var(--accent), transparent 58%);
+        box-shadow: var(--apple-card-hover-shadow);
+      }
+
       .about-card-primary {
         grid-column: 1 / -1;
+        min-height: 150px;
+      }
+
+      .about-card-major {
+        grid-column: span 4;
+      }
+
+      .about-card-email {
+        grid-column: span 8;
+      }
+
+      .about-card-social {
+        grid-column: span 6;
       }
 
       .about-card dt {
@@ -1461,6 +1484,59 @@
 
       .about-card:not(.about-card-primary) dd {
         font-size: clamp(17px, 2.1vw, 22px);
+      }
+
+      .about-contact-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        width: 100%;
+        color: var(--text);
+      }
+
+      .about-contact-link:hover {
+        color: var(--accent);
+      }
+
+      .about-contact-link:focus-visible {
+        border-radius: 8px;
+        outline: 3px solid var(--accent-soft);
+        outline-offset: 5px;
+      }
+
+      .about-contact-link-label {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .about-contact-link-mark {
+        display: inline-grid;
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        border-radius: 9px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: var(--apple-text-font);
+        font-size: 11px;
+        font-weight: 760;
+        letter-spacing: -0.02em;
+        transition: transform 180ms var(--ease-spring), background 180ms var(--ease), color 180ms var(--ease);
+      }
+
+      .about-contact-link:hover .about-contact-link-mark,
+      .about-contact-link:focus-visible .about-contact-link-mark {
+        transform: translateY(-2px);
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .about-contact-link-mark-linkedin {
+        font-size: 15px;
+        letter-spacing: -0.08em;
       }
 
       .visual-map-section {
@@ -2017,6 +2093,24 @@
         }
 
         .directory-section {
+          padding: 20px;
+        }
+
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .about-card,
+        .about-card-primary,
+        .about-card-major,
+        .about-card-email,
+        .about-card-social {
+          grid-column: 1;
+          min-height: 0;
+        }
+
+        .about-card {
           padding: 20px;
         }
 
