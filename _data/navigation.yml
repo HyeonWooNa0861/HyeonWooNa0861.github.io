@@ -50,6 +50,11 @@
       description: Agent harness, workflow, and self-improvement notes
       match: /post/ai-agents/
       section: ai-agents
+    - title: Knowledge & Productivity
+      url: /post/knowledge-productivity/
+      description: Personal productivity and knowledge-management systems
+      match: /post/knowledge-productivity/
+      section: knowledge-productivity
     - title: nxtcloud Boot Camp
       url: /post/nxtcloud-boot-camp/
       description: AWS Bedrock and AI engineering boot camp notes
