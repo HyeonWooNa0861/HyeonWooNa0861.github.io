@@ -404,6 +404,10 @@
       url: /study/data-structures/
       description: Data Structures lecture notes
       match: /study/data-structures/
+    - title: Algorithms
+      url: /study/algorithms/
+      description: Algorithm analysis and design lecture notes
+      match: /study/algorithms/
     - title: Machine Learning Basic
       url: /study/machine-learning-basic/
       description: Machine Learning Basic lecture notes
