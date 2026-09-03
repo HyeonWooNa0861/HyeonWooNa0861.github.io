@@ -30,7 +30,7 @@ Source PDF: `dmro-deep-meta-rl-task-offloading.pdf`
 
 DMRO는 IoT task offloading을 delay와 energy를 함께 줄이는 순차 의사결정 문제로 보고, deep Q-learning의 decision search와 meta-learning의 빠른 환경 적응을 결합해 edge-cloud computing에서 fine-grained task placement를 수행하는 프레임워크다.
 
-## 전체 흐름
+## 핵심 내용
 
 | Section | 핵심 내용 |
 | --- | --- |

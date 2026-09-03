@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
 
+> **핵심:** 마지막 강의는 세 부분으로 구성된다. 첫 부분은 전체 수업 복습으로, tokenization과 word2vec에서 시작해 RNN의 long-range dependency 한계, self-attention, transformer encoder와 decoder, RoPE, grouped query attention, pre-norm, BERT, GPT, T5, mixture of experts, temperature sampling까지 이어진다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

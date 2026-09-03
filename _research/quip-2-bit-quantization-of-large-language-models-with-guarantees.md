@@ -30,6 +30,14 @@ Source PDF: `quip-2-bit-quantization-of-large-language-models-with-guarantees.pd
 
 QuIP은 가중치와 Hessian을 무작위 직교 변환으로 비정합적으로 만든 뒤 LDLQ 적응형 반올림을 적용해, 2-bit LLM 양자화에서 발생하던 성능 붕괴를 크게 완화한 PTQ 방법이다.
 
+## 핵심 내용
+
+- QuIP은 2-bit LLM PTQ를 목표로 하는 방법이며, 핵심은 LDLQ adaptive rounding과 incoherence processing의 결합이다.
+- LDLQ는 Hessian 기반 대리 손실을 줄이기 위해 이전 열의 양자화 오차를 다음 열에 보정한다.
+- Incoherence processing은 무작위 직교 변환과 재스케일링으로 가중치와 Hessian의 좌표축 집중을 완화한다.
+- OPTQ는 LDLQ의 특수한 경우로 해석되며, QuIP은 이 관계를 통해 OPTQ에 대한 이론적 설명도 제공한다.
+- Llama 2 70B와 OPT 실험에서 2-bit 양자화 성능 붕괴를 크게 완화한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -92,14 +100,6 @@ QuIP의 핵심 차별점은 양자화 전에 가중치와 Hessian을 비정합�
 QuIP은 OPT 모델 계열과 Llama 2 70B에서 평가된다. 특히 Llama 2 70B 결과에서 2-bit OPTQ는 WikiText2 perplexity 123.908, C4 perplexity 70.541로 크게 무너지지만, QuIP 2-bit는 각각 6.326, 8.937까지 낮춘다. Zero-shot 과제에서도 PiQA는 50.54에서 75.08, StoryCloze는 51.75에서 75.37로 개선된다.
 
 OPT-30B 절제 결과에서도 비정합성 처리는 LDLQ/OPTQ뿐 아니라 Greedy, Near rounding과 결합했을 때도 2-bit 성능 붕괴를 크게 줄인다. 즉 개선은 특정 반올림 구현 하나의 효과가 아니라, 좌표계와 이상치 구조를 바꾸는 전처리의 효과가 크다.
-
-## 핵심 내용
-
-- QuIP은 2-bit LLM PTQ를 목표로 하는 방법이며, 핵심은 LDLQ adaptive rounding과 incoherence processing의 결합이다.
-- LDLQ는 Hessian 기반 대리 손실을 줄이기 위해 이전 열의 양자화 오차를 다음 열에 보정한다.
-- Incoherence processing은 무작위 직교 변환과 재스케일링으로 가중치와 Hessian의 좌표축 집중을 완화한다.
-- OPTQ는 LDLQ의 특수한 경우로 해석되며, QuIP은 이 관계를 통해 OPTQ에 대한 이론적 설명도 제공한다.
-- Llama 2 70B와 OPT 실험에서 2-bit 양자화 성능 붕괴를 크게 완화한다.
 
 ## 해석 포인트
 

@@ -32,6 +32,12 @@ Source PDF: [Local source PDF]({{ "/assets/pdfs/research/seed-scalable-distribut
 
 SEED는 data graph를 star와 clique 정보가 보존되는 형태로 분산 저장하고, query를 비용이 낮은 join unit으로 분해한 뒤 dynamic programming으로 bushy join plan을 찾아 중간 결과와 통신량을 줄인다.
 
+## 핵심 내용
+
+Arbitrary subgraph enumeration에서는 match 자체보다 edge 단위 join이 만드는 중간 결과와 remote adjacency access가 더 큰 비용이 될 수 있다. SEED는 star와 clique 관계를 local하게 복원할 수 있는 분산 저장 구조를 만들고, query를 선택도 높은 join unit으로 분해한다.
+
+Power-law graph를 반영한 cost model과 dynamic programming으로 bushy join plan을 선택해 큰 candidate table의 전파를 막고, clique match는 압축해 통신량을 낮춘다. Billion-edge graph 평가에서 기존 방법보다 큰 성능 향상을 보고했으며, storage layout, cardinality estimation, join ordering과 compression을 하나의 distributed query optimization 문제로 통합한 것이 핵심이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

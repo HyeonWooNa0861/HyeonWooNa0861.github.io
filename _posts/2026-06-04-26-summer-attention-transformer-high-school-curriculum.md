@@ -12,6 +12,8 @@ section: ai-education
 
 수업은 하루 4시간씩 총 16시간으로 구성되며, Transformer, self-attention, multi-head attention, positional encoding, machine translation 등의 주요 개념을 이론 강의, 예시 문장 분석, 논문 구조 해설, 이용 사례 학습으로 연결한다. 학습자는 이 과정을 통해 생성형 AI의 기반 구조를 단순 체험이 아니라 개념적 이해와 학술적 설명의 관점에서 정리하도록 훈련한다.
 
+> **핵심 메시지:** 이 커리큘럼은 Transformer를 사용법 중심으로 소개하지 않는다. 고등학생이 token과 context에서 시작해 self-attention, positional encoding, encoder·decoder 구조와 실제 활용까지 4일 동안 하나의 인과 흐름으로 설명할 수 있게 만드는 것이 목표다.
+
 ## 1. 과정 개요
 
 | 항목 | 내용 |
@@ -306,17 +308,17 @@ Transformer는 크게 encoder와 decoder로 나눌 수 있다. Encoder는 입력
 - Positional encoding은 “단어 순서가 바뀌면 의미가 바뀐다”는 예시에서 출발한다.
 - 최종 정리는 구현보다 입력 정보, 단어 관계, attention의 필요성, Transformer의 구조적 장점과 한계를 중심으로 본다.
 
-## 11. 참고 문헌 및 자료
-
-<ul>
-  <li><a href="{{ "/assets/pdfs/research/attention-is-all-you-need/attention-is-all-you-need-v7.pdf" | relative_url }}" target="_blank" rel="noopener">Attention Is All You Need, arXiv v7 PDF</a></li>
-  <li><a href="{{ "/research/attention-is-all-you-need/" | relative_url }}">Attention Is All You Need 연구 정리본</a></li>
-</ul>
-
-## 12. 마지막 핵심 정리
+## 11. 마지막 핵심 정리
 
 이 4일 과정의 핵심은 Transformer의 모든 세부 수식을 외우는 것이 아니다. 고등학생 수준에서는 다음 세 문장을 이해하면 충분하다.
 
 1. AI는 문장을 숫자로 바꾸고, 단어 사이의 관계를 계산한다.
 2. Attention은 지금 중요한 단어에 더 집중하게 해 주는 방법이다.
 3. Transformer는 attention을 중심으로 만든 구조이며, 오늘날 많은 생성형 AI의 기반이 되었다.
+
+## 12. 참고 문헌 및 자료
+
+<ul>
+  <li><a href="{{ "/assets/pdfs/research/attention-is-all-you-need/attention-is-all-you-need-v7.pdf" | relative_url }}" target="_blank" rel="noopener">Attention Is All You Need, arXiv v7 PDF</a></li>
+  <li><a href="{{ "/research/attention-is-all-you-need/" | relative_url }}">Attention Is All You Need 연구 정리본</a></li>
+</ul>

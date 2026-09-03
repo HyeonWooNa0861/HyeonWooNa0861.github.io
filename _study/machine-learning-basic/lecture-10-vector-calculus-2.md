@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-10.pdf`
 
+> **핵심:** **backpropagation의 수학적 기반은** chain rule. **automatic differentiation의 두 흐름은** forward pass와 backward pass.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -42,7 +44,7 @@ Source PDF: `machine-learning-basic-lecture-10.pdf`
 x -> A x + b -> nonlinear activation -> output
 ```
 
-신경망을 학습한다는 것은 주어진 \\((x,y)\\)에서 모델 출력이 \\(y\\)에 가까워지도록 \\(A\\), \\(b\\) 같은 parameter를 조정하는 것이다.
+신경망을 학습한다는 것은 주어진 \((x,y)\)에서 모델 출력이 \(y\)에 가까워지도록 \(A\), \(b\) 같은 parameter를 조정하는 것이다.
 
 loss에 대한 parameter gradient는 합성 함수의 chain rule을 통해 계산된다. 이 계산을 효율적으로 뒤에서 앞으로 전파하는 과정이 backpropagation이다.
 
@@ -95,7 +97,9 @@ Hessian은 점 근처에서 함수가 얼마나 휘어 있는지 나타낸다. �
 | Hessian | loss landscape의 곡률 |
 | Taylor approximation | 최적화 알고리즘의 근사 기반 |
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -103,6 +107,10 @@ Hessian은 점 근처에서 함수가 얼마나 휘어 있는지 나타낸다. �
 | automatic differentiation의 두 흐름은? | forward pass와 backward pass |
 | Hessian은 무엇을 나타내는가? | 함수의 2차 미분, 곡률 |
 | 2차 Taylor 근사가 1차보다 더 담는 정보는? | 곡률 정보 |
+
+## Study Guide
+
+작은 계산 graph에서 forward value를 저장하고 output에서 input 방향으로 local derivative를 곱해 backpropagation을 재현한다. automatic differentiation은 수치미분이 아니라 연산 graph와 chain rule을 이용한다는 점을 먼저 구분한다. Hessian과 2차 Taylor 항은 curvature를 추가하므로 1차 gradient 정보와 무엇이 달라지는지 식의 shape까지 확인한다.
 
 ## 복습 질문
 

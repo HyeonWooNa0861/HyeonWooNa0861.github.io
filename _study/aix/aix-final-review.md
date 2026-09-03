@@ -30,6 +30,8 @@ Source Materials:
 
 핵심 전략은 간단하다. 중간고사 전 범위는 기본 개념과 오답 제거 기준을 빠르게 확인하고, 중간고사 이후 범위는 LLM, 자율주행, imitation learning, robotics scaling을 더 깊게 본다.
 
+> **핵심:** **Linear Regression** \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. **Logistic Regression** linear score에 sigmoid를 붙여 class probability로 해석한다.
+
 ## 전체 흐름
 
 | 순서 | 범위 | 기말 대비 핵심 질문 |
@@ -69,7 +71,7 @@ Source Materials:
 
 ## 1. Linear Regression과 Optimization
 
-Linear Regression은 feature \\(x\\)로 target \\(y\\)를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
+Linear Regression은 feature \(x\)로 target \(y\)를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
 
 $$
 \hat{y}=w^Tx+b
@@ -91,10 +93,10 @@ $$
 
 | 개념 | 한 줄 정리 | 오답 제거 기준 |
 |---|---|---|
-| feature | 모델의 입력 정보, 보통 \\(x\\) | \\(y\\)를 feature라고 하면 틀림 |
-| target | 예측해야 하는 정답, 보통 \\(y\\) | \\(x\\)를 target이라고 하면 틀림 |
-| score | \\(w^Tx+b\\) 형태의 선형 출력 | weight와 feature의 가중합 구조가 없으면 의심 |
-| residual | \\(y-\hat{y}\\) | loss와 같은 말이 아님 |
+| feature | 모델의 입력 정보, 보통 \(x\) | \(y\)를 feature라고 하면 틀림 |
+| target | 예측해야 하는 정답, 보통 \(y\) | \(x\)를 target이라고 하면 틀림 |
+| score | \(w^Tx+b\) 형태의 선형 출력 | weight와 feature의 가중합 구조가 없으면 의심 |
+| residual | \(y-\hat{y}\) | loss와 같은 말이 아님 |
 | squared loss | residual을 제곱해 합친 objective | 부호가 상쇄되지 않게 제곱 |
 | iterative update | loss를 줄이도록 parameter를 반복 갱신 | closed-form처럼 한 번에 끝나는 방식이 아님 |
 
@@ -104,7 +106,7 @@ $$
 \theta \leftarrow \theta-\eta\nabla_\theta L(\theta)
 $$
 
-여기서 \\(\eta\\)는 learning rate다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요하다.
+여기서 \(\eta\)는 learning rate다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요하다.
 
 ## 2. Logistic Regression과 Classification
 
@@ -131,9 +133,9 @@ $$
 | 비교 | Linear Regression | Logistic Regression |
 |---|---|---|
 | 출력 | 실수 예측값 | class probability |
-| 기본 식 | \\(\hat{y}=w^Tx+b\\) | \\(P(y=1\mid x)=\sigma(w^Tx+b)\\) |
+| 기본 식 | \(\hat{y}=w^Tx+b\) | \(P(y=1\mid x)=\sigma(w^Tx+b)\) |
 | 대표 목적 | squared residual 감소 | observed label이 most likely 하도록 학습 |
-| decision boundary | 회귀에서는 직접 경계가 핵심이 아님 | \\(w^Tx+b=0\\)이면 기본적으로 선형 경계 |
+| decision boundary | 회귀에서는 직접 경계가 핵심이 아님 | \(w^Tx+b=0\)이면 기본적으로 선형 경계 |
 
 다중 class에서는 softmax를 사용한다. Softmax는 여러 class score를 합이 1인 확률 분포로 바꾼다.
 
@@ -256,10 +258,10 @@ $$
 
 | 구성 | 역할 |
 |---|---|
-| Query \\(Q\\) | 현재 token이 무엇을 찾는지 나타냄 |
-| Key \\(K\\) | 각 token이 어떤 정보를 갖는지 비교 기준 제공 |
-| Value \\(V\\) | attention weight로 실제 가져오는 정보 |
-| \\(QK^T\\) | token 간 관련도 점수 계산 |
+| Query \(Q\) | 현재 token이 무엇을 찾는지 나타냄 |
+| Key \(K\) | 각 token이 어떤 정보를 갖는지 비교 기준 제공 |
+| Value \(V\) | attention weight로 실제 가져오는 정보 |
+| \(QK^T\) | token 간 관련도 점수 계산 |
 | softmax | 관련도 점수를 attention weight로 정규화 |
 | positional encoding | self-attention만으로 부족한 순서 정보를 보강 |
 | multi-head attention | 여러 head가 서로 다른 관계나 패턴을 병렬로 봄 |
@@ -297,7 +299,7 @@ Decoding 방식도 구분해야 한다.
 | 방식 | 핵심 | 장점 | 한계 |
 |---|---|---|---|
 | greedy decoding | 매 step 가장 확률 높은 token 하나 선택 | 빠르고 단순 | 전체 문장 최적 보장 없음 |
-| beam search | 가능성 높은 \\(k\\)개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
+| beam search | 가능성 높은 \(k\)개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
 
 Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식이다. 모든 token이 모든 expert를 쓰는 것이 아니라, router가 token마다 필요한 expert 일부만 활성화한다.
 
@@ -429,7 +431,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 | 문항 유형 | 정답 방향 | 흔한 오답 |
 |---|---|---|
-| Linear regression | \\(x\\)는 feature, \\(y\\)는 target | \\(x\\)와 \\(y\\) 역할을 뒤집음 |
+| Linear regression | \(x\)는 feature, \(y\)는 target | \(x\)와 \(y\) 역할을 뒤집음 |
 | Logistic regression | score를 sigmoid로 probability화 | linear score를 버린다고 설명 |
 | MLP | hidden layer와 nonlinearity | layer만 많으면 비선형이라고 착각 |
 | Backpropagation | chain rule로 gradient 계산 | parameter update 자체와 혼동 |
@@ -451,7 +453,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 | 주제 | 반드시 기억할 문장 |
 |---|---|
-| Linear Regression | \\(\hat{y}=w^Tx+b\\), residual은 \\(y-\hat{y}\\), loss는 squared residual 중심이다. |
+| Linear Regression | \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. |
 | Logistic Regression | linear score에 sigmoid를 붙여 class probability로 해석한다. |
 | MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
 | Backpropagation | chain rule로 gradient를 계산하고, gradient descent가 parameter를 갱신한다. |
@@ -491,14 +493,14 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 <details>
 <summary>1. Linear regression에서 feature와 target은 무엇인가?</summary>
 
-답변: Feature는 모델의 입력 정보이고 보통 \\(x\\)로 둔다. Target은 예측해야 하는 정답이고 보통 \\(y\\)로 둔다.
+답변: Feature는 모델의 입력 정보이고 보통 \(x\)로 둔다. Target은 예측해야 하는 정답이고 보통 \(y\)로 둔다.
 
 </details>
 
 <details>
 <summary>2. Logistic regression은 왜 classification에 적합한가?</summary>
 
-답변: Linear score \\(w^Tx+b\\)를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문이다.
+답변: Linear score \(w^Tx+b\)를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문이다.
 
 </details>
 
@@ -582,7 +584,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 <details>
 <summary>14. Greedy decoding과 beam search는 어떻게 다른가?</summary>
 
-답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고른다. Beam search는 가능성 높은 \\(k\\)개의 후보 sequence를 유지하며 더 넓게 탐색한다.
+답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고른다. Beam search는 가능성 높은 \(k\)개의 후보 sequence를 유지하며 더 넓게 탐색한다.
 
 </details>
 

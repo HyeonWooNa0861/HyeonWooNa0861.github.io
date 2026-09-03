@@ -21,6 +21,8 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 8](https://www.youtu
 
 Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 8은 Lecture 7에서 세운 normalizing flow의 조건을 실제 architecture로 구체화한다. Flow는 simple prior \(p_Z(z)\)에서 시작해 invertible transformation \(x=f_\theta(z)\)를 적용하고, likelihood는 inverse \(z=f_\theta^{-1}(x)\)와 Jacobian determinant로 계산한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

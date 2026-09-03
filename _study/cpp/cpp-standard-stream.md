@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `C++ 표준 스트림 (updated).pdf`
 
+> **핵심:** **`stdin`** 표준 입력, fd 0. **`stdout`** 정상 출력, fd 1.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

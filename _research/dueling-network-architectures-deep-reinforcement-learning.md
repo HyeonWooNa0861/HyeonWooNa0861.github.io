@@ -28,6 +28,18 @@ keywords:
 
 Dueling DQN은 Q-value를 state value와 action advantage로 분해해, 비슷한 action이 많은 상태에서도 state의 중요도를 더 안정적으로 학습하게 만드는 network architecture다.
 
+## 핵심 내용
+
+이 논문은 DQN의 network architecture를 바꾸는 방식으로 reinforcement learning 성능을 개선한다. 핵심 아이디어는 모든 상태에서 action 차이가 중요한 것은 아니라는 점이다. 어떤 상태는 action 선택보다 state 자체가 유리한지 불리한지가 더 중요하다.
+
+Dueling DQN은 value stream과 advantage stream을 분리한다. Value stream은 현재 상태가 전반적으로 좋은지를 보고, advantage stream은 특정 action이 다른 action보다 얼마나 나은지를 본다. 두 stream을 합쳐 Q-value를 만들면 action 간 차이가 작을 때도 state value를 더 효율적으로 배울 수 있다.
+
+QECO 같은 offloading 문제에서 dueling DQN은 edge load 상태의 전반적 위험도와 특정 offloading action의 상대적 이점을 분리해 해석하는 데 도움이 된다. 따라서 단순 game-playing architecture가 아니라 MEC DRL에서도 실용적인 value estimation 구조로 읽을 수 있다.
+
+Dueling DQN의 장점은 action 간 차이가 작거나 일부 action만 의미 있는 상태에서 더 안정적인 value estimation을 제공한다는 점이다. 예를 들어 어떤 상태에서는 어떤 action을 선택해도 결과가 비슷한데, vanilla DQN은 모든 action value를 각각 정확히 배워야 한다. Dueling 구조는 shared state value를 먼저 잡고 action advantage를 보정하므로 sample efficiency를 높일 수 있다.
+
+MEC offloading에서는 queue가 거의 비어 있거나 channel이 매우 나쁜 상태처럼 action 차이가 제한적인 구간이 있다. 이런 상황에서 dueling architecture는 state 자체의 위험도와 action별 이득을 분리해 학습할 수 있다. QECO와 spatial-temporal MEC 논문들이 dueling DQN을 채택하는 이유는 단순 성능 향상보다 value decomposition이 decision 안정성에 도움을 주기 때문이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -47,8 +59,8 @@ Dueling architecture는 neural network의 마지막 부분을 두 stream으로 �
 
 | Stream | 의미 |
 |---|---|
-| Value stream | 상태 \\(s\\) 자체의 가치 \\(V(s)\\) 추정 |
-| Advantage stream | 특정 action \\(a\\)가 평균보다 얼마나 좋은지 \\(A(s,a)\\) 추정 |
+| Value stream | 상태 \(s\) 자체의 가치 \(V(s)\) 추정 |
+| Advantage stream | 특정 action \(a\)가 평균보다 얼마나 좋은지 \(A(s,a)\) 추정 |
 
 최종 Q-value는 두 값을 결합해 얻는다. 이때 advantage의 평균을 빼는 방식으로 identifiability 문제를 완화한다.
 
@@ -59,18 +71,6 @@ Dueling architecture는 neural network의 마지막 부분을 두 stream으로 �
 ## 4. 연구 맥락
 
 MEC offloading에서도 많은 action이 비슷한 cost를 가질 수 있다. 예를 들어 부하가 낮은 상태에서는 local과 edge offloading의 차이가 작을 수 있고, 특정 edge 간 차이가 미세할 수 있다. Dueling architecture는 이런 상황에서 state quality와 action-specific advantage를 분리해 학습 안정성을 높인다.
-
-## 핵심 내용
-
-이 논문은 DQN의 network architecture를 바꾸는 방식으로 reinforcement learning 성능을 개선한다. 핵심 아이디어는 모든 상태에서 action 차이가 중요한 것은 아니라는 점이다. 어떤 상태는 action 선택보다 state 자체가 유리한지 불리한지가 더 중요하다.
-
-Dueling DQN은 value stream과 advantage stream을 분리한다. Value stream은 현재 상태가 전반적으로 좋은지를 보고, advantage stream은 특정 action이 다른 action보다 얼마나 나은지를 본다. 두 stream을 합쳐 Q-value를 만들면 action 간 차이가 작을 때도 state value를 더 효율적으로 배울 수 있다.
-
-QECO 같은 offloading 문제에서 dueling DQN은 edge load 상태의 전반적 위험도와 특정 offloading action의 상대적 이점을 분리해 해석하는 데 도움이 된다. 따라서 단순 game-playing architecture가 아니라 MEC DRL에서도 실용적인 value estimation 구조로 읽을 수 있다.
-
-Dueling DQN의 장점은 action 간 차이가 작거나 일부 action만 의미 있는 상태에서 더 안정적인 value estimation을 제공한다는 점이다. 예를 들어 어떤 상태에서는 어떤 action을 선택해도 결과가 비슷한데, vanilla DQN은 모든 action value를 각각 정확히 배워야 한다. Dueling 구조는 shared state value를 먼저 잡고 action advantage를 보정하므로 sample efficiency를 높일 수 있다.
-
-MEC offloading에서는 queue가 거의 비어 있거나 channel이 매우 나쁜 상태처럼 action 차이가 제한적인 구간이 있다. 이런 상황에서 dueling architecture는 state 자체의 위험도와 action별 이득을 분리해 학습할 수 있다. QECO와 spatial-temporal MEC 논문들이 dueling DQN을 채택하는 이유는 단순 성능 향상보다 value decomposition이 decision 안정성에 도움을 주기 때문이다.
 
 ## 참고자료
 

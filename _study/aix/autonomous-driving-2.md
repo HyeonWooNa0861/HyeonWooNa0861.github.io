@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `Autonomous_Driving_2.pdf`
 
+> **핵심:** **2022 Tesla occupancy pivot의 의미는** object list보다 dense 3D geometry를 중심 representation으로 둔 것. **Occupancy가 safety에 유리한 이유는** unknown obstacle도 차 있는 공간으로 표현할 수 있기 때문.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -165,7 +167,9 @@ Modular stack -> Occupancy representation -> Foundation model for driving
 
 Modular stack은 문제를 module output으로 나눴고, occupancy는 더 조밀한 world state를 학습했으며, foundation model은 그 world state를 여러 task가 공유하도록 확장했다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -174,6 +178,10 @@ Modular stack은 문제를 module output으로 나눴고, occupancy는 더 조�
 | 2022 구조가 pure ViT가 아닌 이유는? | CNN backbone과 attention-based lifting이 결합된 구조이기 때문 |
 | Representation-level end-to-end란? | 사람이 만든 중간 output 대신 통합 latent world state를 학습하는 것 |
 | 2023 foundation model 방향의 핵심은? | 하나의 shared representation을 여러 driving task가 재사용하는 것 |
+
+## Study Guide
+
+multi-camera feature가 attention-based lifting을 거쳐 3D voxel occupancy가 되는 2022 구조를 순서대로 그려 본다. CNN backbone을 포함한다는 점 때문에 pure ViT와 다르고, representation-level end-to-end가 곧 camera-to-steering을 뜻하지 않는다는 점이 주요 혼동 지점이다. 마지막에는 temporal alignment가 4D world model을 만드는 과정과 shared representation·fleet learning의 연결을 함께 설명한다.
 
 ## 복습 질문
 

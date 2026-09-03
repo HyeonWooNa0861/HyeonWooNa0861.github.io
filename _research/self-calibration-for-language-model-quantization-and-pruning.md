@@ -30,6 +30,13 @@ Source PDF: `self-calibration-for-language-model-quantization-and-pruning.pdf`
 
 Self-Calibration은 외부 calibration corpus 없이 압축 대상 LM이 스스로 생성한 synthetic text를 calibration data로 사용해 quantization과 pruning의 downstream 성능을 유지하려는 방법이다.
 
+## 핵심 내용
+
+- Quantization/pruning은 calibration data 품질에 민감하다.
+- Self-calibration은 외부 corpus 없이 모델이 직접 synthetic calibration examples를 생성하게 한다.
+- 데이터 공개가 제한된 모델이나 domain mismatch가 큰 환경에서 유용하다.
+- 압축 대상 모델의 internal distribution을 활용하는 data-free calibration 접근이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -60,13 +67,6 @@ Self-calibration은 외부 데이터를 가져오지 않고, 압축하려는 모
 ## 3. Calibration 연구 축에서의 의미
 
 Self-Calibration은 COVERCAL이나 Calibration Data Curation과 함께 "압축 성능은 calibration data 설계에 의존한다"는 흐름을 만든다. COVERCAL은 outlier channel coverage를, Calibration Data Curation은 activation-space diversity와 capability 보존을, Self-Calibration은 external data 없이 model-generated data를 쓰는 방향을 제시한다.
-
-## 핵심 내용
-
-- Quantization/pruning은 calibration data 품질에 민감하다.
-- Self-calibration은 외부 corpus 없이 모델이 직접 synthetic calibration examples를 생성하게 한다.
-- 데이터 공개가 제한된 모델이나 domain mismatch가 큰 환경에서 유용하다.
-- 압축 대상 모델의 internal distribution을 활용하는 data-free calibration 접근이다.
 
 ## 참고자료
 

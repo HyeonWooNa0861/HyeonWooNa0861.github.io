@@ -33,6 +33,14 @@ Source URL: `https://www.together.ai/blog/minions`
 
 Minions는 긴 private context를 전부 cloud frontier model에 보내지 않고, local small LM이 context chunk를 읽어 중간 결과를 만들고 cloud model이 task decomposition과 aggregation을 담당하게 하는 local-remote LM 협업 프로토콜이다.
 
+## 핵심 내용
+
+- Minions는 local small LM과 cloud frontier model의 협업으로 long-context task의 cloud 비용을 줄이는 protocol이다.
+- 단순 Minion protocol은 cloud cost를 크게 줄이지만, local model이 long context와 multi-step instruction에 취약해 성능 손실이 남는다.
+- MinionS는 RemoteLM이 job generation code를 만들고, LocalLM이 context chunk별 job을 병렬 실행하고, RemoteLM이 filtered output을 집계하는 구조다.
+- 논문 v1 기준 MinionS는 8B local model에서 remote-only 성능의 97.9%를 회복하면서 cloud cost는 18.0%만 사용한다.
+- MEC/QECO-Adapt 관점에서는 "AI workload의 local-edge-cloud 역할 분담"을 설명하는 참고자료로 활용할 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -192,14 +200,6 @@ Minions는 직접적인 MEC offloading 최적화 논문은 아니지만, QECO-Ad
 QECO-Adapt의 UE -> AP -> channel/resource -> edge server 구조는 통신 지연, edge load, energy를 중심으로 offloading을 결정한다. Minions는 network/MEC 수식은 없지만, local small model이 긴 context 처리라는 계산을 담당하고 cloud model은 고난도 reasoning과 aggregation을 담당한다는 split framing을 제공한다.
 
 따라서 QECO-Adapt 후속 설명에서는 Minions를 "AI workload도 점점 local-edge-cloud split 문제로 이동한다"는 motivation 자료로 활용할 수 있다.
-
-## 핵심 내용
-
-- Minions는 local small LM과 cloud frontier model의 협업으로 long-context task의 cloud 비용을 줄이는 protocol이다.
-- 단순 Minion protocol은 cloud cost를 크게 줄이지만, local model이 long context와 multi-step instruction에 취약해 성능 손실이 남는다.
-- MinionS는 RemoteLM이 job generation code를 만들고, LocalLM이 context chunk별 job을 병렬 실행하고, RemoteLM이 filtered output을 집계하는 구조다.
-- 논문 v1 기준 MinionS는 8B local model에서 remote-only 성능의 97.9%를 회복하면서 cloud cost는 18.0%만 사용한다.
-- MEC/QECO-Adapt 관점에서는 "AI workload의 local-edge-cloud 역할 분담"을 설명하는 참고자료로 활용할 수 있다.
 
 ## 해석 포인트
 

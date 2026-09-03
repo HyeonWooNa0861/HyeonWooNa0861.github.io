@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=Ub3GoFaUcds){:target="_blank" rel="noopener"}
 
+> **핵심:** 첫 강의는 CME 295의 목표와 운영 방식을 소개한 뒤, LLM을 이해하기 위한 기본 NLP 문제들을 분류한다. 텍스트 입력에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 입력받아 텍스트를 생성하는 generation을 구분하고, sentiment extraction, NER, machine translation, question answering, summarization 같은 예를 든다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

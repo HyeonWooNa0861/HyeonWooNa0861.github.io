@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `Autonomous_Driving_1.pdf`
 
+> **핵심:** **Modular ADS의 기본 module은** localization, perception, prediction, planning, control. **RSS의 핵심 목적은** learned policy와 별도로 검증 가능한 safety envelope 제공.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -154,7 +156,9 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다.
 
 이 관점에서 "모델"은 neural network 하나가 아니라 데이터 수집부터 배포까지 포함한 폐루프 시스템이다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -163,6 +167,10 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다.
 | Error propagation은 무엇인가? | 앞 module의 오류가 뒤 module 의사결정으로 전파되는 현상 |
 | Occupancy가 object list보다 나은 점은? | unknown object와 irregular geometry를 공간적으로 표현 가능 |
 | Data engine이 중요한 이유는? | rare case를 지속적으로 발견하고 모델을 갱신하기 위해 |
+
+## Study Guide
+
+복습은 localization에서 control까지 modular pipeline을 먼저 그린 뒤, 앞 모듈의 오차가 뒤 의사결정으로 전파되는 경로를 한 사례로 추적한다. 다음으로 object list와 occupancy를 unknown obstacle·irregular geometry 관점에서 비교해, 표현 전환의 이유를 설명할 수 있어야 한다. 시험에서는 RSS의 safety envelope와 fleet data → mining → auto-labeling → retraining → redeployment 폐루프를 우선 재현한다.
 
 ## 복습 질문
 

@@ -13,6 +13,8 @@ section: ai-agents
 
 핵심은 모델 자체의 지능만 보지 말고, 모델 주변의 실행 환경을 함께 봐야 한다는 점이다. coding agent가 실제 repository에서 파일을 읽고 수정하고 테스트를 실행할 수 있는 이유는 base model만으로 설명되지 않는다. 어떤 도구를 언제 쓸 수 있는지, 실패 로그를 어디에 남기는지, sub-agent를 어떻게 띄우고 회수하는지, 어떤 검증을 통과해야 완료로 볼 것인지가 모두 harness의 설계 문제다.
 
+> **핵심 메시지:** Agent의 실제 능력은 base model만이 아니라 context, tools, persistent state, permissions, evaluation과 반복 workflow를 묶는 harness에서 결정된다. Self-improvement도 먼저 이 실행 체계를 관찰 가능하고 검증 가능하게 개선하는 문제로 이해해야 한다.
+
 ## 1. 글의 문제의식
 
 Recursive self-improvement는 AI가 자기 자신을 더 나은 시스템으로 개선하는 반복 구조를 뜻한다. 원문은 이 개념을 모델이 직접 weight를 고치는 좁은 의미로만 보지 않는다. 더 현실적인 가까운 경로는 모델 주변의 training pipeline, deployment system, workflow, memory, evaluator를 개선하는 방향이라고 본다.

@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 11](https://www.youtube.com/watch?v=m61KiAMCJ5Q){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture11.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 11은 energy-based model(EBM)을 통해 생성 모델의 design space를 다시 정리한다. Autoregressive model은 chain rule로 joint probability를 조건부들의 곱으로 만들기 때문에 likelihood 계산과 sampling이 명확하지만 순서와 factorization 구조가 들어간다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

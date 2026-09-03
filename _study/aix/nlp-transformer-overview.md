@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `4_NLP_Transformer.pdf`
 
+> **핵심:** **Bag-of-Words의 한계는** 순서와 긴 문맥을 잘 반영하지 못한다. **LSTM이 RNN보다 나은 점은** gate로 장기 기억을 더 안정적으로 유지한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -138,7 +140,9 @@ Encoder-only는 입력 전체 representation을 풍부하게 만들고, decoder-
 
 Transfer learning은 label이 적은 task에서도 강한 성능을 가능하게 한다. 모델은 이미 문법, 의미, 세계 지식 일부를 representation에 담고 있기 때문이다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -147,6 +151,10 @@ Transfer learning은 label이 적은 task에서도 강한 성능을 가능하게
 | Attention이 Seq2Seq에서 해결한 병목은? | 입력 전체를 하나의 context vector에 압축하는 문제 |
 | Transformer가 병렬화에 유리한 이유는? | recurrence 없이 self-attention으로 token 관계를 계산하기 때문 |
 | Encoder-only와 decoder-only의 차이는? | 이해 중심 representation vs autoregressive generation |
+
+## Study Guide
+
+BoW·n-gram → embedding → RNN/LSTM → Seq2Seq attention → Transformer 순서로 각 단계가 바로 앞 병목을 어떻게 줄였는지 연결한다. Seq2Seq의 context bottleneck을 푸는 attention과 recurrence 자체를 없앤 self-attention을 같은 개념으로 뭉뚱그리지 않는 것이 중요하다. 시험에서는 encoder-only, decoder-only, encoder-decoder의 문맥 가시성과 pretraining·fine-tuning·prompting의 재사용 방식을 함께 비교한다.
 
 ## 복습 질문
 

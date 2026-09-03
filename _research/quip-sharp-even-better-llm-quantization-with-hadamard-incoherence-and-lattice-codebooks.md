@@ -30,6 +30,13 @@ Source PDF: `quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-a
 
 QuIP#은 QuIP의 incoherence processing을 randomized Hadamard transform으로 개선하고, E8 lattice 기반 codebook과 fine-tuning을 결합해 극저비트 LLM PTQ 품질을 높인 방법이다.
 
+## 핵심 내용
+
+- QuIP#은 극저비트 LLM PTQ에서 QuIP보다 강한 incoherence/codebook 설계를 제안한다.
+- E8 lattice는 8D sphere packing 성질 때문에 low-bit vector quantization에 적합하다.
+- Randomized Hadamard transform은 빠르고 이론적으로 좋은 incoherence 처리를 제공한다.
+- EPTQ의 FE8 관점과 비교하면, QuIP#은 품질 중심 E8 codebook 흐름의 중요한 선행 자료다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -66,13 +73,6 @@ QuIP#은 EPTQ와 직접 연결되는 중요한 선행 흐름이다. EPTQ의 Fact
 | QuIP# | Hadamard incoherence + E8 lattice codebook + fine-tuning |
 | QTIP | trellis-coded quantization으로 high-dimensional quantization을 효율화 |
 | EPTQ | E8/FE8 codebook과 cache-friendly lookup을 결합 |
-
-## 핵심 내용
-
-- QuIP#은 극저비트 LLM PTQ에서 QuIP보다 강한 incoherence/codebook 설계를 제안한다.
-- E8 lattice는 8D sphere packing 성질 때문에 low-bit vector quantization에 적합하다.
-- Randomized Hadamard transform은 빠르고 이론적으로 좋은 incoherence 처리를 제공한다.
-- EPTQ의 FE8 관점과 비교하면, QuIP#은 품질 중심 E8 codebook 흐름의 중요한 선행 자료다.
 
 ## 참고자료
 

@@ -30,6 +30,13 @@ Source PDF: `dataset-pruning-reducing-training-data-by-examining-generalization-
 
 Dataset Pruning은 개별 sample 점수만으로 데이터를 고르는 대신, 특정 sample 집합을 제거했을 때 모델 일반화가 얼마나 변하는지 influence function으로 근사해 작은 proxy training set을 구성하는 방법이다.
 
+## 핵심 내용
+
+- 데이터셋 축소는 개별 sample 점수보다 sample 집합의 공동 영향이 중요하다.
+- Influence function을 이용해 sample 제거가 parameter/generalization에 미치는 영향을 근사한다.
+- 일반화 격차 constraint를 두고 가장 큰 redundant subset을 제거한다.
+- 학습 비용과 architecture search 비용을 줄이는 proxy dataset 구성에 활용할 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -74,13 +81,6 @@ Dataset Pruning은 개별 sample 점수만으로 데이터를 고르는 대신, 
 ## GitBlog 관점
 
 이 자료는 LLM quantization 계열과 직접 연결되지는 않지만, calibration data curation과 sample selection이라는 큰 축에서 관련된다. COVERCAL이나 Self-Calibration이 "압축 전에 어떤 calibration data를 쓸 것인가"를 다룬다면, Dataset Pruning은 "학습 또는 탐색에 필요한 데이터 subset을 어떻게 줄일 것인가"라는 더 일반적인 데이터 효율화 문제를 다룬다.
-
-## 핵심 내용
-
-- 데이터셋 축소는 개별 sample 점수보다 sample 집합의 공동 영향이 중요하다.
-- Influence function을 이용해 sample 제거가 parameter/generalization에 미치는 영향을 근사한다.
-- 일반화 격차 constraint를 두고 가장 큰 redundant subset을 제거한다.
-- 학습 비용과 architecture search 비용을 줄이는 proxy dataset 구성에 활용할 수 있다.
 
 ## 참고자료
 

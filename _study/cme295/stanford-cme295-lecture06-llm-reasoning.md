@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=k5Fh-UgTuCo){:target="_blank" rel="noopener"}
 
+> **핵심:** 6강은 preference tuning과 RLHF를 바탕으로 reasoning model을 다룬다. 강의는 reasoning을 주로 math나 coding problem처럼 multi-step reasoning process가 필요한 문제를 푸는 능력으로 정의한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

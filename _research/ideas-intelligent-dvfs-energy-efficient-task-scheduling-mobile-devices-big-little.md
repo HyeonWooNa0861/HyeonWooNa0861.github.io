@@ -32,6 +32,12 @@ Source PDF: `ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devi
 
 iDEAS는 주기적 mobile task를 big core, LITTLE core 또는 edge server에 배치하면서 CPU frequency와 offloading power까지 함께 선택해 deadline을 지키고 device energy를 줄이는 DQN 기반 scheduler다.
 
+## 핵심 내용
+
+big.LITTLE mobile device에서 task 배치, CPU frequency와 edge offloading power를 따로 결정하면 계산 지연·통신 지연·에너지와 deadline 사이의 결합을 놓치기 쉽다. iDEAS는 workload와 channel 상태를 관찰해 big core, LITTLE core 또는 edge server를 고르고, DVFS와 transmit power까지 함께 선택하는 DQN 기반 scheduler다.
+
+보상은 energy 절감만 추구해 task drop을 늘리지 않도록 deadline 위반을 함께 반영하며, 비교 실험에서 여러 local/offloading baseline보다 에너지와 scheduling 성능의 균형을 개선한다. 이 연구의 의의는 heterogeneous core와 wireless offloading을 하나의 순차 의사결정 문제로 통합한 데 있고, 실제 적용에는 online measurement와 hardware별 model calibration이 필요하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

@@ -14,6 +14,8 @@ Source PDF: `Smart Pointer, RAII, Reference Counting.pdf`
 
 이 과제는 C++의 스마트 포인터가 왜 필요한지, `std::shared_ptr`의 reference counting이 어떻게 동작하는지, 그리고 JVM의 Garbage Collection과 어떤 차이가 있는지 정리한 내용이다. C++은 직접 메모리를 제어할 수 있다는 장점이 있지만, 그만큼 메모리 누수, dangling pointer, double deletion 같은 위험도 함께 가진다.
 
+**핵심 메시지:** 스마트 포인터 선택의 기준은 편의성이 아니라 소유권이다. 단독 소유는 `unique_ptr`, 실제 공유 소유는 `shared_ptr`, 공유 객체에 대한 비소유 관찰과 순환 참조 차단은 `weak_ptr`로 표현해야 한다.
+
 ## 1. 일반 포인터의 문제점
 
 C++에서 `new`로 할당한 메모리는 `delete`로 직접 해제해야 한다. 이 과정을 놓치면 할당된 메모리가 계속 남아 메모리 누수가 발생한다. 이미 해제된 메모리를 다시 참조하면 dangling pointer 문제가 생기고, 같은 메모리를 두 번 해제하면 double deletion으로 프로그램이 불안정해질 수 있다.
@@ -54,13 +56,16 @@ C++ 스마트 포인터와 JVM GC는 모두 개발자가 직접 `delete`를 호�
 
 반면 JVM GC는 메모리 관리 부담을 크게 줄이고 순환 참조도 자동으로 처리할 수 있지만, 언제 GC가 실행될지 정확히 예측하기 어렵다. 경우에 따라 stop-the-world pause가 발생할 수 있어 실시간성이 중요한 시스템에서는 부담이 될 수 있다.
 
-## 6. 장단점 정리
+## 핵심 정리
 
-- 스마트 포인터는 메모리 누수와 dangling pointer를 줄인다.
-- RAII는 예외가 발생해도 자원을 안전하게 정리할 수 있게 한다.
-- `shared_ptr`는 다중 소유권을 표현할 수 있지만 reference counting 오버헤드가 있다.
-- 순환 참조는 `shared_ptr`만으로 해결되지 않으며 `weak_ptr`가 필요하다.
-- JVM GC는 개발 편의성이 높지만 회수 시점이 비결정적이고 정지 시간이 생길 수 있다.
+| 주제 | 꼭 기억할 기준 |
+|---|---|
+| RAII | 자원 수명을 객체 수명에 묶어 정상 반환과 예외 상황 모두에서 정리를 보장한다. |
+| `unique_ptr` | 복사할 수 없는 단독 소유권이며, 소유권 이전에는 `std::move`를 사용한다. |
+| `shared_ptr` | control block의 use count로 공유 소유권을 관리하며 마지막 소유자가 사라질 때 객체를 파괴한다. |
+| `weak_ptr` | use count를 늘리지 않는 비소유 참조로 `shared_ptr` 순환을 끊는다. |
+| 비용 | 참조 카운트 갱신, 멀티스레드 원자적 연산, 별도 control block에 따른 오버헤드가 있다. |
+| JVM GC와 차이 | C++ RAII는 해제 시점을 비교적 예측할 수 있고, tracing GC는 순환 참조를 회수하지만 실행 시점이 비결정적일 수 있다. |
 
 ## 결론 및 학습 성과
 

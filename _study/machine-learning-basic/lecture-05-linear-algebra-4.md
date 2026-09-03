@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-05.pdf`
 
+> **핵심:** **기저 변환에서 바뀌는 것은** 벡터 자체가 아니라 좌표 표현. **similar matrix가 중요한 이유는** 같은 선형 변환의 다른 기저 표현이며 고유값을 공유.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -47,7 +49,7 @@ Source PDF: `machine-learning-basic-lecture-05.pdf`
 
 기저 변환을 이해할 때는 "벡터 자체"와 "좌표 표현"을 구분해야 한다.
 
-같은 벡터 \\(x\\)라도 기저가 달라지면 좌표 표현이 달라진다.
+같은 벡터 \(x\)라도 기저가 달라지면 좌표 표현이 달라진다.
 
 $$
 [x]_B \quad \text{and} \quad [x]_C
@@ -59,8 +61,8 @@ $$
 
 | 개념 | 형태 | 의미 |
 |---|---|---|
-| equivalent | \\(B = PAQ\\) | 입력/출력 기저가 모두 바뀐 표현 |
-| similar | \\(B = P^{-1}AP\\) | 같은 공간에서 기저만 바뀐 표현 |
+| equivalent | \(B = PAQ\) | 입력/출력 기저가 모두 바뀐 표현 |
+| similar | \(B = P^{-1}AP\) | 같은 공간에서 기저만 바뀐 표현 |
 
 닮은 행렬은 고유값 같은 중요한 성질을 공유한다.
 
@@ -70,14 +72,14 @@ $$
 
 | 공간 | 의미 |
 |---|---|
-| image space / column space | \\(Ax\\)로 도달 가능한 모든 출력 |
-| null space | \\(Ax = 0\\)을 만족하는 모든 입력 |
+| image space / column space | \(Ax\)로 도달 가능한 모든 출력 |
+| null space | \(Ax = 0\)을 만족하는 모든 입력 |
 
 영 공간은 항상 0 벡터를 포함한다. 영 공간이 0만 포함하면 변환은 injective하다.
 
 ## 5. Rank-Nullity 정리
 
-\\(A\\)가 \\(m \times n\\) 행렬일 때:
+\(A\)가 \(m \times n\) 행렬일 때:
 
 $$
 \operatorname{rank}(A) + \operatorname{nullity}(A) = n
@@ -85,7 +87,7 @@ $$
 
 입력 차원은 "출력으로 살아남는 차원(rank)"과 "0으로 사라지는 차원(nullity)"으로 나뉜다.
 
-정사각행렬에서 \\(\operatorname{rank}(A)=n\\)이면 injective, surjective, bijective가 서로 동치가 된다.
+정사각행렬에서 \(\operatorname{rank}(A)=n\)이면 injective, surjective, bijective가 서로 동치가 된다.
 
 ## 6. 아핀 공간
 
@@ -95,13 +97,13 @@ $$
 x_0 + U
 $$
 
-여기서 \\(U\\)는 direction space, \\(x_0\\)는 support point다. 원점을 지나지 않을 수 있으므로 일반적으로 벡터공간은 아니다.
+여기서 \(U\)는 direction space, \(x_0\)는 support point다. 원점을 지나지 않을 수 있으므로 일반적으로 벡터공간은 아니다.
 
 | 차원 | 아핀 공간 예 |
 |---|---|
 | 1차원 | 선 |
 | 2차원 | 평면 |
-| \\(n-1\\)차원 | hyperplane |
+| \(n-1\)차원 | hyperplane |
 
 ## 7. 아핀 변환
 
@@ -111,37 +113,43 @@ $$
 f(x) = Ax + a
 $$
 
-신경망의 layer \\(Wx + b\\)도 기본적으로 아핀 변환 뒤에 비선형 함수를 적용하는 구조로 볼 수 있다.
+신경망의 layer \(Wx + b\)도 기본적으로 아핀 변환 뒤에 비선형 함수를 적용하는 구조로 볼 수 있다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
 | 기저 변환에서 바뀌는 것은? | 벡터 자체가 아니라 좌표 표현 |
 | similar matrix가 중요한 이유는? | 같은 선형 변환의 다른 기저 표현이며 고유값을 공유 |
-| image space는 무엇인가? | \\(Ax\\)로 만들 수 있는 출력 전체 |
-| affine mapping의 형태는? | \\(Ax + a\\) |
+| image space는 무엇인가? | \(Ax\)로 만들 수 있는 출력 전체 |
+| affine mapping의 형태는? | \(Ax + a\) |
+
+## Study Guide
+
+같은 vector를 두 basis에서 좌표로 표현해 vector 자체와 coordinate tuple이 다르다는 점부터 확인한다. similar matrices는 같은 linear map의 다른 basis 표현이므로 eigenvalue를 공유하고, image/null space는 Ax가 만들 수 있는 출력과 0으로 보내는 입력으로 대비한다. 마지막에는 linear mapping Ax와 affine mapping Ax+a가 원점 보존 여부에서 갈리는 이유를 예제로 검산한다.
 
 ## 복습 질문
 
 <details>
-<summary>1. \\(Ax=0\\)의 해 공간이 크다는 것은 변환 \\(A\\)가 어떤 정보를 잃는다는 뜻인가?</summary>
+<summary>1. \(Ax=0\)의 해 공간이 크다는 것은 변환 \(A\)가 어떤 정보를 잃는다는 뜻인가?</summary>
 
-답변: null space가 크다는 것은 서로 다른 입력 방향들이 \\(A\\)를 거친 뒤 0 또는 같은 출력으로 collapse될 수 있다는 뜻이다. 즉 변환이 입력의 일부 방향 정보를 구분하지 못한다.
+답변: null space가 크다는 것은 서로 다른 입력 방향들이 \(A\)를 거친 뒤 0 또는 같은 출력으로 collapse될 수 있다는 뜻이다. 즉 변환이 입력의 일부 방향 정보를 구분하지 못한다.
 
 </details>
 
 <details>
 <summary>2. 신경망의 bias term은 왜 아핀 변환 관점에서 자연스러운가?</summary>
 
-답변: 선형 변환 \\(Ax\\)는 원점을 반드시 원점으로 보낸다. 그러나 실제 모델은 decision boundary나 activation을 원점에서 이동시켜야 할 때가 많다. \\(Ax+a\\) 같은 아핀 변환은 이 이동을 bias term으로 표현한다.
+답변: 선형 변환 \(Ax\)는 원점을 반드시 원점으로 보낸다. 그러나 실제 모델은 decision boundary나 activation을 원점에서 이동시켜야 할 때가 많다. \(Ax+a\) 같은 아핀 변환은 이 이동을 bias term으로 표현한다.
 
 </details>
 
 <details>
 <summary>3. 닮은 행렬이 고유값을 공유하는 이유를 좌표 변환 관점으로 설명해보자.</summary>
 
-답변: 닮은 행렬은 같은 선형 변환을 다른 basis에서 표현한 것이다. 좌표 표현은 달라지지만 변환 자체의 stretch factor인 eigenvalue는 변하지 않는다. 그래서 \\(B=P^{-1}AP\\)는 \\(A\\)와 같은 고유값을 가진다.
+답변: 닮은 행렬은 같은 선형 변환을 다른 basis에서 표현한 것이다. 좌표 표현은 달라지지만 변환 자체의 stretch factor인 eigenvalue는 변하지 않는다. 그래서 \(B=P^{-1}AP\)는 \(A\)와 같은 고유값을 가진다.
 
 </details>
 

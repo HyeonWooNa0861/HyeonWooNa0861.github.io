@@ -33,6 +33,14 @@ Source URL: `https://www.together.ai/blog/yaqa`
 
 YAQA는 LLM PTQ를 layer별 activation error 최소화 문제가 아니라, 양자화 모델이 원 모델의 출력 분포를 얼마나 보존하는지의 문제로 재정의하고 KL divergence를 직접 줄이려는 adaptive rounding 관점을 제시한다.
 
+## 핵심 내용
+
+- YAQA는 PTQ의 목표를 "layer별 activation error 감소"가 아니라 "원 모델 출력 분포 보존"으로 둔다.
+- 기존 GPTQ/AWQ/LDLQ류 proxy는 각 layer를 독립적으로 다루므로, end-to-end KL 감소를 직접 보장하지 않는다.
+- YAQA는 KL Hessian을 Kronecker factor로 근사하고, input/output dimension 양쪽 feedback을 사용하는 adaptive rounding을 제안한다.
+- LDLQ는 YAQA rounding의 특수한 경우로 해석된다.
+- EPTQ 후속연구에서는 downstream accuracy, perplexity, throughput 외에 original-output KL divergence를 추가 metric으로 넣을 근거가 된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -109,14 +117,6 @@ EPTQ는 FE8 lattice, weight scale normalization, adaptive critical weight preser
 | Critical vector preservation은 원 모델 출력 보존에도 중요한가? | 보존 mask가 downstream accuracy뿐 아니라 output KL에도 영향을 주는지 측정할 수 있다. |
 | E8/FE8 variant의 차이는 KL에서도 같은 방향인가? | throughput 중심 FE8과 accuracy 중심 E8을 original-output KL 관점으로 재비교할 수 있다. |
 | 추가 metric은 무엇인가? | Quantized model과 original model 사이의 KL divergence를 넣는 것이 자연스럽다. |
-
-## 핵심 내용
-
-- YAQA는 PTQ의 목표를 "layer별 activation error 감소"가 아니라 "원 모델 출력 분포 보존"으로 둔다.
-- 기존 GPTQ/AWQ/LDLQ류 proxy는 각 layer를 독립적으로 다루므로, end-to-end KL 감소를 직접 보장하지 않는다.
-- YAQA는 KL Hessian을 Kronecker factor로 근사하고, input/output dimension 양쪽 feedback을 사용하는 adaptive rounding을 제안한다.
-- LDLQ는 YAQA rounding의 특수한 경우로 해석된다.
-- EPTQ 후속연구에서는 downstream accuracy, perplexity, throughput 외에 original-output KL divergence를 추가 metric으로 넣을 근거가 된다.
 
 ## 해석 포인트
 

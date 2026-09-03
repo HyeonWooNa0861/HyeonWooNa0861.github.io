@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
 
+> **핵심:** 이 강의는 LLM 평가를 출력 품질 평가로 좁혀 정의한다. LLM은 자연어, 코드, 수학 reasoning 등 자유 형식 출력을 만들기 때문에 보편적 지표를 만들기 어렵다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

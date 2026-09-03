@@ -28,6 +28,18 @@ keywords:
 
 LyDROO는 stochastic MEC offloading 문제에서 장기 queue stability와 average power constraint를 보장하기 위해 Lyapunov optimization으로 per-frame subproblem을 만들고, DRL로 binary offloading decision을 빠르게 근사하는 framework다.
 
+## 핵심 내용
+
+이 논문은 online computation offloading에서 성능만 높이는 것이 아니라 queue가 안정적으로 유지되어야 한다는 점을 강조한다. Task가 계속 도착하는 상황에서 처리량이 순간적으로 높아도 backlog가 계속 증가하면 시스템은 결국 불안정해진다.
+
+LyDROO는 Lyapunov optimization으로 장기 제약을 frame별 문제로 바꾼다. 이렇게 하면 미래 channel과 task arrival을 몰라도 현재 queue와 channel 상태를 기준으로 decision을 내릴 수 있다. 이후 DRL은 binary offloading decision을 빠르게 생성하는 역할을 한다.
+
+핵심은 이론적 안정성 도구와 learning-based approximation을 결합했다는 점이다. MEC 연구에서 단순히 reward가 높은 policy보다 queue stability와 power constraint를 함께 만족하는 policy가 중요하다는 것을 보여주는 논문이다.
+
+LyDROO의 핵심은 DROO의 learning-based offloading을 queue-aware control과 결합한 점이다. DRL은 channel/task dynamics를 학습해 action을 제안할 수 있지만, 장기 queue 안정성을 직접 보장하기는 어렵다. Lyapunov drift-plus-penalty 구조는 backlog가 커질수록 decision에 안정성 압력을 넣어, short-term rate maximization이 장기 불안정으로 이어지는 것을 줄인다.
+
+따라서 LyDROO는 pure DRL과 pure optimization 사이의 절충으로 읽을 수 있다. Model-free 학습은 복잡한 wireless powered MEC 환경에 적응하고, Lyapunov framework는 안정성에 대한 해석 가능한 제어 신호를 제공한다. 이 조합은 QECO류 reward 설계에서도 "성능 지표를 reward에 넣는 것"과 "queue 안정성을 별도 구조로 관리하는 것"의 차이를 생각하게 만든다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -63,18 +75,6 @@ LyDROO는 Lyapunov optimization과 DRL을 결합한다.
 ## 4. 연구 맥락
 
 QECO-Adapt는 dropped task와 dense load 문제를 다루며, LyDROO는 queue stability 보장 관점에서 중요한 비교 축이다. 두 연구 모두 online MEC 환경에서 단기 reward보다 장기 안정성이 중요하다는 문제의식을 공유한다.
-
-## 핵심 내용
-
-이 논문은 online computation offloading에서 성능만 높이는 것이 아니라 queue가 안정적으로 유지되어야 한다는 점을 강조한다. Task가 계속 도착하는 상황에서 처리량이 순간적으로 높아도 backlog가 계속 증가하면 시스템은 결국 불안정해진다.
-
-LyDROO는 Lyapunov optimization으로 장기 제약을 frame별 문제로 바꾼다. 이렇게 하면 미래 channel과 task arrival을 몰라도 현재 queue와 channel 상태를 기준으로 decision을 내릴 수 있다. 이후 DRL은 binary offloading decision을 빠르게 생성하는 역할을 한다.
-
-핵심은 이론적 안정성 도구와 learning-based approximation을 결합했다는 점이다. MEC 연구에서 단순히 reward가 높은 policy보다 queue stability와 power constraint를 함께 만족하는 policy가 중요하다는 것을 보여주는 논문이다.
-
-LyDROO의 핵심은 DROO의 learning-based offloading을 queue-aware control과 결합한 점이다. DRL은 channel/task dynamics를 학습해 action을 제안할 수 있지만, 장기 queue 안정성을 직접 보장하기는 어렵다. Lyapunov drift-plus-penalty 구조는 backlog가 커질수록 decision에 안정성 압력을 넣어, short-term rate maximization이 장기 불안정으로 이어지는 것을 줄인다.
-
-따라서 LyDROO는 pure DRL과 pure optimization 사이의 절충으로 읽을 수 있다. Model-free 학습은 복잡한 wireless powered MEC 환경에 적응하고, Lyapunov framework는 안정성에 대한 해석 가능한 제어 신호를 제공한다. 이 조합은 QECO류 reward 설계에서도 "성능 지표를 reward에 넣는 것"과 "queue 안정성을 별도 구조로 관리하는 것"의 차이를 생각하게 만든다.
 
 ## 참고자료
 

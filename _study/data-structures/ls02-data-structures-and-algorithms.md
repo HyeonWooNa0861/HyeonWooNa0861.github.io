@@ -17,6 +17,8 @@ keywords:
 
 Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
 
+> **핵심:** **ADT와 자료구조의 차이는** ADT는 인터페이스/명세, 자료구조는 실제 구현이다. **해시 테이블과 트리는 언제 다르게 쓰는가** exact query는 해시, range query는 트리가 유리하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -97,7 +99,9 @@ Java에서는 ADT를 `interface`로 표현하고, 실제 자료구조는 `class`
 
 예를 들어 "웹 문서 중 `Data Mining`을 포함하는 문서를 모두 찾기"는 문제다. 선형 탐색, 색인 기반 탐색 등은 알고리즘이고, Java나 Python으로 작성한 코드는 프로그램이다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -105,6 +109,10 @@ Java에서는 ADT를 `interface`로 표현하고, 실제 자료구조는 `class`
 | 해시 테이블과 트리는 언제 다르게 쓰는가? | exact query는 해시, range query는 트리가 유리하다. |
 | 자료구조 선택 시 먼저 봐야 하는 것은? | 필요한 연산, 연산 빈도, 시간/공간 제약이다. |
 | 알고리즘의 조건은? | 입력, 출력, 명확성, 유한성, 효율성을 만족해야 한다. |
+
+## Study Guide
+
+ADT는 허용 연산의 명세이고 자료구조는 그 명세의 구현이라는 구분부터 고정한다. 같은 자료라도 exact query, range query, indexed access의 빈도를 표로 적어 hash·tree·array 선택이 달라지는 이유를 판단해 본다. 시험에서는 problem, algorithm, program을 입력·출력 조건, 유한한 절차, 언어 구현 결과로 각각 구별하는 문제가 우선이다.
 
 ## 복습 질문
 

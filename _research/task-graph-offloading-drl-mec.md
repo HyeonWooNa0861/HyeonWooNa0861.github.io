@@ -29,6 +29,12 @@ Source PDF: `task-graph-offloading-drl-mec.pdf`
 
 이 논문은 MEC에서 dependent task graph를 여러 ECD에 배치할 때, 시간에 따라 변하는 edge computing capability를 DQN 기반 SATA-DRL이 관찰·학습해 average makespan과 deadline violation을 줄이는 방법을 제안한다.
 
+## 핵심 내용
+
+Mobile application이 dependent task DAG로 구성되면 각 task의 실행 위치뿐 아니라 precedence와 ECD 사이의 intermediate-data transfer가 전체 makespan을 결정한다. 이 논문은 시간에 따라 변하는 edge computing capability 아래 task graph scheduling을 MDP로 만들고, ready-task queue와 ECD 상태를 관찰해 배치 대상을 고르는 SATA-DRL을 제안한다.
+
+DQN은 makespan 감소와 deadline violation penalty를 반영한 경험으로 scheduling policy를 학습한다. Simulation에서 SATA-DRL은 비교 heuristic과 DRL baseline보다 낮은 average makespan과 deadline violation을 보였으며, 고정 분석 모델 대신 환경 변화를 online decision에 반영했다는 점이 핵심이다. 실제 MEC로 확장하려면 mobility, wireless variation과 failure를 포함한 검증이 필요하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

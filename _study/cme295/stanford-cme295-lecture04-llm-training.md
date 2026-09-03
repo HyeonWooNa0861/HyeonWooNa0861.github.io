@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=VlA_jt_3Qc4){:target="_blank" rel="noopener"}
 
+> **핵심:** 4강은 전통적인 작업별 모델 학습에서 전이학습 기반 LLM 학습으로 넘어가는 흐름을 설명한다. 사전학습은 거대한 텍스트와 코드 말뭉치에서 다음 토큰을 예측하도록 학습하는 가장 비싼 단계이며, Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 출처가 언급된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

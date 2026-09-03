@@ -31,6 +31,13 @@ Source PDF: `owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and
 
 OWQ는 activation outlier가 특정 weight column의 양자화 민감도를 키운다는 점에 주목해, 소수의 중요한 column만 고정밀로 보존하고 나머지는 저비트로 저장하는 mixed-precision LLM weight quantization 방법이다.
 
+## 핵심 내용
+
+- LLM weight quantization 성능 저하는 activation outlier와 연결된 특정 column에 집중될 수 있다.
+- OWQ는 소수의 민감한 structured weight를 고정밀로 저장하고 나머지를 저비트로 양자화한다.
+- Weak Column Tuning은 OWQ format 위에서 task-specific fine-tuning을 가능하게 한다.
+- 3.1-bit OWQ가 4-bit OPTQ와 비슷한 성능을 보인다는 점이 핵심 실험 메시지다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -71,13 +78,6 @@ OWQ는 weight column별 양자화 민감도를 평가하고, 민감한 작은 �
 ## EPTQ/QTIP 계열과의 연결
 
 QTIP, QuIP#, EPTQ가 codebook geometry와 vector quantization을 통해 낮은 bit 표현력을 높인다면, OWQ는 outlier-sensitive column을 고정밀로 남기는 혼합 정밀도 전략이다. 극저비트 LLM PTQ를 볼 때 "어떤 weight를 양자화하지 않을 것인가"라는 preservation 축을 제공한다.
-
-## 핵심 내용
-
-- LLM weight quantization 성능 저하는 activation outlier와 연결된 특정 column에 집중될 수 있다.
-- OWQ는 소수의 민감한 structured weight를 고정밀로 저장하고 나머지를 저비트로 양자화한다.
-- Weak Column Tuning은 OWQ format 위에서 task-specific fine-tuning을 가능하게 한다.
-- 3.1-bit OWQ가 4-bit OPTQ와 비슷한 성능을 보인다는 점이 핵심 실험 메시지다.
 
 ## 참고자료
 

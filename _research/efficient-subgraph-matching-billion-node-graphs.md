@@ -32,6 +32,12 @@ Source PDF: [Official PVLDB PDF](https://www.vldb.org/pvldb/vol5/p788_zhaosun_vl
 
 이 논문은 별도 structure index 없이 query를 2-level tree인 STwig들로 분해하고, 선택도 높은 순서로 분산 탐색과 pipeline join을 수행해 billion-node graph의 subgraph matching을 초 단위로 처리한다.
 
+## 핵심 내용
+
+수십억 node 규모의 dynamic graph에서는 복잡한 structure index가 candidate 탐색을 줄이는 대신 memory와 갱신 비용을 키운다. 이 연구는 query graph를 2-level tree인 STwig 집합으로 분해해 local neighborhood 단위로 후보를 만들고, 선택도를 고려한 실행 순서로 중간 결과를 억제한다.
+
+필요한 graph block을 분산 환경에서 불러오고 STwig 결과를 block-based pipeline join으로 결합해 전체 결과의 일괄 materialization을 피한다. 실험은 billion-node graph의 여러 query를 초 단위로 처리할 수 있음을 보였으며, 대형 index 대신 단순한 저장 추상화와 query planning의 결합으로 scale을 확보했다는 점이 핵심이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

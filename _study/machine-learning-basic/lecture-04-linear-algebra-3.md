@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-04.pdf`
 
+> **핵심:** **기저의 조건은** span하면서 선형 독립. **차원이란** 기저 벡터의 개수.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -41,7 +43,7 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 
 ## 2. 생성 집합과 span
 
-벡터 집합 \\(A\\)의 선형 조합으로 벡터공간 \\(V\\)의 모든 원소를 만들 수 있으면 \\(A\\)는 \\(V\\)의 생성 집합이다.
+벡터 집합 \(A\)의 선형 조합으로 벡터공간 \(V\)의 모든 원소를 만들 수 있으면 \(A\)는 \(V\)의 생성 집합이다.
 
 $$
 \operatorname{span}(A) = V
@@ -71,15 +73,15 @@ span은 "이 벡터들로 만들 수 있는 모든 방향과 위치"를 뜻한�
 |---|---|
 | column rank | 독립인 열의 수 |
 | row rank | 독립인 행의 수 |
-| full rank | \\(\operatorname{rank}(A) = \min(m,n)\\) |
+| full rank | \(\operatorname{rank}(A) = \min(m,n)\) |
 
 중요한 성질:
 
 | 성질 | 의미 |
 |---|---|
-| \\(A\\)가 정사각행렬일 때 invertible iff \\(\operatorname{rank}(A)=n\\) | full rank면 역행렬 존재 |
-| \\(Ax=b\\) 해 존재 iff \\(\operatorname{rank}(A)=\operatorname{rank}([A\mid b])\\) | augmented matrix rank로 consistency 확인 |
-| \\(Ax=0\\) 해 공간 차원은 \\(n-\operatorname{rank}(A)\\) | null space 차원 |
+| \(A\)가 정사각행렬일 때 invertible iff \(\operatorname{rank}(A)=n\) | full rank면 역행렬 존재 |
+| \(Ax=b\) 해 존재 iff \(\operatorname{rank}(A)=\operatorname{rank}([A\mid b])\) | augmented matrix rank로 consistency 확인 |
+| \(Ax=0\) 해 공간 차원은 \(n-\operatorname{rank}(A)\) | null space 차원 |
 
 ## 5. 선형 사상
 
@@ -108,21 +110,27 @@ $$
 
 선형 변환도 기저를 고르면 행렬로 표현된다. 즉 행렬은 추상적인 선형 사상을 좌표계 위에서 계산 가능하게 만든 표현이다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
 | 기저의 조건은? | span하면서 선형 독립 |
 | 차원이란? | 기저 벡터의 개수 |
-| rank-nullity 핵심은? | null space 차원은 \\(n-\operatorname{rank}(A)\\) |
+| rank-nullity 핵심은? | null space 차원은 \(n-\operatorname{rank}(A)\) |
 | 선형 사상의 조건은? | 덧셈과 스칼라곱 보존 |
+
+## Study Guide
+
+기저 문제는 먼저 span을 확인하고 그다음 linear independence를 검사하며, 기저 벡터 수를 dimension으로 연결한다. rank-nullity 식에 matrix의 column 수와 rank를 대입해 null space dimension을 계산하고 Ax=b의 consistency는 augmented rank로 판단한다. 선형 사상의 injective·surjective 여부를 null space와 image space에 연결해 외우면 용어 혼동이 줄어든다.
 
 ## 복습 질문
 
 <details>
 <summary>1. 모든 열이 pivot column이면 왜 선형 독립인가?</summary>
 
-답변: 모든 열이 pivot column이면 각 열이 이전 열들의 선형 결합으로 표현되지 않는다. 따라서 \\(Ax=0\\)의 해가 trivial solution \\(x=0\\)뿐이고, 열벡터들이 선형 독립이다.
+답변: 모든 열이 pivot column이면 각 열이 이전 열들의 선형 결합으로 표현되지 않는다. 따라서 \(Ax=0\)의 해가 trivial solution \(x=0\)뿐이고, 열벡터들이 선형 독립이다.
 
 </details>
 
@@ -134,9 +142,9 @@ $$
 </details>
 
 <details>
-<summary>3. \\(\operatorname{rank}(A) < n\\)이면 \\(Ax=0\\)은 어떤 해를 가지는가?</summary>
+<summary>3. \(\operatorname{rank}(A) < n\)이면 \(Ax=0\)은 어떤 해를 가지는가?</summary>
 
-답변: column 수 \\(n\\)보다 rank가 작으면 nullity가 양수다. 따라서 \\(Ax=0\\)은 \\(x=0\\) 외에도 non-trivial solution을 가지며, null space에 자유도가 존재한다.
+답변: column 수 \(n\)보다 rank가 작으면 nullity가 양수다. 따라서 \(Ax=0\)은 \(x=0\) 외에도 non-trivial solution을 가지며, null space에 자유도가 존재한다.
 
 </details>
 

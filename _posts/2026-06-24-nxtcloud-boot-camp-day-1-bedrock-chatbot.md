@@ -9,6 +9,8 @@ permalink: /posts/nxtcloud-boot-camp-day-1-bedrock-chatbot/
 section: nxtcloud-boot-camp
 ---
 
+> **핵심 메시지:** Bedrock 챗봇 구현의 출발점은 모델 호출 자체가 아니라, 대화 상태·스트리밍·응답 파싱·모델 교체 요구에 맞춰 저수준 API와 Converse API의 책임 범위를 선택하는 것이다.
+
 ## 1. 교육 과정 개요
 
 nxtcloud Boot Camp 1일차는 Amazon Bedrock을 사용해 챗봇 호출 방식을 단계적으로 비교하는 실습 과정이다. 전체 흐름은 단일 턴 모델 호출에서 시작해, 멀티턴 대화, 스트리밍 응답, Converse API, API 선택 기준까지 이어진다.

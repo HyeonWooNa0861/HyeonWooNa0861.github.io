@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `02_MLP.pdf`
 
+> **핵심:** **activation이 필요한 이유는** 선형 layer만 쌓으면 결국 하나의 선형 변환이 되기 때문. **XOR 문제가 중요한 이유는** 단일 perceptron의 선형 분리 한계를 보여주기 때문.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -175,7 +177,9 @@ Regularization은 모델이 지나치게 큰 weight나 복잡한 패턴에 의�
 
 핵심은 훈련 손실을 무조건 낮추는 것이 아니라, unseen data에서 안정적으로 동작하는 모델을 만드는 것이다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -184,6 +188,10 @@ Regularization은 모델이 지나치게 큰 weight나 복잡한 패턴에 의�
 | backpropagation의 핵심 원리는? | chain rule을 반복 적용해 gradient를 계산한다. |
 | generalization gap은 무엇인가? | training error와 test error의 차이 |
 | L1과 L2의 차이는? | L1은 sparsity, L2는 weight shrinkage를 유도한다. |
+
+## Study Guide
+
+먼저 activation이 없는 여러 선형층이 하나의 선형 변환으로 합쳐짐을 확인한 뒤, XOR이 단일 perceptron으로 분리되지 않는 그림을 다시 그린다. 작은 2-layer network에서 forward 값과 chain rule 기반 gradient를 차례로 추적하면 backpropagation의 계산 순서가 선명해진다. 마지막에는 training/validation loss 곡선으로 generalization gap을 판별하고 L1, L2, early stopping의 대응 차이를 정리한다.
 
 ## 복습 질문
 

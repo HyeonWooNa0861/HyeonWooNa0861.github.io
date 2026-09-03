@@ -30,6 +30,13 @@ Source PDF: `vptq-extreme-low-bit-vector-post-training-quantization-for-large-la
 
 VPTQ는 LLM weight-only quantization을 vector quantization 문제로 정식화하고, second-order optimization과 codebook initialization을 결합해 2-bit 수준의 정확도와 throughput을 개선하는 PTQ 방법이다.
 
+## 핵심 내용
+
+- VPTQ는 LLM 2-bit quantization을 vector post-training quantization 문제로 본다.
+- Second-order optimization으로 codebook 선택과 refinement를 설계한다.
+- Residual/outlier quantization을 통해 정확도와 압축률을 함께 개선한다.
+- EPTQ/QTIP과 비교할 때 VQ 기반 극저비트 PTQ의 중요한 baseline이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -71,13 +78,6 @@ VPTQ는 VQ를 단순 clustering 문제가 아니라 second-order optimization �
 ## QTIP/EPTQ와의 연결
 
 VPTQ는 QTIP, QuIP#, EPTQ와 함께 2-bit LLM PTQ에서 scalar quantization을 넘어서는 흐름에 속한다. VPTQ는 VQ formulation과 second-order refinement에 초점을 두고, QTIP은 trellis-coded quantization으로 codebook dimension 문제를 풀며, EPTQ는 FE8 codebook과 cache-friendly lookup을 강조한다.
-
-## 핵심 내용
-
-- VPTQ는 LLM 2-bit quantization을 vector post-training quantization 문제로 본다.
-- Second-order optimization으로 codebook 선택과 refinement를 설계한다.
-- Residual/outlier quantization을 통해 정확도와 압축률을 함께 개선한다.
-- EPTQ/QTIP과 비교할 때 VQ 기반 극저비트 PTQ의 중요한 baseline이다.
 
 ## 참고자료
 

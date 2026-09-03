@@ -29,6 +29,12 @@ Source PDF: `policy-invariance-reward-transformations-shaping.pdf`
 
 이 논문은 reward shaping이 학습 속도를 높일 수 있지만 최적 policy를 바꾸면 위험하다는 문제를 다루고, policy invariance를 보장하는 potential-based shaping 조건을 제시한다.
 
+## 핵심 내용
+
+Sparse reward를 보완하는 중간 보상은 학습을 빠르게 할 수 있지만, 임의로 설계하면 원래 MDP에서 최적이던 policy 자체를 바꿀 수 있다. 이 논문은 shaping 이후에도 optimal policy가 유지되는 policy invariance를 기준으로 reward transformation의 안전 조건을 분석한다.
+
+핵심 방법은 state potential의 차이로 \(F(s,a,s')=\gamma\Phi(s')-\Phi(s)\) 형태의 보조 reward를 만드는 potential-based shaping이다. 이 구조는 expert knowledge나 goal progress를 학습 신호로 사용하면서 원 objective의 최적 policy를 보존할 수 있게 하며, reward engineering이 가속인지 목적 변경인지 판별하는 이론적 기준을 제공한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

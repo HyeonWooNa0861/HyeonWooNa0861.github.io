@@ -30,7 +30,7 @@ Source PDF: `deep-learning-user-centric-clustering-cf-mimo.pdf`
 
 Cell-free massive MIMO에서 모든 AP가 모든 UE를 섬기면 fronthaul과 계산 비용이 커지므로, 이 논문은 UE별 master AP와 채널 정보를 순서화해 LSTM 기반으로 AP-UE 연결을 고르고, 합 spectral efficiency를 크게 잃지 않으면서 active link 수를 줄이는 방법을 제안한다.
 
-## 전체 흐름
+## 핵심 내용
 
 | Section | 핵심 내용 |
 | --- | --- |

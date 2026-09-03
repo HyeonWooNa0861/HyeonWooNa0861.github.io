@@ -22,6 +22,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 18](https://www.youtube.com/watch?v=mCaRNnEnYwA){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture18.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 18은 diffusion model을 discrete data로 옮기는 문제를 다룬다. Continuous data에서는 image pixel이나 latent vector를 조금 움직이는 것이 의미 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

@@ -26,6 +26,10 @@ Source PDF: `user-centric-5g-vs-cell-free-massive-mimo.pdf`
 | DOI | <a href="https://doi.org/10.1109/TWC.2019.2952117" target="_blank" rel="noopener">10.1109/TWC.2019.2952117</a> |
 | Topic | Resource allocation and architecture comparison between user-centric distributed MIMO and cell-free massive MIMO |
 
+## 한 줄 요약
+
+이 논문은 가까운 일부 AP만 각 사용자를 서비스하는 user-centric 구조가 cell-free massive MIMO의 all-AP overhead를 줄이면서, 특히 uplink에서 더 나은 achievable rate-per-user를 제공할 수 있음을 보인다.
+
 ## 핵심 내용
 
 이 논문은 cell-free massive MIMO가 모든 AP(access point)가 모든 MS(mobile station)를 서비스한다는 이상적 구조를 가질 때 생기는 overhead를 지적하고, 각 MS가 가까운 일부 AP 집합에서만 서비스되는 user-centric(UC) 구조와 비교한다. 저자들의 핵심 결론은 UC approach가 backhaul 부담을 줄이면서도 대부분의 사용자에게 더 나은 achievable rate-per-user를 줄 수 있으며, 특히 uplink에서 그 차이가 뚜렷하다는 것이다.

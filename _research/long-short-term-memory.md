@@ -28,6 +28,18 @@ keywords:
 
 LSTM은 recurrent backpropagation에서 장기 의존성을 학습하기 어려운 vanishing gradient 문제를 해결하기 위해, constant error flow를 유지하는 memory cell과 gate 구조를 제안한 고전 논문이다.
 
+## 핵심 내용
+
+이 논문은 RNN이 원칙적으로 과거 정보를 저장할 수 있지만 실제 학습에서는 긴 시간 간격을 다루기 어렵다는 문제에서 시작한다. Gradient가 반복적으로 곱해지며 작아지면 과거 정보가 현재 loss에 거의 영향을 주지 못하고, 모델은 long-term dependency를 학습하지 못한다.
+
+LSTM은 memory cell과 gate를 통해 이 문제를 완화한다. Memory cell은 정보를 오래 보존하고, gate는 언제 정보를 저장하고 출력할지 결정한다. Constant error carousel은 gradient가 장기간 유지될 수 있는 경로를 제공한다.
+
+오늘날의 LSTM은 forget gate가 포함된 형태로 많이 쓰이지만, 원 논문의 핵심은 장기 기억을 위한 별도 memory path와 gate-based access control이다. QECO에서 LSTM을 사용하는 이유도 edge load와 task sequence의 시간적 패턴을 기억하기 위해서다.
+
+LSTM의 핵심은 단순히 hidden state를 더 크게 만든 것이 아니라, 정보를 언제 쓰고 언제 보존할지 gate로 제어한다는 점이다. Constant error carousel 관점에서 memory cell은 gradient가 긴 시간 동안 사라지지 않게 돕고, gate는 불필요한 입력이나 출력을 차단해 장기 기억을 안정적으로 유지한다.
+
+현대 sequence model에서 Transformer가 많은 영역을 대체했지만, LSTM은 time series state가 비교적 작고 online으로 흘러오는 문제에서 여전히 해석 가치가 있다. MEC offloading에서는 edge load, queue, task arrival처럼 최근 상태와 오래된 추세가 함께 중요할 수 있다. QECO류 연구가 LSTM을 쓰는 이유는 이런 temporal dependency를 compact하게 담기 위해서다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -61,18 +73,6 @@ LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant err
 ## 4. 연구 맥락
 
 MEC offloading에서 LSTM은 task arrival, edge load, queue length처럼 시간적 의존성이 있는 state를 기억하기 위해 사용된다. 원 논문은 LSTM이 왜 장기 상태 추적에 적합한지 이론적 출발점을 제공한다.
-
-## 핵심 내용
-
-이 논문은 RNN이 원칙적으로 과거 정보를 저장할 수 있지만 실제 학습에서는 긴 시간 간격을 다루기 어렵다는 문제에서 시작한다. Gradient가 반복적으로 곱해지며 작아지면 과거 정보가 현재 loss에 거의 영향을 주지 못하고, 모델은 long-term dependency를 학습하지 못한다.
-
-LSTM은 memory cell과 gate를 통해 이 문제를 완화한다. Memory cell은 정보를 오래 보존하고, gate는 언제 정보를 저장하고 출력할지 결정한다. Constant error carousel은 gradient가 장기간 유지될 수 있는 경로를 제공한다.
-
-오늘날의 LSTM은 forget gate가 포함된 형태로 많이 쓰이지만, 원 논문의 핵심은 장기 기억을 위한 별도 memory path와 gate-based access control이다. QECO에서 LSTM을 사용하는 이유도 edge load와 task sequence의 시간적 패턴을 기억하기 위해서다.
-
-LSTM의 핵심은 단순히 hidden state를 더 크게 만든 것이 아니라, 정보를 언제 쓰고 언제 보존할지 gate로 제어한다는 점이다. Constant error carousel 관점에서 memory cell은 gradient가 긴 시간 동안 사라지지 않게 돕고, gate는 불필요한 입력이나 출력을 차단해 장기 기억을 안정적으로 유지한다.
-
-현대 sequence model에서 Transformer가 많은 영역을 대체했지만, LSTM은 time series state가 비교적 작고 online으로 흘러오는 문제에서 여전히 해석 가치가 있다. MEC offloading에서는 edge load, queue, task arrival처럼 최근 상태와 오래된 추세가 함께 중요할 수 있다. QECO류 연구가 LSTM을 쓰는 이유는 이런 temporal dependency를 compact하게 담기 위해서다.
 
 ## 참고자료
 

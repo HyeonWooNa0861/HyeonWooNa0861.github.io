@@ -408,6 +408,10 @@
       url: /study/machine-learning-basic/
       description: Machine Learning Basic lecture notes
       match: /study/machine-learning-basic/
+    - title: Autonomous Driving
+      url: /study/autonomous-driving/
+      description: Autonomous driving sensors and perception lecture notes
+      match: /study/autonomous-driving/
     - title: CME295
       url: /study/cme295/
       description: Stanford CME295 Transformers and LLMs lecture notes

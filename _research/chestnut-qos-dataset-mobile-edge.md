@@ -31,6 +31,12 @@ Source PDF: `chestnut-qos-dataset-mobile-edge.pdf`
 
 CHESTNUT은 mobile edge 환경의 QoS prediction과 service selection을 재현 가능하게 비교하기 위해 user mobility, edge-server load, service demand, response time, network jitter를 함께 제공하는 공개 데이터셋이다.
 
+## 핵심 내용
+
+기존 cloud QoS dataset은 이동하는 사용자, 시간에 따라 달라지는 edge-server load, 위치별 coverage를 충분히 담지 못해 MEC 알고리즘의 현실적인 비교가 어렵다. CHESTNUT은 실제 Shanghai mobility·telecom trace를 바탕으로 사용자 이동, 서버 부하, service demand, response time과 network jitter를 연결한 공개 평가 기반을 제공한다.
+
+이 데이터셋은 특정 예측 알고리즘의 우수성을 주장하기보다 QoS forecasting, service recommendation과 load-aware edge selection을 동일한 시공간 조건에서 재현하도록 돕는다. 실제 trace와 생성된 QoS 요소의 경계를 분명히 읽어야 하지만, 정적 평균이 아니라 이동성과 long-tail latency를 반영한 MEC 평가를 가능하게 한다는 점이 핵심 의의다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

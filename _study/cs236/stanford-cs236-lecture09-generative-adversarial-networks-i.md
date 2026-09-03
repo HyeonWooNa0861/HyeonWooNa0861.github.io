@@ -21,6 +21,8 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 9](https://www.youtu
 
 Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 9는 지금까지의 likelihood-based generative model에서 벗어나 GAN을 도입한다. Autoregressive model은 chain rule로 \(p_\theta(x)\)를 직접 계산하고, VAE는 marginal likelihood가 어려워 ELBO를 최적화하며, normalizing flow는 change of variables로 exact likelihood를 계산한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

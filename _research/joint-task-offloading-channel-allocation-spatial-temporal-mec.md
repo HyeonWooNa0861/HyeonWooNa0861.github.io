@@ -27,6 +27,18 @@ keywords:
 
 이 논문은 이동성으로 인한 spatial dynamic과 task dependency로 인한 temporal correlation을 함께 고려해, task offloading과 channel allocation을 결합한 long-term delay-energy cost minimization 문제를 다룬다.
 
+## 핵심 내용
+
+이 논문은 MEC 네트워크의 동적 특성을 공간과 시간 두 방향으로 나누어 본다. 사용자가 이동하면 어느 edge server에 요청이 몰리는지가 바뀌고, task dependency가 있으면 이전 task와 다음 task의 resource 경쟁이 서로 영향을 준다.
+
+논문은 먼저 task priority를 평가해 dependency를 다루고, channel allocation을 grouped knapsack 문제로 해결한다. 그 다음 D3QN이 offloading decision을 학습한다. 이때 channel allocation 결과가 reward에 들어가므로, agent는 단순히 계산 위치만 고르는 것이 아니라 통신 resource 상태까지 간접적으로 고려한다.
+
+이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요하다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문이다.
+
+핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 어떤 channel을 할당받는지에 따라 transmission delay와 interference가 달라진다. 따라서 task offloading과 channel allocation을 joint action으로 묶어야 실제 completion delay를 줄일 수 있다.
+
+D3QN 구조는 이런 결합 action에서 value estimation을 안정화하려는 선택이다. Dueling 구조는 state 자체가 좋은지와 특정 action이 얼마나 이득인지 분리하고, double Q-learning은 과대평가를 줄인다. 이 논문은 MEC에서 spatial-temporal dynamics를 다룰 때 "edge 선택"만으로는 부족하고 radio resource까지 함께 decision surface에 올려야 한다는 점을 보여준다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -60,18 +72,6 @@ Multi-user multi-server MEC에서는 사용자의 이동으로 computing request
 ## 4. 연구 맥락
 
 QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 spatial mobility와 temporal dependency를 강조한다. 두 관점은 상호 보완적이며, 실제 MEC 시스템에서는 부하 집중, 이동성, channel competition이 함께 발생한다.
-
-## 핵심 내용
-
-이 논문은 MEC 네트워크의 동적 특성을 공간과 시간 두 방향으로 나누어 본다. 사용자가 이동하면 어느 edge server에 요청이 몰리는지가 바뀌고, task dependency가 있으면 이전 task와 다음 task의 resource 경쟁이 서로 영향을 준다.
-
-논문은 먼저 task priority를 평가해 dependency를 다루고, channel allocation을 grouped knapsack 문제로 해결한다. 그 다음 D3QN이 offloading decision을 학습한다. 이때 channel allocation 결과가 reward에 들어가므로, agent는 단순히 계산 위치만 고르는 것이 아니라 통신 resource 상태까지 간접적으로 고려한다.
-
-이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요하다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문이다.
-
-핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 어떤 channel을 할당받는지에 따라 transmission delay와 interference가 달라진다. 따라서 task offloading과 channel allocation을 joint action으로 묶어야 실제 completion delay를 줄일 수 있다.
-
-D3QN 구조는 이런 결합 action에서 value estimation을 안정화하려는 선택이다. Dueling 구조는 state 자체가 좋은지와 특정 action이 얼마나 이득인지 분리하고, double Q-learning은 과대평가를 줄인다. 이 논문은 MEC에서 spatial-temporal dynamics를 다룰 때 "edge 선택"만으로는 부족하고 radio resource까지 함께 decision surface에 올려야 한다는 점을 보여준다.
 
 ## 참고자료
 

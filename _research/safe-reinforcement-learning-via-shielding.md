@@ -29,6 +29,12 @@ Source PDF: `safe-reinforcement-learning-via-shielding.pdf`
 
 이 논문은 reward penalty만으로 안전을 학습하게 두지 않고, temporal logic safety specification과 MDP abstraction에서 합성한 shield를 RL loop에 붙여 학습 중과 실행 중의 unsafe action을 막는 구조를 제안한다.
 
+## 핵심 내용
+
+Reward penalty만으로 안전을 학습하면 agent가 violation을 직접 경험해야 하고, 학습 또는 배포 중 사고를 막는 형식적 보장이 없다. 이 논문은 temporal-logic safety specification과 환경의 conservative abstraction을 product safety game으로 결합해 unsafe action을 실행 전에 차단하는 reactive shield를 합성한다.
+
+Preemptive shield는 action 선택 전에 허용 집합을 제한하고, post-posed shield는 선택된 action이 위험할 때 안전한 대안으로 교체한다. 여러 domain의 실험에서 shielding은 safety violation을 막으면서 학습 성능을 유지하거나 개선했으며, learning algorithm과 독립적인 runtime assurance layer를 제시했다는 점이 핵심이다. 보장의 유효성은 abstraction이 실제 위험을 충분히 보수적으로 포함한다는 조건에 달려 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

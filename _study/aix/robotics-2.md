@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `Robotics_2.pdf`
 
+> **핵심:** **robotics scaling thesis** LLM의 scaling recipe가 robotics에도 적용될 수 있다는 주장. **three-phase recipe** pre-training, action fine-tuning, physical RL.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

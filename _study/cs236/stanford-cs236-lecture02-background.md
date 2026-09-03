@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 2](https://www.youtube.com/watch?v=rNEujZmD2Tg){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture2.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** 2강은 앞으로 사용할 확률 배경을 압축해서 정리한다. 생성 모델을 학습한다는 것은 관측 데이터가 어떤 unknown data distribution \(p_{\mathrm{data}}\)에서 샘플되었다고 보고, 그 분포를 근사하는 model family \(\{p_{\theta}(x)\}\) 안의 한 분포를 찾는 일이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

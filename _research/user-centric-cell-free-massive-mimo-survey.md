@@ -26,6 +26,10 @@ Source PDF: `user-centric-cell-free-massive-mimo-survey.pdf`
 | DOI | <a href="https://doi.org/10.1109/COMST.2021.3135119" target="_blank" rel="noopener">10.1109/COMST.2021.3135119</a> |
 | Topic | Survey of opportunities, challenges, and solutions for user-centric cell-free massive MIMO |
 
+## 한 줄 요약
+
+이 survey는 user-centric cell-free massive MIMO의 fronthaul, CSI, serving cluster, resource allocation, latency, scalability를 연결해 정리하고, 사용자별 DU cluster가 coverage uniformity와 practical deployment 사이의 핵심 설계 축임을 설명한다.
+
 ## 핵심 내용
 
 이 survey는 user-centric cell-free massive MIMO를 future mobile network의 한 축으로 놓고, fronthaul, CSI estimation, serving cluster formation, resource allocation, latency, scalability를 체계적으로 정리한다. Traditional cellular network와의 핵심 차이는 user마다 serving DU(distributed unit) cluster가 정의된다는 점이며, 이 구조는 cell-edge를 제거하고 user를 자신의 serving cluster 중심에 놓는 방식으로 coverage uniformity와 reliability를 높이려 한다.

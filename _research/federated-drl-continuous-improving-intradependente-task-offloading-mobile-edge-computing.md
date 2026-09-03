@@ -35,6 +35,12 @@ Source PDF: `federated-drl-continuous-improving-intradependente-task-offloading-
 
 이 연구 아이디어는 task call graph로 작업 내부 종속성을 표현하고, 여러 MEC 장치가 원시 데이터를 공유하지 않은 채 federated DRL 모델을 공동 개선하는 오프로딩 구조를 제안한다.
 
+## 핵심 내용
+
+서로 의존하는 subtask를 독립 작업처럼 offload하면 precedence, critical path와 중간 데이터 전송 비용을 놓치게 된다. 이 연구 아이디어는 task call graph로 내부 종속성을 표현하고, 각 장치가 local observation과 trajectory로 Actor-Critic 또는 D3QN 계열 policy를 학습하는 구조를 제안한다.
+
+로컬 model update를 federated aggregation으로 결합하면 원시 task data를 중앙에 모으지 않으면서 여러 장치의 경험을 global policy에 반영할 수 있다. 다만 공개 자료는 2쪽의 연구 제안으로 graph encoder, aggregation, reward와 실험 결과를 제시하지 않으므로, 의의는 지속 적응형 오프로딩의 설계 방향에 있고 성능·privacy 효과는 향후 검증 대상이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

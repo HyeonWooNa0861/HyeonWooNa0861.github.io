@@ -30,6 +30,13 @@ Source PDF: `coverage-based-calibration-for-post-training-quantization-via-weigh
 
 이 논문은 PTQ 보정 데이터의 품질을 일반적인 데이터 대표성이 아니라 outlier channel coverage 문제로 보고, 작은 calibration budget에서도 중요한 activation channel을 더 잘 덮는 COVERCAL 선택 기준을 제안한다.
 
+## 핵심 내용
+
+- PTQ calibration sample은 단순히 많을수록 좋은 것이 아니라 중요한 outlier channel을 덮어야 한다.
+- Outlier channel을 놓치면 dynamic range가 과소추정되고 clipping/reconstruction error가 특정 channel에 집중된다.
+- COVERCAL은 sample selection을 weighted set cover로 보고 greedy하게 calibration set을 구성한다.
+- 기존 GPTQ/AWQ backend와 결합할 수 있는 calibration-data-side 개선 방법이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -75,13 +82,6 @@ COVERCAL은 각 sample이 어떤 outlier channel을 활성화하는지 보고, �
 ## EPTQ/YAQA와의 연결
 
 EPTQ, QTIP, QuIP# 같은 연구가 quantizer geometry와 rounding 구조를 다룬다면, COVERCAL은 calibration input이 activation statistics를 어떻게 왜곡하는지에 집중한다. YAQA가 원 모델 출력 KL을 평가축으로 제안한다면, COVERCAL은 그 평가축을 개선하기 위한 calibration set 설계 문제로 연결될 수 있다.
-
-## 핵심 내용
-
-- PTQ calibration sample은 단순히 많을수록 좋은 것이 아니라 중요한 outlier channel을 덮어야 한다.
-- Outlier channel을 놓치면 dynamic range가 과소추정되고 clipping/reconstruction error가 특정 channel에 집중된다.
-- COVERCAL은 sample selection을 weighted set cover로 보고 greedy하게 calibration set을 구성한다.
-- 기존 GPTQ/AWQ backend와 결합할 수 있는 calibration-data-side 개선 방법이다.
 
 ## 참고자료
 

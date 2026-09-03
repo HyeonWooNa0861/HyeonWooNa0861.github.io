@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=Q5baLehv5So){:target="_blank" rel="noopener"}
 
+> **핵심:** 세 번째 강의는 LLM을 본격적으로 정의하면서 시작한다. Language model은 token sequence에 probability를 assign하고 next token probability를 예측하는 모델이며, LLM은 model size, pre-training data, compute가 모두 큰 language model로 설명된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

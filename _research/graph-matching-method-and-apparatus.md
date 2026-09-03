@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-21 09:57:18 +0900
-title: "Graph Matching Method and Apparatus"
+title: "Graph Matching Patent"
 topic: "Symmetry-breaking node ordering for duplicate-free subgraph matching"
 order: 75
 major_topic: "Graph Algorithms & Distributed Systems"
@@ -34,6 +34,12 @@ Source PDF: [Official patent PDF](https://patentimages.storage.googleapis.com/85
 ## 한 줄 요약
 
 이 특허는 data graph의 node numbering과 query graph의 priority constraint를 결합해, 같은 subgraph가 node permutation만 바뀐 채 반복 탐색되는 일을 줄이는 graph matching 방법과 장치를 정의한다.
+
+## 핵심 내용
+
+대칭 구조를 가진 query graph에서는 node permutation만 다른 동일 subgraph가 반복 탐색될 수 있고, 결과 생성 뒤의 deduplication만으로는 불필요한 backtracking 비용을 줄일 수 없다. 이 특허는 data graph node에 비교 가능한 번호를 부여하고 query graph의 automorphism에서 priority constraint를 구성해 중복을 탐색 과정에서 차단한다.
+
+Partial match가 정해진 priority를 어기면 branch를 즉시 중단하므로 동일 구조의 반복 생성과 끝까지 진행할 필요가 없는 탐색을 함께 줄인다. 핵심 의의는 graph symmetry를 사후 정리 문제가 아니라 early pruning 규칙으로 바꾸고, 이를 processor·memory·storage로 구성된 장치 수준까지 구체화한 데 있다.
 
 ## 전체 흐름
 

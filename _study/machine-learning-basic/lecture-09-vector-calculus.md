@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-09.pdf`
 
+> **핵심:** **gradient가 중요한 이유는** loss를 줄이는 update 방향을 계산하기 위해. **Taylor series의 역할은** 복잡한 함수를 기준점 근처에서 근사.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -56,7 +58,7 @@ Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사�
 
 ## 3. 편미분과 Gradient
 
-다변수 함수 \\(f(x_1,\ldots,x_n)\\)에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
+다변수 함수 \(f(x_1,\ldots,x_n)\)에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
 
 모든 편미분을 모은 것이 gradient다.
 
@@ -100,18 +102,24 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 
 ## 6. 행렬 미분
 
-머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 \\(x^TAx\\), \\(\lVert Ax-b\rVert^2\\) 같은 식의 미분 공식이 자주 쓰인다.
+머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 \(x^TAx\), \(\lVert Ax-b\rVert^2\) 같은 식의 미분 공식이 자주 쓰인다.
 
 공식만 외우기보다 차원 검사를 함께 해야 한다. 미분 결과가 parameter와 같은 shape인지 확인하면 실수를 줄일 수 있다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
 | gradient가 중요한 이유는? | loss를 줄이는 update 방향을 계산하기 위해 |
 | Taylor series의 역할은? | 복잡한 함수를 기준점 근처에서 근사 |
-| Jacobian의 shape은? | \\(f:\mathbb{R}^n \to \mathbb{R}^m\\)이면 \\(m \times n\\) |
+| Jacobian의 shape은? | \(f:\mathbb{R}^n \to \mathbb{R}^m\)이면 \(m \times n\) |
 | chain rule이 중요한 이유는? | 합성 함수와 신경망 미분의 기반 |
+
+## Study Guide
+
+scalar, vector, matrix 출력에 따라 derivative와 Jacobian shape를 먼저 적고 계산을 시작한다. 합성 함수 하나를 계산 graph로 풀어 chain rule을 적용한 뒤, 같은 흐름이 neural network gradient로 이어짐을 확인한다. Taylor 0·1·2차 근사가 함수값·gradient·curvature를 어디까지 포함하는지 구분하는 문제가 시험 우선순위다.
 
 ## 복습 질문
 
@@ -132,7 +140,7 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 <details>
 <summary>3. Jacobian에서 행과 열은 각각 무엇에 대응하는가?</summary>
 
-답변: \\(f:\mathbb{R}^n\to\mathbb{R}^m\\)이면 Jacobian은 보통 \\(m\times n\\) 행렬이다. 행은 출력 성분 \\(f_i\\), 열은 입력 변수 \\(x_j\\)에 대응하며, 원소는 \\(\partial f_i/\partial x_j\\)이다.
+답변: \(f:\mathbb{R}^n\to\mathbb{R}^m\)이면 Jacobian은 보통 \(m\times n\) 행렬이다. 행은 출력 성분 \(f_i\), 열은 입력 변수 \(x_j\)에 대응하며, 원소는 \(\partial f_i/\partial x_j\)이다.
 
 </details>
 

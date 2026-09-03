@@ -28,6 +28,18 @@ keywords:
 
 이 논문은 raw pixel observation을 입력으로 받아 Atari game control policy를 학습하는 Deep Q-Network를 제안해, deep learning과 reinforcement learning을 결합한 대표적 전환점을 만든 연구다.
 
+## 핵심 내용
+
+이 논문은 deep reinforcement learning의 대표적 출발점으로 볼 수 있다. 기존 RL은 사람이 설계한 feature를 사용하거나 작은 state space에 머무는 경우가 많았지만, DQN은 raw pixel에서 직접 action value를 학습한다.
+
+핵심 안정화 장치는 experience replay와 target network다. Replay buffer는 연속된 경험의 상관관계를 줄이고, target network는 target Q-value가 매 step 크게 흔들리는 문제를 줄인다. 이 두 요소가 없으면 nonlinear network와 bootstrapping이 결합된 Q-learning은 쉽게 불안정해질 수 있다.
+
+MEC 연구에서 DQN을 사용할 때도 같은 논리가 적용된다. Offloading agent는 현재 상태에서 local 처리, edge offloading, server 선택 등의 action value를 추정해야 한다. 따라서 DQN의 구조와 안정화 장치는 이후 MEC DRL 논문들의 기반으로 이해할 수 있다.
+
+DQN의 기여는 특정 게임에 맞춘 feature engineering 없이 같은 architecture와 hyperparameter로 여러 Atari task를 처리했다는 점에 있다. Experience replay는 연속된 sample의 correlation을 줄이고, target network는 bootstrapping target이 너무 빠르게 변하는 문제를 완화한다. 이 두 장치는 이후 deep RL 안정화의 기본 구성요소가 되었다.
+
+MEC offloading 논문들이 DQN 계열을 사용하는 이유도 여기서 이어진다. Offloading 환경은 Atari와 다르지만, state를 관찰하고 action을 선택하며 장기 reward를 최대화한다는 구조는 같다. 다만 MEC에서는 reward가 QoE, delay, energy, dropped task처럼 안전성과 제약을 포함하므로, DQN의 value learning을 그대로 가져오기보다 double/dueling/LSTM 같은 안정화 요소와 함께 쓰는 것이 중요하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -59,18 +71,6 @@ DQN은 convolutional neural network로 Q-function을 근사한다. 입력은 최
 ## 4. 연구 맥락
 
 QECO, DROO, LyDROO 같은 MEC offloading 연구에서 DQN 계열을 사용하는 배경에는 이 논문이 있다. MEC 상태는 pixel은 아니지만 channel, queue, energy, deadline 등 고차원 상태를 action value로 연결해야 한다는 점에서 DQN의 function approximation 관점이 이어진다.
-
-## 핵심 내용
-
-이 논문은 deep reinforcement learning의 대표적 출발점으로 볼 수 있다. 기존 RL은 사람이 설계한 feature를 사용하거나 작은 state space에 머무는 경우가 많았지만, DQN은 raw pixel에서 직접 action value를 학습한다.
-
-핵심 안정화 장치는 experience replay와 target network다. Replay buffer는 연속된 경험의 상관관계를 줄이고, target network는 target Q-value가 매 step 크게 흔들리는 문제를 줄인다. 이 두 요소가 없으면 nonlinear network와 bootstrapping이 결합된 Q-learning은 쉽게 불안정해질 수 있다.
-
-MEC 연구에서 DQN을 사용할 때도 같은 논리가 적용된다. Offloading agent는 현재 상태에서 local 처리, edge offloading, server 선택 등의 action value를 추정해야 한다. 따라서 DQN의 구조와 안정화 장치는 이후 MEC DRL 논문들의 기반으로 이해할 수 있다.
-
-DQN의 기여는 특정 게임에 맞춘 feature engineering 없이 같은 architecture와 hyperparameter로 여러 Atari task를 처리했다는 점에 있다. Experience replay는 연속된 sample의 correlation을 줄이고, target network는 bootstrapping target이 너무 빠르게 변하는 문제를 완화한다. 이 두 장치는 이후 deep RL 안정화의 기본 구성요소가 되었다.
-
-MEC offloading 논문들이 DQN 계열을 사용하는 이유도 여기서 이어진다. Offloading 환경은 Atari와 다르지만, state를 관찰하고 action을 선택하며 장기 reward를 최대화한다는 구조는 같다. 다만 MEC에서는 reward가 QoE, delay, energy, dropped task처럼 안전성과 제약을 포함하므로, DQN의 value learning을 그대로 가져오기보다 double/dueling/LSTM 같은 안정화 요소와 함께 쓰는 것이 중요하다.
 
 ## 참고자료
 

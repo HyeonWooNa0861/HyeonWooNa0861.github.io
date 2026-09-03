@@ -35,6 +35,12 @@ Source PDF: `meta-reinforcement-learning-optimized-task-scheduling-heterogeneous
 
 이 연구 아이디어는 서로 다른 edge scheduling 문제를 여러 task-specific MDP로 보고, 공통 meta-policy를 학습해 새로운 workload와 network condition에 적은 추가 학습으로 적응하려 한다.
 
+## 핵심 내용
+
+Heterogeneous edge system의 service placement, edge 간 offloading과 edge 내부 resource allocation은 서로 영향을 주지만, 조건마다 policy를 처음부터 다시 학습하면 workload와 network 변화에 느리게 대응한다. 이 연구 아이디어는 각 scheduling 상황을 task-specific MDP로 보고 Meta-Actor와 Meta-Critic이 여러 환경에서 재사용할 초기 policy를 학습하는 방향을 제안한다.
+
+Meta-learning의 inner loop는 개별 환경에 적응하고 outer loop는 여러 task에서 빠르게 조정될 공통 초기화를 갱신한다. 다만 공개 문서는 완성된 MDP, 알고리즘과 실험 결과가 없는 2쪽 제안이므로, 핵심 의의는 세 계층의 scheduling을 fast adaptation 문제로 연결한 데 있으며 generalization 이득은 향후 검증해야 한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

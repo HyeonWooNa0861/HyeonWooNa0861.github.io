@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 3](https://www.youtube.com/watch?v=tRArbBf-AbI){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture3.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** 3강은 첫 번째 실제 모델군인 autoregressive model을 다룬다. 어떤 joint distribution도 chain rule에 의해 순서가 있는 조건부 확률들의 곱으로 쓸 수 있다는 점이 핵심이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

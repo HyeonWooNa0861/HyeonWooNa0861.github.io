@@ -30,6 +30,14 @@ Source PDF: `offloading-and-resource-allocation-with-general-task.pdf`
 
 이 논문은 태스크 간 의존성이 일반 DAG로 주어질 때, DRL actor가 오프로딩 후보를 만들고 analytic critic이 각 후보의 energy-time cost를 빠르게 평가하게 하여 조합적 오프로딩 문제를 낮은 복잡도로 푸는 방법을 제안한다.
 
+## 핵심 내용
+
+- 일반 task graph에서는 태스크 의존성 때문에 오프로딩 결정이 강하게 결합된다.
+- 목적함수는 모바일 장치의 에너지 소비와 전체 실행 시간을 함께 반영하는 ETC이다.
+- Actor는 채널과 엣지 CPU 상태에서 오프로딩 후보를 생성하고, critic은 analytic optimization으로 각 후보의 ETC를 계산한다.
+- GNOP 양자화는 DNN 출력 주변의 후보와 noise 기반 후보를 함께 만들어 탐색 다양성을 확보한다.
+- One-climb 제약은 행동 공간을 줄이는 실용적 장치이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -87,14 +95,6 @@ Critic은 일반적인 value network가 아니다. Actor가 만든 각 후보 �
 실험은 mesh, tree, mesh와 tree가 결합된 일반 task graph를 대상으로 한다. 제안 알고리즘은 최적 성능의 최대 99.1%에 도달하면서, 행동 생성에 필요한 시간을 기존 대표 최적화 방법보다 크게 줄인다.
 
 중요한 점은 단순히 DRL이 최적화를 대체한다는 이야기가 아니라, actor가 행동 후보를 빠르게 만들고 critic이 문제 구조를 이용해 후보를 정확히 평가한다는 hybrid 설계이다.
-
-## 핵심 내용
-
-- 일반 task graph에서는 태스크 의존성 때문에 오프로딩 결정이 강하게 결합된다.
-- 목적함수는 모바일 장치의 에너지 소비와 전체 실행 시간을 함께 반영하는 ETC이다.
-- Actor는 채널과 엣지 CPU 상태에서 오프로딩 후보를 생성하고, critic은 analytic optimization으로 각 후보의 ETC를 계산한다.
-- GNOP 양자화는 DNN 출력 주변의 후보와 noise 기반 후보를 함께 만들어 탐색 다양성을 확보한다.
-- One-climb 제약은 행동 공간을 줄이는 실용적 장치이다.
 
 ## 해석 포인트
 

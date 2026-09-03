@@ -27,6 +27,10 @@ Source PDF: `tomac-ppo-task-offloading-marl.pdf`
 | DOI | <a href="https://doi.org/10.3390/FI16090333" target="_blank" rel="noopener">10.3390/FI16090333</a> |
 | Topic | Multi-agent reinforcement learning for MEC task offloading and resource allocation |
 
+## 한 줄 요약
+
+TOMAC-PPO는 cloud-edge collaborative MEC의 task offloading과 resource allocation을 task-oriented multi-agent problem으로 구성하고, queue·delay·energy·task drop을 함께 줄이도록 edge agent를 학습하는 방법이다.
+
 ## 핵심 내용
 
 이 논문은 cloud-edge collaborative MEC 환경에서 task offloading, resource scheduling, delay, energy, task drop을 하나의 joint optimization 문제로 묶고, edge server들을 agent로 둔 task-oriented multi-agent reinforcement learning 전략인 TOMAC-PPO를 제안한다. 단순히 "PPO를 MEC에 적용했다"는 수준이 아니라, task queue, wireless/wired transmission, node failure, delayed reward, task priority까지 포함해 offloading decision이 실제 service cost에 미치는 영향을 모델링한 점이 핵심이다.

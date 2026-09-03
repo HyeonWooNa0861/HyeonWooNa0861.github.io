@@ -29,6 +29,18 @@ keywords:
 
 이 논문은 지상 통신 인프라가 부족한 지역에서 HAP-assisted MEC를 이용해 AI service를 제공하는 상황을 다루며, stochastic optimization 기반 EEDO algorithm으로 energy consumption을 줄이고 system stability를 유지한다.
 
+## 핵심 내용
+
+이 논문은 지상 통신 인프라가 충분하지 않은 환경에서 MEC를 어떻게 제공할 것인지 다룬다. HAP는 높은 고도에서 넓은 지역을 커버할 수 있으므로, ground device가 AI task나 computing task를 offload할 수 있는 aerial edge node가 된다.
+
+문제는 task arrival과 channel quality가 계속 변한다는 점이다. 논문은 stochastic optimization을 사용해 장기 문제를 다루고, 이를 여러 subproblem으로 나누어 online EEDO algorithm으로 해결한다. 목표는 에너지 소비를 줄이면서 시스템 안정성을 유지하는 것이다.
+
+이 연구는 MEC offloading이 지상 edge server에만 제한되지 않는다는 점에서 중요하다. 재난 지역, 농촌, 해상, 산악 지역처럼 인프라가 약한 환경에서는 HAP-assisted MEC가 practical deployment option이 될 수 있다.
+
+EEDO의 핵심은 HAP를 단순한 더 높은 위치의 edge server로 보지 않는다는 점이다. HAP는 coverage 측면에서는 유리하지만, wireless link와 onboard computing resource, energy constraint가 함께 얽힌다. 따라서 offloading decision은 "HAP로 보낼 것인가"만이 아니라 언제, 얼마나, 어떤 resource와 함께 보낼 것인가의 문제로 확장된다.
+
+이 연구는 queue stability와 online decision 관점에서도 읽을 가치가 있다. Random channel과 task arrival을 완전히 예측하기 어렵기 때문에, 매 slot의 최적 선택보다 장기 평균 성능과 안정성을 함께 보는 구조가 필요하다. QECO-Adapt처럼 dense stress를 다루는 연구와 연결하면, HAP-MEC에서는 load뿐 아니라 aerial link variability까지 control target이 된다는 차이가 드러난다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -60,18 +72,6 @@ EEDO는 system stability를 유지하면서 energy consumption을 줄이는 것�
 ## 4. 연구 맥락
 
 QECO-Adapt가 dense terrestrial MEC를 다룬다면, 이 연구는 infrastructure-limited environment에서 aerial MEC의 역할을 강조한다. Offloading decision의 목적 함수도 QoE나 delay뿐 아니라 energy efficiency와 service coverage로 확장된다.
-
-## 핵심 내용
-
-이 논문은 지상 통신 인프라가 충분하지 않은 환경에서 MEC를 어떻게 제공할 것인지 다룬다. HAP는 높은 고도에서 넓은 지역을 커버할 수 있으므로, ground device가 AI task나 computing task를 offload할 수 있는 aerial edge node가 된다.
-
-문제는 task arrival과 channel quality가 계속 변한다는 점이다. 논문은 stochastic optimization을 사용해 장기 문제를 다루고, 이를 여러 subproblem으로 나누어 online EEDO algorithm으로 해결한다. 목표는 에너지 소비를 줄이면서 시스템 안정성을 유지하는 것이다.
-
-이 연구는 MEC offloading이 지상 edge server에만 제한되지 않는다는 점에서 중요하다. 재난 지역, 농촌, 해상, 산악 지역처럼 인프라가 약한 환경에서는 HAP-assisted MEC가 practical deployment option이 될 수 있다.
-
-EEDO의 핵심은 HAP를 단순한 더 높은 위치의 edge server로 보지 않는다는 점이다. HAP는 coverage 측면에서는 유리하지만, wireless link와 onboard computing resource, energy constraint가 함께 얽힌다. 따라서 offloading decision은 "HAP로 보낼 것인가"만이 아니라 언제, 얼마나, 어떤 resource와 함께 보낼 것인가의 문제로 확장된다.
-
-이 연구는 queue stability와 online decision 관점에서도 읽을 가치가 있다. Random channel과 task arrival을 완전히 예측하기 어렵기 때문에, 매 slot의 최적 선택보다 장기 평균 성능과 안정성을 함께 보는 구조가 필요하다. QECO-Adapt처럼 dense stress를 다루는 연구와 연결하면, HAP-MEC에서는 load뿐 아니라 aerial link variability까지 control target이 된다는 차이가 드러난다.
 
 ## 참고자료
 

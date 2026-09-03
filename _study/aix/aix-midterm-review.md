@@ -23,6 +23,8 @@ Source Images:
 
 이 자료는 AIX 중간고사 정답지를 바탕으로 주요 개념을 시험 복습용으로 재정리한 문서다. 문항 순서를 그대로 따라가기보다, 같은 개념을 묻는 문제들을 묶어 “왜 그 답이 되는지”를 빠르게 확인할 수 있도록 구성했다. 또한 비슷한 용어가 혼용되기 쉬운 지점을 따로 정리해, 정답 선지와 오답 선지를 구분하는 기준까지 함께 확인할 수 있게 했다.
 
+> **핵심:** **Regression** feature \(x\)로 target \(y\)를 예측하고, residual은 \(y-\hat{y}\)이다. **Optimization** gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다.
+
 ## 전체 흐름
 
 | 구간 | 핵심 주제 | 시험에서 잡아야 할 기준 |
@@ -60,7 +62,7 @@ Source Images:
 
 ### 핵심 정리
 
-Linear Regression은 입력 feature \\(x\\)를 이용해 target \\(y\\)를 예측하는 지도학습 모델이다. 예측값은 보통 다음 선형 점수로 표현한다.
+Linear Regression은 입력 feature \(x\)를 이용해 target \(y\)를 예측하는 지도학습 모델이다. 예측값은 보통 다음 선형 점수로 표현한다.
 
 $$
 \hat{y}=w^Tx+b
@@ -78,10 +80,10 @@ Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, �
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q13 | \\(score=w^Tx+b\\) | 선형 모델은 weight와 feature의 내적에 bias를 더한다. |
+| Q13 | \(score=w^Tx+b\) | 선형 모델은 weight와 feature의 내적에 bias를 더한다. |
 | Q28 | Squared Sum of Residual | 회귀 문제의 대표 loss는 오차의 제곱합이다. |
-| Q34 | \\(Residual=y-\hat{y}\\) | 실제값에서 예측값을 뺀 차이를 residual로 본다. |
-| Q38 | \\(x\\): features, \\(y\\): target | 입력 변수는 feature, 예측 대상은 target이다. |
+| Q34 | \(Residual=y-\hat{y}\) | 실제값에서 예측값을 뺀 차이를 residual로 본다. |
+| Q38 | \(x\): features, \(y\): target | 입력 변수는 feature, 예측 대상은 target이다. |
 | Q49 | loss를 줄이도록 parameter를 반복 update | iterative update는 한 번에 닫힌 해를 구하는 방식이 아니라 반복 갱신이다. |
 | Q24 | loss 감소 방향, gradient의 반대 방향 | gradient는 증가 방향이므로 loss 최소화에는 반대 방향을 쓴다. |
 
@@ -93,7 +95,7 @@ Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, �
 | score vs prediction | score는 모델이 계산한 선형 출력이고, regression에서는 보통 예측값으로 직접 사용된다. | classification에서는 score를 그대로 class probability로 해석하면 안 된다. |
 | gradient vs update direction | gradient는 loss가 증가하는 방향이고, 학습은 보통 그 반대 방향으로 이동한다. | “gradient 방향으로 간다”는 표현은 최소화 문제에서는 부정확할 수 있다. |
 | closed-form vs iterative update | closed-form은 한 번에 해를 구하고, iterative update는 반복적으로 parameter를 고친다. | Gradient Descent는 closed-form 방식이 아니라 반복 최적화 방식이다. |
-| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답이다. | \\(x\\)와 \\(y\\)를 바꿔 적은 선택지는 기본 구성 오류다. |
+| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답이다. | \(x\)와 \(y\)를 바꿔 적은 선택지는 기본 구성 오류다. |
 
 ## 2. Logistic Regression과 Classification
 
@@ -126,7 +128,7 @@ sigmoid를 통과한 값은 0과 1 사이의 확률로 해석할 수 있으므�
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| linear regression vs logistic regression | 둘 다 \\(w^Tx+b\\)를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석한다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아니다. |
+| linear regression vs logistic regression | 둘 다 \(w^Tx+b\)를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석한다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아니다. |
 | sigmoid vs softmax | sigmoid는 주로 binary probability, softmax는 여러 class score를 확률 분포로 바꾼다. | softmax의 출력 합은 1이고, sigmoid는 각 값을 독립적으로 0과 1 사이로 압축한다. |
 | probability vs decision boundary | probability는 class에 속할 가능성이고, decision boundary는 class를 나누는 경계다. | probability function이 있어도 feature가 선형이면 decision boundary는 선형일 수 있다. |
 | likelihood vs probability | probability는 특정 사건의 가능성이고, likelihood는 parameter 관점에서 관측 label을 얼마나 잘 설명하는지 본다. | “observed label이 most likely”라는 표현은 parameter 선택 기준이다. |
@@ -328,7 +330,7 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 | 10 | decision boundary는 여전히 linear |
 | 11 | CNN 기반 모델이 전통적 방법보다 우수한 성능 |
 | 12 | 각 parameter의 gradient를 구하기 위해 chain rule 필요 |
-| 13 | \\(score=w^Tx+b\\) |
+| 13 | \(score=w^Tx+b\) |
 | 14 | 생성 텍스트와 참조 텍스트 간 n-gram 일치도 |
 | 15 | score를 probability로 바꿔 class probability로 해석 |
 | 16 | subword pattern으로 OOV 문제 감소 |
@@ -349,11 +351,11 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 | 31 | linear score 위에 probability link function 추가 |
 | 32 | 현재 hidden state가 이전 hidden state에 의존 |
 | 33 | 필요한 이전 부분을 직접 참고 |
-| 34 | \\(Residual=y-\hat{y}\\) |
+| 34 | \(Residual=y-\hat{y}\) |
 | 35 | proxy task를 학습한 hidden layer를 embedding으로 사용 |
 | 36 | 시간적 순서를 따라 연결되며 sequence를 처리 |
 | 37 | task마다 별도 모델을 from scratch로 학습 |
-| 38 | \\(x\\): features, \\(y\\): target |
+| 38 | \(x\): features, \(y\): target |
 | 39 | token 사이 global relationship을 더 잘 봄 |
 | 40 | self-attention만으로 token 순서를 알기 어려움 |
 | 41 | 의미 관계를 반영한 dense vector |
@@ -371,9 +373,9 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 | 범위 | 반드시 남겨야 할 문장 |
 |---|---|
-| Regression | feature \\(x\\)로 target \\(y\\)를 예측하고, residual은 \\(y-\hat{y}\\)이다. |
+| Regression | feature \(x\)로 target \(y\)를 예측하고, residual은 \(y-\hat{y}\)이다. |
 | Optimization | gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다. |
-| Logistic Regression | linear score \\(w^Tx+b\\)에 sigmoid를 붙여 class probability로 해석한다. |
+| Logistic Regression | linear score \(w^Tx+b\)에 sigmoid를 붙여 class probability로 해석한다. |
 | MLP | hidden layer와 nonlinearity가 single perceptron보다 복잡한 pattern을 표현하게 한다. |
 | Computer Vision | high-level 목표는 pixel을 meaning으로 연결하는 것이다. |
 | NLP | tokenizer는 token으로 나누고, embedding은 token을 dense vector로 표현한다. |
@@ -385,7 +387,7 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기한다.
 2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인한다.
-3. 수식형 문항은 \\(score=w^Tx+b\\), \\(residual=y-\hat{y}\\), sigmoid, softmax, gradient update를 손으로 다시 써 본다.
+3. 수식형 문항은 \(score=w^Tx+b\), \(residual=y-\hat{y}\), sigmoid, softmax, gradient update를 손으로 다시 써 본다.
 4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 본다.
 5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교한다.
 
@@ -394,21 +396,21 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 <details>
 <summary>1. Linear regression에서 feature, target, score, residual을 한 번에 구분하면?</summary>
 
-답변: feature는 입력 \\(x\\), target은 맞혀야 하는 정답 \\(y\\), score 또는 prediction은 \\(\hat{y}=w^Tx+b\\), residual은 실제값과 예측값의 차이 \\(y-\hat{y}\\)이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
+답변: feature는 입력 \(x\), target은 맞혀야 하는 정답 \(y\), score 또는 prediction은 \(\hat{y}=w^Tx+b\), residual은 실제값과 예측값의 차이 \(y-\hat{y}\)이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
 
 </details>
 
 <details>
 <summary>2. Gradient descent에서 왜 gradient의 반대 방향으로 이동하는가?</summary>
 
-답변: gradient \\(\nabla L\)은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 \\(\theta \leftarrow \theta-\eta\nabla L(\theta)\\)처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
+답변: gradient \(\nabla L\)은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 \(\theta \leftarrow \theta-\eta\nabla L(\theta)\)처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
 
 </details>
 
 <details>
 <summary>3. Logistic regression이 linear regression과 비슷하면서도 classification 모델인 이유는?</summary>
 
-답변: logistic regression도 먼저 \\(w^Tx+b\\)라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 \\(0\\)과 \\(1\\) 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
+답변: logistic regression도 먼저 \(w^Tx+b\)라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 \(0\)과 \(1\) 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
 
 </details>
 

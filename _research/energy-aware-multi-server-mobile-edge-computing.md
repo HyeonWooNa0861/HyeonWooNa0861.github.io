@@ -29,6 +29,14 @@ Source PDF: `energy-aware-multi-server-mobile-edge-computing.pdf`
 
 이 논문은 여러 MEC 서버가 있는 환경에서 각 서버가 자신에게 연결된 사용자 중 누구를 오프로딩시킬지 학습하게 하여, 작업 완료 시간을 줄이면서도 배터리 고갈로 인한 system lifetime 감소를 완화하려는 multi-agent DRL 접근이다.
 
+## 핵심 내용
+
+- MEC에서 오프로딩은 에너지 절감 수단이지만, 무선 자원과 서버 큐를 고려하지 않으면 완료 시간이 늘 수 있다.
+- 이 논문은 서버마다 DQN agent를 두어 local user pool 안에서 offloading user를 선택하게 한다.
+- 관측값은 queue length, energy level, mean waiting time, uplink SNR처럼 실제 의사결정에 직접 필요한 상태로 구성된다.
+- 보상은 offloaded bits per energy이므로, 처리량과 에너지 효율을 동시에 압축해 표현한다.
+- 결과의 핵심은 특정 greedy 목적 하나만 최적화하지 않고, 완료 시간과 lifetime의 균형을 학습한다는 점이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -74,14 +82,6 @@ Agent의 reward는 선택된 사용자가 offloading으로 처리한 bit 수를 
 논문은 10m \(\times\) 10m network area, FDMA, 여러 MEC server와 user를 둔 시뮬레이션을 사용한다. DQN은 2-layer neural network를 사용하고, \(\epsilon\)-greedy exploration과 replay buffer로 학습된다.
 
 비교 기준선은 average queue waiting time이 큰 사용자를 고르는 Time-Greedy Agent와 energy level이 낮은 사용자를 고르는 Energy-Greedy Agent이다. 제안 방법은 두 기준선보다 task computation time과 system lifetime 사이에서 더 나은 trade-off를 보인다.
-
-## 핵심 내용
-
-- MEC에서 오프로딩은 에너지 절감 수단이지만, 무선 자원과 서버 큐를 고려하지 않으면 완료 시간이 늘 수 있다.
-- 이 논문은 서버마다 DQN agent를 두어 local user pool 안에서 offloading user를 선택하게 한다.
-- 관측값은 queue length, energy level, mean waiting time, uplink SNR처럼 실제 의사결정에 직접 필요한 상태로 구성된다.
-- 보상은 offloaded bits per energy이므로, 처리량과 에너지 효율을 동시에 압축해 표현한다.
-- 결과의 핵심은 특정 greedy 목적 하나만 최적화하지 않고, 완료 시간과 lifetime의 균형을 학습한다는 점이다.
 
 ## 해석 포인트
 

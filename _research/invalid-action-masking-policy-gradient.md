@@ -29,6 +29,12 @@ Source PDF: `invalid-action-masking-policy-gradient.pdf`
 
 이 논문은 action space가 크고 상태마다 유효 action이 다른 환경에서 invalid action masking이 policy gradient 학습에 어떤 영향을 주는지 분석한다.
 
+## 핵심 내용
+
+상태마다 유효 action이 다른 큰 discrete action space에서는 agent가 실행 불가능한 선택을 반복해 exploration budget을 낭비한다. Invalid action에 penalty를 주는 방식은 유효 action 비율이 작아질수록 학습 신호가 희박해지므로, 이 논문은 sampling 전에 invalid logit을 mask하는 방법을 policy-gradient 관점에서 분석한다.
+
+상태 의존적 mask를 differentiable transformation으로 보면 masking된 distribution에서도 타당한 policy-gradient update를 구성할 수 있다. µRTS 실험은 invalid action 비율이 커질수록 masking이 penalty 방식보다 잘 확장됨을 보여주며, 구현 편의로 보이던 기법에 이론적 해석과 대규모 action-space 설계 근거를 제공한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

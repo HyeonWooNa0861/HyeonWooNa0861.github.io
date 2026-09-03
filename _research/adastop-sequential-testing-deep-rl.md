@@ -31,6 +31,12 @@ Source PDF: `adastop-sequential-testing-deep-rl.pdf`
 
 AdaStop은 Deep RL 알고리즘 비교를 고정된 seed 수 관행이 아니라, family-wise error를 제어하는 순차적 통계 검정 문제로 재정의해 필요한 실행 수를 데이터에 맞춰 줄이거나 늘리는 방법이다.
 
+## 핵심 내용
+
+Deep RL의 score는 seed와 환경 확률성에 따라 크게 달라질 수 있는데도, 소수의 고정된 seed로 여러 agent를 비교하면 우연한 차이를 성능 우위로 오인할 위험이 커진다. AdaStop은 이 문제를 실행 횟수의 관행이 아니라, 여러 비교에서 family-wise error를 제어해야 하는 순차 검정 문제로 다룬다.
+
+실험은 score를 batch 단위로 추가하면서 증거가 충분한 비교는 일찍 멈추고, 불확실한 비교에만 다음 실행을 배정한다. 이 nonparametric·adaptive 절차는 차이가 뚜렷할 때 계산량을 아끼면서도 다중 비교의 오류를 통제한다는 데 의의가 있으며, 방향성 결론과 평균 비교에 대한 보장 범위는 별도로 해석해야 한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

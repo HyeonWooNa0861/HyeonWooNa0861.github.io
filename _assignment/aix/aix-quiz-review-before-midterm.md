@@ -13,7 +13,11 @@ Source Images:
 
 - `aix-pre-midterm-001.png` ~ `aix-pre-midterm-024.png`
 
+## 과제 개요
+
 이 글은 중간고사 전 AIX Quiz 이미지 자료를 시험 대비용으로 다시 정리한 자료다. 원문 선택지를 그대로 옮기기보다, 문항이 묻는 개념과 정답을 고르는 기준을 중심으로 재구성했다.
+
+**핵심 메시지:** 각 모델의 이름보다 입력을 어떤 표현으로 바꾸고, 어떤 목적함수로 학습하며, 이전 구조의 한계를 어떻게 보완하는지를 연결해 이해하는 것이 중요하다.
 
 ## 전체 흐름
 
@@ -30,7 +34,7 @@ Source Images:
 
 빠르게 복습할 때는 다음 문장을 먼저 기억하면 된다.
 
-1. Linear regression은 \\(x\\)를 feature, \\(y\\)를 target으로 보고 \\(\hat{y}=w^Tx+b\\) 형태의 선형 점수를 학습한다.
+1. Linear regression은 \(x\)를 feature, \(y\)를 target으로 보고 \(\hat{y}=w^Tx+b\) 형태의 선형 점수를 학습한다.
 2. Logistic regression은 linear score 위에 sigmoid를 붙여 class probability로 해석한다.
 3. MLP는 hidden layer와 nonlinearity 덕분에 single perceptron보다 복잡한 패턴을 표현할 수 있다.
 4. RNN은 순차적으로 hidden state를 갱신하고, attention은 token 사이의 관계를 더 직접적이고 전역적으로 본다.
@@ -42,9 +46,9 @@ Source Images:
 
 | 문항 | 문제 유형 | 정답 키워드 |
 |---:|---|---|
-| Q1 | 데이터셋 구성 | \\(x\\): features, \\(y\\): target |
-| Q2 | linear score 식 | \\(score=w^Tx+b\\) |
-| Q3 | residual 정의 | \\(residual=y-\hat{y}\\) |
+| Q1 | 데이터셋 구성 | \(x\): features, \(y\): target |
+| Q2 | linear score 식 | \(score=w^Tx+b\) |
+| Q3 | residual 정의 | \(residual=y-\hat{y}\) |
 | Q4 | loss objective | squared sum of residual |
 | Q5 | iterative update | loss를 줄이도록 parameter를 반복적으로 update |
 
@@ -53,9 +57,9 @@ Source Images:
 
 풀이과정:
 
-Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target이다. 관례적으로 feature vector를 \\(x\\), target value를 \\(y\\)로 둔다.
+Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target이다. 관례적으로 feature vector를 \(x\), target value를 \(y\)로 둔다.
 
-답변: \\(x\\)는 features, \\(y\\)는 target이다.
+답변: \(x\)는 features, \(y\)는 target이다.
 
 </details>
 
@@ -64,15 +68,15 @@ Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값�
 
 풀이과정:
 
-Linear regression은 feature vector \\(x\\)에 weight vector \\(w\\)를 곱하고 bias \\(b\\)를 더해 예측값을 만든다.
+Linear regression은 feature vector \(x\)에 weight vector \(w\)를 곱하고 bias \(b\)를 더해 예측값을 만든다.
 
 $$
 \hat{y}=score=w^Tx+b
 $$
 
-곱셈만 있거나, \\(w+x+b\\)처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아니다.
+곱셈만 있거나, \(w+x+b\)처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아니다.
 
-답변: \\(score=w^Tx+b\\)이다.
+답변: \(score=w^Tx+b\)이다.
 
 </details>
 
@@ -95,7 +99,7 @@ $$
 
 제곱하는 이유는 양수/음수 오차가 서로 상쇄되지 않게 하고, 큰 오차를 더 크게 벌주기 위해서다.
 
-답변: residual은 \\(y-\hat{y}\\)이고, loss는 squared sum of residual을 사용한다.
+답변: residual은 \(y-\hat{y}\)이고, loss는 squared sum of residual을 사용한다.
 
 </details>
 
@@ -104,7 +108,7 @@ $$
 
 풀이과정:
 
-Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아니다. 현재 parameter에서 loss가 줄어드는 방향으로 \\(w\\), \\(b\\)를 조금씩 반복 갱신하는 방식이다.
+Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아니다. 현재 parameter에서 loss가 줄어드는 방향으로 \(w\), \(b\)를 조금씩 반복 갱신하는 방식이다.
 
 Deep learning의 training도 기본적으로 이 아이디어를 따른다.
 
@@ -150,7 +154,7 @@ $$
 \sigma(z)=\frac{1}{1+e^{-z}}
 $$
 
-여기서 \\(z=w^Tx+b\\)다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙인다.
+여기서 \(z=w^Tx+b\)다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙인다.
 
 답변: score를 probability로 바꿔 class probability로 해석할 수 있게 한다.
 
@@ -176,7 +180,7 @@ Logistic regression은 관측된 label이 가장 그럴듯하게 나오도록 pa
 
 Logistic regression은 probability와 classification용 loss를 사용하지만, 원래 feature 공간에서의 decision boundary는 보통 선형이다.
 
-Binary classification에서 기준을 \\(P(y=1\mid x)=0.5\\)로 두면, 이는 \\(w^Tx+b=0\\)과 대응된다.
+Binary classification에서 기준을 \(P(y=1\mid x)=0.5\)로 두면, 이는 \(w^Tx+b=0\)과 대응된다.
 
 답변: 확률 해석과 classification loss를 더하지만, 기본 decision boundary는 여전히 linear하다.
 
@@ -524,11 +528,11 @@ Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식
 
 </details>
 
-## 마지막 핵심 정리
+## 핵심 정리
 
 | 구분 | 꼭 기억할 문장 |
 |---|---|
-| Linear Regression | \\(\hat{y}=w^Tx+b\\), residual은 \\(y-\hat{y}\\), loss는 squared residual 중심이다. |
+| Linear Regression | \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. |
 | Logistic Regression | linear score를 sigmoid로 probability로 바꿔 classification에 사용한다. |
 | MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
 | Computer Vision | pixel을 meaning으로 연결하는 것이 high-level 목표다. |

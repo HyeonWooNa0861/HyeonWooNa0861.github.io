@@ -31,6 +31,12 @@ Source PDF: `comprehensive-survey-safe-reinforcement-learning.pdf`
 
 이 survey는 safe RL을 return objective 자체를 risk-aware하게 바꾸는 접근과 exploration process를 안전하게 바꾸는 접근으로 나누어, 안전 제약이 RL 문제 정의와 학습 과정에 들어가는 방식을 정리한다.
 
+## 핵심 내용
+
+일반 RL은 장기 return을 높이는 과정에서 학습 중 발생하는 위험을 별도 제약으로 다루지 않는다. 이 survey는 safe RL을 최종 성능뿐 아니라 learning과 deployment 동안의 system performance와 safety constraint까지 고려하는 문제로 정의하고, 서로 다른 risk 개념을 하나의 분류 체계로 정리한다.
+
+방법은 크게 worst-case·risk-sensitive·constrained objective처럼 최적화 기준을 바꾸는 계열과, demonstration·teacher advice·risk-directed exploration처럼 탐색 과정을 바꾸는 계열로 나뉜다. 논문의 의의는 단일 최고 알고리즘을 제시하는 데 있지 않고, 각 접근이 어떤 위험을 정의하고 어느 시점의 실패를 막는지 비교할 언어를 제공한 데 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

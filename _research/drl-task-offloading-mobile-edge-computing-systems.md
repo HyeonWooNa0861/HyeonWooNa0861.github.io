@@ -28,6 +28,18 @@ keywords:
 
 이 논문은 edge load dynamics와 deadline-sensitive task를 고려해, 각 mobile device가 다른 device의 task model이나 decision을 알지 못해도 offloading 여부와 대상 edge node를 결정하도록 하는 distributed DRL offloading 방법을 제안한다.
 
+## 핵심 내용
+
+이 논문은 edge node가 과부하될 때 발생하는 delay와 task drop 문제를 중심으로 한다. Mobile device는 task를 local에서 처리할지, 특정 edge node로 offload할지 결정해야 하지만 다른 device의 상태를 알기 어렵다. 따라서 완전한 중앙 최적화보다 분산 학습 구조가 현실적이다.
+
+제안 알고리즘은 LSTM으로 시간적 load 변화를 반영하고, dueling DQN으로 state 자체의 가치와 action별 이점을 분리하며, double DQN으로 Q-value 과대평가를 줄인다. 이 조합은 단순 DQN보다 MEC의 동적 환경에 더 적합한 value estimation을 제공한다.
+
+결론적으로 이 연구는 QECO 계열 논문의 핵심 선행 배경이다. 특히 dropped task와 average delay를 줄이는 목적은 dense MEC 환경에서 QECO-Adapt가 다시 다루는 문제와 직접 연결된다.
+
+이 논문이 다루는 offloading은 단일 사용자의 local/edge binary choice보다 복잡하다. Edge node가 여러 개이고 각 node의 load가 시간에 따라 변하므로, 어떤 edge로 보내는지가 task completion에 직접 영향을 준다. LSTM은 이런 load dynamics를 state representation에 반영하고, dueling/double DQN은 action value 추정의 안정성을 보완한다.
+
+읽을 때 주의할 점은 distributed DRL이 global optimum을 보장한다는 뜻은 아니라는 것이다. 각 device가 local observation으로 decision을 내리기 때문에 정보가 제한되고, 다른 device의 action과 환경 변화가 non-stationarity를 만든다. 그럼에도 중앙 controller 없이 delay와 dropped task를 줄일 수 있다는 점이 이 연구의 실용적 의미다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -63,18 +75,6 @@ MEC 시스템에서 edge node는 제한된 processing capacity를 가진다. 많
 ## 4. 연구 맥락
 
 QECO 논문과 QECO-Adapt는 이 연구의 구조적 영향을 직접적으로 받는다. LSTM, dueling DQN, double DQN을 함께 사용하는 offloading model은 deadline, energy, edge load가 결합된 MEC 문제에서 기본적인 DRL 설계 사례로 볼 수 있다.
-
-## 핵심 내용
-
-이 논문은 edge node가 과부하될 때 발생하는 delay와 task drop 문제를 중심으로 한다. Mobile device는 task를 local에서 처리할지, 특정 edge node로 offload할지 결정해야 하지만 다른 device의 상태를 알기 어렵다. 따라서 완전한 중앙 최적화보다 분산 학습 구조가 현실적이다.
-
-제안 알고리즘은 LSTM으로 시간적 load 변화를 반영하고, dueling DQN으로 state 자체의 가치와 action별 이점을 분리하며, double DQN으로 Q-value 과대평가를 줄인다. 이 조합은 단순 DQN보다 MEC의 동적 환경에 더 적합한 value estimation을 제공한다.
-
-결론적으로 이 연구는 QECO 계열 논문의 핵심 선행 배경이다. 특히 dropped task와 average delay를 줄이는 목적은 dense MEC 환경에서 QECO-Adapt가 다시 다루는 문제와 직접 연결된다.
-
-이 논문이 다루는 offloading은 단일 사용자의 local/edge binary choice보다 복잡하다. Edge node가 여러 개이고 각 node의 load가 시간에 따라 변하므로, 어떤 edge로 보내는지가 task completion에 직접 영향을 준다. LSTM은 이런 load dynamics를 state representation에 반영하고, dueling/double DQN은 action value 추정의 안정성을 보완한다.
-
-읽을 때 주의할 점은 distributed DRL이 global optimum을 보장한다는 뜻은 아니라는 것이다. 각 device가 local observation으로 decision을 내리기 때문에 정보가 제한되고, 다른 device의 action과 환경 변화가 non-stationarity를 만든다. 그럼에도 중앙 controller 없이 delay와 dropped task를 줄일 수 있다는 점이 이 연구의 실용적 의미다.
 
 ## 참고자료
 

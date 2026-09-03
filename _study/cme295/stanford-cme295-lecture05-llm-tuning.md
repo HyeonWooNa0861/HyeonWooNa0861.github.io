@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=PmW_TMQ3l0I){:target="_blank" rel="noopener"}
 
+> **핵심:** 5강은 pre-training과 SFT 이후의 preference tuning을 중심으로 진행된다. SFT model은 assistant처럼 동작할 수 있지만 tone, friendliness, safety 같은 human preference와 완전히 맞지 않을 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -44,7 +46,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 |---|---|
 | Preference pair | 같은 prompt에 대해 선호되는 winning response와 덜 선호되는 losing response를 묶은 학습 단위. |
 | RLHF | Reinforcement Learning from Human Feedback. Human preference data로 reward model을 학습한 뒤, 그 reward를 사용해 LLM policy를 tuning하는 절차. |
-| Policy pi_theta(a|s) | RL에서 state가 주어졌을 때 action의 확률분포를 뜻하며, LLM에서는 input prefix가 주어졌을 때 next token distribution에 해당한다. |
+| Policy \(\pi_\theta(a \mid s)\) | RL에서 state가 주어졌을 때 action의 확률분포를 뜻하며, LLM에서는 input prefix가 주어졌을 때 next token distribution에 해당한다. |
 | Bradley-Terry formulation | 두 output score ri, rj로 한 output이 다른 output보다 선호될 확률을 exp(ri)/(exp(ri)+exp(rj)) 또는 sigma(ri-rj)로 표현하는 방식. |
 | Reward model | Prompt와 completion을 입력받아 그 completion이 얼마나 좋은지 scalar score를 내는 모델. 강의에서는 decoder-only LLM에 classification head를 붙이거나 BERT/CLS 기반으로 만들 수 있다고 한다. |
 | KL divergence | 두 probability distribution이 얼마나 다른지 재는 비대칭 measure. 강의에서는 sum p_i log(p_i/q_i)이고 항상 0 이상이며 P=Q일 때 0이라고 설명한다. |

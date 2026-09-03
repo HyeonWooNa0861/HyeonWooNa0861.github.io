@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=h-7S6HNq0Vg){:target="_blank" rel="noopener"}
 
+> **핵심:** 이 강의는 이전 강의의 reasoning model과 GRPO를 짧게 복습한 뒤, LLM이 학습 시점의 지식에 갇혀 있다는 문제에서 출발한다. 모델 가중치를 계속 재학습하는 방식은 회귀 위험과 유지보수 비용이 크고, 모든 최신 정보를 긴 프롬프트에 넣는 방식은 컨텍스트 길이, needle-in-a-haystack 성능 저하, 토큰 비용 때문에 부적절하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

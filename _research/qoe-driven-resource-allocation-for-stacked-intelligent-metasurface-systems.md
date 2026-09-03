@@ -32,6 +32,12 @@ Source PDF: `qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-
 
 이 논문은 stacked intelligent metasurface가 wave-domain beamforming을 수행하는 downlink에서 BS power와 SIM phase response를 Meta-CQL로 함께 조정해 web, video, audio 사용자의 mean opinion score를 높인다.
 
+## 핵심 내용
+
+전송률만 높이는 QoS 중심 자원 배분은 web, video와 audio 서비스가 체감 품질에 반응하는 방식의 차이를 놓친다. 이 논문은 stacked intelligent metasurface의 layer별 electromagnetic response와 BS transmit power를 함께 조정하고, 각 서비스의 data rate를 MOS로 변환해 사용자 QoE를 직접 최적화한다.
+
+Meta-CQL은 보수적 Q-learning으로 관측이 부족한 action의 과대평가를 줄이면서 meta-learning으로 mobility와 service task 변화에 빠르게 적응한다. 실험은 전통적 QoS 기반 배분보다 서비스별 평균 MOS 개선을 보고하며, wave-domain beamforming과 사용자 중심 효용을 하나의 학습 문제로 연결했다는 점이 핵심이다. 다만 원문의 reward·constraint 표기에는 해석상 불일치가 있어 구현 전 확인이 필요하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

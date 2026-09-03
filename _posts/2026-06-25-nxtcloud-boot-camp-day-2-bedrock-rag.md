@@ -9,6 +9,8 @@ permalink: /posts/nxtcloud-boot-camp-day-2-bedrock-rag/
 section: nxtcloud-boot-camp
 ---
 
+> **핵심 메시지:** RAG는 외부 문서를 검색해 LLM의 답변 근거로 연결하며, 실제 품질은 모델뿐 아니라 chunking, embedding, retrieval, citation과 운영 정책을 함께 설계할 때 결정된다.
+
 ## 1. 교육 과정 개요
 
 nxtcloud Boot Camp 2일차는 Amazon Bedrock 기반 RAG(Retrieval-Augmented Generation) 구조를 이해하고, 지식 기반을 사용해 모델 응답을 외부 문서와 연결하는 과정을 정리한 자료다. 1일차가 모델 호출 방식과 챗봇 API 선택에 초점을 두었다면, 2일차는 “모델이 모르는 사내 문서, 매뉴얼, FAQ를 어떻게 답변 근거로 사용할 수 있는가”를 다룬다.

@@ -27,6 +27,18 @@ keywords:
 
 이 논문은 MEC task offloading에서 사용자 단말과 master agent가 서로 다른 역할을 수행하도록 구성해, 사용자와 서버의 다양한 resource constraint를 함께 다루는 combinatorial multiagent DRL 구조를 제안한다.
 
+## 핵심 내용
+
+이 논문은 MEC task offloading이 단순히 각 사용자 단말의 선택 문제가 아니라는 점에서 출발한다. 여러 사용자가 동시에 offload하면 서버 저장공간, 처리 능력, 통신 resource가 함께 제한되며, 한 사용자의 결정이 다른 사용자의 성능에도 영향을 준다.
+
+제안된 CCM-MADRL은 client agent와 master agent를 분리한다. Client는 자신의 task와 단말 상태를 바탕으로 판단하고, master는 여러 client의 결정을 모아 서버 측 제약을 만족하는 방향으로 조정한다. 이는 multiagent 구조를 단순 복제하지 않고 MEC 시스템의 계층적 역할에 맞춘 것이다.
+
+핵심 기여는 resource constraint를 reward penalty로만 처리하지 않고, 의사결정 구조 속에 넣었다는 점이다. 이 접근은 dense MEC나 server bottleneck이 큰 상황에서 특히 중요하다. 반면 master agent가 너무 많은 정보를 요구하면 scalability와 통신 비용 문제가 발생할 수 있으므로, 실제 배포에서는 coordination cost를 함께 평가해야 한다.
+
+Client-master 구조의 해석 포인트는 MEC의 제약이 계층적이라는 점이다. User device는 자신의 battery, task size, latency requirement를 중심으로 판단하지만, MEC server는 여러 사용자의 task를 동시에 받아 storage와 computation resource를 나눠야 한다. 두 관점을 하나의 homogeneous agent로 처리하면 제약의 위치가 흐려질 수 있다.
+
+이 논문은 multiagent DRL을 "여러 agent가 같은 일을 나눠 하는 방식"이 아니라 "서로 다른 역할을 가진 agent들이 조합 decision을 만드는 방식"으로 사용한다. QECO-Adapt처럼 dense condition을 다루는 연구에서는 dropped task가 단순 policy 미숙이 아니라 resource bottleneck의 결과일 수 있으므로, client-master coordination은 중요한 비교 축이 된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -64,18 +76,6 @@ MEC에서는 사용자 단말이 계산 집약적 task를 edge server로 offload
 ## 4. 연구 맥락
 
 QECO-Adapt와 비교하면, 이 논문은 offloading action의 agent 구조 자체를 다루고 QECO는 개별 device의 QoE 중심 decision을 강화한다. Dense MEC 환경에서는 server resource constraint와 dropped task가 중요하므로, client-master coordination은 QECO-Adapt의 load-aware control과 함께 읽을 가치가 있다.
-
-## 핵심 내용
-
-이 논문은 MEC task offloading이 단순히 각 사용자 단말의 선택 문제가 아니라는 점에서 출발한다. 여러 사용자가 동시에 offload하면 서버 저장공간, 처리 능력, 통신 resource가 함께 제한되며, 한 사용자의 결정이 다른 사용자의 성능에도 영향을 준다.
-
-제안된 CCM-MADRL은 client agent와 master agent를 분리한다. Client는 자신의 task와 단말 상태를 바탕으로 판단하고, master는 여러 client의 결정을 모아 서버 측 제약을 만족하는 방향으로 조정한다. 이는 multiagent 구조를 단순 복제하지 않고 MEC 시스템의 계층적 역할에 맞춘 것이다.
-
-핵심 기여는 resource constraint를 reward penalty로만 처리하지 않고, 의사결정 구조 속에 넣었다는 점이다. 이 접근은 dense MEC나 server bottleneck이 큰 상황에서 특히 중요하다. 반면 master agent가 너무 많은 정보를 요구하면 scalability와 통신 비용 문제가 발생할 수 있으므로, 실제 배포에서는 coordination cost를 함께 평가해야 한다.
-
-Client-master 구조의 해석 포인트는 MEC의 제약이 계층적이라는 점이다. User device는 자신의 battery, task size, latency requirement를 중심으로 판단하지만, MEC server는 여러 사용자의 task를 동시에 받아 storage와 computation resource를 나눠야 한다. 두 관점을 하나의 homogeneous agent로 처리하면 제약의 위치가 흐려질 수 있다.
-
-이 논문은 multiagent DRL을 "여러 agent가 같은 일을 나눠 하는 방식"이 아니라 "서로 다른 역할을 가진 agent들이 조합 decision을 만드는 방식"으로 사용한다. QECO-Adapt처럼 dense condition을 다루는 연구에서는 dropped task가 단순 policy 미숙이 아니라 resource bottleneck의 결과일 수 있으므로, client-master coordination은 중요한 비교 축이 된다.
 
 ## 참고자료
 

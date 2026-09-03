@@ -30,6 +30,20 @@ Source PDF: `quarot-outlier-free-4-bit-inference-in-rotated-llms.pdf`
 
 QuaRot은 LLM의 output을 바꾸지 않는 회전 변환으로 activation outlier를 제거해, weight뿐 아니라 activation과 KV cache까지 4비트로 낮추는 quantization scheme이다.
 
+## 핵심 내용
+
+이 절은 원문 전체를 그대로 옮긴 번역이 아니라, QuaRot 논문의 문제 설정, 방법, 실험, 한계를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
+
+QuaRot이 출발하는 문제는 activation outlier다. Weight-only quantization은 LLM memory footprint를 줄일 수 있지만, activation과 KV cache가 high precision으로 남으면 end-to-end inference 비용은 여전히 크다. 특히 4-bit activation quantization에서는 일부 feature의 큰 값이 전체 quantization range를 지배해 작은 값들의 표현 정확도를 떨어뜨린다.
+
+논문은 이 문제를 channel별 예외 처리 대신 rotation으로 해결한다. Randomized Hadamard transform을 hidden state에 적용하면 특정 channel에 몰린 큰 값이 여러 coordinate로 퍼져 outlier가 완화된다. Transformer block의 computational invariance를 이용하면, 이런 회전은 weight matrix에 흡수되거나 attention/FFN 내부의 online transform으로 배치되어 model output을 유지할 수 있다.
+
+QuaRot의 구조는 weight, activation, KV cache를 함께 고려한다. RMSNorm scale을 weight에 흡수하고, FFN down-projection과 attention value/key 경로에 Hadamard transform을 배치해 activation과 cache의 분포를 quantization-friendly하게 만든다. 결과적으로 모든 matrix multiplication이 4-bit path를 사용할 수 있는 구성을 목표로 한다.
+
+실험에서는 LLaMA2-70B 기준 4-bit quantization에서 WikiText-2 perplexity 손실을 작게 유지하고, zero-shot 성능 대부분을 보존한다고 보고한다. 또한 prefill 단계에서는 low-bit matrix multiplication의 이점으로 speedup을, decoding 단계에서는 KV cache 압축으로 memory saving을 얻는다.
+
+결론적으로 QuaRot은 LLM PTQ를 weight compression 문제에서 inference data path 전체의 precision 설계 문제로 확장한다. GPTQ가 weight-only PTQ의 실용성을 보였다면, QuaRot은 activation과 KV cache까지 포함한 end-to-end 4-bit inference의 가능성을 보여주는 연구로 읽을 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -87,20 +101,6 @@ GPTQ는 weight-only PTQ의 대표적 기준점이라면, QuaRot은 activation/KV
 QuaRot은 Hadamard transform과 low-bit kernel support에 의존한다. Rotation 자체의 수학적 output invariance가 있더라도, 실제 speedup은 hardware kernel, batch size, sequence length, memory-bound 정도에 따라 달라진다. 또한 LLaMA 계열 중심의 실험 결과가 다른 architecture나 production serving stack에서 그대로 유지되는지는 별도 검증이 필요하다.
 
 LLAMA-3 결과에서는 LLAMA-2보다 quantization sensitivity가 더 크게 나타난다. 이는 같은 rotation scheme이라도 model family와 training distribution에 따라 quantization robustness가 달라질 수 있음을 시사한다.
-
-## 핵심 내용
-
-이 절은 원문 전체를 그대로 옮긴 번역이 아니라, QuaRot 논문의 문제 설정, 방법, 실험, 한계를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
-QuaRot이 출발하는 문제는 activation outlier다. Weight-only quantization은 LLM memory footprint를 줄일 수 있지만, activation과 KV cache가 high precision으로 남으면 end-to-end inference 비용은 여전히 크다. 특히 4-bit activation quantization에서는 일부 feature의 큰 값이 전체 quantization range를 지배해 작은 값들의 표현 정확도를 떨어뜨린다.
-
-논문은 이 문제를 channel별 예외 처리 대신 rotation으로 해결한다. Randomized Hadamard transform을 hidden state에 적용하면 특정 channel에 몰린 큰 값이 여러 coordinate로 퍼져 outlier가 완화된다. Transformer block의 computational invariance를 이용하면, 이런 회전은 weight matrix에 흡수되거나 attention/FFN 내부의 online transform으로 배치되어 model output을 유지할 수 있다.
-
-QuaRot의 구조는 weight, activation, KV cache를 함께 고려한다. RMSNorm scale을 weight에 흡수하고, FFN down-projection과 attention value/key 경로에 Hadamard transform을 배치해 activation과 cache의 분포를 quantization-friendly하게 만든다. 결과적으로 모든 matrix multiplication이 4-bit path를 사용할 수 있는 구성을 목표로 한다.
-
-실험에서는 LLaMA2-70B 기준 4-bit quantization에서 WikiText-2 perplexity 손실을 작게 유지하고, zero-shot 성능 대부분을 보존한다고 보고한다. 또한 prefill 단계에서는 low-bit matrix multiplication의 이점으로 speedup을, decoding 단계에서는 KV cache 압축으로 memory saving을 얻는다.
-
-결론적으로 QuaRot은 LLM PTQ를 weight compression 문제에서 inference data path 전체의 precision 설계 문제로 확장한다. GPTQ가 weight-only PTQ의 실용성을 보였다면, QuaRot은 activation과 KV cache까지 포함한 end-to-end 4-bit inference의 가능성을 보여주는 연구로 읽을 수 있다.
 
 ## 참고자료
 

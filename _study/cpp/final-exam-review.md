@@ -60,6 +60,8 @@ Source Pages:
   <li><a href="{{ "/assignment/cpp/standard-io-file-descriptor/" | relative_url }}">Standard I/O and File Descriptor Assignment</a></li>
 </ul>
 
+> **핵심:** **C++ 객체** 데이터와 동작, 생성과 소멸까지 함께 설계한다. **RAII** 자원 해제를 객체 수명에 묶는다.
+
 ## 전체 흐름
 
 | 순서 | 큰 주제 | 시험에서 묻는 핵심 |

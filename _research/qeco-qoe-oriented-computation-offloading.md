@@ -29,6 +29,18 @@ keywords:
 
 QECO는 mobile device가 다른 device의 decision을 알 필요 없이 자신의 long-term QoE를 최대화하도록, D3QN/LSTM 기반 분산 computation offloading decision을 학습하는 알고리즘이다.
 
+## 핵심 내용
+
+QECO는 MEC offloading을 단순 delay minimization 문제가 아니라 사용자 QoE maximization 문제로 재정의한다. 사용자는 task가 완료되기를 원하지만, 동시에 delay와 energy consumption도 낮아야 한다. 이 요소들을 하나의 reward로 묶어 long-term QoE를 최대화하도록 학습한다.
+
+알고리즘 구조는 LSTM, dueling DQN, double DQN을 결합한다. LSTM은 시간적으로 변하는 edge load와 task arrival을 기억하고, dueling DQN은 상태 가치와 action 이점을 분리하며, double DQN은 Q-value 과대평가를 줄인다.
+
+이 논문은 QECO-Adapt의 직접적인 출발점이다. QECO-Adapt가 추가한 effective load, adaptive energy weight, gating logic은 QECO의 기본 구조를 유지하면서 dense condition에서 약점을 보완하려는 시도로 이해할 수 있다.
+
+QECO를 읽을 때 중요한 점은 reward가 단순한 cost 합이 아니라 사용자 경험을 모델링하려는 시도라는 것이다. Completed task 수를 늘리는 것만 목표로 하면 에너지를 과도하게 쓰거나 edge congestion을 키울 수 있고, energy만 줄이면 deadline miss가 늘 수 있다. QECO는 이 trade-off를 QoE라는 장기 reward 안에 넣어 agent가 반복 interaction으로 균형점을 찾게 한다.
+
+다만 QECO의 분산 실행은 장점과 한계를 동시에 갖는다. 다른 device의 decision을 직접 알 필요가 없으므로 scalability가 좋지만, 여러 사용자가 동시에 비슷한 offloading action을 선택하면 edge load가 집중될 수 있다. QECO-Adapt에서 load-aware gating을 추가한 이유도 바로 이 지점에 있다. 따라서 QECO는 dense-load 보완을 위한 baseline architecture로 읽는 것이 적절하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -61,18 +73,6 @@ QECO는 computation offloading을 MDP로 정식화하고, 각 mobile device가 �
 ## 4. 연구 맥락
 
 QECO-Adapt는 이 QECO를 기반으로 dense MEC 조건에서 load-adaptive control을 추가한 확장으로 볼 수 있다. 따라서 QECO 원 논문은 QECO-Adapt의 baseline, reward structure, network architecture를 이해하는 핵심 자료다.
-
-## 핵심 내용
-
-QECO는 MEC offloading을 단순 delay minimization 문제가 아니라 사용자 QoE maximization 문제로 재정의한다. 사용자는 task가 완료되기를 원하지만, 동시에 delay와 energy consumption도 낮아야 한다. 이 요소들을 하나의 reward로 묶어 long-term QoE를 최대화하도록 학습한다.
-
-알고리즘 구조는 LSTM, dueling DQN, double DQN을 결합한다. LSTM은 시간적으로 변하는 edge load와 task arrival을 기억하고, dueling DQN은 상태 가치와 action 이점을 분리하며, double DQN은 Q-value 과대평가를 줄인다.
-
-이 논문은 QECO-Adapt의 직접적인 출발점이다. QECO-Adapt가 추가한 effective load, adaptive energy weight, gating logic은 QECO의 기본 구조를 유지하면서 dense condition에서 약점을 보완하려는 시도로 이해할 수 있다.
-
-QECO를 읽을 때 중요한 점은 reward가 단순한 cost 합이 아니라 사용자 경험을 모델링하려는 시도라는 것이다. Completed task 수를 늘리는 것만 목표로 하면 에너지를 과도하게 쓰거나 edge congestion을 키울 수 있고, energy만 줄이면 deadline miss가 늘 수 있다. QECO는 이 trade-off를 QoE라는 장기 reward 안에 넣어 agent가 반복 interaction으로 균형점을 찾게 한다.
-
-다만 QECO의 분산 실행은 장점과 한계를 동시에 갖는다. 다른 device의 decision을 직접 알 필요가 없으므로 scalability가 좋지만, 여러 사용자가 동시에 비슷한 offloading action을 선택하면 edge load가 집중될 수 있다. QECO-Adapt에서 load-aware gating을 추가한 이유도 바로 이 지점에 있다. 따라서 QECO는 dense-load 보완을 위한 baseline architecture로 읽는 것이 적절하다.
 
 ## 참고자료
 

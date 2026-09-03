@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `Robotics_1.pdf`
 
+> **핵심:** **imitation learning** expert demonstration을 policy 학습에 사용하는 방식. **behavioral cloning** expert trajectory를 observation-to-action supervised learning으로 학습.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -28,7 +30,7 @@ Source PDF: `Robotics_1.pdf`
 | 4 | Supervised Learning과 차이 | robot action은 왜 미래 input distribution을 바꾸는가? |
 | 5 | Behavioral Cloning | expert trajectory를 policy로 바꾸는 가장 단순한 방법은 무엇인가? |
 | 6 | Distribution Shift | expert state에서만 배운 policy는 왜 drift 후 회복하지 못하는가? |
-| 7 | Error Growth | 독립 오류와 sequential 오류는 왜 \\(T\epsilon\\), \\(O(T^2\epsilon)\\)처럼 달라지는가? |
+| 7 | Error Growth | 독립 오류와 sequential 오류는 왜 \(T\epsilon\), \(O(T^2\epsilon)\)처럼 달라지는가? |
 | 8 | DAggER | learner가 방문한 state에 expert label을 붙이면 무엇이 좋아지는가? |
 | 9 | Generality | SuperTuxKart, Super Mario 예시는 어떤 공통 문제를 보여주는가? |
 | 10 | Remaining Bottleneck | 왜 modern robotics는 foundation model, world model, VLA로 이동하는가? |
@@ -54,7 +56,7 @@ $$
 o_t \rightarrow a_t
 $$
 
-여기서 \\(o_t\\)는 observation, \\(a_t\\)는 expert action이다.
+여기서 \(o_t\)는 observation, \(a_t\)는 expert action이다.
 
 ## 2. Imitation은 Ordinary Supervised Learning이 아니다
 
@@ -96,9 +98,9 @@ $$
 
 | 구성 | 의미 |
 |---|---|
-| observation \\(o\\) | 카메라 이미지, game screen, robot sensor state 등 |
-| expert action \\(a^*\\) | 사람 또는 expert controller가 선택한 행동 |
-| policy \\(\pi_\theta\\) | observation을 action으로 바꾸는 learned model |
+| observation \(o\) | 카메라 이미지, game screen, robot sensor state 등 |
+| expert action \(a^*\) | 사람 또는 expert controller가 선택한 행동 |
+| policy \(\pi_\theta\) | observation을 action으로 바꾸는 learned model |
 
 Behavioral cloning은 expert state distribution 위에서는 잘 작동할 수 있다. 하지만 expert가 거의 방문하지 않은 state에서는 recovery behavior를 배우지 못한다.
 
@@ -135,10 +137,10 @@ Behavioral cloning은 주로 expert state distribution에서 학습한다. 하�
 
 | 오류 상황 | 누적 규모 |
 |---|---|
-| independent prediction errors | horizon \\(T\\)에서 대략 \\(T\epsilon\\) |
-| correlated sequential errors | drift가 다음 입력을 바꾸므로 \\(O(T^2\epsilon)\\)처럼 커질 수 있음 |
+| independent prediction errors | horizon \(T\)에서 대략 \(T\epsilon\) |
+| correlated sequential errors | drift가 다음 입력을 바꾸므로 \(O(T^2\epsilon)\)처럼 커질 수 있음 |
 
-여기서 \\(\epsilon\\)은 한 step에서 policy가 실수할 확률 또는 error rate의 직관적 표현이다. 중요한 것은 sequential setting에서는 error가 독립적으로 끝나지 않고 다음 입력을 나쁘게 만든다는 점이다.
+여기서 \(\epsilon\)은 한 step에서 policy가 실수할 확률 또는 error rate의 직관적 표현이다. 중요한 것은 sequential setting에서는 error가 독립적으로 끝나지 않고 다음 입력을 나쁘게 만든다는 점이다.
 
 ## 6. DAggER의 핵심 아이디어
 
@@ -183,7 +185,7 @@ $$
 D_{i+1}=D_i\cup\{(o,a^*_{\text{expert}})\}
 $$
 
-그 다음 aggregated dataset으로 policy를 다시 학습한다. 강의에서는 \\(\beta_i\\)가 decay하면서 policy가 점점 자기 자신의 state distribution에 직접 훈련된다고 설명한다.
+그 다음 aggregated dataset으로 policy를 다시 학습한다. 강의에서는 \(\beta_i\)가 decay하면서 policy가 점점 자기 자신의 state distribution에 직접 훈련된다고 설명한다.
 
 ## 8. DAggER가 고친 것
 

@@ -29,6 +29,12 @@ Source PDF: `qoe-driven-multi-task-offloading-semantic.pdf`
 
 이 논문은 edge computing에서 task를 단순 bit 단위 workload가 아니라 semantic value와 QoE에 연결된 작업으로 보고, multi-task offloading 결정을 다룬다.
 
+## 핵심 내용
+
+기존 MEC offloading은 전송 bit와 latency를 중심으로 보지만, semantic task에서는 압축 정도가 통신량뿐 아니라 task accuracy와 사용자 만족도까지 바꾼다. 이 논문은 여러 UE의 semantic extraction factor, offloading choice, channel allocation, transmit power와 GPU frequency를 하나의 QoE 최적화 문제로 묶는다.
+
+MAPPO는 사용자 간 resource contention이 있는 joint decision을 학습하며, 실험에서 semantic-unaware 접근보다 높은 QoE를 보고한다. 핵심 의의는 의미 보존과 시스템 자원 배분을 연결한 데 있고, 실제 서비스 적용에서는 QoE 함수와 사용자 선호를 task별로 보정하고 단말 inference 비용까지 검증해야 한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

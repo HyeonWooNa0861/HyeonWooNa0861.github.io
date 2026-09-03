@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 1](https://www.youtube.com/watch?v=XZ0PMRWXBEU){:target="_blank" rel="noopener"}
 - Source Slides: [cs236_lecture1_2023.pptx](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture1_2023.pptx){:target="_blank" rel="noopener"}
 
+> **핵심:** 1강은 CS236 전체를 여는 강의로, deep generative model을 단순한 이미지 생성 도구가 아니라 복잡한 데이터 분포를 모델링하는 통계적 방법으로 정의한다. 강의의 출발점은 computer vision, NLP, robotics, computational speech가 모두 high-dimensional unstructured input을 이해해야 한다는 점이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

@@ -30,7 +30,7 @@ Source PDF: `drl-statistical-precipice.pdf`
 
 이 논문은 DRL benchmark에서 mean이나 median 같은 point estimate만 보고하면 소수 seed와 benchmark variance 때문에 결론이 흔들린다고 비판하고, stratified bootstrap confidence interval, performance profile, interquartile mean, optimality gap, probability of improvement를 함께 쓰는 평가 체계를 제안한다.
 
-## 전체 흐름
+## 핵심 내용
 
 | Section | 핵심 내용 |
 | --- | --- |

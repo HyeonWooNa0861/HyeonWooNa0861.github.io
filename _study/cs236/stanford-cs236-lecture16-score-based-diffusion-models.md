@@ -22,6 +22,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 16](https://www.youtube.com/watch?v=VsllsC2JMGY){:target="_blank" rel="noopener"}
 - Source Slides: [lecture16-2023-comp.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 16은 score-based model과 diffusion model을 하나의 관점으로 묶는다. Density \(p(x)\) 자체보다 시간별 score field를 학습하고, noise에서 출발한 reverse process로 sample을 만드는 것이 핵심이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

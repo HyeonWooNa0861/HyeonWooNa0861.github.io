@@ -31,6 +31,12 @@ Source PDF: `cell-free-massive-mimo-versus-small-cells.pdf`
 
 이 논문은 많은 단일 안테나 AP가 cell boundary 없이 모든 사용자를 같은 time-frequency resource에서 지원하면, small-cell 구조보다 95%-likely per-user throughput과 shadow fading robustness가 크게 좋아질 수 있음을 보인다.
 
+## 핵심 내용
+
+Small-cell은 사용자를 특정 AP에 연결하므로 cell edge와 shadow fading에 취약하다. Cell-free massive MIMO는 넓게 분산된 AP들이 같은 time-frequency resource에서 사용자를 공동 지원하고, 평균 처리량보다 낮은 성능 구간의 사용자까지 끌어올리는 coverage와 fairness 문제로 구조를 다시 정의한다.
+
+TDD 기반 local channel estimation, conjugate beamforming·matched filtering, max-min power control을 결합한 비교에서 cell-free 구조는 small-cell보다 높은 95%-likely per-user throughput을 보였고, 특히 power control이 큰 기여를 했다. 결과의 의의는 분산 AP 협력이 경계 사용자의 품질과 shadow-fading robustness를 개선할 수 있음을 보인 데 있으며, 실제 확장성은 pilot, synchronization, fronthaul과 processing 설계에 좌우된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

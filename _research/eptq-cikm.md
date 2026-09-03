@@ -30,6 +30,22 @@ Source PDF: `eptq-cikm.pdf`
 
 EPTQ는 LLM을 2-bit 수준으로 압축할 때 scalar quantization의 성능 붕괴와 기존 vector quantization의 느린 양자화/추론 문제를 함께 줄이기 위해, E8 lattice quantization을 4 KB codebook으로 factorization하고 weight scale normalization과 adaptive critical weight preservation을 결합한 PTQ framework다.
 
+## 핵심 내용
+
+이 절은 원문 전체를 그대로 옮긴 번역이 아니라, EPTQ 논문의 문제 설정부터 방법, 실험, 결론까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
+
+초록과 서론에서 논문은 2-bit PTQ의 핵심 난점을 제기한다. GPTQ, AWQ, OmniQuant, SEPTQ 같은 scalar quantization 기반 방법은 2-bit에서 성능이 크게 무너질 수 있다. 반대로 VPTQ나 QTIP 같은 vector quantization 계열은 정확도 측면에서 유리하지만, quantization pipeline이 오래 걸리거나 inference throughput이 낮아 실제 배포에서 부담이 된다. EPTQ는 이 둘 사이의 trade-off를 줄이는 것을 목표로 한다.
+
+방법의 첫 번째 축은 Factored-E8 quantization이다. E8 lattice는 8D 공간에서 weight vector의 spherical distribution을 잘 표현할 수 있지만, full codebook은 1 MB 규모라 GPU L1 cache에 올리기 어렵다. EPTQ는 8D vector를 두 개의 4D half로 나누고, 같은 coset type끼리 결합하는 구조를 이용해 65,536개 point capacity를 유지하면서도 codebook을 4 KB로 줄인다. 이 설계는 lookup을 cache-friendly하게 만들어 decode throughput을 크게 높인다.
+
+두 번째 축은 weight scale normalization이다. Weight matrix 전체는 Gaussian처럼 보일 수 있지만 row와 column 단위로 보면 variance가 균일하지 않다. EPTQ는 \(W=W'\odot(gh^{\top})\)로 weight를 분해하고, Sinkhorn-Knopp 방식의 반복 scaling으로 \(W'\)의 row/column magnitude를 맞춘다. 이 단계는 FE8 lattice quantization이 가정하는 분포 조건에 weight를 더 가깝게 만든다.
+
+세 번째 축은 adaptive critical weight preservation이다. 일부 8D vector는 quantization되면 output error를 크게 키우므로 full precision으로 남기는 것이 유리하다. EPTQ는 Hessian 기반 importance score를 계산하고, 각 matrix별 score distribution에서 Kneedle algorithm으로 knee point를 찾아 preservation threshold를 정한다. 이 방식은 fixed threshold나 fixed ratio보다 layer별 sensitivity 차이를 더 잘 반영한다. 또한 reserved codebook index를 mask marker로 사용해 별도 mask bit를 저장하지 않는다.
+
+실험에서는 Llama-2-7B, Llama-2-13B, Llama-2-70B, Llama-3-8B를 대상으로 Wikitext-2, C4, PIQA, ARC, HellaSwag, WinoGrande 평가가 수행된다. 결과적으로 EPTQ(E8)는 Llama-2 모델에서 QTIP과 경쟁 가능한 정확도를 보이고, EPTQ(FE8)는 대부분 모델에서 가장 높은 decode throughput을 보인다. 특히 Llama-3-8B에서 FE8은 193.0 tok/s로 QTIP 164.7 tok/s와 FP16 161.8 tok/s를 넘는다.
+
+결론적으로 EPTQ는 2-bit PTQ의 한계를 bit-width만의 문제가 아니라 codebook geometry, distribution alignment, critical weight selection, cache behavior가 결합된 시스템 문제로 본다. 정확도 중심 배포라면 E8 variant가, latency와 throughput 중심 배포라면 FE8 variant가 더 적합한 선택지가 될 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -232,22 +248,6 @@ EPTQ의 기여는 2-bit compression을 단순한 quantization level 문제로 �
 논문은 EPTQ가 weight-only PTQ framework라는 점에서 activation quantization까지 다루지는 않는다. 또한 FE8의 장점은 GPU cache behavior와 kernel implementation에 의존하므로, hardware-aware kernel 최적화가 후속 과제로 남는다.
 
 실험은 single NVIDIA H100 GPU에서 수행되었다. 따라서 다른 GPU architecture, CPU inference, mobile/edge accelerator에서 같은 throughput gain이 유지되는지는 추가 확인이 필요하다. 또한 저자 정보와 DOI가 anonymized/placeholder 상태이므로, 최종 출판본에서는 인용 정보가 달라질 수 있다.
-
-## 핵심 내용
-
-이 절은 원문 전체를 그대로 옮긴 번역이 아니라, EPTQ 논문의 문제 설정부터 방법, 실험, 결론까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
-초록과 서론에서 논문은 2-bit PTQ의 핵심 난점을 제기한다. GPTQ, AWQ, OmniQuant, SEPTQ 같은 scalar quantization 기반 방법은 2-bit에서 성능이 크게 무너질 수 있다. 반대로 VPTQ나 QTIP 같은 vector quantization 계열은 정확도 측면에서 유리하지만, quantization pipeline이 오래 걸리거나 inference throughput이 낮아 실제 배포에서 부담이 된다. EPTQ는 이 둘 사이의 trade-off를 줄이는 것을 목표로 한다.
-
-방법의 첫 번째 축은 Factored-E8 quantization이다. E8 lattice는 8D 공간에서 weight vector의 spherical distribution을 잘 표현할 수 있지만, full codebook은 1 MB 규모라 GPU L1 cache에 올리기 어렵다. EPTQ는 8D vector를 두 개의 4D half로 나누고, 같은 coset type끼리 결합하는 구조를 이용해 65,536개 point capacity를 유지하면서도 codebook을 4 KB로 줄인다. 이 설계는 lookup을 cache-friendly하게 만들어 decode throughput을 크게 높인다.
-
-두 번째 축은 weight scale normalization이다. Weight matrix 전체는 Gaussian처럼 보일 수 있지만 row와 column 단위로 보면 variance가 균일하지 않다. EPTQ는 \(W=W'\odot(gh^{\top})\)로 weight를 분해하고, Sinkhorn-Knopp 방식의 반복 scaling으로 \(W'\)의 row/column magnitude를 맞춘다. 이 단계는 FE8 lattice quantization이 가정하는 분포 조건에 weight를 더 가깝게 만든다.
-
-세 번째 축은 adaptive critical weight preservation이다. 일부 8D vector는 quantization되면 output error를 크게 키우므로 full precision으로 남기는 것이 유리하다. EPTQ는 Hessian 기반 importance score를 계산하고, 각 matrix별 score distribution에서 Kneedle algorithm으로 knee point를 찾아 preservation threshold를 정한다. 이 방식은 fixed threshold나 fixed ratio보다 layer별 sensitivity 차이를 더 잘 반영한다. 또한 reserved codebook index를 mask marker로 사용해 별도 mask bit를 저장하지 않는다.
-
-실험에서는 Llama-2-7B, Llama-2-13B, Llama-2-70B, Llama-3-8B를 대상으로 Wikitext-2, C4, PIQA, ARC, HellaSwag, WinoGrande 평가가 수행된다. 결과적으로 EPTQ(E8)는 Llama-2 모델에서 QTIP과 경쟁 가능한 정확도를 보이고, EPTQ(FE8)는 대부분 모델에서 가장 높은 decode throughput을 보인다. 특히 Llama-3-8B에서 FE8은 193.0 tok/s로 QTIP 164.7 tok/s와 FP16 161.8 tok/s를 넘는다.
-
-결론적으로 EPTQ는 2-bit PTQ의 한계를 bit-width만의 문제가 아니라 codebook geometry, distribution alignment, critical weight selection, cache behavior가 결합된 시스템 문제로 본다. 정확도 중심 배포라면 E8 variant가, latency와 throughput 중심 배포라면 FE8 variant가 더 적합한 선택지가 될 수 있다.
 
 ## 참고자료
 

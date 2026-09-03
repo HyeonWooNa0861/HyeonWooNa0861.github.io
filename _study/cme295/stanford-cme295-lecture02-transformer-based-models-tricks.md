@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=yT84Y5zCnaA){:target="_blank" rel="noopener"}
 
+> **핵심:** 두 번째 강의는 Lecture 1의 self-attention과 Transformer 구조를 복습한 뒤, 원래 Transformer에서 변형되어 온 핵심 구성요소를 다룬다. 먼저 position embedding을 설명한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

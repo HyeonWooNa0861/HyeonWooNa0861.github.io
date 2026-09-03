@@ -20,6 +20,8 @@ Source: [Stanford CS236 Lecture 5](https://www.youtube.com/watch?v=MAGBUh77bNg){
 
 Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 5는 autoregressive model의 장단점을 정리한 뒤 latent variable model로 넘어간다. Autoregressive model은 chain rule 덕분에 likelihood 평가와 MLE 학습이 쉽다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

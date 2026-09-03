@@ -27,6 +27,18 @@ keywords:
 
 이 논문은 power control이나 beamforming 같은 wireless resource management 문제에서 반복 최적화 알고리즘의 mapping을 DNN으로 학습해, inference 한 번으로 거의 실시간 resource allocation을 수행하는 접근을 제안한다.
 
+## 핵심 내용
+
+이 논문은 wireless resource management에서 최적화가 너무 느릴 때 neural network가 어떤 역할을 할 수 있는지 설명한다. 전통적 최적화 알고리즘은 정확하지만 여러 iteration이 필요하고, channel state가 빠르게 변하면 계산이 끝나기 전에 환경이 바뀔 수 있다.
+
+저자들은 resource allocation algorithm을 하나의 함수로 본다. 입력은 channel이나 system state이고 출력은 power allocation 같은 resource decision이다. DNN이 이 함수를 충분히 잘 근사하면, online 단계에서는 반복 최적화를 수행하지 않고 빠른 inference로 decision을 얻을 수 있다.
+
+이 관점은 MEC offloading에도 직접 연결된다. Offloading decision과 resource allocation을 매번 최적화하는 대신, 과거 최적화 결과나 simulation data를 이용해 빠른 decision model을 학습할 수 있기 때문이다.
+
+핵심 가치는 "learning replaces optimization"이 아니라 "반복 최적화 solver의 입출력 관계를 학습해 inference-time latency를 줄인다"는 데 있다. Wireless system은 channel이 계속 변하므로 매번 WMMSE 같은 iterative solver를 돌리면 지연이 커질 수 있다. DNN은 offline에서 solver의 solution pattern을 학습하고, online에서는 빠른 forward pass로 근사 decision을 낸다.
+
+다만 이 접근은 학습 분포 밖의 channel condition이나 system constraint 변화에 취약할 수 있다. 따라서 DNN이 낸 solution의 feasibility, optimality gap, retraining cost를 함께 봐야 한다. MEC offloading 연구에서 DRL/DNN을 사용할 때도 같은 문제가 반복된다. 빠른 decision이 장점이지만, 환경 분포가 바뀌면 learned optimizer의 안정성이 핵심 이슈가 된다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -57,18 +69,6 @@ Wireless resource management는 power control, beamformer design, admission cont
 ## 4. 연구 맥락
 
 MEC offloading에서도 일부 subproblem은 매번 최적화를 풀기 어렵다. DROO나 QECO 계열은 DRL을 사용하지만, 이 논문은 최적화 알고리즘 자체를 neural approximation으로 대체하는 별도의 설계 축을 제공한다.
-
-## 핵심 내용
-
-이 논문은 wireless resource management에서 최적화가 너무 느릴 때 neural network가 어떤 역할을 할 수 있는지 설명한다. 전통적 최적화 알고리즘은 정확하지만 여러 iteration이 필요하고, channel state가 빠르게 변하면 계산이 끝나기 전에 환경이 바뀔 수 있다.
-
-저자들은 resource allocation algorithm을 하나의 함수로 본다. 입력은 channel이나 system state이고 출력은 power allocation 같은 resource decision이다. DNN이 이 함수를 충분히 잘 근사하면, online 단계에서는 반복 최적화를 수행하지 않고 빠른 inference로 decision을 얻을 수 있다.
-
-이 관점은 MEC offloading에도 직접 연결된다. Offloading decision과 resource allocation을 매번 최적화하는 대신, 과거 최적화 결과나 simulation data를 이용해 빠른 decision model을 학습할 수 있기 때문이다.
-
-핵심 가치는 "learning replaces optimization"이 아니라 "반복 최적화 solver의 입출력 관계를 학습해 inference-time latency를 줄인다"는 데 있다. Wireless system은 channel이 계속 변하므로 매번 WMMSE 같은 iterative solver를 돌리면 지연이 커질 수 있다. DNN은 offline에서 solver의 solution pattern을 학습하고, online에서는 빠른 forward pass로 근사 decision을 낸다.
-
-다만 이 접근은 학습 분포 밖의 channel condition이나 system constraint 변화에 취약할 수 있다. 따라서 DNN이 낸 solution의 feasibility, optimality gap, retraining cost를 함께 봐야 한다. MEC offloading 연구에서 DRL/DNN을 사용할 때도 같은 문제가 반복된다. 빠른 decision이 장점이지만, 환경 분포가 바뀌면 learned optimizer의 안정성이 핵심 이슈가 된다.
 
 ## 참고자료
 

@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `2_Overview_TF.pdf`
 
+> **핵심:** **positional encoding이 필요한 이유는** self-attention만으로는 순서 정보를 알기 어렵기 때문. **Q, K, V의 역할은** query는 찾는 정보, key는 비교 기준, value는 가져올 내용.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -87,7 +89,7 @@ $$
 = \operatorname{softmax}(\mathrm{score})V
 $$
 
-\\(\sqrt{d_k}\\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
+\(\sqrt{d_k}\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
 
 | 단계 | 설명 |
 |---|---|
@@ -170,7 +172,9 @@ tokens
 
 이 구조가 반복되면서 모델은 token의 local meaning과 global context를 함께 반영한 representation을 만든다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -179,6 +183,10 @@ tokens
 | scaling을 하는 이유는? | softmax가 과도하게 날카로워지는 것을 막기 위해 |
 | multi-head attention의 장점은? | 여러 관계를 서로 다른 subspace에서 병렬로 학습 |
 | decoder mask의 목적은? | 미래 token을 보는 정보 누수를 막기 위해 |
+
+## Study Guide
+
+짧은 token 행렬을 놓고 QKᵀ 계산, √d_k scaling, softmax, V의 weighted sum을 차례로 손으로 따라간다. attention은 token 사이 정보를 섞고 FFN은 각 위치의 표현을 변환한다는 역할 차이, positional encoding과 causal mask가 해결하는 문제가 서로 다르다는 점을 분리해 기억한다. block diagram에는 multi-head, residual, layer normalization까지 표시해 encoder와 decoder의 정보 흐름을 재현한다.
 
 ## 복습 질문
 

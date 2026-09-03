@@ -9,6 +9,8 @@ permalink: /posts/nxtcloud-boot-camp-day-4-ai-workflow/
 section: nxtcloud-boot-camp
 ---
 
+> **핵심 메시지:** AI Workflow는 단발성 프롬프트가 아니라 목표, 자료, 도구, 구현, 검증과 산출물을 연결하고 반복 작업을 안전하게 자동화하는 프로젝트 운영 구조다.
+
 ## 1. 교육 과정 개요
 
 nxtcloud Boot Camp 4일차는 AI Workflow를 프로젝트 수행 과정에 적용하는 흐름을 정리한 자료다. 1일차와 2일차가 Amazon Bedrock 기반 모델 호출과 RAG 구조를 다루고, 3일차가 Claude Code를 활용한 개발 workflow를 다루었다면, 4일차는 AI를 활용해 팀 프로젝트의 기획, 구현, 자동화 과정을 어떻게 연결할 것인지에 초점을 둔다.

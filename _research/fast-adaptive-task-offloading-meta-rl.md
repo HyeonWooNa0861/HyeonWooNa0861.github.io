@@ -31,6 +31,13 @@ Source PDF: `fast-adaptive-task-offloading-meta-rl.pdf`
 
 이 논문은 mobile edge computing에서 application을 DAG로 모델링하고, 새 edge 환경에 적은 trajectory와 몇 번의 gradient update만으로 적응하는 meta reinforcement learning 기반 computation offloading 방법 MRLCO를 제안한다.
 
+## 핵심 내용
+
+- **문제:** 새 topology나 channel condition마다 DRL을 다시 학습하면 많은 trajectory와 adaptation cost가 든다.
+- **방법:** MRLCO는 DAG 기반 offloading을 sequence-to-sequence policy로 표현하고, PPO inner update와 first-order meta update를 결합해 빠르게 적응할 초기 parameter를 학습한다.
+- **결과:** 논문은 unseen setting에서 MRLCO가 fine-tuning DRL보다 적은 update로 낮은 latency를 회복하고, 세 baseline 대비 latency를 최대 25% 줄였다고 보고한다.
+- **의의:** 핵심 기여는 absolute optimality가 아니라, 분포적으로 유사한 새 edge workload에 필요한 adaptation cost를 줄이는 데 있다.
+
 ## 한국어 번역형 해설
 
 ### 왜 이 문제가 중요한가

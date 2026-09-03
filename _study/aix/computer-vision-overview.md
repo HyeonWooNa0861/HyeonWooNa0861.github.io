@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `03_Computer_Vision.pdf`
 
+> **핵심:** **CNN이 이미지에 잘 맞는 이유는** locality, weight sharing, spatial hierarchy를 활용하기 때문. **ImageNet이 중요했던 이유는** 대규모 benchmark가 deep CNN 학습과 비교를 가능하게 했기 때문.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -152,7 +154,9 @@ Computer vision은 의료, 안전, 과학, 보조 기술처럼 큰 가치를 만
 
 따라서 vision 시스템은 성능뿐 아니라 실패 양상과 사용 맥락을 함께 평가해야 한다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -161,6 +165,10 @@ Computer vision은 의료, 안전, 과학, 보조 기술처럼 큰 가치를 만
 | Detection과 segmentation의 차이는? | box 단위 위치 예측 vs pixel 단위 영역 예측 |
 | Diffusion model의 기본 아이디어는? | noise를 추가한 과정을 거꾸로 학습해 sample을 생성 |
 | Vision에서 책임 있는 평가가 필요한 이유는? | 실제 오류가 사람과 사회에 직접 영향을 줄 수 있기 때문 |
+
+## Study Guide
+
+고전적 hand-crafted feature에서 CNN으로 넘어간 이유를 먼저 잡고, AlexNet의 성과를 구조 하나가 아니라 ImageNet·GPU·학습 기법의 결합으로 정리한다. classification, detection, segmentation은 출력 단위가 class·box·pixel로 다르므로 같은 정확도 문제로 섞어 외우지 않는다. 생성 모델의 noise reversal과 함께 robustness·bias·deployment evaluation을 연결하는 문제가 시험 우선순위다.
 
 ## 복습 질문
 

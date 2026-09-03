@@ -30,6 +30,13 @@ Source PDF: `preserving-llm-capabilities-through-calibration-data-curation-from-
 
 이 논문은 LLM 압축 이후의 성능 보존이 compression method만이 아니라 calibration data의 구성, 도메인 대응성, activation space 다양성에 크게 좌우된다고 분석하고 calibration data curation framework를 제안한다.
 
+## 핵심 내용
+
+- Calibration data는 PTQ/pruning의 부수 입력이 아니라 압축 후 capability 보존을 좌우하는 설계 변수다.
+- Activation space의 대표성과 다양성이 calibration data 품질의 핵심 메커니즘으로 제시된다.
+- Math, code, complex reasoning 같은 고수준 능력은 calibration data 구성에 민감할 수 있다.
+- COVERCAL, Self-Calibration과 함께 calibration data selection 연구 축을 형성한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -72,13 +79,6 @@ PTQ와 pruning은 작은 calibration set을 사용해 weight importance와 activ
 ## EPTQ 후속연구 관점
 
 EPTQ, QTIP, QuIP# 같은 PTQ 방법을 비교할 때 동일한 calibration set을 쓰더라도 그 set이 어떤 capability를 보존하는지에 따라 downstream 결과가 달라질 수 있다. 따라서 EPTQ 후속실험에서는 quantizer만 바꾸는 ablation 외에 calibration data source/coverage/domain ablation을 별도 축으로 둘 수 있다.
-
-## 핵심 내용
-
-- Calibration data는 PTQ/pruning의 부수 입력이 아니라 압축 후 capability 보존을 좌우하는 설계 변수다.
-- Activation space의 대표성과 다양성이 calibration data 품질의 핵심 메커니즘으로 제시된다.
-- Math, code, complex reasoning 같은 고수준 능력은 calibration data 구성에 민감할 수 있다.
-- COVERCAL, Self-Calibration과 함께 calibration data selection 연구 축을 형성한다.
 
 ## 참고자료
 

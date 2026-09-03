@@ -30,6 +30,20 @@ Source PDF: `gptq-accurate-post-training-quantization-for-generative-pre-trained
 
 GPTQ는 거대 GPT 계열 모델을 재학습 없이 3-4비트 weight로 압축하기 위해 layer-wise reconstruction과 approximate second-order compensation을 확장한 PTQ 방법이다.
 
+## 핵심 내용
+
+이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, GPTQ 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
+
+GPTQ가 다루는 문제는 거대 생성형 Transformer의 추론 비용이다. GPT/OPT/BLOOM 계열 모델은 parameter 수가 커질수록 weight memory만으로도 단일 GPU 용량을 넘기 쉽고, 여러 GPU에 나누어 실행하면 비용과 운영 복잡도가 커진다. 논문은 이러한 문제를 재학습 없는 one-shot PTQ로 줄이려 한다.
+
+방법의 출발점은 layer-wise reconstruction이다. 각 linear layer에서 \(WX\)와 \(\widehat{W}X\)의 차이를 줄이도록 quantized weight를 선택하며, 단순 nearest rounding이 아니라 Hessian 정보를 사용해 양자화 error를 남은 weight에 보상한다. 이는 OBQ의 아이디어지만, 원래 OBQ는 계산량과 메모리 접근 패턴 때문에 GPT 규모에 그대로 쓰기 어렵다.
+
+GPTQ의 핵심 수정은 scale-up이다. 모든 row가 같은 quantization order를 쓰게 해 Hessian inverse update를 공유하고, lazy batch update로 GPU memory bandwidth 병목을 줄이며, Cholesky 기반 계산으로 수치 불안정을 완화한다. 이 조합 덕분에 175B급 모델도 몇 시간 안에 3-4비트 weight로 양자화할 수 있다고 보고한다.
+
+실험 결과는 GPTQ가 3-4비트 weight-only PTQ에서 정확도와 실용성을 동시에 겨냥했음을 보여준다. OPT/BLOOM 175B 수준에서도 perplexity 손실을 작게 유지하고, 압축된 model을 단일 GPU 또는 더 적은 GPU 수로 실행할 수 있게 만든다. 또한 memory-bound generation에서는 FP16 대비 의미 있는 end-to-end speedup을 얻는다.
+
+결론적으로 GPTQ는 LLM PTQ 연구에서 중요한 기준점이다. 이후 QuaRot은 activation과 KV cache까지 4비트로 낮추기 위해 outlier 제거와 rotation을 도입하고, QTIP과 EPTQ는 더 낮은 bit-width에서 codebook geometry와 decoding 효율을 개선한다. 따라서 GPTQ는 "대형 LLM weight-only PTQ가 실제로 가능하다"는 것을 보여준 출발점으로 읽는 것이 적절하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -55,7 +69,7 @@ $$
 \mathop{\mathrm{argmin}}_{\widehat{W}} \; \lVert W X - \widehat{W} X \rVert_2^{2}
 $$
 
-여기서 \\(W\\)는 원래 weight, \\(X\\)는 calibration input, \\(\widehat{W}\\)는 quantized weight다. 중요한 점은 weight 자체의 round error가 아니라, 그 weight가 실제 input에 곱해졌을 때 생기는 output error를 줄인다는 것이다.
+여기서 \(W\)는 원래 weight, \(X\)는 calibration input, \(\widehat{W}\)는 quantized weight다. 중요한 점은 weight 자체의 round error가 아니라, 그 weight가 실제 input에 곱해졌을 때 생기는 output error를 줄인다는 것이다.
 
 ## 3. OBQ에서 GPTQ로
 
@@ -95,20 +109,6 @@ GPTQ의 핵심은 "Hessian 기반 양자화가 정확하다"가 아니라, 그 �
 논문은 weight-only quantization에 집중한다. Activation quantization은 별도 문제이며, 특히 outlier activation을 다루는 후속 연구들과 결합될 여지가 있다. 또한 GPTQ의 실효성은 low-bit weight를 빠르게 load/decompress하는 kernel과 memory-bound generation setting에 크게 의존한다.
 
 3-4비트에서는 강한 결과를 보이지만, 2비트 이하에서는 group size와 model size에 따라 손실이 커질 수 있다. 따라서 초저비트 영역은 QTIP, EPTQ, QuaRot 같은 후속 PTQ 연구들이 별도의 codebook, rotation, trellis, lattice 구조를 탐색하게 되는 출발점으로 읽을 수 있다.
-
-## 핵심 내용
-
-이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, GPTQ 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
-GPTQ가 다루는 문제는 거대 생성형 Transformer의 추론 비용이다. GPT/OPT/BLOOM 계열 모델은 parameter 수가 커질수록 weight memory만으로도 단일 GPU 용량을 넘기 쉽고, 여러 GPU에 나누어 실행하면 비용과 운영 복잡도가 커진다. 논문은 이러한 문제를 재학습 없는 one-shot PTQ로 줄이려 한다.
-
-방법의 출발점은 layer-wise reconstruction이다. 각 linear layer에서 \\(WX\\)와 \\(\widehat{W}X\\)의 차이를 줄이도록 quantized weight를 선택하며, 단순 nearest rounding이 아니라 Hessian 정보를 사용해 양자화 error를 남은 weight에 보상한다. 이는 OBQ의 아이디어지만, 원래 OBQ는 계산량과 메모리 접근 패턴 때문에 GPT 규모에 그대로 쓰기 어렵다.
-
-GPTQ의 핵심 수정은 scale-up이다. 모든 row가 같은 quantization order를 쓰게 해 Hessian inverse update를 공유하고, lazy batch update로 GPU memory bandwidth 병목을 줄이며, Cholesky 기반 계산으로 수치 불안정을 완화한다. 이 조합 덕분에 175B급 모델도 몇 시간 안에 3-4비트 weight로 양자화할 수 있다고 보고한다.
-
-실험 결과는 GPTQ가 3-4비트 weight-only PTQ에서 정확도와 실용성을 동시에 겨냥했음을 보여준다. OPT/BLOOM 175B 수준에서도 perplexity 손실을 작게 유지하고, 압축된 model을 단일 GPU 또는 더 적은 GPU 수로 실행할 수 있게 만든다. 또한 memory-bound generation에서는 FP16 대비 의미 있는 end-to-end speedup을 얻는다.
-
-결론적으로 GPTQ는 LLM PTQ 연구에서 중요한 기준점이다. 이후 QuaRot은 activation과 KV cache까지 4비트로 낮추기 위해 outlier 제거와 rotation을 도입하고, QTIP과 EPTQ는 더 낮은 bit-width에서 codebook geometry와 decoding 효율을 개선한다. 따라서 GPTQ는 "대형 LLM weight-only PTQ가 실제로 가능하다"는 것을 보여준 출발점으로 읽는 것이 적절하다.
 
 ## 참고자료
 

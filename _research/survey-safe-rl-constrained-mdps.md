@@ -29,6 +29,12 @@ Source PDF: `survey-safe-rl-constrained-mdps.pdf`
 
 이 survey는 SafeRL을 CMDP 기반 제약 최적화 문제로 정식화하고, 이를 single-agent algorithm에서 SafeMARL의 centralized/decentralized/competitive safety 문제까지 확장해 읽을 수 있는 기술 지도를 제공한다.
 
+## 핵심 내용
+
+Safe RL은 cumulative reward를 높이는 동시에 collision, resource budget이나 dosage limit 같은 cost constraint를 만족해야 한다. 이 survey는 이를 CMDP의 reward return과 constraint cost로 분리하고, expected cost·chance constraint·risk measure·temporal logic처럼 서로 다른 safety semantics를 비교한다.
+
+Lagrangian actor-critic, CPO, safety layer와 shielding에서 출발해 centralized·decentralized·competitive SafeMARL까지 방법군을 확장한다. 핵심 의의는 단일 benchmark 순위를 제시하는 것이 아니라, 관측 범위와 agent 상호작용에 따라 어떤 보장과 비용이 필요한지 선택할 기술 지도를 제공한 데 있으며 partial observability와 zero-violation은 여전히 주요 과제다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

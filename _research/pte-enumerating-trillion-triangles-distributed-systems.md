@@ -32,6 +32,12 @@ Source PDF: [Official KDD PDF](https://www.kdd.org/kdd2016/papers/files/rfp0276-
 
 PTE는 graph를 color pair별 edge set으로 먼저 저장한 뒤 필요한 set만 읽고 triangle을 열거해, ClueWeb12의 63억 vertex와 720억 edge에서 3조 개가 넘는 triangle을 처리한다.
 
+## 핵심 내용
+
+Triangle enumeration은 개수만 세는 것이 아니라 모든 vertex triple을 식별해야 하므로, 대규모 graph에서 반복 shuffle, 중복 intersection과 edge-set read가 계산보다 큰 병목이 될 수 있다. PTE는 graph를 color pair별 edge set으로 미리 분할해 저장하고 각 subproblem에 필요한 set만 읽는 방식으로 실행 구조를 바꾼다.
+
+PTECD는 color-direction 규칙으로 중복 계산을 줄이고, PTESC는 제한된 memory에서 관련 subproblem을 연속 배치해 network read를 줄인다. 이 결합은 worst-case optimal한 total work를 지향하면서 ClueWeb12의 trillion-scale triangle output까지 처리했으며, 계산·저장·스케줄링을 함께 최적화한 것이 핵심 의의다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -68,9 +74,9 @@ PTESC는 subproblem 사이에서 memory에 남겨둘 edge set과 다음에 읽�
 
 | 비용 | PTE bound |
 |---|---:|
-| Shuffled data | \(O(|E|)\) |
-| Network read | \(O(|E|^{3/2}/\sqrt{M})\) |
-| Total work | \(O(|E|^{3/2})\) |
+| Shuffled data | \(O(\lvert E\rvert)\) |
+| Network read | \(O(\lvert E\rvert^{3/2}/\sqrt{M})\) |
+| Total work | \(O(\lvert E\rvert^{3/2})\) |
 
 여기서 \(M\)은 machine 하나가 사용할 수 있는 memory다.
 

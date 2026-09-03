@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-08.pdf`
 
+> **핵심:** **Cholesky 분해가 가능한 행렬은** SPD 행렬. **대각화 가능 조건은** 선형 독립인 고유벡터가 충분히 있음.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -30,7 +32,7 @@ Source PDF: `machine-learning-basic-lecture-08.pdf`
 
 ## 1. Cholesky 분해
 
-SPD 행렬은 양의 대각 원소를 가지는 하삼각행렬 \\(L\\)을 이용해 분해할 수 있다.
+SPD 행렬은 양의 대각 원소를 가지는 하삼각행렬 \(L\)을 이용해 분해할 수 있다.
 
 $$
 A = LL^T
@@ -40,13 +42,13 @@ $$
 
 ## 2. 대각화와 고유분해
 
-행렬 \\(A\\)가 어떤 대각행렬 \\(D\\)와 닮았으면 \\(A\\)는 diagonalizable하다고 한다.
+행렬 \(A\)가 어떤 대각행렬 \(D\)와 닮았으면 \(A\)는 diagonalizable하다고 한다.
 
 $$
 A = PDP^{-1}
 $$
 
-여기서 \\(P\\)는 고유벡터들을 열로 모은 행렬이고, \\(D\\)는 대응하는 고유값을 대각 원소로 가진 행렬이다.
+여기서 \(P\)는 고유벡터들을 열로 모은 행렬이고, \(D\)는 대응하는 고유값을 대각 원소로 가진 행렬이다.
 
 대각화가 유용한 이유:
 
@@ -58,13 +60,13 @@ $$
 
 ## 3. 대각화 가능 조건
 
-\\(A\\)가 \\(n\\)개의 선형 독립인 고유벡터를 가지면 대각화 가능하다.
+\(A\)가 \(n\)개의 선형 독립인 고유벡터를 가지면 대각화 가능하다.
 
 대칭행렬은 항상 대각화 가능하다. 머신러닝에서 covariance matrix처럼 대칭행렬이 자주 등장하므로 이 성질은 PCA와 직접 연결된다.
 
 ## 4. SVD
 
-SVD(Singular Value Decomposition)는 \\(m \times n\\) 행렬에도 적용할 수 있는 강력한 행렬 분해다.
+SVD(Singular Value Decomposition)는 \(m \times n\) 행렬에도 적용할 수 있는 강력한 행렬 분해다.
 
 $$
 A = U\Sigma V^T
@@ -72,23 +74,23 @@ $$
 
 | 요소 | 의미 |
 |---|---|
-| \\(U\\) | left singular vectors |
-| \\(\Sigma\\) | singular values를 담은 대각형 행렬 |
-| \\(V\\) | right singular vectors |
+| \(U\) | left singular vectors |
+| \(\Sigma\) | singular values를 담은 대각형 행렬 |
+| \(V\) | right singular vectors |
 
 정사각 대칭행렬의 경우 SVD는 고유분해와 매우 비슷해진다.
 
 ## 5. SVD 계산 관점
 
-SVD는 \\(A^TA\\)와 \\(AA^T\\)의 고유값/고유벡터와 연결된다.
+SVD는 \(A^TA\)와 \(AA^T\)의 고유값/고유벡터와 연결된다.
 
 | 대상 | 연결 |
 |---|---|
-| \\(A^TA\\) | right singular vectors |
-| \\(AA^T\\) | left singular vectors |
+| \(A^TA\) | right singular vectors |
+| \(AA^T\) | left singular vectors |
 | 고유값 | singular value의 제곱과 연결 |
 
-\\(A^TA\\)와 \\(AA^T\\)는 같은 non-zero eigenvalue를 공유한다.
+\(A^TA\)와 \(AA^T\)는 같은 non-zero eigenvalue를 공유한다.
 
 ## 6. SVD의 활용
 
@@ -99,16 +101,22 @@ SVD는 \\(A^TA\\)와 \\(AA^T\\)의 고유값/고유벡터와 연결된다.
 | 차원 축소 | 중요한 singular value 방향만 남김 |
 | 노이즈 제거 | 작은 singular value 성분 제거 |
 
-Rank-\\(k\\) approximation은 큰 데이터 행렬을 중요한 \\(k\\)개의 성분만으로 근사한다. PCA의 핵심 아이디어도 이와 연결된다.
+Rank-\(k\) approximation은 큰 데이터 행렬을 중요한 \(k\)개의 성분만으로 근사한다. PCA의 핵심 아이디어도 이와 연결된다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
 | Cholesky 분해가 가능한 행렬은? | SPD 행렬 |
 | 대각화 가능 조건은? | 선형 독립인 고유벡터가 충분히 있음 |
-| SVD가 고유분해보다 일반적인 이유는? | \\(m \times n\\) 행렬에도 적용 가능 |
+| SVD가 고유분해보다 일반적인 이유는? | \(m \times n\) 행렬에도 적용 가능 |
 | SVD의 대표 활용은? | 추천 시스템, low-rank approximation, 차원 축소 |
+
+## Study Guide
+
+SPD 여부를 먼저 확인해야 Cholesky를 적용할 수 있고, eigen-decomposition은 충분한 독립 eigenvector가 있을 때 가능하다는 전제부터 점검한다. SVD는 직사각 행렬에도 적용되므로 AᵀA에서 right singular vector, AAᵀ에서 left singular vector를 찾는 계산 연결을 재현한다. singular value를 큰 순서로 남기는 low-rank approximation이 차원 축소·추천·노이즈 제거에 쓰이는 이유를 설명한다.
 
 ## 복습 질문
 
@@ -120,7 +128,7 @@ Rank-\\(k\\) approximation은 큰 데이터 행렬을 중요한 \\(k\\)개의 �
 </details>
 
 <details>
-<summary>2. \\(A = U\Sigma V^T\\)에서 singular value가 큰 방향은 어떤 의미인가?</summary>
+<summary>2. \(A = U\Sigma V^T\)에서 singular value가 큰 방향은 어떤 의미인가?</summary>
 
 답변: singular value는 해당 singular vector 방향으로 데이터나 변환이 얼마나 큰 에너지를 가지는지 나타낸다. 값이 큰 방향은 정보량이나 분산이 큰 주요 방향이고, 작은 방향은 상대적으로 덜 중요한 성분으로 볼 수 있다.
 
@@ -129,7 +137,7 @@ Rank-\\(k\\) approximation은 큰 데이터 행렬을 중요한 \\(k\\)개의 �
 <details>
 <summary>3. low-rank approximation은 왜 데이터 압축으로 해석될 수 있는가?</summary>
 
-답변: 큰 singular value에 해당하는 상위 \\(k\\)개 성분만 남기면 원래 행렬의 주요 구조를 보존하면서 저장해야 할 정보량을 줄일 수 있다. 작은 singular value 성분은 노이즈나 세부 정보로 보고 버리기 때문에 압축으로 해석된다.
+답변: 큰 singular value에 해당하는 상위 \(k\)개 성분만 남기면 원래 행렬의 주요 구조를 보존하면서 저장해야 할 정보량을 줄일 수 있다. 작은 singular value 성분은 노이즈나 세부 정보로 보고 버리기 때문에 압축으로 해석된다.
 
 </details>
 

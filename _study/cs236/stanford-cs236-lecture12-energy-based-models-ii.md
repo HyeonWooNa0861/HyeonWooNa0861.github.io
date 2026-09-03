@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 12](https://www.youtube.com/watch?v=Nci1Bepcy0g){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture12.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 12는 EBM의 가장 큰 병목인 sampling과 likelihood 학습을 우회하는 방법을 다룬다. MCMC를 복습한 뒤 score matching, noise contrastive estimation, adversarial training처럼 model sampling 의존을 줄이는 학습법을 비교한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

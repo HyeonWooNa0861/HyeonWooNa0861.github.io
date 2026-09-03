@@ -20,6 +20,8 @@ Source: [Stanford CS236 Lecture 6](https://www.youtube.com/watch?v=8cO61e_8oPY){
 
 Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 6은 전 강의에서 만든 ELBO를 실제 VAE 학습 알고리즘으로 바꾸는 강의다. VAE는 \(z\sim N(0,I)\)를 먼저 뽑고, decoder network가 \(p_{\theta}(x\mid z)\)의 mean과 covariance를 만든다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

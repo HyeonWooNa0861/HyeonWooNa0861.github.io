@@ -20,6 +20,8 @@ Source: [Stanford CS236 Lecture 4](https://www.youtube.com/watch?v=bt3dqcbMLa0){
 
 Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 4는 이전 강의의 autoregressive model을 마무리하면서 시작한다. RNN은 지금까지의 문맥을 하나의 hidden vector에 압축하기 때문에 long-range dependency와 exploding/vanishing gradient 문제가 생긴다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

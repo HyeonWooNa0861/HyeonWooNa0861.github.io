@@ -30,6 +30,20 @@ Source PDF: `qtip.pdf`
 
 QTIP은 기존 VQ 기반 LLM PTQ가 낮은 vector dimension에 묶이는 문제를 trellis-coded quantization으로 풀어, 높은 effective dimension과 빠른 decoding을 함께 노리는 weight-only PTQ 방법이다.
 
+## 핵심 내용
+
+이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, QTIP 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
+
+QTIP이 다루는 문제는 2-bit weight-only LLM quantization에서 정확도와 inference 효율을 동시에 얻기 어렵다는 점이다. Scalar quantization은 단순하고 빠르지만 낮은 bit-width에서 표현력이 부족하고, VQ는 여러 weight를 함께 표현해 정확도를 높일 수 있지만 codebook size와 lookup 비용이 dimension에 대해 지수적으로 커진다.
+
+논문은 먼저 incoherence processing으로 weight matrix를 quantization-friendly하게 만든다. Random Hadamard transform을 적용하면 특정 coordinate에 몰린 큰 값이 분산되고, weight가 대략 i.i.d. Gaussian source처럼 보이게 된다. 이 처리는 trellis-coded quantization이 잘 다루는 source 형태를 만들기 위한 전처리로 기능한다.
+
+그 다음 QTIP은 trellis-coded quantization을 사용한다. TCQ는 긴 sequence를 trellis graph 위의 walk로 표현하고, Viterbi algorithm으로 distortion이 작은 경로를 찾는다. 이 방식은 unstructured VQ처럼 dimension이 커질 때 codebook을 지수적으로 키우지 않아도 되므로, ultra-high-dimensional quantization을 가능하게 한다.
+
+실용성을 위해 QTIP은 bitshift trellis와 계산 기반 Gaussian code를 설계한다. Bitshift trellis는 compressed bit window를 이동시키는 방식으로 병렬 decoding을 가능하게 하고, 1MAD/3INST/HYB 같은 code는 큰 lookup table 없이도 Gaussian-like reconstruction 값을 빠르게 생성한다. 이 부분이 QTIP을 단순한 TCQ 적용이 아니라 hardware-aware PTQ 방법으로 만든다.
+
+결론적으로 QTIP은 LLM PTQ를 codebook search 문제가 아니라 source distribution, trellis structure, decoding instruction cost가 결합된 시스템 문제로 본다. 이 관점은 EPTQ의 cache-friendly lattice factorization, QuaRot의 rotation-based outlier removal과 함께 초저비트 LLM 압축 연구의 중요한 축을 이룬다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -90,20 +104,6 @@ EPTQ가 E8 lattice를 cache-friendly하게 factorization하는 방향이라면, 
 QTIP은 weight-only PTQ 방법이다. Activation quantization과 KV cache quantization은 직접적인 범위가 아니며, QuaRot 같은 activation/KV cache 중심 접근과 결합 가능성을 별도로 봐야 한다. 또한 bitshift trellis와 compute-based code의 실제 이점은 GPU instruction mix, cache behavior, kernel 구현에 영향을 받는다.
 
 생성 예시와 benchmark 결과는 유용하지만, production serving에서는 batch size, context length, model parallelism, kernel availability에 따라 throughput이 달라진다. 따라서 QTIP은 algorithmic quantization quality와 hardware decoding structure를 함께 검증해야 하는 방법으로 읽어야 한다.
-
-## 핵심 내용
-
-이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, QTIP 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
-QTIP이 다루는 문제는 2-bit weight-only LLM quantization에서 정확도와 inference 효율을 동시에 얻기 어렵다는 점이다. Scalar quantization은 단순하고 빠르지만 낮은 bit-width에서 표현력이 부족하고, VQ는 여러 weight를 함께 표현해 정확도를 높일 수 있지만 codebook size와 lookup 비용이 dimension에 대해 지수적으로 커진다.
-
-논문은 먼저 incoherence processing으로 weight matrix를 quantization-friendly하게 만든다. Random Hadamard transform을 적용하면 특정 coordinate에 몰린 큰 값이 분산되고, weight가 대략 i.i.d. Gaussian source처럼 보이게 된다. 이 처리는 trellis-coded quantization이 잘 다루는 source 형태를 만들기 위한 전처리로 기능한다.
-
-그 다음 QTIP은 trellis-coded quantization을 사용한다. TCQ는 긴 sequence를 trellis graph 위의 walk로 표현하고, Viterbi algorithm으로 distortion이 작은 경로를 찾는다. 이 방식은 unstructured VQ처럼 dimension이 커질 때 codebook을 지수적으로 키우지 않아도 되므로, ultra-high-dimensional quantization을 가능하게 한다.
-
-실용성을 위해 QTIP은 bitshift trellis와 계산 기반 Gaussian code를 설계한다. Bitshift trellis는 compressed bit window를 이동시키는 방식으로 병렬 decoding을 가능하게 하고, 1MAD/3INST/HYB 같은 code는 큰 lookup table 없이도 Gaussian-like reconstruction 값을 빠르게 생성한다. 이 부분이 QTIP을 단순한 TCQ 적용이 아니라 hardware-aware PTQ 방법으로 만든다.
-
-결론적으로 QTIP은 LLM PTQ를 codebook search 문제가 아니라 source distribution, trellis structure, decoding instruction cost가 결합된 시스템 문제로 본다. 이 관점은 EPTQ의 cache-friendly lattice factorization, QuaRot의 rotation-based outlier removal과 함께 초저비트 LLM 압축 연구의 중요한 축을 이룬다.
 
 ## 참고자료
 

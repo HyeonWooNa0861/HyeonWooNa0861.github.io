@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `LS09_tree.pdf`
 
+> **핵심:** **트리는 어떤 데이터에 적합한가** 계층 관계가 있는 데이터. **full, complete, perfect의 차이는** 자식 수 조건, 마지막 레벨 조건, 모든 레벨 포화 조건.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -136,7 +138,9 @@ inorder(v):
 
 실제 코드에서는 자식이 존재하는지 확인하는 조건이 함께 필요하다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -144,6 +148,10 @@ inorder(v):
 | full, complete, perfect의 차이는? | 자식 수 조건, 마지막 레벨 조건, 모든 레벨 포화 조건 |
 | 중위 순회가 BST에서 중요한 이유는? | 키가 정렬된 순서로 나온다. |
 | 후위 순회가 디렉터리 용량 계산에 맞는 이유는? | 자식 용량을 먼저 계산한 뒤 부모를 계산해야 한다. |
+
+## Study Guide
+
+예제 트리에 root, parent, child, sibling, leaf, depth, height를 직접 표시해 용어 기준을 먼저 맞춘다. 같은 트리에서 preorder, inorder, postorder를 손으로 써 보고 방문 시점이 root-left-right 중 어디인지 코드와 연결한다. full, complete, perfect binary tree는 자식 수·마지막 레벨·모든 레벨 포화 조건을 각각 반례 그림으로 구분한다.
 
 ## 복습 질문
 

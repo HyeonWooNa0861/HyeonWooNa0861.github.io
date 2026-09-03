@@ -30,6 +30,13 @@ Source PDF: `squeezellm-dense-and-sparse-quantization.pdf`
 
 SqueezeLLM은 LLM 생성 추론의 병목이 compute보다 memory bandwidth에 있다는 점에서 출발해, 3-bit 수준의 non-uniform quantization과 dense-and-sparse decomposition으로 모델 크기와 추론 지연을 줄이는 PTQ framework다.
 
+## 핵심 내용
+
+- LLM 생성 추론의 핵심 병목은 memory bandwidth일 수 있다.
+- SqueezeLLM은 3-bit 수준에서도 성능 열화를 줄이기 위해 non-uniform quantization을 사용한다.
+- Outlier/sensitive weight는 sparse representation으로 별도 보존한다.
+- PTQ 품질뿐 아니라 실제 GPU inference speedup을 함께 목표로 한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -60,13 +67,6 @@ LLM 추론, 특히 작은 batch의 autoregressive generation은 연산량보다 
 ## EPTQ/OWQ와의 연결
 
 SqueezeLLM은 OWQ처럼 민감한 일부 weight를 별도로 보존한다. 다만 OWQ가 outlier-aware column mixed precision과 WCT에 초점을 둔다면, SqueezeLLM은 dense-and-sparse decomposition과 sensitivity-based non-uniform quantization을 결합한다.
-
-## 핵심 내용
-
-- LLM 생성 추론의 핵심 병목은 memory bandwidth일 수 있다.
-- SqueezeLLM은 3-bit 수준에서도 성능 열화를 줄이기 위해 non-uniform quantization을 사용한다.
-- Outlier/sensitive weight는 sparse representation으로 별도 보존한다.
-- PTQ 품질뿐 아니라 실제 GPU inference speedup을 함께 목표로 한다.
 
 ## 참고자료
 

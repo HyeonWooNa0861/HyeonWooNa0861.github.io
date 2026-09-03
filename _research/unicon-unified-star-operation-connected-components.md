@@ -32,6 +32,12 @@ Source PDF: [Local source PDF]({{ "/assets/pdfs/research/unicon-unified-star-ope
 
 UniCon은 MapReduce connected-components 알고리즘의 두 star operation을 partition-aware UniStar 하나로 통합하고, 불필요한 edge와 worker memory를 줄여 10대의 commodity machine으로 1,290억 edge 그래프를 처리한다.
 
+## 핵심 내용
+
+분산 connected-components의 alternating star operation은 여러 round의 I/O와 edge 증식, worker memory 부담을 만든다. UniCon은 두 연산을 partition-aware UniStar 하나로 통합해 partition 내부의 중복 edge를 제거하면서 node를 component representative 쪽으로 이동시킨다.
+
+UniCon-opt의 edge filtering은 다음 round에 필요 없는 edge를 줄이고, HybridMap은 제한된 memory에서 parent mapping을 유지한다. Commodity machine 10대의 실험에서 대규모 graph를 처리하고 비교 알고리즘보다 높은 성능을 보였으며, 고가 장비보다 partitioning·filtering·memory layout의 결합으로 scale을 확보한 것이 핵심 의의다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

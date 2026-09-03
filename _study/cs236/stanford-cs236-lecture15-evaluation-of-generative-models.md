@@ -23,6 +23,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 15](https://www.youtube.com/watch?v=MJt_ahtO-to){:target="_blank" rel="noopener"}
 - Source PDF: [lecture15.pdf](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룬다. Discriminative model은 task가 비교적 명확하다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

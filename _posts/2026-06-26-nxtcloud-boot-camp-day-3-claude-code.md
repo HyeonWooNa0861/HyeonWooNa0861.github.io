@@ -9,6 +9,8 @@ permalink: /posts/nxtcloud-boot-camp-day-3-claude-code/
 section: nxtcloud-boot-camp
 ---
 
+> **핵심 메시지:** Claude Code는 codebase를 읽고 수정·실행·검증하는 coding agent이며, 효과적인 활용에는 명확한 목표와 프로젝트 컨텍스트, 권한 경계, 테스트 기준이 함께 필요하다.
+
 ## 1. 교육 과정 개요
 
 nxtcloud Boot Camp 3일차는 Claude Code를 개발 작업에 적용하는 흐름을 정리한 자료다. 1일차와 2일차가 Amazon Bedrock 기반 모델 호출과 RAG 구조를 다루었다면, 3일차는 AI coding agent를 실제 개발 환경에서 어떻게 사용하고 통제할 것인지에 초점을 둔다.

@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `LS07_stack_queue_R1.pdf`
 
+> **핵심:** **스택과 큐의 차이는** 스택은 LIFO, 큐는 FIFO. **ArrayStack에서 `top`은 무엇을 가리키는가** 다음 삽입 위치. 실제 top 값은 `top - 1`.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -99,11 +101,11 @@ public E pop() {
 
 | 연산 | ArrayStack | LinkedStack |
 |---|---|---|
-| `push` | \\(O(1)\\) | \\(O(1)\\) |
-| `pop` | \\(O(1)\\) | \\(O(1)\\) |
-| `topValue` | \\(O(1)\\) | \\(O(1)\\) |
-| `length` | \\(O(1)\\) | \\(O(1)\\) |
-| 공간 | \\(O(n)\\) 배열 | \\(O(n)\\) + 포인터 |
+| `push` | \(O(1)\) | \(O(1)\) |
+| `pop` | \(O(1)\) | \(O(1)\) |
+| `topValue` | \(O(1)\) | \(O(1)\) |
+| `length` | \(O(1)\) | \(O(1)\) |
+| 공간 | \(O(n)\) 배열 | \(O(n)\) + 포인터 |
 
 ArrayStack은 배열이 가득 차면 재할당 비용이 발생할 수 있다. LinkedStack은 크기 제한이 덜하지만 노드마다 포인터 공간이 추가된다.
 
@@ -159,13 +161,15 @@ private int size;
 
 | 연산 | ArrayQueue | LinkedQueue |
 |---|---|---|
-| `enqueue` | \\(O(1)\\) | \\(O(1)\\) |
-| `dequeue` | \\(O(1)\\) | \\(O(1)\\) |
-| `frontValue` | \\(O(1)\\) | \\(O(1)\\) |
-| `length` | \\(O(1)\\) | \\(O(1)\\) |
-| 공간 | \\(O(n)\\) 배열 | \\(O(n)\\) + 포인터 |
+| `enqueue` | \(O(1)\) | \(O(1)\) |
+| `dequeue` | \(O(1)\) | \(O(1)\) |
+| `frontValue` | \(O(1)\) | \(O(1)\) |
+| `length` | \(O(1)\) | \(O(1)\) |
+| 공간 | \(O(n)\) 배열 | \(O(n)\) + 포인터 |
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -173,6 +177,10 @@ private int size;
 | ArrayStack에서 `top`은 무엇을 가리키는가? | 다음 삽입 위치. 실제 top 값은 `top - 1` |
 | 원형 큐에서 `% capacity`가 필요한 이유는? | 배열 끝 이후 다시 0번 인덱스로 돌아가기 위해 |
 | LinkedQueue에서 마지막 원소 삭제 시 주의점은? | `front`뿐 아니라 `rear`도 `null`로 만들어야 한다. |
+
+## Study Guide
+
+스택은 top의 의미를 먼저 정한 뒤 push/pop마다 배열 상태를 쓰고, 큐는 front와 rear를 capacity로 나눈 나머지로 갱신하며 circular wrap-around를 손으로 추적한다. LIFO와 FIFO의 정의보다 empty/full 조건이 구현마다 어떻게 달라지는지가 더 자주 틀리는 지점이다. 함수 호출·괄호 검사는 stack, BFS·대기열은 queue인 이유를 제거 순서로 설명한다.
 
 ## 복습 질문
 
@@ -218,7 +226,7 @@ private int size;
 | BFS | 가까운 노드부터 순서대로 방문한다. |
 | 네트워크 요청 | 먼저 들어온 요청부터 처리한다. |
 
-원형 큐는 배열 큐의 핵심이다. 단순 배열 큐에서 `dequeue`를 할 때마다 모든 원소를 앞으로 당기면 비용이 \\(O(n)\\)이 된다. 그래서 `front`와 `rear` 인덱스만 움직이고, 배열 끝에 도달하면 `% capacity`로 처음으로 돌아간다.
+원형 큐는 배열 큐의 핵심이다. 단순 배열 큐에서 `dequeue`를 할 때마다 모든 원소를 앞으로 당기면 비용이 \(O(n)\)이 된다. 그래서 `front`와 `rear` 인덱스만 움직이고, 배열 끝에 도달하면 `% capacity`로 처음으로 돌아간다.
 
 $$
 \mathrm{rear} = (\mathrm{rear}+1)\bmod \mathrm{capacity}
@@ -228,7 +236,7 @@ $$
 \mathrm{front} = (\mathrm{front}+1)\bmod \mathrm{capacity}
 $$
 
-이 식은 인덱스가 배열 범위를 벗어나지 않게 한다. 예를 들어 \\(\mathrm{capacity}=5\\)이고 \\(\mathrm{rear}=4\\)이면 다음 위치는 \\((4+1)\bmod 5=0\\)이다.
+이 식은 인덱스가 배열 범위를 벗어나지 않게 한다. 예를 들어 \(\mathrm{capacity}=5\)이고 \(\mathrm{rear}=4\)이면 다음 위치는 \((4+1)\bmod 5=0\)이다.
 
 ## Implementation Checklist
 

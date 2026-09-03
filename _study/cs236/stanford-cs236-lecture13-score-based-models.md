@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 13](https://www.youtube.com/watch?v=8G-OsDs1RLI){:target="_blank" rel="noopener"}
 - Source Slides: [lecture 13.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 13은 score-based model의 출발점을 정리한다. 지금까지의 generative model은 크게 세 가지 표현으로 나눌 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

@@ -31,6 +31,13 @@ Source PDF: `graph-neural-rl-offloading-mec.pdf`
 
 이 논문은 mobile device와 base station의 동적 연결 구조를 graph로 유지하고, GraphSAGE 방식의 node aggregation과 DQN 기반 decision을 결합해 MEC offloading의 weighted time-energy cost를 줄이는 M-GNRL 방법을 제안한다.
 
+## 핵심 내용
+
+- **문제:** device mobility와 base-station load 변화가 만드는 동적 MEC topology를 단순 state vector만으로 표현하기 어렵다.
+- **방법:** M-GNRL은 adjacency-list graph update, GraphSAGE-style aggregation, edge-feature-aware DQN을 결합해 local 또는 offloading target을 선택한다.
+- **결과:** 논문은 M-GNRL이 GNN-A2C보다 system cost를 약 15.6% 낮추고, 더 높은 stable cumulative reward 범위에 도달했다고 보고한다.
+- **의의:** MEC offloading을 고정 vector control이 아니라 topology가 계속 변하는 dynamic graph control로 다룬 접근이다.
+
 ## 한국어 번역형 해설
 
 ### 문제 배경

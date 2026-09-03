@@ -33,6 +33,12 @@ Source PDF: [Local source PDF]({{ "/assets/pdfs/research/pacc-large-scale-connec
 
 PACC는 graph를 partition 단위로 다루고 불필요한 edge를 제거하며 작은 sketch를 먼저 계산해, Hadoop과 Spark에서 connected-components의 통신량과 worker 간 부하 편차를 함께 줄인다.
 
+## 핵심 내용
+
+분산 connected-components 계산에서는 iteration 수뿐 아니라 star operation이 만드는 intermediate edge, worker 간 load imbalance와 반복 통신이 병목이 된다. PACC는 graph를 partition 단위로 처리해 edge 집중을 완화하고, 연결성에 더 이상 영향을 주지 않는 edge를 걸러 다음 round의 입력을 줄인다.
+
+또한 원 graph의 작은 sketch에서 component 정보를 먼저 계산해 본 계산을 단순화하며, 이 원리를 Hadoop과 Spark 환경에서 평가한다. 핵심 의의는 수렴 알고리즘 하나만 바꾸는 대신 partition-aware computation, edge filtering과 sketching을 결합해 commodity cluster의 통신량과 부하 편차를 함께 줄인 데 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

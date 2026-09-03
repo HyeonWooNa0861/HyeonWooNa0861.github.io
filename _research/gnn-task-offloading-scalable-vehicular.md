@@ -31,6 +31,13 @@ Source PDF: `gnn-task-offloading-scalable-vehicular.pdf`
 
 이 논문은 차량 수가 계속 바뀌는 vehicular edge network에서 fixed-size neural network 대신 graph neural network를 사용해 task vehicle과 service vehicle의 관계를 직접 표현하고, genetic algorithm으로 만든 label을 통해 빠른 online offloading decision을 학습한다.
 
+## 핵심 내용
+
+- **문제:** 차량 수가 변하는 vehicular network에서는 fixed-size neural network가 topology 변화와 service vehicle 관계를 일반화하기 어렵다.
+- **방법:** G-TORA는 genetic algorithm으로 offline label을 만들고, task vehicle·service vehicle·wireless link를 graph로 표현한 GNN을 online surrogate로 사용한다.
+- **결과:** GNN inference는 0.03초 미만이었고, 10개 task vehicle 조건에서 processing delay가 MLP보다 약 26%, OMAB보다 약 41% 낮았다.
+- **의의:** 비싼 optimization은 offline으로 옮기고 graph-size 변화에 대응하는 GNN으로 online total delay를 낮춘다는 점이 핵심이다.
+
 ## 한국어 번역형 해설
 
 ### 문제 배경

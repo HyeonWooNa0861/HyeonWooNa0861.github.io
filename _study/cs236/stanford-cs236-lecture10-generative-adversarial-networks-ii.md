@@ -21,6 +21,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 10](https://www.youtube.com/watch?v=M3Fkvu78ZXc){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture10.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 10은 GAN을 단순한 이미지 생성 기법이 아니라 `samples only` 조건에서 분포를 비교하는 방법으로 확장한다. 지난 강의의 기본 GAN은 generator \(G_\theta\)가 prior \(p(z)\)의 sample을 data space로 보내고, discriminator \(D_\phi\)가 real sample과 fake sample을 구분하는 minimax game이다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

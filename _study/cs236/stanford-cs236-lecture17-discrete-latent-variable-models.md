@@ -22,6 +22,8 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 17](https://www.youtube.com/watch?v=vBv7Mf1zsg8){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture17.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어간다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

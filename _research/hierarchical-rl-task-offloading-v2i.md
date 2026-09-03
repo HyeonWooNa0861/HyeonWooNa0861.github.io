@@ -35,6 +35,13 @@ Source PDF: `hierarchical-rl-task-offloading-v2i.pdf`
 
 이 논문 v1은 V2I edge offloading에서 application을 interdependent subtask DAG로 모델링하고, GAT로 dependency를 embedding한 뒤 parameterized hierarchical DRL로 subtask 선택, local/offload 선택, CPU frequency 또는 transmit power 결정을 함께 다루는 DHVO를 제안한다.
 
+## 핵심 내용
+
+- **문제:** V2I offloading은 DAG dependency, local/edge 선택, CPU frequency 또는 transmit power, RSU migration risk를 함께 다뤄야 한다.
+- **방법:** DHVO는 GAT로 subtask dependency를 embedding하고, hierarchical parameterized DRL로 subtask·실행 위치·continuous resource parameter를 순차 결정한다.
+- **결과:** 로컬 arXiv v1은 DHVO가 14 episode 안에 수렴하고 0.0018초 inference로 baseline보다 낮은 TESC를 유지한다고 보고한다.
+- **의의와 범위:** speed-aware hybrid action이라는 아이디어는 유용하지만 공식 arXiv record가 withdrawn 상태이므로, 결과는 v1 preprint의 주장으로 제한해 읽어야 한다.
+
 ## 한국어 번역형 해설
 
 ### 문제 배경

@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `3_Large_Language_Models.pdf`
 
+> **핵심:** **Decoder-only 모델이 생성에 적합한 이유는** 이전 token으로 다음 token을 예측하는 autoregressive 구조와 맞기 때문. **MoE의 핵심 장점은** 전체 capacity를 키우면서 token당 compute를 제한할 수 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -152,7 +154,9 @@ $$
 
 전체 sequence loss는 여러 위치의 cross-entropy를 평균하거나 합산한다. 이 단순한 objective가 대규모 데이터와 모델에서 다양한 언어 능력으로 확장된다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -161,6 +165,10 @@ $$
 | Load balancing loss가 필요한 이유는? | router가 일부 expert에만 token을 몰아주는 현상을 막기 위해 |
 | Greedy와 sampling의 차이는? | 최고 확률 token만 선택 vs 확률 분포에서 무작위 선택 |
 | Temperature가 낮아지면? | 출력이 더 결정적이고 보수적으로 변한다. |
+
+## Study Guide
+
+decoder-only causal generation에서 next-token probability와 cross-entropy가 연결되는 과정을 먼저 식과 함께 확인한다. MoE는 dense/sparse 여부, top-k routing, load balancing을 한 묶음으로 비교해야 token당 compute를 줄이면서 capacity를 키우는 이유가 보인다. 추론 파트는 같은 logits에 greedy, sampling, temperature를 적용했을 때 선택이 어떻게 달라지는지 작은 확률표로 재현한다.
 
 ## 복습 질문
 
@@ -181,7 +189,7 @@ $$
 <details>
 <summary>3. Top-k sampling과 top-p sampling의 차이를 예시로 설명하라.</summary>
 
-답변: top-k는 확률이 높은 상위 \\(k\\)개 token만 후보로 남긴다. top-p는 누적 확률이 \\(p\\)에 도달할 때까지 후보를 남기므로 후보 개수가 상황에 따라 달라진다. 예를 들어 분포가 뾰족하면 top-p 후보는 적고, 분포가 평평하면 더 많은 token이 포함될 수 있다.
+답변: top-k는 확률이 높은 상위 \(k\)개 token만 후보로 남긴다. top-p는 누적 확률이 \(p\)에 도달할 때까지 후보를 남기므로 후보 개수가 상황에 따라 달라진다. 예를 들어 분포가 뾰족하면 top-p 후보는 적고, 분포가 평평하면 더 많은 token이 포함될 수 있다.
 
 </details>
 

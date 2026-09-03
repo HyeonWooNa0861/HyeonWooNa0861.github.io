@@ -17,7 +17,11 @@ Source PDFs:
 - `aix-quiz-20260605-1.pdf`
 - `aix-quiz-20260605-2.pdf`
 
+## 과제 개요
+
 이 글은 중간고사 이후부터 기말고사 전까지의 AIX Quiz PDF 5개를 시험 대비용으로 다시 정리한 자료다. 원문 선택지를 그대로 나열하기보다, 각 문항이 묻는 개념과 정답을 고르는 기준을 중심으로 재구성했다.
+
+**핵심 메시지:** 개별 용어를 따로 외우는 것보다, LLM의 token 생성에서 자율주행의 world representation과 로봇의 action learning으로 이어지는 학습 흐름을 함께 이해해야 한다.
 
 ## 전체 흐름
 
@@ -45,7 +49,7 @@ Source PDFs:
 |---:|---|---|
 | Q1 | Next Token Prediction | 이전 token을 바탕으로 다음 token 하나를 예측하고 반복 |
 | Q2 | Mixture of Experts | token별로 필요한 expert 일부만 활성화 |
-| Q3 | Beam Search | 가능성 높은 \\(k\\)개 경로를 유지 |
+| Q3 | Beam Search | 가능성 높은 \(k\)개 경로를 유지 |
 | Q4 | Greedy Decoding | 매 step마다 확률이 가장 높은 token 하나 선택 |
 | Q5 | LLM Transformer | decoder-only autoregressive Transformer |
 
@@ -84,11 +88,11 @@ MoE는 거대한 모델 capacity를 모두 매번 계산하지 않기 위해 사
 
 풀이과정:
 
-Greedy decoding은 매 순간 가장 높은 확률의 token 하나만 고른다. Beam search는 그보다 넓게 본다. 매 step에서 가능성 높은 \\(k\\)개의 후보 sequence를 유지하면서 다음 token을 확장한다.
+Greedy decoding은 매 순간 가장 높은 확률의 token 하나만 고른다. Beam search는 그보다 넓게 본다. 매 step에서 가능성 높은 \(k\)개의 후보 sequence를 유지하면서 다음 token을 확장한다.
 
 이 방식은 모든 경우를 끝까지 탐색하지는 않는다. 그러나 하나의 경로만 고르는 것보다 더 좋은 전체 문장을 찾을 가능성을 남긴다.
 
-답변: 가능성이 높은 \\(k\\)개의 경로를 유지해 모든 경우를 보지 않으면서도 더 좋은 전체 문장을 찾을 기회를 남기는 방법이다.
+답변: 가능성이 높은 \(k\)개의 경로를 유지해 모든 경우를 보지 않으면서도 더 좋은 전체 문장을 찾을 기회를 남기는 방법이다.
 
 </details>
 
@@ -406,7 +410,7 @@ ego-video와 대규모 비디오는 사람이 물리 세계와 상호작용하�
 
 </details>
 
-## 마지막 핵심 정리
+## 핵심 정리
 
 | 구분 | 꼭 기억할 문장 |
 |---|---|

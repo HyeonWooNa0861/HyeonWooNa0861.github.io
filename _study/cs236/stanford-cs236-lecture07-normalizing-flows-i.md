@@ -20,6 +20,8 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 7](https://www.youtu
 
 Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf){:target="_blank" rel="noopener"}
 
+> **핵심:** 이 강의는 먼저 VAE를 autoencoder로 다시 해석하면서 시작한다. VAE의 encoder \(q_\phi(z \mid x)\)는 입력 \(x\)를 latent variable distribution으로 보내고, decoder \(p_\theta(x \mid z)\)는 그 latent sample에서 원래 입력이 얼마나 잘 설명되는지 평가한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

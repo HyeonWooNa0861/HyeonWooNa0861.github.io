@@ -18,6 +18,8 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-01.pdf`
 
+> **핵심:** **feature vector란** 원본 데이터를 모델 입력용 수치 벡터로 표현한 것. **preprocessing이 중요한 이유는** 스케일과 품질을 맞춰 학습을 안정화하기 위해.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -32,9 +34,9 @@ Source PDF: `machine-learning-basic-lecture-01.pdf`
 
 현대 머신러닝 모델이 작동할 수 있었던 핵심 배경은 많은 데이터다. 이 수업에서는 데이터를 컴퓨터가 읽을 수 있는 테이블 형태의 수치 데이터로 가정한다.
 
-원본 데이터는 바로 모델에 넣기 어렵다. 전문가나 전처리 과정이 원본 데이터를 여러 특징값으로 바꾸고, 각 데이터는 \\(D\\)차원의 feature vector가 된다.
+원본 데이터는 바로 모델에 넣기 어렵다. 전문가나 전처리 과정이 원본 데이터를 여러 특징값으로 바꾸고, 각 데이터는 \(D\)차원의 feature vector가 된다.
 
-\\(N\\)개의 데이터가 있고 각 데이터가 \\(D\\)차원 feature를 가진다면 feature matrix는 다음처럼 표현한다.
+\(N\)개의 데이터가 있고 각 데이터가 \(D\)차원 feature를 가진다면 feature matrix는 다음처럼 표현한다.
 
 $$
 X \in \mathbb{R}^{N \times D}
@@ -89,7 +91,9 @@ ERM과 parameter estimation을 이해하려면 다음 수학이 필요하다.
 | Probability Theory | 불확실성, likelihood, Bayesian modeling 표현 |
 | Vector Calculus and Optimization | loss를 줄이는 방향과 parameter update 계산 |
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
@@ -97,6 +101,10 @@ ERM과 parameter estimation을 이해하려면 다음 수학이 필요하다.
 | preprocessing이 중요한 이유는? | 스케일과 품질을 맞춰 학습을 안정화하기 위해 |
 | 결정론적 모델과 확률적 모델의 차이는? | 하나의 예측값 출력 vs 불확실성을 포함한 분포 출력 |
 | learning의 세 단계는? | training, model selection, inference |
+
+## Study Guide
+
+raw data를 feature vector로 바꾸고 preprocessing한 뒤 model training, hyperparameter selection, inference로 이어지는 전체 pipeline을 먼저 그린다. 결정론적 모델의 단일 출력과 확률적 모델의 분포 출력은 불확실성 표현 여부로 구분한다. 마지막에는 linear algebra, probability, calculus가 각각 표현·불확실성·최적화에 쓰이는 위치를 pipeline에 표시한다.
 
 ## 복습 질문
 
@@ -117,7 +125,7 @@ ERM과 parameter estimation을 이해하려면 다음 수학이 필요하다.
 <details>
 <summary>3. 확률분포로서의 모델이 필요한 상황은 어떤 경우인가?</summary>
 
-답변: 예측값 하나만으로 부족하고 불확실성을 함께 다뤄야 할 때 필요하다. 관측 noise가 있거나 데이터가 부족하거나 여러 가능한 결과가 존재하는 문제에서는 \\(p(y\mid x,\theta)\\)처럼 출력 분포를 모델링하는 편이 더 적절하다.
+답변: 예측값 하나만으로 부족하고 불확실성을 함께 다뤄야 할 때 필요하다. 관측 noise가 있거나 데이터가 부족하거나 여러 가능한 결과가 존재하는 문제에서는 \(p(y\mid x,\theta)\)처럼 출력 분포를 모델링하는 편이 더 적절하다.
 
 </details>
 

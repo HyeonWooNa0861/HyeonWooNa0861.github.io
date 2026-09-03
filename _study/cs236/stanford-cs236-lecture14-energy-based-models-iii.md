@@ -22,6 +22,8 @@ keywords:
 - Video: [Stanford CS236 Lecture 14](https://www.youtube.com/watch?v=E69Lp_T9nVg){:target="_blank" rel="noopener"}
 - Source Slides: [lecture_14_comp.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture_14_comp.pptx){:target="_blank" rel="noopener"}
 
+> **핵심:** Lecture 14는 제목상 Energy-Based Models III로 묶여 있지만 실제 전개는 score-based model을 diffusion model로 확장하는 강의다. 지난 강의에서 score model은 \(s_\theta(x)\approx \nabla_x\log p_{\mathrm{data}}(x)\)를 학습하고 Langevin dynamics로 sample을 만들었다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

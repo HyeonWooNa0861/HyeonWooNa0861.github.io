@@ -18,12 +18,14 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-07.pdf`
 
+> **핵심:** **determinant의 기하학적 의미는** 부피/면적 변화율. **\(\det(A)=0\)이면** 가역 불가능, full rank 아님.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 행렬식 | 선형 변환이 부피를 얼마나 바꾸는가? |
-| 2 | 가역성과 행렬식 | \\(\det(A)=0\\)은 무엇을 의미하는가? |
+| 2 | 가역성과 행렬식 | \(\det(A)=0\)은 무엇을 의미하는가? |
 | 3 | Trace | 대각합은 어떤 불변량으로 쓰이는가? |
 | 4 | 특성 방정식 | 고유값은 어떻게 찾는가? |
 | 5 | 고유값과 고유벡터 | 변환 후에도 방향이 유지되는 벡터는 무엇인가? |
@@ -36,22 +38,22 @@ Source PDF: `machine-learning-basic-lecture-07.pdf`
 
 ## 2. 가역성과 행렬식
 
-정사각행렬 \\(A\\)에 대해 다음은 동치다.
+정사각행렬 \(A\)에 대해 다음은 동치다.
 
 | 조건 | 의미 |
 |---|---|
-| \\(A\\)가 invertible | 역행렬이 존재한다. |
-| \\(\det(A) \ne 0\\) | 부피가 0으로 collapse되지 않는다. |
-| \\(A\\)가 full rank | 열벡터들이 선형 독립이다. |
+| \(A\)가 invertible | 역행렬이 존재한다. |
+| \(\det(A) \ne 0\) | 부피가 0으로 collapse되지 않는다. |
+| \(A\)가 full rank | 열벡터들이 선형 독립이다. |
 
-반대로 \\(\det(A)=0\\)이면 어떤 방향이 사라져 변환이 정보를 잃는다.
+반대로 \(\det(A)=0\)이면 어떤 방향이 사라져 변환이 정보를 잃는다.
 
 ## 3. 행렬식의 주요 성질
 
 | 성질 | 설명 |
 |---|---|
 | 행/열 하나를 다른 행/열에 더함 | determinant 값은 변하지 않는다. |
-| 행/열 하나에 \\(c\\)를 곱함 | determinant도 \\(c\\)배 된다. |
+| 행/열 하나에 \(c\)를 곱함 | determinant도 \(c\)배 된다. |
 | 두 행/열 교환 | determinant 부호가 바뀐다. |
 | invertible 행렬 | determinant가 0이 아니다. |
 
@@ -69,15 +71,15 @@ Trace는 선형성과 cyclic property 같은 중요한 성질을 가진다. 특�
 
 ## 5. 고유값과 고유벡터
 
-정사각행렬 \\(A\\)에 대해 0이 아닌 벡터 \\(v\\)와 스칼라 \\(\lambda\\)가 다음을 만족하면:
+정사각행렬 \(A\)에 대해 0이 아닌 벡터 \(v\)와 스칼라 \(\lambda\)가 다음을 만족하면:
 
 $$
 Av = \lambda v
 $$
 
-\\(\lambda\\)는 eigenvalue, \\(v\\)는 eigenvector다.
+\(\lambda\)는 eigenvalue, \(v\)는 eigenvector다.
 
-고유벡터는 변환 후에도 방향이 유지되고 길이만 \\(\lambda\\)배 바뀌는 벡터다.
+고유벡터는 변환 후에도 방향이 유지되고 길이만 \(\lambda\)배 바뀌는 벡터다.
 
 ## 6. 특성 방정식과 고유공간
 
@@ -87,7 +89,7 @@ $$
 \det(A - \lambda I) = 0
 $$
 
-고유값 \\(\lambda\\)에 대한 고유공간은 다음 영공간이다.
+고유값 \(\lambda\)에 대한 고유공간은 다음 영공간이다.
 
 $$
 \operatorname{Null}(A - \lambda I)
@@ -106,14 +108,20 @@ $$
 
 행렬식은 고유값들의 곱, trace는 고유값들의 합과 연결된다.
 
-## 시험 포인트
+## 마지막 핵심 정리
+
+### 시험 포인트
 
 | 질문 | 답의 방향 |
 |---|---|
 | determinant의 기하학적 의미는? | 부피/면적 변화율 |
-| \\(\det(A)=0\\)이면? | 가역 불가능, full rank 아님 |
+| \(\det(A)=0\)이면? | 가역 불가능, full rank 아님 |
 | eigenvector의 의미는? | 변환 후 방향이 유지되는 0이 아닌 벡터 |
 | SPD 행렬의 고유값은? | 양의 실수 |
+
+## Study Guide
+
+행 스케일과 행 교환이 determinant에 미치는 영향을 적용한 뒤 det(A)=0을 non-invertible·rank deficient와 연결한다. eigenvector는 Av=λv를 만족하며 방향이 보존되는 벡터이므로 characteristic equation으로 λ를 구하고 null space에서 v를 찾는 순서를 손으로 반복한다. symmetric matrix의 실수 eigenvalue와 SPD matrix의 양의 eigenvalue 조건을 구분해 암기한다.
 
 ## 복습 질문
 
@@ -132,9 +140,9 @@ $$
 </details>
 
 <details>
-<summary>3. 고유공간이 \\(\operatorname{Null}(A-\lambda I)\\)인 이유를 설명해보자.</summary>
+<summary>3. 고유공간이 \(\operatorname{Null}(A-\lambda I)\)인 이유를 설명해보자.</summary>
 
-답변: eigenvector는 \\(Av=\lambda v\\)를 만족한다. 이를 옮기면 \\((A-\lambda I)v=0\\)이므로, 해당 \\(\lambda\\)에 대한 모든 eigenvector는 \\(A-\lambda I\\)의 null space에 속한다.
+답변: eigenvector는 \(Av=\lambda v\)를 만족한다. 이를 옮기면 \((A-\lambda I)v=0\)이므로, 해당 \(\lambda\)에 대한 모든 eigenvector는 \(A-\lambda I\)의 null space에 속한다.
 
 </details>
 

@@ -29,6 +29,12 @@ Source PDF: `how-many-random-seeds-drl.pdf`
 
 이 논문은 Deep RL 비교에서 random seed 수를 관행적으로 정하지 말고, 검출하려는 effect size와 variance에 맞춰 power analysis로 계획해야 한다고 주장한다.
 
+## 핵심 내용
+
+Deep RL 성능은 random seed, 초기 상태와 환경 확률성에 따라 달라지므로, 소수 run의 평균만으로 알고리즘 차이를 판단하면 false positive 또는 낮은 검정력이 생길 수 있다. 이 논문은 seed 수를 관행적으로 고정하지 말고 검출하려는 effect size, 관측 variance, type-I error와 목표 power를 먼저 정하라고 제안한다.
+
+Power analysis는 연구자가 주장하려는 최소 성능 차이를 실제로 검출할 수 있는 반복 횟수를 계산하게 한다. 따라서 핵심 결과는 특정 seed 수를 보편적 정답으로 제시하는 것이 아니라, variance와 effect size를 보고하고 그에 맞는 sample size를 설계해야 재현 가능한 비교가 된다는 실험 원칙을 확립한 데 있다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

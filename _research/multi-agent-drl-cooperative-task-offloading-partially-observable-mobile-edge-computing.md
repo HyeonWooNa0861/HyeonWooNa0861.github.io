@@ -35,6 +35,12 @@ Source PDF: `multi-agent-drl-cooperative-task-offloading-partially-observable-mo
 
 이 연구 아이디어는 device-edge와 edge-edge 오프로딩을 하나의 협력 문제로 묶고, 각 참여자가 전체 상태가 아닌 로컬 관측만 갖는 상황을 Dec-POMDP와 MARL로 다루려 한다.
 
+## 핵심 내용
+
+MEC 참여자는 전체 queue, channel과 자원 상태를 모두 알 수 없고, device-edge와 edge-edge offloading 행동은 서로의 지연과 부하를 바꾼다. 이 연구 아이디어는 이 결합 문제를 Dec-POMDP로 정식화하고, local observation 아래 여러 agent가 공동 목적을 학습하는 MARL 구조를 제안한다.
+
+DDPG나 D3QN 같은 후보는 실제 action이 연속 제어인지 이산 선택인지에 따라 달라지며, reward도 latency뿐 아니라 resource utilization과 coordination cost를 함께 반영해야 한다. 공개 자료에는 구현과 실험 결과가 없으므로, 의의는 부분 관측·이중 오프로딩·협력 학습을 하나의 설계 문제로 묶은 데 있고 성능과 scalability는 검증 과제로 남는다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |

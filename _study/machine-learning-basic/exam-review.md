@@ -28,6 +28,8 @@ Source PDFs:
 
 이 글은 머신러닝기초 11강부터 17강까지의 정리 자료에서 시험 범위에 해당하는 부분만 뽑아 재구성한 시험 대비용 추출본이다. 출제 조건은 확률과 분포 3문제, 최적화 이론 2문제, Model and Data 1문제, 선형회귀 1문제이므로, 아래 내용도 그 배점에 맞추어 정리한다.
 
+> **핵심:** **PMF** \(p_X(x)=P(X=x)\). **PDF** \(P(a<X\le b)=\int_a^b f_X(x)\,dx\).
+
 ## 전체 흐름
 
 | 범위 | 예상 문항 수 | 연결 강의 | 공부 우선순위 |
@@ -54,13 +56,13 @@ Source PDFs:
 
 ### 1.1 확률의 조건
 
-확률은 표본공간 \\(S\\)의 사건 \\(A\\)에 숫자를 붙이는 함수다. 더 정확히 말하면 사건을 \\([0,1]\\) 사이의 수로 보내면서, 아래의 기본 구조를 만족하는 함수를 확률이라고 부른다. 따라서 확률의 정의와 조건은 계산보다 먼저 개념적으로 반드시 알아야 한다. 아무 숫자나 붙인다고 확률이 되는 것이 아니라, nonnegativity, normalization, additivity를 만족해야 한다.
+확률은 표본공간 \(S\)의 사건 \(A\)에 숫자를 붙이는 함수다. 더 정확히 말하면 사건을 \([0,1]\) 사이의 수로 보내면서, 아래의 기본 구조를 만족하는 함수를 확률이라고 부른다. 따라서 확률의 정의와 조건은 계산보다 먼저 개념적으로 반드시 알아야 한다. 아무 숫자나 붙인다고 확률이 되는 것이 아니라, nonnegativity, normalization, additivity를 만족해야 한다.
 
 | 조건 | 수식 | 의미 |
 |---|---|---|
-| Nonnegativity | \\(P(A)\ge 0\\) | 확률은 음수가 될 수 없다. |
-| Normalization | \\(P(S)=1\\) | 전체 표본공간의 확률은 1이다. |
-| Additivity | \\(P(A\cup B)=P(A)+P(B)\\), if \\(A\cap B=\emptyset\\) | 서로소 사건은 확률을 더한다. |
+| Nonnegativity | \(P(A)\ge 0\) | 확률은 음수가 될 수 없다. |
+| Normalization | \(P(S)=1\) | 전체 표본공간의 확률은 1이다. |
+| Additivity | \(P(A\cup B)=P(A)+P(B)\), if \(A\cap B=\emptyset\) | 서로소 사건은 확률을 더한다. |
 
 이 조건에서 다음 성질이 바로 따라온다.
 
@@ -91,19 +93,19 @@ $$
 S=\{HH,HT,TH,TT\}
 $$
 
-앞면이 한 번 이상 나오는 사건을 \\(A\\)라 하면
+앞면이 한 번 이상 나오는 사건을 \(A\)라 하면
 
 $$
 A=\{HH,HT,TH\}
 $$
 
-공정한 동전이면 각 결과의 확률은 \\(\frac{1}{4}\\)이므로
+공정한 동전이면 각 결과의 확률은 \(\frac{1}{4}\)이므로
 
 $$
 P(A)=\frac{3}{4}
 $$
 
-이 예시의 핵심은 확률변수로 바꾸는 부분이다. 앞면의 개수를 세는 확률변수 \\(X\\)를 두면
+이 예시의 핵심은 확률변수로 바꾸는 부분이다. 앞면의 개수를 세는 확률변수 \(X\)를 두면
 
 $$
 X(HH)=2,\quad X(HT)=1,\quad X(TH)=1,\quad X(TT)=0
@@ -119,7 +121,7 @@ $$
 
 확률변수는 표본공간의 결과를 숫자로 보내는 함수다. 가능한 값이 유한하거나 셀 수 있으면 이산확률변수라고 한다. 즉, 확률이 이미 정의된 표본공간 위에서 어떤 결과들을 숫자 값으로 묶어 보는 함수가 확률변수다.
 
-이산확률변수 \\(X\\)의 확률분포는 PMF(probability mass function), 즉 확률질량함수로 표현한다. PMF는 "확률변수 \\(X\\)가 특정 값 \\(x\\)를 가질 확률"을 알려주는 함수다.
+이산확률변수 \(X\)의 확률분포는 PMF(probability mass function), 즉 확률질량함수로 표현한다. PMF는 "확률변수 \(X\)가 특정 값 \(x\)를 가질 확률"을 알려주는 함수다.
 
 $$
 p_X(x)=P(X=x)
@@ -133,12 +135,12 @@ p_X(x)
 P(\{\omega\in S:X(\omega)=x\})
 $$
 
-즉, PMF는 확률변수 값 \\(x\\) 하나에 대응되는 원래 실험 결과들을 모두 모은 뒤, 그 결과들의 확률을 더한 값이다. 그래서 서로 다른 표본공간 원소가 같은 확률변수 값을 가질 수 있고, 그 확률들이 하나의 PMF 값으로 합쳐진다.
+즉, PMF는 확률변수 값 \(x\) 하나에 대응되는 원래 실험 결과들을 모두 모은 뒤, 그 결과들의 확률을 더한 값이다. 그래서 서로 다른 표본공간 원소가 같은 확률변수 값을 가질 수 있고, 그 확률들이 하나의 PMF 값으로 합쳐진다.
 
 | 관점 | 의미 |
 |---|---|
-| 입력 | 확률변수의 가능한 값 \\(x\\) |
-| 출력 | 그 값이 나올 확률 \\(P(X=x)\\) |
+| 입력 | 확률변수의 가능한 값 \(x\) |
+| 출력 | 그 값이 나올 확률 \(P(X=x)\) |
 | 사용 대상 | 이산확률변수 |
 | 계산 방식 | 해당 값에 대응되는 확률들을 더함 |
 
@@ -158,11 +160,11 @@ $$
 0\le p_X(x)\le 1
 $$
 
-예를 들어 동전 두 번 던지기에서 앞면 개수 \\(X\\)의 PMF는 다음과 같다.
+예를 들어 동전 두 번 던지기에서 앞면 개수 \(X\)의 PMF는 다음과 같다.
 
-| \\(x\\) | \\(0\\) | \\(1\\) | \\(2\\) |
+| \(x\) | \(0\) | \(1\) | \(2\) |
 |---:|---:|---:|---:|
-| \\(p_X(x)\\) | \\(\frac{1}{4}\\) | \\(\frac{1}{2}\\) | \\(\frac{1}{4}\\) |
+| \(p_X(x)\) | \(\frac{1}{4}\) | \(\frac{1}{2}\) | \(\frac{1}{4}\) |
 
 여러 값을 포함하는 사건은 PMF를 더해서 계산한다.
 
@@ -173,7 +175,7 @@ P(X\ge 1)
 =\frac{3}{4}
 $$
 
-조금 더 일반적으로 쓰면, 확률변수 \\(X\\)가 어떤 값들의 집합 \\(B\\)에 들어갈 확률은 그 값에 해당하는 표본공간 원소들의 확률을 모두 더한 것이다.
+조금 더 일반적으로 쓰면, 확률변수 \(X\)가 어떤 값들의 집합 \(B\)에 들어갈 확률은 그 값에 해당하는 표본공간 원소들의 확률을 모두 더한 것이다.
 
 $$
 P(X\in B)
@@ -185,7 +187,7 @@ $$
 
 ### 1.4 결합 확률 질량함수
 
-두 이산확률변수 \\(X\\), \\(Y\\)가 있을 때 joint PMF는 두 변수가 동시에 특정 값을 가질 확률이다.
+두 이산확률변수 \(X\), \(Y\)가 있을 때 joint PMF는 두 변수가 동시에 특정 값을 가질 확률이다.
 
 $$
 p_{X,Y}(x,y)=P(X=x,Y=y)
@@ -202,13 +204,13 @@ $$
 
 예를 들어 joint PMF가 다음과 같다고 하자.
 
-|  | \\(Y=0\\) | \\(Y=1\\) | 합 |
+|  | \(Y=0\) | \(Y=1\) | 합 |
 |---|---:|---:|---:|
-| \\(X=0\\) | 0.10 | 0.20 | 0.30 |
-| \\(X=1\\) | 0.25 | 0.45 | 0.70 |
+| \(X=0\) | 0.10 | 0.20 | 0.30 |
+| \(X=1\) | 0.25 | 0.45 | 0.70 |
 | 합 | 0.35 | 0.65 | 1.00 |
 
-이때 \\(P(X=1,Y=0)=0.25\\)이다. \\(X=1\\)일 확률은 \\(Y\\) 값을 모두 더해서 구한다.
+이때 \(P(X=1,Y=0)=0.25\)이다. \(X=1\)일 확률은 \(Y\) 값을 모두 더해서 구한다.
 
 $$
 P(X=1)
@@ -247,7 +249,7 @@ p_{X\mid Y}(x\mid y)
 \frac{p_{X,Y}(x,y)}{p_Y(y)}
 $$
 
-위 joint table에서 \\(P(X=1\mid Y=0)\\)은 다음처럼 계산된다.
+위 joint table에서 \(P(X=1\mid Y=0)\)은 다음처럼 계산된다.
 
 $$
 P(X=1\mid Y=0)
@@ -287,11 +289,11 @@ p_X(x)
 \sum_y p_{X\mid Y}(x\mid y)p_Y(y)
 $$
 
-이 식은 "가능한 모든 \\(Y=y\\) 경우를 나누어 \\(X=x\\)의 확률을 더한다"는 의미다.
+이 식은 "가능한 모든 \(Y=y\) 경우를 나누어 \(X=x\)의 확률을 더한다"는 의미다.
 
 ### 1.6 연속확률변수, PDF, CDF
 
-연속확률변수는 값이 연속적인 구간 또는 \\(d\\)차원 실수공간 위에 있는 확률변수다. 연속확률변수에서는 한 점의 확률이 0이다.
+연속확률변수는 값이 연속적인 구간 또는 \(d\)차원 실수공간 위에 있는 확률변수다. 연속확률변수에서는 한 점의 확률이 0이다.
 
 $$
 P(X=x)=0
@@ -317,15 +319,15 @@ P(a<X\le b)
 \int_a^b f_X(x)\,dx
 $$
 
-중요한 점은 \\(f_X(x)\\)가 1보다 클 수 있다는 것이다. PDF 값이 1보다 크더라도 면적, 즉 적분한 확률이 1을 넘지 않으면 정상적인 density다.
+중요한 점은 \(f_X(x)\)가 1보다 클 수 있다는 것이다. PDF 값이 1보다 크더라도 면적, 즉 적분한 확률이 1을 넘지 않으면 정상적인 density다.
 
-CDF(cumulative distribution function), 즉 누적분포함수는 확률변수 \\(X\\)가 어떤 기준값 \\(x\\) 이하일 확률을 누적해서 보여주는 함수다.
+CDF(cumulative distribution function), 즉 누적분포함수는 확률변수 \(X\)가 어떤 기준값 \(x\) 이하일 확률을 누적해서 보여주는 함수다.
 
 $$
 F_X(x)=P(X\le x)
 $$
 
-연속확률변수에서 CDF는 PDF를 \\(-\infty\\)부터 \\(x\\)까지 적분한 값이다.
+연속확률변수에서 CDF는 PDF를 \(-\infty\)부터 \(x\)까지 적분한 값이다.
 
 $$
 F_X(x)
@@ -343,10 +345,10 @@ CDF는 다음 성질을 가진다.
 
 | 성질 | 의미 |
 |---|---|
-| \\(0\le F_X(x)\le 1\\) | CDF 값은 확률이므로 0과 1 사이 |
-| Non-decreasing | \\(x\\)가 커질수록 누적확률은 줄어들지 않음 |
-| \\(\lim_{x\to-\infty}F_X(x)=0\\) | 매우 작은 값 이하일 확률은 0으로 감 |
-| \\(\lim_{x\to\infty}F_X(x)=1\\) | 충분히 큰 값 이하일 확률은 1로 감 |
+| \(0\le F_X(x)\le 1\) | CDF 값은 확률이므로 0과 1 사이 |
+| Non-decreasing | \(x\)가 커질수록 누적확률은 줄어들지 않음 |
+| \(\lim_{x\to-\infty}F_X(x)=0\) | 매우 작은 값 이하일 확률은 0으로 감 |
+| \(\lim_{x\to\infty}F_X(x)=1\) | 충분히 큰 값 이하일 확률은 1로 감 |
 
 구간 확률은 CDF의 차 또는 PDF의 적분으로 계산한다.
 
@@ -356,7 +358,7 @@ P(a<X\le b)
 =\int_a^b f_X(x)\,dx
 $$
 
-\\(d\\)차원 연속확률변수 \\(X\in\mathbb{R}^d\\)에서는 구간 대신 영역 \\(A\\) 위에서 적분한다.
+\(d\)차원 연속확률변수 \(X\in\mathbb{R}^d\)에서는 구간 대신 영역 \(A\) 위에서 적분한다.
 
 $$
 P(X\in A)
@@ -364,23 +366,23 @@ P(X\in A)
 \int_A f_X(x)\,dx
 $$
 
-주의할 점은 PDF 값은 확률 자체가 아니라 density라는 것이다. 따라서 \\(f_X(x)\\) 값은 1보다 클 수 있다. 1보다 클 수 없는 것은 확률값과 CDF 값이다.
+주의할 점은 PDF 값은 확률 자체가 아니라 density라는 것이다. 따라서 \(f_X(x)\) 값은 1보다 클 수 있다. 1보다 클 수 없는 것은 확률값과 CDF 값이다.
 
 PMF, PDF, CDF를 시험용으로 구분하면 다음과 같다.
 
 | 함수 | 정의 | 대상 | 확률 계산 |
 |---|---|---|---|
-| PMF | \\(p_X(x)=P(X=x)\\) | 이산확률변수 | 값을 더함: \\(P(X\in B)=\sum_{x\in B}p_X(x)\\) |
-| PDF | \\(f_X(x)\\) | 연속확률변수 | 구간을 적분: \\(P(a<X\le b)=\int_a^b f_X(x)\,dx\\) |
-| CDF | \\(F_X(x)=P(X\le x)\\) | 이산과 연속 모두 가능 | 차이를 계산: \\(P(a<X\le b)=F_X(b)-F_X(a)\\) |
+| PMF | \(p_X(x)=P(X=x)\) | 이산확률변수 | 값을 더함: \(P(X\in B)=\sum_{x\in B}p_X(x)\) |
+| PDF | \(f_X(x)\) | 연속확률변수 | 구간을 적분: \(P(a<X\le b)=\int_a^b f_X(x)\,dx\) |
+| CDF | \(F_X(x)=P(X\le x)\) | 이산과 연속 모두 가능 | 차이를 계산: \(P(a<X\le b)=F_X(b)-F_X(a)\) |
 
 핵심 구분은 이렇다. PMF는 값 하나에 대한 확률이고, PDF는 값 하나의 확률이 아니라 density이며, CDF는 특정 값 이하까지 누적한 확률이다.
 
 ### 1.7 독립 확률 변수 판단
 
-두 확률변수 \\(X\\), \\(Y\\)가 독립이라는 것은 \\(Y\\)를 알아도 \\(X\\)에 대한 확률이 바뀌지 않는다는 뜻이다.
+두 확률변수 \(X\), \(Y\)가 독립이라는 것은 \(Y\)를 알아도 \(X\)에 대한 확률이 바뀌지 않는다는 뜻이다.
 
-이산확률변수에서는 모든 \\(x,y\\)에 대해 다음이 성립해야 한다.
+이산확률변수에서는 모든 \(x,y\)에 대해 다음이 성립해야 한다.
 
 $$
 p_{X,Y}(x,y)=p_X(x)p_Y(y)
@@ -406,7 +408,7 @@ $$
 p_X(1)p_Y(1)=0.70\times 0.65=0.455
 $$
 
-두 값이 다르므로 \\(X\\), \\(Y\\)는 독립이 아니다. 한 칸만 달라도 독립이 아니다.
+두 값이 다르므로 \(X\), \(Y\)는 독립이 아니다. 한 칸만 달라도 독립이 아니다.
 
 ### 1.8 Bayes 정리와 likelihood
 
@@ -422,12 +424,12 @@ $$
 
 | 항 | 이름 | 해석 |
 |---|---|---|
-| \\(P(Y\mid X)\\) | posterior | 증거 \\(X\\)를 본 뒤 \\(Y\\)에 대한 갱신된 믿음 |
-| \\(P(X\mid Y)\\) | likelihood | \\(Y\\)라고 가정했을 때 관측 \\(X\\)가 얼마나 그럴듯한가 |
-| \\(P(Y)\\) | prior | 증거를 보기 전 \\(Y\\)에 대한 믿음 |
-| \\(P(X)\\) | evidence | 관측 \\(X\\) 자체가 나타날 전체 확률 |
+| \(P(Y\mid X)\) | posterior | 증거 \(X\)를 본 뒤 \(Y\)에 대한 갱신된 믿음 |
+| \(P(X\mid Y)\) | likelihood | \(Y\)라고 가정했을 때 관측 \(X\)가 얼마나 그럴듯한가 |
+| \(P(Y)\) | prior | 증거를 보기 전 \(Y\)에 대한 믿음 |
+| \(P(X)\) | evidence | 관측 \(X\) 자체가 나타날 전체 확률 |
 
-분모 \\(P(X)\\)는 posterior 전체가 합이 1이 되도록 정규화한다. 가능한 원인 \\(Y=y_i\\)가 여러 개라면 evidence는 다음처럼 계산한다.
+분모 \(P(X)\)는 posterior 전체가 합이 1이 되도록 정규화한다. 가능한 원인 \(Y=y_i\)가 여러 개라면 evidence는 다음처럼 계산한다.
 
 $$
 P(X)
@@ -435,7 +437,7 @@ P(X)
 \sum_i P(X\mid Y=y_i)P(Y=y_i)
 $$
 
-Parameter estimation에서는 같은 구조를 \\(\theta\\)와 데이터 \\(\mathcal{D}\\)에 대해 쓴다.
+Parameter estimation에서는 같은 구조를 \(\theta\)와 데이터 \(\mathcal{D}\)에 대해 쓴다.
 
 $$
 p(\theta\mid\mathcal{D})
@@ -455,7 +457,7 @@ $$
 \text{likelihood}\times\text{prior}
 $$
 
-likelihood는 \\(p(\mathcal{D}\mid\theta)\\)다. 말로는 "parameter가 \\(\theta\\)라고 가정했을 때, 지금 관측한 데이터가 얼마나 그럴듯한가"를 나타낸다. 데이터는 고정되어 있고, \\(\theta\\)를 바꾸어 가며 비교한다는 점이 중요하다.
+likelihood는 \(p(\mathcal{D}\mid\theta)\)다. 말로는 "parameter가 \(\theta\)라고 가정했을 때, 지금 관측한 데이터가 얼마나 그럴듯한가"를 나타낸다. 데이터는 고정되어 있고, \(\theta\)를 바꾸어 가며 비교한다는 점이 중요하다.
 
 ### 1.9 Prior distribution과 posterior distribution
 
@@ -480,7 +482,7 @@ $$
 p(\theta\mid\mathcal{D})
 $$
 
-Evidence \\(p(\mathcal{D})\\)는 \\(\theta\\)에 대해 constant이므로, MAP에서는 다음을 최대화해도 같은 해를 얻는다.
+Evidence \(p(\mathcal{D})\)는 \(\theta\)에 대해 constant이므로, MAP에서는 다음을 최대화해도 같은 해를 얻는다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -532,7 +534,7 @@ $$
 \mathbb{E}[X]+\mathbb{E}[Y]
 $$
 
-두 번째 식은 \\(X\\), \\(Y\\)가 독립이 아니어도 성립한다. 독립성이 필요해지는 대표적인 곳은 곱의 기대값이다.
+두 번째 식은 \(X\), \(Y\)가 독립이 아니어도 성립한다. 독립성이 필요해지는 대표적인 곳은 곱의 기대값이다.
 
 $$
 X\perp Y
@@ -542,7 +544,7 @@ $$
 
 ### 1.11 Gaussian distribution
 
-Gaussian distribution 또는 normal distribution은 평균 \\(\mu\\), 분산 \\(\sigma^2\\)로 결정되는 대표적인 연속확률분포다. 이 PDF 공식은 중요도가 높으므로 반드시 외워야 한다.
+Gaussian distribution 또는 normal distribution은 평균 \(\mu\), 분산 \(\sigma^2\)로 결정되는 대표적인 연속확률분포다. 이 PDF 공식은 중요도가 높으므로 반드시 외워야 한다.
 
 $$
 X\sim\mathcal{N}(\mu,\sigma^2)
@@ -559,13 +561,13 @@ p(x\mid\mu,\sigma^2)
 \right)
 $$
 
-평균 \\(\mu\\)는 분포의 중심을 정하고, 분산 \\(\sigma^2\\)는 평균 주변으로 얼마나 퍼져 있는지를 정한다. 표준정규분포는 다음과 같다.
+평균 \(\mu\)는 분포의 중심을 정하고, 분산 \(\sigma^2\)는 평균 주변으로 얼마나 퍼져 있는지를 정한다. 표준정규분포는 다음과 같다.
 
 $$
 \mathcal{N}(0,1)
 $$
 
-다변수 Gaussian은 평균 벡터 \\(\mu\\)와 공분산 행렬 \\(\Sigma\\)로 결정된다.
+다변수 Gaussian은 평균 벡터 \(\mu\)와 공분산 행렬 \(\Sigma\)로 결정된다.
 
 $$
 x\sim\mathcal{N}(\mu,\Sigma)
@@ -577,7 +579,7 @@ $$
 
 다변수 Gaussian의 중요한 성질은 일부 변수를 보거나 일부 변수를 조건으로 걸어도 다시 Gaussian이 된다는 점이다.
 
-두 변수 블록 \\(x\\), \\(y\\)가 함께 Gaussian이라고 하자.
+두 변수 블록 \(x\), \(y\)가 함께 Gaussian이라고 하자.
 
 $$
 \begin{bmatrix}
@@ -597,20 +599,20 @@ y
 \right)
 $$
 
-\\(y\\)를 관측하지 않고 \\(x\\)만 보면 주변분포가 된다.
+\(y\)를 관측하지 않고 \(x\)만 보면 주변분포가 된다.
 
 $$
 p(x)=\mathcal{N}(\mu_x,\Sigma_{xx})
 $$
 
-\\(y\\)를 관측한 뒤 \\(x\\)의 분포를 보면 조건부분포가 된다.
+\(y\)를 관측한 뒤 \(x\)의 분포를 보면 조건부분포가 된다.
 
 $$
 p(x\mid y)=
 \mathcal{N}(\mu_{x\mid y},\Sigma_{x\mid y})
 $$
 
-조건부 평균은 관측된 \\(y\\)가 평균 \\(\mu_y\\)에서 얼마나 벗어났는지에 따라 \\(x\\)의 평균을 조정한다.
+조건부 평균은 관측된 \(y\)가 평균 \(\mu_y\)에서 얼마나 벗어났는지에 따라 \(x\)의 평균을 조정한다.
 
 $$
 \mu_{x\mid y}
@@ -639,7 +641,7 @@ $$
 Z=X+Y
 $$
 
-\\(X\\), \\(Y\\)가 서로 독립이고
+\(X\), \(Y\)가 서로 독립이고
 
 $$
 X\sim\mathcal{N}(\mu_X,\sigma_X^2),
@@ -660,7 +662,7 @@ $$
 p(x)=a p_1(x)+(1-a)p_2(x)
 $$
 
-이것은 mixture distribution이다. \\(p_1\\), \\(p_2\\)가 각각 Gaussian이어도 \\(p(x)\\)는 일반적으로 하나의 Gaussian이 아니다. 두 봉우리를 가진 분포가 될 수도 있다.
+이것은 mixture distribution이다. \(p_1\), \(p_2\)가 각각 Gaussian이어도 \(p(x)\)는 일반적으로 하나의 Gaussian이 아니다. 두 봉우리를 가진 분포가 될 수도 있다.
 
 따라서 "Gaussian random variable의 합"과 "Gaussian distribution의 mixture"를 반드시 구분해야 한다.
 
@@ -678,7 +680,7 @@ Gaussian이 보장되지 않는 조건도 같이 정리해야 한다.
 
 ### 1.14 변수변환과 선형변환
 
-변수변환은 확률변수 \\(X\\)를 다른 함수 \\(Y=g(X)\\)로 바꾸었을 때, \\(Y\\)의 분포를 구하는 과정이다. 일대일 변환에서는 density의 면적이 보존되도록 Jacobian 보정이 들어간다.
+변수변환은 확률변수 \(X\)를 다른 함수 \(Y=g(X)\)로 바꾸었을 때, \(Y\)의 분포를 구하는 과정이다. 일대일 변환에서는 density의 면적이 보존되도록 Jacobian 보정이 들어간다.
 
 $$
 p_Y(y)
@@ -731,7 +733,7 @@ $$
 \min_{\theta} L(\theta)
 $$
 
-Gradient \\(\nabla_\theta L(\theta)\\)는 현재 위치에서 loss가 가장 빠르게 증가하는 방향이다. 최소화를 위해서는 그 반대 방향으로 이동한다.
+Gradient \(\nabla_\theta L(\theta)\)는 현재 위치에서 loss가 가장 빠르게 증가하는 방향이다. 최소화를 위해서는 그 반대 방향으로 이동한다.
 
 $$
 \theta_{t+1}
@@ -739,7 +741,7 @@ $$
 \theta_t-\eta\nabla_\theta L(\theta_t)
 $$
 
-여기서 \\(\eta\\)는 learning rate 또는 step size다.
+여기서 \(\eta\)는 learning rate 또는 step size다.
 
 | learning rate | 결과 |
 |---|---|
@@ -749,7 +751,7 @@ $$
 
 ### 2.2 확률적 경사 하강법
 
-전체 loss가 \\(N\\)개 데이터 loss의 합이라고 하자.
+전체 loss가 \(N\)개 데이터 loss의 합이라고 하자.
 
 $$
 L(\theta)
@@ -770,7 +772,7 @@ $$
 
 SGD(stochastic gradient descent)는 전체 데이터 대신 한 개 또는 일부 sample로 gradient를 근사한다.
 
-한 sample \\(i\\)만 쓰는 경우:
+한 sample \(i\)만 쓰는 경우:
 
 $$
 \theta_{t+1}
@@ -783,7 +785,7 @@ SGD의 장점은 update가 빠르고 자주 일어난다는 것이다. 단점은
 
 ### 2.3 Mini-batch
 
-Mini-batch는 한 번의 update에 사용하는 데이터 부분집합 \\(B\\)다. Mini-batch gradient는 다음과 같다.
+Mini-batch는 한 번의 update에 사용하는 데이터 부분집합 \(B\)다. Mini-batch gradient는 다음과 같다.
 
 $$
 g_B(\theta_t)
@@ -845,7 +847,7 @@ $$
 \theta_t+\Delta\theta_t
 $$
 
-여기서 \\(\alpha\\)는 momentum coefficient다.
+여기서 \(\alpha\)는 momentum coefficient다.
 
 Momentum의 핵심 효과는 다음과 같다.
 
@@ -859,7 +861,7 @@ Momentum의 핵심 효과는 다음과 같다.
 
 ### 2.5 Newton-Raphson Method
 
-Newton method 또는 Newton-Raphson method는 gradient뿐 아니라 Hessian, 즉 2차 미분 정보를 사용한다. 현재 위치 \\(\theta_t\\) 근처에서 목적함수를 2차 Taylor approximation으로 근사한 뒤, 그 근사의 최소점을 다음 위치로 선택한다.
+Newton method 또는 Newton-Raphson method는 gradient뿐 아니라 Hessian, 즉 2차 미분 정보를 사용한다. 현재 위치 \(\theta_t\) 근처에서 목적함수를 2차 Taylor approximation으로 근사한 뒤, 그 근사의 최소점을 다음 위치로 선택한다.
 
 Gradient와 Hessian을 다음처럼 두자.
 
@@ -894,7 +896,7 @@ Gradient descent는 기울기 방향만 보고 움직인다. Newton method는 He
 
 ### 2.6 Convex function
 
-함수 \\(f\\)가 convex라는 것은 두 점을 잇는 직선 위의 함수값이 양 끝 함수값을 선형 보간한 값보다 크지 않다는 뜻이다.
+함수 \(f\)가 convex라는 것은 두 점을 잇는 직선 위의 함수값이 양 끝 함수값을 선형 보간한 값보다 크지 않다는 뜻이다.
 
 $$
 f(\lambda x+(1-\lambda)y)
@@ -916,7 +918,7 @@ $$
 | Global minimum | 전체 영역에서 함수값이 가장 작은 지점 |
 | Convex function | local minimum이 global minimum이 되는 구조 |
 
-미분 가능한 convex function에서 \\(\nabla f(x^*)=0\\)이면 \\(x^*\\)는 global minimum이다. 반대로 non-convex function에서는 gradient가 0이어도 local minimum, saddle point, local maximum일 수 있다.
+미분 가능한 convex function에서 \(\nabla f(x^*)=0\)이면 \(x^*\)는 global minimum이다. 반대로 non-convex function에서는 gradient가 0이어도 local minimum, saddle point, local maximum일 수 있다.
 
 2차 함수
 
@@ -924,15 +926,15 @@ $$
 f(x)=x^TAx+b^Tx+c
 $$
 
-에서 \\(A\\)가 positive semidefinite이면 convex다.
+에서 \(A\)가 positive semidefinite이면 convex다.
 
 Convex를 증명해야 한다면 정의를 그대로 사용한다.
 
-1. 임의의 두 점 \\(x,y\\)와 \\(0\le\lambda\le 1\\)를 둔다.
-2. \\(f(\lambda x+(1-\lambda)y)\\)를 전개한다.
-3. 이것이 \\(\lambda f(x)+(1-\lambda)f(y)\\)보다 작거나 같음을 보인다.
+1. 임의의 두 점 \(x,y\)와 \(0\le\lambda\le 1\)를 둔다.
+2. \(f(\lambda x+(1-\lambda)y)\)를 전개한다.
+3. 이것이 \(\lambda f(x)+(1-\lambda)f(y)\)보다 작거나 같음을 보인다.
 
-Convex가 아님을 보이면 한 쌍의 반례만 찾으면 된다. 즉, 어떤 \\(x,y,\lambda\\)에 대해
+Convex가 아님을 보이면 한 쌍의 반례만 찾으면 된다. 즉, 어떤 \(x,y,\lambda\)에 대해
 
 $$
 f(\lambda x+(1-\lambda)y)
@@ -948,7 +950,7 @@ $$
 
 ### 3.1 결정론적 함수와 확률분포로서의 모델
 
-결정론적 함수로서의 모델은 입력 \\(x\\)가 주어지면 하나의 예측값을 출력한다.
+결정론적 함수로서의 모델은 입력 \(x\)가 주어지면 하나의 예측값을 출력한다.
 
 $$
 \hat{y}=f_\theta(x)
@@ -986,8 +988,8 @@ $$
 
 | 관점 | 출력 | 장점 |
 |---|---|---|
-| 결정론적 모델 | 하나의 예측값 \\(\hat{y}\\) | 단순하고 loss 기반 학습과 연결이 쉽다. |
-| 확률 모델 | 예측 분포 \\(p(y\mid x,\theta)\\) | noise와 불확실성을 표현하고 likelihood, posterior와 연결된다. |
+| 결정론적 모델 | 하나의 예측값 \(\hat{y}\) | 단순하고 loss 기반 학습과 연결이 쉽다. |
+| 확률 모델 | 예측 분포 \(p(y\mid x,\theta)\) | noise와 불확실성을 표현하고 likelihood, posterior와 연결된다. |
 
 ### 3.2 ERM
 
@@ -1016,7 +1018,7 @@ ERM은 결정론적 모델의 학습 원리로 이해할 수 있지만, 확률 �
 
 ### 3.3 변수 추정
 
-확률적 모델에서는 데이터가 어떤 분포에서 생성되었다고 가정하고, 그 분포의 parameter \\(\theta\\)를 추정한다.
+확률적 모델에서는 데이터가 어떤 분포에서 생성되었다고 가정하고, 그 분포의 parameter \(\theta\)를 추정한다.
 
 관측 데이터가
 
@@ -1085,7 +1087,7 @@ p(\mathcal{D})
 }
 $$
 
-\\(p(\mathcal{D})\\)는 \\(\theta\\)에 대해 constant이므로
+\(p(\mathcal{D})\)는 \(\theta\)에 대해 constant이므로
 
 $$
 \theta_{\mathrm{MAP}}
@@ -1128,7 +1130,7 @@ $$
 -\log p(\theta)
 $$
 
-여기서 \\(-\log p(\theta)\\)가 regularization penalty처럼 작동한다. Zero-mean Gaussian prior를 두면 L2 regularization과 연결된다.
+여기서 \(-\log p(\theta)\)가 regularization penalty처럼 작동한다. Zero-mean Gaussian prior를 두면 L2 regularization과 연결된다.
 
 $$
 p(\theta)
@@ -1174,7 +1176,7 @@ $$
 
 공통점은 둘 다 복잡하거나 큰 parameter를 억제해 overfitting을 줄이려는 목적을 가진다는 것이다. 차이점은 L2는 parameter를 부드럽게 작게 만들고, L1은 일부 parameter를 정확히 0으로 만들어 sparse solution을 유도할 수 있다는 점이다.
 
-MAP와 regularization의 연결도 중요하다. MAP의 negative log objective에서 \\(-\log p(\theta)\\)가 penalty 역할을 한다. Gaussian prior는 L2 penalty와 연결되고, Laplace prior는 L1 penalty와 연결된다.
+MAP와 regularization의 연결도 중요하다. MAP의 negative log objective에서 \(-\log p(\theta)\)가 penalty 역할을 한다. Gaussian prior는 L2 penalty와 연결되고, Laplace prior는 L1 penalty와 연결된다.
 
 ### 3.6 Cross Validation과 validation loss 해석
 
@@ -1182,10 +1184,10 @@ Cross validation은 모델 선택 또는 hyperparameter 선택을 더 안정적�
 
 K-fold cross validation의 기본 절차는 다음과 같다.
 
-1. 데이터를 \\(K\\)개의 fold로 나눈다.
-2. \\(K-1\\)개 fold로 학습하고 남은 1개 fold로 validation loss를 계산한다.
-3. validation fold를 바꾸어 \\(K\\)번 반복한다.
-4. \\(K\\)개의 validation score 평균으로 모델을 비교한다.
+1. 데이터를 \(K\)개의 fold로 나눈다.
+2. \(K-1\)개 fold로 학습하고 남은 1개 fold로 validation loss를 계산한다.
+3. validation fold를 바꾸어 \(K\)번 반복한다.
+4. \(K\)개의 validation score 평균으로 모델을 비교한다.
 
 Training loss와 validation loss의 조합은 다음처럼 해석한다.
 
@@ -1209,7 +1211,7 @@ Directed Graphical Model(DGM)은 확률변수 사이의 조건부 의존 관계�
 | Parent | 어떤 변수의 분포를 조건짓는 변수 |
 | Factorization | joint distribution을 작은 conditional distribution의 곱으로 분해 |
 
-세 변수 \\(a,b,c\\)가 chain rule로 연결되면 다음처럼 쓸 수 있다.
+세 변수 \(a,b,c\)가 chain rule로 연결되면 다음처럼 쓸 수 있다.
 
 $$
 p(a,b,c)
@@ -1264,7 +1266,7 @@ p(y_n\mid x_n,\theta)
 \mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)
 $$
 
-Basis function을 쓰면 \\(x_n\\) 대신 \\(\phi(x_n)\\)를 사용한다.
+Basis function을 쓰면 \(x_n\) 대신 \(\phi(x_n)\)를 사용한다.
 
 $$
 p(y_n\mid x_n,\theta)
@@ -1334,7 +1336,7 @@ $$
 X^TX\theta=X^Ty
 $$
 
-이를 normal equation이라고 한다. \\(X^TX\\)가 invertible이면
+이를 normal equation이라고 한다. \(X^TX\)가 invertible이면
 
 $$
 \theta_{\mathrm{ML}}
@@ -1344,7 +1346,7 @@ $$
 
 이다.
 
-Basis expansion을 쓰면 \\(X\\) 대신 \\(\Phi\\)를 넣는다.
+Basis expansion을 쓰면 \(X\) 대신 \(\Phi\)를 넣는다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -1386,7 +1388,7 @@ $$
 \right]
 $$
 
-양의 상수 \\(\sigma^2\\)를 곱해도 minimizer는 바뀌지 않으므로 다음처럼 볼 수 있다.
+양의 상수 \(\sigma^2\)를 곱해도 minimizer는 바뀌지 않으므로 다음처럼 볼 수 있다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -1413,11 +1415,11 @@ $$
 \Phi^Ty
 $$
 
-이 식은 ridge regression과 같은 형태다. Prior variance \\(b^2\\)가 작으면 parameter가 0 근처에 있어야 한다는 믿음이 강해져 regularization이 강해진다. Observation noise variance \\(\sigma^2\\)가 크면 데이터 자체를 덜 신뢰하게 되어 prior의 영향이 상대적으로 커진다.
+이 식은 ridge regression과 같은 형태다. Prior variance \(b^2\)가 작으면 parameter가 0 근처에 있어야 한다는 믿음이 강해져 regularization이 강해진다. Observation noise variance \(\sigma^2\)가 크면 데이터 자체를 덜 신뢰하게 되어 prior의 영향이 상대적으로 커진다.
 
 ### 4.4 최적해로 예측하기
 
-MLE 또는 MAP로 parameter \\(\hat{\theta}\\)를 구했다면 새 입력 \\(x_*\\)에 대한 점 예측은 다음과 같다.
+MLE 또는 MAP로 parameter \(\hat{\theta}\)를 구했다면 새 입력 \(x_*\)에 대한 점 예측은 다음과 같다.
 
 $$
 \hat{y}_*
@@ -1451,11 +1453,11 @@ $$
 
 따라서 선형회귀 문제는 다음 순서로 답안을 구성하면 안정적이다.
 
-1. 모델식 \\(y=x^T\theta+\epsilon\\) 또는 \\(y=\phi(x)^T\theta+\epsilon\\)을 쓴다.
+1. 모델식 \(y=x^T\theta+\epsilon\) 또는 \(y=\phi(x)^T\theta+\epsilon\)을 쓴다.
 2. Gaussian noise 가정으로 likelihood를 세운다.
 3. MLE는 NLL을 최소화해 normal equation과 closed-form solution을 얻는다.
 4. MAP는 Gaussian prior를 추가해 L2 penalty가 들어간 solution을 얻는다.
-5. 구한 \\(\hat{\theta}\\)로 새 입력의 점 예측 또는 예측 분포를 쓴다.
+5. 구한 \(\hat{\theta}\)로 새 입력의 점 예측 또는 예측 분포를 쓴다.
 
 ## 5. 출제 배분에 맞춘 7문제 모의 구성
 
@@ -1464,49 +1466,49 @@ $$
 <details>
 <summary>1. Joint PMF table에서 marginal probability와 conditional probability를 계산하라.</summary>
 
-답변: 먼저 joint PMF의 행 또는 열을 더해 marginal probability를 구한다. 예를 들어 \\(p_X(x)=\sum_y p_{X,Y}(x,y)\\), \\(p_Y(y)=\sum_x p_{X,Y}(x,y)\\)이다. 조건부 확률은 \\(p_{X\mid Y}(x\mid y)=p_{X,Y}(x,y)/p_Y(y)\\)로 계산한다. 분모가 조건으로 주어진 사건의 주변확률이라는 점을 확인한다.
+답변: 먼저 joint PMF의 행 또는 열을 더해 marginal probability를 구한다. 예를 들어 \(p_X(x)=\sum_y p_{X,Y}(x,y)\), \(p_Y(y)=\sum_x p_{X,Y}(x,y)\)이다. 조건부 확률은 \(p_{X\mid Y}(x\mid y)=p_{X,Y}(x,y)/p_Y(y)\)로 계산한다. 분모가 조건으로 주어진 사건의 주변확률이라는 점을 확인한다.
 
 </details>
 
 <details>
 <summary>2. Bayes 정리를 이용해 posterior를 계산하고 likelihood와 prior를 구분하라.</summary>
 
-답변: Bayes 정리는 \\(P(Y\mid X)=P(X\mid Y)P(Y)/P(X)\\)이다. \\(P(X\mid Y)\\)는 likelihood, \\(P(Y)\\)는 prior, \\(P(Y\mid X)\\)는 posterior다. Evidence는 \\(P(X)=\sum_i P(X\mid Y=y_i)P(Y=y_i)\\)로 구하며 posterior를 정규화한다.
+답변: Bayes 정리는 \(P(Y\mid X)=P(X\mid Y)P(Y)/P(X)\)이다. \(P(X\mid Y)\)는 likelihood, \(P(Y)\)는 prior, \(P(Y\mid X)\)는 posterior다. Evidence는 \(P(X)=\sum_i P(X\mid Y=y_i)P(Y=y_i)\)로 구하며 posterior를 정규화한다.
 
 </details>
 
 <details>
 <summary>3. Gaussian 확률변수의 합과 Gaussian mixture의 차이를 설명하라.</summary>
 
-답변: 확률변수의 합은 \\(Z=X+Y\\)처럼 random variable을 더하는 것이다. 독립 Gaussian \\(X,Y\\)의 합은 다시 Gaussian이고 평균과 분산이 더해진다. 반면 Gaussian mixture는 \\(p(x)=a p_1(x)+(1-a)p_2(x)\\)처럼 density를 가중합한 분포다. 각 성분이 Gaussian이어도 mixture 전체는 일반적으로 하나의 Gaussian이 아니다.
+답변: 확률변수의 합은 \(Z=X+Y\)처럼 random variable을 더하는 것이다. 독립 Gaussian \(X,Y\)의 합은 다시 Gaussian이고 평균과 분산이 더해진다. 반면 Gaussian mixture는 \(p(x)=a p_1(x)+(1-a)p_2(x)\)처럼 density를 가중합한 분포다. 각 성분이 Gaussian이어도 mixture 전체는 일반적으로 하나의 Gaussian이 아니다.
 
 </details>
 
 <details>
 <summary>4. Gradient descent update, step size, mini-batch, momentum을 설명하라.</summary>
 
-답변: 기본 gradient descent는 \\(\theta_{t+1}=\theta_t-\eta\nabla_\theta L(\theta_t)\\)이다. Step size \\(\eta\\)가 너무 작으면 느리고, 너무 크면 overshooting이나 발산이 생긴다. Mini-batch는 \\(g_B(\theta_t)=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n(\theta_t)\\)로 일부 데이터의 평균 gradient를 계산해 update한다. Batch가 크면 안정적이고, 작으면 noisy하지만 빠르다. Momentum은 이전 update \\(\Delta\theta_{t-1}\\)를 현재 update에 반영해 zigzag를 줄인다.
+답변: 기본 gradient descent는 \(\theta_{t+1}=\theta_t-\eta\nabla_\theta L(\theta_t)\)이다. Step size \(\eta\)가 너무 작으면 느리고, 너무 크면 overshooting이나 발산이 생긴다. Mini-batch는 \(g_B(\theta_t)=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n(\theta_t)\)로 일부 데이터의 평균 gradient를 계산해 update한다. Batch가 크면 안정적이고, 작으면 noisy하지만 빠르다. Momentum은 이전 update \(\Delta\theta_{t-1}\)를 현재 update에 반영해 zigzag를 줄인다.
 
 </details>
 
 <details>
 <summary>5. Newton method와 convex function의 정의, 증명 또는 반례 방법을 설명하라.</summary>
 
-답변: Newton method는 \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\)처럼 gradient와 Hessian을 함께 사용한다. 곡률을 반영하므로 빠르게 수렴할 수 있지만 Hessian 계산과 inverse가 비싸다. Convex function은 \\(f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\\), \\(0\le\lambda\le 1\\)을 만족하는 함수다. Convex를 증명하려면 정의를 전개해 부등식을 보이고, convex가 아님을 보이려면 이 부등식을 깨는 \\(x,y,\lambda\\) 반례 하나를 제시하면 된다.
+답변: Newton method는 \(\theta_{t+1}=\theta_t-H_t^{-1}g_t\)처럼 gradient와 Hessian을 함께 사용한다. 곡률을 반영하므로 빠르게 수렴할 수 있지만 Hessian 계산과 inverse가 비싸다. Convex function은 \(f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\), \(0\le\lambda\le 1\)을 만족하는 함수다. Convex를 증명하려면 정의를 전개해 부등식을 보이고, convex가 아님을 보이려면 이 부등식을 깨는 \(x,y,\lambda\) 반례 하나를 제시하면 된다.
 
 </details>
 
 <details>
 <summary>6. Model and Data에서 ERM, MLE, MAP, CV, regularization, DGM을 연결해 설명하라.</summary>
 
-답변: 결정론적 모델은 \\(\hat{y}=f_\theta(x)\\)처럼 하나의 예측값을 내고, 확률 모델은 \\(p(y\mid x,\theta)\\)처럼 예측 분포를 낸다. ERM은 training 평균 loss를 최소화한다. MLE는 \\(\theta_{\mathrm{MLE}}=\arg\max_\theta p(\mathcal{D}\mid\theta)\\)로 likelihood를 최대화하고, MAP는 \\(\theta_{\mathrm{MAP}}=\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\\)로 prior까지 반영한다. Negative log를 취하면 prior 항이 regularization penalty처럼 작동한다. Cross validation은 validation loss로 모델을 고르는 절차이며, DGM은 joint distribution을 조건부 분포의 곱으로 factorization한다.
+답변: 결정론적 모델은 \(\hat{y}=f_\theta(x)\)처럼 하나의 예측값을 내고, 확률 모델은 \(p(y\mid x,\theta)\)처럼 예측 분포를 낸다. ERM은 training 평균 loss를 최소화한다. MLE는 \(\theta_{\mathrm{MLE}}=\arg\max_\theta p(\mathcal{D}\mid\theta)\)로 likelihood를 최대화하고, MAP는 \(\theta_{\mathrm{MAP}}=\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\)로 prior까지 반영한다. Negative log를 취하면 prior 항이 regularization penalty처럼 작동한다. Cross validation은 validation loss로 모델을 고르는 절차이며, DGM은 joint distribution을 조건부 분포의 곱으로 factorization한다.
 
 </details>
 
 <details>
 <summary>7. 선형회귀에서 MLE와 MAP objective를 각각 유도하라.</summary>
 
-답변: Gaussian noise \\(\epsilon\sim\mathcal{N}(0,\sigma^2)\\)를 가정하면 \\(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\\)이다. Negative log-likelihood는 \\(\frac{1}{2\sigma^2}\lVert y-X\theta\rVert^2+\mathrm{const}\\)이므로 MLE는 squared error를 최소화한다. Gaussian prior \\(p(\theta)=\mathcal{N}(0,b^2I)\\)를 추가하면 MAP objective는 \\(\frac{1}{2\sigma^2}\lVert y-\Phi\theta\rVert^2+\frac{1}{2b^2}\lVert\theta\rVert^2\\)가 된다.
+답변: Gaussian noise \(\epsilon\sim\mathcal{N}(0,\sigma^2)\)를 가정하면 \(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\)이다. Negative log-likelihood는 \(\frac{1}{2\sigma^2}\lVert y-X\theta\rVert^2+\mathrm{const}\)이므로 MLE는 squared error를 최소화한다. Gaussian prior \(p(\theta)=\mathcal{N}(0,b^2I)\)를 추가하면 MAP objective는 \(\frac{1}{2\sigma^2}\lVert y-\Phi\theta\rVert^2+\frac{1}{2b^2}\lVert\theta\rVert^2\)가 된다.
 
 </details>
 
@@ -1514,29 +1516,29 @@ $$
 
 | 범위 | 반드시 기억할 식 | 한 줄 해석 |
 |---|---|---|
-| PMF | \\(p_X(x)=P(X=x)\\) | 이산확률변수에서 값 하나의 확률 |
-| PDF | \\(P(a<X\le b)=\int_a^b f_X(x)\,dx\\) | 연속확률변수에서 구간 확률을 만드는 density |
-| CDF | \\(F_X(x)=P(X\le x)\\) | 기준값 이하의 누적확률 |
-| Joint PMF | \\(p_{X,Y}(x,y)=P(X=x,Y=y)\\) | 두 확률변수의 동시 확률 |
-| Marginalization | \\(p_X(x)=\sum_y p_{X,Y}(x,y)\\) | 필요 없는 변수를 더해서 제거 |
-| Conditional | \\(p_{X\mid Y}(x\mid y)=p_{X,Y}(x,y)/p_Y(y)\\) | 조건으로 주어진 사건의 확률로 나눔 |
-| Independence | \\(p_{X,Y}(x,y)=p_X(x)p_Y(y)\\) | joint가 marginal product로 분해 |
-| Bayes | posterior \\(\propto\\) likelihood \\(\times\\) prior | 관측 후 믿음을 갱신 |
-| Expectation | \\(\mathbb{E}[X]=\sum_x xp_X(x)\\) | 확률가중평균 |
-| Gaussian transform | \\(AX+b\sim\mathcal{N}(A\mu+b,A\Sigma A^T)\\) | Gaussian은 선형변환 후에도 Gaussian |
-| SGD | \\(\theta_{t+1}=\theta_t-\eta\nabla_\theta L_i(\theta_t)\\) | 일부 sample로 빠르게 update |
-| Mini-batch | \\(g_B=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n\\) | 전체 gradient를 subset 평균으로 근사 |
-| Momentum | \\(\Delta\theta_t=-\eta\nabla L(\theta_t)+\alpha\Delta\theta_{t-1}\\) | 이전 update를 반영해 zigzag 완화 |
-| Newton | \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\) | Hessian으로 곡률까지 반영 |
-| Convex | \\(f(\lambda x+(1-\lambda)y)\le\lambda f(x)+(1-\lambda)f(y)\\) | local minimum이 global minimum |
-| ERM | \\(\arg\min_\theta \frac{1}{N}\sum_i \ell(f_\theta(x_i),y_i)\\) | training 평균 loss 최소화 |
-| MLE | \\(\arg\max_\theta p(\mathcal{D}\mid\theta)\\) | 데이터를 가장 그럴듯하게 하는 parameter |
-| MAP | \\(\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\\) | likelihood에 prior를 추가 |
+| PMF | \(p_X(x)=P(X=x)\) | 이산확률변수에서 값 하나의 확률 |
+| PDF | \(P(a<X\le b)=\int_a^b f_X(x)\,dx\) | 연속확률변수에서 구간 확률을 만드는 density |
+| CDF | \(F_X(x)=P(X\le x)\) | 기준값 이하의 누적확률 |
+| Joint PMF | \(p_{X,Y}(x,y)=P(X=x,Y=y)\) | 두 확률변수의 동시 확률 |
+| Marginalization | \(p_X(x)=\sum_y p_{X,Y}(x,y)\) | 필요 없는 변수를 더해서 제거 |
+| Conditional | \(p_{X\mid Y}(x\mid y)=p_{X,Y}(x,y)/p_Y(y)\) | 조건으로 주어진 사건의 확률로 나눔 |
+| Independence | \(p_{X,Y}(x,y)=p_X(x)p_Y(y)\) | joint가 marginal product로 분해 |
+| Bayes | posterior \(\propto\) likelihood \(\times\) prior | 관측 후 믿음을 갱신 |
+| Expectation | \(\mathbb{E}[X]=\sum_x xp_X(x)\) | 확률가중평균 |
+| Gaussian transform | \(AX+b\sim\mathcal{N}(A\mu+b,A\Sigma A^T)\) | Gaussian은 선형변환 후에도 Gaussian |
+| SGD | \(\theta_{t+1}=\theta_t-\eta\nabla_\theta L_i(\theta_t)\) | 일부 sample로 빠르게 update |
+| Mini-batch | \(g_B=\frac{1}{\lvert B\rvert}\sum_{n\in B}\nabla_\theta L_n\) | 전체 gradient를 subset 평균으로 근사 |
+| Momentum | \(\Delta\theta_t=-\eta\nabla L(\theta_t)+\alpha\Delta\theta_{t-1}\) | 이전 update를 반영해 zigzag 완화 |
+| Newton | \(\theta_{t+1}=\theta_t-H_t^{-1}g_t\) | Hessian으로 곡률까지 반영 |
+| Convex | \(f(\lambda x+(1-\lambda)y)\le\lambda f(x)+(1-\lambda)f(y)\) | local minimum이 global minimum |
+| ERM | \(\arg\min_\theta \frac{1}{N}\sum_i \ell(f_\theta(x_i),y_i)\) | training 평균 loss 최소화 |
+| MLE | \(\arg\max_\theta p(\mathcal{D}\mid\theta)\) | 데이터를 가장 그럴듯하게 하는 parameter |
+| MAP | \(\arg\max_\theta p(\mathcal{D}\mid\theta)p(\theta)\) | likelihood에 prior를 추가 |
 | Cross validation | validation loss 평균 비교 | 모델 선택을 더 안정적으로 수행 |
-| Regularization | loss \\(+\lambda\Omega(\theta)\\) | 큰 parameter나 복잡한 해를 억제 |
-| Linear MLE | \\((X^TX)^{-1}X^Ty\\) | Gaussian noise에서 최소제곱 해 |
-| Linear MAP | \\((\Phi^T\Phi+\frac{\sigma^2}{b^2}I)^{-1}\Phi^Ty\\) | Gaussian prior가 L2 penalty를 만든 해 |
-| Linear prediction | \\(\hat{y}_*=x_*^T\hat{\theta}\\) | 구한 parameter로 새 입력 예측 |
+| Regularization | loss \(+\lambda\Omega(\theta)\) | 큰 parameter나 복잡한 해를 억제 |
+| Linear MLE | \((X^TX)^{-1}X^Ty\) | Gaussian noise에서 최소제곱 해 |
+| Linear MAP | \((\Phi^T\Phi+\frac{\sigma^2}{b^2}I)^{-1}\Phi^Ty\) | Gaussian prior가 L2 penalty를 만든 해 |
+| Linear prediction | \(\hat{y}_*=x_*^T\hat{\theta}\) | 구한 parameter로 새 입력 예측 |
 
 ## Study Guide
 
@@ -1544,9 +1546,9 @@ $$
 2. Bayes 정리는 이름을 외우는 것보다 posterior, likelihood, prior, evidence의 역할을 말로 설명하는 연습이 중요하다. 특히 MAP에서 log를 취하면 prior가 penalty로 추가되는 흐름을 연결한다.
 3. Gaussian은 PDF 공식보다 성질이 중요하다. 주변분포와 조건부분포가 다시 Gaussian이라는 점, 확률변수의 합과 mixture가 다르다는 점, 선형변환에서 평균과 공분산이 어떻게 바뀌는지 정리한다.
 4. 최적화는 update 식을 직접 쓸 수 있어야 한다. Full-batch, SGD, mini-batch의 차이는 "얼마나 많은 데이터로 gradient를 계산하는가"와 "noise와 비용의 trade-off"로 정리한다. Momentum은 이전 update 반영, Newton은 Hessian 반영으로 구분한다.
-5. Convex function은 정의식과 local minimum/global minimum 관계를 함께 암기한다. 증명 문제는 정의를 전개하고, 반례 문제는 정의 부등식을 깨는 점 두 개와 \\(\lambda\\)를 제시한다.
+5. Convex function은 정의식과 local minimum/global minimum 관계를 함께 암기한다. 증명 문제는 정의를 전개하고, 반례 문제는 정의 부등식을 깨는 점 두 개와 \(\lambda\)를 제시한다.
 6. Model and Data는 결정론적 모델과 확률 모델, ERM과 MLE의 연결, validation loss 해석, regularization과 MAP의 연결을 한 흐름으로 정리한다.
-7. 선형회귀는 Gaussian noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나오는 두 문장을 중심으로 유도식을 붙인다. 마지막에는 구한 \\(\hat{\theta}\\)로 \\(\hat{y}_*=x_*^T\hat{\theta}\\)를 예측한다.
+7. 선형회귀는 Gaussian noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나오는 두 문장을 중심으로 유도식을 붙인다. 마지막에는 구한 \(\hat{\theta}\)로 \(\hat{y}_*=x_*^T\hat{\theta}\)를 예측한다.
 헷갈리기 쉬운 부분은 다음처럼 구분한다.
 
 | 헷갈리는 쌍 | 구분 |
@@ -1563,42 +1565,42 @@ $$
 <details>
 <summary>1. 확률의 세 조건은 무엇인가?</summary>
 
-답변: Nonnegativity \\(P(A)\ge 0\\), normalization \\(P(S)=1\\), additivity \\(P(A\cup B)=P(A)+P(B)\\) for disjoint events이다. 여기서 여사건 확률 \\(P(A^c)=1-P(A)\\), 일반 합집합 확률 \\(P(A\cup B)=P(A)+P(B)-P(A\cap B)\\)가 따라온다.
+답변: Nonnegativity \(P(A)\ge 0\), normalization \(P(S)=1\), additivity \(P(A\cup B)=P(A)+P(B)\) for disjoint events이다. 여기서 여사건 확률 \(P(A^c)=1-P(A)\), 일반 합집합 확률 \(P(A\cup B)=P(A)+P(B)-P(A\cap B)\)가 따라온다.
 
 </details>
 
 <details>
 <summary>2. Joint PMF에서 marginal PMF는 어떻게 구하는가?</summary>
 
-답변: 관심 없는 변수를 가능한 모든 값에 대해 더한다. 즉, \\(p_X(x)=\sum_y p_{X,Y}(x,y)\\), \\(p_Y(y)=\sum_x p_{X,Y}(x,y)\\)이다. Joint table에서는 행합 또는 열합이 marginal probability다.
+답변: 관심 없는 변수를 가능한 모든 값에 대해 더한다. 즉, \(p_X(x)=\sum_y p_{X,Y}(x,y)\), \(p_Y(y)=\sum_x p_{X,Y}(x,y)\)이다. Joint table에서는 행합 또는 열합이 marginal probability다.
 
 </details>
 
 <details>
 <summary>3. 독립 확률변수인지 판단하는 기준은 무엇인가?</summary>
 
-답변: 모든 \\(x,y\\)에 대해 \\(p_{X,Y}(x,y)=p_X(x)p_Y(y)\\)가 성립해야 한다. 조건부 확률로는 \\(p_{X\mid Y}(x\mid y)=p_X(x)\\)가 성립해야 한다. 한 칸이라도 다르면 독립이 아니다.
+답변: 모든 \(x,y\)에 대해 \(p_{X,Y}(x,y)=p_X(x)p_Y(y)\)가 성립해야 한다. 조건부 확률로는 \(p_{X\mid Y}(x\mid y)=p_X(x)\)가 성립해야 한다. 한 칸이라도 다르면 독립이 아니다.
 
 </details>
 
 <details>
 <summary>4. CDF와 PDF의 관계는 무엇인가?</summary>
 
-답변: CDF는 \\(F_X(x)=P(X\le x)\\)이고, PDF는 CDF의 미분 \\(f_X(x)=dF_X(x)/dx\\)로 볼 수 있다. 구간 확률은 \\(P(a<X\le b)=F_X(b)-F_X(a)=\int_a^b f_X(x)\,dx\\)이다.
+답변: CDF는 \(F_X(x)=P(X\le x)\)이고, PDF는 CDF의 미분 \(f_X(x)=dF_X(x)/dx\)로 볼 수 있다. 구간 확률은 \(P(a<X\le b)=F_X(b)-F_X(a)=\int_a^b f_X(x)\,dx\)이다.
 
 </details>
 
 <details>
 <summary>5. Bayes 정리에서 likelihood와 prior는 각각 무엇인가?</summary>
 
-답변: \\(P(Y\mid X)=P(X\mid Y)P(Y)/P(X)\\)에서 \\(P(X\mid Y)\\)가 likelihood, \\(P(Y)\\)가 prior다. Parameter notation에서는 \\(p(\mathcal{D}\mid\theta)\\)가 likelihood, \\(p(\theta)\\)가 prior다.
+답변: \(P(Y\mid X)=P(X\mid Y)P(Y)/P(X)\)에서 \(P(X\mid Y)\)가 likelihood, \(P(Y)\)가 prior다. Parameter notation에서는 \(p(\mathcal{D}\mid\theta)\)가 likelihood, \(p(\theta)\)가 prior다.
 
 </details>
 
 <details>
 <summary>6. Gaussian random variable의 선형변환 결과는 어떻게 되는가?</summary>
 
-답변: \\(X\sim\mathcal{N}(\mu,\Sigma)\\), \\(Y=AX+b\\)이면 \\(Y\sim\mathcal{N}(A\mu+b,A\Sigma A^T)\\)이다. 일변수에서는 \\(Y=aX+b\\)일 때 평균은 \\(a\mu+b\\), 분산은 \\(a^2\sigma^2\\)가 된다.
+답변: \(X\sim\mathcal{N}(\mu,\Sigma)\), \(Y=AX+b\)이면 \(Y\sim\mathcal{N}(A\mu+b,A\Sigma A^T)\)이다. 일변수에서는 \(Y=aX+b\)일 때 평균은 \(a\mu+b\), 분산은 \(a^2\sigma^2\)가 된다.
 
 </details>
 
@@ -1619,7 +1621,7 @@ $$
 <details>
 <summary>9. Newton method는 gradient descent와 무엇이 다른가?</summary>
 
-답변: Gradient descent는 \\(\theta_{t+1}=\theta_t-\eta\nabla f(\theta_t)\\)처럼 1차 미분만 사용한다. Newton method는 \\(\theta_{t+1}=\theta_t-H_t^{-1}g_t\\)처럼 gradient \\(g_t\\)와 Hessian \\(H_t\\)를 함께 사용한다. 곡률 정보를 반영하므로 빠를 수 있지만 Hessian 계산과 inverse 비용이 크다.
+답변: Gradient descent는 \(\theta_{t+1}=\theta_t-\eta\nabla f(\theta_t)\)처럼 1차 미분만 사용한다. Newton method는 \(\theta_{t+1}=\theta_t-H_t^{-1}g_t\)처럼 gradient \(g_t\)와 Hessian \(H_t\)를 함께 사용한다. 곡률 정보를 반영하므로 빠를 수 있지만 Hessian 계산과 inverse 비용이 크다.
 
 </details>
 
@@ -1633,28 +1635,28 @@ $$
 <details>
 <summary>11. DGM은 무엇을 표현하고 왜 쓰는가?</summary>
 
-답변: Directed Graphical Model은 node로 확률변수를, arrow로 조건부 의존 관계를 표현한다. DGM을 쓰면 복잡한 joint distribution을 작은 conditional distribution들의 곱으로 factorization할 수 있다. 예를 들어 \\(p(x_1,x_2,x_3)=p(x_1)p(x_2\mid x_1)p(x_3\mid x_2)\\)처럼 구조를 드러낼 수 있다.
+답변: Directed Graphical Model은 node로 확률변수를, arrow로 조건부 의존 관계를 표현한다. DGM을 쓰면 복잡한 joint distribution을 작은 conditional distribution들의 곱으로 factorization할 수 있다. 예를 들어 \(p(x_1,x_2,x_3)=p(x_1)p(x_2\mid x_1)p(x_3\mid x_2)\)처럼 구조를 드러낼 수 있다.
 
 </details>
 
 <details>
 <summary>12. MAP에서 log를 취하면 prior가 왜 추가 항처럼 보이는가?</summary>
 
-답변: MAP는 \\(p(\mathcal{D}\mid\theta)p(\theta)\\)를 최대화한다. Log를 취하면 곱이 \\(\log p(\mathcal{D}\mid\theta)+\log p(\theta)\\)라는 합으로 바뀐다. Negative log minimization으로 바꾸면 \\(-\log p(\mathcal{D}\mid\theta)-\log p(\theta)\\)가 되어, \\(-\log p(\theta)\\)가 regularization penalty처럼 추가된다.
+답변: MAP는 \(p(\mathcal{D}\mid\theta)p(\theta)\)를 최대화한다. Log를 취하면 곱이 \(\log p(\mathcal{D}\mid\theta)+\log p(\theta)\)라는 합으로 바뀐다. Negative log minimization으로 바꾸면 \(-\log p(\mathcal{D}\mid\theta)-\log p(\theta)\)가 되어, \(-\log p(\theta)\)가 regularization penalty처럼 추가된다.
 
 </details>
 
 <details>
 <summary>13. 선형회귀 MLE에서 squared error가 나오는 이유는 무엇인가?</summary>
 
-답변: 관측 noise를 \\(\epsilon\sim\mathcal{N}(0,\sigma^2)\\)로 가정하면 \\(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\\)이다. Gaussian density의 negative log를 취하면 \\((y_n-x_n^T\theta)^2/(2\sigma^2)\\) 항이 나오므로, 전체 NLL 최소화는 squared error 합 최소화와 같은 문제가 된다.
+답변: 관측 noise를 \(\epsilon\sim\mathcal{N}(0,\sigma^2)\)로 가정하면 \(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\)이다. Gaussian density의 negative log를 취하면 \((y_n-x_n^T\theta)^2/(2\sigma^2)\) 항이 나오므로, 전체 NLL 최소화는 squared error 합 최소화와 같은 문제가 된다.
 
 </details>
 
 <details>
 <summary>14. PMF, PDF, CDF의 정의와 차이를 설명하라.</summary>
 
-답변: PMF는 이산확률변수에서 \\(p_X(x)=P(X=x)\\)로 정의되며, 값 하나의 확률을 직접 준다. PDF는 연속확률변수에서 쓰는 확률밀도함수로, \\(f_X(x)\\) 자체는 확률이 아니라 density이고 구간 확률은 \\(\int_a^b f_X(x)\,dx\\)로 구한다. CDF는 \\(F_X(x)=P(X\le x)\\)로 정의되는 누적분포함수이며, 기준값 \\(x\\) 이하의 확률을 나타낸다. 연속확률변수에서는 \\(F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt\\)이고, 미분 가능하면 \\(f_X(x)=dF_X(x)/dx\\)이다.
+답변: PMF는 이산확률변수에서 \(p_X(x)=P(X=x)\)로 정의되며, 값 하나의 확률을 직접 준다. PDF는 연속확률변수에서 쓰는 확률밀도함수로, \(f_X(x)\) 자체는 확률이 아니라 density이고 구간 확률은 \(\int_a^b f_X(x)\,dx\)로 구한다. CDF는 \(F_X(x)=P(X\le x)\)로 정의되는 누적분포함수이며, 기준값 \(x\) 이하의 확률을 나타낸다. 연속확률변수에서는 \(F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt\)이고, 미분 가능하면 \(f_X(x)=dF_X(x)/dx\)이다.
 
 </details>
 

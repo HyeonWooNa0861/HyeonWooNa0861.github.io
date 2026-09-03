@@ -30,7 +30,7 @@ Source PDF: `deep-reinforcement-learning-that-matters.pdf`
 
 이 논문은 새로운 DRL 알고리즘을 제안하기보다, random seed, hyperparameter, network architecture, environment, codebase, evaluation metric만 바뀌어도 DRL 성능 결론이 흔들릴 수 있음을 실험으로 보이고, 재현 가능한 연구를 위한 보고 기준을 제안한다.
 
-## 전체 흐름
+## 핵심 내용
 
 | Section | 핵심 내용 |
 | --- | --- |

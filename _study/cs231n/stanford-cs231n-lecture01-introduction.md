@@ -18,6 +18,8 @@ keywords:
 
 Source: [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture 1](https://youtu.be/2fq9wYslV0A?si=YXCKanCTWpZFstJ2){:target="_blank" rel="noopener"}
 
+> **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
+
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
@@ -125,11 +127,40 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 
 ## 복습 질문
 
-1. Computer vision에서 픽셀과 의미 사이의 간극은 어떤 예로 설명할 수 있는가?
-2. CNN의 weight sharing은 왜 이미지 처리에 적합한가?
-3. ImageNet은 단순한 데이터셋을 넘어 어떤 연구 인프라 역할을 했는가?
-4. Detection, semantic segmentation, instance segmentation의 출력 차이는 무엇인가?
-5. Vision-language model과 generative vision은 기존 classification 문제를 어떻게 확장하는가?
+<details>
+<summary>1. Computer vision에서 픽셀과 의미 사이의 간극은 어떤 예로 설명할 수 있는가?</summary>
+
+답변: 같은 물체도 조명, 시점, 가림과 배경이 달라지면 픽셀 값은 크게 변하지만 의미는 유지된다. 반대로 픽셀 수준에서 비슷한 장면이 서로 다른 의미를 가질 수도 있으므로, 모델은 단순한 색 값 비교를 넘어 불변적인 표현을 학습해야 한다.
+
+</details>
+
+<details>
+<summary>2. CNN의 weight sharing은 왜 이미지 처리에 적합한가?</summary>
+
+답변: 같은 edge나 texture pattern은 이미지의 여러 위치에 나타날 수 있다. 하나의 filter를 공간 전체에 공유하면 위치마다 별도 파라미터를 학습하지 않고도 같은 특징을 탐지할 수 있어 데이터와 계산을 더 효율적으로 사용한다.
+
+</details>
+
+<details>
+<summary>3. ImageNet은 단순한 데이터셋을 넘어 어떤 연구 인프라 역할을 했는가?</summary>
+
+답변: 대규모 label data뿐 아니라 공통 task와 평가 기준을 제공해 서로 다른 모델을 비교하게 했다. 이 기반 위에서 AlexNet 같은 deep CNN의 성능 향상이 재현되고 널리 알려질 수 있었다.
+
+</details>
+
+<details>
+<summary>4. Detection, semantic segmentation, instance segmentation의 출력 차이는 무엇인가?</summary>
+
+답변: Detection은 객체별 class와 bounding box를 출력한다. Semantic segmentation은 모든 pixel에 class를 부여하지만 같은 class의 개체를 구분하지 않고, instance segmentation은 같은 class 안에서도 객체별 mask를 분리한다.
+
+</details>
+
+<details>
+<summary>5. Vision-language model과 generative vision은 기존 classification 문제를 어떻게 확장하는가?</summary>
+
+답변: Vision-language model은 이미지와 자연어 사이의 의미 관계를 학습해 설명, 질의응답과 grounding을 수행한다. Generative vision은 주어진 이미지를 분류하는 데서 나아가 새로운 이미지의 생성, 편집과 변환을 모델링한다.
+
+</details>
 
 ## 참고자료
 
