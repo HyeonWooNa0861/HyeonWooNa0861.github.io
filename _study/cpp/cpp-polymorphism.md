@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -17,6 +18,16 @@ keywords:
 # C++ Polymorphism
 
 Source PDF: `C++ 다형성.pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 |
+|---:|---|---|
+| 1–3 | 다형성, virtual, static/dynamic binding | 1–2절 |
+| 4–6 | 활용 예, abstract class, virtual destructor | 3–6절 |
+| 7–8 | `override`, `final`, 요약 | 7–8절·마지막 정리 |
+
+8쪽 전체를 페이지 이미지로 대조했다. `= 0`은 순수 가상 함수를 선언하는 C++ 문법이고, vtable 그림은 runtime dispatch 구조다. 숫자 모양의 token이 있어도 수학 명제나 정량 모델은 아니므로 증명 대상으로 분류하지 않았다.
 
 > **핵심:** **정적 다형성** 오버로딩, 템플릿. **동적 다형성** `virtual` + 포인터/참조.
 
@@ -383,21 +394,21 @@ class ImmutablePoint final {
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 정적 다형성과 동적 다형성의 차이는 무엇인가?</summary>
 
 답변: 정적 다형성은 컴파일 타임에 호출될 함수가 결정되며 함수 오버로딩과 템플릿이 대표적이다. 동적 다형성은 런타임에 실제 객체 타입을 보고 호출될 함수가 결정되며 `virtual` 함수와 기본 클래스 포인터/참조를 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 기본 클래스 포인터로 파생 클래스 객체를 삭제할 때 기본 클래스 소멸자가 `virtual`이어야 하는 이유는 무엇인가?</summary>
 
 답변: 기본 클래스 소멸자가 virtual이 아니면 기본 클래스 포인터로 `delete`할 때 파생 클래스 소멸자가 호출되지 않을 수 있다. 그러면 파생 클래스가 가진 자원이 해제되지 않아 누수나 정리 누락이 발생할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. `override`를 붙이는 이유는 무엇인가?</summary>
 
 답변: 파생 클래스 함수가 실제로 기본 클래스의 가상 함수를 오버라이딩하는지 컴파일러가 검사하게 하기 위해서다. 함수 이름, 매개변수, `const` 여부가 맞지 않으면 오류를 내므로 실수로 함수 숨김이 발생하는 것을 줄일 수 있다.

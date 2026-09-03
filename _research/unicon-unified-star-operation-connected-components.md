@@ -73,7 +73,7 @@ Connected component는 경로로 서로 이어진 node의 maximal set이다. 단
 
 UniCon-opt는 이후 결과에 영향을 주지 않는 edge를 round 사이에서 걸러낸다. 원문 실험에서는 partition-aware processing이 naïve UniStar 대비 intermediate data를 최대 87.5% 줄였고, edge filtering은 round마다 input edge를 평균 80.4% 축소했다.
 
-Worker는 각 node의 이전 representative를 기억해야 한다. 전체 vertex ID 범위의 array는 빠르지만 memory를 과도하게 사용하고, 전부 hash table로 두면 memory는 줄어도 access가 느리다. HybridMap은 worker partition의 연속 ID 구간에는 array를, 외부 node에는 hash table을 사용한다. Worker당 expected memory는 partition 수를 \(\rho\)라고 할 때 다음 범위로 제한된다.
+Worker는 각 node의 이전 representative를 기억해야 한다. 전체 vertex ID 범위의 array는 빠르지만 memory를 과도하게 사용하고, 전부 hash table로 두면 memory는 줄어도 access가 느리다. HybridMap은 worker partition의 연속 ID 구간에는 array를, 외부 node에는 hash table을 사용한다. Worker당 expected memory는 partition 수를 $$\rho$$라고 할 때 다음 범위로 제한된다.
 
 $$
 O\left(\frac{|V|+|E|}{\rho}\right)

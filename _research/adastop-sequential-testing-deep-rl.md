@@ -58,19 +58,19 @@ AdaStop의 문제의식은 seed 수를 “3개면 충분한가, 80개면 과한�
 
 ### 제안 방법 또는 분석 구조
 
-AdaStop은 multiple group sequential tests를 Deep RL 비교에 맞춘 절차다. 실험자는 한 번에 모든 seed를 실행하지 않고, \(N\)개의 중간 분석과 각 단계의 batch 크기 \(K\)를 정한다. 각 단계에서 새 score가 추가되면 pairwise comparison을 수행하고, 충분한 증거가 모인 비교는 더 이상 score를 요구하지 않는다. 아직 구분되지 않은 비교에는 다음 단계 실행을 배정한다.
+AdaStop은 multiple group sequential tests를 Deep RL 비교에 맞춘 절차다. 실험자는 한 번에 모든 seed를 실행하지 않고, $$N$$개의 중간 분석과 각 단계의 batch 크기 $$K$$를 정한다. 각 단계에서 새 score가 추가되면 pairwise comparison을 수행하고, 충분한 증거가 모인 비교는 더 이상 score를 요구하지 않는다. 아직 구분되지 않은 비교에는 다음 단계 실행을 배정한다.
 
 핵심은 여러 agent를 동시에 비교할 때 생기는 multiple testing 문제다. pairwise test를 여러 번 수행하면 개별 test의 type I error가 작아도 전체 family에서 하나 이상 잘못 reject할 확률이 커진다. AdaStop은 family-wise error(FWE)를 기준으로 이 위험을 제어하며, 논문은 distribution comparison에 대해 non-asymptotic FWE bound를 제시한다. 저자들이 “better” 대신 “most likely better(MLB)”라는 표현을 쓰는 것도 이 통계적 보장의 범위를 넘지 않기 위한 장치다.
 
-이 방법이 요구하는 성질은 명확하다. Deep RL score는 정규분포를 따르지 않을 수 있으므로 nonparametric해야 하고, 계산량을 줄이기 위해 sequential/adaptive해야 하며, 여러 agent 비교를 다루기 위해 multiple testing을 포함해야 한다. 또한 실제 실험에서는 agent당 최대 budget \(B\)가 있으므로 bounded budget 안에서 결론을 내릴 수 있어야 한다.
+이 방법이 요구하는 성질은 명확하다. Deep RL score는 정규분포를 따르지 않을 수 있으므로 nonparametric해야 하고, 계산량을 줄이기 위해 sequential/adaptive해야 하며, 여러 agent 비교를 다루기 위해 multiple testing을 포함해야 한다. 또한 실제 실험에서는 agent당 최대 budget $$B$$가 있으므로 bounded budget 안에서 결론을 내릴 수 있어야 한다.
 
 ### 실험 설정과 결과 해석
 
-논문은 toy example과 MuJoCo benchmark에서 AdaStop을 보인다. HalfCheetah와 Hopper 예시에서는 SAC, PPO, TRPO, DDPG를 비교하고, 각 agent의 최대 score budget을 \(B=30\)으로 둔다. HalfCheetah에서는 AdaStop이 SAC와 PPO 각각 5개 score만으로 SAC가 PPO보다 MLB라고 결론 내린다. Hopper에서는 SAC가 DDPG 및 TRPO보다 MLB라는 결론에 10개 score가 충분했지만, SAC와 PPO가 동등하게 수행된다는 결론에는 양쪽 모두 최대 budget 30개 score가 필요했다.
+논문은 toy example과 MuJoCo benchmark에서 AdaStop을 보인다. HalfCheetah와 Hopper 예시에서는 SAC, PPO, TRPO, DDPG를 비교하고, 각 agent의 최대 score budget을 $$B=30$$으로 둔다. HalfCheetah에서는 AdaStop이 SAC와 PPO 각각 5개 score만으로 SAC가 PPO보다 MLB라고 결론 내린다. Hopper에서는 SAC가 DDPG 및 TRPO보다 MLB라는 결론에 10개 score가 충분했지만, SAC와 PPO가 동등하게 수행된다는 결론에는 양쪽 모두 최대 budget 30개 score가 필요했다.
 
-Colas et al.의 HalfCheetah SAC-TD3 data를 사용한 비교도 중요한 확인점이다. \(N=4, K=5\)이면 최대 \(N \times K=20\) score를 사용할 수 있지만, AdaStop은 평균적으로 12개의 effective scores만으로 power 0.82 수준의 decision을 냈다. 같은 맥락에서 기존 non-adaptive protocol은 약 15개 score를 요구했다. 이 결과는 AdaStop이 항상 적은 seed를 쓰게 한다는 뜻이 아니라, 차이가 뚜렷한 비교에서는 빨리 멈추고 애매한 비교에서는 budget까지 간다는 뜻이다.
+Colas et al.의 HalfCheetah SAC-TD3 data를 사용한 비교도 중요한 확인점이다. $$N=4, K=5$$이면 최대 $$N \times K=20$$ score를 사용할 수 있지만, AdaStop은 평균적으로 12개의 effective scores만으로 power 0.82 수준의 decision을 냈다. 같은 맥락에서 기존 non-adaptive protocol은 약 15개 score를 요구했다. 이 결과는 AdaStop이 항상 적은 seed를 쓰게 한다는 뜻이 아니라, 차이가 뚜렷한 비교에서는 빨리 멈추고 애매한 비교에서는 budget까지 간다는 뜻이다.
 
-Section 5.3의 MuJoCo 실험은 Ant-v3, HalfCheetah-v3, Hopper-v3, Humanoid-v3, Walker2d-v3에서 PPO, SAC, DDPG, TRPO를 비교한다. \(N=5, K=6\) 설정에서 SAC가 여러 환경에서 다른 agent보다 MLB로 나타나지만, 동등하거나 분리하기 어려운 비교는 \(NK=30\)까지 필요했다. Appendix의 early accept heuristic을 쓰면 Walker2d-v3에서 각 agent당 10개 score로 같은 final decisions를 얻는 예도 제시된다.
+Section 5.3의 MuJoCo 실험은 Ant-v3, HalfCheetah-v3, Hopper-v3, Humanoid-v3, Walker2d-v3에서 PPO, SAC, DDPG, TRPO를 비교한다. $$N=5, K=6$$ 설정에서 SAC가 여러 환경에서 다른 agent보다 MLB로 나타나지만, 동등하거나 분리하기 어려운 비교는 $$NK=30$$까지 필요했다. Appendix의 early accept heuristic을 쓰면 Walker2d-v3에서 각 agent당 10개 score로 같은 final decisions를 얻는 예도 제시된다.
 
 ### 논문 주장과 해석의 경계
 
@@ -82,7 +82,7 @@ Section 5.3의 MuJoCo 실험은 Ant-v3, HalfCheetah-v3, Hopper-v3, Humanoid-v3, 
 
 논문은 bidirectional distribution test를 사용한 뒤 empirical mean의 부호로 방향을 해석하는 관행이 conceptually unsatisfactory하다고 인정한다. 즉 test 자체가 “두 분포가 다르다”를 보장하더라도, 어느 쪽 평균이 더 큰지에 대한 directional error 문제는 별도 분석이 필요하다. 해결 방향은 mean comparison에 대한 non-asymptotic power, FWE, directional error control을 함께 정리하는 것이다.
 
-또 다른 한계는 AdaStop이 실험 설계의 품질을 대체하지 못한다는 점이다. score definition, random seed policy, hyperparameter selection, evaluation episode 수가 흔들리면 순차 검정도 흔들린 결론을 낸다. 실제 적용에서는 AdaStop 설정 \(N, K, B, \alpha\), evaluation protocol, early stopping rule을 사전에 고정하고, Atari나 MuJoCo 여러 task 묶음처럼 task collection 전체를 비교하는 방향으로 확장하는 것이 필요하다.
+또 다른 한계는 AdaStop이 실험 설계의 품질을 대체하지 못한다는 점이다. score definition, random seed policy, hyperparameter selection, evaluation episode 수가 흔들리면 순차 검정도 흔들린 결론을 낸다. 실제 적용에서는 AdaStop 설정 $$N, K, B, \alpha$$, evaluation protocol, early stopping rule을 사전에 고정하고, Atari나 MuJoCo 여러 task 묶음처럼 task collection 전체를 비교하는 방향으로 확장하는 것이 필요하다.
 
 ## 참고자료
 

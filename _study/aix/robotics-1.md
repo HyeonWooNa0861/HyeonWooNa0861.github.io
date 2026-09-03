@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
@@ -30,10 +31,20 @@ Source PDF: `Robotics_1.pdf`
 | 4 | Supervised Learning과 차이 | robot action은 왜 미래 input distribution을 바꾸는가? |
 | 5 | Behavioral Cloning | expert trajectory를 policy로 바꾸는 가장 단순한 방법은 무엇인가? |
 | 6 | Distribution Shift | expert state에서만 배운 policy는 왜 drift 후 회복하지 못하는가? |
-| 7 | Error Growth | 독립 오류와 sequential 오류는 왜 \(T\epsilon\), \(O(T^2\epsilon)\)처럼 달라지는가? |
+| 7 | Error Growth | 독립 오류와 sequential 오류는 왜 $$T\epsilon$$, $$O(T^2\epsilon)$$처럼 달라지는가? |
 | 8 | DAggER | learner가 방문한 state에 expert label을 붙이면 무엇이 좋아지는가? |
 | 9 | Generality | SuperTuxKart, Super Mario 예시는 어떤 공통 문제를 보여주는가? |
 | 10 | Remaining Bottleneck | 왜 modern robotics는 foundation model, world model, VLA로 이동하는가? |
+
+### 수식 원문 대응
+
+| 원문 페이지 | 수식·도식 | 이 글의 보충 범위 |
+|---:|---|---|
+| p.5-8 | imitation과 behavioral cloning의 분포 차이 | maximum-likelihood objective는 p.6의 expert-trajectory 학습을 표준 확률 표기로 형식화한 보충이다. |
+| p.9-11 | cascading error, covariate shift, $$T\epsilon$$ 대 $$O(T^2\epsilon)$$ | p.11의 차수 표기를 기대 오류와 보수적 누적-cost 상한으로 구분해 유도했다. |
+| p.12-15 | DAggER 및 3단계 절차 | dataset union과 mixed policy 식은 원문 절차를 명시적으로 적은 알고리즘 정의다. |
+
+Behavioral-cloning objective와 DAggER update는 슬라이드에 직접 인쇄된 식이 아니라 강의 절차의 수학적 형식화다. 반면 p.11의 두 error-growth 차수는 원문 직접 제시 내용이며, 정확한 관측 등식이 아니라 단순화된 가정 아래의 기대값·상한이다.
 
 Robotics 1은 imitation learning이 왜 매력적인지에서 시작해, behavioral cloning의 한계와 DAggER의 해결 전략을 정리한다. 핵심은 robot learning을 단순한 supervised learning으로 보면 안 된다는 점이다. 로봇의 action은 다음 state를 바꾸고, 다음 state는 다시 policy의 입력이 된다.
 
@@ -56,7 +67,7 @@ $$
 o_t \rightarrow a_t
 $$
 
-여기서 \(o_t\)는 observation, \(a_t\)는 expert action이다.
+여기서 $$o_t$$는 observation, $$a_t$$는 expert action이다.
 
 ## 2. Imitation은 Ordinary Supervised Learning이 아니다
 
@@ -96,11 +107,20 @@ $$
 
 학습 목표는 expert가 어떤 observation에서 선택한 action을 policy가 따라 하도록 만드는 것이다.
 
+Discrete action에서 behavioral cloning objective는 다음 negative log-likelihood로 정의할 수 있다.
+
+$$
+\theta^*=\arg\min_{\theta}
+\mathbb{E}_{(o,a^*)\sim D_E}\left[-\log\pi_{\theta}(a^*\mid o)\right]
+$$
+
+$$D_E$$는 expert가 방문한 observation-action 분포, $$\pi_\theta(a^*\mid o)$$는 observation $$o$$에서 expert action에 준 확률이며 모두 무차원이다. 이 식은 supervised maximum likelihood의 **정의**다. Continuous action이면 Gaussian likelihood 가정 아래 squared error로 바꿀 수 있지만, multimodal expert action을 단일 평균으로 학습하면 실제로 안전한 어느 mode에도 해당하지 않는 action이 나올 수 있다.
+
 | 구성 | 의미 |
 |---|---|
-| observation \(o\) | 카메라 이미지, game screen, robot sensor state 등 |
-| expert action \(a^*\) | 사람 또는 expert controller가 선택한 행동 |
-| policy \(\pi_\theta\) | observation을 action으로 바꾸는 learned model |
+| observation $$o$$ | 카메라 이미지, game screen, robot sensor state 등 |
+| expert action $$a^*$$ | 사람 또는 expert controller가 선택한 행동 |
+| policy $$\pi_\theta$$ | observation을 action으로 바꾸는 learned model |
 
 Behavioral cloning은 expert state distribution 위에서는 잘 작동할 수 있다. 하지만 expert가 거의 방문하지 않은 state에서는 recovery behavior를 배우지 못한다.
 
@@ -137,10 +157,20 @@ Behavioral cloning은 주로 expert state distribution에서 학습한다. 하�
 
 | 오류 상황 | 누적 규모 |
 |---|---|
-| independent prediction errors | horizon \(T\)에서 대략 \(T\epsilon\) |
-| correlated sequential errors | drift가 다음 입력을 바꾸므로 \(O(T^2\epsilon)\)처럼 커질 수 있음 |
+| independent prediction errors | horizon $$T$$에서 대략 $$T\epsilon$$ |
+| correlated sequential errors | drift가 다음 입력을 바꾸므로 $$O(T^2\epsilon)$$처럼 커질 수 있음 |
 
-여기서 \(\epsilon\)은 한 step에서 policy가 실수할 확률 또는 error rate의 직관적 표현이다. 중요한 것은 sequential setting에서는 error가 독립적으로 끝나지 않고 다음 입력을 나쁘게 만든다는 점이다.
+여기서 $$\epsilon$$은 한 step에서 policy가 실수할 확률 또는 error rate의 직관적 표현이다. 중요한 것은 sequential setting에서는 error가 독립적으로 끝나지 않고 다음 입력을 나쁘게 만든다는 점이다.
+
+### $$T\epsilon$$과 $$O(T^2\epsilon)$$의 의미
+
+이 표기는 실제 오류가 항상 정확히 그 값이라는 등식이 아니라, 단순화된 가정 아래의 **기대 오류 또는 worst-case 상한의 차수**다. $$T$$는 단위 없는 horizon step 수, $$\epsilon\in[0,1]$$은 expert 분포에서의 step별 오류율이라고 둔다.
+
+1. 각 step 오류 확률이 $$\epsilon$$으로 유지되면 오류 개수 $$N=\sum_{t=1}^{T}I_t$$에 대해 선형성으로 $$\mathbb{E}[N]=\sum_t\mathbb{E}[I_t]=T\epsilon$$이다. 기대값 계산 자체에는 독립성도 필요 없지만, 각 step이 같은 기준 분포에서 평가되어야 한다.
+2. Behavioral cloning에서는 한 번의 오류가 다음 state distribution을 바꾼다. Union bound를 쓰면 시각 $$t$$ 전에 적어도 한 번 오류가 났을 확률을 최대 $$t\epsilon$$ 정도로 둘 수 있다.
+3. Off-distribution 상태에서 step당 추가 cost가 상수로 제한된다고 보면 누적 추가 cost의 상한은 $$\sum_{t=1}^{T}O(t\epsilon)=O(T^2\epsilon)$$이다.
+
+따라서 quadratic 표기는 covariate shift가 만들 수 있는 **보수적 compounding-error bound**이지 모든 trajectory의 정확한 관측값이 아니다. Policy가 오류에서 빠르게 회복하거나 환경이 state를 다시 안정화하면 훨씬 작을 수 있고, off-distribution cost가 제한되지 않으면 이 단순 상한도 적용할 수 없다. 이 논리의 formal한 online-learning 조건과 DAggER 보장은 <a href="https://proceedings.mlr.press/v15/ross11a.html" target="_blank" rel="noopener">Ross, Gordon, and Bagnell (2011)</a>에서 확인할 수 있다.
 
 ## 6. DAggER의 핵심 아이디어
 
@@ -185,7 +215,7 @@ $$
 D_{i+1}=D_i\cup\{(o,a^*_{\text{expert}})\}
 $$
 
-그 다음 aggregated dataset으로 policy를 다시 학습한다. 강의에서는 \(\beta_i\)가 decay하면서 policy가 점점 자기 자신의 state distribution에 직접 훈련된다고 설명한다.
+그 다음 aggregated dataset으로 policy를 다시 학습한다. 강의에서는 $$\beta_i$$가 decay하면서 policy가 점점 자기 자신의 state distribution에 직접 훈련된다고 설명한다.
 
 ## 8. DAggER가 고친 것
 
@@ -250,49 +280,49 @@ Robotics 1은 behavioral cloning과 DAggER의 차이를 중심으로 읽어야 �
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Physical robot에서 imitation learning이 매력적인 이유는 무엇인가?</summary>
 
 답변: 실제 로봇에서 pure reinforcement learning은 많은 trial-and-error를 요구하므로 비용이 크고 느리며 위험할 수 있다. Imitation learning은 expert demonstration을 사용해 초기에 훨씬 sample-efficient하게 policy를 학습할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Behavioral cloning은 무엇인가?</summary>
 
 답변: Expert trajectory에서 observation과 expert action 쌍을 모아 supervised learning으로 policy를 학습하는 방법이다. 즉 observation을 입력으로 받고 expert action을 label로 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Imitation learning이 ordinary supervised learning과 다른 이유는 무엇인가?</summary>
 
 답변: Ordinary supervised learning에서는 model prediction이 다음 input distribution을 바꾸지 않는 경우가 많다. 반면 robotics에서는 policy의 action이 다음 state를 바꾸고, 그 state가 다시 다음 input이 되므로 error가 future distribution을 바꾼다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Behavioral cloning이 drift state에서 취약한 이유는 무엇인가?</summary>
 
 답변: Behavioral cloning은 expert가 방문한 state distribution 위에서 주로 학습한다. Expert는 보통 안정적인 trajectory를 유지하므로, learner가 실수로 벗어난 state와 그 state에서의 recovery action data가 부족하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. DAggER의 핵심 절차는 무엇인가?</summary>
 
 답변: 초기 policy를 expert demonstration으로 학습하고, learner를 roll out해 learner가 방문한 state를 모은다. 그 state에 expert action label을 붙이고 dataset에 aggregate한 뒤 policy를 retrain한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. DAggER가 바꾼 것은 model architecture인가 data collection인가?</summary>
 
 답변: DAggER의 핵심은 data collection process를 바꾼 것이다. Learner가 실제로 방문하는 on-policy state를 모아 expert label을 붙이기 때문에 sequential error growth를 줄일 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. DAggER 이후에도 남는 bottleneck은 무엇인가?</summary>
 
 답변: DAggER는 expert correction과 narrow task data에 여전히 의존한다. 이 한계 때문에 modern robotics는 foundation model, world model, VLA-style generalization으로 이동한다.

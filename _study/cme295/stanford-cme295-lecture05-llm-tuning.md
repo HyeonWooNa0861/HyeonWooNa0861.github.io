@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 5: LLM tuning
 
 Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=PmW_TMQ3l0I){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 5강은 pre-training과 SFT 이후의 preference tuning을 중심으로 진행된다. SFT model은 assistant처럼 동작할 수 있지만 tone, friendliness, safety 같은 human preference와 완전히 맞지 않을 수 있다.
 
@@ -46,7 +49,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 |---|---|
 | Preference pair | 같은 prompt에 대해 선호되는 winning response와 덜 선호되는 losing response를 묶은 학습 단위. |
 | RLHF | Reinforcement Learning from Human Feedback. Human preference data로 reward model을 학습한 뒤, 그 reward를 사용해 LLM policy를 tuning하는 절차. |
-| Policy \(\pi_\theta(a \mid s)\) | RL에서 state가 주어졌을 때 action의 확률분포를 뜻하며, LLM에서는 input prefix가 주어졌을 때 next token distribution에 해당한다. |
+| Policy $$\pi_\theta(a \mid s)$$ | RL에서 state가 주어졌을 때 action의 확률분포를 뜻하며, LLM에서는 input prefix가 주어졌을 때 next token distribution에 해당한다. |
 | Bradley-Terry formulation | 두 output score ri, rj로 한 output이 다른 output보다 선호될 확률을 exp(ri)/(exp(ri)+exp(rj)) 또는 sigma(ri-rj)로 표현하는 방식. |
 | Reward model | Prompt와 completion을 입력받아 그 completion이 얼마나 좋은지 scalar score를 내는 모델. 강의에서는 decoder-only LLM에 classification head를 붙이거나 BERT/CLS 기반으로 만들 수 있다고 한다. |
 | KL divergence | 두 probability distribution이 얼마나 다른지 재는 비대칭 measure. 강의에서는 sum p_i log(p_i/q_i)이고 항상 0 이상이며 P=Q일 때 0이라고 설명한다. |
@@ -54,6 +57,88 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 | PPO-Clip | Current policy와 old policy의 probability ratio를 clipping해 positive/negative advantage에 대한 policy update가 너무 커지지 않게 하는 PPO variant. |
 | Best-of-N | 하나의 prompt에 대해 N개 completion을 만들고 reward model로 score한 뒤 최고 score의 completion을 반환하는 inference-time 방법. |
 | DPO | Direct Preference Optimization. Reward model 없이 preference pair와 reference model을 사용해 policy를 직접 supervised objective로 preference tune하는 방법. |
+
+## 수식 해설: preference probability, KL, PPO와 DPO
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Bradley-Terry와 reward-model loss | 00:29:55–00:37:11 | Pairwise probability와 likelihood 전개는 강의 원문이며, logistic 대수식과 modeling assumption 표시는 작성자 보충이다. |
+| KL divergence | 00:55:14–00:57:28 | 정의와 non-negativity·equality 조건은 강의 원문에서 다루며, 아래 log inequality 증명은 작성자 보충 유도다. |
+| PPO clipping과 KL penalty | 01:03:48–01:14:03 | Ratio·clipping·KL penalty의 역할은 강의 원문이며, 보장 범위와 민감도는 작성자 보충이다. |
+| DPO relation | 01:29:56–01:40:29 | Optimal policy에서 direct preference objective로 가는 흐름은 강의 원문이며, reward-policy 식의 가정과 상수 소거 설명은 작성자 보충이다. |
+
+Winning/losing response의 scalar reward를 $$r_w,r_l$$라 하면 Bradley-Terry model은
+
+$$
+P(y_w\succ y_l)
+=\frac{e^{r_w}}{e^{r_w}+e^{r_l}}
+=\frac{1}{1+e^{-(r_w-r_l)}}
+=\sigma(r_w-r_l)
+$$
+
+로 **정의**한다. 두 번째 등식은 분자·분모를 $$e^{r_w}$$로 나눈 정확한 대수 변형이다. 관측 label이 win이면 binary cross-entropy는 $$-\log\sigma(r_w-r_l)$$이고, 이를 dataset에서 평균낸 것이 reward-model loss다. Reward는 무차원 score이며 score 차이만 probability를 결정한다. 실제 사람 선호가 이 logistic model을 따른다는 것은 modeling assumption이다.
+
+Discrete distribution $$P,Q$$에서 $$S=\{i:p_i>0\}$$라 두고 $$i\in S\Rightarrow q_i>0$$라 하면
+
+$$
+D_{KL}(P\|Q)=\sum_i p_i\log\frac{p_i}{q_i}\ge0.
+$$
+
+증명 개요는 $$\log x\le x-1$$을 쓰는 것이다.
+
+$$
+-D_{KL}(P\|Q)
+=\sum_{i\in S} p_i\log\frac{q_i}{p_i}
+\le\sum_{i\in S} p_i\left(\frac{q_i}{p_i}-1\right)
+=\sum_{i\in S}q_i-1\le0.
+$$
+
+마지막 부등식은 $$\sum_{i\in S}p_i=1$$, $$\sum_{i\in S}q_i\le1$$에서 나온다. 따라서 KL은 음수가 아니며, equality가 성립하려면 $$Q$$의 질량도 모두 $$S$$에 있고 $$q_i=p_i$$여야 하므로 $$P=Q$$다. KL은 비대칭이고 distance metric은 아니다.
+
+PPO에서 old policy 대비 ratio는
+
+$$
+r_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{old}(a_t\mid s_t)}
+$$
+
+이고 clipped surrogate는
+
+$$
+L^{clip}=\mathbb{E}_t\left[
+\min\left(r_tA_t,
+\operatorname{clip}(r_t,1-\varepsilon,1+\varepsilon)A_t\right)
+\right].
+$$
+
+Ratio는 exact importance ratio지만 clipping은 큰 update의 이득을 제한하려는 **optimization heuristic**이다. Monotonic improvement를 보장하는 증명이 아니며 $$\varepsilon$$, advantage error와 sampling distribution에 민감하다.
+
+DPO는 KL-regularized reward optimum의 관계
+
+$$
+r(x,y)=\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{ref}(y\mid x)}+C(x),
+\qquad \beta>0
+$$
+
+를 Bradley-Terry model에 대입한다. 같은 prompt $$x$$의 winner와 loser를 빼면 $$C(x)$$가 소거되어
+
+$$
+r(x,y_w)-r(x,y_l)
+=\beta\left[
+\log\frac{\pi_\theta(y_w\mid x)}{\pi_{ref}(y_w\mid x)}
+-\log\frac{\pi_\theta(y_l\mid x)}{\pi_{ref}(y_l\mid x)}
+\right]
+=\beta\Delta_\theta
+$$
+
+가 된다. 따라서 dataset $$\mathcal D$$에 대한 explicit DPO loss는
+
+$$
+\mathcal L_{DPO}(\theta)
+=-\mathbb E_{(x,y_w,y_l)\sim\mathcal D}
+\left[\log\sigma(\beta\Delta_\theta)\right].
+$$
+
+이는 01:34:47–01:38:21의 optimal-policy 재배열과 Bradley-Terry substitution을 식으로 적은 **작성자 보충 유도**다. Log-ratio가 유한하려면 관측 response에 대해 policy와 reference probability가 양수여야 한다. $$\beta$$가 KL 제약과 loss의 선호 강도를 연결하는 convention은 논문 표기마다 역수 형태로 나타날 수 있으므로 식을 섞지 않아야 한다. 이 유도는 reward-policy relation과 pairwise logistic preference model을 가정하며, arbitrary distribution shift에서 PPO와 동등하다는 보장은 아니다.
 
 ## 학습 포인트
 
@@ -80,35 +165,35 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Preference tuning은 SFT 이후 어떤 문제를 해결하려는가?</summary>
 
 답변: SFT model이 task를 수행할 수 있어도 tone, safety, friendliness 등 human preference와 맞지 않는 출력을 할 수 있으므로, 선호되는 출력 쪽으로 policy를 조정한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. RLHF의 두 단계는 무엇인가?</summary>
 
 답변: 먼저 preference pair로 reward model을 학습해 good/bad output을 구분하고, 이후 그 reward model을 사용해 LLM policy를 reinforcement learning으로 tuning한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Bradley-Terry formulation에서 winning response의 score는 어떤 방향으로 학습되는가?</summary>
 
 답변: Winning response의 reward score r_w가 losing response의 r_l보다 커져 sigma(r_w-r_l)가 1에 가까워지도록 학습된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. PPO에서 KL divergence 또는 clipping을 쓰는 이유는 무엇인가?</summary>
 
 답변: Reward를 높이는 방향으로 update하되, SFT/base model이나 직전 policy에서 너무 멀어져 지식 손실, reward hacking, instability가 생기지 않도록 제한하기 위해서다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. DPO가 RLHF보다 단순한 이유는 무엇인가?</summary>
 
 답변: Reward model과 value function을 별도로 학습하거나 on-policy RL loop를 돌리지 않고, preference pair와 reference model을 사용해 policy loss를 직접 최적화하기 때문이다.

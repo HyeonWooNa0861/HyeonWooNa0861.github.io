@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
+last_modified_at: 2026-09-03 20:25:45 +0900
 title: "LS02 Data Structures and Algorithms"
 course: "Data Structures"
 topic: "Data Structures and Algorithms"
@@ -28,6 +29,20 @@ Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
 | 3 | 자료구조 선택 기준 | 문제의 연산과 제약을 보고 어떤 구조를 고르는가? |
 | 4 | ADT와 자료구조 | "무엇을 할 수 있는가"와 "어떻게 구현하는가"는 어떻게 다른가? |
 | 5 | Problem, Algorithm, Program | 문제, 풀이 절차, 구현 결과를 어떻게 구분하는가? |
+
+### 원문 31페이지 대조와 수식 audit
+
+| 원문 PDF 범위 | 원문 주제 | 이 글의 대응 위치 | 수식 판단 |
+|---|---|---|---|
+| pp. 1–9 | 강의 정보, 과목 운영, 학습 목표 | `전체 흐름`과 이 audit 표 | 과목 운영 정보에는 증명 대상 수식 없음 |
+| pp. 10–19 | 자료구조의 철학, 효율성, 선택 기준, cost-benefit | Sections 1–3 | time·space는 자원 범주로만 소개되며 복잡도 식은 제시되지 않음 |
+| p. 20 | GPA exact query와 range query | Section 4 | hash와 binary-tree 선택은 정성적 사례이며 성능 등식이나 정리로 제시되지 않음 |
+| pp. 21–26 | ADT, data structure, data type, interface/class | Section 5와 `Study Notes` | 정의와 구현 관계 중심이며 증명 대상 수식 없음 |
+| pp. 27–31 | problem, algorithm, program, 다음 강의 예고 | Section 6 | 알고리즘의 정확성·유한성을 정의하지만 계산식은 다음 강의 범위 |
+
+원문 31쪽을 page image와 page-scoped text로 대조했으며, 이 강의에는 유도하거나 증명할 중요한 수학식이 없다. 따라서 뒤 강의에서 배우는 $$O(1)$$, $$O(\log n)$$ 같은 복잡도를 이 자료의 원문 결론처럼 소급하지 않는다. Hash와 tree의 비교도 p. 20의 질의 유형 예시를 학습용으로 풀어쓴 것이며, 구현·충돌 처리·균형 조건에 따른 정량 성능 분석은 이 글의 범위 밖이다.
+
+Reader의 PDF는 현재 블로그 자산에 배치된 강의 원문이며, p. 1은 이 슬라이드가 Prof. Ha-Myung Park의 자료를 바탕으로 작성되었다고 밝힌다. 본문은 원문 그림이나 문장을 연속 복제하지 않고 개념 관계를 독립적으로 재구성했으며, 원문 사실과 뒤 강의의 성능 분석을 섞지 않는 것을 출처 경계로 삼았다.
 
 ## 1. 자료구조란?
 
@@ -116,21 +131,21 @@ ADT는 허용 연산의 명세이고 자료구조는 그 명세의 구현이라�
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 배열 기반 스택과 연결 리스트 기반 스택은 같은 ADT인가, 다른 ADT인가?</summary>
 
 답변: 같은 Stack ADT를 구현한 서로 다른 자료구조다. 둘 다 `push`, `pop`, `top` 같은 스택 연산을 제공하지만, 배열 기반 스택은 배열과 인덱스로 구현하고 연결 리스트 기반 스택은 노드와 포인터로 구현한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 도서 관리 시스템에서 "특정 ISBN 찾기"와 "가격이 1만 원에서 2만 원 사이인 책 찾기"는 각각 어떤 질의인가?</summary>
 
 답변: 특정 ISBN 찾기는 exact query다. 정확히 하나의 key 값을 찾기 때문이다. 가격이 1만 원에서 2만 원 사이인 책 찾기는 range query다. 값의 구간을 기준으로 검색하므로 정렬 관계를 활용할 수 있는 구조가 유리하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 프로그램 성능을 개선하려면 알고리즘만 바꾸면 충분한가, 자료구조도 함께 봐야 하는가?</summary>
 
 답변: 자료구조도 함께 봐야 한다. 같은 알고리즘이라도 데이터를 배열, 리스트, 트리, 해시 테이블 중 어디에 저장하느냐에 따라 탐색, 삽입, 삭제 비용이 크게 달라진다.

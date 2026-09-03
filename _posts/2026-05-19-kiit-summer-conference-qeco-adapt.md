@@ -65,7 +65,7 @@ $$
 L_{\mathrm{eff}} = \frac{N\bar{b}\bar{a}}{M}
 $$
 
-여기서 \(N\)은 사용자 수, \(M\)은 edge 수, \(\bar{b}\)는 평균 task arrival profile, \(\bar{a}\)는 평균 사용자 활동성이다. 사용자가 늘면 \(L_{\mathrm{eff}}\)는 증가하고, edge 수가 늘면 감소한다.
+여기서 $$N$$은 사용자 수, $$M$$은 edge 수, $$\bar{b}$$는 평균 task arrival profile, $$\bar{a}$$는 평균 사용자 활동성이다. 사용자가 늘면 $$L_{\mathrm{eff}}$$는 증가하고, edge 수가 늘면 감소한다.
 
 ### Q6. gating strength는 어떤 역할인가?
 
@@ -76,11 +76,11 @@ g(L_{\mathrm{eff}})
 = \frac{L_{\mathrm{eff}}}{L_{\mathrm{eff}} + M\lambda}
 $$
 
-부하가 커질수록 \(g\)가 증가하므로, QECO-ADAPT는 dense 조건에서 energy-aware behavior와 보수적 offloading 선택을 강화한다. 반대로 edge 수가 늘면 \(L_{\mathrm{eff}}\)는 낮아지고 \(M\lambda\)는 커져 gating이 완화된다.
+부하가 커질수록 $$g$$가 증가하므로, QECO-ADAPT는 dense 조건에서 energy-aware behavior와 보수적 offloading 선택을 강화한다. 반대로 edge 수가 늘면 $$L_{\mathrm{eff}}$$는 낮아지고 $$M\lambda$$는 커져 gating이 완화된다.
 
 ### Q7. scale constant는 현재 얼마인가?
 
-코드 기준 per-edge load scale인 \(\lambda\)는 10.0이다. 실제 gating denominator에 들어가는 scale constant는 \(c = M\lambda\)이다. 현재 공통 실험은 \(M = 1\)이므로 실제 scale constant도 10.0이다.
+코드 기준 per-edge load scale인 $$\lambda$$는 10.0이다. 실제 gating denominator에 들어가는 scale constant는 $$c = M\lambda$$이다. 현재 공통 실험은 $$M = 1$$이므로 실제 scale constant도 10.0이다.
 
 $$
 \lambda = 10.0,\qquad M=1,\qquad c=M\lambda=10.0
@@ -94,32 +94,32 @@ $$
 w_E = w_0\left(1+g(L_{\mathrm{eff}})\right)^{\rho}
 $$
 
-현재 설정은 \(w_0 = 1.20\), \(\rho = 0.35\), \(\lambda = 10.0\)이다. \(w_0\)는 기본 energy emphasis이고, \(\rho\)는 부하 증가에 따른 energy weight 증가 곡률을 조절한다. \(\rho < 1\)이므로 부하가 증가해도 energy penalty가 과도하게 폭증하지 않도록 완만하게 증가한다.
+현재 설정은 $$w_0 = 1.20$$, $$\rho = 0.35$$, $$\lambda = 10.0$$이다. $$w_0$$는 기본 energy emphasis이고, $$\rho$$는 부하 증가에 따른 energy weight 증가 곡률을 조절한다. $$\rho < 1$$이므로 부하가 증가해도 energy penalty가 과도하게 폭증하지 않도록 완만하게 증가한다.
 
 ### Q9. a_bar와 b_bar가 energy weight 곡선을 직접 제어하는가?
 
-직접 제어하지 않는다. \(\bar{a}\)와 \(\bar{b}\)는 \(L_{\mathrm{eff}}\)를 계산하는 입력값이다. energy weight 곡선 자체는 \(w_0\), \(\rho\), \(\lambda\)가 제어한다.
+직접 제어하지 않는다. $$\bar{a}$$와 $$\bar{b}$$는 $$L_{\mathrm{eff}}$$를 계산하는 입력값이다. energy weight 곡선 자체는 $$w_0$$, $$\rho$$, $$\lambda$$가 제어한다.
 
 정확한 구분은 다음과 같다.
 
 | 기호 | 역할 |
 |---|---|
-| \(\bar{b}\) | 평균 task arrival profile |
-| \(\bar{a}\) | 평균 사용자 활동성 |
-| \(\lambda\) | gating strength의 load scale |
-| \(w_0\) | energy weight 기준값 |
-| \(\rho\) | energy weight 증가 곡률 |
-| \(\alpha\) | completion reward scale |
+| $$\bar{b}$$ | 평균 task arrival profile |
+| $$\bar{a}$$ | 평균 사용자 활동성 |
+| $$\lambda$$ | gating strength의 load scale |
+| $$w_0$$ | energy weight 기준값 |
+| $$\rho$$ | energy weight 증가 곡률 |
+| $$\alpha$$ | completion reward scale |
 
 ### Q10. alpha는 energy weight 파라미터인가?
 
-아니다. \(\alpha = 4\)는 completion reward scale이다.
+아니다. $$\alpha = 4$$는 completion reward scale이다.
 
 $$
 r_{\mathrm{done}} = \alpha D_{\max}
 $$
 
-현재 \(D_{\max} = 10\)이므로 \(r_{\mathrm{done}} = 40\)이다. \(\alpha\)는 energy weight 곡선을 제어하는 값이 아니라 기존 QECO 공개 구현의 completion reward scale을 유지하기 위한 calibration parameter로 보는 것이 적절하다.
+현재 $$D_{\max} = 10$$이므로 $$r_{\mathrm{done}} = 40$$이다. $$\alpha$$는 energy weight 곡선을 제어하는 값이 아니라 기존 QECO 공개 구현의 completion reward scale을 유지하기 위한 calibration parameter로 보는 것이 적절하다.
 
 ### Q11. QECO-ADAPT는 policy-invariant reward shaping인가?
 
@@ -173,7 +173,7 @@ DROO가 딥러닝 기반이라는 점과, 본 자료의 common QoE 차트가 DRO
 | last loss | 0.156065 |
 | min loss | 0.086969 |
 
-따라서 "DROO가 학습하지 않았다"라고 해석하면 안 된다. 다만 DROO의 내부 학습 목표는 channel state \(h\)를 입력으로 binary offloading mode를 예측하는 것이다. 반면 본 연구의 QoE 지표는 channel뿐 아니라 task arrival, queue/backlog, deadline, delay, energy, unfinished task까지 포함한다.
+따라서 "DROO가 학습하지 않았다"라고 해석하면 안 된다. 다만 DROO의 내부 학습 목표는 channel state $$h$$를 입력으로 binary offloading mode를 예측하는 것이다. 반면 본 연구의 QoE 지표는 channel뿐 아니라 task arrival, queue/backlog, deadline, delay, energy, unfinished task까지 포함한다.
 
 즉 현재 common QoE 차트에는 다음 요인이 함께 섞인다.
 
@@ -181,7 +181,7 @@ DROO가 딥러닝 기반이라는 점과, 본 자료의 common QoE 차트가 DRO
 - 매 episode마다 달라지는 task arrival 난이도
 - channel trace 변동
 - queue/backlog 누적 상태
-- adaptive \(K\) 변화
+- adaptive $$K$$ 변화
 - QoE/Delay/Energy/Drop이라는 외부 평가 지표
 
 이 때문에 DROO 내부 loss가 감소하더라도, common QoE 차트가 단조 증가하거나 매끄럽게 수렴하는 형태를 보장하지 않는다. 본 실험에서 DROO는 학습을 수행했지만, 그 학습 신호와 본 연구의 QoE 평가 지표가 완전히 일치하지 않기 때문에 수렴성이 눈에 띄게 나타나기 어렵다.
@@ -260,7 +260,7 @@ QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참�
 
 | 논문 | 유사성 | 차별점 | 참고문헌 정보 |
 |---|---|---|---|
-| D3QN-LMA | D3QN, LSTM, dynamic edge load, adaptive weight adjustment, QECO를 baseline으로 비교한다는 점에서 가장 가까운 발간 이후 유사 연구 | QECO를 직접 확장한 구조가 아니라 multi-head attention과 hierarchical optimization을 포함한 별도 알고리즘이다. 또한 QECO-ADAPT의 \(L_{\mathrm{eff}} \to g(L_{\mathrm{eff}}) \to w_E\) 수식 및 action-level gating 구조와는 다르다 | Y. Mao, X. Tang, J. Lu, H. Li, and C. Wang, "D3QN-LMA: A memory-augmented deep reinforcement learning framework for energy-latency tradeoff optimization in mobile edge computing," Advanced Engineering Informatics, vol. 72, article 104431, 2026. DOI: [10.1016/j.aei.2026.104431](https://doi.org/10.1016/j.aei.2026.104431){:target="_blank" rel="noopener"}. [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1474034626001230){:target="_blank" rel="noopener"} |
+| D3QN-LMA | D3QN, LSTM, dynamic edge load, adaptive weight adjustment, QECO를 baseline으로 비교한다는 점에서 가장 가까운 발간 이후 유사 연구 | QECO를 직접 확장한 구조가 아니라 multi-head attention과 hierarchical optimization을 포함한 별도 알고리즘이다. 또한 QECO-ADAPT의 $$L_{\mathrm{eff}} \to g(L_{\mathrm{eff}}) \to w_E$$ 수식 및 action-level gating 구조와는 다르다 | Y. Mao, X. Tang, J. Lu, H. Li, and C. Wang, "D3QN-LMA: A memory-augmented deep reinforcement learning framework for energy-latency tradeoff optimization in mobile edge computing," Advanced Engineering Informatics, vol. 72, article 104431, 2026. DOI: [10.1016/j.aei.2026.104431](https://doi.org/10.1016/j.aei.2026.104431){:target="_blank" rel="noopener"}. [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1474034626001230){:target="_blank" rel="noopener"} |
 | PreAlloc-A2C | workload 변화, LSTM 기반 server load 예측, delay-energy-drop rate를 함께 최적화한다는 점에서 문제의식이 유사하다 | QECO 기반이 아니며 D3QN 계열도 아니다. actor-critic 기반 pre-allocation/task-server matching 구조이므로, QECO-ADAPT의 QECO reward 보완형 설계와 직접 겹치지 않는다 | C. Wang, X. Tang, J. Lu, J. Yang, and P. Yuan, "A Deep Reinforcement Learning-Based Pre-Allocation Mechanism for Efficient Task Offloading in Mobile Edge Computing," Computers, Materials & Continua, vol. 88, no. 1, article 45, 2026. DOI: [10.32604/cmc.2026.078998](https://doi.org/10.32604/cmc.2026.078998){:target="_blank" rel="noopener"}. [Tech Science](https://www.techscience.com/cmc/v88n1/67307/html){:target="_blank" rel="noopener"} |
 {: .reference-candidate-table }
 
@@ -275,7 +275,7 @@ QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참�
 
 ### Q30. edge당 평균 부하를 산출하는 방식이라면 평균 부하는 딥러닝 과정에서 계속 변화하는가?
 
-현재 구현 기준으로는 계속 변화하지 않는다. \(L_{\mathrm{eff}} = N\bar{b}\bar{a}/M\)에서 \(N\), \(M\), \(\bar{b}\), \(\bar{a}\)는 한 실험 시나리오 안에서 고정된 설정값이다. 따라서 `effective_load`, `gating_strength`, `adaptive energy weight`는 현재 코드에서는 episode마다 학습되거나 gradient로 업데이트되는 신경망 weight가 아니라, 시나리오 시작 시 결정되는 deterministic control parameter에 가깝다.
+현재 구현 기준으로는 계속 변화하지 않는다. $$L_{\mathrm{eff}} = N\bar{b}\bar{a}/M$$에서 $$N$$, $$M$$, $$\bar{b}$$, $$\bar{a}$$는 한 실험 시나리오 안에서 고정된 설정값이다. 따라서 `effective_load`, `gating_strength`, `adaptive energy weight`는 현재 코드에서는 episode마다 학습되거나 gradient로 업데이트되는 신경망 weight가 아니라, 시나리오 시작 시 결정되는 deterministic control parameter에 가깝다.
 
 다만 실제 환경의 instantaneous load는 계속 변한다. 예를 들어 각 time slot에서 task arrival, edge backlog, local/transmission time, energy state는 변하고, 이 값들은 DQN의 observation과 LSTM state에 반영된다. 또한 QECO-ADAPT의 gating은 고정된 gating strength를 기준으로 하되, 매 time slot의 observation을 보고 실제 action을 바꿀 수 있다.
 
@@ -283,9 +283,9 @@ QECO-ADAPT의 유사성 검증에 직접 사용할 수 있는 발간 이후 참�
 
 | 구분 | 현재 구현에서 변화 여부 | 설명 |
 |---|---|---|
-| \(L_{\mathrm{eff}}\) | 실험 중 고정 | 사용자 수, 평균 profile, 평균 활동성, edge 수로 계산 |
-| \(g(L_{\mathrm{eff}})\) | 실험 중 고정 | \(L_{\mathrm{eff}}\)와 \(M\lambda\)로 계산 |
-| \(w_E\) | 실험 중 고정 | reward 계산마다 같은 scenario-level weight 사용 |
+| $$L_{\mathrm{eff}}$$ | 실험 중 고정 | 사용자 수, 평균 profile, 평균 활동성, edge 수로 계산 |
+| $$g(L_{\mathrm{eff}})$$ | 실험 중 고정 | $$L_{\mathrm{eff}}$$와 $$M\lambda$$로 계산 |
+| $$w_E$$ | 실험 중 고정 | reward 계산마다 같은 scenario-level weight 사용 |
 | edge backlog | time slot마다 변화 | 환경 상태이며 gating 조건과 DQN observation에 반영 |
 | DQN/LSTM 내부 weight | 학습 중 변화 | reward signal에 따라 Q-network가 업데이트됨 |
 
@@ -321,9 +321,9 @@ C_i^{\mathrm{adapt}}
 = 2\left(s_iD_i + (1-s_i)w_EE_i^{\mathrm{scaled}}\right)
 $$
 
-여기서 \(w_E\)가 adaptive energy weight이다. 이 값은 매 transition reward를 계산할 때 energy cost를 얼마나 강하게 반영할지 결정한다. 따라서 학습 초기만이 아니라 전체 training 과정에서 Q-learning target, TD error, Q-value 업데이트, 이후 action preference에 계속 영향을 준다.
+여기서 $$w_E$$가 adaptive energy weight이다. 이 값은 매 transition reward를 계산할 때 energy cost를 얼마나 강하게 반영할지 결정한다. 따라서 학습 초기만이 아니라 전체 training 과정에서 Q-learning target, TD error, Q-value 업데이트, 이후 action preference에 계속 영향을 준다.
 
-현재 구현에서는 \(w_E\)가 episode마다 재학습되는 값은 아니지만, reward가 저장되는 모든 시점에 적용된다. 즉 "초기값"이 아니라 "학습 전 과정의 reward landscape를 바꾸는 scenario-level coefficient"이다.
+현재 구현에서는 $$w_E$$가 episode마다 재학습되는 값은 아니지만, reward가 저장되는 모든 시점에 적용된다. 즉 "초기값"이 아니라 "학습 전 과정의 reward landscape를 바꾸는 scenario-level coefficient"이다.
 
 요약:
 
@@ -350,19 +350,19 @@ C_i^{\mathrm{adapt}}
 = 2\left(s_iD_i + (1-s_i)w_EE_i^{\mathrm{scaled}}\right)
 $$
 
-즉 기존 QECO를 \(w_E = 1\)인 고정 energy cost 구조로 보면, QECO-ADAPT는 \(w_E\)를 effective load에 따라 조정하는 구조이다.
+즉 기존 QECO를 $$w_E = 1$$인 고정 energy cost 구조로 보면, QECO-ADAPT는 $$w_E$$를 effective load에 따라 조정하는 구조이다.
 
 이 수식을 사용한 이유는 세 가지이다.
 
-첫째, \(g(L_{\mathrm{eff}})\)는 0과 1 사이에서 부하가 증가할수록 커지는 값이므로, dense load를 reward에 반영하기 쉽다.
+첫째, $$g(L_{\mathrm{eff}})$$는 0과 1 사이에서 부하가 증가할수록 커지는 값이므로, dense load를 reward에 반영하기 쉽다.
 
-둘째, \(w_0\)는 기본 energy-aware bias를 준다. 현재 \(w_0 = 1.20\)이므로 QECO-ADAPT는 기존 QECO보다 energy cost를 기본적으로 조금 더 민감하게 본다.
+둘째, $$w_0$$는 기본 energy-aware bias를 준다. 현재 $$w_0 = 1.20$$이므로 QECO-ADAPT는 기존 QECO보다 energy cost를 기본적으로 조금 더 민감하게 본다.
 
-셋째, \(\rho = 0.35 < 1\)을 사용해 증가 곡선을 sublinear하게 만들었다. 부하가 커진다고 energy penalty가 과도하게 폭증하면 QoE와 dropped-task가 악화될 수 있으므로, 완만하게 증가하도록 설계한 것이다.
+셋째, $$\rho = 0.35 < 1$$을 사용해 증가 곡선을 sublinear하게 만들었다. 부하가 커진다고 energy penalty가 과도하게 폭증하면 QoE와 dropped-task가 악화될 수 있으므로, 완만하게 증가하도록 설계한 것이다.
 
 요약:
 
-> 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 \(g(L_{\mathrm{eff}})\)로 정규화하고, \(w_0(1+g)^{\rho}\) 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
+> 기존 QECO에는 부하에 따라 변하는 energy weight가 없었습니다. QECO-ADAPT는 effective load를 $$g(L_{\mathrm{eff}})$$로 정규화하고, $$w_0(1+g)^{\rho}$$ 형태로 energy penalty를 완만하게 키워 dense 환경에서 energy-aware behavior를 강화합니다.
 
 ## 9. 공유 시 피해야 할 표현
 
@@ -410,7 +410,7 @@ $$
 
 ### "상수는 어떻게 정했나?"
 
-> \(\lambda=10\), \(w_0=1.20\), \(\rho=0.35\), \(\alpha=4\)는 닫힌형 최적해에서 나온 값이 아니라 공통 MEC 실험 환경에서 QECO의 completion reward scale을 유지하면서 부하 증가에 따른 energy-aware behavior를 유도하기 위한 calibration parameter입니다.
+> $$\lambda=10$$, $$w_0=1.20$$, $$\rho=0.35$$, $$\alpha=4$$는 닫힌형 최적해에서 나온 값이 아니라 공통 MEC 실험 환경에서 QECO의 completion reward scale을 유지하면서 부하 증가에 따른 energy-aware behavior를 유도하기 위한 calibration parameter입니다.
 
 ### "유사 논문이 있나?"
 

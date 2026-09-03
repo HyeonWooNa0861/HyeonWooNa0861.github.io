@@ -37,13 +37,13 @@
 
 {% if branch_search_items %}
   <form class="library-search branch-search" role="search" data-library-search data-library-search-empty-status="Press / to search. Use ↑ and ↓ to choose, Enter to open.">
-    <label class="library-search__label" for="library-search-input">{{ branch_search_label }}</label>
+    <label class="library-search__label" for="library-search-input">{{ branch_search_label | escape }}</label>
     <div class="library-search__control">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <circle cx="11" cy="11" r="6.5"></circle>
         <path d="m16 16 4 4"></path>
       </svg>
-      <input id="library-search-input" type="search" role="combobox" autocomplete="off" placeholder="{{ branch_search_placeholder }}" data-library-search-input aria-autocomplete="list" aria-haspopup="listbox" aria-controls="library-search-results" aria-describedby="library-search-status" aria-expanded="false" aria-keyshortcuts="/ ArrowUp ArrowDown Enter Escape">
+      <input id="library-search-input" type="search" role="combobox" autocomplete="off" placeholder="{{ branch_search_placeholder | escape }}" data-library-search-input aria-autocomplete="list" aria-haspopup="listbox" aria-controls="library-search-results" aria-describedby="library-search-status" aria-expanded="false" aria-keyshortcuts="/ ArrowUp ArrowDown Enter Escape">
       <button class="library-search__submit" type="submit">Open</button>
     </div>
     <p class="library-search__status" id="library-search-status" data-library-search-status aria-live="polite">Press / to search. Use ↑ and ↓ to choose, Enter to open.</p>
@@ -51,7 +51,7 @@
       <ul role="presentation">
         {% for item in branch_search_items %}
           <li data-library-search-item data-search-text="{{ item.title | escape }} {{ item.course | default: '' | escape }} {{ item.section | default: '' | replace: '-', ' ' | escape }} {{ item.description | default: '' | escape }} {{ item.major_topic | default: '' | escape }} {{ item.topic | default: '' | escape }} {{ item.keywords | join: ' ' | escape }}">
-            <a href="{{ item.url | relative_url }}">
+            <a href="{{ item.url | relative_url | escape }}">
               <span data-library-search-result-title>{{ item.title | escape }}</span>
               <small>
                 {% if branch_search_collection == "posts" %}

@@ -4,6 +4,8 @@ url: "https://HyeonWooNa0861.github.io"
 timezone: Asia/Seoul
 future: true
 markdown: kramdown
+kramdown:
+  math_engine: mathjax
 permalink: /:year/:month/:day/:title/
 include:
   - _pics

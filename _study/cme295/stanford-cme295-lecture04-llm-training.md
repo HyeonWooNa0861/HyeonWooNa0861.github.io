@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 4: LLM Training
 
 Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=VlA_jt_3Qc4){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 4강은 전통적인 작업별 모델 학습에서 전이학습 기반 LLM 학습으로 넘어가는 흐름을 설명한다. 사전학습은 거대한 텍스트와 코드 말뭉치에서 다음 토큰을 예측하도록 학습하는 가장 비싼 단계이며, Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 출처가 언급된다.
 
@@ -55,6 +58,61 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 | LoRA | Pre-trained weight W0는 freeze하고 low-rank product BA만 학습하는 parameter-efficient fine-tuning 기법. |
 | QLoRA / NF4 | Frozen base weights를 NF4 같은 quantized format으로 저장하고 LoRA matrices는 BF16으로 학습해 fine-tuning memory footprint를 크게 낮추는 방식. |
 
+## 수식 해설: pre-training loss와 LoRA
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Next-token pre-training과 SFT masking | 00:10:36–00:10:55, 01:07:00–01:08:31 | Next-token objective와 response 구간 loss는 강의 원문이며, NLL·chain-rule 표기는 작성자 보충 유도다. |
+| Chinchilla scaling rule | 00:19:23–00:19:51 | 약 $$20N$$ token이라는 경험적 규칙은 강의 원문이다. $$C\approx kND$$와 적용 한계는 작성자 보충이다. |
+| FlashAttention과 online softmax | 00:38:35–00:51:40 | Tiling, exactness, iterative correction, recomputation은 강의 원문이며, 강의가 생략했다고 밝힌 recurrence는 아래 작성자 보충이다. |
+| LoRA low-rank update | 01:37:56–01:42:33 | Frozen weight에 low-rank 곱을 더하는 구조는 강의 원문이며, shape·parameter 비율 계산은 작성자 보충이다. |
+
+Next-token pre-training은 sequence $$x_{1:T}$$의 negative log-likelihood를 최소화한다.
+
+$$
+\mathcal{L}_{\mathrm{NLL}}
+=-\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{<t}).
+$$
+
+이는 autoregressive chain rule $$\log p_\theta(x_{1:T})=\sum_t\log p_\theta(x_t\mid x_{<t})$$에 음수를 붙인 **정확한 maximum-likelihood objective**다. $$T,t$$는 무차원 token count/index이고 loss는 nats이며, 밑 2 로그를 쓰면 bits가 된다. SFT에서 prompt token을 masking하면 같은 합을 response position에만 적용한다. Data가 실제 target distribution의 유한 sample이라는 점과 optimization이 global optimum에 도달하지 않을 수 있다는 점은 별도 한계다.
+
+LoRA는 frozen weight $$W_0\in\mathbb{R}^{d_{out}\times d_{in}}$$에
+
+$$
+W=W_0+\Delta W,
+\qquad
+\Delta W=BA,
+$$
+
+$$
+B\in\mathbb{R}^{d_{out}\times r},\qquad
+A\in\mathbb{R}^{r\times d_{in}}
+$$
+
+을 더하는 parameterization이다. Full update는 $$d_{out}d_{in}$$개를 학습하지만 LoRA는 $$r(d_{out}+d_{in})$$개만 학습하므로 감소 비율은
+
+$$
+\frac{r(d_{out}+d_{in})}{d_{out}d_{in}}.
+$$
+
+이는 정확한 parameter count다. $$r<\min(d_{out},d_{in})$$이어야 low-rank 절감이 의미 있고, 필요한 update가 작은 rank로 잘 근사된다는 것은 task-dependent assumption이다.
+
+Training compute가 parameter 수 $$N$$과 token 수 $$D$$에 대략 비례한다는 $$C\approx kND$$, 그리고 $$D\approx20N$$ 같은 Chinchilla rule은 측정된 regime의 **empirical scaling relation**이다. 상수 $$k$$, optimal ratio는 architecture, optimizer, data quality, hardware accounting에 따라 달라지므로 대수적으로 증명되는 보편 법칙으로 취급하지 않는다.
+
+FlashAttention의 exactness는 softmax 한 행을 block별로 합치는 recurrence로 확인할 수 있다. 지금까지 본 score의 running maximum, exponential sum, value numerator를 각각 $$m,\ell,u$$라 하고 초기값을 $$m=-\infty,\ell=0,u=0$$으로 둔다. 새 block의 score/value를 $$(s_j,v_j)$$라 하고 $$m_B=\max_j s_j$$라 하면
+
+$$
+m'=\max(m,m_B),
+$$
+
+$$
+\ell'=e^{m-m'}\ell+\sum_{j\in B}e^{s_j-m'},
+\qquad
+u'=e^{m-m'}u+\sum_{j\in B}e^{s_j-m'}v_j.
+$$
+
+마지막 output은 $$u'/\ell'$$다. 이전 항에 $$e^{m-m'}$$를 곱하면 모든 항이 새 maximum $$m'$$ 기준으로 다시 scale되므로, block을 모두 처리한 뒤 $$u/\ell=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 된다. 따라서 real arithmetic에서는 vanilla softmax attention과 같은 결과를 내면서 전체 score matrix를 HBM에 materialize하지 않을 수 있다. 이는 00:46:33–00:48:53에서 강의가 “slide에 식을 넣지 않았다”고 명시한 부분의 **작성자 보충 유도**다. 한 행에 unmasked finite score가 하나 이상 있어 $$\ell>0$$이어야 한다. 실제 floating-point에서는 reduction 순서와 rounding이 달라 bitwise equality는 보장되지 않으며, dropout·mask·causal block 경계도 kernel에서 같은 의미로 적용해야 한다.
+
 ## 학습 포인트
 
 - Pre-training은 거대한 text/code 데이터로 next token prediction을 학습하는 LLM training의 가장 비용 큰 단계다.
@@ -80,35 +138,35 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Pre-training 데이터 규모와 목적은 무엇인가?</summary>
 
 답변: 거대한 text/code corpus에서 next token prediction을 학습해 language와 code 구조를 배우는 단계이며, 강의에서는 수천억에서 수십조 token 규모를 언급한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. ZeRO 1, 2, 3의 핵심 아이디어는 무엇인가?</summary>
 
 답변: Data parallelism에서 중복 저장되는 optimizer state, gradient, parameter를 단계적으로 partition해 GPU별 memory load를 줄이는 것이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. FlashAttention은 attention 계산을 근사하는가?</summary>
 
 답변: 아니다. 강의에서는 exact computation이며 HBM과 SRAM 사이의 IO를 줄이는 tiling과 recomputation 전략이라고 설명한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. SFT에서 입력 instruction 구간에는 왜 loss를 걸지 않는가?</summary>
 
 답변: 모델이 사용자 입력을 그대로 따라 쓰게 하려는 것이 아니라, 그 입력에 조건화된 이후의 output token을 예측하도록 학습하기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. LoRA가 fine-tuning 비용을 줄이는 방식은 무엇인가?</summary>
 
 답변: 기존 weight W0를 freeze하고 작은 rank R을 가진 matrices A와 B만 학습해 task-specific update를 표현하므로 학습 parameter 수가 크게 줄어든다.

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
+last_modified_at: 2026-09-03 20:25:28 +0900
 title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"
@@ -17,6 +18,19 @@ keywords:
 # Autonomous Driving 1
 
 Source PDF: `Autonomous_Driving_1.pdf`
+
+> **원본 확인 범위:** 로컬 원본 PDF 40쪽의 텍스트 레이어와 핵심 도표 슬라이드를 대조했다. 아래 쪽수는 PDF 뷰어 기준이다. 이 deck은 RSS의 safe distance를 개념으로 소개하지만 계산식이나 증명은 제시하지 않으므로, 원본에 없는 RSS 공식을 임의로 보충하지 않는다.
+
+## 원본 슬라이드 매핑
+
+| 핵심 내용 | PDF 쪽 | 수식·출처 경계 |
+|---|---:|---|
+| Modular ADS pipeline | 7–10 | Localization, perception, prediction, planning, control의 분리는 원본 구조 설명이다. 정량식은 제시되지 않는다. |
+| Sensor fusion과 HD map | 12–13 | Camera·LiDAR·radar·map 결합과 localization의 역할은 원본 설명이며, sensor model이나 calibration 식은 deck 범위 밖이다. |
+| RSS safety envelope | 14–17 | Safe distance와 proper response는 원본의 개념 설명이다. RSS longitudinal/lateral distance 식과 그 가정은 원본에 없어 이 글에서 증명 대상으로 확장하지 않는다. |
+| Error propagation과 world-model 한계 | 21–26 | Upstream error가 downstream으로 전파되는 흐름과 object list의 한계는 원본의 정성적 설명이다. |
+| Occupancy representation | 28–29 | 3D cell의 occupied/free/semantic 상태는 원본 도표와 설명을 따른다. 확률 모델이나 loss 식은 원본에 없다. |
+| Fleet data engine | 34–36 | Mining → labeling → training → redeployment 폐루프는 원본의 시스템 흐름이며, 성능 향상을 보장하는 수학적 정리는 아니다. |
 
 > **핵심:** **Modular ADS의 기본 module은** localization, perception, prediction, planning, control. **RSS의 핵심 목적은** learned policy와 별도로 검증 가능한 safety envelope 제공.
 
@@ -174,21 +188,21 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다.
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 자율주행에서 perception과 planning을 완전히 분리하면 어떤 장단점이 생기는가?</summary>
 
 답변: 분리하면 각 모듈을 독립적으로 설계, 디버깅, 검증하기 쉽다. 하지만 perception의 오차가 planning으로 그대로 전달되고, planning에 필요한 정보가 perception 단계에서 사라질 수 있다. end-to-end 방식은 이런 정보 손실을 줄일 수 있지만 해석성과 안전 검증이 어려워진다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. HD map 기반 접근과 camera-first learning 접근의 차이를 설명하라.</summary>
 
 답변: HD map 기반 접근은 정밀 지도와 위치 추정을 강하게 활용해 안정적인 주행 계획을 만든다. 반면 camera-first learning은 카메라 입력에서 주변 구조를 직접 학습해 지도 의존도를 줄인다. 전자는 검증 가능성이 높고, 후자는 확장성과 최신 환경 대응이 장점이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Occupancy representation이 end-to-end driving으로 가는 bridge가 되는 이유는 무엇인가?</summary>
 
 답변: occupancy는 객체 단위 인식 결과보다 더 조밀하게 공간의 점유 여부를 표현한다. 따라서 perception 결과를 planning이 바로 사용할 수 있는 3D 공간 표현으로 바꿔준다. 완전한 black-box end-to-end보다 해석 가능성을 남기면서도 학습 기반 주행으로 연결되는 중간 표현이다.

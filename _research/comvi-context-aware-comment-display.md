@@ -95,7 +95,7 @@ $$
 \{C_1, C_2, \ldots, C_I\}
 $$
 
-각 댓글 \(C_i\)는 여러 timestamp \(t\)에 대응될 수 있다. \(C_{i,t}\)는 댓글 \(C_i\)가 timestamp \(t\)에 표시되는 timed comment를 뜻한다.
+각 댓글 $$C_i$$는 여러 timestamp $$t$$에 대응될 수 있다. $$C_{i,t}$$는 댓글 $$C_i$$가 timestamp $$t$$에 표시되는 timed comment를 뜻한다.
 
 ComVi는 댓글과 timestamp의 관련성을 audio correlation과 visual correlation으로 나누어 계산한다.
 
@@ -113,8 +113,8 @@ $$
 
 | 항목 | 계산 방식 |
 |---|---|
-| \(Corr_A(C_{i,t})\) | 댓글과 timestamp에 대응되는 subtitle segment 사이의 cosine similarity |
-| \(Corr_V(C_{i,t})\) | 댓글과 timestamp가 속한 video shot description 사이의 cosine similarity |
+| $$Corr_A(C_{i,t})$$ | 댓글과 timestamp에 대응되는 subtitle segment 사이의 cosine similarity |
+| $$Corr_V(C_{i,t})$$ | 댓글과 timestamp가 속한 video shot description 사이의 cosine similarity |
 | Text encoder | Sentence-BERT `all-mpnet-base-v2` |
 | Shot segmentation | PySceneDetect |
 | Visual description | Tarsier video captioning model |
@@ -127,7 +127,7 @@ Subtitle이 없는 경우에는 Whisper 같은 speech-to-text model로 생성할
 
 ComVi는 timed comment pool에서 후보 sequence를 만들 때 두 조건을 둔다.
 
-첫째, 각 댓글은 사용자가 읽을 수 있을 만큼 충분히 표시되어야 한다. 댓글 \(C_i\)의 reading time은 comment length \(L(C_i)\)와 사용자 reading speed \(\alpha_{user}\)를 이용해 계산한다.
+첫째, 각 댓글은 사용자가 읽을 수 있을 만큼 충분히 표시되어야 한다. 댓글 $$C_i$$의 reading time은 comment length $$L(C_i)$$와 사용자 reading speed $$\alpha_{user}$$를 이용해 계산한다.
 
 $$
 Reading(C_i)
@@ -137,11 +137,11 @@ $$
 
 | 값 | 의미 |
 |---|---|
-| \(\alpha_{user}\) | character당 평균 reading time, 기본값 0.068초 |
-| \(L(C_i)\) | 댓글의 character 수 |
-| \(\tau_{max}\) | 최대 display duration, 기본값 6초 |
+| $$\alpha_{user}$$ | character당 평균 reading time, 기본값 0.068초 |
+| $$L(C_i)$$ | 댓글의 character 수 |
+| $$\tau_{max}$$ | 최대 display duration, 기본값 6초 |
 
-다음 댓글 \(C_{i',t'}\)은 이전 댓글이 끝난 뒤 나타나야 하므로 기본 조건은 다음과 같다.
+다음 댓글 $$C_{i',t'}$$은 이전 댓글이 끝난 뒤 나타나야 하므로 기본 조건은 다음과 같다.
 
 $$
 t' \ge t + Reading(C_i)
@@ -163,7 +163,7 @@ w_{corr}Corr(C_{i,t})
 \cdot Reading(C_i)
 $$
 
-논문에서 기본값은 \(w_{corr}=2\), \(w_{likes}=1\)이다. \(Likes(C_i)\)는 normalized like count이며, 원시 좋아요 수가 long-tailed distribution을 가지기 때문에 Box-Cox transformation을 적용한 뒤 0과 1 사이로 정규화한다.
+논문에서 기본값은 $$w_{corr}=2$$, $$w_{likes}=1$$이다. $$Likes(C_i)$$는 normalized like count이며, 원시 좋아요 수가 long-tailed distribution을 가지기 때문에 Box-Cox transformation을 적용한 뒤 0과 1 사이로 정규화한다.
 
 좋아요 수 정규화는 다음처럼 정의된다.
 
@@ -185,9 +185,9 @@ BoxCox(l_i)
 \end{cases}
 $$
 
-여기서 \(l_i\)는 raw like count다. \(\lambda\)는 like count distribution을 더 정규분포에 가깝게 만들도록 자동 추정된다.
+여기서 $$l_i$$는 raw like count다. $$\lambda$$는 like count distribution을 더 정규분포에 가깝게 만들도록 자동 추정된다.
 
-최종 목표는 sequence \(S\) 안의 timed comment 점수 합을 최대화하는 것이다.
+최종 목표는 sequence $$S$$ 안의 timed comment 점수 합을 최대화하는 것이다.
 
 $$
 S^{*}
@@ -205,10 +205,10 @@ ComVi는 자동 sequence를 기본으로 하지만 사용자의 읽기 방식과
 
 | 기능 | 설명 |
 |---|---|
-| 동시 표시 개수 조절 | \(N_{user}\)를 설정해 한 번에 최대 몇 개 댓글을 볼지 정한다. |
-| 관심 주제 query | 사용자가 자연어 query \(q_{user}\)를 입력하면, query와 유사한 댓글만 먼저 filtering한다. |
+| 동시 표시 개수 조절 | $$N_{user}$$를 설정해 한 번에 최대 몇 개 댓글을 볼지 정한다. |
+| 관심 주제 query | 사용자가 자연어 query $$q_{user}$$를 입력하면, query와 유사한 댓글만 먼저 filtering한다. |
 
-동시 표시 개수를 허용할 때는 non-overlap 조건을 완화한다. 대신 현재 timestamp에서 이미 표시 중인 댓글 수가 \(N_{user}\)보다 작아야 한다.
+동시 표시 개수를 허용할 때는 non-overlap 조건을 완화한다. 대신 현재 timestamp에서 이미 표시 중인 댓글 수가 $$N_{user}$$보다 작아야 한다.
 
 $$
 Overlap(C_{i',t'})
@@ -222,7 +222,7 @@ t + Reading(C_i) > t'
 \right|
 $$
 
-관심 주제 filtering은 \(q_{user}\)와 각 댓글 embedding의 cosine similarity를 계산한 뒤, threshold `0.6` 이상인 댓글만 다음 mapping process로 넘긴다.
+관심 주제 filtering은 $$q_{user}$$와 각 댓글 embedding의 cosine similarity를 계산한 뒤, threshold `0.6` 이상인 댓글만 다음 mapping process로 넘긴다.
 
 ## 7. 결과 분석
 
@@ -254,9 +254,9 @@ ComVi는 normalized like count 측면에서도 Total comment pool과 Likes-ablat
 
 ### 7.3 Reading Speed와 Sequence 구조
 
-\(\alpha_{user}\)가 커질수록 댓글 하나가 더 오래 표시되므로, 전체 sequence에 포함되는 댓글 수는 감소한다.
+$$\alpha_{user}$$가 커질수록 댓글 하나가 더 오래 표시되므로, 전체 sequence에 포함되는 댓글 수는 감소한다.
 
-| \(\alpha_{user}\) | 평균 display duration | 선택된 댓글 수 |
+| $$\alpha_{user}$$ | 평균 display duration | 선택된 댓글 수 |
 |---:|---:|---:|
 | 0.048 | 3.45초 | 85 |
 | 0.068 | 3.89초 | 75 |
@@ -266,7 +266,7 @@ ComVi는 normalized like count 측면에서도 Total comment pool과 Likes-ablat
 
 ### 7.4 Customization
 
-동시 표시 댓글 수 \(N_{user}\)를 2에서 3으로 높이면 선택된 댓글 수가 65개에서 96개로 증가했다. 또한 user-specified query \(q_{user}\)를 적용하면 동일한 video segment에서도 사용자의 관심 주제와 관련된 다른 댓글 sequence가 생성된다.
+동시 표시 댓글 수 $$N_{user}$$를 2에서 3으로 높이면 선택된 댓글 수가 65개에서 96개로 증가했다. 또한 user-specified query $$q_{user}$$를 적용하면 동일한 video segment에서도 사용자의 관심 주제와 관련된 다른 댓글 sequence가 생성된다.
 
 ### 7.5 Implementation Cost
 
@@ -321,7 +321,7 @@ Friedman test 결과, 네 질문 모두에서 다섯 interface 간 유의미한 
 
 둘째, Sentence-BERT는 lexical overlap이 큰 댓글에 높은 similarity를 줄 수 있다. 그 결과 narration을 그대로 반복하는 댓글이 우선될 수 있고, 새로운 관점이나 다양한 해석이 덜 노출될 수 있다. 논문은 novelty term이나 diversity constraint를 향후 방향으로 제안한다.
 
-셋째, 정보 밀도가 높은 장면에서는 영상과 댓글을 동시에 처리하는 것이 cognitive overload를 만들 수 있다. 장면 복잡도에 따라 \(\alpha_{user}\)를 동적으로 조정하거나, shot boundary와 speech pause에 맞춰 댓글 표시 시점을 조정하는 방향이 필요하다.
+셋째, 정보 밀도가 높은 장면에서는 영상과 댓글을 동시에 처리하는 것이 cognitive overload를 만들 수 있다. 장면 복잡도에 따라 $$\alpha_{user}$$를 동적으로 조정하거나, shot boundary와 speech pause에 맞춰 댓글 표시 시점을 조정하는 방향이 필요하다.
 
 넷째, 댓글은 화면 하단에 표시되므로 subtitle이나 중요한 시각 정보와 겹칠 수 있다. Dynamic placement, summarization, keyword highlighting, eye-tracking 기반 주의 분산 분석이 후속 연구로 제시된다.
 

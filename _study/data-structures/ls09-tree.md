@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
+last_modified_at: 2026-09-03 19:35:19 +0900
 title: "LS09 Trees"
 course: "Data Structures"
 topic: "Trees"
@@ -155,14 +156,14 @@ inorder(v):
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 어떤 노드의 조상에는 부모 노드가 포함되는가?</summary>
 
 답변: 포함된다. 조상은 부모, 부모의 부모, 그 위의 모든 노드를 뜻한다. 따라서 어떤 노드의 바로 위 부모 노드는 가장 가까운 조상이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. complete binary tree이지만 perfect binary tree가 아닌 예를 직접 그려보자.</summary>
 
 답변: 마지막 레벨이 왼쪽부터 채워졌지만 전체가 꽉 차지는 않은 트리면 된다.
@@ -179,7 +180,7 @@ D
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 다음 방문 순서를 외워보자: preorder, postorder, inorder.</summary>
 
 답변: preorder는 Root - Left - Right, postorder는 Left - Right - Root, inorder는 Left - Root - Right다. 루트 방문이 앞이면 preorder, 가운데면 inorder, 뒤면 postorder로 기억하면 된다.
@@ -240,6 +241,21 @@ D
 | postorder | `D E B F C A` |
 
 중위 순회는 일반 이진 트리에서는 단순한 방문 순서일 뿐이다. 하지만 BST에서는 왼쪽이 작고 오른쪽이 크다는 조건 때문에 정렬된 출력이 된다.
+
+## 원문 수식 감사와 페이지 매핑
+
+Source PDF 29쪽 전체를 렌더링해 시각적으로 확인했다. **트리 본론에는 정리 형태의 수식이나 유도해야 할 공식이 없다.** 핵심은 계층 관계, 이진 트리 분류, 재귀 순회의 방문 순서다.
+
+| PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
+|---|---|---|
+| 1--9 | DLL·dictionary 복습, 평균 $$O(1)$$와 최악 $$O(n)$$ | 해시가 key를 고르게 분산하고 load가 제한된 경우 평균 상수 시간이며, 한 슬롯에 $$n$$개가 몰리면 최악 선형 시간이다. 이는 조건부 복잡도 주장이다. |
+| 10--17 | tree 정의·용어·linked 표현·binary tree | 구조 정의와 그림으로, proof-level 수식이 없다. 1--4절에 대응한다. |
+| 18 | $$(2(a-1))+(3b)$$ 산술 표현식 트리 | 연산자 우선순위를 트리로 표현한 **산술 예제**이지 일반 정리나 증명 대상 공식이 아니다. 5절에 대응한다. |
+| 19--21 | decision tree와 full·complete·perfect 분류 | 정의와 반례 그림으로 구분하며 수식 증명 대상이 없다. 5--6절에 대응한다. |
+| 22--27 | preorder·postorder·inorder | 방문 번호는 실행 추적값이며 공식이 아니다. 7--8절과 Traversal Example에 대응한다. |
+| 28--29 | heap preview와 BST 예고 | 구조 예고이며 증명 대상 수식이 없다. |
+
+복습 범위의 DLL 비용도 대상 노드 참조를 이미 알면 상수 개 링크만 바꿔 $$\Theta(1)$$이고, 먼저 찾아야 하면 최대 $$n$$개 노드를 방문해 $$\Theta(n)$$이다. 여기서 $$n$$은 노드 수를 나타내는 무차원 정수다. 이 조건 구분은 복습 복잡도를 설명하기 위한 작성자 보충이며, LS09 트리 본론에 새 공식을 추가한 것은 아니다.
 
 ## PDF
 

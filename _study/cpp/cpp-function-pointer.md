@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"
@@ -17,6 +18,17 @@ keywords:
 # C++ Function Pointers
 
 Source PDF: `C++ 함수포인터.pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 |
+|---:|---|---|
+| 1–4 | 함수 포인터 선언·호출, callback | 1–4절 |
+| 5–10 | `qsort`, `typedef`, `using`, `std::sort`, lambda | 5–10절 |
+| 11–12 | hook과 표준 callback | 11–13절 |
+| 13–14 | 수동 함수 포인터와 virtual/vtable 비교 | 14절 |
+
+14쪽 전체를 페이지 이미지로 대조했다. 이 자료의 괄호, 반환형, 매개변수 목록은 함수 타입을 나타내는 **C++ 선언 문법**이고, comparator의 음수·0·양수 반환은 API 계약이다. 강의의 결론이나 알고리즘이 의존하는 수학 공식은 없으므로 유도·증명을 추가하지 않고 코드 호출 흐름을 추적했다.
 
 > **핵심:** **함수 포인터** 함수 주소를 저장하고 나중에 호출할 수 있다. **콜백 함수** 동작을 함수 인자로 전달해 호출 시점과 동작 내용을 분리한다.
 
@@ -547,21 +559,21 @@ public:
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. `int (*op)(int, int)`는 어떻게 읽어야 하는가?</summary>
 
 답변: `op`는 `int` 두 개를 매개변수로 받고 `int`를 반환하는 함수를 가리키는 함수 포인터다. 괄호가 중요하며, `int *op(int, int)`처럼 쓰면 함수 포인터가 아니라 포인터를 반환하는 함수 선언처럼 해석될 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 콜백 함수는 왜 유용한가?</summary>
 
 답변: 함수의 실행 시점은 라이브러리나 다른 함수가 관리하되, 실제로 어떤 동작을 할지는 사용자 함수로 전달할 수 있기 때문이다. 예를 들어 `qsort`는 정렬 알고리즘은 고정하지만 비교 기준은 콜백 함수로 바꿀 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. C++의 `virtual` 함수와 함수 포인터는 어떤 관계로 이해할 수 있는가?</summary>
 
 답변: `virtual` 함수는 함수 포인터 기반 디스패치를 C++ 상속과 타입 시스템 안에 통합한 형태로 볼 수 있다. 컴파일러가 vtable에 가상 함수 주소를 저장하고, 런타임에 실제 객체 타입에 맞는 함수를 호출한다.

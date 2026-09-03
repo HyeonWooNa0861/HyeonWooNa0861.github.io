@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
+last_modified_at: 2026-09-03 19:49:35 +0900
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CS231N Lecture 11: Large Scale Distributed Training
 
 Source: [Stanford CS231N Spring 2025 Lecture 11](https://www.youtube.com/watch?v=9MvD-XsowsE){:target="_blank" rel="noopener"}
+
+Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lecture_11.pdf){:target="_blank" rel="noopener"}
 
 > **핵심:** 대규모 학습은 GPU 수를 늘리는 문제가 아니라 **연산, 메모리, 통신을 서로 다른 병렬화 축으로 분해하는 시스템 설계 문제**다. 가장 느린 데이터 이동 경로가 전체 처리량을 결정한다.
 
@@ -45,7 +48,7 @@ Tensor core는 작은 행렬 곱을 대량 병렬 수행하며, 보통 16-bit �
 
 ## 3. Data parallelism: 샘플을 나누고 gradient를 합친다
 
-전체 mini-batch 크기를 \(N\), GPU 수를 \(M\)이라 하면 각 GPU가 약 \(N/M\)개 샘플을 처리한다. 모든 GPU는 같은 parameter \(\theta\)를 보유하고 서로 다른 샘플에서 local gradient \(g_m\)을 계산한다. 동기식 update에 쓰는 평균 gradient는
+전체 mini-batch 크기를 $$N$$, GPU 수를 $$M$$이라 하면 각 GPU가 약 $$N/M$$개 샘플을 처리한다. 모든 GPU는 같은 parameter $$\theta$$를 보유하고 서로 다른 샘플에서 local gradient $$g_m$$을 계산한다. 동기식 update에 쓰는 평균 gradient는
 
 $$
 g=\frac{1}{M}\sum_{m=1}^{M}g_m
@@ -71,9 +74,21 @@ Pipeline parallelism은 연속된 layer 묶음을 여러 GPU에 배치한다. �
 
 ## 6. Tensor parallelism: 한 layer의 행렬 곱을 나눈다
 
-선형층 \(Y=XW\)에서 \(W\)를 열 방향으로 나누면 여러 GPU가 \(Y\)의 서로 다른 feature slice를 계산한다. 행 방향 분할에서는 partial result를 합치는 통신이 필요하다. Attention의 여러 head나 MLP의 큰 행렬을 이런 방식으로 나눌 수 있다.
+선형층 $$Y=XW$$에서 $$W$$를 열 방향으로 나누면 여러 GPU가 $$Y$$의 서로 다른 feature slice를 계산한다. 행 방향 분할에서는 partial result를 합치는 통신이 필요하다. Attention의 여러 head나 MLP의 큰 행렬을 이런 방식으로 나눌 수 있다.
 
 Tensor parallelism은 단일 layer조차 한 GPU에 들어가지 않을 때 유용하지만 layer마다 통신이 자주 발생한다. 그래서 보통 빠른 intra-server 연결 안에서 사용하고, data/pipeline parallelism과 조합한 다차원 병렬화를 구성한다.
+
+## 핵심 수식 유도
+
+### 작성자 보충: data-parallel gradient 평균
+
+Global batch $$B$$를 $$N$$개 worker의 disjoint batch $$B_n$$로 나누고 크기가 같다면
+
+$$
+\frac1{|B|}\sum_{x\in B}\nabla\ell(x)=\frac1N\sum_{n=1}^{N}\left(\frac1{|B_n|}\sum_{x\in B_n}\nabla\ell(x)\right).
+$$
+
+All-reduce 평균이 single-device global-batch gradient와 같은 이유를 보이는 **항등식**이다. Worker batch 크기가 다르면 sample-count weighted average가 필요하다. Gradient와 loss의 단위는 parameterization을 따르고 $$N$$은 무차원이다. 통신 지연, stale gradient, BatchNorm local statistics, floating-point reduction order 때문에 실제 trajectory는 완전히 같지 않을 수 있다.
 
 ## 마지막 핵심 정리
 
@@ -89,21 +104,36 @@ Tensor parallelism은 단일 layer조차 한 GPU에 들어가지 않을 때 유�
 
 ## 복습 질문
 
-<details><summary>1. Data parallelism의 all-reduce는 왜 필요한가?</summary>
+<details markdown="block"><summary>1. Data parallelism의 all-reduce는 왜 필요한가?</summary>
 
 답변: 각 GPU가 서로 다른 샘플에서 gradient를 계산하므로 그대로 update하면 replica가 달라진다. 평균 gradient를 모두에게 공유해야 단일 큰 batch와 같은 동기식 update가 된다.
 </details>
 
-<details><summary>2. Pipeline bubble은 무엇이며 어떻게 줄이는가?</summary>
+<details markdown="block"><summary>2. Pipeline bubble은 무엇이며 어떻게 줄이는가?</summary>
 
 답변: 일부 stage가 입력이나 gradient를 기다리며 쉬는 시간이다. Batch를 micro-batch로 나누어 여러 stage가 서로 다른 micro-batch를 동시에 처리하면 줄일 수 있다.
 </details>
 
-<details><summary>3. Tensor parallelism을 빠른 장치 간 연결 안에 두는 이유는?</summary>
+<details markdown="block"><summary>3. Tensor parallelism을 빠른 장치 간 연결 안에 두는 이유는?</summary>
 
 답변: layer마다 activation 또는 partial result를 자주 교환하므로 통신 빈도가 높기 때문이다. 느린 rack 간 network를 반복해서 넘으면 연산 이득이 사라진다.
 </details>
 
+## 원문 대조 기록
+
+공식 PDF **148쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
+
+| 원문 위치 | 확인한 내용 | 노트 대응 |
+|---|---|---|
+| PDF 4–29쪽 | H100 구조와 cluster hierarchy | 1–2절 |
+| PDF 30–70쪽 · 영상 00:28:35, 00:41:17 | data parallelism, FSDP, HSDP | 3–4절 |
+| PDF 71–102쪽 · 영상 00:53:29 | activation checkpointing과 memory/compute trade-off | 5절 |
+| PDF 103–113쪽 · 영상 00:58:10 | HFU와 MFU | 시스템 지표로 대조; 별도 수식 증명 대상 아님 |
+| PDF 114–145쪽 | context, pipeline, tensor parallelism | 5–6절 |
+
+병렬화 동작과 수치는 강의 원문 요약이다. Global-batch gradient와 all-reduce 평균의 동치, unequal batch caveat는 **작성자 보충**이다.
+
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=9MvD-XsowsE){:target="_blank" rel="noopener"}
+- [Official Lecture 11 slides](https://cs231n.stanford.edu/slides/2025/lecture_11.pdf){:target="_blank" rel="noopener"}

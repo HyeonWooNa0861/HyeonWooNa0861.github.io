@@ -18,7 +18,7 @@ permalink: /log/
     <dl class="index-stats">
       <div>
         <dt>Entries</dt>
-        <dd>{{ accession_entries | size }}</dd>
+        <dd>{{ accession_entries | size | escape }}</dd>
       </div>
     </dl>
   </header>
@@ -35,12 +35,12 @@ permalink: /log/
           {% assign accession_label = entry.section | default: "Post" | replace: "-", " " %}
         {% endif %}
         <li class="recent-work__item">
-          <a href="{{ entry.url | relative_url }}">
-            <span class="recent-work__number">{{ forloop.index | prepend: '000' | slice: -3, 3 }}</span>
-            <span class="recent-work__title">{{ entry.title }}</span>
+          <a href="{{ entry.url | relative_url | escape }}">
+            <span class="recent-work__number">{{ forloop.index | prepend: '000' | slice: -3, 3 | escape }}</span>
+            <span class="recent-work__title">{{ entry.title | escape }}</span>
             <span class="recent-work__meta">
-              {{ accession_label }} ·
-              <time datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: "%Y.%m.%d" }}</time>
+              {{ accession_label | escape }} ·
+              <time datetime="{{ entry.date | date_to_xmlschema | escape }}">{{ entry.date | date: "%Y.%m.%d" | escape }}</time>
             </span>
           </a>
         </li>

@@ -55,7 +55,7 @@ Dataset Pruning은 개별 sample 점수만으로 데이터를 고르는 대신, 
 
 ## 2. 방법
 
-논문은 training example을 제거했을 때 생기는 parameter change를 influence function으로 선형 근사한다. 모든 subset을 실제로 제거하고 재학습하는 것은 \(2^n\)번 학습이 필요하므로 불가능하다. 대신 영향 근사를 이용해 다음 형태의 문제를 푼다.
+논문은 training example을 제거했을 때 생기는 parameter change를 influence function으로 선형 근사한다. 모든 subset을 실제로 제거하고 재학습하는 것은 $$2^n$$번 학습이 필요하므로 불가능하다. 대신 영향 근사를 이용해 다음 형태의 문제를 푼다.
 
 | 요소 | 의미 |
 |---|---|

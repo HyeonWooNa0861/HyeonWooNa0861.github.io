@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:51:11 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 1: Transformer
 
 Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=Ub3GoFaUcds){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 첫 강의는 CME 295의 목표와 운영 방식을 소개한 뒤, LLM을 이해하기 위한 기본 NLP 문제들을 분류한다. 텍스트 입력에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 입력받아 텍스트를 생성하는 generation을 구분하고, sentiment extraction, NER, machine translation, question answering, summarization 같은 예를 든다.
 
@@ -55,6 +58,49 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 | Scaled dot-product attention | 강의 공식은 softmax(QK^T / sqrt(d_k))V이다. Q와 K의 dot product를 sqrt(d_k)로 나누어 scale을 조정한 뒤 value를 weighted sum한다. |
 | Label smoothing | 정답 label을 완전한 one-hot으로 두지 않고 1 - epsilon과 epsilon/(v - 1) 형태로 부드럽게 만들어 모델이 과도하게 확신하지 않도록 하는 기법이다. |
 
+## 수식 해설: scaled dot-product attention
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Perplexity의 확률 기반 의미 | 00:20:43–00:21:06 | 강의 원문은 metric의 의미와 방향을 설명하며, 아래 NLL 등가식은 작성자 보충 유도다. |
+| Label smoothing target | 01:25:45–01:27:26 | $$1-\varepsilon$$와 $$\varepsilon/(v-1)$$은 강의 원문에 나온다. 합·조건·한계 설명은 작성자 보충이다. |
+| Scaled dot-product attention과 $$\sqrt{d_k}$$ | 01:32:24–01:34:26 | 공식과 정규화 직관은 강의 원문이며, 독립·단위분산 가정의 계산은 작성자 보충 유도다. |
+
+Token 수를 $$n$$, key/query 차원을 $$d_k$$, value 차원을 $$d_v$$라 하면
+
+$$
+Q,K\in\mathbb{R}^{n\times d_k},\qquad
+V\in\mathbb{R}^{n\times d_v},
+$$
+
+$$
+\operatorname{Attention}(Q,K,V)
+=\operatorname{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
+$$
+
+이는 attention의 **정의**다. Softmax는 각 query 행의 score $$s_j$$에 대해 $$\alpha_j=e^{s_j}/\sum_\ell e^{s_\ell}$$를 계산하므로 $$\alpha_j\ge0$$, $$\sum_j\alpha_j=1$$이고 출력은 value의 convex combination이다. 모든 기호는 representation이므로 물리 단위는 없으며 $$n,d_k,d_v$$는 무차원 개수다.
+
+왜 $$\sqrt{d_k}$$로 나누는지는 분산으로 확인할 수 있다. 한 query와 key의 성분이 서로 독립이고 평균 0, 분산 1이라고 가정하면
+
+$$
+q^\top k=\sum_{r=1}^{d_k}q_rk_r,\qquad
+\operatorname{Var}(q^\top k)
+=\sum_{r=1}^{d_k}\operatorname{Var}(q_rk_r)=d_k.
+$$
+
+따라서 $$q^\top k/\sqrt{d_k}$$의 분산은 1이 된다. 이는 독립·단위분산 가정 아래의 **정확한 분산 계산**이며, 학습된 성분이 실제로 독립이라는 보장은 아니다. Scale이 없고 score magnitude가 커지면 softmax가 포화되어 gradient가 작아질 수 있다는 것이 설계 직관이다.
+
+Label smoothing의 $$1-\varepsilon$$, $$\varepsilon/(v-1)$$은 합이 1이 되도록 만든 target distribution의 정의다. $$0\le\varepsilon\le1$$, vocabulary size $$v>1$$이 필요하며, smoothing이 calibration을 항상 개선한다는 주장은 데이터·모델에 의존하는 경험적 효과이지 이 식만으로 증명되지 않는다.
+
+Token sequence의 평균 negative log-likelihood가 $$\overline{\mathcal L}=-(1/T)\sum_{t=1}^{T}\log p(x_t\mid x_{<t})$$이면 perplexity는
+
+$$
+PPL=e^{\overline{\mathcal L}}
+=\left(\prod_{t=1}^{T}\frac{1}{p(x_t\mid x_{<t})}\right)^{1/T}
+$$
+
+다. 두 번째 등식은 $$\exp(\sum\log a_t/T)=(\prod a_t)^{1/T}$$에서 나온다. 이는 동일 tokenizer와 evaluation tokenization에서의 정확한 metric 정의다. Tokenizer와 data distribution이 다르면 perplexity를 직접 비교하기 어렵고, 낮은 perplexity가 factuality나 usefulness를 보장하지 않는다.
+
 ## 학습 포인트
 
 - NLP 작업은 강의에서 classification, multi-classification, generation 세 범주로 정리된다.
@@ -81,35 +127,35 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 왜 word-level tokenization은 OOV 문제가 크고, subword tokenization은 이를 완화하는가?</summary>
 
 답변: Word-level은 training time에 본 단어 전체가 vocabulary에 있어야 하므로 unseen word가 unknown token이 되기 쉽다. Subword는 bear/bears처럼 공통 어근이나 조각을 공유해 unseen word도 더 작은 단위로 표현할 가능성이 높다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. One-hot encoding이 의미 유사도를 표현하기 어려운 이유는 무엇인가?</summary>
 
 답변: 서로 다른 token의 one-hot vector는 대부분 직교하므로 dot product나 cosine similarity가 의미적 가까움을 반영하지 않는다. Teddy bear와 soft처럼 관련 있는 단어도 기본적으로 독립적인 축으로 표현된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. RNN이 긴 sequence에서 어려움을 겪는 주된 이유는 무엇인가?</summary>
 
 답변: 마지막 예측을 위해 이전 hidden state들이 순차적으로 연결되고, backpropagation through time에서 많은 항을 곱하면서 gradient가 0에 가까워지거나 폭주할 수 있다. 이로 인해 long-range dependency를 기억하기 어렵고 계산도 느리다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Self-attention에서 query, key, value는 각각 어떤 역할을 하는가?</summary>
 
 답변: Query는 현재 token이 어떤 다른 token과 관련 있는지 묻는 vector이고, key는 similarity 비교 대상이며, value는 similarity weight를 적용해 실제로 합산되는 vector다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Transformer decoder에서 masked self-attention이 필요한 이유는 무엇인가?</summary>
 
 답변: Decoder는 아직 생성되지 않은 미래 token을 알 수 없으므로, 현재 token은 자기 자신과 이전에 생성된 token까지만 attend해야 한다. Mask는 미래 방향의 attention을 막는다.

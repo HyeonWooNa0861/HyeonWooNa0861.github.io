@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 10:51:57 +0900
+last_modified_at: 2026-09-03 19:42:41 +0900
 title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"
@@ -17,6 +18,18 @@ keywords:
 # C++ Templates
 
 Source PDF: `C++ 템플릿.pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
+|---:|---|---|---|
+| 1–6 | 코드 중복, 함수 template, 추론·명시 지정, instantiation, 여러 매개변수 | 1–5절 | compile-time code 생성 규칙 중심 |
+| 7–8 | class template와 `Stack<T>` | 6절 | 자료구조·API 예제이며 별도 수학식 없음 |
+| 9–10 | `Vector<T,N>`, `Matrix<T,R,C>`, 타입 별칭 | 7–8절 | $$N,R,C$$는 compile-time 차원·원소 개수; 단위 없는 정수 |
+| 11 | `Matrix * Vector`, `Vector * Matrix` | 행렬·벡터 곱 보충 해설 | **핵심 성분식**: 차원 조건과 합의 정의를 아래에서 명시 |
+| 12 | 전체 요약 | 마지막 핵심 정리 | 새로운 수식 없음 |
+
+12쪽 전체를 페이지 이미지로 대조했다. 중요 수학 관계는 11쪽의 두 행렬·벡터 곱뿐이며 아래에서 성분식, 결과 차원, 실패 조건을 설명한다. `template<typename T>`, `operator()`, `using`은 C++ 문법과 API 설계이므로 수학적 증명을 덧붙이지 않았다.
 
 > **핵심:** **템플릿** 타입을 매개변수처럼 받는 코드의 틀. **함수 템플릿** 타입만 다른 함수 중복을 줄임.
 
@@ -983,6 +996,18 @@ render(c); // 가능
 
 템플릿은 편리하지만 컴파일러가 만들어내는 코드가 많아질 수 있고, 오류 메시지가 길어질 수 있다. 따라서 처음에는 단순한 함수 템플릿과 클래스 템플릿부터 익히는 것이 좋다.
 
+## 행렬·벡터 곱의 차원과 성분식
+
+> **작성자 보충:** 슬라이드 11의 `Matrix * Vector` 코드를 선형대수의 성분식과 차원 조건으로 풀어 쓴 해설이다. 아래 식과 실패 조건은 슬라이드에 그대로 제시된 증명이 아니라 코드의 의미를 명시하기 위해 추가했다.
+
+슬라이드 11의 `Matrix * Vector`는 단순 연산자 문법이 아니라 선형대수의 **정의**를 타입으로 보존한 예다. $$A\in T^{R\times C}$$, $$v\in T^C$$이면 결과 $$y\in T^R$$의 각 성분은
+
+$$
+y_i=\sum_{j=0}^{C-1}A_{ij}v_j,\qquad 0\le i<R.
+$$
+
+반대로 row vector $$u\in T^R$$와 $$A$$의 곱은 $$z_j=\sum_{i=0}^{R-1}u_iA_{ij}$$이고 결과 차원은 $$C$$다. 내부 합의 길이가 같아야 하므로 template signature가 잘못된 차원의 곱을 compile time에 거부할 수 있다. $$R,C,i,j$$는 무차원 크기/index다. 이 유도는 $$T$$가 덧셈과 곱셈을 지원한다는 가정이 필요하며, 정수 $$T$$에서는 overflow, floating-point $$T$$에서는 누적 반올림 오차가 생길 수 있다.
+
 ## 마지막 핵심 정리
 
 | 개념 | 꼭 기억할 점 |
@@ -1015,56 +1040,56 @@ render(c); // 가능
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 템플릿은 왜 필요한가?</summary>
 
 답변: 템플릿은 타입만 다르고 구조가 같은 코드를 하나의 틀로 작성하기 위해 필요하다. `int`, `double`, `std::string` 등 여러 타입에 대해 같은 로직을 반복 작성하지 않아도 되므로 중복을 줄이고 유지보수를 쉽게 만든다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 함수 템플릿은 언제 실제 함수가 되는가?</summary>
 
 답변: 함수 템플릿은 정의만으로는 실제 함수가 아니다. <code>max_value(3, 5)</code>처럼 특정 타입으로 호출될 때 컴파일러가 <code>max_value&lt;int&gt;</code> 같은 구체적인 함수를 생성한다. 이 과정을 인스턴스화라고 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. <code>template &lt;typename T&gt;</code>와 <code>template &lt;class T&gt;</code>는 다른가?</summary>
 
 답변: 타입 매개변수를 선언하는 문맥에서는 거의 같은 의미다. 둘 다 <code>T</code>가 어떤 타입을 대표한다는 뜻이다. 현대 C++에서는 의미가 더 직접적인 <code>typename</code>을 선호하는 경우가 많지만, <code>class</code>도 여전히 사용할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. 비타입 템플릿 매개변수에서 <code>Vector&lt;int, 3&gt;</code>의 <code>3</code>은 무엇을 의미하는가?</summary>
 
 답변: <code>3</code>은 생성자에 전달되는 런타임 값이 아니라 컴파일 타임에 정해지는 템플릿 인자다. 따라서 <code>Vector&lt;int, 3&gt;</code>은 <code>int</code> 원소 3개를 가지는 벡터 타입이고, <code>Vector&lt;int, 4&gt;</code>와는 서로 다른 타입이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. 템플릿 정의를 헤더에 두는 이유는 무엇인가?</summary>
 
 답변: 컴파일러가 템플릿을 실제 타입으로 인스턴스화하려면 템플릿의 선언뿐 아니라 함수 본문이나 클래스 멤버 함수 정의까지 볼 수 있어야 한다. 그래서 템플릿은 보통 `.cpp`에 숨기지 않고 헤더에 정의까지 함께 작성한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. 템플릿과 가상 함수의 차이는 무엇인가?</summary>
 
 답변: 템플릿은 컴파일 타임에 타입별 코드를 생성하는 정적 다형성이다. 가상 함수는 런타임에 실제 객체 타입을 보고 호출 함수를 결정하는 동적 다형성이다. 템플릿은 상속 관계가 없어도 사용할 수 있지만, 필요한 연산이나 멤버 함수가 타입에 존재해야 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. <code>cpp_template.cpp</code>에서 <code>T&amp; operator()(int i)</code>가 참조를 반환하는 이유는 무엇인가?</summary>
 
 답변: <code>v(0) = 3</code>처럼 원소에 값을 대입하려면 <code>v(0)</code>이 실제 배열 원소를 가리키는 왼쪽 값이어야 한다. <code>T&amp;</code>를 반환하면 <code>data[i]</code>의 참조가 반환되므로 대입이 가능하다. 만약 <code>T</code>를 값으로 반환하면 복사본이 반환되어 원소 수정에 사용할 수 없다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. <code>operator&lt;&lt;</code> 함수도 <code>template&lt;typename T, int N&gt;</code>으로 작성한 이유는 무엇인가?</summary>
 
 답변: 출력 함수가 <code>Vector&lt;int, 3&gt;</code>만 출력하는 것이 아니라 <code>Vector&lt;float, 2&gt;</code>, <code>Vector&lt;std::string, 3&gt;</code>처럼 타입과 크기가 다른 모든 <code>Vector&lt;T, N&gt;</code>을 출력해야 하기 때문이다. 그래서 클래스 템플릿과 같은 템플릿 매개변수 <code>T</code>, <code>N</code>을 받아 전역 함수 템플릿으로 작성한다.

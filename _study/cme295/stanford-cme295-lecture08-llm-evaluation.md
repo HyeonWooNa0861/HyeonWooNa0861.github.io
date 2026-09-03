@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 8: LLM Evaluation
 
 Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 이 강의는 LLM 평가를 출력 품질 평가로 좁혀 정의한다. LLM은 자연어, 코드, 수학 reasoning 등 자유 형식 출력을 만들기 때문에 보편적 지표를 만들기 어렵다.
 
@@ -55,6 +58,65 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 | tau-bench | airline과 retail 도메인에서 tools, policies, simulated user를 이용해 agent가 task를 일관되게 완료하는지 평가하는 benchmark다. |
 | Goodhart's law | 측정값이 목표가 되면 좋은 측정값이 아니게 된다는 법칙으로, benchmark 최적화가 실제 사용 품질을 대체할 수 없음을 경고한다. |
 
+## 수식 해설: agreement, text metric, reliability
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Chance agreement와 Cohen's kappa | 00:08:22–00:16:49 | 우연 일치 baseline과 kappa 해석은 강의 원문이며, 정의역·prevalence 한계는 작성자 보충이다. |
+| METEOR | 00:21:06–00:25:06 | Weighted harmonic mean과 fragmentation penalty의 구성은 강의 원문이며, 아래 완전한 식과 zero-match 처리는 작성자 보충이다. |
+| BLEU와 brevity penalty | 00:25:16–00:26:13 | N-gram precision과 brevity penalty의 역할은 강의 원문이며, piecewise 식·empty-candidate 처리는 작성자 보충이다. |
+| Weighted factuality | 00:54:15–00:59:49 | Fact 분해와 aggregation 흐름은 강의 원문이며, binary weighted-score 식과 경계 조건은 작성자 보충이다. |
+| All-pass reliability | 01:43:42–01:45:08 | pass-hat-k가 모든 시행의 성공을 묻는다는 설명은 강의 원문이며, 독립 시행의 $$p^k$$ 유도와 가정은 작성자 보충이다. |
+
+두 rater의 observed agreement를 $$p_o$$, 각 label marginal로 계산한 chance agreement를 $$p_e$$라 하면 Cohen's kappa는
+
+$$
+\kappa=\frac{p_o-p_e}{1-p_e}.
+$$
+
+이는 chance baseline $$p_e$$부터 perfect agreement 1까지 남은 간격 중 실제로 얼마나 개선했는지 나타내는 **정의**다. $$p_e=1$$이면 분모가 0이라 정의되지 않는다. Kappa가 낮다고 반드시 rater가 나쁘다는 뜻은 아니며 label prevalence가 극단적이면 값이 민감하게 변한다.
+
+METEOR에서 matched unigram 수를 $$m$$, prediction/reference 길이를 $$h,r$$라 하면 $$P=m/h$$, $$R=m/r$$다. 강의의 variable-weight harmonic mean과 ordering penalty를 한 convention으로 쓰면
+
+$$
+F_{\alpha}=\frac{PR}{\alpha P+(1-\alpha)R},
+\qquad 0\le\alpha\le1,
+$$
+
+$$
+Penalty=\gamma\left(\frac{c}{m}\right)^{\beta},
+\qquad
+METEOR=(1-Penalty)F_{\alpha},
+$$
+
+이다. $$c$$는 alignment에서 순서가 이어지는 matched chunk 수이고 보통 $$\gamma\in[0,1]$$, $$\beta>0$$를 둔다. 같은 $$m$$이라도 fragment가 많아 $$c/m$$이 크면 ordering penalty가 커진다. $$m=0$$이면 $$c/m$$과 harmonic mean이 정의되지 않으므로 score를 0으로 정하는 명시적 branch가 필요하며, 빈 prediction/reference 처리와 stemming·synonym matching은 구현 convention이다. 이 완전한 식과 edge-case는 강의 설명을 옮긴 **작성자 보충**이고, hyperparameter 선택이 semantic equivalence를 증명하지 않는다.
+
+BLEU의 corpus-level 대표식은 modified n-gram precision $$p_n$$과 brevity penalty $$BP$$를 사용한다.
+
+$$
+BLEU=\begin{cases}
+0,&c=0,\\
+BP\exp\left(\displaystyle\sum_{n=1}^{N}w_n\log p_n\right),&c>0,
+\end{cases}
+\qquad
+BP=\begin{cases}
+1,&c>r,\\
+e^{1-r/c},&0<c\le r.
+\end{cases}
+$$
+
+여기서 $$c,r\ge0$$은 candidate/reference 길이, $$w_n\ge0$$, $$\sum_nw_n=1$$이다. Empty candidate인 $$c=0$$에서는 modified precision $$p_n$$ 자체가 $$0/0$$ 꼴로 정의되지 않을 수 있으므로, **precision과 logarithm을 평가하기 전에** 전체 $$BLEU$$를 0으로 정한다. 지수항과 $$BP$$는 $$c>0$$인 branch에서만 계산하므로 $$r/c$$나 $$\log p_n$$의 정의되지 않은 값을 $$0$$에 곱하는 방식이 아니다. 이는 metric의 명시적 convention이며 semantic equivalence를 증명하지 않는다. $$c>0$$이어도 어떤 $$p_n=0$$이면 unsmoothed corpus BLEU는 0으로 처리하고, smoothing 여부에 따라 sentence-level 결과가 크게 달라질 수 있다.
+
+반복 실행에서 한 번의 성공확률이 $$p$$이고 각 trial이 독립이면, $$k$$번 모두 성공하는 reliability는
+
+$$
+P(\text{all }k\text{ pass})=p^k,
+$$
+
+적어도 한 번 성공할 확률은 $$1-(1-p)^k$$다. 두 지표는 정반대 질문에 답한다. Agent benchmark에서 반복할수록 all-pass reliability가 낮아지는 것은 곱셈 법칙의 결과지만, trial이 독립·동일분포가 아니면 $$p^k$$를 그대로 사용할 수 없다.
+
+Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있다. $$z_i\in\{0,1\}$$, $$w_i\ge0$$, $$\sum_iw_i>0$$이면 $$S\in[0,1]$$인 것은 정확하지만, fact 분해와 weight 자체는 evaluator 설계에 의존한다. 모든 weight가 0이면 분모도 0이라 score가 정의되지 않는다. LLM-as-a-Judge 점수는 경험적 proxy이므로 수학식이 bias 제거를 보장하지 않는다.
+
 ## 학습 포인트
 
 - LLM output quality 평가는 자유 형식 텍스트를 다루기 때문에 보편적인 단일 metric을 만들기 어렵다.
@@ -80,35 +142,35 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. agreement rate만으로 inter-rater agreement를 평가하면 왜 문제가 되는가?</summary>
 
 답변: 두 평가자가 무작위로 답해도 일정 비율은 일치한다. 예를 들어 둘 다 0.5 확률로 1 또는 0을 고르면 우연 agreement rate가 0.5가 되므로, 관측 일치를 chance baseline과 비교해야 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. METEOR와 BLEU의 공통 한계는 무엇인가?</summary>
 
 답변: 둘 다 reference와 prediction의 token 또는 n-gram matching에 크게 의존하므로, 의미는 같지만 표현이 다른 자연어 응답을 낮게 평가할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. LLM-as-a-Judge에서 rationale을 score보다 먼저 출력하게 하는 이유는 무엇인가?</summary>
 
 답변: 모델이 평가 근거를 먼저 verbalize하면 reasoning model이 답 전에 reasoning chain을 만드는 것과 비슷하게, score 품질이 경험적으로 좋아질 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. factuality를 평가할 때 답변 전체를 하나의 binary label로 처리하지 않는 이유는 무엇인가?</summary>
 
 답변: 한 답변 안에는 여러 사실이 있고 일부만 틀릴 수 있다. fact extraction, 개별 fact checking, 중요도 가중 aggregation을 쓰면 부분 오류의 정도를 더 잘 반영할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. tau-bench에서 pass_hat_k가 중요한 이유는 무엇인가?</summary>
 
 답변: agent는 한 번만 성공하는 것보다 반복 실행에서 모두 성공하는 reliability와 consistency가 중요하다. 그래서 k번 시도 중 하나라도 성공하는 pass@k보다 모든 시도가 성공할 확률을 본다.

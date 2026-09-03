@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
+last_modified_at: 2026-09-03 19:42:25 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -34,7 +35,20 @@ Source PDF: `machine-learning-basic-lecture-16.pdf`
 | 8 | Nested Cross Validation | model selection 과정에서 test leakage를 어떻게 막는가? |
 | 9 | Occam's razor | Bayesian model comparison은 단순한 모델을 왜 선호할 수 있는가? |
 
-16강은 15강에서 정리한 ERM, regularization, MLE, MAP를 확률적 모델링이라는 더 큰 틀로 확장한다. 핵심은 모델을 단순히 하나의 함수 \(f_\theta(x)\)로 보지 않고, 관측의 noise, parameter의 불확실성, 잠재 변수, 모델 후보의 선택까지 확률분포로 표현하는 것이다.
+16강은 15강에서 정리한 ERM, regularization, MLE, MAP를 확률적 모델링이라는 더 큰 틀로 확장한다. 핵심은 모델을 단순히 하나의 함수 $$f_\theta(x)$$로 보지 않고, 관측의 noise, parameter의 불확실성, 잠재 변수, 모델 후보의 선택까지 확률분포로 표현하는 것이다.
+
+### 원문 수식 추적표
+
+| PDF 페이지 | 중요 모델·수식 | 본문 대응 |
+|---:|---|---|
+| 2–5 | ERM과 regularized empirical risk | 1, 2 |
+| 6–8 | likelihood, MLE, Bayes 공식과 MAP objective | 3, 4, 18.1 |
+| 9–10 | observation/model/prediction uncertainty와 posterior predictive 적분 | 5–8 |
+| 11–13 | latent variable marginalization과 evidence | 9–11, 18.3 |
+| 14–15 | DGM factorization과 Bernoulli 예시 | 12, 13, 18.2 |
+| 16–18 | model selection, nested CV, Bayesian model comparison | 14–17, 18.3 |
+
+페이지 19는 Q&A 마무리이다. Evidence의 복잡도 penalty는 해석이지 “항상 더 단순한 모델이 승리한다”는 정리가 아니며, prior와 model class에 의존한다.
 
 ## 1. ERM 복습: 데이터를 잘 설명하는 함수 찾기
 
@@ -45,9 +59,9 @@ $$
 =\{(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N)\}
 $$
 
-목표는 입력 \(x\)가 주어졌을 때 출력 \(y\)를 잘 예측하는 함수 \(f(x,\theta)\)를 찾는 것이다. 여기서 \(\theta\)는 모델의 parameter다.
+목표는 입력 $$x$$가 주어졌을 때 출력 $$y$$를 잘 예측하는 함수 $$f(x,\theta)$$를 찾는 것이다. 여기서 $$\theta$$는 모델의 parameter다.
 
-각 sample에 대해 예측값 \(f(x_i,\theta)\)와 실제 label \(y_i\)가 얼마나 다른지 측정하는 함수를 loss function이라고 한다.
+각 sample에 대해 예측값 $$f(x_i,\theta)$$와 실제 label $$y_i$$가 얼마나 다른지 측정하는 함수를 loss function이라고 한다.
 
 $$
 \ell(f(x_i,\theta),y_i)
@@ -96,11 +110,11 @@ $$
 +\lambda\lVert\theta\rVert^2
 $$
 
-여기서 \(\lambda\)는 regularization strength다. \(\lambda\)가 작으면 penalty가 약해서 overfitting을 충분히 막지 못할 수 있고, 너무 크면 모델이 데이터의 실제 패턴도 못 따라가는 underfitting이 생길 수 있다.
+여기서 $$\lambda$$는 regularization strength다. $$\lambda$$가 작으면 penalty가 약해서 overfitting을 충분히 막지 못할 수 있고, 너무 크면 모델이 데이터의 실제 패턴도 못 따라가는 underfitting이 생길 수 있다.
 
 ## 3. 변수 추정: 확률분포로 예측할 때
 
-예측값을 하나의 숫자로만 내는 것이 아니라 확률분포로 모델링하면 parameter estimation 관점이 필요하다. 데이터가 어떤 확률분포에서 생성되었다고 보고, 그 분포의 parameter \(\theta\)를 추정하는 방식이다.
+예측값을 하나의 숫자로만 내는 것이 아니라 확률분포로 모델링하면 parameter estimation 관점이 필요하다. 데이터가 어떤 확률분포에서 생성되었다고 보고, 그 분포의 parameter $$\theta$$를 추정하는 방식이다.
 
 Maximum Likelihood Estimation(MLE)은 관측된 데이터가 가장 그럴듯해지는 parameter를 고른다.
 
@@ -147,7 +161,7 @@ p(\theta\mid x)
 \frac{p(x\mid\theta)p(\theta)}{p(x)}
 $$
 
-Parameter \(\theta\)를 고르는 문제에서는 \(p(x)\)가 \(\theta\)에 대해 constant이므로 다음 비례식만 보면 된다.
+Parameter $$\theta$$를 고르는 문제에서는 $$p(x)$$가 $$\theta$$에 대해 constant이므로 다음 비례식만 보면 된다.
 
 $$
 p(\theta\mid x)
@@ -185,7 +199,7 @@ $$
 -\log p(\theta)
 $$
 
-여기서 \(-\log p(\theta)\)는 regularization penalty처럼 작동한다. 예를 들어 \(\theta\)에 zero-mean Gaussian prior를 두면 \(-\log p(\theta)\)가 \(\lVert\theta\rVert^2\)에 비례하므로 L2 regularization과 같은 형태가 된다.
+여기서 $$-\log p(\theta)$$는 regularization penalty처럼 작동한다. 예를 들어 $$\theta$$에 zero-mean Gaussian prior를 두면 $$-\log p(\theta)$$가 $$\lVert\theta\rVert^2$$에 비례하므로 L2 regularization과 같은 형태가 된다.
 
 ## 5. 왜 확률적 모델링을 배우는가
 
@@ -206,9 +220,9 @@ $$
 
 | level | 의미 | 대표 표현 |
 |---|---|---|
-| Observation uncertainty | 같은 입력에서도 관측값이 noise 때문에 흔들릴 수 있다. | \(y_n=x_n^T\theta+\epsilon\) |
-| Model uncertainty | 데이터가 부족하면 parameter나 모델 자체에 대한 확신이 낮다. | \(p(\theta)\), \(p(\theta\mid\mathcal{D})\) |
-| Predictive uncertainty | 새 입력에 대해 가능한 출력의 분포를 계산한다. | \(p(y_*\mid x_*,\mathcal{D})\) |
+| Observation uncertainty | 같은 입력에서도 관측값이 noise 때문에 흔들릴 수 있다. | $$y_n=x_n^T\theta+\epsilon$$ |
+| Model uncertainty | 데이터가 부족하면 parameter나 모델 자체에 대한 확신이 낮다. | $$p(\theta)$$, $$p(\theta\mid\mathcal{D})$$ |
+| Predictive uncertainty | 새 입력에 대해 가능한 출력의 분포를 계산한다. | $$p(y_*\mid x_*,\mathcal{D})$$ |
 
 Observation uncertainty는 데이터 측정 과정의 noise를 다룬다. Model uncertainty는 parameter를 하나의 점 추정값으로 고정하지 않고 분포로 다룬다. Predictive uncertainty는 이 둘을 반영해 새로운 입력에 대한 예측 분포를 만든다.
 
@@ -236,17 +250,17 @@ p(y_n\mid x_n,\theta)
 \mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)
 $$
 
-이 모델에서 \(\sigma^2\)는 관측 noise의 크기를 나타낸다. \(\sigma^2\)가 작으면 같은 \(x_n\)에서 \(y_n\)이 모델 예측 주변에 좁게 모인다고 보는 것이고, \(\sigma^2\)가 크면 관측값이 더 넓게 흔들릴 수 있다고 보는 것이다.
+이 모델에서 $$\sigma^2$$는 관측 noise의 크기를 나타낸다. $$\sigma^2$$가 작으면 같은 $$x_n$$에서 $$y_n$$이 모델 예측 주변에 좁게 모인다고 보는 것이고, $$\sigma^2$$가 크면 관측값이 더 넓게 흔들릴 수 있다고 보는 것이다.
 
 ## 8. Model Uncertainty와 Bayesian Prediction
 
-MLE나 일반적인 ERM은 보통 하나의 parameter \(\hat{\theta}\)를 고른다. 그러나 데이터가 적거나 noise가 크면 여러 parameter가 비슷하게 그럴듯할 수 있다. Bayesian 관점에서는 parameter 자체를 확률변수처럼 두고 posterior를 계산한다.
+MLE나 일반적인 ERM은 보통 하나의 parameter $$\hat{\theta}$$를 고른다. 그러나 데이터가 적거나 noise가 크면 여러 parameter가 비슷하게 그럴듯할 수 있다. Bayesian 관점에서는 parameter 자체를 확률변수처럼 두고 posterior를 계산한다.
 
 $$
 p(\theta\mid\mathcal{D})
 $$
 
-새로운 입력 \(x_*\)에 대한 예측은 특정 parameter 하나에만 의존하지 않고 가능한 모든 parameter에 대해 평균낸다.
+새로운 입력 $$x_*$$에 대한 예측은 특정 parameter 하나에만 의존하지 않고 가능한 모든 parameter에 대해 평균낸다.
 
 $$
 p(y_*\mid x_*,\mathcal{D})
@@ -257,13 +271,13 @@ p(\theta\mid\mathcal{D})
 d\theta
 $$
 
-이 식은 Bayesian prediction의 핵심이다. \(\theta\)가 확실하면 posterior가 좁아져 거의 하나의 모델로 예측하는 것과 비슷해지고, \(\theta\)가 불확실하면 여러 가능한 모델의 예측이 함께 반영된다.
+이 식은 Bayesian prediction의 핵심이다. $$\theta$$가 확실하면 posterior가 좁아져 거의 하나의 모델로 예측하는 것과 비슷해지고, $$\theta$$가 불확실하면 여러 가능한 모델의 예측이 함께 반영된다.
 
 실제 딥러닝에서는 이 적분을 정확히 계산하기 어렵기 때문에 다음과 같은 근사를 사용한다.
 
 | 방법 | 직관 |
 |---|---|
-| Point estimate | \(p(\theta\mid\mathcal{D})\)를 하나의 \(\hat{\theta}\)로 근사한다. |
+| Point estimate | $$p(\theta\mid\mathcal{D})$$를 하나의 $$\hat{\theta}$$로 근사한다. |
 | Deep Ensemble | 여러 모델을 학습해 parameter 불확실성을 경험적으로 근사한다. |
 | Variational Inference | 다루기 쉬운 분포로 posterior를 근사한다. |
 
@@ -287,7 +301,7 @@ z
 \text{Marvel fan}
 $$
 
-이 \(z\)는 데이터에 직접 적혀 있지 않지만, 클릭 패턴을 설명하고 다음에 어떤 영상을 추천할지 예측하는 데 중요하다. 머신러닝에서는 이처럼 보이지 않는 구조를 모델 안에 넣어 관측 데이터를 더 잘 설명하려고 한다.
+이 $$z$$는 데이터에 직접 적혀 있지 않지만, 클릭 패턴을 설명하고 다음에 어떤 영상을 추천할지 예측하는 데 중요하다. 머신러닝에서는 이처럼 보이지 않는 구조를 모델 안에 넣어 관측 데이터를 더 잘 설명하려고 한다.
 
 ## 10. 동전 던지기에서의 잠재 변수
 
@@ -297,7 +311,7 @@ $$
 x_n\in\{0,1\}
 $$
 
-하지만 앞으로 앞면이 얼마나 자주 나올지 예측하려면 숨은 값인 앞면 확률 \(\mu\)를 알아야 한다.
+하지만 앞으로 앞면이 얼마나 자주 나올지 예측하려면 숨은 값인 앞면 확률 $$\mu$$를 알아야 한다.
 
 $$
 \mu
@@ -305,11 +319,11 @@ $$
 P(x=1)
 $$
 
-이때 \(\mu\)는 직접 관측되는 값이 아니라 관측된 던지기 결과로부터 추정해야 하는 latent variable 또는 parameter로 볼 수 있다. 동전이 공정한지 아닌지, 앞면이 나올 확률이 어느 정도인지가 바로 데이터 뒤의 숨은 규칙이다.
+이때 $$\mu$$는 직접 관측되는 값이 아니라 관측된 던지기 결과로부터 추정해야 하는 latent variable 또는 parameter로 볼 수 있다. 동전이 공정한지 아닌지, 앞면이 나올 확률이 어느 정도인지가 바로 데이터 뒤의 숨은 규칙이다.
 
 ## 11. 잠재 변수를 이용한 예측과 Evidence
 
-잠재 변수 또는 parameter \(\theta\)를 명시적으로 두면 예측 분포는 다음처럼 쓴다.
+잠재 변수 또는 parameter $$\theta$$를 명시적으로 두면 예측 분포는 다음처럼 쓴다.
 
 $$
 p(y_*\mid x_*,\mathcal{D})
@@ -320,7 +334,7 @@ p(\theta\mid\mathcal{D})
 d\theta
 $$
 
-계산이 어려우면 posterior 전체를 쓰지 않고 하나의 대표값 \(\hat{\theta}\)로 근사하기도 한다.
+계산이 어려우면 posterior 전체를 쓰지 않고 하나의 대표값 $$\hat{\theta}$$로 근사하기도 한다.
 
 $$
 p(y_*\mid x_*,\mathcal{D})
@@ -345,7 +359,7 @@ Evidence는 가능한 parameter 전체에 대해 likelihood를 prior로 가중 �
 
 Directed Graphical Model(DGM)은 확률변수들 사이의 조건부 의존 관계를 방향성이 있는 그래프로 표현한 확률 모델이다. 그래프의 node는 확률변수이고, arrow는 조건부 의존 관계를 나타낸다.
 
-세 변수 \(a,b,c\)가 fully connected 형태로 의존한다고 하면 joint distribution은 chain rule로 다음처럼 분해할 수 있다.
+세 변수 $$a,b,c$$가 fully connected 형태로 의존한다고 하면 joint distribution은 chain rule로 다음처럼 분해할 수 있다.
 
 $$
 p(a,b,c)
@@ -353,7 +367,7 @@ p(a,b,c)
 p(c\mid a,b)p(b\mid a)p(a)
 $$
 
-그래프가 fully connected가 아니면 joint distribution은 더 단순하게 factorization된다. 예를 들어 \(x_1,x_2,x_3,x_4,x_5\)의 관계가 일부 arrow만 가진다면 다음처럼 쓸 수 있다.
+그래프가 fully connected가 아니면 joint distribution은 더 단순하게 factorization된다. 예를 들어 $$x_1,x_2,x_3,x_4,x_5$$의 관계가 일부 arrow만 가진다면 다음처럼 쓸 수 있다.
 
 $$
 p(x_1,x_2,x_3,x_4,x_5)
@@ -367,7 +381,7 @@ DGM의 장점은 복잡한 joint distribution을 작은 conditional distribution
 
 ## 13. DGM 예시: 동전 던지기
 
-동전 던지기에서 앞면이 나올 확률을 \(\mu\)라고 하자.
+동전 던지기에서 앞면이 나올 확률을 $$\mu$$라고 하자.
 
 $$
 p(x\mid\mu)
@@ -375,7 +389,7 @@ p(x\mid\mu)
 \operatorname{Ber}(\mu)
 $$
 
-\(N\)번 독립적으로 동전을 던졌다면 likelihood는 다음처럼 곱으로 분해된다.
+$$N$$번 독립적으로 동전을 던졌다면 likelihood는 다음처럼 곱으로 분해된다.
 
 $$
 p(x_1,\ldots,x_N\mid\mu)
@@ -384,13 +398,13 @@ p(x_1,\ldots,x_N\mid\mu)
 p(x_n\mid\mu)
 $$
 
-그래프로 보면 \(\mu\)가 각 관측값 \(x_1,\ldots,x_N\)을 생성하는 부모 node가 된다. Bayesian 모델에서는 \(\mu\) 자체에도 prior를 둘 수 있다.
+그래프로 보면 $$\mu$$가 각 관측값 $$x_1,\ldots,x_N$$을 생성하는 부모 node가 된다. Bayesian 모델에서는 $$\mu$$ 자체에도 prior를 둘 수 있다.
 
 $$
 p(\mu\mid\alpha)
 $$
 
-여기서 \(\alpha\)는 prior의 모양을 정하는 hyperparameter다. 이 구조는 “동전의 앞면 확률이 먼저 정해지고, 그 확률에 따라 여러 번의 관측값이 생성된다”는 이야기를 그래프로 표현한 것이다.
+여기서 $$\alpha$$는 prior의 모양을 정하는 hyperparameter다. 이 구조는 “동전의 앞면 확률이 먼저 정해지고, 그 확률에 따라 여러 번의 관측값이 생성된다”는 이야기를 그래프로 표현한 것이다.
 
 ## 14. Model Selection
 
@@ -400,7 +414,7 @@ $$
 |---|---|
 | Linear model | 단순하고 해석이 쉽지만 복잡한 패턴을 놓칠 수 있다. |
 | Quadratic polynomial | 곡선 형태의 관계를 표현할 수 있다. |
-| \(k\)-th polynomial | \(k\)가 커질수록 더 복잡한 함수를 표현할 수 있다. |
+| $$k$$-th polynomial | $$k$$가 커질수록 더 복잡한 함수를 표현할 수 있다. |
 | Neural network | 매우 유연하지만 과적합과 해석 문제가 생길 수 있다. |
 
 Model selection은 이 후보들 중 어떤 모델을 사용할지 고르는 과정이다. Training data에 대한 성능만 보면 복잡한 모델이 유리해지기 쉽다. 따라서 validation 성능, cross validation, Bayesian evidence 같은 기준이 필요하다.
@@ -429,7 +443,7 @@ Occam's razor는 어떤 현상을 설명할 때 불필요한 가정을 최소화
 
 ## 17. Bayesian Model Comparison
 
-Bayesian 관점에서는 모델 자체도 확률적으로 비교할 수 있다. 두 모델 \(M_1\), \(M_2\)가 있을 때 posterior odds는 다음과 같다.
+Bayesian 관점에서는 모델 자체도 확률적으로 비교할 수 있다. 두 모델 $$M_1$$, $$M_2$$가 있을 때 posterior odds는 다음과 같다.
 
 $$
 \frac{p(M_1\mid\mathcal{D})}{p(M_2\mid\mathcal{D})}
@@ -441,7 +455,7 @@ $$
 }
 $$
 
-공통 분모 \(p(\mathcal{D})\)는 약분되어 다음처럼 정리된다.
+공통 분모 $$p(\mathcal{D})$$는 약분되어 다음처럼 정리된다.
 
 $$
 \frac{p(M_1\mid\mathcal{D})}{p(M_2\mid\mathcal{D})}
@@ -453,7 +467,7 @@ p(M_2)p(\mathcal{D}\mid M_2)
 }
 $$
 
-여기서 \(p(M_i)\)는 모델 prior, \(p(\mathcal{D}\mid M_i)\)는 해당 모델의 evidence다.
+여기서 $$p(M_i)$$는 모델 prior, $$p(\mathcal{D}\mid M_i)$$는 해당 모델의 evidence다.
 
 $$
 p(\mathcal{D}\mid M)
@@ -466,6 +480,47 @@ $$
 
 Evidence는 모델의 fit과 complexity를 동시에 반영한다. 너무 유연한 모델은 많은 데이터 형태를 설명할 수 있지만, 그만큼 prior probability mass가 넓게 퍼진다. 실제 관측 데이터 주변에 충분한 확률 질량을 두지 못하면 evidence가 낮아질 수 있다. 그래서 Bayesian model comparison은 복잡한 모델에 자동으로 complexity penalty를 주는 효과가 있다.
 
+## 18. 확률 모델 식의 유도와 해석 경계
+
+### 18.1 MAP objective
+
+Bayes 정리에서 evidence $$p(\mathcal D)$$는 $$\theta$$에 대해 상수이므로
+
+$$
+\theta_{\mathrm{MAP}}
+=\arg\max_\theta p(\theta\mid\mathcal D)
+=\arg\max_\theta p(\mathcal D\mid\theta)p(\theta).
+$$
+
+단조 감소 함수인 negative log를 취하면
+
+$$
+\theta_{\mathrm{MAP}}
+=\arg\min_\theta\{-\log p(\mathcal D\mid\theta)-\log p(\theta)\}.
+$$
+
+이는 density가 양수인 영역에서의 **정확한 동치**다. prior가 Gaussian이면 L2, Laplace이면 L1 형태가 나오지만, normalization과 scale에 따라 penalty 계수는 달라진다.
+
+### 18.2 DGM factorization
+
+Chain rule은 임의의 순서에서 $$p(x_1,\ldots,x_d)=\prod_i p(x_i\mid x_{<i})$$를 준다. DAG가 각 node $$X_i$$가 non-descendant와 parents $$\mathrm{pa}(X_i)$$에 조건부 독립이라는 local Markov property를 표현하면
+
+$$
+p(x_1,\ldots,x_d)=\prod_{i=1}^d p(x_i\mid \mathrm{pa}(x_i))
+$$
+
+로 줄어든다. 이 식은 그래프가 주장하는 조건부 독립이 맞을 때의 **정확한 factorization**이다. 화살표만 그렸다고 실제 데이터가 그 독립성을 자동으로 만족하는 것은 아니다.
+
+### 18.3 Evidence의 복잡도 효과
+
+$$
+p(\mathcal D\mid M)=\int p(\mathcal D\mid\theta,M)p(\theta\mid M)d\theta
+$$
+
+는 likelihood의 prior 평균이라는 **정의·정확한 등식**이다. 넓은 parameter 공간 중 작은 영역에서만 likelihood가 높으면 적분 평균은 낮아질 수 있다. 이를 Occam penalty라고 해석하지만 “항상 더 단순한 모델이 이긴다”는 정리는 아니다. prior가 부적절하거나 모델이 misspecified되면 evidence 비교도 왜곡될 수 있다.
+
+확률·likelihood ratio·posterior weight는 무차원으로 해석하지만 연속분포의 density는 변수 단위의 역수를 가진다. 잠재변수 $$z$$와 parameter $$\theta$$의 단위는 모델 정의에 따르며, 적분 measure와 density 단위가 상쇄되어 evidence가 일관된 단위를 가져야 한다.
+
 ## 마지막 핵심 정리
 
 ### 시험 포인트
@@ -474,7 +529,7 @@ Evidence는 모델의 fit과 complexity를 동시에 반영한다. 너무 유연
 |---|---|
 | ERM이 최소화하는 값은? | training data 전체의 평균 loss, 즉 empirical risk |
 | ERM에서 i.i.d. 가정이 필요한 이유는? | empirical risk가 true risk의 근사로 의미를 가지려면 data가 같은 분포에서 독립적으로 나와야 하기 때문 |
-| Regularization과 MAP의 연결은? | MAP objective의 \(-\log p(\theta)\)가 penalty처럼 작동한다. |
+| Regularization과 MAP의 연결은? | MAP objective의 $$-\log p(\theta)$$가 penalty처럼 작동한다. |
 | MLE와 MAP의 차이는? | MLE는 likelihood만 보고, MAP는 likelihood와 prior를 함께 본다. |
 | 확률적 모델링의 장점은? | modeling, inference, parameter estimation, model selection을 하나의 확률 언어로 묶는다. |
 | latent variable이란? | 직접 관측되지 않지만 데이터 생성과 예측에 영향을 주는 숨은 변수 |
@@ -489,49 +544,49 @@ ERM과 i.i.d. 가정에서 출발해 regularization을 MAP의 negative-log prior
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. ERM과 MLE는 어떤 점에서 연결될 수 있는가?</summary>
 
 답변: 특정 noise distribution을 가정하면 MLE가 특정 loss를 최소화하는 ERM과 같은 문제가 될 수 있다. 예를 들어 Gaussian observation noise를 가정하면 negative log-likelihood 안에 squared error가 생기므로, squared error를 최소화하는 선형 회귀는 Gaussian likelihood에서의 MLE로 해석할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. MAP objective에서 regularization penalty에 해당하는 항은 무엇인가?</summary>
 
-답변: MAP objective는 \(\text{NLL}-\log p(\theta)\) 형태다. 여기서 \(-\log p(\theta)\)가 parameter prior에서 나온 penalty 역할을 한다. Gaussian prior를 두면 이 항이 \(\lVert\theta\rVert^2\)에 비례해 L2 regularization과 연결된다.
+답변: MAP objective는 $$\text{NLL}-\log p(\theta)$$ 형태다. 여기서 $$-\log p(\theta)$$가 parameter prior에서 나온 penalty 역할을 한다. Gaussian prior를 두면 이 항이 $$\lVert\theta\rVert^2$$에 비례해 L2 regularization과 연결된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 머신러닝에서 확률이 쓰이는 세 가지 level을 설명하라.</summary>
 
-답변: 첫째, observation uncertainty는 관측값이 noise 때문에 흔들리는 것을 표현한다. 둘째, model uncertainty는 parameter나 모델에 대한 불확실성을 \(p(\theta\mid\mathcal{D})\)처럼 분포로 표현한다. 셋째, predictive uncertainty는 새 입력의 출력 분포 \(p(y_*\mid x_*,\mathcal{D})\)를 계산하는 것이다.
+답변: 첫째, observation uncertainty는 관측값이 noise 때문에 흔들리는 것을 표현한다. 둘째, model uncertainty는 parameter나 모델에 대한 불확실성을 $$p(\theta\mid\mathcal{D})$$처럼 분포로 표현한다. 셋째, predictive uncertainty는 새 입력의 출력 분포 $$p(y_*\mid x_*,\mathcal{D})$$를 계산하는 것이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Latent variable이 필요한 이유를 동전 던지기 예시로 설명하라.</summary>
 
-답변: 동전 던지기에서 우리가 직접 보는 것은 앞면 또는 뒷면의 관측 결과다. 하지만 미래 결과를 예측하려면 앞면이 나올 확률 \(\mu\)를 알아야 한다. \(\mu\)는 직접 관측되는 값이 아니라 관측 결과 뒤에 숨어 있는 값이므로 latent variable 또는 parameter로 볼 수 있다.
+답변: 동전 던지기에서 우리가 직접 보는 것은 앞면 또는 뒷면의 관측 결과다. 하지만 미래 결과를 예측하려면 앞면이 나올 확률 $$\mu$$를 알아야 한다. $$\mu$$는 직접 관측되는 값이 아니라 관측 결과 뒤에 숨어 있는 값이므로 latent variable 또는 parameter로 볼 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Directed Graphical Model을 쓰면 무엇이 좋아지는가?</summary>
 
 답변: DGM은 확률변수 사이의 조건부 의존 관계를 그래프로 표현한다. 이를 통해 복잡한 joint distribution을 작은 conditional distribution들의 곱으로 factorization할 수 있고, 어떤 변수가 어떤 변수에 직접 의존하는지 해석하기 쉬워진다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Nested cross validation에서 test data를 model selection에 쓰면 안 되는 이유는 무엇인가?</summary>
 
 답변: test data를 보고 모델이나 hyperparameter를 고르면 test set에 우연히 잘 맞는 선택을 하게 되어 최종 성능 추정이 낙관적으로 치우친다. Nested CV는 inner validation에서 모델을 고르고 outer test에서 최종 평가를 하므로 test leakage를 줄인다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. Bayesian evidence가 복잡한 모델에 penalty를 줄 수 있는 이유는 무엇인가?</summary>
 
 답변: Evidence는 특정 best parameter에서의 성능만 보지 않고, parameter 전체에 대해 likelihood를 prior로 가중 평균한다. 복잡한 모델은 가능한 데이터 형태가 많아 probability mass가 넓게 퍼지므로, 실제 관측 데이터 주변에 충분한 질량을 두지 못하면 evidence가 낮아진다. 그래서 fit이 좋아도 불필요하게 복잡한 모델은 불리해질 수 있다.

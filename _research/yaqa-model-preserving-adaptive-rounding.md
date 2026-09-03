@@ -53,7 +53,7 @@ YAQA는 LLM PTQ를 layer별 activation error 최소화 문제가 아니라, 양�
 
 ## 1. PTQ 목표의 차이
 
-Together AI 글은 YAQA를 weight-only LLM post-training quantization 방법으로 소개한다. 핵심 표현은 "원 모델의 출력을 직접 보존"하는 양자화이다. 이 관점에서는 PTQ의 목적이 단순히 weight를 낮은 bit로 표현하는 것이 아니라, 원 모델 \(M(\theta^{*}, X)\)와 양자화 모델 \(M(\theta, X)\)의 출력 분포 차이를 줄이는 것이다.
+Together AI 글은 YAQA를 weight-only LLM post-training quantization 방법으로 소개한다. 핵심 표현은 "원 모델의 출력을 직접 보존"하는 양자화이다. 이 관점에서는 PTQ의 목적이 단순히 weight를 낮은 bit로 표현하는 것이 아니라, 원 모델 $$M(\theta^{*}, X)$$와 양자화 모델 $$M(\theta, X)$$의 출력 분포 차이를 줄이는 것이다.
 
 이를 KL divergence 목적함수로 쓰면 다음과 같은 형태가 된다.
 
@@ -65,7 +65,7 @@ $$
 D_{\mathrm{KL}}\left(M(\theta^{*},X)\|M(\theta,X)\right)
 $$
 
-여기서 \(C\)는 표현 가능한 low-precision point 집합이다. 실제로 이 최적화는 직접 풀기 어렵기 때문에 YAQA는 tractable한 근사를 설계한다.
+여기서 $$C$$는 표현 가능한 low-precision point 집합이다. 실제로 이 최적화는 직접 풀기 어렵기 때문에 YAQA는 tractable한 근사를 설계한다.
 
 ## 2. 기존 layerwise proxy 비판
 
@@ -83,9 +83,9 @@ $$
 
 ## 3. KL 기반 Hessian 근사
 
-YAQA는 KL minimization 문제를 linear layer \(W\) 주변에서 second-order expansion으로 근사한다. 이때 Hessian은 원 모델 출력에 대한 KL divergence의 Hessian이다.
+YAQA는 KL minimization 문제를 linear layer $$W$$ 주변에서 second-order expansion으로 근사한다. 이때 Hessian은 원 모델 출력에 대한 KL divergence의 Hessian이다.
 
-글은 KL의 Hessian이 Fisher Information Matrix와 연결되며, Hessian-vector product를 통해 큰 LLM에서도 근사 계산이 가능하다고 설명한다. 전체 Hessian \(H\in\mathbb{R}^{mn\times mn}\)을 직접 만들면 너무 크므로, YAQA는 Kronecker-factored approximation을 사용한다.
+글은 KL의 Hessian이 Fisher Information Matrix와 연결되며, Hessian-vector product를 통해 큰 LLM에서도 근사 계산이 가능하다고 설명한다. 전체 Hessian $$H\in\mathbb{R}^{mn\times mn}$$을 직접 만들면 너무 크므로, YAQA는 Kronecker-factored approximation을 사용한다.
 
 $$
 H\approx H_{O}\otimes H_{I}
@@ -97,7 +97,7 @@ $$
 
 YAQA의 adaptive rounding은 QuIP의 LDLQ를 자연스럽게 확장한 형태로 설명된다. QuIP/LDLQ는 input dimension 쪽 feedback을 사용하지만, YAQA는 output dimension 쪽 feedback도 함께 사용한다.
 
-Together AI 글은 LDLQ가 YAQA rounding의 특수한 경우이며, 이론적으로 YAQA보다 약한 형태라고 설명한다. 또한 LDLQ는 \(H_I\gets\mathbb{E}[x^{T}x]\), \(H_O\gets I\)로 둔 YAQA로 볼 수 있다고 정리한다.
+Together AI 글은 LDLQ가 YAQA rounding의 특수한 경우이며, 이론적으로 YAQA보다 약한 형태라고 설명한다. 또한 LDLQ는 $$H_I\gets\mathbb{E}[x^{T}x]$$, $$H_O\gets I$$로 둔 YAQA로 볼 수 있다고 정리한다.
 
 이 관계는 YAQA를 QuIP/QTIP/EPTQ 계열과 분리된 주제가 아니라, 기존 Hessian-aware PTQ를 원 모델 출력 보존 관점으로 확장하는 흐름으로 읽게 만든다.
 

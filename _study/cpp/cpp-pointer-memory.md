@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
@@ -22,6 +23,18 @@ Source PDFs:
 - `(심화) C++ 포인터.pdf`
 
 두 자료는 C의 `malloc/free`, C++의 `new/delete`, 포인터 문법, 스마트 포인터가 이어지는 주제를 다룬다. 중복되는 메모리 구조와 포인터 기초 설명은 합치고, C 방식에서 C++ 방식으로 발전하는 흐름으로 정리했다.
+
+## 원문 페이지 대조와 수식 판정
+
+| 원문 | 페이지 | 본문 대응 | 수식 판정 |
+|---|---:|---|---|
+| `C_동적할당.pdf` | 1–6 | 메모리 구조, 정적/동적 할당, 오류 | 구조와 수명 규칙 중심 |
+| 같은 원문 | 7–11 | `malloc`, `calloc`, `free`, 재할당 | **핵심 크기식**: 8쪽과 11쪽의 byte 수를 아래에서 유도 |
+| 같은 원문 | 12 | API 요약 | 새로운 수식 없음 |
+| `(심화) C++ 포인터.pdf` | 1–9 | C pointer 복습, `nullptr`, `new/delete`, `const`, class | 코드·타입 규칙 중심 |
+| 같은 원문 | 10–21 | RAII와 smart pointer의 소유권 | 수명·소유권 규칙 중심 |
+
+두 PDF 33쪽을 페이지 이미지로 대조했다. byte 단위 allocation·copy 크기는 실제 안전 조건에 쓰이는 정확한 관계라서 설명했고, 주소 예시·참조 count·소유권 표는 특정 실행 상태 또는 API 의미이지 일반 수학 공식이 아니므로 증명을 꾸며내지 않았다.
 
 > **핵심:** **Heap** 실행 중 동적으로 할당하는 메모리 영역. **`malloc/free`** C 방식 동적 할당과 해제.
 
@@ -100,6 +113,20 @@ int* arr = (int*)calloc(n, sizeof(int));
 
 `malloc`과 달리 초기값이 0으로 설정된다.
 
+### `calloc`이 요청하는 바이트 수
+
+> **작성자 보충:** 아래 식은 원소 수와 원소 크기에서 요청 바이트 수를 구하는 정확한 단위 항등식이며, 이어지는 문장은 overflow와 할당 실패 조건을 명시한다.
+
+원문 `C_동적할당.pdf` 8쪽에서 원소 수를 $$n$$, 원소 한 개의 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라고 하면 `calloc(n, s)`가 요청하는 전체 크기는
+
+$$
+B=n\times s\quad\text{bytes}
+$$
+
+이다. `calloc(n, sizeof(int))`라면 $$B=n\operatorname{sizeof}(\texttt{int})$$ 바이트다. $$n$$의 단위는 원소 개수, $$s$$는 바이트/원소이므로 곱의 단위가 바이트가 된다. 모든 비트가 0인 상태로 초기화되지만, 이것이 모든 C 타입에서 의미상 숫자 0이나 null pointer와 같다고 일반화해서는 안 된다.
+
+할당 전에는 `n > SIZE_MAX / s`인지 검사해 곱셈 overflow를 막아야 하며, $$n>0$$인데 반환값이 `NULL`이면 할당 실패로 처리해야 한다. `calloc(0, s)`의 반환값은 구현에 따라 `NULL`일 수도, 해제 가능한 고유 포인터일 수도 있으므로 역참조해서는 안 된다.
+
 ## 5. `free`와 메모리 오류
 
 동적 할당한 메모리는 반드시 `free`로 해제해야 한다.
@@ -128,6 +155,21 @@ old = bigger;
 ```
 
 이 패턴은 C에서 동적 배열을 직접 구현할 때 기본이 된다.
+
+### Capacity를 두 배로 늘릴 때의 할당·복사량
+
+> **작성자 보충:** 아래 식은 capacity를 정확히 두 배로 늘리는 정책에서 새 할당량과 기존 원소 복사량을 세는 정확한 accounting이다.
+
+원문 `C_동적할당.pdf` 11쪽의 재할당 pattern에서 현재 원소 수를 $$n$$, capacity를 $$c$$, 원소 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라 하자. 배열이 가득 찬 상태 $$n=c$$에서 capacity를 두 배로 늘리면
+
+$$
+c'=2c,\qquad B_{\text{alloc}}=2cs\ \text{bytes},\qquad
+B_{\text{copy}}=ns=cs\ \text{bytes}
+$$
+
+가 된다. 새 저장소는 $$2c$$개 원소를 담도록 $$2cs$$바이트를 요청하고, 실제로 존재하는 기존 $$n=c$$개 원소만 $$cs$$바이트 복사하는 것이다. 일반적으로 가득 차기 전에 늘린다면 복사량은 $$ns$$바이트이며 $$n\le c$$다.
+
+이 계산은 연속 저장, 원소별 padding이 아닌 `sizeof(T)` 간격, byte-wise 복사가 허용되는 C 객체를 가정한다. 먼저 `c <= SIZE_MAX / 2`와 `2c <= SIZE_MAX / s`를 확인해야 한다. 새 할당이 실패하면 기존 포인터를 그대로 보존해야 하므로, 성공을 확인하기 전에 `old`를 덮어쓰거나 해제하면 안 된다. C++에서 생성자·소멸자나 비자명 복사가 필요한 객체에는 `memcpy`를 사용하지 말고 `std::vector` 같은 컨테이너나 적절한 객체 이동/복사를 사용한다.
 
 ## 7. C++의 `nullptr`
 
@@ -363,21 +405,21 @@ auto sp = std::make_shared<T>(args...);
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇인가?</summary>
 
 답변: `malloc/free`는 단순히 메모리 블록을 할당하고 해제하며 생성자와 소멸자를 호출하지 않는다. `new/delete`는 메모리 할당과 함께 객체의 생성자/소멸자 호출까지 처리한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. `const int* p`와 `int* const p`는 어떻게 다르게 읽는가?</summary>
 
 답변: `const int* p`는 p가 가리키는 int 값을 수정할 수 없다는 뜻이다. 반면 `int* const p`는 포인터 p 자체가 const라서 다른 주소를 가리키도록 바꿀 수 없다는 뜻이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결하는가?</summary>
 
 답변: `shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 객체가 해제되지 않을 수 있다. `weak_ptr`는 객체를 소유하지 않고 관찰만 하므로 참조 카운트를 증가시키지 않아 순환 소유를 끊을 수 있다.

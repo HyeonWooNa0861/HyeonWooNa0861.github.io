@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page.title | default: site.title }}</title>
+    <title>{{ page.title | default: site.title | escape }}</title>
     <script>
       (function () {
         var theme = "light";
@@ -1827,8 +1827,17 @@
         min-width: 0;
       }
 
+      .pdf-reader-panel[hidden] {
+        display: none !important;
+      }
+
       body.pdf-reader-active .pdf-reader-backdrop {
         display: none;
+      }
+
+      body.pdf-reader-modal-active {
+        overflow: hidden;
+        overscroll-behavior: none;
       }
 
       body.pdf-reader-active .main-wrap {
@@ -1934,20 +1943,6 @@
         background: var(--bg-elevated);
       }
 
-      .pdf-reader-fallback {
-        position: absolute;
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        margin: 0;
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: var(--panel-strong);
-        color: var(--muted);
-        font-size: 12px;
-        box-shadow: none;
-      }
-
       a[data-pdf-reader-link] {
         cursor: zoom-in;
       }
@@ -2036,9 +2031,18 @@
         .side-index:not(.reader-index) .side-index-list {
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
+      }
 
+      @media (max-width: 980px) {
         body.pdf-reader-active .page-shell {
           grid-template-columns: 1fr;
+        }
+
+        body.pdf-reader-modal-active .pdf-reader-backdrop {
+          display: block;
+          background: rgba(0, 0, 0, 0.48);
+          pointer-events: auto;
+          touch-action: none;
         }
 
         body.pdf-reader-active .pdf-reader-panel {
@@ -2046,6 +2050,12 @@
           inset: auto 12px 12px;
           top: calc(var(--header-height) + 12px);
           height: auto;
+          box-shadow: var(--shadow-lg);
+        }
+
+        .pdf-reader-open,
+        .pdf-reader-close {
+          min-height: 44px;
         }
       }
 
@@ -3487,8 +3497,8 @@
 
       window.MathJax = {
         tex: {
-          inlineMath: [["\\\\(", "\\\\)"], ["\\(", "\\)"]],
-          displayMath: [["$$", "$$"], ["\\\\[", "\\\\]"], ["\\[", "\\]"]],
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["$$", "$$"], ["\\[", "\\]"]],
           processEscapes: true
         },
         options: {
@@ -3502,9 +3512,9 @@
         }
       };
     </script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
   </head>
-  <body class="{% if page.url == '/' %}home-page{% else %}content-page{% endif %}{% if page.collection %} posted-page collection-{{ page.collection }}{% endif %}">
+  <body class="{% if page.url == '/' %}home-page{% else %}content-page{% endif %}{% if page.collection %} posted-page collection-{{ page.collection | escape }}{% endif %}">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="loading-screen" data-loading-screen role="status" aria-live="polite" aria-label="Loading">
       <div class="loading-mark" aria-hidden="true">
@@ -3542,7 +3552,7 @@
           <a class="nav-link nav-link-primary" href="{{ '/research/' | relative_url }}">Research</a>
           <a class="nav-link nav-link-primary" href="{{ '/study/' | relative_url }}">Study</a>
           <a class="nav-link nav-link-secondary" href="{{ '/about/' | relative_url }}">About</a>
-          <a class="nav-link nav-link-secondary" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io">GitHub</a>
+          <a class="nav-link nav-link-secondary" href="https://github.com/HyeonWooNa0861/HyeonWooNa0861.github.io" target="_blank" rel="noopener">GitHub</a>
           <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode">Dark</button>
         </nav>
       </div>
@@ -3581,9 +3591,9 @@
                   {% assign item_is_current = true %}
                 {% endif %}
                 <section class="side-index-section reader-index__group{% if item_is_current %} is-current{% endif %}">
-                  <a class="side-index-heading reader-index__heading{% if item_is_current %} active{% endif %}" href="{{ item.url | relative_url }}">
-                    <span>{{ item.title }}</span>
-                    {% if item.children %}<span class="side-index-count reader-index__count">{{ item.children | size }}</span>{% endif %}
+                  <a class="side-index-heading reader-index__heading{% if item_is_current %} active{% endif %}" href="{{ item.url | relative_url | escape }}">
+                    <span>{{ item.title | escape }}</span>
+                    {% if item.children %}<span class="side-index-count reader-index__count">{{ item.children | size | escape }}</span>{% endif %}
                   </a>
                   {% if item.children %}
                     <ul class="side-index-list reader-index__list">
@@ -3601,12 +3611,12 @@
                             {% assign child_active = true %}
                           {% endif %}
                         {% endif %}
-                        {% assign child_href = child.url %}
-                        {% unless child.url contains "://" %}
-                          {% assign child_href = child.url | relative_url %}
-                        {% endunless %}
                         <li>
-                          <a class="side-index-link reader-index__link{% if child_active %} active{% endif %}" href="{{ child_href }}"{% if child.url contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ child.title }}</a>
+                          {% if child.url contains "://" %}
+                          <a class="side-index-link reader-index__link{% if child_active %} active{% endif %}" href="{{ child.url | escape }}" target="_blank" rel="noopener">{{ child.title | escape }}</a>
+                          {% else %}
+                          <a class="side-index-link reader-index__link{% if child_active %} active{% endif %}" href="{{ child.url | relative_url | escape }}">{{ child.title | escape }}</a>
+                          {% endif %}
                         </li>
                       {% endfor %}
                     </ul>
@@ -5201,9 +5211,10 @@
           var readerTitle = null;
           var readerFrame = null;
           var readerOpen = null;
-          var readerFallback = null;
           var readerClose = null;
           var lastReaderTrigger = null;
+          var inertBackground = [];
+          var readerModalQuery = window.matchMedia("(max-width: 980px)");
 
           function getLinkUrl(link) {
             if (!link || link.hasAttribute("download")) return false;
@@ -5215,8 +5226,73 @@
             }
           }
 
+          function getYouTubeEmbedUrl(url) {
+            if (url.protocol !== "https:" || url.port || url.username || url.password) return null;
+
+            var host = url.hostname.toLowerCase().replace(/^www\./, "");
+            var videoId = "";
+            var playlistId = url.searchParams.get("list") || "";
+            var validPath = false;
+            var requiresVideo = false;
+            var requiresPlaylist = false;
+
+            if (host === "youtu.be") {
+              var shortPathMatch = url.pathname.match(/^\/([A-Za-z0-9_-]{11})\/?$/);
+              validPath = Boolean(shortPathMatch);
+              requiresVideo = true;
+              videoId = shortPathMatch ? shortPathMatch[1] : "";
+            } else if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
+              if (url.pathname === "/watch") {
+                validPath = true;
+                requiresVideo = true;
+                videoId = url.searchParams.get("v") || "";
+              } else if (url.pathname === "/playlist") {
+                validPath = true;
+                requiresPlaylist = true;
+              } else {
+                var pathMatch = url.pathname.match(/^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})\/?$/);
+                validPath = Boolean(pathMatch);
+                requiresVideo = true;
+                videoId = pathMatch ? pathMatch[1] : "";
+              }
+            } else {
+              return null;
+            }
+
+            if (!validPath) return null;
+            if (videoId && !/^[A-Za-z0-9_-]{11}$/.test(videoId)) return null;
+            if (playlistId && !/^[A-Za-z0-9_-]{10,100}$/.test(playlistId)) return null;
+            if ((requiresVideo && !videoId) || (requiresPlaylist && !playlistId)) return null;
+            if (!videoId && !playlistId) return null;
+
+            var embedUrl = new URL(
+              videoId
+                ? "https://www.youtube.com/embed/" + videoId
+                : "https://www.youtube.com/embed/videoseries"
+            );
+            if (playlistId) embedUrl.searchParams.set("list", playlistId);
+            embedUrl.searchParams.set("rel", "0");
+            return embedUrl.href;
+          }
+
           function isPdfUrl(url) {
-            return url.pathname.toLowerCase().endsWith(".pdf");
+            var host = url.hostname.toLowerCase().replace(/^www\./, "");
+            var path = url.pathname.toLowerCase();
+
+            if (path.endsWith(".pdf")) return true;
+            if (host === "arxiv.org" && /^\/pdf\/[0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?\/?$/.test(path)) return true;
+            return host === "ti.com" && /^\/lit\/pdf\/[a-z0-9_-]+\/?$/.test(path);
+          }
+
+          function isImageUrl(url) {
+            if (!/\.(avif|gif|heic|jpeg|jpg|png|svg|webp)$/i.test(url.pathname)) return false;
+
+            var host = url.hostname.toLowerCase().replace(/^www\./, "");
+            if ((host === "commons.wikimedia.org" || host.endsWith(".wikipedia.org")) && url.pathname.startsWith("/wiki/")) {
+              return false;
+            }
+
+            return true;
           }
 
           function isFileUrl(url) {
@@ -5246,9 +5322,26 @@
             var url = getLinkUrl(link);
             if (!url) return null;
 
+            var youtubeEmbedUrl = getYouTubeEmbedUrl(url);
+            if (youtubeEmbedUrl) {
+              return {
+                type: "VIDEO",
+                sourceUrl: url.href,
+                frameUrl: youtubeEmbedUrl
+              };
+            }
+
             if (isPdfUrl(url)) {
               return {
                 type: "PDF",
+                sourceUrl: url.href,
+                frameUrl: url.href
+              };
+            }
+
+            if (isImageUrl(url)) {
+              return {
+                type: "IMAGE",
                 sourceUrl: url.href,
                 frameUrl: url.href
               };
@@ -5272,7 +5365,7 @@
             try {
               var url = new URL(resource.sourceUrl, window.location.href);
               var fileName = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || resource.type);
-              return fileName.replace(/\.pdf$/i, "") || resource.type;
+              return fileName.replace(/\.(avif|gif|heic|jpeg|jpg|pdf|png|svg|webp)$/i, "") || resource.type;
             } catch (error) {
               return resource.type;
             }
@@ -5290,7 +5383,9 @@
             readerPanel.className = "pdf-reader-panel";
             readerPanel.setAttribute("data-pdf-reader-panel", "");
             readerPanel.setAttribute("role", "dialog");
-            readerPanel.setAttribute("aria-label", "Resource preview");
+            readerPanel.setAttribute("aria-labelledby", "resource-reader-title");
+            readerPanel.setAttribute("aria-hidden", "true");
+            readerPanel.tabIndex = -1;
             readerPanel.hidden = true;
 
             readerPanel.innerHTML = [
@@ -5298,16 +5393,15 @@
               '  <div class="pdf-reader-toolbar">',
               '    <div>',
               '      <p class="pdf-reader-kicker" data-resource-reader-kicker>RESOURCE</p>',
-              '      <h2 class="pdf-reader-title" data-pdf-reader-title>Resource</h2>',
+              '      <h2 class="pdf-reader-title" id="resource-reader-title" data-pdf-reader-title>Resource</h2>',
               '    </div>',
               '    <div class="pdf-reader-actions">',
               '      <a class="pdf-reader-open" data-pdf-reader-open href="#" target="_blank" rel="noopener">Open</a>',
-              '      <button class="pdf-reader-close" data-pdf-reader-close type="button" aria-label="Close resource preview">Close</button>',
+              '      <button class="pdf-reader-close" data-pdf-reader-close type="button" aria-label="Hide resource preview">Hide</button>',
               '    </div>',
               '  </div>',
               '  <div class="pdf-reader-frame-wrap">',
-              '    <iframe class="pdf-reader-frame" data-pdf-reader-frame title="Resource preview"></iframe>',
-              '    <p class="pdf-reader-fallback">Preview unavailable? <a data-pdf-reader-fallback href="#" target="_blank" rel="noopener">Open in a new tab</a>.</p>',
+              '    <iframe class="pdf-reader-frame" data-pdf-reader-frame title="Resource preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>',
               '  </div>',
               '</div>'
             ].join("");
@@ -5316,7 +5410,6 @@
             readerTitle = readerPanel.querySelector("[data-pdf-reader-title]");
             readerFrame = readerPanel.querySelector("[data-pdf-reader-frame]");
             readerOpen = readerPanel.querySelector("[data-pdf-reader-open]");
-            readerFallback = readerPanel.querySelector("[data-pdf-reader-fallback]");
             readerClose = readerPanel.querySelector("[data-pdf-reader-close]");
 
             readerBackdrop.addEventListener("click", closeResourceReader);
@@ -5326,37 +5419,163 @@
             pageShell.appendChild(readerPanel);
           }
 
+          function supportsInert() {
+            return typeof HTMLElement !== "undefined" && "inert" in HTMLElement.prototype;
+          }
+
+          function restoreBackgroundInteraction() {
+            inertBackground.forEach(function (entry) {
+              if (entry.usedInert) {
+                if (!entry.hadInert) entry.element.inert = false;
+                return;
+              }
+
+              if (entry.previousAriaHidden === null) {
+                entry.element.removeAttribute("aria-hidden");
+              } else {
+                entry.element.setAttribute("aria-hidden", entry.previousAriaHidden);
+              }
+            });
+            inertBackground = [];
+          }
+
+          function suppressBackgroundInteraction() {
+            restoreBackgroundInteraction();
+            if (!readerPanel) return;
+
+            var useInert = supportsInert();
+
+            var current = readerPanel;
+            while (current && current !== document.body) {
+              var parent = current.parentElement;
+              if (!parent) break;
+
+              Array.prototype.forEach.call(parent.children, function (sibling) {
+                if (sibling === current || sibling === readerBackdrop) return;
+                if (sibling.tagName === "SCRIPT" || sibling.tagName === "STYLE") return;
+
+                inertBackground.push({
+                  element: sibling,
+                  usedInert: useInert,
+                  hadInert: sibling.hasAttribute("inert"),
+                  previousAriaHidden: sibling.getAttribute("aria-hidden")
+                });
+                if (useInert) {
+                  sibling.inert = true;
+                } else {
+                  sibling.setAttribute("aria-hidden", "true");
+                }
+              });
+
+              current = parent;
+            }
+          }
+
+          function isReaderModalViewport() {
+            return readerModalQuery.matches;
+          }
+
+          function syncResourceReaderMode() {
+            if (!readerPanel || readerPanel.hidden) return;
+
+            var isModal = isReaderModalViewport();
+            document.body.classList.toggle("pdf-reader-modal-active", isModal);
+            readerBackdrop.setAttribute("aria-hidden", "true");
+
+            if (isModal) {
+              readerPanel.setAttribute("aria-modal", "true");
+              suppressBackgroundInteraction();
+              if (!readerPanel.contains(document.activeElement)) {
+                readerClose.focus({ preventScroll: true });
+              }
+            } else {
+              readerPanel.removeAttribute("aria-modal");
+              restoreBackgroundInteraction();
+            }
+          }
+
+          function getReaderFocusableElements() {
+            if (!readerPanel) return [];
+
+            return Array.prototype.slice.call(readerPanel.querySelectorAll(
+              'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+            )).filter(function (element) {
+              return element.getAttribute("aria-hidden") !== "true";
+            });
+          }
+
+          function trapReaderFocus(event) {
+            if (event.key !== "Tab" || !isReaderModalViewport() || !readerPanel || readerPanel.hidden) return;
+
+            var focusable = getReaderFocusableElements();
+            if (!focusable.length) {
+              event.preventDefault();
+              readerPanel.focus({ preventScroll: true });
+              return;
+            }
+
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+            if (!readerPanel.contains(document.activeElement)) {
+              event.preventDefault();
+              (event.shiftKey ? last : first).focus({ preventScroll: true });
+            } else if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus({ preventScroll: true });
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus({ preventScroll: true });
+            }
+          }
+
           function openResourceReader(link, resource) {
             ensureResourceReader();
 
             var label = getResourceLabel(link, resource);
+            if (lastReaderTrigger && lastReaderTrigger !== link) {
+              lastReaderTrigger.setAttribute("aria-expanded", "false");
+            }
             lastReaderTrigger = link;
+            link.setAttribute("aria-expanded", "true");
 
             readerKicker.textContent = resource.type;
             readerTitle.textContent = label;
             readerOpen.href = resource.sourceUrl;
-            readerFallback.href = resource.sourceUrl;
             readerFrame.title = label + " preview";
             readerFrame.src = resource.frameUrl;
+            readerPanel.setAttribute("aria-hidden", "false");
             readerPanel.hidden = false;
             document.body.classList.add("pdf-reader-active");
             readerClose.focus({ preventScroll: true });
+            syncResourceReaderMode();
           }
 
           function closeResourceReader() {
-            if (!readerPanel || readerPanel.hidden) return;
+            if (!readerPanel) return;
+
+            var shouldRestoreFocus = !readerPanel.hidden;
 
             readerFrame.removeAttribute("src");
+            readerPanel.setAttribute("aria-hidden", "true");
             readerPanel.hidden = true;
-            document.body.classList.remove("pdf-reader-active");
+            document.body.classList.remove("pdf-reader-active", "pdf-reader-modal-active");
+            readerPanel.removeAttribute("aria-modal");
+            readerBackdrop.setAttribute("aria-hidden", "true");
+            restoreBackgroundInteraction();
 
-            if (lastReaderTrigger && document.contains(lastReaderTrigger)) {
+            if (lastReaderTrigger) {
+              lastReaderTrigger.setAttribute("aria-expanded", "false");
+            }
+
+            if (shouldRestoreFocus && lastReaderTrigger && document.contains(lastReaderTrigger)) {
               lastReaderTrigger.focus({ preventScroll: true });
             }
           }
 
           readerLinks.forEach(function (link) {
             link.setAttribute("data-pdf-reader-link", "");
+            link.setAttribute("aria-haspopup", "dialog");
+            link.setAttribute("aria-expanded", "false");
             link.addEventListener("click", function (event) {
               if (event.defaultPrevented) return;
               if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -5370,9 +5589,25 @@
           });
 
           document.addEventListener("keydown", function (event) {
-            if (event.key !== "Escape") return;
-            closeResourceReader();
+            if (event.key === "Escape") {
+              closeResourceReader();
+              return;
+            }
+
+            trapReaderFocus(event);
           });
+
+          document.addEventListener("focusin", function (event) {
+            if (!isReaderModalViewport() || !readerPanel || readerPanel.hidden) return;
+            if (readerPanel.contains(event.target)) return;
+            readerClose.focus({ preventScroll: true });
+          });
+
+          if (readerModalQuery.addEventListener) {
+            readerModalQuery.addEventListener("change", syncResourceReaderMode);
+          } else if (readerModalQuery.addListener) {
+            readerModalQuery.addListener(syncResourceReaderMode);
+          }
         }
 
         initResourceReader();

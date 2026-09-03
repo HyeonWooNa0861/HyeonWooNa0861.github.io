@@ -87,6 +87,63 @@ CNN의 아이디어는 갑자기 등장한 것이 아니다.
 
 Neocognitron과 AlexNet은 계층적 구조라는 점에서 닮아 있다. 차이는 대규모 데이터, GPU compute, backpropagation을 통한 end-to-end training이 가능해졌다는 점이다.
 
+### Backpropagation의 chain rule
+
+> **원문 대응:** `03_Computer_Vision.pdf` p.10은 pattern $$p$$의 error를 connection weight로 미분할 때 chain rule로 gradient를 뒤쪽 layer에서 앞쪽 layer로 전달한다는 핵심 식을 제시한다. 아래의 preactivation 전개와 경계 조건은 그 식을 학습용으로 풀어 쓴 **작성자 보충 해설**이다.
+
+한 개의 연결을 다음과 같이 정의하자.
+
+| 기호 | 의미 | 단위 |
+|---|---|---|
+| $$p$$ | 입력 pattern index | 무차원 |
+| $$i, j$$ | 각각 이전 layer와 현재 layer의 neuron index | 무차원 |
+| $$E_p$$ | 입력 pattern $$p$$에 대한 loss 또는 error | 보통 무차원 |
+| $$w_{ji}$$ | 이전 layer의 neuron $$i$$에서 현재 layer의 neuron $$j$$로 가는 weight | $$[z_{pj}]/[a_{pi}]$$ |
+| $$a_{pi}$$ | pattern $$p$$가 neuron $$j$$로 보내는 입력 activation | 보통 무차원 |
+| $$b_j$$ | neuron $$j$$의 bias | $$[z_{pj}]$$ |
+| $$z_{pj}$$ | neuron $$j$$의 preactivation | 보통 무차원 |
+| $$o_{pj}$$ | activation function을 통과한 neuron $$j$$의 output | 보통 무차원 |
+| $$\phi$$ | $$z_{pj}$$를 $$o_{pj}$$로 보내는 activation mapping | $$[\phi'(z_{pj})]=[o_{pj}]/[z_{pj}]$$ |
+
+Bias를 $$b_j$$, activation function을 $$\phi$$라고 하면 정의는 다음과 같다.
+
+$$
+z_{pj}=\sum_i w_{ji}a_{pi}+b_j,
+\qquad
+o_{pj}=\phi(z_{pj}).
+$$
+
+$$E_p$$가 $$o_{pj}$$에 대해 미분 가능하고, $$\phi$$가 관심 지점에서 미분 가능하다고 가정하면 합성함수의 chain rule을 연속해서 적용할 수 있다.
+
+$$
+\begin{aligned}
+\frac{\partial E_p}{\partial w_{ji}}
+&=
+\frac{\partial E_p}{\partial o_{pj}}
+\frac{\partial o_{pj}}{\partial z_{pj}}
+\frac{\partial z_{pj}}{\partial w_{ji}} \\
+&=
+\frac{\partial E_p}{\partial o_{pj}}
+\phi'(z_{pj})
+a_{pi}.
+\end{aligned}
+$$
+
+마지막 등식은 $$w_{ji}$$ 이외의 weight, bias, 입력 activation을 고정할 때 $$\partial z_{pj}/\partial w_{ji}=a_{pi}$$이기 때문에 성립한다. 즉 weight의 gradient는 **뒤에서 전달된 error 신호**, **현재 neuron의 local slope**, **앞 neuron에서 들어온 activation**의 곱이다. 이 정확한 등식은 위 미분 가능성 가정 아래 성립하며, mini-batch loss에서는 각 pattern의 gradient를 합하거나 평균한다.
+
+ReLU $$\phi(z)=\max(0,z)$$는 $$z=0$$에서 고전적 의미로 미분 가능하지 않다. 실제 구현은 이 지점에서 subgradient를 하나 선택하며 보통 $$\phi'(0)=0$$으로 둔다. 또한 $$z<0$$이면 local slope가 0이므로 해당 경로의 gradient도 0이 된다. 여러 layer에서는 이런 local derivative가 계속 곱해진다. 절댓값이 1보다 작은 요인이 반복되면 gradient가 0에 가까워지는 **vanishing gradient**, 큰 요인이 반복되면 크기가 급증하는 **exploding gradient**가 발생할 수 있다. 따라서 이 식은 backpropagation의 계산 원리인 동시에 매우 깊은 network에서 optimization이 불안정해지는 조건도 보여준다.
+
+차원 분석도 chain rule과 일치한다. 일반적으로 $$[w_{ji}]=[z_{pj}]/[a_{pi}]$$이고,
+
+$$
+\left[\frac{\partial E_p}{\partial o_{pj}}\right]
+\left[\frac{\partial o_{pj}}{\partial z_{pj}}\right]
+\left[\frac{\partial z_{pj}}{\partial w_{ji}}\right]
+=\frac{[E_p]}{[w_{ji}]}.
+$$
+
+Neural network에서는 정규화된 activation, weight, preactivation, loss를 대개 무차원으로 취급하므로 gradient 역시 수치적으로 무차원이다. 물리 단위를 가진 입력을 그대로 쓴다면 먼저 scale을 정하거나, 위 관계에 맞게 weight와 gradient의 단위를 해석해야 한다.
+
 ## 5. CNN의 핵심 직관
 
 이미지는 공간 구조를 가진다. CNN은 이 구조를 이용하기 위해 convolution과 pooling을 사용한다.
@@ -172,21 +229,21 @@ Computer vision은 의료, 안전, 과학, 보조 기술처럼 큰 가치를 만
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Hand-crafted feature 기반 vision과 representation learning 기반 vision의 차이를 설명하라.</summary>
 
 답변: hand-crafted feature는 사람이 edge, corner, texture 같은 특징을 설계한 뒤 모델이 이를 사용한다. representation learning은 CNN이나 Transformer가 데이터에서 필요한 feature를 직접 학습한다. 후자는 더 큰 데이터와 compute가 필요하지만 복잡한 시각 패턴을 자동으로 포착할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. AlexNet이 과거 CNN 아이디어를 다시 강력하게 만든 조건은 무엇인가?</summary>
 
 답변: CNN 아이디어 자체는 오래전부터 있었지만, AlexNet은 대규모 ImageNet 데이터, GPU 학습, ReLU, dropout 같은 실용적 요소가 결합되면서 성능을 크게 끌어올렸다. 즉 모델 구조만이 아니라 데이터와 연산 자원의 성숙이 함께 작용했다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Computer vision에서 bias와 robustness를 별도로 평가해야 하는 이유는 무엇인가?</summary>
 
 답변: 평균 정확도가 높아도 특정 조명, 배경, 인종, 성별, 날씨, 카메라 조건에서 성능이 무너질 수 있다. bias는 데이터나 모델이 특정 분포에 치우친 문제이고, robustness는 분포 변화와 노이즈에도 안정적인지의 문제다. 실제 서비스에서는 둘 다 안전성과 신뢰성에 직접 영향을 준다.

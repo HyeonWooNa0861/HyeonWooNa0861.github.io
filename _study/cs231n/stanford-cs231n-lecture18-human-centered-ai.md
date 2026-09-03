@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
+last_modified_at: 2026-09-03 19:49:35 +0900
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"
@@ -74,20 +75,33 @@ Robotics 연구는 model이 수행하기 쉬운 benchmark task를 택하기 쉽�
 
 ## 복습 질문
 
-<details><summary>1. Human-centered AI가 단순한 fairness audit보다 넓은 이유는?</summary>
+<details markdown="block"><summary>1. Human-centered AI가 단순한 fairness audit보다 넓은 이유는?</summary>
 
 답변: Problem selection부터 data·sensor·interface·workflow·평가·책임 구조까지 system 전체가 사람의 필요와 영향을 중심으로 설계되어야 하기 때문이다.
 </details>
 
-<details><summary>2. Privacy-aware representation에는 어떤 trade-off가 있는가?</summary>
+<details markdown="block"><summary>2. Privacy-aware representation에는 어떤 trade-off가 있는가?</summary>
 
 답변: Face나 texture처럼 identity 정보를 제거하면 privacy는 좋아지지만 task에 필요한 행동 단서까지 잃을 수 있다. 목적별 최소 충분 정보를 찾아야 한다.
 </details>
 
-<details><summary>3. Robot task를 human survey로 선정하는 의의는?</summary>
+<details markdown="block"><summary>3. Robot task를 human survey로 선정하는 의의는?</summary>
 
 답변: 연구자가 구현하기 쉬운 benchmark와 사용자가 실제로 원하거나 돌봄 공백을 줄이는 task가 다를 수 있으므로, 제한된 연구 자원을 현실의 필요에 맞출 수 있다.
 </details>
+
+## 원문 대조 기록
+
+이 강의에는 게시된 공식 PDF가 없어, 공식 영상의 **전체 transcript**와 타임라인을 끝까지 대조했다. 아래는 본문 판단을 추적할 수 있는 대표 timestamp다.
+
+| 영상 위치 | 확인한 내용 | 노트 대응 |
+|---|---|---|
+| 00:07:01–00:18:35 | object recognition에서 관계·scene 이해로 확장 | 1절 |
+| 00:24:53–00:37:37 | human capability, bias, privacy-preserving vision | 2–3절 |
+| 00:41:37–00:43:45 | healthcare ambient intelligence와 depth sensor | 4절 |
+| 00:47:59–01:01:27 | human-centered robotics, survey, 현재 robot 한계 | 5절 |
+
+본문은 강연의 사례와 주장을 요약한다. Privacy-by-design 운영 원칙, outcome 중심 평가 항목, 책임·override 권고는 사례에서 실무적으로 확장한 **작성자 해설**이며 수학적 증명 대상은 없다.
 
 ## 참고자료
 

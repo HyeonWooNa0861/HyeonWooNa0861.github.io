@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 16:37:00 +0900
+last_modified_at: 2026-09-03 19:42:41 +0900
 title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"
@@ -17,6 +18,21 @@ keywords:
 # C++ STL
 
 Source PDF: `C++ STL.pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
+|---:|---|---|---|
+| 1–5 | STL 개요와 네 구성 요소 | 1–2절 | 구조·인터페이스 개념 중심 |
+| 6–12 | `vector`, 삽입·삭제, size/capacity | 3–6절 | **11–12쪽 핵심 복잡도**: 중간 이동 $$O(n)$$, `push_back` amortized $$O(1)$$을 아래에서 유도 |
+| 13–16 | `list`, 지정 위치 삽입·삭제, `splice` | 7–9절 | **15–16쪽 핵심 복잡도**: iterator가 주어진 연산과 `splice`의 조건을 아래에서 설명 |
+| 17–20 | `array`와 sequence container 선택 | 10절·비교표 | **19–20쪽 핵심 복잡도**: `array::swap` $$O(N)$$과 임의 접근·삽입 비용을 설명 |
+| 21–27 | iterator 개념·범주·순회 | 11–14절 | iterator category와 유효성 규칙 중심 |
+| 28–40 | `set`, `map`, `pair`, 연관 container 비교 | 15–22절 | **40쪽 핵심 복잡도**: 단일 키 연산 $$O(\log n)$$의 조건과 unordered 평균/최악을 구분 |
+| 41–46 | algorithm 분류, functor, lambda | 23–27절 | callable·capture 문법 중심 |
+| 47–53 | 검색·정렬·변환·제거·집계 algorithm | 28–35절 | **51쪽 핵심 복잡도**: 정렬 전제 아래 binary search $$O(\log n)$$을 유도 |
+
+53쪽 전체를 페이지 이미지로 대조했다. 원문의 모든 중요 복잡도 표기는 아래 보충 해설에서 입력 크기, 최악·평균·상각 구분, 성립 조건까지 설명한다. Header, iterator 표기, lambda capture는 API와 언어 문법이므로 증명 대상으로 만들지 않았다.
 
 > **핵심:** **STL** 컨테이너, 이터레이터, 알고리즘, 함수 객체/람다가 연결된 구조. **`vector`** 연속 메모리 동적 배열, 대부분의 기본 선택.
 
@@ -351,6 +367,14 @@ a.splice(pos, b);
 
 `splice`는 원소를 복사하지 않고 노드 연결만 바꾼다. 그래서 구간 이동을 효율적으로 처리할 수 있다.
 
+### `list::splice`가 $$O(1)$$인 조건
+
+> **작성자 보충:** 아래 복잡도는 유효한 iterator와 호환 allocator가 이미 주어진 전체-list 또는 단일 원소 splice에 대한 표준 복잡도 보장을 조건과 함께 풀어 쓴 것이다.
+
+위의 `a.splice(pos, b)`는 `b` 전체의 첫 노드와 마지막 노드를 `a`의 `pos` 앞에 연결하도록 몇 개의 link만 바꾼다. 이동 원소 수를 $$m$$이라 해도 원소별 복사·이동을 하지 않으므로, **`pos`와 두 list가 이미 주어지고 allocator가 호환되는 전체-list splice** 자체의 link 변경 횟수는 상수이고 시간복잡도는 $$O(1)$$이다. 단일 원소를 유효한 iterator로 지정한 splice도 같은 이유로 $$O(1)$$이다.
+
+이 보장은 위치를 찾는 비용을 포함하지 않는다. 위 코드의 `std::find`는 최대 $$n$$개 노드를 방문하므로 전체 예제는 $$O(n)$$이다. 임의 구간 splice는 구현이 이동 구간 길이를 세어야 하는 경우 $$O(m)$$일 수 있으며, 서로 다른 list 사이의 splice는 allocator가 같아야 한다. 유효하지 않은 iterator, 대상 위치를 포함하는 잘못된 self-splice 구간, 호환되지 않는 allocator에서는 이 설명을 적용할 수 없다.
+
 ## 7. `std::array`
 
 `std::array`는 **크기가 컴파일 타임에 고정된 배열**이다. C 배열과 비슷한 성능을 가지면서 STL 컨테이너 인터페이스를 제공한다.
@@ -388,6 +412,24 @@ a.swap(b);
 
 int* p = a.data();
 ```
+
+### `array::swap`의 $$O(N)$$ 유도
+
+> **작성자 보충:** 아래 복잡도는 대응 원소를 모두 교환한다는 `std::array::swap`의 보장을, 원소 swap 비용이 상수라는 조건 아래 유도한 것이다.
+
+`std::array<T, N>`은 내부 buffer 포인터만 교환하는 동적 컨테이너가 아니라 $$N$$개 원소를 객체 안에 직접 보관한다. 따라서 `a.swap(b)`는 대응하는 원소 쌍
+
+$$
+(a_0,b_0),(a_1,b_1),\ldots,(a_{N-1},b_{N-1})
+$$
+
+을 각각 한 번씩 swap한다. 원소 한 쌍의 swap 비용을 $$S_T$$라 하면
+
+$$
+T_{\texttt{array::swap}}(N)=\sum_{i=0}^{N-1}S_T=N S_T.
+$$
+
+`T`의 swap이 $$O(1)$$이면 전체는 정확히 $$N$$번의 원소 swap, 즉 $$O(N)$$이다. $$N=0$$이면 수행할 원소 swap도 0개다. `T`의 swap 비용이 상수가 아니거나 예외를 던질 수 있으면 전체 비용과 예외 안전성도 그 원소 swap의 성질을 따른다. 두 배열은 같은 `T`와 같은 $$N$$을 가진 동일한 `std::array` 타입이어야 한다.
 
 `data()`는 첫 원소의 raw pointer를 반환한다. 그래서 C 스타일 함수를 호출할 때도 사용할 수 있다.
 
@@ -778,6 +820,26 @@ for (const auto& w : words) {
 -> unordered_set 또는 unordered_map 고려
 ```
 
+### 보충 해설: `set`과 `map`이 $$O(\log n)$$인 이유
+
+> **작성자 보충:** 원문의 “트리 기반, 키 순 정렬”과 삽입·검색·삭제 $$O(\log n)$$ 표기에 대한 유도다.
+
+여기서 $$n$$은 컨테이너에 저장된 원소 수이며 단위는 `원소 개수`다. `std::set`과 `std::map`의 구현 자료구조 자체가 표준에 고정된 것은 아니지만, 단일 키의 `find`, `insert`, `erase(key)` 등은 로그 복잡도를 보장한다. 이를 전형적인 균형 이진 탐색 트리로 해석하면 높이 $$h(n)$$이 어떤 상수 $$a,b$$에 대해
+
+$$
+h(n) \le a\log_2(n+1)+b
+$$
+
+로 제한된다. 한 레벨에서 비교 한 번 후 왼쪽 또는 오른쪽 한 경로만 따라가므로
+
+$$
+T(n) \le c\,h(n)+d = O(\log n)
+$$
+
+이다. 삽입과 삭제도 탐색 경로를 찾은 뒤 균형을 복구하는 작업이 트리 높이에 비례하므로 같은 상한을 갖는다.
+
+이 유도는 **키 비교 한 번이 $$O(1)$$**이라고 가정한다. 문자열처럼 비교 비용이 키 길이 $$L$$에 따라 최악 $$O(L)$$이면 전체 비용은 최악 $$O(L\log n)$$이 될 수 있다. 비교 함수가 strict weak ordering을 만족하지 않으면 컨테이너의 정렬 전제가 깨진다. 또한 `erase(iterator)`처럼 별도 복잡도 보장을 가진 overload나 범위 연산을 단일 키 연산과 같은 $$O(\log n)$$으로 뭉뚱그리면 안 된다.
+
 ## 17. STL 알고리즘의 공통 패턴
 
 STL 알고리즘은 컨테이너 자체가 아니라 **iterator 범위**를 받는다.
@@ -1152,6 +1214,32 @@ if (it == v.end()) {
 }
 ```
 
+### 보충 해설: 이진 검색의 절반 감소 점화식
+
+> **작성자 보충:** 원문의 정렬 전제와 $$O(\log n)$$ 표기를 후보 범위가 줄어드는 과정으로 유도한다.
+
+처음 후보 원소 수를 $$m_0=n$$이라 하자. 가운데 원소와 비교한 뒤 한쪽 절반만 남기므로 각 단계의 후보 수는
+
+$$
+m_{t+1} \le \left\lceil \frac{m_t}{2} \right\rceil
+$$
+
+이고, 반복하면
+
+$$
+m_t \le \left\lceil \frac{n}{2^t} \right\rceil
+$$
+
+이다. 후보가 1개 이하가 되려면 $$n/2^t \le 1$$이면 충분하므로
+
+$$
+t \ge \lceil \log_2 n \rceil
+$$
+
+번의 단계가 필요하다. 비교 한 번의 비용을 상수로 보면 비교 횟수는 $$O(\log n)$$이다. $$n$$과 $$m_t$$의 단위는 `원소 개수`, $$t$$는 `비교 단계 수`이며 모두 무차원 정수다.
+
+이 결론은 범위가 **같은 비교 기준으로 정렬 또는 partition**되어 있을 때만 올바르다. 정렬되지 않았거나 정렬에 쓴 comparator와 검색 comparator가 다르면 반환 결과를 신뢰할 수 없다. 또한 `vector`·`array` 같은 random-access 범위에서는 위치 이동도 빠르지만, forward iterator만 제공하는 범위에 `lower_bound`를 적용하면 비교 횟수는 로그여도 iterator 증가 횟수는 선형이 될 수 있다.
+
 ## 23. 집계 알고리즘
 
 `accumulate`는 범위를 하나의 값으로 접는다.
@@ -1385,6 +1473,31 @@ int main() {
 | 90점 이상 학생 추출 | `copy_if` + `back_inserter` |
 | 결과 순회 | 범위 기반 `for` |
 
+## 보충 해설: 원문 컨테이너 복잡도의 조건
+
+원문에서 강조한 주요 컨테이너 연산을 최악 비용과 상각 또는 평균 비용을 구분해 다시 적으면 다음과 같다. $$n$$은 현재 원소 수이며, 원소 한 개의 이동·비교·해시 비용이 상수라는 가정이다.
+
+| 컨테이너/연산 | 보장 또는 대표 비용 | 성립 조건과 구분 |
+|---|---|---|
+| `array`, `vector` 임의 접근 | worst $$O(1)$$ | 유효한 인덱스의 offset 계산 |
+| `vector::push_back` | amortized $$O(1)$$, 재할당 호출의 worst $$O(n)$$ | capacity를 기하급수적으로 늘리는 상각 분석 |
+| `vector` 중간 삽입·삭제 | worst $$O(n)$$ | 뒤쪽 원소 이동 수에 비례 |
+| `list` 지정 위치 삽입·삭제 | worst $$O(1)$$ | 유효한 iterator가 이미 주어짐; 위치 탐색은 별도 $$O(n)$$ |
+| `list::splice` 전체 list/단일 원소 | $$O(1)$$ | 유효한 위치·원소 iterator와 호환 allocator가 이미 주어짐; 탐색 비용 제외 |
+| `array::swap` | $$O(n)$$ | 길이 $$n$$의 대응 원소를 모두 swap; 원소 swap 비용이 상수 |
+| `set`/`map` 단일 키 탐색·삽입·삭제 | worst $$O(\log n)$$ | 비교 비용이 상수이고 정렬 기준이 유효함 |
+| `unordered_set`/`unordered_map` 탐색·삽입·삭제 | average $$O(1)$$, worst $$O(n)$$ | 적절한 hash 분포와 load factor가 평균 비용의 전제 |
+
+### `vector::push_back`의 amortized $$O(1)$$
+
+슬라이드 11–12의 $$O(1)$$, $$O(n)$$ 표기는 실행시간의 물리 단위가 아니라 입력 크기 $$n$$에 따른 연산 수의 점근적 상한이다. Capacity를 매번 일정 배수 $$g>1$$로 늘린다고 가정하면, $$N$$번의 `push_back` 동안 재할당 복사 수는
+
+$$
+1+g+g^2+\cdots+g^k < \frac{g}{g-1}N=O(N)
+$$
+
+이다. 일반 삽입 $$N$$회의 비용 $$N$$을 더해도 총 $$O(N)$$, 한 번당 평균은 amortized $$O(1)$$이다. 이는 **상각 분석**이며 개별 호출의 worst case는 재할당 때문에 $$O(n)$$이다. 성장 정책이 기하급수적이지 않거나 원소 이동 비용이 상수가 아니면 이 단순한 결론을 그대로 적용할 수 없다. 중간 삽입·삭제가 $$O(n)$$인 이유는 뒤쪽 최대 $$n$$개 원소를 이동해야 하기 때문이다.
+
 ## 마지막 핵심 정리
 
 | 개념 | 꼭 기억할 점 |
@@ -1423,119 +1536,119 @@ int main() {
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. STL의 네 가지 구성 요소는 무엇인가?</summary>
 
 답변: 컨테이너, 이터레이터, 알고리즘, 함수 객체/람다다. 컨테이너는 데이터를 저장하고, 이터레이터는 범위를 표현하며, 알고리즘은 그 범위에 연산을 적용한다. 함수 객체와 람다는 알고리즘에 정렬 기준이나 검색 조건 같은 동작을 전달한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 특별한 이유가 없을 때 `vector`를 먼저 선택하는 이유는 무엇인가?</summary>
 
 답변: <code>vector</code>는 연속 메모리를 사용하므로 임의 접근이 O(1)이고 캐시 효율이 좋다. 뒤쪽 추가도 평균 O(1)이어서 대부분의 순차 데이터 처리에 적합하다. 중간 삽입과 삭제가 잦은 경우가 아니라면 기본 선택지로 충분하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. `reserve()`와 `resize()`의 차이는 무엇인가?</summary>
 
 답변: <code>reserve()</code>는 capacity만 미리 확보하고 실제 원소 개수인 size는 바꾸지 않는다. <code>resize()</code>는 실제 원소 개수를 바꾸며, 크기를 늘리면 새 원소를 생성하고 줄이면 뒤쪽 원소를 제거한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. `end()`는 왜 마지막 원소가 아닌가?</summary>
 
 답변: STL 범위는 <code>[begin, end)</code> 형태로 표현된다. <code>begin()</code>은 첫 원소를 가리키고, <code>end()</code>는 마지막 원소의 다음 위치를 가리킨다. 따라서 반복문은 <code>it != end()</code>까지 순회하고, <code>*end()</code>는 미정의 동작이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. `list`의 중간 삽입이 O(1)이라는 말은 항상 맞는가?</summary>
 
 답변: 위치를 이미 알고 있을 때만 맞다. <code>list</code>에서 iterator 위치가 주어지면 노드 포인터만 바꾸면 되므로 삽입과 삭제가 O(1)이다. 그러나 그 위치를 찾기 위해 처음부터 탐색해야 한다면 탐색 비용 O(n)이 추가된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. 왜 `std::sort`를 `list`에 직접 사용할 수 없는가?</summary>
 
 답변: <code>std::sort</code>는 random access iterator가 필요하다. <code>vector</code>와 <code>array</code>는 random access iterator를 제공하지만, <code>list</code>는 bidirectional iterator만 제공한다. 그래서 <code>list</code>는 전용 멤버 함수인 <code>lst.sort()</code>를 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. `set::find`와 `std::find`의 차이는 무엇인가?</summary>
 
 답변: <code>std::find</code>는 iterator 범위를 앞에서부터 선형 탐색하므로 O(n)이다. 반면 <code>set::find</code>는 set 내부의 정렬 트리 구조를 이용하므로 O(log n)에 검색한다. set에서 특정 원소를 찾을 때는 보통 멤버 함수 <code>find</code>가 더 적절하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. `map["Nobody"]`처럼 없는 키를 읽으면 어떤 일이 생기는가?</summary>
 
 답변: <code>operator[]</code>는 없는 키에 접근하면 해당 키를 기본값으로 삽입한다. 예를 들어 <code>std::map&lt;std::string, int&gt;</code>에서 없는 키를 읽으면 값 0이 들어간 원소가 새로 생길 수 있다. 읽기만 할 때는 <code>at()</code> 또는 <code>find()</code>를 사용하는 것이 안전하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>9. `remove`를 호출했는데 왜 vector 크기가 줄지 않는가?</summary>
 
 답변: <code>std::remove</code>는 원소를 실제로 삭제하지 않고, 남길 원소들을 앞쪽으로 모은 뒤 유효 범위의 끝 iterator를 반환한다. 컨테이너 크기를 줄이려면 반환된 iterator부터 <code>end()</code>까지 <code>erase</code>해야 한다. 이것이 erase-remove 관용구다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>10. `binary_search`와 `lower_bound`를 쓰기 전에 필요한 조건은 무엇인가?</summary>
 
 답변: 범위가 정렬되어 있어야 한다. 이진 검색 계열 알고리즘은 정렬된 범위를 전제로 O(log n)에 동작한다. 정렬되지 않은 데이터에 사용하면 결과가 올바르지 않을 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>11. 람다의 캡처 리스트는 왜 필요한가?</summary>
 
 답변: 람다 본문에서 바깥 지역 변수를 사용하려면 캡처 리스트에 명시해야 한다. <code>[x]</code>는 값을 복사하고, <code>[&x]</code>는 참조로 접근한다. 값 캡처는 람다 생성 시점의 값을 기억하고, 참조 캡처는 원본 변수의 현재 값을 사용하거나 수정할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>12. `copy_if`에서 `back_inserter`를 쓰는 이유는 무엇인가?</summary>
 
 답변: 조건을 만족하는 원소 개수를 미리 모를 때 결과 vector의 크기를 정확히 준비하기 어렵다. <code>std::back_inserter</code>를 사용하면 알고리즘이 결과를 쓸 때마다 내부적으로 <code>push_back</code>을 호출하므로, 빈 vector에도 안전하게 원소를 추가할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>13. `sort`와 `stable_sort`의 차이는 무엇인가?</summary>
 
 답변: 둘 다 전체 범위를 정렬하지만, <code>sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 보장하지 않는다. <code>stable_sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 유지한다. 예를 들어 점수 90점인 A, B가 원래 A 다음 B 순서였다면, 점수 기준 안정 정렬 후에도 A, B 순서가 유지된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>14. `partial_sort`와 `nth_element`는 전체 정렬과 어떻게 다른가?</summary>
 
 답변: <code>partial_sort</code>는 앞 N개만 정렬된 상태로 만들고, 뒤쪽 나머지 순서는 보장하지 않는다. <code>nth_element</code>는 n번째 위치에 들어갈 원소만 제자리로 보내며, 그 왼쪽은 n번째 원소 이하, 오른쪽은 n번째 원소 이상이 되게 한다. 둘 다 전체 정렬이 필요 없는 상황에서 비용을 줄이기 위해 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>15. `accumulate`에서 초기값이 중요한 이유는 무엇인가?</summary>
 
 답변: <code>accumulate</code>는 세 번째 인자인 초기값에서 누적을 시작한다. 합계는 0에서 시작하는 것이 자연스럽지만, 곱은 1에서 시작해야 한다. 곱셈 누적의 초기값을 0으로 두면 이후 어떤 값을 곱해도 결과가 계속 0이 된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>16. `transform`, `fill`, `generate`는 각각 언제 쓰는가?</summary>
 
 답변: <code>transform</code>은 각 원소에 함수를 적용해 변환 결과를 저장할 때 쓴다. <code>fill</code>은 이미 존재하는 범위를 같은 값으로 채울 때 쓴다. <code>generate</code>는 함수를 매번 호출한 결과로 범위를 채울 때 쓰며, 람다 캡처를 이용해 0, 1, 2처럼 상태가 변하는 값을 만들 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>17. `binary_search`, `lower_bound`, `upper_bound`의 공통 전제는 무엇인가?</summary>
 
 답변: 세 함수 모두 정렬된 범위에서만 올바르게 동작한다. <code>binary_search</code>는 값의 존재 여부를 bool로 반환하고, <code>lower_bound</code>는 key 이상인 첫 위치, <code>upper_bound</code>는 key 초과인 첫 위치를 iterator로 반환한다.

@@ -66,7 +66,7 @@ Pilot assignment도 다루지만, 논문의 결론은 pilot assignment보다 max
 
 ### 실험 설정과 결과 해석
 
-주요 수치 실험은 \(M=100\) AP, \(K=40\) users, pilot 길이 \(\tau^{cf}=\tau_d^{sc}=\tau_u^{sc}=20\)을 기본으로 한다. Carrier frequency는 1.9 GHz, bandwidth는 20 MHz, noise figure는 9 dB이며, 200개의 AP/user location 및 shadow fading realization을 생성해 cumulative distribution을 계산한다.
+주요 수치 실험은 $$M=100$$ AP, $$K=40$$ users, pilot 길이 $$\tau^{cf}=\tau_d^{sc}=\tau_u^{sc}=20$$을 기본으로 한다. Carrier frequency는 1.9 GHz, bandwidth는 20 MHz, noise figure는 9 dB이며, 200개의 AP/user location 및 shadow fading realization을 생성해 cumulative distribution을 계산한다.
 
 Greedy pilot assignment와 max-min power control을 함께 쓴 경우 95%-likely per-user net throughput은 다음처럼 보고된다.
 

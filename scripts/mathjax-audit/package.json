@@ -1,0 +1,12 @@
+{
+  "name": "gitblog-mathjax-audit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned dependencies for the GitBlog MathJax validation scripts.",
+  "dependencies": {
+    "mathjax-full": "3.2.2"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.9.12"
+  }
+}

@@ -1,0 +1,74 @@
+name: Validate GitBlog content
+
+"on":
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          ruby-version: "3.3.4"
+
+      - name: Install GitHub Pages build environment
+        run: gem install github-pages --version 232 --no-document
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: "22"
+
+      - name: Install and audit pinned MathJax renderer
+        run: |
+          mkdir -p "$RUNNER_TEMP/mathjax-audit"
+          cp scripts/mathjax-audit/package.json scripts/mathjax-audit/package-lock.json "$RUNNER_TEMP/mathjax-audit/"
+          npm ci --prefix "$RUNNER_TEMP/mathjax-audit" --ignore-scripts
+          npm audit --prefix "$RUNNER_TEMP/mathjax-audit" --audit-level=moderate
+
+      - name: Validate public Markdown and navigation
+        run: |
+          ruby scripts/test_validate_blog.rb
+          ruby scripts/validate_blog.rb
+          node scripts/test_resource_reader.cjs
+          ruby scripts/test_kramdown_math_render.rb
+          NODE_PATH="$RUNNER_TEMP/mathjax-audit/node_modules" node scripts/test_mathjax_tex_render_fixture.cjs
+          NODE_PATH="$RUNNER_TEMP/mathjax-audit/node_modules" node scripts/test_mathjax_tex_render.cjs
+
+      - name: Build site with GitHub Pages Jekyll
+        env:
+          JEKYLL_ENV: production
+        run: >
+          jekyll _3.10.0_ build
+          --safe
+          --strict_front_matter
+          --destination "$RUNNER_TEMP/gitblog-site"
+
+      - name: Check changed lines for whitespace errors
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            git diff --check "$BASE_SHA...$HEAD_SHA"
+          elif [[ "$BEFORE_SHA" =~ ^0+$ ]]; then
+            git show --check --format= "$HEAD_SHA"
+          else
+            git diff --check "$BEFORE_SHA..$HEAD_SHA"
+          fi

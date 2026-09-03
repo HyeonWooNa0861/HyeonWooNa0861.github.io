@@ -5,8 +5,8 @@
 <ul class="post-list content-catalog-list">
   {% for study in study_catalog_items %}
     <li class="post-card content-card">
-      <a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url }}">{{ study.title }}</a>
-      <p>{{ study.topic }}</p>
+      <a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url | escape }}">{{ study.title | escape }}</a>
+      <p>{{ study.topic | escape }}</p>
       {% include content-taxonomy.html item=study mode="compact" %}
     </li>
   {% endfor %}

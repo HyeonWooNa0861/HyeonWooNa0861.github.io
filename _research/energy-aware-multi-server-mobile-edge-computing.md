@@ -55,9 +55,9 @@ MEC는 사용자 장치의 계산 부담을 줄일 수 있지만, 모든 사용�
 
 ## 2. 시스템 모델
 
-네트워크에는 \(N\)개의 MEC server와 \(K\)명의 user가 있다. 시간은 slot 단위로 진행되며, 각 사용자는 Poisson process에 따라 계산 task를 받는다. 사용자는 각 slot에서 idle, local computation, offloading 중 하나의 상태로 동작한다.
+네트워크에는 $$N$$개의 MEC server와 $$K$$명의 user가 있다. 시간은 slot 단위로 진행되며, 각 사용자는 Poisson process에 따라 계산 task를 받는다. 사용자는 각 slot에서 idle, local computation, offloading 중 하나의 상태로 동작한다.
 
-사용자 \(j\)의 에너지 \(E_j(t)\)는 local computation, offloading, standby energy에 의해 줄어든다. 한 사용자의 에너지가 0 이하가 되면 episode가 종료되며, 이것이 system lifetime을 결정한다.
+사용자 $$j$$의 에너지 $$E_j(t)$$는 local computation, offloading, standby energy에 의해 줄어든다. 한 사용자의 에너지가 0 이하가 되면 episode가 종료되며, 이것이 system lifetime을 결정한다.
 
 ## 3. Local computation과 offloading
 
@@ -79,7 +79,7 @@ Agent의 reward는 선택된 사용자가 offloading으로 처리한 bit 수를 
 
 ## 6. 실험 결과 해석
 
-논문은 10m \(\times\) 10m network area, FDMA, 여러 MEC server와 user를 둔 시뮬레이션을 사용한다. DQN은 2-layer neural network를 사용하고, \(\epsilon\)-greedy exploration과 replay buffer로 학습된다.
+논문은 10m $$\times$$ 10m network area, FDMA, 여러 MEC server와 user를 둔 시뮬레이션을 사용한다. DQN은 2-layer neural network를 사용하고, $$\epsilon$$-greedy exploration과 replay buffer로 학습된다.
 
 비교 기준선은 average queue waiting time이 큰 사용자를 고르는 Time-Greedy Agent와 energy level이 낮은 사용자를 고르는 Energy-Greedy Agent이다. 제안 방법은 두 기준선보다 task computation time과 system lifetime 사이에서 더 나은 trade-off를 보인다.
 

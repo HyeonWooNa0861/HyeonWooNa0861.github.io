@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 9: Recap & Current Trends
 
 Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 마지막 강의는 세 부분으로 구성된다. 첫 부분은 전체 수업 복습으로, tokenization과 word2vec에서 시작해 RNN의 long-range dependency 한계, self-attention, transformer encoder와 decoder, RoPE, grouped query attention, pre-norm, BERT, GPT, T5, mixture of experts, temperature sampling까지 이어진다.
 
@@ -55,6 +58,101 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 | Masked Diffusion Model | text diffusion에서 noise의 analogue를 mask token으로 보고, 완전히 또는 부분적으로 masked된 sequence를 점진적으로 unmask하는 모델 계열이다. |
 | Model collapse | LLM generated text가 다양성이 낮아 training data distribution을 바꾸고 학습 품질을 떨어뜨릴 수 있다는 문제로 소개된다. |
 
+## 수식 해설: recap 식과 empirical trend의 경계
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Scaled attention과 RoPE | 00:05:05–00:07:50 | Attention 공식과 RoPE의 상대 위치 역할은 강의 원문이며, 분산·rotation identity 유도는 Lectures 1–2의 작성자 보충을 재사용한다. |
+| Chinchilla rule | 00:17:30–00:17:45 | 약 $$20N$$ token이라는 rule of thumb은 강의 원문이며, 보편 theorem이 아니라는 경계 설명은 작성자 보충이다. |
+| FlashAttention | 00:18:19–00:20:16 | HBM/SRAM tiling, exact method, recomputation 설명은 강의 원문이며, bitwise equality 경계는 작성자 보충이다. |
+| Bradley-Terry와 GRPO recap | 00:25:54–00:26:06, 00:32:40–00:38:26 | Preference probability와 group-relative learning은 강의 원문이며, 식의 가정·정규화 한계는 Lectures 5–6의 작성자 보충을 재사용한다. |
+
+강의가 복습한 scaled attention은
+
+$$
+\operatorname{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+$$
+
+이며 $$\sqrt{d_k}$$ scale은 독립·평균 0·단위분산인 query/key 성분을 가정할 때 dot-product variance $$d_k$$를 1로 맞춘다. RoPE는 rotation identity $$R(m)^\top R(n)=R(n-m)$$로 relative position을 반영한다. 두 유도와 기호 정의는 Lectures 1-2의 수식 해설을 따른다.
+
+Preference tuning의 Bradley-Terry relation은
+
+$$
+P(y_w\succ y_l)=\sigma(r_w-r_l)
+$$
+
+이라는 pairwise probability model이고, GRPO의 $$A_i=(R_i-\bar R)/(s_R+\varepsilon)$$는 group-relative score 정의다. 전자는 실제 human preference에 대한 modeling assumption이고, 후자는 absolute correctness를 보장하지 않는다. 자세한 BCE·KL·clipping 경계는 Lectures 5-6에서 유도했다.
+
+Parameter 수 $$N$$에 대해 training token을 약 $$20N$$으로 두는 rule, 더 많은 reasoning token이 더 높은 정확도를 준다는 관찰, diffusion LLM의 속도 우위는 모두 특정 실험·hardware·model regime의 **empirical result 또는 rule of thumb**이다. 수학적 항등식이나 보편 theorem으로 증명하지 않으며, 새로운 model에는 compute accounting, data quality, latency와 benchmark를 다시 측정해야 한다.
+
+FlashAttention은 softmax attention 자체를 근사하는 식이 아니라 tiling과 online normalization으로 같은 결과를 계산하는 exact algorithm이다. 다만 floating-point 연산 순서가 달라 bitwise-identical output까지 보장한다는 뜻은 아니다.
+
+Lecture 9만 읽어도 유도 경계를 확인할 수 있도록 핵심식을 다시 적는다. RoPE는 rotation matrix의 $$R(a)^\top=R(-a)$$와 $$R(a)R(b)=R(a+b)$$에서
+
+$$
+(R(m\theta)q)^\top(R(n\theta)k)
+=q^\top R((n-m)\theta)k
+$$
+
+를 얻는다. 따라서 score는 상대 위치 $$n-m$$에 의존한다. 이는 00:07:37–00:07:50의 RoPE 복습에 대한 작성자 보충 유도이며 long-context 품질 자체의 증명은 아니다.
+
+Bradley-Terry는
+
+$$
+\frac{e^{r_w}}{e^{r_w}+e^{r_l}}
+=\frac{1}{1+e^{-(r_w-r_l)}}
+=\sigma(r_w-r_l)
+$$
+
+로, 첫 분수의 분자·분모를 $$e^{r_w}$$로 나눈 결과다. 이는 00:25:54–00:26:06의 강의 원문 공식을 자립적으로 전개한 것이며 실제 human preference가 logistic relation을 따른다는 것은 modeling assumption이다.
+
+GRPO는 같은 prompt의 reward $$R_i$$에 대해
+
+$$
+\bar R=\frac1G\sum_iR_i,
+\qquad
+s_R=\sqrt{\frac1G\sum_i(R_i-\bar R)^2},
+\qquad
+A_i=\frac{R_i-\bar R}{s_R+\varepsilon}
+$$
+
+로 relative advantage를 만든다. $$s_R=0$$이면 상대 reward 신호가 없고 $$\varepsilon>0$$은 수치 안정화용이다. Completion 길이를 $$T_i$$, token ratio를 $$\rho_{i,t}=\pi_\theta(o_{i,t}\mid\cdot)/\pi_{old}(o_{i,t}\mid\cdot)$$라 하면 대표 objective는
+
+$$
+J_{GRPO}=\mathbb E\!\left[
+\frac1G\sum_{i=1}^{G}\frac1{T_i}\sum_{t=1}^{T_i}
+\left\{
+\min\!\left(\rho_{i,t}A_i,
+\operatorname{clip}(\rho_{i,t},1-\epsilon,1+\epsilon)A_i\right)
+-\beta\widehat D_{KL,i,t}
+\right\}\right]
+$$
+
+한 가지 sampled-token KL estimator까지 명시하면
+
+$$
+\widehat D_{KL,i,t}
+=\frac{\pi_{ref}(o_{i,t}\mid\cdot)}{\pi_\theta(o_{i,t}\mid\cdot)}
+-\log\frac{\pi_{ref}(o_{i,t}\mid\cdot)}{\pi_\theta(o_{i,t}\mid\cdot)}-1\ge0
+$$
+
+이다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 오며, ratio와 log가 유한하려면 sampled token에서 current·old·reference probability가 양수여야 한다. $$\epsilon>0$$은 ratio clip 폭, $$\beta\ge0$$는 reference-policy KL penalty 강도다. 이 식들은 00:32:40–00:38:26의 value model 제거와 group 비교 설명을 Lecture 6의 정의로 보충한 것이며, KL estimator와 normalization 위치는 구현별로 다를 수 있다. Clipping은 monotonic improvement나 absolute correctness를 보장하지 않는다.
+
+마지막으로 FlashAttention의 online-softmax row recurrence는 $$m=-\infty,\ell=0,u=0$$에서 시작해 새 score block $$B$$에 대해
+
+$$
+m'=\max(m,\max_{j\in B}s_j),
+$$
+
+$$
+\ell'=e^{m-m'}\ell+\sum_{j\in B}e^{s_j-m'},
+\qquad
+u'=e^{m-m'}u+\sum_{j\in B}e^{s_j-m'}v_j,
+\qquad o'=u'/\ell'.
+$$
+
+모든 block 뒤에는 $$o'=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 되어 real arithmetic에서 vanilla attention과 같다. 이는 00:18:19–00:20:16의 exact tiling 설명에 대한 작성자 보충이며, unmasked finite score가 하나 이상 있어 $$\ell'>0$$이어야 한다. Floating-point reduction 순서 때문에 bitwise equality까지 뜻하지 않는다.
+
 ## 학습 포인트
 
 - Self-attention은 query, key, value를 사용해 모든 token이 서로 attend하게 하며, 강의는 softmax(QK^T / sqrt(k))V 공식을 복습한다.
@@ -80,42 +178,42 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. word2vec 표현의 한계가 transformer로 이어지는 이유는 무엇인가?</summary>
 
 답변: word2vec은 같은 단어에 같은 표현을 주므로 문맥에 따라 의미가 달라지는 문제를 충분히 다루지 못한다. RNN은 순차 처리로 문맥을 반영하지만 long-range dependency가 약했고, self-attention은 token 사이의 직접 연결로 이를 보완했다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. FlashAttention이 더 많은 재계산을 하면서도 빨라질 수 있는 이유는 무엇인가?</summary>
 
 답변: 병목이 계산량만이 아니라 HBM 같은 큰 느린 메모리와의 read/write이기 때문이다. 일부 중간 결과를 저장하지 않고 SRAM에서 block 단위로 계산하며 필요할 때 재계산하면 memory movement를 줄여 전체 runtime을 줄일 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. GRPO가 PPO보다 reasoning model 학습에 매력적인 이유는 무엇인가?</summary>
 
 답변: GRPO는 value model을 따로 학습하고 유지하지 않아도 되고, math나 coding처럼 정답을 검증할 수 있는 task에서는 reward model 없이 verifiable reward를 사용할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Vision Transformer가 convolutional neural network와 대비되는 점은 무엇인가?</summary>
 
 답변: CNN은 sliding window와 같은 강한 vision inductive bias를 갖지만, ViT는 image patch들이 self-attention으로 서로 attend하게 하며 상대적으로 낮은 inductive bias를 갖는다. 충분한 image data가 있으면 이 방식이 잘 동작할 수 있다고 설명된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Diffusion-based LLM이 autoregressive LLM보다 빠를 수 있는 핵심 이유는 무엇인가?</summary>
 
 답변: autoregressive LLM은 출력 token 수만큼 순차 forward pass가 필요하지만, diffusion LLM은 정해진 수의 diffusion step으로 여러 mask token을 점진적으로 채울 수 있어 긴 출력에서 forward pass 수가 더 적을 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. 강의가 최신 LLM 흐름을 따라가기 위해 제안한 자료원은 무엇인가?</summary>
 
 답변: arXiv, NeurIPS 같은 학회, HuggingFace trending papers, X/Twitter 커뮤니티, Yannic Kilcher와 Andrej Karpathy의 YouTube 자료, company blogs, 그리고 수업 study guide가 언급된다.

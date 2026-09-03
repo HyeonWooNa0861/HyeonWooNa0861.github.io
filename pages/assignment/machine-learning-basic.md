@@ -10,8 +10,8 @@ permalink: /assignment/machine-learning-basic/
   {% assign assignments = site.assignment | where: "course", "Machine Learning Basic" | sort: "title" %}
   {% for assignment in assignments %}
     <li class="post-card">
-      <a class="branch-card-link" data-label="{{ assignment.title | escape }}" href="{{ assignment.url | relative_url }}">{{ assignment.title }}</a>
-      <p>{{ assignment.course }} · {{ assignment.topic }}</p>
+      <a class="branch-card-link" data-label="{{ assignment.title | escape }}" href="{{ assignment.url | relative_url | escape }}">{{ assignment.title | escape }}</a>
+      <p>{{ assignment.course | escape }} · {{ assignment.topic | escape }}</p>
     </li>
   {% endfor %}
 </ul>

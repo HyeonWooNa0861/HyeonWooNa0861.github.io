@@ -59,8 +59,8 @@ Dueling architecture는 neural network의 마지막 부분을 두 stream으로 �
 
 | Stream | 의미 |
 |---|---|
-| Value stream | 상태 \(s\) 자체의 가치 \(V(s)\) 추정 |
-| Advantage stream | 특정 action \(a\)가 평균보다 얼마나 좋은지 \(A(s,a)\) 추정 |
+| Value stream | 상태 $$s$$ 자체의 가치 $$V(s)$$ 추정 |
+| Advantage stream | 특정 action $$a$$가 평균보다 얼마나 좋은지 $$A(s,a)$$ 추정 |
 
 최종 Q-value는 두 값을 결합해 얻는다. 이때 advantage의 평균을 빼는 방식으로 identifiability 문제를 완화한다.
 

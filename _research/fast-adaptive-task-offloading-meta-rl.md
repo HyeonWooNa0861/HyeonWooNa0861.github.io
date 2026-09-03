@@ -48,22 +48,22 @@ Mobile edge computing의 offloading 결정은 task dependency, 무선 전송률,
 
 ### 문제 모델
 
-Application은 directed acyclic graph \(G(T,E)\)로 표현된다. 각 node \(t_i\)는 subtask이고, edge는 선행 task가 끝난 뒤 후속 task가 실행될 수 있음을 나타낸다. Scheduling decision은 node 순서대로 local execution 또는 edge offloading을 선택하는 binary sequence가 된다.
+Application은 directed acyclic graph $$G(T,E)$$로 표현된다. 각 node $$t_i$$는 subtask이고, edge는 선행 task가 끝난 뒤 후속 task가 실행될 수 있음을 나타낸다. Scheduling decision은 node 순서대로 local execution 또는 edge offloading을 선택하는 binary sequence가 된다.
 
 | 구성 | 논문에서의 역할 |
 |---|---|
 | User equipment | application parser, local trainer, offloading scheduler를 가진 실행 주체 |
 | MEC host | meta policy를 학습하고, remote execution service를 제공하는 edge 측 주체 |
-| Local execution | \(T_i^{UE}=C_i/f_{UE}\) 형태로 CPU cycle과 local CPU frequency에 의해 지연이 결정됨 |
+| Local execution | $$T_i^{UE}=C_i/f_{UE}$$ 형태로 CPU cycle과 local CPU frequency에 의해 지연이 결정됨 |
 | Edge execution | uplink transmission, VM execution, downlink return delay가 합쳐짐 |
-| VM resource | server capacity를 VM 수로 나눈 \(f_{vm}=f_s/k\)로 표현됨 |
+| VM resource | server capacity를 VM 수로 나눈 $$f_{vm}=f_s/k$$로 표현됨 |
 
 MDP는 하나의 DAG 전체 결정을 sequence prediction으로 보는 방식에 가깝다.
 
 | MDP 요소 | 내용 |
 |---|---|
-| State | encoded DAG와 partial offloading plan \(A_{1:i}\) |
-| Action | \(A=\{0,1\}\), 0은 local execution, 1은 offloading |
+| State | encoded DAG와 partial offloading plan $$A_{1:i}$$ |
+| Action | $$A=\{0,1\}$$, 0은 local execution, 1은 offloading |
 | Reward | 새 결정을 추가했을 때 증가한 completion latency의 음수 |
 | Objective | exit task의 finish time, 즉 전체 application latency 최소화 |
 
@@ -71,23 +71,23 @@ MDP는 하나의 DAG 전체 결정을 sequence prediction으로 보는 방식에
 
 ### 제안 방법: MRLCO
 
-MRLCO는 Model-Agnostic Meta-Learning 계열의 아이디어를 offloading RL에 맞춘다. 여러 computation offloading task를 sampled task batch로 보고, 각 task에서 inner-loop PPO update를 수행한 뒤, outer-loop에서 빠르게 적응 가능한 초기 parameter \(\theta\)를 갱신한다.
+MRLCO는 Model-Agnostic Meta-Learning 계열의 아이디어를 offloading RL에 맞춘다. 여러 computation offloading task를 sampled task batch로 보고, 각 task에서 inner-loop PPO update를 수행한 뒤, outer-loop에서 빠르게 적응 가능한 초기 parameter $$\theta$$를 갱신한다.
 
 ### Sequence-to-sequence offloading policy
 
 논문은 offloading decision을 단순한 fixed-size vector classification으로 두지 않고, DAG를 입력받아 decision sequence를 출력하는 custom sequence-to-sequence network로 만든다. Encoder는 task profile과 dependency 정보를 embedding하고, decoder는 attention을 통해 이전 decision과 graph context를 참조하며 다음 node의 offloading action을 선택한다.
 
-Policy head는 action probability를 만들고, value head는 PPO/GAE 학습에 필요한 value estimate를 제공한다. 논문은 encoder/decoder에 LSTM을 사용하며, inference complexity를 \(O(n^2)\)로 설명한다. 실제 mobile application의 subtask 수가 보통 100개 미만이라는 가정 아래 이 비용은 허용 가능하다고 본다.
+Policy head는 action probability를 만들고, value head는 PPO/GAE 학습에 필요한 value estimate를 제공한다. 논문은 encoder/decoder에 LSTM을 사용하며, inference complexity를 $$O(n^2)$$로 설명한다. 실제 mobile application의 subtask 수가 보통 100개 미만이라는 가정 아래 이 비용은 허용 가능하다고 본다.
 
 ### Meta-RL update
 
 Inner loop는 vanilla policy gradient가 아니라 PPO clipped surrogate objective와 generalized advantage estimation을 사용한다. Outer loop는 second-order gradient를 그대로 쓰지 않고 first-order approximation을 사용해 계산량을 줄인다. 알고리즘 흐름은 다음과 같다.
 
 1. MEC host가 여러 offloading task를 meta batch로 sampling한다.
-2. 각 task에서 현재 meta policy \(\theta\)로 trajectory를 수집한다.
-3. PPO objective로 \(m\)번 inner update를 수행해 task-specific policy \(\theta'\)를 얻는다.
-4. \(\theta'\)들의 성능을 기준으로 first-order meta gradient를 계산한다.
-5. Adam으로 \(\theta\)를 갱신하고, user equipment는 이 meta policy를 내려받아 local adaptation에 사용한다.
+2. 각 task에서 현재 meta policy $$\theta$$로 trajectory를 수집한다.
+3. PPO objective로 $$m$$번 inner update를 수행해 task-specific policy $$\theta'$$를 얻는다.
+4. $$\theta'$$들의 성능을 기준으로 first-order meta gradient를 계산한다.
+5. Adam으로 $$\theta$$를 갱신하고, user equipment는 이 meta policy를 내려받아 local adaptation에 사용한다.
 
 이 구조 때문에 논문의 핵심 주장은 "MRLCO가 optimal policy를 즉시 맞힌다"가 아니라 "unseen task distribution에서도 적은 update로 fine-tuning DRL보다 빠르게 좋은 offloading decision에 접근한다"이다.
 
@@ -97,23 +97,23 @@ Inner loop는 vanilla policy gradient가 아니라 PPO clipped surrogate objecti
 
 | 항목 | 값 |
 |---|---:|
-| Inner-loop learning rate \(\alpha\) | \(5\times10^{-4}\) |
-| Outer-loop learning rate \(\beta\) | \(5\times10^{-4}\) |
-| PPO clip \(\epsilon\) | 0.2 |
-| Value loss coefficient \(c_1\) | 0.5 |
-| Discount factor \(\gamma\) | 0.99 |
-| GAE parameter \(\lambda\) | 0.95 |
-| Inner gradient steps \(m\) | 3 |
+| Inner-loop learning rate $$\alpha$$ | $$5\times10^{-4}$$ |
+| Outer-loop learning rate $$\beta$$ | $$5\times10^{-4}$$ |
+| PPO clip $$\epsilon$$ | 0.2 |
+| Value loss coefficient $$c_1$$ | 0.5 |
+| Discount factor $$\gamma$$ | 0.99 |
+| GAE parameter $$\lambda$$ | 0.95 |
+| Inner gradient steps $$m$$ | 3 |
 
 Simulation은 synthetic DAG를 사용하지만, task size와 CPU cycle, dependency shape, transmission rate를 바꾸어 unseen setting을 만든다.
 
 | 항목 | 설정 |
 |---|---|
 | UE CPU | 1 GHz |
-| MEC VM capacity | \(4\times2.5=10\) GHz |
+| MEC VM capacity | $$4\times2.5=10$$ GHz |
 | Task input data | 5 KB to 50 KB |
-| Task CPU cycles | \(10^7\) to \(10^8\) cycles |
-| DAG parent/child index vector | \(p=12\) |
+| Task CPU cycles | $$10^7$$ to $$10^8$$ cycles |
+| DAG parent/child index vector | $$p=12$$ |
 | Communication-to-computation ratio | 0.3 to 0.5 |
 | Transmission-rate study | train 4 to 22 Mbps, test 5.5, 8.5, 11.5 Mbps |
 

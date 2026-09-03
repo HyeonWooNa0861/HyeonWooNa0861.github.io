@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "Autonomous Driving 2"
 course: "AIX"
 topic: "Tesla Occupancy and Driving Foundation Models"
@@ -32,6 +33,10 @@ Source PDF: `Autonomous_Driving_2.pdf`
 | 6 | Representation-level end-to-end | camera-to-steering과는 어떻게 다른 end-to-end인가? |
 | 7 | CVPR 2023 foundation model | shared world representation은 왜 중요해졌는가? |
 | 8 | Data engine과 fleet learning | foundation model 성능은 어떤 폐루프에 의존하는가? |
+
+### 수식 원문 대응
+
+이 자료의 직접적인 핵심 수식은 p.7의 $$Q,K,V$$ 기반 scaled dot-product attention이다. 본문의 mask·행렬 차원·가중합 표기는 그 식을 occupancy query 문맥으로 풀어 쓴 **정의**이고, $$\sqrt{d_k}$$ 설명은 독립·평균 0·단위분산을 둔 **근사적 분산 분석**이다. p.8은 fixed query와 positional encoding을 도식으로 제시하며 별도의 증명식을 주지 않는다. 나머지 p.2-6, p.9-41은 occupancy, geometry, temporal alignment, foundation model 및 fleet-learning 구조를 설명하는 개념·경험 자료이므로 인위적인 수식 증명을 추가하지 않았다.
 
 ## 1. 2022 Occupancy Pivot
 
@@ -87,6 +92,16 @@ multi-camera images
 | Positional encoding | 공간 위치 정보를 attention 계산에 제공 |
 | Key/value | camera image feature에서 가져올 정보 |
 | Attention | 어떤 view와 feature가 해당 3D 위치에 중요한지 선택 |
+
+슬라이드에 제시된 attention 계산을 occupancy 문맥에 맞춰 쓰면 다음과 같다.
+
+$$
+O=\operatorname{softmax}\left(\frac{QK^T}{\sqrt{d_k}}+M\right)V
+$$
+
+$$Q\in\mathbb{R}^{n_q\times d_k}$$는 $$n_q$$개 공간 query, $$K\in\mathbb{R}^{n_f\times d_k}$$와 $$V\in\mathbb{R}^{n_f\times d_v}$$는 $$n_f$$개 image feature, $$M$$은 볼 수 없는 위치에 $$-\infty$$를 주는 선택적 mask다. 모두 learned representation이므로 물리 단위는 없다. 행별 softmax weight $$\alpha_{ij}$$는 합이 1이고, 각 output query는 $$o_i=\sum_j\alpha_{ij}v_j$$라는 value의 가중합이 된다. 이는 attention의 **정의**이며, weight가 높은 feature가 인과적으로 중요하다는 증명은 아니다.
+
+Scaling은 query와 key 성분이 독립·평균 0·분산 1이라고 근사할 때 dot product 분산이 $$d_k$$가 되는 데서 나온다. $$\sqrt{d_k}$$로 나누면 분산이 약 1이 되어 softmax 포화를 줄인다. 실제 feature는 상관될 수 있으므로 이는 **근사적 분산 분석**이다. Camera calibration, positional encoding 또는 query 위치가 틀리면 attention 연산 자체가 정상이어도 잘못된 3D cell에 정보를 모을 수 있다.
 
 이 구조는 classical perception과 transformer-era representation learning 사이의 bridge로 볼 수 있다.
 
@@ -185,21 +200,21 @@ multi-camera feature가 attention-based lifting을 거쳐 3D voxel occupancy가 
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Object detector가 높은 정확도를 가져도 occupancy가 필요한 이유는 무엇인가?</summary>
 
 답변: object detector는 정해진 객체 class와 bounding box 중심으로 환경을 본다. 그러나 주행에는 도로 위 점유 공간, 비정형 장애물, 가려진 영역, free space도 중요하다. occupancy는 객체가 무엇인지보다 어디가 차 있는지를 표현하므로 planning에 더 직접적인 정보를 제공한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Fixed query와 positional encoding이 3D occupancy attention에서 하는 역할을 설명하라.</summary>
 
 답변: fixed query는 3D 공간의 각 위치나 voxel을 질의하는 기준점 역할을 한다. positional encoding은 그 query가 공간상 어디에 있는지 모델에 알려준다. attention은 이미지 feature와 이 공간 query를 연결해 2D 관측을 3D occupancy 표현으로 끌어올린다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Fleet learning loop가 foundation model for driving의 일부로 봐야 하는 이유는 무엇인가?</summary>
 
 답변: 실제 차량 fleet에서 수집되는 데이터는 드문 상황과 실패 사례를 계속 보강한다. 이 데이터가 labeling, training, validation을 거쳐 모델에 다시 반영되면 주행 모델은 점점 더 넓은 상황을 학습한다. 그래서 fleet learning loop는 단순 배포 과정이 아니라 driving foundation model을 키우는 핵심 학습 체계다.

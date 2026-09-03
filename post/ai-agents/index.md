@@ -10,8 +10,8 @@ permalink: /post/ai-agents/
   {% assign posts = site.posts | where: "section", "ai-agents" | sort: "date" | reverse %}
   {% for post in posts %}
     <li class="post-card">
-      <a class="branch-card-link" data-label="{{ post.title | escape }}" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <p>{{ post.date | date: "%Y-%m-%d" }} · {{ post.categories | join: ", " }}</p>
+      <a class="branch-card-link" data-label="{{ post.title | escape }}" href="{{ post.url | relative_url | escape }}">{{ post.title | escape }}</a>
+      <p>{{ post.date | date: "%Y-%m-%d" | escape }} · {{ post.categories | join: ", " | escape }}</p>
     </li>
   {% endfor %}
 </ul>

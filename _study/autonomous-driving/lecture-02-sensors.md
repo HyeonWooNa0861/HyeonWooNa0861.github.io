@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 10:45:36 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "Lecture 2: Sensors for Autonomous Driving"
 course: "Autonomous Driving"
 topic: "Camera, LiDAR, RADAR, and Sensor-Stack Trade-offs"
@@ -102,40 +103,90 @@ Maps + Sensors
 
 Stereo camera는 간격을 두고 배치한 두 대 이상의 camera로 같은 장면을 촬영한다. 가까운 물체일수록 왼쪽과 오른쪽 영상에서 위치 차이, 즉 disparity가 크게 나타나고 먼 물체일수록 작게 나타난다.
 
-평행한 두 camera를 단순화하면 깊이 \(Z\)는 다음 관계로 설명할 수 있다.
+평행한 두 camera를 단순화하면 깊이 $$Z$$는 다음 관계로 설명할 수 있다.
 
 $$
 Z = \frac{fB}{d}
 $$
 
-- \(f\): camera focal length
-- \(B\): 두 camera 사이의 baseline
-- \(d\): 같은 점이 좌우 영상에서 이동한 disparity
+- $$f$$: camera focal length
+- $$B$$: 두 camera 사이의 baseline
+- $$d$$: 같은 점이 좌우 영상에서 이동한 disparity
+
+| 기호 | 명칭 | 단위 | 주의 |
+|---|---|---|---|
+| $$Z$$ | Optical axis 방향 depth | $$B$$와 같은 길이 단위, 보통 $$\mathrm{m}$$ | rectified pinhole-camera model의 값 |
+| $$f$$ | Focal length | pixel | image coordinate로 계산할 때 pixel 단위를 사용 |
+| $$B$$ | Stereo baseline | $$\mathrm{m}$$ | 두 optical center 사이 거리 |
+| $$d=x_L-x_R$$ | Horizontal disparity | pixel | rectification 뒤 대응점의 horizontal coordinate 차이 |
+
+### 3.1 작성자 보충: $$Z=fB/d$$의 기하학적 유도
+
+이 식은 **평행 optical axis, 동일한 focal length, rectified image, pinhole projection**을 가정한 정확한 기하 관계다. 왼쪽 camera를 원점에 두고 3D 점을 $$(X,Z)$$, 오른쪽 camera를 baseline $$B$$만큼 옮긴 위치에 두면 닮은삼각형으로
+
+$$
+x_L=\frac{fX}{Z},\qquad
+x_R=\frac{f(X-B)}{Z}
+$$
+
+를 얻는다. 두 image coordinate의 차이를 취하면
+
+$$
+d=x_L-x_R
+=\frac{fX-f(X-B)}{Z}
+=\frac{fB}{Z}.
+$$
+
+양변을 정리하면 $$Z=fB/d$$다. 즉 같은 $$f,B$$에서는 disparity가 절반으로 줄 때 추정 depth가 두 배가 된다. 다만 $$d=0$$이면 식의 분모가 0이 되어 유한 depth를 정할 수 없고, 먼 물체처럼 $$d$$가 작을수록 작은 disparity 오차가 크게 증폭된다. 미분한 1차 오차 근사
+
+$$
+|\delta Z|\approx\left|\frac{\partial Z}{\partial d}\right||\delta d|
+=\frac{fB}{d^2}|\delta d|
+=\frac{Z^2}{fB}|\delta d|
+$$
+
+는 이 민감도를 보여준다. 이는 $$\lvert\delta d\rvert\ll d$$일 때만 유효한 선형 근사이며, calibration 오차·lens distortion·잘못된 correspondence까지 포함한 완전한 오차 모델은 아니다.
 
 이 식은 **disparity가 클수록 물체가 가깝고, 작을수록 멀다**는 직관을 보여준다.
 
-> **작성자 보충:** 실제 stereo depth 계산에는 camera calibration, lens distortion 보정, 좌우 영상 정렬과 같은 점을 찾는 correspondence 과정이 필요하다. 질감이 거의 없는 표면, 반복 무늬, 가려짐, 먼 거리에서는 correspondence가 어려워져 depth 오차가 커질 수 있다. NVIDIA의 [Stereo Disparity Workflow](https://docs.nvidia.com/drive/driveworks-3.5/stereo_usecase1.html)는 좌·우 camera의 intrinsic/extrinsic parameter, rectification, occlusion과 invalid disparity 처리를 구현 조건으로 설명한다. 이 문서는 특정 DriveWorks 버전의 개발 문서이므로 일반적인 원리를 보강하는 범위에서만 참고한다.
+> **작성자 보충:** 실제 stereo depth 계산에는 camera calibration, lens distortion 보정, 좌우 영상 정렬과 같은 점을 찾는 correspondence 과정이 필요하다. 질감이 거의 없는 표면, 반복 무늬, 가려짐, 먼 거리에서는 correspondence가 어려워져 depth 오차가 커질 수 있다. NVIDIA의 [Stereo Disparity Workflow](https://docs.nvidia.com/drive/driveworks-3.5/stereo_usecase1.html){:target="_blank" rel="noopener"}는 좌·우 camera의 intrinsic/extrinsic parameter, rectification, occlusion과 invalid disparity 처리를 구현 조건으로 설명한다. 이 문서는 특정 DriveWorks 버전의 개발 문서이므로 일반적인 원리를 보강하는 범위에서만 참고한다.
 
 ## 4. LiDAR: 레이저로 3D geometry 측정하기
 
-LiDAR는 *Light Detection and Ranging*의 약자다. 레이저 pulse를 내보내고 물체에서 반사되어 돌아오기까지 걸린 시간을 분석해 거리를 측정한다. 왕복 시간 \(\Delta t\)를 이용하는 단순한 time-of-flight 모델은 다음과 같다.
+LiDAR는 *Light Detection and Ranging*의 약자다. 레이저 pulse를 내보내고 물체에서 반사되어 돌아오기까지 걸린 시간을 분석해 거리를 측정한다. 왕복 시간 $$\Delta t$$를 이용하는 단순한 time-of-flight 모델은 다음과 같다.
 
 $$
 r = \frac{c\Delta t}{2}
 $$
 
-- \(r\): 센서에서 반사점까지의 거리
-- \(c\): 빛의 속도
-- \(\Delta t\): 레이저 pulse의 왕복 시간
+- $$r$$: 센서에서 반사점까지의 거리
+- $$c$$: 빛의 속도
+- $$\Delta t$$: 레이저 pulse의 왕복 시간
 - 분모의 2: 신호가 물체까지 갔다가 돌아오는 왕복 경로 보정
 
-LiDAR는 여러 방향으로 이 측정을 반복해 각 반사점을 \((x, y, z)\) 좌표로 표현한다. 이렇게 얻은 점 집합이 **3D point cloud**다.
+| 기호 | 명칭 | SI 단위 | 식의 성격 |
+|---|---|---|---|
+| $$r$$ | One-way range | $$\mathrm{m}$$ | 단순 ToF model에서의 거리 |
+| $$c$$ | 빛의 전파 속도 | $$\mathrm{m/s}$$ | 진공에서는 정확히 $$299{,}792{,}458\ \mathrm{m/s}$$, 공기에서는 굴절률에 따라 조금 작음 |
+| $$\Delta t$$ | Round-trip time of flight | $$\mathrm{s}$$ | 송신부터 echo 검출까지의 시간 |
 
-### 4.1 한 frame과 여러 frame
+### 4.1 작성자 보충: $$r=c\Delta t/2$$의 유도와 조건
+
+전파 속도가 왕복 경로에서 일정하고 물체와 sensor가 측정 중 거의 움직이지 않는다고 하자. Pulse는 물체까지 $$r$$, 다시 sensor까지 $$r$$을 이동하므로 총 경로 길이는 $$2r$$다. 거리 = 속도 × 시간 관계에서
+
+$$
+2r=c\Delta t\quad\Longrightarrow\quad r=\frac{c\Delta t}{2}
+$$
+
+가 된다. 이는 위 가정 아래의 **정확한 등식**이며 경험적 보정식이 아니다. 다만 실제 장치의 $$\Delta t$$에는 electronics delay, pulse detection threshold, atmospheric propagation, multipath가 섞이므로 calibration된 offset과 noise model이 추가된다. 물체가 빠르게 움직이거나 echo가 여러 경로로 돌아오면 단일 왕복 경로 가정이 깨진다.
+
+LiDAR는 여러 방향으로 이 측정을 반복해 각 반사점을 $$(x, y, z)$$ 좌표로 표현한다. 이렇게 얻은 점 집합이 **3D point cloud**다.
+
+### 4.2 한 frame과 여러 frame
 
 한 LiDAR frame은 특정 시점의 도로 표면, 차량, 건물과 장애물 표면을 점으로 보여준다. 연속 frame을 시각화하면 차량 이동과 주변 객체 변화를 시간축으로 관찰할 수 있다. 다만 frame을 합치려면 자차의 움직임을 보정하고 좌표계를 정렬해야 한다.
 
-### 4.2 Point cloud에서 BEV로
+### 4.3 Point cloud에서 BEV로
 
 강의 자료는 3D point cloud를 XY 평면에 투영해 **bird's-eye view(BEV)** 로 보는 예를 제시한다.
 
@@ -145,7 +196,7 @@ LiDAR는 여러 방향으로 이 측정을 반복해 각 반사점을 \((x, y, z
 
 BEV에서는 차량 주변의 앞·뒤·좌·우 위치 관계와 거리 구조가 한 좌표계에 놓인다. 이 표현은 object detection, occupancy estimation, map alignment와 motion planning에 유리하다. Camera의 perspective view에서 먼 물체가 작아지는 현상을 줄이고, planner가 사용하는 평면 좌표와 직접 연결하기 쉽기 때문이다.
 
-### 4.3 LiDAR의 강점과 제약
+### 4.4 LiDAR의 강점과 제약
 
 | 관점 | 내용 |
 |---|---|
@@ -170,7 +221,7 @@ RADAR는 *Radio Detection and Ranging*의 약자다. 전파를 송신하고 물�
 - Doppler effect로 물체의 속도를 감지할 수 있다.
 - LiDAR보다 상대적으로 저렴한 구성이 가능하다.
 
-> **작성자 보충:** 일반적인 automotive RADAR는 camera나 고해상도 LiDAR보다 각도·형상·semantic 정보가 거칠 수 있고, multipath reflection이나 여러 target이 가까이 있을 때 측정이 복잡해질 수 있다. Texas Instruments의 [mmWave Radar Range and Angular Resolution](https://www.ti.com/lit/pdf/swra841)은 radar가 range·angle·velocity를 함께 측정하는 원리와 센서별 trade-off를 설명한다. 문서의 제품별 해상도 수치는 전체 automotive RADAR의 보편 사양으로 일반화하지 않는다.
+> **작성자 보충:** 일반적인 automotive RADAR는 camera나 고해상도 LiDAR보다 각도·형상·semantic 정보가 거칠 수 있고, multipath reflection이나 여러 target이 가까이 있을 때 측정이 복잡해질 수 있다. Texas Instruments의 [mmWave Radar Range and Angular Resolution](https://www.ti.com/lit/pdf/swra841){:target="_blank" rel="noopener"}은 radar가 range·angle·velocity를 함께 측정하는 원리와 센서별 trade-off를 설명한다. 문서의 제품별 해상도 수치는 전체 automotive RADAR의 보편 사양으로 일반화하지 않는다.
 
 ## 6. 세 센서의 trade-off
 
@@ -189,11 +240,11 @@ RADAR는 *Radio Detection and Ranging*의 약자다. 전파를 송신하고 물�
 
 ## 7. 작성자 보충: Sensor fusion이 필요한 이유
 
-이 절은 강의 슬라이드의 multi-sensor 차량 사례를 실제 구현 관점으로 확장한 작성자 보충이다. Sensor fusion은 단순히 측정값의 개수를 늘리는 작업이 아니라, 서로 다른 물리 신호를 결합해 한 센서의 약점을 다른 센서의 강점으로 보완하는 과정이다. Waymo의 [Sixth-Generation Driver 소개](https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/)도 camera·LiDAR·RADAR의 overlapping view와 redundancy를 자사 설계 원리로 설명한다. 이는 제조사의 1차 자료이며 독립적인 안전성 증명으로 해석하지 않는다.
+이 절은 강의 슬라이드의 multi-sensor 차량 사례를 실제 구현 관점으로 확장한 작성자 보충이다. Sensor fusion은 단순히 측정값의 개수를 늘리는 작업이 아니라, 서로 다른 물리 신호를 결합해 한 센서의 약점을 다른 센서의 강점으로 보완하는 과정이다. Waymo의 [Sixth-Generation Driver 소개](https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/){:target="_blank" rel="noopener"}도 camera·LiDAR·RADAR의 overlapping view와 redundancy를 자사 설계 원리로 설명한다. 이는 제조사의 1차 자료이며 독립적인 안전성 증명으로 해석하지 않는다.
 
 예를 들어 야간에 camera가 먼 차량의 외형을 선명하게 보지 못하더라도 RADAR는 거리와 상대 속도를 제공할 수 있다. 반대로 RADAR가 인접한 두 물체의 형태를 거칠게 표현할 때 camera와 LiDAR가 경계와 위치를 세밀하게 보완할 수 있다.
 
-효과적인 fusion에는 다음 조건이 필요하다. NVIDIA DriveWorks의 [Calibration Engine](https://docs.nvidia.com/drive/driveworks-3.5/calibration_2engine_2docs_2mainsection_8md_source.html)과 [Time Synchronization](https://docs.nvidia.com/drive/archive/driveworks-3.0/sensors_2time_2docs_2mainsection_8md_source.html)은 각각 sensor intrinsic/extrinsic alignment와 여러 sensor timestamp 정렬의 구현 사례를 제공한다. 두 문서 모두 특정 NVIDIA SDK의 보관 문서이므로 구현 원리를 보강하는 자료로 한정한다.
+효과적인 fusion에는 다음 조건이 필요하다. NVIDIA DriveWorks의 [Calibration Engine](https://docs.nvidia.com/drive/driveworks-3.5/calibration_2engine_2docs_2mainsection_8md_source.html){:target="_blank" rel="noopener"}과 [Time Synchronization](https://docs.nvidia.com/drive/archive/driveworks-3.0/sensors_2time_2docs_2mainsection_8md_source.html){:target="_blank" rel="noopener"}은 각각 sensor intrinsic/extrinsic alignment와 여러 sensor timestamp 정렬의 구현 사례를 제공한다. 두 문서 모두 특정 NVIDIA SDK의 보관 문서이므로 구현 원리를 보강하는 자료로 한정한다.
 
 1. **Calibration:** 센서의 위치와 방향을 공통 vehicle coordinate에 맞춘다.
 2. **Time synchronization:** 서로 다른 주기로 들어오는 측정 시각을 정렬한다.
@@ -225,7 +276,7 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 
 ## 9. 작성자 보충: Sensor suite를 설계할 때의 판단 기준
 
-이 절은 강의의 센서 비교와 차량 사례를 system engineering 관점으로 확장한 작성자 보충이다. NHTSA의 [Automated Driving Systems guidance](https://www.nhtsa.gov/vehicle-manufacturers/automated-driving-systems)는 system safety, Operational Design Domain(ODD), object and event detection and response, fallback, validation을 주요 안전 요소로 제시한다. 이는 센서 종류나 개수를 정하는 규정이 아니라, sensor suite를 전체 운행 범위와 안전 검증 안에서 판단해야 한다는 기준으로 사용한다.
+이 절은 강의의 센서 비교와 차량 사례를 system engineering 관점으로 확장한 작성자 보충이다. NHTSA의 [Automated Driving Systems guidance](https://www.nhtsa.gov/vehicle-manufacturers/automated-driving-systems){:target="_blank" rel="noopener"}는 system safety, Operational Design Domain(ODD), object and event detection and response, fallback, validation을 주요 안전 요소로 제시한다. 이는 센서 종류나 개수를 정하는 규정이 아니라, sensor suite를 전체 운행 범위와 안전 검증 안에서 판단해야 한다는 기준으로 사용한다.
 
 | 판단 기준 | 확인할 질문 |
 |---|---|
@@ -254,53 +305,68 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 
 1. 먼저 `Maps + Sensors -> Perception -> Prediction -> Planning -> Control` 흐름을 외운다.
 2. Camera·LiDAR·RADAR를 **관측 신호, 대표 출력, 강점, 실패 조건**의 네 축으로 비교한다.
-3. 두 depth 식 \(Z=fB/d\)와 \(r=c\Delta t/2\)가 각각 stereo geometry와 LiDAR time-of-flight를 설명한다는 점을 구분한다.
+3. 두 depth 식 $$Z=fB/d$$와 $$r=c\Delta t/2$$가 각각 stereo geometry와 LiDAR time-of-flight를 설명한다는 점을 구분한다.
 4. Point cloud와 BEV의 관계를 그림 없이 말로 설명해 본다.
 5. Waymo·Zoox·Tesla 사례는 회사별 최신 hardware 사양 암기보다, multi-sensor와 vision-centered 설계의 trade-off를 설명하는 데 사용한다.
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Sensor data가 perception 뒤의 planning과 control에도 중요한 이유는 무엇인가?</summary>
 
 답변: Perception은 sensor data를 detection과 track으로 변환하고, prediction은 그 결과로 주변 객체의 미래 움직임을 예측한다. Planning은 이 world model을 바탕으로 trajectory를 만들고 control은 실제 조향과 가속을 수행한다. 초기 관측이 부정확하면 뒤 단계의 판단도 잘못될 수 있으므로 sensor quality는 stack 전체의 기반이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Monocular camera와 stereo camera의 depth 정보 차이를 설명하라.</summary>
 
 답변: 한 대의 camera 영상은 3D 장면이 2D 평면에 투영된 결과이므로 metric depth를 직접 제공하지 않는다. Stereo camera는 서로 떨어진 두 시점에서 같은 점의 disparity를 구하고, focal length와 baseline을 이용해 depth를 계산한다. 다만 calibration과 correspondence 오차에 영향을 받는다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. LiDAR point cloud를 BEV로 투영하는 이유는 무엇인가?</summary>
 
 답변: BEV는 차량 주변 물체와 주행 가능 공간을 동일한 top-down 좌표계에서 보여준다. 거리와 방향 관계가 perspective distortion 없이 정리되므로 object detection, occupancy, map alignment와 trajectory planning에 연결하기 쉽다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. RADAR가 camera와 LiDAR를 완전히 대체하기 어려운 이유는 무엇인가?</summary>
 
 답변: RADAR는 장거리 거리와 상대 속도, 악천후 대응에 강하지만 일반적으로 물체의 색, 문자, 세밀한 경계와 3D 형상을 camera나 고해상도 LiDAR만큼 풍부하게 표현하지 못한다. 따라서 서로 다른 정보를 가진 센서를 결합하는 것이 유리하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Sensor redundancy와 sensor fusion quality가 다른 개념인 이유는 무엇인가?</summary>
 
 답변: Redundancy는 같은 영역을 여러 센서가 관측해 한 센서가 실패해도 정보를 남기는 설계다. Fusion quality는 서로 다른 측정값을 좌표와 시간에 맞게 정렬하고 불확실성을 고려해 일관된 world model로 만드는 능력이다. 센서가 많아도 calibration이나 synchronization이 틀리면 fusion 결과는 나빠질 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Waymo·Zoox·Tesla 사례에서 공통으로 확인해야 할 질문은 무엇인가?</summary>
 
 답변: 센서의 개수보다 어떤 ODD를 목표로 하는지, 필요한 coverage와 detection range를 확보하는지, 각 센서의 실패 조건을 어떻게 보완하는지, compute·전력·비용을 감당하는지, 그리고 perception부터 fail-safe까지 전체 stack을 어떻게 검증하는지를 확인해야 한다.
 
 </details>
+
+## 원문 페이지 대조와 수식 판정
+
+공개된 `02-sensors.pdf`의 **물리 PDF 32쪽 전체를 시각 대조**했다. 원문 슬라이드는 sensor 원리와 장단점을 그림·문장으로 설명하며, 대수적으로 증명해야 할 명시적 수식은 제시하지 않는다.
+
+| 원문 PDF 쪽 | 원문 핵심 | 본문 반영 및 판정 |
+|---:|---|---|
+| 5–7 | 센서의 역할, 감각 정보 비중, autonomous-driving stack | §1과 전체 구조에서 개념·역할을 반영; proof-level 수식 없음 |
+| 9–14 | camera, RGB filter, 장단점, stereo camera | §2–3에서 반영. $$Z=fB/d$$는 원문 식이 아니라 stereo depth 원리를 설명하기 위한 **작성자 보충 유도** |
+| 15–21 | LiDAR 원리, point cloud, BEV, 장단점 | §4에서 반영. $$r=c\Delta t/2$$는 왕복 time-of-flight를 풀어 쓴 **작성자 보충 유도** |
+| 22–23 | RADAR 원리와 Doppler 기반 속도 감지 | §5에서 반영; 원문에 Doppler equation은 없어 임의의 source formula로 추가하지 않음 |
+| 25–28 | Waymo·Zoox·Tesla 사례와 사고 이미지 | §7에서 시점 의존 사례임을 분리해 설명 |
+| 1–4, 8, 24, 29–32 | 표지·구분·요약·예고·질문 | 별도 증명이 필요한 수식 없음 |
+
+따라서 이 자료의 수식 감사 결과는 “원문 수식의 미증명”이 아니라, 본문에 추가한 두 기하·물리 식의 출처 경계와 가정이 명확한지를 확인하는 문제다. 두 식 모두 기호·단위·성립 조건·실패 조건을 해당 절에서 함께 설명한다.
 
 ## PDF
 
@@ -310,9 +376,9 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 
 ### 작성자 보충 참고자료
 
-- [NVIDIA DriveWorks: Stereo Disparity Workflow](https://docs.nvidia.com/drive/driveworks-3.5/stereo_usecase1.html)
-- [Texas Instruments: Understanding Range and Angular Resolution in mmWave Radar Devices](https://www.ti.com/lit/pdf/swra841)
-- [NVIDIA DriveWorks: Calibration Engine](https://docs.nvidia.com/drive/driveworks-3.5/calibration_2engine_2docs_2mainsection_8md_source.html)
-- [NVIDIA DriveWorks: Time Synchronization](https://docs.nvidia.com/drive/archive/driveworks-3.0/sensors_2time_2docs_2mainsection_8md_source.html)
-- [NHTSA: Automated Driving Systems](https://www.nhtsa.gov/vehicle-manufacturers/automated-driving-systems)
-- [Waymo: Meet the 6th-generation Waymo Driver](https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/)
+- [NVIDIA DriveWorks: Stereo Disparity Workflow](https://docs.nvidia.com/drive/driveworks-3.5/stereo_usecase1.html){:target="_blank" rel="noopener"}
+- [Texas Instruments: Understanding Range and Angular Resolution in mmWave Radar Devices](https://www.ti.com/lit/pdf/swra841){:target="_blank" rel="noopener"}
+- [NVIDIA DriveWorks: Calibration Engine](https://docs.nvidia.com/drive/driveworks-3.5/calibration_2engine_2docs_2mainsection_8md_source.html){:target="_blank" rel="noopener"}
+- [NVIDIA DriveWorks: Time Synchronization](https://docs.nvidia.com/drive/archive/driveworks-3.0/sensors_2time_2docs_2mainsection_8md_source.html){:target="_blank" rel="noopener"}
+- [NHTSA: Automated Driving Systems](https://www.nhtsa.gov/vehicle-manufacturers/automated-driving-systems){:target="_blank" rel="noopener"}
+- [Waymo: Meet the 6th-generation Waymo Driver](https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/){:target="_blank" rel="noopener"}

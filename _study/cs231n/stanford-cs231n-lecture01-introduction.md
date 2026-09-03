@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-07-15 22:57:10 +0900
+last_modified_at: 2026-09-03 19:36:09 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CS231N Lecture 1: Introduction
 
 Source: [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture 1](https://youtu.be/2fq9wYslV0A?si=YXCKanCTWpZFstJ2){:target="_blank" rel="noopener"}
+
+Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf){:target="_blank" rel="noopener"} · [Part 2](https://cs231n.stanford.edu/slides/2025/lecture_1_part_2.pdf){:target="_blank" rel="noopener"}
 
 > **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
 
@@ -68,6 +71,29 @@ CNN은 이미지의 공간 구조를 활용한다. 작은 filter를 이미지 �
 | Hierarchy | 낮은 수준 특징에서 높은 수준 의미로 표현 확장 |
 | Backpropagation | feature와 classifier를 함께 학습 |
 
+### 작성자 보충: Backpropagation 식의 chain rule
+
+공식 slide Part 1 p.39와 영상 28:35–29:39는 역전파의 핵심을 다음 chain rule로 제시한다.
+
+$$
+\frac{\partial E_p}{\partial w_{ji}}
+=
+\frac{\partial E_p}{\partial o_{pj}}
+\frac{\partial o_{pj}}{\partial w_{ji}}.
+$$
+
+여기서 $$E_p$$는 sample $$p$$의 error, $$w_{ji}$$는 node $$i$$에서 $$j$$로 가는 weight, $$o_{pj}$$는 sample $$p$$에 대한 node $$j$$의 output이다. 이 식은 $$E_p=E_p(o_{pj}(w_{ji}))$$처럼 error가 이 경로를 통해 weight에 의존하고 두 함수가 해당 지점에서 미분 가능하다고 둘 때의 **정확한 국소 항등식**이다. 합성함수의 미소 변화는
+
+$$
+dE_p
+=\frac{\partial E_p}{\partial o_{pj}}\,do_{pj},
+\qquad
+do_{pj}
+=\frac{\partial o_{pj}}{\partial w_{ji}}\,dw_{ji}
+$$
+
+이므로 두 식을 대입하고 $$dw_{ji}$$의 계수를 비교하면 slide의 식이 나온다. 직관적으로는 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱해 gradient를 뒤로 전달한다. 여러 계산 경로가 같은 변수로 합쳐지면 각 경로의 항을 더해야 하며, 비미분점에서는 선택한 subgradient 규칙까지 명시해야 한다. 이는 slide의 역사적 소개를 풀어 쓴 작성자 보충이며, 전체 network의 역전파 알고리즘 증명은 아니다. Gradient의 단위는 `error / weight`이고, 우변의 `error / output`과 `output / weight`가 곱해져 같은 단위가 된다.
+
 ## 5. ImageNet과 AlexNet
 
 현대 딥러닝의 전환은 알고리즘 하나만의 결과가 아니다. 대규모 데이터, GPU 계산 자원, 학습 가능한 신경망 구조, 역전파가 함께 맞물렸다.
@@ -115,6 +141,18 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 - 현대 vision은 분류를 넘어 검출, 분할, 비디오, 생성, 멀티모달 이해로 확장된다.
 - 비전 시스템은 성능뿐 아니라 편향, 안전, 사회적 영향까지 함께 평가해야 한다.
 
+## 원문 대조 기록
+
+공식 slide 전 페이지(Part 1 69쪽, Part 2 50쪽)를 시각적으로 확인했다. 이 강의는 역사와 course overview가 중심이며, 후속 강의 내용을 예고하는 network diagram·성능 graph를 제외하면 단계별 유도가 필요한 핵심 수식은 Part 1 p.39의 backpropagation chain rule 한 건이다.
+
+| 본문 대응 | 공식 slide | 영상 구간 | 확인 결과 |
+|---|---|---|---|
+| Computer vision의 위치와 역사 | Part 1 pp.5–40 | 03:12–30:37 | AI·vision의 관계, 초기 연구, neural network 계보를 반영 |
+| Backpropagation chain rule | Part 1 p.39 | 28:35–29:39 | 원문 수식과 변수 표기를 유지하고, 작성자 보충 유도·가정·경계 조건을 추가 |
+| ImageNet과 AlexNet | Part 1 pp.43–47 | 32:15–35:54 | data, backpropagation, compute의 결합을 반영 |
+| Vision task와 course 구조 | Part 2 pp.4–32, 49 | 45:26–01:02:29 | 분류 이후 task, 생성·언어·3D·embodied 영역과 강의 구성을 반영 |
+| 운영 안내 | Part 2 pp.33–48 | 녹화 강의에서 별도 설명 없음 | 학술 내용이 아닌 수업 logistics이므로 본문 수식 해설 대상에서 제외 |
+
 ## Study Guide
 
 | 질문 | 확인할 개념 |
@@ -127,35 +165,35 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Computer vision에서 픽셀과 의미 사이의 간극은 어떤 예로 설명할 수 있는가?</summary>
 
 답변: 같은 물체도 조명, 시점, 가림과 배경이 달라지면 픽셀 값은 크게 변하지만 의미는 유지된다. 반대로 픽셀 수준에서 비슷한 장면이 서로 다른 의미를 가질 수도 있으므로, 모델은 단순한 색 값 비교를 넘어 불변적인 표현을 학습해야 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. CNN의 weight sharing은 왜 이미지 처리에 적합한가?</summary>
 
 답변: 같은 edge나 texture pattern은 이미지의 여러 위치에 나타날 수 있다. 하나의 filter를 공간 전체에 공유하면 위치마다 별도 파라미터를 학습하지 않고도 같은 특징을 탐지할 수 있어 데이터와 계산을 더 효율적으로 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. ImageNet은 단순한 데이터셋을 넘어 어떤 연구 인프라 역할을 했는가?</summary>
 
 답변: 대규모 label data뿐 아니라 공통 task와 평가 기준을 제공해 서로 다른 모델을 비교하게 했다. 이 기반 위에서 AlexNet 같은 deep CNN의 성능 향상이 재현되고 널리 알려질 수 있었다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Detection, semantic segmentation, instance segmentation의 출력 차이는 무엇인가?</summary>
 
 답변: Detection은 객체별 class와 bounding box를 출력한다. Semantic segmentation은 모든 pixel에 class를 부여하지만 같은 class의 개체를 구분하지 않고, instance segmentation은 같은 class 안에서도 객체별 mask를 분리한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Vision-language model과 generative vision은 기존 classification 문제를 어떻게 확장하는가?</summary>
 
 답변: Vision-language model은 이미지와 자연어 사이의 의미 관계를 학습해 설명, 질의응답과 grounding을 수행한다. Generative vision은 주어진 이미지를 분류하는 데서 나아가 새로운 이미지의 생성, 편집과 변환을 모델링한다.
@@ -165,3 +203,5 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 ## 참고자료
 
 - [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture 1](https://youtu.be/2fq9wYslV0A?si=YXCKanCTWpZFstJ2){:target="_blank" rel="noopener"}
+- [Official slides — Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf){:target="_blank" rel="noopener"}
+- [Official slides — Part 2](https://cs231n.stanford.edu/slides/2025/lecture_1_part_2.pdf){:target="_blank" rel="noopener"}

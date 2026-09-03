@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:16:19 +0900
+last_modified_at: 2026-09-03 19:42:41 +0900
 title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"
@@ -59,6 +60,35 @@ Source Pages:
   <li><a href="{{ "/assignment/cpp/smart-pointer-memory-management/" | relative_url }}">Smart Pointer and Memory Management Assignment</a></li>
   <li><a href="{{ "/assignment/cpp/standard-io-file-descriptor/" | relative_url }}">Standard I/O and File Descriptor Assignment</a></li>
 </ul>
+
+## 원문 페이지 대조와 수식 판정
+
+| 원문 | 페이지 | 종합 복습의 대응 | 수식·복잡도 판정 |
+|---|---:|---|---|
+| `C 프로그래밍 소개.pdf` | 1–41 | C/C++ 입문, 자료형·함수·포인터·배열·구조체 | 10–11쪽 경우의 수와 31·40쪽 크기·평균식은 [C Programming Fundamentals](/study/cpp/c-programming-basics/)에서 유도 |
+| `C 프로그래밍 개요.pdf` | 1–77 | 역사, 도구, compiler/debugger, C 기초 재수록 | 51–77쪽은 앞 자료의 기초 내용과 중복; 별도 핵심식 없음 |
+| `C_구조체.pdf` | 1–8 | 구조체, pointer 전달, 동적 배열 | 7쪽 `n * sizeof(Student)`의 allocation 크기는 [C Structs and C++ Classes](/study/cpp/c-struct-to-cpp-class/)에 대응 |
+| `클래스 (Class) 입문.pdf` | 1–9 | class, 접근 제어, 생성자·소멸자, encapsulation | 객체 수명·초기화 규칙 중심; 핵심 수학식 없음 |
+| `C에서 C++로 넘어가기.pdf` | 1–11 | header, string, C/C++ 차이와 혼용 | 6쪽 `strlen` $$O(n)$$ 대 `size()` $$O(1)$$은 구조체·클래스 글에서 유도 |
+| `C_동적할당.pdf` | 1–12 | memory 영역, `malloc/calloc/free` | 8·11쪽 allocation/copy byte 식은 [C and C++ Pointer Memory](/study/cpp/cpp-pointer-memory/)에서 유도 |
+| `(심화) C++ 포인터.pdf` | 1–21 | pointer, `new/delete`, RAII, smart pointer | 주소·참조 count는 실행 상태와 소유권 규칙이며 일반 수학 공식이 아님 |
+| `C++ 표준 스트림 (updated).pdf` | 1–24 | stream, buffer, fd, redirection | fd 0/1/2와 formatting 인자는 식이 아니라 식별자·API parameter |
+| `참조 (Reference).pdf` | 1–10 | reference, 전달, `const`, 반환 | `&`, `*`는 이 문맥에서 C++ 문법; 별도 수학식 없음 |
+| `열거형 (Enum).pdf` | 1–7 | enum과 bit flag | 6쪽 `1u << k`와 $$2^k$$ 관계는 [C++ Enumerations](/study/cpp/cpp-enum/)에서 유도 |
+| `C++ 오버로딩.pdf` | 1–24 | overload, deep copy, 연산자, 2D 저장 | 7쪽 byte 크기와 22쪽 2D offset·행렬 곱은 [C++ Classes and Operator Overloading](/study/cpp/cpp-overloading/)에서 유도 |
+| `C++ 함수포인터.pdf` | 1–14 | function pointer, callback, lambda | 선언식과 comparator 부호는 문법·API 계약; 핵심 수학식 없음 |
+| `C++ 상속.pdf` | 1–12 | inheritance, 접근, 생성·소멸, casting | 3쪽 원 넓이는 예제 method의 계산일 뿐 상속 결론의 핵심식이 아님 |
+| `C++ 다형성.pdf` | 1–8 | virtual, binding, abstract class | `= 0`은 pure virtual 선언 문법; 수학식이 아님 |
+| `C++ 템플릿.pdf` | 1–12 | 함수·class·비타입 template | 11쪽 행렬·벡터 곱의 차원·성분식은 [C++ Templates](/study/cpp/cpp-templates/)에서 설명 |
+| `C++ STL.pdf` | 1–53 | container, iterator, algorithm, lambda | 11–12·15–16·19–20·40·51쪽의 중요 복잡도는 [C++ STL](/study/cpp/cpp-stl/)에서 조건과 함께 유도 |
+| `Operator Overloading.pdf` | 1–11 | C++/Python 연산자 대응과 `Fraction` 구현 | 연산자·반환 참조 규칙 중심 |
+| 같은 원문 | 12–13 | 실행 결과, gcd 정규화 | **핵심 유리수식**: 아래 `Rational` 사칙연산·정규화에서 정의역과 overflow 조건까지 설명 |
+| 같은 원문 | 14–20 | C++·Python 전체 코드 부록 | 앞 구현의 코드 재현; 새로운 수식 없음 |
+| `Code Data Stack Heap.pdf` | 1–7 | memory layout, fragmentation, leak, GC/smart pointer | 주소 그림과 영역 비교는 구조·수명 설명이며 핵심 수학식 없음 |
+| `Smart Pointer, RAII, Reference Counting.pdf` | 1–7 | ownership, reference counting, JVM GC 비교 | count 증감과 0에서 파괴는 상태 전이 규칙; 일반 수학 증명 대상이 아님 |
+| `stdin, stdout, stderr, File Descriptor.pdf` | 1–12 | 표준 I/O, buffer, fd, redirect 실험 | fd 번호·buffer 예제는 운영체제/API 의미; 정량 모델 없음 |
+
+강의 PDF 16개 343쪽과 과제 PDF 4개 46쪽, 합계 389쪽을 페이지 이미지로 대조했다. 종합 글에서는 수식을 중복 전개하지 않고 정확한 원문 페이지와 상세 유도가 있는 하위 글을 연결했다. 단, 과제의 유리수 사칙연산과 gcd 정규화는 이 글의 핵심 구현에 직접 쓰이므로 아래에서 완전한 식과 실패 조건을 유지한다.
 
 > **핵심:** **C++ 객체** 데이터와 동작, 생성과 소멸까지 함께 설계한다. **RAII** 자원 해제를 객체 수명에 묶는다.
 
@@ -435,6 +465,40 @@ std::ostream& operator<<(std::ostream& os, const Complex& c) {
 
 반환 타입이 `std::ostream&`인 이유는 `std::cout << a << b`처럼 체이닝해야 하기 때문이다.
 
+### `Rational` 사칙연산과 정규화
+
+> **작성자 보충:** `Operator Overloading.pdf` 12–13쪽의 `Fraction` 실행 결과와 gcd 정규화를 일반화한다. 아래 사칙연산 식은 분모가 0이 아닌 정의역에서의 정확한 유리수 항등식이고, gcd 약분과 양의 분모 처리는 같은 값을 하나의 표현으로 만드는 정규화 convention이다.
+
+`Operator Overloading` 자료의 유리수 예제를 일반화하자. 두 유리수를
+
+$$
+x=\frac{a}{b},\qquad y=\frac{c}{d},\qquad b\ne0,\ d\ne0
+$$
+
+라 두면 공통분모를 사용한 덧셈·뺄셈과 분자·분모별 곱셈으로
+
+$$
+x+y=\frac{ad+bc}{bd},\qquad
+x-y=\frac{ad-bc}{bd},\qquad
+xy=\frac{ac}{bd}
+$$
+
+를 얻는다. 나눗셈은 역수를 곱하므로
+
+$$
+\frac{x}{y}=\frac{a}{b}\times\frac{d}{c}=\frac{ad}{bc},\qquad c\ne0
+$$
+
+이다. $$a,b,c,d$$가 무차원 정수라면 결과도 무차원 유리수다. 차원이 있는 양을 표현한다면 덧셈·뺄셈은 두 피연산자의 단위가 같아야 하고, 곱셈·나눗셈의 단위는 각각 곱과 비로 변한다.
+
+계산 뒤 분자 $$p$$와 분모 $$q$$에 대해 $$g=\gcd(\lvert p\rvert,\lvert q\rvert)$$를 구하고
+
+$$
+(p,q)\leftarrow\left(\frac{p}{g},\frac{q}{g}\right)
+$$
+
+로 약분한다. 이어서 $$q<0$$이면 $$(p,q)\leftarrow(-p,-q)$$로 바꾸어 **분모는 항상 양수**라는 정규형을 유지한다. 입력이나 연산 결과의 분모가 0이면 유리수가 아니므로 생성 또는 연산을 거부해야 하며, 특히 나눗셈에서는 $$y=0$$, 즉 $$c=0$$인지 먼저 검사해야 한다. 고정 폭 정수 구현에서는 `ad`, `bc`, `bd`, `ac`가 overflow할 수 있으므로 곱셈 전 범위 검사, 더 넓은 중간 타입, 또는 임의 정밀도 정수가 필요하다.
+
 ## 11. 함수 포인터, 콜백, 람다
 
 함수 포인터는 함수의 주소를 저장한다.
@@ -695,6 +759,42 @@ auto max_it = std::max_element(freq.begin(), freq.end(),
 | `transform` | 원소 변환 |
 | `copy_if` | 조건을 만족하는 원소만 복사 |
 
+### 보충 해설: 이 종합 복습의 수식 범위
+
+> **작성자 보충:** 이 글은 시험 직전의 통합 지도이므로 모든 유도를 반복하지 않고 핵심 식과 결론만 둔다. 행렬 저장식의 단계별 유도와 실패 조건은 [C++ Classes and Operator Overloading]({{ "/study/cpp/cpp-overloading/" | relative_url }}), 문자열과 컨테이너 복잡도의 전체 유도는 [C Structs and C++ Classes]({{ "/study/cpp/c-struct-to-cpp-class/" | relative_url }})와 [C++ STL]({{ "/study/cpp/cpp-stl/" | relative_url }})에서 확인한다.
+
+$$m \times n$$ 행렬 $$A$$와 길이 $$n$$의 열벡터 $$x$$의 곱 $$y=Ax$$는 성분별로
+
+$$
+y_i=\sum_{j=0}^{n-1}A_{ij}x_j, \qquad 0\le i<m
+$$
+
+이다. 이는 행렬 곱의 **정의에 따른 정확한 등식**이며, $$i,j$$는 0 기반 무차원 인덱스다. 모든 성분을 직접 계산하면 각 $$y_i$$에 $$n$$개 항이 필요하므로 총 산술 연산 수는 $$\Theta(mn)$$이다. 차원이 맞지 않거나 `Matrix2D`의 범위를 벗어난 인덱스를 쓰면 식 또는 코드 접근이 성립하지 않는다.
+
+이 글에서 생략하지 않아야 할 핵심 복잡도 근거는 다음 세 줄로 압축된다.
+
+$$
+T_{\texttt{strlen}}(n)=\sum_{k=0}^{n}c=\Theta(n),
+\qquad
+T_{\texttt{string::size}}(n)=\Theta(1)
+$$
+
+$$
+m_{t+1}\le\left\lceil\frac{m_t}{2}\right\rceil
+\Longrightarrow
+t=O(\log n)
+\quad\text{(정렬된 범위의 이진 검색)}
+$$
+
+$$
+h(n)=O(\log n)
+\Longrightarrow
+T_{\texttt{set/map}}(n)=O(\log n)
+\quad\text{(단일 키 연산과 상수 비교 비용)}
+$$
+
+`vector::push_back`은 여러 호출을 합친 amortized $$O(1)$$이고 재할당이 일어난 한 호출의 worst case는 $$O(n)$$이다. `unordered_map`과 `unordered_set`의 탐색은 average $$O(1)$$이지만 충돌이 집중되는 worst case는 $$O(n)$$이다. 위 결과는 실행시간의 초 단위가 아니라 원소 수에 따른 연산 횟수의 점근적 크기이며, 정렬 전제·유효 인덱스·상수 비교/해시 비용이 깨지면 그대로 적용할 수 없다.
+
 ## 17. 과제 연결 포인트
 
 과제 자료는 강의 개념을 시험 문제식으로 바꿔 보는 데 좋다.
@@ -762,126 +862,126 @@ C++은 어느 함수가 어떤 피연산자를 받는지와 반환 타입을 직
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Stack과 Heap의 가장 큰 차이는 무엇인가?</summary>
 
 답변: Stack은 함수 호출과 함께 자동으로 관리되는 영역이고, Heap은 실행 중 동적으로 할당되는 영역이다. Stack 객체는 scope를 벗어나면 자동으로 정리되지만, Heap 객체는 직접 해제하거나 RAII 객체가 해제해야 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. `malloc/free`와 `new/delete`의 핵심 차이는 무엇인가?</summary>
 
 답변: <code>malloc/free</code>는 메모리 블록만 할당/해제하고 생성자와 소멸자를 호출하지 않는다. <code>new/delete</code>는 C++ 객체의 생성자와 소멸자를 호출한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. `const T&`를 함수 매개변수로 자주 쓰는 이유는 무엇인가?</summary>
 
 답변: 큰 객체를 복사하지 않고 받을 수 있고, 함수 안에서 원본을 수정하지 않겠다는 약속도 함께 표현할 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. 복사 생성자와 복사 대입 연산자는 언제 다르게 호출되는가?</summary>
 
 답변: 새 객체를 기존 객체로 만들 때는 복사 생성자가 호출되고, 이미 존재하는 객체에 값을 대입할 때는 복사 대입 연산자가 호출된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. `return *this;`를 대입 연산자에서 반환하는 이유는 무엇인가?</summary>
 
 답변: 현재 객체 자신을 반환해 <code>a = b = c</code> 같은 체이닝을 가능하게 하고, 불필요한 복사를 줄이기 위해 보통 참조로 반환한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. `std::endl`과 `"\n"`의 차이는 무엇인가?</summary>
 
 답변: 둘 다 줄바꿈을 만들지만, <code>std::endl</code>은 출력 버퍼를 flush한다. <code>"\n"</code>은 줄바꿈 문자만 출력한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. 멤버 연산자와 비멤버 연산자의 가장 중요한 차이는 무엇인가?</summary>
 
 답변: 멤버 연산자는 왼쪽 피연산자가 항상 <code>*this</code>다. 비멤버 연산자는 두 피연산자를 모두 매개변수로 받으므로, 왼쪽 피연산자가 기본 타입인 경우에도 대응하기 쉽다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. <code>operator&lt;&lt;</code>를 보통 비멤버 함수로 만드는 이유는 무엇인가?</summary>
 
 답변: <code>std::cout &lt;&lt; obj</code>에서 왼쪽 피연산자는 <code>std::ostream</code>이다. 사용자 정의 타입의 멤버 함수로는 <code>std::ostream</code>을 수정할 수 없으므로 보통 비멤버 연산자로 만든다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>9. 함수 포인터와 람다는 어떤 공통점이 있는가?</summary>
 
 답변: 둘 다 어떤 동작을 다른 함수나 알고리즘에 전달할 수 있다. 함수 포인터는 함수 주소를 전달하고, 람다는 그 자리에서 정의한 함수 객체를 전달한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>10. 기본 클래스 소멸자를 `virtual`로 두어야 하는 경우는 언제인가?</summary>
 
 답변: 기본 클래스 포인터로 파생 클래스 객체를 삭제할 가능성이 있을 때다. 소멸자가 가상 함수가 아니면 파생 클래스 소멸자가 호출되지 않을 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>11. 템플릿이 런타임 다형성과 다른 점은 무엇인가?</summary>
 
 답변: 템플릿은 컴파일 시점에 실제 타입을 넣어 코드를 생성한다. 런타임 다형성은 기본 클래스 포인터/참조와 virtual function을 통해 실행 중 실제 객체 타입에 맞는 함수를 호출한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>12. `std::vector`에서 `reserve`와 `resize`의 차이는 무엇인가?</summary>
 
 답변: <code>reserve</code>는 capacity만 확보하고 size는 바꾸지 않는다. <code>resize</code>는 실제 원소 개수인 size를 바꾼다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>13. iterator의 `end()`는 무엇을 가리키는가?</summary>
 
 답변: 마지막 원소가 아니라 마지막 원소의 다음 위치를 가리킨다. 따라서 <code>*end()</code>는 하면 안 되고, 보통 <code>it != end()</code> 조건으로 반복을 끝낸다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>14. `std::remove`만 호출하면 왜 vector 크기가 줄지 않는가?</summary>
 
 답변: <code>std::remove</code>는 제거 대상이 아닌 원소를 앞쪽으로 모으고 유효 범위 끝 iterator를 반환할 뿐이다. 실제 size를 줄이려면 <code>erase</code>를 이어서 호출해야 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>15. `std::find`와 `.find()`는 왜 다른가?</summary>
 
 답변: <code>std::find</code>는 iterator 범위를 앞에서부터 순차 탐색하는 범용 알고리즘이다. <code>.find()</code>는 <code>set</code>, <code>map</code> 같은 컨테이너가 내부 구조를 이용해 제공하는 전용 탐색 함수다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>16. <code>std::max_element</code>에서 비교식 <code>a.second &lt; b.second</code>를 쓰면 왜 최대 빈도가 나오는가?</summary>
 
 답변: 비교식은 “a가 b보다 작다”를 정의한다. <code>a.second &lt; b.second</code>를 기준으로 작고 큼을 판단하면, <code>max_element</code>는 <code>second</code>가 가장 큰 원소를 최대 원소로 선택한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>17. `enum class`가 C-style enum보다 안전한 이유는 무엇인가?</summary>
 
 답변: <code>enum class</code>는 이름이 enum scope 안에 묶이고, 정수로 암시 변환되지 않는다. 그래서 이름 충돌과 의도하지 않은 정수 연산을 줄일 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>18. `shared_ptr`의 순환 참조는 왜 문제가 되는가?</summary>
 
 답변: 서로를 <code>shared_ptr</code>로 소유하면 reference count가 0이 되지 않아 객체가 해제되지 않는다. 이때 한쪽 참조를 <code>weak_ptr</code>로 바꾸면 소유권 순환을 끊을 수 있다.

@@ -37,7 +37,7 @@ keywords:
 
 제안 방법은 YouTube의 Most Replayed Data를 crowd-sourced attention signal로 사용한다. 많은 시청자가 다시 본 구간은 영상 안에서 관심도가 높은 순간일 가능성이 크다. 논문은 이 신호가 live chat frequency나 sound intensity보다 key moment를 더 안정적으로 반영할 수 있다고 보고, MRD를 highlight reward의 핵심 입력으로 사용한다.
 
-Highlight 생성은 그래프 위의 path optimization으로 모델링된다. 각 node는 원본 영상의 timestamp \(t\)와 현재 segment duration \(d\)를 가진다. Edge는 같은 segment를 1초 더 이어가는 동작 또는 다른 구간으로 cut transition하는 동작을 표현한다. 최적 path의 길이를 사용자가 지정한 \(L_{user}\)와 같게 두면, 결과 highlight는 정확히 원하는 길이를 갖는다.
+Highlight 생성은 그래프 위의 path optimization으로 모델링된다. 각 node는 원본 영상의 timestamp $$t$$와 현재 segment duration $$d$$를 가진다. Edge는 같은 segment를 1초 더 이어가는 동작 또는 다른 구간으로 cut transition하는 동작을 표현한다. 최적 path의 길이를 사용자가 지정한 $$L_{user}$$와 같게 두면, 결과 highlight는 정확히 원하는 길이를 갖는다.
 
 Reward는 MRD 기반 관심도와 duration reward를 결합한다. Duration reward는 너무 짧은 segment를 벌점 처리하고, 최소 맥락을 유지하는 길이 이상에서는 안정적인 보상을 준다. 이 설계 때문에 시스템은 MRD peak만 짧게 찍고 넘어가지 않고, 시청자가 상황을 이해할 수 있는 장면 단위를 유지하려 한다. 사용자가 특정 timestamp를 포함하거나 제외하고 싶을 때는 Gaussian reward를 더하거나 빼서 같은 최적화 구조 안에서 반영한다.
 
@@ -90,7 +90,7 @@ Most Replayed Data는 YouTube 영상에서 시청자들이 어느 구간을 많�
 
 ## 3. Highlight Editing Path로 문제 모델링
 
-논문은 highlight 생성 과정을 그래프 위의 최적 path 탐색 문제로 만든다. 입력은 원본 영상, MRD, 사용자가 지정한 길이 \(L_{user}\)다. 여기서 \(L_{user}\)는 원본 영상보다 짧은 임의의 길이로 설정될 수 있다.
+논문은 highlight 생성 과정을 그래프 위의 최적 path 탐색 문제로 만든다. 입력은 원본 영상, MRD, 사용자가 지정한 길이 $$L_{user}$$다. 여기서 $$L_{user}$$는 원본 영상보다 짧은 임의의 길이로 설정될 수 있다.
 
 각 node는 다음과 같이 정의된다.
 
@@ -100,20 +100,20 @@ $$
 
 | 기호 | 의미 |
 |---|---|
-| \(t\) | 원본 영상의 timestamp, 초 단위 |
-| \(d\) | 현재 segment가 이어진 시간 |
+| $$t$$ | 원본 영상의 timestamp, 초 단위 |
+| $$d$$ | 현재 segment가 이어진 시간 |
 
-전체 node 수는 \(T \times D\)로 볼 수 있다. \(T\)는 원본 영상의 길이이고, \(D\)는 segment duration의 최대값이다. 논문에서는 한 segment가 너무 길어져 지루해지는 것을 막기 위해 \(D=30\)초를 사용한다.
+전체 node 수는 $$T \times D$$로 볼 수 있다. $$T$$는 원본 영상의 길이이고, $$D$$는 segment duration의 최대값이다. 논문에서는 한 segment가 너무 길어져 지루해지는 것을 막기 위해 $$D=30$$초를 사용한다.
 
 Edge는 시간 순서를 유지하면서 두 가지 편집 동작을 표현한다.
 
 | 조건 | 의미 |
 |---|---|
-| \(t' = t + 1\), \(d' = d + 1\) | 같은 segment를 1초 더 재생한다. |
-| \(t' \ne t + 1\), \(d' = 0\) | 다른 구간으로 cut transition한다. |
-| cut transition 시 \(t' \ge t + 5\) | 최소 5초 이상 떨어진 구간으로 이동해 1초 단위의 어색한 interruption을 줄인다. |
+| $$t' = t + 1$$, $$d' = d + 1$$ | 같은 segment를 1초 더 재생한다. |
+| $$t' \ne t + 1$$, $$d' = 0$$ | 다른 구간으로 cut transition한다. |
+| cut transition 시 $$t' \ge t + 5$$ | 최소 5초 이상 떨어진 구간으로 이동해 1초 단위의 어색한 interruption을 줄인다. |
 
-Highlight editing path는 이 node와 edge를 따라가는 sequence이며, path의 길이가 곧 최종 highlight의 길이 \(L_{user}\)가 된다. 따라서 사용자가 60초 highlight를 원하면, 시스템은 정확히 60개의 초 단위 node로 이루어진 최적 path를 찾는다.
+Highlight editing path는 이 node와 edge를 따라가는 sequence이며, path의 길이가 곧 최종 highlight의 길이 $$L_{user}$$가 된다. 따라서 사용자가 60초 highlight를 원하면, 시스템은 정확히 60개의 초 단위 node로 이루어진 최적 path를 찾는다.
 
 ## 4. Reward 설계
 
@@ -123,7 +123,7 @@ $$
 R(n) = R_{MRD}(t) + wR_{dur}(d)
 $$
 
-논문에서 \(w=0.2\)로 설정된다. \(R_{MRD}(t)\)는 timestamp \(t\)에서의 replay intensity를 의미한다. YouTube의 MRD graph는 영상 길이와 관계없이 100개의 data point로 제공되므로, 논문은 이를 1초 단위로 보간하고 0과 1 사이로 정규화한다.
+논문에서 $$w=0.2$$로 설정된다. $$R_{MRD}(t)$$는 timestamp $$t$$에서의 replay intensity를 의미한다. YouTube의 MRD graph는 영상 길이와 관계없이 100개의 data point로 제공되므로, 논문은 이를 1초 단위로 보간하고 0과 1 사이로 정규화한다.
 
 Segment duration reward는 cut이 발생할 때만 반영된다.
 
@@ -135,7 +135,7 @@ R_{ctx}(d) & \text{if } d'=0 \\
 \end{cases}
 $$
 
-여기서 \(R_{ctx}(d)\)는 segment가 너무 짧을 때 penalty를 주고, 충분히 길면 1에 가까운 보상을 주는 함수다.
+여기서 $$R_{ctx}(d)$$는 segment가 너무 짧을 때 penalty를 주고, 충분히 길면 1에 가까운 보상을 주는 함수다.
 
 $$
 R_{ctx}(d) =
@@ -145,7 +145,7 @@ R_{ctx}(d) =
 \end{cases}
 $$
 
-논문은 cinematographic principle을 참고해 \(\tau=8\)초를 권장 최소 segment 길이로 둔다. 이 설계는 높은 MRD peak만 짧게 찍고 넘어가는 편집을 피하게 만든다. 즉, 장면의 관심도뿐 아니라 시청자가 상황을 이해할 수 있는 최소 맥락을 함께 확보한다.
+논문은 cinematographic principle을 참고해 $$\tau=8$$초를 권장 최소 segment 길이로 둔다. 이 설계는 높은 MRD peak만 짧게 찍고 넘어가는 편집을 피하게 만든다. 즉, 장면의 관심도뿐 아니라 시청자가 상황을 이해할 수 있는 최소 맥락을 함께 확보한다.
 
 최종 목표는 사용자가 지정한 길이만큼의 path 중 reward 합이 최대인 path를 찾는 것이다.
 
@@ -165,19 +165,19 @@ $$
 R_{MRD}(t) \leftarrow R_{MRD}(t) + R_{user}(t)
 $$
 
-사용자가 timestamp \(\alpha\)를 포함하고 싶으면 양의 Gaussian reward를 더하고, 제외하고 싶으면 음의 Gaussian reward를 더한다.
+사용자가 timestamp $$\alpha$$를 포함하고 싶으면 양의 Gaussian reward를 더하고, 제외하고 싶으면 음의 Gaussian reward를 더한다.
 
 $$
 R_{user}(t) = \pm \lambda G(t-\alpha)
 $$
 
-논문에서는 \(\lambda=10\), standard deviation 1.333을 사용한다. 여러 timestamp가 선택되면 각 사용자 reward를 합산한다.
+논문에서는 $$\lambda=10$$, standard deviation 1.333을 사용한다. 여러 timestamp가 선택되면 각 사용자 reward를 합산한다.
 
-이 방식의 장점은 전체 최적화 구조를 유지한다는 점이다. 사용자가 특정 장면을 고정하더라도 highlight의 전체 길이 \(L_{user}\)는 그대로 유지되고, 남은 구간은 MRD와 duration reward에 따라 자동으로 채워진다.
+이 방식의 장점은 전체 최적화 구조를 유지한다는 점이다. 사용자가 특정 장면을 고정하더라도 highlight의 전체 길이 $$L_{user}$$는 그대로 유지되고, 남은 구간은 MRD와 duration reward에 따라 자동으로 채워진다.
 
 ## 6. 생성 결과 해석
 
-논문은 archery, concert, soccer, audition 등 다양한 영상에서 highlight를 생성했다. 같은 soccer 영상에 대해 \(L_{user}\)를 30초, 60초, 90초, 120초로 바꾸면 선택되는 구간이 자연스럽게 달라진다.
+논문은 archery, concert, soccer, audition 등 다양한 영상에서 highlight를 생성했다. 같은 soccer 영상에 대해 $$L_{user}$$를 30초, 60초, 90초, 120초로 바꾸면 선택되는 구간이 자연스럽게 달라진다.
 
 | 설정 | 결과 경향 |
 |---|---|
@@ -186,7 +186,7 @@ $$
 | 길이가 증가할수록 | 평균 segment 수와 segment duration이 함께 증가한다. |
 | 평균 MRD | 낮은 MRD 주변 구간도 포함되므로 전체 평균은 감소한다. |
 
-중요한 점은 모든 \(L_{user}\) 조건에서 평균 segment duration이 8초 이상으로 유지되었다는 것이다. 이는 duration reward가 실제로 지나치게 짧은 cut을 억제했음을 보여준다.
+중요한 점은 모든 $$L_{user}$$ 조건에서 평균 segment duration이 8초 이상으로 유지되었다는 것이다. 이는 duration reward가 실제로 지나치게 짧은 cut을 억제했음을 보여준다.
 
 사용자 지정 예시에서는 4분 24초, 7분 11초, 9분 19초, 10분 42초, 11분 57초 timestamp를 포함하도록 설정했다. 시스템은 해당 장면들을 반영하면서도 남은 길이를 1분 46초, 3분 33초, 6분 03초 부근의 높은 MRD peak로 채웠다. 이는 사용자의 의도와 crowd interest signal을 함께 사용하는 방식으로 해석할 수 있다.
 
@@ -208,15 +208,15 @@ $$
 
 | 문항 | 통계 결과 | 제안 방법 평균 | threshold 평균 | random 평균 |
 |---|---|---:|---:|---:|
-| Appropriateness | \(\chi^{2}(2)=37.16, p<0.0001\) | 5.27 | 4.14 | 4.06 |
-| Key moment inclusion | \(\chi^{2}(2)=40.99, p<0.0001\) | 5.59 | 5.02 | 4.15 |
-| Satisfaction | \(\chi^{2}(2)=38.97, p<0.0001\) | 5.43 | 4.59 | 3.99 |
+| Appropriateness | $$\chi^{2}(2)=37.16, p<0.0001$$ | 5.27 | 4.14 | 4.06 |
+| Key moment inclusion | $$\chi^{2}(2)=40.99, p<0.0001$$ | 5.59 | 5.02 | 4.15 |
+| Satisfaction | $$\chi^{2}(2)=38.97, p<0.0001$$ | 5.43 | 4.59 | 3.99 |
 
 해석하면, 제안 방법은 단순히 MRD가 높은 frame을 모으는 방식보다 자연스럽고 만족스러운 highlight를 만들었다. 특히 duration reward와 path formulation이 짧고 끊기는 편집을 줄이는 데 기여한 것으로 볼 수 있다.
 
 ### 7.2 사람 편집본과의 비교
 
-두 번째 study는 제안 방법으로 만든 highlight와 YouTube Shorts의 사람 편집본을 비교했다. 제안 방법의 \(L_{user}\)는 각 Shorts의 길이와 동일하게 설정했다.
+두 번째 study는 제안 방법으로 만든 highlight와 YouTube Shorts의 사람 편집본을 비교했다. 제안 방법의 $$L_{user}$$는 각 Shorts의 길이와 동일하게 설정했다.
 
 참가자는 원본 영상을 본 뒤 두 버전을 비교하고, 제안 방법, 사람 편집본, 또는 동등 선호 중 하나를 선택했다. Friedman test 결과는 다음과 같다.
 
@@ -224,7 +224,7 @@ $$
 \chi^{2}(2)=5.8919,\quad p=0.0526
 $$
 
-통계적으로 유의한 선호 차이가 없었다는 점에서, 논문은 제안 방법이 사람 편집본과 유사한 수준의 viewing experience를 제공할 수 있다고 해석한다. 다만 \(p=0.0526\)은 유의수준 0.05에 매우 가까우므로, "사람보다 우수하다"가 아니라 "강한 선호 차이를 보이지 않았다"로 읽는 것이 적절하다.
+통계적으로 유의한 선호 차이가 없었다는 점에서, 논문은 제안 방법이 사람 편집본과 유사한 수준의 viewing experience를 제공할 수 있다고 해석한다. 다만 $$p=0.0526$$은 유의수준 0.05에 매우 가까우므로, "사람보다 우수하다"가 아니라 "강한 선호 차이를 보이지 않았다"로 읽는 것이 적절하다.
 
 정성적 의견에서는 12명이 제안 방법의 narrative structure가 명확하다고 응답했고, 10명은 engaging하고 이해하기 쉽다고 평가했다. 6명은 segment duration이 적절하다고 언급했으며, 3명은 편집이 자연스럽다고 보았다.
 

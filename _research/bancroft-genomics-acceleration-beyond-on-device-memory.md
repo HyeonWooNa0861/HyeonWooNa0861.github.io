@@ -112,10 +112,10 @@ Bancroft encoding은 hardware 구현을 쉽게 하기 위해 공통 구조를 �
 | 2-bit grouped header | 16개 header를 묶어 parsing 단순화 |
 | 32-bit fixed payload | variable-length decode를 피하고 datapath를 단순화 |
 | exact K-mer matching | approximate matching보다 hardware가 단순함 |
-| fixed match length \(K\) | match length를 따로 encoding하지 않아도 됨 |
-| fixed stride \(S\) | mismatch/verbatim 처리와 payload 폭을 일정하게 유지 |
+| fixed match length $$K$$ | match length를 따로 encoding하지 않아도 됨 |
+| fixed stride $$S$$ | mismatch/verbatim 처리와 payload 폭을 일정하게 유지 |
 
-기본 설정은 base read에서 \(K = 64\), \(S = 16\)이다. \(S = 16\)이면 2-bit base 16개가 정확히 32-bit payload에 들어간다.
+기본 설정은 base read에서 $$K = 64$$, $$S = 16$$이다. $$S = 16$$이면 2-bit base 16개가 정확히 32-bit payload에 들어간다.
 
 ## 4. Base Read Compression
 
@@ -133,7 +133,7 @@ Base read header는 다음 의미를 가진다.
 
 | Header | 의미 |
 |---|---|
-| `00` | \(S\) bases verbatim encoding |
+| `00` | $$S$$ bases verbatim encoding |
 | `01` | 32-bit forward match offset |
 | `10` | 32-bit reverse complement match offset |
 | `11` | continuation |
@@ -146,13 +146,13 @@ Reverse complement를 별도 header로 둔 것도 중요하다. DNA read는 forw
 
 FASTQ quality score는 base마다 붙는 score다. Bancroft는 correctness를 우선해 quality score도 lossless로 압축한다.
 
-Quality score는 6-bit 값으로 보고, \(S = 5\)개 score를 32-bit payload에 넣는다. 남는 bit는 p1/p2 mask에 활용한다.
+Quality score는 6-bit 값으로 보고, $$S = 5$$개 score를 32-bit payload에 넣는다. 남는 bit는 p1/p2 mask에 활용한다.
 
 | Header | 의미 |
 |---|---|
-| `00` | \(S\)개 score verbatim |
-| `01` | 직전 \(S\)개 score 반복 |
-| `10` | 직전 score 하나를 \(S\)번 반복 |
+| `00` | $$S$$개 score verbatim |
+| `01` | 직전 $$S$$개 score 반복 |
+| `10` | 직전 score 하나를 $$S$$번 반복 |
 | `11` | 가장 빈번한 두 score `p1`, `p2`만으로 이루어진 string |
 
 논문 실험에서 `p1`, `p2`는 여러 dataset에서 안정적으로 `I`, `D`였고, HG002에서는 각각 81%, 10%를 차지한다. 즉 quality score의 분포 특성을 매우 단순한 hardware-friendly format으로 이용한다.
@@ -198,7 +198,7 @@ Bancroft는 compressed data를 4KB page 단위로 관리하고, original file of
 | long read padding | read boundary를 유지해 read 단위 I/O를 쉽게 함 |
 | shifted reference copies | 2-bit packed reference의 bit alignment overhead를 줄임 |
 
-Reference comparison에서 \(\mathrm{offset}\bmod 4\)에 따라 미리 shift해 둔 reference copy를 고르면, 비트 shift를 반복하지 않고 byte-aligned `memcmp`를 사용할 수 있다. 논문은 이 최적화가 encoding performance를 평균 4배 높인다고 보고한다.
+Reference comparison에서 $$\mathrm{offset}\bmod 4$$에 따라 미리 shift해 둔 reference copy를 고르면, 비트 shift를 반복하지 않고 byte-aligned `memcmp`를 사용할 수 있다. 논문은 이 최적화가 encoding performance를 평균 4배 높인다고 보고한다.
 
 ## 9. 실험 설정
 

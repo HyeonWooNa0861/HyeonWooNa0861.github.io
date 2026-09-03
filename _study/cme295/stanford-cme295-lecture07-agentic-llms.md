@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 7: Agentic LLMs
 
 Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=h-7S6HNq0Vg){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 이 강의는 이전 강의의 reasoning model과 GRPO를 짧게 복습한 뒤, LLM이 학습 시점의 지식에 갇혀 있다는 문제에서 출발한다. 모델 가중치를 계속 재학습하는 방식은 회귀 위험과 유지보수 비용이 크고, 모든 최신 정보를 긴 프롬프트에 넣는 방식은 컨텍스트 길이, needle-in-a-haystack 성능 저하, 토큰 비용 때문에 부적절하다.
 
@@ -55,6 +58,59 @@ RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 �
 | MCP | Model Context Protocol. MCP server, tools, prompts, resources, MCP client 같은 vocabulary로 도구 노출 방식을 표준화한다. |
 | ReAct | Reason plus act. 복잡한 목표를 observe, plan, act 또는 think, observe, act 같은 반복 가능한 하위 단계로 분해하는 에이전트 프레임워크다. |
 
+## 수식 해설: retrieval score와 ranking metric
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Cosine similarity retrieval | 00:28:25–00:33:24 | Embedding 비교와 top-candidate retrieval은 강의 원문이며, 범위·zero-vector 조건은 작성자 보충이다. |
+| BM25 | 00:34:44–00:37:23 | Lexical heuristic이라는 성격과 hybrid retrieval은 강의 원문이며, parameter 의존성은 작성자 보충이다. |
+| DCG/NDCG | 00:49:41–00:52:19 | Rank discount와 ideal-DCG normalization은 강의 원문이며, 정확한 convention과 zero denominator 처리는 작성자 보충이다. |
+| Reciprocal rank, Precision@k, Recall@k | 00:54:12–00:56:44 | Metric 의미는 강의 원문이며, 분모가 0인 query 처리 조건은 작성자 보충이다. |
+
+Embedding $$q,d\in\mathbb{R}^{m}$$의 cosine similarity는
+
+$$
+\operatorname{cos}(q,d)=\frac{q^\top d}{\|q\|_2\|d\|_2}
+$$
+
+로 정의한다. 두 vector가 0이 아니어야 한다. Cauchy-Schwarz inequality $$\lvert q^\top d\rvert\le\|q\|_2\|d\|_2$$의 양변을 양수인 $$\|q\|_2\|d\|_2$$로 나누면 $$-1\le\operatorname{cos}(q,d)\le1$$이므로 값은 $$[-1,1]$$에 놓인다. 이 한 줄 유도는 강의가 제시한 cosine similarity를 보완한 작성자 설명이다. L2-normalized embedding에서는 $$\|q\|=\|d\|=1$$이라 dot product와 같다. 높은 cosine이 실제 relevance를 보장한다는 것은 embedding training과 domain에 의존하는 경험적 가정이다.
+
+Top-$$k$$ retrieval의 exact-count metric은
+
+$$
+\operatorname{Precision@k}=\frac{\#\text{ relevant in top }k}{k},
+\qquad
+\operatorname{Recall@k}=\frac{\#\text{ relevant in top }k}{\#\text{ all relevant}}.
+$$
+
+Relevant 문서가 하나도 없는 query에서는 recall 분모가 0이므로 dataset policy를 정해야 한다. 첫 relevant rank가 $$r$$이면 reciprocal rank는 $$1/r$$이고, 없으면 보통 0으로 둔다.
+
+Graded relevance $$rel_i$$를 쓰는 한 convention은
+
+$$
+DCG@k=\sum_{i=1}^{k}\frac{2^{rel_i}-1}{\log_2(i+1)},
+\qquad
+NDCG@k=\frac{DCG@k}{IDCG@k}.
+$$
+
+IDCG는 같은 label을 이상적으로 정렬한 DCG다. $$IDCG=0$$이면 NDCG가 정의되지 않아 구현별 처리 규칙이 필요하다. Discount와 gain 선택은 convention이며, NDCG가 downstream answer correctness를 증명하지는 않는다.
+
+BM25는 강의가 00:34:44–00:37:23에서 lexical heuristic으로 소개했지만 완전한 식은 제시하지 않았다. 한 가지 널리 쓰는 **작성자 보충 convention**은
+
+$$
+\operatorname{BM25}(D,Q)
+=\sum_{t\in Q}\operatorname{IDF}(t)
+\frac{f(t,D)(k_1+1)}
+{f(t,D)+k_1\left(1-b+b\frac{|D|}{\operatorname{avgdl}}\right)},
+$$
+
+$$
+\operatorname{IDF}(t)
+=\log\!\left(1+\frac{N-n_t+0.5}{n_t+0.5}\right).
+$$
+
+$$f(t,D)$$는 document term frequency, $$\lvert D\rvert$$와 $$\operatorname{avgdl}>0$$은 document 길이와 corpus 평균 길이, $$N$$은 문서 수, $$n_t$$는 term $$t$$를 포함한 문서 수다. $$k_1>0$$은 term-frequency 증가를 포화시키고, $$0\le b\le1$$은 길이 정규화 강도를 조절한다. 위 IDF는 rare term에 더 큰 nonnegative weight를 주는 convention이며, 구현에 따라 log의 $$+1$$, query-term factor, duplicate query term 처리가 다르다. 높은 BM25가 semantic relevance의 theorem인 것은 아니며 tokenizer와 corpus statistics에 따라 순위가 바뀐다.
+
 ## 학습 포인트
 
 - RAG는 관련 정보를 검색해 프롬프트에 추가한 뒤 답을 생성하는 방식이며, 핵심은 관련 정보만 넣는 것이다.
@@ -80,35 +136,35 @@ RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 �
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. RAG가 모델 재학습보다 선호되는 이유는 무엇인가?</summary>
 
 답변: 가중치에 새 지식을 주입하면 회귀와 유지보수 문제가 생기고, 모든 downstream use case에 같은 업데이트를 반복해야 한다. RAG는 필요한 외부 지식만 검색해 프롬프트에 넣으므로 더 실용적이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. bi-encoder retrieval과 cross-encoder reranking의 차이는 무엇인가?</summary>
 
 답변: bi-encoder는 query와 chunk를 따로 인코딩해 빠르게 임베딩 유사도를 비교한다. cross-encoder는 query와 chunk를 함께 넣어 attention 상호작용을 사용하므로 더 비싸지만 더 정밀한 relevance score를 낼 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. NDCG가 단순 precision보다 ranking 평가에 더 맞는 이유는 무엇인가?</summary>
 
 답변: NDCG는 relevant document가 몇 개 있는지만 보지 않고, 그 문서들이 top-k 안에서 얼마나 앞쪽에 배치되었는지도 반영한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. tool calling에서 LLM이 함수 구현 전체를 볼 필요가 없는 이유는 무엇인가?</summary>
 
 답변: LLM의 역할은 도구 API, 인자, 설명을 보고 적절한 호출을 생성하는 것이다. 실제 구현은 코드베이스나 backend가 실행하고, LLM은 실행 결과를 다시 받아 답변을 합성한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. ReAct식 에이전트가 단순 tool call과 다른 점은 무엇인가?</summary>
 
 답변: 단순 tool call은 보통 한 번의 도구 선택과 결과 합성에 가깝지만, ReAct식 에이전트는 관찰, 계획, 행동을 반복하며 목표가 달성되었는지 확인하고 필요하면 추가 도구를 호출한다.

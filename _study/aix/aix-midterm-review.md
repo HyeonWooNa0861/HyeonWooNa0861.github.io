@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:26:36 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "AIX Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
@@ -23,7 +24,7 @@ Source Images:
 
 이 자료는 AIX 중간고사 정답지를 바탕으로 주요 개념을 시험 복습용으로 재정리한 문서다. 문항 순서를 그대로 따라가기보다, 같은 개념을 묻는 문제들을 묶어 “왜 그 답이 되는지”를 빠르게 확인할 수 있도록 구성했다. 또한 비슷한 용어가 혼용되기 쉬운 지점을 따로 정리해, 정답 선지와 오답 선지를 구분하는 기준까지 함께 확인할 수 있게 했다.
 
-> **핵심:** **Regression** feature \(x\)로 target \(y\)를 예측하고, residual은 \(y-\hat{y}\)이다. **Optimization** gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다.
+> **핵심:** **Regression** feature $$x$$로 target $$y$$를 예측하고, residual은 $$y-\hat{y}$$이다. **Optimization** gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다.
 
 ## 전체 흐름
 
@@ -58,11 +59,25 @@ Source Images:
 | 정답지 2, Q26-Q37 | Transformer와 Self-Attention, Logistic Regression, Regression, Computer Vision, NLP, RNN | 차원 조건, objective, residual, task-specific NLP 등 혼동 지점이 보강되어 있다. |
 | 정답지 2, Q38-Q50 | Regression, Attention, Transformer, Word Embedding, Diffusion, MLP, Deep Learning | feature/target, positional encoding, softmax, fine-tuning, generalization까지 체크리스트에 반영되어 있다. |
 
+## 핵심 수식 유도 지도
+
+이 종합 글에서는 시험에 필요한 논리만 압축하고, 전체 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/)에서 확인한다. 아래 기호는 정규화된 feature와 representation을 가정해 무차원이며, 물리량을 쓰면 weight가 입력 단위를 target 단위로 변환해야 한다.
+
+1. **Gradient update:** $$L(\theta+\Delta)\approx L(\theta)+\nabla L^T\Delta$$라는 1차 근사에서 $$\Delta=-\eta\nabla L$$로 두면 변화량이 $$-\eta\lVert\nabla L\rVert^2\le0$$다. 충분히 작은 $$\eta>0$$에서만 감소를 기대하는 **국소 근사**다.
+2. **BCE:** $$y\in\{0,1\}$$인 Bernoulli likelihood $$p^y(1-p)^{1-y}$$에 음의 로그를 취하면 $$-y\log p-(1-y)\log(1-p)$$가 된다. $$p=\sigma(z)$$이면 chain rule로 $$\partial L/\partial z=p-y$$다. 이는 $$0<p<1$$에서의 **정확한 등식**이다.
+3. **Softmax:** $$p_i=e^{z_i}/\sum_j e^{z_j}$$이므로 $$p_i>0$$이고 $$\sum_i p_i=1$$이다. 따라서 여러 class logit을 categorical probability로 바꾸는 **정의**다.
+4. **선형층의 붕괴와 XOR:** Activation이 없으면 $$W_2(W_1x+b_1)+b_2=(W_2W_1)x+(W_2b_1+b_2)$$라 한 affine map으로 합쳐진다. XOR에서 $$b<0$$, $$w_1+b>0$$, $$w_2+b>0$$이면 $$w_1+w_2+b>0$$가 되어 $$(1,1)$$을 0으로 분류해야 한다는 조건과 모순이다.
+5. **Scaled attention:** query·key 성분이 독립·평균 0·분산 1이라는 근사 가정에서는 $$q^Tk$$의 분산이 약 $$d_k$$다. $$\sqrt{d_k}$$로 나누면 분산을 약 1로 유지한다. Learned vector에는 독립성이 보장되지 않으므로 이는 **근사적 분산 분석**이다.
+
+각 식은 정의·정확한 등식·근사를 구분해 읽어야 한다. 큰 learning rate, 확률 0의 로그, 선형 종속 feature, 포화된 softmax처럼 가정이 깨지는 지점도 함께 확인한다.
+
+**원문 대응:** 정답지 1의 Q13·Q19·Q24와 정답지 2의 Q26·Q28·Q30·Q34·Q38·Q40·Q43·Q47·Q49가 score, gradient, attention 차원, squared residual, positional encoding, XOR, softmax를 직접 확인한다. 위 유도는 이 정답 문구를 검산하기 위한 보충이며, 상세 원문은 `1st_Regression.pdf` p.4-25, `02_MLP.pdf` p.4-24, `2_Overview_TF.pdf` p.6-20에 대응한다. 정답지 이미지 자체에 없는 BCE likelihood·XOR 부등식·attention 분산 전개를 시험 원문의 직접 제시식으로 오인하면 안 된다.
+
 ## 1. Regression과 Optimization
 
 ### 핵심 정리
 
-Linear Regression은 입력 feature \(x\)를 이용해 target \(y\)를 예측하는 지도학습 모델이다. 예측값은 보통 다음 선형 점수로 표현한다.
+Linear Regression은 입력 feature $$x$$를 이용해 target $$y$$를 예측하는 지도학습 모델이다. 예측값은 보통 다음 선형 점수로 표현한다.
 
 $$
 \hat{y}=w^Tx+b
@@ -80,10 +95,10 @@ Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, �
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q13 | \(score=w^Tx+b\) | 선형 모델은 weight와 feature의 내적에 bias를 더한다. |
+| Q13 | $$score=w^Tx+b$$ | 선형 모델은 weight와 feature의 내적에 bias를 더한다. |
 | Q28 | Squared Sum of Residual | 회귀 문제의 대표 loss는 오차의 제곱합이다. |
-| Q34 | \(Residual=y-\hat{y}\) | 실제값에서 예측값을 뺀 차이를 residual로 본다. |
-| Q38 | \(x\): features, \(y\): target | 입력 변수는 feature, 예측 대상은 target이다. |
+| Q34 | $$Residual=y-\hat{y}$$ | 실제값에서 예측값을 뺀 차이를 residual로 본다. |
+| Q38 | $$x$$: features, $$y$$: target | 입력 변수는 feature, 예측 대상은 target이다. |
 | Q49 | loss를 줄이도록 parameter를 반복 update | iterative update는 한 번에 닫힌 해를 구하는 방식이 아니라 반복 갱신이다. |
 | Q24 | loss 감소 방향, gradient의 반대 방향 | gradient는 증가 방향이므로 loss 최소화에는 반대 방향을 쓴다. |
 
@@ -95,7 +110,7 @@ Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, �
 | score vs prediction | score는 모델이 계산한 선형 출력이고, regression에서는 보통 예측값으로 직접 사용된다. | classification에서는 score를 그대로 class probability로 해석하면 안 된다. |
 | gradient vs update direction | gradient는 loss가 증가하는 방향이고, 학습은 보통 그 반대 방향으로 이동한다. | “gradient 방향으로 간다”는 표현은 최소화 문제에서는 부정확할 수 있다. |
 | closed-form vs iterative update | closed-form은 한 번에 해를 구하고, iterative update는 반복적으로 parameter를 고친다. | Gradient Descent는 closed-form 방식이 아니라 반복 최적화 방식이다. |
-| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답이다. | \(x\)와 \(y\)를 바꿔 적은 선택지는 기본 구성 오류다. |
+| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답이다. | $$x$$와 $$y$$를 바꿔 적은 선택지는 기본 구성 오류다. |
 
 ## 2. Logistic Regression과 Classification
 
@@ -128,7 +143,7 @@ sigmoid를 통과한 값은 0과 1 사이의 확률로 해석할 수 있으므�
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| linear regression vs logistic regression | 둘 다 \(w^Tx+b\)를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석한다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아니다. |
+| linear regression vs logistic regression | 둘 다 $$w^Tx+b$$를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석한다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아니다. |
 | sigmoid vs softmax | sigmoid는 주로 binary probability, softmax는 여러 class score를 확률 분포로 바꾼다. | softmax의 출력 합은 1이고, sigmoid는 각 값을 독립적으로 0과 1 사이로 압축한다. |
 | probability vs decision boundary | probability는 class에 속할 가능성이고, decision boundary는 class를 나누는 경계다. | probability function이 있어도 feature가 선형이면 decision boundary는 선형일 수 있다. |
 | likelihood vs probability | probability는 특정 사건의 가능성이고, likelihood는 parameter 관점에서 관측 label을 얼마나 잘 설명하는지 본다. | “observed label이 most likely”라는 표현은 parameter 선택 기준이다. |
@@ -330,7 +345,7 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 | 10 | decision boundary는 여전히 linear |
 | 11 | CNN 기반 모델이 전통적 방법보다 우수한 성능 |
 | 12 | 각 parameter의 gradient를 구하기 위해 chain rule 필요 |
-| 13 | \(score=w^Tx+b\) |
+| 13 | $$score=w^Tx+b$$ |
 | 14 | 생성 텍스트와 참조 텍스트 간 n-gram 일치도 |
 | 15 | score를 probability로 바꿔 class probability로 해석 |
 | 16 | subword pattern으로 OOV 문제 감소 |
@@ -351,11 +366,11 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 | 31 | linear score 위에 probability link function 추가 |
 | 32 | 현재 hidden state가 이전 hidden state에 의존 |
 | 33 | 필요한 이전 부분을 직접 참고 |
-| 34 | \(Residual=y-\hat{y}\) |
+| 34 | $$Residual=y-\hat{y}$$ |
 | 35 | proxy task를 학습한 hidden layer를 embedding으로 사용 |
 | 36 | 시간적 순서를 따라 연결되며 sequence를 처리 |
 | 37 | task마다 별도 모델을 from scratch로 학습 |
-| 38 | \(x\): features, \(y\): target |
+| 38 | $$x$$: features, $$y$$: target |
 | 39 | token 사이 global relationship을 더 잘 봄 |
 | 40 | self-attention만으로 token 순서를 알기 어려움 |
 | 41 | 의미 관계를 반영한 dense vector |
@@ -373,9 +388,9 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 | 범위 | 반드시 남겨야 할 문장 |
 |---|---|
-| Regression | feature \(x\)로 target \(y\)를 예측하고, residual은 \(y-\hat{y}\)이다. |
+| Regression | feature $$x$$로 target $$y$$를 예측하고, residual은 $$y-\hat{y}$$이다. |
 | Optimization | gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다. |
-| Logistic Regression | linear score \(w^Tx+b\)에 sigmoid를 붙여 class probability로 해석한다. |
+| Logistic Regression | linear score $$w^Tx+b$$에 sigmoid를 붙여 class probability로 해석한다. |
 | MLP | hidden layer와 nonlinearity가 single perceptron보다 복잡한 pattern을 표현하게 한다. |
 | Computer Vision | high-level 목표는 pixel을 meaning으로 연결하는 것이다. |
 | NLP | tokenizer는 token으로 나누고, embedding은 token을 dense vector로 표현한다. |
@@ -387,62 +402,62 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기한다.
 2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인한다.
-3. 수식형 문항은 \(score=w^Tx+b\), \(residual=y-\hat{y}\), sigmoid, softmax, gradient update를 손으로 다시 써 본다.
+3. 수식형 문항은 $$score=w^Tx+b$$, $$residual=y-\hat{y}$$, sigmoid, softmax, gradient update를 손으로 다시 써 본다.
 4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 본다.
 5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교한다.
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Linear regression에서 feature, target, score, residual을 한 번에 구분하면?</summary>
 
-답변: feature는 입력 \(x\), target은 맞혀야 하는 정답 \(y\), score 또는 prediction은 \(\hat{y}=w^Tx+b\), residual은 실제값과 예측값의 차이 \(y-\hat{y}\)이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
+답변: feature는 입력 $$x$$, target은 맞혀야 하는 정답 $$y$$, score 또는 prediction은 $$\hat{y}=w^Tx+b$$, residual은 실제값과 예측값의 차이 $$y-\hat{y}$$이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Gradient descent에서 왜 gradient의 반대 방향으로 이동하는가?</summary>
 
-답변: gradient \(\nabla L\)은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 \(\theta \leftarrow \theta-\eta\nabla L(\theta)\)처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
+답변: gradient $$\nabla L$$은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 $$\theta \leftarrow \theta-\eta\nabla L(\theta)$$처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Logistic regression이 linear regression과 비슷하면서도 classification 모델인 이유는?</summary>
 
-답변: logistic regression도 먼저 \(w^Tx+b\)라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 \(0\)과 \(1\) 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
+답변: logistic regression도 먼저 $$w^Tx+b$$라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 $$0$$과 $$1$$ 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Single perceptron은 XOR을 못 풀고 MLP는 풀 수 있는 이유는?</summary>
 
 답변: single perceptron은 하나의 선형 decision boundary를 만들기 때문에 linearly separable한 문제에만 적합하다. XOR은 하나의 직선으로 두 class를 나눌 수 없다. MLP는 hidden layer와 nonlinear activation을 통해 입력을 새로운 표현 공간으로 바꾸고, 여러 경계 조각을 조합해 XOR 같은 비선형 패턴을 표현할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Backpropagation과 gradient descent는 같은 말인가?</summary>
 
 답변: 아니다. backpropagation은 chain rule을 이용해 각 parameter의 gradient를 계산하는 절차다. gradient descent는 계산된 gradient를 이용해 parameter를 실제로 업데이트하는 최적화 방법이다. 즉 backpropagation은 “기울기를 구하는 법”, gradient descent는 “그 기울기로 움직이는 법”에 가깝다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Tokenizer, one-hot vector, embedding은 어떻게 이어지는가?</summary>
 
 답변: tokenizer는 문장을 token으로 나누고 vocabulary의 항목에 대응시킨다. one-hot vector는 token을 vocabulary 크기의 희소 벡터로 표현한다. embedding은 token을 더 낮은 차원의 dense vector로 바꾸어 의미적 유사성을 담을 수 있게 한다. 따라서 tokenizer와 embedding은 같은 단계가 아니라 순차적으로 연결되는 단계다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. RNN이 sequence에 맞지만 긴 문장에서 약해지는 이유는?</summary>
 
 답변: RNN은 현재 hidden state가 이전 hidden state에 의존하므로 시간 순서가 있는 데이터를 처리하기 좋다. 그러나 긴 문장에서는 앞부분 정보가 hidden state에 반복적으로 압축되면서 영향이 희미해질 수 있고, 이전 시점 계산이 끝나야 다음 시점을 계산할 수 있어 병렬화도 어렵다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. Self-attention에서 Q, K, V와 positional encoding의 역할은?</summary>
 
 답변: Q와 K의 내적은 token 사이 관련도 점수를 계산하는 데 쓰이고, V는 그 점수로 가중합해 실제 출력 표현을 만드는 데 쓰인다. self-attention은 token 간 관계를 잘 보지만 그 자체만으로 순서 정보를 자연스럽게 알기 어렵다. 그래서 positional encoding을 더해 각 token의 위치 정보를 보강한다.

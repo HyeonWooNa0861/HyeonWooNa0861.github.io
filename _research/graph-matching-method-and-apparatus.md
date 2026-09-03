@@ -15,7 +15,7 @@ keywords:
 
 # Graph Matching Method and Apparatus
 
-Source PDF: [Official patent PDF](https://patentimages.storage.googleapis.com/85/ec/97/d3f3e6eda9823c/KR101747854B1.pdf)
+Source PDF: [Official patent PDF](https://patentimages.storage.googleapis.com/85/ec/97/d3f3e6eda9823c/KR101747854B1.pdf){:target="_blank" rel="noopener"}
 
 ## 문서 정보
 
@@ -61,19 +61,19 @@ Subgraph matching은 query graph와 동형인 부분 구조를 data graph에서 
 
 ### 1단계: Data graph node numbering
 
-Data graph의 모든 node를 degree 기준으로 정렬한다. 가장 작은 degree의 node에 \(n\)을 부여하고, 번호가 없는 node 중 다음 후보에 \(n+1\)을 반복해 부여한다. 같은 degree의 후보가 둘 이상이면 명세서는 하나를 선택해 번호를 부여할 수 있다고 설명한다.
+Data graph의 모든 node를 degree 기준으로 정렬한다. 가장 작은 degree의 node에 $$n$$을 부여하고, 번호가 없는 node 중 다음 후보에 $$n+1$$을 반복해 부여한다. 같은 degree의 후보가 둘 이상이면 명세서는 하나를 선택해 번호를 부여할 수 있다고 설명한다.
 
-이 번호는 matching 순서 자체가 아니라, query node가 대응된 data node 사이의 대소 관계를 검사하기 위한 값이다. 따라서 query priority가 \(N(a)<N(b)\)라면, \(a\)와 \(b\)에 대응된 data-node number가 같은 관계를 만족해야 한다.
+이 번호는 matching 순서 자체가 아니라, query node가 대응된 data node 사이의 대소 관계를 검사하기 위한 값이다. 따라서 query priority가 $$N(a)<N(b)$$라면, $$a$$와 $$b$$에 대응된 data-node number가 같은 관계를 만족해야 한다.
 
 ### 2단계: Query graph priority
 
-Query graph node로 만들 수 있는 permutation을 생성하고, 서로 동형인 graph를 clustering한다. 기준 cluster와 기준 graph를 선택한 뒤, 기준 graph의 \(m\)번째 node가 같은 cluster의 다른 graph에 있는 \(m\)번째 node보다 작다는 조건을 만든다. 조건에 맞지 않는 permutation을 제거하고 \(m+1\)로 이동한다.
+Query graph node로 만들 수 있는 permutation을 생성하고, 서로 동형인 graph를 clustering한다. 기준 cluster와 기준 graph를 선택한 뒤, 기준 graph의 $$m$$번째 node가 같은 cluster의 다른 graph에 있는 $$m$$번째 node보다 작다는 조건을 만든다. 조건에 맞지 않는 permutation을 제거하고 $$m+1$$로 이동한다.
 
 기준 graph만 남을 때까지 반복하면 query node 사이의 priority constraint가 완성된다. 현대 graph-algorithm 용어로는 automorphism orbit에서 대표 순서를 정하는 symmetry-breaking constraint로 해석할 수 있다.
 
 ### 3단계: Priority-aware matching
 
-Matching은 query node를 data node에 대응시키면서 priority를 즉시 검사한다. 예를 들어 \(p<q<r\)인데 partial mapping의 data-node number가 \(q<r\)을 위반하면, 아직 매칭하지 않은 다음 query node를 시도할 필요 없이 해당 branch를 종료한다.
+Matching은 query node를 data node에 대응시키면서 priority를 즉시 검사한다. 예를 들어 $$p<q<r$$인데 partial mapping의 data-node number가 $$q<r$$을 위반하면, 아직 매칭하지 않은 다음 query node를 시도할 필요 없이 해당 branch를 종료한다.
 
 ```text
 data node numbering

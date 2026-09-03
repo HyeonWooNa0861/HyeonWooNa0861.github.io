@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
+last_modified_at: 2026-09-03 20:25:28 +0900
 title: "Robotics 2"
 course: "AIX"
 topic: "VLA, World Models, Physical RL"
@@ -17,6 +18,20 @@ keywords:
 # Robotics 2
 
 Source PDF: `Robotics_2.pdf`
+
+> **원본 확인 범위:** 로컬 원본 PDF 44쪽의 텍스트 레이어와 핵심 도표 슬라이드를 대조했다. 아래 쪽수는 PDF 뷰어 기준이다. 이 deck은 robotics scaling을 경험적 thesis와 chart로 제시하며, fitted power-law 식이나 증명을 제공하지 않는다. 따라서 아래 글은 원본의 정성적 주장과 작성자의 구조화 설명을 구분하고, 임의의 scaling 식을 원문 공식처럼 추가하지 않는다.
+
+## 원본 슬라이드 매핑
+
+| 핵심 내용 | PDF 쪽 | 수식·출처 경계 |
+|---|---:|---|
+| LLM–robotics three-phase parallel | 5–9 | Pre-training, alignment/action fine-tuning, RL의 대응은 원본의 중심 비유이며 수학적 동치가 아니다. |
+| VLA와 video pre-training | 11–15 | Vision-language-action 구조와 video의 physical regularity 학습은 원본 설명이다. Architecture 식이나 loss는 제시되지 않는다. |
+| Action fine-tuning, world model, WAM | 17–21 | Embodiment alignment와 internal rollout은 원본의 개념 흐름이며, state-transition 식은 이 글이 임의로 가정하지 않는다. |
+| Data engine과 autonomous-rollout flywheel | 23–29 | Teleoperation throughput과 policy → data → improved policy 흐름은 원본의 시스템 주장이다. |
+| Robot pre-training scaling chart | 33 | Data 증가에 따른 loss 감소는 원본 chart의 경험적 관찰이다. Fitted 계수·지수와 uncertainty가 없어 power law의 증명으로 해석하지 않는다. |
+| Physical RL과 simulation ecosystem | 35–39 | Real-world RL, digital twins/cousins, 세 입력의 결합은 원본 설명이며 성능 보장 정리는 아니다. |
+| Physical Turing test와 장기 horizon | 41–44 | Milestone과 timeline은 원본의 전망이며 수학적 예측 모델이 아니다. |
 
 > **핵심:** **robotics scaling thesis** LLM의 scaling recipe가 robotics에도 적용될 수 있다는 주장. **three-phase recipe** pre-training, action fine-tuning, physical RL.
 
@@ -250,70 +265,70 @@ Robotics 2는 LLM과 robotics의 parallel을 먼저 외우면 훨씬 쉽다. Pre
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Robotics를 LLM 이후의 scaling frontier로 보는 이유는 무엇인가?</summary>
 
 답변: LLM에서 대규모 data, model, compute, pre-training, alignment, RL이 성능을 크게 끌어올렸듯이, robotics도 video/world data, action fine-tuning, physical RL을 결합하면 비슷한 scaling 구조를 따를 수 있다고 보기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. LLM의 three-phase recipe는 robotics에서 무엇에 대응되는가?</summary>
 
 답변: LLM의 pre-training은 robotics의 world/video pre-training에, supervised alignment는 action fine-tuning에, reasoning RL은 physical RL에 대응된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. VLA는 무엇인가?</summary>
 
 답변: Vision-Language-Action의 약자다. 장면을 보고, 언어 지시를 이해하고, 실제 robot action을 출력하는 robot foundation model backbone이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Video pre-training이 robotics에 중요한 이유는 무엇인가?</summary>
 
 답변: Internet video와 ego-video는 물체의 움직임, 접촉, geometry, affordance 같은 physical regularities를 많이 담고 있기 때문이다. 이는 robot world model의 pre-training substrate가 될 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. VLA와 WAM은 어떻게 다른가?</summary>
 
 답변: VLA는 vision-language understanding을 action으로 연결하는 mapping에 초점이 있다. WAM은 World Action Model로, world dynamics를 예측하고 internal rollout을 통해 action을 선택하는 world modeling을 더 중심에 둔다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Teleoperation이 default data engine이 되었지만 한계가 있는 이유는 무엇인가?</summary>
 
 답변: Teleoperation은 robot embodiment와 action trace가 잘 정렬된 데이터를 제공하지만, human labor, robot access, operator fatigue 때문에 throughput ceiling이 있다. 그래서 foundation model scale에는 부족할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. Ego-video는 왜 embodied AI에 유용한가?</summary>
 
 답변: First-person video는 사람이 물리 세계와 상호작용하는 장면을 많이 담고 있어 dynamics와 affordance를 관찰할 수 있다. 완벽한 robot action label은 아니지만 pre-training data로 매우 풍부하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. Physical RL이 robotics의 surpassing phase인 이유는 무엇인가?</summary>
 
 답변: Teleoperation이나 imitation은 human demonstration을 따라 하는 데 강하지만, physical RL은 실제 환경이나 simulation에서 반복 개선을 통해 demonstration을 넘어서는 성능을 추구한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>9. Digital twin과 digital cousin의 차이는 무엇인가?</summary>
 
 답변: Digital twin은 실제 환경을 가깝게 복제한 simulation이고, digital cousin은 exact replica가 아니라 유사하지만 변형된 환경이다. Digital cousin은 variation을 만들어 robustness를 높이는 데 중요하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>10. Near-term physical Turing test는 무엇을 뜻하는가?</summary>
 
 답변: 모든 환경에서 완전한 general-purpose autonomy를 달성하는 것이 아니라, bounded physical tasks에서 인간과 비교 가능한 노동 수행 능력을 보여주는 것을 첫 milestone으로 보는 관점이다.

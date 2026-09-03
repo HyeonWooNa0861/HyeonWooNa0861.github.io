@@ -60,7 +60,7 @@ Minions는 긴 private context를 전부 cloud frontier model에 보내지 않�
 
 ## 2. 문제 정의와 비용 모델
 
-논문이 다루는 task는 context \(c\), query \(q\), 정답 \(y\)로 정의된다. Local-remote system \(S\)는 local device의 작은 모델과 cloud의 큰 모델을 함께 사용해 \(\hat{y} \sim S(c,q)\)를 출력한다.
+논문이 다루는 task는 context $$c$$, query $$q$$, 정답 $$y$$로 정의된다. Local-remote system $$S$$는 local device의 작은 모델과 cloud의 큰 모델을 함께 사용해 $$\hat{y} \sim S(c,q)$$를 출력한다.
 
 품질은 정답 여부 기반 accuracy로 측정한다. 비교 기준은 세 가지다.
 

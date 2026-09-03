@@ -416,6 +416,10 @@
       url: /study/autonomous-driving/
       description: Autonomous driving sensors and perception lecture notes
       match: /study/autonomous-driving/
+    - title: Speech and Audio Recognition
+      url: /study/speech-and-audio-recognition/
+      description: Speech, audio, and digital signal processing lecture notes
+      match: /study/speech-and-audio-recognition/
     - title: CME295
       url: /study/cme295/
       description: Stanford CME295 Transformers and LLMs lecture notes

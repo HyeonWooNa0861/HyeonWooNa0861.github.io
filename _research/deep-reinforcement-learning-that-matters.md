@@ -46,11 +46,11 @@ Source PDF: `deep-reinforcement-learning-that-matters.pdf`
 
 저자들은 TRPO, DDPG, PPO, ACKTR을 중심으로 OpenAI Gym MuJoCo 환경인 Hopper-v1, HalfCheetah-v1, Swimmer, Walker2d 등을 사용한다. 대부분의 실험은 OpenAI Baselines를 기준으로 하되, codebase 비교에서는 원래 TRPO 구현, rllab TensorFlow, rllab Theano, rllabplusplus 같은 구현 차이도 다룬다. 이 선택은 논문의 핵심 메시지와 연결된다. 논문이 묻는 것은 "어떤 알고리즘이 가장 강한가"가 아니라 "같은 알고리즘이라고 부르는 구현과 설정이 정말 같은 비교 단위인가"이다.
 
-random seed 실험은 특히 직접적이다. 같은 hyperparameter 설정에서 10개 trial을 두 묶음의 5개 seed로 나누었을 때, HalfCheetah에서 TRPO는 두 묶음 사이에 \(t=-9.0916\), \(p=0.0016\) 수준의 차이를 보였다. 이 값은 단순히 seed를 다르게 뽑은 것만으로도 통계적으로 유의한 차이가 나타날 수 있음을 의미한다. 따라서 3개나 5개 seed 평균만으로 새로운 알고리즘의 우월성을 주장하는 것은 약하다.
+random seed 실험은 특히 직접적이다. 같은 hyperparameter 설정에서 10개 trial을 두 묶음의 5개 seed로 나누었을 때, HalfCheetah에서 TRPO는 두 묶음 사이에 $$t=-9.0916$$, $$p=0.0016$$ 수준의 차이를 보였다. 이 값은 단순히 seed를 다르게 뽑은 것만으로도 통계적으로 유의한 차이가 나타날 수 있음을 의미한다. 따라서 3개나 5개 seed 평균만으로 새로운 알고리즘의 우월성을 주장하는 것은 약하다.
 
-network architecture와 activation도 결과를 바꾼다. 논문은 MLP hidden layer 구성을 \((64,64)\), \((100,50,25)\), \((400,300)\) 등으로 바꾸고, tanh, ReLU, Leaky ReLU를 비교한다. 이 변화는 같은 알고리즘 이름 아래에서도 학습 안정성과 최종 return을 달라지게 한다. DDPG의 경우 HalfCheetah처럼 상대적으로 안정적인 환경에서는 좋은 결과를 보일 수 있지만, Hopper처럼 균형을 잃으면 episode가 끝나는 환경에서는 성능 차이가 다르게 나타난다.
+network architecture와 activation도 결과를 바꾼다. 논문은 MLP hidden layer 구성을 $$(64,64)$$, $$(100,50,25)$$, $$(400,300)$$ 등으로 바꾸고, tanh, ReLU, Leaky ReLU를 비교한다. 이 변화는 같은 알고리즘 이름 아래에서도 학습 안정성과 최종 return을 달라지게 한다. DDPG의 경우 HalfCheetah처럼 상대적으로 안정적인 환경에서는 좋은 결과를 보일 수 있지만, Hopper처럼 균형을 잃으면 episode가 끝나는 환경에서는 성능 차이가 다르게 나타난다.
 
-평가 지표에 대한 비판도 중요하다. 최고 return만 고르면 trial 수가 많은 쪽이 유리하고, 평균 return만 보면 outlier나 실패 run을 가릴 수 있다. Walker2d에서 ACKTR과 DDPG를 비교한 예시는 \(t=1.03\), \(p=0.334\), KS statistic \(=0.40\), \(p=0.697\)처럼 단순 평균 차이를 유의한 개선으로 보기 어렵다는 점을 보여준다. bootstrap percent difference도 44.47%였지만 confidence interval은 \([-80.62\%, 111.72\%]\)로 매우 넓었다.
+평가 지표에 대한 비판도 중요하다. 최고 return만 고르면 trial 수가 많은 쪽이 유리하고, 평균 return만 보면 outlier나 실패 run을 가릴 수 있다. Walker2d에서 ACKTR과 DDPG를 비교한 예시는 $$t=1.03$$, $$p=0.334$$, KS statistic $$=0.40$$, $$p=0.697$$처럼 단순 평균 차이를 유의한 개선으로 보기 어렵다는 점을 보여준다. bootstrap percent difference도 44.47%였지만 confidence interval은 $$[-80.62\%, 111.72\%]$$로 매우 넓었다.
 
 ## Claim vs Interpretation
 

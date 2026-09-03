@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
@@ -33,6 +34,18 @@ Source PDF: `2_Overview_TF.pdf`
 | 7 | Residual과 normalization | 깊은 Transformer를 안정적으로 학습시키는 장치는 무엇인가? |
 | 8 | Encoder와 decoder | 이해용 구조와 생성용 구조는 어떻게 달라지는가? |
 
+### 수식 원문 대응
+
+| 원문 페이지 | 수식·도식 | 이 글의 보충 범위 |
+|---:|---|---|
+| p.6-9 | token embedding + position embedding, encoder 입력 | 입력 표현식과 permutation-equivariance 증명은 도식을 수식화한 보충이다. |
+| p.10-17 | $$Q,K,V$$와 $$\operatorname{softmax}(QK^T/\sqrt{d_k})V$$ | p.12의 원문 식을 p.13-17의 행렬 전개와 연결하고 scaling의 분산 근사를 명시했다. |
+| p.18-20 | multi-head 구성과 output projection | concat 및 $$W_O$$ 식은 원문 구성도를 표준 표기로 옮긴 정의다. |
+| p.21-22 | FFN과 encoder output | FFN·residual·layer-normalization 식은 block 도식을 계산식으로 풀어 쓴 보충이다. |
+| p.25-38 | decoder self-attention, cross-attention, autoregressive output | 구조 설명에 해당하며 원문은 별도의 닫힌꼴 증명을 제시하지 않는다. |
+
+따라서 attention 식은 원문 직접 제시식이고, equivariance·FFN·residual 계산은 구조를 검산하기 위한 저자 보충이다.
+
 ## 1. Tokenization과 Embedding
 
 Transformer는 raw text를 그대로 받지 않는다. 먼저 text를 token으로 나누고, 각 token을 정수 id로 바꾼 뒤 embedding vector로 변환한다.
@@ -51,6 +64,18 @@ $$
 \mathrm{input\ representation}
 = \mathrm{token\ embedding} + \mathrm{positional\ encoding}
 $$
+
+이 식은 **입력 표현의 정의**다. 두 벡터가 같은 $$d_{\mathrm{model}}$$ 차원을 가져야 원소별 덧셈이 가능하며, embedding 값은 학습된 무차원 representation이다.
+
+위치 정보가 없을 때 순서를 구분하기 어려운 이유는 permutation으로 확인할 수 있다. Token 행을 바꾸는 permutation matrix를 $$P$$라 하고 $$X'=PX$$라 두면 $$Q'=PQ$$, $$K'=PK$$, $$V'=PV$$다. 따라서
+
+$$
+Q'K'^T=P(QK^T)P^T,
+\qquad
+\operatorname{Attention}(PX)=P\operatorname{Attention}(X)
+$$
+
+가 되어 입력 순서를 바꾸면 출력도 같은 방식으로 재배열될 뿐, 절대 위치 자체는 생기지 않는다. 이는 positional signal과 위치 의존 mask가 없는 self-attention의 **정확한 equivariance 성질**이다. Causal mask나 relative position bias가 들어가면 이 단순 관계는 더 이상 그대로 성립하지 않는다.
 
 | 방식 | 설명 |
 |---|---|
@@ -76,6 +101,8 @@ $$
 Q = XW_Q,\qquad K = XW_K,\qquad V = XW_V
 $$
 
+$$X\in\mathbb{R}^{n\times d_{\mathrm{model}}}$$에서 $$n$$은 token 수, $$Q,K\in\mathbb{R}^{n\times d_k}$$, $$V\in\mathbb{R}^{n\times d_v}$$다. 모든 항은 학습 representation이라 보통 물리 단위가 없는 수치다.
+
 ## 4. Scaled Dot-Product Attention
 
 Attention score는 query와 key의 dot product로 계산한다.
@@ -89,7 +116,24 @@ $$
 = \operatorname{softmax}(\mathrm{score})V
 $$
 
-\(\sqrt{d_k}\)로 나누는 이유는 차원이 커질수록 dot product 값이 커져 softmax가 너무 날카로워지는 것을 막기 위해서다.
+한 query $$q_i$$가 모든 key와 만드는 score와 weight를 펼치면 다음과 같다.
+
+$$
+s_{ij}=\frac{q_i^Tk_j}{\sqrt{d_k}},\qquad
+\alpha_{ij}=\frac{e^{s_{ij}}}{\sum_{\ell=1}^{n}e^{s_{i\ell}}},\qquad
+o_i=\sum_{j=1}^{n}\alpha_{ij}v_j
+$$
+
+이는 scaled dot-product attention의 **정의**다. Softmax 때문에 $$\alpha_{ij}>0$$, $$\sum_j\alpha_{ij}=1$$이므로 $$o_i$$는 value들의 가중합이다. Masked 위치는 softmax 전에 score를 $$-\infty$$로 보내 weight를 0으로 만든다.
+
+$$\sqrt{d_k}$$ scaling은 다음 통계적 근사로 설명할 수 있다.
+
+1. $$q_{ir}$$, $$k_{jr}$$의 각 성분이 서로 독립이고 평균 0, 분산 1이라고 가정한다.
+2. Dot product는 $$q_i^Tk_j=\sum_{r=1}^{d_k}q_{ir}k_{jr}$$다.
+3. 각 곱의 분산을 약 1로 보면 합의 분산은 약 $$d_k$$, 표준편차는 $$\sqrt{d_k}$$다.
+4. $$\sqrt{d_k}$$로 나누면 score 분산이 약 1로 유지되어 softmax가 차원 증가만으로 포화되는 현상을 줄인다.
+
+이 설명은 learned query와 key가 실제로 독립·단위분산이라는 증명이 아니라 초기화 규모를 이해하기 위한 **근사적 분산 분석**이다. 성분 상관이나 scale이 크면 정규화 후에도 score가 과도하게 커질 수 있고, 매우 날카로운 softmax에서는 작은 score 차이에도 gradient가 작아질 수 있다.
 
 | 단계 | 설명 |
 |---|---|
@@ -190,21 +234,21 @@ tokens
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Attention을 검색 엔진에 비유하면 query, key, value는 각각 무엇인가?</summary>
 
 답변: query는 검색어, key는 각 문서의 색인 또는 제목, value는 실제 문서 내용에 해당한다. query와 key의 유사도가 높을수록 해당 value를 더 많이 가져온다. Transformer에서는 이 과정을 token 표현 사이에서 수행한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Attention sublayer와 FFN sublayer의 역할 차이를 설명하라.</summary>
 
 답변: attention sublayer는 token들 사이의 관계를 계산해 문맥 정보를 섞는다. FFN sublayer는 각 token 위치에서 독립적으로 비선형 변환을 적용해 표현력을 높인다. 즉 attention은 token 간 상호작용, FFN은 위치별 feature 변환에 가깝다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Encoder-only 모델과 decoder-only 모델의 attention mask 차이를 설명하라.</summary>
 
 답변: encoder-only 모델은 보통 입력 전체를 동시에 볼 수 있어 양방향 attention을 사용한다. decoder-only 모델은 다음 token 예측을 위해 미래 token을 보면 안 되므로 causal mask를 사용한다. 이 차이가 이해 중심 모델과 생성 중심 모델의 학습 방식 차이를 만든다.

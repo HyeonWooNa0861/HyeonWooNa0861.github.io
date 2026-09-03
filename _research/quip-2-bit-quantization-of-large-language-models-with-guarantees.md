@@ -56,7 +56,7 @@ QuIP의 출발점은 양자화가 가중치와 Hessian의 좌표계 성질에 �
 
 ## 2. 대리 목적함수
 
-QuIP은 선형 layer의 원래 가중치 \(W\), 양자화된 가중치 \(\hat{W}\), calibration input의 second moment matrix \(H\)를 사용해 다음 이차 대리 손실을 최소화한다.
+QuIP은 선형 layer의 원래 가중치 $$W$$, 양자화된 가중치 $$\hat{W}$$, calibration input의 second moment matrix $$H$$를 사용해 다음 이차 대리 손실을 최소화한다.
 
 $$\ell(\hat{W})=\operatorname{tr}\left((\hat{W}-W)H(\hat{W}-W)^{T}\right).$$
 
@@ -64,7 +64,7 @@ $$\ell(\hat{W})=\operatorname{tr}\left((\hat{W}-W)H(\hat{W}-W)^{T}\right).$$
 
 ## 3. LDLQ
 
-LDLQ는 \(H\)의 LDL 분해를 이용해 선형 feedback 행렬을 정한다. 열 \(k\)를 양자화할 때 이전 열들의 양자화 오차를 보정항으로 더한다.
+LDLQ는 $$H$$의 LDL 분해를 이용해 선형 feedback 행렬을 정한다. 열 $$k$$를 양자화할 때 이전 열들의 양자화 오차를 보정항으로 더한다.
 
 $$\hat{W}_k=Q\left(W_k+(W_{1:(k-1)}-\hat{W}_{1:(k-1)})a_k\right).$$
 
@@ -76,22 +76,22 @@ QuIP의 핵심 차별점은 양자화 전에 가중치와 Hessian을 비정합�
 
 전처리는 대략 다음 순서로 진행된다.
 
-1. \(H\)에 damping 항을 더한다.
-2. \(W\)와 \(H\)를 대각 재스케일링한다.
-3. 무작위 직교행렬 \(U,V\)로 \(W\leftarrow UWV^{T}\), \(H\leftarrow VHV^{T}\)를 적용한다.
-4. Frobenius norm 기반 범위로 \(W\)를 양자화 격자에 맞게 scale하고 clamp한다.
+1. $$H$$에 damping 항을 더한다.
+2. $$W$$와 $$H$$를 대각 재스케일링한다.
+3. 무작위 직교행렬 $$U,V$$로 $$W\leftarrow UWV^{T}$$, $$H\leftarrow VHV^{T}$$를 적용한다.
+4. Frobenius norm 기반 범위로 $$W$$를 양자화 격자에 맞게 scale하고 clamp한다.
 
 후처리에서는 같은 시드로 생성한 직교행렬을 사용해 변환을 되돌리고, 대각 재스케일링도 복원한다.
 
 ## 5. 빠른 직교 곱셈
 
-완전한 무작위 직교행렬을 실제 추론에 그대로 쓰면 비용이 너무 크다. QuIP은 Kronecker product 형태의 무작위 직교행렬을 사용한다. 예를 들어 \(n=pq\)이면 \(U=U_L\otimes U_R\)로 두고, 벡터를 행렬로 reshape한 뒤 양쪽에서 작은 직교행렬을 곱하는 방식으로 연산한다.
+완전한 무작위 직교행렬을 실제 추론에 그대로 쓰면 비용이 너무 크다. QuIP은 Kronecker product 형태의 무작위 직교행렬을 사용한다. 예를 들어 $$n=pq$$이면 $$U=U_L\otimes U_R$$로 두고, 벡터를 행렬로 reshape한 뒤 양쪽에서 작은 직교행렬을 곱하는 방식으로 연산한다.
 
 이 설계는 비정합성 효과를 얻으면서도 전처리와 추론 오버헤드를 통제하기 위한 장치이다.
 
 ## 6. QuIP과 OPTQ의 관계
 
-논문은 비정합성 처리를 제거한 QuIP, 즉 LDLQ가 OPTQ와 동치라고 설명한다. 차이는 구현 효율이다. OPTQ 구현은 \(H\)의 역행렬과 두 번의 Cholesky 분해가 필요하지만, LDLQ 구현은 역행렬 없이 한 번의 분해로 처리할 수 있다.
+논문은 비정합성 처리를 제거한 QuIP, 즉 LDLQ가 OPTQ와 동치라고 설명한다. 차이는 구현 효율이다. OPTQ 구현은 $$H$$의 역행렬과 두 번의 Cholesky 분해가 필요하지만, LDLQ 구현은 역행렬 없이 한 번의 분해로 처리할 수 있다.
 
 따라서 QuIP은 OPTQ를 단순히 대체하는 별도 휴리스틱이라기보다, OPTQ 계열의 adaptive rounding을 더 이론적으로 정리하고 그 앞뒤에 비정합성 처리를 붙인 방법으로 볼 수 있다.
 

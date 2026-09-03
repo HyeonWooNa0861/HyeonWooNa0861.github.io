@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
+last_modified_at: 2026-09-03 19:42:25 +0900
 title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
@@ -34,9 +35,21 @@ Source PDF: `machine-learning-basic-lecture-12.pdf`
 
 12강은 11강의 확률변수, PMF/PDF, joint distribution, conditional distribution을 바탕으로 한다. 핵심은 확률분포를 단순히 정의하는 데서 끝나지 않고, 머신러닝에서 실제로 계산하고 싶은 값인 likelihood, posterior, expectation, variance, covariance로 이어지는 것이다.
 
+### 원문 수식 추적표
+
+| PDF 페이지 | 중요 정의·식 | 본문 대응 |
+|---:|---|---|
+| 3–10 | 11강 확률 공리, PMF/PDF 및 joint·conditional 복습 | 전제 복습 |
+| 11–14 | 독립 $$p(x,y)=p(x)p(y)$$, IID와 판정 예시 | 1–3 |
+| 15–20 | Bayes 정리, prior·likelihood·posterior·predictive distribution | 4–6, 12.1 |
+| 21–26 | 기대값·분산·공분산·다변수 기대값과 성질 | 7–11, 12.2, 12.3 |
+| 27 | correlation과 $$\lvert\operatorname{corr}(X,Y)\rvert\le1$$ | 9, 12.4 |
+
+페이지 28은 Q&A 마무리이다.
+
 ## 1. 독립 확률변수
 
-두 확률변수 \(X\), \(Y\)가 독립이라는 말은 \(Y\)를 알게 되어도 \(X\)에 대한 확률적 믿음이 바뀌지 않는다는 뜻이다. 이산확률변수에서는 다음 조건으로 표현한다.
+두 확률변수 $$X$$, $$Y$$가 독립이라는 말은 $$Y$$를 알게 되어도 $$X$$에 대한 확률적 믿음이 바뀌지 않는다는 뜻이다. 이산확률변수에서는 다음 조건으로 표현한다.
 
 $$
 P(X=x, Y=y)=P(X=x)P(Y=y)
@@ -48,7 +61,7 @@ $$
 P(X=x\mid Y=y)=P(X=x)
 $$
 
-\(Y=y\)라는 정보를 알고 있어도 \(X=x\)의 확률이 그대로라면, \(Y\)는 \(X\)를 예측하는 데 정보를 주지 못한다.
+$$Y=y$$라는 정보를 알고 있어도 $$X=x$$의 확률이 그대로라면, $$Y$$는 $$X$$를 예측하는 데 정보를 주지 못한다.
 
 연속확률변수에서는 PMF 대신 PDF를 사용한다.
 
@@ -70,7 +83,7 @@ $$
 | 여성 | 0.12 | 0.28 | 0.40 |
 | 합 | 0.30 | 0.70 | 1.00 |
 
-남성이면서 안경을 착용할 확률은 \(0.18\)이다. 주변확률의 곱을 계산하면 다음과 같다.
+남성이면서 안경을 착용할 확률은 $$0.18$$이다. 주변확률의 곱을 계산하면 다음과 같다.
 
 $$
 P(\mathrm{남성})P(\mathrm{착용})=0.60\times 0.30=0.18
@@ -100,7 +113,7 @@ $$
 | 여성 | 0.05 | 0.35 | 0.40 |
 | 합 | 0.30 | 0.70 | 1.00 |
 
-주변확률은 이전 표와 같지만, 남성이면서 안경을 착용할 확률은 \(0.25\)다.
+주변확률은 이전 표와 같지만, 남성이면서 안경을 착용할 확률은 $$0.25$$다.
 
 $$
 P(\mathrm{남성})P(\mathrm{착용})=0.60\times 0.30=0.18
@@ -114,7 +127,7 @@ $$
 
 ## 3. IID의 의미
 
-IID는 independent and identically distributed의 약자다. 여러 확률변수 \(X_1, X_2, \ldots, X_n\)이 있을 때 다음 두 조건을 모두 만족한다는 뜻이다.
+IID는 independent and identically distributed의 약자다. 여러 확률변수 $$X_1, X_2, \ldots, X_n$$이 있을 때 다음 두 조건을 모두 만족한다는 뜻이다.
 
 | 조건 | 의미 |
 |---|---|
@@ -148,12 +161,12 @@ $$
 
 | 항 | 이름 | 의미 |
 |---|---|---|
-| \(P(Y=y\mid X=x)\) | posterior | 증거 \(X=x\)를 본 뒤 \(Y=y\)일 확률 |
-| \(P(X=x\mid Y=y)\) | likelihood | \(Y=y\)라고 가정했을 때 증거 \(X=x\)가 관측될 가능성 |
-| \(P(Y=y)\) | prior | 증거를 보기 전 \(Y=y\)에 대한 믿음 |
-| \(P(X=x)\) | evidence | 증거 \(X=x\) 자체가 나타날 전체 확률 |
+| $$P(Y=y\mid X=x)$$ | posterior | 증거 $$X=x$$를 본 뒤 $$Y=y$$일 확률 |
+| $$P(X=x\mid Y=y)$$ | likelihood | $$Y=y$$라고 가정했을 때 증거 $$X=x$$가 관측될 가능성 |
+| $$P(Y=y)$$ | prior | 증거를 보기 전 $$Y=y$$에 대한 믿음 |
+| $$P(X=x)$$ | evidence | 증거 $$X=x$$ 자체가 나타날 전체 확률 |
 
-분모 \(P(X=x)\)는 posterior가 전체적으로 합이 1이 되도록 정규화하는 역할을 한다. 이산적인 경우에는 가능한 모든 \(y_i\)에 대해 다음처럼 계산할 수 있다.
+분모 $$P(X=x)$$는 posterior가 전체적으로 합이 1이 되도록 정규화하는 역할을 한다. 이산적인 경우에는 가능한 모든 $$y_i$$에 대해 다음처럼 계산할 수 있다.
 
 $$
 P(X=x)=\sum_{i=1}^{n}P(X=x\mid Y=y_i)P(Y=y_i)
@@ -221,13 +234,13 @@ $$
 
 ## 6. Bayesian Machine Learning
 
-Bayesian machine learning에서는 모델 parameter \(\theta\)를 하나의 고정된 미지수로만 보지 않고, 확률변수처럼 다룬다. 데이터를 보기 전에는 parameter에 대한 믿음인 prior distribution을 둔다.
+Bayesian machine learning에서는 모델 parameter $$\theta$$를 하나의 고정된 미지수로만 보지 않고, 확률변수처럼 다룬다. 데이터를 보기 전에는 parameter에 대한 믿음인 prior distribution을 둔다.
 
 $$
 P(\theta)
 $$
 
-데이터 \(X=\{x_i\}_{i=1}^{n}\)이 parameter \(\theta\)를 가진 모델에서 생성되었다고 가정하면, 조건부 확률 \(P(X\mid\theta)\)를 likelihood라고 부른다.
+데이터 $$X=\{x_i\}_{i=1}^{n}$$이 parameter $$\theta$$를 가진 모델에서 생성되었다고 가정하면, 조건부 확률 $$P(X\mid\theta)$$를 likelihood라고 부른다.
 
 데이터가 IID라고 가정하면 likelihood는 다음처럼 곱으로 분해된다.
 
@@ -249,14 +262,14 @@ $$
 
 | 개념 | 의미 | 직관 |
 |---|---|---|
-| prior \(P(\theta)\) | 데이터를 보기 전 parameter에 대한 믿음 | 어떤 parameter가 그럴듯한가? |
-| likelihood \(P(X\mid\theta)\) | parameter가 주어졌을 때 현재 데이터가 나올 가능성 | 이 parameter가 데이터를 잘 설명하는가? |
-| posterior \(P(\theta\mid X)\) | 데이터를 본 뒤 parameter에 대한 믿음 | 데이터까지 반영하면 어떤 parameter가 그럴듯한가? |
-| evidence \(P(X)\) | 데이터가 나타날 전체 확률 | posterior를 정규화하는 값 |
+| prior $$P(\theta)$$ | 데이터를 보기 전 parameter에 대한 믿음 | 어떤 parameter가 그럴듯한가? |
+| likelihood $$P(X\mid\theta)$$ | parameter가 주어졌을 때 현재 데이터가 나올 가능성 | 이 parameter가 데이터를 잘 설명하는가? |
+| posterior $$P(\theta\mid X)$$ | 데이터를 본 뒤 parameter에 대한 믿음 | 데이터까지 반영하면 어떤 parameter가 그럴듯한가? |
+| evidence $$P(X)$$ | 데이터가 나타날 전체 확률 | posterior를 정규화하는 값 |
 
 일반적인 point estimate 방식은 가장 좋은 parameter 하나를 찾는 데 집중한다. Bayesian 관점은 가능한 parameter들의 분포를 유지하므로, 예측의 불확실성까지 표현할 수 있다.
 
-새로운 입력 \(x_*\)가 들어왔을 때의 예측도 하나의 값이 아니라 분포로 계산한다.
+새로운 입력 $$x_*$$가 들어왔을 때의 예측도 하나의 값이 아니라 분포로 계산한다.
 
 $$
 P(F(x_*)\mid X)
@@ -267,7 +280,7 @@ $$
 
 ## 7. 기대값, 평균, 분산
 
-기대값은 확률변수에 어떤 함수 \(g\)를 적용했을 때의 평균적인 값을 뜻한다.
+기대값은 확률변수에 어떤 함수 $$g$$를 적용했을 때의 평균적인 값을 뜻한다.
 
 이산확률변수에서는 다음과 같이 계산한다.
 
@@ -281,7 +294,7 @@ $$
 \mathbb{E}[g(X)]=\int g(x)f_X(x)dx
 $$
 
-\(g(x)=x\)인 경우를 평균이라고 부른다.
+$$g(x)=x$$인 경우를 평균이라고 부른다.
 
 $$
 \mathbb{E}[X]
@@ -303,7 +316,7 @@ $$
 
 ## 8. 기대값 예시
 
-공정한 주사위를 굴릴 때 각 눈이 나올 확률은 \(\frac{1}{6}\)이다.
+공정한 주사위를 굴릴 때 각 눈이 나올 확률은 $$\frac{1}{6}$$이다.
 
 $$
 \mathbb{E}[X]
@@ -328,7 +341,7 @@ $$
 =\frac{35}{12}
 $$
 
-만약 \(6\)이 나올 확률이 \(\frac{1}{2}\)이고, \(1\)부터 \(5\)까지는 각각 \(\frac{1}{10}\)이라면 평균은 다음과 같다.
+만약 $$6$$이 나올 확률이 $$\frac{1}{2}$$이고, $$1$$부터 $$5$$까지는 각각 $$\frac{1}{10}$$이라면 평균은 다음과 같다.
 
 $$
 \mathbb{E}[X]
@@ -341,7 +354,7 @@ $$
 
 ## 9. 공분산과 상관관계
 
-공분산은 두 확률변수 \(X\), \(Y\)가 평균을 기준으로 함께 어떻게 움직이는지를 측정한다.
+공분산은 두 확률변수 $$X$$, $$Y$$가 평균을 기준으로 함께 어떻게 움직이는지를 측정한다.
 
 $$
 \operatorname{Cov}(X,Y)
@@ -359,8 +372,8 @@ $$
 
 | 공분산 | 해석 |
 |---|---|
-| 양수 | \(X\)가 평균보다 클 때 \(Y\)도 평균보다 큰 경향 |
-| 음수 | \(X\)가 평균보다 클 때 \(Y\)는 평균보다 작은 경향 |
+| 양수 | $$X$$가 평균보다 클 때 $$Y$$도 평균보다 큰 경향 |
+| 음수 | $$X$$가 평균보다 클 때 $$Y$$는 평균보다 작은 경향 |
 | 0 근처 | 선형적으로 함께 움직이는 경향이 약함 |
 
 공분산은 단위의 영향을 받는다. 그래서 두 변수의 표준편차로 나누어 정규화한 값이 상관관계다.
@@ -370,13 +383,13 @@ $$
 =\frac{\operatorname{Cov}(X,Y)}{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}\in[-1,1]
 $$
 
-상관관계는 항상 \(-1\)과 \(1\) 사이에 있다.
+상관관계는 항상 $$-1$$과 $$1$$ 사이에 있다.
 
 | 상관관계 | 해석 |
 |---|---|
-| \(1\)에 가까움 | 강한 양의 선형 관계 |
-| \(-1\)에 가까움 | 강한 음의 선형 관계 |
-| \(0\)에 가까움 | 선형 관계가 약함 |
+| $$1$$에 가까움 | 강한 양의 선형 관계 |
+| $$-1$$에 가까움 | 강한 음의 선형 관계 |
+| $$0$$에 가까움 | 선형 관계가 약함 |
 
 주의할 점은 correlation이 0이라고 해서 항상 독립을 의미하지는 않는다는 것이다. 상관관계는 선형 관계만 측정하므로 비선형 의존성은 남아 있을 수 있다. 반대로 독립이면 일반적으로 공분산과 상관관계는 0이 된다.
 
@@ -427,9 +440,9 @@ $$
 \mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]
 $$
 
-이 성질은 \(X\), \(Y\)가 독립이 아니어도 성립한다. 선형성은 기대값 계산에서 가장 자주 쓰이는 성질이다.
+이 성질은 $$X$$, $$Y$$가 독립이 아니어도 성립한다. 선형성은 기대값 계산에서 가장 자주 쓰이는 성질이다.
 
-만약 \(X\), \(Y\)가 독립이라면 곱의 기대값도 분리된다.
+만약 $$X$$, $$Y$$가 독립이라면 곱의 기대값도 분리된다.
 
 $$
 \mathbb{E}[XY]=\mathbb{E}[X]\mathbb{E}[Y]
@@ -453,10 +466,98 @@ $$
 
 | 항 | 의미 |
 |---|---|
-| \(\mathbb{E}[\operatorname{Var}(Y\mid X)]\) | \(X\)가 고정되었을 때 남는 평균적인 내부 변동 |
-| \(\operatorname{Var}(\mathbb{E}[Y\mid X])\) | \(X\) 값에 따라 조건부 평균이 달라지는 변동 |
+| $$\mathbb{E}[\operatorname{Var}(Y\mid X)]$$ | $$X$$가 고정되었을 때 남는 평균적인 내부 변동 |
+| $$\operatorname{Var}(\mathbb{E}[Y\mid X])$$ | $$X$$ 값에 따라 조건부 평균이 달라지는 변동 |
 
 예를 들어 데이터를 여러 그룹으로 나누면, 전체 분산은 그룹 내부에서 생기는 분산과 그룹 평균들 사이의 분산으로 나눠 볼 수 있다.
+
+## 12. 핵심 확률식의 유도와 성립 조건
+
+### 12.1 Bayes 정리
+
+$$P(Y=y)>0$$, $$P(X=x)>0$$라 하자. 조건부 확률의 **정의**를 같은 joint probability에 두 번 적용하면
+
+$$
+P(X=x,Y=y)=P(X=x\mid Y=y)P(Y=y)
+=P(Y=y\mid X=x)P(X=x)
+$$
+
+이다. 양변을 $$P(Y=y)$$로 나누면 Bayes 정리라는 **정확한 등식**
+
+$$
+P(X=x\mid Y=y)
+=\frac{P(Y=y\mid X=x)P(X=x)}{P(Y=y)}
+$$
+
+를 얻는다. 분모가 0인 사건에는 이 초급 형태의 조건부 확률을 적용할 수 없다.
+
+### 12.2 기대값 선형성
+
+이산형에서 합이 절대수렴한다고 가정하면
+
+$$
+\mathbb{E}[aX+bY]
+=\sum_{x,y}(ax+by)p_{X,Y}(x,y)
+=a\mathbb{E}[X]+b\mathbb{E}[Y].
+$$
+
+이는 독립성과 무관한 **정확한 항등식**이다. 반면 $$\mathbb{E}[XY]=\mathbb{E}[X]\mathbb{E}[Y]$$로 분리하려면 독립성 같은 추가 조건이 필요하다.
+
+### 12.3 전체 분산 법칙
+
+$$m(X)=\mathbb{E}[Y\mid X]$$, $$\mu=\mathbb{E}[Y]$$라 두고 $$Y-\mu=(Y-m)+(m-\mu)$$로 분해한다. 제곱 후 조건부 기대값을 취하면 교차항은
+
+$$
+\mathbb{E}[(Y-m)(m-\mu)\mid X]
+=(m-\mu)\mathbb{E}[Y-m\mid X]=0
+$$
+
+이므로
+
+$$
+\operatorname{Var}(Y)
+=\mathbb{E}[\operatorname{Var}(Y\mid X)]
++\operatorname{Var}(\mathbb{E}[Y\mid X])
+$$
+
+을 얻는다. 이는 2차 적률이 유한할 때의 **정확한 등식**이다.
+
+### 12.4 Cauchy--Schwarz로 증명하는 상관계수의 범위
+
+$$\mu_X=\mathbb{E}[X]$$, $$\mu_Y=\mathbb{E}[Y]$$라 하고 중심화한 확률변수를 $$U=X-\mu_X$$, $$V=Y-\mu_Y$$로 둔다. $$X,Y$$의 2차 적률이 유한하면 random variable의 내적 $$\langle U,V\rangle=\mathbb{E}[UV]$$에 Cauchy--Schwarz 부등식을 적용할 수 있어
+
+$$
+|\mathbb{E}[UV]|^2
+\le \mathbb{E}[U^2]\mathbb{E}[V^2]
+$$
+
+를 얻는다. 각 항은
+
+$$
+\mathbb{E}[UV]=\operatorname{Cov}(X,Y),
+\quad
+\mathbb{E}[U^2]=\operatorname{Var}(X),
+\quad
+\mathbb{E}[V^2]=\operatorname{Var}(Y)
+$$
+
+이므로
+
+$$
+|\operatorname{Cov}(X,Y)|
+\le
+\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}.
+$$
+
+여기서 **두 분산이 모두 양수**, 즉 $$0<\operatorname{Var}(X),\operatorname{Var}(Y)<\infty$$일 때만 분모로 나눌 수 있고
+
+$$
+|\operatorname{corr}(X,Y)|\le1
+$$
+
+을 얻는다. 이는 표본 추정이 아니라 population correlation에 대한 **정확한 부등식**이다. 어느 한 변수가 거의 확실하게 상수여서 분산이 0이면 covariance도 0이지만 상관계수는 $$0/0$$이 되어 정의되지 않는다. 등호 $$\lvert\operatorname{corr}\rvert=1$$은 중심화된 변수들이 거의 확실하게 $$V=cU$$인 선형 종속 관계일 때 성립하며, $$c>0$$이면 $$+1$$, $$c<0$$이면 $$-1$$이다. Correlation은 covariance의 단위를 두 표준편차의 단위로 나누므로 무차원이다.
+
+확률, PMF, CDF, correlation은 무차원이다. $$X$$가 meter, $$Y$$가 second 단위라면 $$\mathbb{E}[X]$$는 meter, $$\operatorname{Var}(X)$$는 $$\mathrm{m}^2$$, $$\operatorname{Cov}(X,Y)$$는 $$\mathrm{m\,s}$$다.
 
 ## 마지막 핵심 정리
 
@@ -469,7 +570,7 @@ $$
 | Bayes theorem의 분모는 무엇을 하는가? | evidence로서 posterior를 정규화하며 가능한 원인을 모두 고려한다. |
 | likelihood는 무엇인가? | parameter나 원인이 주어졌을 때 관측 데이터가 나올 조건부 확률 |
 | posterior는 무엇인가? | 데이터를 본 뒤 parameter나 원인에 대해 갱신된 믿음 |
-| 분산의 계산식은? | \(\operatorname{Var}(X)=\mathbb{E}[(X-\mathbb{E}[X])^2]=\mathbb{E}[X^2]-\mathbb{E}[X]^2\) |
+| 분산의 계산식은? | $$\operatorname{Var}(X)=\mathbb{E}[(X-\mathbb{E}[X])^2]=\mathbb{E}[X^2]-\mathbb{E}[X]^2$$ |
 | covariance matrix의 대각/비대각 원소는? | 대각은 분산, 비대각은 변수 쌍의 공분산 |
 | 상관관계가 0이면 독립인가? | 항상 그렇지는 않다. 선형 관계가 없다는 뜻에 가깝다. |
 | total variance는 무엇을 분해하는가? | 전체 분산을 조건부 내부 분산과 조건부 평균의 분산으로 분해한다. |
@@ -480,42 +581,42 @@ joint에서 marginal과 conditional을 계산한 뒤 Bayes theorem의 numerator�
 
 ## 복습 질문
 
-<details>
-<summary>1. \(P(X,Y)=P(X)P(Y)\)와 \(P(X\mid Y)=P(X)\)는 왜 같은 독립성의 표현인가?</summary>
+<details markdown="block">
+<summary markdown="span">1. $$P(X,Y)=P(X)P(Y)$$와 $$P(X\mid Y)=P(X)$$는 왜 같은 독립성의 표현인가?</summary>
 
-답변: 조건부 확률 정의에 의해 \(P(X\mid Y)=P(X,Y)/P(Y)\)이다. 만약 \(P(X,Y)=P(X)P(Y)\)이면 \(P(X\mid Y)=P(X)\)가 된다. 반대로 \(P(X\mid Y)=P(X)\)이면 양변에 \(P(Y)\)를 곱해 \(P(X,Y)=P(X)P(Y)\)를 얻는다. 즉, \(Y\)를 알아도 \(X\)에 대한 믿음이 바뀌지 않는다는 뜻이다.
+답변: 조건부 확률 정의에 의해 $$P(X\mid Y)=P(X,Y)/P(Y)$$이다. 만약 $$P(X,Y)=P(X)P(Y)$$이면 $$P(X\mid Y)=P(X)$$가 된다. 반대로 $$P(X\mid Y)=P(X)$$이면 양변에 $$P(Y)$$를 곱해 $$P(X,Y)=P(X)P(Y)$$를 얻는다. 즉, $$Y$$를 알아도 $$X$$에 대한 믿음이 바뀌지 않는다는 뜻이다.
 
 </details>
 
-<details>
-<summary>2. 췌장암 예시에서 \(P(\mathrm{Symptom}\mid\mathrm{Cancer})=1\)인데도 \(P(\mathrm{Cancer}\mid\mathrm{Symptom})=1/11\)인 이유는 무엇인가?</summary>
+<details markdown="block">
+<summary markdown="span">2. 췌장암 예시에서 $$P(\mathrm{Symptom}\mid\mathrm{Cancer})=1$$인데도 $$P(\mathrm{Cancer}\mid\mathrm{Symptom})=1/11$$인 이유는 무엇인가?</summary>
 
 답변: 암 자체의 prior probability가 매우 작기 때문이다. 증상이 암 환자에게 항상 나타나더라도, 암이 아닌 사람 수가 압도적으로 많고 그중 일부에게도 증상이 나타나면 증상 관측자 안에는 false positive가 많이 포함된다. Bayes 정리에서는 likelihood뿐 아니라 prior와 evidence가 함께 posterior를 결정한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Bayesian ML에서 prior가 강하고 데이터가 적으면 posterior는 어떤 모양이 되기 쉬운가?</summary>
 
 답변: 데이터가 적으면 likelihood가 prior를 충분히 밀어내지 못한다. 따라서 posterior는 prior와 비슷한 위치와 모양을 유지하기 쉽다. 반대로 데이터가 많고 likelihood가 뚜렷하면 posterior는 데이터가 지지하는 parameter 근처로 더 강하게 이동한다.
 
 </details>
 
-<details>
-<summary>4. \(\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]\)는 독립이 필요할까?</summary>
+<details markdown="block">
+<summary markdown="span">4. $$\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]$$는 독립이 필요할까?</summary>
 
-답변: 필요하지 않다. 기대값의 선형성은 \(X\), \(Y\)가 독립인지와 무관하게 성립한다. 독립이 필요한 대표적인 성질은 \(\mathbb{E}[XY]=\mathbb{E}[X]\mathbb{E}[Y]\)처럼 곱의 기대값을 분리할 때다.
+답변: 필요하지 않다. 기대값의 선형성은 $$X$$, $$Y$$가 독립인지와 무관하게 성립한다. 독립이 필요한 대표적인 성질은 $$\mathbb{E}[XY]=\mathbb{E}[X]\mathbb{E}[Y]$$처럼 곱의 기대값을 분리할 때다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. 공분산이 0인데도 두 변수가 독립이 아닐 수 있는 예시는 어떤 형태일까?</summary>
 
-답변: 예를 들어 \(X\)가 0을 중심으로 대칭인 확률변수이고 \(Y=X^2\)라고 하자. 이 경우 \(Y\)는 \(X\)로 완전히 결정되므로 독립이 아니다. 하지만 대칭성 때문에 \(\operatorname{Cov}(X,Y)=\operatorname{Cov}(X,X^2)\)가 0이 될 수 있다. 공분산은 선형 관계만 잡기 때문에 비선형 의존성을 놓칠 수 있다.
+답변: 예를 들어 $$X$$가 0을 중심으로 대칭인 확률변수이고 $$Y=X^2$$라고 하자. 이 경우 $$Y$$는 $$X$$로 완전히 결정되므로 독립이 아니다. 하지만 대칭성 때문에 $$\operatorname{Cov}(X,Y)=\operatorname{Cov}(X,X^2)$$가 0이 될 수 있다. 공분산은 선형 관계만 잡기 때문에 비선형 의존성을 놓칠 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. 공분산 행렬의 비대각 원소가 모두 0이면 feature들이 어떤 관계라고 해석할 수 있는가?</summary>
 
 답변: feature 쌍들 사이의 선형 공분산이 없다는 뜻이다. 즉, 서로 uncorrelated하다고 해석할 수 있다. 다만 일반적으로 이것만으로 독립이라고 말할 수는 없다. 다변수 Gaussian처럼 추가 가정이 있을 때는 공분산 0이 독립으로 이어질 수 있다.

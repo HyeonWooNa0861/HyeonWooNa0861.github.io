@@ -59,7 +59,7 @@ Connected-components는 같은 연결 성분에 속한 모든 vertex에 동일�
 
 ### Partition-aware large-star와 small-star
 
-PACC-base는 node를 \(\rho\)개 partition에 배정하고, 각 partition이 담당하는 edge를 유지한 채 두 star operation을 수행한다. PA-large-star는 큰 neighbor를 local minimum 쪽으로 연결하고, PA-small-star는 작은 neighbor와 현재 node를 local minimum 쪽으로 연결한다.
+PACC-base는 node를 $$\rho$$개 partition에 배정하고, 각 partition이 담당하는 edge를 유지한 채 두 star operation을 수행한다. PA-large-star는 큰 neighbor를 local minimum 쪽으로 연결하고, PA-small-star는 작은 neighbor와 현재 node를 local minimum 쪽으로 연결한다.
 
 핵심은 edge가 하나의 대표 node로만 몰리지 않도록 partition별 subproblem을 보존하는 것이다. 이 구성은 connected-components의 정확성을 유지하면서 worker가 담당하는 input 크기를 균등하게 만들고, 각 round가 생성하는 graph가 원 input보다 커지지 않도록 설계된다.
 

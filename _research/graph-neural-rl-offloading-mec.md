@@ -48,7 +48,7 @@ MEC에서는 mobile device가 가까운 base station이나 edge server로 task�
 
 ### 시스템 모델
 
-논문은 mobile device \(N(t)\), base station \(M(t)\), service range \(K_m\), time slot 기반 task arrival을 정의한다. 각 device는 time slot마다 하나의 task \(T_{a_n}(t)=[D_n(t),C_n(t)]\)를 가진다. \(D_n(t)\)는 data size이고 \(C_n(t)\)는 required CPU cycles다.
+논문은 mobile device $$N(t)$$, base station $$M(t)$$, service range $$K_m$$, time slot 기반 task arrival을 정의한다. 각 device는 time slot마다 하나의 task $$T_{a_n}(t)=[D_n(t),C_n(t)]$$를 가진다. $$D_n(t)$$는 data size이고 $$C_n(t)$$는 required CPU cycles다.
 
 Base station은 directly connected station과 indirectly connected station으로 나뉜다. Direct offloading은 device가 coverage 안의 base station으로 바로 task를 보내는 경우이고, indirect offloading은 다른 base station을 통해 forwarding되는 경우를 포함한다.
 
@@ -60,7 +60,7 @@ Base station은 directly connected station과 indirectly connected station으로
 | Resource scheduling | base station residual resource, task priority, deadline, load factor 반영 |
 | Objective | time cost와 energy cost의 weighted sum 최소화 |
 
-논문은 \(\alpha+\beta=1\)인 weight로 energy와 time을 결합해 system cost \(U_n(t)\)를 만들고, 한 task가 local 또는 하나의 offloading target만 선택하도록 제한한다. 또한 base station resource limit과 maximum execution time \(4\tau\) 조건을 둔다.
+논문은 $$\alpha+\beta=1$$인 weight로 energy와 time을 결합해 system cost $$U_n(t)$$를 만들고, 한 task가 local 또는 하나의 offloading target만 선택하도록 제한한다. 또한 base station resource limit과 maximum execution time $$4\tau$$ 조건을 둔다.
 
 ### 제안 방법: M-GNRL
 
@@ -68,7 +68,7 @@ M-GNRL은 graph neural network와 reinforcement learning을 분리하지 않고,
 
 ### Graph update
 
-MEC structural graph는 node와 edge가 계속 바뀌는 dynamic graph다. 논문은 adjacency list 기반 update algorithm을 사용해 node addition, node deletion, edge addition, edge deletion, edge weight change를 반영한다. 이렇게 하면 time slot마다 전체 graph를 처음부터 다시 만드는 대신, 변화 set \(C(v_{t+n})\), \(C(e_{t+n})\)만 반영해 topology를 유지할 수 있다.
+MEC structural graph는 node와 edge가 계속 바뀌는 dynamic graph다. 논문은 adjacency list 기반 update algorithm을 사용해 node addition, node deletion, edge addition, edge deletion, edge weight change를 반영한다. 이렇게 하면 time slot마다 전체 graph를 처음부터 다시 만드는 대신, 변화 set $$C(v_{t+n})$$, $$C(e_{t+n})$$만 반영해 topology를 유지할 수 있다.
 
 ### GraphSAGE-style aggregation
 
@@ -94,14 +94,14 @@ Simulation은 4 km by 4 km 영역에서 device와 base station을 배치하고, 
 
 | 항목 | 값 |
 |---|---|
-| Bandwidth \(B\) | 4 MHz |
-| Time slot sequence length \(T\) | 80 |
-| Environment coefficient \(\theta\) | 0.5 to 1 |
-| BS service range \(K_m\) | 0.5 to 4 km |
-| Task data size \(D_n(t)\) | 800 to 2000 kbytes |
-| Required cycles \(C_n(t)\) | 1000 to 2500 Mcycles |
-| Local CPU \(f_n^{local}\) | 0.5 to 1.5 GHz |
-| BS capacity \(F_m\) | 4 to 11 GHz |
+| Bandwidth $$B$$ | 4 MHz |
+| Time slot sequence length $$T$$ | 80 |
+| Environment coefficient $$\theta$$ | 0.5 to 1 |
+| BS service range $$K_m$$ | 0.5 to 4 km |
+| Task data size $$D_n(t)$$ | 800 to 2000 kbytes |
+| Required cycles $$C_n(t)$$ | 1000 to 2500 Mcycles |
+| Local CPU $$f_n^{local}$$ | 0.5 to 1.5 GHz |
+| BS capacity $$F_m$$ | 4 to 11 GHz |
 | Episodes | 1000, 1200, 1400 |
 | Replay pool | 1500 tuples |
 | Learning rate | 0.001 |
@@ -110,7 +110,7 @@ Baseline은 LOCAL, RANDOM, GNN-A2C, Coop-UEC다. LOCAL과 RANDOM은 lower refere
 
 ### 핵심 결과
 
-Discount factor 실험에서는 \(\gamma=0.97\)일 때 평균 reward가 가장 좋게 나타난다. Convergence comparison에서 GNN-A2C는 약 920 iteration 이후 안정화되고 reward가 0.66 to 0.78 범위에 머문다. Coop-UEC는 약 1050 episode 이후 0.35 to 0.44 범위다. M-GNRL은 약 950 iteration 이후 0.82 to 0.97 범위의 더 높은 cumulative reward에 도달한다.
+Discount factor 실험에서는 $$\gamma=0.97$$일 때 평균 reward가 가장 좋게 나타난다. Convergence comparison에서 GNN-A2C는 약 920 iteration 이후 안정화되고 reward가 0.66 to 0.78 범위에 머문다. Coop-UEC는 약 1050 episode 이후 0.35 to 0.44 범위다. M-GNRL은 약 950 iteration 이후 0.82 to 0.97 범위의 더 높은 cumulative reward에 도달한다.
 
 System cost 측면에서도 M-GNRL의 개선이 강조된다. 논문은 GNN-A2C가 Coop-UEC 대비 system cost를 약 22.8% 줄이고, M-GNRL이 다시 GNN-A2C 대비 약 15.6% 낮춘다고 보고한다. 이 수치는 graph topology뿐 아니라 edge feature를 DQN architecture에 넣는 설계가 cost minimization에 기여한다는 논문 측 근거다.
 
@@ -119,7 +119,7 @@ System cost 측면에서도 M-GNRL의 개선이 강조된다. 논문은 GNN-A2C�
 | M-GNRL vs LOCAL/RANDOM | local-only 또는 random offloading보다 낮은 system cost |
 | M-GNRL vs Coop-UEC | graph state와 edge feature를 쓰는 쪽이 더 높은 reward와 낮은 cost |
 | M-GNRL vs GNN-A2C | GNN-A2C가 조금 더 빠르게 안정화될 수 있지만, M-GNRL이 더 높은 stable reward에 도달 |
-| \(\alpha,\beta\) weight study | time 또는 energy 한쪽만 극단적으로 보면 system cost가 불안정해져 균형 weight가 필요 |
+| $$\alpha,\beta$$ weight study | time 또는 energy 한쪽만 극단적으로 보면 system cost가 불안정해져 균형 weight가 필요 |
 
 ### 논문이 말한 것과 해석을 구분하기
 

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"
@@ -32,6 +33,17 @@ Source PDF: `4_NLP_Transformer.pdf`
 | 6 | Transformer | recurrence 없이 attention만으로 sequence를 처리하는 이유는 무엇인가? |
 | 7 | Encoder/decoder 계열 | BERT, GPT 같은 구조는 어떤 차이를 갖는가? |
 | 8 | Transfer learning | 사전학습된 언어 모델을 왜 다양한 task에 재사용하는가? |
+
+### 수식 원문 대응
+
+| 원문 페이지 | 수식·도식 | 이 글의 보충 범위 |
+|---:|---|---|
+| p.13-15 | tokenization과 one-hot/learned embedding | 내적·cosine 식은 p.15의 좌표 예시를 일반 표기로 옮긴 보충이다. |
+| p.21-30 | recurrent state의 순차 전달 | $$h_t=f(h_{t-1},x_t)$$는 반복 도식을 요약한 상태 갱신 정의이며 원문 직접 제시식은 아니다. |
+| p.35-38 | attention의 역사, $$Q,K,V$$, scaled dot-product attention | p.38의 원문 식을 query별 weight와 value 합으로 펼쳤다. |
+| p.39-44 | MHA·FFN·position·encoder/decoder parameter | 구조와 차원 설명이며 별도의 증명식은 제시되지 않는다. |
+
+특히 p.15의 유사도 숫자는 설명용 예시이므로, 본문은 이를 항상 성립하는 등식으로 취급하지 않는다.
 
 ## 1. NLP의 기본 문제
 
@@ -71,6 +83,14 @@ Embedding의 장점은 sparse one-hot vector보다 의미적 유사성을 더 �
 | Count vector | 빈도 기반 정보는 담지만 sparse하다. |
 | Dense embedding | 문맥 기반 의미 유사성을 담는다. |
 
+슬라이드의 vector 내적은 embedding 유사도의 직관을 다음처럼 표현한다.
+
+$$
+\langle e_i,e_j\rangle=e_i^Te_j
+$$
+
+One-hot vector끼리는 서로 다른 token이면 직교하므로 내적이 0이다. Learned embedding은 좌표를 학습하므로 관련 단어의 내적이 커질 수 있다. 다만 슬라이드의 $$\langle\text{teddy bear},\text{soft}\rangle\approx1$$ 같은 값은 **설명용 예시**이지 항상 성립하는 정리가 아니다. Dot product는 vector 크기에도 영향을 받으므로 방향만 비교하려면 $$\frac{e_i^Te_j}{\lVert e_i\rVert_2\lVert e_j\rVert_2}$$인 cosine similarity를 사용하며, zero vector에는 정의되지 않는다. Embedding과 similarity는 모두 무차원이다.
+
 ## 4. RNN과 LSTM
 
 RNN은 sequence를 왼쪽에서 오른쪽으로 읽으며 hidden state를 갱신한다.
@@ -79,7 +99,7 @@ $$
 h_t = f(x_t, h_{t-1})
 $$
 
-이 구조는 이전 단어의 정보를 다음 단어 처리에 전달할 수 있다. 하지만 긴 sequence에서는 gradient vanishing/exploding 문제가 생기고, 멀리 떨어진 단어 사이의 관계를 유지하기 어렵다.
+이 식은 recurrent cell의 **상태 갱신 정의**다. $$t$$는 단위 없는 token step, $$x_t$$는 현재 token representation, $$h_t$$는 hidden state이며 보통 모두 무차원 vector다. 같은 함수 $$f$$와 parameter를 모든 step에서 공유하기 때문에 이전 정보가 전달된다. 하지만 backpropagation에서는 여러 step의 Jacobian이 곱해지므로 그 크기가 반복해서 1보다 작으면 gradient가 사라지고, 1보다 크면 폭발할 수 있다.
 
 LSTM과 GRU는 gate 구조를 사용해 어떤 정보를 기억하고 버릴지 조절한다. 덕분에 단순 RNN보다 긴 의존성을 더 잘 다룰 수 있지만, 순차 처리 특성 때문에 병렬화가 어렵다.
 
@@ -99,6 +119,16 @@ source sentence -> encoder -> context vector -> decoder -> target sentence
 | Key | encoder token이 가진 검색용 표지 |
 | Value | 실제로 가져올 정보 |
 | Attention weight | 어떤 token을 얼마나 참고할지 |
+
+슬라이드의 scaled dot-product attention을 한 query 기준으로 펼치면 다음과 같다.
+
+$$
+s_{ij}=\frac{q_i^Tk_j}{\sqrt{d_k}},\qquad
+\alpha_{ij}=\frac{e^{s_{ij}}}{\sum_{\ell}e^{s_{i\ell}}},\qquad
+o_i=\sum_j\alpha_{ij}v_j
+$$
+
+첫 식은 query-key 유사도, 둘째 식은 합이 1인 weight의 **정의**, 셋째 식은 value weighted sum의 **정확한 등식**이다. $$q_i,k_j,v_j$$는 무차원 representation이고 $$d_k$$는 key dimension이다. 각 성분이 독립·평균 0·분산 1이라는 근사 가정에서는 $$q_i^Tk_j$$의 분산이 약 $$d_k$$이므로 $$\sqrt{d_k}$$로 나누면 score scale을 약 1로 유지한다. 실제 learned vector는 독립이 아닐 수 있으므로 이는 scaling을 설명하는 **근사적 분산 논리**다. Mask가 잘못되면 미래 token이나 padding을 참고할 수 있고, 큰 score는 softmax를 포화시켜 gradient를 약하게 만들 수 있다.
 
 ## 6. Transformer의 등장
 
@@ -158,21 +188,21 @@ BoW·n-gram → embedding → RNN/LSTM → Seq2Seq attention → Transformer 순
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Word embedding이 one-hot vector보다 의미 표현에 유리한 이유는 무엇인가?</summary>
 
 답변: one-hot vector는 단어 간 거리가 모두 비슷해 의미적 유사성을 표현하지 못한다. word embedding은 단어를 연속 벡터 공간에 배치해 비슷한 문맥에서 쓰이는 단어가 가까워지도록 학습한다. 그래서 similarity, analogy, downstream task에 더 유용하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Self-attention에서 query, key, value를 검색 과정에 비유해 설명하라.</summary>
 
 답변: query는 현재 token이 찾고 싶은 정보, key는 각 token이 가진 검색용 색인, value는 실제로 가져올 내용에 해당한다. query와 key의 유사도를 계산해 어떤 token을 얼마나 참고할지 정하고, 그 가중치로 value들을 합쳐 현재 token의 표현을 만든다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. BERT와 GPT의 task 적합성이 다른 이유를 구조 관점에서 설명하라.</summary>
 
 답변: BERT는 encoder-only 구조로 양방향 문맥을 보므로 문장 이해, 분류, 추출형 QA에 강하다. GPT는 decoder-only 구조와 causal mask를 사용해 이전 token을 바탕으로 다음 token을 생성한다. 그래서 자연어 생성과 autoregressive completion에 적합하다.

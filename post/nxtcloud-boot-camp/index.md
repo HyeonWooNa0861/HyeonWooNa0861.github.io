@@ -10,8 +10,8 @@ permalink: /post/nxtcloud-boot-camp/
   {% assign posts = site.posts | where: "section", "nxtcloud-boot-camp" | sort: "date" | reverse %}
   {% for post in posts %}
     <li class="post-card">
-      <a class="branch-card-link" data-label="{{ post.nav_title | default: post.title | escape }}" href="{{ post.url | relative_url }}">{{ post.nav_title | default: post.title }}</a>
-      <p>{{ post.title }}</p>
+      <a class="branch-card-link" data-label="{{ post.nav_title | default: post.title | escape }}" href="{{ post.url | relative_url | escape }}">{{ post.nav_title | default: post.title | escape }}</a>
+      <p>{{ post.title | escape }}</p>
     </li>
   {% endfor %}
 </ul>

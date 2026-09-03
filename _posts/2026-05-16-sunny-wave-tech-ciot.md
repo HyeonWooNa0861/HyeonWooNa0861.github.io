@@ -76,10 +76,10 @@ WIS 2026에서 써니웨이브텍을 접하며, IoT의 핵심이 단순히 센�
   <section>
     <h2>참고 자료</h2>
     <ul>
-      <li><a href="https://www.worlditshow.co.kr/introduce/01.php">World IT Show 2026 공식 소개</a></li>
-      <li><a href="https://sunnywt.com/page.php?p_id=about">Sunny Wave Tech - Company</a></li>
-      <li><a href="https://sunnywt.com/page.php?p_id=technology1">Sunny Wave Tech - Technology Introduction</a></li>
-      <li><a href="https://sunnywt.com/page.php?p_id=product1">Sunny Wave Tech - C-IoT System Products</a></li>
+      <li><a href="https://www.worlditshow.co.kr/introduce/01.php" target="_blank" rel="noopener">World IT Show 2026 공식 소개</a></li>
+      <li><a href="https://sunnywt.com/page.php?p_id=about" target="_blank" rel="noopener">Sunny Wave Tech - Company</a></li>
+      <li><a href="https://sunnywt.com/page.php?p_id=technology1" target="_blank" rel="noopener">Sunny Wave Tech - Technology Introduction</a></li>
+      <li><a href="https://sunnywt.com/page.php?p_id=product1" target="_blank" rel="noopener">Sunny Wave Tech - C-IoT System Products</a></li>
     </ul>
   </section>
   <section>

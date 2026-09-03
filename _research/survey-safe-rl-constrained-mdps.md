@@ -42,7 +42,7 @@ Lagrangian actor-critic, CPO, safety layer와 shielding에서 출발해 centrali
 | 1 | Foundations | MDP와 CMDP에서 reward return과 cost constraint를 어떻게 분리하는가? |
 | 2 | Constraint types | expected cost, chance constraint, risk measure, temporal logic은 무엇이 다른가? |
 | 3 | Algorithms | Lagrangian actor-critic, CPO, safety layer, shielding은 어떤 보장을 제공하는가? |
-| 4 | SafeMARL | centralized MACPO, decentralized \(\kappa\)-hop learning, competitive equilibrium은 어디서 어려워지는가? |
+| 4 | SafeMARL | centralized MACPO, decentralized $$\kappa$$-hop learning, competitive equilibrium은 어디서 어려워지는가? |
 | 5 | Open problems | zero-violation, partial observability, decentralized/competitive/non-stationary safety를 어떻게 풀 것인가? |
 
 ## 한국어 번역형 해설
@@ -55,27 +55,27 @@ Survey의 범위는 single-agent SafeRL에 머물지 않는다. 저자들은 CMD
 
 ### CMDP 정식화
 
-기본 MDP는 \(M=(S,A,P,r,\gamma)\)로 쓰며, CMDP는 여기에 cost function \(c^{(i)}(s,a)\), \(i=1,\ldots,m\)과 threshold \(d_i\)를 추가한다. Policy \(\pi\)의 reward return을 \(J(\pi)\), \(i\)번째 cost return을 \(J_c^{(i)}(\pi)\)로 두면 SafeRL objective는 다음 형태가 된다.
+기본 MDP는 $$M=(S,A,P,r,\gamma)$$로 쓰며, CMDP는 여기에 cost function $$c^{(i)}(s,a)$$, $$i=1,\ldots,m$$과 threshold $$d_i$$를 추가한다. Policy $$\pi$$의 reward return을 $$J(\pi)$$, $$i$$번째 cost return을 $$J_c^{(i)}(\pi)$$로 두면 SafeRL objective는 다음 형태가 된다.
 
-\[
+$$
 \max_\pi J(\pi)\quad\text{subject to}\quad J_c^{(i)}(\pi)\le d_i,\ \forall i.
-\]
+$$
 
-이 정식화는 reward optimization과 safety satisfaction을 명시적으로 분리한다. Penalty reward 하나로 합치면 weight tuning에 따라 constraint를 놓칠 수 있지만, CMDP는 feasible policy set \(\Pi_{\mathrm{safe}}\) 안에서 reward를 최적화한다는 해석을 제공한다.
+이 정식화는 reward optimization과 safety satisfaction을 명시적으로 분리한다. Penalty reward 하나로 합치면 weight tuning에 따라 constraint를 놓칠 수 있지만, CMDP는 feasible policy set $$\Pi_{\mathrm{safe}}$$ 안에서 reward를 최적화한다는 해석을 제공한다.
 
-Lagrangian 관점에서는 multiplier \(\lambda=(\lambda_1,\ldots,\lambda_m)\ge0\)를 두고
+Lagrangian 관점에서는 multiplier $$\lambda=(\lambda_1,\ldots,\lambda_m)\ge0$$를 두고
 
-\[
+$$
 L(\pi,\lambda)=J(\pi)-\sum_i \lambda_i\bigl(J_c^{(i)}(\pi)-d_i\bigr)
-\]
+$$
 
-를 최적화한다. Constraint가 위반되면 \(\lambda_i\)를 키워 cost penalty를 강화하고, slack이 있으면 penalty를 낮춘다. 논문은 이를 primal-dual update와 occupancy measure 기반 linear programming으로 연결하며, finite CMDP에서는 stationary optimal policy가 존재하고 필요한 경우 deterministic policies 사이의 randomization이 필요할 수 있다고 정리한다.
+를 최적화한다. Constraint가 위반되면 $$\lambda_i$$를 키워 cost penalty를 강화하고, slack이 있으면 penalty를 낮춘다. 논문은 이를 primal-dual update와 occupancy measure 기반 linear programming으로 연결하며, finite CMDP에서는 stationary optimal policy가 존재하고 필요한 경우 deterministic policies 사이의 randomization이 필요할 수 있다고 정리한다.
 
 ### 방법군 비교
 
 | 방법군 | 핵심 아이디어 | 강점 | 주의점 |
 |---|---|---|---|
-| Lagrangian actor-critic | Reward objective에 cost penalty를 붙이고 \(\lambda\)를 online update | 구현이 단순하고 PPO/TRPO/DQN 계열에 붙이기 쉽다 | Convergence 전에는 constraint violation이 발생할 수 있고 \(\lambda\) tuning이 어렵다 |
+| Lagrangian actor-critic | Reward objective에 cost penalty를 붙이고 $$\lambda$$를 online update | 구현이 단순하고 PPO/TRPO/DQN 계열에 붙이기 쉽다 | Convergence 전에는 constraint violation이 발생할 수 있고 $$\lambda$$ tuning이 어렵다 |
 | CPO / PCPO | Trust region 안에서 reward improvement와 cost constraint를 동시에 만족하는 update를 계산 | 각 iteration에서 near-constraint satisfaction 보장을 목표로 한다 | Constrained subproblem, cost critic, second-order approximation이 필요해 계산이 무겁다 |
 | Safety layer / action correction | Proposed action을 QP, filter, shield로 검사해 가장 가까운 safe action으로 보정 | Immediate violation을 줄이거나 0으로 만들 수 있다 | Dynamics model, learned safety predictor, formal specification 등 외부 안전 모델이 필요하다 |
 | Formal shielding | LTL 또는 automata specification에서 unsafe state-action을 pre-compute | Specification에 대한 provable safety가 가능하다 | Abstraction 품질과 state explosion에 의존한다 |
@@ -85,12 +85,12 @@ Survey가 강조하는 관점은 "하나의 SafeRL algorithm이 모든 안전 �
 
 ### SafeMARL로 확장될 때의 변화
 
-Multi-agent setting에서는 \(N\)개의 agent가 각자 action \(a_i\in A_i\)를 고르고, joint action \(\mathbf{a}=(a_1,\ldots,a_N)\)이 transition \(P(s'|s,\mathbf{a})\)를 만든다. Cooperative SafeMARL에서는 team reward와 global cost를 정의해 하나의 큰 CMDP처럼 풀 수 있지만, joint action space가 agent 수에 따라 빠르게 커진다.
+Multi-agent setting에서는 $$N$$개의 agent가 각자 action $$a_i\in A_i$$를 고르고, joint action $$\mathbf{a}=(a_1,\ldots,a_N)$$이 transition $$P(s'\mid s,\mathbf{a})$$를 만든다. Cooperative SafeMARL에서는 team reward와 global cost를 정의해 하나의 큰 CMDP처럼 풀 수 있지만, joint action space가 agent 수에 따라 빠르게 커진다.
 
 Survey는 세 접근을 구분한다.
 
 - **Centralized training with global constraints**: MACPO처럼 centralized critic이 global reward/cost를 추정하고 joint policy 또는 coordinated update를 수행한다. Team reward의 monotonic improvement와 safety constraint satisfaction을 목표로 하지만 scalability와 central-state access가 병목이다.
-- **Decentralized Safe Learning with Coordination**: 각 agent가 \(\kappa\)-hop neighborhood 안의 제한된 정보로 local surrogate constrained problem을 푸는 방향이다. Collision avoidance처럼 global constraint가 additively separable하지 않은 경우 local cost 설계가 핵심 난점이다.
+- **Decentralized Safe Learning with Coordination**: 각 agent가 $$\kappa$$-hop neighborhood 안의 제한된 정보로 local surrogate constrained problem을 푸는 방향이다. Collision avoidance처럼 global constraint가 additively separable하지 않은 경우 local cost 설계가 핵심 난점이다.
 - **Competitive/general-sum SafeMARL**: agent들이 common reward를 공유하지 않을 때는 CPO 같은 single-objective update가 바로 적용되지 않는다. Constrained Nash equilibrium, constrained correlated equilibrium, Stackelberg-style safe RL 같은 game-theoretic solution concept가 필요하다.
 
 ### 실험, benchmark, 핵심 수치

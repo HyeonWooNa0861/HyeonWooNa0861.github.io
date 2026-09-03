@@ -49,11 +49,11 @@ Source PDFs:
 |---:|---|---|
 | Q1 | Next Token Prediction | 이전 token을 바탕으로 다음 token 하나를 예측하고 반복 |
 | Q2 | Mixture of Experts | token별로 필요한 expert 일부만 활성화 |
-| Q3 | Beam Search | 가능성 높은 \(k\)개 경로를 유지 |
+| Q3 | Beam Search | 가능성 높은 $$k$$개 경로를 유지 |
 | Q4 | Greedy Decoding | 매 step마다 확률이 가장 높은 token 하나 선택 |
 | Q5 | LLM Transformer | decoder-only autoregressive Transformer |
 
-<details>
+<details markdown="block">
 <summary>Q1. Next Token Prediction은 어떻게 이해해야 하는가?</summary>
 
 풀이과정:
@@ -70,7 +70,7 @@ $$
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q2. Mixture of Experts의 핵심 아이디어는 무엇인가?</summary>
 
 풀이과정:
@@ -83,20 +83,20 @@ MoE는 거대한 모델 capacity를 모두 매번 계산하지 않기 위해 사
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q3. Beam Search를 Best-of-N 관점에서 어떻게 이해하는가?</summary>
 
 풀이과정:
 
-Greedy decoding은 매 순간 가장 높은 확률의 token 하나만 고른다. Beam search는 그보다 넓게 본다. 매 step에서 가능성 높은 \(k\)개의 후보 sequence를 유지하면서 다음 token을 확장한다.
+Greedy decoding은 매 순간 가장 높은 확률의 token 하나만 고른다. Beam search는 그보다 넓게 본다. 매 step에서 가능성 높은 $$k$$개의 후보 sequence를 유지하면서 다음 token을 확장한다.
 
 이 방식은 모든 경우를 끝까지 탐색하지는 않는다. 그러나 하나의 경로만 고르는 것보다 더 좋은 전체 문장을 찾을 가능성을 남긴다.
 
-답변: 가능성이 높은 \(k\)개의 경로를 유지해 모든 경우를 보지 않으면서도 더 좋은 전체 문장을 찾을 기회를 남기는 방법이다.
+답변: 가능성이 높은 $$k$$개의 경로를 유지해 모든 경우를 보지 않으면서도 더 좋은 전체 문장을 찾을 기회를 남기는 방법이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q4. Greedy Decoding은 무엇인가?</summary>
 
 풀이과정:
@@ -109,7 +109,7 @@ Greedy decoding은 가장 단순한 decoding 방식이다. 각 step에서 현재
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q5. Large Language Model의 Transformer는 어떻게 설명해야 하는가?</summary>
 
 풀이과정:
@@ -134,7 +134,7 @@ encoder-only는 BERT처럼 입력 이해에 강한 구조를 설명할 때 더 �
 | Q4 | modular stack 약점 | 앞단 오류가 뒤 단계로 전파 |
 | Q5 | corner case 중요성 | unusual case coverage가 안전성에 크게 영향 |
 
-<details>
+<details markdown="block">
 <summary>Q1. End-to-End 이전 자율주행의 대표 구조는 무엇인가?</summary>
 
 풀이과정:
@@ -153,7 +153,7 @@ Perception은 주변 객체와 도로 상황을 인식하고, prediction은 다�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q2. 자율주행이 AI 문제로 여겨지는 가장 큰 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -166,7 +166,7 @@ Perception은 주변 객체와 도로 상황을 인식하고, prediction은 다�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q3. 초기 산업용 자율주행에서 machine learning이 먼저 크게 들어간 영역은 어디인가?</summary>
 
 풀이과정:
@@ -179,7 +179,7 @@ Perception은 주변 객체와 도로 상황을 인식하고, prediction은 다�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q4. Modular autonomous driving stack의 대표적 약점은 무엇인가?</summary>
 
 풀이과정:
@@ -192,7 +192,7 @@ modular stack은 각 단계가 분명해 해석하기 쉽지만, 앞단 모듈�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q5. Autonomous driving에서 corner case가 중요한 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -217,7 +217,7 @@ modular stack은 각 단계가 분명해 해석하기 쉽지만, 앞단 모듈�
 | Q4 | occupancy 장점 | geometry, free space, semantics를 함께 다룸 |
 | Q5 | shared world representation 이유 | manually stitched intermediate interface 의존 감소, 여러 task가 표현 공유 |
 
-<details>
+<details markdown="block">
 <summary>Q1. Tesla End-to-End 이야기에서 가장 중요한 변화는 무엇인가?</summary>
 
 풀이과정:
@@ -230,7 +230,7 @@ object list는 "무엇이 있는가"에 강하지만, free space와 geometry를 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q2. Tesla architecture를 가장 쉽게 설명하면?</summary>
 
 풀이과정:
@@ -241,7 +241,7 @@ Tesla식 접근은 multi-camera image/video를 입력으로 사용해 장면의 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q3. Tesla의 “end-to-end”를 어떻게 표현해야 하는가?</summary>
 
 풀이과정:
@@ -254,7 +254,7 @@ Tesla의 end-to-end를 "카메라에서 steering까지 아무 중간 표현 없�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q4. Occupancy가 object-list 방식보다 좋은 점은 무엇인가?</summary>
 
 풀이과정:
@@ -267,7 +267,7 @@ occupancy는 특정 객체 이름이 없어도 공간이 차 있는지, 비어 �
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q5. Shared world representation을 쓰려는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -291,7 +291,7 @@ shared world representation은 여러 task가 같은 장면 표현을 공유하�
 | Q3 | ordinary supervised learning과 차이 | 현재 행동이 다음 state와 미래 입력 분포를 바꿈 |
 | Q4 | DAggER | learner 방문 상태를 모으고 expert label을 다시 붙여 aggregate/retrain |
 
-<details>
+<details markdown="block">
 <summary>Q1. 로봇 학습에서 imitation learning이 매력적인 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -304,7 +304,7 @@ imitation learning은 expert demonstration을 활용해 처음부터 좋은 행�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q2. Behavioral Cloning은 어떻게 설명해야 하는가?</summary>
 
 풀이과정:
@@ -321,7 +321,7 @@ $$
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q3. Imitation learning이 ordinary supervised learning과 다른 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -334,7 +334,7 @@ $$
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q4. DAggER의 핵심 아이디어는 무엇인가?</summary>
 
 풀이과정:
@@ -358,7 +358,7 @@ DAggER는 Dataset Aggregation의 약자다. 단순히 expert demonstration만 �
 | Q3 | ego-video 중요성 | physical interaction, dynamics, affordance 단서 |
 | Q4 | world model + action + physical RL | pre-trained 기반 모델 위에 action 적응과 실제 환경 학습을 더함 |
 
-<details>
+<details markdown="block">
 <summary>Q1. 로보틱스를 AI scaling frontier로 보는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -371,7 +371,7 @@ DAggER는 Dataset Aggregation의 약자다. 단순히 expert demonstration만 �
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q2. VLA는 어떻게 이해해야 하는가?</summary>
 
 풀이과정:
@@ -384,7 +384,7 @@ VLA는 Vision-Language-Action의 약자다. 이미지를 보고, 언어 지시�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q3. 인터넷 규모의 video나 ego-video가 embodied AI에서 중요한 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -397,7 +397,7 @@ ego-video와 대규모 비디오는 사람이 물리 세계와 상호작용하�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Q4. World modeling, action fine-tuning, physical RL을 하나의 흐름으로 묶으면?</summary>
 
 풀이과정:

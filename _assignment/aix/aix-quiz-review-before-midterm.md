@@ -34,7 +34,7 @@ Source Images:
 
 빠르게 복습할 때는 다음 문장을 먼저 기억하면 된다.
 
-1. Linear regression은 \(x\)를 feature, \(y\)를 target으로 보고 \(\hat{y}=w^Tx+b\) 형태의 선형 점수를 학습한다.
+1. Linear regression은 $$x$$를 feature, $$y$$를 target으로 보고 $$\hat{y}=w^Tx+b$$ 형태의 선형 점수를 학습한다.
 2. Logistic regression은 linear score 위에 sigmoid를 붙여 class probability로 해석한다.
 3. MLP는 hidden layer와 nonlinearity 덕분에 single perceptron보다 복잡한 패턴을 표현할 수 있다.
 4. RNN은 순차적으로 hidden state를 갱신하고, attention은 token 사이의 관계를 더 직접적이고 전역적으로 본다.
@@ -46,41 +46,41 @@ Source Images:
 
 | 문항 | 문제 유형 | 정답 키워드 |
 |---:|---|---|
-| Q1 | 데이터셋 구성 | \(x\): features, \(y\): target |
-| Q2 | linear score 식 | \(score=w^Tx+b\) |
-| Q3 | residual 정의 | \(residual=y-\hat{y}\) |
+| Q1 | 데이터셋 구성 | $$x$$: features, $$y$$: target |
+| Q2 | linear score 식 | $$score=w^Tx+b$$ |
+| Q3 | residual 정의 | $$residual=y-\hat{y}$$ |
 | Q4 | loss objective | squared sum of residual |
 | Q5 | iterative update | loss를 줄이도록 parameter를 반복적으로 update |
 
-<details>
+<details markdown="block">
 <summary>Linear regression에서 feature와 target은 어떻게 구분하는가?</summary>
 
 풀이과정:
 
-Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target이다. 관례적으로 feature vector를 \(x\), target value를 \(y\)로 둔다.
+Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target이다. 관례적으로 feature vector를 $$x$$, target value를 $$y$$로 둔다.
 
-답변: \(x\)는 features, \(y\)는 target이다.
+답변: $$x$$는 features, $$y$$는 target이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Linear regression의 선형 score 식은 무엇인가?</summary>
 
 풀이과정:
 
-Linear regression은 feature vector \(x\)에 weight vector \(w\)를 곱하고 bias \(b\)를 더해 예측값을 만든다.
+Linear regression은 feature vector $$x$$에 weight vector $$w$$를 곱하고 bias $$b$$를 더해 예측값을 만든다.
 
 $$
 \hat{y}=score=w^Tx+b
 $$
 
-곱셈만 있거나, \(w+x+b\)처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아니다.
+곱셈만 있거나, $$w+x+b$$처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아니다.
 
-답변: \(score=w^Tx+b\)이다.
+답변: $$score=w^Tx+b$$이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Residual과 squared loss는 어떻게 연결되는가?</summary>
 
 풀이과정:
@@ -99,16 +99,16 @@ $$
 
 제곱하는 이유는 양수/음수 오차가 서로 상쇄되지 않게 하고, 큰 오차를 더 크게 벌주기 위해서다.
 
-답변: residual은 \(y-\hat{y}\)이고, loss는 squared sum of residual을 사용한다.
+답변: residual은 $$y-\hat{y}$$이고, loss는 squared sum of residual을 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Iterative update는 무엇인가?</summary>
 
 풀이과정:
 
-Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아니다. 현재 parameter에서 loss가 줄어드는 방향으로 \(w\), \(b\)를 조금씩 반복 갱신하는 방식이다.
+Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아니다. 현재 parameter에서 loss가 줄어드는 방향으로 $$w$$, $$b$$를 조금씩 반복 갱신하는 방식이다.
 
 Deep learning의 training도 기본적으로 이 아이디어를 따른다.
 
@@ -128,7 +128,7 @@ Deep learning의 training도 기본적으로 이 아이디어를 따른다.
 | Q4 | training intuition | observed labels가 most likely 하도록 parameter 선택 |
 | Q5 | decision boundary | linear regression보다 classification loss/probability를 더해도 boundary는 선형 |
 
-<details>
+<details markdown="block">
 <summary>Classification에서 logistic regression을 쓰는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -143,7 +143,7 @@ $$
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Sigmoid function은 어떤 역할을 하는가?</summary>
 
 풀이과정:
@@ -154,13 +154,13 @@ $$
 \sigma(z)=\frac{1}{1+e^{-z}}
 $$
 
-여기서 \(z=w^Tx+b\)다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙인다.
+여기서 $$z=w^Tx+b$$다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙인다.
 
 답변: score를 probability로 바꿔 class probability로 해석할 수 있게 한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Training logistic regression의 high-level intuition은 무엇인가?</summary>
 
 풀이과정:
@@ -173,14 +173,14 @@ Logistic regression은 관측된 label이 가장 그럴듯하게 나오도록 pa
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Logistic regression의 decision boundary는 어떻게 이해해야 하는가?</summary>
 
 풀이과정:
 
 Logistic regression은 probability와 classification용 loss를 사용하지만, 원래 feature 공간에서의 decision boundary는 보통 선형이다.
 
-Binary classification에서 기준을 \(P(y=1\mid x)=0.5\)로 두면, 이는 \(w^Tx+b=0\)과 대응된다.
+Binary classification에서 기준을 $$P(y=1\mid x)=0.5$$로 두면, 이는 $$w^Tx+b=0$$과 대응된다.
 
 답변: 확률 해석과 classification loss를 더하지만, 기본 decision boundary는 여전히 linear하다.
 
@@ -196,7 +196,7 @@ Binary classification에서 기준을 \(P(y=1\mid x)=0.5\)로 두면, 이는 \(w
 | Q2 | good learning | expressivity, regularization, bias-variance, unseen data generalization |
 | Q3 | deep learning 도약 조건 | data, computation, algorithms가 함께 맞물림 |
 
-<details>
+<details markdown="block">
 <summary>MLP가 single perceptron보다 강한 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -207,7 +207,7 @@ Single perceptron은 기본적으로 하나의 선형 결정 경계를 만든다
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Good learning은 단순히 training loss를 낮추는 것인가?</summary>
 
 풀이과정:
@@ -220,7 +220,7 @@ Single perceptron은 기본적으로 하나의 선형 결정 경계를 만든다
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Deep learning의 큰 도약을 가능하게 한 조합은 무엇인가?</summary>
 
 풀이과정:
@@ -242,7 +242,7 @@ Deep learning은 data만 많거나, computation만 좋거나, algorithm만 좋�
 | Q3 | image/video generation 주류 모델 | diffusion models |
 | Q4 | 3D Vision이 어려운 이유 | geometry, pose, spatial relationship과 다양한 representation |
 
-<details>
+<details markdown="block">
 <summary>Computer Vision의 high-level 목표는 무엇인가?</summary>
 
 풀이과정:
@@ -253,7 +253,7 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Visual reasoning이 중요해진 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -266,7 +266,7 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>최근 image/video generation의 대표적 주류 모델은 무엇인가?</summary>
 
 풀이과정:
@@ -277,7 +277,7 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3D Vision이 여전히 어려운 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -303,7 +303,7 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 | Q5 | Pre-training | 큰 데이터로 base를 만들고 일반적 특징을 학습 |
 | Q6 | Fine-tuning | pretrained model을 특정 task 목적에 맞게 미세 조정 |
 
-<details>
+<details markdown="block">
 <summary>Task-specific NLP era는 어떤 방식이었는가?</summary>
 
 풀이과정:
@@ -314,7 +314,7 @@ pre-trained foundation model을 하나 만들어 여러 task에 재사용하는 
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Tokenizer는 어떤 역할을 하는가?</summary>
 
 풀이과정:
@@ -325,7 +325,7 @@ Tokenizer는 문장을 token 단위로 나누고, 각 token을 vocabulary의 항
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Word2Vec은 어떻게 embedding을 배우는가?</summary>
 
 풀이과정:
@@ -338,7 +338,7 @@ Word2Vec은 사람이 단어 의미를 직접 써 넣는 방식이 아니다. pr
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Skip-Gram은 어떤 proxy task인가?</summary>
 
 풀이과정:
@@ -349,7 +349,7 @@ Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측하는 task�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Pre-training과 Fine-tuning은 어떻게 구분하는가?</summary>
 
 풀이과정:
@@ -373,7 +373,7 @@ Pre-training은 큰 데이터로 base model을 만들고 언어의 일반적인 
 | Q5 | sequential dependency 원인 | 현재 hidden state가 이전 hidden state에 의존 |
 | Q6 | attention 장점 | token 사이 global relationship을 더 직접적으로 봄 |
 
-<details>
+<details markdown="block">
 <summary>RNN은 어떤 모델인가?</summary>
 
 풀이과정:
@@ -388,7 +388,7 @@ $$
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>RNN이 attention보다 계산 구조가 단순하다고 볼 수 있는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -401,7 +401,7 @@ RNN은 모든 token-to-token 관계를 한 번에 계산하지 않는다. 현재
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>RNN의 대표적 문제점은 무엇인가?</summary>
 
 풀이과정:
@@ -412,7 +412,7 @@ RNN은 정보가 순서대로 전달된다. 따라서 먼 과거 정보가 뒤�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Attention이 RNN보다 global relationship을 더 잘 볼 수 있는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -435,7 +435,7 @@ Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 �
 | Q4 | Positional encoding | token의 순서와 상대적 위치 정보를 알려 줌 |
 | Q5 | matrix computation | attention은 행렬 연산으로 표현되어 병렬 계산에 유리 |
 
-<details>
+<details markdown="block">
 <summary>Transformer에서 텍스트 입력은 어떻게 처리되는가?</summary>
 
 풀이과정:
@@ -446,7 +446,7 @@ Transformer는 문장을 숫자 변환 없이 바로 attention에 넣지 않는�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Self-attention을 가장 쉽게 설명하면?</summary>
 
 풀이과정:
@@ -457,7 +457,7 @@ Self-attention은 한 문장 안의 각 token이 다른 token들과의 관련성
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Multi-head attention의 장점은 무엇인가?</summary>
 
 풀이과정:
@@ -470,7 +470,7 @@ Self-attention은 한 문장 안의 각 token이 다른 token들과의 관련성
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Positional encoding이 필요한 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -481,7 +481,7 @@ Self-attention은 모든 token 사이의 관계를 계산하지만, 그 자체�
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Attention이 efficient computations with matrices와 연결되는 이유는 무엇인가?</summary>
 
 풀이과정:
@@ -506,7 +506,7 @@ $$
 | Q2 | Image/video generation | diffusion models |
 | Q3 | 3D Vision | geometry, pose, spatial relationship, 다양한 representation |
 
-<details>
+<details markdown="block">
 <summary>Self-Supervised Learning의 objective는 무엇인가?</summary>
 
 풀이과정:
@@ -517,7 +517,7 @@ Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>Modern vision 범위에서 diffusion과 3D vision은 어떻게 정리하는가?</summary>
 
 풀이과정:
@@ -532,7 +532,7 @@ Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식
 
 | 구분 | 꼭 기억할 문장 |
 |---|---|
-| Linear Regression | \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. |
+| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. |
 | Logistic Regression | linear score를 sigmoid로 probability로 바꿔 classification에 사용한다. |
 | MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
 | Computer Vision | pixel을 meaning으로 연결하는 것이 high-level 목표다. |

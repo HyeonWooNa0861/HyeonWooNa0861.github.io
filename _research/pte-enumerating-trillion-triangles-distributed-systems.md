@@ -15,7 +15,7 @@ keywords:
 
 # PTE: Enumerating Trillion Triangles On Distributed Systems
 
-Source PDF: [Official KDD PDF](https://www.kdd.org/kdd2016/papers/files/rfp0276-parkA.pdf)
+Source PDF: [Official KDD PDF](https://www.kdd.org/kdd2016/papers/files/rfp0276-parkA.pdf){:target="_blank" rel="noopener"}
 
 ## 논문 정보
 
@@ -52,21 +52,21 @@ PTECD는 color-direction 규칙으로 중복 계산을 줄이고, PTESC는 제�
 
 ### Enumeration은 counting과 다르다
 
-Triangle enumeration은 undirected simple graph \(G=(V,E)\)에서 서로 완전히 연결된 vertex triple을 하나씩 찾아 local function에 전달하는 문제다. 단순한 triangle count보다 결과 하나하나를 식별해야 하므로 computation과 I/O 부담이 크다. 논문은 degree와 vertex ID로 total order를 만들고 \(u\prec v\prec n\)인 triangle을 한 방향으로만 표현해 중복 출력을 막는다.
+Triangle enumeration은 undirected simple graph $$G=(V,E)$$에서 서로 완전히 연결된 vertex triple을 하나씩 찾아 local function에 전달하는 문제다. 단순한 triangle count보다 결과 하나하나를 식별해야 하므로 computation과 I/O 부담이 크다. 논문은 degree와 vertex ID로 total order를 만들고 $$u\prec v\prec n$$인 triangle을 한 방향으로만 표현해 중복 출력을 막는다.
 
 기존 MapReduce 알고리즘은 vertex color 조합별 subproblem을 만들 때 edge를 여러 reducer로 반복 전송한다. CTTP는 한 round의 크기를 제한해 out-of-space를 피하지만, 전체적으로는 동일한 edge를 여러 번 shuffle하고 매 round 전체 data를 다시 읽는다.
 
 ### PTEBASE: 먼저 나누고 나중에 계산하기
 
-PTEBASE는 graph partitioning과 subgraph generation을 분리한다. Vertex를 \(\rho\)개 color로 hash하고, color pair \((i,j)\)에 해당하는 edge set \(E_{ij}\)를 HDFS나 RDD 같은 distributed storage에 한 번 저장한다. 이후 각 subproblem은 필요한 edge set만 직접 읽는다.
+PTEBASE는 graph partitioning과 subgraph generation을 분리한다. Vertex를 $$\rho$$개 color로 hash하고, color pair $$(i,j)$$에 해당하는 edge set $$E_{ij}$$를 HDFS나 RDD 같은 distributed storage에 한 번 저장한다. 이후 각 subproblem은 필요한 edge set만 직접 읽는다.
 
-이 구조에서 shuffle은 최초 partition 단계의 \(O(|E|)\)로 줄어든다. Network read는 남아 있지만 shuffle처럼 sender의 collect·spill, transfer, receiver의 merge·sort를 모두 요구하지 않으므로 비용 구조가 다르다.
+이 구조에서 shuffle은 최초 partition 단계의 $$O(\lvert E\rvert)$$로 줄어든다. Network read는 남아 있지만 shuffle처럼 sender의 collect·spill, transfer, receiver의 merge·sort를 모두 요구하지 않으므로 비용 구조가 다르다.
 
 ### PTECD: Color-direction으로 중복 계산 제거
 
-PTECD는 edge \((u,v)\)의 vertex color 순서를 color-direction으로 사용한다. Type-3 triangle을 찾을 때 pivot, port, starboard edge가 들어갈 color-direction을 미리 알 수 있으므로, 관계없는 neighbor set은 intersection 대상에서 제외한다.
+PTECD는 edge $$(u,v)$$의 vertex color 순서를 color-direction으로 사용한다. Type-3 triangle을 찾을 때 pivot, port, starboard edge가 들어갈 color-direction을 미리 알 수 있으므로, 관계없는 neighbor set은 intersection 대상에서 제외한다.
 
-Type-1 triangle도 특정 color 조합에서 한 번만 계산하도록 배치한다. 결과적으로 PTEBASE가 같은 triangle 후보를 여러 번 검사하는 문제를 줄이고, worst-case optimal한 \(O(|E|^{3/2})\) total work에 도달한다.
+Type-1 triangle도 특정 color 조합에서 한 번만 계산하도록 배치한다. 결과적으로 PTEBASE가 같은 triangle 후보를 여러 번 검사하는 문제를 줄이고, worst-case optimal한 $$O(\lvert E\rvert^{3/2})$$ total work에 도달한다.
 
 ### PTESC: Edge-set loading 순서 최적화
 
@@ -74,11 +74,11 @@ PTESC는 subproblem 사이에서 memory에 남겨둘 edge set과 다음에 읽�
 
 | 비용 | PTE bound |
 |---|---:|
-| Shuffled data | \(O(\lvert E\rvert)\) |
-| Network read | \(O(\lvert E\rvert^{3/2}/\sqrt{M})\) |
-| Total work | \(O(\lvert E\rvert^{3/2})\) |
+| Shuffled data | $$O(\lvert E\rvert)$$ |
+| Network read | $$O(\lvert E\rvert^{3/2}/\sqrt{M})$$ |
+| Total work | $$O(\lvert E\rvert^{3/2})$$ |
 
-여기서 \(M\)은 machine 하나가 사용할 수 있는 memory다.
+여기서 $$M$$은 machine 하나가 사용할 수 있는 memory다.
 
 ### 실험 결과
 

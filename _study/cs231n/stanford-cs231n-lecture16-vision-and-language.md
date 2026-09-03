@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
+last_modified_at: 2026-09-03 19:49:35 +0900
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CS231N Lecture 16: Vision and Language
 
 Source: [Stanford CS231N Spring 2025 Lecture 16](https://www.youtube.com/watch?v=mQOK0Mfyrkk){:target="_blank" rel="noopener"}
+
+Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lecture_16.pdf){:target="_blank" rel="noopener"}
 
 > **핵심:** Vision-language foundation model의 능력은 단순히 모델을 크게 만든 결과가 아니다. **어떤 image-text supervision을 수집하고, global alignment를 넘어 region·point grounding을 어떻게 가르치며, 다른 도구와 어떻게 연결하는가**가 실제 유용성과 신뢰성을 결정한다.
 
@@ -39,7 +42,7 @@ Web-scale image-text pair는 class label보다 풍부하지만 noisy하고 편�
 
 ## 2. CLIP의 contrastive image-text alignment
 
-CLIP은 image encoder와 text encoder가 paired sample을 가까이, batch의 다른 조합을 멀리 배치하도록 학습한다. 정규화한 image embedding \(v_i\), text embedding \(t_j\), temperature \(\tau\)로 similarity logit을
+CLIP은 image encoder와 text encoder가 paired sample을 가까이, batch의 다른 조합을 멀리 배치하도록 학습한다. 정규화한 image embedding $$v_i$$, text embedding $$t_j$$, temperature $$\tau$$로 similarity logit을
 
 $$
 \ell_{ij}=\frac{v_i^\top t_j}{\tau}
@@ -71,6 +74,42 @@ Point output은 다른 model의 prompt가 될 수 있다. 강의의 구체적 ch
 
 평가도 classification accuracy 하나로 끝나지 않는다. VQA, counting, spatial relation, grounding, compositionality, real-user preference를 함께 봐야 한다. Benchmark contamination과 narrow metric 때문에 숫자가 실제 사용 능력을 과장할 수 있으므로 정성적 실패 분석이 병행되어야 한다.
 
+## 핵심 수식 유도
+
+### 작성자 보충: CLIP의 대칭 contrastive loss와 gradient
+
+Batch 크기를 $$N$$, L2-normalized image/text embedding을 $$u_i,v_j$$, temperature를 $$\tau>0$$라 두면 logit은
+
+$$
+s_{ij}=\frac{u_i^{\top}v_j}{\tau}
+$$
+
+다. Image $$i$$가 paired text $$i$$를 맞히는 image-to-text cross-entropy와 반대 방향 loss는
+
+$$
+\mathcal{L}_{I\to T}^{(i)}
+=-\log\frac{e^{s_{ii}}}{\sum_{j=1}^{N}e^{s_{ij}}},\qquad
+\mathcal{L}_{T\to I}^{(i)}
+=-\log\frac{e^{s_{ii}}}{\sum_{j=1}^{N}e^{s_{ji}}}.
+$$
+
+CLIP은 두 방향을 평균한
+
+$$
+\mathcal{L}_{\mathrm{CLIP}}
+=\frac{1}{2N}\sum_{i=1}^{N}
+\left(\mathcal{L}_{I\to T}^{(i)}+\mathcal{L}_{T\to I}^{(i)}\right)
+$$
+
+를 사용하는 **대칭 contrastive objective**다. 첫 번째 방향에서 $$p_{ij}=e^{s_{ij}}/\sum_k e^{s_{ik}}$$라 하면 softmax cross-entropy 미분은
+
+$$
+\frac{\partial\mathcal{L}_{I\to T}^{(i)}}{\partial s_{ij}}
+=p_{ij}-\mathbf{1}[j=i].
+$$
+
+따라서 positive pair에서는 derivative가 $$p_{ii}-1\le0$$라 gradient descent가 $$s_{ii}$$를 높이고, negative pair에서는 $$p_{ij}\ge0$$라 $$s_{ij}$$를 낮춘다. Text-to-image 방향도 열을 기준으로 같은 유도가 성립한다. Embedding, cosine similarity, logit, $$\tau$$는 무차원이고 $$\tau$$가 작을수록 similarity에 대한 gradient scale은 $$1/\tau$$만큼 커진다. 이 방향성은 loss 정의에서 나오는 정확한 결과지만 caption ambiguity, false negative, biased web pairs가 있으면 alignment가 semantic truth나 grounded reasoning을 보장하지 않는다.
+
 ## 마지막 핵심 정리
 
 - CLIP은 contrastive objective로 global image-text alignment를 학습한다.
@@ -86,21 +125,36 @@ Point output은 다른 model의 prompt가 될 수 있다. 강의의 구체적 ch
 
 ## 복습 질문
 
-<details><summary>1. CLIP이 zero-shot classification을 할 수 있는 이유는?</summary>
+<details markdown="block"><summary>1. CLIP이 zero-shot classification을 할 수 있는 이유는?</summary>
 
 답변: Class 이름이나 설명을 text encoder로 embedding하고, 학습 때 정렬한 공통 공간에서 image embedding과 similarity를 비교할 수 있기 때문이다.
 </details>
 
-<details><summary>2. Global image-text alignment가 spatial reasoning에 부족한 이유는?</summary>
+<details markdown="block"><summary>2. Global image-text alignment가 spatial reasoning에 부족한 이유는?</summary>
 
 답변: 이미지 전체와 문장 전체를 한 vector로 맞추면 개별 object의 위치와 관계를 직접 감독하지 않으므로 같은 단어를 가진 서로 다른 구성을 구분하기 어렵다.
 </details>
 
-<details><summary>3. Pointing output은 model chaining에 어떻게 쓰이는가?</summary>
+<details markdown="block"><summary>3. Pointing output은 model chaining에 어떻게 쓰이는가?</summary>
 
 답변: Multimodal model이 자연어 지시에서 찾은 coordinate를 segmentation이나 robot planning 같은 다른 model의 입력 prompt로 전달해 더 정밀한 행동으로 바꿀 수 있다.
 </details>
 
+## 원문 대조 기록
+
+공식 PDF **148쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
+
+| 원문 위치 | 확인한 내용 | 노트 대응 |
+|---|---|---|
+| PDF 10–55쪽 · 영상 00:02:57 | CLIP objective, zero-shot classifier, scale와 data | 1–2절 및 작성자 보충 |
+| PDF 56–83쪽 · 영상 00:26:15, 00:31:29 | LLaVA와 Flamingo의 visual-token fusion | 3절 |
+| PDF 84–111쪽 · 영상 00:44:12 | evaluation과 Molmo grounding | 4절 |
+| PDF 112–131쪽 · 영상 00:54:25 | Segment Anything | 5절의 foundation-model 확장 맥락 |
+| PDF 132–148쪽 · 영상 01:03:59 | CuPL, model chaining, VisProg | 5절 |
+
+Architecture와 사례는 강의 원문 요약이다. CLIP의 대칭 loss 및 logit gradient 전개는 **작성자 보충**이다.
+
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=mQOK0Mfyrkk){:target="_blank" rel="noopener"}
+- [Official Lecture 16 slides](https://cs231n.stanford.edu/slides/2025/lecture_16.pdf){:target="_blank" rel="noopener"}

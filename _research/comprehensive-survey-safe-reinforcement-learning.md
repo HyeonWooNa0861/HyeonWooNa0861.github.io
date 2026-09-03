@@ -58,7 +58,7 @@ Source PDF: `comprehensive-survey-safe-reinforcement-learning.pdf`
 
 ### 제안 방법 또는 분석 구조
 
-Survey의 taxonomy는 두 축으로 구성된다. 첫 번째 축은 optimization criterion을 바꾸는 접근이다. 표준 discounted return \(R=\sum_{t=0}^{\infty}\gamma^t r_t\)의 expectation만 최대화하는 대신, worst-case return, risk-sensitive objective, constrained criterion, VaR나 return density 같은 다른 기준을 목적함수에 포함한다.
+Survey의 taxonomy는 두 축으로 구성된다. 첫 번째 축은 optimization criterion을 바꾸는 접근이다. 표준 discounted return $$R=\sum_{t=0}^{\infty}\gamma^t r_t$$의 expectation만 최대화하는 대신, worst-case return, risk-sensitive objective, constrained criterion, VaR나 return density 같은 다른 기준을 목적함수에 포함한다.
 
 두 번째 축은 exploration process를 바꾸는 접근이다. Agent가 위험한 state를 직접 경험하며 배우게 두지 않고, initial knowledge, finite demonstrations, teacher advice, risk-directed exploration을 통해 탐색 경로를 제한하거나 안내한다. 이 축의 관심사는 최적 policy의 최종 안전성뿐 아니라, 학습 중 agent가 얼마나 위험한 시행착오를 겪는가다.
 
@@ -67,7 +67,7 @@ Survey의 taxonomy는 두 축으로 구성된다. 첫 번째 축은 optimization
 | 축 | 대표 접근 | 핵심 아이디어 | 주의점 |
 |---|---|---|---|
 | Optimization criterion | Worst-case | 최악의 return 또는 model uncertainty에 대해 보수적으로 최적화 | 지나치게 pessimistic해 long-term utility를 잃을 수 있다 |
-| Optimization criterion | Risk-sensitive | risk sensitivity parameter \(\beta\)로 risk-averse 또는 risk-seeking 성향을 조절 | risk metric 선택에 따라 실제 safety와 어긋날 수 있다 |
+| Optimization criterion | Risk-sensitive | risk sensitivity parameter $$\beta$$로 risk-averse 또는 risk-seeking 성향을 조절 | risk metric 선택에 따라 실제 safety와 어긋날 수 있다 |
 | Optimization criterion | Constrained | return을 최대화하되 safety-related measure를 bound 안에 둔다 | constraint를 어떤 관측량으로 둘지 명확해야 한다 |
 | Exploration process | Demonstrations | teacher의 finite examples로 offline safe policy를 유도한다 | demonstration 품질과 coverage에 의존한다 |
 | Exploration process | Teacher advice | 학습 중 teacher가 action 또는 information을 제공한다 | teacher availability와 subjective monitoring에 의존한다 |
@@ -79,7 +79,7 @@ Survey의 taxonomy는 두 축으로 구성된다. 첫 번째 축은 optimization
 
 예를 들어 return variance를 위험으로 보면, 낮은 variance policy가 반드시 안전하다고 말할 수 없다. Survey는 stochastic transition 때문에 error state에 들어갈 수 있는 grid-world류 예를 통해, long-term return variance와 실제 catastrophic state 방문 위험이 어긋날 수 있음을 설명한다. Worst-case criterion은 rare large negative outcome을 피하는 데 유리하지만 지나치게 보수적일 수 있고, teacher advice는 early learning risk를 줄이는 데 유용하지만 teacher의 품질과 개입 가능성에 기대야 한다.
 
-Risk-sensitive criterion에서는 \(\beta\)가 중요한 해석 변수다. 논문은 \(\beta>0\)을 risk aversion, \(\beta<0\)을 risk-seeking preference, \(\beta=0\)을 risk neutrality로 설명한다. 이 notation은 후속 문헌이나 구현마다 부호 convention이 달라질 수 있으므로, 논문의 definition을 기준으로 읽는 것이 안전하다.
+Risk-sensitive criterion에서는 $$\beta$$가 중요한 해석 변수다. 논문은 $$\beta>0$$을 risk aversion, $$\beta<0$$을 risk-seeking preference, $$\beta=0$$을 risk neutrality로 설명한다. 이 notation은 후속 문헌이나 구현마다 부호 convention이 달라질 수 있으므로, 논문의 definition을 기준으로 읽는 것이 안전하다.
 
 ### 논문 주장과 해석의 경계
 

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 18:13:14 +0900
+last_modified_at: 2026-09-03 15:50:43 +0900
 title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"
@@ -30,7 +31,7 @@ Source Materials:
 
 핵심 전략은 간단하다. 중간고사 전 범위는 기본 개념과 오답 제거 기준을 빠르게 확인하고, 중간고사 이후 범위는 LLM, 자율주행, imitation learning, robotics scaling을 더 깊게 본다.
 
-> **핵심:** **Linear Regression** \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. **Logistic Regression** linear score에 sigmoid를 붙여 class probability로 해석한다.
+> **핵심:** **Linear Regression** $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. **Logistic Regression** linear score에 sigmoid를 붙여 class probability로 해석한다.
 
 ## 전체 흐름
 
@@ -69,9 +70,28 @@ Source Materials:
 | Imitation Learning | behavioral cloning은 supervised learning처럼 보이지만 action이 다음 state distribution을 바꾸는 점이 다르다. |
 | Robotics Scaling | VLA와 ego-video, world model, action fine-tuning, physical RL은 로봇용 foundation model 흐름으로 연결된다. |
 
+## 핵심 수식 유도 지도
+
+종합 복습에서는 같은 증명을 반복하기보다 아래 논리 사슬을 손으로 재현한다. 상세 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/), [Large Language Models](/study/aix/large-language-models/), [Robotics 1](/study/aix/robotics-1/)에 있다.
+
+| 수식 | 성격과 유도 핵심 | 가정·실패 조건 |
+|---|---|---|
+| $$w^*=(X^TX)^{-1}X^Ty$$ | squared loss를 미분해 $$X^T(Xw-y)=0$$으로 둔 **정확한 정상방정식 해** | $$X^TX$$가 가역이어야 하며, 아니면 pseudo-inverse·regularization이 필요 |
+| $$\theta\leftarrow\theta-\eta\nabla L$$ | 1차 Taylor 근사에서 변화량이 $$-\eta\lVert\nabla L\rVert^2$$가 되는 하강 방향 | 국소 근사이므로 $$\eta$$가 크면 loss가 증가할 수 있음 |
+| $$L_{\mathrm{BCE}}=-y\log p-(1-y)\log(1-p)$$ | Bernoulli likelihood $$p^y(1-p)^{1-y}$$의 negative log라는 **정확한 등식** | $$y\in\{0,1\}$$, $$0<p<1$$; 구현은 logit 기반 안정화 필요 |
+| $$\delta_1=(W_2^T\delta_2)\odot\phi'(z_1)$$ | 합성 함수에 chain rule을 역순 적용한 backpropagation 등식 | ReLU의 0에서는 subgradient가 필요하고 포화 activation은 gradient를 약화 |
+| $$\operatorname{softmax}(QK^T/\sqrt{d_k})V$$ | softmax weight의 합이 1이고 output은 value weighted sum이라는 **정의** | $$\sqrt{d_k}$$ 근거는 성분 독립·단위분산을 둔 근사적 분산 분석 |
+| $$p_i(T)=e^{z_i/T}/\sum_j e^{z_j/T}$$ | $$p_i/p_j=e^{(z_i-z_j)/T}$$라서 $$T$$가 logit 간격의 효과를 조절 | $$T>0$$; $$T=0$$은 정의되지 않으며 능력 자체를 바꾸지 않음 |
+| $$-\log p_c$$ | categorical likelihood에 음의 로그를 취한 one-hot cross-entropy | Label smoothing이면 $$-\sum_i y_i\log p_i$$를 사용 |
+| $$T\epsilon$$ 대 $$O(T^2\epsilon)$$ | 전자는 step 오류 기대합, 후자는 $$\sum_{t=1}^{T}O(t\epsilon)$$인 **보수적 compounding-error 상한** | 정확한 관측 등식이 아니며 bounded cost와 단순화된 오류율 가정 필요 |
+
+여기서 $$T$$는 문맥에 따라 temperature 또는 horizon을 뜻하므로 반드시 주변 정의를 확인한다. 전자는 무차원 양수이고, 후자는 단위 없는 step 수다.
+
+**원문 대응:** after-midterm quiz 5개 PDF는 각 p.1-3에 LLM·autonomous driving·imitation learning·robotics scaling 문항을 제시하지만 별도의 수식 증명은 싣지 않는다. 위 표의 계산 근거는 `1st_Regression.pdf` p.10-25, `02_MLP.pdf` p.11-24, `2_Overview_TF.pdf` p.10-20, `3_Large_Language_Models.pdf` p.17-48, `Robotics_1.pdf` p.9-15에 대응한다. 즉 퀴즈 정답 범위를 넘어선 전개는 각 상세 강의 글에서 원문 직접 제시식과 저자 보충을 구분해 검산한다.
+
 ## 1. Linear Regression과 Optimization
 
-Linear Regression은 feature \(x\)로 target \(y\)를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
+Linear Regression은 feature $$x$$로 target $$y$$를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
 
 $$
 \hat{y}=w^Tx+b
@@ -93,10 +113,10 @@ $$
 
 | 개념 | 한 줄 정리 | 오답 제거 기준 |
 |---|---|---|
-| feature | 모델의 입력 정보, 보통 \(x\) | \(y\)를 feature라고 하면 틀림 |
-| target | 예측해야 하는 정답, 보통 \(y\) | \(x\)를 target이라고 하면 틀림 |
-| score | \(w^Tx+b\) 형태의 선형 출력 | weight와 feature의 가중합 구조가 없으면 의심 |
-| residual | \(y-\hat{y}\) | loss와 같은 말이 아님 |
+| feature | 모델의 입력 정보, 보통 $$x$$ | $$y$$를 feature라고 하면 틀림 |
+| target | 예측해야 하는 정답, 보통 $$y$$ | $$x$$를 target이라고 하면 틀림 |
+| score | $$w^Tx+b$$ 형태의 선형 출력 | weight와 feature의 가중합 구조가 없으면 의심 |
+| residual | $$y-\hat{y}$$ | loss와 같은 말이 아님 |
 | squared loss | residual을 제곱해 합친 objective | 부호가 상쇄되지 않게 제곱 |
 | iterative update | loss를 줄이도록 parameter를 반복 갱신 | closed-form처럼 한 번에 끝나는 방식이 아님 |
 
@@ -106,7 +126,7 @@ $$
 \theta \leftarrow \theta-\eta\nabla_\theta L(\theta)
 $$
 
-여기서 \(\eta\)는 learning rate다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요하다.
+여기서 $$\eta$$는 learning rate다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요하다.
 
 ## 2. Logistic Regression과 Classification
 
@@ -133,9 +153,9 @@ $$
 | 비교 | Linear Regression | Logistic Regression |
 |---|---|---|
 | 출력 | 실수 예측값 | class probability |
-| 기본 식 | \(\hat{y}=w^Tx+b\) | \(P(y=1\mid x)=\sigma(w^Tx+b)\) |
+| 기본 식 | $$\hat{y}=w^Tx+b$$ | $$P(y=1\mid x)=\sigma(w^Tx+b)$$ |
 | 대표 목적 | squared residual 감소 | observed label이 most likely 하도록 학습 |
-| decision boundary | 회귀에서는 직접 경계가 핵심이 아님 | \(w^Tx+b=0\)이면 기본적으로 선형 경계 |
+| decision boundary | 회귀에서는 직접 경계가 핵심이 아님 | $$w^Tx+b=0$$이면 기본적으로 선형 경계 |
 
 다중 class에서는 softmax를 사용한다. Softmax는 여러 class score를 합이 1인 확률 분포로 바꾼다.
 
@@ -258,10 +278,10 @@ $$
 
 | 구성 | 역할 |
 |---|---|
-| Query \(Q\) | 현재 token이 무엇을 찾는지 나타냄 |
-| Key \(K\) | 각 token이 어떤 정보를 갖는지 비교 기준 제공 |
-| Value \(V\) | attention weight로 실제 가져오는 정보 |
-| \(QK^T\) | token 간 관련도 점수 계산 |
+| Query $$Q$$ | 현재 token이 무엇을 찾는지 나타냄 |
+| Key $$K$$ | 각 token이 어떤 정보를 갖는지 비교 기준 제공 |
+| Value $$V$$ | attention weight로 실제 가져오는 정보 |
+| $$QK^T$$ | token 간 관련도 점수 계산 |
 | softmax | 관련도 점수를 attention weight로 정규화 |
 | positional encoding | self-attention만으로 부족한 순서 정보를 보강 |
 | multi-head attention | 여러 head가 서로 다른 관계나 패턴을 병렬로 봄 |
@@ -299,7 +319,7 @@ Decoding 방식도 구분해야 한다.
 | 방식 | 핵심 | 장점 | 한계 |
 |---|---|---|---|
 | greedy decoding | 매 step 가장 확률 높은 token 하나 선택 | 빠르고 단순 | 전체 문장 최적 보장 없음 |
-| beam search | 가능성 높은 \(k\)개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
+| beam search | 가능성 높은 $$k$$개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
 
 Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식이다. 모든 token이 모든 expert를 쓰는 것이 아니라, router가 token마다 필요한 expert 일부만 활성화한다.
 
@@ -431,7 +451,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 | 문항 유형 | 정답 방향 | 흔한 오답 |
 |---|---|---|
-| Linear regression | \(x\)는 feature, \(y\)는 target | \(x\)와 \(y\) 역할을 뒤집음 |
+| Linear regression | $$x$$는 feature, $$y$$는 target | $$x$$와 $$y$$ 역할을 뒤집음 |
 | Logistic regression | score를 sigmoid로 probability화 | linear score를 버린다고 설명 |
 | MLP | hidden layer와 nonlinearity | layer만 많으면 비선형이라고 착각 |
 | Backpropagation | chain rule로 gradient 계산 | parameter update 자체와 혼동 |
@@ -453,7 +473,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 | 주제 | 반드시 기억할 문장 |
 |---|---|
-| Linear Regression | \(\hat{y}=w^Tx+b\), residual은 \(y-\hat{y}\), loss는 squared residual 중심이다. |
+| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. |
 | Logistic Regression | linear score에 sigmoid를 붙여 class probability로 해석한다. |
 | MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
 | Backpropagation | chain rule로 gradient를 계산하고, gradient descent가 parameter를 갱신한다. |
@@ -490,140 +510,140 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Linear regression에서 feature와 target은 무엇인가?</summary>
 
-답변: Feature는 모델의 입력 정보이고 보통 \(x\)로 둔다. Target은 예측해야 하는 정답이고 보통 \(y\)로 둔다.
+답변: Feature는 모델의 입력 정보이고 보통 $$x$$로 둔다. Target은 예측해야 하는 정답이고 보통 $$y$$로 둔다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Logistic regression은 왜 classification에 적합한가?</summary>
 
-답변: Linear score \(w^Tx+b\)를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문이다.
+답변: Linear score $$w^Tx+b$$를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. MLP가 single perceptron보다 강한 이유는 무엇인가?</summary>
 
 답변: Hidden layer와 nonlinear activation을 사용하므로 single perceptron이 만들 수 없는 복잡한 비선형 패턴을 표현할 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Backpropagation과 gradient descent는 어떻게 다른가?</summary>
 
 답변: Backpropagation은 chain rule로 gradient를 계산하는 방법이고, gradient descent는 그 gradient를 이용해 parameter를 갱신하는 최적화 방법이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Computer Vision의 high-level 목표는 무엇인가?</summary>
 
 답변: Raw pixel을 object, scene, relation, meaning으로 해석하는 것이다. 단순 압축이나 저장 효율이 핵심 목표가 아니다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. CNN이 이미지 처리에 적합한 이유는 무엇인가?</summary>
 
 답변: Local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습할 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. Tokenizer와 embedding은 어떻게 다른가?</summary>
 
 답변: Tokenizer는 문장을 token으로 나누고 vocabulary 항목에 대응시키는 과정이다. Embedding은 token을 의미 관계를 담을 수 있는 dense vector로 바꾸는 표현이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>8. Skip-Gram은 어떤 task인가?</summary>
 
 답변: 중심 단어 하나를 보고 주변 context 단어를 예측하는 Word2Vec의 proxy task다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>9. RNN이 긴 sequence에서 어려움을 겪는 이유는 무엇인가?</summary>
 
 답변: 정보가 hidden state를 따라 순차적으로 전달되므로 먼 과거 정보가 뒤쪽까지 유지되기 어렵고, 순차 계산 때문에 병렬 처리에도 불리하기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>10. Attention이 RNN보다 global relationship을 잘 보는 이유는 무엇인가?</summary>
 
 답변: Attention은 각 token이 다른 token들과의 관련도를 직접 계산해 필요한 정보를 바로 참조할 수 있기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>11. Transformer에서 Q, K, V의 역할은 무엇인가?</summary>
 
 답변: Q와 K는 dot product로 token 간 관련도 점수를 계산하는 데 쓰이고, V는 그 attention weight를 바탕으로 실제 출력 정보를 만드는 데 쓰인다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>12. Positional encoding이 필요한 이유는 무엇인가?</summary>
 
 답변: Self-attention 자체는 token 사이 관계를 보지만 순서 정보를 충분히 담지 못하므로, token의 위치와 순서를 모델에 알려 주기 위해 positional encoding을 더한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>13. LLM의 next token prediction은 무엇인가?</summary>
 
 답변: 지금까지 생성되거나 입력된 token sequence를 조건으로 다음 token의 확률분포를 예측하고, 선택된 token을 다시 문맥에 붙여 반복 생성하는 방식이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>14. Greedy decoding과 beam search는 어떻게 다른가?</summary>
 
-답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고른다. Beam search는 가능성 높은 \(k\)개의 후보 sequence를 유지하며 더 넓게 탐색한다.
+답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고른다. Beam search는 가능성 높은 $$k$$개의 후보 sequence를 유지하며 더 넓게 탐색한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>15. MoE의 핵심 아이디어는 무엇인가?</summary>
 
 답변: 모든 token이 모든 expert를 사용하는 것이 아니라, router가 token마다 필요한 expert 일부만 선택해 sparse하게 활성화하는 것이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>16. Modular autonomous driving stack의 약점은 무엇인가?</summary>
 
 답변: Perception, prediction, planning, control이 단계별로 나뉘어 있어 해석은 쉽지만, 앞단의 오류가 뒤 단계로 전파되어 최종 주행 결과를 나쁘게 만들 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>17. Tesla식 end-to-end에서 occupancy가 중요한 이유는 무엇인가?</summary>
 
 답변: Occupancy는 object list보다 geometry, free space, semantics를 함께 표현할 수 있어 planning에 필요한 world representation을 더 잘 제공하기 때문이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>18. Behavioral cloning이 ordinary supervised learning과 다른 이유는 무엇인가?</summary>
 
 답변: Robot policy의 action은 다음 state를 바꾸고, 그 결과 미래 입력 분포 자체가 달라질 수 있다. 일반 supervised learning보다 covariate shift와 compounding error 문제가 크다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>19. DAggER는 무엇을 해결하려는 방법인가?</summary>
 
 답변: Learner가 실제로 방문한 state를 모으고 expert label을 붙여 dataset에 aggregate한 뒤 retrain함으로써 state distribution shift와 compounding error를 줄이려는 방법이다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>20. VLA는 무엇인가?</summary>
 
 답변: Vision-Language-Action의 약자로, 이미지나 비디오를 보고 언어 지시를 이해한 뒤 실제 로봇 action을 출력하는 로봇용 backbone이다.

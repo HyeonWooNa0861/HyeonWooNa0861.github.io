@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 3: Transformers & Large Language Models
 
 Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=Q5baLehv5So){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 세 번째 강의는 LLM을 본격적으로 정의하면서 시작한다. Language model은 token sequence에 probability를 assign하고 next token probability를 예측하는 모델이며, LLM은 model size, pre-training data, compute가 모두 큰 language model로 설명된다.
 
@@ -36,7 +39,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 세 번째 강의는 LLM을 본격적으로 정의하면서 시작한다. Language model은 token sequence에 probability를 assign하고 next token probability를 예측하는 모델이며, LLM은 model size, pre-training data, compute가 모두 큰 language model로 설명된다. 강의에서는 현대 LLM이 보통 최소 billion 단위 parameter, hundreds of billions 또는 trillions of tokens 규모의 data, 많은 GPU compute를 필요로 한다고 말한다. 현재 정의에서 BERT는 text를 생성하지 않는 encoder-only 모델이므로 LLM으로 보지 않고, LLM은 text-to-text를 수행하는 decoder-only 모델로 둔다. GPT, LLaMA, Gemma, DeepSeek, Mistral, Qwen 등이 예로 나오며, modern day LLM의 90% 이상이 decoder-only라고 설명한다.
 
-그 다음은 mixture of experts(MoE)와 generation 방법이다. MoE는 모든 parameter를 매 forward pass에 활성화하지 않고, gate/router G가 input x에 대해 어떤 expert E_i를 사용할지 정하는 구조다. Dense MoE는 모든 expert output에 weight를 두고, sparse MoE는 top-k expert만 선택해 FLOPS를 줄인다. 현대 LLM에서는 MoE를 주로 FFN 위치에 넣는데, FFN은 d_model에서 더 큰 d_FF로 갔다가 다시 d_model로 돌아가며 많은 parameter와 operation을 차지하기 때문이다. Expert는 token level로 routing될 수 있고, routing collapse를 막기 위해 expert별 token fraction f_i와 average routing probability p_i가 uniform에 가까워지도록 auxiliary loss를 더한다. Noisy gating도 언급된다. 이어서 next token 선택 방식으로 greedy decoding, beam search, sampling을 비교한다. Beam search는 k개의 path를 유지하고 sequence log probability를 token log probability의 합으로 보지만 짧은 sequence를 선호하는 문제가 있어 보정항이 필요하고, translation 같은 작업에 더 자주 쓰인다고 한다. Sampling은 probability distribution에서 token을 뽑는 방식이며 top-k, top-p, temperature가 소개된다. Temperature T는 softmax에서 logits를 T로 나누는 hyperparameter이고, low temperature는 spiky distribution, high temperature는 uniform에 가까운 distribution을 만든다. T=0은 이론적으로 deterministic하지만 실제 GPU 연산 순서 때문에 non-determinism이 생길 수 있다는 설명도 있다. Guided decoding은 JSON 같은 형식을 위해 invalid next token을 generation 중에 필터링하고, finite state machine이나 context grammar가 관련 키워드로 언급된다.
+그 다음은 mixture of experts(MoE)와 generation 방법이다. MoE는 모든 parameter를 매 forward pass에 활성화하지 않고, gate/router G가 input x에 대해 어떤 expert E_i를 사용할지 정하는 구조다. Dense MoE는 모든 expert output에 weight를 두고, sparse MoE는 top-k expert만 선택해 FLOPs를 줄인다. 현대 LLM에서는 MoE를 주로 FFN 위치에 넣는데, FFN은 d_model에서 더 큰 d_FF로 갔다가 다시 d_model로 돌아가며 많은 parameter와 operation을 차지하기 때문이다. Expert는 token level로 routing될 수 있고, routing collapse를 막기 위해 expert별 token fraction f_i와 average routing probability p_i가 uniform에 가까워지도록 auxiliary loss를 더한다. Noisy gating도 언급된다. 이어서 next token 선택 방식으로 greedy decoding, beam search, sampling을 비교한다. Beam search는 k개의 path를 유지하고 sequence log probability를 token log probability의 합으로 보지만 짧은 sequence를 선호하는 문제가 있어 보정항이 필요하고, translation 같은 작업에 더 자주 쓰인다고 한다. Sampling은 probability distribution에서 token을 뽑는 방식이며 top-k, top-p, temperature가 소개된다. Temperature T는 softmax에서 logits를 T로 나누는 hyperparameter이고, low temperature는 spiky distribution, high temperature는 uniform에 가까운 distribution을 만든다. T=0은 이론적으로 deterministic하지만 실제 GPU 연산 순서 때문에 non-determinism이 생길 수 있다는 설명도 있다. Guided decoding은 JSON 같은 형식을 위해 invalid next token을 generation 중에 필터링하고, finite state machine이나 context grammar가 관련 키워드로 언급된다.
 
 후반부는 prompting과 inference efficiency를 다룬다. Context length, context size, window size는 입력 token 수를 뜻하며 현대 LLM은 tens of thousands, hundreds of thousands, millions of tokens까지 처리할 수 있지만, needle-in-a-haystack류 실험에서 context rot처럼 긴 context에서 retrieval capability가 떨어질 수 있다고 설명한다. Prompt는 context, instructions, inputs, constraints로 볼 수 있고, in-context learning은 weight를 바꾸지 않고 context 안의 지식과 예시로 모델 행동을 유도한다. Zero-shot과 few-shot을 비교하고, chain of thought는 답 전에 rationale을 만들게 해 성능과 debugging 가능성을 높일 수 있지만 token 수와 latency를 늘린다고 한다. Self-consistency는 여러 번 sampling한 답에서 majority voting을 하는 방식이다. 마지막으로 inference 최적화에서는 KV cache로 과거 token의 key/value를 저장해 재계산을 피하고, training에서는 teacher forcing 때문에 이 개념이 나오지 않는다고 설명한다. GQA는 cache를 줄이는 데 재사용되고, PagedAttention/vLLM은 cache memory를 fixed-size block으로 관리해 fragmentation을 줄인다. DeepSeek V2의 multi-latent attention은 key/value projection을 lower-dimensional latent space로 factorize하고 cache representation을 key/value 및 head 사이에 공유해 compact하게 만든다. Speculative decoding은 작은 draft model이 여러 token을 제안하고 큰 target model이 acceptance-rejection으로 target distribution을 맞추며, multi-token prediction은 같은 model 안의 multiple heads를 draft처럼 활용한다.
 
@@ -46,7 +49,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 |---|---|
 | Large Language Model (LLM) | Token sequence에 probability를 assign하고 next token을 예측하는 text-to-text language model 중 parameter, training tokens, compute 규모가 큰 모델이다. |
 | Mixture of Experts (MoE) | Input x에 대해 gate/router G가 expert E_i의 output을 얼마나 사용할지 정하는 구조다. Sparse MoE는 top-k expert만 활성화한다. |
-| FLOPS | Floating-point operations의 약자로 forward pass 등에 필요한 연산량을 나타내는 단위다. Sparse MoE는 dense MoE보다 FLOPS를 낮출 수 있다. |
+| FLOPs | Floating-point operation count로, forward pass 등에 필요한 부동소수점 연산 횟수를 뜻한다. 연산 처리율은 FLOP/s 또는 FLOPS로 구분한다. Sparse MoE는 dense MoE보다 FLOPs를 낮출 수 있다. |
 | Routing collapse | MoE training에서 router가 일부 expert만 계속 선택하고 다른 expert는 거의 쓰지 않는 현상이다. Auxiliary loss나 noisy gating으로 완화할 수 있다. |
 | Beam search | Beam width k개의 가장 가능성 높은 generation path를 유지하며 sequence probability가 높은 출력을 찾는 decoding 방식이다. |
 | Top-k and Top-p sampling | Top-k는 확률이 가장 높은 k개 token에서 sampling하고, top-p는 누적 확률이 threshold p를 넘는 상위 token 집합에서 sampling한다. |
@@ -55,11 +58,64 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 | KV cache | Autoregressive decoding에서 이전 token들의 key/value representation을 저장해 다음 token 계산 때 재사용하는 cache다. |
 | Speculative decoding | 작은 draft model이 여러 token을 빠르게 제안하고 큰 target model이 acceptance-rejection으로 검증해 target distribution과 맞추는 inference 가속 방식이다. |
 
+## 수식 해설: generation, MoE, cache
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Dense/sparse MoE와 routing | 00:10:59–00:14:16, 00:20:38–00:24:02, 00:26:20–00:27:18 | Weighted expert 합, auxiliary loss, gate probability는 강의 원문이다. Auxiliary-loss의 보장 한계는 작성자 보충이다. |
+| Autoregressive sequence probability | 00:43:51–00:44:53 | Token log-probability 합과 probability 곱은 강의 원문이며, 조건부 chain-rule 표기는 작성자 보충이다. |
+| Temperature softmax 극한 | 00:52:31–00:59:52 | Softmax 식과 저온·고온 전개는 강의 원문이며, odds 식과 $$\tau=0$$ 조건은 작성자 보충이다. |
+| KV cache | 01:28:38–01:30:16 | K/V 재사용은 강의 원문이며, byte 단위 용량식과 PagedAttention 경계는 작성자 보충이다. |
+| Speculative decoding acceptance | 01:41:34–01:45:29 | Draft/target과 acceptance-rejection 흐름은 강의 원문이며, 아래 acceptance 확률·residual distribution과 marginal 확인은 작성자 보충이다. |
+
+Autoregressive model의 chain rule은
+
+$$
+p(y_{1:T}\mid x)=\prod_{t=1}^{T}p(y_t\mid x,y_{<t}),
+\qquad
+\log p(y_{1:T}\mid x)=\sum_{t=1}^{T}\log p(y_t\mid x,y_{<t})
+$$
+
+이다. 이는 확률의 **정확한 chain rule**이고 $$T,t$$는 무차원 token count/index다. 각 log probability는 보통 0 이하라 긴 sequence가 불리해진다. $$T^{-\alpha}\sum_t\log p_t$$ 같은 length normalization은 이를 조절하는 heuristic이며 보편적으로 최적인 $$\alpha$$는 없다.
+
+Temperature $$\tau>0$$의 softmax는
+
+$$
+p_i(\tau)=\frac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}.
+$$
+
+두 token의 odds는 $$p_i/p_j=e^{(z_i-z_j)/\tau}$$이므로 $$\tau$$가 작을수록 logit 차이가 확대되고, $$\tau\to\infty$$이면 유한 logit에서 uniform distribution으로 간다. $$\tau=0$$은 식에 넣을 수 없으며 argmax limit로 구현한다. 더 높은 temperature가 반드시 더 창의적이라는 말은 경험적 해석이다.
+
+Dense MoE는 $$y=\sum_{i=1}^{E}G_i(x)E_i(x)$$, $$G_i\ge0$$, $$\sum_iG_i=1$$로 정의할 수 있고 sparse top-$$k$$는 선택된 expert만 계산한다. Switch-style $$L_{aux}=E\sum_i f_ip_i$$는 token fraction $$f_i$$와 mean routing probability $$p_i$$를 고르게 만들려는 **auxiliary heuristic**이다. 완전 균형이나 더 높은 task quality를 보장하는 theorem은 아니다.
+
+단순 dense layout의 KV cache는
+
+$$
+M_{KV}=2LTh_{kv}d_hb
+$$
+
+byte다. $$L$$은 layer 수, $$T$$는 cached token 수, $$h_{kv}$$는 KV head 수, $$d_h$$는 head dimension, $$b$$는 element당 byte이고 2는 K/V다. GQA/MQA는 $$h_{kv}$$를 줄인다. PagedAttention은 fragmentation을 줄이지만 tensor 원소 수 자체를 자동으로 줄이는 식은 아니다.
+
+Speculative decoding의 한 token을 보자. Draft distribution을 $$q(x)$$, target distribution을 $$p(x)$$라 하고 $$x\sim q$$를 제안하면
+
+$$
+a(x)=\min\!\left(1,\frac{p(x)}{q(x)}\right)
+$$
+
+확률로 accept한다. Reject되면 residual distribution
+
+$$
+r(x)=\frac{[p(x)-q(x)]_+}{\sum_z[p(z)-q(z)]_+},
+\qquad [u]_+=\max(u,0)
+$$
+
+에서 다시 뽑는다. Draft에서 accept되어 $$x$$가 나올 질량은 $$q(x)a(x)=\min(p(x),q(x))$$다. 전체 reject 확률은 $$1-\sum_z\min(p(z),q(z))=\sum_z[p(z)-q(z)]_+$$이므로 residual 경로의 질량을 더하면 $$\min(p,q)+[p-q]_+=p$$가 되어 target marginal을 복원한다. 이는 이상적인 categorical distribution과 정확한 확률 계산을 가정한 **작성자 보충 유도**다. $$p=q$$이면 reject 확률이 0이라 residual 분모도 0이지만 그 branch 자체를 실행하지 않는다. $$q(x)=0$$인 token은 draft에서 제안되지 않으며 residual에서 처리되고, 여러 token block에서는 첫 rejection 이후의 token을 버리고 그 위치부터 target-consistent generation을 이어야 한다. 모든 draft token을 accept한 뒤 target에서 한 token을 더 sampling하는 단계까지 포함해야 표준 speculative decoding 절차가 완성된다.
+
 ## 학습 포인트
 
 - LLM은 token sequence에 probability를 assign하고 next token probability를 예측하는 language model이면서 parameter, data, compute 규모가 큰 text-to-text model이다.
 - 강의의 현재 정의에서 BERT는 text를 생성하지 않으므로 LLM이 아니며, 현대 LLM은 대부분 decoder-only다.
-- MoE는 router/gate가 expert를 선택해 active parameters와 FLOPS를 줄이면서 total capacity를 키우는 방식이다.
+- MoE는 router/gate가 expert를 선택해 active parameters와 FLOPs를 줄이면서 total capacity를 키우는 방식이다.
 - Sparse MoE는 top-k expert만 활성화하고, routing collapse를 막기 위해 f_i와 p_i를 균등하게 만드는 auxiliary loss를 사용할 수 있다.
 - Greedy decoding은 deterministic하고 다양성이 낮으며, beam search는 여러 path를 유지하지만 계산이 크고 짧은 sequence 선호 문제가 있다.
 - Sampling은 top-k, top-p, temperature로 후보와 확률분포를 조절하며, low temperature는 spiky, high temperature는 uniform에 가까운 분포를 만든다.
@@ -81,42 +137,42 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 강의의 현재 정의에서 BERT가 LLM으로 분류되지 않는 이유는 무엇인가?</summary>
 
 답변: BERT는 encoder-only 모델로 text를 생성하지 않는다. 강의에서는 현재 LLM을 text-to-text를 수행하고 parameter, training data, compute가 큰 decoder-only language model로 정의한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Sparse MoE가 dense MoE와 다른 점은 무엇인가?</summary>
 
-답변: Dense MoE는 모든 expert output에 weight를 둘 수 있지만, sparse MoE는 top-k expert만 선택해 계산한다. 그래서 total parameter capacity를 키우면서 forward pass의 active parameter와 FLOPS를 제한할 수 있다.
+답변: Dense MoE는 모든 expert output에 weight를 둘 수 있지만, sparse MoE는 top-k expert만 선택해 계산한다. 그래서 total parameter capacity를 키우면서 forward pass의 active parameter와 FLOPs를 제한할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Temperature가 next-token sampling에 미치는 영향은 무엇인가?</summary>
 
 답변: Softmax에서 logits를 T로 나누므로 T가 낮으면 가장 높은 logit token에 확률이 몰리는 spiky distribution이 되고, T가 높으면 확률이 더 uniform해져 낮은 확률 token도 뽑힐 가능성이 커진다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. Context length가 커지면 retrieval 문제가 자동으로 해결되는가?</summary>
 
 답변: 아니다. 강의는 context rot과 needle-in-a-haystack 실험을 언급하며, context가 길어지고 distractor가 많아질수록 답이 context 안에 있어도 grounding/retrieval capability가 떨어질 수 있다고 설명한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. KV cache는 왜 training보다 inference에서 중요하게 등장하는가?</summary>
 
 답변: Inference에서는 autoregressive decoding으로 매 token마다 이전 token들의 key/value를 다시 참조하므로 저장해 재사용하면 중복 계산을 줄일 수 있다. Training에서는 teacher forcing으로 입력 전체를 한 번에 넣기 때문에 같은 의미의 KV caching 문제가 생기지 않는다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Speculative decoding은 어떻게 큰 LLM의 generation을 빠르게 만드는가?</summary>
 
 답변: 작은 draft model이 여러 token을 빠르게 생성하고, 큰 target model이 그 token들을 한 번의 forward pass로 평가한다. Acceptance-rejection 규칙을 통해 target distribution을 유지하면서 여러 token만큼 진행할 수 있다.

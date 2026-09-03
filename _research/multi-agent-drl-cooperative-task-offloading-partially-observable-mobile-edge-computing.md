@@ -66,7 +66,7 @@ MEC의 task offloading은 단말이 계산을 로컬에서 수행할지 인근 e
 
 ### Dec-POMDP로 보는 이유
 
-제안 문서는 P1과 P2를 decentralized partially observable Markov decision process, 즉 Dec-POMDP로 정식화한다. 전체 시스템 상태를 \(s_t\), agent \(i\)의 로컬 관측을 \(o_t^i\), 공동 행동을 \(a_t=(a_t^1,\ldots,a_t^n)\)라고 보면 각 agent는 전역 상태를 직접 알지 못한 채 자신의 observation history로 행동해야 한다.
+제안 문서는 P1과 P2를 decentralized partially observable Markov decision process, 즉 Dec-POMDP로 정식화한다. 전체 시스템 상태를 $$s_t$$, agent $$i$$의 로컬 관측을 $$o_t^i$$, 공동 행동을 $$a_t=(a_t^1,\ldots,a_t^n)$$라고 보면 각 agent는 전역 상태를 직접 알지 못한 채 자신의 observation history로 행동해야 한다.
 
 이때 핵심은 단순히 agent 수를 늘리는 것이 아니라 무엇을 공유할지 정하는 일이다. 단말은 자신의 queue, channel, battery와 인접 서버 정보를 관측할 수 있고, edge server는 자신의 compute queue, storage, neighbor load와 backhaul 상태를 관측할 수 있다. 모든 원시 상태를 교환하면 중앙집중식 제어와 다르지 않으므로, 실제 구현에서는 load summary나 learned message처럼 제한된 협력 신호가 필요하다.
 

@@ -58,19 +58,19 @@ big.LITTLE mobile device에서 task 배치, CPU frequency와 edge offloading pow
 
 ### Task와 system model
 
-주기적 task \(i\)는 \(t_i(p_i,b_i,w_i)\)로 표현된다. \(p_i\)는 period이자 deadline, \(b_i\)는 input data size, \(w_i\)는 worst-case execution time이다. Task utilization과 전체 utilization은 다음과 같다.
+주기적 task $$i$$는 $$t_i(p_i,b_i,w_i)$$로 표현된다. $$p_i$$는 period이자 deadline, $$b_i$$는 input data size, $$w_i$$는 worst-case execution time이다. Task utilization과 전체 utilization은 다음과 같다.
 
 $$
 u_i=\frac{w_i}{p_i}, \qquad U_T=\sum_{t_i\in T}u_i.
 $$
 
-각 task는 edge offloading, big core, LITTLE core 가운데 하나만 선택한다. 이진 변수 \(x_i^O,x_i^b,x_i^L\)에 대해 \(x_i^O+x_i^b+x_i^L=1\)이다. Uplink rate는 transmit power \(q_i\), channel gain \(h_i\), bandwidth \(W\), noise power \(\sigma\)를 이용해 다음과 같이 모델링한다.
+각 task는 edge offloading, big core, LITTLE core 가운데 하나만 선택한다. 이진 변수 $$x_i^O,x_i^b,x_i^L$$에 대해 $$x_i^O+x_i^b+x_i^L=1$$이다. Uplink rate는 transmit power $$q_i$$, channel gain $$h_i$$, bandwidth $$W$$, noise power $$\sigma$$를 이용해 다음과 같이 모델링한다.
 
 $$
 r_i=W\log_2\left(1+\frac{q_i h_i}{\sigma}\right).
 $$
 
-Offloading energy는 \(E_i^O(q_i)=q_i b_i/r_i\)다. Local energy는 core별 static power와 dynamic power, 실제 execution time을 결합한다. 논문은 execution time이 CPU frequency에 단순 역비례한다는 가정을 완화하고, task별로 관측한 비선형 execution time을 학습 입력으로 사용한다.
+Offloading energy는 $$E_i^O(q_i)=q_i b_i/r_i$$다. Local energy는 core별 static power와 dynamic power, 실제 execution time을 결합한다. 논문은 execution time이 CPU frequency에 단순 역비례한다는 가정을 완화하고, task별로 관측한 비선형 execution time을 학습 입력으로 사용한다.
 
 전체 task energy는 선택에 따라 다음과 같이 구성된다.
 
@@ -86,16 +86,16 @@ $$
 |---|---|
 | State | Task utilization, WCET, input size, channel gain, big/LITTLE core utilization |
 | Action | 각 task의 edge, big, LITTLE 배치와 transmit power, 두 core의 DVFS frequency |
-| Cost | Task energy \(E_i^T\)와 actual execution time을 결합하고 deadline miss에 큰 cost 부여 |
-| Reward | 작은 cost를 강조하는 \(R_k=\sum_{t_i\in T_k}e^{-\beta_r C_i}\) |
+| Cost | Task energy $$E_i^T$$와 actual execution time을 결합하고 deadline miss에 큰 cost 부여 |
+| Reward | 작은 cost를 강조하는 $$R_k=\sum_{t_i\in T_k}e^{-\beta_r C_i}$$ |
 
-Cost는 \(C_i=E_i^T+\zeta^{le}AET_i\)로 정의된다. Energy만 줄이는 정책이 task를 늦게 끝내는 것을 막기 위해 actual execution time을 함께 포함하고, deadline을 놓친 task에는 큰 cost를 준다. Exponential reward는 낮은 cost의 action을 선호하게 한다.
+Cost는 $$C_i=E_i^T+\zeta^{le}AET_i$$로 정의된다. Energy만 줄이는 정책이 task를 늦게 끝내는 것을 막기 위해 actual execution time을 함께 포함하고, deadline을 놓친 task에는 큰 cost를 준다. Exponential reward는 낮은 cost의 action을 선호하게 한다.
 
-DQN은 3-layer fully connected network, replay buffer, target network, \(\epsilon\)-greedy exploration, smooth L1 loss와 Adam optimizer를 사용한다. 논문이 제시한 계산량과 parameter count는 input size \(M\)에 대해 모두 \(O(M)\)이므로 mobile deployment를 염두에 둔 경량 구조다.
+DQN은 3-layer fully connected network, replay buffer, target network, $$\epsilon$$-greedy exploration, smooth L1 loss와 Adam optimizer를 사용한다. 논문이 제시한 계산량과 parameter count는 input size $$M$$에 대해 모두 $$O(M)$$이므로 mobile deployment를 염두에 둔 경량 구조다.
 
 ### 실험 설정
 
-실험은 big core로 Cortex-A57, LITTLE core로 Cortex-A53을 사용하고 edge server CPU를 2.8 GHz로 가정한다. 네 종류의 real-time task로 두 task set을 구성하며, Task Set II는 Task Set I의 계산 집약적 \(t_3\)를 더 가벼운 \(t_2\)로 바꾼다. 비교군은 random policy, local-only, edge-only, RRLO와 DRLDO다.
+실험은 big core로 Cortex-A57, LITTLE core로 Cortex-A53을 사용하고 edge server CPU를 2.8 GHz로 가정한다. 네 종류의 real-time task로 두 task set을 구성하며, Task Set II는 Task Set I의 계산 집약적 $$t_3$$를 더 가벼운 $$t_2$$로 바꾼다. 비교군은 random policy, local-only, edge-only, RRLO와 DRLDO다.
 
 | 평가 항목 | 주요 관찰 |
 |---|---|

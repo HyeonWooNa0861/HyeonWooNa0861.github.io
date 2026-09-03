@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
+last_modified_at: 2026-09-03 19:35:19 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
@@ -101,11 +102,11 @@ public E pop() {
 
 | 연산 | ArrayStack | LinkedStack |
 |---|---|---|
-| `push` | \(O(1)\) | \(O(1)\) |
-| `pop` | \(O(1)\) | \(O(1)\) |
-| `topValue` | \(O(1)\) | \(O(1)\) |
-| `length` | \(O(1)\) | \(O(1)\) |
-| 공간 | \(O(n)\) 배열 | \(O(n)\) + 포인터 |
+| `push` | $$O(1)$$ | $$O(1)$$ |
+| `pop` | $$O(1)$$ | $$O(1)$$ |
+| `topValue` | $$O(1)$$ | $$O(1)$$ |
+| `length` | $$O(1)$$ | $$O(1)$$ |
+| 공간 | $$O(n)$$ 배열 | $$O(n)$$ + 포인터 |
 
 ArrayStack은 배열이 가득 차면 재할당 비용이 발생할 수 있다. LinkedStack은 크기 제한이 덜하지만 노드마다 포인터 공간이 추가된다.
 
@@ -161,11 +162,11 @@ private int size;
 
 | 연산 | ArrayQueue | LinkedQueue |
 |---|---|---|
-| `enqueue` | \(O(1)\) | \(O(1)\) |
-| `dequeue` | \(O(1)\) | \(O(1)\) |
-| `frontValue` | \(O(1)\) | \(O(1)\) |
-| `length` | \(O(1)\) | \(O(1)\) |
-| 공간 | \(O(n)\) 배열 | \(O(n)\) + 포인터 |
+| `enqueue` | $$O(1)$$ | $$O(1)$$ |
+| `dequeue` | $$O(1)$$ | $$O(1)$$ |
+| `frontValue` | $$O(1)$$ | $$O(1)$$ |
+| `length` | $$O(1)$$ | $$O(1)$$ |
+| 공간 | $$O(n)$$ 배열 | $$O(n)$$ + 포인터 |
 
 ## 마지막 핵심 정리
 
@@ -184,21 +185,21 @@ private int size;
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. `push(1), push(2), pop(), push(3), pop()`의 반환 순서는?</summary>
 
 답변: `2`, `3` 순서로 반환된다. 스택은 LIFO 구조이므로 가장 나중에 들어온 값이 먼저 나온다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. `enqueue(1), enqueue(2), dequeue(), enqueue(3), dequeue()`의 반환 순서는?</summary>
 
 답변: `1`, `2` 순서로 반환된다. 큐는 FIFO 구조이므로 먼저 들어온 값이 먼저 나온다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 배열 큐에서 원형 구조를 쓰지 않으면 어떤 공간 낭비가 생기는가?</summary>
 
 답변: 앞쪽 원소를 `dequeue`한 뒤 배열 앞부분에 빈칸이 생겨도 `rear`가 계속 뒤로만 이동하면 그 빈칸을 재사용하기 어렵다. 원형 큐는 `% capacity`를 사용해 뒤쪽 끝 다음을 다시 0번 인덱스로 연결해 이 낭비를 줄인다.
@@ -226,7 +227,7 @@ private int size;
 | BFS | 가까운 노드부터 순서대로 방문한다. |
 | 네트워크 요청 | 먼저 들어온 요청부터 처리한다. |
 
-원형 큐는 배열 큐의 핵심이다. 단순 배열 큐에서 `dequeue`를 할 때마다 모든 원소를 앞으로 당기면 비용이 \(O(n)\)이 된다. 그래서 `front`와 `rear` 인덱스만 움직이고, 배열 끝에 도달하면 `% capacity`로 처음으로 돌아간다.
+원형 큐는 배열 큐의 핵심이다. 단순 배열 큐에서 `dequeue`를 할 때마다 모든 원소를 앞으로 당기면 비용이 $$O(n)$$이 된다. 그래서 `front`와 `rear` 인덱스만 움직이고, 배열 끝에 도달하면 `% capacity`로 처음으로 돌아간다.
 
 $$
 \mathrm{rear} = (\mathrm{rear}+1)\bmod \mathrm{capacity}
@@ -236,9 +237,49 @@ $$
 \mathrm{front} = (\mathrm{front}+1)\bmod \mathrm{capacity}
 $$
 
-이 식은 인덱스가 배열 범위를 벗어나지 않게 한다. 예를 들어 \(\mathrm{capacity}=5\)이고 \(\mathrm{rear}=4\)이면 다음 위치는 \((4+1)\bmod 5=0\)이다.
+이 식은 인덱스가 배열 범위를 벗어나지 않게 한다. 예를 들어 $$\mathrm{capacity}=5$$이고 $$\mathrm{rear}=4$$이면 다음 위치는 $$(4+1)\bmod 5=0$$이다.
 
 ## Implementation Checklist
+
+### 원형 큐 인덱스 식이 성립하는 이유
+
+> **분류:** $$\bmod$$ 연산의 정의에서 나오는 **구현 불변식**이다. $$C>0$$은 배열 용량, `front`는 다음 제거 위치, `rear`는 다음 삽입 위치라고 가정한다.
+>
+> **원문 추적:** Source PDF 43--46쪽의 원형 배열 구조와 `ArrayQueue` 갱신 코드를 보충 해설한다.
+
+삽입 또는 삭제 뒤 인덱스를 한 칸 전진시키되 배열 범위 $$0,\ldots,C-1$$에 남겨야 한다. $$x\bmod C$$의 나머지는 항상 이 범위에 있으므로
+
+$$
+\mathrm{rear}'=(\mathrm{rear}+1)\bmod C,
+\qquad
+\mathrm{front}'=(\mathrm{front}+1)\bmod C
+$$
+
+로 갱신하면 $$C-1$$ 다음이 0으로 돌아간다. 별도의 `size`를 유지하면
+
+$$
+0\le \mathrm{size}\le C,
+\qquad
+\mathrm{empty}\iff \mathrm{size}=0,
+\qquad
+\mathrm{full}\iff \mathrm{size}=C
+$$
+
+가 empty/full 판정 불변식이다. `size` 없이 `front == rear`만 사용하면 빈 큐와 가득 찬 큐가 같은 상태로 보인다. 이 경우 한 칸을 항상 비워 두거나 별도 flag를 둬야 한다. 그렇지 않으면 식은 인덱스 순환만 보장할 뿐 큐 상태를 올바르게 판정하지 못한다.
+
+### 상수 시간과 재할당 비용의 조건
+
+> **분류:** Source PDF 31--32쪽과 49--50쪽의 복잡도 표를 연산 수로 확인한 **작성자 보충 증명**이다. $$n$$은 저장 원소 수, $$C$$는 배열 용량으로 모두 무차원 개수다.
+
+고정 용량 ArrayStack의 `push`와 `pop`은 배열 접근, 대입, 인덱스 증감처럼 입력 크기와 무관한 일정 개수의 연산만 수행하므로 $$\Theta(1)$$이다. ArrayQueue도 `front`, `rear`, `size`만 갱신하므로 용량 안에서는 `enqueue`와 `dequeue`가 $$\Theta(1)$$이다. LinkedStack과 LinkedQueue 역시 끝 노드 참조를 이미 유지한다는 가정 아래 상수 개의 포인터만 바꾸므로 $$\Theta(1)$$이다.
+
+다만 배열이 가득 찰 때 정확히 한 칸씩 늘리면 한 번의 재할당은 $$\Theta(n)$$이고 반복 삽입도 비쌀 수 있다. 용량을 기하급수적으로 늘려 $$C,2C,4C,\ldots$$ 크기로 복사한다면 $$N$$번 삽입까지 복사한 원소 수는
+
+$$
+C+2C+4C+\cdots < 2N
+$$
+
+이므로 전체 복사 비용은 $$O(N)$$, 삽입 1회당 상환 비용은 $$O(1)$$이다. 이 상환 결론은 **기하급수적 확장 정책을 쓸 때만** 성립한다. 원문의 구현처럼 고정 배열에서 overflow를 예외로 처리하면 재할당 자체가 연산 계약에 포함되지 않는다.
 
 | 구조 | 확인할 상태 |
 |---|---|
@@ -248,6 +289,21 @@ $$
 | LinkedQueue | 마지막 원소 삭제 시 `rear = null` 처리 |
 
 스택과 큐 문제는 연산 순서를 직접 써 보면 대부분 풀린다. 반환값을 묻는 문제에서는 삽입된 순서와 삭제되는 순서를 표로 적는 습관이 좋다.
+
+## 원문 수식 감사와 페이지 매핑
+
+Source PDF 51쪽 전체를 렌더링해 시각적으로 확인했다.
+
+| PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
+|---|---|---|
+| 1--11 | 공지, list 정의와 ADT | 공지에는 성적 비율 예시만 있으며 자료구조 증명 대상 수식은 없다. |
+| 12--14 | array/list 연산의 $$O(1)$$·$$O(n)$$ 비교 | 리스트 복습 범위이며, 접근·이동 노드 수에 따른 조건부 복잡도다. |
+| 15--30 | stack 정의·코드 | 수학식보다 LIFO 불변식과 `top` 상태 전이가 핵심이며 1--4절에 대응한다. |
+| 31--32 | stack 시간·공간 복잡도 | 상수 연산 수와 재할당 조건을 위에서 증명했다. |
+| 33--45 | queue 정의와 원형 배열 그림 | FIFO와 wrap-around 구조를 5--6절에 대응했다. |
+| 46 | $$(x+1)\bmod C$$ 형태의 index 갱신 코드 | 나머지 범위와 empty/full 불변식으로 유도했다. |
+| 47--50 | linked queue와 시간·공간 복잡도 | 끝 참조 유지 시 상수 포인터 갱신임을 위에서 설명했다. |
+| 51 | 다음 강의 예고 | 수식이나 증명 대상이 없다. |
 
 ## PDF
 

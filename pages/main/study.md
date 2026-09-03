@@ -15,8 +15,8 @@ permalink: /study/
         {% assign course_notes = site.study | where: "course", child.title %}
         {% assign course_sample = course_notes | first %}
         <li class="post-card">
-          <a class="branch-card-link" data-label="{{ child.title | escape }}" href="{{ child.url | relative_url }}">{{ child.title }}</a>
-          <p>{{ child.description }} · {{ course_notes | size }} notes</p>
+          <a class="branch-card-link" data-label="{{ child.title | escape }}" href="{{ child.url | relative_url | escape }}">{{ child.title | escape }}</a>
+          <p>{{ child.description | escape }} · {{ course_notes | size | escape }} notes</p>
           {% include content-taxonomy.html item=course_sample mode="compact" %}
         </li>
       {% endfor %}

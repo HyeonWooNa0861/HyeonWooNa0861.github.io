@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C++ Enumerations"
 course: "C++"
 topic: "Enums and enum class"
@@ -17,6 +18,16 @@ keywords:
 # C++ Enumerations
 
 Source PDF: `열거형 (Enum).pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
+|---:|---|---|---|
+| 1–5 | enum의 정의, 기본값, scope, `enum class` | 1–5절 | 문법·타입 규칙 중심 |
+| 6 | 상태 머신과 bit flag | 6–7절 | **핵심 관계**: `1u << k`와 $$2^k$$를 아래에서 유도 |
+| 7 | 비교 요약 | 마지막 핵심 정리 | 새로운 수식 없음 |
+
+7쪽 전체를 페이지 이미지로 대조했다. 수학적으로 설명할 핵심 관계는 6쪽 bit flag의 자리값뿐이며, 열거자의 기본값 증가와 `static_cast`는 언어가 정한 규칙이므로 별도의 수학 증명을 만들지 않았다.
 
 > **핵심:** **enum** 관련 상수에 이름을 붙인다. **매직 넘버** 의미 없는 숫자 사용은 가독성을 떨어뜨린다.
 
@@ -130,9 +141,9 @@ Color c = Color::GREEN;
 ```cpp
 enum class Permission : unsigned int {
     NONE = 0,
-    READ = 1 << 0,
-    WRITE = 1 << 1,
-    EXECUTE = 1 << 2
+    READ = 1u << 0,
+    WRITE = 1u << 1,
+    EXECUTE = 1u << 2
 };
 ```
 
@@ -170,9 +181,9 @@ TrafficLight next(TrafficLight current) {
 ```cpp
 enum class Permission : unsigned int {
     NONE = 0,
-    READ = 1 << 0,
-    WRITE = 1 << 1,
-    EXECUTE = 1 << 2
+    READ = 1u << 0,
+    WRITE = 1u << 1,
+    EXECUTE = 1u << 2
 };
 ```
 
@@ -183,6 +194,20 @@ READ    = 001
 WRITE   = 010
 EXECUTE = 100
 ```
+
+### `1u << k`가 $$2^k$$인 이유
+
+> **작성자 보충:** 아래 관계는 부호 없는 기반 타입에서 $$0\le k<W$$라는 명시된 정의역 안에 있을 때 성립하는 정확한 등식이다.
+
+원문 6쪽에서 부호 없는 정수 `1u`의 이진 표현은 최하위 bit 하나만 1이다. 이를 왼쪽으로 $$k$$칸 이동하면 그 1의 자리값이 $$2^0$$에서 $$2^k$$로 바뀌므로
+
+$$
+1\texttt{u}\ll k=1\times2^k=2^k
+$$
+
+이다. 따라서 서로 다른 $$k$$를 쓰면 겹치지 않는 단일-bit mask가 된다. $$k$$는 무차원 bit index다.
+
+기반 타입의 값 bit 수를 $$W$$라 두고 코드에서 `std::numeric_limits<unsigned int>::digits`로 얻으면, 이 식의 정의역은 $$0\le k<W$$다. 음수 shift나 $$k\ge W$$인 shift는 정의되지 않는다. 또한 `1 << k`의 `1`은 signed `int`이므로 상위 bit 이동에서 표현 범위 문제가 생길 수 있다. 기반 타입이 `unsigned int`인 이 예제에서는 `1u << k`처럼 부호 없는 값을 사용하고, 더 넓은 기반 타입이면 `std::uint64_t{1} << k`처럼 왼쪽 피연산자의 폭도 맞춰야 한다.
 
 단, `enum class`는 타입 안전성을 위해 비트 연산자가 자동으로 제공되지 않으므로, 필요하면 `operator|`, `operator&` 등을 직접 정의한다.
 
@@ -210,21 +235,21 @@ EXECUTE = 100
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. C 스타일 `enum`보다 `enum class`가 더 안전한 이유는 무엇인가?</summary>
 
 답변: `enum class`는 열거자 이름이 enum 내부 스코프에 묶이고, 정수로 암묵 변환되지 않는다. 그래서 이름 충돌과 실수로 정수처럼 사용하는 문제를 줄일 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 열거형의 기반 타입을 직접 지정하는 이유는 무엇인가?</summary>
 
 답변: 저장 크기나 비트 표현을 명확히 하기 위해서다. 예를 들어 권한 플래그처럼 비트 단위 조합이 필요한 경우 `enum class Permission : unsigned int`처럼 기반 타입을 지정하면 의도가 더 분명해진다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. `enum class`로 비트 플래그를 만들 때 `operator|` 같은 연산자를 직접 정의해야 하는 이유는 무엇인가?</summary>
 
 답변: `enum class`는 타입 안전성을 위해 정수로 자동 변환되지 않기 때문이다. 따라서 `READ | WRITE` 같은 비트 조합을 자연스럽게 쓰려면 해당 enum 타입에 맞는 비트 연산자 오버로딩을 직접 제공해야 한다.

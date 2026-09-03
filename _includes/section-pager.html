@@ -68,9 +68,9 @@
   <nav class="section-pager" aria-label="Sibling navigation">
     <div class="section-pager-grid">
       {% if pager_prev %}
-        <a class="section-pager-card previous" href="{{ pager_prev.url | relative_url }}">
+        <a class="section-pager-card previous" href="{{ pager_prev.url | relative_url | escape }}">
           <span class="section-pager-label">Previous</span>
-          <strong>{{ pager_prev.title }}</strong>
+          <strong>{{ pager_prev.title | escape }}</strong>
         </a>
       {% else %}
         <span class="section-pager-card previous disabled" aria-hidden="true">
@@ -80,15 +80,15 @@
       {% endif %}
 
       {% if pager_parent_url %}
-        <a class="section-pager-parent" href="{{ pager_parent_url | relative_url }}">Back to {{ pager_parent_title }}</a>
+        <a class="section-pager-parent" href="{{ pager_parent_url | relative_url | escape }}">Back to {{ pager_parent_title | escape }}</a>
       {% else %}
         <span class="section-pager-parent disabled" aria-hidden="true"></span>
       {% endif %}
 
       {% if pager_next %}
-        <a class="section-pager-card next" href="{{ pager_next.url | relative_url }}">
+        <a class="section-pager-card next" href="{{ pager_next.url | relative_url | escape }}">
           <span class="section-pager-label">Next</span>
-          <strong>{{ pager_next.title }}</strong>
+          <strong>{{ pager_next.title | escape }}</strong>
         </a>
       {% else %}
         <span class="section-pager-card next disabled" aria-hidden="true">

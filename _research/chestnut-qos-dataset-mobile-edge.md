@@ -60,7 +60,7 @@ CHESTNUT의 문제의식은 MEC 연구가 QoS-aware service selection, edge serv
 
 데이터셋 구성에는 두 Shanghai real-world trace가 들어간다. Shanghai Johnson Taxi trace는 user mobility를 만들기 위해 사용되며, longitude, latitude, speed, direction, timestamp 같은 이동 record를 제공한다. Shanghai Telecom trace는 edge server 배치와 coverage를 구성하는 데 사용되며, 6개월 동안 3,233개 base stations를 통해 9,481대 mobile phones가 접속한 720만 건 이상의 기록을 포함한다. 논문은 이 중 한 달치와 base station geographic information을 사용한다.
 
-QoS record는 user, server, service, timestamp를 잇는 invocation 단위로 구성된다. User request count는 additive-white-noise Gaussian process로 생성해 group-level temporal similarity를 유지하고, server load는 computation, storage, bandwidth resource별 recursive load model로 업데이트한다. Service demand와 server supply는 computation, storage, bandwidth 축으로 나뉘며, server coverage radius \(R_e\), user speed \(v_u^t\), direction \(\theta_u^t\), request count \(q_u^t\) 같은 변수가 함께 쓰인다.
+QoS record는 user, server, service, timestamp를 잇는 invocation 단위로 구성된다. User request count는 additive-white-noise Gaussian process로 생성해 group-level temporal similarity를 유지하고, server load는 computation, storage, bandwidth resource별 recursive load model로 업데이트한다. Service demand와 server supply는 computation, storage, bandwidth 축으로 나뉘며, server coverage radius $$R_e$$, user speed $$v_u^t$$, direction $$\theta_u^t$$, request count $$q_u^t$$ 같은 변수가 함께 쓰인다.
 
 Response time은 request propagation, uplink transmission, queueing, processing, downlink transmission, response propagation의 여섯 stage를 합친 값으로 생성된다. Queueing delay는 computation, storage, bandwidth waiting stage를 M/M/1 queue로 모델링한다. Network jitter는 absolute delay가 아니라 delay fluctuation이므로, bandwidth load trend, user-server distance ratio, direction change, bandwidth demand ratio, speed 등을 결합해 합성한다.
 

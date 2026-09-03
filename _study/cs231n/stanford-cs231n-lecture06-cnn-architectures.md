@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
+last_modified_at: 2026-09-03 19:49:35 +0900
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
@@ -17,8 +18,9 @@ keywords:
 # Stanford CS231N Lecture 6: CNN Architectures
 
 Source: [Stanford CS231N Spring 2025 Lecture 6](https://www.youtube.com/watch?v=aVJy4O5TOk8){:target="_blank" rel="noopener"}
+Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.edu/slides/2025/lecture_6.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** CNN architecture의 발전은 단순한 층 증가가 아니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 \(3\times3\) filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습된다.
+> **핵심:** CNN architecture의 발전은 단순한 층 증가가 아니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 $$3\times3$$ filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습된다.
 
 ## 전체 흐름
 
@@ -48,7 +50,7 @@ Leaky ReLU는 음수 구간에 작은 기울기를 두고, GELU 같은 부드러
 
 모든 weight를 0으로 초기화하면 같은 층의 unit이 같은 gradient를 받아 계속 동일하게 움직이는 symmetry 문제가 생긴다. 작은 random weight로 symmetry를 깨되, 너무 작거나 크면 깊이에 따라 activation과 gradient가 소실·폭주한다.
 
-ReLU 계열에서 널리 쓰는 He initialization은 fan-in이 \(n\)일 때 대략
+ReLU 계열에서 널리 쓰는 He initialization은 fan-in이 $$n$$일 때 대략
 
 $$
 W_{ij}\sim\mathcal{N}\left(0,\frac{2}{n}\right)
@@ -66,7 +68,7 @@ $$
 
 VGG는 architecture를 거의 전부 `3x3 convolution, stride 1, padding 1` 블록과 주기적인 max pooling으로 구성한다. Convolution 동안 spatial 크기를 유지하고 pooling 뒤에는 해상도를 낮추며 channel 수를 늘린다. 마지막에는 강의에서 설명한 4,096차원 fully connected layer들과 1,000-class 출력이 이어진다.
 
-VGG를 이해하는 핵심은 큰 kernel 하나와 작은 kernel stack의 비교다. Stride 1인 \(3\times3\) convolution 세 층은 \(3\to5\to7\)로 receptive field가 커져 \(7\times7\) 영역을 본다. 입출력 channel이 모두 \(C\)라고 단순화하면 파라미터 수는 다음처럼 비교할 수 있다.
+VGG를 이해하는 핵심은 큰 kernel 하나와 작은 kernel stack의 비교다. Stride 1인 $$3\times3$$ convolution 세 층은 $$3\to5\to7$$로 receptive field가 커져 $$7\times7$$ 영역을 본다. 입출력 channel이 모두 $$C$$라고 단순화하면 파라미터 수는 다음처럼 비교할 수 있다.
 
 $$
 3\cdot(3^2C^2)=27C^2
@@ -78,27 +80,27 @@ $$
 
 ## 6. GoogLeNet/Inception: multi-scale branch
 
-VGG가 한 종류의 작은 filter를 순차적으로 쌓았다면, Inception module은 같은 입력에 \(1\times1\), \(3\times3\), 더 큰 receptive-field branch와 pooling branch를 병렬 적용하고 channel 축으로 결과를 합친다. 한 scale을 미리 고정하지 않고 국소 패턴과 더 넓은 문맥을 한 stage에서 함께 추출하려는 설계다.
+VGG가 한 종류의 작은 filter를 순차적으로 쌓았다면, Inception module은 같은 입력에 $$1\times1$$, $$3\times3$$, 더 큰 receptive-field branch와 pooling branch를 병렬 적용하고 channel 축으로 결과를 합친다. 한 scale을 미리 고정하지 않고 국소 패턴과 더 넓은 문맥을 한 stage에서 함께 추출하려는 설계다.
 
-큰 kernel을 입력 channel 전체에 바로 적용하면 비용이 급증한다. 그래서 \(1\times1\) convolution을 projection/bottleneck으로 두어 channel 수를 먼저 줄인 뒤 비싼 branch를 계산한다. \(1\times1\) convolution은 spatial 위치를 바꾸지 않으면서 channel을 혼합하므로, 표현을 재조합하고 연산량을 제어하는 역할을 동시에 한다.
+큰 kernel을 입력 channel 전체에 바로 적용하면 비용이 급증한다. 그래서 $$1\times1$$ convolution을 projection/bottleneck으로 두어 channel 수를 먼저 줄인 뒤 비싼 branch를 계산한다. $$1\times1$$ convolution은 spatial 위치를 바꾸지 않으면서 channel을 혼합하므로, 표현을 재조합하고 연산량을 제어하는 역할을 동시에 한다.
 
 GoogLeNet/Inception이 남긴 핵심은 **layer를 단순히 더 깊게 만드는 것 외에도 module 내부의 폭, branch, bottleneck을 함께 설계할 수 있다**는 점이다. VGG의 규칙적 순차 stack과 비교하면 구조는 복잡하지만 multi-scale feature와 계산 효율을 함께 겨냥한다.
 
 ## 7. Residual connections
 
-깊은 plain network는 표현력이 더 커도 optimization이 어려워 성능이 나빠질 수 있다. Residual block은 원하는 mapping \(H(x)\) 대신 잔차 \(F(x)=H(x)-x\)를 학습한다.
+깊은 plain network는 표현력이 더 커도 optimization이 어려워 성능이 나빠질 수 있다. Residual block은 원하는 mapping $$H(x)$$ 대신 잔차 $$F(x)=H(x)-x$$를 학습한다.
 
 $$
 y=F(x;W)+x
 $$
 
-잔차 branch가 불필요하면 \(F(x)\approx0\)으로 만들어 identity에 가까워질 수 있다. 역전파에서도 addition을 통해 gradient가 identity path로 직접 전달된다. Spatial/channel shape이 다르면 projection shortcut으로 차원을 맞춘다.
+잔차 branch가 불필요하면 $$F(x)\approx0$$으로 만들어 identity에 가까워질 수 있다. 역전파에서도 addition을 통해 gradient가 identity path로 직접 전달된다. Spatial/channel shape이 다르면 projection shortcut으로 차원을 맞춘다.
 
 이 아이디어는 단순히 정보를 건너뛰는 것이 아니라 깊은 모델을 **기존 표현에 대한 점진적 수정**으로 재매개변수화한다.
 
 ## 8. Normalization
 
-Normalization layer는 먼저 선택한 축에서 평균과 분산을 구해 정규화한 뒤 learnable scale \(\gamma\)와 shift \(\beta\)를 적용한다.
+Normalization layer는 먼저 선택한 축에서 평균과 분산을 구해 정규화한 뒤 learnable scale $$\gamma$$와 shift $$\beta$$를 적용한다.
 
 $$
 \hat{x}=\frac{x-\mu_B}{\sqrt{\sigma_B^2+\epsilon}},
@@ -140,12 +142,69 @@ Fine-tuning에서는 새 head를 더 큰 학습률로, pretrained backbone을 �
 
 작은 데이터 subset을 거의 완벽히 overfit할 수 있는지 먼저 확인하면 구현 오류를 찾기 쉽다. 이후 learning rate를 logarithmic scale로 탐색하고, train/validation curve로 underfitting과 overfitting을 구분한다. 여러 hyperparameter를 동시에 크게 바꾸기보다 coarse-to-fine search로 범위를 좁힌다.
 
+## 핵심 수식 유도
+
+### 작성자 보충: He initialization의 scale
+
+한 neuron의 pre-activation을 $$z=\sum_{i=1}^{n}W_ix_i$$, fan-in을 $$n$$이라 하자. 입력과 weight가 서로 독립이고 0 평균이며 각 항이 같은 분산을 갖는다는 mean-field 가정 아래
+
+$$
+\operatorname{Var}(z)
+=n\operatorname{Var}(W_i)\operatorname{Var}(x_i).
+$$
+
+$$z$$의 분포가 0을 중심으로 대칭이면 ReLU는 양수 절반만 남겨
+
+$$
+\mathbb E[\operatorname{ReLU}(z)^2]
+=\frac{1}{2}\mathbb E[z^2]
+$$
+
+가 된다. 층을 지난 activation의 second moment scale을 유지하려면 $$n\operatorname{Var}(W_i)/2=1$$로 두어
+
+$$
+\boxed{\operatorname{Var}(W_i)=\frac{2}{\mathrm{fan\text{-}in}}}
+$$
+
+을 얻는다. 이는 ReLU와 독립·대칭 분포를 전제로 한 **초기화 휴리스틱**이지 학습 중 분산 보존 정리가 아니다. 정확히 절반이 되는 것은 second moment이며 ReLU 출력의 평균은 0이 아니므로 centered variance와 혼동하면 안 된다. Weight와 activation이 무차원이면 분산도 무차원이고 fan-in은 무차원 개수다. 입력 상관, 비대칭 분포, 다른 activation, residual 합성이 강하면 이 근사가 어긋난다.
+
+### 작성자 보충: BatchNorm의 정규화와 affine 복원
+
+한 channel의 mini-batch 값 $$x_1,\ldots,x_m$$에 대해 BatchNorm training mode는
+
+$$
+\mu_B=\frac{1}{m}\sum_{i=1}^{m}x_i,
+\qquad
+\sigma_B^2=\frac{1}{m}\sum_{i=1}^{m}(x_i-\mu_B)^2
+$$
+
+를 계산하고
+
+$$
+\widehat x_i=\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\epsilon}},
+\qquad
+y_i=\gamma\widehat x_i+\beta,
+\qquad \epsilon>0
+$$
+
+로 변환한다. 이는 선택한 batch와 divisor $$m$$에 대한 **정확한 layer 정의**다. 같은 batch에서 $$\widehat x$$의 평균은 0이지만 분산은 $$\sigma_B^2/(\sigma_B^2+\epsilon)$$이므로 $$\epsilon>0$$일 때 정확히 1은 아니다. 이상적인 population normalization이라는 해석은 batch 통계가 모집단 통계를 잘 근사할 때만 성립한다. $$\mu_B,\beta,y$$는 $$x$$와 같은 단위, $$\sigma_B^2$$와 $$\epsilon$$은 그 제곱 단위이며, $$\widehat x$$는 무차원이고 $$\gamma$$는 출력 단위를 정한다. 작은 batch나 상관된 sample에서는 통계가 noisy하고, inference에서는 training 중 누적한 running statistics를 쓰므로 train/eval mode 불일치가 실패 원인이 된다.
+
+### 작성자 보충: residual gradient path
+
+Residual block $$y=x+F(x)$$은 **architecture 정의**이고 chain rule로
+
+$$
+\frac{\partial L}{\partial x}=\frac{\partial L}{\partial y}\left(I+J_F(x)\right)
+$$
+
+가 된다. $$J_F$$가 작아도 identity 경로가 gradient를 직접 전달하므로 plain deep stack보다 optimization이 쉬워진다. 이는 vanishing gradient가 절대 생기지 않는다는 증명이 아니라 경로 하나가 보존된다는 설명이다. $$x$$와 $$F(x)$$는 shape와 단위가 같아야 하며, downsampling 때는 projection shortcut이 필요하다.
+
 ## 마지막 핵심 정리
 
 - AlexNet은 GPU로 대규모 CNN을 ImageNet에 성공적으로 학습한 역사적 전환점이다.
-- VGG의 연속된 \(3\times3\) convolution은 큰 receptive field를 더 적은 파라미터와 더 많은 비선형성으로 만든다.
-- GoogLeNet/Inception은 multi-scale branch를 병렬 결합하고 \(1\times1\) bottleneck으로 계산량을 제어한다.
-- Residual connection은 \(y=F(x)+x\)로 표현과 gradient의 identity path를 만든다.
+- VGG의 연속된 $$3\times3$$ convolution은 큰 receptive field를 더 적은 파라미터와 더 많은 비선형성으로 만든다.
+- GoogLeNet/Inception은 multi-scale branch를 병렬 결합하고 $$1\times1$$ bottleneck으로 계산량을 제어한다.
+- Residual connection은 $$y=F(x)+x$$로 표현과 gradient의 identity path를 만든다.
 - 올바른 초기화는 activation과 gradient 분산을 깊이에 걸쳐 유지한다.
 - Batch normalization은 train/eval 통계가 다르며, 작은 batch에서는 주의가 필요하다.
 - Regularization과 augmentation은 task의 불변성을 반영해야 한다.
@@ -154,39 +213,53 @@ Fine-tuning에서는 새 head를 더 큰 학습률로, pretrained backbone을 �
 ## Study Guide
 
 1. AlexNet, VGG, Inception, ResNet을 `더 크게`, `더 규칙적으로`, `더 넓고 효율적으로`, `더 쉽게 최적화하도록`이라는 설계 목표로 비교한다.
-2. VGG의 세 \(3\times3\) layer와 한 \(7\times7\) layer의 receptive field, 파라미터 수, activation 횟수를 계산한다.
-3. Inception의 병렬 branch와 \(1\times1\) bottleneck이 각각 표현과 계산량에 미치는 영향을 설명한다.
+2. VGG의 세 $$3\times3$$ layer와 한 $$7\times7$$ layer의 receptive field, 파라미터 수, activation 횟수를 계산한다.
+3. Inception의 병렬 branch와 $$1\times1$$ bottleneck이 각각 표현과 계산량에 미치는 영향을 설명한다.
 4. plain block과 residual block에서 gradient path를 비교한다.
 5. BatchNorm의 train mode와 eval mode 차이를 점검한다.
 6. 학습 시작 전 small-subset overfit, learning-rate sweep, curve diagnosis 순서를 익힌다.
 
 ## 복습 질문
 
-<details><summary>1. 모든 weight를 0으로 초기화하면 왜 학습이 실패하는가?</summary>
+<details markdown="block"><summary>1. 모든 weight를 0으로 초기화하면 왜 학습이 실패하는가?</summary>
 
 답변: 같은 층의 모든 unit이 같은 출력과 gradient를 받아 서로 다른 feature를 학습하지 못하는 symmetry가 유지되기 때문이다.
 </details>
 
-<details><summary>2. VGG가 큰 kernel 하나보다 여러 개의 3x3 convolution을 사용한 이유는?</summary>
+<details markdown="block"><summary>2. VGG가 큰 kernel 하나보다 여러 개의 3x3 convolution을 사용한 이유는?</summary>
 
 답변: 같은 크기의 effective receptive field를 더 적은 파라미터로 만들고, 층 사이의 activation을 추가해 더 복잡한 비선형 함수를 표현할 수 있기 때문이다.
 </details>
 
-<details><summary>3. Inception module에서 1x1 convolution은 어떤 역할을 하는가?</summary>
+<details markdown="block"><summary>3. Inception module에서 1x1 convolution은 어떤 역할을 하는가?</summary>
 
 답변: 각 공간 위치에서 channel 정보를 혼합하고, 큰 kernel branch 앞에서 channel 차원을 줄여 파라미터와 연산량을 제한하는 bottleneck 역할을 한다.
 </details>
 
-<details><summary>4. residual connection은 역전파에 어떤 경로를 추가하는가?</summary>
+<details markdown="block"><summary>4. residual connection은 역전파에 어떤 경로를 추가하는가?</summary>
 
 답변: 잔차 branch의 미분과 별개로 addition의 identity 경로를 통해 upstream gradient가 입력으로 직접 전달된다.
 </details>
 
-<details><summary>5. BatchNorm 모델을 추론할 때 train mode로 두면 왜 문제가 되는가?</summary>
+<details markdown="block"><summary>5. BatchNorm 모델을 추론할 때 train mode로 두면 왜 문제가 되는가?</summary>
 
 답변: 현재 추론 batch의 불안정한 통계를 사용하고 running statistics도 바뀔 수 있어, 입력 구성에 따라 출력이 달라지기 때문이다.
 </details>
 
+## 원문 대조 기록
+
+공식 PDF **97쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
+
+| 원문 위치 | 확인한 내용 | 노트 대응 |
+|---|---|---|
+| PDF 8–19쪽 · 영상 00:04:59 | LayerNorm과 dropout | 8–9절 |
+| PDF 23–57쪽 · 영상 00:27:28 | activation, VGG receptive field, ResNet | 2절, 5–7절 |
+| PDF 58–77쪽 · 영상 00:43:14 | initialization, preprocessing, augmentation | 3절, 9절 |
+| PDF 78–95쪽 · 영상 01:10:52 | transfer learning과 training diagnosis | 10–11절 |
+
+공식 강의의 normalization 중심 예시는 **LayerNorm**이다. 본문의 BatchNorm·InstanceNorm·GroupNorm 비교와 BatchNorm 수식 유도는 혼동을 막기 위해 강의 범위를 넓힌 **작성자 보충**이며, He scale과 residual gradient 역시 보충 유도다.
+
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 6](https://www.youtube.com/watch?v=aVJy4O5TOk8){:target="_blank" rel="noopener"}
+- [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.edu/slides/2025/lecture_6.pdf){:target="_blank" rel="noopener"}

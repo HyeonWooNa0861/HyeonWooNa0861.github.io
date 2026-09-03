@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-21 12:29:52 +0900
+last_modified_at: 2026-09-03 19:42:25 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
@@ -37,17 +38,30 @@ Source PDF: `machine-learning-basic-lecture-15.pdf`
 
 15강은 앞에서 배운 데이터, 모델, 최적화, 확률분포를 하나로 묶는다. 핵심은 “모델을 학습한다”는 말을 수학적으로 어떻게 표현하는지다. 결정론적 모델에서는 empirical risk minimization이 중심이고, 확률적 모델에서는 likelihood와 posterior가 중심이다.
 
+### 원문 수식 추적표
+
+| PDF 페이지 | 중요 모델·목적식 | 본문 대응 |
+|---:|---|---|
+| 2–5 | 데이터의 배열·벡터화와 표준화 | 1–4 |
+| 6–10 | 결정론적 함수, 확률분포 모델, learning의 단계 | 5–8 |
+| 11–14 | empirical risk $$N^{-1}\sum_n\ell(f_\theta(x_n),y_n)$$와 선형회귀 예시 | 9, 10, 18.1 |
+| 15–17 | true risk, regularization, cross validation | 11–13, 18.1 |
+| 18–20 | Gaussian likelihood와 MLE의 squared-error objective | 14, 15, 18.2 |
+| 21–22 | MAP와 Gaussian prior–L2 연결 | 16, 17, 18.3 |
+
+페이지 23은 Q&A 마무리이다. $$\hat R_N\approx R$$은 유한 표본 근사이며, MLE/MAP의 negative-log 변환은 해당 density가 양수인 영역에서 정확한 동치로 18절에서 구분한다.
+
 ## 1. 데이터와 머신러닝
 
 현대 머신러닝과 인공지능 모델이 작동할 수 있게 된 근본적인 이유 중 하나는 많은 데이터다. 강의에서는 데이터를 컴퓨터가 읽을 수 있는 수치적 형태, 특히 table 형태의 데이터로 가정한다.
 
-원본 데이터는 보통 그대로 모델에 들어가지 않는다. 전문가 지식이나 전처리 알고리즘을 통해 feature로 변환되고, 각 sample은 \(D\)차원의 feature vector가 된다.
+원본 데이터는 보통 그대로 모델에 들어가지 않는다. 전문가 지식이나 전처리 알고리즘을 통해 feature로 변환되고, 각 sample은 $$D$$차원의 feature vector가 된다.
 
 $$
 x_n\in\mathbb{R}^{D}
 $$
 
-\(N\)개의 데이터가 있으면 전체 dataset은 feature matrix로 볼 수 있다.
+$$N$$개의 데이터가 있으면 전체 dataset은 feature matrix로 볼 수 있다.
 
 $$
 X\in\mathbb{R}^{N\times D}
@@ -57,10 +71,10 @@ $$
 
 | 기호 | 의미 |
 |---|---|
-| \(N\) | 데이터 sample 수 |
-| \(D\) | feature 차원 |
-| \(x_n\) | \(n\)번째 sample의 feature vector |
-| \(X\) | 전체 feature matrix |
+| $$N$$ | 데이터 sample 수 |
+| $$D$$ | feature 차원 |
+| $$x_n$$ | $$n$$번째 sample의 feature vector |
+| $$X$$ | 전체 feature matrix |
 
 ## 2. 데이터의 벡터화
 
@@ -118,11 +132,11 @@ $$
 =\{(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N)\}
 $$
 
-우리가 모델을 통해 알고 싶은 것은 관측하지 않은 새로운 \(x\)에 대한 \(y\)다. 즉, training data 안의 sample을 외우는 것이 아니라 unseen data에 대해 좋은 예측을 하는 것이 목표다.
+우리가 모델을 통해 알고 싶은 것은 관측하지 않은 새로운 $$x$$에 대한 $$y$$다. 즉, training data 안의 sample을 외우는 것이 아니라 unseen data에 대해 좋은 예측을 하는 것이 목표다.
 
 ## 6. 결정론적 함수로서의 모델
 
-결정론적 모델은 입력 \(x\)에 대해 하나의 예측값을 출력한다.
+결정론적 모델은 입력 $$x$$에 대해 하나의 예측값을 출력한다.
 
 $$
 \hat{y}=f_\theta(x)
@@ -134,7 +148,7 @@ $$
 f_\theta(x)=\theta^T x+\theta_0
 $$
 
-여기서 \(\theta\)는 feature별 가중치이고, \(\theta_0\)는 bias 또는 intercept다. 이 관점에서 학습은 training data를 잘 설명하는 함수 \(f_\theta\)를 찾는 과정이다.
+여기서 $$\theta$$는 feature별 가중치이고, $$\theta_0$$는 bias 또는 intercept다. 이 관점에서 학습은 training data를 잘 설명하는 함수 $$f_\theta$$를 찾는 과정이다.
 
 ## 7. 확률분포로서의 모델
 
@@ -154,7 +168,7 @@ $$
 \epsilon\sim\mathcal{N}(0,\sigma^2)
 $$
 
-그러면 \(y\)는 다음 분포를 따른다.
+그러면 $$y$$는 다음 분포를 따른다.
 
 $$
 p(y\mid x,\theta)
@@ -241,7 +255,7 @@ $$
 \frac{1}{N}\lVert y-\tilde{X}\theta\rVert^2
 $$
 
-여기서 \(\tilde{X}\)는 bias 항을 포함하도록 feature matrix에 1로 된 열을 추가한 행렬로 볼 수 있다. 따라서 선형 회귀의 최소제곱법은 ERM의 대표적인 예다.
+여기서 $$\tilde{X}$$는 bias 항을 포함하도록 feature matrix에 1로 된 열을 추가한 행렬로 볼 수 있다. 따라서 선형 회귀의 최소제곱법은 ERM의 대표적인 예다.
 
 ## 11. 우리가 진짜 원하는 것: Generalization
 
@@ -252,7 +266,7 @@ R_{\mathrm{true}}(f)
 =\mathbb{E}_{x,y}\left[\ell(y,f(x))\right]
 $$
 
-하지만 실제로는 전체 data-generating distribution을 모르기 때문에 \(R_{\mathrm{true}}\)를 직접 계산할 수 없다. 그래서 training data로 \(R_{\mathrm{emp}}\)를 최소화하되, validation data로 unseen data 성능을 추정한다.
+하지만 실제로는 전체 data-generating distribution을 모르기 때문에 $$R_{\mathrm{true}}$$를 직접 계산할 수 없다. 그래서 training data로 $$R_{\mathrm{emp}}$$를 최소화하되, validation data로 unseen data 성능을 추정한다.
 
 | 상황 | 해석 |
 |---|---|
@@ -292,10 +306,10 @@ $$
 
 | regularization | penalty | 효과 |
 |---|---|---|
-| L2 | \(\lVert\theta\rVert_2^2\) | 큰 parameter를 부드럽게 억제 |
-| L1 | \(\lVert\theta\rVert_1\) | 일부 parameter를 0으로 만들어 sparse solution 유도 |
+| L2 | $$\lVert\theta\rVert_2^2$$ | 큰 parameter를 부드럽게 억제 |
+| L1 | $$\lVert\theta\rVert_1$$ | 일부 parameter를 0으로 만들어 sparse solution 유도 |
 
-\(\lambda\)는 regularization strength다. 너무 작으면 overfitting을 충분히 막지 못하고, 너무 크면 underfitting이 생길 수 있다.
+$$\lambda$$는 regularization strength다. 너무 작으면 overfitting을 충분히 막지 못하고, 너무 크면 underfitting이 생길 수 있다.
 
 ## 13. Cross Validation
 
@@ -303,11 +317,11 @@ Validation set 하나만 사용하면 데이터 분할에 따라 성능 추정�
 
 K-fold cross validation은 다음 절차로 진행된다.
 
-1. 데이터를 \(K\)개 fold로 나눈다.
-2. \(K-1\)개 fold로 학습한다.
+1. 데이터를 $$K$$개 fold로 나눈다.
+2. $$K-1$$개 fold로 학습한다.
 3. 남은 1개 fold로 validation score를 계산한다.
-4. validation fold를 바꿔가며 \(K\)번 반복한다.
-5. \(K\)개의 validation score 평균을 model selection에 사용한다.
+4. validation fold를 바꿔가며 $$K$$번 반복한다.
+5. $$K$$개의 validation score 평균을 model selection에 사용한다.
 
 데이터가 많지 않을 때 cross validation은 hyperparameter tuning과 model selection을 더 안정적으로 해준다. 다만 학습을 여러 번 해야 하므로 계산 비용은 증가한다.
 
@@ -400,7 +414,7 @@ $$
 \log\frac{1}{\sqrt{2\pi\sigma^2}}
 $$
 
-두 번째 항은 \(\theta\)와 무관한 constant다. 따라서 Gaussian observation error에서 MLE는 squared error를 최소화하는 것과 같은 parameter를 선택한다.
+두 번째 항은 $$\theta$$와 무관한 constant다. 따라서 Gaussian observation error에서 MLE는 squared error를 최소화하는 것과 같은 parameter를 선택한다.
 
 $$
 \theta_{\mathrm{MLE}}
@@ -422,7 +436,7 @@ p(\theta\mid x)
 \frac{p(x\mid\theta)p(\theta)}{p(x)}
 $$
 
-\(p(x)\)는 \(\theta\)에 대해 constant이므로 MAP 추정에서는 다음을 최대화하면 된다.
+$$p(x)$$는 $$\theta$$에 대해 constant이므로 MAP 추정에서는 다음을 최대화하면 된다.
 
 $$
 p(\theta\mid x)
@@ -460,7 +474,7 @@ $$
 -\log p(\theta)
 $$
 
-이 식에서 \(-\log p(\theta)\)가 regularization penalty처럼 작동한다.
+이 식에서 $$-\log p(\theta)$$가 regularization penalty처럼 작동한다.
 
 ## 17. Gaussian Prior와 L2 Regularization
 
@@ -500,6 +514,48 @@ $$
 
 즉, Gaussian prior는 L2 regularization과 대응된다. prior가 parameter를 0 근처에 두고 싶어하는 믿음이라면, L2 penalty는 parameter가 지나치게 커지는 것을 막는 최적화 항이다. 같은 현상을 확률 관점과 최적화 관점에서 다르게 보는 셈이다.
 
+## 18. 학습 목적식의 유도와 구분
+
+### 18.1 Empirical risk와 true risk
+
+데이터 분포를 $$p(x,y)$$, loss를 $$\ell$$이라 하면
+
+$$
+R(\theta)=\mathbb{E}_{(x,y)\sim p}[\ell(f_\theta(x),y)]
+$$
+
+는 population 또는 true risk의 **정의**이고,
+
+$$
+\hat R_N(\theta)=\frac1N\sum_{n=1}^N\ell(f_\theta(x_n),y_n)
+$$
+
+는 empirical risk의 **정의**다. $$\hat R_N\approx R$$은 유한 표본에서의 **근사**이지 항등식이 아니다. i.i.d., 유한 기대값, 충분한 표본과 train/test distribution 일치가 해석의 핵심 조건이다. dependence, selection bias, distribution shift가 크면 training 평균은 실제 위험을 대표하지 못한다.
+
+### 18.2 Gaussian likelihood에서 squared error
+
+$$y_n=f_\theta(x_n)+\epsilon_n$$, $$\epsilon_n\overset{\mathrm{iid}}\sim\mathcal{N}(0,\sigma^2)$$라 두면
+
+$$
+-\log p(\mathcal D\mid\theta)
+=\frac{1}{2\sigma^2}\sum_{n=1}^N(y_n-f_\theta(x_n))^2
++\frac N2\log(2\pi\sigma^2).
+$$
+
+$$\sigma^2$$를 고정하면 마지막 항은 $$\theta$$와 무관하므로 MLE는 squared error 최소화와 **동치**다. noise가 Laplace면 L1 loss가 나오고, heteroscedastic하면 sample별 가중치가 달라지므로 squared error는 보편적 진리가 아니라 noise model의 결과다.
+
+### 18.3 Gaussian prior에서 L2 penalty
+
+$$p(\theta)=\mathcal N(0,\tau^2I)$$이면
+
+$$
+-\log p(\theta)=\frac{1}{2\tau^2}\lVert\theta\rVert_2^2+\text{const}.
+$$
+
+따라서 MAP의 negative log objective는 NLL과 L2 penalty의 합이다. $$\lambda=\sigma^2/\tau^2$$처럼 scale convention에 따라 계수가 달라질 수 있으므로, “Gaussian prior와 L2가 연결된다”는 형태는 정확하지만 특정 $$\lambda$$ 값은 objective 정규화 방식에 의존한다.
+
+확률과 평균 loss는 보통 무차원으로 정규화한다. $$y$$가 물리 단위 $$u$$를 가지면 squared error는 $$u^2$$, Gaussian NLL의 제곱항은 $$\sigma^2$$로 나뉘어 무차원이 된다. $$N$$은 표본 수인 무차원 정수다.
+
 ## 마지막 핵심 정리
 
 ### 시험 포인트
@@ -517,7 +573,7 @@ $$
 | MLE는 무엇을 최대화하는가? | 관측 데이터 likelihood |
 | Gaussian error에서 MLE는 어떤 loss와 연결되는가? | squared error |
 | MAP와 regularization의 연결은? | prior의 negative log가 regularization penalty처럼 작동 |
-| Gaussian prior와 L2 regularization의 관계는? | zero-mean Gaussian prior의 negative log가 \(\lVert\theta\rVert^2\)에 비례 |
+| Gaussian prior와 L2 regularization의 관계는? | zero-mean Gaussian prior의 negative log가 $$\lVert\theta\rVert^2$$에 비례 |
 
 ## Study Guide
 
@@ -525,49 +581,49 @@ $$
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Training error가 낮은데 validation error가 높다면 어떤 문제가 의심되는가?</summary>
 
 답변: overfitting이 의심된다. 모델이 training data에는 잘 맞지만 unseen data를 대표하는 validation data에는 일반화하지 못하는 상황이다. regularization, early stopping, 데이터 보강, 모델 복잡도 조절을 고려할 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. ERM에서 i.i.d. 가정이 왜 중요한가?</summary>
 
 답변: training data가 같은 분포에서 독립적으로 뽑혔다고 볼 수 있어야 empirical risk가 true risk의 근사로 의미를 가진다. 데이터가 편향되어 있거나 sample들이 강하게 의존적이면 training 평균 loss가 실제 unseen data 성능을 잘 대표하지 못한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. Squared error를 쓰는 선형 회귀가 ERM의 예가 되는 이유를 설명하라.</summary>
 
-답변: 선형 회귀는 \(f(x,\theta)=\theta^Tx+\theta_0\) 같은 함수로 예측하고, squared error로 예측값과 실제값의 차이를 측정한다. training data 전체에 대한 평균 squared error를 최소화하는 parameter를 찾으므로 ERM의 한 예다.
+답변: 선형 회귀는 $$f(x,\theta)=\theta^Tx+\theta_0$$ 같은 함수로 예측하고, squared error로 예측값과 실제값의 차이를 측정한다. training data 전체에 대한 평균 squared error를 최소화하는 parameter를 찾으므로 ERM의 한 예다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. MLE에서 likelihood 곱 대신 log-likelihood 합을 쓰는 이유는 무엇인가?</summary>
 
 답변: i.i.d. sample의 likelihood는 확률들의 곱으로 표현된다. 곱은 수치적으로 매우 작아져 underflow가 생기기 쉽고 미분도 불편하다. log를 취하면 곱이 합으로 바뀌어 계산과 최적화가 쉬워지며, log는 단조 증가 함수라 최댓값 위치가 유지된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. Gaussian observation error에서 squared error가 나오는 이유는 무엇인가?</summary>
 
-답변: \(p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)\)로 두면 negative log-likelihood 안에 \((y_n-x_n^T\theta)^2/(2\sigma^2)\)가 생긴다. \(\theta\)와 무관한 constant를 제외하면 squared error 합을 최소화하는 문제가 된다.
+답변: $$p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)$$로 두면 negative log-likelihood 안에 $$(y_n-x_n^T\theta)^2/(2\sigma^2)$$가 생긴다. $$\theta$$와 무관한 constant를 제외하면 squared error 합을 최소화하는 문제가 된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. Gaussian prior와 L2 regularization이 어떻게 연결되는지 설명하라.</summary>
 
-답변: parameter에 zero-mean Gaussian prior를 두면 \(-\log p(\theta)\)가 \(\lVert\theta\rVert^2\)에 비례한다. MAP objective는 NLL에 \(-\log p(\theta)\)를 더한 형태이므로, 결과적으로 \(\lambda\lVert\theta\rVert^2\) 같은 L2 penalty가 생긴다.
+답변: parameter에 zero-mean Gaussian prior를 두면 $$-\log p(\theta)$$가 $$\lVert\theta\rVert^2$$에 비례한다. MAP objective는 NLL에 $$-\log p(\theta)$$를 더한 형태이므로, 결과적으로 $$\lambda\lVert\theta\rVert^2$$ 같은 L2 penalty가 생긴다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>7. Cross validation은 validation set 하나만 쓰는 것과 비교해 어떤 장점이 있는가?</summary>
 
 답변: validation set 하나만 쓰면 특정 split에 따라 성능 평가가 흔들릴 수 있다. Cross validation은 validation fold를 바꿔가며 여러 번 평가하므로 model selection과 hyperparameter tuning에서 더 안정적인 성능 추정치를 얻을 수 있다. 대신 여러 번 학습해야 하므로 계산 비용은 증가한다.

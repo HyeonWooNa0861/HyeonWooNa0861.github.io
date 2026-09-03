@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C++ Standard Streams"
 course: "C++"
 topic: "Input and Output Streams"
@@ -17,6 +18,17 @@ keywords:
 # C++ Standard Streams
 
 Source PDF: `C++ 표준 스트림 (updated).pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 |
+|---:|---|---|
+| 1–6 | 표준 stream, C/C++ I/O, formatting, error stream | 1–5절 |
+| 7–12 | 입력, `getline`, redirection, 비교·요약 | 6–10절 |
+| 13–18 | buffer 종류, 대상별 buffering, flush | 11–13절 |
+| 19–24 | 입력 잔류, `FILE*`, file descriptor, redirection | 8·14–16절·마지막 정리 |
+
+24쪽 전체를 페이지 이미지로 대조했다. fd 0/1/2는 운영체제의 식별 번호이고 `setw(n)`·`setprecision(n)`의 $$n$$은 API parameter다. 자료에는 throughput 공식이나 buffer-size 모델 같은 정량식이 없으므로 수학 증명은 추가하지 않고, buffering과 descriptor 연결의 작동 조건을 설명했다.
 
 > **핵심:** **`stdin`** 표준 입력, fd 0. **`stdout`** 정상 출력, fd 1.
 
@@ -298,21 +310,21 @@ OS 커널의 실제 입출력 대상
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. `stdin`, `stdout`, `stderr`의 파일 디스크립터 번호는 각각 무엇인가?</summary>
 
 답변: `stdin`은 0, `stdout`은 1, `stderr`는 2다. `stdin`은 입력, `stdout`은 정상 출력, `stderr`는 오류나 진단 메시지 출력에 사용된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. `std::endl`과 `"\n"`은 어떤 차이가 있는가?</summary>
 
 답변: 둘 다 줄바꿈을 만들 수 있지만, `std::endl`은 줄바꿈 후 flush까지 수행한다. 단순 줄바꿈만 필요하면 `"\n"`이 더 가볍고, 출력 버퍼를 즉시 비워야 할 때 `std::endl`이나 `std::flush`를 사용한다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 리다이렉션과 파이프는 표준 스트림 관점에서 무엇을 바꾸는가?</summary>
 
 답변: 쉘이 프로그램의 표준 스트림 연결 대상을 바꾼다. 리다이렉션은 `stdout`이나 `stdin`을 파일로 연결하고, 파이프는 한 프로그램의 `stdout`을 다른 프로그램의 `stdin`으로 연결한다.

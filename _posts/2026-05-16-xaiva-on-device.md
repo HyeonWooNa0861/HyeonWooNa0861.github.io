@@ -78,9 +78,9 @@ AI EXPO 2026에서 XAIVA ON-DEVICE를 살펴보며, 앞으로의 AI 활용 능�
   <section>
     <h2>참고 자료</h2>
     <ul>
-      <li><a href="https://www.aiexpo.co.kr/home/">AI EXPO KOREA 2026 공식 홈페이지</a></li>
-      <li><a href="https://www.aiexpo.co.kr/home/v1.php">AI EXPO KOREA 2026 참관 안내</a></li>
-      <li><a href="https://www.xiilab.com/product/xaivaondevice">씨이랩 - XAIVA ON-DEVICE 제품 소개</a></li>
+      <li><a href="https://www.aiexpo.co.kr/home/" target="_blank" rel="noopener">AI EXPO KOREA 2026 공식 홈페이지</a></li>
+      <li><a href="https://www.aiexpo.co.kr/home/v1.php" target="_blank" rel="noopener">AI EXPO KOREA 2026 참관 안내</a></li>
+      <li><a href="https://www.xiilab.com/product/xaivaondevice" target="_blank" rel="noopener">씨이랩 - XAIVA ON-DEVICE 제품 소개</a></li>
       <li><a href="{{ "/assets/pdfs/post/industry-lectures/XAIVA-ON-DEVICE.pdf" | relative_url }}" target="_blank" rel="noopener">XAIVA-ON-DEVICE 제품 소개서(PDF)</a></li>
     </ul>
   </section>

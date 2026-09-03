@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
+last_modified_at: 2026-09-03 19:35:52 +0900
 title: "C++ References"
 course: "C++"
 topic: "References and Value Passing"
@@ -17,6 +18,17 @@ keywords:
 # C++ References
 
 Source PDF: `참조 (Reference).pdf`
+
+## 원문 페이지 대조와 수식 판정
+
+| 페이지 | 원문 주제 | 본문 대응 |
+|---:|---|---|
+| 1–3 | reference 정의와 초기화 규칙 | 1–2절 |
+| 4–6 | pointer 비교와 함수 인자 전달 | 3–4절 |
+| 7–8 | `const` reference와 reference 반환 | 5–6절 |
+| 9–10 | 선택 기준과 요약 | 7절·마지막 정리 |
+
+10쪽 전체를 페이지 이미지로 대조했다. `&`, `*`, `nullptr`는 이 문맥에서 수학 연산자가 아니라 C++ declarator·operator이고, 핵심은 aliasing과 lifetime 규칙이다. 따라서 별도의 수학 유도는 필요하지 않으며 각 코드의 유효·무효 조건을 본문에서 설명했다.
 
 > **핵심:** **참조** 기존 변수의 별명. **초기화** 선언과 동시에 해야 한다.
 
@@ -199,21 +211,21 @@ int& danger() {
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. 참조(reference)는 포인터와 달리 어떤 특징을 가지는가?</summary>
 
 답변: 참조는 기존 변수의 별명이며 반드시 선언과 동시에 초기화해야 한다. 일반 참조는 null이 될 수 없고, 한 번 어떤 대상을 참조하면 다른 대상으로 다시 바꿀 수 없다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. 큰 객체를 함수에 전달할 때 `const T&`를 자주 쓰는 이유는 무엇인가?</summary>
 
 답변: 객체 복사를 피하면서도 함수가 원본을 수정하지 못하게 보장할 수 있기 때문이다. 그래서 `std::string`, 큰 구조체, 클래스 객체를 읽기 전용으로 전달할 때 유용하다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. 지역 변수의 참조를 반환하면 안 되는 이유는 무엇인가?</summary>
 
 답변: 지역 변수는 함수가 끝나면 사라진다. 그 변수의 참조를 반환하면 이미 수명이 끝난 대상을 가리키는 dangling reference가 되어 정의되지 않은 동작을 일으킬 수 있다.

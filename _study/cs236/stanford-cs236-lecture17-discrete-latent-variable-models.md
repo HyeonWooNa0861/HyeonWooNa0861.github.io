@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
+last_modified_at: 2026-09-03 19:55:00 +0900
 title: "Stanford CS236 Lecture 17: Discrete Latent Variable Models"
 course: "CS236"
 topic: "Discrete Latent Variable Optimization"
@@ -29,15 +30,25 @@ keywords:
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Diffusion wrap-up | diffusion model은 SDE/ODE/likelihood 관점에서 어떻게 마무리되는가? |
-| 2 | Discrete latent variables | discrete \(z\)가 들어가면 왜 reparameterization trick이 바로 쓰이지 않는가? |
-| 3 | Log derivative trick | differentiable path가 없어도 \(\phi\) gradient를 어떻게 만들 수 있는가? |
+| 2 | Discrete latent variables | discrete $$z$$가 들어가면 왜 reparameterization trick이 바로 쓰이지 않는가? |
+| 3 | Log derivative trick | differentiable path가 없어도 $$\phi$$ gradient를 어떻게 만들 수 있는가? |
 | 4 | Variance reduction | unbiased estimator가 너무 noisy할 때 control variate는 무엇을 바꾸는가? |
 | 5 | NVIL | neural variational inference는 discrete latent variable ELBO를 어떻게 학습하는가? |
 | 6 | Gumbel-Softmax | discrete sample을 continuous relaxation으로 바꾸면 어떤 bias-variance tradeoff가 생기는가? |
 
+### 원본 수식 위치
+
+| 원본 PDF | 중요한 식·도식 | 본문 처리 |
+|---|---|---|
+| pp. 5--10 | Stochastic objective, reparameterization, log-derivative estimator | `핵심 내용`과 `score-function estimator`에서 조건부 항등식과 Monte Carlo 근사를 구분한다. |
+| pp. 11--13 | Discrete-latent ELBO, high variance, constant baseline | `score-function estimator와 baseline`에서 unbiasedness 조건을 유도한다. |
+| pp. 14--17 | General control variate와 optimal coefficient | `일반 control variate와 최적 계수`에서 variance identity와 유한표본 위험을 설명한다. |
+| pp. 18--19 | NVIL gradient와 learned baselines | `핵심 내용`에서 원문 algorithm과 baseline 의존성을 설명한다. |
+| pp. 20--26 | Gumbel CDF, Gumbel-Max, Gumbel-Softmax, temperature | `핵심 내용`과 `핵심 개념`에서 exact sampling identity와 biased relaxation을 구분한다. |
+
 ## 핵심 내용
 
-Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어간다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"다. Diffusion에서는 score model이 reverse SDE와 probability flow ODE를 정의했다. Discrete latent variable에서는 latent state \(z\)가 category, graph, text token, program structure처럼 불연속이기 때문에 continuous reparameterization을 그대로 적용하기 어렵다.
+Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어간다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"다. Diffusion에서는 score model이 reverse SDE와 probability flow ODE를 정의했다. Discrete latent variable에서는 latent state $$z$$가 category, graph, text token, program structure처럼 불연속이기 때문에 continuous reparameterization을 그대로 적용하기 어렵다.
 
 기본 문제는 다음 stochastic optimization이다.
 
@@ -45,9 +56,9 @@ $$
 \max_\phi \mathbb{E}_{q_\phi(z)}[f(z)]
 $$
 
-VAE에서 decoder parameter \(\theta\)는 expectation 안쪽의 \(\log p_\theta(x,z)\)를 미분하면 되므로 비교적 직접적이다. 그러나 variational distribution parameter \(\phi\)는 sample을 뽑는 분포 \(q_\phi(z)\) 자체를 바꾼다. Continuous latent variable에서는 \(\epsilon\sim p(\epsilon)\), \(z=g_\phi(\epsilon)\)처럼 fixed noise를 differentiable transformation으로 바꾸는 reparameterization trick을 쓴다. 이 방식은 \(f\)가 differentiable이고 \(q_\phi\)가 differentiably reparameterizable할 때 강력하다.
+VAE에서 decoder parameter $$\theta$$는 expectation 안쪽의 $$\log p_\theta(x,z)$$를 미분하면 되므로 비교적 직접적이다. 그러나 variational distribution parameter $$\phi$$는 sample을 뽑는 분포 $$q_\phi(z)$$ 자체를 바꾼다. Continuous latent variable에서는 $$\epsilon\sim p(\epsilon)$$, $$z=g_\phi(\epsilon)$$처럼 fixed noise를 differentiable transformation으로 바꾸는 reparameterization trick을 쓴다. 이 방식은 $$f$$가 differentiable이고 $$q_\phi$$가 differentiably reparameterizable할 때 강력하다.
 
-Discrete \(z\)에서는 이 조건이 깨진다. Category를 하나 고르는 과정, argmax, graph edge 선택은 보통 미분 가능한 path를 제공하지 않는다. 이때 가장 일반적인 도구가 log derivative trick이다.
+Discrete $$z$$에서는 이 조건이 깨진다. Category를 하나 고르는 과정, argmax, graph edge 선택은 보통 미분 가능한 path를 제공하지 않는다. 이때 가장 일반적인 도구가 log derivative trick이다.
 
 $$
 \nabla_\phi \mathbb{E}_{q_\phi(z)}[f(z)]
@@ -55,7 +66,7 @@ $$
 \mathbb{E}_{q_\phi(z)}[f(z)\nabla_\phi \log q_\phi(z)]
 $$
 
-이 식은 \(q_\phi(z)\)를 sample하고 probability를 평가할 수 있으면 discrete와 continuous 모두에 적용된다. Reinforcement learning의 policy gradient와 같은 구조다. 문제는 Monte Carlo estimator의 variance가 매우 크다는 점이다. Sample 하나가 받은 reward 또는 objective value \(f(z)\)가 그대로 gradient 크기를 흔들기 때문에 naive estimator는 실제 neural model 학습에 거의 쓰기 어렵다.
+이 식은 $$q_\phi(z)$$를 sample하고 probability를 평가할 수 있으면 discrete와 continuous 모두에 적용된다. Reinforcement learning의 policy gradient와 같은 구조다. 문제는 Monte Carlo estimator의 variance가 매우 크다는 점이다. Sample 하나가 받은 reward 또는 objective value $$f(z)$$가 그대로 gradient 크기를 흔들기 때문에 naive estimator는 실제 neural model 학습에 거의 쓰기 어렵다.
 
 Discrete latent variable VAE의 ELBO는 보통
 
@@ -66,23 +77,23 @@ $$
 [\log p_\theta(x,z)-\log q_\phi(z\mid x)]
 $$
 
-로 쓴다. 여기서는 expectation 안의 \(f\)도 \(\phi\)에 의존한다. 따라서 gradient에는 \(f(z)\nabla_\phi\log q_\phi(z\mid x)\) 항과 \(\nabla_\phi f(z)\) 항이 함께 나타난다. 첫 항이 high-variance score-function estimator이고, 두 번째 항은 entropy나 variational distribution term에서 직접 생기는 gradient다.
+로 쓴다. 여기서는 expectation 안의 $$f$$도 $$\phi$$에 의존한다. 따라서 gradient에는 $$f(z)\nabla_\phi\log q_\phi(z\mid x)$$ 항과 $$\nabla_\phi f(z)$$ 항이 함께 나타난다. 첫 항이 high-variance score-function estimator이고, 두 번째 항은 entropy나 variational distribution term에서 직접 생기는 gradient다.
 
-Control variate는 expectation은 유지하면서 variance를 줄인다. 가장 단순한 형태는 constant baseline \(B\)를 빼는 것이다.
+Control variate는 expectation은 유지하면서 variance를 줄인다. 가장 단순한 형태는 constant baseline $$B$$를 빼는 것이다.
 
 $$
 \mathbb{E}_{q_\phi(z)}[B\nabla_\phi\log q_\phi(z)]=0
 $$
 
-이므로 \(f(z)\) 대신 \(f(z)-B\)를 곱해도 estimator는 unbiased다. 더 일반적으로 expectation을 알거나 계산 가능한 \(h(z)\)를 더해 estimator를 보정할 수 있다. \(h\)가 원래 estimator와 강하게 상관되어 있으면 variance가 크게 줄어든다. 핵심은 mean은 그대로 두고 random fluctuation만 제거하는 것이다.
+이므로 $$f(z)$$ 대신 $$f(z)-B$$를 곱해도 estimator는 unbiased다. 더 일반적으로 expectation을 알거나 계산 가능한 $$h(z)$$를 더해 estimator를 보정할 수 있다. $$h$$가 원래 estimator와 강하게 상관되어 있으면 variance가 크게 줄어든다. 핵심은 mean은 그대로 두고 random fluctuation만 제거하는 것이다.
 
-NVIL은 discrete latent variable을 가진 neural model에 log derivative trick과 learned baseline을 적용한 대표적 방법이다. 입력 \(x\)마다 objective scale이 달라지므로 하나의 constant baseline만으로는 충분하지 않다. NVIL은 global baseline \(B\)와 input-dependent baseline \(h_\psi(x)\)를 함께 사용해
+NVIL은 discrete latent variable을 가진 neural model에 log derivative trick과 learned baseline을 적용한 대표적 방법이다. 입력 $$x$$마다 objective scale이 달라지므로 하나의 constant baseline만으로는 충분하지 않다. NVIL은 global baseline $$B$$와 input-dependent baseline $$h_\psi(x)$$를 함께 사용해
 
 $$
 (f-h_\psi(x)-B)\nabla_\phi\log q_\phi(z\mid x)
 $$
 
-형태의 estimator를 만든다. Baseline network는 \(f\)를 잘 예측하도록 학습되어 residual variance를 줄인다. 이 방법은 unbiased지만 여전히 tuning과 variance 관리가 중요하다.
+형태의 estimator를 만든다. Baseline network는 $$f$$를 잘 예측하도록 학습되어 residual variance를 줄인다. 이 방법은 unbiased지만 여전히 tuning과 variance 관리가 중요하다.
 
 다른 길은 discrete variable을 continuous relaxation으로 바꾸는 것이다. Gumbel-Max trick은 categorical distribution에서 exact sample을 만드는 재parameterization이다.
 
@@ -90,7 +101,7 @@ $$
 z=\operatorname{onehot}\left(\arg\max_i(g_i+\log \pi_i)\right)
 $$
 
-여기서 \(g_i\)는 independent Gumbel noise다. Randomness는 fixed Gumbel noise로 분리되지만, \(\arg\max\)가 non-differentiable이다. Gumbel-Softmax는 \(\arg\max\)를 softmax로 완화한다.
+여기서 $$g_i$$는 independent Gumbel noise다. Randomness는 fixed Gumbel noise로 분리되지만, $$\arg\max$$가 non-differentiable이다. Gumbel-Softmax는 $$\arg\max$$를 softmax로 완화한다.
 
 $$
 \hat z_i
@@ -98,15 +109,72 @@ $$
 \operatorname{softmax}_i\left(\frac{g_i+\log\pi_i}{\tau}\right)
 $$
 
-Temperature \(\tau\)가 작으면 one-hot categorical에 가까워져 bias가 줄지만 gradient variance가 커진다. \(\tau\)가 크면 distribution은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete sample과 멀어진다. Straight-through estimator는 forward pass에서는 hard discrete sample을 쓰고 backward pass에서는 soft relaxation의 gradient를 흘려보내는 practical compromise다.
+Temperature $$\tau$$가 작으면 one-hot categorical에 가까워져 bias가 줄지만 gradient variance가 커진다. $$\tau$$가 크면 distribution은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete sample과 멀어진다. Straight-through estimator는 forward pass에서는 hard discrete sample을 쓰고 backward pass에서는 soft relaxation의 gradient를 흘려보내는 practical compromise다.
+
+### 핵심 수식 유도: score-function estimator와 baseline
+
+> **Source mapping:** Official Lecture 17 PDF pp. 10--13의 log-derivative estimator와 constant-baseline identity에 대응한다.
+
+Support가 $$\phi$$에 따라 바뀌지 않고 합과 미분을 교환할 수 있으면 다음은 discrete $$z$$에도 성립하는 **정확한 항등식**이다.
+
+$$
+\begin{aligned}
+\nabla_\phi\mathbb E_{q_\phi(z)}[f(z)]
+&=\sum_z f(z)\nabla_\phi q_\phi(z)\\
+&=\sum_z f(z)q_\phi(z)\nabla_\phi\log q_\phi(z)\\
+&=\mathbb E_{q_\phi}[f(z)\nabla_\phi\log q_\phi(z)].
+\end{aligned}
+$$
+
+또한 $$\mathbb E_q[\nabla_\phi\log q]=\sum_z\nabla_\phi q(z)=\nabla_\phi1=0$$이므로 $$z$$와 무관한 baseline $$B$$를 빼도 unbiasedness가 유지된다. $$z$$, $$\phi$$, probability는 무차원이다. Monte Carlo 표본이 적으면 variance가 크며, baseline이 sampled $$z$$에 임의로 의존하면 bias가 생길 수 있다. Gumbel-Softmax와 straight-through gradient는 이 항등식과 달리 discrete objective의 **편향된 relaxation/휴리스틱**이며, $$\tau\to0$$에서 sample은 one-hot에 가까워져도 gradient 안정성이 보장되지는 않는다.
+
+### 일반 control variate와 최적 계수 (작성자 보충; 강의 슬라이드 14--17의 분산 계산)
+
+> **Source mapping:** Official Lecture 17 PDF pp. 14--15의 일반 control variate와 pp. 16--17의 optimal coefficient 및 $$1-\rho^2$$ variance factor에 대응한다.
+
+목표 expectation $$\mu=\mathbb E[F]$$를 Monte Carlo로 추정하고, expectation $$\eta=\mathbb E[H]$$를 아는 보조변수 $$H$$가 있다고 하자. 일반 scalar control-variate estimator는
+
+$$
+\widetilde F_a=F+a(H-\eta)
+$$
+
+이고 모든 상수 $$a$$에 대해 $$\mathbb E[\widetilde F_a]=\mu$$이므로 **unbiased**다. 유한한 second moment와 $$\operatorname{Var}(H)>0$$를 가정하면
+
+$$
+\operatorname{Var}(\widetilde F_a)
+=\operatorname{Var}(F)
++a^2\operatorname{Var}(H)
++2a\operatorname{Cov}(F,H).
+$$
+
+이를 $$a$$로 미분해 0으로 두면 분산을 최소화하는 **정확한 최적 계수**는
+
+$$
+a^*=-\frac{\operatorname{Cov}(F,H)}{\operatorname{Var}(H)}
+$$
+
+이고, 다시 대입하면
+
+$$
+\begin{aligned}
+\operatorname{Var}(\widetilde F_{a^*})
+&=\operatorname{Var}(F)
+-\frac{\operatorname{Cov}(F,H)^2}{\operatorname{Var}(H)}\\
+&=\left(1-\rho_{F,H}^2\right)\operatorname{Var}(F).
+\end{aligned}
+$$
+
+마지막 줄은 $$\rho_{F,H}=\operatorname{Cov}(F,H)/(\sqrt{\operatorname{Var}(F)}\sqrt{\operatorname{Var}(H)})$$를 대입한 항등식이다. 따라서 상관의 부호가 아니라 절댓값이 1에 가까울수록 감소 폭이 크고, $$\rho=0$$이면 이 최적 선형 보정도 이득이 없다. $$F$$와 $$H$$가 같은 단위를 가지면 $$a$$와 $$\rho$$는 무차원이며 variance는 그 단위의 제곱이다.
+
+실제 gradient는 vector이므로 component별 $$a_j^*$$를 쓰거나 전체 covariance trace를 최소화하는 scalar를 정할 수 있다. 위 계수를 같은 finite minibatch로 추정해 즉시 대입하면 추가 noise와 bias가 생길 수 있고, $$\eta$$를 정확히 모르는 learned baseline도 더 이상 위의 단순 unbiasedness 증명을 그대로 적용할 수 없다. Score-function baseline은 sampled $$z$$와 무관하거나 조건부로 zero-mean이어야 하며, control variate를 학습하는 비용이 절감한 variance보다 클 수도 있다.
 
 ## 핵심 개념
 
 | 개념 | 설명 |
 |---|---|
 | Discrete latent variable | category, graph, token, program structure처럼 가능한 값이 분리되어 있는 latent variable이다. |
-| Reparameterization trick | random source를 fixed noise로 분리하고 \(z=g_\phi(\epsilon)\)로 써서 pathwise gradient를 얻는 방법이다. |
-| Log derivative trick | sample path가 미분 불가능해도 \(\nabla_\phi\log q_\phi(z)\)를 사용해 expectation gradient를 추정한다. |
+| Reparameterization trick | random source를 fixed noise로 분리하고 $$z=g_\phi(\epsilon)$$로 써서 pathwise gradient를 얻는 방법이다. |
+| Log derivative trick | sample path가 미분 불가능해도 $$\nabla_\phi\log q_\phi(z)$$를 사용해 expectation gradient를 추정한다. |
 | Score-function estimator | log derivative trick으로 얻는 Monte Carlo gradient estimator다. 일반적이지만 variance가 크다. |
 | Control variate | estimator의 expectation을 바꾸지 않으면서 variance를 줄이는 보정항이다. |
 | NVIL | discrete latent variable neural model을 log derivative trick과 learned baseline으로 학습하는 variational inference 방법이다. |
@@ -115,7 +183,7 @@ Temperature \(\tau\)가 작으면 one-hot categorical에 가까워져 bias가 �
 ## 학습 포인트
 
 - Discrete latent variable의 어려움은 "sample을 뽑을 수 없다"가 아니라 "sample 선택이 parameter에 대해 differentiable path를 주지 않는다"는 점이다.
-- Log derivative trick은 매우 일반적이다. \(f\)가 black-box reward여도, \(q_\phi(z)\)의 log probability를 계산할 수 있으면 gradient estimator를 만들 수 있다.
+- Log derivative trick은 매우 일반적이다. $$f$$가 black-box reward여도, $$q_\phi(z)$$의 log probability를 계산할 수 있으면 gradient estimator를 만들 수 있다.
 - Unbiased estimator가 좋은 estimator라는 뜻은 아니다. Variance가 너무 크면 실제 optimization은 느리거나 불안정해진다.
 - Baseline은 objective 값을 예측해 gradient scale의 불필요한 흔들림을 줄인다. Baseline을 빼도 expectation이 변하지 않는 이유를 반드시 식으로 확인해야 한다.
 - Gumbel-Softmax는 exact discrete optimization이 아니라 relaxation이다. 낮은 temperature는 discrete에 가깝지만 gradient가 불안정하고, 높은 temperature는 안정적이지만 bias가 커진다.
@@ -127,54 +195,54 @@ Lecture 17의 핵심은 discrete latent variable이 generative model에서 매�
 
 ## Study Guide
 
-1. 먼저 stochastic objective \(\mathbb{E}_{q_\phi(z)}[f(z)]\)에서 \(\phi\)가 어디에 들어가는지 표시한다. Sample distribution에 들어가는 parameter와 objective 안쪽에 들어가는 parameter를 구분한다.
+1. 먼저 stochastic objective $$\mathbb{E}_{q_\phi(z)}[f(z)]$$에서 $$\phi$$가 어디에 들어가는지 표시한다. Sample distribution에 들어가는 parameter와 objective 안쪽에 들어가는 parameter를 구분한다.
 2. Reparameterization trick이 성립하는 조건을 적고, categorical variable에서 어떤 조건이 깨지는지 설명한다.
-3. Log derivative trick을 한 줄 유도해 본다. \(\nabla q_\phi(z)=q_\phi(z)\nabla\log q_\phi(z)\)가 핵심이다.
-4. Baseline을 빼도 unbiased인 이유를 \(\mathbb{E}[\nabla\log q_\phi(z)]=0\)로 확인한다.
+3. Log derivative trick을 한 줄 유도해 본다. $$\nabla q_\phi(z)=q_\phi(z)\nabla\log q_\phi(z)$$가 핵심이다.
+4. Baseline을 빼도 unbiased인 이유를 $$\mathbb{E}[\nabla\log q_\phi(z)]=0$$로 확인한다.
 5. NVIL을 읽을 때는 estimator 자체와 baseline 학습 objective를 분리한다. Baseline은 gradient mean을 바꾸기 위한 것이 아니라 variance를 줄이기 위한 auxiliary model이다.
 6. Gumbel-Max, Gumbel-Softmax, straight-through estimator를 exactness와 differentiability 기준으로 비교한다.
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Discrete latent variable에서 reparameterization trick이 어려운 이유는 무엇인가?</summary>
 
-답변: Reparameterization trick은 \(z=g_\phi(\epsilon)\)가 differentiable해야 pathwise gradient를 계산할 수 있다. Discrete category 선택은 보통 argmax나 sampling decision을 포함하고, 이 선택은 parameter에 대해 미분 가능한 연속 경로를 제공하지 않는다.
+답변: Reparameterization trick은 $$z=g_\phi(\epsilon)$$가 differentiable해야 pathwise gradient를 계산할 수 있다. Discrete category 선택은 보통 argmax나 sampling decision을 포함하고, 이 선택은 parameter에 대해 미분 가능한 연속 경로를 제공하지 않는다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. Log derivative trick은 어떤 가정에서 사용할 수 있는가?</summary>
 
-답변: \(q_\phi(z)\)에서 sample을 뽑을 수 있고 \(\log q_\phi(z)\)와 그 gradient를 계산할 수 있으면 사용할 수 있다. \(f(z)\) 자체가 differentiable일 필요는 없어서 black-box reward나 discrete action에도 적용된다.
+답변: $$q_\phi(z)$$에서 sample을 뽑을 수 있고 $$\log q_\phi(z)$$와 그 gradient를 계산할 수 있으면 사용할 수 있다. $$f(z)$$ 자체가 differentiable일 필요는 없어서 black-box reward나 discrete action에도 적용된다.
 
 </details>
 
-<details>
-<summary>3. Baseline \(B\)를 빼도 gradient estimator가 unbiased인 이유는 무엇인가?</summary>
+<details markdown="block">
+<summary markdown="span">3. Baseline $$B$$를 빼도 gradient estimator가 unbiased인 이유는 무엇인가?</summary>
 
-답변: \(\mathbb{E}_{q_\phi}[B\nabla_\phi\log q_\phi(z)]=B\nabla_\phi\sum_z q_\phi(z)=B\nabla_\phi 1=0\)이기 때문이다. 따라서 \(f(z)\) 대신 \(f(z)-B\)를 써도 expectation은 같고 variance만 줄일 수 있다.
-
-</details>
-
-<details>
-<summary>4. NVIL에서 input-dependent baseline \(h_\psi(x)\)가 필요한 이유는 무엇인가?</summary>
-
-답변: ELBO나 reward의 scale은 입력 \(x\)마다 다를 수 있다. 하나의 global baseline만 쓰면 각 input의 난이도와 objective scale을 반영하지 못한다. \(h_\psi(x)\)는 input별 expected learning signal을 예측해 residual variance를 줄인다.
+답변: $$\mathbb{E}_{q_\phi}[B\nabla_\phi\log q_\phi(z)]=B\nabla_\phi\sum_z q_\phi(z)=B\nabla_\phi 1=0$$이기 때문이다. 따라서 $$f(z)$$ 대신 $$f(z)-B$$를 써도 expectation은 같고 variance만 줄일 수 있다.
 
 </details>
 
-<details>
+<details markdown="block">
+<summary markdown="span">4. NVIL에서 input-dependent baseline $$h_\psi(x)$$가 필요한 이유는 무엇인가?</summary>
+
+답변: ELBO나 reward의 scale은 입력 $$x$$마다 다를 수 있다. 하나의 global baseline만 쓰면 각 input의 난이도와 objective scale을 반영하지 못한다. $$h_\psi(x)$$는 input별 expected learning signal을 예측해 residual variance를 줄인다.
+
+</details>
+
+<details markdown="block">
 <summary>5. Gumbel-Max와 Gumbel-Softmax의 차이는 무엇인가?</summary>
 
-답변: Gumbel-Max는 Gumbel noise와 \(\arg\max\)를 이용해 exact categorical one-hot sample을 만든다. 하지만 \(\arg\max\)가 non-differentiable이다. Gumbel-Softmax는 \(\arg\max\)를 softmax로 대체해 differentiable sample을 만들지만, categorical distribution의 continuous relaxation이므로 bias가 생긴다.
+답변: Gumbel-Max는 Gumbel noise와 $$\arg\max$$를 이용해 exact categorical one-hot sample을 만든다. 하지만 $$\arg\max$$가 non-differentiable이다. Gumbel-Softmax는 $$\arg\max$$를 softmax로 대체해 differentiable sample을 만들지만, categorical distribution의 continuous relaxation이므로 bias가 생긴다.
 
 </details>
 
-<details>
-<summary>6. Temperature \(\tau\)는 Gumbel-Softmax에서 어떤 역할을 하는가?</summary>
+<details markdown="block">
+<summary markdown="span">6. Temperature $$\tau$$는 Gumbel-Softmax에서 어떤 역할을 하는가?</summary>
 
-답변: \(\tau\)가 작을수록 sample은 one-hot categorical에 가까워진다. 이 경우 bias는 줄지만 gradient variance와 불안정성이 커진다. \(\tau\)가 클수록 sample은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete target과 멀어진다.
+답변: $$\tau$$가 작을수록 sample은 one-hot categorical에 가까워진다. 이 경우 bias는 줄지만 gradient variance와 불안정성이 커진다. $$\tau$$가 클수록 sample은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete target과 멀어진다.
 
 </details>
 

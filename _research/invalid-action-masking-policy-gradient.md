@@ -54,27 +54,27 @@ Source PDF: `invalid-action-masking-policy-gradient.pdf`
 
 ### 방법: logit masking과 gradient 해석
 
-논문은 policy network가 action logits를 출력하고 softmax를 통해 확률분포를 만든다고 가정한다. 어떤 상태 \(s\)에서 action \(a_2\)가 invalid라면, 해당 logit을 매우 큰 음수 \(M\)으로 바꾼다. 예시 값은 \(M=-1\times10^8\)이다. 그러면 softmax 이후 invalid action의 확률은 사실상 0이 되고, valid action들에만 확률질량이 재분배된다.
+논문은 policy network가 action logits를 출력하고 softmax를 통해 확률분포를 만든다고 가정한다. 어떤 상태 $$s$$에서 action $$a_2$$가 invalid라면, 해당 logit을 매우 큰 음수 $$M$$으로 바꾼다. 예시 값은 $$M=-1\times10^8$$이다. 그러면 softmax 이후 invalid action의 확률은 사실상 0이 되고, valid action들에만 확률질량이 재분배된다.
 
-중요한 점은 이 조작이 sampling만 바꾸는 것이 아니라 gradient도 바꾼다는 것이다. Masked logit은 상수 함수처럼 취급되므로, invalid action에 대응하는 logit gradient가 0이 된다. 논문의 Proposition 1은 이 masking 과정이 각 logit에 대해 identity function 또는 constant function을 적용하는 미분 가능한 함수이며, 따라서 masking된 정책 \(\pi'_\theta\)에 대한 policy gradient로 해석할 수 있음을 보인다.
+중요한 점은 이 조작이 sampling만 바꾸는 것이 아니라 gradient도 바꾼다는 것이다. Masked logit은 상수 함수처럼 취급되므로, invalid action에 대응하는 logit gradient가 0이 된다. 논문의 Proposition 1은 이 masking 과정이 각 logit에 대해 identity function 또는 constant function을 적용하는 미분 가능한 함수이며, 따라서 masking된 정책 $$\pi'_\theta$$에 대한 policy gradient로 해석할 수 있음을 보인다.
 
 저자들이 별도로 비교한 naive masking은 이 지점을 의도적으로 어긴다. Action sampling에는 mask를 적용하지만, gradient update는 원래 unmasked probability로 계산한다. 이 경우 invalid action이 sampling되지 않는 장점은 유지되지만, PPO update의 target policy와 current policy 사이 KL divergence가 커져 학습 안정성이 악화된다.
 
 ### 실험 설정: µRTS와 invalid action 비율
 
-실험 환경은 µRTS다. Observation은 \(h\times w\) map 위의 27개 binary feature plane으로 구성되고, action은 8개 discrete component를 가진 vector다. 첫 component는 Source Unit, 마지막 component는 Attack Target Unit이며, 두 component의 range가 map 크기에 따라 \(h\times w\)로 커진다.
+실험 환경은 µRTS다. Observation은 $$h\times w$$ map 위의 27개 binary feature plane으로 구성되고, action은 8개 discrete component를 가진 vector다. 첫 component는 Source Unit, 마지막 component는 Attack Target Unit이며, 두 component의 range가 map 크기에 따라 $$h\times w$$로 커진다.
 
-이 구조 때문에 map이 커질수록 invalid action 문제가 급격히 심해진다. 예를 들어 Source Unit으로 선택 가능한 유닛이 base와 worker 두 개뿐인 상황에서 Source Unit 범위는 4×4 map의 16에서 24×24 map의 576으로 증가한다. 무작위로 valid Source Unit을 고를 확률은 4×4에서는 \(2/16=0.125\), 24×24에서는 \(2/576=0.0034\)에 불과하다.
+이 구조 때문에 map이 커질수록 invalid action 문제가 급격히 심해진다. 예를 들어 Source Unit으로 선택 가능한 유닛이 base와 worker 두 개뿐인 상황에서 Source Unit 범위는 4×4 map의 16에서 24×24 map의 576으로 증가한다. 무작위로 valid Source Unit을 고를 확률은 4×4에서는 $$2/16=0.125$$, 24×24에서는 $$2/576=0.0034$$에 불과하다.
 
-비교 대상은 네 가지다. Invalid action penalty는 invalid action마다 \(r_{\mathrm{invalid}}\in\{0,-0.01,-0.1,-1\}\)을 부여한다. Invalid action masking은 Source Unit과 Attack Target Unit에 mask를 적용한다. Naive masking은 sampling에만 mask를 쓰고 gradient에는 쓰지 않는다. Masking removed는 mask로 학습한 뒤 평가 시 mask를 제거해 얼마나 행동이 유지되는지 본다.
+비교 대상은 네 가지다. Invalid action penalty는 invalid action마다 $$r_{\mathrm{invalid}}\in\{0,-0.01,-0.1,-1\}$$을 부여한다. Invalid action masking은 Source Unit과 Attack Target Unit에 mask를 적용한다. Naive masking은 sampling에만 mask를 쓰고 gradient에는 쓰지 않는다. Masking removed는 mask로 학습한 뒤 평가 시 mask를 제거해 얼마나 행동이 유지되는지 본다.
 
 ### 결과 해석
 
-결과는 masking의 scalability를 분명히 보여준다. Invalid action masking은 4×4, 10×10, 16×16, 24×24 map 모두에서 \(r_{\mathrm{episode}}=40.00\)을 달성하고, 첫 positive reward를 찾는 시간 \(t_{\mathrm{first}}\)도 전체 training time의 약 0.05%에서 0.08% 수준으로 낮다. \(t_{\mathrm{solve}}\)도 8.67%에서 18.38% 범위에 머문다.
+결과는 masking의 scalability를 분명히 보여준다. Invalid action masking은 4×4, 10×10, 16×16, 24×24 map 모두에서 $$r_{\mathrm{episode}}=40.00$$을 달성하고, 첫 positive reward를 찾는 시간 $$t_{\mathrm{first}}$$도 전체 training time의 약 0.05%에서 0.08% 수준으로 낮다. $$t_{\mathrm{solve}}$$도 8.67%에서 18.38% 범위에 머문다.
 
 Penalty 방식은 작은 4×4 map에서는 동작할 수 있지만, 10×10 이상에서는 reward가 거의 0에 머무는 경우가 많다. 논문은 10×10 map에서 penalty agent가 첫 reward를 찾는 데 training time의 몇 %를 소비하는 반면, masking agent는 모든 map에서 약 0.06% 수준으로 첫 reward를 찾는다고 해석한다. 이는 invalid action을 penalty로 "배우게" 하는 전략이 큰 action space에서는 보상 발견 자체를 지연시킨다는 뜻이다.
 
-Naive masking은 일부 map에서 높은 episode reward를 보이지만, 논문이 강조하는 문제는 안정성이다. PPO의 KL divergence가 다른 설정보다 크게 증가하고, 24×24 map에서는 \(t_{\mathrm{solve}}=49.14\%\)까지 늘어난다. Masking removed 설정은 mask가 사라져도 어느 정도 useful behavior를 유지하지만, map이 커질수록 invalid Source Unit 선택이 증가하고 episode reward도 17점대로 낮아진다.
+Naive masking은 일부 map에서 높은 episode reward를 보이지만, 논문이 강조하는 문제는 안정성이다. PPO의 KL divergence가 다른 설정보다 크게 증가하고, 24×24 map에서는 $$t_{\mathrm{solve}}=49.14\%$$까지 늘어난다. Masking removed 설정은 mask가 사라져도 어느 정도 useful behavior를 유지하지만, map이 커질수록 invalid Source Unit 선택이 증가하고 episode reward도 17점대로 낮아진다.
 
 ### 한계와 확장 방향
 

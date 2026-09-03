@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
+last_modified_at: 2026-09-03 19:58:44 +0900
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
@@ -17,6 +18,8 @@ keywords:
 # Stanford CME295 Lecture 2: Transformer-Based Models & Tricks
 
 Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=yT84Y5zCnaA){:target="_blank" rel="noopener"}
+
+> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
 > **핵심:** 두 번째 강의는 Lecture 1의 self-attention과 Transformer 구조를 복습한 뒤, 원래 Transformer에서 변형되어 온 핵심 구성요소를 다룬다. 먼저 position embedding을 설명한다.
 
@@ -56,6 +59,85 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 | Span corruption | T5의 training objective다. 입력 문장의 일부 span을 sentinel token으로 대체하고 decoder가 빠진 span들을 순서대로 복원한다. |
 | Masked Language Model (MLM) | BERT pre-training objective다. 선택된 token을 80%는 [MASK], 10%는 그대로, 10%는 random word로 처리하고 원래 token을 예측하게 한다. |
 
+## 수식 해설: position, normalization, attention cost
+
+| 수식 주제 | 공식 영상 timestamp | 출처 경계 |
+|---|---:|---|
+| Sinusoidal position과 상대 거리 | 00:16:12–00:24:45 | 주파수식과 삼각함수·내적 설명은 강의 원문이며, 아래 행렬 표기와 조건 정리는 작성자 보충이다. |
+| T5 relative bias와 ALiBi | 00:28:41–00:30:45, 00:36:35–00:36:48 | Bucketized learned bias와 deterministic linear bias는 강의 원문이며, 아래 식·부호·거리 convention은 작성자 보충이다. |
+| RoPE rotation identity | 00:37:26–00:43:20 | 상대 위치가 회전 차이로 들어간다는 설명은 강의 원문이다. 전개식은 강의가 생략한 수학 세부를 보충한다. |
+| RMSNorm | 00:47:04–00:47:44 | Root mean square 정규화와 parameter 감소는 강의 원문이며, 정확한 정의·shift 한계는 작성자 보충이다. |
+| Attention 비용과 KV 공유 | 00:50:48–00:52:35, 00:57:34–00:59:45 | $$O(n^2)$$와 MQA/GQA의 메모리 직관은 강의 원문이며, $$\Theta(nw)$$·byte 식은 작성자 보충이다. |
+
+### Sinusoidal position과 relative distance
+
+짝을 이룬 두 차원에서 $$\omega_i=10000^{-2i/d_{\mathrm{model}}}$$라 두고
+
+$$
+p_m^{(i)}=
+\begin{bmatrix}
+\sin(m\omega_i)\\
+\cos(m\omega_i)
+\end{bmatrix}
+$$
+
+로 정의한다. 두 position의 같은 frequency 쌍을 내적하면
+
+$$
+\left(p_m^{(i)}\right)^\top p_n^{(i)}
+=\sin(m\omega_i)\sin(n\omega_i)
++\cos(m\omega_i)\cos(n\omega_i)
+=\cos((m-n)\omega_i).
+$$
+
+따라서 내적은 position 차이 $$m-n$$에 의존한다. 이는 **정확한 삼각함수 항등식**이다. Index와 angle은 무차원이다. 여러 frequency를 합친 embedding이 임의 거리에서 유일하거나 extrapolation 품질을 보장한다는 뜻은 아니다.
+
+Attention logit에 relative bias를 더하는 공통 표기는
+
+$$
+\ell_{ij}=\frac{q_i^\top k_j}{\sqrt{d_k}}+b(i,j)
+$$
+
+다. 여기서는 query 위치를 $$i$$, key 위치를 $$j$$로 두고 causal attention의 과거 거리를 $$\delta=i-j\ge0$$로 정의한다. T5 방식은 $$b(i,j)=\beta_{B(j-i)}$$처럼 **signed relative displacement를 bucket 함수 $$B$$에 넣어 bucket별 $$\beta$$를 학습**한다. $$B(i-j)$$를 쓰는 구현도 가능하지만 그때는 bucket의 양·음 방향 의미도 함께 뒤집어야 한다. Bucket 경계와 bidirectional/causal bucket 분할은 구현 convention이며, 강의는 식 전체가 아니라 learned bucket bias의 아이디어를 설명한다.
+
+ALiBi의 한 causal-head convention은
+
+$$
+\ell_{ij}=\frac{q_i^\top k_j}{\sqrt{d_k}}-m_h(i-j),
+\qquad j\le i,\quad m_h>0,
+$$
+
+이고 $$j>i$$는 causal mask로 제외한다. 거리가 커질수록 음의 penalty가 커진다. 이를 $$+m_h(j-i)$$로 쓰는 것은 같은 convention이며, 거리의 방향을 정의하지 않고 부호만 옮기면 반대 효과가 나므로 둘을 섞으면 안 된다. Head별 slope $$m_h$$의 실제 schedule과 extrapolation 품질은 설계·경험적 결과이지 위 선형식만으로 증명되지 않는다.
+
+RoPE의 2차원 rotation matrix를 $$R(\theta)$$라 하면
+
+$$
+(R(m\theta)q)^\top(R(n\theta)k)
+=q^\top R(m\theta)^\top R(n\theta)k
+=q^\top R((n-m)\theta)k.
+$$
+
+여기서 $$R(a)^\top=R(-a)$$, $$R(a)R(b)=R(a+b)$$를 썼다. Score가 relative displacement에 의존한다는 것은 회전 block 안의 정확한 항등식이지만 실제 long-context 품질은 frequency schedule과 training range에 좌우된다.
+
+### RMSNorm과 비용식
+
+입력 $$x\in\mathbb{R}^{d}$$에 대한 RMSNorm은 보통
+
+$$
+\operatorname{RMSNorm}(x)_i
+=\gamma_i\frac{x_i}{\sqrt{\frac{1}{d}\sum_{j=1}^{d}x_j^2+\varepsilon}}
+$$
+
+로 정의한다. $$\gamma_i$$는 학습 scale, $$\varepsilon>0$$은 수치 안정화 상수다. LayerNorm과 달리 mean을 빼지 않으므로 shift invariance는 없다. 비슷한 성능은 경험적 관찰이지 정의에서 증명되는 결과가 아니다.
+
+Full attention은 $$n\times n$$ score matrix를 만들므로 계산·저장량이 $$\Theta(n^2)$$이다. Window 폭이 $$w$$이면 최대 $$\Theta(nw)$$로 줄지만 window 밖 직접 연결을 잃는다. Autoregressive KV cache는 layer 수 $$L$$, token 수 $$n$$, KV head 수 $$h_{kv}$$, head dimension $$d_h$$, element당 byte $$b$$일 때 대략
+
+$$
+M_{KV}=2Lnh_{kv}d_hb
+$$
+
+byte다. 2는 key와 value를 뜻한다. Batch·beam 수와 allocator overhead는 별도로 반영해야 한다.
+
 ## 학습 포인트
 
 - Position information은 Transformer에서 별도로 주입되어야 하며, learned embedding은 training set의 max position에 제한된다.
@@ -82,42 +164,42 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 
 ## 복습 질문
 
-<details>
+<details markdown="block">
 <summary>1. Learned position embedding의 한계는 무엇인가?</summary>
 
 답변: Training set에서 본 최대 position까지만 embedding을 학습할 수 있고, training data의 position bias를 embedding이 그대로 학습할 수 있다. 더 긴 sequence의 position은 직접 학습되지 않는다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>2. RoPE가 attention 계산에 위치 정보를 넣는 방식은 무엇인가?</summary>
 
 답변: Query와 key vector를 각각 자신의 position에 따른 angle로 회전한다. 그 결과 QK^T의 값이 두 position의 relative distance에 의존하게 되어 attention layer 안에서 위치 정보가 직접 반영된다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>3. RMSNorm은 LayerNorm과 무엇이 다른가?</summary>
 
 답변: LayerNorm은 activation에서 mean을 빼고 standard deviation으로 나눈 뒤 gamma와 beta를 학습한다. RMSNorm은 root mean square로 normalize하고 gamma만 학습해 더 적은 parameter로 비슷한 convergence 특성을 노린다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>4. GQA와 MQA는 왜 KV cache와 관련이 있는가?</summary>
 
 답변: Decoding 때 이전 token들의 key/value를 계속 재사용해야 하므로 KV cache가 커진다. GQA와 MQA는 key/value projection을 여러 head 사이에서 공유해 저장해야 할 key/value 수를 줄인다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>5. BERT의 CLS token은 fine-tuning에서 어떻게 사용되는가?</summary>
 
 답변: CLS token은 sequence 맨 앞에 놓이고 encoder self-attention을 거친 뒤 전체 입력의 bidirectional 정보를 담는 embedding으로 사용된다. Sentiment classification 같은 sentence-level task에서는 그 embedding 위에 classification layer를 붙인다.
 
 </details>
 
-<details>
+<details markdown="block">
 <summary>6. RoBERTa는 BERT와 비교해 어떤 pre-training 선택을 바꾸었는가?</summary>
 
 답변: 강의에 따르면 RoBERTa는 NSP objective를 제거해도 성능 저하가 거의 없다는 점을 보였고, dynamic masking과 더 크고 다양한 data strategy를 추가했다.

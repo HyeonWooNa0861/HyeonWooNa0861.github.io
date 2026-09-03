@@ -64,23 +64,23 @@ Meta-CQL은 보수적 Q-learning으로 관측이 부족한 action의 과대평�
 
 ### Stacked intelligent metasurface
 
-SIM은 여러 transmissive metasurface layer를 쌓고 각 meta-atom의 phase shift를 제어한다. Layer \(l\)의 transmission matrix를 \(\Gamma^l=\mathrm{diag}(\Phi^l)\), layer 사이 propagation matrix를 \(B^l\)라고 하면 전체 electromagnetic response는 다음과 같다.
+SIM은 여러 transmissive metasurface layer를 쌓고 각 meta-atom의 phase shift를 제어한다. Layer $$l$$의 transmission matrix를 $$\Gamma^l=\mathrm{diag}(\Phi^l)$$, layer 사이 propagation matrix를 $$B^l$$라고 하면 전체 electromagnetic response는 다음과 같다.
 
 $$
 \Omega=\Gamma^L B^L\Gamma^{L-1}B^{L-1}\cdots\Gamma^2B^2\Gamma^1.
 $$
 
-사용자 \(u\)의 received signal은 BS power allocation과 \(\Omega\)가 함께 결정한다. 따라서 optimization variable은 BS의 사용자별 transmit power \(P\)와 SIM response \(\Omega\)를 묶은 \(\Psi=\{P,\Omega\}\)다. 각 사용자의 최소 MOS, BS maximum power, SIM layer propagation과 phase range를 constraint로 둔다.
+사용자 $$u$$의 received signal은 BS power allocation과 $$\Omega$$가 함께 결정한다. 따라서 optimization variable은 BS의 사용자별 transmit power $$P$$와 SIM response $$\Omega$$를 묶은 $$\Psi=\{P,\Omega\}$$다. 각 사용자의 최소 MOS, BS maximum power, SIM layer propagation과 phase range를 constraint로 둔다.
 
 ### Optimization problem
 
-서비스 \(\ell\in\{\text{Web},\text{Video},\text{Audio}\}\)에 대해 목적은 다음 형태다.
+서비스 $$\ell\in\{\text{Web},\text{Video},\text{Audio}\}$$에 대해 목적은 다음 형태다.
 
 $$
 \max_{\Psi}\sum_{u\in U}\mathrm{MOS}_{\ell,u}
 $$
 
-각 user의 minimum MOS를 만족하고 total transmit power가 \(P^{\max}\)를 넘지 않아야 한다. MOS function과 SIM response가 nonconvex이고 변수들이 강하게 결합되어 있어 반복적 convex optimization은 많은 matrix computation과 convergence time을 요구한다. 논문은 real-time mobility를 고려해 문제를 MDP로 바꾸고 CQL agent가 resource allocation을 선택하도록 한다.
+각 user의 minimum MOS를 만족하고 total transmit power가 $$P^{\max}$$를 넘지 않아야 한다. MOS function과 SIM response가 nonconvex이고 변수들이 강하게 결합되어 있어 반복적 convex optimization은 많은 matrix computation과 convergence time을 요구한다. 논문은 real-time mobility를 고려해 문제를 MDP로 바꾸고 CQL agent가 resource allocation을 선택하도록 한다.
 
 ### MDP와 Meta-CQL
 
@@ -88,7 +88,7 @@ $$
 |---|---|
 | Agent | Wireless resource를 제어하는 edge node |
 | State | 이전 time step에서 관측된 사용자별 SINR |
-| Action | BS power와 SIM electromagnetic response를 포함한 \(\Psi\) |
+| Action | BS power와 SIM electromagnetic response를 포함한 $$\Psi$$ |
 | Objective signal | 사용자 MOS 합과 constraint penalty |
 
 CQL은 경험 데이터에서 충분히 관측되지 않은 action의 Q-value를 보수적으로 낮춰 overestimation을 줄이려는 방법이다. 논문은 여기에 meta-learning의 inner loop와 outer loop를 결합한다. Inner loop는 특정 mobility 또는 service task에 정책을 적응시키고, outer loop는 여러 task에서 빠르게 조정될 initialization을 학습한다.
@@ -109,9 +109,9 @@ BS power budget이 커지면 feasible region이 넓어져 web MOS가 증가한�
 
 ### 수식 해석 시 주의점
 
-원문 reward 설명은 constraint indicator를 `constraint가 만족되면 \(\chi_i=1\), 아니면 0`으로 정의한 뒤 MOS 합에서 \(\chi_i\)가 곱해진 항을 빼도록 적는다. 이 정의를 문자 그대로 적용하면 constraint를 더 많이 만족할수록 reward가 더 크게 감소하므로, 바로 다음 문장의 `constraint adherence` 목적과 반대가 된다.
+원문 reward 설명은 constraint indicator를 “constraint가 만족되면 $$\chi_i=1$$, 아니면 0”으로 정의한 뒤 MOS 합에서 $$\chi_i$$가 곱해진 항을 빼도록 적는다. 이 정의를 문자 그대로 적용하면 constraint를 더 많이 만족할수록 reward가 더 크게 감소하므로, 바로 다음 문장의 `constraint adherence` 목적과 반대가 된다.
 
-일반적인 penalty 설계라면 violation일 때 indicator가 1이 되거나, 만족 시 1인 indicator에는 반대 부호 구조가 필요하다. 따라서 구현 전 저자 코드 또는 정정 자료로 \(\chi_i\) 정의를 확인해야 한다. 이 글은 원문의 수식을 임의로 수정하지 않고, 재현 과정에서 확인해야 할 표기 문제로 남긴다.
+일반적인 penalty 설계라면 violation일 때 indicator가 1이 되거나, 만족 시 1인 indicator에는 반대 부호 구조가 필요하다. 따라서 구현 전 저자 코드 또는 정정 자료로 $$\chi_i$$ 정의를 확인해야 한다. 이 글은 원문의 수식을 임의로 수정하지 않고, 재현 과정에서 확인해야 할 표기 문제로 남긴다.
 
 ## 논문의 핵심 기여
 
