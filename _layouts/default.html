@@ -3251,6 +3251,12 @@
         -webkit-backdrop-filter: none;
       }
 
+      .page-content mjx-container[display="true"] {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
       .posted-page .post,
       .posted-page .section-pager {
         width: min(100%, 72ch);
@@ -3289,6 +3295,11 @@
       }
 
       @media (max-width: 980px), (hover: none), (pointer: coarse) {
+        .page-shell.has-sidebar {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 22px;
+        }
+
         .index-masthead {
           grid-template-columns: minmax(0, 1fr) minmax(260px, 0.65fr);
         }

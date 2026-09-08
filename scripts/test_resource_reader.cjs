@@ -27,6 +27,15 @@ function between(startMarker, endMarker) {
   return layout.slice(start, end);
 }
 
+// The reader's later desktop grid must not override the mobile single column.
+const readerStyles = between(
+  ".page-shell.has-sidebar {\n        grid-template-columns: 210px",
+  "@media (max-width: 760px)"
+);
+assert.match(readerStyles, /@media \(max-width: 980px\), \(hover: none\), \(pointer: coarse\)\s*\{\s*\.page-shell\.has-sidebar\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\);/s);
+// Study uses .page-content directly; a .post-only selector misses its equations.
+assert.match(readerStyles, /\.page-content mjx-container\[display="true"\]\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
+
 const initialization = between("function ensureResourceReader()", "function supportsInert()");
 assert.match(initialization, /readerPanel\.setAttribute\("aria-hidden", "true"\);/);
 assert.match(initialization, /readerPanel\.hidden = true;/);
