@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-09-10 15:50:48 +0900
+last_modified_at: 2026-09-10 16:02:00 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -1497,21 +1497,24 @@ $$
 
 ## 10. Nyquist sampling과 aliasing
 
-원 신호의 가장 높은 harmonic index가 $$K$$라면 aliasing 없이 구분하기 위한 조건은 다음처럼 정리된다.
+> **“is not satisfied”의 의미:** DTFS 계산에 실패했다는 말이 아니라, **표본만으로 원래 연속시간의 frequency를 구별할 조건이 충족되지 않았다**는 뜻이다. 강의의 7 kHz 신호를 8 kHz로 sampling한 경우에는 $$8<2\times7=14$$이므로 조건을 위반한다. 그 결과 7 kHz와 1 kHz cosine이 같은 표본을 만든다.
 
-$$
-N > 2K
-$$
+원본 PDF p.36 (footer 40)은 Nyquist 부등식을 제시하고, pp.37–38 (footers 41–42)은 **“What if the Nyquist sampling condition is not satisfied?”**라고 묻는다. p.37은 0과 $$\pm f_s$$를 중심으로 반복되는 spectrum을, p.38은 1 kHz·7 kHz cosine의 8 kHz sampling과 이미지 moire를 보여 준다. 아래의 중간 계산·경계 반례·해결 방법은 이 화면을 이해하기 위한 작성자 보강이다. p.37 그림만으로 최고 frequency의 수치를 추정하지 않고, 수치 검산에는 p.38에 명시된 값을 사용한다.
 
-Frequency 단위로 쓰면 더 익숙한 Nyquist condition이 된다.
+| Symbol | 의미 | 단위 |
+|---|---|---|
+| $$P,T,N$$ | 연속 주기, sample 간격, 한 주기의 표본 수; $$P=NT$$ | s, s, 무차원 |
+| $$K,f_{\max}=K/P$$ | 최고 nonzero harmonic index와 그 frequency | 무차원, Hz |
+| $$f_s=1/T$$ | sampling rate | Hz, samples/s |
+| $$f_s/2$$ | 주어진 sample rate의 **Nyquist frequency** | Hz |
+| $$2f_{\max}$$ | 주어진 low-pass 신호의 **Nyquist rate** | Hz |
+| $$f_a$$ | 표본과 같은 discrete basis를 갖는 대표 alias frequency | Hz |
 
-$$
-f_s > 2f_{\max}
-$$
+**Nyquist frequency와 Nyquist rate를 바꿔 읽지 않는다.** 8 kHz sampling의 Nyquist frequency는 4 kHz이고, 7 kHz 성분까지 보존하려는 신호의 Nyquist rate는 14 kHz다. 여기서는 강의처럼 경계의 sinusoid까지 구별하기 위해 strict inequality를 사용한다.
 
 ### 10.1 작성자 보충: Nyquist 부등식의 유도와 경계
 
-CTFS가 $$\lvert k\rvert\le K$$에서만 nonzero인 band-limited periodic signal이라고 하자. Sampling 뒤에는 $$k$$와 $$k+rN$$이 같은 discrete basis가 된다. 대역 안의 임의의 서로 다른 두 index $$k_1,k_2$$는
+CTFS가 $$\lvert k\rvert\le K$$에서만 nonzero인 band-limited periodic signal이라고 하자. Sampling 뒤에는 $$k$$와 $$k+rN$$이 같은 discrete basis가 된다. 대역 안의 임의의 서로 다른 두 index $$k_1,k_2$$는 $$N>2K$$일 때
 
 $$
 0<\lvert k_1-k_2\rvert\le2K<N
@@ -1526,26 +1529,142 @@ N>2K
 \quad\Longleftrightarrow\quad
 \frac{N}{P}>2\frac{K}{P}
 \quad\Longleftrightarrow\quad
-f_s>2f_{\max}.
+\boxed{f_s>2f_{\max}}.
 $$
 
-이는 엄격히 band-limited한 신호와 이상적 reconstruction을 가정한 theorem의 조건이다. 등호 $$f_s=2f_{\max}$$에서는 Nyquist-frequency sinusoid의 phase에 따라 sample이 모두 0이 되는 등 모호성이 생길 수 있어 이 글은 안전하게 strict inequality를 쓴다. 실제 speech, finite-duration signal, nonideal filter에는 무한히 날카로운 band limit가 없으므로 transition band와 guard margin이 필요하다.
+이 조건은 원래 신호가 해당 low-pass 대역에 있다는 가정 아래 harmonic들을 구별하게 한다. “어떤 frequency의 신호도 표본만으로 알아낸다”는 조건이 아니다.
 
-이 조건을 만족하면 sampling으로 복제된 spectrum이 관심 대역에서 겹치지 않는다. 실제 시스템에서는 이상적인 brick-wall filter를 만들 수 없으므로 $$2f_{\max}$$보다 충분히 높은 sample rate와 anti-aliasing filter의 transition band를 함께 고려한다.
+Nyquist 조건과 alias frequency의 주기성은 <a href="https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/c8dc8096a9d75f8f30b4b97354b48437_ch1_adc.pdf" target="_blank" rel="noopener">MIT HST.582J, Analog-to-Digital Conversion, PDF pp.3–5</a>의 대역 제한·sampling theorem 및 aliasing 설명과 대조했다.
 
-### 10.2 1 kHz와 7 kHz가 같아지는 예
+#### p.37의 spectrum 그림은 왜 겹칠 수 있는가?
 
-Sample rate가 8 kHz일 때 1 kHz cosine과 7 kHz cosine을 같은 sampling time에서 관측하면 동일한 sample sequence가 만들어질 수 있다.
+Sampling한 exponential에서는 정수 $$r,n$$에 대해
 
 $$
-7\ \mathrm{kHz} = 8\ \mathrm{kHz} - 1\ \mathrm{kHz}
+e^{j2\pi(f+rf_s)n/f_s}
+=e^{j2\pi fn/f_s}e^{j2\pi rn}
+=e^{j2\pi fn/f_s}
 $$
 
-Discrete-time frequency는 sample rate를 기준으로 periodic하기 때문에 7 kHz 성분이 1 kHz 위치로 접혀 보인다. Sample만 본 뒤에는 어느 continuous frequency가 원래 신호였는지 복원할 수 없다.
+이므로 frequency가 $$f_s$$만큼 달라도 같은 basis다. 이것이 p.37에서 spectrum의 복사본이 $$f_s$$ 간격으로 반복되는 이유다. 원래 대역의 바깥 경계가 $$[-f_{\max},f_{\max}]$$라면 오른쪽 복사본의 경계는 $$[f_s-f_{\max},f_s+f_{\max}]$$다. 두 대역 사이에 간격이 있으려면
 
-### 10.3 Spatial aliasing과 moire pattern
+$$
+f_{\max}<f_s-f_{\max}
+\quad\Longleftrightarrow\quad f_s>2f_{\max}
+$$
 
-Aliasing은 audio에만 생기지 않는다. Camera sensor가 공간의 고주파 pattern을 충분히 촘촘하게 sampling하지 못하면 moire pattern이 나타난다. 시간축 sampling과 이미지의 공간축 sampling은 같은 원리로 설명할 수 있다.
+여야 한다. $$f_s<2f_{\max}$$이면 이 대역 구간들이 겹쳐, 같은 표본 frequency에 서로 다른 연속시간 성분이 들어올 수 있다. 주기 신호의 경우 이 겹침은 Section 9.4의 $$d_k=\sum_r c_{k+rN}$$라는 **complex 계수의 합**으로 나타난다. 그림의 magnitude 높이만 더하는 과정으로 이해하면 phase 상쇄를 놓친다.
+
+대역의 경계 구간이 겹친다는 사실이 모든 sparse 신호에서 nonzero 성분이 반드시 충돌한다는 뜻은 아니다. 핵심은 **그 대역 안의 임의의 신호를 추가 정보 없이 유일하게 복원한다는 보장이 사라진다**는 것이다.
+
+#### 왜 등호에서는 주의해야 하는가?
+
+$$f_s=2f_{\max}$$라면 최고 frequency는 표본 사이에서 정확히 반 바퀴씩 진행한다. 진폭 $$A$$, phase $$\phi$$인 sinusoid를 sampling하면
+
+$$
+\begin{aligned}
+x(t)&=A\cos(2\pi(f_s/2)t+\phi),\\
+x[n]&=A\cos(\pi n+\phi)
+=A(-1)^n\cos\phi.
+\end{aligned}
+$$
+
+$$\sin(\pi n)=0$$이므로 sine 방향의 성분이 사라진다. 특히 $$\phi=\pi/2$$이면 **연속시간에서는 0이 아닌 신호인데 모든 표본이 0**이다. $$A$$와 $$\phi$$도 표본에 남은 곱 $$A\cos\phi$$만으로 각각 결정할 수 없다. CTFS 관점에서는 $$+N/2$$와 $$-N/2$$가 같은 bin이 되는 경계 충돌이다.
+
+이 반례 때문에 임의 phase의 경계 sinusoid를 포함하는 이 글의 신호 범위에서는 strict inequality를 쓴다. 다른 교재의 등호 허용 여부는 대역 경계에 성분이 없는지, 어떤 함수 공간·복원 의미를 쓰는지 등 가정과 함께 비교해야 한다.
+
+### 10.2 p.38: 1 kHz는 조건을 만족하고 7 kHz는 왜 만족하지 않는가?
+
+슬라이드 p.38 (footer 42)의 위·아래 그래프는 **서로 다른 두 analog cosine**을 각각 8 kHz로 sampling한 비교다. Section 9.7에서 작성자가 두 성분을 더한 혼합 신호와 구분한다. 시간 $$t$$의 단위는 s이며 아래 식은 그래프처럼 정규화된 unit amplitude와 zero phase를 사용한다.
+
+| Signal | 조건에 대입 | 한 주기의 평균 sample 수 | 판정 |
+|---|---|---|---|
+| 1 kHz cosine | $$8>2\times1$$, kHz 기준 | $$f_s/f=8$$ | 이 low-pass 대역에서는 만족 |
+| 7 kHz cosine | $$8<2\times7=14$$, kHz 기준 | $$f_s/f=8/7\approx1.14$$ | 만족하지 않음 |
+
+**“8 kHz가 7 kHz보다 큰데 왜 부족한가?”** 비교 대상은 $$f_{\max}$$가 아니라 $$2f_{\max}$$다. 7 kHz의 주기는 약 $$142.86\ \mu\mathrm{s}$$인데 sample 간격은 $$125\ \mu\mathrm{s}$$다. 한 주기에서 약 1.14번만 관측하므로 빠른 회전과 반대 방향의 느린 회전이 같은 위치에 잡힌다. “주기당 두 표본보다 많아야 한다”는 말의 정확한 근거는 앞 절의 basis 충돌과 아래 등식이지, 점 몇 개를 선으로 연결하는 직관만은 아니다.
+
+#### 동일한 표본이 되는 것을 식으로 증명하기
+
+$$t_n=n/8000$$에서 두 표본열은
+
+$$
+\begin{aligned}
+x_1[n]
+&=\cos(2\pi\cdot1000\,n/8000)
+=\cos(\pi n/4),\\
+x_7[n]
+&=\cos(2\pi\cdot7000\,n/8000)\\
+&=\cos(2\pi n-\pi n/4)
+=\cos(\pi n/4)
+=x_1[n].
+\end{aligned}
+$$
+
+마지막 두 등호는 정수 $$n$$에 대한 $$2\pi$$ 주기성과 cosine의 짝대칭성에서 나온 **정확한 등식**이다. Complex exponential에서는 7 kHz가 먼저 **−1 kHz**에 대응한다.
+
+$$
+e^{j2\pi(7000)n/8000}
+=e^{-j2\pi(1000)n/8000}.
+$$
+
+실수 zero-phase cosine은 양·음 frequency 쌍이므로 결과가 +1 kHz cosine과 같다. 일반 phase에서는 부호까지 따라가야 한다.
+
+$$
+\cos(2\pi\cdot7000\,n/8000+\phi)
+=\cos(2\pi\cdot1000\,n/8000-\phi).
+$$
+
+따라서 “어떤 phase의 7 kHz 신호든 같은 phase의 1 kHz 신호가 된다”라고 쓰면 틀린다. Sine 성분에서는 부호 반전도 생길 수 있다.
+
+일반적으로 정수 $$r$$을 골라
+
+$$
+f_a=f-rf_s,\qquad -f_s/2\le f_a<f_s/2
+$$
+
+에 놓으면 같은 표본 basis의 대표 frequency를 얻는다. 여기서는 $$f_a=7000-8000=-1000\ \mathrm{Hz}$$다. 실수 cosine의 양의 frequency 표시는 $$\lvert f_a\rvert=1000\ \mathrm{Hz}$$이며, 복원할 때는 phase도 함께 바꿔야 한다.
+
+#### 표본은 맞는데 원래 소리는 왜 복원할 수 없는가?
+
+처음 다섯 표본은 두 신호 모두
+
+$$
+1,\quad \frac{\sqrt2}{2},\quad 0,\quad
+-\frac{\sqrt2}{2},\quad -1
+$$
+
+이다. 반면 sample 사이인 $$t=1/16000\ \mathrm{s}$$에서는
+
+$$
+x_1(t)=\cos(\pi/8)\approx0.9239,\qquad
+x_7(t)=\cos(7\pi/8)\approx-0.9239
+$$
+
+로 서로 다르다. **표본값을 정확히 맞춘다는 사실은 표본 사이의 원래 파형까지 맞췄다는 증거가 아니다.** 관측값만 받은 알고리즘은 두 입력을 구별할 수 없다. 4 kHz 미만의 원 신호라는 low-pass 가정을 사용하면 1 kHz로 해석하지만, 실제 입력이 7 kHz였다면 그 가정이 깨진 것이다. 슬라이드 오른쪽의 연결선도 두 표본열이 같다는 시각화이지 7 kHz 원파형 복원의 증명이 아니다.
+
+### 10.3 p.38: Spatial aliasing과 moire pattern
+
+슬라이드 아래의 줄무늬·건물 사진은 같은 현상의 공간축 예다. 수평 방향으로만 변하는 밝기 pattern을 $$I(u)=I_0+B\cos(2\pi\nu u)$$라고 하자. $$u$$는 mm, $$\nu$$는 cycles/mm, $$\Delta u$$는 pixel 간격(mm/pixel)이며 $$I_0,B$$는 동일한 밝기 단위다. 공간 sampling rate를 $$\nu_s=1/\Delta u$$ (pixels/mm)라고 하면
+
+$$
+I[m]=I_0+B\cos(2\pi\nu m/\nu_s).
+$$
+
+$$\nu$$와 $$\nu+r\nu_s$$는 동일한 표본 basis를 만든다. 시간축의 $$f_s>2f_{\max}$$에 대응하는 조건은 이 1차원 방향에서 $$\nu_s>2\nu_{\max}$$다. 실제 2차원 영상은 두 축의 공간 frequency와 pixel 격자를 함께 확인해야 한다.
+
+촘촘한 원무늬가 이 조건을 벗어나면 더 느린 밝기 변화로 접혀 **원래 장면에는 없던 넓은 줄무늬, 즉 moire**처럼 보일 수 있다. 사진의 정확한 pixel 간격이나 무늬 frequency는 슬라이드에 주어지지 않았으므로 수치 위반량까지 단정하지 않는다. 이 식은 현상을 설명하는 단순화된 작성자 모델이다.
+
+### 10.4 조건을 만족시키려면 무엇을 바꿔야 하는가?
+
+보존할 신호와 관측 장치 중 무엇을 바꿀 것인지 나눠 생각한다.
+
+1. **7 kHz 성분까지 보존하려면 sampling rate를 높인다.** 이 예에서는 이상적인 조건으로 14 kHz를 넘어야 한다. 예를 들어 16 kHz이면 7 kHz가 Nyquist frequency 8 kHz 안에 들어간다. 실제 rate는 filter의 transition band와 필요한 감쇠량까지 확인해 정한다.
+2. **8 kHz를 유지한다면 ADC 전에 대역을 제한한다.** Analog anti-aliasing low-pass filter로 4 kHz 경계 이전에 transition을 확보하고, alias를 유발할 대역 밖 성분을 충분히 감쇠한다. 이 경우 보존하는 대상은 **필터를 거친 신호**이며, 7 kHz 원성분을 보존한 것이 아니다. 비이상적 필터에서는 잔여 alias 오차를 허용 수준으로 관리한다.
+3. **이미 8 kHz로 취득한 표본을 단순히 늘려도 잃은 구분은 돌아오지 않는다.** 보간·zero-padding·FFT 크기 증가·사후 digital low-pass filtering은 같은 입력 표본을 받으므로 원래 1 kHz인지 7 kHz인지 판별할 수 없다. 반면 더 높은 rate의 기존 digital signal을 낮출 때는 **downsampling 전에 digital low-pass filter**를 적용할 수 있다.
+4. **이미지도 낮은 해상도로 줄이기 전에 filter를 적용한다.** 시간축 downsampling과 같은 원리다. 촬영 단계에서 이미 발생한 moire와 후속 resize 과정에서 새로 생기는 aliasing은 구분해야 한다.
+
+이것은 amplitude 단계 수를 늘리는 **quantization**이나 유한 분석 구간의 **spectral leakage**와 다른 문제다. Aliasing은 sampling에서 frequency 구분이 사라지는 것이므로, bit depth를 늘리거나 window만 바꾸는 방법으로 해결하지 않는다.
 
 ## 11. Finite signal과 DFT
 
@@ -1630,7 +1749,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 2. intensity ratio에는 $$10\log_{10}$$, pressure ratio에는 조건부로 $$20\log_{10}$$을 쓰는 이유를 설명한다.
 3. Fourier series, Fourier transform, DTFS, DFT의 신호 범위와 frequency 축 차이를 구분한다.
 4. $$e^{j2\pi(k+N)n/N}=e^{j2\pi kn/N}$$에서 aliasing의 주기성을 유도한다.
-5. Nyquist condition, anti-aliasing filter, spectral leakage가 서로 해결하는 문제가 다름을 구분한다.
+5. 슬라이드의 7 kHz·8 kHz 예에 Nyquist 부등식을 대입하고 1 kHz와 표본이 같아지는 것을 증명한다. 경계 phase 반례와 anti-aliasing filter의 적용 시점을 설명하며 spectral leakage와 구분한다.
 6. 100·200·300 Hz harmonic의 번호·합성파·주기를 계산하고, 100 Hz 항을 없앤 경우와 200·400 Hz만 남긴 경우를 비교한다.
 7. $$3\cos\alpha+4\sin\alpha$$를 amplitude-phase form으로 바꾸고, plus/minus 부호 convention 및 실제 time delay와의 차이를 설명한다.
 8. 같은 예제를 $$c_n,c_{-n}$$로 바꿔 실수 신호를 다시 합성하고, complex coefficient의 크기와 peak amplitude의 factor 2를 설명한다.
@@ -1786,6 +1905,18 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 답변: −1과 7은 modulo 8에서 같으므로 bin 7에 들어간다. 따라서 이 경우 $$d_7=c_{-1}$$이며, 모든 raw index에서 $$d_k=c_k$$라고 읽으면 안 된다. DTFS 계수의 주기성과 원래 CTFS 계수의 index를 구분한다.
 </details>
 
+<details markdown="block">
+<summary>22. 슬라이드의 7 kHz 신호는 8 kHz로 sampling할 때 왜 Nyquist 조건을 만족하지 않는가?</summary>
+
+답변: 비교 대상은 7 kHz 자체가 아니라 그 두 배인 14 kHz다. Sampling rate 8 kHz의 Nyquist frequency는 4 kHz이므로 7 kHz는 대역 밖이다. Section 10.2의 계산처럼 모든 정수 표본 위치에서 $$x_7[n]=x_1[n]$$이므로 zero-phase 1 kHz cosine과 구별할 수 없다. 원래 7 kHz까지 보존하려면 14 kHz보다 높은 rate를 사용하고, 8 kHz를 유지하려면 ADC 전에 대역 밖 성분을 감쇠해 보존할 신호 범위 자체를 제한해야 한다.
+</details>
+
+<details markdown="block">
+<summary>23. 최고 frequency의 정확히 두 배로 sampling하거나, 나중에 표본 수를 늘리면 항상 복원할 수 있는가?</summary>
+
+답변: 아니다. 경계에서 phase가 π/2인 cosine은 $$x[n]=A\cos(\pi n+\pi/2)=0$$이 되어 0 신호와 구별되지 않는다. 이미 같은 표본으로 겹친 두 입력은 동일한 보간·FFT 처리에도 같은 결과를 내므로, 사후 표본 수 증가만으로 원신호 구분이 돌아오지 않는다. 대역 가정과 sampling 전 filter가 필요한 이유다.
+</details>
+
 ## Source Check
 
 2026-09-08 검토에서는 **원본 PDF 40쪽의 추출 텍스트와 이 포스트 전체**를 대조하고, 아래 오류 관련 수식·문구가 있는 물리적 PDF pp.8-9, 20-21, 25-28을 원본 화면으로 재확인했다. 원문을 그대로 따랐는지와 실제로 맞는지는 별개로 판단했다. 표의 page는 물리적 PDF 번호이고 괄호 안은 슬라이드 footer다.
@@ -1807,6 +1938,7 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 | Post, Section 2 | 해설의 단위 오류 | 기존 단위식에서 `/channel`을 두 번 나누는 표기를 수정했다. 한 channel의 bit rate를 구한 뒤 channel 수를 곱하는 순서로 재작성했다. |
 | Post, Sections 3.1 and 4 | 해설의 과도한 일반화 | 음압 calibration만으로 intensity 단위가 확보된다는 표기와 PCM이 원래 신호를 정확히 보존한다는 문구를 수정했다. Pressure 제곱의 단위 및 analog-to-digital 손실을 구분했다. |
 | Post, Section 10.1 | 증명 논리 보완 | 최고·최저 index만 비교하는 설명 대신 대역 안의 모든 index 쌍의 차이와 나머지 개수로 alias-free 조건을 증명했다. |
+| PDF pp.37–38 (41–42), Section 10 | 질문·예제 해설 보완 | “is not satisfied”는 조건 위반을 묻는 문구다. 화면의 1 kHz·7 kHz 및 8 kHz 값을 확인하고, 7 kHz에 대해 $$8<14$$인 조건 위반과 표본 동일성·phase 반전을 직접 계산했다. p.37 개념도의 폭과 moire 사진에는 수치가 없어 대역폭·pixel 간격을 추정하지 않았다. 원문 오류 판정이 아니라 생략된 설명의 보강이다. |
 
 Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-filter의 LTI 가정, DTFS/DFT의 정규화도 정의·재계산과 대조했다. **이 검토는 현재 Speech Lecture 2에 한정되며 다른 과목이나 모든 원문 페이지의 시각적 전수 검증 완료를 의미하지 않는다.** 원본 PDF는 수정하지 않았고, 위 내용은 강의자가 발행한 공식 정정문이 아니라 작성자의 검토·정정 기록이다.
 
