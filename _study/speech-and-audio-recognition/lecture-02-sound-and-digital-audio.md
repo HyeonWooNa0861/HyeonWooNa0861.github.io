@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-09-08 16:02:26 +0900
+last_modified_at: 2026-09-10 15:29:20 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -850,60 +850,437 @@ $$
 
 ## 8. Fourier series에서 Fourier transform으로
 
-Fourier series는 periodic signal의 frequency를 $$n\omega_0$$라는 discrete grid에서 표현한다. Period $$P$$가 커지면 fundamental spacing은 다음처럼 작아진다.
+> **핵심:** Fourier transform은 비주기 신호를 연속적인 frequency의 complex exponential로 분석하는 표현이다. 강의는 **주기 $$P$$를 늘려 주파수 간격을 줄이고, Fourier series의 합을 적분으로 바꾸는 방법**으로 정의와 역변환을 연결한다. 이때 $$c_n$$을 그대로 $$X(\omega)$$로 바꾸면 안 된다. 계수에 들어 있던 $$1/P$$가 frequency 간격과 결합하는 과정이 핵심이다.
+
+아래는 원본 PDF pp.29–31의 전개를 단계별로 풀어 쓴 해설이다. Physical page와 slide footer가 다르므로 함께 적었다. 원문에 명시된 정의·극한 방향과, 작성자가 추가한 중간 계산·수렴 검증·예제를 구분한다.
+
+| Source | 강의의 전개 | 이 글의 대응 |
+|---|---|---|
+| PDF p.29 (footer 32) | Fourier coefficient, $$P\to\infty$$, forward transform | Sections 8.1–8.3 |
+| PDF p.30 (footer 33) | $$1/P=\Delta\omega/(2\pi)$$, 합에서 적분, inverse transform | Sections 8.4–8.5 |
+| PDF p.31 (footer 35) | Hz convention의 forward/inverse pair | Section 8.6; inverse 적분 변수 오기 정정 |
+
+### 8.1 왜 주기를 늘리는가: 대상 신호와 기호
+
+Fourier series는 한 주기 이후에도 같은 waveform이 반복된다는 모델이다. 반면 하나의 짧은 소리나 유한한 관측 구간을 분석할 때는 그 반복을 실제 신호의 성질로 가정하고 싶지 않다. **원래 파형을 늘이는 것이 아니라, 복제된 파형 사이의 간격을 늘려 반복 모델의 영향을 멀리 보내는 것**이 강의 극한의 의미다. 시간 sampling을 수행하는 과정도 아니다.
+
+먼저 유도를 명확히 하기 위해 다음 충분조건을 둔다. 신호 $$x(t)$$는 유한 구간 밖에서 0이고, 유한 개의 매끄러운 조각과 jump로 이루어진 piecewise $$C^1$$ 함수라고 하자. 각 조각은 끝점까지 유한한 함수값과 미분값을 갖는다고 가정한다. Rectangular pulse도 이 범위에 포함된다. 이것은 모든 Fourier-transform 대상의 필요조건이 아니라, 이번 유도와 점별 역변환을 확인하기 쉬운 범위다.
+
+| Symbol | 의미 | 단위 |
+|---|---|---|
+| $$t,u,v$$ | 시간과 시간 적분의 보조 변수 | s |
+| $$x(t)$$, $$x_P(t)$$ | 원래 신호, 주기 $$P$$인 반복 모델 | 입력 amplitude 단위; 예: V |
+| $$T_0,P$$ | 신호가 놓인 구간 길이, 반복 모델의 주기 | s |
+| $$f,\Delta f$$ | frequency와 frequency 간격 | Hz |
+| $$\omega,\omega_0,\omega_n,\Delta\omega,\Omega$$ | angular frequency, 기본 간격, grid 값, 간격, 적분 cutoff | rad/s |
+| $$n,N$$ | harmonic index, 유한 합의 cutoff index | 무차원 정수 |
+| $$j$$ | $$j^2=-1$$인 허수 단위; 원문 $$i$$와 동일 | 무차원 |
+| $$c_n^{(P)}$$ | 주기 $$P$$ 모델의 Fourier-series coefficient | 입력과 동일; 예: V |
+| $$X_\omega(\omega),X_f(f)$$ | angular-frequency/Hz 좌표의 complex spectrum | 입력 단위 × s; 예: V·s |
+| $$\theta_X(\omega)$$ | spectrum의 phase angle | rad |
+| $$x_\Omega(t),K_\Omega(v)$$ | cutoff inverse 신호, 그 합성 kernel | 각각 입력 단위, $$\mathrm{s}^{-1}$$ |
+
+각도 rad는 SI 차원상 무차원이지만 Hz와 구분하기 위해 표시한다. 따라서 $$\omega t$$와 $$2\pi ft$$는 지수 함수에 넣을 수 있는 무차원 angle이다. 아래 첨자 $$\omega,f$$는 서로 다른 변환을 뜻하는 것이 아니라, 원문의 두 $$X$$가 어떤 좌표를 사용하는지 구분하는 보조 표기다.
+
+### 8.2 Fourier transform의 정의와 음의 지수의 의미
+
+각 frequency에서 분석하는 **forward transform의 정의**는 다음과 같다.
 
 $$
-\Delta\omega = \frac{2\pi}{P}
+X_\omega(\omega)
+=\int_{-\infty}^{\infty}x(t)e^{-j\omega t}\,dt.
 $$
 
-$$P\to\infty$$이면 frequency grid가 연속적으로 가까워지고, 합은 적분으로 이어진다. Angular-frequency convention은 다음과 같다.
-
-### 8.1 작성자 보충: Fourier series 합이 적분으로 바뀌는 과정
-
-유한 구간 $$[-P/2,P/2]$$의 신호를 주기 $$P$$로 반복했다고 생각하면 $$\omega_n=n\Delta\omega$$, $$\Delta\omega=2\pi/P$$이고 coefficient는
+Euler formula를 대입하면 무엇을 계산하는지 드러난다.
 
 $$
-c_n=\frac{1}{P}\int_{-P/2}^{P/2}x(t)e^{-j\omega_nt}\,dt
-=\frac{\Delta\omega}{2\pi}X_P(\omega_n)
+X_\omega(\omega)
+=\int_{-\infty}^{\infty}x(t)\cos(\omega t)\,dt
+-j\int_{-\infty}^{\infty}x(t)\sin(\omega t)\,dt.
 $$
 
-로 쓸 수 있다. 여기서 $$X_P(\omega)=\int_{-P/2}^{P/2}x(t)e^{-j\omega t}\,dt$$다. 이를 synthesis 식에 넣으면
+이는 cosine과 sine 방향에 얼마나 맞물리는지를 동시에 측정한 complex 값이다. **음의 부호는 분석 basis의 complex conjugate에서 나오며**, Section 7의 coefficient 추출과 같은 방향이다. 합성에서는 반대로 $$e^{+j\omega t}$$를 사용한다. 부호를 반대로 정의하는 관례도 가능하지만 forward와 inverse를 한 쌍으로 바꿔야 한다.
+
+$$X_\omega(\omega)\ne0$$인 곳에서는
 
 $$
-x_P(t)=\frac{1}{2\pi}
+X_\omega(\omega)
+=\lvert X_\omega(\omega)\rvert e^{j\theta_X(\omega)}
+$$
+
+로 magnitude와 phase를 읽을 수 있다. 값이 0이면 phase는 정해지지 않는다. Spectrum은 amplitude만 보관하지 않으며, phase를 버리면 일반적으로 원래 waveform을 유일하게 복원할 수 없다.
+
+**정의의 존재 조건과 복원 조건은 다르다.** 절대적분 가능한 $$x$$, 즉 $$\int_{-\infty}^{\infty}\lvert x(t)\rvert\,dt<\infty$$이면 위 적분은 각 $$\omega$$에서 존재한다. 그러나 이것만으로 아무 점에서나 아무 방식의 inverse 적분이 성립한다고 결론 내릴 수는 없다. 유한 에너지 $$L^2$$ 신호의 변환은 평균제곱 의미로 확장할 수 있고, 무한히 지속되는 constant나 sinusoid는 Dirac delta를 쓰는 distribution 해석이 필요하다. 따라서 원문의 “any signal”은 조건 없는 보통 적분의 존재 명제로 읽지 않는다.
+
+### 8.3 강의 p.29: Fourier coefficient에서 연속 spectrum으로
+
+원래 신호가 $$[-T_0/2,T_0/2]$$ 밖에서는 0이라고 하고, $$P>T_0$$를 택한다. $$[-P/2,P/2]$$의 신호를 반복해 $$x_P$$를 만든다. 고정된 유한 시간 구간은 $$P$$를 충분히 크게 잡으면 중심 복사본에 포함되므로, 그 구간에서는 $$x_P(t)=x(t)$$다.
+
+강의의 frequency grid와 계수는 다음과 같다.
+
+$$
+\omega_0=\Delta\omega=\frac{2\pi}{P},
+\qquad \omega_n=n\Delta\omega,
+\qquad \Delta f=\frac{1}{P}.
+$$
+
+$$
+c_n^{(P)}
+=\frac{1}{P}\int_{-P/2}^{P/2}
+x(t)e^{-j\omega_n t}\,dt.
+$$
+
+적분 구간 밖의 $$x$$가 0이므로 이 예에서는 적분을 실수축 전체로 넓혀도 값이 같다. 따라서 **유한한 $$P$$에서도 정확히**
+
+$$
+\boxed{
+c_n^{(P)}
+=\frac{1}{P}X_\omega(\omega_n)
+=\frac{\Delta\omega}{2\pi}X_\omega(\omega_n)
+}
+$$
+
+이다. 즉 $$X_\omega(\omega_n)=Pc_n^{(P)}$$이며, transform이 계수 $$c_n^{(P)}$$ 자체의 극한이라는 뜻은 아니다. 원래 신호가 유한 support를 갖지 않으면 먼저
+
+$$
+X_{\omega,P}(\omega)
+=\int_{-P/2}^{P/2}x(t)e^{-j\omega t}\,dt
+$$
+
+를 정의해 같은 관계를 얻고, $$P\to\infty$$에서 $$X_{\omega,P}\to X_\omega$$가 성립하는 조건까지 따로 확인해야 한다.
+
+**왜 scaling을 반드시 남겨야 하는가?** 반복 사이의 빈 구간이 길어질수록 한 주기의 평균적인 coefficient는 작아진다. 동시에 frequency grid는 촘촘해져 합성에 참여하는 항이 많아진다. 예를 들어 $$P=0.1\ \mathrm{s}$$이면 $$\Delta f=10\ \mathrm{Hz}$$, $$P=1\ \mathrm{s}$$이면 $$\Delta f=1\ \mathrm{Hz}$$다. 고정된 frequency 대역의 항 수는 약 10배가 되고, 같은 spectrum 값에 대응하는 각 coefficient는 1/10로 작아진다.
+
+따라서 $$X_\omega$$는 **연속 spectrum의 밀도에 해당하는 값**이지, 각 frequency에서 독립적으로 존재하는 sinusoid 한 개의 peak amplitude가 아니다. 엄밀히는 inverse 측도 $$d\omega/(2\pi)$$와 결합한다. 좁은 대역의 합성 기여는
+
+$$
+\frac{1}{2\pi}X_\omega(\omega)e^{j\omega t}\Delta\omega
+$$
+
+처럼 대역폭을 곱해 계산한다. 단위도 V·s에 $$d\omega$$의 $$\mathrm{s}^{-1}$$를 곱하면 원래 V가 되어 맞는다. 이 값은 power spectral density와도 구별한다.
+
+### 8.4 강의 p.30: 합성식에 대입하면 왜 역변환이 나오는가?
+
+Section 7의 Fourier-series 합성에 방금 구한 계수를 대입한다. 불연속점에서는 series가 양쪽 극한의 평균으로 수렴한다는 조건을 유지한다.
+
+$$
+\begin{aligned}
+x_P(t)
+&=\sum_{n=-\infty}^{\infty}
+c_n^{(P)}e^{j\omega_n t}\\
+&=\frac{1}{2\pi}
 \sum_{n=-\infty}^{\infty}
-X_P(\omega_n)e^{j\omega_nt}\,\Delta\omega.
+X_\omega(\omega_n)e^{j\omega_n t}\Delta\omega.
+\end{aligned}
 $$
 
-오른쪽은 frequency 축의 Riemann sum이다. $$P\to\infty$$에서 $$\Delta\omega\to0$$, $$X_P\to X$$가 적절한 의미로 성립하면
+두 번째 줄에서 각 항은 **함수값 × frequency 구간 폭**이다. 이것이 강의의 합에서 적분으로 넘어가는 화살표에 생략된 Riemann-sum 구조다. 유한 cutoff $$\Omega>0$$를 고정하고 $$N=\lfloor\Omega/\Delta\omega\rfloor$$로 잡으면, $$P\to\infty$$에서
 
 $$
-x(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}
-X(\omega)e^{j\omega t}\,d\omega
+\frac{1}{2\pi}\sum_{n=-N}^{N}
+X_\omega(\omega_n)e^{j\omega_n t}\Delta\omega
+\longrightarrow
+\frac{1}{2\pi}\int_{-\Omega}^{\Omega}
+X_\omega(\omega)e^{j\omega t}\,d\omega.
 $$
 
-가 된다. 이것은 “무한 주기”를 단순 대입한 대수 항등식이 아니라 **수렴 조건을 전제로 한 극한 유도**다. 예를 들어 $$x\in L^1$$이면 transform 적분은 정의되지만 inverse가 모든 점에서 곧바로 성립한다고 보장되지는 않으며, 추가 정칙성 또는 $$L^2$$ 해석이 필요할 수 있다.
+유한 frequency 구간에서는 연속인 integrand의 Riemann sum이다. 이후 $$\Omega\to\infty$$에서 신호가 복원된다는 것이 **Fourier inversion theorem**의 내용이다. 무한합과 두 극한을 조건 없이 교환해도 된다는 뜻이 아니므로, 다음 절에서 복원 부분을 별도로 확인한다.
+
+연속점에서 사용하는 angular-frequency transform pair는
 
 $$
-X(\omega)=\int_{-\infty}^{\infty}x(t)e^{-j\omega t}\,dt
-$$
-
-$$
-x(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}
-X(\omega)e^{j\omega t}\,d\omega
-$$
-
-Ordinary frequency $$f$$를 쓰는 convention은 다음과 같다.
-
-$$
-X(f)=\int_{-\infty}^{\infty}x(t)e^{-j2\pi ft}\,dt
+\boxed{
+X_\omega(\omega)=\int_{-\infty}^{\infty}
+x(t)e^{-j\omega t}\,dt
+}
 $$
 
 $$
-x(t)=\int_{-\infty}^{\infty}X(f)e^{j2\pi ft}\,df
+\boxed{
+x(t)=\frac{1}{2\pi}
+\lim_{\Omega\to\infty}\int_{-\Omega}^{\Omega}
+X_\omega(\omega)e^{j\omega t}\,d\omega
+}
 $$
 
-두 convention은 모두 맞지만 $$2\pi$$의 위치가 다르다. 계산 중 $$\omega$$와 $$f$$ 표기를 섞지 않는 것이 중요하다.
+이다. 일반적으로 적는 무한구간 inverse 식은 이 문맥에서 symmetric cutoff 극한을 뜻한다. $$X_\omega$$까지 절대적분 가능하면 통상적인 절대수렴 적분으로 읽을 수 있다. **$$1/(2\pi)$$는 임의의 보정이 아니라 $$1/P=\Delta\omega/(2\pi)$$에서 남은 정규화다.**
+
+### 8.5 작성자 보충: 역변환이 원래 신호를 복원하는 이유
+
+앞 절의 “합이 적분으로 바뀐다”만으로는 복원 증명이 끝나지 않는다. 이번 유한 support·piecewise $$C^1$$ 범위에서, cutoff inverse를 $$x_\Omega(t)$$라고 두고 forward 정의를 다시 대입하자.
+
+$$
+\begin{aligned}
+x_\Omega(t)
+&=\frac{1}{2\pi}\int_{-\Omega}^{\Omega}
+X_\omega(\omega)e^{j\omega t}\,d\omega\\
+&=\int_{-\infty}^{\infty}x(u)
+\left[\frac{1}{2\pi}\int_{-\Omega}^{\Omega}
+e^{j\omega(t-u)}\,d\omega\right]du.
+\end{aligned}
+$$
+
+유한 $$\Omega$$와 $$x\in L^1$$에서는 이중 적분의 절댓값이 적분 가능하므로 적분 순서를 바꿀 수 있다. 대괄호는 $$v=t-u\ne0$$일 때 직접 계산된다.
+
+$$
+\begin{aligned}
+K_\Omega(v)
+&=\frac{1}{2\pi}
+\left.\frac{e^{j\omega v}}{jv}\right|_{-\Omega}^{\Omega}\\
+&=\frac{e^{j\Omega v}-e^{-j\Omega v}}{2\pi jv}
+=\frac{\sin(\Omega v)}{\pi v}.
+\end{aligned}
+$$
+
+$$v=0$$에서는 연속 연장으로 $$K_\Omega(0)=\Omega/\pi$$다. 따라서 inverse는 이 sinc형 kernel로 신호를 합치는 연산이다.
+
+$$
+x_\Omega(t)
+=\int_{-\infty}^{\infty}
+x(t-v)\frac{\sin(\Omega v)}{\pi v}\,dv.
+$$
+
+Kernel은 even이므로 양·음 시간 지연을 묶으면
+
+$$
+x_\Omega(t)
+=\frac{1}{\pi}\int_0^\infty
+\bigl[x(t-v)+x(t+v)\bigr]
+\frac{\sin(\Omega v)}{v}\,dv.
+$$
+
+이제 복원되는 값이 보인다. $$v\to0^+$$에서 대괄호는 $$x(t^-)+x(t^+)$$로 간다. 앞의 piecewise-smooth 가정 아래에서는 작은 $$v$$ 구간에서 이 상수와의 차이가 $$O(v)$$이므로 $$v$$로 나눈 나머지도 적분 가능하다. 원점에서 떨어진 부분 역시 적분 가능한 진동항이 되어 frequency가 커질수록 기여가 0으로 간다. 이 단계는 Riemann–Lebesgue lemma 또는 조각별 적분에 대한 표준 진동적분 논증을 사용한다.
+
+남는 상수 항에는 Dirichlet integral
+
+$$
+\int_0^\infty\frac{\sin z}{z}\,dz=\frac{\pi}{2}
+$$
+
+가 적용된다. 이 적분도 절대수렴이 아니라 improper 적분이다. 결론은
+
+$$
+\boxed{
+\lim_{\Omega\to\infty}x_\Omega(t)
+=\frac{x(t^-)+x(t^+)}{2}
+}
+$$
+
+이다. **연속점에서는 $$x(t)$$를, jump에서는 양쪽 극한의 평균을 복원한다.** 적분은 한 점의 값만 바꾸어도 변하지 않으므로, jump에 임의로 지정한 그 한 점의 값까지 알아낼 수는 없다.
+
+이 절은 kernel 계산과 복원 논리를 연결한 증명 개요이며, 사용한 진동적분 정리 자체를 모두 증명한 것은 아니다. 또한 sinc kernel을 보통 함수처럼 점별로 Dirac delta와 같다고 두거나, 수렴 조건 없이 무한 이중 적분의 순서를 바꾸는 증명은 사용하지 않는다.
+
+Cutoff에서 sinc형 kernel을 얻는 직접 계산은 <a href="https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/d95e4644254e96ffe92a970c5ed65b0e_MIT18_103F13_fourierint1.pdf" target="_blank" rel="noopener">MIT 18.103: Fourier Integrals, p.5</a>에서도 확인할 수 있다. 해당 자료의 pp.4–6은 더 넓은 적분 가능 함수 범위에서 Fejér 가중치를 쓰는 별도의 복원 증명으로 이어진다. 이를 이번 piecewise-smooth 신호의 가중치 없는 cutoff 증명과 같은 방식이라고 혼동하지 않는다.
+
+주기 확장의 극한 전개와 piecewise-smooth 함수의 jump 복원 조건은 <a href="https://people.tamu.edu/~f-narcowich/m414/s04w/m414w_ln14.html" target="_blank" rel="noopener">Texas A&amp;M Math 414, Lecture 14</a>와 대조했다. 그 자료는 양방향에 $$1/\sqrt{2\pi}$$를 두는 unitary convention을 사용하므로, 이 글의 forward 정의로 정규화를 환산해 비교해야 한다.
+
+### 8.6 강의 p.31: Hz convention과 적분 변수 정정
+
+Hz로 적은 forward 정의는
+
+$$
+X_f(f)=\int_{-\infty}^{\infty}
+x(t)e^{-j2\pi ft}\,dt
+=X_\omega(2\pi f)
+$$
+
+다. $$\omega=2\pi f$$를 angular-frequency inverse에 치환하면 $$d\omega=2\pi\,df$$이므로
+
+$$
+\begin{aligned}
+x(t)
+&=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(\omega)e^{j\omega t}\,d\omega\\
+&=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(2\pi f)e^{j2\pi ft}\,2\pi\,df\\
+&=\int_{-\infty}^{\infty}
+X_f(f)e^{j2\pi ft}\,df.
+\end{aligned}
+$$
+
+여기서도 필요하면 symmetric cutoff 극한으로 읽는다. $$1/(2\pi)$$가 사라지는 이유는 **적분 변수 변환의 Jacobian $$2\pi$$와 상쇄되기 때문**이다. Spectrum을 잘못해서 추가로 $$2\pi$$배 하는 것이 아니다.
+
+**원본 정정 — PDF p.31 (footer 35):** Hz inverse 식의 마지막 적분 변수가 $$dt$$로 적혀 있지만, frequency를 합성해 고정된 시간 $$t$$의 값을 구하는 식이므로 올바른 변수는 $$df$$다. 화면에서 확인한 원문 오기이며 OCR 문제나 정규화 관례 차이가 아니다. 위 정정은 강의자의 공식 정정문이 아니라 작성자의 검산 결과다.
+
+### 8.7 작성자 예제: rectangular pulse로 정의·정규화·복원을 검산하기
+
+높이 $$B$$, 폭 $$\tau>0$$인 centered pulse를 생각하자. $$B$$는 입력 amplitude 단위, $$\tau$$는 seconds다.
+
+$$
+x(t)=
+\begin{cases}
+B,&\lvert t\rvert<\tau/2,\\
+0,&\lvert t\rvert>\tau/2.
+\end{cases}
+$$
+
+경계점 값은 transform에 영향을 주지 않는다. 정의에 직접 대입하면 $$\omega\ne0$$에서
+
+$$
+\begin{aligned}
+X_\omega(\omega)
+&=B\int_{-\tau/2}^{\tau/2}e^{-j\omega t}\,dt\\
+&=\frac{B}{-j\omega}
+\left(e^{-j\omega\tau/2}-e^{j\omega\tau/2}\right)\\
+&=\frac{2B\sin(\omega\tau/2)}{\omega}\\
+&=B\tau\,\operatorname{sinc}(\omega\tau/2).
+\end{aligned}
+$$
+
+이 예에서는 $$\operatorname{sinc}(z)=\sin z/z$$이고 $$\operatorname{sinc}(0)=1$$로 정의한다. Library가 쓰는 normalized sinc $$\sin(\pi z)/(\pi z)$$와 섞지 않는다. $$\omega=0$$의 값은 극한 또는 원래 적분으로
+
+$$
+X_\omega(0)=\int x(t)\,dt=B\tau
+$$
+
+가 되어 pulse의 면적과 일치한다. Hz convention에서는
+
+$$
+X_f(f)=B\tau\,\operatorname{sinc}(\pi f\tau).
+$$
+
+$$B=1\ \mathrm{V}$$, $$\tau=2\ \mathrm{ms}$$라면 다음과 같이 검산한다.
+
+| Check | 결과 | 해석 |
+|---|---|---|
+| $$X_f(0)$$ | $$0.002\ \mathrm{V\,s}$$ | pulse 면적; peak amplitude 1 V와 단위부터 다름 |
+| $$X_f(250\ \mathrm{Hz})$$ | $$0.004/\pi\approx0.00127324\ \mathrm{V\,s}$$ | $$\pi f\tau=\pi/2$$를 직접 대입 |
+| 첫 양의 zero | $$f=1/\tau=500\ \mathrm{Hz}$$ | 시간 폭이 짧을수록 첫 zero가 멀어짐 |
+| angular-frequency zero | $$\omega=2\pi/\tau=1000\pi\ \mathrm{rad/s}$$ | Hz zero와 같은 위치를 다른 좌표로 표시 |
+| inverse의 $$t=\pm\tau/2$$ | $$B/2=0.5\ \mathrm{V}$$ | jump에서의 평균값 복원 |
+
+시간 중심에서도 inverse 정규화를 독립적으로 확인할 수 있다.
+
+$$
+\begin{aligned}
+x(0)
+&=\frac{1}{2\pi}\lim_{\Omega\to\infty}
+\int_{-\Omega}^{\Omega}
+\frac{2B\sin(\omega\tau/2)}{\omega}\,d\omega\\
+&=\frac{2B}{\pi}\int_0^\infty\frac{\sin z}{z}\,dz
+=B.
+\end{aligned}
+$$
+
+마지막 치환은 $$z=\omega\tau/2$$다. $$1/(2\pi)$$를 빠뜨리면 1 V 대신 $$2\pi$$ V로 복원되므로 정규화 오류를 바로 잡을 수 있다.
+
+이 pulse는 시간에 제한되어 있지만 spectrum은 무한 frequency까지 퍼진다. 따라서 **시간 제한과 대역 제한은 같은 조건이 아니다.** 실제 speech frame의 DFT가 유한 개의 coefficient를 내는 이유는 continuous Fourier transform의 정의가 유한해서가 아니라, Section 11에서 다루는 sampling과 유한 sample 수 때문이다.
+
+Transform pair·spectrum 단위와 rectangular-pulse 적분은 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">MIT 2.161 Lecture 4</a>의 Sections 1, 1.1–1.2 (PDF pp.2–4, printed pp.4–1–4–3)와 대조했다. 위 2 ms 수치 검산과 cutoff kernel 전개는 이 글의 보충 계산이다.
+
+### 8.8 복습 시 연결할 결론
+
+강의의 유도는 **Fourier-series coefficient → 주파수 간격을 분리한 spectrum → Riemann sum → inverse integral**이다. 정의 식은 분석 방법을 정하고, inversion theorem은 그 분석으로 신호를 되찾을 수 있는 조건을 설명한다. 단순한 표기 변환과 증명을 구별해서 복습해야 한다.
+
+주기 신호는 discrete harmonic coefficient, 이번 비주기 연속시간 신호는 continuous spectrum으로 표현한다. 다음 절의 DTFS는 시간을 sampling한 **다른 단계**다. $$P\to\infty$$ 자체가 시간을 이산화하거나 DFT를 만드는 것은 아니다.
+
+### 8.9 양방향 분석: signal에서 frequency로, frequency에서 signal로
+
+강의 그림의 **Original signal ↔ Frequency**를 이 절에서는 **S ↔ F**라는 방향 이름으로 부른다. S는 시간 신호 $$x(t)$$, F는 주파수 표현 $$X_\omega(\omega)$$다. 여기서 F는 frequency 변수 한 개의 값이 아니라 **주파수별 complex 값을 모은 표현 전체**이며, S도 Laplace transform의 complex 변수 $$s$$가 아니다.
+
+| Direction | 무엇을 고정하는가? | 무엇을 합치는가? |
+|---|---|---|
+| S → F: analysis | 분석할 frequency $$\omega$$ 하나 | 모든 시간 $$t$$에서 신호와 basis가 맞물리는 정도 |
+| F → S: synthesis | 복원할 시간 $$t$$ 하나 | 모든 frequency $$\omega$$의 magnitude·phase를 반영한 기여 |
+
+#### S → F: 신호에서 주파수 성분을 추출하기
+
+$$
+(\mathcal{F}x)(\omega)
+=X_\omega(\omega)
+=\int_{-\infty}^{\infty}x(t)e^{-j\omega t}\,dt.
+$$
+
+$$\mathcal{F}$$는 Fourier analysis라는 **연산자**다. 신호의 어느 한 시각을 frequency로 치환하는 함수가 아니라, 전체 시간축의 정보를 하나의 frequency coefficient로 모으는 연산이다.
+
+왜 $$e^{-j\omega t}$$를 곱하는지는 Section 7의 유한 주기에서 가장 분명하다. $$n$$번째 성분에 $$m$$번째 basis의 conjugate를 곱하면
+
+$$
+e^{j\omega_n t}e^{-j\omega_m t}
+=e^{j(\omega_n-\omega_m)t}.
+$$
+
+같은 harmonic이면 1이 되어 한 주기 동안 누적되고, 다른 harmonic이면 한 주기 적분에서 회전 성분이 상쇄된다. 이것이 **원하는 basis 방향의 coefficient를 꺼내는 projection**이다. 연속 frequency로 넘어갈 때는 Section 8.3처럼 계수의 간격 scaling을 분리한다. 무한 시간의 complex exponential을 보통의 유한 norm 벡터라고 가정하거나, 모든 비주기 입력에서 다른 frequency가 유한 시간 안에 정확히 상쇄된다고 말하는 것은 아니다.
+
+따라서 S → F를 “크기 그래프를 만드는 과정”으로만 이해하면 부족하다. 음의 지수에 포함된 cosine·sine 비교가 **magnitude와 phase를 함께 계산**한다.
+
+#### F → S: 주파수 성분으로 시간 신호를 합성하기
+
+$$
+(\mathcal{F}^{-1}X_\omega)(t)
+=x(t)
+=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(\omega)e^{j\omega t}\,d\omega.
+$$
+
+$$\mathcal{F}^{-1}$$는 synthesis 연산자다. 입력은 숫자 하나가 아니라 frequency 전체에 정의된 complex spectrum이다. 각 basis에 해당 complex weight를 곱한 뒤 모두 더해 시간 $$t$$에서의 값을 만든다. 조건부 수렴인 경우에는 Section 8.4–8.5의 symmetric cutoff 극한으로 읽는다.
+
+**첫 번째 왕복 S → F → S**는 Section 8.5에서 이미 증명 개요를 전개했다. Forward 정의를 inverse에 넣으면 sinc형 kernel이 나오고, 이번 piecewise-smooth 조건에서 연속점의 원래 값 또는 jump 양쪽의 평균이 복원된다. 즉 조건을 명시한 의미에서
+
+$$
+\mathcal{F}^{-1}(\mathcal{F}x)=x
+$$
+
+다. 이는 정의식에 단순히 “inverse”라는 이름을 붙였기 때문에 참인 것이 아니라, kernel의 극한을 확인했기 때문에 성립하는 결과다.
+
+#### F → S → F도 원래 spectrum으로 돌아오는가?
+
+두 번째 왕복도 확인해야 한다. 이번 계산은 **매끄럽고 함수와 모든 도함수가 다항식의 역수보다 빠르게 감소하는 spectrum**을 가정한다. 이런 함수의 모임을 Schwartz class라고 하며 Gaussian이 대표적인 예다. 이 충분조건에서는 forward/inverse를 모두 통상적인 적분으로 다룰 수 있다. Rectangular pulse의 느리게 감소하는 spectrum은 이 추가 가정에 포함되지 않으며, 그 예에는 앞 절의 cutoff 해석을 사용한다.
+
+합성한 신호를 다시 분석하되, 먼저 시간 적분을 $$[-R,R]$$로 제한하자. $$R>0$$은 관측 반구간 길이 [s], $$\nu$$는 다시 확인하려는 angular frequency [rad/s], $$Y_R(\nu)$$는 이 유한 시간 분석 결과 [입력 단위 × s]다.
+
+$$
+\begin{aligned}
+Y_R(\nu)
+&=\int_{-R}^{R}x(t)e^{-j\nu t}\,dt\\
+&=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(\omega)
+\left[\int_{-R}^{R}e^{j(\omega-\nu)t}\,dt\right]d\omega\\
+&=\int_{-\infty}^{\infty}X_\omega(\omega)
+\frac{\sin\!\left(R(\omega-\nu)\right)}
+{\pi(\omega-\nu)}\,d\omega.
+\end{aligned}
+$$
+
+두 번째 줄은 유한 $$R$$와 절대적분 가능한 spectrum 때문에 적분 순서를 바꿀 수 있다. 세 번째 줄은 exponential을 시간에 대해 직접 적분한 결과이며, $$\omega=\nu$$에서는 분수의 연속 극한이 $$R/\pi$$다.
+
+이번에는 **frequency 축에서 $$\nu$$ 주변을 모으는 sinc형 kernel**이 생겼다. Section 8.5의 시간축 복원 논리를 frequency 축에 적용하면, 매끄러운 $$X_\omega$$에 대해
+
+$$
+\lim_{R\to\infty}Y_R(\nu)=X_\omega(\nu)
+$$
+
+가 된다. 따라서 이 조건에서는
+
+$$
+\boxed{
+\mathcal{F}\bigl(\mathcal{F}^{-1}X_\omega\bigr)
+=X_\omega
+}
+$$
+
+도 성립한다. 정리하면 **S → F → S에서는 시간축 kernel이 신호를 되찾고, F → S → F에서는 frequency 축 kernel이 spectrum을 되찾는다.** 시간과 frequency가 맡는 역할이 서로 바뀌지만 정규화와 conjugate 부호는 일관된다. Schwartz class에서의 역변환 조건은 <a href="https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/d95e4644254e96ffe92a970c5ed65b0e_MIT18_103F13_fourierint1.pdf" target="_blank" rel="noopener">MIT 18.103: Fourier Integrals, Theorem 1</a>과도 대조할 수 있다.
+
+#### 왕복 과정에서 보존해야 하는 정보
+
+이 왕복은 **중간 spectrum을 바꾸지 않을 때**의 이야기다. Magnitude만 남기거나, phase를 0으로 만들거나, 일부 frequency를 제거하면 다른 신호를 합성하는 연산이 된다. Fourier 변환 자체가 정보를 버린 것이 아니라 중간 처리가 정보를 바꾼 것이다.
+
+실수 음성을 합성하려면 양·음 frequency도 맞아야 한다. $$X_\omega(-\omega)=X_\omega(\omega)^*$$라는 conjugate symmetry가 있으면
+
+$$
+\begin{aligned}
+x(t)^*
+&=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(\omega)^*e^{-j\omega t}\,d\omega\\
+&=\frac{1}{2\pi}\int_{-\infty}^{\infty}
+X_\omega(-\nu)^*e^{j\nu t}\,d\nu
+=x(t).
+\end{aligned}
+$$
+
+두 번째 줄은 $$\nu=-\omega$$ 치환이다. 따라서 복원 신호가 실수가 된다. 임의의 complex spectrum을 넣으면 complex 신호가 나올 수 있으며, 이는 역변환의 오류가 아니다.
+
+Section 8.7의 예에 적용하면 **1 V·2 ms pulse → 0 Hz 값이 0.002 V·s인 sinc spectrum → 원래 pulse**라는 왕복이다. 이 0 Hz 값은 시간 신호의 면적이며 spectrum의 면적을 뜻하지 않는다. Fourier transform을 새로운 음성을 생성하는 과정이나 단순한 단위 변환으로 보지 않고, **같은 정보를 다른 basis에서 분석하고 다시 합성하는 과정**으로 이해하면 phase·정규화·양음 frequency의 필요성이 함께 연결된다.
 
 ## 9. Discrete-Time Fourier Series
 
@@ -1114,7 +1491,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 1. **Digitization은 두 단계다.** Sampling은 시간을, quantization은 amplitude를 이산화한다.
 2. **PCM bit rate는 $$b f_s C$$다.** 더 높은 precision과 더 많은 channel은 저장량을 증가시킨다.
 3. **Fourier analysis는 basis change다.** Time-domain signal을 frequency-domain component로 분해한다.
-4. **Periodic continuous signal에는 Fourier series, aperiodic signal에는 Fourier transform을 사용한다.**
+4. **Fourier series의 discrete 계수는 주파수 간격을 분리하면 continuous spectrum으로 이어진다.** Section 8의 관계 $$c_n^{(P)}=X_\omega(\omega_n)/P$$가 inverse의 정규화를 결정한다. 주기 신호의 보통 Fourier series와 비주기 신호의 transform을 먼저 구별하며, 일반화된 변환에는 별도의 수렴·distribution 해석이 필요하다.
 5. **Discrete time에서는 frequency도 periodic하다.** $$k$$와 $$k+N$$ basis가 같아 aliasing이 발생한다.
 6. **Nyquist condition은 구분 가능성의 조건이다.** 위반 후에는 sample만으로 원래 frequency를 알아낼 수 없다.
 7. **DFT는 finite samples의 periodic extension을 분석한다.** Normalization과 windowing convention을 함께 확인해야 한다.
@@ -1126,7 +1503,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 
 이 글은 **digitization → Fourier representation → discrete-time periodicity → DFT** 순서로 복습하면 가장 잘 연결된다. 먼저 sampling과 quantization이 서로 다른 축을 이산화한다는 점을 고정한 뒤, Fourier series의 orthogonal projection이 DTFS와 DFT로 어떻게 이어지는지 식을 따라가면 된다.
 
-시험 대비에서는 다음 여덟 항목을 직접 설명하고 계산할 수 있는지 확인한다.
+시험 대비에서는 다음 아홉 항목을 직접 설명하고 계산할 수 있는지 확인한다.
 
 1. $$R=b f_s C$$로 uncompressed PCM bit rate를 계산한다.
 2. intensity ratio에는 $$10\log_{10}$$, pressure ratio에는 조건부로 $$20\log_{10}$$을 쓰는 이유를 설명한다.
@@ -1136,6 +1513,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 6. 100·200·300 Hz harmonic의 번호·합성파·주기를 계산하고, 100 Hz 항을 없앤 경우와 200·400 Hz만 남긴 경우를 비교한다.
 7. $$3\cos\alpha+4\sin\alpha$$를 amplitude-phase form으로 바꾸고, plus/minus 부호 convention 및 실제 time delay와의 차이를 설명한다.
 8. 같은 예제를 $$c_n,c_{-n}$$로 바꿔 실수 신호를 다시 합성하고, complex coefficient의 크기와 peak amplitude의 factor 2를 설명한다.
+9. $$1/P=\Delta\omega/(2\pi)$$를 합성식에 대입해 inverse transform을 유도하고, Hz로 치환할 때 $$df$$가 나오는 이유와 rectangular pulse의 면적·첫 zero·jump 복원을 검산한다.
 
 헷갈리기 쉬운 핵심은 **aliasing과 leakage를 같은 현상으로 보지 않는 것**이다. Aliasing은 sampling 전에 제거하지 못한 대역이 겹쳐 원래 frequency를 복구할 수 없는 현상이고, leakage는 유한 구간의 경계 불연속 때문에 DFT energy가 이웃 bin으로 퍼지는 현상이다.
 
@@ -1244,9 +1622,35 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 답변: $$c_n=(3-4j)/2=1.5-2j$$이고 $$\lvert c_n\rvert=2.5$$다. Negative-frequency coefficient $$1.5+2j$$와 함께 하나의 실수 sinusoid를 이루므로 peak amplitude는 $$2\lvert c_n\rvert=5$$다. 이 배수는 DC에는 적용하지 않는다.
 </details>
 
+<details markdown="block">
+<summary>15. 주기를 무한히 늘릴 때 Fourier coefficient를 그대로 spectrum으로 바꾸면 왜 틀리는가?</summary>
+
+답변: 유한 support 신호의 반복 모델에서는 $$c_n^{(P)}=X_\omega(\omega_n)/P$$다. 주기를 늘리면 각 계수는 작아지고 frequency grid의 항 수는 증가한다. 계수의 $$1/P$$를 $$\Delta\omega/(2\pi)$$로 바꿔 합에 남겨야 올바른 적분과 정규화가 나온다.
+</details>
+
+<details markdown="block">
+<summary>16. Forward에서는 시간, inverse에서는 frequency를 적분하는 이유는 무엇인가?</summary>
+
+답변: Forward는 하나의 frequency를 고정하고 전체 시간의 신호가 그 basis에 얼마나 맞는지 계산한다. Inverse는 하나의 시간 $$t$$를 고정하고 모든 frequency의 기여를 합친다. 따라서 Hz inverse의 적분 변수는 $$df$$이며 $$dt$$가 아니다.
+</details>
+
+<details markdown="block">
+<summary>17. 높이 1 V, 폭 2 ms pulse의 zero-frequency spectrum과 jump 복원값은 무엇인가?</summary>
+
+답변: Zero-frequency spectrum은 면적 $$1\times0.002=0.002\ \mathrm{V\,s}$$다. 첫 양의 spectral zero는 500 Hz이고, jump에서는 symmetric inverse가 양쪽 극한의 평균인 0.5 V를 복원한다. Spectrum 값과 waveform amplitude를 같은 단위로 읽지 않는다.
+</details>
+
+<details markdown="block">
+<summary>18. Signal → frequency → signal과 frequency → signal → frequency는 각각 왜 원래 표현으로 돌아오는가?</summary>
+
+답변: 첫 왕복은 시간축의 sinc형 kernel로 신호를, 두 번째 왕복은 frequency 축의 sinc형 kernel로 spectrum을 복원한다. 둘 다 적분 순서와 극한을 허용하는 조건이 필요하다. Magnitude만 남기거나 frequency를 삭제하는 중간 처리를 하면 원래 표현을 보존하는 왕복이 아니며, 실수 신호 합성에는 conjugate symmetry도 유지해야 한다.
+</details>
+
 ## Source Check
 
 2026-09-08 검토에서는 **원본 PDF 40쪽의 추출 텍스트와 이 포스트 전체**를 대조하고, 아래 오류 관련 수식·문구가 있는 물리적 PDF pp.8-9, 20-21, 25-28을 원본 화면으로 재확인했다. 원문을 그대로 따랐는지와 실제로 맞는지는 별개로 판단했다. 표의 page는 물리적 PDF 번호이고 괄호 안은 슬라이드 footer다.
+
+2026-09-10에는 **Fourier transform에 해당하는 PDF pp.29–31 (footer 32, 33, 35)**를 화면과 텍스트로 다시 확인했다. Section 8에 강의의 유도 흐름, 누락된 scaling과 적분 단계, 복원 조건과 검산을 보강했다. Section 8.9에서는 signal → frequency와 frequency → signal의 역할 및 두 방향의 왕복을 별도 유도하고, 원문에 생략된 조건을 명시했다. 이번 추가 검토를 다른 과목의 전수 검증으로 확대하지 않는다.
 
 | Location | Classification | 확인 내용과 조치 |
 |---|---|---|
@@ -1256,6 +1660,8 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 | PDF p.21 (21), Section 6.3.2 | 첨자 오류 | 합의 index가 $$n$$인데 coefficient는 $$c_k$$로 표기되어 있어 $$c_n$$로 통일했다. Euler formula에서 계수 대응을 직접 유도했다. |
 | PDF p.25 (27), p.28 (31), Section 6 | 정규화 불일치 | 같은 계수로 동치라고 소개하는 sine-cosine 식의 DC가 $$a_0$$로 적혀 있다. 이 글의 convention에서는 $$a_0/2$$로 통일하고 $$c_0=a_0/2$$를 명시했다. 다른 DC 정의 자체가 틀린 것이 아니라 동치 표현 사이의 일관성이 문제다. |
 | PDF p.26 (28), Section 7 | 수식 오류 | Orthogonality의 두 경우가 뒤바뀌고 conjugate 전개의 부호가 일치하지 않는다. $$n=m$$이면 $$P$$, 다르면 0임을 직접 적분으로 확인했다. |
+| PDF pp.29–30 (32–33), Sections 8.2–8.5 | 가정·중간 단계 생략 | “any signal”을 조건 없는 일반 적분 명제로 읽지 않는다. 주기 확장과 $$c_n^{(P)}=X_\omega(\omega_n)/P$$, Riemann sum, symmetric cutoff 복원과 jump의 평균값을 구분해 유도했다. |
+| PDF p.31 (35), Section 8.6 | 적분 변수 오류 | Hz inverse 식 끝의 $$dt$$를 $$df$$로 정정했다. 원문 화면 및 $$d\omega=2\pi\,df$$ 치환으로 확인했다. Forward/inverse 정규화 관례 차이와 구분한다. |
 | Post, Section 2 | 해설의 단위 오류 | 기존 단위식에서 `/channel`을 두 번 나누는 표기를 수정했다. 한 channel의 bit rate를 구한 뒤 channel 수를 곱하는 순서로 재작성했다. |
 | Post, Sections 3.1 and 4 | 해설의 과도한 일반화 | 음압 calibration만으로 intensity 단위가 확보된다는 표기와 PCM이 원래 신호를 정확히 보존한다는 문구를 수정했다. Pressure 제곱의 단위 및 analog-to-digital 손실을 구분했다. |
 | Post, Section 10.1 | 증명 논리 보완 | 최고·최저 index만 비교하는 설명 대신 대역 안의 모든 index 쌍의 차이와 나머지 개수로 alias-free 조건을 증명했다. |
@@ -1287,10 +1693,14 @@ Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-
 
 ### Supplementary References
 
+2026-09-10 보완: Fourier transform 부분은 원문 pp.29–31의 전개 순서에 맞춰 정의·주기 극한·역변환을 연결했다. 작성자의 cutoff kernel 증명 개요와 rectangular-pulse 계산을 덧붙이고, 원문 inverse 식의 적분 변수 오기를 기록했다. 로컬 강의 폴더에는 별도의 보강 Markdown을 두며, 원본 PDF와 공개 URL은 보존한다.
+
 2026-09-08 보완: 원본 PDF pp.19-24의 harmonic 설명에 용어·단위, 정수배 조건의 유도, 합성파 계산, missing fundamental 및 speech source-filter 연결을 추가했다. PDF pp.15-17, 22-25의 phase 설명에는 amplitude-phase 재표현의 목적, `atan2`·부호 convention, 실제 지연의 유도와 복원·상쇄 예제를 보충했다. PDF pp.18, 21-25의 exponential form에는 Euler formula로부터의 계수 유도, 음의 주파수·conjugate symmetry, factor 2와 복원 예제, 미분·지연 연산의 의미를 추가했다. 원본 PDF와 기존 공개 URL은 변경하지 않았다.
 
 <ul>
   <li><a href="https://courses.physics.illinois.edu/phys406/sp2017/Lecture_Notes/P406POM_Lecture_Notes/P406POM_Lect6.pdf" target="_blank" rel="noopener">UIUC Physics 406: Harmonics and Overtones</a> — harmonic series의 fundamental·harmonic·overtone 번호 대응, p.2.</li>
+  <li><a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">MIT 2.161 Lecture 4: Fourier Transform</a> — angular-frequency pair와 spectrum 단위, convention 비교 및 rectangular-pulse 적분, Sections 1–1.2.</li>
+  <li><a href="https://people.tamu.edu/~f-narcowich/m414/s04w/m414w_ln14.html" target="_blank" rel="noopener">Texas A&amp;M Math 414: Fourier Series and Fourier Transforms</a> — 주기 확장의 Riemann-sum 전개와 piecewise-smooth inversion theorem; unitary 정규화는 이 글의 convention으로 환산해 비교.</li>
   <li><a href="https://open.lib.umn.edu/sensationandperception/chapter/pitch-perception/" target="_blank" rel="noopener">University of Minnesota: Pitch Perception</a> — harmonic complex tone과 missing fundamental의 지각.</li>
   <li><a href="https://icm.music.cs.cmu.edu/icm-online/icm-text-2nd-ed.pdf" target="_blank" rel="noopener">CMU: Introduction to Computer Music</a> — Chapter 9, pp.159-160의 voiced excitation·harmonic spectrum·formant filter.</li>
   <li><a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/3ab918dbe6a0376dbd9216e404fee31b_fourier.pdf" target="_blank" rel="noopener">MIT OCW: Fourier Series Representation of Signals</a> — pp.3-4의 amplitude-phase 재표현, complex coefficient와 conjugate symmetry.</li>
