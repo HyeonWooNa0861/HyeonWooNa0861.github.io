@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-09-10 15:29:20 +0900
+last_modified_at: 2026-09-10 15:50:48 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -22,6 +22,7 @@ keywords:
   - "Complex Exponential"
   - "Conjugate Symmetry"
   - "Fourier Transform"
+  - "CTFS"
   - "DTFS"
   - "DFT"
   - "Nyquist Sampling"
@@ -1284,81 +1285,107 @@ Section 8.7의 예에 적용하면 **1 V·2 ms pulse → 0 Hz 값이 0.002 V·s�
 
 ## 9. Discrete-Time Fourier Series
 
-주기 $$P$$인 continuous-time signal을 간격 $$T$$로 sampling하고 한 주기에 $$N$$개 sample이 있다고 하자.
+> **CTFS → DTFS가 가능한 이유:** 주기 신호를 한 주기당 정수 개의 간격으로 sampling하면 표본열도 주기적이다. 이 표본 위치에서는 harmonic index가 $$N$$만큼 다른 exponential들이 같은 값을 가지므로, 무한한 CTFS 항을 **서로 다른 $$N$$개 basis와 그 계수**로 묶을 수 있다. DTFS가 표본을 정확히 표현한다는 사실과, 그 표본으로 원래 연속 신호를 복원할 수 있다는 사실은 별개다.
+
+원본 PDF pp.32–36 (footer 36–40)은 CTFS의 sampling, basis 반복, 계수의 aliasing 합과 Riemann-sum 비교를 차례로 보여 준다. PDF p.39 (footer 43)는 Nyquist 조건과 유한 녹음의 주기 확장을 연결한다. 아래는 이 흐름에서 생략된 조건·증명과 작성자의 검산을 보강한 설명이다.
+
+### 9.1 Sampling이 시간 주기성을 유지하는 조건
+
+목적은 연속적인 한 주기를 $$N$$개의 값으로 관측하고, 그 값들을 컴퓨터에서 계산 가능한 frequency coefficient로 표현하는 것이다. **시간축을 sampling하는 것**이지, Section 8처럼 주기 $$P$$를 무한히 늘리는 과정이 아니다. CTFS의 harmonic index는 sampling 전부터 이미 이산적이다.
+
+강의와 같이 $$x(t+P)=x(t)$$인 신호에 대해
 
 $$
-P = NT, \qquad x[n+N]=x[n]
+T=\frac{P}{N},\qquad N\in\mathbb{Z}_{>0},
+\qquad x[n]:=x(nT)
 $$
 
-이 절에서 $$T\,[\mathrm{s/sample}]$$는 sampling interval, $$P\,[\mathrm{s}]$$는 continuous period, $$N\,[\mathrm{sample}]$$은 한 주기의 sample 수이며 $$n,k,r$$는 무차원 정수 index다. $$d_k,c_k$$는 입력 신호와 같은 amplitude 단위를 갖는다.
-
-Discrete-time complex exponential은 frequency index $$k$$에 대해서도 $$N$$주기로 반복된다.
+로 정의한다. 그러면
 
 $$
-e^{j2\pi(k+N)n/N}=e^{j2\pi kn/N}
+x[n+N]=x((n+N)T)
+=x(nT+NT)=x(nT+P)=x(nT)=x[n].
 $$
 
-왼쪽 exponent를 분리하면
+따라서 $$N$$은 표본열의 한 주기다. 더 짧은 주기가 존재할 수 있으므로 항상 **최소 주기**라는 뜻은 아니다.
+
+| Symbol | 의미 | 단위 |
+|---|---|---|
+| $$t,P,T$$ | 연속 시간, 신호 주기, sample 사이의 시간 간격 | s |
+| $$N,n,m,k,\ell,r$$ | 주기당 표본 수와 정수 index | 무차원; $$N>0$$ |
+| $$f_s=1/T$$ | sampling rate | Hz, samples/s |
+| $$\omega_0=2\pi/P$$ | 연속시간 기본 angular frequency | rad/s |
+| $$\Omega_\ell=\ell\omega_0T$$ | 표본당 phase 증가량 | rad/sample |
+| $$c_\ell,d_k$$ | CTFS 계수, DTFS 계수 | 입력 amplitude와 동일; 예: V |
+
+**주기적인 연속 신호를 아무 간격으로 sampling해도 표본열이 주기적인 것은 아니다.** 일반적으로 $$T/P=a/b$$가 서로소 양의 정수 $$a,b$$의 비이면 $$bT=aP$$이므로 $$x[n+b]=x[n]$$다. 강의의 $$T/P=1/N$$은 그중 한 연속 주기에 정확히 $$N$$개 표본이 대응하는 경우다. 일반적인 $$a/b$$에서는 harmonic index가 $$a\ell\bmod b$$로 대응하므로 아래의 $$k+rN$$ 식을 그대로 쓰지 않는다. 무리수 비의 반례로 $$T/P=\sqrt{2}$$일 때 $$e^{j2\pi t/P}$$의 표본은 $$e^{j2\pi\sqrt{2}n}$$이며, 주기 $$M>0$$가 있으려면 $$M\sqrt{2}$$가 정수여야 하므로 불가능하다.
+
+### 9.2 CTFS에 sampling 시각을 대입하면 무엇이 바뀌는가?
+
+이제 CTFS가 실제 sample 위치의 신호값을 나타낸다고 가정하자. 예를 들어 **유한한 harmonic 합으로 이루어진 신호**, 또는 절대합 가능한 계수의 급수로 정의된 연속 주기 신호이면 아래 대입·재배열이 정당하다. 임의의 $$L^2$$ 등식만으로는 특정 점의 값까지 정해지지 않으므로 그대로 sampling했다고 주장하지 않는다.
 
 $$
-e^{j2\pi(k+N)n/N}
-=e^{j2\pi kn/N}e^{j2\pi n}
-=e^{j2\pi kn/N}
+\begin{aligned}
+x(t)&=\sum_{\ell=-\infty}^{\infty}c_\ell e^{j\ell\omega_0t},\\
+x[n]&=\sum_{\ell=-\infty}^{\infty}c_\ell e^{j\ell\omega_0nT}\\
+&=\sum_{\ell=-\infty}^{\infty}c_\ell
+e^{j2\pi\ell n/N}.
+\end{aligned}
 $$
 
-이다. 정수 $$n$$에 대해 $$e^{j2\pi n}=1$$이기 때문이다. 따라서 이 등식은 근사가 아니라 discrete index에서의 **정확한 항등식**이다.
+마지막 줄은 $$\omega_0T=(2\pi/P)(P/N)=2\pi/N$$를 대입한 **정확한 등식**이다. $$c_\ell$$가 아직 DTFS 계수로 바뀐 것은 아니다. 같은 basis를 만드는 항들을 묶는 단계가 남아 있다.
 
-따라서 서로 구별되는 basis는 한 주기당 $$N$$개뿐이다. DTFS synthesis와 analysis 식은 다음과 같다.
-
-$$
-x[n]=\sum_{k=0}^{N-1}d_k e^{j2\pi kn/N}
-$$
+정수 $$n,r$$에 대해
 
 $$
-d_k=\frac{1}{N}\sum_{n=0}^{N-1}
-x[n]e^{-j2\pi kn/N}
+e^{j2\pi(\ell+rN)n/N}
+=e^{j2\pi\ell n/N}e^{j2\pi rn}
+=e^{j2\pi\ell n/N}.
 $$
 
-### 9.1 작성자 보충: DTFS coefficient의 유도
+연속시간에서는 $$e^{j2\pi rNt/P}$$가 모든 $$t$$에서 1인 것은 아니지만, sample 위치 $$t=nP/N$$에서는 1이다. **표본 사이에서 달랐던 파형을 표본값만으로는 구별하지 못하게 되는 것**이다. 따라서 서로 다른 basis는 $$k=0,\ldots,N-1$$의 $$N$$개로 대표할 수 있다.
 
-Synthesis 식 양변에 $$e^{-j2\pi mn/N}$$을 곱하고 $$n=0,\ldots,N-1$$에 대해 합하면 discrete orthogonality
+### 9.3 왜 모든 N-periodic 표본열을 정확히 표현하는가?
+
+한 주기의 표본열은 $$N$$개의 complex 수로 이루어진 벡터다. $$\phi_k[n]=e^{j2\pi kn/N}$$라고 하면 한 주기에서
 
 $$
-\sum_{n=0}^{N-1}e^{j2\pi(k-m)n/N}
+\sum_{n=0}^{N-1}\phi_k[n]\phi_m[n]^*
+=\sum_{n=0}^{N-1}e^{j2\pi(k-m)n/N}
 =\begin{cases}
 N,&k\equiv m\pmod N,\\
-0,&k\not\equiv m\pmod N
+0,&k\not\equiv m\pmod N.
 \end{cases}
 $$
 
-때문에 $$m$$번째 항만 남는다. 다른 항의 합이 0인 이유는 공비 $$q=e^{j2\pi(k-m)/N}\ne1$$인 geometric series에서
+다른 나머지일 때 공비 $$q=e^{j2\pi(k-m)/N}\ne1$$인 geometric series를 계산하면
 
 $$
-\sum_{n=0}^{N-1}q^n=\frac{1-q^N}{1-q}=0
+\sum_{n=0}^{N-1}q^n
+=\frac{1-q^N}{1-q}=0,
+\qquad q^N=e^{j2\pi(k-m)}=1
 $$
 
-이고 $$q^N=e^{j2\pi(k-m)}=1$$이기 때문이다. 따라서
+이기 때문이다. 같은 나머지이면 $$N$$개 항이 모두 1이다.
+
+따라서 이 $$N$$개 벡터는 서로 직교하고 0이 아니므로 독립이며, $$N$$차원 공간 전체의 basis가 된다. **원래 신호가 band-limited인지와 관계없이 모든 N-periodic 표본열에 DTFS가 존재한다.** CTFS에서 얻지 않은 표본열도 마찬가지다.
+
+Synthesis 식에 $$\phi_m[n]^*$$를 곱하고 한 주기에서 합하면 $$m$$번째 항만 $$Nd_m$$으로 남는다. 이로부터 analysis와 synthesis는
 
 $$
-\sum_{n=0}^{N-1}x[n]e^{-j2\pi mn/N}=Nd_m,
+\boxed{d_k=\frac{1}{N}\sum_{n=0}^{N-1}
+x[n]e^{-j2\pi kn/N}}
 $$
 
-양변을 $$N$$으로 나누면 analysis 식을 얻는다. 여기서는 $$N$$이 양의 정수이고 모든 index를 한 period에서 합한다.
-
-Continuous Fourier-series coefficient $$c_k$$와 sampled signal의 coefficient $$d_k$$ 사이에는 다음 관계가 있다.
-
 $$
-d_k=\sum_{r=-\infty}^{\infty}c_{k+rN}
+\boxed{x[n]=\sum_{k=0}^{N-1}d_k e^{j2\pi kn/N}}
 $$
 
-이 aliasing 합도 basis periodicity에서 유도된다. Sampled CTFS를 쓰면
+가 된다. $$1/N$$은 basis의 제곱 norm $$N$$으로 나누는 정규화다. 적분을 근사해서 얻어야만 성립하는 계수가 아니다. 표본의 복원은 Section 11.1의 유한 이중합 검산으로도 확인할 수 있다. 유한 basis와 계수의 주기성은 <a href="https://ocw.mit.edu/courses/res-6-007-signals-and-systems-spring-2011/cf3874410d609d71d6036e7572525222_MITRES_6_007S11_lec10.pdf" target="_blank" rel="noopener">MIT Signals and Systems, Lecture 10, PDF pp.1–2</a>와 대조했다.
 
-$$
-x[n]=x(nT)
-=\sum_{\ell=-\infty}^{\infty}c_\ell e^{j2\pi\ell n/N}.
-$$
+### 9.4 CTFS coefficient가 DTFS coefficient로 합쳐지는 과정
 
-모든 integer $$\ell$$은 유일하게 $$\ell=k+rN$$, $$0\le k<N$$로 쓸 수 있다. 같은 나머지를 갖는 항을 묶으면
+Section 9.2의 수렴 조건 아래 모든 정수 $$\ell$$을 유일하게 $$\ell=k+rN$$, $$0\le k<N$$로 분해한다. 같은 나머지의 항을 묶으면
 
 $$
 \begin{aligned}
@@ -1366,13 +1393,107 @@ x[n]
 &=\sum_{k=0}^{N-1}\sum_{r=-\infty}^{\infty}
 c_{k+rN}e^{j2\pi(k+rN)n/N}\\
 &=\sum_{k=0}^{N-1}
-\left(\sum_r c_{k+rN}\right)e^{j2\pi kn/N},
+\left(\sum_{r=-\infty}^{\infty}c_{k+rN}\right)
+e^{j2\pi kn/N}.
 \end{aligned}
 $$
 
-이므로 DTFS coefficient는 $$d_k=\sum_r c_{k+rN}$$다. 무한합의 재배열이 정당화될 정도의 coefficient 수렴성이 필요하다. 이 식은 alias 성분이 서로 더해진다는 정확한 관계이며, 각 alias의 크기가 작을 것이라는 보장은 없다.
+방금 증명한 DTFS 계수의 유일성 때문에
 
-즉 $$N$$만큼 떨어진 continuous frequency 성분들이 같은 discrete frequency bin에 더해질 수 있다. 이것이 frequency-domain에서 본 aliasing의 핵심이다.
+$$
+\boxed{d_k=\sum_{r=-\infty}^{\infty}c_{k+rN}}
+$$
+
+이다. 무한합의 순서를 바꾸는 충분조건으로 $$\sum_\ell\lvert c_\ell\rvert<\infty$$를 사용했다. CTFS가 조건부로만 수렴하거나 sample이 jump에 놓인 경우에는 급수의 수렴값과 실제 지정한 표본값부터 확인해야 하며, 이 재배열을 무조건 적용하지 않는다. 반면 유한 표본열 자체의 DTFS 계산에는 이런 무한급수 조건이 필요 없다.
+
+물리적인 frequency 차이는 $$rN/P=rf_s$$이고, 표본당 phase 차이는 $$2\pi r$$다. 즉 sample rate의 정수배만큼 떨어진 성분들이 하나의 계수에 **complex 값으로 더해진다**. Magnitude끼리만 합치는 것이 아니며 phase에 따라 상쇄될 수도 있다.
+
+같은 재배열 유도는 <a href="https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/c8dc8096a9d75f8f30b4b97354b48437_ch1_adc.pdf" target="_blank" rel="noopener">MIT HST.582J, Section 1.A.2.3, equations 1.A.21–1.A.26 (PDF p.16, printed p.15)</a>에서도 확인할 수 있다. 해당 절은 홀수 $$N$$의 centered index를 쓰며, 이 글은 짝수·홀수에 모두 쓸 수 있는 $$0,\ldots,N-1$$ 대표 index를 사용했다.
+
+### 9.5 강의의 Riemann sum: 어떤 등호만 근사인가?
+
+원본 PDF p.35 (footer 39)는 CTFS 적분을 직사각형 합으로 **근사**한 뒤 DTFS 식과 연결한다. 비교할 integrand를 $$g_k(t)=x(t)e^{-j2\pi kt/P}$$라고 두면
+
+$$
+\begin{aligned}
+c_k
+&=\frac{1}{P}\int_0^P g_k(t)\,dt\\
+&\approx\frac{T}{P}\sum_{n=0}^{N-1}g_k(nT)\\
+&=\frac{1}{N}\sum_{n=0}^{N-1}x[n]e^{-j2\pi kn/N}
+=d_k.
+\end{aligned}
+$$
+
+**근사인 것은 적분을 유한 합으로 바꾼 줄뿐이다.** $$T/P=1/N$$와 마지막 DTFS 정의는 정확하다. 고정된 $$k,P$$에 대해 $$g_k$$가 Riemann 적분 가능하고 $$N\to\infty$$, $$T=P/N\to0$$이면 근사 합이 적분으로 수렴한다. 특정 유한 $$N$$에서 오차가 작다는 보장과는 다르다.
+
+앞 절의 더 강한 급수 조건이 성립하면 이 오차를 정확히
+
+$$
+d_k-c_k=\sum_{r\ne0}c_{k+rN},
+\qquad
+\lvert d_k-c_k\rvert
+\le\sum_{r\ne0}\lvert c_{k+rN}\rvert
+$$
+
+로 읽을 수 있다. Alias가 없으면 적분 근사가 우연히 좋아서가 아니라 **다른 harmonic이 같은 basis에 들어오지 않아서** 계수가 정확히 일치한다. Alias가 있어도 DTFS 자체는 표본열을 정확히 표현한다.
+
+### 9.6 DTFS 존재와 원래 연속 신호의 복원은 다른 조건이다
+
+CTFS가 $$\lvert\ell\rvert\le K$$에서만 nonzero인 low-pass band-limited 신호이고 $$N>2K$$이면 이 범위의 index들이 서로 다른 나머지를 갖는다. 이 조건의 증명과 $$f_s>2f_{\max}$$와의 관계는 Section 10.1에서 이어진다.
+
+여기서 강의의 $$d_k=c_k$$는 index 범위를 붙여 읽어야 한다. $$d$$를 $$d_{k+N}=d_k$$로 주기 확장하고, $$[\ell]_N$$을 $$0,\ldots,N-1$$ 안의 나머지라고 정의하면 원래 대역 안에서
+
+$$
+d_{[\ell]_N}=c_\ell,\qquad -K\le\ell\le K
+$$
+
+가 정확하다. 예를 들어 $$N=8$$에서 음의 harmonic $$\ell=-1$$은 $$d_7$$에 들어간다. 이때 $$d_7=c_{-1}$$이지, 반드시 $$d_7=c_7$$인 것은 아니다. **DTFS의 계수는 N주기지만 원래 CTFS 계수가 N주기라는 뜻은 아니다.**
+
+원본 PDF p.39 (footer 43)의 축약된 $$d_k=c_k$$는 이렇게 원래 대역의 signed index 또는 그에 대응하는 bin으로 해석한다. 이를 $$0,\ldots,N-1$$의 모든 raw index에 조건 없이 적용하지 않는다. 짝수 $$N$$에서 $$+N/2$$와 $$-N/2$$도 같은 bin이므로 strict Nyquist 조건에서 경계를 제외한다.
+
+### 9.7 8개 표본으로 직접 검산하기
+
+작성자 예제로 $$P=1\ \mathrm{ms}$$, $$N=8$$, $$T=0.125\ \mathrm{ms}$$, $$f_s=8\ \mathrm{kHz}$$를 사용하자. 시간 $$t$$는 seconds, 진폭 단위는 V다.
+
+$$
+x(t)=\cos(2\pi\,1000t),\qquad
+x[n]=\cos(2\pi n/8).
+$$
+
+Euler formula로 $$c_1=c_{-1}=1/2$$, 나머지는 0이다. 따라서 $$d_1=d_7=1/2$$이고
+
+$$
+x[n]=\tfrac12 e^{j2\pi n/8}
++\tfrac12 e^{j2\pi7n/8}
+=\cos(2\pi n/8).
+$$
+
+이는 $$N=8>2K=2$$인 alias-free 예다. 원래 1 kHz low-pass 성분을 구별할 수 있다.
+
+같은 신호에 7 kHz 성분을 더하면
+
+$$
+y(t)=\cos(2\pi\,1000t)
++0.4\cos(2\pi\,7000t).
+$$
+
+원래 CTFS에는 $$c_{\pm1}=0.5$$, $$c_{\pm7}=0.2$$가 있다. 표본에서는 $$7\equiv-1\pmod8$$, $$-7\equiv1\pmod8$$이므로
+
+$$
+d_1=c_1+c_{-7}=0.7,\qquad
+d_7=c_{-1}+c_7=0.7.
+$$
+
+다른 계수는 0이고, DTFS가 복원하는 표본은 정확히
+
+$$
+y[n]=0.7e^{j2\pi n/8}+0.7e^{-j2\pi n/8}
+=1.4\cos(2\pi n/8)
+$$
+
+이다. 원래 두 주파수의 혼합과 1 kHz·1.4 V 단일 cosine은 **모든 sample에서 같지만 연속시간 신호로는 다르다.** 따라서 “DTFS 역합으로 sample이 정확히 복원됐다”는 검사만으로 aliasing이 없었다고 결론 내릴 수 없다.
+
+정리하면 **CTFS의 sampling → 표본열의 주기성 → basis의 modulo-N 동일성 → DTFS의 정확한 계수**가 변환을 가능하게 한다. Nyquist 조건은 그다음에 원래 harmonic들을 구별하기 위한 조건이다. 실제 녹음의 유한 $$N$$개 표본이 본래 주기적이지 않더라도, 이를 한 주기로 확장하면 Section 11의 DFT를 적용할 수 있다. 이때 주기성은 원래 녹음의 성질이 아니라 분석 모델이다.
 
 ## 10. Nyquist sampling과 aliasing
 
@@ -1492,7 +1613,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 2. **PCM bit rate는 $$b f_s C$$다.** 더 높은 precision과 더 많은 channel은 저장량을 증가시킨다.
 3. **Fourier analysis는 basis change다.** Time-domain signal을 frequency-domain component로 분해한다.
 4. **Fourier series의 discrete 계수는 주파수 간격을 분리하면 continuous spectrum으로 이어진다.** Section 8의 관계 $$c_n^{(P)}=X_\omega(\omega_n)/P$$가 inverse의 정규화를 결정한다. 주기 신호의 보통 Fourier series와 비주기 신호의 transform을 먼저 구별하며, 일반화된 변환에는 별도의 수렴·distribution 해석이 필요하다.
-5. **Discrete time에서는 frequency도 periodic하다.** $$k$$와 $$k+N$$ basis가 같아 aliasing이 발생한다.
+5. **CTFS를 sampling하면 modulo-N으로 같은 basis의 계수들이 합쳐져 DTFS가 된다.** DTFS는 표본열을 정확히 표현하지만, 원래 연속 신호까지 구별하려면 별도의 alias-free 조건이 필요하다.
 6. **Nyquist condition은 구분 가능성의 조건이다.** 위반 후에는 sample만으로 원래 frequency를 알아낼 수 없다.
 7. **DFT는 finite samples의 periodic extension을 분석한다.** Normalization과 windowing convention을 함께 확인해야 한다.
 8. **Harmonic은 $$nf_0$$ 성분이며 fundamental이 first harmonic이다.** Harmonic 간격, formant 위치, DFT bin 간격은 서로 다른 양이다. $$f_0$$ 성분이 없어도 반복 주기와 그에 대응하는 pitch가 남을 수 있다.
@@ -1503,7 +1624,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 
 이 글은 **digitization → Fourier representation → discrete-time periodicity → DFT** 순서로 복습하면 가장 잘 연결된다. 먼저 sampling과 quantization이 서로 다른 축을 이산화한다는 점을 고정한 뒤, Fourier series의 orthogonal projection이 DTFS와 DFT로 어떻게 이어지는지 식을 따라가면 된다.
 
-시험 대비에서는 다음 아홉 항목을 직접 설명하고 계산할 수 있는지 확인한다.
+시험 대비에서는 다음 열 항목을 직접 설명하고 계산할 수 있는지 확인한다.
 
 1. $$R=b f_s C$$로 uncompressed PCM bit rate를 계산한다.
 2. intensity ratio에는 $$10\log_{10}$$, pressure ratio에는 조건부로 $$20\log_{10}$$을 쓰는 이유를 설명한다.
@@ -1514,6 +1635,7 @@ Speech는 시간에 따라 빠르게 변하므로 전체 utterance에 한 번만
 7. $$3\cos\alpha+4\sin\alpha$$를 amplitude-phase form으로 바꾸고, plus/minus 부호 convention 및 실제 time delay와의 차이를 설명한다.
 8. 같은 예제를 $$c_n,c_{-n}$$로 바꿔 실수 신호를 다시 합성하고, complex coefficient의 크기와 peak amplitude의 factor 2를 설명한다.
 9. $$1/P=\Delta\omega/(2\pi)$$를 합성식에 대입해 inverse transform을 유도하고, Hz로 치환할 때 $$df$$가 나오는 이유와 rectangular pulse의 면적·첫 zero·jump 복원을 검산한다.
+10. $$T=P/N$$의 sampling에서 시간 주기성과 basis의 modulo-N 동일성을 증명하고, CTFS 계수의 적분 근사와 DTFS의 정확한 정의를 구분한다. 음의 harmonic이 어느 bin으로 들어가는지도 설명한다.
 
 헷갈리기 쉬운 핵심은 **aliasing과 leakage를 같은 현상으로 보지 않는 것**이다. Aliasing은 sampling 전에 제거하지 못한 대역이 겹쳐 원래 frequency를 복구할 수 없는 현상이고, leakage는 유한 구간의 경계 불연속 때문에 DFT energy가 이웃 bin으로 퍼지는 현상이다.
 
@@ -1646,11 +1768,29 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 답변: 첫 왕복은 시간축의 sinc형 kernel로 신호를, 두 번째 왕복은 frequency 축의 sinc형 kernel로 spectrum을 복원한다. 둘 다 적분 순서와 극한을 허용하는 조건이 필요하다. Magnitude만 남기거나 frequency를 삭제하는 중간 처리를 하면 원래 표현을 보존하는 왕복이 아니며, 실수 신호 합성에는 conjugate symmetry도 유지해야 한다.
 </details>
 
+<details markdown="block">
+<summary>19. Nyquist 조건을 만족하지 못해도 DTFS를 계산하고 표본을 정확히 복원할 수 있는가?</summary>
+
+답변: 그렇다. 모든 N-periodic 표본열은 N개의 직교 exponential basis로 정확히 표현된다. Nyquist 조건은 그 표현의 존재 조건이 아니라, 별도의 대역 가정 아래 원래 연속시간 harmonic들을 구별하기 위한 조건이다. Section 9.7의 1 kHz·7 kHz 혼합처럼 서로 다른 연속 신호가 같은 표본과 DTFS를 가질 수 있다.
+</details>
+
+<details markdown="block">
+<summary>20. CTFS 적분을 Riemann sum으로 바꾼 근사와 DTFS 계수의 정확한 등식은 어떻게 다른가?</summary>
+
+답변: 고정된 harmonic의 CTFS 적분을 유한 표본 합으로 계산하는 것은 일반적으로 근사다. 같은 유한 합은 DTFS 계수 자체의 정확한 정의이며, 정규화 1/N은 discrete basis의 직교성으로 증명된다. 충분한 급수 수렴 조건 아래 두 계수의 차이는 같은 나머지로 겹친 다른 CTFS 계수들의 합이다.
+</details>
+
+<details markdown="block">
+<summary>21. N=8의 alias-free low-pass 신호에서 음의 harmonic −1은 어느 DTFS bin에 들어가는가?</summary>
+
+답변: −1과 7은 modulo 8에서 같으므로 bin 7에 들어간다. 따라서 이 경우 $$d_7=c_{-1}$$이며, 모든 raw index에서 $$d_k=c_k$$라고 읽으면 안 된다. DTFS 계수의 주기성과 원래 CTFS 계수의 index를 구분한다.
+</details>
+
 ## Source Check
 
 2026-09-08 검토에서는 **원본 PDF 40쪽의 추출 텍스트와 이 포스트 전체**를 대조하고, 아래 오류 관련 수식·문구가 있는 물리적 PDF pp.8-9, 20-21, 25-28을 원본 화면으로 재확인했다. 원문을 그대로 따랐는지와 실제로 맞는지는 별개로 판단했다. 표의 page는 물리적 PDF 번호이고 괄호 안은 슬라이드 footer다.
 
-2026-09-10에는 **Fourier transform에 해당하는 PDF pp.29–31 (footer 32, 33, 35)**를 화면과 텍스트로 다시 확인했다. Section 8에 강의의 유도 흐름, 누락된 scaling과 적분 단계, 복원 조건과 검산을 보강했다. Section 8.9에서는 signal → frequency와 frequency → signal의 역할 및 두 방향의 왕복을 별도 유도하고, 원문에 생략된 조건을 명시했다. 이번 추가 검토를 다른 과목의 전수 검증으로 확대하지 않는다.
+2026-09-10에는 **Fourier transform에 해당하는 PDF pp.29–31 (footer 32, 33, 35)**를 화면과 텍스트로 다시 확인했다. Section 8에 강의의 유도 흐름, 누락된 scaling과 적분 단계, 복원 조건과 검산을 보강했다. Section 8.9에서는 signal → frequency와 frequency → signal의 역할 및 두 방향의 왕복을 별도 유도하고, 원문에 생략된 조건을 명시했다. 이어서 **PDF pp.32–36, 39 (footer 36–40, 43)**도 화면과 대조해 Section 9의 CTFS→DTFS 연결을 보강했다. 이번 추가 검토를 다른 과목의 전수 검증으로 확대하지 않는다.
 
 | Location | Classification | 확인 내용과 조치 |
 |---|---|---|
@@ -1662,6 +1802,8 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어진다. 같은 지연
 | PDF p.26 (28), Section 7 | 수식 오류 | Orthogonality의 두 경우가 뒤바뀌고 conjugate 전개의 부호가 일치하지 않는다. $$n=m$$이면 $$P$$, 다르면 0임을 직접 적분으로 확인했다. |
 | PDF pp.29–30 (32–33), Sections 8.2–8.5 | 가정·중간 단계 생략 | “any signal”을 조건 없는 일반 적분 명제로 읽지 않는다. 주기 확장과 $$c_n^{(P)}=X_\omega(\omega_n)/P$$, Riemann sum, symmetric cutoff 복원과 jump의 평균값을 구분해 유도했다. |
 | PDF p.31 (35), Section 8.6 | 적분 변수 오류 | Hz inverse 식 끝의 $$dt$$를 $$df$$로 정정했다. 원문 화면 및 $$d\omega=2\pi\,df$$ 치환으로 확인했다. Forward/inverse 정규화 관례 차이와 구분한다. |
+| PDF pp.32–35 (36–39), Sections 9.1–9.5 | 가정·근사 범위 보완 | $$P=NT$$의 sampling 주기 조건과 CTFS 급수의 점별 대입·재배열 조건을 명시했다. CTFS 적분의 Riemann-sum 근사와 DTFS 계수의 정확한 정의를 구분하고 N개 직교 basis의 완전성을 설명했다. p.35의 discrete period를 P라고 쓴 문구는 표본 주기 N과 구분한다. |
+| PDF pp.36, 39 (40, 43), Sections 9.6–9.7 | 계수 index 범위 생략 | Nyquist 조건 아래의 계수 동일성은 원래 대역의 signed harmonic과 대응하는 modulo-N bin 사이의 관계다. N=8에서 $$d_7=c_{-1}$$인 예로 모든 raw index에 $$d_k=c_k$$를 적용하면 안 됨을 설명했다. |
 | Post, Section 2 | 해설의 단위 오류 | 기존 단위식에서 `/channel`을 두 번 나누는 표기를 수정했다. 한 channel의 bit rate를 구한 뒤 channel 수를 곱하는 순서로 재작성했다. |
 | Post, Sections 3.1 and 4 | 해설의 과도한 일반화 | 음압 calibration만으로 intensity 단위가 확보된다는 표기와 PCM이 원래 신호를 정확히 보존한다는 문구를 수정했다. Pressure 제곱의 단위 및 analog-to-digital 손실을 구분했다. |
 | Post, Section 10.1 | 증명 논리 보완 | 최고·최저 index만 비교하는 설명 대신 대역 안의 모든 index 쌍의 차이와 나머지 개수로 alias-free 조건을 증명했다. |
@@ -1693,12 +1835,14 @@ Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-
 
 ### Supplementary References
 
-2026-09-10 보완: Fourier transform 부분은 원문 pp.29–31의 전개 순서에 맞춰 정의·주기 극한·역변환을 연결했다. 작성자의 cutoff kernel 증명 개요와 rectangular-pulse 계산을 덧붙이고, 원문 inverse 식의 적분 변수 오기를 기록했다. 로컬 강의 폴더에는 별도의 보강 Markdown을 두며, 원본 PDF와 공개 URL은 보존한다.
+2026-09-10 보완: Fourier transform 부분은 원문 pp.29–31의 전개 순서에 맞춰 정의·주기 극한·역변환을 연결했다. 작성자의 cutoff kernel 증명 개요와 rectangular-pulse 계산을 덧붙이고, 원문 inverse 식의 적분 변수 오기를 기록했다. 이어지는 CTFS→DTFS 부분에는 sampling 조건, 직교 basis와 aliasing 계수, 적분 근사의 적용 범위 및 signed-index 대응을 추가했다. 로컬 강의 폴더의 별도 보강 Markdown에도 반영하며, 원본 PDF와 공개 URL은 보존한다.
 
 2026-09-08 보완: 원본 PDF pp.19-24의 harmonic 설명에 용어·단위, 정수배 조건의 유도, 합성파 계산, missing fundamental 및 speech source-filter 연결을 추가했다. PDF pp.15-17, 22-25의 phase 설명에는 amplitude-phase 재표현의 목적, `atan2`·부호 convention, 실제 지연의 유도와 복원·상쇄 예제를 보충했다. PDF pp.18, 21-25의 exponential form에는 Euler formula로부터의 계수 유도, 음의 주파수·conjugate symmetry, factor 2와 복원 예제, 미분·지연 연산의 의미를 추가했다. 원본 PDF와 기존 공개 URL은 변경하지 않았다.
 
 <ul>
   <li><a href="https://courses.physics.illinois.edu/phys406/sp2017/Lecture_Notes/P406POM_Lecture_Notes/P406POM_Lect6.pdf" target="_blank" rel="noopener">UIUC Physics 406: Harmonics and Overtones</a> — harmonic series의 fundamental·harmonic·overtone 번호 대응, p.2.</li>
+  <li><a href="https://ocw.mit.edu/courses/res-6-007-signals-and-systems-spring-2011/cf3874410d609d71d6036e7572525222_MITRES_6_007S11_lec10.pdf" target="_blank" rel="noopener">MIT Signals and Systems: Discrete-Time Fourier Series</a> — PDF pp.1–2의 유한 exponential basis와 계수 주기성.</li>
+  <li><a href="https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/c8dc8096a9d75f8f30b4b97354b48437_ch1_adc.pdf" target="_blank" rel="noopener">MIT HST.582J: Aliasing of a Periodic Signal</a> — Section 1.A.2.3, PDF p.16 (printed p.15)의 CTFS sampling과 계수 재배열 유도.</li>
   <li><a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">MIT 2.161 Lecture 4: Fourier Transform</a> — angular-frequency pair와 spectrum 단위, convention 비교 및 rectangular-pulse 적분, Sections 1–1.2.</li>
   <li><a href="https://people.tamu.edu/~f-narcowich/m414/s04w/m414w_ln14.html" target="_blank" rel="noopener">Texas A&amp;M Math 414: Fourier Series and Fourier Transforms</a> — 주기 확장의 Riemann-sum 전개와 piecewise-smooth inversion theorem; unitary 정규화는 이 글의 convention으로 환산해 비교.</li>
   <li><a href="https://open.lib.umn.edu/sensationandperception/chapter/pitch-perception/" target="_blank" rel="noopener">University of Minnesota: Pitch Perception</a> — harmonic complex tone과 missing fundamental의 지각.</li>
