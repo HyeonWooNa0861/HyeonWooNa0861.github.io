@@ -1,0 +1,200 @@
+## 1. MRLCO: 변화하는 MEC에서 빠르게 적응하는 DAG 오프로딩
+
+1. MRLCO: 변화하는 MEC에서 빠르게 적응하는 DAG 오프로딩
+
+발표 대본
+이 발표는 MRLCO가 왜 필요한지, DAG 오프로딩을 어떻게 순차 의사결정으로 바꾸는지, 그리고 메타 학습과 일반적인 온라인 강화학습이 어디에서 다른지를 설명합니다. 핵심 용어는 computation task와 meta-RL learning task를 구분해서 사용합니다. computation task는 DAG의 정점이고, learning task는 하나의 MEC 맥락에서 정책을 배울 MDP입니다.
+
+공개 출처
+ieee | title, abstract
+IEEE Transactions on Parallel and Distributed Systems paper record
+https://doi.org/10.1109/TPDS.2020.3014896
+arxiv | title page, v5
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 2. 환경이 바뀌면 기존 DRL policy가 다시 학습해야 한다
+
+2. 환경이 바뀌면 기존 DRL policy가 다시 학습해야 한다
+
+발표 대본
+논문은 기존 DRL 오프로딩 방법이 새로운 환경에서 낮은 sample efficiency 때문에 policy를 다시 학습해야 한다고 문제를 제기합니다. MRLCO는 여러 MEC 맥락에서 meta policy를 학습한 뒤, 새 맥락에서 소수의 gradient update로 task-specific policy를 얻으려 합니다. 이 슬라이드의 새 맥락은 새 computation task 하나가 아니라, DAG 집합이나 전송률 조건이 달라진 learning task를 뜻합니다.
+
+공개 출처
+arxiv | pp. 1-2, §1
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 3. DAG 오프로딩은 의존성을 지키며 task를 배치하는 문제다
+
+3. DAG 오프로딩은 의존성을 지키며 task를 배치하는 문제다
+
+발표 대본
+논문은 application을 DAG로 모델링합니다. 정점은 computation task이고 간선은 선행 관계입니다. 각 task는 UE에서 local execution하거나 MEC host에 offload합니다. task는 rank 내림차순으로 정렬되어 parent가 child보다 먼저 배치됩니다. 이 순서 덕분에 partial placement plan과 resource finish time을 state에 누적할 수 있습니다.
+
+공개 출처
+arxiv | pp. 3-6, Eqs. 5-11
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 4. local과 offload의 latency는 같은 task에도 달라진다
+
+4. local과 offload의 latency는 같은 task에도 달라진다
+
+발표 대본
+논문에서 local latency는 필요한 CPU cycle을 UE capacity로 나눈 값입니다. Offload latency는 uplink data transmission, MEC VM computation, downlink result transmission의 합입니다. 실제 finish-time equation은 parent task의 finish time과 해당 resource가 비는 시각의 최댓값을 사용합니다. 전체 DAG latency는 exit task의 finish time으로 정의됩니다.
+
+공개 출처
+arxiv | pp. 3-4, Eqs. 4-8
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 5. 강의용 계산 예시: 전송률이 바뀌면 선택도 바뀐다
+
+5. 강의용 계산 예시: 전송률이 바뀌면 선택도 바뀐다
+
+발표 대본
+이 예시는 논문의 latency equation을 설명하기 위해 만든 계산입니다. B의 remote compute time은 20 million cycles를 10 GHz VM으로 나눈 2 ms이고, 첫 조건에서는 parent A의 4 ms 뒤에 3+2+1 ms가 더해져 10 ms가 됩니다. Uplink가 25 ms로 길어지면 remote total은 32 ms가 됩니다. 원문은 이와 같은 시스템 상태 차이를 learning task distribution으로 다룹니다.
+
+공개 출처
+arxiv | pp. 3-4, Eqs. 4-8
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 6. MRLCO의 MDP: 상태는 DAG와 지금까지의 배치다
+
+6. MRLCO의 MDP: 상태는 DAG와 지금까지의 배치다
+
+발표 대본
+논문은 각 learning task Ti를 MDP로 표현하고, Ti는 task distribution rho(T)에서 샘플됩니다. State는 단순 channel vector가 아니라 DAG의 encoded representation과 앞선 placement plan입니다. Action은 다음 computation task의 local 또는 MEC placement입니다. Reward는 그 decision 뒤 증가한 end-to-end latency의 음수입니다. 서로 다른 learning task는 reward나 transition, initial distribution이 달라질 수 있습니다.
+
+공개 출처
+arxiv | pp. 2-3, §2.2-2.3; pp. 5-6, §4.2
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 7. seq2seq: DAG를 action 순서로 바꾸는 policy
+
+7. seq2seq: DAG를 action 순서로 바꾸는 policy
+
+발표 대본
+논문은 custom seq2seq neural network를 사용합니다. Encoder와 decoder는 LSTM이며, attention은 현재 decoder step에 필요한 encoder output을 가중합으로 선택합니다. Decoder는 이전 action, 이전 decoder state, attention context를 받아 다음 task action의 policy distribution을 만듭니다. Policy와 value function은 encoder와 decoder의 대부분 parameter를 공유합니다.
+
+공개 출처
+arxiv | pp. 6-7, Eqs. 11-15 and Fig. 4
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 8. PPO inner loop: 새 MEC context 적응
+
+8. PPO inner loop: 새 MEC context 적응
+
+발표 대본
+MRLCO는 inner loop에서 PPO를 사용합니다. Sample policy로 trajectory를 모은 뒤 clipped surrogate objective와 value-function loss를 결합해 θ_i를 update합니다. 원문 Table 2에서 inner learning rate는 5e-4이고 gradient step m은 3입니다. 여기서 θ_i는 특정 learning task에 적응한 parameter입니다. 학습이 끝난 뒤 decoder는 각 step에서 가장 높은 policy probability action을 사용해 offloading plan을 추론합니다.
+
+공개 출처
+arxiv | pp. 7-8, Eqs. 16-20; p. 8, Table 2
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 9. first-order meta: 여러 context의 초기값 갱신
+
+9. first-order meta: 여러 context의 초기값 갱신
+
+발표 대본
+Algorithm 1은 task distribution rho(T)에서 learning task batch를 샘플하고, 각 task에서 θ_i를 θ로 초기화해 inner PPO update를 합니다. Inner loop 결과는 θ′_i로 복사됩니다. 원문 Eq. (22)의 first-order meta gradient는 sampled contexts에 대해 (θ′_i − θ)/(αm)을 평균낸 값입니다. 이는 gradients of gradients 비용을 줄이기 위한 first-order approximation이며, outer loop는 이 g_MRLCO로 θ를 Adam update합니다.
+
+공개 출처
+arxiv | pp. 7-8, Eqs. 21-22 and Algorithm 1
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 10. meta-training과 새 환경 적응의 차이
+
+10. meta-training과 새 환경 적응의 차이
+
+발표 대본
+이 슬라이드는 분기 그림을 비교 장식으로 쓰는 것이 아니라, 실제 parameter 흐름을 보입니다. Meta-training은 여러 MDP context로 θ를 업데이트합니다. New context adaptation은 그 θ에서 시작해 local trajectory로 θ_i를 만듭니다. 그 결과 θ_i가 scheduler에서 사용됩니다. Fine-tuning DRL도 pretrained parameter를 시작점으로 쓸 수 있지만, MRLCO는 post-update performance를 목표로 meta objective를 구성한다는 점에서 다릅니다.
+
+공개 출처
+arxiv | pp. 2-3, §2.3; pp. 5, 7-8, §4.1-4.3
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 11. 평가 조건: synthetic DAG와 held-out learning task
+
+11. 평가 조건: synthetic DAG와 held-out learning task
+
+발표 대본
+원문은 TensorFlow로 two-layer LSTM encoder와 decoder를 구현합니다. UE CPU speed는 1 GHz이고 MEC VM은 four 2.5-GHz cores로 10 GHz입니다. 각 task data size는 5 KB에서 50 KB, CPU cycles는 10^7에서 10^8 사이입니다. Training과 test dataset은 분리했고, topology, task number, transmission rate 변화가 서로 다른 learning task를 구성합니다.
+
+공개 출처
+arxiv | p. 8, Table 2 and §5.2
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 12. 적응 결과: update 수와 test context
+
+12. 적응 결과: update 수와 test context
+
+발표 대본
+Figure 6부터 Figure 8까지는 update steps를 가로축으로 사용합니다. 논문은 Topology I에서 9 step 뒤 MRLCO가 HEFT-based보다 좋아진다고 해석합니다. n=30 case에서는 한 update 뒤 MRLCO latency가 급격히 낮아지고, 20 update 뒤 가장 낮은 baseline result를 보인다고 설명합니다. Transmission-rate experiment는 training에 없던 5.5, 8.5, 11.5 Mbps conditions를 test합니다. 이러한 문장은 각 figure의 simulator 조건을 벗어나 일반적인 guarantee로 바꾸면 안 됩니다.
+
+공개 출처
+arxiv | pp. 9-10, Figs. 6-8
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 13. Table 3 읽기: MRLCO도 optimal 값과는 차이가 남는다
+
+13. Table 3 읽기: MRLCO도 optimal 값과는 차이가 남는다
+
+발표 대본
+이 표는 원문 Table 3의 Topology I row만 편집 가능한 형태로 옮긴 것입니다. Table 3은 서로 다른 topology, task count, and transmission-rate test dataset을 함께 제시하므로, 한 row의 latency를 다른 test context의 값과 직접 섞어 비교하지 않아야 합니다. Optimal column은 exhaustive search 가능 조건에서만 존재하며 n=30과 n=40은 N/A입니다. MRLCO의 이점은 original table에서 baseline보다 낮은 conditional latency이지 optimality proof가 아닙니다.
+
+공개 출처
+arxiv | p. 10, Table 3
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 14. 일반 DRL·DMRO·MRLCO의 문제 설정 차이
+
+14. 일반 DRL·DMRO·MRLCO의 문제 설정 차이
+
+발표 대본
+이 비교는 각 원문이 정의한 formulation에 한정합니다. DMRO는 local, edge, cloud의 세 위치와 parallel Q-learning DNN을 사용하며 meta parameter psi를 학습합니다. MRLCO는 binary UE versus MEC placement, PPO inner loop, first-order outer meta update, DAG seq2seq policy를 사용합니다. 일반 DRL은 하나의 stationary environment에서 policy를 training하고 새로운 context에서 full retraining 또는 fine-tuning을 요구할 수 있다는 논문의 대비 대상입니다.
+
+공개 출처
+dmro-paper | arXiv:2008.09930v1, pp. 3-8, Eqs. (1)-(22), Algorithms 1-2
+DMRO primary manuscript, arXiv:2008.09930v1
+https://arxiv.org/abs/2008.09930
+arxiv | pp. 1-3, 5-8
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+ieee | abstract and §4
+IEEE Transactions on Parallel and Distributed Systems paper record
+https://doi.org/10.1109/TPDS.2020.3014896
+
+## 15. 논문이 남긴 가정과 한계
+
+15. 논문이 남긴 가정과 한계
+
+발표 대본
+논문의 Discussion은 stable wireless channel, reliable mobile device, sufficient computation resource를 가정한다고 밝힙니다. Outer loop는 모든 UE로부터 task-specific parameter를 모은 뒤 meta policy를 갱신하는 synchronous process이므로, network connection이나 power 부족으로 발생한 straggler가 training performance에 영향을 줄 수 있다고 설명합니다. 또한 first-order approximation은 second-order gradient의 computation cost와 implementation difficulty를 피하기 위한 선택입니다.
+
+공개 출처
+arxiv | pp. 7-8, §4.3; pp. 10-11, §7
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033
+
+## 16. MRLCO의 핵심 연결
+
+16. MRLCO의 핵심 연결
+
+발표 대본
+정리하면, MRLCO는 dependency가 있는 DAG를 rank 순서의 decision sequence로 표현하고 seq2seq policy로 local/offload placement를 만듭니다. 새 context에서는 meta initialization θ에서 시작한 inner PPO update가 θ_i를 만들며, outer loop는 많은 context에서 그 시작점을 개선합니다. 실험은 held-out topology, task count, and transmission-rate context에서 낮은 latency와 빠른 adaptation을 보고하지만, 그 결과는 source의 synthetic simulator와 stated assumptions 안에서 해석해야 합니다.
+
+공개 출처
+arxiv | pp. 1-11, §§1-8
+Authors' public manuscript record, arXiv:2008.02033v5
+https://arxiv.org/abs/2008.02033

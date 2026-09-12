@@ -93,6 +93,14 @@ Power control의 영향도 크다. Uncorrelated shadow fading에서 power contro
 
 또한 cell-free 구조는 AP synchronization, TDD reciprocity calibration, large-scale fading 시간 척도의 power-control update를 전제로 한다. 실제 deployment에서는 mobility가 높을 때 pilot 재할당과 power-control coefficient 갱신을 얼마나 자주 수행할지, CPU/edge processing을 어디에 둘지까지 함께 설계해야 한다. 논문의 model은 이 확장 문제를 여는 출발점으로 보는 것이 적절하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/cell-free-massive-mimo-versus-small-cells/cell-free-small-cells-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/cell-free-massive-mimo-versus-small-cells/cell-free-small-cells-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/cell-free-massive-mimo-versus-small-cells/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/cell-free-massive-mimo-versus-small-cells/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

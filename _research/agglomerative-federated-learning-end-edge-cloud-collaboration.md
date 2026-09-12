@@ -77,6 +77,14 @@ FedAgg는 end, edge, cloud가 계층별로 다른 크기의 모델을 가질 수
 
 QECO-Adapt 관점에서 이 논문은 edge-cloud 협업 구조를 학습 문제에 적용한 사례로 볼 수 있다. Task offloading은 계산 task를 어디에서 처리할지 결정하고, FedAgg는 model training knowledge를 어떤 계층에서 어떻게 교환할지 다룬다. 둘 다 edge 환경에서 자원 차이를 숨기기보다 계층별 capability 차이를 모델링한다는 공통점이 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 19장 | <a href="/assets/seminars/agglomerative-federated-learning-end-edge-cloud-collaboration/fedagg-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/agglomerative-federated-learning-end-edge-cloud-collaboration/fedagg-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/agglomerative-federated-learning-end-edge-cloud-collaboration/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/agglomerative-federated-learning-end-edge-cloud-collaboration/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

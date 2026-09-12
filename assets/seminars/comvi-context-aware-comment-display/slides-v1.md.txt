@@ -1,0 +1,441 @@
+---
+type: research-seminar-slides
+paper_id: comvi-context-aware-comment-display
+---
+
+# 문맥에 맞춰 댓글을 재생하는 ComVi
+
+논문: ComVi: Context-Aware Optimized Comment Display in Video Playback
+
+저자: Minsun Kim, Dawon Lee, Junyong Noh (2026)
+
+## 1. 문맥에 맞춰 댓글을 재생하는 ComVi
+
+일반 댓글을 영상 시점에 연결하고 읽을 수 있는 순서로 선택하는 인터페이스
+
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) title page and abstract
+
+## 2. 댓글에는 내용뿐 아니라 보여 줄 시점도 필요하다
+
+일반 댓글과 시간 동기 댓글은 서로 다른 결손을 가진다.
+
+
+| 방식 | 시점 정보 | 시청 중 문제 |
+| --- | --- | --- |
+| 일반 댓글 목록 | 대부분 없음 | 현재 장면과 무관하거나 spoiler 가능 |
+| Danmaku | 작성 시점에 저장 | 동시 댓글이 화면을 가리고 읽기 어려움 |
+| ComVi의 목표 | 내용에서 시점을 추정 | 관련 댓글을 읽을 시간과 함께 배치 |
+
+핵심: 핵심 문제는 좋은 댓글 찾기만이 아니라 댓글과 재생 시점의 정렬이다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §1, pp. 1-2; Fig. 2
+
+## 3. 논문의 세 층위를 먼저 분리한다
+
+시스템 설계, 계산 결과, 사용자 경험은 같은 종류의 증거가 아니다.
+
+
+| 층위 | 논문이 제시한 것 | 보장하지 않는 것 |
+| --- | --- | --- |
+| 설계 | 댓글 mapping과 sequence 선택 | 모든 장면의 의미를 정확히 이해 |
+| prototype | 재생 중 하단 댓글 표시와 설정 | 모든 플랫폼의 실시간 배포 성능 |
+| 평가 | proxy 분석과 N=32 사용자 연구 | 장기 사용·학습·이해도 향상 |
+
+핵심: 동적 계획법의 최적성과 시청 경험의 우수성은 서로 다른 주장이다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §§1, 3, 5-6
+
+## 4. ComVi의 전체 처리 흐름
+
+많은 일반 댓글을 한 개의 시간 순서 comment sequence로 바꾼다.
+
+1. **입력**: video·comments·likes
+2. **시점 mapping**: audio·visual correlation
+3. **후보 sequence**: reading rule 적용
+4. **점수와 DP**: 총점 최대 sequence
+5. **재생**: 정해진 시점에 표시
+
+핵심: 먼저 댓글마다 가능한 시점을 만들고, 그 뒤 전체 순서를 선택한다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) Fig. 1; §3, p. 3
+
+## 5. 입력 단계에서 comment identity를 정리한다
+
+같은 문장을 여러 번 세어 sequence를 채우지 않도록 중복을 먼저 제거한다.
+
+- 입력: video, 모든 comment, like 수, user metadata
+- 동일한 comment text가 반복되면 like가 가장 많은 하나만 유지
+- video 길이 T를 1초 단위 timestamp 1부터 T까지로 다룸
+- 한 comment는 여러 timestamp의 timed comment가 될 수 있음
+
+핵심: comment와 timed comment는 다르다: 같은 문장이 여러 후보 시점을 가질 수 있다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.1, pp. 3-4
+
+## 6. 댓글은 audio와 visual 두 관점에 동시에 맞춘다
+
+두 독립적인 텍스트 표현을 만든 뒤 cosine similarity를 결합한다.
+
+- **Audio view**: 해당 시점 subtitle
+- **Visual view**: 해당 shot 설명
+- **Correlation**: 두 similarity 결합
+- **Timed comment**: 관련 timestamp 후보
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.1, p. 4
+
+## 7. 두 similarity를 합쳐 0부터 1로 정규화한다
+
+audio나 visual 한쪽만 높은 경우도 반영하되, 최종 threshold는 정규화 뒤 적용한다.
+
+
+| 단계 | 계산 | 해석 |
+| --- | --- | --- |
+| 두 관점 | Corr_A, Corr_V | comment와 subtitle·shot 설명의 cosine |
+| 결합 | sqrt((Corr_A^2+Corr_V^2)/2) | 두 값을 RMS 방식으로 결합 |
+| 정규화 | Norm으로 0부터 1 | 0부터 1 범위로 정규화 |
+| 후보화 | Corr > 0.3 | 경험적으로 정한 mapping threshold |
+
+핵심: 0.3은 학습으로 증명된 보편 경계가 아니라 논문이 경험적으로 정한 값이다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.1, Eq. (1), p. 4
+
+## 8. 계산 예시: 결합값과 최종 Corr를 구분한다
+
+다음 숫자는 수식 이해를 위한 구성 예시이며 논문의 실험값이 아니다.
+
+
+| 항목 | 값 | 계산 의미 |
+| --- | --- | --- |
+| audio cosine | 0.6 | subtitle와 comment의 similarity |
+| visual cosine | 0.8 | shot 설명과 comment의 similarity |
+| 결합값 | sqrt((0.36+0.64)/2) ≈ 0.707 | Norm 이전 RMS |
+| 최종 Corr | Norm(0.707) | 원문이 세부 정규화식을 명시하지 않음 |
+
+핵심: 0.707을 바로 threshold 0.3과 비교하면 정규화 단계를 건너뛴다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.1, Eq. (1), p. 4
+
+## 9. 후보 sequence는 읽을 수 있는 시간부터 확보한다
+
+기본 모드에서는 한 댓글이 끝나기 전에 다음 댓글을 시작하지 않는다.
+
+
+| 규칙 | 원문 정의 | 효과 |
+| --- | --- | --- |
+| 읽기 시간 | min(alpha_user × 글자 수, 6초) | 긴 댓글의 표시 상한 |
+| 시간 해상도 | fraction은 올림 | 최소 1초 표시 |
+| 비중첩 | 다음 시작 >= 현재 시작+읽기 | 기본 화면은 한 댓글 |
+| 중복 금지 | 선택한 원댓글은 재선택하지 않음 | 다른 시점 반복 표시 방지 |
+
+핵심: 관련성이 높아도 기존 댓글의 읽기 구간과 겹치면 기본 sequence에서 제외된다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.2, p. 4
+
+## 10. 관련성·인기도·읽기 시간을 하나의 score로 묶는다
+
+짧은 댓글만 많이 고르는 편향을 줄이기 위해 reading time도 곱한다.
+
+
+| 요소 | 기본 설정 | 역할 |
+| --- | --- | --- |
+| Corr | weight 2 | 해당 시점의 semantic relevance |
+| Likes | weight 1 | Box-Cox 후 0부터 1로 정규화 |
+| Reading | 각 timed comment의 가중합에 곱함 | 짧은 댓글의 개수상 이점 완화 |
+| Score | (2×Corr+Likes)×Reading | timed comment 하나의 가치 |
+
+핵심: 이 score는 논문의 설계 목적 함수이며 인간 만족의 완전한 측정값은 아니다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.3, p. 4
+
+## 11. 동적 계획법은 feasible sequence의 총점을 비교한다
+
+개별 최고 score가 아니라 서로 함께 배치할 수 있는 조합의 합을 최대화한다.
+
+1. **timed comments**: 시점별 후보 pool
+2. **feasibility**: 읽기·중복 규칙
+3. **sequence score**: 선택 항목 score 합
+4. **dynamic programming**: 최대 총점 선택
+5. **S star**: 표시 수 n도 함께 결정
+
+핵심: n을 미리 정하지 않고 영상 길이와 reading rule이 선택 개수를 결정한다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §§3.2-3.4, p. 4
+
+## 12. 구성 예시: 최고 개별 score보다 조합이 중요하다
+
+정규화된 값과 기본 weight를 사용한 교육용 예시다.
+
+
+| 후보 | 표시 구간 | Corr·Likes·Reading | Score |
+| --- | --- | --- | --- |
+| A | [2,5) | 0.8, 0.1, 3초 | (1.6+0.1)×3 = 5.1 |
+| B | [4,6) | 0.9, 0.4, 2초 | (1.8+0.4)×2 = 4.4 |
+| C | [6,9) | 0.6, 0.8, 3초 | (1.2+0.8)×3 = 6.0 |
+| 선택 | A+C | 비중첩; B+C도 가능 | 11.1 > 10.4 |
+
+핵심: A와 B는 겹치므로 A+C가 이 작은 예시의 최적 sequence다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §§3.2-3.4, p. 4
+
+## 13. 선택 결과는 재생 중 한 줄의 시간표가 된다
+
+각 selected comment는 시작 시점과 표시 길이를 함께 가진다.
+
+1. **timestamp 도달**: selected comment 시작
+2. **bottom overlay**: 영상 하단에 표시
+3. **metadata**: profile과 like 함께
+4. **reading 종료**: 다음 구간으로 이동
+
+핵심: 출력은 댓글 순위 목록이 아니라 video timeline에 배치된 sequence다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) Fig. 4, p. 6
+
+## 14. 개인화는 mapping 전후의 서로 다른 지점을 바꾼다
+
+하나의 slider가 모든 동작을 바꾸는 것이 아니라 각 parameter가 다른 경계를 조정한다.
+
+
+| 설정 | 바뀌는 단계 | 원문 동작 |
+| --- | --- | --- |
+| alpha_user·tau_max | 후보 feasibility | 읽기 시간과 상한 조절 |
+| w_likes | score | 인기도 영향 1에서 0까지 축소 |
+| N_user | overlap rule | 동시 댓글 수를 N_user 이하로 유지 |
+| query | mapping 전 filter | similarity > 0.6 comment만 통과 |
+
+핵심: query는 결과를 재정렬하는 것이 아니라 후보 comment pool을 먼저 줄인다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §3.5, p. 5; Fig. 3
+
+## 15. Figure 4: 큰 comment pool의 축약
+
+다음 값은 한 개 영상 V1에서 생성된 sequence의 기술 통계다.
+
+
+| 조건 | 입력 | 출력 | 선택 comment 특성 |
+| --- | --- | --- | --- |
+| V1 | 3분34초 | 46 comments | 평균 표시 4.65초 |
+| comment pool | 14,880개 | 시간 순 sequence | 표시 SD 1.75초 |
+| raw likes | 0부터 21,000 | selected 평균 1,069.24 | SD 2,249.68 |
+
+핵심: 이 예시는 sequence 구조를 보여 주며 사용자 경험의 인과 효과를 측정한 실험은 아니다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4, pp. 5-6; Fig. 4
+
+## 16. semantic 평가의 세 조건
+
+같은 수의 댓글을 비교하지만 각 조건이 만드는 근거는 다르다.
+
+
+| 조건 | 댓글·시점 구성 | 해석 경계 |
+| --- | --- | --- |
+| ComVi | Likes=0으로 두고 Corr만 평가 | 전체 system score와 다름 |
+| Ground-truth | 명시적 timestamp 댓글의 그 시점 | 논문이 만든 proxy |
+| Random | 같은 개수를 ComVi 시점에 무작위 배치 | 무작위 기준선 |
+
+핵심: Ground-truth라는 이름이 exhaustive human annotation을 뜻하지 않는다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.1, pp. 5-6
+
+## 17. 세 영상에서 Corr는 Random보다 높고 proxy와 비슷했다
+
+값은 sequence 안 comment의 평균 Corr이며 의미 정확도 비율이 아니다.
+
+
+| Genre | ComVi | Ground-truth proxy | Random |
+| --- | --- | --- | --- |
+| Documentary | 0.66 | 0.76 | 0.14 |
+| Movie | 0.66 | 0.61 | 0.17 |
+| News | 0.74 | 0.72 | 0.24 |
+
+핵심: ComVi는 embedding proxy에서 Random보다 높았지만 의미 정확도를 직접 측정하지 않았다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.1, pp. 5-6
+
+## 18. likes term은 선택 sequence의 popularity 분포를 바꿨다
+
+평균 normalized likes를 전체 댓글과 Likes-ablated sequence에 비교했다.
+
+
+| Genre | ComVi | Likes-ablated | Total |
+| --- | --- | --- | --- |
+| Documentary | 0.94 | 0.14 | 0.10 |
+| Movie | 0.76 | 0.31 | 0.15 |
+| News | 0.93 | 0.12 | 0.09 |
+
+핵심: likes를 score에 넣으면 이 세 영상에서 더 인기 있는 댓글이 선택되었다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.2, p. 6; Fig. 6
+
+## 19. reading speed를 느리게 잡으면 선택 수가 줄어든다
+
+고정 video 안에서 더 긴 표시 구간은 들어갈 수 있는 댓글 수를 줄인다.
+
+
+| alpha_user | 평균 표시 시간 | 선택 수 | 관계 |
+| --- | --- | --- | --- |
+| 0.048 | 3.45초 | 85 | 짧은 구간 |
+| 0.068 | 3.89초 | 75 | 기본값 |
+| 0.088 | 4.63초 | 63 | 긴 구간 |
+
+핵심: 개인화는 읽기 편의와 comment density 사이의 구조적 trade-off를 만든다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.3, p. 6; Fig. 7
+
+## 20. 동시 표시와 query는 sequence 구성을 다르게 바꾼다
+
+하나는 시간 용량을 늘리고, 다른 하나는 후보의 주제를 바꾼다.
+
+
+| 기능 | 관찰 조건 | 결과 | 의미 |
+| --- | --- | --- | --- |
+| N_user | 2에서 3 | 65에서 96 comments | 동시 slot 증가 |
+| query | 같은 1:00-1:25 구간 | 다른 comment 집합 | 관심 주제 filter |
+
+핵심: 더 많은 댓글과 더 관심 있는 댓글은 서로 다른 제어 목표다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.4, p. 6; Figs. 8-9
+
+## 21. sequence 계산 시간과 준비 비용을 분리한다
+
+17초에서 71초라는 값에는 video caption 생성이 포함되지 않는다.
+
+
+| 항목 | 조건 | 보고 시간 | 경계 |
+| --- | --- | --- | --- |
+| sequence 계산 | 2-10분, 1천+ comments | 17-71초 | 5개 video |
+| shot segmentation | PySceneDetect | 약 20초 | text 준비 단계 |
+| shot caption | Tarsier | 약 10분 | sequence 시간에서 제외 |
+| hardware | EPYC 7352, 62GB, RTX A5000 | 단일 machine | 다른 장비 미측정 |
+
+핵심: 보고된 sequence runtime만으로 end-to-end interactive latency를 주장할 수 없다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §4.5, p. 8; Table 1
+
+## 22. 사용자 연구: 다섯 interface 비교
+
+순서와 video pairing을 통제했지만 같은 video를 모든 interface에서 반복하지는 않았다.
+
+
+| 항목 | 설정 | 해석 |
+| --- | --- | --- |
+| 참가자 | N=32; 남15·여17 | 평균 26.34세, SD 3.48 |
+| 조건 | 각자 5 interface 모두 경험 | randomized order |
+| 영상 | 조건마다 다른 video | 10 pairing을 counterbalance |
+| 장르 | movie·entertainment·news·documentary·music | 5개 material |
+| 응답 | 4문항, 7-point Likert | self-reported experience |
+
+핵심: 이 연구는 interface 경험 비교이며 실제 장기 플랫폼 사용을 관찰한 field study가 아니다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §§5.1-5.3, pp. 8-10; Table 2
+
+## 23. 단일 댓글 표시 변형도 비교 조건에 포함한다
+
+두 기존 방식에도 한 번에 하나의 댓글만 표시하는 변형을 추가한다.
+
+
+| Interface | 표시 방식 | 시점 처리 |
+| --- | --- | --- |
+| ComVi | 한 comment overlay | ComVi sequence |
+| YouTube | 아래 scroll list | playback과 독립 |
+| YouTube-1ver. | 한 comment씩 scroll | playback과 독립 |
+| Danmaku | 최대 20개 이동 overlay | Corr 최고 시점 |
+| Danmaku-1ver. | 한 comment 이동 | 시점별 Corr 최고 comment |
+
+핵심: 두 1ver. 조건은 ComVi와 같은 single-comment format으로 표시하는 비교 interface다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §5.1, pp. 8-10; Fig. 10
+
+## 24. 통계 분석은 전체 차이 뒤에 ComVi pair를 확인한다
+
+모든 pair를 무제한 비교하지 않고 사후 검정의 다중비교를 보정했다.
+
+1. **4개 문항**: 각각 7-point rating
+2. **Friedman test**: 5조건 전체 차이
+3. **pairwise**: ComVi 대 4조건
+4. **Wilcoxon**: two-tailed signed-rank
+5. **Holm correction**: multiple comparison
+
+핵심: 평균 차이만이 아니라 participant 내 순위와 보정된 pairwise 유의성을 함께 본다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §5.3, pp. 10-11
+
+## 25. ComVi의 네 self-report mean을 조건별로 읽는다
+
+demand는 낮을수록, alignment와 engagement는 높을수록 긍정적이다.
+
+
+| Measure | ComVi mean | 유의하게 비교된 조건 | 방향 |
+| --- | --- | --- | --- |
+| Mental demand | 2.22 | Danmaku, Danmaku-1ver. | ComVi 낮음 |
+| Physical demand | 1.50 | YouTube, YouTube-1ver., Danmaku | ComVi 낮음 |
+| Context alignment | 5.97 | 다른 네 조건 모두 | ComVi 높음 |
+| Overall engagement | 5.22 | 다른 네 조건 모두 | ComVi 높음 |
+
+핵심: 유의하지 않은 pair까지 같은 방향으로 일반화해서는 안 된다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §5.3, pp. 10-11; Fig. 11
+
+## 26. 선호도에서는 23명에 해당하는 71.9%가 ComVi를 골랐다
+
+이 선택은 가장 만족스러운 comment-integrated viewing interface 한 가지를 묻는다.
+
+
+| Interface | Preference | N=32 환산 |
+| --- | --- | --- |
+| ComVi | 71.9% | 23명 |
+| YouTube | 18.8% | 6명 |
+| Danmaku-1ver. | 6.2% | 2명 |
+| YouTube-1ver. | 3.1% | 1명 |
+| Danmaku | 0% | 0명 |
+
+핵심: 71.9%는 이 표본과 다섯 구현 조건에서의 단일 선택 결과다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §5.3, p. 11; Fig. 11
+
+## 27. ComVi가 놓치는 comment와 viewing context가 있다
+
+논문은 현재 system의 한계를 후속 기능과 측정 과제로 분리한다.
+
+
+| 한계 | 현재 영향 | 논문이 제안한 방향 |
+| --- | --- | --- |
+| 영상 전체 반응 | 특정 시점 Corr가 낮아 제외 | 별도 panel |
+| lexical overlap | 인용형 comment 우선 가능 | novelty·diversity term |
+| 복잡한 장면 | video와 comment 동시 overload | 동적 reading speed |
+| 하단 overlay | subtitle·visual을 가릴 수 있음 | dynamic placement |
+| 평가 범위 | gaze·comprehension 미측정 | eye tracking과 이해도 평가 |
+
+핵심: 관련 시점에 보인다는 것과 시청자가 충분히 이해한다는 것은 별도 평가 문제다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §6, pp. 10-12
+
+## 28. 최종 주장은 근거의 종류에 맞춰 제한한다
+
+ComVi의 장점은 분명하지만 각 결과가 답하는 질문은 다르다.
+
+
+| 근거 | 말할 수 있는 것 | 말할 수 없는 것 |
+| --- | --- | --- |
+| DP objective | 정의된 score 합의 최적 sequence | 주관적 만족의 전역 최적 |
+| proxy 분석 | 세 영상의 Corr·likes 경향 | 모든 장르의 의미 정확도 |
+| runtime | 한 hardware의 조건부 비용 | 실시간 end-to-end 보장 |
+| user study | N=32의 self-report 차이 | 장기 행동·이해도·학습 효과 |
+
+핵심: 좋은 HCI 논문 읽기는 system이 만든 기능과 study가 지지한 경험을 따로 추적하는 일이다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) §§3-6
+
+## 29. ComVi를 한 문장씩 다시 연결한다
+
+댓글을 줄이는 것이 아니라 시간에 맞고 읽을 수 있는 sequence로 재구성한다.
+
+1. **Context**: audio·visual 시점 정렬
+2. **Feasibility**: reading interval 확보
+3. **Preference**: Corr와 likes 결합
+4. **Sequence**: DP로 총점 최대화
+5. **Evidence**: proxy와 user study
+
+핵심: ComVi의 핵심은 multimodal mapping, temporal scheduling, interface evaluation의 결합이다
+
+근거: [paper](https://doi.org/10.1145/3772318.3791018) Fig. 1; §§3-7

@@ -1,0 +1,245 @@
+## 1. Calibration Data가 LLM PTQ·Pruning에 미치는 영향
+
+1. Calibration Data가 LLM PTQ·Pruning에 미치는 영향
+
+발표 대본
+이 논문은 post-training quantization과 pruning에서 calibration data가 단순한 준비물이 아니라 압축 알고리즘의 입력이라는 점을 실증적으로 살핍니다. 발표의 중심 질문은 같은 모델과 같은 압축 방법을 써도 calibration text가 바뀌면 결과가 달라질 수 있는가입니다. 먼저 activation-dependent compression의 구조를 보고, 실험 격자와 결과를 읽은 뒤, 이 논문이 지지하는 실무 교훈과 지지하지 않는 과잉 해석을 구분합니다.
+
+공개 출처
+acl2024 | Abstract
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+arxiv-v2 | v2, 2024-08-12
+On the Impact of Calibration Data in Post-training Quantization and Pruning, arXiv v2
+https://arxiv.org/abs/2311.09755
+
+## 2. 먼저 범위: calibration은 training data가 아니다
+
+2. 먼저 범위: calibration은 training data가 아니다
+
+발표 대본
+이 구분이 발표 전체의 출발점입니다. calibration text는 모델을 통과해 각 layer의 input activation을 만듭니다. 이 activation을 보고 양자화 level이나 남길 weight를 고르지만, 논문은 그 text의 정답으로 gradient를 계산해 원래 모델 weight를 학습시키지 않습니다. 평가 data는 압축 뒤 zero-shot accuracy와 WikiText perplexity를 재기 위해 별도로 둡니다. 저자들은 zero-shot evaluation data를 calibration source로 쓰지 않아 평가 무결성을 지키려 했습니다.
+
+공개 출처
+acl2024 | pp. 2-3, Sections 2.1 and 3.3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 3. Calibration text가 압축 선택에 들어가는 경로
+
+3. Calibration text가 압축 선택에 들어가는 경로
+
+발표 대본
+논문은 layer l의 원 weight W와 compressed weight Wc가 calibration activation X에서 만드는 출력 차이를 작게 하려는 layer-wise reconstruction 문제를 출발점으로 둡니다. 식을 말로 읽으면 W X와 Wc X의 제곱 차이를 작게 만드는 Wc를 고르는 것입니다. X는 calibration text에서 오므로, text 표본이 달라지면 proxy의 우선순위가 달라질 수 있습니다. 여기서 Wc는 원래 weight를 압축해 만든 표현이고, supervised fine-tuning으로 모든 model weight를 다시 학습한 결과가 아닙니다. proxy가 작다고 downstream accuracy나 latency가 자동으로 최적이라는 뜻도 아닙니다.
+
+공개 출처
+acl2024 | p. 2, Section 2.1
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 4. 교육용 toy: activation 표본이 후보 순위를 바꾼다
+
+4. 교육용 toy: activation 표본이 후보 순위를 바꾼다
+
+발표 대본
+이 예는 논문 실험값이 아닙니다. 원 weight W를 1과 1의 두 성분으로 두고, 압축 후보 C1과 C2를 비교합니다. xA에서는 C1이 원 output을 정확히 재현하고 C2는 큰 오차를 냅니다. xB에서는 반대입니다. 실제 논문은 한 activation이 아니라 2,048-token example 128개에서 얻은 activation을 쓰고, 후보 selection도 각 GPTQ, SpQR, SparseGPT, Wanda의 절차를 따릅니다. 이 toy가 보이는 것은 calibration sample이 proxy에 들어가는 구조뿐이며, 특정 corpus feature가 성능 차이의 원인이라는 증명은 아닙니다.
+
+공개 출처
+acl2024 | p. 2, layer-wise compression objective; illustrative arithmetic
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 5. 같은 calibration도 compressor가 읽는 방식은 다르다
+
+5. 같은 calibration도 compressor가 읽는 방식은 다르다
+
+발표 대본
+GPTQ와 SpQR은 weight quantization 방법이고, SparseGPT와 Wanda는 pruning 방법입니다. GPTQ와 SparseGPT는 inverse-Hessian 정보를 사용합니다. Wanda는 inverse Hessian을 피하고 weight magnitude와 input activation의 l2 norm을 결합한 기준으로 prune합니다. 논문은 양자화와 pruning의 sensitivity가 다를 수 있음을 관찰했지만, 이 표만으로 어느 method가 본질적으로 우월하거나 어떤 mechanism이 분산의 원인이라고 증명하지는 않습니다.
+
+공개 출처
+acl2024 | pp. 2-3, Sections 2.1 and 3.1; p. 12, Table 3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 6. 연구는 calibration 선택을 큰 실험 격자로 바꿨다
+
+6. 연구는 calibration 선택을 큰 실험 격자로 바꿨다
+
+발표 대본
+저자들의 목표는 calibration data robustness를 보는 것입니다. 다섯 source에서 각 열 개의 calibration set을 만들고, 네 compression method와 아홉 LLM에 적용해 1,800개 compressed model을 만들었습니다. 각 model은 10개 zero-shot task와 WikiText perplexity, 즉 11개 evaluation을 거치므로 19,800 model-evaluation 결과가 됩니다. 이 수는 independent training seed의 개수가 아니라, 명시된 calibration source·set·method·model·metric 조합의 개수입니다.
+
+공개 출처
+acl2024 | p. 3, Section 3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 7. 50 calibration set의 생성 규칙
+
+7. 50 calibration set의 생성 규칙
+
+발표 대본
+각 calibration set은 128 example이며 example 하나는 2,048 tokens입니다. 따라서 set 하나의 총량은 262,144 tokens입니다. Sampling은 without replacement이고, 각 source에서는 열 개 calibration set이 서로 겹치지 않습니다. 공개 Hugging Face Datasets version을 사용했으며 C4와 RefinedWeb은 first shard, RedPajama는 existing 1B-token extract에서 sampling했습니다. 본문과 appendix는 50개 set의 seed 값이나 text 목록을 나열하지 않습니다. 저자들은 software/platform 차이 때문에 seed만으로는 부족할 수 있다며 calibration data 자체의 release를 권고합니다.
+
+공개 출처
+acl2024 | p. 4, Sections 3.5-3.6; p. 8, footnote 5
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 8. Source 비교는 단일 속성의 조작 실험이 아니다
+
+8. Source 비교는 단일 속성의 조작 실험이 아니다
+
+발표 대본
+저자들은 random web text와 curated pretraining dataset을 함께 보기 위해 C4, CNN/DM, RedPajama, RefinedWeb, English Wikipedia를 골랐습니다. 그러나 dataset source를 바꾸면 genre, filtering, deduplication, date, length, pretraining overlap 가능성 등 여러 속성이 동시에 바뀝니다. 그러므로 RefinedWeb이 어떤 row에서 좋았다는 관찰을 ‘curation이 원인’ 또는 ‘뉴스는 나쁘다’로 바꿀 수 없습니다. source effect는 이 논문에서 feature-level causal isolation이 아니라 dataset-level comparison입니다.
+
+공개 출처
+acl2024 | pp. 3-4, Section 3.3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 9. 나머지 조건도 함께 고정해 읽어야 한다
+
+9. 나머지 조건도 함께 고정해 읽어야 한다
+
+발표 대본
+세 model family는 LLaMA와 OPT의 base model, Vicuna instruction-tuned model을 포함합니다. Pruning은 GPU acceleration을 목표로 2:4 semi-structured sparsity를 사용해 50% weight를 제거합니다. GPTQ와 SpQR은 4-bit weight setting입니다. 모든 model compression과 evaluation은 single NVIDIA A100 SXM 80GB에서 LM Evaluation Harness로 실행됩니다. 이 실행 환경은 재현 조건에는 중요하지만, 논문이 A100 inference throughput이나 serving latency를 비교했다는 뜻은 아닙니다.
+
+공개 출처
+acl2024 | pp. 3-4, Sections 3.1-3.5; p. 12, Table 3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 10. 평가는 ‘mean accuracy 하나’가 아니라 두 종류의 지표다
+
+10. 평가는 ‘mean accuracy 하나’가 아니라 두 종류의 지표다
+
+발표 대본
+10 zero-shot task는 commonsense reasoning, binary·multiple-choice·Cloze·Winograd-style question을 포함합니다. 저자들은 각 task accuracy와 mean zero-shot accuracy, 그리고 WikiText test perplexity를 함께 봅니다. Appendix B에 따르면 RTE evaluation split은 277 examples로 다른 task보다 작습니다. 그래서 RTE의 큰 score range는 calibration sensitivity와 evaluation sampling variability를 분리해 조심스럽게 읽어야 합니다. 논문 자체도 이 점을 명시합니다.
+
+공개 출처
+acl2024 | pp. 3-4, Section 3.2; p. 12, Table 4
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 11. 결과 1: 같은 C4 source 안에서도 sample range가 보였다
+
+11. 결과 1: 같은 C4 source 안에서도 sample range가 보였다
+
+발표 대본
+Figure 2는 C4에서 뽑은 열 개 calibration set에 대한 task accuracy distribution을 LLaMA family별로 보입니다. LLaMA-7B와 SparseGPT의 RTE는 52.7%부터 61.7%, BoolQ는 66.4%부터 73.0% 범위였습니다. 이것은 C4가 나쁘다는 결론이 아니라, 동일 source 안 random sample variation도 관찰해야 한다는 증거입니다. RTE split이 작다는 앞 slide의 주의를 계속 유지해야 하며, 이 두 task range를 모든 model과 task의 대표값으로 말하면 안 됩니다.
+
+공개 출처
+acl2024 | p. 4; Fig. 2, p. 5
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 12. 결과 2: sensitivity는 method·model에 따라 달랐다
+
+12. 결과 2: sensitivity는 method·model에 따라 달랐다
+
+발표 대본
+Figure 4를 설명하는 본문에서 저자들은 OPT-6.7B의 range를 GPTQ 1.6%, SpQR 0.9%, SparseGPT 2.4%, Wanda 2.4%로 제시합니다. 전체적으로 quantization methods가 pruning methods보다 낮은 dispersion을 보이고 SparseGPT가 높다고 관찰합니다. 그러나 pruning이 더 destructive해서 그럴 수 있다는 설명은 저자들의 speculation입니다. 이 실험은 method와 calibration distribution의 상호작용을 완전히 분해하는 causal ablation이 아니므로, ‘pruning은 본질적으로 불안정하다’라고 말할 근거는 아닙니다.
+
+공개 출처
+acl2024 | p. 6; Fig. 4, p. 8
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 13. 결과 3: ‘최고 calibration corpus’ 하나는 나오지 않았다
+
+13. 결과 3: ‘최고 calibration corpus’ 하나는 나오지 않았다
+
+발표 대본
+Table 1과 본문은 SparseGPT에서 RefinedWeb이 잘 보이는 경향을 보고하지만, universal winner라고 결론 내리지 않습니다. Wanda로 prune한 LLaMA-7B에서는 RedPajama가 52.7%로 높고 RefinedWeb이 52.2%로 낮은 반례가 있습니다. Quantization에서는 source 평균 차이가 작으며, SpQR에서 대체로 약 0.2%라고 설명합니다. 따라서 발표에서 RefinedWeb을 권장 corpus라고 단정하거나 Wikipedia를 일반적으로 나쁜 calibration data라고 부르면 원전의 조건부 결과를 과장하게 됩니다.
+
+공개 출처
+acl2024 | p. 5; Table 1, p. 6
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 14. 결과 4: PPL 안정성이 task 안정성은 아니다
+
+14. 결과 4: PPL 안정성이 task 안정성은 아니다
+
+발표 대본
+저자들은 prior work가 calibration robustness를 PPL로 보는 관행을 인정하지만, 그 결과가 downstream task variation을 가릴 수 있다고 설명합니다. Table 2의 Vicuna-7B SparseGPT CNN/DM row에서 PPL은 12.72에 표준편차 0.18인데, BoolQ accuracy는 평균 66.7%에 표준편차 4.7이고 57.0%에서 71.6% range입니다. 이 한 예가 PPL을 무효화하는 것은 아닙니다. 압축을 실제로 사용할 task에 맞는 지표를 같이 확인해야 한다는 점을 보입니다.
+
+공개 출처
+acl2024 | p. 7; Table 2
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 15. Calibration example 수와 compression cost
+
+15. Calibration example 수와 compression cost
+
+발표 대본
+Figure 3은 LLaMA-7B를 C4 calibration set으로 압축하면서 example 수를 1부터 512까지 바꿉니다. GPTQ는 1개에서 128개로 갈 때 PPL이 6.13에서 5.90으로 개선되고, SpQR은 거의 일정합니다. SparseGPT는 작은 example 수에서 매우 높은 PPL과 큰 표준편차를 보이지만 128에서 개선됩니다. Mean zero-shot accuracy도 대부분 빠르게 plateau하나 SparseGPT는 128의 네 배 example에서 0.4% 더 올랐습니다. 저자들은 더 많은 example이 compression computational cost를 늘린다고 함께 적습니다.
+
+공개 출처
+acl2024 | pp. 6-7; Fig. 3
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 16. 분산 읽기: 10 set의 평균·표준편차·range
+
+16. 분산 읽기: 10 set의 평균·표준편차·range
+
+발표 대본
+Table 1, 2와 Appendix C는 각 source에서 뽑은 열 개 calibration set의 mean과 standard deviation을 보고합니다. Figure 2와 Figure 4의 range는 그 sample set들에서 나온 best–worst 관찰 범위입니다. 이것은 calibration sampling variation을 드러내는 중요한 정보지만, independent training run의 confidence interval 또는 dataset feature 하나의 causal effect estimate로 해석하면 안 됩니다. 원전은 별도의 significance test나 feature-level controlled ablation을 제시하지 않습니다.
+
+공개 출처
+acl2024 | pp. 4-8; Tables 1-2 and Figs. 2-4
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 17. 저자들의 세 가지 권고: release · vary · inspect
+
+17. 저자들의 세 가지 권고: release · vary · inspect
+
+발표 대본
+논문의 권고는 세 가지입니다. 첫째, calibration data를 release해 randomness를 줄이고 reproducibility를 높입니다. Footnote는 code로 seed를 주더라도 software/platform version 차이 때문에 같은 set이 보장되지 않을 수 있다고 지적합니다. 둘째, 개발 중 여러 calibration set에서 downstream performance를 보며 sensitivity를 살핍니다. 셋째, set이 작으므로 random sample을 inspect해 anomalous example을 찾을 수 있습니다. 이는 권고를 따르면 accuracy가 반드시 상승한다는 theorem이 아니라, 실험과 diagnosis의 품질을 높이는 행동입니다. Version 기록은 이 권고를 재현 가능한 artifact 관리로 옮긴 실무적 확장입니다.
+
+공개 출처
+acl2024 | p. 8, Section 5 and footnote 5
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 18. 이식 가능한 연구·실무 습관
+
+18. 이식 가능한 연구·실무 습관
+
+발표 대본
+논문의 가장 전이 가능한 교훈은 single best corpus의 선택이 아니라 실험 설계입니다. Calibration set을 source, set ID, tokenizer, code version과 함께 artifact로 기록하고, 하나의 set에서 좋은 숫자가 나왔다는 이유만으로 method를 결론내리지 않습니다. PPL과 실제 intended task를 함께 보고, bit width나 sparsity 같은 compressor configuration도 표시합니다. 이 슬라이드는 논문이 직접 검증한 artifact schema를 제안하는 것이 아니라, 저자 권고와 observed variation을 reproducible practice로 옮긴 것입니다.
+
+공개 출처
+acl2024 | pp. 4-8, Sections 4-5
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 19. 이 논문이 아직 답하지 않는 것
+
+19. 이 논문이 아직 답하지 않는 것
+
+발표 대본
+논문의 limitation은 모든 model, evaluation task, calibration data가 English라는 점입니다. 저자들은 compression method가 일반적으로 language-agnostic하다고 가정하지만 linguistic diversity의 중요성을 인정하고 diverse language family를 future work로 둡니다. 또한 source를 바꾼 비교는 여러 data property를 함께 바꾸므로, content feature 하나의 causal mechanism을 보여 주지 않습니다. 발표의 좋은 마무리는 이 논문이 넓은 empirical grid를 제공했다는 장점과, universal generalization·causal explanation은 남았다는 한계를 같이 보여 주는 것입니다.
+
+공개 출처
+acl2024 | p. 9, Limitations; pp. 5-8
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+
+## 20. 마무리: calibration은 압축 과정의 숨은 입력이다
+
+20. 마무리: calibration은 압축 과정의 숨은 입력이다
+
+발표 대본
+결론은 간단합니다. Calibration data는 작은 input set이지만 activation-dependent compression에서는 직접적인 algorithm input입니다. 이 논문은 다양한 source와 set, compressor, model, task를 교차해 결과가 달라질 수 있음을 보여 줍니다. 동시에 특정 source가 항상 최고라는 결론, 한 data feature가 원인이라는 결론, 모든 language로의 일반화는 제공하지 않습니다. 따라서 실제 압축 연구에서는 calibration artifact와 protocol을 기록하고, 여러 set과 intended downstream task에서 sensitivity를 함께 확인하는 것이 가장 근거 있는 행동입니다.
+
+공개 출처
+acl2024 | pp. 1, 8-9, Abstract, Conclusion, Limitations
+On the Impact of Calibration Data in Post-training Quantization and Pruning, ACL 2024
+https://aclanthology.org/2024.acl-long.544/
+arxiv-v2 | v2 record
+On the Impact of Calibration Data in Post-training Quantization and Pruning, arXiv v2
+https://arxiv.org/abs/2311.09755

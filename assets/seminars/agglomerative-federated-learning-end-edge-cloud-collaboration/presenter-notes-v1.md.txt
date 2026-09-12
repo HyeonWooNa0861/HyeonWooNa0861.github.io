@@ -1,0 +1,227 @@
+## 1. 이기종 모델을 잇는 계층형 연합학습
+
+1. 이기종 모델을 잇는 계층형 연합학습
+
+발표 대본
+IEEE INFOCOM 2024 최종본을 읽는 세미나다. 제목의 agglomerative는 공통 파라미터를 평균한다는 뜻으로 읽지 말고, 서로 다른 모델을 계층적으로 지식증류로 연결한다는 문제의식에서 출발한다.
+
+공개 출처
+ieee-infocom | p. 131, title and abstract
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 2. 문제: 데이터 위치와 모델 크기가 함께 다르다
+
+2. 문제: 데이터 위치와 모델 크기가 함께 다르다
+
+발표 대본
+그림 1과 2는 End–Edge–Cloud 구조와 계층별 모델 규모를 제시한다. 이 슬라이드는 물리 배치의 보편 법칙을 주장하지 않는다. 논문 실험에서의 구체적인 모델 조합은 뒤의 Table I 슬라이드에서 분리해 제시한다.
+
+공개 출처
+ieee-infocom | pp. 131–133; Fig. 1–2
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 3. End–Edge–Cloud: 역할과 능력의 계층
+
+3. End–Edge–Cloud: 역할과 능력의 계층
+
+발표 대본
+여기서 점선은 능력과 프로토콜의 계층 관계를 가리킨다. raw data가 이 화살표를 따라 이동한다는 뜻이 아니다. 논문은 이질적 모델 크기 때문에 단순한 동형 모델 평균과 다른 협력 방식을 설계한다.
+
+공개 출처
+ieee-infocom | p. 133, Fig. 1; p. 137, Table I
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 4. 핵심 구분: 공통 벡터 평균이 아니다
+
+4. 핵심 구분: 공통 벡터 평균이 아니다
+
+발표 대본
+논문은 BSBODP를 통해 이질적 모델 간 online distillation을 수행한다. 이 표는 논문의 메커니즘을 이해하기 위한 개념 대비이며, 모든 계층형 FL 방법을 한 가지 방식으로 일반화한 분류표는 아니다.
+
+공개 출처
+ieee-infocom | pp. 132, 134–135
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 5. 무엇이 어디에 남고, 무엇이 전달되는가
+
+5. 무엇이 어디에 남고, 무엇이 전달되는가
+
+발표 대본
+그림 3과 알고리즘 2의 초기화는 leaf가 encoder로 ε를 추출해 label과 함께 부모 쪽에 저장하도록 한다. 이후 decoder가 ε에서 bridge sample을 만들고 teacher가 logits를 낸다. 이는 formal privacy proof가 아니라 논문이 제시한 데이터 공유 완화 설계다.
+
+공개 출처
+ieee-infocom | pp. 134–135; Fig. 3–4, Alg. 2
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 6. BSBODP는 양방향 교사–학생 갱신이다
+
+6. BSBODP는 양방향 교사–학생 갱신이다
+
+발표 대본
+Algorithm 1은 BSBODP(v1,v2)를 두 directional BSBODP 호출로 구현한다. 각 방향의 teacher가 bridge sample에서 logits를 만들고 student가 이를 사용한다. 그림은 두 방향을 분리해 보일 뿐, 서로 다른 두 모델이 같은 파라미터를 복사한다는 뜻이 아니다.
+
+공개 출처
+ieee-infocom | pp. 134–135; Fig. 3, Alg. 1
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 7. 학생의 위치가 손실을 바꾼다
+
+7. 학생의 위치가 손실을 바꾼다
+
+발표 대본
+Eq. (2)의 non-leaf 손실은 bridge sample의 cross entropy와 temperature-softened 출력 사이 KL 항을 β로 가중한다. Eq. (4)의 leaf는 자신의 raw local data에 대한 supervised cross entropy에 γ 곱의 non-leaf 손실을 더한다. 그림의 L은 논문 Eq. (2)를 짧게 표시한 것이다.
+
+공개 출처
+ieee-infocom | p. 135, Eqs. 2–5
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 8. 초기화: embedding과 label을 재귀적으로 저장
+
+8. 초기화: embedding과 label을 재귀적으로 저장
+
+발표 대본
+Algorithm 2에서 root는 child INIT을 재귀적으로 호출하고, leaf는 자신의 Dv에서 ε=enc(X)를 얻어 parent로 보낸다. intermediate는 child 상태를 받은 뒤 저장하고 상위로 전달한다. 이 도식은 INIT의 논리적 상태 전달이며, 네트워크 wall-clock trace가 아니다.
+
+공개 출처
+ieee-infocom | p. 135, Alg. 2 INIT; Eq. 5
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 9. 실제 반복 단위: Algorithm 2의 재귀 학습 라운드
+
+9. 실제 반복 단위: Algorithm 2의 재귀 학습 라운드
+
+발표 대본
+Algorithm 2 lines 25–27에서 internal non-root의 BSBODP(v*,Parent(v*))는 parallel for의 각 child 분기 안에 있다. 따라서 각 분기는 FedAggTrain(u,E)를 마친 직후 v*–parent BSBODP를 호출하며, 모든 child가 join된 뒤 한 번만 호출하는 구조가 아니다. 이 그림의 u1·u2는 여러 child 중 두 분기를 보인 것이다. leaf는 parent와 BSBODP를 한 번 수행하고, root는 parent가 없으므로 병렬 child 재귀만 시작한다.
+
+공개 출처
+ieee-infocom | p. 135, Alg. 2 FedAggTrain
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 10. 동적 계층 변경: 정리가 보장하는 범위
+
+10. 동적 계층 변경: 정리가 보장하는 범위
+
+발표 대본
+Theorem 1과 2는 v1,v2∈Vt, t∈{2,…,T}이고 후보 parent들이 같은 hierarchy level에 있는 교체를 다룬다. Theorem 1은 equivalence interaction protocol에서 교체 가능하다는 긍정 결과다. Theorem 2는 partial-order protocol에서는 같은 교체가 항상 가능하지 않음을 반례로 보인다. 어느 정리도 runtime accuracy나 수렴을 보장하지 않는다.
+
+공개 출처
+ieee-infocom | pp. 133, 136–137; Fig. 1, Thm. 1–2
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 11. 손실을 손으로 계산해 보기: 명시적 가상 예시
+
+11. 손실을 손으로 계산해 보기: 명시적 가상 예시
+
+발표 대본
+가상 확률 p와 q는 논문의 logits나 결과가 아니다. natural logarithm으로 계산하면 CE=0.6931471806, KL(p||q)=0.0920328502이고, β=10일 때 CE+βKL=1.6134756829다. 따라서 네 자리 소수로 반올림하면 1.6135다. 이는 accuracy, privacy, bridge image 품질을 뒷받침하지 않는다.
+
+공개 출처
+ieee-infocom | p. 135, Eq. 2; p. 137, setup
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 12. 실험 모델과 autoencoder의 규모
+
+12. 실험 모델과 autoencoder의 규모
+
+발표 대본
+Table I은 end M1, edge M2, cloud M3과 autoencoder 크기를 제공한다. 본문은 autoencoder를 ImageNet으로 pretrain했다고 서술한다. 이 수치를 계산량, throughput, privacy 강도의 측정치로 재해석하지 않는다.
+
+공개 출처
+ieee-infocom | p. 137, Table I and setup
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 13. 결과를 읽기 위한 실험 조건
+
+13. 결과를 읽기 위한 실험 조건
+
+발표 대본
+실험 데이터는 FedML CIFAR-10/100의 non-IID partition이다. 본문은 α=1을 high heterogeneity, α=3을 low heterogeneity로 표기한다. CIFAR-10 Table II는 HierFAVG, DemLearn, FedGKT, FedDKC 네 baseline을 모두 비교한다. CIFAR-100 Table III는 HierFAVG와 DemLearn level 3, 5, 7, 10만 비교하며 FedGKT·FedDKC는 포함하지 않는다.
+
+공개 출처
+ieee-infocom | p. 137, experimental setup
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 14. CIFAR-10 cloud-model accuracy: 네 조건을 함께 읽기
+
+14. CIFAR-10 cloud-model accuracy: 네 조건을 함께 읽기
+
+발표 대본
+Table II의 평균은 FedAgg 35.05%, 최선 baseline FedDKC 30.52%다. 발표에서는 평균 한 개로 실험 조건을 지우지 말고 네 열을 먼저 읽는다. 논문이 제시한 four-column gain은 이 Table-II comparison에 한정한다.
+
+공개 출처
+ieee-infocom | p. 138, Table II
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 15. CIFAR-100 α=3: client 수별 비교
+
+15. CIFAR-100 α=3: client 수별 비교
+
+발표 대본
+Table III에는 DemLearn level 3, 5, 7, 10도 실려 있다. 여기서는 각 K에서 가장 높은 DemLearn level 3과 다른 대표 baseline, FedAgg를 보여 준다. 이 축약은 α=3, CIFAR-100이라는 조건과 정확도 metric을 보존한다.
+
+공개 출처
+ieee-infocom | p. 138, Table III
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 16. 통신 라운드 표: 시간이나 에너지로 읽지 않기
+
+16. 통신 라운드 표: 시간이나 에너지로 읽지 않기
+
+발표 대본
+Tables IV와 V는 특정 목표 accuracy를 처음 넘기 위한 communication rounds를 보고한다. 데이터셋, K, α, target이 바뀌면 숫자의 의미도 바뀐다. 논문은 이 표에서 wall-clock latency, bandwidth, battery energy를 측정하지 않는다.
+
+공개 출처
+ieee-infocom | p. 138, Tables IV–V
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 17. 민감도: β와 모델 이질성의 한정된 관찰
+
+17. 민감도: β와 모델 이질성의 한정된 관찰
+
+발표 대본
+Table VI는 β 값별 CIFAR-10 K=225 α=1 결과다. Table VII은 20% device M1을 M2로 바꾼 비교이며, Table VIII은 cloud model을 달리한 비교다. 서로 다른 표의 조건을 섞어 일반적 최적 β나 보편 모델 순위를 주장하지 않는다.
+
+공개 출처
+ieee-infocom | p. 139, Tables VI–VIII
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 18. 논문이 지지하는 주장과 지지하지 않는 주장
+
+18. 논문이 지지하는 주장과 지지하지 않는 주장
+
+발표 대본
+이 표는 논문을 약화시키는 것이 아니라 claim의 검증 가능 범위를 지킨다. autoencoder bridge design, Table II–VIII, Theorem 1–2는 서로 다른 종류의 근거다. 각각을 privacy proof, deployment benchmark, convergence theorem으로 바꾸어 말하지 않는다.
+
+공개 출처
+ieee-infocom | pp. 134–139; Fig. 4, Thm. 1–2, Tables II–VIII
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254
+
+## 19. 읽기 순서로 정리하기
+
+19. 읽기 순서로 정리하기
+
+발표 대본
+학생은 먼저 정보 객체를 분리하고, Algorithm 1의 양방향성과 Algorithm 2에서 각 병렬 child 분기 안의 recursion→BSBODP 순서를 확인한 뒤, 표의 조건을 붙여 결과를 읽는다. 이 네 질문이 답되면 이질적 End–Edge–Cloud 협력이라는 논문의 주장과 한계를 함께 설명할 수 있다.
+
+공개 출처
+ieee-infocom | pp. 134–139; Alg. 1–2, Tables I–VIII
+IEEE INFOCOM 2024 final paper, pp. 131–140
+https://doi.org/10.1109/INFOCOM52122.2024.10621254

@@ -1,0 +1,287 @@
+## 1. 의미 추출과 작업 전송의 공동 최적화
+
+1. 의미 추출과 작업 전송의 공동 최적화
+
+발표 대본
+이 덱은 Chen et al.의 arXiv:2407.11018v3(2026-02-12 표기) 18쪽 원문을 기준으로 구성합니다. μ는 전송량만 줄이는 압축률이 아니라 단말 의미 추출 부담, 전송량, ES 작업 성능의 trade-off를 나타내는 논문 고유의 계수입니다. QoE는 Quality of Experience(사용자 체감 품질), MEC는 Mobile Edge Computing(모바일 엣지 컴퓨팅), MAPPO는 Multi-Agent Proximal Policy Optimization(다중 에이전트 근접 정책 최적화)입니다.
+
+공개 출처
+paper-v3 | title page; abstract
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 2. 이 논문이 푸는 문제
+
+2. 이 논문이 푸는 문제
+
+발표 대본
+원문은 atomic task를 가정하므로 한 task를 local과 ES에 임의 분할하지 않습니다. semantic extraction은 split computing에서 영감을 얻었지만, 논문에서 결정하는 것은 extraction factor와 radio/compute 자원입니다.
+
+공개 출처
+paper-v3 | pp. 1-2; §III-A; Eq. 11
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 3. 먼저 구분할 구성요소와 기호
+
+3. 먼저 구분할 구성요소와 기호
+
+발표 대본
+UE=User Equipment, ES=Edge Server, OFDMA=Orthogonal Frequency-Division Multiple Access, VQA=Visual Question Answering, MAPPO=Multi-Agent Proximal Policy Optimization입니다. ρ=0은 단말 완료, ρ=1은 ES 전송입니다. QoE는 Quality of Experience이며 뒤에서 local 실행을 기준으로 정의합니다. 본 논문은 여러 작업 유형을 다루지만 모든 작업에 동일한 코덱을 쓰지는 않습니다.
+
+공개 출처
+paper-v3 | pp. 1, 5–6; Table II
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 4. 작업마다 세 실행 경로 중 하나를 고른다
+
+4. 작업마다 세 실행 경로 중 하나를 고른다
+
+발표 대본
+원문 Fig. 1에서 UE별 queue는 task_1, task_2, task_3 등 서로 다른 type을 포함하며, image/text semantic encoder와 ES decoder를 예시로 보입니다. AP에는 K resource block이 있으며 UE와 sub-channel 집합은 각각 N, K로 정의됩니다. 이 그림의 세 갈래는 서로 다른 실행 모드입니다. semantic 경로는 해당 작업 유형의 encoder가 만든 특징을 전송하고 ES의 decoder/나머지 모델이 작업을 완료합니다. 직접 경로는 μ=1인 semantic-unaware 전송이며 무선 채널의 영향이 사라진다는 뜻이 아닙니다.
+
+공개 출처
+paper-v3 | p. 5; Fig. 1; §III
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 5. ρ와 μ가 세 실행 방식을 구분한다
+
+5. ρ와 μ가 세 실행 방식을 구분한다
+
+발표 대본
+원문 §III-C는 세 mode를 명시합니다. Eq. 3에서 μ=1이면 semantic extraction 항이 없고, μ_n^min≤μ_n<1이면 local extraction term이 포함됩니다. download result의 크기는 보통 작다고 보아 upload rate/latency만 고려합니다. 의미 전송에서는 인코더 계산이 단말에 남습니다. 따라서 atomic이라는 표현을 '단말은 어떤 계산도 하지 않고 통째로 보낸다'로 해석하지 않습니다.
+
+공개 출처
+paper-v3 | pp. 5–6; §III-A,C; Eqs. 2–3
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 6. μ가 작아질수록 무엇이 바뀌나
+
+6. μ가 작아질수록 무엇이 바뀌나
+
+발표 대본
+원문 Fig. 2와 §III-A: 작은 μ는 더 높은 semantic compression, 낮은 transmission load를 뜻합니다. 모델은 extraction overhead, transmission delay, task performance를 μ의 monotonic power-law 함수로 추상화하며, 실제 neural layer별 관계를 엄밀히 유도한 것은 아닙니다. Fig.12와 p.13은 직접 offloading에도 무선 채널에 의한 정확도 저하가 있을 수 있다고 설명합니다. μ=1은 의미 추출에 의한 손실이 없다는 뜻이며 local 실행과 정확도가 같다는 보장이 아닙니다.
+
+공개 출처
+paper-v3 | pp. 5-6; Fig. 2; §III-A
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 7. OFDMA 전송: 채널을 받은 UE만 upload한다
+
+7. OFDMA 전송: 채널을 받은 UE만 upload한다
+
+발표 대본
+Eq. 1의 channel gain은 |g_{k,n}|²=|h_{k,n}|²/d_n^{-α}로 두며 h는 CN(0,1) Rayleigh fading coefficient입니다. Eq. 2의 p>0은 task-specific constant이며, 수신 결과는 작다고 보고 downlink latency를 포함하지 않습니다. 원문의 거리 감쇠 표기는 d^(−α)가 분모에 있어 일반적 감쇠 해석과 주의가 필요합니다. 이 발표에서는 그 거리 법칙을 재현하거나 수정하지 않고 관측 채널 이득 g를 사용합니다. ρ=0의 업로드 지연은 의미상0으로 처리하며 0/0을 계산하지 않습니다.
+
+공개 출처
+paper-v3 | p. 6; Eqs. 1-2; Eq. 11d-e
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 8. 실행 time과 energy를 어떻게 세나
+
+8. 실행 time과 energy를 어떻게 세나
+
+발표 대본
+Eq. 4는 ES 전체 offloaded GPU consumption의 합을 c_s로 나누어 t^S를 정합니다. Eq. 6은 UE energy κ^U t_n^U(f_n)^3+p_nt_n, Eq. 7은 ES energy κ^S t^S(f_s)^3입니다. ‘fairly proportional to computation’은 ES allocation의 원문 가정입니다. 표시의 t_U,t_tx,t_S,t_task는 각각 원문 t_n^U,t_n,t^S,t_n^M를 짧게 쓴 것입니다. E_task,E_UE,E_ES도 원문 기호를 줄였습니다. Eq.8은 공통 ES 에너지를 더하며 별도 사용자별 배분 지표가 없습니다. 이를 '단말 배터리에서 소비된 에너지'나 독립적으로 배분된 사용자별 서버 에너지로 바꿔 설명하지 않습니다.
+
+공개 출처
+paper-v3 | pp. 6-7; Eqs. 3-8
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 9. 서로 다른 작업을 local 기준으로 QoE화한다
+
+9. 서로 다른 작업을 local 기준으로 QoE화한다
+
+발표 대본
+Eq. 10은 queue의 각 task q_n^M에 대해 ω_tG_t^M+ω_eG_e^M+ω_aG_a^M를 평균합니다. Fig. 3에서 local execution 값은 logistic offset x_0입니다. 논문은 local baseline QoE가 0.5라고 설명합니다. Eq.10 첫 줄에는1/Q_n이 있지만 전개된 두 번째 줄에는 누락돼 있습니다. 이 자료는 첫 줄의 큐 평균 정의와 p.12의 local QoE=0.5 설명을 따릅니다. 식의 불일치를 숨기거나 합계 QoE를 평균인 것처럼 섞지 않습니다.
+
+공개 출처
+paper-v3 | p. 7; Fig. 3; Eqs. 9-10
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 10. 교육용 계산: local 기준보다 얼마나 좋아졌나
+
+10. 교육용 계산: local 기준보다 얼마나 좋아졌나
+
+발표 대본
+숫자는 논문 측정값이 아닌 재계산용 예시입니다. σ(z)=1/(1+exp(−z)); z_t=λ(t_local−t), z_e=β(E_local−E), z_a=η(ε−ε_local)입니다. 단위와 slope를 곱한 뒤 얻는 무차원 입력을 직접 가정했으며 원문 GPU 성능을 가정하지 않습니다. 실제 정확도 .475라는 뜻이 아니라 정확도 항의 logistic 점수입니다. 실제 작업 큐는 이 가중 점수를 작업 수로 나눠 평균합니다. 벌점/제약 충족은 다음 단계에서 따로 봅니다.
+
+공개 출처
+paper-v3 | p. 7, Eq. 10; p. 12; constructed example
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 11. P0가 요구하는 조건과 학습 결과를 구분한다
+
+11. P0가 요구하는 조건과 학습 결과를 구분한다
+
+발표 대본
+원문 Eq. 11a는 Σ_n QoE_n 최대화입니다. x_{k,n}의 양 제약은 separate radio constraints로도 적용됩니다. 논문은 P0의 exact global optimum나 approximation guarantee를 주장하지 않고 MAPPO를 제안합니다.
+
+공개 출처
+paper-v3 | p. 8; Eq. 11; §IV
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 12. 관측 → 공동 행동 → 결과 → 벌점 포함 보상
+
+12. 관측 → 공동 행동 → 결과 → 벌점 포함 보상
+
+발표 대본
+원문 Eq. 12의 penalty는 [ (t_n^M−t_max)/t_max ]_+, [ (E_n^M−E_n^max)/E_n^max ]_+, [ (ε_min−ε_n^M)/ε_min ]_+ 입니다. state/action 항목은 p. 8 §IV-A의 명시 목록을 요약했습니다. 여기서 MDP는 Markov Decision Process(마르코프 결정 과정)입니다. 원문의 최적화 목표와 할인된 보상 학습 목표를 완전히 동등한 전역 최적화 보장으로 설명하지 않습니다.
+
+공개 출처
+paper-v3 | p. 8; Eqs. 12-15; §IV-A
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 13. actor와 critic은 서로 다른 출력을 학습한다
+
+13. actor와 critic은 서로 다른 출력을 학습한다
+
+발표 대본
+원문 p.10과 TableIII를 재구성했습니다. 각 경로는 FC256+ReLU+LayerNorm, FC256+ReLU+LayerNorm, multi-layer GRU, final FC입니다. MLP는 Multilayer Perceptron(다층 퍼셉트론), GRU는 Gated Recurrent Unit(게이트 순환 신경망)입니다. 두 출력이 직렬로 연결되지 않으며 critic 값이 곧 실행 행동도 아닙니다. μ/p/f는 연속 결정,ρ/x는 이산 결정을 포함하지만 구체적인 모든 출력 분포·중재·마스킹 방식은 TableIII에 나와 있지 않습니다. 도식은 이를 새로 정하지 않습니다.
+
+공개 출처
+paper-v3 | pp. 10–11; Table III
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 14. semantic-aware MAPPO의 학습 순서
+
+14. semantic-aware MAPPO의 학습 순서
+
+발표 대본
+Algorithm 1은 trajectory를 replay buffer에 저장한다고 적고, p. 9는 PPO를 on-policy로 설명하면서 parallel sampling과 small-batch multi-step update를 설명합니다. 이 덱은 replay buffer가 오래된 임의 data를 무제한 재사용한다는 주장을 하지 않습니다. Eq. 22는 GAE, Eqs. 23-28은 clip/actor/critic objective입니다. GAE는 Generalized Advantage Estimation(일반화 이득 추정)입니다. λ_GAE=.95와 QoE logistic 기울기 λ=1000은 다른 용도의 기호입니다. 학습이 끝난 runtime에서는 정책이 관측으로 행동을 출력하며 매 선택마다 전체 훈련을 다시 수행하는 것이 아닙니다.
+
+공개 출처
+paper-v3 | pp. 9-10; Fig. 4; Algorithm 1; Eqs. 22-28
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 15. PPO clip은 확률 비율을 강제로 고정하지 않는다
+
+15. PPO clip은 확률 비율을 강제로 고정하지 않는다
+
+발표 대본
+원문 Eq23–24를 수치로 계산한 교육용 예시이며 실험값이 아닙니다. A>0에서는 r>1+ε 방향의 추가 보상, A<0에서는 r<1−ε 방향의 추가 보상을 surrogate가 잘라냅니다. 공유 파라미터와 다른 표본 및 entropy 항 때문에 실제 새 확률 비율이 범위 밖으로 갈 수 있습니다. p.9의 비율 제한 서술은 이 목적함수 효과를 단순화한 표현으로 읽고, 별도 projection이나 hard trust-region 보장으로 읽지 않습니다. TableIV ε=.2,γ=.99,λ_GAE=.95입니다.
+
+공개 출처
+paper-v3 | pp. 9–11; Eqs. 23–28; constructed example
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 16. 교육용 계산: 의미 추출이 줄인 전송 시간
+
+16. 교육용 계산: 의미 추출이 줄인 전송 시간
+
+발표 대본
+모든 숫자는 Eq2–5의 구조를 보여 주기 위한 가상값이며 원문 실험 또는 정책 출력이 아닙니다. p=q=1, l_U/c_U=4, l_SE/c_U=.2, s/R=3, t_S=.5로 고정한 단일 작업 예시입니다. μ=1에서는 의미 추출 항이 없으므로 .2/1을 더하지 않습니다. ρ=0에서는 ES 에너지가 아닌 local 지연만 비교합니다. μ=.1의 extraction이2로 늘어 총지연이2.8이므로 μ=.5보다 느립니다. 여기서는 에너지/정확도/공유 서버 변화와 QoE를 계산하지 않았으므로 .5가 전체 문제의 최적해라고 결론 내리지 않습니다.
+
+공개 출처
+paper-v3 | pp. 6–7; Eqs. 2–5; constructed example
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 17. 실험의 semantic task와 model 부담
+
+17. 실험의 semantic task와 model 부담
+
+발표 대본
+원문 p. 10 §V-A의 구현 세부입니다. semantic transmission model 학습 후 encoder/decoder FLOPs로 l_n^SE와 l_n^S를 계산한다고 설명합니다. semantic model training은 AdamW, LR 3×10^-5, batch 50, weight decay 1×10^-4 및 RTX 4090/i9-13900K 환경에서 수행했습니다. BERT와 Vision Transformer는 의미 모델의 특징 추출기입니다. p.10의 Jetson Nano peak FLOPS 활용 가능성 서술은 해당 장치에서 이 자료가 실측한 벤치마크가 아니므로 실제 배포 보장으로 제시하지 않습니다.
+
+공개 출처
+paper-v3 | p. 10; §V-A
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 18. QoE 결과를 읽기 위한 simulation 조건
+
+18. QoE 결과를 읽기 위한 simulation 조건
+
+발표 대본
+Table IV의 transmit power range는 (10,90) mW, UE/ES energy coefficient는 각각 1×10^-26, 1.2×10^-26입니다. MAPPO training batch size 2, epoch 5, learning rate 1×10^-4입니다.
+
+공개 출처
+paper-v3 | p. 11; Table IV; §V-A
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 19. 비교 baseline이 무엇을 바꾸고 무엇을 고정했나
+
+19. 비교 baseline이 무엇을 바꾸고 무엇을 고정했나
+
+발표 대본
+원문 p. 11의 benchmark 정의입니다. semantic-unaware는 conventional compression에 의존하고 adaptive semantic extraction을 지원하지 않는다고 설명합니다. D3QN replay buffer size는 30000으로 설정했습니다.
+
+공개 출처
+paper-v3 | p. 11; §V-A
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 20. QoE 곡선의 조건부 결론
+
+20. QoE 곡선의 조건부 결론
+
+발표 대본
+Figs. 6-10 및 p. 11-12의 서술에 근거합니다. Fig. 8은 sub-channel bandwidth, Fig. 9는 noise power, Fig. 10은 user number의 QoE입니다. local execution QoE는 fixed 0.5로 설명됩니다.
+
+공개 출처
+paper-v3 | pp. 11-12; Figs. 6-10; §V-B
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 21. QoE weight를 바꾸면 ‘최선’도 바뀐다
+
+21. QoE weight를 바꾸면 ‘최선’도 바뀐다
+
+발표 대본
+Table V의 원문 수치를 그대로 옮겼습니다. §V-C는 각 weight setting마다 corresponding model을 retrain했다고 명시합니다. delay/energy/accuracy preference는 각각 (1,0,0), (0,1,0), (0,0,1)입니다. TableIV는 ε_min=50%이지만 TableV의 delay-preference 평균43.08%는 이보다 낮습니다. §V-C는 가중치와 재학습을 설명하나 이 차이를 해소할 별도 정확도 임계 변경을 명시하지 않습니다. 이 수치를 그대로 보존하며 제약 충족의 증거로 사용하지 않습니다.
+
+공개 출처
+paper-v3 | pp. 13-14; Table V; §V-C
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 22. 벌점이 있다는 것과 제약을 지킨다는 것은 다르다
+
+22. 벌점이 있다는 것과 제약을 지킨다는 것은 다르다
+
+발표 대본
+원문 수치의 불일치를 평가할 때 새로운 실험 실패 원인이나 저자의 의도를 추정하지 않습니다. Eq12의 정확도 벌점은 max((ε_min−ε)/ε_min,0)입니다. 예를 들어 가상의 단일 작업 정확도를 .4308, 임계값을 .5라고 놓으면 벌점은 .1384로 유한합니다. 이 계산은 TableV 평균을 실제 개별 학습 transition에 대입한 재현 결과가 아니며, 벌점이 유한하다는 점만 보여줍니다. 모든 작업이50% 이상이었다면 같은 단위로 평균한 값도50% 이상이므로 표를 보편적 feasibility 증명으로 읽지 않습니다. 조건 변경이나 평가 기준 차이는 추가 확인 사항입니다.
+
+공개 출처
+paper-v3 | p. 8, Eqs. 11–12; pp. 11,13, Tables IV–V
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 23. 무엇이 아직 모델 밖에 남나
+
+23. 무엇이 아직 모델 밖에 남나
+
+발표 대본
+원문 §V-D는 trained policy를 고정한 채 λ,β,η를 하나씩 바꿔 평가하며 λ=10^3, β=10, η=2를 사용합니다. 결론의 future work 범위를 그대로 요약했습니다. 작은 slope를 0/1 포화로 설명한 원문 p.14의 표현과 달리 logistic 식에서 slope→0이면 모든 유한 입력은.5로 갑니다. 결론은 p.15에 있으며 범용 코덱과 경험 자료 기반 정량 관계 확립을 향후 과제로 둡니다.
+
+공개 출처
+paper-v3 | pp. 5–7; pp. 14–15; Fig. 17; §VI
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3
+
+## 24. 한 줄로 다시 읽기
+
+24. 한 줄로 다시 읽기
+
+발표 대본
+원문 범위를 넘어 실제 배포, 범용 코덱 품질, 전역 최적해 또는 모든 제약 충족을 보장하지 않습니다. 학습자료의 마지막에서는 세 실행 경로와 μ trade-off를 다시 연결합니다.
+
+공개 출처
+paper-v3 | pp. 5–15; Algorithm 1; §VI
+Chen et al., QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems, arXiv:2407.11018v3
+https://arxiv.org/abs/2407.11018v3

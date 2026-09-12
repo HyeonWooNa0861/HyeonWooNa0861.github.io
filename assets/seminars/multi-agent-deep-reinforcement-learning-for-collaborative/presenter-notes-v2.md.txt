@@ -1,0 +1,155 @@
+## 1. 협력 MEC offloading을 위한 multi-agent DRL 제안
+
+1. 협력 MEC offloading을 위한 multi-agent DRL 제안
+
+발표 대본
+이 자료는 Iman Rahmati의 세 쪽짜리 research proposal을 소개합니다. 원문에는 publication year가 적혀 있지 않으므로 연도를 추정하지 않습니다. 이 제안의 핵심은 mobile device에서 edge node로 보내는 D2E offloading에 더해, edge node 사이 E2E forwarding까지 고려하려는 것입니다.
+
+공개 출처
+proposal | p. 1, title and abstract
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 2. 먼저 범위 확인: 제안서가 말한 것과 말하지 않은 것
+
+2. 먼저 범위 확인: 제안서가 말한 것과 말하지 않은 것
+
+발표 대본
+원문에는 수식, figure, table, pseudocode, simulation setting, performance result가 없습니다. 또한 reward, observation vector, action encoding, queue transition, critic input과 update rule도 정의되지 않습니다. 따라서 발표에서는 미래형 제안과 이미 검증된 method를 구분해야 하며, generic MARL 지식을 이 proposal의 결과처럼 말하면 안 됩니다.
+
+공개 출처
+proposal | pp. 1-3, all sections and references
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 3. 왜 D2E만으로는 부족하다고 보는가
+
+3. 왜 D2E만으로는 부족하다고 보는가
+
+발표 대본
+Introduction은 기존 RL 기반 MEC 연구가 주로 device-to-edge link를 통해 MD task를 EN으로 보내는 문제를 다뤘다고 설명합니다. 이 proposal은 underutilized EN computing resource를 공유할 수 있도록, MD와 EN 모두가 communication·computation capacity에 따라 particular EN으로 task를 offload하는 collaborative framework를 탐색합니다.
+
+공개 출처
+proposal | pp. 1-2, Introduction
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 4. D2E·E2E link와 decision-maker
+
+4. D2E·E2E link와 decision-maker
+
+발표 대본
+원문은 MD가 D2E transmission link로 task를 EN에 offload하고, EN이 E2E transmission link로 task를 particular EN에 offload할 수 있는 collaborative framework를 제안합니다. 위아래 행은 이 두 관계를 분리해 보인 것이며, 모든 D2E task가 E2E로 이어진다는 뜻은 아닙니다. Source가 queue-based multi-layer model이라고만 했을 뿐 MD queue, EN queue, service order, E2E forwarding 조건을 정의하지 않았으므로 그림도 그것들을 사실처럼 배치하지 않습니다.
+
+공개 출처
+proposal | pp. 1-2, abstract and Introduction
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 5. queue-based multi-layer의 범위
+
+5. queue-based multi-layer의 범위
+
+발표 대본
+Proposal은 queue-based multi-layer model scenario를 design한다고 말하지만 queue의 state, arrival, service, capacity, location을 제시하지 않습니다. 마찬가지로 resource availability에 맞춰 layer decision을 adjust한다고 하나 communication rate, computing capacity formula, resource constraint가 없습니다. 이 slide의 오른쪽 열은 결함을 비난하는 것이 아니라 proposal을 executable method로 만들 때 필요한 명세를 구분하는 장치입니다.
+
+공개 출처
+proposal | pp. 1-2, abstract and Solution Approach
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 6. 왜 Dec-POMDP인가
+
+6. 왜 Dec-POMDP인가
+
+발표 대본
+Decentralized partially observable MDP라는 framing은 agent가 global network와 다른 entities에 대해 limited information만 가진다는 원문의 설명을 담습니다. MD와 EN은 각자 agent이므로 전체 state를 모두 보지 못한 채 action을 고르는 상황을 표현합니다. 다만 Dec-POMDP의 state, observation, action, transition, reward를 이 proposal이 수식이나 vector로 정의한 것은 아닙니다.
+
+공개 출처
+proposal | p. 2, Problem Statement and Solution Approach
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 7. single-agent RL 대신 MARL을 제안하는 논리
+
+7. single-agent RL 대신 MARL을 제안하는 논리
+
+발표 대본
+Introduction은 single-agent RL이 다른 agents를 environment 일부로 취급하면 다른 agents의 policy 변화 때문에 non-stationarity 문제가 생길 수 있다고 설명합니다. 이 proposal은 MD와 EN agent가 distributed decisions를 협력해 만들도록 MARL을 사용하겠다고 합니다. 여기서 ‘해결한다’는 말은 proposal의 동기이며, source에는 MARL과 single-agent method의 experiment나 theorem 비교가 없습니다.
+
+공개 출처
+proposal | pp. 1-2, Introduction
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 8. 서로 다른 layer·time point의 결정
+
+8. 서로 다른 layer·time point의 결정
+
+발표 대본
+Solution Approach는 task offloading decisions를 different layers와 different time points에서 만들도록 decouple한다고 말합니다. 이 구조가 current network state와 resource availability에 맞춘 dynamic adjustment를 허용한다고 주장합니다. 하지만 source는 MD와 EN이 각각 몇 초 또는 몇 slot마다 action하는지, 동시 action 충돌을 어떻게 처리하는지는 지정하지 않습니다.
+
+공개 출처
+proposal | p. 2, Solution Approach
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 9. multi-agent DDPG는 candidate다
+
+9. multi-agent DDPG는 candidate다
+
+발표 대본
+원문은 multi-agent deep deterministic policy gradient algorithm을 design한다고 하고 각 agent에 decentralized actor와 centralized critic이 있다고 말합니다. 그러나 critic이 global state, joint actions, local observations 중 무엇을 input으로 받는지, actor가 어떤 action을 내는지, update가 어떤 loss를 최소화하는지는 정의하지 않습니다. 따라서 이 proposal을 MADDPG implementation으로 소개하면 범위를 넘습니다.
+
+공개 출처
+proposal | p. 2, Solution Approach; ref. 17
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 10. 강의용 가상 trace: 서로 다른 시점의 두 decision
+
+10. 강의용 가상 trace: 서로 다른 시점의 두 decision
+
+발표 대본
+이 slide는 teaching-only construction입니다. 가상의 MD task가 D2E link로 EN에 도착한 뒤, EN이 나중 시점에 E2E forwarding 여부를 결정할 수 있다는 순서만 보여 줍니다. 원문은 이러한 different layers and time points를 제안하지만, 어떤 task가 언제 반드시 forward되는지, forwarding이 local service보다 좋은지, reward가 무엇인지는 정의하지 않습니다.
+
+공개 출처
+proposal | pp. 1-2, proposed D2E/E2E and timing; constructed trace
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 11. 가상 trace가 보여 주는 것과 보여 주지 않는 것
+
+11. 가상 trace가 보여 주는 것과 보여 주지 않는 것
+
+발표 대본
+원문에는 numerical example, figure, table, experiment가 없습니다. 따라서 앞의 trace는 D2E와 E2E, MD와 EN, 서로 다른 decision timing이라는 high-level relation을 익히는 장치입니다. Rate, delay, energy, utilization, queue length, reward 또는 policy quality를 넣지 않은 이유는 그런 값이 source에 정의되거나 측정되지 않았기 때문입니다.
+
+공개 출처
+proposal | pp. 1-3, proposal content and references
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 12. proposal을 재현 가능한 method로 만들 때 필요한 명세
+
+12. proposal을 재현 가능한 method로 만들 때 필요한 명세
+
+발표 대본
+이 표는 원문의 claim과 그 claim을 구현 가능한 연구로 바꾸기 위해 필요한 정보를 분리합니다. Dec-POMDP와 multi-agent DDPG라는 이름만으로 state, action, transition, reward, learning update, evaluation protocol이 결정되지는 않습니다. 따라서 checklist는 source의 누락을 임의로 채운 것이 아니라, 제안서 단계와 completed method 단계의 차이를 드러냅니다.
+
+공개 출처
+proposal | pp. 1-3, stated approach and absent specifications
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf
+
+## 13. 정리: 이 proposal이 남긴 설계 질문
+
+13. 정리: 이 proposal이 남긴 설계 질문
+
+발표 대본
+이 제안서는 MD뿐 아니라 EN도 decision-maker로 포함해 D2E와 E2E offloading을 연결하고, partial observation과 asynchronous decision을 Dec-POMDP/MARL 관점에서 다루려 합니다. Multi-agent DDPG actor–critic은 candidate solution으로 언급됩니다. 그러나 source에는 result가 없으므로, 이 자료의 결론은 성능 우위가 아니라 정확한 research scope와 명세 과제입니다.
+
+공개 출처
+proposal | pp. 1-2, abstract, Introduction, Solution Approach
+Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf

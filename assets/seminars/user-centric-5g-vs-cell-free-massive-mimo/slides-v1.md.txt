@@ -1,0 +1,413 @@
+---
+type: research-seminar-slides
+paper_id: user-centric-5g-vs-cell-free-massive-mimo
+---
+
+# User-Centric 5G와 Cell-Free Massive MIMO
+
+논문: User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+
+저자: Stefano Buzzi, Carmen D'Andrea, Alessio Zappone (2018)
+
+## 1. User-Centric 5G와 Cell-Free Massive MIMO
+
+모든 AP의 협력과 선택된 AP의 협력을 같은 조건에서 비교한다
+
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) title page and abstract
+
+## 2. 모든 AP가 모든 사용자를 돕는 것이 항상 이득은 아니다
+
+멀리 있는 AP의 낮은 SINR 링크도 전력·연산·backhaul을 사용한다
+
+- Cell-free 구조에서는 같은 자원에서 모든 AP가 모든 MS를 공동 서비스한다
+- 서비스 영역이 커지면 일부 AP와 MS 사이의 링크는 매우 약해질 수 있다
+- 약한 링크까지 유지하면 전력과 계산, backhaul 사용량이 늘어난다
+- User-centric 구조는 AP마다 기여도가 큰 사용자 집합만 남긴다
+
+핵심: 논문의 출발점은 협력을 없애는 것이 아니라, 도움이 되는 협력만 선택하는 것이다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 1–2, §I
+
+## 3. 이 논문이 확장하고 비교하는 범위
+
+다중 안테나 AP와 MS, 두 협력 범위, 두 링크 방향을 함께 다룬다
+
+
+| 축 | 논문 설정 | 핵심 질문 |
+| --- | --- | --- |
+| 단말 구조 | AP와 MS 모두 multiple antenna | MS가 CSI 없이 수신 가능한가 |
+| 협력 범위 | CF와 UC | 모든 AP가 필요한가 |
+| 통신 방향 | downlink와 uplink | 처리·backhaul 차이는 무엇인가 |
+| 전력 목표 | sum-rate와 minimum-rate | 총량과 fairness를 어떻게 나누는가 |
+
+핵심: 기여는 UC 아이디어 하나보다 multi-antenna 처리와 자원 할당의 통합 비교에 있다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 1–2, abstract and §I
+
+## 4. 시스템 모델의 객체와 집합
+
+M개 AP와 K개 MS가 CPU를 중심으로 협력한다
+
+
+| 기호 | 의미 | 어디에서 쓰나 |
+| --- | --- | --- |
+| M, K | AP 수, MS 수 | 협력 규모와 power 변수 수 |
+| N_AP, N_MS | AP와 MS의 antenna 수 | channel matrix와 stream 처리 |
+| K(m) | AP m이 서비스하는 MS 집합 | AP의 송신·local detection 범위 |
+| M(k) | MS k를 서비스하는 AP 집합 | MS 수신과 CPU 결합 범위 |
+| N | AP마다 고른 강한 MS 수 | N=K이면 CF가 된다 |
+
+핵심: UC는 K(m)과 M(k)를 제한하고, CF는 두 집합을 전체 네트워크로 넓힌 특수 경우다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 2–5, Eqs. 16–17
+
+## 5. 같은 AP·MS 배치에서 협력 범위만 바꾼다
+
+CF는 전체 링크를 유지하고 UC는 AP별 선택 집합만 처리한다
+
+- **공통 무선망**: M개 AP, K개 MS, TDD와 같은 채널 모델
+- **Cell-free**: 각 AP가 K명 모두를 서비스
+- **User-centric**: 각 AP가 강한 N명만 서비스
+- **같은 평가**: rate, sum-rate, minimum-rate
+- **비교**: 성능과 backhaul 부담을 함께 해석
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 2–5, §II–III
+
+## 6. 설명용 top-2 선택: estimated-channel norm을 정렬한다
+
+아래 숫자는 집합 생성만 보여 주는 발명 예시이며 논문 측정값이 아니다
+
+
+| AP | u1 norm | u2 norm | u3 norm | 선택된 K(m) |
+| --- | --- | --- | --- | --- |
+| AP1 | 0.90 | 0.20 | 0.70 | {u1, u3} |
+| AP2 | 0.30 | 0.80 | 0.60 | {u2, u3} |
+
+핵심: 역방향 집합은 M(1)={AP1}, M(2)={AP2}, M(3)={AP1,AP2}가 된다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) p. 4, Eqs. 16–17
+
+## 7. 설명용 집합을 AP 관점과 사용자 관점으로 읽기
+
+각 AP의 norm 입력에서 top-2 사용자 목록 K(m)을 만든다
+
+- **레인 AP1**
+- **레인 AP2**
+  - **AP1 norm**: u1 0.90, u2 0.20, u3 0.70
+  - **K(1)**: u1 → u3
+  - **AP2 norm**: u1 0.30, u2 0.80, u3 0.60
+  - **K(2)**: u2 → u3
+  - **AP1 relations**: AP1-u1 → AP1-u3
+  - **AP2 relations**: AP2-u2 → AP2-u3
+- AP1 norm → K(1) (실선, 단방향)
+- AP2 norm → K(2) (실선, 단방향)
+- K(1) → AP1 relations (실선, 단방향)
+- K(2) → AP2 relations (실선, 단방향)
+
+핵심: K(m)은 AP의 작업 범위를, M(k)는 한 사용자를 위해 결합할 AP 범위를 정한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) p. 4, Eqs. 16–17
+
+## 8. 한 coherence interval의 세 단계
+
+training과 두 data phase의 합이 channel coherence time 안에 들어가야 한다
+
+1. **Uplink training**: MS가 pilot을 보내고 AP가 channel을 추정
+2. **Downlink data**: AP가 추정 channel로 precoding해 전송
+3. **Uplink data**: MS 전송 → AP local 처리 → CPU 결합
+
+핵심: UC와 CF는 같은 시간 절차를 쓰며, 각 단계에 참여하는 AP-user 링크 수가 다르다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 2–3, §II and §III
+
+## 9. Pilot-matched channel estimation
+
+각 AP는 수신 pilot과 사용자 pilot을 맞춰 local channel estimate를 만든다
+
+1. **MS pilot**: 각 MS가 N_MS개 row의 pilot을 전송
+2. **AP observation**: 모든 user channel과 noise가 Y_m에 합쳐짐
+3. **Pilot match**: Y_m에 user k pilot의 conjugate transpose 적용
+4. **G_hat(k,m)**: desired channel과 contamination, noise가 남음
+
+핵심: 추정은 AP에서 끝나며 channel estimate 자체를 CPU나 MS로 보내지 않는다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 3–4, Eqs. 7–11
+
+## 10. Pilot 길이 부족은 contamination을 남긴다
+
+완전 직교 조건과 논문이 사용하는 현실적 조건을 구분한다
+
+
+| 조건 | estimate에 남는 것 | 논문 해석 |
+| --- | --- | --- |
+| tau_p >= K times N_MS | desired channel과 noise | 완전 직교에 필요한 차원 조건 |
+| 사용자 내부 row 직교 | 같은 MS의 stream 구분 | 논문이 유지하는 조건 |
+| 사용자 간 pilot 비직교 | 다른 user channel 교차항 | pilot contamination 발생 |
+| tau_p < tau_c | training 시간 제한 | coherence interval 일부만 사용 |
+
+핵심: UC가 링크 수를 줄여도 pilot contamination이 자동으로 사라지는 것은 아니다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 3–4, Eqs. 9–11
+
+## 11. Downlink: AP의 channel inversion과 MS의 고정 결합
+
+MS가 instantaneous CSI를 추정하지 않아도 data stream을 결합하도록 설계한다
+
+1. **Local estimate**: AP m이 G_hat(k,m)을 보유
+2. **Channel inversion**: estimate로 precoder Q(k,m) 계산
+3. **Power coefficient**: eta(k,m)로 AP-user 전력 조절
+4. **Air interface**: CF 전체 AP 또는 UC M(k)가 전송
+5. **Fixed combiner**: MS는 channel-independent L_k로 결합
+
+핵심: Channel-dependent 처리는 AP에 두고, MS는 고정 구조와 channel hardening에 의존한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 3–4, Eqs. 12–20
+
+## 12. Channel hardening이 MS-side CSI를 대신하는 범위
+
+많은 AP의 합성 효과가 안정적이라는 가정 아래 fixed combiner를 사용한다
+
+- TDD reciprocity로 uplink channel estimate를 downlink precoding에 쓴다
+- 여러 AP의 기여가 합쳐지면 effective channel 변동이 완화될 수 있다
+- MS는 downlink pilot 없이 fixed L_k로 각 stream group을 coherent sum한다
+- 논문은 perfect hardware reciprocity calibration을 전제로 둔다
+- Hardening이 모든 밀도·주파수·antenna 배치에서 완벽하다는 보장은 아니다
+
+핵심: MS-side CSI 대신 AP 처리와 channel hardening에 의존한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 2–4, §II and Eqs. 12–20
+
+## 13. Downlink에서 CF와 UC의 차이
+
+precoder 형식은 같고, 합에 포함되는 AP-user 항이 달라진다
+
+
+| 항목 | Cell-free | User-centric |
+| --- | --- | --- |
+| AP m의 대상 | 모든 K users | K(m)의 users |
+| MS k의 serving AP | 1부터 M까지 전체 | M(k)의 selected AP |
+| Power 변수 | 모든 AP-user pair | 선택된 pair만 nonzero |
+| Local CSI | AP가 보유 | AP가 보유 |
+| MS combiner | fixed L_k | fixed L_k |
+
+핵심: UC는 빔포밍 종류를 바꾸기보다 전송과 전력 할당의 support를 줄인다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 3–4, Eqs. 13–20
+
+## 14. Uplink: AP local statistic을 CPU에서 합친다
+
+UC에서는 user k를 서비스하는 M(k)의 AP만 statistic을 만든다
+
+- **AP1 local**: served user k의 soft statistic
+- **AP2 local**: served user k의 soft statistic
+- **CPU sum**: M(k)에 속한 AP statistic만 합산
+- **Soft estimate**: user k의 uplink data estimate
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 4–5, Eqs. 21–25
+
+## 15. Backhaul에 실리는 정보와 실리지 않는 정보
+
+논문의 분산 처리는 instantaneous CSI를 local에 남긴다
+
+
+| 정보 | AP 내부 | Backhaul·CPU | UC 효과 |
+| --- | --- | --- | --- |
+| Channel estimate | 추정·precoding에 사용 | 전송하지 않음 | 동일 |
+| Beamforming matrix | AP가 local 계산 | 전송하지 않음 | 동일 |
+| Downlink payload | 선택 user로 전송 | backhaul로 data symbol 전달 | 대상 user 감소 |
+| Uplink soft statistic | served user별 생성 | CPU로 전송·합산 | 항목 수 감소 |
+
+핵심: UC의 backhaul 절감은 local CSI 정책과 선택된 AP-user 관계가 함께 만든다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 1–5, §I and Eqs. 22–25
+
+## 16. 세 power allocation 기준은 서로 다른 목표를 가진다
+
+같은 구조도 power objective에 따라 rate 분포와 sum-rate가 달라진다
+
+
+| 전략 | 목표 | 해석 |
+| --- | --- | --- |
+| Uniform | available power를 균등 또는 최대로 사용 | optimization 없는 baseline |
+| SR Max | 모든 user rate의 합을 최대화 | system throughput 우선 |
+| MR Max | 가장 낮은 user rate를 최대화 | fairness 우선 |
+
+핵심: CF와 UC의 우열을 말하려면 link 방향과 CSI뿐 아니라 power objective도 밝혀야 한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 5–10, §§IV–VI
+
+## 17. Downlink power control의 successive lower-bound loop
+
+비볼록 rate를 직접 풀지 않고 AP power block별 convex surrogate를 반복한다
+
+1. **Feasible init**: AP별 power block eta_m 초기화
+2. **AP block 선택**: 다른 AP power는 고정
+3. **Concave lower bound**: 현재 점에서 값과 gradient를 맞춤
+4. **Convex subproblem**: power constraint 아래 surrogate 최적화
+5. **Update and repeat**: inner와 outer convergence까지 반복
+
+핵심: 큰 KM 변수 문제를 AP별 작은 문제로 나누되, global optimum을 주장하지 않는다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 5–8, Eqs. 32–41 and Algorithms 1–2
+
+## 18. Optimization guarantee를 정확히 읽기
+
+수렴한다는 말과 전역 최적이라는 말은 다르다
+
+
+| source statement | 보장 | 보장하지 않는 것 |
+| --- | --- | --- |
+| 각 update | objective가 감소하지 않음 | 매번 큰 폭의 향상 |
+| 반복 sequence | objective value가 수렴 | 유일한 power solution |
+| limit point | 가정 아래 first-order KKT | global maximum |
+| block choice | 복잡도와 subproblem 크기 조절 | 한 partition이 항상 최선 |
+
+핵심: 논문의 이론적 결론은 monotonic improvement와 first-order stationarity다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 5–7, Properties P1–P3 and Proposition 1
+
+## 19. Downlink와 uplink의 변수 규모가 다르다
+
+같은 lower-bound 원리를 쓰지만 자연스러운 block 구성은 다르다
+
+
+| 항목 | Downlink | Uplink |
+| --- | --- | --- |
+| Power 변수 | AP-user pair, 최대 KM개 | user power K개 |
+| 자연스러운 block | AP별 eta_m | 전체 user power 한 block |
+| Constraint | AP별 total power | MS별 maximum power |
+| 목표 | SR Max 또는 MR Max | SR Max 또는 MR Max |
+| 해법 | block 순환과 sequential bound | single-block sequential bound |
+
+핵심: UC의 링크 선택과 power optimization은 별개 층이며 두 link에서 변수 구조도 다르다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 5–8, §§IV–V and Remark 1
+
+## 20. Simulation의 공통 조건
+
+결과는 특정 channel·antenna·power·averaging 설정에서 얻었다
+
+
+| 범주 | 논문 설정 | 해석 주의 |
+| --- | --- | --- |
+| Area | 1000 m by 1000 m, wrap-around | boundary effect 완화 |
+| Radio | 20 MHz, 1.9 GHz | 다른 band로 자동 확장 불가 |
+| Antenna | N_AP=4, N_MS=2, P_k=2 | multi-antenna 설정 |
+| Training | maximum-length pilot, 100 mW | partial CSI에 contamination 포함 |
+| Average | 100 random locations and channels | 한 배치의 결과가 아님 |
+
+핵심: CDF와 sum-rate curve는 이 공통 조건을 고정한 뒤 구조·power rule을 바꾼 비교다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 8–9, §VI
+
+## 21. 두 density case와 N-sweep 조건
+
+AP 수, user 수, 선택 수, pilot 길이가 함께 바뀐다
+
+
+| case | M AP | K users | N selected | tau_p |
+| --- | --- | --- | --- | --- |
+| High density | 80 | 15 | 6 | 16 |
+| Low density | 50 | 5 | 2 | 8 |
+| N sweep | 60 | 10 | 1 to 10 | 16 |
+
+핵심: High와 low density의 차이는 AP density 하나가 아니라 여러 parameter 묶음이다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 9–10, Figs. 1–8
+
+## 22. Downlink 결과는 power objective에 따라 갈린다
+
+논문 prose가 보고한 방향을 high·low density와 CSI 조건 아래 읽는다
+
+
+| Power strategy | CF vs UC | Source interpretation |
+| --- | --- | --- |
+| Uniform | UC가 CF보다 우수 | 두 density case에서 같은 방향 |
+| MR Max | UC가 CF보다 우수 | worst-user fairness 목표 |
+| SR Max | CF가 UC보다 우수 | 차이는 제한적이라고 기술 |
+| CSI | perfect와 partial 모두 표시 | pilot estimation 손실을 분리 |
+
+핵심: Downlink에서 UC가 항상 우세하다는 단일 문장은 논문 결과를 과장한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 9–10, Figs. 1–4 and §VI
+
+## 23. N은 협력 범위와 backhaul을 함께 바꾼다
+
+작게 고르면 희소해지고, K까지 키우면 CF로 돌아간다
+
+
+| N 변화 | 구조 효과 | 해석 범위 |
+| --- | --- | --- |
+| N=1 | AP마다 한 user만 선택 | AP–user 관계 수 감소 |
+| 1<N<K | AP마다 N명의 user를 서비스 | 선택된 관계에서만 공동 처리 |
+| N=K | 모든 AP가 모든 user 서비스 | CF special case |
+| Sweep 결과 | sum-rate ordering이 변할 수 있음 | DL/UL, CSI, objective |
+
+핵심: 논문은 하나의 universal best N을 제시하지 않고 조건별 curve를 제시한다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 9–10, Figs. 4 and 8
+
+## 24. Uplink에서는 UC가 세 power strategy 모두에서 앞선다
+
+선택된 AP만 local statistic을 만들고 CPU가 결합하는 구조의 결과다
+
+
+| Power strategy | Paper result | Condition boundary |
+| --- | --- | --- |
+| Uniform | UC가 CF보다 우수 | high와 low density simulation |
+| SR Max | UC가 CF보다 우수 | perfect와 partial CSI curves |
+| MR Max | UC가 CF보다 우수 | minimum-user-rate objective |
+| Magnitude | 일부 상황에서 many-fold | 모든 배치의 고정 배수는 아님 |
+
+핵심: 논문의 가장 일관된 비교 결과는 simulated uplink에서의 UC 우세다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 10–11, Figs. 5–8 and §VII
+
+## 25. 비슷한 제목의 small-cell 비교 논문과는 질문이 다르다
+
+두 논문은 연결되지만 대상 architecture와 antenna 가정이 다르다
+
+
+| 항목 | 이 논문 | Ngo et al. reference [7] |
+| --- | --- | --- |
+| 비교 | User-centric vs cell-free | Cell-free vs small cells |
+| AP service | 선택된 여러 AP 또는 전체 AP | 전체 AP 또는 dedicated AP |
+| Antenna | AP와 MS 모두 multiple | AP와 user single |
+| 주요 확장 | channel inversion과 power allocation | capacity bounds와 max-min control |
+
+핵심: 이 자료는 small cell과의 최초 비교를 반복하지 않고 CF 내부의 cooperation scope를 묻는다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 1–2, §I, [ngo-cf-smallcells-v2](https://arxiv.org/abs/1602.08232v2) pp. 1–2, Abstract and §I
+
+## 26. 논문 결과의 적용 경계
+
+2018년 v1 simulation의 구조적 통찰과 일반적 보장을 구분한다
+
+
+| 경계 | 논문이 보여 준 것 | 보류해야 할 주장 |
+| --- | --- | --- |
+| Channel model | correlated shadowing과 wrap-around | 모든 실제 지형의 동일 성능 |
+| CSI | pilot-matched partial CSI 비교 | contamination 제거 |
+| Optimization | monotonic과 first-order KKT | global optimum |
+| Selection | estimated norm top-N simulation | 항상 geographical nearest |
+| Deployment | sub-6 GHz parameter simulation | mmWave·URLLC의 검증 완료 |
+
+핵심: 핵심은 선택적 협력의 가능성이며, 모든 radio 환경의 성능 보장은 아니다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) pp. 8–11, §VI–VII
+
+## 27. 정리: 협력의 범위를 channel strength로 선택한다
+
+UC는 cell-free의 공동 처리를 유지하면서 약한 AP-user 관계를 줄인다
+
+- 각 AP는 estimated-channel norm이 큰 N명의 K(m)을 고른다
+- Pilot estimate와 beamformer는 AP local에 남고 MS는 fixed combiner를 쓴다
+- Uplink CPU는 M(k)의 soft statistics만 합쳐 backhaul 항목을 줄인다
+- SR Max와 MR Max는 total throughput과 fairness라는 다른 목적을 푼다
+- Simulation의 uplink는 UC 우세, downlink는 objective별 차이를 보인다
+- 수렴 보장과 성능 결과는 논문의 model·parameter·CSI 조건 안에서 읽는다
+
+핵심: User-centric의 핵심은 비협력이 아니라 유효한 링크에 집중한 선택적 공동 처리다
+
+근거: [buzzi-uc-cf-v1](https://arxiv.org/abs/1803.02261v1) abstract; pp. 4–11, §§III–VII

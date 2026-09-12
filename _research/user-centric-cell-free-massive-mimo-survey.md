@@ -98,6 +98,14 @@ Scalability는 단순히 "더 많은 DU를 배치할 수 있는가"가 아니라
 
 넷째, energy efficiency는 dense DU의 transmit power 절감과 circuit/fronthaul power 증가가 동시에 나타나는 trade-off다. 해결 방향은 AP sleep mode, energy harvesting, traffic-aware DU activation, area energy efficiency metric을 함께 사용하는 것이다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/user-centric-cell-free-massive-mimo-survey/cf-mimo-survey-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/user-centric-cell-free-massive-mimo-survey/cf-mimo-survey-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/user-centric-cell-free-massive-mimo-survey/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/user-centric-cell-free-massive-mimo-survey/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

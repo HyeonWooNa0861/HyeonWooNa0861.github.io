@@ -95,6 +95,14 @@ Preemptive shield는 action 선택 전에 허용 집합을 제한하고, post-po
 
 실용적인 확장 방향은 세 가지다. 첫째, learned dynamics model의 uncertainty를 abstraction에 반영해 high-confidence safe set과 recheck-needed 영역을 나누는 방식이다. 둘째, shield가 개입한 state-action을 logging해 abstraction을 반복 개선하는 runtime assurance loop다. 셋째, multi-agent 또는 continuous-control domain에서는 symbolic shield와 barrier function, model predictive safety certification을 결합해 discrete specification과 continuous dynamics 사이의 간극을 줄일 수 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 31장 | <a href="/assets/seminars/safe-reinforcement-learning-via-shielding/shielding-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/safe-reinforcement-learning-via-shielding/shielding-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/safe-reinforcement-learning-via-shielding/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/safe-reinforcement-learning-via-shielding/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

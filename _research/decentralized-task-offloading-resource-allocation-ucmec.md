@@ -72,6 +72,14 @@ Decentralized MADRL scheme은 cooperation과 non-cooperation 상황을 모두 �
 
 QECO-Adapt가 dense load에 초점을 둔다면, 이 논문은 cell edge 통신 품질 문제를 다룬다. 실제 MEC에서는 edge load와 radio link quality가 함께 task completion을 좌우하므로, user-centric architecture는 offloading 연구의 중요한 확장 방향이다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 17장 | <a href="/assets/seminars/decentralized-task-offloading-resource-allocation-ucmec/ucmec-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/decentralized-task-offloading-resource-allocation-ucmec/ucmec-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/decentralized-task-offloading-resource-allocation-ucmec/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/decentralized-task-offloading-resource-allocation-ucmec/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

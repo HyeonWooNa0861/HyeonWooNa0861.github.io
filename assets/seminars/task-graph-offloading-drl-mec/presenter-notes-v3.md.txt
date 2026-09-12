@@ -1,0 +1,359 @@
+## 1. SATA-DRL: 의존 작업의 실행 위치를 학습하다
+
+1. SATA-DRL: 의존 작업의 실행 위치를 학습하다
+
+발표 대본
+이 발표는 SATA-DRL이 의존 task graph의 각 ready task를 어느 edge computing device, ECD에 배치할지 DQN으로 정하는 방식을 설명합니다. 핵심은 네 가지입니다. DAG 의존성, FCFS queue와 전송 지연, event-driven ready queue, 그리고 prediction/target network를 가진 DQN입니다.
+
+공개 출처
+arxiv-v4 | p. 1, title and Abstract
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 2. 문제: 독립 task 하나가 아니라 의존 DAG를 배치한다
+
+2. 문제: 독립 task 하나가 아니라 의존 DAG를 배치한다
+
+발표 대본
+논문은 모바일 application을 directed acyclic graph, DAG로 모델링합니다. 정점은 atomic and indivisible task이고 directed edge는 task 사이 data dependency입니다. 또한 edge computing device의 processing capability가 time varying이므로, 고정된 분석 모델이나 휴리스틱만으로 환경 변화에 적응하기 어렵다는 점에서 DRL을 도입합니다.
+
+공개 출처
+arxiv-v4 | pp. 1–3, Abstract and §3
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 3. 논문을 읽기 위한 용어
+
+3. 논문을 읽기 위한 용어
+
+발표 대본
+DRL은 Deep Reinforcement Learning, FCFS는 First-Come First-Served입니다. 원문 §6이 SATA를 Scheduling strAtegy for the Task grAph라는 대문자 조합으로 정의하고 DRL을 결합합니다. 이름 자체가 별도 표준 알고리즘이라는 뜻은 아닙니다. MEC는 Mobile Edge Computing이며 makespan은 여기서 application 요청 이후 최종 완료까지의 길이입니다.
+
+공개 출처
+arxiv-v4 | pp. 3–8; §§3–6
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 4. MEC system: 중앙 controller와 ECD queue
+
+4. MEC system: 중앙 controller와 ECD queue
+
+발표 대본
+Fig. 1과 §3은 일부 ECD에 위치한 decision controller가 전체 ECD의 broadcast status를 수집하고, 그 안의 reinforcement-learning agent가 task scheduling decision을 내린다고 설명합니다. 단순 모델에서 각 ECD는 one processing element를 가지며 FCFS로 실행합니다. ECD들 사이에는 wired link가 있습니다.
+
+공개 출처
+arxiv-v4 | p. 3, Fig. 1 and §3
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 5. DAG의 source·real task·sink
+
+5. DAG의 source·real task·sink
+
+발표 대본
+논문은 각 MU application에 dummy source v_n0와 dummy sink v_nI를 두며 둘은 MU를 나타내는 fictitious ECD 0에 있습니다. workload는 0입니다. 나머지 real task는 atomic and indivisible이며 local ECD 0이 아니라 real ECD에 offload됩니다. 한 real task는 한 ECD에서만 실행할 수 있습니다. 이 그림은 source Fig. 3의 특정 topology를 복제하지 않고 모델의 최소 의존 순서를 설명합니다.
+
+공개 출처
+arxiv-v4 | pp. 3–5, Fig. 3 and Eqs. 1–4
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 6. 완료 시간: 입력 도착·큐 준비·실행
+
+6. 완료 시간: 입력 도착·큐 준비·실행
+
+발표 대본
+Eq. 5는 workload rho_ni와 ECD capability delta_m으로 execution time을 정의합니다. Eqs. 6–10은 MU input, result, 그리고 task-to-task data transfer를 정의하고, 같은 ECD에 놓인 parent/child에는 transfer time을 0으로 둡니다. Eq. 12는 target ECD queue-ready time Q와 parent input arrival의 maximum을 취한 뒤 execution time을 더합니다.
+
+공개 출처
+arxiv-v4 | pp. 4–6, Eqs. 5–13
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 7. 목표: application 평균 makespan 최소화
+
+7. 목표: application 평균 makespan 최소화
+
+발표 대본
+Eq. 14는 application n의 makespan Psi_n을 task completion의 최댓값에서 request time r_n을 뺀 값으로 정의합니다. Eq. 15는 application들의 평균 makespan을 최소화합니다. Eqs. 1–4와 16은 binary assignment, ECD 0의 dummy task, real task offloading, task당 하나의 ECD를 제한합니다. 논문은 이를 NP-hard multiprocessor scheduling problem으로 분류합니다.
+
+공개 출처
+arxiv-v4 | pp. 5–6, Eqs. 1–4 and 14–16
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 8. SATA는 arrival·completion event에서 움직인다
+
+8. SATA는 arrival·completion event에서 움직인다
+
+발표 대본
+§5.1은 agent가 application arrival event와 task completion event에서 작동한다고 설명합니다. Eq. 17의 latest completion estimate F_lct로 application list xi_n를 정렬하고, dependency가 충족된 ready task를 Q_r에 넣습니다. Algorithm 1 lines 8–19는 Q_r에서 task를 하나씩 가져와 state를 얻고, DQN의 action으로 target ECD에 schedule하는 순서입니다. 목록 생성/우선순위 계산은 Algorithm1의 arrival 분기이고, ready 항목 수집은 두 이벤트 모두에서 수행됩니다. 원문은 목록 head를 검사하므로 한 번의 호출이 임의 위치의 모든 DAG 정점을 동시에 수집한다고 설명하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 6–7, Eq. 17; p. 9, Algorithm 1
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 9. F_lct: 기한에서 거꾸로 계산한 우선순위
+
+9. F_lct: 기한에서 거꾸로 계산한 우선순위
+
+발표 대본
+원문 측정값이 아닌 Eq17 계산용 가상 시간입니다. B와 C는 dummy sink의 부모이므로 deadline에서 반환 전송을 뺍니다. A는 각 자식의 최신 완료에서 자식 실행과 A→자식 전송을 뺀 값 중 작은 값을 사용합니다. 실행3·4는 workload6·8과 기준 처리 능력2, 전송1·2는 기준 link에서 얻었다고 가정했습니다. Q_r에 들어온 ready 항목만 우선순위로 정렬하며, 우선순위가 높다고 의존성을 건너뛰지는 않습니다. 추정에는 최댓값 자원을 사용하므로 혼잡한 실제 실행 완료의 보장이 아닙니다.
+
+공개 출처
+arxiv-v4 | p. 6, Eq. 17; constructed example
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 10. 배치를 결정하는 시점과 실행 시작은 다르다
+
+10. 배치를 결정하는 시점과 실행 시작은 다르다
+
+발표 대본
+p6은 부모 scheduling plans 이후 자식의 계획을 만들 수 있다고 하고, p7 Eq19 설명은 ready task의 각 부모가 완료되어 A를 얻는다고 합니다. 발표는 이 차이를 숨기거나 임의 구현 규칙으로 메우지 않습니다. 대조적으로 실제 실행은 Eq12의 max 조건으로 정의되어 있습니다. 목록 삭제·중복 방지·여러 사건 사이 상태 보존의 상세 구현도 의사코드에 전부 드러나 있지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 5–7, Eqs. 12–13; p. 9, Algorithm 1
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 11. MDP state: 다섯 종류의 지연 관련 관측
+
+11. MDP state: 다섯 종류의 지연 관련 관측
+
+발표 대본
+§5.2는 state s_tau가 computing delay와 transmission delay에 관한 five parameters를 포함한다고 설명합니다. 본문은 ECD 간 transmission-rate 합, MU와 covering ECD의 link-rate 항, ECD processing-capability 합, ready queue Q_r의 total workload, 모든 computing queue의 total workload를 설명합니다. 이 슬라이드는 원문이 정의한 합계 관측을 그대로 설명하며, 임의의 ECD별 벡터를 추가하지 않습니다.
+
+공개 출처
+arxiv-v4 | p. 7, §5.2 State Space
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 12. 합계가 같아도 어느 ECD가 빠른지는 다를 수 있다
+
+12. 합계가 같아도 어느 ECD가 빠른지는 다를 수 있다
+
+발표 대본
+원문4-ECD 실험을 재현한 결과가 아니라 상태 표현을 이해하기 위한 두 ECD 반례입니다. capacity 합을 유지한 채 위치만 바꾸고 link/queue 합도 고정하면 같은 관측에서 유리한 ECD가 달라집니다. 원문의 MDP라는 명칭만으로 집계 관측의 Markov 충분성 또는 최적 정책 식별 가능성이 증명되지는 않습니다. 논문은 이 경우의 정량 실패율을 측정하지 않았으므로 실패율이나 실제 구현 버그라고 확대하지 않습니다.
+
+공개 출처
+arxiv-v4 | p. 7, §5.2 State Space; constructed example
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 13. action: 현재 ready task를 한 ECD에 배치
+
+13. action: 현재 ready task를 한 ECD에 배치
+
+발표 대본
+§5.2는 action a_tau가 지금 scheduling하는 task의 decision을 표현한다고 설명합니다. dummy task가 아닌 task는 M개 ECD 중 하나에 schedule되고, action의 binary entry는 §4의 strategy x_ni에 대응합니다. Eqs. 1과 4는 real task에 정확히 하나의 ECD를 요구합니다. 논문은 real task의 local execution을 action으로 두지 않습니다. action 표기는 a0부터 aM까지 M+1개입니다. 원문 Eq3은 real task의 a0=0을 요구하지만, DQN이 이를 강제하는 구체적 masking 방법은 제공하지 않습니다. ready 판정과 입력 데이터 도착은 동일 개념이라고 단정하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 5, 7, Eqs. 1–4 and §5.2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 14. reward = utility - duration - penalty
+
+14. reward = utility - duration - penalty
+
+발표 대본
+Eq18–20을 그대로 분리합니다. maxA는 가장 늦은 부모 입력 도착 시각, Q는 ECD의 준비 시각, E는 실행 길이입니다. 실제 완료 Eq12는 F=max(Q,maxA)+E이나 Eq19의 D는 ψ(maxA+Q+E)/ρ입니다. 둘은 같지 않으며 중복 시간 대기를 제거한 식으로 보상식을 바꾸지 않습니다. Eq20에는 max(0,·)가 없습니다. F<F_lct이면 P<0이고 r에서 P를 빼므로 보상이 증가합니다. β,ψ,η는 가중치이며 U−D−P를 평균 makespan의 정확한 음수나 등가 목적이라고 단정하지 않습니다.
+
+공개 출처
+arxiv-v4 | p. 7, Eqs. 18–20
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 15. 교육용 계산: 완료 시간과 shaped reward를 구분
+
+15. 교육용 계산: 완료 시간과 shaped reward를 구분
+
+발표 대본
+가상 시각과 작업량을 선택한 설명용 계산입니다. U=.6×6.64385619=3.98631371, 실제 완료는4, D=.3, P=−.4, r=4.08631371입니다. 비교용으로 F_lct만3으로 바꾸면 P=.4, r=3.28631371입니다. Eq20에 양수 부분 함수가 없다는 점을 보여 줍니다. 물리 단위가 보상 안에서 어떻게 무차원화되는지는 원문이 상세하게 논의하지 않으므로 실제 monetary utility나 최적 성능으로 해석하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 5–7, Eqs. 12,18–20; p. 11; constructed example
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 16. training action은 epsilon-greedy로 고른다
+
+16. training action은 epsilon-greedy로 고른다
+
+발표 대본
+Eq. 24는 training 중 action을 정의합니다. probability epsilon으로 random action을, 그 밖에는 prediction-network Q-value의 argmax를 고릅니다. action 뒤 MEC environment는 next state와 reward를 돌려주고, 논문은 transition을 저장해 batch learning에 사용합니다. 이는 convergence 뒤 working algorithm이 직접 argmax를 고르는 것과 다릅니다.
+
+공개 출처
+arxiv-v4 | p. 8, Eq. 24 and §6.1
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 17. DQN training: replay, target, loss
+
+17. DQN training: replay, target, loss
+
+발표 대본
+Eqs. 22–23은 current Q와 target Q의 squared error loss를 정의합니다. 각 experience record는 state, selected action, reward, next state입니다. 논문은 sampled current state를 prediction network에, next state를 target network에 넣고 prediction-network parameter에 SGD를 적용합니다. Algorithm 2는 prior state-action pair가 없는 첫 scheduling step에서는 transition 저장을 건너뜁니다.
+
+공개 출처
+arxiv-v4 | pp. 7–9, Eqs. 22–23; Algorithm 2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 18. target network: K회 반복 뒤 파라미터 복사
+
+18. target network: K회 반복 뒤 파라미터 복사
+
+발표 대본
+실제 p9 Algorithm2의 들여쓰기를 보면 line18 θ−←θ는 line3 for k=1,…,K와 같은 깊이입니다. 따라서 표기상 K회 블록이 끝난 후 hard copy합니다. p8 본문의 일정 round 후 복사 및 Fig4의 synchronization condition과 모순되지 않습니다. 다만 Algorithm3의 호출 사이 초기화/경험 pool 지속 방식, K의 구체적 값과 전역 cadence는 충분히 명시되지 않았으므로 구현 상세까지 확정하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 8–9, §5.3 and Algorithm 2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 19. Algorithm 1과 2의 실제 연결
+
+19. Algorithm 1과 2의 실제 연결
+
+발표 대본
+Algorithm 1은 SATA를 구현합니다. 두 event를 받고 list를 만들고 rank하며 ready task를 Q_r에 넣고 state를 얻습니다. 첫 step 뒤 reward를 계산하고 DRL action으로 task를 schedule합니다. Algorithm 2는 state와 reward를 받아 epsilon-greedy action을 고르고, 첫 step 뒤 transition을 저장한 뒤 minibatch Q를 계산하여 prediction network를 갱신합니다. 이름은 environment scheduling과 DQN learning을 분리합니다. 보상은 이전 선택의 결과와 짝지은 뒤 replay에 저장합니다. 현재 선택 전에 현재 선택의 실제 결과를 알고 있는 것으로 그리지 않습니다. 원문의 사건 처리와 미완료 작업의 reward 측정 시점은 별도 구현 명세가 부족합니다.
+
+공개 출처
+arxiv-v4 | p. 9, Algorithms 1–2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 20. 학습 뒤 SATA-Work의 결정
+
+20. 학습 뒤 SATA-Work의 결정
+
+발표 대본
+§6.3과 Algorithm 4는 working과 training을 구분합니다. Algorithm 3는 predefined number of episodes 동안 DRL invocation을 반복합니다. neural network가 converged한 뒤 SATA-Work도 arrival/completion event와 ready-task handling에는 응답하지만, prediction-network Q value를 최대화하는 action을 고릅니다. 이 working path에는 epsilon-random exploration이 없습니다.
+
+공개 출처
+arxiv-v4 | pp. 9–10, Algorithms 3–4 and §6.3
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 21. 교육용 가상 trace: parent output이 child 시작을 바꾼다
+
+21. 교육용 가상 trace: parent output이 child 시작을 바꾼다
+
+발표 대본
+이 trace는 설명용으로 새로 만든 값입니다. A는 1000 instructions를 1000 instructions/s ECD 1에서 실행해 1 s에 끝납니다. A output 200 bit를 B가 ECD 2에서 받으면 200 bit/s link로 1 s를 더 기다리고 B의 1 s execution 뒤 3 s에 끝납니다. B도 ECD 1이면 source Eq. 10의 same-ECD transfer rule이 0이어서 2 s입니다. FCFS queue delay와 DQN Q-value는 0 또는 미계산으로 둡니다. 두 대안에서 실제 Eq12를 적용하면 ECD2의 준비 시각0과 데이터 도착2의 max 뒤 실행1을 더해3입니다. ECD1은 A 종료로 준비 시각1이며 같은 ECD의 입력도1에 도착하여 max(1,1)+1=2입니다. 이는 이미 입력을 받은 A부터의 부분 trace이며 application의 dummy sink/최종 반환 지연은 포함하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 4–6, Eqs. 5, 10, 12–13
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 22. 실험 조건: 네 ECD와 Montage 작업 그래프
+
+22. 실험 조건: 네 ECD와 Montage 작업 그래프
+
+발표 대본
+§7.1은 simulator가 four ECD와 ECD당 one PE를 둔다고 말합니다. ECD capacity는 6000, 5500, 5000, 4500, 4000 MIPS의 discrete value를 가지며 printed matrix에 따라 transition합니다. inter-ECD rate는 440 Mbps, MU-to-covering-ECD rate는 1000 Mbps입니다. Montage workflow dataset은 25 nodes입니다. 저자들은 CloudSim, EdgeCloudSim, ElasticSim을 함께 adapt했으며 physical deployment는 보고하지 않습니다. 처리 능력은 임의의 task 완료 이벤트 뒤 전이 행렬에 따라 갱신합니다. DAX runtime은 100–500 범위로 자르고, 평균 전송률520Mbps를 이용한 기준 통신 시간을 .001–.01 범위로 제한한 뒤 데이터 크기를 정합니다. 따라서 원시 Montage를 수정 없이 그대로 실행한 실험이 아닙니다. Eq17의 Bhat은 ECD 간 최대 전송률로 정의되지만 p10은 Bhat=1000Mbps로 설정해 ECD 간440Mbps와 맞지 않습니다. 정규화 및 기준 설정을 기록하고 원문 밖 구현을 추정하지 않습니다.
+
+공개 출처
+arxiv-v4 | p. 10, §7.1 and Fig. 5
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 23. deadline metric을 읽을 때의 조건
+
+23. deadline metric을 읽을 때의 조건
+
+발표 대본
+p. 11은 basic makespan MS_n의 construction을 설명합니다. application의 every task가 maximum average processing capability 5000 MIPS인 서로 다른 ECD에 schedule되고 모든 task transfer data를 무시한다고 가정합니다. 이어 d_n=r_n+6 MS_n으로 둡니다. 같은 페이지는 deadline violation을 deadline을 위반한 application 수를 전체 application 수로 나눈 뒤 100 percent를 곱한 값으로 정의합니다. 이를 validated real-system SLA로 제시하면 안 됩니다. 주의: 원문은 5000=(6000×4+1000)/6이라고 인쇄하지만 우변은 약4166.67입니다. 발표는 본문이 지정한5000을 실험 기준값으로만 옮기며, 그 산식이 맞거나 실제 코드가 어느 값을 사용했다고 단정하지 않습니다. 25개 task를 서로 다른 ECD에 놓는 것은 기준 계산의 가정이지 실제 네 ECD 배치가 아닙니다.
+
+공개 출처
+arxiv-v4 | p. 11, §7.1 and §7.4
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 24. DQN agent의 보고된 설정
+
+24. DQN agent의 보고된 설정
+
+발표 대본
+§7.2는 같은 fully connected five-layer structure와 node counts 128, 64, 32, 16, 5를 가진 two neural networks를 보고합니다. 논문에 따르면 first four layers는 linear activation, final layer는 softmax입니다. Adam learning rate 0.0006, pool size 200000, batch 64, beta 0.6, psi 5, eta 40, gamma 0.95를 사용합니다. 이 숫자는 해당 simulation configuration에 속합니다.
+
+공개 출처
+arxiv-v4 | p. 11, §7.2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 25. 재현할 때 원문만으로 확정하기 어려운 지점
+
+25. 재현할 때 원문만으로 확정하기 어려운 지점
+
+발표 대본
+p7은 a0…aM, p11은4개ECD와5개출력을 보고하므로 차원 자체는 M+1에 맞습니다. 그러나 Eq3의 real-task a0=0을 실제 선택에서 강제하는 방법은 명시되지 않았습니다. softmax는 출력 합이1인 제한된 값을 주는데 Eq23의 보상과 bootstrap target은 일반적으로 그 범위에 제한되지 않습니다. 이를 원문 표기의 재현 질문으로 기록하며, 코드가 반드시 그대로이거나 실험이 틀렸다고 단정하지 않습니다. 5000 기준 산식도 숫자 불일치가 있습니다. 이 발표는 본문 지정값과 수식 불일치를 나눠 전달합니다.
+
+공개 출처
+arxiv-v4 | pp. 5,7–11; Eqs. 3,23; Algorithms 2–3; §7.2
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 26. cumulative reward 학습 곡선의 범위
+
+26. cumulative reward 학습 곡선의 범위
+
+발표 대본
+§7.3은 simulator가 episode당 10 applications를 처리할 때 arrival rate lambda 5, 7, 9에서 cumulative reward를 평가합니다. 저자들은 total reward가 training episode와 함께 증가하며 Fig. 5(c)를 가리켜 600 episode 이후 trend가 relatively stable하다고 말합니다. 논문은 이 setting 밖의 formal convergence proof나 generalization test를 제공하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 10–11, Fig. 5 and §7.3
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 27. optimization 비교의 대상과 측정값
+
+27. optimization 비교의 대상과 측정값
+
+발표 대본
+§7.4는 SATA-DRL을 Zhang's PCP, OnDoc, DTO-CED, Dueling DQN과 비교합니다. Dueling DQN에는 §5.2에서 정의한 same state, action, reward를 쓴다고 저자들이 밝힙니다. Poisson arrival rate로 application을 fetch하고, algorithm들이 같은 application을 30회 처리한 평균을 plot합니다. metric은 average makespan과 deadline violation rate입니다.
+
+공개 출처
+arxiv-v4 | p. 11, §7.4
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 28. Fig. 6–7의 조건부 결과
+
+28. Fig. 6–7의 조건부 결과
+
+발표 대본
+pp. 11–12는 Figs. 6–7을 논의합니다. 저자들은 tested arrival rate에서 SATA-DRL이 five algorithms 중 lowest makespan을 달성하고 deadline violation도 much lower하다고 말합니다. 같은 metric에서 Dueling DQN보다 superior하다고도 밝힙니다. 원문은 result table이 아닌 plot을 제공하므로 이 deck은 graph pixel에서 exact percentage margin을 만들어 내지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 11–12, Figs. 6–7 and §7.4
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 29. 모델을 적용할 때 남는 경계
+
+29. 모델을 적용할 때 남는 경계
+
+발표 대본
+이 경계는 논문의 system model과 experimental construction에서 직접 나옵니다. controller는 centralized이고 각 ECD는 one FCFS PE를 가지며 simulation capacity는 five level로 quantized됩니다. optimization objective는 average makespan이고 deadline violation은 constructed deadline rule을 씁니다. 논문은 local real-task execution, energy, price, reliability, wireless fading, bandwidth-allocation action을 모델링하지 않습니다.
+
+공개 출처
+arxiv-v4 | pp. 3, 6, 10–11, §§3,4,7
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4
+
+## 30. SATA-DRL의 전체 연결
+
+30. SATA-DRL의 전체 연결
+
+발표 대본
+SATA는 application 도착과 task 완료 이벤트를 우선순위가 붙은 준비 작업 순서로 바꿉니다. DQN은 논문이 정의한 집계 상태를 보고 현재 작업의 ECD를 선택하며, shaped reward와 경험 재생으로 학습합니다. 네 ECD의 simulation 결과를 해석할 때 큐, 처리 능력, workflow 정규화, deadline 규칙을 함께 봐야 합니다.
+
+공개 출처
+arxiv-v4 | pp. 3–12, §§3–8
+arXiv:2309.10569v4 primary paper
+https://arxiv.org/abs/2309.10569v4

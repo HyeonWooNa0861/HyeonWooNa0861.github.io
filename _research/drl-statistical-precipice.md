@@ -73,6 +73,14 @@ Atari 100k case study는 이 주장을 구체화한다. 저자들은 26개 game�
 2. Confidence interval은 uncertainty를 보여주지만, benchmark 자체의 task selection bias를 없애지는 못한다. 새로운 domain에서는 task suite 구성, normalization 기준, failure definition을 명확히 정해야 한다.
 3. Robust metric도 잘못 사용하면 또 다른 단일 숫자 경쟁이 될 수 있다. 실무 적용에서는 IQM, performance profile, optimality gap, probability of improvement를 함께 보고하고, 중요 서비스에서는 worst-case와 safety metric을 별도로 유지해야 한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 31장 | <a href="/assets/seminars/drl-statistical-precipice/statistical-precipice-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/drl-statistical-precipice/statistical-precipice-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/drl-statistical-precipice/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/drl-statistical-precipice/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 - [Local source PDF](/assets/pdfs/research/drl-statistical-precipice/drl-statistical-precipice.pdf){:target="_blank" rel="noopener"}

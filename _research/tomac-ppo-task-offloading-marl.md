@@ -33,7 +33,7 @@ TOMAC-PPO는 cloud-edge collaborative MEC의 task offloading과 resource allocat
 
 ## 핵심 내용
 
-이 논문은 cloud-edge collaborative MEC 환경에서 task offloading, resource scheduling, delay, energy, task drop을 하나의 joint optimization 문제로 묶고, edge server들을 agent로 둔 task-oriented multi-agent reinforcement learning 전략인 TOMAC-PPO를 제안한다. 단순히 "PPO를 MEC에 적용했다"는 수준이 아니라, task queue, wireless/wired transmission, node failure, delayed reward, task priority까지 포함해 offloading decision이 실제 service cost에 미치는 영향을 모델링한 점이 핵심이다.
+이 논문은 cloud-edge collaborative MEC의 task offloading과 resource scheduling을 joint optimization으로 묶고, hop-based subnet마다 highest-degree commentator node 하나를 agent로 두는 task-oriented multi-agent strategy TOMAC-PPO를 제안한다. 단순히 "PPO를 MEC에 적용했다"는 수준이 아니라, task queue, wireless/wired transmission, node failure, delayed reward, task priority까지 포함해 offloading decision이 실제 service cost에 미치는 영향을 모델링한 점이 핵심이다.
 
 ## 논문 전개
 
@@ -67,7 +67,7 @@ Task class도 reward를 바꾼다. High-priority task는 energy term을 제외�
 
 ### TOMAC-PPO의 방법
 
-TOMAC-PPO는 edge server를 agent로 보고, 각 agent가 local observation과 synchronization message를 바탕으로 offloading/scheduling action을 선택하게 한다. Markov decision process는 fixed time slot 대신 task arrival과 processing event를 중심으로 구성된다. 이 설계는 병렬 task 처리와 delayed reward를 더 직접적으로 반영하려는 선택이다.
+TOMAC-PPO는 각 subnet의 commentator node를 agent로 두고, ordinary node가 observation을 보내면 commentator가 해당 node의 offloading·scheduling action을 선택해 돌려준다. Markov decision process는 fixed time slot 대신 task arrival과 processing event를 중심으로 구성된다. 이 설계는 병렬 task 처리와 delayed reward를 더 직접적으로 반영하려는 선택이다.
 
 Policy update는 PPO의 clipped objective `L^{CLIP}(\theta)`를 사용한다. 논문은 policy network를 gradient ascent로 갱신하고, value network와 target network update ratio `\sigma`를 함께 둔다. Algorithm 1의 주요 input은 training round `e_max`, pruning parameter `\varsigma`, learning rate `\alpha`, discount factor `\gamma`, target update ratio `\sigma`이며, output은 각 agent의 policy `\pi(a|s;\theta^j)`이다. 저자들은 알고리즘 복잡도를 agent 수 `n`과 training round `e_max`에 대해 `O(n e_max)`로 제시한다.
 
@@ -96,6 +96,14 @@ Transformer는 network state의 memory와 prediction을 보강하는 역할로 �
 둘째, simulation network가 비교적 단순하다. 실제 deployment에서는 UAV, connected vehicle, multi-operator edge, heterogeneous accelerator, cost-aware cloud billing이 함께 들어온다. 따라서 ns-3, OMNeT++, Simu5G 같은 network simulator나 trace-driven digital twin으로 failure, mobility, handover, backhaul congestion을 재검증할 필요가 있다.
 
 셋째, reward 설계가 task priority를 반영하지만 safety constraint를 엄밀한 hard constraint로 보장하지는 않는다. Critical task에는 constrained RL, safe exploration, admission control을 함께 붙여 drop bound나 deadline violation probability를 직접 제한하는 확장이 자연스럽다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 42장 | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/tomac-ppo-seminar-ko-v3.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/tomac-ppo-seminar-ko-v3.pptx" download>다운로드</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
 
 ## 참고자료
 

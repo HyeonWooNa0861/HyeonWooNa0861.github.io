@@ -1,0 +1,359 @@
+## 1. YAQA: 모델 출력을 보존하는 적응형 반올림
+
+1. YAQA: 모델 출력을 보존하는 적응형 반올림
+
+발표 대본
+YAQA는 Yet Another Quantization Algorithm의 약자입니다. 이 논문은 새로운 low-bit datatype을 제안하지 않습니다. 이미 정해진 quantizer의 representable points를 그대로 쓰되, 각 weight를 어느 point로 보낼지를 full-model output distribution에 더 맞게 결정합니다. 핵심 도구는 full-model KL Hessian의 Kronecker-factored sketch와 output·input channel 양쪽으로 error를 전달하는 adaptive rounding입니다. 공개 기준 문서는 2026년 6월 3일의 arXiv v3이며 ICML 2026 proceedings footline을 가진 20쪽 논문입니다.
+
+공개 출처
+paper-v3 | title page, abstract, arXiv v3 footer
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 2. LLM 배포에서 양자화가 맡는 일
+
+2. LLM 배포에서 양자화가 맡는 일
+
+발표 대본
+Weight-only post-training quantization은 pretrained weight를 다시 학습하지 않거나 제한적으로만 보정하면서 낮은 precision으로 저장합니다. Memory-bound inference에서는 읽어야 하는 bytes가 줄고, 지원되는 datatype에서는 throughput도 높아질 수 있습니다. 하지만 같은 bit 수라도 rounding 선택에 따라 model output distribution이 크게 달라집니다. 이 논문은 압축 형식을 설계하기보다 원본 모델의 행동을 더 잘 보존하는 rounding을 다룹니다.
+
+공개 출처
+paper-v3 | p. 1, abstract and §1
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 3. quantizer와 rounding algorithm은 다르다
+
+3. quantizer와 rounding algorithm은 다르다
+
+발표 대본
+논문은 quantization framework를 두 부분으로 구분합니다. Quantizer Q는 codebook C, 즉 표현 가능한 points를 정의합니다. Rounding algorithm은 원래 parameter를 그 points 중 하나에 배정합니다. 따라서 YAQA를 QTIP이나 standard INT4와 함께 쓸 수 있습니다. 추론 형식은 quantizer가 결정하므로 YAQA 자체가 새 decode kernel을 요구하지는 않습니다. 다만 Hessian sketch와 rounding을 계산하는 offline 비용은 분명히 존재합니다.
+
+공개 출처
+paper-v3 | p. 1, §1 quantizer and rounding distinction
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 4. 목표는 원본 출력 분포와의 KL을 줄이는 것
+
+4. 목표는 원본 출력 분포와의 KL을 줄이는 것
+
+발표 대본
+식 1은 quantized parameters를 codebook C 안에서 고르되, 입력 distribution에 대한 expected KL divergence를 최소화하도록 정의합니다. 원본 모델 output distribution이 기준이고 양자화 모델이 이를 근사합니다. 이산적인 조합 최적화를 정확히 푸는 것은 어렵기 때문에 논문은 한 linear layer의 weight 변화가 이 KL에 미치는 영향을 second-order approximation으로 다룹니다. 여기서 lower KL은 원본 모델과 더 가깝다는 뜻이지, 별도의 ground-truth task에서 항상 더 높은 accuracy를 뜻하지는 않습니다.
+
+공개 출처
+paper-v3 | p. 1, Eqs. 1–2
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 5. immediate activation error는 왜 proxy인가
+
+5. immediate activation error는 왜 proxy인가
+
+발표 대본
+LDLQ와 동등한 GPTQ rounding은 H1 equals expected x transpose x를 사용해 현재 layer activation reconstruction error를 줄입니다. 이 값은 forward input으로 구할 수 있어 저렴하지만, 해당 error가 뒤의 attention과 MLP를 통과하면서 어떻게 변하는지는 반영하지 않습니다. YAQA는 full-model KL Hessian H를 목표로 삼습니다. 다만 H를 그대로 계산하지 않고 구조화된 approximation을 쓰므로, approximation이 true Hessian의 중요한 방향을 얼마나 잘 포착하는지가 성능과 bound를 좌우합니다.
+
+공개 출처
+paper-v3 | pp. 1–2, Eq. 2 and local activation proxy
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 6. full Hessian은 그대로 저장할 수 없다
+
+6. full Hessian은 그대로 저장할 수 없다
+
+발표 대본
+W가 m output channels와 n input channels를 가지면 vectorized weight error에는 mn coordinates가 있습니다. Full-model KL의 second-order curvature H는 이 coordinates 사이의 관계를 담아 mn by mn이 됩니다. YAQA는 H를 H_O Kronecker H_I로 근사합니다. H_O는 output-channel 관계, H_I는 input-channel 관계를 담습니다. Storage는 O(m squared plus n squared)로 줄지만, LDLQ의 H1 하나보다 factor가 하나 더 있으므로 저자 구현에서는 Hessian storage가 대략 두 배입니다.
+
+공개 출처
+paper-v3 | pp. 1, 4, Eq. 2 and §3.1.2
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 7. LDLQ는 input channel 방향으로 error를 넘긴다
+
+7. LDLQ는 input channel 방향으로 error를 넘긴다
+
+발표 대본
+LDLQ의 fixed-point form을 한 update로 펼친 그림입니다. 먼저 quantizer Q가 current quantized matrix Wq를 만듭니다. Error Δ는 original W* minus Wq입니다. H1의 block LDL decomposition에서 얻은 strictly lower factor L'I를 이용해 ΔL'I를 원래 weight에 더한 뒤 다시 quantize합니다. 이 의존성은 input-channel 순서로만 전파됩니다. 그림의 화살표는 반복 전체의 cycle을 그린 것이 아니라 한 iteration의 data dependency를 시간 순서로 펼친 것입니다.
+
+공개 출처
+paper-v3 | pp. 2–3, Eq. 3 and Lemma 3.2
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 8. SND는 rounding dependency의 깊이다
+
+8. SND는 rounding dependency의 깊이다
+
+발표 대본
+Structural nilpotence degree, SND는 L minus identity의 support graph가 가진 dependency depth를 나타냅니다. Definition 3.1이 SND를 정의하고 Lemma 3.2가 이 깊이로 fixed-point iteration 수를 bound합니다. Full Hessian의 dense triangular factor를 그대로 쓰면 depth가 mn까지 갈 수 있습니다. Lemma 3.3에 따라 Kronecker product of unit triangular factors의 SND는 두 factor의 SND 합으로 분해됩니다. 그래서 YAQA는 output m과 input n의 합에 비례하는 단계 안에서 수렴하는 구조를 얻습니다.
+
+공개 출처
+paper-v3 | pp. 3–4, Definition 3.1 and Lemmas 3.2–3.3
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 9. Kronecker factor가 두 channel 축을 결합한다
+
+9. Kronecker factor가 두 channel 축을 결합한다
+
+발표 대본
+H_O와 H_I는 서로 독립된 입력이 아니라 full Hessian의 output-channel and input-channel structure를 각각 요약한 factors입니다. 이 둘의 Kronecker product는 mn by mn shape을 암시하지만 실제로 dense matrix를 만들지 않고 factorized operations로 사용합니다. LDL decomposition도 각 factor에 따로 적용할 수 있어 output-side L'_O와 input-side L'_I를 얻습니다. 이 구조가 YAQA의 세 feedback terms로 이어집니다.
+
+공개 출처
+paper-v3 | p. 4, Lemma 3.3 and Eqs. 5–6
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 10. YAQA는 output과 input 양쪽 error를 전달한다
+
+10. YAQA는 output과 input 양쪽 error를 전달한다
+
+발표 대본
+YAQA의 식 6을 한 iteration으로 펼친 그림입니다. Current Wq로 error Δ를 만들고, output factor의 strictly lower component와 input factor를 적용해 세 terms를 계산합니다. Input term ΔL'I는 LDLQ에 있던 부분입니다. YAQA는 output term L'O transpose Δ와 cross term L'O transpose Δ L'I를 추가합니다. 마지막에는 original W* plus three terms를 같은 quantizer Q에 넣습니다. 따라서 representable points는 바뀌지 않고 code assignment만 바뀝니다.
+
+공개 출처
+paper-v3 | p. 4, Eqs. 5–6
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 11. 세 feedback term을 따로 읽기
+
+11. 세 feedback term을 따로 읽기
+
+발표 대본
+첫 term은 LDLQ에서도 사용되는 input-side feedback입니다. 둘째는 output-side factor가 error rows 사이의 관계를 반영합니다. 셋째는 output-side transformed error에 input-side factor까지 적용해 두 axes의 joint dependency를 반영합니다. 세 term을 모두 original weight에 더한 뒤 same quantizer로 requantize합니다. 논문은 Equation 5가 LDLQ보다 two additional output-side components를 가진다고 표현하며, 그 두 components가 output term과 cross term입니다.
+
+공개 출처
+paper-v3 | p. 4, Eq. 6 and following paragraph
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 12. 교육용 2 by 2 rounding trace의 설정
+
+12. 교육용 2 by 2 rounding trace의 설정
+
+발표 대본
+이 숫자는 YAQA의 update를 손으로 따라가기 위한 invented example입니다. Quantizer Q는 nearest integer이므로 W*의 0.45는 0, 1.55는 2, 2.45는 2, 2.55는 3으로 시작합니다. L'O and L'I are identical two-by-two strictly lower matrices with 0.5 in the lower-left entry. 실제 YAQA factors는 Hessian sketches의 block LDL decomposition에서 얻습니다. 여기서는 작은 arithmetic을 위해 임의로 정했습니다.
+
+공개 출처
+paper-v3 | p. 4, Eq. 6; p. 13, Algorithm 1; illustrative trace
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 13. 첫 update에서 code 하나가 2에서 1로 바뀐다
+
+13. 첫 update에서 code 하나가 2에서 1로 바뀐다
+
+발표 대본
+Output term, input term, cross term을 elementwise 더하면 feedback sum은 [[−0.1125,−0.225],[−0.225,0]]입니다. 이를 original W*에 더하면 new target이 [[0.3375,1.325],[2.225,2.55]]가 됩니다. Nearest-integer quantization 결과는 W1 equals [[0,1],[2,3]]입니다. Initial W0의 upper-right code 2가 1로 바뀌었습니다. 이 예는 모델 성능을 보여 주지 않고 Equation 6의 mechanics만 재현합니다.
+
+공개 출처
+paper-v3 | p. 4, Eq. 6; illustrative arithmetic
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 14. 두 번째 update 뒤 fixed point에 도달한다
+
+14. 두 번째 update 뒤 fixed point에 도달한다
+
+발표 대본
+W1을 기준으로 error를 다시 계산하면 Δ1은 [[0.45,0.55],[0.45,−0.45]]입니다. 동일 factors와 Equation 6을 적용한 target은 [[0.8375,1.325],[2.225,2.55]]이고 nearest rounding은 W2 equals [[1,1],[2,3]]입니다. 다음 반복에서도 같은 code가 나오므로 fixed point입니다. 실제 Algorithm 1도 current quantized matrix와 new quantized matrix가 같은지를 확인해 converged를 정합니다. 작은 예의 두 번 수렴은 일반적인 iteration 수를 주장하지 않습니다.
+
+공개 출처
+paper-v3 | p. 13, Algorithm 1; illustrative arithmetic
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 15. Theorem 3.4가 보장하는 범위
+
+15. Theorem 3.4가 보장하는 범위
+
+발표 대본
+Theorem 3.4는 true KL Hessian H와 positive-definite factors H_O, H_I를 두고 nearest 또는 stochastic rounding의 expected squared error가 bounded라는 가정 아래 quadratic error upper bound를 줍니다. 첫 항은 true H와 Kronecker approximation의 cosine similarity c로 생기는 mismatch이며 c가 1에 가까울수록 작아집니다. 둘째 항은 factor traces, incoherence, dimensions, and rounding error bound에 의해 정해지므로 낮은 incoherence가 tightness에 유리합니다. 논문은 낮은 output rank 등 별도의 충분조건 아래 trace part가 LDLQ 이하가 되는 비교도 제시합니다. 이는 exact discrete KL optimum이나 every downstream task improvement를 보장하지 않습니다.
+
+공개 출처
+paper-v3 | p. 4, Theorem 3.4 and Eq. 7
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 16. true KL Hessian을 real Fisher로 관측한다
+
+16. true KL Hessian을 real Fisher로 관측한다
+
+발표 대본
+KL divergence는 original model at W*에서 first derivative가 zero이고, corresponding Fisher information이 Hessian과 일치합니다. 저자들은 original logits distribution에서 Monte Carlo sample을 뽑아 cross-entropy gradient를 만들고 sequence 단위 outer products를 사용합니다. Training labels에 대한 empirical Fisher는 trained optimum assumptions에 의존하고 true Hessian과 다를 수 있습니다. 하지만 full Fisher를 그대로 저장하지 못하므로 다음 slides의 two sketches가 Kronecker factors를 직접 추정합니다.
+
+공개 출처
+paper-v3 | pp. 4–5, §3.2 and real Fisher discussion
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 17. Sketch A: token 독립 가정으로 variance를 낮춘다
+
+17. Sketch A: token 독립 가정으로 variance를 낮춘다
+
+발표 대본
+Sketch A는 한 sequence 안의 tokens가 linear layer에서 independent라고 가정합니다. 실제 attention model에서는 맞지 않으므로 biased estimator입니다. 대신 sample size를 token count까지 늘려 variance가 roughly inverse number of tokens로 감소합니다. Input x와 error signal을 이용한 modified backward pass로 factor moments를 계산합니다. 초기값은 LDLQ Hessian H1과 output identity이고, authors report at most three full iterations. 10B model, 20M-token dataset에서 about 20 GPU-hours가 보고됩니다.
+
+공개 출처
+paper-v3 | p. 5, §3.2.1 and Eqs. 10–11
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 18. Sketch B: sequence gradient로 factor를 구한다
+
+18. Sketch B: sequence gradient로 factor를 구한다
+
+발표 대본
+Sketch B는 identity factors에서 real Fisher Hessian에 대한 one round of power iteration을 수행합니다. 한 sequence의 layer weight gradient를 G라 하면 H_I는 expected G transpose G divided by m, H_O는 expected G G transpose divided by n으로 계산됩니다. 두 factors는 같은 backward pass에서 얻을 수 있습니다. Token-level independence를 두지 않아 Sketch A보다 bias가 낮지만, independent samples가 sequences이므로 variance를 낮추려면 more sequences가 필요합니다. Main setup은 64K sequences of 2K tokens, about 30 GPU-hours for a 10B model입니다.
+
+공개 출처
+paper-v3 | p. 5, §3.2.2 and Eqs. 12–13
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 19. Sketch A와 B의 tradeoff
+
+19. Sketch A와 B의 tradeoff
+
+발표 대본
+Figures 1 to 3에서 both sketches의 output factors는 approximately low-rank이며 local identity-output approximation보다 true Hessian 방향에 훨씬 가깝습니다. Sketch B가 충분한 data에서 generally stronger라고 authors state하지만, Llama 3.1 8B layer 24 Down 같은 data-limited case에서는 Sketch A의 cosine similarity가 더 높습니다. 비용 수치는 10B model에 대한 authors' reported calibration examples이며 arbitrary hardware의 universal runtime이 아닙니다.
+
+공개 출처
+paper-v3 | pp. 5–7, Figs. 1–3 and §§3.2.1–3.2.3
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 20. incoherence processing은 bound의 trace를 낮춘다
+
+20. incoherence processing은 bound의 trace를 낮춘다
+
+발표 대본
+Theorem의 trace term은 factor incoherence의 영향을 받습니다. Authors use randomized Hadamard transform from QuIP# to spread structure across coordinates. Weight와 Hessian factors를 consistent basis로 바꾼 뒤 LDL decomposition을 적용합니다. Figure 2는 incoherence processing after-to-before trace ratio의 layerwise empirical CDF를 보여 주고, ratio below one이면 bound component가 줄어듭니다. Main Table 1은 LDLQ, GuidedQuant, YAQA에 동일한 QTIP and incoherence processing context를 사용하므로 rounding method 차이를 비교할 수 있습니다.
+
+공개 출처
+paper-v3 | pp. 5–7, Fig. 2 and Appendix A.5
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 21. offline sketch부터 inference까지의 경계
+
+21. offline sketch부터 inference까지의 경계
+
+발표 대본
+Sketch A 또는 B는 calibration sequences와 original model samples로 backward signals를 수집합니다. 이 과정에서 H_O and H_I를 FP32로 누적하고 diagonal regularization을 적용합니다. YAQA rounding은 those factors의 block LDL terms로 fixed-point codes를 만듭니다. 배포 단계에는 chosen quantizer가 원래 사용하는 datatype과 decode path가 남습니다. Therefore authors claim no inference overhead from YAQA. 그러나 offline GPU-hours, factor storage, and roughly twice-LDLQ rounding time은 별도 비용입니다.
+
+공개 출처
+paper-v3 | pp. 5, 12–13, §§3.2, A.2 and Algorithm 1
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 22. main experiment를 읽는 조건
+
+22. main experiment를 읽는 조건
+
+발표 대본
+Section 4의 main results는 weight-only PTQ without additional finetuning입니다. Quantizer is QTIP with incoherence processing in Table 1. YAQA-A and YAQA-B use the same dual-feedback rounding but different factor estimates. A uses 8K context, 20M tokens, three full power iterations. B uses 2K context and 64K sequences. WikiText-2 and C4 KL/PPL are evaluated at sequence length 8192. Zero-shot uses chat templates. These conditions should stay attached to every numeric comparison.
+
+공개 출처
+paper-v3 | p. 6, §4 baseline and setup
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 23. Llama 3.1 8B에서 2-bit rounding 비교
+
+23. Llama 3.1 8B에서 2-bit rounding 비교
+
+발표 대본
+This is a direct slice of Table 1 for Llama 3.1 8B Instruct at 2 bits. All methods use QTIP and incoherence processing without finetuning. KL and perplexity lower is better; zero-shot average higher is better. YAQA-B KL 0.241 is about 32 percent lower than LDLQ 0.356 for this row. 논문 abstract의 approximately 30 percent statement는 broad empirical summary이며 every model-bit row에서 exactly 30 percent라는 뜻은 아닙니다.
+
+공개 출처
+paper-v3 | p. 7, Table 1, Llama 3.1 8B Instruct 2-bit
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 24. standard INT4에서도 rounding만 바꿀 수 있다
+
+24. standard INT4에서도 rounding만 바꿀 수 있다
+
+발표 대본
+Table 2 uses a standard INT4 quantizer, incoherence processing, and no finetuning on Llama 3.1 8B Instruct. YAQA-A KL 0.028 and YAQA-B 0.029 are both below LDLQ 0.038 and DiscQuant 0.061. 이 표는 quantizer-agnostic interface의 empirical example입니다. It does not show that every arbitrary quantizer or hardware backend will obtain the same gain. BF16 row is the original reference, not another rounding method.
+
+공개 출처
+paper-v3 | p. 8, Table 2
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 25. QAT 비교에서는 bit와 data 차이를 함께 본다
+
+25. QAT 비교에서는 bit와 data 차이를 함께 본다
+
+발표 대본
+Table 3 compares Google Gemma 3 QAT at an effective 4.5 bits with YAQA-A and B at 4 bits. Authors estimate the QAT process used roughly one hundred times more data. YAQA has lower KL to the original model, while some QAT downstream metrics exceed the original reference. 그래서 KL preservation과 task performance를 구분해야 합니다. Bit budget, training procedure, and data volume are not matched, so this is not a controlled one-variable comparison입니다.
+
+공개 출처
+paper-v3 | p. 8, Table 3 and following paragraph
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 26. recovery finetuning 뒤에도 차이는 남지만 줄어든다
+
+26. recovery finetuning 뒤에도 차이는 남지만 줄어든다
+
+발표 대본
+Table 4 applies the QTIP recovery finetuning procedure. Llama 3.1 8B Instruct에서 LDLQ와 YAQA의 KL gap은 no-finetuning Table 1보다 작아지지만 남습니다. The displayed percent reductions use the rounded table values: at 2 bits, one minus 0.147 divided by 0.185 is about 20.5 percent; at 3 bits about 20.8 percent; at 4 bits 25 percent. The paper summarizes this region as approximately 10 to 20 percent across its broader reported results, so the per-row rounded calculation should not replace the paper's aggregate wording입니다.
+
+공개 출처
+paper-v3 | p. 8, Table 4 and §4.3
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 27. Sketch B는 sequence 수와 KL 사이의 곡선을 만든다
+
+27. Sketch B는 sequence 수와 KL 사이의 곡선을 만든다
+
+발표 대본
+Table 9는 Qwen3 8B의 2-bit QTIP에서 Sketch B sequence 수만 바꾼 결과입니다. The 2K sequence setting uses one GPU-hour and reaches KL 0.227, below LDLQ 0.285 at 1.5 GPU-hours in the authors' setup. Increasing to 64K sequences uses 30 GPU-hours and lowers KL to 0.205. 이는 보편적 sample-sufficiency theorem이 아니라 한 model, quantizer, bit-width, dataset, implementation의 conditioned curve입니다.
+
+공개 출처
+paper-v3 | p. 20, Table 9
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 28. 정확도 이득과 함께 지불하는 비용
+
+28. 정확도 이득과 함께 지불하는 비용
+
+발표 대본
+Factor storage는 O(m squared plus n squared)이며 lower triangles만 저장해도 LDLQ Hessian storage의 roughly twice로 설명됩니다. Authors accumulate in FP32 with diagonal regularization around 1e-4 times trace over dimension and report TF32 numerical instability. YAQA rounding takes roughly twice LDLQ because SND is about m plus n rather than n, but is negligible relative to Hessian collection in their practice. The 20 and 30 GPU-hour figures는 특정 data choice를 쓴 10B model 기준이며 보편적 hardware guarantee가 아닙니다.
+
+공개 출처
+paper-v3 | pp. 4–5, 12, §A.2
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 29. 논문 결과를 넘어서 말하면 안 되는 것
+
+29. 논문 결과를 넘어서 말하면 안 되는 것
+
+발표 대본
+실험은 여러 Llama, Gemma, Qwen size와 QTIP·INT4 example을 포함해 폭넓은 근거를 제공합니다. Still, the paper explicitly selects baselines and does not compare every PTQ family. Hessian sketches are approximations and their quality depends on data and model structure. The theorem concerns a second-order error upper bound under assumptions. No inference overhead refers to format compatibility after quantization; calibration and storage costs remain. 이 경계를 지키면 empirical breadth를 universal law로 과장하지 않고 논문의 기여를 설명할 수 있습니다.
+
+공개 출처
+paper-v3 | pp. 4–8, Theorem 3.4, experiments, and §5
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3
+
+## 30. YAQA를 한 번에 정리하면
+
+30. YAQA를 한 번에 정리하면
+
+발표 대본
+첫째, YAQA is a rounding algorithm, not a quantizer. 둘째, full-model KL sensitivity를 직접 저장하지 않고 output and input Kronecker factors로 근사합니다. 셋째, three feedback terms가 input-only LDLQ를 generalize합니다. 넷째, Sketch A와 B는 bias-variance-data tradeoff가 다릅니다. 다섯째, experiments show strong KL preservation across several settings, but theorem and empirical claims have explicit conditions. 마지막으로 same inference format does not remove offline cost. 이 여섯 문장을 연결하면 논문의 전체 기여와 한계를 함께 설명할 수 있습니다.
+
+공개 출처
+paper-v3 | pp. 1–8, main method and results; p. 13, Algorithm 1
+Model-Preserving Adaptive Rounding, arXiv:2505.22988v3
+https://arxiv.org/abs/2505.22988v3

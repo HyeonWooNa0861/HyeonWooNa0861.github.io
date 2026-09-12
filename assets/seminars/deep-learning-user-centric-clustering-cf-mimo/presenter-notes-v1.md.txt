@@ -1,0 +1,191 @@
+## 1. LSTM 기반 User-Centric AP–UE Clustering
+
+1. LSTM 기반 User-Centric AP–UE Clustering
+
+발표 대본
+이 자료는 Di Gennaro 등 논문을 따라 Cell-Free massive MIMO에서 AP와 UE의 연결을 어떻게 고르는지 설명합니다. 핵심은 AP–UE 연결 수를 줄이면서 downlink sum spectral efficiency, 줄여서 sum SE를 유지하거나 높이려는 것입니다. LSTM이 내는 것은 송신 전력 자체가 아니라 UE와 각 AP를 연결할 확률입니다. 순서는 문제, 제약, 순서가 있는 LSTM, 학습과 시험의 차이, 작은 예시, 그리고 조건부 실험 결과입니다.
+
+공개 출처
+arxiv-v1 | p. 1, title and abstract
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 2. 왜 모든 AP가 모든 UE를 서비스하지 않을까
+
+2. 왜 모든 AP가 모든 UE를 서비스하지 않을까
+
+발표 대본
+CF-mMIMO는 conventional cellular network의 cell boundary를 제거하고 분산 AP가 협력하도록 합니다. 하지만 모든 AP가 모든 UE를 서비스하는 방식은 UE가 많아질수록 fronthaul capacity와 computation complexity에서 잘 확장되지 않는다고 논문은 설명합니다. 그래서 UE k에 대해 모든 AP가 아니라 일부만 고른 집합 L_k를 user-centric cluster라고 부릅니다. 이 슬라이드의 마지막 상자가 논문이 학습으로 결정하려는 바로 그 대상입니다.
+
+공개 출처
+arxiv-v1 | p. 1, Abstract and Secs. I–II
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 3. 시스템에서 실제로 무엇을 결정하는가
+
+3. 시스템에서 실제로 무엇을 결정하는가
+
+발표 대본
+논문은 같은 영역의 K개 single-antenna UE와 L개 AP의 downlink를 다룹니다. 각 AP는 N개 안테나를 갖고 L 곱하기 N이 K보다 큰 massive-MIMO regime를 가정합니다. beta_kell은 large-scale fading으로 path loss와 shadow fading을 포함합니다. L_k는 UE k를 실제로 서비스할 AP subset입니다. rho_kell은 AP ell이 UE k에게 할당하는 downlink power이고, 각 AP의 합은 rho_max를 넘을 수 없습니다. 따라서 연결 집합을 고르는 문제와 전력 제약은 분리해서 보되, 함께 만족해야 합니다.
+
+공개 출처
+arxiv-v1 | pp. 1–2, Sec. II and Eqs. (1)–(9)
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 4. master AP는 연결이 끊기지 않게 만든다
+
+4. master AP는 연결이 끊기지 않게 만든다
+
+발표 대본
+먼저 UE k는 beta_kell이 가장 큰 AP를 master AP로 선택합니다. 논문은 AP synchronization signal에서 이 channel gain measurement를 얻는다고 가정합니다. 이후 학습 모델은 각 AP–UE link의 활성 확률을 냅니다. 시험 때는 50% 초과 확률의 link를 활성화하지만, 논문은 각 UE가 master AP에는 항상 연결되도록 해서 L_k가 비어 있지 않게 합니다. Eq. 1의 master 선택은 시작 규칙이고, Eq. 9b의 L_k nonempty는 최적화 제약입니다. 연결 보장이라는 결과는 맞지만, 두 식의 역할을 같은 것으로 합치면 안 됩니다.
+
+공개 출처
+arxiv-v1 | pp. 2 and 4, Eqs. (1), (9b), (11)
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 5. 목적은 SE와 active link 수를 함께 본다
+
+5. 목적은 SE와 active link 수를 함께 본다
+
+발표 대본
+Eq. 9a는 모든 UE의 SE를 더하고, UE k의 cluster 크기 |L_k|에 lambda를 곱한 값을 뺍니다. lambda가 크면 같은 SE 이득을 위해 더 많은 link를 켜는 선택이 불리해집니다. 그러나 L_k가 비어 있으면 안 되며, AP ell이 서비스하는 UE들의 rho_iell 합도 rho_max 이하이어야 합니다. 논문은 lambda를 pre-defined positive weighting factor이며 not learned라고 명시합니다. 이것은 lambda를 neural network의 trainable parameter로 설명하면 안 되는 이유입니다.
+
+공개 출처
+arxiv-v1 | p. 2, Eqs. (8)–(9)
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 6. cluster 선택은 downlink SE를 바꾼다
+
+6. cluster 선택은 downlink SE를 바꾼다
+
+발표 대본
+논문은 TDD coherence block을 pilot, uplink data, downlink data로 나누고 tau_c는 세 부분의 합으로 둡니다. master AP는 pilot-sharing interference를 작게 하려는 기준으로 pilot을 할당합니다. AP는 MMSE estimate를 구하고, 논문은 distributed implementation에 적합한 MR precoding을 사용합니다. UE k의 SE는 tau_d/tau_c에 log2 one plus SINR을 곱한 값입니다. 따라서 L_k의 AP link를 바꾸면 원하는 signal 항뿐 아니라 다른 UE의 interference 항도 달라집니다. 저자들이 이 조합 문제를 어렵고 NP-hard라고 부르는 배경입니다.
+
+공개 출처
+arxiv-v1 | p. 2, Eqs. (2)–(8); p. 3, Sec. III
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 7. LSTM은 master AP 순서를 따른다
+
+7. LSTM은 master AP 순서를 따른다
+
+발표 대본
+LSTM은 sequence를 처리하므로 입력 순서가 중요합니다. 논문은 AP 위치가 고정되고 operator에게 알려져 있으므로 AP를 순서대로 scheduling할 수 있다고 설명합니다. 첫 hierarchy는 master AP별 UE 묶음입니다. 그 뒤 각 AP는 자신이 처리할 UE를 channel gain으로 정렬합니다. 각 UE에 하나의 동일한 LSTM cell이 대응하므로 active UE 수가 달라져도 chain 길이만 바뀝니다. 선행 cell의 hidden state와 cell state가 다음 cell에 context를 제공합니다. 저자들은 proper scheduling 없이는 learning이 실패했다고 보고합니다.
+
+공개 출처
+arxiv-v1 | p. 3, Fig. 1 and Sec. III
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 8. 한 UE feature에서 L개의 link 확률이 나온다
+
+8. 한 UE feature에서 L개의 link 확률이 나온다
+
+발표 대본
+Eq. 10에서 cell j의 input xi_j는 UE k에서 모든 AP로의 beta_kell 값과 UE position x_k, y_k를 이어 붙인 vector입니다. LSTM gate는 이 input과 앞 cell의 output state를 함께 사용합니다. cell output은 shared multi-layer FC network에 들어가고, FC output layer size는 L이며 sigmoid activation을 적용합니다. 즉 UE k와 AP ell 연결 각각에 대한 probability가 나옵니다. 여기서 출력이 L개라는 사실은 이 architecture가 AP 수 L에 완전히 무관하다는 뜻이 아니라는 점도 기억해야 합니다.
+
+공개 출처
+arxiv-v1 | p. 3, Fig. 1 and Eq. (10)
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 9. 학습은 Bernoulli activation을 샘플링한다
+
+9. 학습은 Bernoulli activation을 샘플링한다
+
+발표 대본
+Training에서는 L probabilities가 같은 수의 Bernoulli distributions를 정의합니다. source의 표현대로 random activation을 생성하고, 그 activation의 수와 corresponding SE를 계산합니다. 이어 Eq. 9a loss의 gradient를 random inputs에 관해 backpropagate하여 weight를 update한다고 적습니다. LSTM weights는 upward direction과 subsequent cells에서 오는 gradient를 받는다고도 적습니다. 그러나 이 짧은 source는 REINFORCE, Gumbel-Softmax, straight-through 같은 estimator 이름이나 exact discrete-gradient pseudocode를 주지 않습니다. 그러므로 이 자료는 source가 말한 sampling-and-backpropagation까지만 설명하고, 방법명을 덧붙이지 않습니다.
+
+공개 출처
+arxiv-v1 | p. 3, Sec. III, training paragraph
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 10. 시험은 threshold 뒤에 feasible power를 배분한다
+
+10. 시험은 threshold 뒤에 feasible power를 배분한다
+
+발표 대본
+Test phase는 확률을 직접 사용합니다. 50%를 초과한 AP–UE link를 active로 두고 master AP는 항상 남깁니다. 그러면 each UE의 cluster가 nonempty이고, each AP ell이 서비스할 UE 집합 K_ell도 결정됩니다. 이후 Eq. 11은 AP ell의 rho_max를 its served UEs의 square-root beta_iell 비율에 따라 나눕니다. 분자는 rho_max 곱하기 square-root beta_kell이고, 분모는 K_ell에 속한 UE들의 square-root beta_iell 합입니다. 따라서 AP별 allocation의 합은 rho_max입니다. 논문의 future work가 joint transmit-power optimization을 언급하므로, 이 after-cluster rule을 learned joint optimizer라고 부르면 안 됩니다.
+
+공개 출처
+arxiv-v1 | pp. 3–5, test rule; Eq. (11); conclusion
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 11. 강의용 3-AP threshold 예시
+
+11. 강의용 3-AP threshold 예시
+
+발표 대본
+이 슬라이드의 beta와 probability는 원문 표나 그림에서 가져온 값이 아니라 threshold rule을 확인하기 위해 만든 강의용 예시입니다. beta 9가 최대이므로 AP 1이 master입니다. probability 0.92와 0.61은 0.5보다 커서 AP 1과 2를 선택하고, 0.20인 AP 3은 제외합니다. 따라서 cluster L_1은 AP 1과 2입니다. Table I의 lambda 0.04를 빌려 가정 SE 2.00에 적용하면 objective contribution은 1.92입니다. 여기서 2.00은 full SINR expression으로 계산한 값이 아니며 reported performance도 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 2–4, Eqs. (1), (9), (11); Table I
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 12. 보고된 simulation은 어떤 조건에서 수행됐나
+
+12. 보고된 simulation은 어떤 조건에서 수행됐나
+
+발표 대본
+Simulation은 L 25 AP, AP당 N 4 antennas, 700 by 700 square meter area를 사용합니다. AP locations는 imaginary grid와 비교해 inter-AP distance의 최대 50 percent random displacement를 가집니다. K 10 UEs의 each UE에는 1,000 training locations와 200 test locations가 생성됩니다. Network는 512 hidden-state LSTM과 256, 128, 25 neuron shared FC layers입니다. tau_p 3은 strong pilot interference, tau_p 10은 K와 같아 pilot sharing을 virtually eliminate하는 scenario입니다. 이 setting들을 유지해야 Table II의 숫자를 올바르게 읽을 수 있습니다.
+
+공개 출처
+arxiv-v1 | p. 4, Fig. 2 and Table I
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 13. Table II: 평균 결과는 pilot regime에 따라 다르다
+
+13. Table II: 평균 결과는 pilot regime에 따라 다르다
+
+발표 대본
+Table II는 test set average입니다. tau_p 3, strong pilot interference에서는 proposed method가 32.60 connections로 baseline 75보다 훨씬 적지만 sum SE는 23.94로 baseline 24.42보다 낮습니다. tau_p 10, practically no shared-pilot interference에서는 proposed method가 38.18 links로 baseline 250보다 훨씬 적고 sum SE도 25.42로 24.65보다 높습니다. 따라서 항상 SE가 더 높다가 아니라, link reduction과 SE의 관계가 pilot scenario에 따라 달라진다는 것이 정확한 읽기입니다.
+
+공개 출처
+arxiv-v1 | p. 4, Table II and Sec. IV
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 14. Fig. 4–5는 평균이 아닌 선택된 위치 예시다
+
+14. Fig. 4–5는 평균이 아닌 선택된 위치 예시다
+
+발표 대본
+Fig. 4와 Fig. 5는 Table II average 자체가 아닙니다. 저자들은 two reference scenarios에서 sum SE performance가 average와 closely aligned한 test locations를 골라 active connections를 보여주었습니다. tau_p 3의 Fig. 4에서는 baseline 75 links, 23.84 bit per second per Hz와 proposed 33 links, 23.42가 보입니다. tau_p 10의 Fig. 5에서는 baseline 250 links, 24.63과 proposed 33 links, 25.39가 보입니다. 따라서 그림은 chosen layout를 설명하지만, distribution average는 Table II로 확인해야 합니다.
+
+공개 출처
+arxiv-v1 | p. 5, Figs. 3–5
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 15. 논문의 claim과 증거 범위를 분리해 읽기
+
+15. 논문의 claim과 증거 범위를 분리해 읽기
+
+발표 대본
+이 논문의 scalability claim은 active UE 수가 달라져도 shared recurrent cell을 재사용할 수 있다는 것입니다. FC output size가 L이고 reported architecture가 25 outputs이므로 AP 수 변화까지 demonstrated했다고 말할 수는 없습니다. Connection count reduction은 both pilot regimes의 Table II에 있습니다. SE는 tau_p 10 condition에서는 proposed가 높지만 tau_p 3에서는 낮습니다. 또한 paper conclusion은 energy efficiency objective와 transmitted power를 포함하는 broader optimization을 future research로 둡니다. Eq. 11은 cluster가 정해진 후 사용할 power allocation rule이지 learned joint optimization 결과가 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 1, 3–5; Table II; conclusion
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1
+
+## 16. 한 UE의 결정 경로를 다시 연결하면
+
+16. 한 UE의 결정 경로를 다시 연결하면
+
+발표 대본
+마지막으로 논문의 end-to-end story를 한 UE 기준으로 요약합니다. Input은 beta vector와 position입니다. Fixed AP order와 master AP group, then channel-gain UE order가 LSTM sequence를 만듭니다. Shared recurrent cell과 FC head는 every AP link probability를 output합니다. Test phase에서는 50% threshold와 master retention으로 L_k를 만들고, only then Eq. 11 power allocation을 적용합니다. Finally, communication model의 SE와 lambda penalty가 objective를 이룹니다. 이 연결을 구분하면 LSTM output, cluster decision, power rule, and numerical evaluation을 뒤섞지 않게 됩니다.
+
+공개 출처
+arxiv-v1 | pp. 2–5, Eqs. (1), (9)–(11) and Figs. 1–5
+arXiv:2410.02775v1 — A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+https://arxiv.org/abs/2410.02775v1

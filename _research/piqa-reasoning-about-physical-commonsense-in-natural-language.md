@@ -93,6 +93,14 @@ PIQA는 "언어 모델이 상식을 아는가"를 넓게 묻기보다, 물리적
 
 PIQA는 자연어만으로 물리적 상식을 평가하므로, 실제 시각/로봇 상호작용에서 필요한 연속적 물리 추론 전체를 포함하지는 않는다. 또한 Instructables 기반 데이터는 일상 제작과 조작 상황에 강하게 치우칠 수 있다. 향후에는 시각, 로봇 경험, 시뮬레이션과 결합한 평가가 중요하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 16장 | <a href="/assets/seminars/piqa-reasoning-about-physical-commonsense-in-natural-language/piqa-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/piqa-reasoning-about-physical-commonsense-in-natural-language/piqa-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/piqa-reasoning-about-physical-commonsense-in-natural-language/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/piqa-reasoning-about-physical-commonsense-in-natural-language/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

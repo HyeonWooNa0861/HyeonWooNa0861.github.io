@@ -76,7 +76,7 @@ MAPPO를 선택한 이유는 multi-agent setting에서 discrete decision과 cont
 
 실험은 SST-2 text classification, CIFAR-10 image classification, VQAv2 VQA를 사용한다. Text semantic extraction에는 BERT 기반 text embedding, image semantic extraction에는 Vision Transformer(ViT), VQA에는 BERT와 ViT 및 cross-modal fusion 구조를 사용한다. 계산량은 text classification 3.72 GFLOPs, image classification 8.43 GFLOPs, VQA 8.31 GFLOPs로 보고된다. Training 설정은 AdamW, learning rate $$3\times10^{-5}$$, batch size 50, weight decay $$1\times10^{-4}$$이며, 실험 platform은 NVIDIA RTX 4090과 Intel i9-13900K다.
 
-주요 결과는 semantic-aware MAPPO가 semantic-unaware approach 대비 사용자 QoE를 12.68% 향상시킨다는 것이다. Bandwidth가 증가하면 QoE가 개선되고, noise power가 커지거나 user 수가 늘어나면 congestion과 channel degradation 때문에 QoE가 낮아지는 경향이 나타난다. 그럼에도 semantic-aware MAPPO는 D3QN, local execution, semantic-unaware baselines보다 높은 QoE를 유지한다.
+arXiv v3 원문에서 semantic-aware MAPPO는 semantic-unaware MAPPO보다 사용자 QoE가 12.68%, semantic-unaware D3QN보다 14.48% 높게 보고됐다. Bandwidth가 증가하면 QoE가 개선되고, noise power가 커지거나 user 수가 늘어나면 congestion과 channel degradation 때문에 QoE가 낮아지는 경향이 나타난다. 그럼에도 semantic-aware MAPPO는 D3QN, local execution, semantic-unaware baselines보다 높은 QoE를 유지한다.
 
 또한 user preference figure는 QoE weight가 달라질 때 policy가 latency, energy, accuracy의 균형을 다르게 잡을 수 있음을 보여준다. 예를 들어 지연 가중치가 커지면 더 빠른 execution을 선호하고, accuracy 가중치가 커지면 더 높은 task performance를 위해 semantic extraction과 resource allocation을 다르게 선택한다. 이는 논문이 주장하는 personalized QoE 확장 가능성의 근거다.
 
@@ -85,6 +85,14 @@ MAPPO를 선택한 이유는 multi-agent setting에서 discrete decision과 cont
 이 논문의 한계는 QoE metric이 task와 user preference 설계에 의존한다는 점이다. Logistic normalization과 weight choice가 실제 사용자 만족을 얼마나 잘 반영하는지는 서비스별 calibration이 필요하다. 또한 semantic model training과 MAPPO simulation은 고성능 GPU platform에서 수행되므로, resource-constrained UE에 바로 배포하려면 model size, inference latency, battery impact를 별도로 검증해야 한다.
 
 해결 및 확장 방향은 비교적 명확하다. 첫째, user feedback과 online telemetry를 이용해 QoE weight와 logistic normalization parameter를 서비스별로 보정해야 한다. 둘째, $$\mu_n$$ 선택은 channel uncertainty와 task drift에 robust하도록 online adaptation 또는 safe exploration과 결합할 수 있다. 셋째, 제한된 device에서는 pruning, quantization, knowledge distillation을 적용해 semantic encoder를 경량화하고, $$\mu_n$$ 범위를 device capability에 맞게 제한하는 deployment profile을 둘 수 있다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 24장 | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/qoe-semantic-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/qoe-semantic-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

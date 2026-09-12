@@ -1,0 +1,263 @@
+## 1. QTIP: Trellis와 Incoherence Processing을 이용한 LLM 양자화
+
+1. QTIP: Trellis와 Incoherence Processing을 이용한 LLM 양자화
+
+발표 대본
+QTIP은 이미 학습된 LLM weight를 낮은 비트로 압축하는 weight-only post-training quantization 방법입니다. 발표에서는 먼저 vector quantization이 왜 고차원에서 어려운지 살펴보고, RHT, bitshift trellis, computed 또는 hybrid code가 그 문제를 어떻게 나누어 푸는지 설명합니다. 수식의 최적성, tail-biting의 근사성, 실험 throughput의 하드웨어 조건도 구분합니다.
+
+공개 출처
+neurips2024 | p. 1, Abstract
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 2. QTIP의 범위: PTQ와 fine-tuning 경로
+
+2. QTIP의 범위: PTQ와 fine-tuning 경로
+
+발표 대본
+논문은 QTIP을 weight-only PTQ로 소개합니다. lookup-free computed code의 Table 3 결과는 fine-tuning 없이 얻었지만, hybrid code는 QuIP# 방식으로 codebook entry와 아직 양자화하지 않은 weight를 blockwise fine-tune할 수 있습니다. 따라서 method 전체를 무조건 training-free라고 부르면 정확하지 않습니다.
+
+공개 출처
+neurips2024 | pp. 1-2 and pp. 7-8, Sections 4.1-4.2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 3. 고차원 VQ의 병목과 TCQ의 출발점
+
+3. 고차원 VQ의 병목과 TCQ의 출발점
+
+발표 대본
+일반 vector quantization은 d차원 vector를 2의 kd승개 codeword 가운데 하나로 고르므로 codebook과 최근접 탐색의 비용이 빠르게 커집니다. TCQ는 긴 sequence 전체를 하나의 거대한 codebook으로 만들지 않고, 허용된 state walk를 고릅니다. 다만 vanilla TCQ도 큰 state-value table과 serial decode 문제가 있으므로 QTIP은 bitshift 구조와 code 재계산을 추가합니다.
+
+공개 출처
+neurips2024 | pp. 1-4, Sections 1-3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 4. 양자화가 줄이는 대상: layer proxy error
+
+4. 양자화가 줄이는 대상: layer proxy error
+
+발표 대본
+식 1은 quantized linear layer의 출력이 원래 layer 출력과 calibration input에서 얼마나 다른지 측정합니다. H는 input의 second moment로서 민감한 방향을 가중합니다. 이 목적은 layer별로 계산할 수 있어 실용적이지만, proxy가 작다는 사실만으로 최종 language-model perplexity나 serving latency가 보장되지는 않습니다.
+
+공개 출처
+neurips2024 | p. 2, Eq. 1; p. 3, Section 2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 5. RHT 전처리: Gaussian-like source를 만드는 이유
+
+5. RHT 전처리: Gaussian-like source를 만드는 이유
+
+발표 대본
+논문은 QuIP#의 random Hadamard transform을 사용합니다. W와 H에 random sign과 Hadamard matrix를 곱해 coordinate energy의 집중을 줄이고, transformed weight entry가 approximately independently Gaussian distributed하다는 근거를 얻습니다. 이는 확률적이고 근사적인 설명입니다. 각 layer가 정확히 독립 Gaussian이 된다는 theorem이나 실제 task quality의 보장은 아닙니다.
+
+공개 출처
+neurips2024 | p. 3, Section 2.1
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 6. TCQ: codeword 하나가 아니라 허용된 state walk를 고른다
+
+6. TCQ: codeword 하나가 아니라 허용된 state walk를 고른다
+
+발표 대본
+L, k, V trellis에는 2의 L승 state가 있고, 각 state에는 V차원 value가 연결됩니다. sequence를 V개씩 묶어 state walk로 맞추며, reconstruction은 그 walk의 state value를 이어 붙인 것입니다. 각 state의 incoming/outgoing degree는 2^(kV)입니다. V개 weight 한 group마다 edge 선택에 kV bits를 쓰므로 weight당 k bits입니다. V=1일 때만 group당 bit 수와 weight당 bit 수가 같습니다.
+
+공개 출처
+neurips2024 | pp. 2-4, Sections 1 and 2.3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 7. Viterbi가 exact인 범위: additive distortion
+
+7. Viterbi가 exact인 범위: additive distortion
+
+발표 대본
+논문은 additive squared-error metric에서 Viterbi dynamic programming이 가장 가까운 representable walk를 정확히 찾는다고 설명합니다. 이 경우 시간은 sequence length에 선형이고, 간단한 최적화 뒤 O(2의 L승 곱하기 T)입니다. 그러나 QTIP이 LLM에서 다루는 Hessian-weighted layer proxy는 sequence group별 additive error가 아니므로, 전체 W를 단일 TCQ sequence로 Viterbi하면 Eq. 1을 정확히 최소화하는 것이 아닙니다.
+
+공개 출처
+neurips2024 | pp. 2-4, Sections 1-3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 8. Bitshift trellis: 겹치는 bit window로 병렬 decode
+
+8. Bitshift trellis: 겹치는 bit window로 병렬 decode
+
+발표 대본
+bitshift trellis에서는 다음 state의 상위 L-kV bits가 현재 state의 하위 L-kV bits와 같습니다. 그래서 t번째 V-weight group은 encoded bitstream의 연속된 L-bit window만 보면 됩니다. 다음 group으로 갈 때 window를 kV bit만 옮기므로 bit shift 연산으로 접근할 수 있고, 각 group의 window decode는 병렬화할 수 있습니다. c는 0부터 2^(kV)-1까지의 정수이며 각 state의 incoming/outgoing degree는 2^(kV)입니다. 이 병렬 decode 성질을 generic trellis 전체에 일반화하면 안 됩니다.
+
+공개 출처
+neurips2024 | p. 4, Section 3.1; p. 5, Fig. 2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 9. 교육용 검산: 원전 Fig. 2의 tail-biting walk
+
+9. 교육용 검산: 원전 Fig. 2의 tail-biting walk
+
+발표 대본
+원전 Fig. 2는 L=2, k=1, V=1 예입니다. node 0, 1, 2, 3의 value는 각각 0.5, 0.1, 0.8, 0.3이므로 binary state 00, 01, 10, 11에 순서대로 대응합니다. 그림의 reconstruction 0.5, 0.1, 0.8, 0.1, 0.3, 0.8과 target의 squared error를 더하면 0.0307입니다. 이 walk가 보여 주는 것은 bit overlap과 tail-biting 저장 표기이며, 발표자가 이 표만으로 모든 candidate walk를 search해 global optimum을 새로 증명했다고 말하면 안 됩니다.
+
+공개 출처
+neurips2024 | p. 5, Fig. 2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 10. Fig. 2: walk 전체의 저장 비트와 오차
+
+10. Fig. 2: walk 전체의 저장 비트와 오차
+
+발표 대본
+Fig. 2의 node 0, 1, 2, 3은 binary state 00, 01, 10, 11이며 value는 0.5, 0.1, 0.8, 0.3입니다. 앞 표의 group별 squared error 여섯 항을 합친 값이 0.0307입니다. 여기의 full bitstream과 tail-biting 저장 문자열은 특정 두 group의 값이 아니라 전체 walk에 대한 표현입니다. 마지막 1 bit 제거는 이 예의 L-kV=1 overlap에 해당합니다. 이 수치 검산을 새로운 global-optimality 증명으로 해석하지 않습니다.
+
+공개 출처
+neurips2024 | p. 5, Fig. 2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 11. 세 decoder의 설계: 계산만 또는 작은 lookup
+
+11. 세 decoder의 설계: 계산만 또는 작은 lookup
+
+발표 대본
+1MAD와 3INST는 lookup 없이 state bitword에서 pseudorandom approximate Gaussian scalar를 만듭니다. HYB는 2D LUT의 작은 base table과 hashing을 함께 써서 codebook entry를 fine-tune할 수 있습니다. 3INST의 3 ALU instructions는 논문의 NVIDIA GPU 설명이며, top and bottom FP16 half를 합치기 위한 추가 data movement가 필요하다는 footnote도 함께 봐야 합니다.
+
+공개 출처
+neurips2024 | pp. 5-7, Algorithms 1-3 and Fig. 3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 12. HYB decoder의 2D vector 복원 경로
+
+12. HYB decoder의 2D vector 복원 경로
+
+발표 대본
+HYB는 x squared plus x modulo 2의 32승 hash로 state bit의 상관을 섞고, Q-bit slice를 2D FP16 lookup table index로 씁니다. bit 15는 vector의 두 번째 entry sign을 flip합니다. 논문의 modern-GPU hybrid setting은 L=16, V=2, T_x=T_y=16, Q=9이며 base codebook은 2 KiB입니다. bank conflict를 위한 32배 duplication 뒤 RTX 6000 Ada L1에 맞는다는 조건도 원문에 별도로 적혀 있습니다.
+
+공개 출처
+neurips2024 | pp. 6-8, Algorithm 3 and Section 4.2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 13. Tail-biting: 두 번 Viterbi로 하는 근사
+
+13. Tail-biting: 두 번 Viterbi로 하는 근사
+
+발표 대본
+직접 bitshift encoding은 start state 때문에 kT에 더해 L-kV bit를 저장해야 합니다. tail-biting은 start와 end가 그 overlap를 공유하게 만들어 이 부담을 없앱니다. 하지만 exact tail-biting dynamic programming은 state-space에 대해 quadratic이어서 L이 충분히 크면 어렵습니다. Algorithm 4는 회전한 sequence에서 먼저 Viterbi를 실행해 overlap를 얻고, 원 sequence에서 그 overlap를 강제하는 두 번의 Viterbi를 사용합니다.
+
+공개 출처
+neurips2024 | pp. 6-8, Section 3.2 and Algorithm 4
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 14. Tail-biting 근사의 Table 2 조건과 수치
+
+14. Tail-biting 근사의 Table 2 조건과 수치
+
+발표 대본
+Table 2는 Algorithm 4의 tail-biting approximation을 4K개의 길이 256 i.i.d. Gaussian sequence에서 비교합니다. trellis는 L=12, V=1이고 k만 1부터 4까지 바꿉니다. 표는 이 조건에서 optimal MSE와 매우 가깝다는 관찰을 보여 줍니다. 모든 source distribution, all L, all hardware에서 tail-biting이 exact 또는 같은 품질이라는 보장은 아닙니다.
+
+공개 출처
+neurips2024 | p. 8, Table 2
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 15. BlockLDLQ 안에서 TCQ를 쓰는 이유
+
+15. BlockLDLQ 안에서 TCQ를 쓰는 이유
+
+발표 대본
+논문은 proxy error가 additive distortion이 아니므로 전체 W를 하나의 TCQ sequence로 직접 최소화하지 않습니다. 대신 QuIP#의 BlockLDLQ 안에서 QTIP을 drop-in quantizer로 씁니다. input dimension에 따른 Ty block feedback은 유지하면서, Tx rows를 함께 묶어 Tx 곱하기 Ty weight를 하나의 high-dimensional sequence로 Viterbi합니다. Algorithm 5의 regular BlockLDLQ feedback step은 그대로이고 Q가 round하는 방식만 QTIP으로 바뀝니다.
+
+공개 출처
+neurips2024 | p. 7, Section 4; pp. 16-17, Appendix A.2 and Algorithm 5
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 16. Algorithm 5의 block quantization 순서
+
+16. Algorithm 5의 block quantization 순서
+
+발표 대본
+Algorithm 5는 W-hat를 0으로 시작하고 H의 Ty-block LDL decomposition에서 A를 만듭니다. input column block을 뒤에서 앞으로 처리하며, 이미 quantize한 block의 error가 A를 거쳐 current x에 반영됩니다. 그 x를 Tx by Ty tile sequence로 reshape한 뒤 각 row에 Viterbi를 적용하고, result를 W-hat의 현재 block으로 되돌립니다. 이 순서 때문에 QTIP은 단독 source coder가 아니라 proxy-aware rounding pipeline의 일부가 됩니다.
+
+공개 출처
+neurips2024 | p. 17, Algorithm 5
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 17. 숫자를 읽기 전 고정해야 하는 실험 조건
+
+17. 숫자를 읽기 전 고정해야 하는 실험 조건
+
+발표 대본
+QTIP 논문은 computed code와 hybrid code를 별도로 평가합니다. Table 3의 computed code는 no fine-tuning이고 context 4096입니다. HYB table은 또 다른 code와 tuning path를 가집니다. speed Table 4는 RTX 6000 Ada에서 batch size 1 matrix fusion decoding을 측정한 값입니다. 결과를 인용할 때 이 조건을 함께 말해야 quality와 speed를 한 개의 보편적 SOTA 주장으로 합치지 않을 수 있습니다.
+
+공개 출처
+neurips2024 | pp. 7-9, Sections 4.1-4.3 and Tables 3-6; pp. 16-17, Appendix A.3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 18. Table 1: i.i.d. Gaussian source-MSE 비교
+
+18. Table 1: i.i.d. Gaussian source-MSE 비교
+
+발표 대본
+Table 1은 i.i.d. Gaussian source를 2 bits로 quantize하는 source-coding experiment입니다. 모든 TCQ method는 L=16이고 effective dimension 256입니다. 1MAD와 3INST는 MSE 0.069, HYB는 0.071, QuIP# E8P는 0.089로 보고됩니다. distortion-rate 0.063은 infinite-length lower bound입니다. 이 숫자를 LLM PPL이나 실제 accelerator speed로 읽으면 안 됩니다.
+
+공개 출처
+neurips2024 | p. 5, Table 1
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 19. Table 3의 예: Llama 2 Wikitext2 perplexity
+
+19. Table 3의 예: Llama 2 Wikitext2 perplexity
+
+발표 대본
+이 슬라이드는 Table 3의 about 3-bit Wikitext2 행만 추렸습니다. 1MAD와 3INST 열은 no fine-tuning computed-code result이고, QuIP#와 AQLM 열은 fine-tuning result입니다. 2-7B에서는 1MAD 5.38, 3INST 5.40, QuIP# 5.41, AQLM 5.38이고, 2-70B에서는 3.27, 3.27, 3.35, 3.36입니다. 원문도 computed variants가 almost all model sizes에서 비교 FT rows와 경쟁한다고 제한해 표현합니다.
+
+공개 출처
+neurips2024 | p. 8, Table 3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 20. Table 4: RTX 6000 Ada batch-1 decoding throughput
+
+20. Table 4: RTX 6000 Ada batch-1 decoding throughput
+
+발표 대본
+Table 4는 RTX 6000 Ada에서 batch size 1 decoding을 matrix fusion으로 측정합니다. QTIP 2-bit은 7B에서 188 tok/s, 70B에서 23.5 tok/s이고 QuIP# 2-bit은 186과 22.2입니다. 3-bit과 4-bit QTIP 결과도 같은 표에 있지만, 이 수치는 kernel, GPU, batch, memory 상태가 바뀌면 달라질 수 있습니다. 따라서 일반 serving latency, every accelerator speedup, energy use로 확장하면 안 됩니다.
+
+공개 출처
+neurips2024 | p. 8, Table 4; p. 9, Section 4.3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 21. Appendix Table 17: GPU가 바뀌면 speed도 바뀐다
+
+21. Appendix Table 17: GPU가 바뀌면 speed도 바뀐다
+
+발표 대본
+Appendix Table 17은 QTIP decoding speed가 GPU와 model size에 따라 달라짐을 보여 줍니다. 7B 2-bit은 RTX 3090에서 127, RTX A6000에서 116, RTX 6000 Ada에서 188 tok/s입니다. 70B 2-bit은 각각 15.3, 15.0, 23.5 tok/s이며, 여기서는 표를 읽기 쉽게 15.3 RTX 3090 행을 생략했습니다. ARMv8 NEON은 논문 본문의 가능한 implementation example일 뿐 이 표와 같은 timed throughput measurement가 아닙니다.
+
+공개 출처
+neurips2024 | p. 16, Table 17; p. 9, Section 4.3
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf
+
+## 22. QTIP이 지지하는 결론과 남는 경계
+
+22. QTIP이 지지하는 결론과 남는 경계
+
+발표 대본
+QTIP은 RHT로 Gaussian-like source를 만들고, bitshift trellis가 공유하는 state bits를 Viterbi로 고르며, computed 또는 small hybrid lookup decoder로 state value를 재생성합니다. BlockLDLQ는 Hessian-weighted proxy에 맞춘 feedback을 제공합니다. 다만 Viterbi exactness는 additive metric의 성질이고, tail-biting은 approximate이며, quality와 speed table에는 고정된 experimental conditions가 있습니다. NeurIPS checklist도 formal theoretical results가 없고 error bars를 report하지 않았다고 답합니다.
+
+공개 출처
+neurips2024 | pp. 3-10; pp. 19-21, NeurIPS checklist
+QTIP: Quantization with Trellises and Incoherence Processing, NeurIPS 2024
+https://proceedings.neurips.cc/paper_files/paper/2024/file/6de2e84b8da47bb2eb5e2ac96c63d2b0-Paper-Conference.pdf

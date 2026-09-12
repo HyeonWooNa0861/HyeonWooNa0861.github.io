@@ -79,6 +79,14 @@ VPTQ는 VQ를 단순 clustering 문제가 아니라 second-order optimization �
 
 VPTQ는 QTIP, QuIP#, EPTQ와 함께 2-bit LLM PTQ에서 scalar quantization을 넘어서는 흐름에 속한다. VPTQ는 VQ formulation과 second-order refinement에 초점을 두고, QTIP은 trellis-coded quantization으로 codebook dimension 문제를 풀며, EPTQ는 FE8 codebook과 cache-friendly lookup을 강조한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 21장 | <a href="/assets/seminars/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/vptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/vptq-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -24,7 +24,7 @@ Source PDF: [Official patent PDF](https://patentimages.storage.googleapis.com/85
 | 원제 | 그래프 매칭 방법 및 장치 |
 | 영문명 | METHOD AND APPARATUS FOR MATCHING GRAPH |
 | 문서번호 | KR101747854B1 (Google Patents publication number; 국내 등록번호 10-1747854) |
-| 출원번호 | KR1020160139185A |
+| 출원번호 | 10-2016-0139185 |
 | 출원일 | 2016-10-25 |
 | 등록일 | 2017-06-09 |
 | 공고·공개일 | 2017-06-15 |
@@ -67,9 +67,9 @@ Data graph의 모든 node를 degree 기준으로 정렬한다. 가장 작은 deg
 
 ### 2단계: Query graph priority
 
-Query graph node로 만들 수 있는 permutation을 생성하고, 서로 동형인 graph를 clustering한다. 기준 cluster와 기준 graph를 선택한 뒤, 기준 graph의 $$m$$번째 node가 같은 cluster의 다른 graph에 있는 $$m$$번째 node보다 작다는 조건을 만든다. 조건에 맞지 않는 permutation을 제거하고 $$m+1$$로 이동한다.
+명세서는 query permutation을 동형 구조별로 묶고 기준 tuple과 다른 후보를 위치별 부등식으로 제거하는 절차를 제안한다. 다만 C4 예시의 [0071]은 경우의 수를 32로 적지만 실제 네 정점 순열은 24개이고, Fig. 12는 16개만 보여 일반적인 완전 분할 절차를 복원할 수 없다.
 
-기준 graph만 남을 때까지 반복하면 query node 사이의 priority constraint가 완성된다. 현대 graph-algorithm 용어로는 automorphism orbit에서 대표 순서를 정하는 symmetry-breaking constraint로 해석할 수 있다.
+검증 가능한 C4 범위에서는 인접 관계를 보존하는 8개 대칭에서 $$p$$를 최소 번호로 두고 $$q<r$$로 방향을 고정해 대표 하나를 남긴다. 원문의 [0089] 조건 단순화와 [0091]/Fig. 13 성공 예시는 각각 필요한 $$p<s$$ 누락과 존재하지 않는 $$c-e$$ 간선 때문에 일반 정당성의 근거로 사용하지 않는다.
 
 ### 3단계: Priority-aware matching
 
@@ -115,6 +115,14 @@ violation: prune / satisfied: continue
 ## Source Integrity Note
 
 공개 PDF에는 비표준 embedded attachment object `STOC`가 포함되어 있었다. Local research archive에서는 해당 attachment만 제거한 안전본으로 본문과 도면을 검토했으며, 블로그에는 PDF 사본을 두지 않고 공식 patent record와 공식 PDF를 연결한다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/graph-matching-method-and-apparatus/graph-matching-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/graph-matching-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

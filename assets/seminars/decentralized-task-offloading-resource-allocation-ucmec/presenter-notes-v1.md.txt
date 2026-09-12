@@ -1,0 +1,203 @@
+## 1. User-Centric MEC: 협력 AP와 분산 오프로딩
+
+1. User-Centric MEC: 협력 AP와 분산 오프로딩
+
+발표 대본
+이 자료는 Qin 등 5인의 2023년 preprint를 교육용으로 소개한다. 출발점은 셀 가장자리 사용자가 약한 하나의 기지국에 의존하지 않도록, 사용자별 AP cluster가 uplink를 협력 수신하고 CPU가 decoding과 task processing을 맡는 UCMEC다.
+
+공개 출처
+arxiv-v1 | title, abstract, v1
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 2. 문제의 시작: 무선 품질과 계산 지연은 함께 움직인다
+
+2. 문제의 시작: 무선 품질과 계산 지연은 함께 움직인다
+
+발표 대본
+논문은 conventional cellular MEC에서 셀 가장자리 사용자가 severe interference와 signal attenuation 때문에 낮은 throughput 또는 offloading failure를 겪는 문제에서 시작한다. UCMEC는 AP cluster의 cooperative uplink를 쓰지만, 그 결과 fronthaul contention과 CPU resource competition도 새로 생긴다.
+
+공개 출처
+arxiv-v1 | pp. 1-2, Introduction
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 3. UCMEC의 실제 데이터 경로
+
+3. UCMEC의 실제 데이터 경로
+
+발표 대본
+논문 그림 1의 uplink UCMEC에서 M명의 single-antenna user, N개의 multi-antenna AP, MEC server가 통합된 K개의 CPU를 둔다. AP는 RF transmission and channel estimation, CPU는 signal decoding and task processing을 담당한다. Access link와 fronthaul link는 frequency division으로 분리한다고 가정한다.
+
+공개 출처
+arxiv-v1 | p. 3, Fig. 1 and Network Model
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 4. slot마다 누가 무엇을 결정하는가
+
+4. slot마다 누가 무엇을 결정하는가
+
+발표 대본
+오프로딩 indicator omega_mk는 user m이 CPU k로 task를 offload할 때 1이다. 각 user는 한 CPU에만 offload할 수 있으며, data-transmission power는 P^a={0,0.2,0.4,...,pmax}의 discrete set에서 정한다. CPU k는 sum_m c_mk=C_k^e를 만족하도록 computing resource를 분배한다.
+
+공개 출처
+arxiv-v1 | pp. 5-6, Eqs. (17), (24b)-(24g)
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 5. 지연은 local 또는 offload branch에서 생긴다
+
+5. 지연은 local 또는 offload branch에서 생긴다
+
+발표 대본
+원문은 task가 분할될 수 없다고 선언하고 omega_mk=1이면 CPU k로 offload, 아니면 local로 정의한다. 따라서 의도상 local 또는 offload branch 하나가 활성이다. T_f는 cluster Phi_m 내 AP-to-CPU transmission delay의 maximum이며 T_o=T_a+T_f+T_e다. Eq. (23)의 max(T_l,T_o)는 이 binary 선택의 active branch를 고르는 표현으로 읽어야 하며, 두 alternative의 동시 completion time이 아니다. 단 Eq. (18)은 인쇄된 sum_k(1-omega_mk) local term이라 K>1에서 binary 의미와 맞지 않는다: no-offload면 local term이 K번, 한 CPU offload면 K-1번 남는다. 자연스러운 (1-sum_k omega_mk)로 조용히 바꾸지 않고, 원문의 표기 모순으로 보존한다.
+
+공개 출처
+arxiv-v1 | p. 6, Eqs. (18)-(23)
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 6. 원문 최적화 문제 P1: 긴 시간 평균 delay 최소화
+
+6. 원문 최적화 문제 P1: 긴 시간 평균 delay 최소화
+
+발표 대본
+P1은 time horizon T에서 (1/MT) sum_t sum_m T_m(t)를 최소화한다. 제약은 offload uniqueness, CPU capacity, discrete power, fixed cluster size Xi, deadline tau_c, nonnegative CPU allocation, binary omega다. 논문은 이를 NP-hard mixed integer nonlinear programming problem으로 설명한다.
+
+공개 출처
+arxiv-v1 | p. 6, Problem P1, Eq. (24)
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 7. 해법의 분해: RL이 이산 선택, convex solver가 CPU share
+
+7. 해법의 분해: RL이 이산 선택, convex solver가 CPU share
+
+발표 대본
+논문은 power와 offloading decision을 먼저 정하면 computing resource allocation subproblem P2를 만들고, 이를 P3/P4로 변형한다. P4는 convex problem이며 CVXPY로 풀 수 있다고 적는다. 이 결과는 RL policy가 선택한 discrete action을 평가하기 위한 allocation이며 P1 전체에 대한 global optimality claim은 아니다.
+
+공개 출처
+arxiv-v1 | pp. 6-7, P2-P4 and convexity discussion
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 8. 비협력 모드 IPPO: 다른 사용자를 환경으로 본다
+
+8. 비협력 모드 IPPO: 다른 사용자를 환경으로 본다
+
+발표 대본
+Section III에서 각 selfish user는 information exchange 없이 agent가 된다. Local observation equation은 o_m={D_m,rho_m,a_m(t-1)}로 제시되며 본문은 prior total latency history도 언급한다. Action은 CPU decision과 data-transmission power다. Reward는 negative delay 및 deadline-related penalty를 사용한다. 식의 penalty sign 해석을 일반화하지 않고 원문의 reward definition 범위로 설명한다.
+
+공개 출처
+arxiv-v1 | pp. 7-9, Sec. III-A and Algorithm 1
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 9. MAPPO: 전체로 훈련, local actor로 실행
+
+9. MAPPO: 전체로 훈련, local actor로 실행
+
+발표 대본
+Section IV는 cooperative case에서 centralized training and decentralized execution을 채택한다. Local observation은 자신과 다른 users의 previous decision 및 prior average total delay를 포함하도록 확장된다. CPU는 centralized critic으로 global state와 action을 이용해 actor update를 지원하고 actor parameters를 전송한다. 실행 단계에서는 user가 local actor로 action을 만든다.
+
+공개 출처
+arxiv-v1 | pp. 9-11, Sec. IV-A and Fig. 3
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 10. IPPO와 MAPPO는 무엇이 다른가
+
+10. IPPO와 MAPPO는 무엇이 다른가
+
+발표 대본
+원문은 MAPPO cooperative case가 global information으로 better strategy를 얻을 수 있으나 centralized critic 때문에 IPPO보다 offline training time이 길다고 해석한다. 이는 논문의 configured simulator와 method implementations에서의 observation이며, signalling overhead나 deployment feasibility에 대한 정량 보장을 의미하지 않는다.
+
+공개 출처
+arxiv-v1 | pp. 10-11, Sec. IV; p. 14, Fig. 4 discussion
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 11. 계산 trace 예시: 언제 offload path가 더 빠른가
+
+11. 계산 trace 예시: 언제 offload path가 더 빠른가
+
+발표 대본
+교육용으로 새로 계산한 K=1 trace다. local action omega=0에서는 T_l=2.00 s, T_o=0이고 offload action omega=1에서는 T_l=0, T_o=0.65 s이므로 Eq. (23)의 total은 각각 2.00 s와 0.65 s다. 두 branch를 동시에 활성화해 max(2.00,0.65)를 취하지 않는다. T_a=D/r_a, T_f=D/r_f, T_e=D rho/c로 단순화했다. 실제 원문 T_f는 cluster의 AP-to-CPU delay maximum이며, 여기서는 0.05초인 effective rate로 놓았다. K=1은 Eq. (18)의 다중-CPU 인쇄 표기 모순을 피하기 위한 범위다. 실제 experiment result나 policy quality 수치가 아니다.
+
+공개 출처
+arxiv-v1 | p. 6, Eqs. (18)-(23)
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 12. 실험은 어떤 환경에서 비교됐는가
+
+12. 실험은 어떤 환경에서 비교됐는가
+
+발표 대본
+Section V-A는 900×900 m² square area에 AP와 user를 무작위 배치하고, 3 CPUs, CPU capacity 10-20 GHz, local capacity 2-5 GHz, task data 50-100 KB, computation density 500-1000 cycles/bit, access carrier 1.9 GHz and 20 MHz를 명시한다. Training은 Python 3.10, PyTorch 1.12, RTX 3080 등의 offline setup에서 수행했다.
+
+공개 출처
+arxiv-v1 | pp. 11-13, Sec. V-A, Table II
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 13. Fig. 4: convergence와 training time
+
+13. Fig. 4: convergence와 training time
+
+발표 대본
+원문 Fig. 4(a)는 10 users and 50 APs에서 convergence performance를, Fig. 4(b)는 50,000 steps의 offline training time을 비교한다. 저자는 PPO based schemes가 about 3,000 episodes에서 converge하고, IL based IPPO가 MAPPO와 nearly equivalent convergence behavior를 보인다고 서술한다. CTDE central critic은 global information을 처리하므로 training cost가 더 든다고 해석한다.
+
+공개 출처
+arxiv-v1 | pp. 13-14, Fig. 4 and Sec. V-C1
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 14. Fig. 5: access 협력의 rate 이득은 sweep마다 다르다
+
+14. Fig. 5: access 협력의 rate 이득은 sweep마다 다르다
+
+발표 대본
+Fig. 5는 average uplink transmission rate를 users, APs, maximum power, AP cluster size에 대해 비교한다. 원문은 Proposed (Coop)이 해당 네 sweep에서 각각 maximum 7.31%-208.76%, 12.88%-326.99%, 8.13%-227.94%, 10.05%-343.56% rate increase를 얻는다고 적는다. 범위 안의 comparator와 parameter 위치를 분리하지 않으면 이 값을 보편적인 gain으로 오독하기 쉽다.
+
+공개 출처
+arxiv-v1 | pp. 14-15, Fig. 5 and Sec. V-C2
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 15. Fig. 6: AP·power·cluster에는 모두 trade-off가 있다
+
+15. Fig. 6: AP·power·cluster에는 모두 trade-off가 있다
+
+발표 대본
+Fig. 6은 long-term average total delay를 같은 네 parameter sweep에서 비교한다. 원문은 user count, AP count, maximum power, cluster size에 대해 Proposed (Coop)의 maximum delay decrease 범위를 각각 8.33%-35.06%, 19.59%-45.57%, 16.74%-42.79%, 16.31%-38.24%로 쓴다. Maximum power가 0.2 W를 넘은 뒤 delay gain이 거의 없다고 한 관찰은 Fig. 6(c)의 sweep 맥락이다.
+
+공개 출처
+arxiv-v1 | p. 15, Fig. 6 and Sec. V-C3
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 16. 이 논문이 보여 주지 않는 것
+
+16. 이 논문이 보여 주지 않는 것
+
+발표 대본
+원문은 dynamic wireless environment and user demand에 맞춰 MADRL and convex optimization 기반 decentralized schemes를 제안하고 simulation으로 비교한다. Theorem 형태의 online constraint satisfaction, formal robustness, or universal deployment guarantee는 제시하지 않는다. 또한 AP cluster는 user별 Xi size constraint로 modelled되어 있고, 이 자료는 arbitrary cluster-selection algorithm을 덧붙이지 않는다.
+
+공개 출처
+arxiv-v1 | pp. 2, 6, 9-11, 15-16
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499
+
+## 17. 핵심: wireless와 compute를 한 loop에
+
+17. 핵심: wireless와 compute를 한 loop에
+
+발표 대본
+발표를 마무리하며 세 가지를 구분한다. 첫째, UCMEC architecture는 AP cluster와 CPU의 역할 분리다. 둘째, optimization은 discrete offload and power decision과 continuous CPU allocation을 결합한다. 셋째, IPPO와 MAPPO의 차이는 collaborative information and training architecture이며, Fig. 4-6의 수치는 논문의 stated simulation conditions 안에서 읽는다.
+
+공개 출처
+arxiv-v1 | abstract; pp. 6-11, 13-16
+Towards Decentralized Task Offloading and Resource Allocation in User-Centric MEC, arXiv:2312.01499v1
+https://arxiv.org/abs/2312.01499

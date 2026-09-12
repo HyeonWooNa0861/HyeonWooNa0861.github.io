@@ -1,0 +1,241 @@
+---
+type: research-seminar-slides
+paper_id: combinatorial-client-master-madrl-task-offloading-mec
+---
+
+# CCM_MADRL: 제안과 조합 승인으로 푸는 MEC 오프로딩
+
+논문: Combinatorial Client-Master Multiagent Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing
+
+저자: Tesfay Zemuy Gebrekidan, Sebastian Stein, Timothy J. Norman (2024)
+
+## 1. CCM_MADRL: 제안과 조합 승인으로 푸는 MEC 오프로딩
+
+연속 client 제안과 서버의 이산 feasible-subset 선택을 분리한 2단계 의사결정
+
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) title page; Abstract, [aamas-extended](https://doi.org/10.65109/cdmt9885) publication record
+
+## 2. 공유 MEC에서 client 제안은 함께 충돌할 수 있다
+
+각 UD의 연속 자원 선택과 서버의 이산 수락 결정을 분리한다
+
+
+| 결정 주체 | 먼저 정하는 값 | 공유 제약 |
+| --- | --- | --- |
+| UD client | 제안·전력·로컬 CPU | 자신의 deadline·battery |
+| MEC master | 제안 중 수락 subset | K개 channel·저장 z_e |
+| 환경 | 지연·에너지·다음 state | 서버 처리 순서 |
+
+핵심: 서버 제약은 모든 client action을 합쳐 본 뒤에야 판정할 수 있다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 1 Abstract; pp. 1-2
+
+## 3. 논문의 MEC 환경
+
+각 time step에 UD 하나당 task 하나가 생성된다
+
+1. **UD**: task·battery·uplink
+2. **BS와 SDN**: UD 정보 수집
+3. **MEC server**: storage·8 processing units
+4. **처리 결과**: local 또는 MEC 완료
+
+핵심: 마감시간 안에 끝나지 않은 task는 다음 step 전에 폐기된다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 2; Fig. 1; §2
+
+## 4. 한 task의 두 처리 경로
+
+
+| 경로 | 결정 조건 | 지연·에너지 |
+| --- | --- | --- |
+| Local | client가 local 선택 또는 master 거절 | T_loc = zc/f; local energy |
+| MEC | client 제안 후 master 수락 | 전송 + 대기/서버 처리 |
+| 최종 mode | x_n=0 local, x_n=1 MEC | T_n·E_n을 mode별로 결합 |
+
+핵심: client가 offload를 제안해도 master가 거절하면 local path로 돌아간다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 2-3; Eqs. 1-5
+
+## 5. 비용 최소화와 제약의 소유자
+
+L_n = lambda_1 T_n + lambda_2 E_n
+
+
+| 항목 | 논문의 역할 | 처리 위치 |
+| --- | --- | --- |
+| 시간·에너지 | 모든 task cost | objective |
+| 전력·local CPU | UD별 범위 | client action mapping |
+| deadline·battery | UD 조건 | reward penalty |
+| offload 수 K | 동시 channel 수 | master selection |
+| task size 합 | server storage z_e | master selection |
+
+핵심: hard server feasibility와 reward penalty를 같은 방식으로 합치지 않는다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 3-5; Eqs. 6, 12-13
+
+## 6. client가 보는 state는 UD별 다섯 묶음이다
+
+
+| state 묶음 | 포함 값 | state 밖 상수 |
+| --- | --- | --- |
+| Task | size z, cycles c, deadline tau | K·U_e·f_e·z_e |
+| Uplink | normalized channel gain | K subchannels |
+| Budget | power·local CPU bounds | server f_e·U_e |
+| Battery | harvest 뒤 battery state | storage z_e |
+
+핵심: K와 z_e는 agent state가 아니라 master selection의 알려진 server constraint다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 4; §4.1; Eq. 7
+
+## 7. client는 세 연속 값을 내고 proposal 여부를 가른다
+
+1. **S_n 입력**: UD의 다섯 state
+2. **client policy**: x_c·p_c·f_c 출력
+3. **threshold**: x_c < 0.5면 local
+4. **proposal**: x_c 이상이면 master로
+
+핵심: p_c와 f_c는 각 UD의 허용 전력·CPU 범위로 변환된다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 4; §4.2; Eqs. 8-10
+
+## 8. master는 proposal을 feasible subset으로 바꾼다
+
+주의: 본문과 Algorithm 2 의사코드는 ε 분기를 서로 반대로 쓴다.
+
+1. **proposal 모음**: x_c 이상인 task
+2. **모두 적합?**: count와 size 검사
+3. **본문의 Q 우선순위**: exploitation에서만 정렬
+4. **binary 수락**: 나머지는 local
+
+핵심: 본문 rule과 Algorithm 2 loop는 ε 분기·storage scan에서 불일치한다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 4, 6-7; §4.2; Algorithm 2
+
+## 9. 연속 제안과 이산 수락이 같은 action이 아니다
+
+- **client proposal**: UD state → x_c,p_c,f_c
+- **server constraints**: K와 storage z_e
+- **master selection**: proposal subset을 binary 승인
+- **final mode**: MEC 승인 또는 local fallback
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 4-5; Fig. 2; Eq. 11
+
+## 10. reward와 Q값의 역할을 분리해 읽기
+
+
+| 요소 | 논문에서 하는 일 | 읽을 때 주의 |
+| --- | --- | --- |
+| system reward | negative cost와 UD penalty | server penalty를 중복하지 않음 |
+| master Q | candidate별 relative Q | single joint Q만 아님 |
+| all-local | all_zeros placeholder | master 개입 없음 |
+| client update | master가 계산한 TD feedback | 선택 task 조건부 처리 |
+
+핵심: per-client Q는 master의 수락 순서를 만들고, reward는 system cost에서 출발한다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 5, 7-8; Eqs. 12-15; Algorithm 3
+
+## 11. 한 episode에서 selection과 training은 분리된다
+
+1. **environment reset**: initial UD states
+2. **T time steps**: select·act·reward
+3. **replay memory**: transition 저장
+4. **Algorithm 3**: client·master update
+
+핵심: 평가 episode는 exploration을 쓰지 않으며, training episode와 절차가 다르다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 6; Algorithm 1
+
+## 12. 강의용 구성 예: 본문이 설명한 Q-priority scan
+
+가정: K=2, 남은 storage=60 MB, exploitation mode
+
+
+| proposal | size | relative Q | 순서 뒤 결과 |
+| --- | --- | --- | --- |
+| A | 40 MB | 0.9 | 수락 |
+| B | 25 MB | 0.8 | 거절: 40+25>60 |
+| C | 20 MB | 0.3 | 수락: 총 60 MB |
+| final subset | A+C | 2 channels | MEC offload |
+
+핵심: A+C는 prose greedy scan 예이며, literal Algorithm 2 결과가 아니다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 6-7; Algorithm 2
+
+## 13. 실험은 작은 storage 제약을 의도적으로 만든 simulator다
+
+
+| 항목 | 값 | 해석 범위 |
+| --- | --- | --- |
+| UD와 channels | N=50, K=10 | 동시 acceptance 제약 |
+| radio | W=40 MHz, gain 5-14 dB | 정지 UD·constant noise |
+| task와 server | 1-50 MB, z_e=400 MB, U_e=8 | 조합 selection이 생기도록 설정 |
+| training | 2,000 episodes, gamma=0.99 | client 0.0001, master 0.001 |
+| reported runs | Fig. 3은 10 runs | 95% confidence interval |
+
+핵심: 400 MB는 deployed capacity가 아니라 combinatorial setting을 위한 storage다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 9; §5.2; Table 2
+
+## 14. 비교 방법은 master의 수락 규칙에서 갈린다
+
+
+| 방법 | 수락 또는 미배정 처리 | 논문에서의 역할 |
+| --- | --- | --- |
+| CCM_MADRL | per-client Q로 feasible subset | 제안 방법 |
+| MADDPG | offloading order로 channel 배정 | 직접 benchmark |
+| Shortest-offload heuristic | 미배정 task를 local 지정 | 동등한 fallback 비교 |
+| Deadline/size heuristic | deadline/size priority | 정적 master rule |
+
+핵심: 원문은 승인 task의 MEC processing을 arrival order로 둔다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 8; §5.1
+
+## 15. Figure 3은 10-step setting의 세 관측치를 함께 보인다
+
+
+| panel | 측정 | 저자가 읽는 방향 |
+| --- | --- | --- |
+| A | combined reward | CCM curve가 더 높게 수렴 |
+| B | deadline 전 미완료 task 비율 | CCM이 더 낮은 비율 |
+| C | minimum battery 미만 UD 비율 | 10-step 조건에서 0 |
+
+핵심: A의 scalar reward와 B·C의 별도 비율 지표를 같은 수치로 읽어서는 안 된다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 9; Fig. 3; §5.4
+
+## 16. 100-step battery stress는 결과의 trade-off를 드러낸다
+
+
+| 그림 | 바뀐 조건 | 원문의 관찰 |
+| --- | --- | --- |
+| Fig. 4 | 100 steps, b_max=b_min+1 J | CCM의 battery threshold 위반 UD가 더 많음 |
+| Fig. 5 | lambda_1=1, lambda_2=5, 40 runs | combined performance와 deadline에서는 우세 |
+| 두 그림 | scalar reward와 별도 battery ratio | scale choice의 영향 |
+
+핵심: 더 높은 combined reward가 모든 battery 측정치의 개선을 뜻하지는 않는다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) p. 10; Figs. 4-5; §5.4
+
+## 17. 이 논문이 주장하지 않는 범위
+
+- 배포 네트워크의 보편적 성능 보장은 제시하지 않는다.
+- UD는 stationary이고 normalized channel gain과 noise variance를 단순화한다.
+- 한 channel을 한 task가 쓴다는 경우 interference를 고려하지 않는다.
+- 100-step 실험의 일부 CCM run은 final episode 전에 time out되었다.
+- future work는 여러 MEC server의 협력 조합 결정을 제안한다.
+
+핵심: Figures 3-5는 architecture theorem이 아니라 설정된 simulator에서의 관측이다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 3, 10-11; §2.3; §5.4; Conclusion
+
+## 18. 정리: client 제안과 master 승인
+
+- UD별 연속 action은 proposal, power, local CPU allocation을 만든다.
+- master는 proposed offloads에서 channel count와 storage를 만족하는 binary subset을 고른다.
+- per-client Q와 conditional training은 그 selection 절차에 맞추어 설계된다.
+- 실험 곡선은 Table 2와 Figures 3-5의 simulator conditions 안에서 읽는다.
+
+핵심: 핵심 기여는 단일 actor의 선택이 아니라 proposal과 feasible-subset 승인의 분리다.
+
+근거: [ccm-v2](https://arxiv.org/abs/2402.11653) pp. 1, 4-11; Abstract; §4-6

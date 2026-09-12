@@ -1,0 +1,299 @@
+## 1. 다중 서버 MEC에서 무엇을 함께 최적화할까
+
+1. 다중 서버 MEC에서 무엇을 함께 최적화할까
+
+발표 대본
+이 자료는 Tran과 Pompili의 arXiv:1705.00704v1을 기준으로 합니다. 논문은 다중 셀에서 각 BS가 MEC 서버를 갖는 모델을 사용하며, task offloading decision, uplink transmit power, server computing resource allocation을 함께 최적화합니다.
+
+공개 출처
+arxiv-v1 | title page; abstract; v1
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 2. 논문이 푸는 범위와 풀지 않는 범위
+
+2. 논문이 푸는 범위와 풀지 않는 범위
+
+발표 대본
+Section III는 task가 atomic이라 subtask로 나눌 수 없다고 가정합니다. Section V는 convex and quasi-convex optimization과 local-search heuristic을 사용합니다. actor, critic, replay memory, online queue dynamics는 원문에 없습니다.
+
+공개 출처
+arxiv-v1 | pp. 6-11; §§III-IV
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 3. 여러 BS의 MEC server가 선택지와 간섭을 함께 만든다
+
+3. 여러 BS의 MEC server가 선택지와 간섭을 함께 만든다
+
+발표 대본
+Fig. 1은 mobile users, MEC server가 있는 BS, potential association link를 보여 줍니다. 이 편집 가능한 그림은 선택된 link와 potential link를 분리합니다. 논문은 index s의 server, BS, MEC server를 서로 바꾸어 부릅니다.
+
+공개 출처
+arxiv-v1 | p. 6; Fig. 1; §III
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 4. local과 offload는 time·energy accounting이 다르다
+
+4. local과 offload는 time·energy accounting이 다르다
+
+발표 대본
+원문의 local time·energy는 식 (1)과 그 직전 정의에 있습니다. Offloaded delay는 식 (5), (7), (8), transmit energy는 식 (9)입니다. 원문은 output이 input보다 훨씬 작고 downlink가 빠르다고 가정하여 output delay를 생략합니다. 같은 BS의 users는 서로 다른 OFDMA sub-band를 쓰고, 다른 BS의 같은-sub-band users가 inter-cell interference를 만듭니다.
+
+공개 출처
+arxiv-v1 | pp. 6-9; Eqs. 1, 3-9
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 5. 오프로딩 변수는 세 가지 선택을 동시에 담는다
+
+5. 오프로딩 변수는 세 가지 선택을 동시에 담는다
+
+발표 대본
+이 슬라이드는 이진 선택변수의 제약을 읽는 순서입니다. Equation (2) requires sum over s and j of x^j_us to be at most one for each user. Equation (12d) requires sum over users of x^j_us to be at most one at server s and sub-band j. A user without a selected entry executes locally. U_s is the user set selected for server s.
+
+공개 출처
+arxiv-v1 | pp. 7, 10; Eqs. 2, 12b-12d
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 6. utility는 local 대비 time·energy 개선의 가중합이다
+
+6. utility는 local 대비 time·energy 개선의 가중합이다
+
+발표 대본
+이 슬라이드는 utility의 기준점이 local execution임을 강조합니다. Equation (10) defines J_u as weighted relative reductions in time and energy versus local execution, multiplied by the offloading indicator. Equation (11) sums lambda_u J_u. The text gives payment/revenue preference as one interpretation of lambda_u. If J_u is nonpositive, the paper says that user should not offload.
+
+공개 출처
+arxiv-v1 | pp. 9-10; Eqs. 10-11
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 7. JTORA: scheduling과 allocation이 섞인 MINLP
+
+7. JTORA: scheduling과 allocation이 섞인 MINLP
+
+발표 대본
+이 슬라이드는 JTORA의 변수와 제약을 한 화면에 묶습니다. Equations (12a)-(12g) are the JTORA formulation. The authors state that it is NP-hard and that exhaustive optimization is impractical as variables grow with users, servers, and sub-bands. The subsequent method is designed as a low-complexity suboptimal approach, not an exact general solver.
+
+공개 출처
+arxiv-v1 | pp. 10-11; Eqs. 12a-12g
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 8. 고정된 X에서 연속 자원을 풀고, 그 값을 X의 점수로 쓴다
+
+8. 고정된 X에서 연속 자원을 풀고, 그 값을 X의 점수로 쓴다
+
+발표 대본
+이 슬라이드는 원문이 쓰는 outer/inner 분해를 설명합니다. Equations (13)-(15) express max_X max_{P,F} J(X,P,F), then define J*(X) as the RA optimum for fixed X. The TO problem chooses X under the binary association/sub-band constraints. RA feasibility constraints are separated from X constraints, which permits the nesting used here.
+
+공개 출처
+arxiv-v1 | pp. 10-12; Eqs. 13-15
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 9. RA는 uplink power와 server CPU의 두 문제로 다시 나뉜다
+
+9. RA는 uplink power와 server CPU의 두 문제로 다시 나뉜다
+
+발표 대본
+이 슬라이드는 고정된 X 안에서만 RA가 분리됨을 설명합니다. For fixed X, Eq. (16) turns utility maximization into minimizing V(X,P,F). Equation (19) is the sum of a power/rate term and a CPU-share term, which supports the independent UPA and CRA subproblems. This separation does not make the original full JTORA globally convex because X remains combinatorial.
+
+공개 출처
+arxiv-v1 | pp. 12-13; Eqs. 16-20
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 10. UPA는 inter-cell interference를 upper-bound로 근사한다
+
+10. UPA는 inter-cell interference를 upper-bound로 근사한다
+
+발표 대본
+이 슬라이드는 UPA의 근사 경계와 조건을 구분합니다. Equation (21) defines the achievable upper bound for interference using power budgets P_k. Equation (22) substitutes it into an approximate SINR, and Eq. (23) separates the power choices. Lemma 1 states that Gamma_s(p_u) is strictly quasi-convex on the feasible power interval. The paper argues the approximation is reasonable when the offloading decision itself keeps the estimated interference small.
+
+공개 출처
+arxiv-v1 | pp. 13-14; Eqs. 20-23; Lemma 1
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 11. Algorithm 1: Omega 부호로 power 이분 탐색
+
+11. Algorithm 1: Omega 부호로 power 이분 탐색
+
+발표 대본
+이 슬라이드는 Algorithm 1의 경계판정과 bisection 방향을 읽습니다. After deriving that Omega_s(p_u) is monotonically increasing and negative at zero, the paper gives Algorithm 1. If Omega_s(P_u) is no greater than zero, the optimum is the upper boundary. Otherwise bisection updates the lower end when Omega at midpoint is no greater than zero, and the upper end otherwise. The stated iteration count is ceiling log2(P_u/epsilon) when a root must be found.
+
+공개 출처
+arxiv-v1 | pp. 14-15; Eq. 24; Algorithm 1
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 12. CRA는 server CPU를 sqrt(eta_u)에 비례해 나눈다
+
+12. CRA는 server CPU를 sqrt(eta_u)에 비례해 나눈다
+
+발표 대본
+이 슬라이드는 CPU share의 닫힌형 해가 고정 X에 조건부임을 설명합니다. Equation (25) defines the CRA problem. Equations (26a)-(26b) show its positive-definite Hessian. Equation (27) gives f_us*=f_s sqrt(eta_u) divided by the sum of sqrt(eta_u) over users in U_s. Equation (28) gives the resulting objective. The solution is conditional on the fixed offloading set X.
+
+공개 출처
+arxiv-v1 | pp. 15-16; Eqs. 25-28
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 13. outer TO는 두 matroid 제약 아래 set value를 최대화한다
+
+13. outer TO는 두 matroid 제약 아래 set value를 최대화한다
+
+발표 대본
+이 슬라이드는 TO가 두 matroid 제약을 갖는다는 원문 표현을 따릅니다. Equation (30) is the TO problem after substituting the resource-allocation values. The paper says the two constraints define two matroids over ground set G. It notes that exhaustive search requires 2^n decisions with n=S times U times N, and is not practical.
+
+공개 출처
+arxiv-v1 | pp. 16-17; Eq. 30
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 14. Routine 1: 새 entry의 충돌을 지운다
+
+14. Routine 1: 새 entry의 충돌을 지운다
+
+발표 대본
+이 슬라이드는 Routine 1의 충돌 제거 순서를 보입니다. Routine 1 removes x^i_uw for every server w and sub-band i, then removes x^j_vs for every user v, and finally adds x^j_us. Thus an exchange can drop up to two elements under the two matroid constraints. The separate remove operation simply deletes one existing entry.
+
+공개 출처
+arxiv-v1 | p. 17; Routine 1
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 15. Algorithm 2: 개선될 때만 remove·exchange
+
+15. Algorithm 2: 개선될 때만 remove·exchange
+
+발표 대본
+이 슬라이드는 Algorithm 2의 수용조건과 보장 한계를 분리합니다. Algorithm 2 uses the threshold (1+epsilon/n^2)J*(X) for both remove and exchange. Remark 1 gives O((1/epsilon)n^3 log n) running time when 1/epsilon is at most polynomial in n. Remark 2 calls the output X* a local optimal solution and explicitly says the degree of suboptimality is non-trivial to characterize.
+
+공개 출처
+arxiv-v1 | pp. 17-18; Algorithm 2; Remarks 1-2
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 16. 교육용 가상 trace: 한 sub-band에서 exchange를 판정한다
+
+16. 교육용 가상 trace: 한 sub-band에서 exchange를 판정한다
+
+발표 대본
+이것은 논문 실험이나 계산된 J*가 아니라 재계산용으로 만든 예시입니다. With one server and one sub-band, adding B conflicts with A on the same server-sub-band. For n=2 and epsilon=.1, the stated improvement factor is 1.025. The assumed .83 exchange value exceeds .7175, so Algorithm 2 would take that exchange branch.
+
+공개 출처
+arxiv-v1 | pp. 17-18; Routine 1; Algorithm 2
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 17. local search는 각 candidate X의 RA value를 비교한다
+
+17. local search는 각 candidate X의 RA value를 비교한다
+
+발표 대본
+Algorithm 2의 remove와 exchange 수용검사는 J*(remove(...)) 및 J*(exchange(...))를 비교하므로, 각 candidate X의 fixed-X RA가 먼저 필요합니다. Remark 2는 종료 뒤 final X*에 대응하는 P*, F*를 붙인다고 설명합니다. 이는 online control loop가 아니라 nested optimization 관계입니다.
+
+공개 출처
+arxiv-v1 | pp. 10-18; Eqs. 13-19, 29-30; Alg. 2; Remark 2
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 18. 비교 방법의 scheduling·coordination 범위
+
+18. 비교 방법의 scheduling·coordination 범위
+
+발표 대본
+이 슬라이드는 Section VI의 네 비교군을 구별합니다. Exhaustive is only used for a small network because its scheduling search is expensive. GOJRA applies the Section V resource allocation after greedy admission. IOJRA uses a random home-BS sub-band and independent decision. DORA independently decides for users within each BS cell.
+
+공개 출처
+arxiv-v1 | p. 19; §VI; baseline definitions
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 19. 기본 simulation 조건이 result의 해석 범위를 정한다
+
+19. 기본 simulation 조건이 result의 해석 범위를 정한다
+
+발표 대본
+이 슬라이드는 Section VI의 기본 simulation condition만 나열합니다. Section VI supplies these defaults unless otherwise stated. Users are uniformly randomly placed, and sub-bands N equal users per cell. The channel path-loss model is 140.7+36.7 log10(d in km). The paper sets kappa=5×10^-27. This slide lists conditions rather than treating them as a real deployment specification.
+
+공개 출처
+arxiv-v1 | pp. 18-19; §VI settings
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 20. small network: hJTORA는 Exhaustive에 가깝고 빠르다
+
+20. small network: hJTORA는 Exhaustive에 가깝고 빠르다
+
+발표 대본
+이 슬라이드는 작은 network에서만 Exhaustive를 비교한 Fig. 2를 읽습니다. Fig. 2 compares U=6 uniformly placed users served by S=4 cells with N=2 sub-bands each, across 500 shadowing realizations. 본문은 c_u=1000, 2000 Megacycles라고 쓰지만 같은 Fig. 2 panel label은 1, 2 Megacycles라고 표기하는 내부 불일치가 있습니다. 아래 utility·gain·runtime은 p. 20 prose와 Table I의 별도 보고값이며 이 불일치를 임의로 해결하지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 19-20; Table I; Fig. 2
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 21. load·task profile이 offloading gain을 바꾼다
+
+21. load·task profile이 offloading gain을 바꾼다
+
+발표 대본
+이 슬라이드는 Fig. 3과 Fig. 4의 서로 다른 sweep을 섞지 않습니다. For Fig. 3, N equals users per cell, so per-user bandwidth declines as user count grows. Fig. 4 evaluates different workloads and input sizes at U=28. The paper reports hJTORA as best among compared schemes under these settings; the deck avoids assigning unreported point values from the plotted curves.
+
+공개 출처
+arxiv-v1 | pp. 20-22; Figs. 3-4
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 22. time preference↑ → energy cost↑ (experiment)
+
+22. time preference↑ → energy cost↑ (experiment)
+
+발표 대본
+이 슬라이드는 user preference weight를 바꾼 Fig. 5의 trade-off입니다. Figure 5 reports average time and energy consumption of all users under hJTORA. It varies beta_ut from 0.1 to 0.9 and sets beta_ue to one minus beta_ut. The paper also observes higher time and energy consumption at U=21 than U=14 because more users compete for limited resources.
+
+공개 출처
+arxiv-v1 | pp. 22-23; Fig. 5
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 23. 근사: 25 dBm 아래 exact curve와 거의 일치
+
+23. 근사: 25 dBm 아래 exact curve와 거의 일치
+
+발표 대본
+이 슬라이드는 근사의 경험적 비교이지 일반 오차정리가 아닙니다. Section VI-E compares system utility calculated with approximate versus exact inter-cell interference while P_u varies 0 to 35 dBm. The authors say the curves are almost identical below 25 dBm and separate at higher power, then reference 23 dBm maximum UE power in 3GPP TS36.101 section 6.2.3. This is not a mathematical error bound for all systems.
+
+공개 출처
+arxiv-v1 | pp. 23-24; Fig. 6; Eq. 21
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 24. 결과를 넘어 일반화하면 안 되는 모델 경계
+
+24. 결과를 넘어 일반화하면 안 되는 모델 경계
+
+발표 대본
+이 슬라이드는 모델 가정·근사 경계·실험 조건을 구분해 회수합니다. The system-model limits appear in Section III, including atomic tasks, single antennas, omitted output delay, and fast-fading averaging. The approximation boundary is in Section V-A. Remarks 1-2 provide the local-search complexity and solution status, while Section VI identifies the simulation conditions. These distinctions prevent a source-grounded seminar from adding unsupported deployment or theorem claims.
+
+공개 출처
+arxiv-v1 | pp. 6-8, 13, 18-20; §§III,V-VI
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1
+
+## 25. JTORA를 한 줄로 연결하면
+
+25. JTORA를 한 줄로 연결하면
+
+발표 대본
+마무리는 논문의 실제 계산 순서만 다시 연결합니다. The closing flow summarizes the paper's actual order: define JTORA, solve RA conditional on X, use J*(X) for TO local search, and finally attach P* and F* to X*. The numerical claims are conditioned on the Section VI simulation rather than a deployment guarantee.
+
+공개 출처
+arxiv-v1 | pp. 10-24; §§IV-VII
+Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks, arXiv:1705.00704v1
+https://arxiv.org/abs/1705.00704v1

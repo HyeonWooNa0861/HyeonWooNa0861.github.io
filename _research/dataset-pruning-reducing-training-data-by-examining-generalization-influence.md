@@ -82,6 +82,14 @@ Dataset Pruning은 개별 sample 점수만으로 데이터를 고르는 대신, 
 
 이 자료는 LLM quantization 계열과 직접 연결되지는 않지만, calibration data curation과 sample selection이라는 큰 축에서 관련된다. COVERCAL이나 Self-Calibration이 "압축 전에 어떤 calibration data를 쓸 것인가"를 다룬다면, Dataset Pruning은 "학습 또는 탐색에 필요한 데이터 subset을 어떻게 줄일 것인가"라는 더 일반적인 데이터 효율화 문제를 다룬다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 25장 | <a href="/assets/seminars/dataset-pruning-reducing-training-data-by-examining-generalization-influence/dataset-pruning-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/dataset-pruning-reducing-training-data-by-examining-generalization-influence/dataset-pruning-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/dataset-pruning-reducing-training-data-by-examining-generalization-influence/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/dataset-pruning-reducing-training-data-by-examining-generalization-influence/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

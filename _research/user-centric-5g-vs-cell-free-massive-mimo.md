@@ -97,6 +97,14 @@ High-density scenario는 `M=80`, `K=15`, `N=6`, `\tau_p=16`이고, low-density s
 
 셋째, future work로 논문이 직접 제시한 방향은 millimeter wave frequency에서의 CF/UC comparison, uRLLC 지원 가능성, NOMA 같은 5G-and-beyond multiple access와의 결합이다. 이 방향은 단순한 성능 확장이 아니라, beam blockage, low-latency reliability, multi-user interference를 UC cluster design 안에 함께 넣는 문제로 이어진다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 27장 | <a href="/assets/seminars/user-centric-5g-vs-cell-free-massive-mimo/user-centric-cf-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/user-centric-5g-vs-cell-free-massive-mimo/user-centric-cf-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/user-centric-5g-vs-cell-free-massive-mimo/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/user-centric-5g-vs-cell-free-massive-mimo/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

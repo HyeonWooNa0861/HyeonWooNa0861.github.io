@@ -1,0 +1,347 @@
+---
+type: research-seminar-slides
+paper_id: user-performance-in-consecutive-temporal-pointing
+---
+
+# Consecutive Temporal Pointing의 사용자 수행
+
+논문: User Performance in Consecutive Temporal Pointing: An Exploratory Study
+
+저자: Dawon Lee, Sunjun Kim, Junyong Noh, Byungjoo Lee (2024)
+
+## 1. Consecutive Temporal Pointing의 사용자 수행
+
+두 번의 시간 맞춤 입력을 하나의 연속 동작으로 볼 때 무엇이 달라지는가
+
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 1, title and abstract
+
+## 2. 한 번의 timing 입력과 두 번의 연속 입력
+
+CTP에서는 두 입력이 짧은 간격 안에서 하나의 동작 덩어리로 계획된다
+
+
+| 상황 | 시간 조건 | 예 |
+| --- | --- | --- |
+| temporal pointing | 한 번의 입력을 지정 시점에 맞춤 | 움직이는 target 포착 |
+| Type I CTP | 첫 입력 뒤 두 번째 입력의 시점을 맞춤 | double-click, charged attack |
+| Type II CTP | 두 입력을 각각 외부 시점에 맞춤 | rhythm game의 long note |
+
+핵심: 두 번째 입력은 첫 입력과 독립적이지 않을 수 있다는 점이 연구 문제다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 1–3, Figs. 1–2; §2.1
+
+## 3. 논문의 증거 범위
+
+이 연구는 CTP 수행을 탐색한 HCI 실험이며 완성된 예측 모델을 제안하지 않는다
+
+
+| 층위 | 논문이 제시한 것 | 제시하지 않은 것 |
+| --- | --- | --- |
+| 정의 | CTP 조건과 Type I·II taxonomy | 모든 연속 입력의 보편 분류 |
+| 실험 | 100명의 네 study cell | 모든 연령·device의 수행 |
+| 모델 검사 | 기존 모델의 σ₁·σ₂ 적합 비교 | 새 CTP 예측식 |
+| 해석 | TTS cue와 motor limitation 가설 | 인지 기제의 인과 증명 |
+
+핵심: 결과는 새 알고리즘보다 과제 정의와 empirical boundary를 제공한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 1, abstract; §§4–7
+
+## 4. CTP taxonomy는 어느 입력에 시간 조건이 있는가로 나뉜다
+
+첫 입력에 조건이 없는 Type I과 두 입력 모두 조건이 있는 Type II를 구분한다
+
+
+| 과제 | 첫 입력 | 두 번째 입력 | trial 시작 |
+| --- | --- | --- | --- |
+| Type I CTP | 사용자가 원하는 때 | 첫 입력 이후 조건 | 첫 입력 순간 |
+| Type II CTP | 외부 target 시점 | 외부 target 시점 | 외부 event |
+| ordinary temporal pointing | 한 입력에 시간 조건 | 두 번째 입력 없음 | 외부 event |
+
+핵심: 두 입력의 시간 기준이 다르면 같은 CTP 안에서도 planning 정보가 달라진다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 2–4, §2.1; Fig. 5
+
+## 5. TTF와 TTS의 시간 기준
+
+TTF는 trial 시작부터 첫 target까지, TTS는 첫 target부터 두 번째 target까지의 간격이다
+
+- **레인 requested timing**
+  - **trial start**: 외부 event 또는 첫 입력
+  - **first target**: 첫 입력의 기준 시점
+  - **second target**: 두 번째 입력 기준
+- trial start → first target: TTF (실선, 단방향)
+- first target → second target: TTS (실선, 단방향)
+
+핵심: TTF와 TTS는 사용자가 누른 실제 간격이 아니라 시스템이 요구한 target interval이다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 3, Fig. 3; §2.1.1
+
+## 6. 두 입력의 accuracy와 precision을 따로 측정한다
+
+평균은 target과의 편향을, 표준편차는 반복 입력의 퍼짐을 나타낸다
+
+
+| 지표 | 첫 입력 | 두 번째 입력 | 좋은 수행 |
+| --- | --- | --- | --- |
+| 평균 timing error | μ₁ | μ₂ | 0에 가까움 |
+| 표준편차 | σ₁ | σ₂ | 작을수록 정밀 |
+| 분포 표기 | N₁(μ₁, σ₁²) | N₂(μ₂, σ₂²) | 각 입력을 별도 추정 |
+
+핵심: 두 입력의 평균과 퍼짐을 합치면 두 번째 입력에서 생기는 변화를 놓친다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 2–3, Fig. 4; §2.1.1
+
+## 7. 기존 temporal-pointing 모델이 보는 세 요인
+
+반복 주기, 움직임을 본 시간, 버튼 activation point가 timing precision을 바꾼다
+
+
+| 요인 | 기존 연구의 관계 | CTP에서의 질문 |
+| --- | --- | --- |
+| input period P | 길수록 internal clock noise 증가 | 두 입력 사이 TTS도 cue가 되는가 |
+| cue-viewing time C₂ | 길수록 움직임 encoding 개선 | σ₂도 같은 방향으로 변하는가 |
+| activation point | 강한 감각 자극과 callback 정렬 | Press와 Release 차이가 유지되는가 |
+
+핵심: CTP 검사는 기존 요인을 그대로 적용했을 때 두 번째 입력도 설명되는지를 묻는다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 4–5, §§3.2–3.3; Figs. 7–8; Eqs. 1–3
+
+## 8. 두 입력의 독립성 가정과 기존 요인의 재현
+
+두 입력을 ordinary temporal pointing 두 번으로 볼 수 있는지가 출발점이다
+
+- RQ1: 첫 입력과 두 번째 입력을 각각 ordinary temporal pointing으로 볼 수 있는가
+- RQ2: activation point 같은 기존 요인이 CTP 수행에도 영향을 주는가
+- 검사 전략: μ₁·σ₁과 μ₂·σ₂를 조건별로 분리해 비교
+- 모델 검사: 기존 moving-target model을 σ₁과 σ₂에 각각 적합
+
+핵심: 같은 trial 안의 두 입력을 별도 outcome으로 보는 것이 분석의 핵심이다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 5, §3.4
+
+## 9. 100명을 네 study cell에 나눠 CTP 변형을 관찰했다
+
+Type I·II와 한 손·두 손 조건을 분리해 서로 다른 요인을 조작했다
+
+1. **Variation 1**: Type I, 한 손, N=25
+2. **Variation 2**: Type II, 한 손, N=43
+3. **Variation 3.1**: Type I, 두 손, N=16
+4. **Variation 3.2**: Type II, 두 손, N=16
+
+핵심: 네 cell은 같은 참가자가 모든 조합을 수행한 하나의 완전요인 실험이 아니다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 5–7, §4; Fig. 9; Table 1
+
+## 10. Study cell별 주요 factor와 level
+
+TTF와 period는 Type I에서 정의되지 않고, input method와 order도 cell마다 다르다
+
+
+| cell | timing level | 입력 조건 | cue |
+| --- | --- | --- | --- |
+| V1 | TTS 50–500 ms, 8 levels | Press-Press / Press-Release | On/Off |
+| V2 | TTF 150/250, TTS 150/200/250 | Press-Press / Press-Release | On/Off* |
+| V3.1 | TTS 50–500 ms, 8 levels | 두 손 order 2 levels | On/Off |
+| V3.2 | TTF 150/250, TTS 150/200/250 | 두 손 order 2 levels | On/Off |
+
+핵심: 별표가 붙은 V2 cue만 between-subject이고 나머지 factor는 within-subject다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 7, Table 1; §4.2
+
+## 11. Moving-target task와 입력 기록
+
+일정한 속도의 선이 두 capture line에 닿을 때 버튼 입력을 맞춘다
+
+1. **moving line**: 28.2 cm/s로 오른쪽 이동
+2. **first capture**: 첫 target timing
+3. **second capture**: 두 번째 target timing
+4. **button callback**: Press 또는 Release 기록
+5. **timing distribution**: μ₁·σ₁, μ₂·σ₂ 계산
+
+핵심: target motion은 1차원·등속이며 실제 게임의 복잡한 motion과 다르다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 6–8, §§4.1–4.3; Figs. 9–11
+
+## 12. 조작 변수와 측정 변수를 분리한다
+
+실험이 바꾼 조건과 참가자 수행에서 계산한 outcome은 같은 종류의 변수가 아니다
+
+
+| 구분 | 변수 | 해석 |
+| --- | --- | --- |
+| 독립변수 | TTF, TTS, input period | 시스템이 요구한 timing 구조 |
+| 독립변수 | visual cue, input method, input order | 감각 정보와 motor execution |
+| 종속변수 | μ₁, μ₂ | 각 입력의 평균 timing error |
+| 종속변수 | σ₁, σ₂ | 각 입력 timing의 precision |
+| 통제·구성 | speed, apparatus, counterbalance | 조건 비교의 배경 |
+
+핵심: TTS가 길어졌다는 조작과 실제 inter-input timing이 길어졌다는 측정은 구분해야 한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 6–7, §4.2; Table 1
+
+## 13. 반복 trial과 통계 분석 절차
+
+학습 구간을 제외하고 조건별 반복 측정에 맞는 검정을 사용했다
+
+
+| 항목 | 원문 설정 | 읽을 때의 경계 |
+| --- | --- | --- |
+| trial | 조건당 50회, 마지막 40회 분석 | 초기 10회는 learning 고려 |
+| 재수행 | TTS error 절댓값이 120 ms 초과 | 2,649회, 약 2.43% |
+| 전체 기록 | 109,090 trials | 네 cell의 합계 |
+| ANOVA | repeated measures, α=.05 | cell별 factor structure 유지 |
+| 보정 | GG와 Bonferroni | sphericity·post-hoc에 적용 |
+
+핵심: 유의한 main effect와 실제 효과의 크기·방향은 별도로 읽어야 한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 7–8, §§4.3, 5.1, 5.3
+
+## 14. 기존 model을 첫 입력과 두 번째 입력에 따로 맞춘다
+
+같은 model이 두 분포를 모두 설명해야 CTP를 두 ordinary process로 볼 근거가 생긴다
+
+- **moving-target model**: period와 cue-viewing time으로 σ 예측
+- **first-input fit**: 관측 σ₁과 model 비교
+- **second-input fit**: 관측 σ₂와 model 비교
+- **trend comparison**: cue time에 따른 방향을 대조
+- **RQ1 evidence**: 두 ordinary process 가정 평가
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 5, 8–9, Eq. 3; §5.2
+
+## 15. σ₁은 기존 경향을 따랐지만 σ₂는 맞지 않았다
+
+두 번째 입력의 precision은 cue-viewing time이 길수록 좋아진다는 예측과 다른 형태를 보였다
+
+
+| 대상 | 관측 | model 결과 | 해석 |
+| --- | --- | --- | --- |
+| V2 σ₁ | TTF 증가와 함께 감소 | fit 성공, R²=.93 | 기존 경향과 일치 |
+| V3.2 σ₁ | 비슷한 감소 경향 | 2 points라 fit 불가 | 정성 비교만 가능 |
+| σ₂ | TTS에 따라 다른 trend | fit 불가 | 추가 요인 가능성 |
+| σ₂ 대 σ₁ | σ₂가 전반적으로 더 작음 | 기존 model 밖 | 추가 cue 가설을 지지 |
+
+핵심: model mismatch는 두 번째 입력의 추가 기제를 찾을 근거이며 새 기제를 증명한 결과는 아니다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 8–11, §5.2 and §6.1; Fig. 12
+
+## 16. 두 번째 입력은 TTS 자체를 추가 timing cue로 쓸 수 있다
+
+저자들은 trial period보다 짧은 inter-input interval이 더 정밀한 internal-clock cue라고 해석한다
+
+1. **첫 target**: 첫 입력 timing을 기준점으로 사용
+2. **TTS encoding**: 짧은 interval을 internal clock에 저장
+3. **movement cue**: 보이는 target motion도 함께 사용
+4. **cue integration**: reliability에 따라 두 cue 결합
+5. **second input**: σ₂ pattern이 달라짐
+
+핵심: TTS cue는 discussion의 설명 가설이며 논문이 새 식으로 검증한 model은 아니다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 10–12, §6.1; Figs. 12–13
+
+## 17. Activation point와 짧은 interval의 motor trade-off
+
+Press callback은 더 정밀했지만 빠른 두 번째 Press에는 추가 finger movement가 필요했다
+
+- **같은 짧은 TTS 과제**: 두 번째 입력 방법을 비교
+- **Press-Press**: Down-Up-Down으로 두 번째 입력
+- **Press-Release**: Down-Up으로 두 번째 입력
+- **timing outcome**: precision과 motor delay를 함께 비교
+- **conditioned choice**: interval 길이에 맞춘 input method
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 11–13, §6.2; Figs. 13–14
+
+## 18. KeyPressed의 precision 이득과 timing 편향
+
+정밀도 이득과 짧은 interval의 평균 지연은 동시에 관찰됐다
+
+
+| 관측 | Variation 1 | Variation 2 | 조건 |
+| --- | --- | --- | --- |
+| Pressed σ₂ / Released σ₂ | 82.8% | 93.7% | 작을수록 정밀 |
+| 짧은 TTS의 μ₂ | Press-Press에서 뒤로 밀림 | 관련 interaction 존재 | 약 150 ms 미만 |
+| 짧은 TTS의 μ₁ | 보상하듯 앞당겨짐 | cell별 effect 구분 | 한 손 조건 |
+| σ₁ method effect | 유의 차이 없음 | 유의 차이 없음 | 첫 입력은 모두 Press |
+
+핵심: 작은 σ₂만 보고 Press-Press를 모든 interval에 권할 수 없다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 11–13, §6.2; Figs. 13–14; Tables 2–3
+
+## 19. 두 손 조건은 motor limit와 hand order를 분리해 본다
+
+각 손이 한 번씩 입력하면 한 손의 빠른 Down-Up-Down 제약이 줄어든다
+
+
+| 관측 | 결과 | 해석 경계 |
+| --- | --- | --- |
+| 짧은 TTS pushback | Variation 3에서 사라짐 | motor limitation 설명과 일치 |
+| input order | distribution effect p>.23 | 유의한 handedness 우위 없음 |
+| movement direction | hand order와 함께 바뀜 | handedness만 분리하기 어려움 |
+| participant profile | 대부분 young, V3는 mostly right-handed | 외적 타당도 제한 |
+
+핵심: 이 결과는 bimanual input의 보편 우위보다 한 손 motor sequence의 역할을 지지한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 13–14, §6.2; Fig. 13e; Tables 4–5
+
+## 20. 구성 예시: target interval과 timing error 계산
+
+다음 수치는 TTF·TTS·μ·σ의 관계를 익히기 위한 예시이며 실험 데이터가 아니다
+
+
+| event | target time | logged time | derived value |
+| --- | --- | --- | --- |
+| trial start | 0 ms | 해당 없음 | 기준점 |
+| first input | 800 ms | 790 ms | TTF=800 ms, error₁=−10 ms |
+| second input | 1000 ms | 1025 ms | TTS=200 ms, error₂=+25 ms |
+| many trials | 같은 조건 반복 | error sample 모음 | mean은 μ, SD는 σ |
+
+핵심: 한 trial은 두 timing error를 주지만 μ와 σ는 반복 trial의 분포에서 계산한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 3, Figs. 3–4; §2.1.1
+
+## 21. Interaction design에 적용할 때의 조건
+
+입력 방식은 activation precision과 motor sequence를 함께 고려해야 한다
+
+
+| 상황 | 논문의 제안 | 조건 |
+| --- | --- | --- |
+| TTS 약 150 ms 미만 | Release activation 고려 | 한 손의 빠른 연속 입력 |
+| 더 긴 interval | Pressed precision 활용 고려 | 동일 apparatus의 관측 |
+| difficulty tuning | TTS에 따른 σ₂ 변화 반영 | 단조 관계로 가정하지 않음 |
+| future model | TTS cue와 μ 변화 포함 | cue-integration 가설 검증 필요 |
+
+핵심: 설계 제안은 이 연구 조건에서 나온 것으로 device와 population이 바뀌면 다시 검증해야 한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 13, §6.3
+
+## 22. 실험이 다루지 않은 CTP 조건
+
+과제·참가자·baseline의 제한 때문에 결과를 모든 연속 입력으로 일반화할 수 없다
+
+
+| 제한 | 이번 연구 | 후속 질문 |
+| --- | --- | --- |
+| target motion | 1D constant speed | 복잡하고 예측 불가능한 motion |
+| cue pattern | 전체 구간 On 또는 Off | 첫·두 번째 구간만 선택적 cue |
+| timing disclosure | target timing을 미리 제시 | 첫 입력 뒤 second timing 공개 |
+| participants | mostly young, local universities | age와 handedness 다양성 |
+| baseline | 개인별 ordinary task 미측정 | 개인 내 CTP 변화 비교 |
+
+핵심: 이 논문은 CTP 모델링의 출발점이며 외적 타당도와 인지 기제 검증이 남아 있다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) p. 14, §6.4
+
+## 23. 두 timing 입력의 단순 합으로 설명되지 않은 CTP
+
+두 번째 입력은 interval cue와 motor sequence의 영향을 함께 받았다
+
+- CTP는 두 번의 anticipatory button input을 하나의 짧은 연속 동작으로 다룬다
+- 기존 model은 σ₁ 경향을 설명했지만 관측 σ₂에는 맞지 않았다
+- Pressed는 σ₂를 줄였지만 짧은 Press-Press에는 motor delay가 나타났다
+- TTS cue 해석은 후속 modeling에서 검증해야 할 가설이다
+- 과제 motion, participant diversity, 개인 baseline의 제한을 유지해야 한다
+
+핵심: CTP를 설계하거나 모델링할 때 두 입력의 분포와 두 입력 사이 interval을 따로 관찰해야 한다
+
+근거: [acm-paper](https://doi.org/10.1145/3613904.3642904) pp. 13–14, §§6.3–7

@@ -1,0 +1,315 @@
+---
+type: research-seminar-slides
+paper_id: lydroo-stable-online-computation-offloading-mec
+---
+
+# LyDROO: 큐와 전력 제약을 함께 보는 MEC 오프로딩
+
+논문: Lyapunov-Guided Deep Reinforcement Learning for Stable Online Computation Offloading in Mobile-Edge Computing Networks
+
+저자: Suzhi Bi, Liang Huang, Hui Wang, Ying-Jun Angela Zhang (2021)
+
+## 1. LyDROO: 큐와 전력 제약을 함께 보는 MEC 오프로딩
+
+한 frame의 빠른 선택을 장기 queue 안정성과 평균 power 제약으로 연결하는 hybrid online controller
+
+
+근거: [ieee-paper](https://doi.org/10.1109/TWC.2021.3085319) title, abstract, [arxiv-paper](https://arxiv.org/abs/2010.01370) title page, v3
+
+## 2. 좋은 channel의 한 frame 선택만으로는 충분하지 않다
+
+현재 rate만 크게 만들면 average power를 넘기거나 task를 뒤로 미뤄 queue를 키울 수 있다
+
+1. **현재 관측**: current channel h와 Q,Y를 본다
+2. **즉시 rate 최대화**: 좋은 channel에서 energy를 많이 쓸 수 있다
+3. **누적 효과**: 평균 power 또는 대기 task가 쌓인다
+4. **필요한 feedback**: Q와 Y를 다음 frame 의사결정에 반영
+
+핵심: LyDROO의 목적은 frame reward가 아니라 장기 queue와 평균 power를 함께 제어하는 것이다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 1-2, 5-6
+
+## 3. 한 device의 한 frame: route와 연속 resource를 분리한다
+
+binary x가 local/offload route를 고르고, route 안의 f 또는 tau·e가 실제 service를 정한다
+
+- **레인 device i**
+  - **frame 시작 state**: h: current channel → Q: waiting task
+  - **binary route x**: 0: local
+1: offload
+  - **연속 resource**: local: f
+offload: tau, e
+  - **결과**: served data D
+power consumption e
+- frame 시작 state → binary route x (실선, 단방향)
+- binary route x → 연속 resource (실선, 단방향)
+- 연속 resource → 결과 (실선, 단방향)
+
+핵심: DNN은 final CPU frequency나 frame power를 직접 내보내지 않는다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 4-5, Eqs. 1-3
+
+## 4. Q는 실제 workload, Y는 average-power 압력 기록이다
+
+둘 다 다음 action을 바꾸지만 물리적 의미는 다르다
+
+
+| state | update | 무엇을 뜻하나 | 커지면 |
+| --- | --- | --- | --- |
+| Q_i | Q(next)=Q-D+A | 아직 service되지 않은 task data | 현재 service의 가치가 커짐 |
+| Y_i | Y(next)=max(Y+nu(e-gamma),0) | average-power 초과 압력의 virtual record | power 사용의 비용이 커짐 |
+| A, D | arrival, served data | frame에서 들어오고 처리된 data | D는 Q를 넘을 수 없음 |
+| e, gamma | power, threshold | frame power와 장기 average-power threshold | e가 gamma보다 크면 Y 증가 |
+
+핵심: Y는 battery charge가 아니라 장기 average-power constraint를 online으로 보이는 queue다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 4-5, Eqs. 4-7
+
+## 5. 작은 queue trace: Q와 Y의 다른 변화
+
+교육용 계산: gamma=0.5, nu=1. 논문의 측정값이 아니다
+
+- **레인 한 device**
+  - **frame 전**: Q=5
+Y=0.2
+  - **교육용 action**: A=2, D=3
+power e=0.8
+  - **frame 후**: Q(next)=4
+Y(next)=0.5
+- frame 전 → 교육용 action (실선, 단방향)
+- 교육용 action → frame 후 (실선, 단방향)
+
+핵심: D=3은 workload를 줄였지만 e-gamma=0.3은 다음 frame의 power pressure를 높인다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 4-5, Eqs. 5 and 7; constructed example
+
+## 6. Lyapunov objective: service와 power pressure
+
+P2와 그 P3/P4 분해는 action과 무관한 drift 항을 빼고 current state가 가중한 목표를 푼다
+
+
+| 항 | 읽는 법 | state가 커질 때 | 결정 효과 |
+| --- | --- | --- | --- |
+| (Q_i+V c_i) r_i | service rate의 보상 | Q_i가 크면 증가 | waiting task를 더 service하려 함 |
+| Y_i e_i | power consumption penalty | Y_i가 크면 증가 | power-heavy action을 억제 |
+| V | utility와 queue의 control parameter | V가 크면 utility weight 증가 | utility gap와 backlog의 trade-off |
+| constraint | binary route와 continuous resource feasibility | tau 합과 data causality | 각 frame feasible action만 비교 |
+
+핵심: Q와 Y는 history를 저장해 다음 frame의 one-frame objective를 시간-aware하게 만든다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 6, Eqs. 20-22
+
+## 7. V trade-off: 정리의 bound와 Figure 7
+
+정리는 조건부 rate-gap/queue bound를 주고, Figure 7은 setup-dependent한 non-monotone 관측을 보인다
+
+
+| V | objective에서 | 정리의 방향 | 실험에서 읽을 점 |
+| --- | --- | --- | --- |
+| 작은 V | Q의 상대 영향이 큼 | rate-gap bound는 더 큼 | Figure 7에서 V<=40의 Q/power 감소 |
+| 큰 V | utility c의 상대 영향이 큼 | rate-gap bound 감소, queue bound 증가 | Figure 7에서 V>40의 Q/power/Y 증가 |
+| 주의 | control parameter | assumptions와 bounded gap 아래 | rate curve의 단조 증가 증명 아님 |
+
+핵심: V의 bound trade-off는 조건부다. Figure 7을 단조 tuning rule로 읽으면 안 된다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 11, Theorem 1; p. 14, Fig. 7
+
+## 8. LyDROO online loop
+
+queue module의 Q/Y가 다음 frame actor input으로 다시 들어간다
+
+- **레인 frame t to t+1**
+  - **state xi(t)**: h, Q, Y
+  - **actor DNN**: relaxed x-hat
+in [0,1]^N
+  - **NOP**: OPQ → noisy OPQ
+  - **P4 critic**: solve f, tau, e
+choose best
+  - **next state**: D, e
+update Q, Y
+- state xi(t) → actor DNN (실선, 단방향)
+- actor DNN → NOP (실선, 단방향)
+- NOP → P4 critic (실선, 단방향)
+- P4 critic → next state (실선, 단방향)
+
+핵심: DNN이 binary search를 좁히고 P4가 continuous feasibility와 value를 판정한다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 7-10, Fig. 3 and Algorithm 1
+
+## 9. Actor와 critic은 모두 neural network가 아니다
+
+LyDROO의 critic은 learned value estimator가 아니라 candidate마다 P4를 푸는 analytical optimizer다
+
+1. **actor DNN**: state에서 relaxed binary proposal을 낸다
+2. **NOP**: proposal 주변의 binary actions를 만든다
+3. **critic P4**: candidate마다 continuous allocation을 계산한다
+4. **argmax**: modeled objective가 가장 큰 feasible action을 실행
+5. **training label**: 선택된 action이 actor training target이 된다
+
+핵심: ‘actor-critic DRL’이라는 이름을 일반적인 learned-critic 구조로 읽으면 안 된다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 7-10, Algorithm 1; pp. 9-10, P4 and Algorithm 2
+
+## 10. NOP: actor 후보와 noise 후보
+
+order-preserving quantization이 exploitation을, noisy branch가 exploration을 담당한다
+
+- **relaxed x-hat**: actor output in [0,1]^N
+- **OPQ branch**: 0.5 근처의 order를 따라 binary 후보 생성
+- **noise branch**: Gaussian noise, sigmoid, OPQ로 추가 후보 생성
+- **candidate set**: M_t binary offload actions
+- **P4 evaluation**: candidate별 P4 feasibility와 score
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) arXiv v3, pp. 7-9, Eqs. 23-29 and Algorithm 1
+
+## 11. P4는 binary candidate에 조건부로 연속 resource를 푼다
+
+같은 x라도 Q, Y, h가 달라지면 best f, tau, e와 objective가 달라진다
+
+- **binary candidate x**: 각 device가 local인지 offload인지 고정
+- **current state**: h, Q, Y와 resource limit
+- **P4 optimizer**: local closed form
+offload dual and LP
+- **candidate score**: feasible f, tau, e와 drift-plus-penalty value
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 9-10, P4 and Algorithm 2
+
+## 12. Online action과 actor training의 시간축
+
+매 frame에는 candidate evaluation을 하고, DNN parameter update는 replay memory에서 주기적으로 수행한다
+
+
+| 과정 | 입력 | 언제 | 출력 |
+| --- | --- | --- | --- |
+| online control | current h, Q, Y | 매 frame | x, f, tau, e |
+| critic evaluation | binary candidates와 current state | online control 안 | P4 objective와 best label |
+| replay storage | selected state-action pair | action 뒤 | 최근 q개 sample |
+| actor training | random replay batch | delta_T frame마다 | 다음 actor parameter |
+
+핵심: reported CPU computation time은 online controller 측정치이며 training 시간 전체가 아니다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 8-10, Algorithm 1 and Eq. 29; pp. 11, 14, Table II
+
+## 13. Theorem 1: 조건부 whole-policy 결과
+
+stability와 trade-off는 stochastic model, feasibility, 그리고 bounded approximation gap을 함께 가정한다
+
+
+| 필요한 조건 | 왜 필요한가 | 정리가 말하는 것 | 말하지 않는 것 |
+| --- | --- | --- | --- |
+| bounded arrival와 service | drift bound를 만들기 위함 | average queue bound | 무한 burst에도 자동 안정 |
+| i.i.d. system state | time-average expectation 처리 | stochastic guarantee | 모든 non-i.i.d. deployment |
+| feasibility와 Slater-type 조건 | constraint를 만족할 여유 | virtual queue stability | 불가능한 budget의 해결 |
+| bounded per-frame gap C | selected action이 ideal P2에서 너무 멀지 않음 | O(1/V), O(V) trade-off | 임의 training run의 성공 |
+
+핵심: Theorem 1은 approximation gap을 포함한 controller 전체를 조건부로 분석한다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 11, Theorem 1; pp. 16-17, Appendix B proof
+
+## 14. Queue plot은 defined simulation에서의 비교 증거다
+
+Figure 5의 lambda=3 run에서 Myopic queue는 선형으로 자라고 LyDROO는 LyCD에 접근한다
+
+
+| setting | reported observation | 올바른 해석 |
+| --- | --- | --- |
+| N=3, lambda=3 | DDPG baseline은 stabilize하지 못함 | textual simulation observation |
+| Figure 5, lambda=3 | Myopic queue가 linear growth | frame-only choice의 failure mode 예시 |
+| Figure 5, LyDROO | 약 7,500 frame 뒤 LyCD에 접근 | 한 simulation trace의 timing |
+| Figure 6(a), gamma=0.08 | displayed lambda range에서 3.2까지 stable | universal threshold가 아님 |
+
+핵심: queue plot은 지정된 workload와 parameter에서 얻은 empirical evidence다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 11, DDPG observation; p. 12, Fig. 5; p. 13, Fig. 6(a)
+
+## 15. Figure 7: V와 queue/power의 non-monotone 관측
+
+converged setting에서 rate는 같고, queue·power는 V 구간에 따라 다른 방향을 보인다
+
+
+| 관측 대상 | plot에서의 방향 | 정리와의 연결 | 한계 |
+| --- | --- | --- | --- |
+| V<=40 | queue와 power 감소 | theorem bound 자체의 plot 아님 | converged simulation observation |
+| V>40 | queue, power, energy queue 증가 | queue bound 방향과 양립 | exact threshold는 setup-dependent |
+| computation rate | LyDROO와 LyCD의 optimal performance | rate-gap bound와 구분 | rate의 단조 증가 claim 아님 |
+
+핵심: Figure 7은 setup-specific observation이다. V의 theorem bound와 구분해야 한다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 14, Fig. 7; p. 11, Theorem 1
+
+## 16. N=30 reported CPU computation time의 범위
+
+paper의 0.156 s는 TensorFlow 2, Intel i5, 12 GB RAM 환경의 Table II 수치다
+
+
+| 조건 | reported number | paper의 비교 | 피해야 할 해석 |
+| --- | --- | --- | --- |
+| N=30 | reported CPU computation time 0.156 s | 5-s frame의 약 3% | generic edge-device latency |
+| same table | LyCD보다 약 50배 빠름 | defined comparator implementation | 모든 MEC solver의 배수 |
+| adaptive M_t | candidate selection runtime 80% 이상 절감 | cited comparison의 saving | 무조건 80% cost reduction |
+| environment | TensorFlow 2, Intel i5, 12 GB RAM | simulation/controller setting | mobile hardware benchmark |
+
+핵심: reported CPU time은 paper의 online controller 측정치다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 11, 14, Table II and surrounding text
+
+## 17. Figure 9: non-i.i.d. test와 theorem의 구분
+
+N=10 ON-OFF Markov arrival test는 empirical evidence다. Theorem 1의 i.i.d. bound와 구분한다
+
+
+| 부분 | paper가 한 일 | 근거 강도 | 구분 |
+| --- | --- | --- | --- |
+| Theorem 1 | i.i.d. omega(t)를 가정 | 조건부 queue/rate bound | 일반 non-i.i.d. proof 아님 |
+| Figure 9 test | N=10 ON-OFF Markov와 i.i.d. exponential, 평균 3 Mbps | empirical: Markov에서 더 긴 convergence | plot 자체가 theorem 증명 아님 |
+
+핵심: Figure 9의 non-i.i.d. result와 Theorem 1의 i.i.d. bound는 근거 종류가 다르다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) p. 15, Fig. 9; p. 11, Theorem 1
+
+## 18. DROO와 LyDROO의 control-state 차이
+
+LyDROO는 queue와 average-power constraint를 current state와 objective에 추가한다
+
+
+| dimension | DROO formulation | LyDROO formulation |
+| --- | --- | --- |
+| actor input | wireless channel h | channel h와 real Q, virtual Y |
+| per-frame aim | computation rate | drift-plus-penalty objective |
+| candidate generation | relaxed output의 OPQ | OPQ와 noisy OPQ, NOP |
+| continuous solver | fixed-x convex allocation (P2) | Lyapunov-weighted P4 |
+| long-term feedback | Q/Y control state 없음 | Q,Y update가 next action을 바꿈 |
+
+핵심: LyDROO를 DROO에 reward 하나를 더한 방법으로 축소하면 Q/Y feedback loop를 놓친다
+
+근거: [droo-paper](https://arxiv.org/abs/1808.01977) arXiv:1808.01977v6, pp. 4-5, Eqs. 6-10 and Algorithm 1, [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 6-10, Eqs. 20-28 and Algorithms 1-2
+
+## 19. 모델의 경계도 controller 해석의 일부다
+
+analytical critic의 feasible action과 theorem claim은 paper가 둔 communication·energy model 안에서만 읽어야 한다
+
+
+| 모델 선택 | paper의 처리 | 해석 영향 |
+| --- | --- | --- |
+| offloading | binary local 또는 edge route | local/edge split 없음 |
+| uplink | TDMA, sum tau <= 1 | shared time coupling |
+| edge stage | execution과 download delay 무시 | end-to-end latency 전체가 아님 |
+| utility | linear computation rate | 다른 U는 convex P4가 필요 |
+| queue | infinite capacity for analysis | finite buffer drop model과 다름 |
+
+핵심: 해석적 critic은 일반 oracle이 아니라 이 논문의 MEC model을 푸는 optimizer다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 4-6, Eqs. 1-13 and Remark 1
+
+## 20. LyDROO를 읽는 네 가지 연결
+
+queue update가 objective를 바꾸고, actor proposal이 analytical allocation과 결합되며, theorem과 plot는 다른 근거를 제공한다
+
+1. **Q와 Y**: workload와 average-power pressure를 state로 보존
+2. **drift plus penalty**: service reward와 power penalty를 current state로 가중
+3. **actor plus P4**: binary search를 좁히고 continuous feasibility를 계산
+4. **conditional evidence**: theorem assumptions와 simulation conditions를 분리
+
+핵심: LyDROO는 long-term feedback와 model-based candidate evaluation을 결합한다
+
+근거: [arxiv-paper](https://arxiv.org/abs/2010.01370) pp. 5-16, Theorem 1 and evaluation

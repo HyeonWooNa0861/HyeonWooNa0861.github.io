@@ -1,0 +1,275 @@
+## 1. LyDROP: WP-MEC 부분 오프로딩의 온라인 제어
+
+1. LyDROP: WP-MEC 부분 오프로딩의 온라인 제어
+
+발표 대본
+이 발표는 LyDROP이 어떤 온라인 WP-MEC 문제를 풀려 하는지, 부분 오프로딩 비율과 연속 자원을 어떻게 나누는지, DNN과 모델 기반 최적화가 어떤 순서로 협력하는지를 소개합니다. LyDROP은 이 논문의 이름이며, 다른 유사 약칭의 MEC 방법과 같은 모델이라고 가정하지 않습니다.
+
+공개 출처
+ieee-paper | title, abstract
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 2. 왜 매 frame마다 다시 결정해야 하는가
+
+2. 왜 매 frame마다 다시 결정해야 하는가
+
+발표 대본
+논문은 시간에 따라 달라지는 channel과 random task arrival이 있는 wireless powered MEC를 다룹니다. AP가 먼저 WPT를 하고 WD가 local computing 또는 AP offloading을 수행하는 한 frame에서, partial-offload decision delta, WPT duration a, transmission time tau를 함께 정합니다. 여기서 frame 안의 단계들은 순서이지, 동일한 물리 시간 간격을 뜻하는 축이 아닙니다.
+
+공개 출처
+ieee-paper | pp. 1–4, §§1–3
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 3. 한 frame의 물리적 분할: 전력 수확에서 service까지
+
+3. 한 frame의 물리적 분할: 전력 수확에서 service까지
+
+발표 대본
+이 그림은 원문의 system model을 교육용으로 압축한 관계도입니다. E는 현재 frame의 WPT와 channel로 얻는 에너지이고, delta는 그 에너지를 local과 offloading에 나누는 비율입니다. tau는 uplink에 쓸 시간 비율입니다. 원문은 AP execution time과 result feedback delay를 경량·저부하 조건에서 무시하므로, 그림의 service가 모든 실제 MEC latency를 포괄한다고 해석하면 안 됩니다.
+
+공개 출처
+ieee-paper | pp. 4–5, Eqs. 1–9
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 4. delta: binary route가 아닌 연속 에너지 분할
+
+4. delta: binary route가 아닌 연속 에너지 분할
+
+발표 대본
+원문의 delta_i는 WD i가 harvested energy 중 computation offloading에 쓰는 비율입니다. 1-delta_i는 local computation에 배정됩니다. 따라서 중간값은 task 전체를 반으로 자르는 별도 routing label이 아니라 에너지 분할에서 local과 offloaded data가 동시에 처리되는 partial-offloading decision입니다. delta를 CPU frequency나 transmit power로 부르면 원문 변수의 역할이 바뀝니다.
+
+공개 출처
+ieee-paper | pp. 4–5, Eqs. 1–6
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 5. service는 현재 data와 frame budget을 넘을 수 없다
+
+5. service는 현재 data와 frame budget을 넘을 수 없다
+
+발표 대본
+원문 queue는 data queue입니다. D_i는 현재 frame 시작 시 쌓인 Q_i(t)를 넘을 수 없고, service가 끝난 뒤 new task arrival R_i가 더해집니다. DNN input은 h와 Q로 정의되어 있으며, current R은 actor input 목록에 없습니다. 논문은 수확 에너지를 해당 frame에서 소진하는 rate model을 사용하므로, controller state에 inter-frame battery state나 virtual energy queue를 추가하지 않습니다.
+
+공개 출처
+ieee-paper | pp. 4–6, Eqs. 9–11
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 6. 강의용 한 WD 계산: 분할·제약·queue를 함께 확인한다
+
+6. 강의용 한 WD 계산: 분할·제약·queue를 함께 확인한다
+
+발표 대본
+이 예시는 한 WD와 normalized frame T=1을 가정한 강의용 계산입니다. sigma=0.5, P_a=4, h=1, tau=0.25, k=0.125, phi=1, B=1, chi=1, N_0=0.1로 두면 E=1 J입니다. delta=0.5일 때 source 식에서 local service는 1.587 bits, offloaded service는 1.098 bits입니다. 값들은 radio calibration이나 원문 측정치가 아닙니다. 계산 목적은 service 제약 D<=Q와 arrival-after-service 순서를 확인하는 것입니다.
+
+공개 출처
+ieee-paper | pp. 4–6, Eqs. 1–10
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 7. P1의 장기 목표를 P2의 현재 frame score로 읽는다
+
+7. P1의 장기 목표를 P2의 현재 frame score로 읽는다
+
+발표 대본
+P1은 long-term average weighted computation rate 최대화와 strong data-queue stability를 함께 둡니다. Lemma 1은 drift-plus-penalty upper bound를 유도하고, 상수항을 제외해 P2의 per-frame maximization을 얻습니다. P2 score의 Q_i 항은 backlog가 큰 WD service를 더 가치 있게 만들고 V omega_i 항은 weighted rate를 반영합니다. inspected source에는 학습된 DNN policy에 대해 O(1/V), O(V) 혹은 approximation-gap을 주는 정리가 보이지 않으므로, 이 슬라이드는 그러한 보장을 주장하지 않습니다.
+
+공개 출처
+ieee-paper | p. 6, Eqs. 11–16; Lemma 1
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 8. Q와 V omega가 P2에서 하는 일
+
+8. Q와 V omega가 P2에서 하는 일
+
+발표 대본
+P2는 sum_i (Q_i(t)+V omega_i) r_i(t)를 maximize하는 형태입니다. 이 슬라이드는 그 식을 새 theorem처럼 확장하지 않고 각 항의 직관만 설명합니다. queue term은 delay나 queue build-up을 고려하기 위한 현재 state의 정보이고, omega는 source가 둔 device weight입니다. Fig. 6의 V sweep은 특정 arrival condition의 simulation 결과이므로 V와 queue의 관계를 일반적 단조 법칙이라고 말하면 안 됩니다.
+
+공개 출처
+ieee-paper | p. 6, Eqs. 14–16; p. 10, Fig. 6
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 9. LyDROP: DNN 제안과 model-based 선택
+
+9. LyDROP: DNN 제안과 model-based 선택
+
+발표 대본
+Algorithm 1에서 DNN actor는 current h와 Q를 보고 partial-offloading action delta-hat을 출력합니다. Quantization은 2K+1 candidate decisions를 만들고, critic은 각각을 P2의 G로 평가해 maximum candidate를 고릅니다. delta가 고정되면 a와 tau의 resource allocation은 convex problem이 되어 Lagrange duality와 bisection으로 풉니다. 따라서 이 논문의 critic을 neural value network나 PPO critic이라고 부르면 안 됩니다.
+
+공개 출처
+ieee-paper | pp. 7–9, Fig. 3; Algorithm 1
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 10. two constructions: fixed vs adopted PNOP
+
+10. two constructions: fixed vs adopted PNOP
+
+발표 대본
+Eq. 17은 fixed quantization interval을 설명합니다. 원문이 채택한 partial noisy-order-preserving method는 delta-hat의 entries를 0.5와의 거리로 정렬하고 shifted candidates와 Gaussian white noise를 포함합니다. 이는 binary 0/1 threshold 그림이 아닙니다. Table II에서 noisy method의 weighted sum computation rate는 더 높지만 reported average data queue length도 더 높으므로, noise가 queue를 낮췄다고 말하면 안 됩니다.
+
+공개 출처
+ieee-paper | pp. 7–8, Eqs. 17–20; Table II
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 11. noisy order: near-0.5 entry의 순서를 사용
+
+11. noisy order: near-0.5 entry의 순서를 사용
+
+발표 대본
+이 slide의 vector 값은 teaching sketch이며, paper experiment의 input이 아닙니다. 원문 Eq. 18–20은 distance ordering과 shifted/noisy candidate construction을 정의합니다. Appendix의 Fig. 16은 DNN output에서 0.5에 가까운 entry를 기준으로 residual and absolute-value operation을 설명합니다. 발표에서는 모든 detailed modular operation을 외우기보다, candidate가 partial energy ratio이고 order-preserving noise가 exploration을 위한 방법이라는 구분을 유지하는 편이 중요합니다.
+
+공개 출처
+ieee-paper | pp. 7–8, Eqs. 18–20; p. 13, Fig. 16
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 12. fixed delta 뒤의 연속 resource solve
+
+12. fixed delta 뒤의 연속 resource solve
+
+발표 대본
+P2에서 delta_i가 fixed될 때 a와 tau_i에 대한 problem은 convex로 관찰됩니다. 논문은 Lagrange multiplier epsilon을 도입하고 dual problem을 만든 뒤, Eqs. 26–28과 Algorithm 2의 dichotomy 또는 bisection으로 a star와 tau star를 얻습니다. 이 solver는 actor가 낸 후보 각각의 resource allocation과 G evaluation을 가능하게 합니다. 하지만 DNN candidate generation을 포함한 LyDROP 전체가 original P1의 exact global solver라는 주장은 source가 뒷받침하지 않습니다.
+
+공개 출처
+ieee-paper | pp. 8–9, Eqs. 21–28; Algorithm 2
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 13. bisection으로 dual epsilon을 찾는다
+
+13. bisection으로 dual epsilon을 찾는다
+
+발표 대본
+Algorithm 2는 epsilon의 lower and upper bound를 두고 반복하며 Omega(epsilon)의 monotonicity를 이용합니다. source는 Lemma 3 뒤 epsilon star를 dichotomy로 얻고 Eqs. 26–27로 tau star와 a star를 계산합니다. Appendix Lemmas 2–3는 Lambert-W를 포함한 derivation을 제공합니다. 이 발표에서는 candidate scoring의 계산 역할을 강조하고, Appendix algebra를 새로운 runtime benchmark나 global guarantee로 확장하지 않습니다.
+
+공개 출처
+ieee-paper | p. 9, Eq. 28; Algorithm 2; Appendix
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 14. online action과 periodic DNN training
+
+14. online action과 periodic DNN training
+
+발표 대본
+Algorithm 1은 state input, DNN output, candidate quantization, P2 evaluation, joint action execution, replay memory renewal, periodic DNN training, queue renewal의 순서를 적습니다. Fig. 3은 replay sample을 (xi, delta)로 표시합니다. Algorithm 1은 G(delta, xi)를 추가해 memory를 갱신한다고 적고 그 memory에서 뽑은 batch로 주기적으로 학습하지만, 이를 xi, delta, G라는 세 개 필드를 가진 저장 레코드의 명세로 단정하지 않습니다. gamma는 training interval이며 source는 on-device DNN training latency나 deployed power consumption benchmark를 보고하지 않습니다. current arrival R은 queue renewal에 포함되며 actor input을 구성하는 h,Q와 분리되어 있습니다.
+
+공개 출처
+ieee-paper | pp. 7-8, Fig. 3 and Algorithm 1
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 15. 실험 결과는 simulator 설정 안에서 읽어야 한다
+
+15. 실험 결과는 simulator 설정 안에서 읽어야 한다
+
+발표 대본
+Table III는 bandwidth B=2 MHz, energy efficiency coefficient k_i=10^-26, sigma=0.51, AP transmit power 3 W, phi=100, receiver noise power 10^-10 W, chi=1.1, T=1 s, V=36을 둡니다. channel gain은 i.i.d. Rician distribution이고 task arrivals는 equal mean exponential distribution입니다. 실험에서 AP와 WDs 위치는 fixed입니다. 따라서 발표에서는 simulator result를 real deployed WPT throughput이나 device latency로 바꾸지 않습니다.
+
+공개 출처
+ieee-paper | p. 9, Table III; §5
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 16. Table II: noisy choice의 rate·queue 결과
+
+16. Table II: noisy choice의 rate·queue 결과
+
+발표 대본
+Table II는 order-preserving quantization and noisy-order-preserving quantization을 비교합니다. noisy column has weighted sum computation rate 7.9523 versus 7.6573, while its average data queue length is 3.4037 versus 2.0842. source는 queue backlog가 acceptable range라고 보아 noisy method를 subsequent experiments에 채택합니다. 따라서 noise가 queue를 줄였다는 문장은 table values와 맞지 않습니다.
+
+공개 출처
+ieee-paper | p. 8, Table II
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 17. K와 V는 paper의 simulation tuning 변수다
+
+17. K와 V는 paper의 simulation tuning 변수다
+
+발표 대본
+Table IV에는 K value 8, 9, 10의 CPU computation time이 각각 0.1833, 0.1636, 0.1551로 적혀 있고 unit은 table에 printed되지 않습니다. Fig. 5 and Table IV를 결합해 paper는 K=10을 noisy-order-preserving groups 수로 선택합니다. Fig. 6에서는 average task arrival rate kappa_i=8 Mbps로 두고 V를 변화시킵니다. 발표자는 이 result를 universal monotonic rule or hardware benchmark로 부르지 않아야 합니다.
+
+공개 출처
+ieee-paper | pp. 9–10, Table IV; Figs. 5–6
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 18. baseline은 queue를 어떤 방식으로 반영하는지에서 다르다
+
+18. baseline은 queue를 어떤 방식으로 반영하는지에서 다르다
+
+발표 대본
+Section 5는 LyDROP을 LyCD, LyRPO, Myopic과 비교합니다. LyCD는 randomly generated partial-offloading decisions부터 coordinate descent and Lagrange duality를 쓰는 baseline으로 설명됩니다. LyRPO is described as randomly generating partial offloading strategies. Myopic solves weighted sum computation rate without queue backlog. 이 표는 generic coordinate-descent or myopic-control definition을 제공하지 않고 paper가 해당 baselines를 구성한 방식만 요약합니다.
+
+공개 출처
+ieee-paper | pp. 9–10, §5; Eq. 29
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 19. N 비교: trace와 CPU time을 구분
+
+19. N 비교: trace와 CPU time을 구분
+
+발표 대본
+Figs. 7, 8, 9는 N=10, 20, 30 및 n=10000 조건의 algorithm traces를 비교합니다. Fig. 7 본문은 kappa_i=8 Mbps와 omega_i=1을 명시합니다. Table V의 CPU calculation time은 program total execution duration을 set total time으로 나눈 값입니다. source는 N=20에서 LyCD가 LyDROP의 3.68배, N=30에서 16.39배라고 보고합니다. 이 값은 AP-to-WD latency나 energy-harvesting delay가 아니라 computational program-time comparison입니다.
+
+공개 출처
+ieee-paper | pp. 10–11, Figs. 7–9; Table V
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 20. priority와 arrival sweep도 조건을 붙여 읽는다
+
+20. priority와 arrival sweep도 조건을 붙여 읽는다
+
+발표 대본
+Figs. 10과 11은 even-numbered WD에 omega_i=1.2, odd-numbered WD에 1을 둡니다. Figs. 12와 13은 average task arrival을 바꿉니다. source는 average arrival이 8 Mbps에서 8.25 Mbps로 오를 때 Myopic queue가 다른 algorithms보다 최소 두 orders of magnitude 커지며, 이후 unstable points는 그리지 않았다고 설명합니다. 이는 stated simulation series의 evidence이지 trained DNN 전체 부하 안정성 theorem은 아닙니다.
+
+공개 출처
+ieee-paper | pp. 11–12, Figs. 10–13
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 21. Melbourne: location-based simulation
+
+21. Melbourne: location-based simulation
+
+발표 대본
+source는 BS location을 latitude/longitude (-37.81517, 144.97476)에 두고, stated coordinate rectangle의 816 groups에서 nearby users를 고릅니다. Figs. 14와 15는 user quantity를 바꾸어 algorithms를 비교합니다. 논문은 Melbourne real-world dataset이라고 부르지만, system model과 reported curves는 location-based simulation evaluation입니다. source는 field WPT measurement, battery trace, production MEC runtime measurement를 보고하지 않습니다.
+
+공개 출처
+ieee-paper | pp. 12–13, Figs. 14–15
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 22. 모델 가정은 결과를 어디까지 일반화할지 정한다
+
+22. 모델 가정은 결과를 어디까지 일반화할지 정한다
+
+발표 대본
+rate derivation에서 paper는 harvested energy를 one time frame 안에서 사용하고 t_i star=T로 둡니다. conclusion은 one AP와 fixed-location WDs를 명시하며 multi-AP 및 mobile-WD case를 future work로 듭니다. p. 5의 AP compute/feedback-delay omission은 lightweight, medium 또는 low load와 low-latency network condition으로 한정됩니다. paper에는 Lemma 1 drift derivation과 fixed-delta solver lemmas가 있지만, every learned DNN candidate policy의 global optimality나 arbitrary deployment condition에서의 asymptotic guarantee theorem은 없습니다.
+
+공개 출처
+ieee-paper | pp. 5–6, 13–14; §§3, 6
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741
+
+## 23. LyDROP을 이해하는 네 연결
+
+23. LyDROP을 이해하는 네 연결
+
+발표 대본
+마지막으로 LyDROP의 변수 역할을 구분합니다. a는 WPT duration, delta는 harvested-energy split, tau는 uplink-time allocation, Q는 real data queue입니다. DNN은 relaxed partial decision을 outputs하고 candidate quantization은 search를 넓힙니다. model-based critic은 fixed candidate를 P2 resource allocation으로 평가합니다. experimental evidence는 paper의 stated simulator와 location-based evaluation 조건에 한정됩니다. 이 구분으로 LyDROP을 단순 binary label 또는 learned-value-critic method로 오해하지 않습니다.
+
+공개 출처
+ieee-paper | pp. 4–13, §§3–6
+IEEE Transactions on Cognitive Communications and Networking paper record
+https://doi.org/10.1109/TCCN.2025.3612741

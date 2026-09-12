@@ -237,6 +237,15 @@ Transformer의 self-attention은 sequence 내 모든 token pair를 계산하므�
 
 마지막으로 attention visualization은 모델 해석 가능성을 보여주는 흥미로운 자료지만, attention weight가 곧바로 인과적 설명을 의미한다고 단정하기는 어렵다. 따라서 attention map은 분석의 출발점이지 최종 설명으로 읽으면 안 된다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| arXiv v7 강의 | 22장 | <a href="/assets/seminars/attention-is-all-you-need/transformer-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/attention-is-all-you-need/transformer-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/attention-is-all-you-need/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/attention-is-all-you-need/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+| arXiv v1 버전 비교 | 8장 | <a href="/assets/seminars/attention-is-all-you-need-v1/transformer-arxiv-v1-companion-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/attention-is-all-you-need-v1/transformer-arxiv-v1-companion-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/attention-is-all-you-need-v1/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/attention-is-all-you-need-v1/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

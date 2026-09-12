@@ -415,6 +415,14 @@ Typhoon event에서도 SkySearch는 baseline보다 좋은 결과를 보였다.
 | Evaluation | LPIPS/FSIM/SSIM이 실제 기상 유사도를 얼마나 잘 대변하는가? |
 | Deployment | 속도, memory, update, UI까지 고려했는가? |
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/skysearch/skysearch-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/skysearch/skysearch-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/skysearch/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/skysearch/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

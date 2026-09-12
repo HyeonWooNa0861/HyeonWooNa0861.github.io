@@ -1,0 +1,275 @@
+## 1. Consecutive Temporal Pointing의 사용자 수행
+
+1. Consecutive Temporal Pointing의 사용자 수행
+
+발표 대본
+이 논문은 사용자가 짧은 간격으로 두 번의 버튼 입력을 특정 시점에 맞추는 consecutive temporal pointing, 즉 CTP를 탐구합니다. 100명이 참여한 실험에서 첫 입력과 두 번째 입력의 정확도와 정밀도를 따로 측정하고, 기존 temporal-pointing 모델이 두 입력에 같은 방식으로 적용되는지 확인합니다.
+
+공개 출처
+acm-paper | p. 1, title and abstract
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 2. 한 번의 timing 입력과 두 번의 연속 입력
+
+2. 한 번의 timing 입력과 두 번의 연속 입력
+
+발표 대본
+Temporal pointing은 공간의 위치가 아니라 시스템이 요구한 시간 위치에 입력을 맞추는 과제입니다. CTP는 보통 500밀리초보다 짧은 간격으로 두 입력을 수행하고 두 입력의 시간 조건을 모두 만족해야 합니다. 논문은 double-click, charged attack, rhythm-game long note를 대표 사례로 듭니다.
+
+공개 출처
+acm-paper | pp. 1–3, Figs. 1–2; §2.1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 3. 논문의 증거 범위
+
+3. 논문의 증거 범위
+
+발표 대본
+논문 제목처럼 exploratory study입니다. 저자들은 CTP taxonomy와 실험 결과를 제시하고 기존 모델이 두 번째 입력을 설명하지 못함을 보입니다. TTS를 추가 감각 단서로 쓰는 해석과 motor limitation 설명은 discussion의 가설이며, 이를 완성된 새 수학 모델로 제시하지 않습니다.
+
+공개 출처
+acm-paper | p. 1, abstract; §§4–7
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 4. CTP taxonomy는 어느 입력에 시간 조건이 있는가로 나뉜다
+
+4. CTP taxonomy는 어느 입력에 시간 조건이 있는가로 나뉜다
+
+발표 대본
+Type I에서는 첫 버튼 입력이 trial을 시작하고 두 번째 입력만 첫 입력을 기준으로 시간 조건을 가집니다. Type II에서는 외부 event가 trial을 시작하며 두 입력 모두 그 시작점에 대한 target timing을 가집니다. 첫 입력에만 조건이 있고 두 번째에는 조건이 없으면 ordinary temporal pointing에 더 가깝다고 저자들은 설명합니다.
+
+공개 출처
+acm-paper | pp. 2–4, §2.1; Fig. 5
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 5. TTF와 TTS의 시간 기준
+
+5. TTF와 TTS의 시간 기준
+
+발표 대본
+Figure 3에서 TTF는 task 시작부터 첫 입력이 요구되는 시점까지의 시간이고, TTS는 첫 target timing부터 두 번째 target timing까지의 시간입니다. 실제 logged input은 이 target 주변에 분포합니다. Type I에서는 사용자가 첫 입력으로 trial을 시작하므로 TTF를 정의하지 않습니다.
+
+공개 출처
+acm-paper | p. 3, Fig. 3; §2.1.1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 6. 두 입력의 accuracy와 precision을 따로 측정한다
+
+6. 두 입력의 accuracy와 precision을 따로 측정한다
+
+발표 대본
+논문은 입력 timing이 target 주변의 Gaussian distribution을 보인다는 기존 연구를 바탕으로 첫 입력과 두 번째 입력을 각각 N1과 N2로 표기합니다. Mean μ는 target timing에서 얼마나 앞서거나 늦는지 나타내고, standard deviation σ는 반복 trial에서 timing이 얼마나 퍼지는지 나타냅니다. 작은 σ가 높은 precision입니다.
+
+공개 출처
+acm-paper | pp. 2–3, Fig. 4; §2.1.1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 7. 기존 temporal-pointing 모델이 보는 세 요인
+
+7. 기존 temporal-pointing 모델이 보는 세 요인
+
+발표 대본
+기존 연구는 반복 period가 길면 internal clock의 interval encoding noise가 커지고, cue-viewing time이 길면 움직임을 더 정밀하게 예측할 수 있다고 설명합니다. 또한 physical button에서 keyPressed activation은 finger가 바닥 충격을 느끼는 지점과 가까워 keyReleased보다 정밀할 수 있습니다. 논문은 이 관계가 CTP의 두 입력에도 같은지 검사합니다.
+
+공개 출처
+acm-paper | pp. 4–5, §§3.2–3.3; Figs. 7–8; Eqs. 1–3
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 8. 두 입력의 독립성 가정과 기존 요인의 재현
+
+8. 두 입력의 독립성 가정과 기존 요인의 재현
+
+발표 대본
+RQ1은 CTP가 ordinary temporal pointing 두 번의 단순 결합인지 묻습니다. RQ2는 input period, cue-viewing time, activation point 같은 알려진 요인이 CTP에서도 작동하는지 묻습니다. 연구팀은 각 입력의 mean과 standard deviation을 따로 기록하고 기존 model을 별도로 fitting합니다.
+
+공개 출처
+acm-paper | p. 5, §3.4
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 9. 100명을 네 study cell에 나눠 CTP 변형을 관찰했다
+
+9. 100명을 네 study cell에 나눠 CTP 변형을 관찰했다
+
+발표 대본
+논문은 세 variation이라고 부르지만 Variation 3을 Type I과 Type II의 3.1, 3.2로 나눠 Table 1에 네 study cell을 제시합니다. 참가자 수는 25, 43, 16, 16명으로 합계 100명입니다. 각 cell은 서로 다른 factor set을 사용하므로 결과를 한 개의 완전요인 ANOVA처럼 합치면 안 됩니다.
+
+공개 출처
+acm-paper | pp. 5–7, §4; Fig. 9; Table 1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 10. Study cell별 주요 factor와 level
+
+10. Study cell별 주요 factor와 level
+
+발표 대본
+Variation 2는 input period 1000과 1500밀리초도 조작하며, Visual Cue Presence만 between-subject factor입니다. Variation 3.2의 period는 1000밀리초로 고정됩니다. Type I에서는 사용자가 첫 입력으로 trial을 시작하므로 TTF와 repeated target period를 정의하지 않습니다. 전체 level은 Table 1을 기준으로 읽어야 합니다.
+
+공개 출처
+acm-paper | p. 7, Table 1; §4.2
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 11. Moving-target task와 입력 기록
+
+11. Moving-target task와 입력 기록
+
+발표 대본
+모든 variation은 왼쪽에서 오른쪽으로 일정 속도로 움직이는 line을 사용합니다. Capture line의 위치로 TTF와 TTS를 바꾸고, custom low-latency button에서 callback timing을 기록합니다. Visual cue Off에서는 moving line이 생성될 때와 capture line에 닿을 때 각각 20밀리초 동안만 보입니다.
+
+공개 출처
+acm-paper | pp. 6–8, §§4.1–4.3; Figs. 9–11
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 12. 조작 변수와 측정 변수를 분리한다
+
+12. 조작 변수와 측정 변수를 분리한다
+
+발표 대본
+TTF와 TTS는 capture-line geometry가 정한 requested timing입니다. Logged input timing은 그 target에 대한 참가자 반응입니다. Input Method는 second callback을 keyPressed 또는 keyReleased로 정하며, Input Order는 two-hand cell에서 dominant hand와 nondominant hand의 순서를 바꿉니다. Outcome은 각 입력의 mean과 standard deviation입니다.
+
+공개 출처
+acm-paper | pp. 6–7, §4.2; Table 1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 13. 반복 trial과 통계 분석 절차
+
+13. 반복 trial과 통계 분석 절차
+
+발표 대본
+참가자는 조건마다 50번 수행했고 연구팀은 learning을 고려해 마지막 40회를 분석했습니다. Requested TTS와 logged inter-input interval 차이가 120밀리초를 넘으면 trial을 다시 수행하게 했습니다. Repeated-measures ANOVA를 사용하고 sphericity 위반 시 Greenhouse-Geisser, post-hoc에는 Bonferroni correction을 적용했습니다.
+
+공개 출처
+acm-paper | pp. 7–8, §§4.3, 5.1, 5.3
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 14. 기존 model을 첫 입력과 두 번째 입력에 따로 맞춘다
+
+14. 기존 model을 첫 입력과 두 번째 입력에 따로 맞춘다
+
+발표 대본
+기존 moving-target acquisition model은 input period와 cue-viewing time의 함수로 timing standard deviation을 예측합니다. CTP가 ordinary temporal pointing 두 번의 연결이라면 같은 model이 σ1과 σ2를 모두 설명해야 합니다. 연구팀은 참가자별 condition mean을 사용해 첫 입력과 두 번째 입력을 별도로 fitting했습니다.
+
+공개 출처
+acm-paper | pp. 5, 8–9, Eq. 3; §5.2
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 15. σ₁은 기존 경향을 따랐지만 σ₂는 맞지 않았다
+
+15. σ₁은 기존 경향을 따랐지만 σ₂는 맞지 않았다
+
+발표 대본
+Variation 2의 σ1 fitting은 R-squared 0.93이었습니다. Variation 3.2는 data point가 두 개로 model parameter 수보다 적어 fitting할 수 없었습니다. σ2는 cue-viewing time이 길어질수록 σ가 단순히 감소해야 한다는 기존 예측을 따르지 않아 model fitting이 불가능했습니다. 저자들은 이를 CTP가 ordinary temporal pointing 두 번의 단순 결합이 아니라는 핵심 근거로 봅니다.
+
+공개 출처
+acm-paper | pp. 8–11, §5.2 and §6.1; Fig. 12
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 16. 두 번째 입력은 TTS 자체를 추가 timing cue로 쓸 수 있다
+
+16. 두 번째 입력은 TTS 자체를 추가 timing cue로 쓸 수 있다
+
+발표 대본
+저자들은 참가자가 첫 입력부터 두 번째 입력까지의 TTS를 internal clock으로 encoding하고, target movement pattern과 함께 사용했을 가능성을 제시합니다. TTS는 전체 trial period보다 짧기 때문에 더 reliable한 interval cue가 될 수 있다는 설명입니다. 약 300밀리초 이후에는 이 interval cue가 덜 reliable해져 movement cue 의존이 커질 수 있다고 논의하지만, 새 cognitive model을 fitting해 검증하지는 않습니다.
+
+공개 출처
+acm-paper | pp. 10–12, §6.1; Figs. 12–13
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 17. Activation point와 짧은 interval의 motor trade-off
+
+17. Activation point와 짧은 interval의 motor trade-off
+
+발표 대본
+KeyPressed는 finger가 button floor의 충격을 느끼는 activation point와 정렬되어 높은 precision을 보였습니다. 그러나 Press-Press로 두 번 입력하려면 Down-Up-Down 세 단계가 필요하고, Press-Release는 Down-Up 한 번으로 두 event를 만듭니다. 그래서 TTS가 150밀리초보다 짧은 Press-Press 조건에서는 두 번째 입력이 늦어지는 motor limitation이 나타났습니다.
+
+공개 출처
+acm-paper | pp. 11–13, §6.2; Figs. 13–14
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 18. KeyPressed의 precision 이득과 timing 편향
+
+18. KeyPressed의 precision 이득과 timing 편향
+
+발표 대본
+Variation 1과 2에서 keyPressed second input의 σ2는 keyReleased σ2의 각각 82.8퍼센트와 93.7퍼센트였습니다. 반면 짧은 TTS에서는 Press-Press의 두 번째 입력 mean이 늦어졌고 첫 입력 mean은 앞으로 이동했습니다. 두 방법의 첫 입력은 모두 keyPressed였으므로 σ1의 method 차이는 예상대로 유의하지 않았습니다.
+
+공개 출처
+acm-paper | pp. 11–13, §6.2; Figs. 13–14; Tables 2–3
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 19. 두 손 조건은 motor limit와 hand order를 분리해 본다
+
+19. 두 손 조건은 motor limit와 hand order를 분리해 본다
+
+발표 대본
+Variation 3에서는 각 손이 한 번씩 누르므로 한 손으로 Down-Up-Down을 빠르게 반복할 필요가 없습니다. 연구에서 짧은 TTS의 pushback effect가 사라진 것은 motor limitation 설명과 일치합니다. Dominant-to-nondominant와 반대 order의 차이는 p가 0.23보다 커 유의하지 않았지만, movement direction도 order와 함께 바뀌어 handedness 효과만 독립적으로 결론내리기 어렵습니다.
+
+공개 출처
+acm-paper | pp. 13–14, §6.2; Fig. 13e; Tables 4–5
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 20. 구성 예시: target interval과 timing error 계산
+
+20. 구성 예시: target interval과 timing error 계산
+
+발표 대본
+이 예시에서는 first target이 800밀리초, second target이 1000밀리초이므로 TTF는 800밀리초이고 TTS는 200밀리초입니다. 실제 첫 입력 790밀리초의 error는 마이너스 10밀리초, 두 번째 입력 1025밀리초의 error는 플러스 25밀리초입니다. 같은 조건을 여러 번 반복한 error의 평균이 μ이고 standard deviation이 σ입니다. 한 trial만으로 Gaussian distribution이나 precision을 추정할 수 없습니다.
+
+공개 출처
+acm-paper | p. 3, Figs. 3–4; §2.1.1
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 21. Interaction design에 적용할 때의 조건
+
+21. Interaction design에 적용할 때의 조건
+
+발표 대본
+저자들은 매우 짧은 interval을 자주 요구하는 게임에서는 motor limitation을 피할 수 있는 Release method를 고려하고, 그렇지 않으면 Pressed의 precision 이점을 활용할 수 있다고 제안합니다. 또한 TTS가 길어질수록 두 번째 입력이 항상 정밀해진다는 단순 가정을 피해야 한다고 말합니다. 이는 field deployment guideline이 아니라 study-based implication입니다.
+
+공개 출처
+acm-paper | p. 13, §6.3
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 22. 실험이 다루지 않은 CTP 조건
+
+22. 실험이 다루지 않은 CTP 조건
+
+발표 대본
+저자들은 second timing을 첫 입력 뒤에 알게 되는 경우, visual cue가 일부 구간에만 보이는 경우, 복잡한 target motion을 다루지 않았다고 적습니다. 참가자는 주로 젊었고 Variation 3은 대부분 오른손잡이였습니다. 개인별 ordinary temporal-pointing baseline도 측정하지 않아 각 참가자의 일반 timing 능력 대비 CTP 변화는 직접 계산할 수 없습니다.
+
+공개 출처
+acm-paper | p. 14, §6.4
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904
+
+## 23. 두 timing 입력의 단순 합으로 설명되지 않은 CTP
+
+23. 두 timing 입력의 단순 합으로 설명되지 않은 CTP
+
+발표 대본
+논문의 중심 결론은 CTP가 ordinary temporal pointing 두 번을 단순히 이어 붙인 과제로 보이지 않는다는 것입니다. σ2의 model mismatch, activation-point effect, 짧은 interval의 motor limitation이 이를 뒷받침합니다. 동시에 저자들의 TTS cue 설명은 후속 연구가 검증해야 하고, 이번 실험의 apparatus와 participant sample 밖으로 일반화할 때는 주의가 필요합니다.
+
+공개 출처
+acm-paper | pp. 13–14, §§6.3–7
+CHI 2024 — User Performance in Consecutive Temporal Pointing: An Exploratory Study
+https://doi.org/10.1145/3613904.3642904

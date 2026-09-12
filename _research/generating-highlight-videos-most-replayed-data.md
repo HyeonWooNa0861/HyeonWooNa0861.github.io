@@ -145,7 +145,7 @@ R_{ctx}(d) =
 \end{cases}
 $$
 
-논문은 cinematographic principle을 참고해 $$\tau=8$$초를 권장 최소 segment 길이로 둔다. 이 설계는 높은 MRD peak만 짧게 찍고 넘어가는 편집을 피하게 만든다. 즉, 장면의 관심도뿐 아니라 시청자가 상황을 이해할 수 있는 최소 맥락을 함께 확보한다.
+논문은 cinematographic principle을 참고해 $$\tau=8$$초에서 duration reward가 포화되도록 둔다. 이는 짧은 segment를 불리하게 만드는 soft reward이며, 모든 segment가 8초 이상임을 보장하는 hard constraint는 아니다.
 
 최종 목표는 사용자가 지정한 길이만큼의 path 중 reward 합이 최대인 path를 찾는 것이다.
 
@@ -186,7 +186,7 @@ $$
 | 길이가 증가할수록 | 평균 segment 수와 segment duration이 함께 증가한다. |
 | 평균 MRD | 낮은 MRD 주변 구간도 포함되므로 전체 평균은 감소한다. |
 
-중요한 점은 모든 $$L_{user}$$ 조건에서 평균 segment duration이 8초 이상으로 유지되었다는 것이다. 이는 duration reward가 실제로 지나치게 짧은 cut을 억제했음을 보여준다.
+모든 $$L_{user}$$ 조건에서 관측된 평균 segment duration은 8초를 넘었다. 이는 해당 실험에서 duration-aware objective와 함께 나타난 결과이지, 모든 개별 segment의 최소 길이 보장은 아니다.
 
 사용자 지정 예시에서는 4분 24초, 7분 11초, 9분 19초, 10분 42초, 11분 57초 timestamp를 포함하도록 설정했다. 시스템은 해당 장면들을 반영하면서도 남은 길이를 1분 46초, 3분 33초, 6분 03초 부근의 높은 MRD peak로 채웠다. 이는 사용자의 의도와 crowd interest signal을 함께 사용하는 방식으로 해석할 수 있다.
 
@@ -275,6 +275,14 @@ $$
 네 번째는 short-form platform을 위한 aspect ratio 변환 문제다. 논문은 highlight length를 맞추는 데 집중하므로, portrait video로 변환할 때 어떤 영역을 crop할지는 별도의 문제로 남는다. Region of interest detection이나 subject tracking이 결합될 수 있다.
 
 마지막으로 narrative-driven highlight에는 추가적인 semantic understanding이 필요하다. MRD peak가 높은 구간은 관심도가 높은 순간을 알려주지만, 스토리의 시작, 갈등, 전환, 결말을 의도적으로 구성하는 편집까지 자동으로 보장하지는 않는다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 18장 | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/highlight-videos-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/highlight-videos-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

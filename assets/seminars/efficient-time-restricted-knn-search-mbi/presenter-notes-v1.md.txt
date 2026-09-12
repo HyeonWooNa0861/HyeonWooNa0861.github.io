@@ -1,0 +1,518 @@
+## 1. 시간 제약 kNN 검색과 Multi-Level Block Indexing
+
+1. 시간 제약 kNN 검색과 Multi-Level Block Indexing
+
+발표 대본
+이 논문은 고차원 벡터 검색에 시간 구간 또는 여러 수치 속성의 필터를 함께 적용하는 문제를 다룹니다. 핵심 제안은 같은 데이터를 여러 크기의 블록으로 중복 색인해, 질의 범위에 맞는 검색 단위를 고르는 Multi-Level Block Indexing, 즉 MBI입니다. ACM TKDD 2026년 2월 논문입니다.
+
+공개 출처
+tkdd-paper | title page; publication footer
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 2. 벡터 유사도와 시간 조건을 동시에 만족해야 한다
+
+2. 벡터 유사도와 시간 조건을 동시에 만족해야 한다
+
+발표 대본
+일반 approximate kNN은 전체 데이터에서 질의 벡터와 가까운 항목을 찾습니다. T-kNN은 여기에 시간 창을 추가합니다. 먼저 시간으로 줄인 뒤 거리를 전부 계산할 수도 있고, 전체 근접 그래프를 탐색하면서 시간 조건을 검사할 수도 있습니다. 두 순서의 비용이 시간 창 크기에 따라 반대로 움직이는 것이 출발점입니다.
+
+공개 출처
+tkdd-paper | §1; §3.1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 3. T-kNN 질의의 정확한 의미
+
+3. T-kNN 질의의 정확한 의미
+
+발표 대본
+논문은 D[t_s:t_e]를 t_s 이상이면서 t_e 미만인 timestamped vector의 집합으로 정의합니다. 즉 [t_s,t_e) 반개구간입니다. 이 경계는 블록 겹침 계산과 후보 필터링에서 그대로 유지해야 합니다. 덱의 모든 예제도 끝점을 제외합니다.
+
+공개 출처
+tkdd-paper | §3.1; Table 1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 4. 이 논문이 푸는 것은 approximate kNN이다
+
+4. 이 논문이 푸는 것은 approximate kNN이다
+
+발표 대본
+MBI 내부의 각 큰 블록은 NNDescent로 만든 graph-based kNN index를 사용하고, Algorithm 3의 SF로 근사 검색합니다. 시간 필터는 후보 자격을 결정하지만, 근접 이웃 탐색 자체는 approximate입니다. 실험에서 T-kNN은 recall@k 0.995, m-AkNN은 0.95를 주로 사용합니다.
+
+공개 출처
+tkdd-paper | §2.1; Algorithms 3, 5; §5.1.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 5. 두 단순 전략은 반대 범위에서 강하다
+
+5. 두 단순 전략은 반대 범위에서 강하다
+
+발표 대본
+BSBF와 AFBF는 필터를 먼저 적용한 뒤 qualifying set을 brute-force합니다. 반대로 SF는 전체 proximity graph를 따라가며 조건을 만족하는 정점만 결과에 넣습니다. 좁은 필터에서는 SF가 많은 탈락 후보를 방문하고, 넓은 필터에서는 brute-force가 많은 거리를 계산합니다. MBI는 여러 크기의 블록을 준비해 이 교차점을 다룹니다.
+
+공개 출처
+tkdd-paper | §3.2; Algorithms 1–3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 6. BSBF: 시간으로 자른 뒤 전부 비교한다
+
+6. BSBF: 시간으로 자른 뒤 전부 비교한다
+
+발표 대본
+Algorithm 1은 먼저 정렬된 데이터에서 D[t_s:t_e]를 binary search로 찾고, 그 안에서 brute-force kNN을 수행합니다. 논문이 제시한 비용은 O(log n + b d log k)입니다. b는 시간 창 안 벡터 수, d는 벡터 차원입니다. 시간 창이 짧을수록 b가 작아 유리합니다.
+
+공개 출처
+tkdd-paper | Algorithm 1; §3.2.1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 7. SF: 근접 graph를 걷고 시간 조건으로 거른다
+
+7. SF: 근접 graph를 걷고 시간 조건으로 거른다
+
+발표 대본
+Algorithm 3의 SF는 proximity graph에서 질의 벡터와 가까운 정점을 우선 방문합니다. 방문한 정점이 시간 창에 있을 때만 결과 집합에 넣습니다. 넓은 창에서는 대부분의 방문이 유효하지만, 좁은 창에서는 많은 정점을 확인하고도 결과가 채워지지 않아 탐색이 늘어납니다.
+
+공개 출처
+tkdd-paper | Algorithm 3; §3.2.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 8. 시간 창이 바뀌면 병목도 바뀐다
+
+8. 시간 창이 바뀌면 병목도 바뀐다
+
+발표 대본
+논문의 Figure 7은 시간 창 비율이 커질수록 BSBF의 속도가 내려가고 SF의 속도가 올라가는 교차 형태를 반복해서 보여 줍니다. MBI는 작은 블록에서는 BSBF를, graph index가 있는 블록에서는 SF를 사용합니다. 즉 두 방법의 강점을 블록 선택과 결합합니다.
+
+공개 출처
+tkdd-paper | §4.1; Fig. 7
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 9. MBI의 핵심: 같은 데이터를 여러 크기로 본다
+
+9. MBI의 핵심: 같은 데이터를 여러 크기로 본다
+
+발표 대본
+Figure 1에서 leaf는 짧고 연속된 timestamp 구간을 담습니다. 두 leaf를 합친 부모는 더 넓은 구간을 담고, root는 전체 기간을 담습니다. 각 블록은 자체 graph-based kNN index를 가질 수 있습니다. 하나의 벡터가 leaf와 여러 ancestor에 나타나므로 공간 비용이 늘어납니다.
+
+공개 출처
+tkdd-paper | Fig. 1; §4.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 10. 블록 B_i는 구간만이 아니라 검색 단위다
+
+10. 블록 B_i는 구간만이 아니라 검색 단위다
+
+발표 대본
+Table 1은 블록 B_i를 vector set D_i와 graph-based index G_i의 쌍으로 정의합니다. Algorithm 5는 non-full leaf에서는 graph가 비어 있을 수 있으므로 BSBF를 쓰고, 나머지 선택 블록에서는 SF를 사용합니다. B_i.te는 exclusive upper timestamp입니다.
+
+공개 출처
+tkdd-paper | Table 1; Algorithm 5
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 11. 시간 블록은 포함 관계로 계층을 이룬다
+
+11. 시간 블록은 포함 관계로 계층을 이룬다
+
+발표 대본
+이 구간 표는 논문의 Figure 1 구조를 단순화한 교육용 예시입니다. 실제 블록 경계는 leaf size S_L과 들어온 데이터의 timestamp 순서에 의해 정해집니다. 중요한 불변식은 각 블록이 연속된 시간 범위를 담당하고, 부모가 두 자식의 union을 담는다는 점입니다.
+
+공개 출처
+tkdd-paper | Fig. 1; §4.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 12. 증분 삽입은 가장 최신 leaf에서 시작한다
+
+12. 증분 삽입은 가장 최신 leaf에서 시작한다
+
+발표 대본
+MBI는 새 벡터가 기존 벡터보다 늦은 timestamp로 도착한다고 가정합니다. 따라서 첫 번째 non-full leaf가 곧 최신 leaf이며, 그곳에 append할 수 있습니다. 임의의 과거 timestamp를 삽입하면 이 단순한 경로와 연속 구간 구조가 깨질 수 있으므로 현재 알고리즘의 지원 범위가 아닙니다.
+
+공개 출처
+tkdd-paper | §4.2; Algorithm 4
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 13. leaf가 차면 아래에서 위로 index를 갱신한다
+
+13. leaf가 차면 아래에서 위로 index를 갱신한다
+
+발표 대본
+Algorithm 4는 leaf가 S_L에 도달하면 그 leaf의 kNN index를 만들고, postorder 번호 관계를 이용해 sibling의 vector set과 union한 뒤 parent의 kNN index를 구축합니다. 이 과정을 필요한 ancestor까지 반복합니다. Figure 3은 B4가 찬 뒤 B5와 B6가 구성되는 예를 보여 줍니다.
+
+공개 출처
+tkdd-paper | Fig. 3; Algorithm 4
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 14. 서로 다른 블록 index는 병렬로 만들 수 있다
+
+14. 서로 다른 블록 index는 병렬로 만들 수 있다
+
+발표 대본
+논문은 Figure 3의 v15 삽입 예에서 B4, B5, B6의 vector set을 독립적으로 식별하고 G4, G5, G6를 병렬 구축할 수 있다고 설명합니다. 이 도식은 그 병렬성을 요약한 것입니다. ancestor마다 vector set은 다르므로 각 graph index는 해당 집합에서 별도로 생성됩니다.
+
+공개 출처
+tkdd-paper | §4.2, Parallelization of MBI
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 15. virtual block은 불완전한 tree의 탐색 경로를 유지한다
+
+15. virtual block은 불완전한 tree의 탐색 경로를 유지한다
+
+발표 대본
+Figure 2와 Figure 3의 점선 상자가 virtual block입니다. 논문은 이 블록의 time window를 음의 무한대부터 양의 무한대로 두어 overlap ratio가 threshold를 만족하지 않게 합니다. 그러므로 search block set에는 들어가지 않지만, child traversal을 가능하게 합니다.
+
+공개 출처
+tkdd-paper | Figs. 2–3; §4.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 16. 질의는 block 선택, 내부 검색, 전역 병합으로 진행된다
+
+16. 질의는 block 선택, 내부 검색, 전역 병합으로 진행된다
+
+발표 대본
+Algorithm 5는 root에서 BlockSelection을 호출해 search block set S를 얻습니다. 각 블록에 대해 non-full leaf이면 BSBF, 그 밖에는 SF를 수행합니다. 결과 집합들을 union하고 질의 벡터에 가까운 k개만 남깁니다. 블록별 top-k를 그대로 이어 붙이는 것이 아니라 마지막에 전역 순위를 다시 계산합니다.
+
+공개 출처
+tkdd-paper | Algorithm 5; §4.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 17. overlap ratio는 block 중 실제 질의가 차지하는 비율이다
+
+17. overlap ratio는 block 중 실제 질의가 차지하는 비율이다
+
+발표 대본
+표의 수치는 설명을 위해 구성한 예입니다. 논문의 식은 max와 min으로 두 구간의 교집합 길이를 계산하고, 이를 현재 block의 길이로 나눕니다. query 길이로 나누는 비율이 아닙니다. 그래서 자식으로 내려가 block이 작아지면 동일한 query가 차지하는 비율이 커질 수 있습니다.
+
+공개 출처
+tkdd-paper | §4.3, overlap ratio equation
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 18. top-down block 선택의 세 경우
+
+18. top-down block 선택의 세 경우
+
+발표 대본
+Algorithm 5의 BlockSelection은 겹침이 없으면 빈 집합을 반환합니다. leaf이거나 overlap ratio가 tau 기준을 충족하면 현재 block을 반환하고, 그렇지 않으면 두 child에 재귀 호출합니다. 본문은 exceeds와 less를 쓰고 증명 일부는 경계에서 이상을 사용하므로, 이 자료는 equality에 과도한 의미를 주지 않고 threshold criterion으로 설명합니다.
+
+공개 출처
+tkdd-paper | Algorithm 5 lines 11–20; §4.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 19. tau가 block 해상도를 조절한다
+
+19. tau가 block 해상도를 조절한다
+
+발표 대본
+Figure 4에서 tau가 0이면 B30 하나, 0.5이면 B14와 B21, 1이면 다섯 개의 더 작은 block이 선택됩니다. 낮은 tau는 큰 블록을 골라 좁은 query에서 SF와 비슷한 낭비를 만들고, 높은 tau는 긴 query에서 많은 block 호출 비용을 만듭니다. 저자들은 사전 정보가 없을 때 약 0.5를 권합니다.
+
+공개 출처
+tkdd-paper | Fig. 4; §4.3; §5.4.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 20. 구성 예제: q=[5,14), tau=.6에서 block 고르기
+
+20. 구성 예제: q=[5,14), tau=.6에서 block 고르기
+
+발표 대본
+이 예제의 숫자와 구간은 논문 Figure 4를 복사한 것이 아니라 규칙을 직접 실행하도록 구성했습니다. root의 비율은 9/16으로 tau 0.6보다 작아 내려갑니다. 왼쪽에서는 [4,8)만 선택되고, 오른쪽 [8,16)은 6/8로 선택됩니다. 선택 block은 query 바깥의 일부 시간도 포함할 수 있으므로 내부 필터가 여전히 필요합니다.
+
+공개 출처
+tkdd-paper | Algorithm 5; §4.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 21. 구성 예제: block 탐색 결과를 전역 병합한다
+
+21. 구성 예제: block 탐색 결과를 전역 병합한다
+
+발표 대본
+이 후보와 거리는 교육용으로 구성했습니다. X의 timestamp는 4.5라 시작 전이고, Y는 15라 종료 뒤이므로 각 block 내부의 BSBF 또는 SF가 결과에서 제외합니다. 유효한 block 결과 A, B, C, D를 union하고 거리로 정렬하면 C 0.25, A 0.30, D 0.40이 top-3입니다. B는 조건은 맞지만 네 번째라 탈락합니다.
+
+공개 출처
+tkdd-paper | Algorithm 5 lines 3–10
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 22. 선택 뒤에는 block 상태에 따라 내부 검색이 달라진다
+
+22. 선택 뒤에는 block 상태에 따라 내부 검색이 달라진다
+
+발표 대본
+Algorithm 5는 non-full leaf에 대해서만 BSBFQuery를 호출합니다. full leaf와 internal block에는 구축된 graph index가 있으므로 SFQuery를 호출합니다. 모든 block의 결과를 합친 뒤 질의 벡터에 가장 가까운 k개를 남깁니다. 이 조건 분기는 구현 동작을 이해하는 데 중요합니다.
+
+공개 출처
+tkdd-paper | Algorithm 5 lines 4–9
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 23. tau <= .5이면 처리 block은 최대 두 개다
+
+23. tau <= .5이면 처리 block은 최대 두 개다
+
+발표 대본
+Lemma 1의 핵심은 tau가 0.5 이하이면 query의 한쪽 조각이 현재 block 기준을 만족하지 못할 때 반대쪽 child와 겹치지 않게 된다는 점입니다. 그래서 한쪽 조각은 descendant 한 경로만 따라가고 정확히 하나의 block에서 처리됩니다. 좌우를 합쳐 최대 두 개입니다.
+
+공개 출처
+tkdd-paper | §4.5.3, Lemma 1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 24. 이론 비용은 index 선택과 graph 가정에 함께 의존한다
+
+24. 이론 비용은 index 선택과 graph 가정에 함께 의존한다
+
+발표 대본
+N_q는 논문의 |D[t_s:t_e]|, 즉 query 시간 창 안 벡터 수를 짧게 표기한 것입니다. 논문은 graph-based 1NN 검색이 O(log n)이라는 가정과 필터 통과 확률에 따른 기대 방문 수를 사용합니다. eligible count와 block size가 k보다 충분히 크다고 둡니다. 1.14 지수는 NNDescent의 경험적 분석에서 가져옵니다.
+
+공개 출처
+tkdd-paper | §4.5.1–4.5.3; Theorems 1–2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 25. 빠른 범위 적응의 대가는 level별 중복이다
+
+25. 빠른 범위 적응의 대가는 level별 중복이다
+
+발표 대본
+각 level에서 vector 수의 합은 대략 |D|이고, level 수는 logarithmic입니다. graph index 크기가 block vector 수에 선형이라고 보면 전체가 O(|D| log |D|)입니다. 실제 Table 4에서도 MBI index가 input과 SF index보다 큽니다.
+
+공개 출처
+tkdd-paper | §4.5.1; Table 4
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 26. m-AkNN은 시간 하나를 m개 수치 속성으로 확장한다
+
+26. m-AkNN은 시간 하나를 m개 수치 속성으로 확장한다
+
+발표 대본
+m-AkNN query는 질의 벡터 w, 결과 수 k, m개 lower bound와 upper bound를 갖습니다. 모든 속성 조건을 동시에 만족하는 벡터 중 nearest k를 찾습니다. timestamp와 달리 attribute value는 insertion order와 독립이므로 bottom-up append 전략을 그대로 쓸 수 없고, 논문은 static data를 가정합니다.
+
+공개 출처
+tkdd-paper | §3.1; §4.4; Table 1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 27. multi-attribute 공간은 밀도에 따라 나눈다
+
+27. multi-attribute 공간은 밀도에 따라 나눈다
+
+발표 대본
+Algorithm 6은 root의 각 attribute range를 데이터의 minimum과 maximum으로 정의합니다. block이 S_L보다 크면 각 attribute의 midpoint로 나눠 2^m children을 만들고 vector를 재배치합니다. 모든 leaf가 S_L 이하가 될 때까지 재귀합니다. 고정 균일 grid보다 빈 block을 줄이려는 설계입니다.
+
+공개 출처
+tkdd-paper | Fig. 5; Algorithm 6; §4.4.1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 28. 여러 속성의 overlap은 축별 비율을 곱한다
+
+28. 여러 속성의 overlap은 축별 비율을 곱한다
+
+발표 대본
+수치는 overlap 공식을 읽기 위한 구성 예제입니다. 논문의 m-AkNN overlap ratio는 각 속성에서 query와 block의 교집합 길이를 block 길이로 나눈 뒤 모두 곱합니다. 독립확률을 추정하는 식이 아니라, multi-dimensional block coverage를 정의한 deterministic product입니다.
+
+공개 출처
+tkdd-paper | §4.4.2, overlap ratio equation
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 29. m-AkNN query는 같은 선택 틀에 다른 filter를 넣는다
+
+29. m-AkNN query는 같은 선택 틀에 다른 filter를 넣는다
+
+발표 대본
+Algorithm 7은 Algorithm 5와 거의 같은 구조지만, overlap ratio가 m개 속성의 product이고 non-full leaf에서 AFBF를 호출합니다. AFBF는 모든 속성 조건을 확인한 뒤 qualifying vector에 대해 brute-force kNN을 수행합니다. internal block에는 SF를 사용합니다.
+
+공개 출처
+tkdd-paper | Algorithm 7; Fig. 6; §4.4.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 30. 실험 결과는 이 구현과 장비 조건에서 측정되었다
+
+30. 실험 결과는 이 구현과 장비 조건에서 측정되었다
+
+발표 대본
+Section 5.1.1은 모든 실험이 Ryzen 7 3800XT, 128 GB DDR4, Ubuntu 20.04.1에서 수행되었다고 밝힙니다. Rust와 Cargo 1.66.1 release mode를 사용합니다. 각 block과 SF의 graph index는 NNDescent로 구축해 비교의 index family를 맞춥니다.
+
+공개 출처
+tkdd-paper | §5.1.1; §5.1.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 31. T-kNN은 규모와 차원이 다른 여섯 dataset에서 평가한다
+
+31. T-kNN은 규모와 차원이 다른 여섯 dataset에서 평가한다
+
+발표 대본
+Table 2의 T-kNN datasets를 요약했습니다. MovieLens와 COMS는 실제 시간 정보를 사용합니다. GloVe-100, SIFT1M, GIST1M, DEEP1B는 원래 timestamp가 없어서 item index를 virtual timestamp로 사용합니다. 마지막 행은 1B 전체가 아니라 9,990,000 train vectors입니다.
+
+공개 출처
+tkdd-paper | Table 2; §5.1.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 32. m-AkNN dataset에는 원문 내부 차원 표기 차이가 있다
+
+32. m-AkNN dataset에는 원문 내부 차원 표기 차이가 있다
+
+발표 대본
+Table 2는 CORD-19 dimension을 728로 인쇄하지만, 같은 페이지의 본문은 SPECTER를 사용한 768-dimensional vector라고 설명합니다. 이 자료는 원문 내부 불일치를 그대로 표시합니다. 50,000 papers를 sample하고 200 query를 제외해 train 49,800이 된 것으로 읽을 수 있습니다.
+
+공개 출처
+tkdd-paper | Table 2; §5.1.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 33. T-kNN 성능 비교의 operational definition
+
+33. T-kNN 성능 비교의 operational definition
+
+발표 대본
+Figure 7 실험은 각 dataset에서 200개 query vector를 무작위로 뽑아 indexing에서 제외합니다. query time window의 start와 end를 조절해 전체 데이터의 1%부터 95%를 포함하게 합니다. recall@k는 0.995로 맞추고 k 10, 50, 100을 비교하며, 각 절차를 다섯 번 반복합니다.
+
+공개 출처
+tkdd-paper | §5.2; Fig. 7
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 34. MBI는 시간 창 길이에 걸쳐 교차점을 완화한다
+
+34. MBI는 시간 창 길이에 걸쳐 교차점을 완화한다
+
+발표 대본
+Figure 7의 초록 BSBF는 window가 커지면서 내려가고, 파란 SF는 window가 작을 때 낮습니다. MBI는 각 dataset에 선택한 tau를 사용해 두 곡선의 교차 영역을 포함한 전체 범위에서 높은 QPS를 보입니다. 저자들이 말하는 hypothetical method는 질의마다 BSBF와 SF 중 더 빠른 쪽을 고르는 oracle성 비교선입니다.
+
+공개 출처
+tkdd-paper | Fig. 7; §5.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 35. recall-speed curve 전체를 봐야 한다
+
+35. recall-speed curve 전체를 봐야 한다
+
+발표 대본
+graph search parameter epsilon은 search range를 조절해 speed와 recall을 바꿉니다. 논문은 1에서 1.4까지 0.02 간격으로 탐색하고 Pareto frontier를 표시합니다. Figure 8은 COMS에서 서로 다른 window ratio에서도 MBI의 곡선이 어떻게 변하는지 보여 줍니다.
+
+공개 출처
+tkdd-paper | §5.1.3; Fig. 8
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 36. SIFT1M scaling은 관찰된 slope로 보고된다
+
+36. SIFT1M scaling은 관찰된 slope로 보고된다
+
+발표 대본
+Figure 9는 두 축을 log scale로 두고 data size 증가에 따른 indexing time과 index size를 측정합니다. MBI의 slope가 약 1.29이고, data가 두 배일 때 2의 1.29승인 약 2.45배의 indexing time으로 해석합니다. 병렬 block 구축은 이 실험에서 indexing time을 최대 5.08배 줄였습니다.
+
+공개 출처
+tkdd-paper | Fig. 9; §5.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 37. 실제 index 크기도 MBI의 공간 대가를 보여 준다
+
+37. 실제 index 크기도 MBI의 공간 대가를 보여 준다
+
+발표 대본
+Table 4에서 괄호는 input data size 대비 index size 비율입니다. SIFT1M은 표 공간 때문에 생략했지만 MBI 2.09 GB, 4.28배이고 SF 0.80 GB, 1.53배입니다. 여섯 dataset 모두 MBI가 SF보다 큰 index를 사용합니다. 이 비용은 이론의 level별 중복과 일치합니다.
+
+공개 출처
+tkdd-paper | Table 4; §5.3
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 38. S_L과 tau는 서로 다른 비용을 조절한다
+
+38. S_L과 tau는 서로 다른 비용을 조절한다
+
+발표 대본
+Figure 10은 leaf size S_L이 작을수록 좁은 window의 query가 유리하지만 indexing time과 index size가 늘어나는 경향을 보입니다. 저자들은 tree depth 5에서 10을 practical balance로 제안합니다. Figure 11은 tau가 0.5보다 클 때 증가할수록 block 수가 많아져 QPS가 내려가는 경향을 보여 줍니다.
+
+공개 출처
+tkdd-paper | Figs. 10–11; §5.4
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 39. m-AkNN 결과도 별도의 정확도와 반복 조건을 가진다
+
+39. m-AkNN 결과도 별도의 정확도와 반복 조건을 가진다
+
+발표 대본
+Figure 12의 COMS-GTS 실험은 m=2와 3, k=10,50,100을 비교합니다. SF의 recall이 상대적으로 낮아 T-kNN보다 낮은 recall@k 0.95를 사용했다고 논문이 설명합니다. 각 실험은 세 번 반복됩니다. Figure 13은 COMS-GTS와 CORD-19-small, CORD-19의 recall-QPS 곡선을 보여 줍니다.
+
+공개 출처
+tkdd-paper | Figs. 12–13; §5.5.1
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 40. m-AkNN에서도 MBI index는 SF보다 크다
+
+40. m-AkNN에서도 MBI index는 SF보다 크다
+
+발표 대본
+Table 5의 수치를 그대로 옮겼습니다. COMS-GTS에서 m=3 MBI index가 m=2보다 작게 측정되므로, branching factor가 증가하면 항상 저장공간이 커진다고 단정할 수 없습니다. CORD-19에서는 input 대비 MBI index 배율이 약 1.34에서 1.38입니다.
+
+공개 출처
+tkdd-paper | Table 5; §5.5.2
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 41. MBI가 보장하거나 지원하지 않는 것
+
+41. MBI가 보장하거나 지원하지 않는 것
+
+발표 대본
+Limitations and Future Work는 T-kNN의 non-decreasing timestamp arrival, deletion과 arbitrary timestamp insertion의 부재, m-AkNN의 static setting을 명시합니다. sliding-window 방식으로 오래된 왼쪽 block을 제거하는 확장은 향후 연구로 제안합니다. T-kNN과 m-AkNN 모두 formal optimality analysis가 열려 있습니다.
+
+공개 출처
+tkdd-paper | §6, Limitations and Future Work
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+
+## 42. 재현 시 함께 고정해야 할 항목
+
+42. 재현 시 함께 고정해야 할 항목
+
+발표 대본
+논문은 코드와 dataset을 GitHub에 공개한다고 밝힙니다. 재현에서는 Table 2의 dataset 구성, Table 3의 default parameters, Section 5.2와 5.5의 query sampling과 recall 목표를 함께 맞춰야 합니다. 특히 tau는 dataset마다 다르고 epsilon은 Pareto frontier를 만들기 위해 sweep합니다.
+
+공개 출처
+tkdd-paper | p. 3; Tables 2–3; §5.1–5.5
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265
+mbi-code | repository README
+MBI public code and datasets
+https://github.com/kjsoo-1010/mbi2025
+
+## 43. MBI를 한 문장씩 연결하면
+
+43. MBI를 한 문장씩 연결하면
+
+발표 대본
+이 논문의 설계 논리는 일관됩니다. 필터 폭에 따라 BSBF와 SF의 병목이 바뀌므로, 여러 해상도의 block을 미리 색인합니다. query 때 overlap ratio와 tau로 block을 고르고, block 상태에 맞는 기존 검색법을 실행한 뒤 후보를 합칩니다. 그 대가는 추가 index 공간과 update 제약입니다.
+
+공개 출처
+tkdd-paper | §4; §6
+ACM TKDD paper, DOI 10.1145/3789265
+https://doi.org/10.1145/3789265

@@ -109,6 +109,14 @@ QuIP의 메시지는 "좋은 반올림 방법"만으로는 부족하다는 것�
 
 QuIP은 2-bit PTQ에서 강력한 결과를 보이지만, 직교 변환과 후처리 구조가 실제 추론 커널 및 배포 스택과 어떻게 결합되는지는 별도 엔지니어링 과제이다. 또한 논문은 calibration set 기반 Hessian 추정에 의존하므로, calibration 데이터 분포가 실제 사용 분포와 달라질 때의 안정성도 중요하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 28장 | <a href="/assets/seminars/quip-2-bit-quantization-of-large-language-models-with-guarantees/quip-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/quip-2-bit-quantization-of-large-language-models-with-guarantees/quip-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/quip-2-bit-quantization-of-large-language-models-with-guarantees/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/quip-2-bit-quantization-of-large-language-models-with-guarantees/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

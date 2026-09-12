@@ -84,6 +84,14 @@ Section 5.3의 MuJoCo 실험은 Ant-v3, HalfCheetah-v3, Hopper-v3, Humanoid-v3, 
 
 또 다른 한계는 AdaStop이 실험 설계의 품질을 대체하지 못한다는 점이다. score definition, random seed policy, hyperparameter selection, evaluation episode 수가 흔들리면 순차 검정도 흔들린 결론을 낸다. 실제 적용에서는 AdaStop 설정 $$N, K, B, \alpha$$, evaluation protocol, early stopping rule을 사전에 고정하고, Atari나 MuJoCo 여러 task 묶음처럼 task collection 전체를 비교하는 방향으로 확장하는 것이 필요하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 31장 | <a href="/assets/seminars/adastop-sequential-testing-deep-rl/adastop-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/adastop-sequential-testing-deep-rl/adastop-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/adastop-sequential-testing-deep-rl/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/adastop-sequential-testing-deep-rl/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

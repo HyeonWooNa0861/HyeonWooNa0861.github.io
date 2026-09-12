@@ -127,6 +127,14 @@ BS power budget이 커지면 feasible region이 넓어져 web MOS가 증가한�
 
 State가 이전 slot의 SINR만 포함하므로 queue, mobility trajectory, service state와 channel uncertainty를 충분히 표현하지 못할 수 있다. Recurrent 또는 belief-state encoder를 추가하고 observation ablation을 수행하면 partial observability를 줄일 수 있다. 또한 SIM hardware의 quantized phase, calibration error, insertion loss와 control overhead를 포함한 hardware-in-the-loop 검증이 필요하다. 이러한 검증을 거치면 multi-service scheduling, personalized QoE와 energy-aware SIM control로 확장할 수 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 21장 | <a href="/assets/seminars/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/qoe-sim-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/qoe-sim-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

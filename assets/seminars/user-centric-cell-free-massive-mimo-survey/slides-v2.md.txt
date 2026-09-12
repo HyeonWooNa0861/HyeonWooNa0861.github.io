@@ -1,0 +1,405 @@
+---
+type: research-seminar-slides
+paper_id: user-centric-cell-free-massive-mimo-survey
+---
+
+# User-centric Cell-free Massive MIMO: 선택적 협력
+
+논문: User-centric Cell-free Massive MIMO Networks: A Survey of Opportunities, Challenges and Solutions
+
+저자: Hussein A. Ammar, Raviraj Adve, Shahram Shahbazpanahi, Gary Boudreau, Kothapalli Venkata Srinivas (2022)
+
+## 1. User-centric Cell-free Massive MIMO: 선택적 협력
+
+선택적 협력, fronthaul, CSI, cluster와 resource allocation을 읽는 survey 지도
+
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) title page, abstract, [ieee](https://doi.org/10.1109/COMST.2021.3135119) article record
+
+## 2. 이 자료는 무엇을 종합하는 survey인가
+
+2021년 arXiv v2와 2022년 journal survey의 분류를 따라간다
+
+
+| 항목 | 범위 | 읽을 때의 주의 |
+| --- | --- | --- |
+| 중심 구조 | user-centric cell-free massive MIMO | 하나의 고정 배치가 아니다 |
+| 설계 축 | fronthaul, CSI, cluster, allocation | 서로 강하게 연결된다 |
+| 증거 | 여러 인용 연구와 qualitative table | 같은 실험 조건의 순위가 아니다 |
+| 시간 범위 | survey 시점의 문헌과 open issue | 현재 표준이나 최신 통계로 읽지 않는다 |
+
+핵심: 이 논문의 기여는 단일 controller보다 설계 선택과 연구 공백을 체계적으로 연결한 데 있다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 1–5, §I and Fig. 3
+
+## 3. 왜 더 촘촘한 무선망이 자동으로 쉬워지지 않는가
+
+가까운 DU가 늘어도, 간섭과 coordination 정보량이 함께 늘어난다
+
+1. **더 많은 DU**: 사용자 가까이에 송신점을 둘 수 있다
+2. **더 많은 링크**: 유용한 신호와 간섭 후보가 함께 늘어난다
+3. **공동 결정**: CSI, data, power, scheduling을 맞춰야 한다
+4. **제한된 협력**: 사용자마다 필요한 DU만 선택하는 문제가 생긴다
+
+핵심: cell-free의 과제는 송신점을 없애는 것이 아니라, 어떤 협력을 유지할지 정하는 것이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 1–2, §I
+
+## 4. 먼저 구분할 네 가지 용어
+
+access 협력과 CU–DU 관리 연결을 같은 것으로 보지 않는다
+
+
+| 용어 | 이 자료의 뜻 | 설계에서 바뀌는 것 |
+| --- | --- | --- |
+| DU | 공간적으로 분산된 송수신 단위 | 사용자에게 제공할 무선 link |
+| CU | 여러 DU를 관리·처리하는 central unit | control과 processing 위치 |
+| fronthaul | CU와 DU 사이의 연결 | data와 운영 정보를 전달 |
+| serving cluster | 한 사용자를 도울 DU의 집합 | 협력 범위와 부담 |
+| coordination | 송신점 사이 정보 공유의 정도 | scheduling·beamforming의 결합 |
+
+핵심: user-centric은 DU 집합을 사용자별로 고르는 말이며 CU나 fronthaul의 소멸을 뜻하지 않는다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) p. 2 footnote 1; p. 7, §III
+
+## 5. Cell-free와 user-centric의 차이는 협력 집합의 범위다
+
+같은 분산 DU 환경에서도 모든 DU를 쓸지, 사용자별 subset을 쓸지는 별도 선택이다
+
+- **분산 DU 환경**: 여러 DU와 사용자가 같은 영역에 존재
+- **일반 cell-free**: 모든 DU 협력을 모델에 둘 수 있다
+- **user-centric**: 사용자마다 serving DU 수를 명시적으로 제한
+- **공통 목적**: 간섭을 관리하며 서비스 품질을 유지
+- **핵심 설계**: 누가 누구를 도울지와 resource를 함께 결정
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) p. 2, §I
+
+## 6. 구성한 예시: 사용자마다 다른 DU 집합
+
+아래 threshold는 논문 알고리즘이 아니라 per-user cluster를 재계산해 보는 교육용 예시다
+
+- **레인 교육용 cluster 선택**
+  - **사용자 U**: gain: A=12, B=8, C=2
+  - **threshold 5**: 5 이상인 DU만 U에 남긴다
+  - **U cluster**: {A, B}; C는 제외
+  - **사용자 V**: gain 4,10,7이면 {B,C}
+- 사용자 U → threshold 5 (실선, 단방향)
+- threshold 5 → U cluster (실선, 단방향)
+- U cluster → 사용자 V: 같은 규칙 (점선, 단방향)
+
+핵심: 같은 DU 배치라도 사용자가 다르면 serving cluster도 달라질 수 있다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 2, 17–18, §§I,V
+
+## 7. CU topology: single-CU와 multiple-CU는 별도 축이다
+
+어떤 DU가 사용자를 돕는지와, control·processing을 어느 CU가 맡는지는 같은 질문이 아니다
+
+
+| topology | 원문의 특징 | 해석 경계 |
+| --- | --- | --- |
+| single-CU | 모든 DU와 하나의 CU를 연결하는 모델 | fronthaul 요구가 클 수 있음 |
+| multiple-CU | DU를 CU group에 나누는 hierarchy | survey의 qualitative scalability 논의 |
+| local processing | DU 쪽에서 일부 처리를 수행 | 중앙 fronthaul 부담 완화 가능 |
+| user-centric cluster | 한 사용자의 DU 협력 집합 | 위 topology 위에서 별도로 구성 |
+
+핵심: multiple-CU는 절대 순위가 아니라 fronthaul·delay·복잡도의 trade-off를 다루는 모형이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 6–7, Fig. 4 and Table III
+
+## 8. Downlink delivery mode: data와 active DU
+
+JT, DPS, CS/CB는 cluster를 만드는 방식이 아니라 cluster 안의 delivery choice다
+
+
+| mode | data와 active DU | 조건·부담 |
+| --- | --- | --- |
+| JT | 협력 DU가 같은 user data를 공유해 공동 송신 | coherent JT는 phase synchronization 필요 |
+| DPS | 한 시점에는 한 transmission point를 선택 | selection과 coordination이 필요 |
+| CS/CB | data는 한 DU에 두고 scheduling·beamforming을 조정 | 공유 정보의 범위를 제한 |
+| non-coherent | 여러 신호를 coherent 결합 없이 전달 | 수신 쪽 SIC 복잡도가 필요 |
+
+핵심: delivery mode는 rate만이 아니라 synchronization과 receiver 조건을 함께 봐야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) p. 7, §II-A
+
+## 9. Survey의 설계 연결을 다섯 축으로 요약
+
+cluster 하나의 선택이 channel estimation, fronthaul와 allocation 문제를 연쇄적으로 바꾼다
+
+1. **architecture**: CU topology와 delivery mode
+2. **fronthaul**: data와 control 정보를 transport
+3. **CSI**: pilot과 channel knowledge를 확보
+4. **cluster**: 사용자별 cooperation 범위를 선택
+5. **allocation**: power, scheduling, latency를 조정
+
+핵심: 이 survey의 taxonomy는 독립된 chapter 목록이 아니라 서로 결합된 설계 변수의 지도다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) p. 5, Fig. 3
+
+## 10. Fronthaul에는 user data만 흐르지 않는다
+
+CU–DU link는 data와 channel·control information을 운반하며, 처리 위치에 따라 양이 달라진다
+
+- **레인 data**
+- **레인 control**
+  - **CU user data**: 전송할 사용자 data
+  - **fronthaul**: DU까지 data를 전달
+  - **DU transmission**: 선택된 user link에 송신
+  - **wireless access**: 사용자에게 service
+  - **CU control**: CSI, beamformer, power, scheduling
+  - **control transport**: 필요한 operational information
+  - **DU control**: local processing과 radio 설정
+- CU user data → fronthaul (실선, 단방향)
+- fronthaul → DU transmission (실선, 단방향)
+- DU transmission → wireless access (실선, 단방향)
+- CU control → control transport: control (점선, 단방향)
+- control transport → DU control: control (점선, 단방향)
+
+핵심: cluster를 줄이면 무선 link뿐 아니라 CSI·scheduling·fronthaul의 처리 범위도 함께 달라진다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 7–8, §III
+
+## 11. Fronthaul 설계는 하나의 rate 최소화 규칙이 아니다
+
+survey는 transport, compression, cooperation reduction, centralization 위치를 함께 다룬다
+
+
+| 선택 | 무엇을 바꾸나 | 원문의 위치 |
+| --- | --- | --- |
+| wired·wireless transport | CU–DU 물리 link의 전달 방식 | §III-B |
+| compression | 전달하는 baseband·CSI 표현량 | §III-A |
+| reduced cooperation | data·control을 공유할 DU 범위 | §III-A |
+| partial centralization | CU와 DU 사이의 processing 분할 | §III-A |
+| serial connection | 여러 DU를 잇는 transport 형태 | §III-B |
+
+핵심: fronthaul 부담은 bit 수뿐 아니라 정보 처리 위치와 공유 범위의 결과다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 8–11, §III-A–B
+
+## 12. Uplink compression의 세 processing 위치
+
+Fig. 6은 세 가지 placement를 나열하며, 하나가 모든 조건에서 최선이라고 결론내리지 않는다
+
+
+| 대안 | 처리 위치와 순서 |
+| --- | --- |
+| compress-first | signal을 압축해 CU에 보내고 estimate |
+| estimate-first | DU에서 estimate한 뒤 결과를 압축 |
+| multiply-first | estimate와 signal을 먼저 결합하고 압축 |
+| 비교 조건 | fronthaul, DU computation, achievable rate를 함께 본다 |
+
+핵심: 같은 ‘compression’이라도 처리 순서가 달라지면 CU–DU가 교환하는 객체와 부담이 달라진다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 9–10, Fig. 6 and §III-A
+
+## 13. CSI: channel knowledge를 어떻게 얻는가
+
+pilot 수, contamination, mobility와 distributed propagation 특성이 함께 걸린다
+
+1. **pilot resource**: 제한된 pilot sequence를 사용자에 배정
+2. **channel estimate**: DU와 CU가 필요한 CSI를 형성
+3. **propagation check**: hardening과 favorable propagation을 가정할지 점검
+4. **resource decision**: CSI를 power, scheduling, beamforming에 사용
+
+핵심: 분산 DU에서는 channel hardening을 자동 전제로 두지 않고 configuration별로 확인해야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 12–17, §IV
+
+## 14. Hardening·favorable propagation의 조건
+
+큰 antenna 수라는 말 하나만으로 distributed link의 변동성이 사라진다고 결론낼 수 없다
+
+
+| 성질 | 무엇을 뜻하나 | survey의 경계 |
+| --- | --- | --- |
+| channel hardening | 정규화한 channel gain의 변동이 작아지는 성질 | 적절한 antenna·통계 조건이 필요 |
+| favorable propagation | 서로 다른 user channel이 충분히 직교에 가까워지는 성질 | spatial distribution과 propagation에 좌우 |
+| Fig. 9 | co-located와 distributed shadowing model의 simulation | field measurement 또는 보편 결론이 아님 |
+| design implication | pilot·beamforming·rate model의 가정을 재점검 | cluster가 바뀌면 조건도 바뀜 |
+
+핵심: hardening 가정은 cluster·antenna·shadowing 조건과 분리해 읽을 수 없다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 12–15, Eq. 6 and Fig. 9
+
+## 15. Pilot assignment의 세 비용
+
+pilot을 더 길게 쓰거나 더 정교하게 배정할수록 다른 resource를 덜 남긴다
+
+
+| 정책 축 | 줄이려는 비용 | 함께 확인할 조건 |
+| --- | --- | --- |
+| orthogonal pilot 확대 | pilot contamination | coherence block 안의 overhead |
+| reuse-aware assignment | 강한 pilot interference | large-scale CSI와 computation |
+| centralized selection | global contamination objective | fronthaul·central processing |
+| distributed selection | local overhead과 scalability | coupled user decision의 손실 |
+
+핵심: pilot assignment는 SE와 coherence resource·coordination 조건을 함께 읽어야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 14–16, Table V and §IV-B
+
+## 16. Cluster formation이 바꾸는 범위
+
+membership을 바꾸면 유용한 signal, CSI workload, fronthaul traffic, optimization dimension이 동시에 바뀐다
+
+1. **candidate DU**: 사용자 근처의 여러 link를 관측
+2. **membership rule**: distance, gain, utility, resource 조건을 반영
+3. **selected cluster**: 강한 DU는 협력하고 약한 link는 제외
+4. **system burden**: CSI·fronthaul·computation 범위가 함께 변함
+
+핵심: cluster formation은 후속 allocation의 변수 수와 feasibility를 바꾸는 선택이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 17–18, §V
+
+## 17. Cluster formation의 시간 scale과 목표를 분리한다
+
+§V 본문은 static·semi-dynamic·dynamic construction을 구분하고, Table VI는 선택된 formation solution의 장단점을 요약한다
+
+
+| 형태 | membership 갱신 | 핵심 trade-off |
+| --- | --- | --- |
+| static | 장기간 같은 또는 천천히 변하는 정보로 구성 | 낮은 signaling, environment 변화 반영 제한 |
+| semi-dynamic | large-scale fading 등 느린 channel 정보에 맞춰 갱신 | overhead와 adaptation의 절충 |
+| dynamic | 더 빠른 state와 resource 상황을 반영 | control·computation 부담 증가 |
+| utility-based | rate·interference·cost 같은 목표를 함께 반영 | utility 정의에 따라 해가 달라짐 |
+
+핵심: ‘최적 cluster’는 update frequency와 utility definition 없이 하나로 정해지지 않는다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 17–18, §V; Table VI
+
+## 18. Resource allocation: 먼저 무엇을 최적화하는지 적는다
+
+같은 link state라도 WSR, energy efficiency, QoS constraint는 다른 decision을 만들 수 있다
+
+
+| 목표 | 교육용 읽기 | 변수 예 |
+| --- | --- | --- |
+| WSR | sum of weight times log of 1 plus SINR을 크게 | power, beamformer, schedule |
+| SE | spectrum당 전송량을 크게 | pilot, power, user selection |
+| EE | rate와 소비 power의 비를 고려 | radiated·circuit power |
+| QoS | 최저 rate·delay·reliability를 만족 | admission, power, cluster |
+
+핵심: allocation 비교 전에는 objective, feasible set, link direction을 맞춰야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 18, 22; Eqs. 7 and 10
+
+## 19. §VI의 resource-allocation taxonomy
+
+Table VIII는 metric·problem type·approach를 map하고, §VI는 latency와 distributed operation까지 더 넓게 종합한다
+
+
+| allocation family | 접근의 예 | 반드시 붙일 조건 |
+| --- | --- | --- |
+| power allocation | max–min, WSR, fractional programming | UL/DL, CSI, power constraint |
+| scheduling | user selection, queue·QoS-aware policy | traffic model, latency target |
+| cluster allocation | AP/DU association, cooperation control | cluster metric, update scale |
+| distributed optimization | local updates와 information exchange | message scope, convergence, loss |
+
+핵심: Table VIII와 §VI의 방법은 metric과 가정이 달라 바로 순위화할 수 없다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 18–25, Table VIII; §VI-C
+
+## 20. Centralized·distributed allocation의 정보 위치
+
+두 경로는 대안적인 formulation이며 실제 설계에서는 hybrid가 가능하다
+
+- **공통 입력**: CSI, queue·QoS, power, cluster 상태
+- **centralized**: 넓은 state를 모아 joint decision을 계산
+- **distributed**: local decision과 제한된 message를 반복
+- **같은 확인**: feasibility, signaling, computation, utility
+- **조건부 선택**: 규모와 coordination capacity에 맞춰 설계
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 18–28, §VI and Table XIII
+
+## 21. Latency와 MEC는 rate maximization 밖의 state를 넣는다
+
+delay target이 있으면 traffic arrival, queue, execution, synchronization까지 model 범위가 넓어진다
+
+
+| 주제 | 추가로 봐야 할 것 | survey의 상태 |
+| --- | --- | --- |
+| uRLLC | latency와 reliability target, finite resource | research challenge로 survey |
+| MEC | offload·execution·queue와 radio allocation | cell-free와의 결합을 논의 |
+| Lyapunov control | queue stability와 energy·rate penalty | 일부 cited approach |
+| punctured scheduling | 서로 다른 service 요구의 resource 분할 | 조건부 접근 |
+| synchronization | 분산 DU의 time·phase consistency | 기본 구현 제약 |
+
+핵심: low latency claim에는 rate 외에 traffic·queue·execution model이 필요하다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 27–30, §VII
+
+## 22. 수치는 어디까지 말할 수 있는가: source 조건을 유지한다
+
+survey가 인용한 개별 연구의 결과는 configuration과 정의를 떼어내면 의미가 달라진다
+
+
+| reported observation | source condition | 말하지 말아야 할 것 |
+| --- | --- | --- |
+| 5배·10배 gain | 인용 연구의 small-cell 대비, shadow fading 조건 | 모든 cell-free의 보편 gain |
+| pilot length 3–3.75 감소 | 3% average-SE decrease를 negligible contamination으로 정의 | pilot 정책의 일반 보장 |
+| 7 bit 초과 quantization | 특정 연구의 perfect-fronthaul 접근 조건 | 모든 fronthaul의 필요 bit 수 |
+| Fig. 9 difference | 명시된 antenna·shadowing·path-loss simulation | field deployment의 결론 |
+
+핵심: survey의 수치는 결론의 장식이 아니라 조건을 확인해야만 재사용할 수 있는 문헌 evidence다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 2, 9, 14; Fig. 9
+
+## 23. Scalability, IRS, ML은 survey의 별도 연구 축이다
+
+이 chapter들은 하나의 통합 성능 수치를 내는 것이 아니라 future direction과 cited approach를 정리한다
+
+
+| 축 | 왜 나타나는가 | 해석 범위 |
+| --- | --- | --- |
+| scalability | DU·user·decision variable 증가를 감당 | distributed allocation은 한 route |
+| IRS | propagation environment를 조절하는 추가 요소 | 인용 study의 assumptions에 한정 |
+| machine learning | 복잡한 mapping이나 online decision을 근사 | data, training, generalization 조건 필요 |
+| partial cooperation | 모든 link·message를 공유하지 않음 | service loss와 overhead를 같이 평가 |
+
+핵심: scalability claim에는 state·message·training cost를 함께 모델링해야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 30–32, §VIII
+
+## 24. Fig. 13의 open issue를 네 연결로 읽기
+
+2021 survey의 공백은 architecture·CSI·resource·service requirement가 만나는 곳에 남아 있다
+
+1. **architecture**: multi-CU fronthaul과 distributed SDN
+2. **CSI**: FDD CSI, pilot allocation, high mobility
+3. **resource**: robust cluster와 scalable allocation
+4. **service**: delay, synchronization, emerging applications
+
+핵심: open issue는 한 algorithm보다 여러 layer를 함께 맞춰야 하는 결합 문제다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 32–34, Fig. 13 and §IX
+
+## 25. 새 논문을 이 survey 위에서 읽는 확인표
+
+결과 숫자보다 먼저 model과 coordination boundary를 맞추면 비교 오류를 줄일 수 있다
+
+
+| 질문 | 확인할 조건 | 왜 중요한가 |
+| --- | --- | --- |
+| 누가 협력하나 | cluster rule, size, update rate | CSI·fronthaul burden을 정함 |
+| 누가 계산하나 | single/multiple CU, DU processing | delay·complexity를 정함 |
+| 무엇을 최적화하나 | WSR, EE, QoS, queue, reliability | objective별 숫자 비교를 막음 |
+| 무엇을 알고 있나 | CSI, TDD/FDD, mobility, pilot reuse | rate·hardening 가정을 정함 |
+| 어떤 evidence인가 | simulation·citation·taxonomy | universal claim을 막음 |
+
+핵심: user-centric 연구는 cluster·information·objective·condition을 함께 읽는다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 1–34, §§I–IX
+
+## 26. 정리: 선택적 협력은 단일 knob가 아니다
+
+user-centric cell-free는 per-user cluster를 중심으로 radio, transport, estimation, control 문제를 다시 묶는다
+
+- 사용자별 cluster는 fixed cell을 완화하지만 CU·fronthaul은 남는다
+- cluster, CSI, fronthaul, allocation은 coupled decision이다
+- centralized·distributed, coherent·non-coherent는 조건과 부담이 다르다
+- survey table과 수치는 공통 leaderboard가 아니라 문헌 지도다
+- open issue는 2021 survey 시점의 연구 출발점이다
+
+핵심: 설계 주장은 cluster·information·objective·condition을 함께 말해야 비교 가능하다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2104.14589v2) pp. 32–34, §IX–X

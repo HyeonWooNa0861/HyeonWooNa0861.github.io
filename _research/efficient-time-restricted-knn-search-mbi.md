@@ -337,6 +337,14 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시된다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향이다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 43장 | <a href="/assets/seminars/efficient-time-restricted-knn-search-mbi/mbi-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/efficient-time-restricted-knn-search-mbi/mbi-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/efficient-time-restricted-knn-search-mbi/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/efficient-time-restricted-knn-search-mbi/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

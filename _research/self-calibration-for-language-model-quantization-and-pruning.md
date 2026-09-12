@@ -68,6 +68,14 @@ Self-calibration은 외부 데이터를 가져오지 않고, 압축하려는 모
 
 Self-Calibration은 COVERCAL이나 Calibration Data Curation과 함께 "압축 성능은 calibration data 설계에 의존한다"는 흐름을 만든다. COVERCAL은 outlier channel coverage를, Calibration Data Curation은 activation-space diversity와 capability 보존을, Self-Calibration은 external data 없이 model-generated data를 쓰는 방향을 제시한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 18장 | <a href="/assets/seminars/self-calibration-for-language-model-quantization-and-pruning/self-calibration-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/self-calibration-for-language-model-quantization-and-pruning/self-calibration-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/self-calibration-for-language-model-quantization-and-pruning/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/self-calibration-for-language-model-quantization-and-pruning/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -1,0 +1,218 @@
+## 1. CCM_MADRL: 제안과 조합 승인으로 푸는 MEC 오프로딩
+
+1. CCM_MADRL: 제안과 조합 승인으로 푸는 MEC 오프로딩
+
+발표 대본
+이 발표는 Gebrekidan, Stein, Norman의 12쪽 arXiv v2 보충 원고를 기준으로 합니다. 같은 제목의 AAMAS 2024 산출물은 3쪽 extended abstract이므로, 이 덱의 equations, algorithms, Table 2, Figures 3-5는 v2 preprint 위치로 인용합니다. 핵심 질문은 각 UD가 offload 여부와 자원을 제안한 다음, 공유 MEC server의 channel count와 storage를 누가 어떻게 동시에 만족시키는가입니다.
+
+공개 출처
+ccm-v2 | title page; Abstract
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+aamas-extended | publication record
+AAMAS 2024 extended abstract record
+https://doi.org/10.65109/cdmt9885
+
+## 2. 공유 MEC에서 client 제안은 함께 충돌할 수 있다
+
+2. 공유 MEC에서 client 제안은 함께 충돌할 수 있다
+
+발표 대본
+원문은 UD의 다양한 continuous/discrete constraint와 server storage constraint의 결합을 문제로 둡니다. 기존 방식을 모두 같은 penalty로 설명하지 않습니다. 이 논문에서는 UD constraint는 reward penalty로 다루고, channel count와 server storage는 master의 combinatorial action selection에서 직접 만족시킵니다.
+
+공개 출처
+ccm-v2 | p. 1 Abstract; pp. 1-2
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 3. 논문의 MEC 환경
+
+3. 논문의 MEC 환경
+
+발표 대본
+Figure 1의 구성은 single wireless BS, MEC server, SDN controller, UDs, energy harvesting, wireless network입니다. 각 time step마다 UD가 하나의 task를 생성하고 processing이 tau_max 안에 끝나지 않으면 해당 task를 drop합니다. server는 task arrival order로 처리하며, 그 arrival은 offloading time에 의해 정해집니다.
+
+공개 출처
+ccm-v2 | p. 2; Fig. 1; §2
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 4. 한 task의 두 처리 경로
+
+4. 한 task의 두 처리 경로
+
+발표 대본
+Equation 1에서 x_n=1은 MEC processing, x_n=0은 local processing입니다. Local latency는 z_n c_n / f_n입니다. MEC latency에는 transmission time, earliest available server unit, server processing time이 들어갑니다. 중요한 교육 포인트는 client proposal x_c,n과 final binary mode x_n을 혼동하지 않는 것입니다.
+
+공개 출처
+ccm-v2 | pp. 2-3; Eqs. 1-5
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 5. 비용 최소화와 제약의 소유자
+
+5. 비용 최소화와 제약의 소유자
+
+발표 대본
+Equation 6은 T time steps와 N users의 summed cost minimization을 정의합니다. Eq. 6c는 transmit-power bounds, 6d deadline, 6e battery threshold, 6f local-resource bounds, 6g channel count, 6h accepted task-size total and storage capacity입니다. 원문 Section 4.3은 server constraint가 combinatorial selection에서 이미 고려되므로 reward penalty로 넣지 않는다고 명시합니다.
+
+공개 출처
+ccm-v2 | pp. 3-5; Eqs. 6, 12-13
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 6. client가 보는 state는 UD별 다섯 묶음이다
+
+6. client가 보는 state는 UD별 다섯 묶음이다
+
+발표 대본
+Equation 7은 each UD state를 task state, normalized gain, power budget, local-resource budget, battery state로 나눕니다. 본문은 K, U_e, f_e, z_e가 constant values이므로 state information에서 제외된다고 합니다. 따라서 이 슬라이드는 master가 state vector에 channel identity를 받는다고 말하지 않습니다.
+
+공개 출처
+ccm-v2 | p. 4; §4.1; Eq. 7
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 7. client는 세 연속 값을 내고 proposal 여부를 가른다
+
+7. client는 세 연속 값을 내고 proposal 여부를 가른다
+
+발표 대본
+Equation 8의 client action은 x_c,n, p_c,n, f_c,n 세 continuous values입니다. x_c,n<0.5이면 final x_n=0이 되어 local processing을 시작합니다. 그렇지 않은 task만 combinatorial decision 대상으로 proposal됩니다. Equations 9-10은 p_c,n과 f_c,n을 allowed range inside of p_n and f_n으로 map합니다.
+
+공개 출처
+ccm-v2 | p. 4; §4.2; Eqs. 8-10
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 8. master는 proposal을 feasible subset으로 바꾼다
+
+8. master는 proposal을 feasible subset으로 바꾼다
+
+발표 대본
+원문 prose는 all-local이면 master가 개입하지 않고, proposed count와 total size가 constraints 안이면 모두 수락한다고 설명합니다. 아닌 경우 exploitation은 per-client Q sort 후 highest-Q proposal부터 approve하고, exploration은 proposal index를 random shuffle한다고 설명합니다. 그러나 Algorithm 2 line 13은 random<epsilon 또는 Evaluation=True에서 Q 계산·sort를 하고 else에서 shuffle하므로 ε 분기가 prose와 반대입니다. 또한 line 23은 count≤K여도 storage violation이면 else로 보내지만, line 30은 while Length(Index)>K만 반복합니다. 따라서 count≤K인 storage violation은 scan하지 않고, count>K여도 length가 K가 되면 남은 candidate scan을 멈춥니다. 이 슬라이드는 prose가 설명한 intended rule을 요약하며 literal pseudocode의 완전한 실행 절차를 주장하지 않습니다.
+
+공개 출처
+ccm-v2 | pp. 4, 6-7; §4.2; Algorithm 2
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 9. 연속 제안과 이산 수락이 같은 action이 아니다
+
+9. 연속 제안과 이산 수락이 같은 action이 아니다
+
+발표 대본
+이 그림은 Figure 2와 Section 4.2의 논리 순서를 편집 가능한 native flow로 다시 표현합니다. Client action and server constants are independent inputs to master selection. Client policy output x_c,n is not final x_n. Server side sees combined state/action of proposed clients and produces binary accept/reject decisions. Rejection means the device processes locally.
+
+공개 출처
+ccm-v2 | pp. 4-5; Fig. 2; Eq. 11
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 10. reward와 Q값의 역할을 분리해 읽기
+
+10. reward와 Q값의 역할을 분리해 읽기
+
+발표 대본
+Equation 13 is the negative average system cost minus penalty. Equation 14 gives the Bellman-style Q update. Section 4.4 says that a standard MADDPG critic has one combined Q but this master must make a combinatorial decision, so it adopts per-action DQN logic to calculate relative Q values for each client. Algorithm 3 contains the conditional all_zeros and maximum-Q cases. 이 슬라이드는 논문 밖의 centralized-training deployment dataflow를 추가하지 않습니다.
+
+공개 출처
+ccm-v2 | pp. 5, 7-8; Eqs. 12-15; Algorithm 3
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 11. 한 episode에서 selection과 training은 분리된다
+
+11. 한 episode에서 selection과 training은 분리된다
+
+발표 대본
+Algorithm 1은 clients, master, target networks, replay memory를 초기화합니다. 각 training episode는 T time steps를 돌며 Algorithm 2를 evaluation=False로 호출하고, total reward와 next state를 관측해 transition을 저장합니다. 그 뒤 Algorithm 3을 호출합니다. Evaluation loop는 Algorithm 2를 evaluation=True로 호출합니다. 따라서 정적 architecture 그림만으로 전체 training schedule을 추론하면 안 됩니다.
+
+공개 출처
+ccm-v2 | p. 6; Algorithm 1
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 12. 강의용 구성 예: 본문이 설명한 Q-priority scan
+
+12. 강의용 구성 예: 본문이 설명한 Q-priority scan
+
+발표 대본
+이 숫자는 강의용으로 새로 만든 가상 예이며 A, B, C의 Q값은 paper에서 관측한 값이 아닙니다. 저자 본문이 설명한 Q-descending greedy feasibility rule에서는 A를 accept해 used storage 40 MB, B는 40+25=65 MB>60 MB라 reject·local fallback, C는 40+20=60 MB와 channel count 2를 만족해 accept됩니다. 따라서 A+C는 이 intended prose rule의 구성 예입니다. 하지만 Algorithm 2 literal lines 28-38은 Length(Index)>K만 반복하여 첫 pop 뒤 length=K에서 멈추므로 전체 A+C decision을 산출하지 않습니다. 그러므로 이 표를 Algorithm 2 pseudocode의 재계산 trace로 읽으면 안 됩니다.
+
+공개 출처
+ccm-v2 | pp. 6-7; Algorithm 2
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 13. 실험은 작은 storage 제약을 의도적으로 만든 simulator다
+
+13. 실험은 작은 storage 제약을 의도적으로 만든 simulator다
+
+발표 대본
+Table 2는 simulation parameters를 제시합니다. 본문은 modern server storage가 GB 또는 TB인데도 computational resources 때문에 400 MB를 쓰며, 이 작은 setting이 server의 combinatorial task offloading을 만들었다고 명시합니다. Environment reproducibility는 seed 37, evaluation episode는 index를 seed로 사용합니다. 이 조건은 deployed network로의 결과 이전을 제한합니다.
+
+공개 출처
+ccm-v2 | p. 9; §5.2; Table 2
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 14. 비교 방법은 master의 수락 규칙에서 갈린다
+
+14. 비교 방법은 master의 수락 규칙에서 갈린다
+
+발표 대본
+Section 5.1에서 standard MADDPG는 offloading order로 배정하고, subchannel을 못 받은 task는 latency penalty와 함께 drop됩니다. 두 heuristics는 unaccepted task를 local로 보내 comparable combinatorial decisions을 만듭니다. Server는 Equation 4에 따라 accepted task를 arrival order로 처리합니다. 이 비교는 모든 MADRL offloading system의 일반 순위를 세우지 않습니다.
+
+공개 출처
+ccm-v2 | p. 8; §5.1
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 15. Figure 3은 10-step setting의 세 관측치를 함께 보인다
+
+15. Figure 3은 10-step setting의 세 관측치를 함께 보인다
+
+발표 대본
+Figure 3은 episode당 10 steps, 2,000 training episodes, ten experiments, 95% confidence intervals를 사용합니다. 저자는 client action 뒤 master combinatorial action을 configured advantage로 읽고, MADDPG와 heuristics는 actors for action and critics for feedback을 쓴다고 대비합니다. Panel A는 Equation 13의 combined reward와 penalty, B는 deadline 전 미완료 task 비율, C는 battery threshold 아래 UD 비율입니다. 세 지표는 서로 다릅니다.
+
+공개 출처
+ccm-v2 | p. 9; Fig. 3; §5.4
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 16. 100-step battery stress는 결과의 trade-off를 드러낸다
+
+16. 100-step battery stress는 결과의 trade-off를 드러낸다
+
+발표 대본
+Figures 4와 5는 steps per episode와 battery range를 바꿉니다. 저자는 Eq. 13이 time과 energy를 scalarize하는 반면, threshold 아래 비율은 그 ratio 및 deadline/energy penalty scale에 좌우된다고 설명합니다. lambda_1=lambda_2=0.5는 balance에 충분하지 않으며, Figure 5는 lambda_1=1, lambda_2=5와 40-run 95% intervals를 씁니다. 논문은 scalar reward가 underlying multi-objective problem을 충분히 나타내지 못한다고 명시합니다.
+
+공개 출처
+ccm-v2 | p. 10; Figs. 4-5; §5.4
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 17. 이 논문이 주장하지 않는 범위
+
+17. 이 논문이 주장하지 않는 범위
+
+발표 대본
+Section 2.3은 stationary UDs, distance 기반 channel gains, constant background noise, 그리고 한 channel에 한 task일 때 no interference를 가정합니다. Page 11은 Figures 4와 5의 일부 CCM_MADRL_MEC runs가 last episode 전에 time out되어 CCM curves를 가장 적은 episode를 마친 run 뒤에서 clip했다고 말합니다. Conclusion은 multi-server MEC collaboration을 future work로 제안합니다. 이 제약은 numerical results와 함께 읽어야 합니다.
+
+공개 출처
+ccm-v2 | pp. 3, 10-11; §2.3; §5.4; Conclusion
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653
+
+## 18. 정리: client 제안과 master 승인
+
+18. 정리: client 제안과 master 승인
+
+발표 대본
+마지막으로 method와 evidence boundary를 함께 회상합니다. CCM_MADRL_MEC is not simply continuous MADDPG with an additional penalty. It makes UD-level continuous proposals, then lets a server-side master make a hard-constraint combinatorial decision. The experiments are a configured comparison, not a deployment measurement or an analytical convergence theorem.
+
+공개 출처
+ccm-v2 | pp. 1, 4-11; Abstract; §4-6
+CCM_MADRL_MEC arXiv v2 preprint
+https://arxiv.org/abs/2402.11653

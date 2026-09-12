@@ -1,0 +1,278 @@
+## 1. Dueling Network Architecture
+
+1. Dueling Network Architecture
+
+발표 대본
+이 발표는 Dueling Network Architectures for Deep Reinforcement Learning 논문을 소개합니다. 논문이 묻는 질문은 한 상태에서 여러 행동의 결과가 비슷할 때에도 각 행동의 Q 값을 처음부터 따로 표현해야 하는가입니다. Dueling 구조는 공통 feature 뒤를 두 stream으로 나누지만, 최종 출력은 기존 Q network와 같은 행동별 Q 벡터입니다. 핵심은 두 stream을 만든 사실보다 두 출력을 어떤 제약으로 다시 합치는가에 있습니다.
+
+공개 출처
+pmlr-record | bibliographic record
+ICML 2016 proceedings record
+https://proceedings.mlr.press/v48/wangf16.html
+arxiv-v3 | p. 1, Abstract and Fig. 1
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 2. Q network가 예측하는 값
+
+2. Q network가 예측하는 값
+
+발표 대본
+먼저 예측 대상을 정의하겠습니다. 상태 s는 현재 관측을 나타내고 행동 a는 지금 선택할 수 있는 동작입니다. Q^pi(s,a)는 행동 a를 한 뒤 정책 pi를 따른다고 할 때 얻을 할인 return의 기댓값입니다. 즉시 보상 하나나 확정된 미래 결과가 아닙니다. 이산 행동 환경의 Q network는 한 상태를 입력받아 가능한 행동 수만큼 값을 출력합니다. Dueling도 이 입력과 출력 형식을 바꾸지 않습니다.
+
+공개 출처
+arxiv-v3 | p. 3, Sec. 2, Eqs. (1)-(3)
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 3. 정책의 가치와 advantage
+
+3. 정책의 가치와 advantage
+
+발표 대본
+여기서는 참된 정책량을 정의합니다. V^pi(s)는 정책 pi가 행동을 고르는 분포로 Q^pi를 평균한 값입니다. A^pi(s,a)는 개별 행동의 Q 값에서 그 정책 가치를 뺀 차이입니다. 따라서 정책 pi로 행동을 평균하면 참된 advantage의 기댓값은 0입니다. 뒤에서 network가 출력하는 V와 A라는 이름은 이 정의를 반영하지만, 그 출력이 별도 supervision 없이 참된 V^pi와 A^pi로 자동 식별되는 것은 아닙니다.
+
+공개 출처
+arxiv-v3 | p. 3, Sec. 2, Eqs. (2)-(3)
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 4. 일반적인 Q network
+
+4. 일반적인 Q network
+
+발표 대본
+일반적인 DQN 계열의 Q network를 보겠습니다. 입력 상태에서 convolution layer가 공통 feature를 추출하고, 상위 fully connected layer가 가능한 행동마다 하나의 Q 값을 냅니다. 모든 행동 값이 같은 feature를 사용하더라도 마지막 표현은 하나의 경로에서 직접 만들어집니다. Dueling 논문은 학습 목표나 Q 벡터의 용도를 먼저 바꾸지 않고 이 상위 표현 구조를 바꿉니다.
+
+공개 출처
+arxiv-v3 | p. 1, Fig. 1; p. 3, Sec. 2.1
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 5. 비슷한 행동이 많은 상태
+
+5. 비슷한 행동이 많은 상태
+
+발표 대본
+논문은 Enduro의 장면을 동기로 듭니다. 자동차가 즉시 피해야 할 장애물이 없는 상태에서는 여러 행동의 가치가 비슷할 수 있습니다. 장애물이 가까우면 행동 선택이 중요해집니다. saliency map은 value stream과 advantage stream이 서로 다른 영역에 반응하는 모습을 보여 주지만, 입력 gradient를 시각화한 해석 자료입니다. 이 그림만으로 모든 환경에서 stream이 참된 의미를 학습했다고 결론 내릴 수는 없습니다.
+
+공개 출처
+arxiv-v3 | p. 2, opening discussion and Fig. 2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 6. Dueling network의 분기와 결합
+
+6. Dueling network의 분기와 결합
+
+발표 대본
+Dueling 구조의 실제 데이터 흐름입니다. 상태 s에서 얻은 공통 feature가 두 stream으로 갈라집니다. V stream은 scalar 하나를 내고 A stream은 행동 수만큼 raw score를 냅니다. 두 출력은 aggregation module 안에서 다시 합쳐져 최종 Q 벡터가 됩니다. 두 stream은 하위 feature와 최종 Q loss를 공유하므로 독립적으로 학습하는 두 개의 DQN이 아닙니다. 논문은 공통 파라미터를 theta, advantage stream을 alpha, value stream을 beta로 표기합니다.
+
+공개 출처
+arxiv-v3 | p. 1, Fig. 1; p. 4, Sec. 3
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 7. Architecture와 학습 알고리즘의 구분
+
+7. Architecture와 학습 알고리즘의 구분
+
+발표 대본
+세 방법을 같은 종류로 부르면 논문의 기여가 흐려집니다. Dueling은 Q 값을 표현하는 network architecture입니다. Double DQN은 bootstrap target에서 행동을 고르는 network와 그 행동을 평가하는 network snapshot의 역할을 나눕니다. Prioritized replay는 어떤 transition을 더 자주 학습할지 바꿉니다. 논문의 Atari dueling model은 DDQN으로 학습되며, 뒤에서는 prioritized replay와도 결합합니다. 호환된다는 사실이 세 방법의 작동 원리가 같다는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v3 | pp. 3-4, Secs. 2.1-3; pp. 6-8, Sec. 4.2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 8. 단순 합산 Eq. (7)
+
+8. 단순 합산 Eq. (7)
+
+발표 대본
+참된 advantage 정의를 정리하면 Q^pi는 V^pi와 A^pi의 합으로 쓸 수 있습니다. 그래서 network 두 stream도 그대로 더하는 Eq. (7)이 자연스럽게 보입니다. 최종 Q loss는 Q 벡터를 감독하지만 V stream과 A stream에 각각 정답 label을 주지 않습니다. 이 상황에서 같은 Q를 만드는 V와 A 조합이 여러 개 존재합니다. 다음 수치 예시로 어떤 자유도가 남는지 확인하겠습니다.
+
+공개 출처
+arxiv-v3 | p. 4, Eq. (7) and following text
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 9. Eq. (7)의 non-identifiability
+
+9. Eq. (7)의 non-identifiability
+
+발표 대본
+이 수치는 논문의 측정값이 아니라 non-identifiability를 재계산하기 위한 교육용 예시입니다. 처음에는 V가 10이고 raw A가 3, 0, -1이므로 Q는 13, 10, 9입니다. V에 4를 더하고 모든 A에서 4를 빼면 V는 14, A는 -1, -4, -5가 됩니다. 그러나 두 결과의 합은 여전히 13, 10, 9입니다. 최종 Q만 보는 학습 신호는 두 내부 표현 중 하나를 고를 근거가 없습니다. 논문은 Eq. (7)을 직접 사용했을 때 실용적 성능도 좋지 않았다고 설명합니다.
+
+공개 출처
+arxiv-v3 | p. 4, Eq. (7) and non-identifiability discussion
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 10. Max-centered 대안 Eq. (8)
+
+10. Max-centered 대안 Eq. (8)
+
+발표 대본
+논문은 먼저 Eq. (8)을 제안합니다. A stream의 모든 출력에서 최댓값을 빼면 greedy 행동의 centered advantage가 0이 됩니다. 그 행동에 대해서는 Q가 V와 같아져 공통 offset을 정할 수 있습니다. 하지만 max 연산에서 선택된 행동만 기준이 되며, 논문은 이어서 평균을 빼는 Eq. (9)이 더 안정적인 최적화를 제공한다고 설명합니다. 보고된 모든 실험은 Eq. (9)을 사용합니다.
+
+공개 출처
+arxiv-v3 | pp. 4-5, Eq. (8) and following paragraph
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 11. Mean-centered aggregation Eq. (9)
+
+11. Mean-centered aggregation Eq. (9)
+
+발표 대본
+Eq. (9)은 A stream의 raw 출력에서 그 상태의 행동 평균을 뺍니다. 이 centered advantage들의 합은 0입니다. 여기에 V scalar를 모든 행동에 더하면 최종 Q 벡터가 됩니다. 모든 A에서 같은 평균을 빼므로 행동 순서와 argmax는 그대로 유지됩니다. 이 연산은 network의 forward pass 안에 있는 aggregation이며, 학습이 끝난 뒤 별도로 수행하는 후처리 알고리즘이 아닙니다.
+
+공개 출처
+arxiv-v3 | p. 5, Eq. (9) and end of Sec. 3
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 12. Eq. (9) 수치 계산
+
+12. Eq. (9) 수치 계산
+
+발표 대본
+이 수치도 Atari에서 측정한 값이 아니라 Eq. (9)을 재계산하는 교육용 예시입니다. V stream은 10을 내고 A stream은 left, straight, right에 5, 2, 2를 냈다고 하겠습니다. raw A의 평균은 3입니다. 각 원소에서 3을 빼면 centered A는 2, -1, -1이고 합은 0입니다. V 10을 더하면 Q는 12, 9, 9가 됩니다. Q 평균은 V stream 값 10과 같고 left의 순위는 유지됩니다. 다만 이 제약이 10을 특정 정책 pi의 참된 V^pi로 자동 보장하지는 않습니다.
+
+공개 출처
+arxiv-v3 | p. 5, Eq. (9); numerical values are a constructed example
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 13. Eq. (9)이 보존하는 것
+
+13. Eq. (9)이 보존하는 것
+
+발표 대본
+Mean centering으로 정확히 무엇이 성립하는지 정리하겠습니다. 모든 행동에 같은 평균을 빼므로 행동 간 차이와 순위는 보존됩니다. Centered A의 합은 0이고 Q 벡터의 단순 평균은 V scalar와 같습니다. 그러나 이 평균은 행동을 균등하게 평균한 network 출력입니다. 정책 pi의 행동 분포로 정의한 V^pi와 항상 같다고 말할 수 없습니다. 논문도 Eq. (9)이 V와 A의 원래 의미를 state-dependent constant만큼 이동시킨다고 설명합니다.
+
+공개 출처
+arxiv-v3 | p. 5, Eq. (9) discussion
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 14. 기존 Q-learning 방식으로 학습
+
+14. 기존 Q-learning 방식으로 학습
+
+발표 대본
+학습 과정에서 replay transition을 뽑고 DQN 또는 DDQN 방식으로 target을 만듭니다. 현재 network의 두 stream은 Eq. (9)에서 Q로 합쳐집니다. 선택한 행동의 Q와 target 사이 TD error를 계산하고 그 gradient가 aggregation을 거쳐 V stream, A stream, shared feature로 함께 흐릅니다. V나 A 각각에 정답 label을 주는 별도 supervision은 없습니다. 논문의 Atari dueling model은 이 구조를 DDQN 학습과 결합합니다.
+
+공개 출처
+arxiv-v3 | pp. 3-6, Secs. 2.1-4.2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 15. Corridor 실험의 통제 조건
+
+15. Corridor 실험의 통제 조건
+
+발표 대본
+Corridor 실험은 많은 비슷한 행동이라는 가설을 직접 시험하기 위한 통제 환경입니다. 기본 행동은 상하좌우와 no action입니다. 10개와 20개 조건은 추가 no-op을 넣어 만듭니다. 논문은 epsilon 0.001의 고정된 epsilon-greedy 정책을 temporal-difference 방식으로 평가하고, 정확히 계산 가능한 Q^pi와 학습 Q 사이 squared error 합을 측정합니다. 따라서 이 실험을 전체 제어 문제나 exploration 방법의 비교로 읽으면 안 됩니다.
+
+공개 출처
+arxiv-v3 | pp. 5-6, Sec. 4.1 and Fig. 3
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 16. Corridor 결과가 지지하는 범위
+
+16. Corridor 결과가 지지하는 범위
+
+발표 대본
+Figure 3의 곡선을 정성적으로 읽겠습니다. 행동이 5개일 때에는 dueling과 single-stream 구조가 비슷한 속도로 수렴합니다. no-op을 추가해 행동이 10개와 20개가 되면 dueling의 squared-error curve가 더 낮습니다. 저자들은 상태 가치와 관련된 공통 성분을 더 자주 갱신할 수 있다는 설명과 연결합니다. 이 관찰은 corridor와 고정 정책 평가 조건에서 얻은 근거이며, 모든 큰 행동 공간이나 연속 행동 문제에서 항상 우세하다는 보편 법칙은 아닙니다.
+
+공개 출처
+arxiv-v3 | p. 6, Fig. 3; p. 8, Sec. 5
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 17. Atari 실험 설계
+
+17. Atari 실험 설계
+
+발표 대본
+Atari 실험은 57개 게임을 사용합니다. 하위에는 DQN과 같은 세 convolution layer가 있고, dueling은 그 위에 각각 512 unit인 두 fully connected stream을 둡니다. 논문은 유사한 parameter 수를 가진 Single Clip baseline도 같은 절차로 다시 학습해 architecture 차이를 더 공정하게 비교합니다. Atari dueling model은 DDQN으로 학습되므로, 결과를 설명할 때 dueling architecture와 DDQN target이 함께 쓰였다는 조건을 밝혀야 합니다.
+
+공개 출처
+arxiv-v3 | p. 6, Sec. 4.2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 18. 두 Atari 평가 조건
+
+18. 두 Atari 평가 조건
+
+발표 대본
+Table 1은 30 no-ops와 Human Starts 결과를 함께 보여 줍니다. 30 no-ops는 게임 시작 전 no-op 횟수를 바꿉니다. Human Starts는 전문가 trajectory에서 게임마다 100개 상태를 뽑아 더 다양한 위치에서 시작합니다. 각 평가 episode는 표본 상태에서 시작해 최대 108,000 frame 동안 실행하며, 표본 시작 이후에 얻은 보상만 셉니다. 표의 퍼센트는 random과 human 점수를 기준으로 정규화한 평가 점수이므로 승률이나 성공 확률로 읽으면 안 됩니다.
+
+공개 출처
+arxiv-v3 | p. 7, Table 1 and evaluation text
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 19. Table 1의 aggregate 결과
+
+19. Table 1의 aggregate 결과
+
+발표 대본
+Table 1의 핵심 수치를 그대로 비교하겠습니다. 30 no-ops에서 Single Clip의 mean과 median은 341.2와 132.6퍼센트이고 Duel Clip은 373.1과 151.5퍼센트입니다. Human Starts에서는 Single Clip이 302.8과 114.1퍼센트, Duel Clip이 343.8과 117.1퍼센트입니다. 표의 차이는 각각 31.9, 18.9, 41.0, 3.0퍼센트포인트입니다. 이는 57개 게임 집계에서 두 지표가 높았다는 뜻이며 모든 게임에서 Duel Clip이 이겼다는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v3 | p. 7, Table 1
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 20. 결합 실험과 해석 경계
+
+20. 결합 실험과 해석 경계
+
+발표 대본
+논문은 prioritized replay와 dueling, gradient clipping을 결합한 Prior. Duel Clip도 평가합니다. 각 구성은 서로 다른 문제를 겨냥하며 상호작용할 수 있습니다. 저자들은 9개 게임 subset에서 결합 설정을 다시 조정했다고 밝힙니다. 따라서 결합 model의 향상 전체를 dueling stream 분리 하나의 인과 효과로 돌릴 수 없습니다. Saliency map도 model 해석에 유용하지만 stream이 참된 가치와 advantage를 인과적으로 분리했다는 증명은 아닙니다.
+
+공개 출처
+arxiv-v3 | pp. 2 and 7-8, Figs. 2 and 5, Sec. 4.2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 21. Dueling architecture의 핵심
+
+21. Dueling architecture의 핵심
+
+발표 대본
+전체 흐름을 정리하겠습니다. 문제는 여러 행동의 가치가 비슷한 상태에서도 Q network가 행동별 값을 모두 표현해야 한다는 점입니다. Dueling은 shared feature 위에서 상태 공통 scalar와 행동별 raw score를 나눕니다. 단순히 더하면 offset이 식별되지 않으므로 Eq. (9)에서 raw A의 평균을 빼고 V를 더합니다. 최종 Q 벡터는 기존 DQN이나 DDQN 방식으로 학습할 수 있습니다. Corridor와 Atari 결과는 이 구조의 동기와 실용성을 지지하지만 모든 환경에 대한 보편적 우세를 보장하지 않습니다.
+
+공개 출처
+arxiv-v3 | pp. 1 and 4-8, Figs. 1, 3, 5 and Eq. (9)
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 22. 부록: Network parameter 표기
+
+22. 부록: Network parameter 표기
+
+발표 대본
+기호를 다시 확인하겠습니다. theta는 두 stream이 공유하는 convolutional feature의 parameter입니다. beta는 value stream, alpha는 advantage stream의 parameter입니다. 최종 Q는 세 parameter 집합을 모두 거쳐 계산됩니다. TD loss의 gradient도 aggregation을 통해 세 집합으로 흐릅니다. 이런 구조 때문에 value network와 advantage network가 서로 독립된 두 Q learner라고 표현하면 정확하지 않습니다.
+
+공개 출처
+arxiv-v3 | p. 4, Sec. 3, paragraph before Eq. (7)
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3
+
+## 23. 부록: Dueling Double DQN의 한 update
+
+23. 부록: Dueling Double DQN의 한 update
+
+발표 대본
+Dueling Double DQN이라는 이름을 한 update 안에서 풀어 보겠습니다. Online network와 target network 각각은 dueling architecture로 Q 벡터를 만듭니다. Double DQN target에서는 online Q가 다음 행동을 고르고 target Q가 그 행동의 값을 평가합니다. 현재 transition의 loss는 aggregated Q와 이 target의 차이로 계산됩니다. 따라서 dueling은 각 snapshot 내부의 representation이고 Double DQN은 두 snapshot을 target 계산에 배치하는 방식입니다.
+
+공개 출처
+arxiv-v3 | pp. 3-6, Eqs. (6), (9) and Sec. 4.2
+arXiv:1511.06581v3
+https://arxiv.org/abs/1511.06581v3

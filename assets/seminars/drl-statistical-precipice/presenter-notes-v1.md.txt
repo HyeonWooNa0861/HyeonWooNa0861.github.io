@@ -1,0 +1,374 @@
+## 1. Deep RL 평가의 통계적 절벽
+
+1. Deep RL 평가의 통계적 절벽
+
+발표 대본
+이 논문은 새로운 강화학습 알고리즘보다 평가 방법을 다룹니다. NeurIPS 2021 논문이며, 이 자료는 2022년 1월 5일 공개된 arXiv v4의 부록까지 함께 반영합니다. 질문은 단순합니다. 몇 개의 run에서 나온 점수 하나를 알고리즘의 고정된 성질처럼 읽어도 되는가입니다.
+
+공개 출처
+neurips-record | title, authors, NeurIPS 2021 record
+NeurIPS 2021 paper record
+https://proceedings.neurips.cc/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html
+arxiv-v4 | v4 metadata, 5 Jan 2022
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 2. 적은 run이 통계적 절벽이 되는 이유
+
+2. 적은 run이 통계적 절벽이 되는 이유
+
+발표 대본
+논문은 deep RL에서 게임 또는 환경마다 독립 run을 여러 번 수행해야 하지만, 계산비용 때문에 흔히 3개에서 10개만 사용한다고 지적합니다. Atari에서 50개가 넘는 게임을 다섯 번씩 학습하는 표준 실험도 1,000 GPU training days를 넘을 수 있습니다. 따라서 한 번 얻은 평균이나 중앙값에는 큰 표본 변동이 남을 수 있습니다.
+
+공개 출처
+neurips-paper | Abstract; Sec. 1, pp. 1–2
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 3. run은 seed 하나와 같지 않다
+
+3. run은 seed 하나와 같지 않다
+
+발표 대본
+Appendix A.2의 Figure A.13은 seed를 고정해도 GPU 비결정성 때문에 결과가 동일하지 않을 수 있음을 보입니다. 같은 seed 집합으로 수행한 결과 사이의 상관도 낮았습니다. 따라서 run을 seed ID와 동일시하지 말고, 환경·학습·하드웨어를 포함한 전체 독립 반복으로 정의해야 합니다.
+
+공개 출처
+arxiv-v4 | Appendix A.2; Fig. A.13
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 4. Atari 100k 사례의 실험 단위
+
+4. Atari 100k 사례의 실험 단위
+
+발표 대본
+Atari 100k는 26개 게임에서 100,000 environment steps만 학습하는 data-efficient benchmark입니다. 저자들은 각 알고리즘과 게임 조합에 100개의 독립 run을 수행하고, 학습 뒤 각 run을 100개의 episode로 평가했습니다. 이후 3개부터 100개의 run을 재표집해 평가 통계의 변동을 관찰합니다.
+
+공개 출처
+arxiv-v4 | Sec. 3.1; Appendix A.2
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 5. 점 추정치에도 분포가 있다
+
+5. 점 추정치에도 분포가 있다
+
+발표 대본
+Figure 2는 100-run data에서 작은 N을 반복해 뽑고 aggregate metric을 다시 계산합니다. sampling distribution은 알고리즘의 학습 중 상태 분포가 아니라, 동일한 평가 절차를 다시 수행할 때 통계량이 어떻게 달라지는지를 나타냅니다. 논문은 이 그림에 100,000개의 subsample을 사용했습니다.
+
+공개 출처
+arxiv-v4 | Sec. 3.1–3.2; Fig. 2
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 6. 평가 시점이 다르면 숫자도 다르다
+
+6. 평가 시점이 다르면 숫자도 다르다
+
+발표 대본
+논문은 CURL이 학습 중 10번 평가한 값의 maximum을, SUNRISE가 게임마다 8개 configuration과 3개 run에서 maximum을 보고한 사례를 설명합니다. 동일한 maximum selection을 DER에 적용하면 상당한 개선이 나타났습니다. final evaluation과 maximum selection은 operational definition부터 다릅니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.1; Appendix A.4
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 7. 통계량·구간·검정은 다른 층이다
+
+7. 통계량·구간·검정은 다른 층이다
+
+발표 대본
+통계량은 표본의 요약값입니다. 신뢰구간은 그 통계량을 추정하는 절차의 불확실성을 보여 줍니다. 가설검정은 사전에 정한 귀무가설과 오류율 아래의 별도 의사결정 절차입니다. 논문은 이분법적 유의성 보고보다 effect size와 confidence interval을 함께 제시하라고 권고합니다.
+
+공개 출처
+neurips-paper | Sec. 3–4, pp. 3–6
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 8. 평가 데이터는 M×N score matrix다
+
+8. 평가 데이터는 M×N score matrix다
+
+발표 대본
+논문의 표기에서 M은 task 수, N은 각 task의 독립 run 수입니다. x_mn은 정규화된 score입니다. 여기의 matrix는 이해를 위한 축약 그림이라 두 run 열만 보이지만, 실제 데이터에는 N개 열이 있습니다. stratified bootstrap은 이 task 경계를 유지합니다.
+
+공개 출처
+neurips-paper | Sec. 2, p. 2
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 9. 정규화와 metric 방향을 먼저 확인한다
+
+9. 정규화와 metric 방향을 먼저 확인한다
+
+발표 대본
+Atari human-normalized score는 random agent를 0, average human을 1로 둡니다. Procgen 재분석에서는 PPO normalization보다 min–max normalization을 사용합니다. normalization은 단위 변환에 그치지 않고 task 간 상대 가중과 순위에 영향을 줄 수 있습니다. optimality gap만 lower-is-better라는 점도 반드시 분리해야 합니다.
+
+공개 출처
+arxiv-v4 | Sec. 2, 4.2, 5.3; Appendix A.6
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 10. mean과 median의 다른 취약점
+
+10. mean과 median의 다른 취약점
+
+발표 대본
+Atari score에는 일부 게임의 매우 큰 normalized score가 있어 mean이 크게 흔들릴 수 있습니다. median은 outlier에는 강하지만 finite sample에서 높은 분산과 bias가 나타납니다. IQM은 middle half를 평균해 두 성질을 절충하지만, distribution에 따라 효율성이 달라지므로 항상 최적이라고 말할 수 없습니다.
+
+공개 출처
+arxiv-v4 | Sec. 3–4; Fig. 2–3; Fig. A.16
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 11. IQM은 중앙 50%의 평균이다
+
+11. IQM은 중앙 50%의 평균이다
+
+발표 대본
+논문은 IQM을 25% trimmed mean으로 정의합니다. median처럼 중앙 위치만 고르는 대신 middle half의 값 전체를 평균합니다. 이 때문에 studied benchmarks에서 median보다 statistically efficient했고 mean보다 robust했습니다. 다만 tail 성능을 알고 싶다면 performance profile 같은 별도 보기가 필요합니다.
+
+공개 출처
+neurips-paper | Sec. 4.2, pp. 6–7
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 12. 계산 예: outlier와 IQM
+
+12. 계산 예: outlier와 IQM
+
+발표 대본
+여덟 score의 원래 합은 7.3이므로 mean은 0.9125입니다. IQM은 bottom two와 top two를 제거하고 0.2, 0.3, 0.8, 0.9의 평균 0.55를 사용합니다. 최대값을 20으로 바꾸면 mean은 23.3/8=2.9125가 되지만 IQM은 같습니다. 이 예시는 논문의 정의만 적용한 교육용 계산입니다.
+
+공개 출처
+neurips-paper | Sec. 4.2, IQM definition
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 13. Performance profile은 분포를 곡선으로 본다
+
+13. Performance profile은 분포를 곡선으로 본다
+
+발표 대본
+논문이 권고하는 run-score distribution은 empirical tail distribution입니다. 모든 task-run score를 사용하고, threshold tau보다 큰 비율을 그립니다. 따라서 higher curve is better입니다. 한 outlier가 곡선을 바꿀 수 있는 최대 크기는 1/(M×N)입니다. uncertainty는 threshold별 pointwise stratified-bootstrap band로 나타냅니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.2; Fig. 8
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 14. 계산 예: profile이 교차할 수 있다
+
+14. 계산 예: profile이 교차할 수 있다
+
+발표 대본
+A와 B는 threshold 0.5에서 같고, 1.0에서는 A가 높으며, 1.5에서는 B가 높습니다. 따라서 curve가 교차합니다. 이때 어느 algorithm이 더 좋다는 결론은 관심 threshold와 위험 선호에 달립니다. 숫자는 performance-profile 정의를 설명하기 위해 만든 예시입니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.2, run-score distributions
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 15. Stratified bootstrap은 task 안에서 뽑는다
+
+15. Stratified bootstrap은 task 안에서 뽑는다
+
+발표 대본
+stratified라는 말은 game 또는 task가 층이라는 뜻입니다. 각 task에서 N개의 run을 replacement와 함께 다시 뽑고, 모든 task의 resampled score에 aggregate metric을 계산합니다. 이 과정을 반복한 분포의 quantile로 percentile interval을 구성합니다. 논문은 aggregate score에 보통 50,000 bootstrap replicate를 사용합니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.1; Fig. 5–6; Appendix A.5
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 16. 계산 예: bootstrap replicate 하나
+
+16. 계산 예: bootstrap replicate 하나
+
+발표 대본
+원래 Task A는 0.2,0.4,0.6,0.8이고 Task B는 0.3,0.5,0.9,1.1입니다. 표시한 index를 task별로 복원추출하면 결합 정렬값은 0.2,0.3,0.4,0.4,0.5,0.8,1.1,1.1입니다. middle four의 평균은 0.525입니다. 이 한 번의 계산을 여러 번 반복해야 bootstrap distribution을 얻습니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.1, stratified bootstrap
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 17. 95% CI를 올바르게 읽는 법
+
+17. 95% CI를 올바르게 읽는 법
+
+발표 대본
+95% confidence interval은 같은 절차를 반복했을 때 생성된 구간의 약 95%가 target quantity를 포함하도록 설계된다는 뜻입니다. 이미 계산된 한 구간에 참값이 들어 있을 확률을 95%라고 말하는 frequentist 해석은 부정확합니다. 또한 bootstrap interval은 N=3처럼 매우 작을 때 nominal coverage를 얻지 못할 수 있습니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.1; Appendix A.5
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 18. 알고리즘 비교에는 차이의 CI가 필요하다
+
+18. 알고리즘 비교에는 차이의 CI가 필요하다
+
+발표 대본
+관심 parameter가 알고리즘 차이라면 bootstrap replicate마다 두 알고리즘의 aggregate statistic 차이를 계산하고 그 분포의 interval을 구해야 합니다. 개별 confidence interval의 overlap 여부는 차이의 interval과 같은 검정이 아닙니다. 같은 task set의 각 task 안에서 X와 Y의 독립 run들을 각각 독립적으로 복원 추출한 뒤, 해당 replicate의 statistic(X)−statistic(Y)를 구합니다. 이것은 서로 다른 알고리즘의 run을 임의로 짝짓는 paired bootstrap이 아닙니다. 실제로 paired 설계로 수집한 자료를 분석할 때만 그 실험의 pairing을 보존해야 합니다.
+
+공개 출처
+neurips-paper | Sec. 4.1–4.3, pp. 5–7
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 19. Probability of improvement는 승률이다
+
+19. Probability of improvement는 승률이다
+
+발표 대본
+논문은 Mann–Whitney statistic으로 task별 P(X>Y)를 추정하고, 이를 task 전체에서 평균냅니다. 0.5는 대체로 동등한 승률을 뜻합니다. 이 값은 effect magnitude를 반영하지 않으므로 IQM 차이와 함께 보는 것이 좋습니다. profile과 마찬가지로 bootstrap uncertainty를 덧붙일 수 있습니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.3; Fig. 7
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 20. 계산 예: 두 task의 개선 확률
+
+20. 계산 예: 두 task의 개선 확률
+
+발표 대본
+Task 1의 네 pair 중 X가 이기는 경우는 0.8>0.6과 1.0>0.6의 두 개입니다. Task 2에서는 0.5>0.4, 0.7>0.4, 0.7>0.6의 세 개입니다. task별 확률을 동일하게 평균하면 0.625입니다. 숫자는 논문 정의를 적용한 교육용 계산입니다.
+
+공개 출처
+arxiv-v4 | Sec. 4.3, improvement probability
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 21. Optimality gap은 목표 미달을 본다
+
+21. Optimality gap은 목표 미달을 본다
+
+발표 대본
+Atari human-normalized score에서는 target gamma=1이 human performance를 뜻합니다. 각 score의 contribution은 max(0, 1−x)이고 이를 평균합니다. 따라서 1.2와 10 모두 gap contribution이 0입니다. high tail의 크기를 중요하게 본다면 mean이나 performance profile을 함께 봐야 합니다.
+
+공개 출처
+neurips-paper | Sec. 4.2, optimality gap
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf
+
+## 22. 권장 reporting packet
+
+22. 권장 reporting packet
+
+발표 대본
+논문과 companion library rliable의 핵심 철학은 한 metric으로 모든 것을 대체하는 것이 아닙니다. IQM은 robust central tendency, performance profile은 score distribution, probability of improvement는 direct pairwise frequency를 보여 줍니다. run budget, evaluation protocol, normalization을 함께 적어야 재해석이 가능합니다.
+
+공개 출처
+arxiv-v4 | Sec. 4; Fig. 7–8
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 23. Atari 100k 근거의 실제 비용
+
+23. Atari 100k 근거의 실제 비용
+
+발표 대본
+Appendix A.2의 산술은 15,600 main runs와 2,600 extra DER runs를 합쳐 18,200 runs입니다. 각 run은 Tesla P100에서 대략 3–5시간 걸렸고, paper estimate는 2,400–3,600 GPU training days입니다. 실제 wall-clock 기간은 병렬 GPU 수에 따라 다르므로 training-day 합계와 구분해야 합니다.
+
+공개 출처
+arxiv-v4 | Appendix A.2, computational resources
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 24. 조건부 결과: median보다 IQM이 안정적이었다
+
+24. 조건부 결과: median보다 IQM이 안정적이었다
+
+발표 대본
+Figure 2는 DER, OTR, DrQ에 N=5, SPR에 N=10, CURL에 N=20을 사용해 기존 보고 관행을 재현합니다. 100,000 subsamples에서 median sampling distribution은 넓고, IQM은 더 좁았습니다. median은 50 runs에서도 substantial uncertainty가 남았습니다. 이는 Atari 100k의 관찰이지 IQM이 모든 benchmark에서 최적이라는 theorem이 아닙니다.
+
+공개 출처
+arxiv-v4 | Sec. 3.2; Fig. 2
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 25. 작은 개선일수록 더 많은 run이 필요했다
+
+25. 작은 개선일수록 더 많은 run이 필요했다
+
+발표 대본
+Figure 4는 실제 새 알고리즘을 비교한 것이 아니라 DER normalized scores를 0%, 10%, 25% 올려 controlled effect를 만듭니다. median은 25% lift에서 약 25 runs, 10% lift에서 약 100 runs가 필요했습니다. IQM은 더 적은 runs에서 안정적이었습니다. 정확한 요구 run 수는 이 data-generating distribution에 조건부입니다.
+
+공개 출처
+arxiv-v4 | Sec. 3.3; Fig. 4
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 26. Bootstrap도 작은 N에서는 점검해야 한다
+
+26. Bootstrap도 작은 N에서는 점검해야 한다
+
+발표 대본
+저자들은 DER의 200 independent runs를 ground-truth approximation으로 사용해 interval coverage를 확인했습니다. Atari 100k의 aggregate median과 IQM은 5–10 runs 부근에서 nominal 95% coverage에 가까웠지만 N=3에서는 낮았습니다. 한 game의 mean은 20–30 runs 정도가 필요했습니다. 이 차이는 task aggregation이 uncertainty를 줄일 수 있음을 보여 주지만, 보편적 sample-size theorem은 아닙니다.
+
+공개 출처
+arxiv-v4 | Fig. 6; Appendix A.5
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 27. Atari 200M: metric이 순위를 바꾼다
+
+27. Atari 200M: metric이 순위를 바꾼다
+
+발표 대본
+Section 5.1은 Atari 200M의 55 games with sticky actions를 재분석합니다. 대부분 five runs per game이지만 M-IQN은 3, DreamerV2는 11입니다. DreamerV2와 M-IQN의 mean은 JAMESBOND에서 50을 넘는 normalized score의 영향을 크게 받습니다. mean, median, IQM의 ranking이 달라지는 이유를 distribution과 함께 읽어야 합니다.
+
+공개 출처
+arxiv-v4 | Sec. 5.1; Fig. 9
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 28. DeepMind Control: uncertainty가 결론을 제한한다
+
+28. DeepMind Control: uncertainty가 결론을 제한한다
+
+발표 대본
+DeepMind Control 재분석은 six tasks와 100k, 500k environment-step budgets를 분리합니다. score는 maximum 1000으로 normalize합니다. 대부분 개별-run score로 percentile stratified bootstrap을 계산하지만, CURL, CURL-D2RL, SUNRISE는 이용 가능한 aggregate 정보 때문에 studentized interval을 사용합니다. rank distribution은 200,000 resamples로 구합니다.
+
+공개 출처
+arxiv-v4 | Sec. 5.2; Fig. 10–11
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 29. Procgen: claimed gain과 승률은 다르다
+
+29. Procgen: claimed gain과 승률은 다르다
+
+발표 대본
+Procgen analysis는 16 easy-mode environments와 10 independent runs per environment를 사용합니다. 저자들은 PPO normalization보다 task-wise min–max normalization을 선호합니다. 여러 claimed improvements의 average probability of improvement는 50–70% 정도이며, UCB-DrAC relative to PLR은 40–50% 부근입니다. 승률과 score magnitude는 서로 다른 질문입니다.
+
+공개 출처
+arxiv-v4 | Sec. 5.3; Fig. 12
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 30. 이 논문이 보장하지 않는 것
+
+30. 이 논문이 보장하지 않는 것
+
+발표 대본
+논문의 범위는 statistical reproducibility, 즉 같은 평가를 반복했을 때 보고 결과가 얼마나 안정적인지에 가깝습니다. method reproducibility, implementation correctness, external validity를 자동으로 보장하지 않습니다. sample sufficiency는 benchmark distribution, effect size, statistic에 따라 달라집니다. confidence interval도 선택 편향이나 protocol mismatch를 제거하지 않습니다.
+
+공개 출처
+arxiv-v4 | Sec. 6–7; Appendices A.1, A.5
+arXiv:2108.13264v4, 5 January 2022
+https://arxiv.org/abs/2108.13264v4
+
+## 31. Deep RL 결과표를 읽는 순서
+
+31. Deep RL 결과표를 읽는 순서
+
+발표 대본
+마지막으로 실전 순서를 정리합니다. 먼저 M, N, budget, final-or-maximum protocol을 확인합니다. 다음으로 normalization과 good direction을 확인하고, point statistic과 confidence interval을 함께 읽습니다. profile과 direct comparison을 보완한 뒤, 결론을 관찰한 benchmark 조건 밖으로 일반화하지 않습니다. 이것이 논문의 statistical precipice를 피하는 최소 습관입니다.
+
+공개 출처
+neurips-paper | Sec. 4–7, pp. 5–10
+NeurIPS 2021 proceedings paper
+https://proceedings.neurips.cc/paper_files/paper/2021/file/f514cec81cb148559cf475e7426eed5e-Paper.pdf

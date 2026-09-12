@@ -100,7 +100,7 @@ DQN은 3-layer fully connected network, replay buffer, target network, $$\epsilo
 | 평가 항목 | 주요 관찰 |
 |---|---|
 | Workload response | 낮은 utilization에서는 LITTLE core를 우선하고, 부하가 높아지면 big core와 offloading을 더 사용함 |
-| Deadline behavior | 정규화 utilization 0.375까지 task drop이 거의 없고 이후 자원 한계로 drop이 증가함 |
+| Deadline behavior | Fig. 5에서 drop은 utilization 0.375에도 2.588%이며, 0.5·0.75·1.0에서 각각 17.770%·49.223%·83.300%로 증가 |
 | Edge-only 비교 | 두 task set 모두에서 약 84.26% 낮은 energy consumption을 보고함 |
 | Local-only 비교 | Task Set I과 II에서 각각 81.13%, 79.18% 개선을 보고함 |
 | Random policy 비교 | Task Set I과 II에서 각각 62.8%, 59.75% 개선을 보고함 |
@@ -127,6 +127,14 @@ Task dependency는 현재 모델에서 제외된다. 이를 해결하려면 DAG 
 ## Source Availability Note
 
 논문 참고문헌 [2]가 가리키는 `NimaSamadi007/iDEASImplementation` 저장소는 2026-08-19 확인 시 HTTP 404를 반환했고, 공개된 대체 경로도 확인하지 못했다. 재현용 코드가 다시 공개되기 전까지는 논문 PDF의 알고리즘과 파라미터를 기준으로 해석해야 한다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 30장 | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

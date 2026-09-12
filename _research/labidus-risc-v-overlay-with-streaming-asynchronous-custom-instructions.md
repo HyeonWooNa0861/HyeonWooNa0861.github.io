@@ -256,6 +256,14 @@ Labidus는 매우 규칙적인 matrix multiplication보다, control이 복잡하
 | RISC-V softcore overhead | 아무리 줄여도 pure custom datapath 대비 control overhead가 남는다. |
 | Legacy code 자동 추출은 future work | 논문은 legacy software에서 custom kernel을 자동 추출하는 방향을 향후 과제로 제시한다. |
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 28장 | <a href="/assets/seminars/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/labidus-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/labidus-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

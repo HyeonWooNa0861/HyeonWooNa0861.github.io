@@ -1,0 +1,509 @@
+## 1. SEED: 확장 가능한 분산 서브그래프 열거
+
+1. SEED: 확장 가능한 분산 서브그래프 열거
+
+발표 대본
+SEED는 큰 비라벨 그래프에서 주어진 패턴과 동형인 모든 서브그래프를 분산 환경에서 열거하는 방법입니다. 핵심은 단순히 기계를 늘리는 데 있지 않습니다. 어떤 부분 패턴을 먼저 만들고, 로컬 그래프에 무엇을 저장하며, 어떤 중간 결과를 물질화할지 함께 설계해야 합니다. 발표에서는 후보 폭발에서 출발해 SCP 저장, PR 비용 추정, bushy 조인 계획, clique compression으로 이어지는 설계 논리를 따라갑니다.
+
+공개 출처
+doi | published record
+Published article DOI record
+https://doi.org/10.14778/3021924.3021937
+vldb-pdf | p. 217, Abstract
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 2. 입력은 두 그래프, 출력은 모든 match
+
+2. 입력은 두 그래프, 출력은 모든 match
+
+발표 대본
+문제의 입력은 분산 파일 시스템에 저장된 data graph G와 작은 connected pattern P입니다. Match는 P의 각 vertex를 G의 vertex에 대응시키는 mapping입니다. 이 논문은 하나가 존재하는지 묻는 subgraph isomorphism decision이 아니라 조건을 만족하는 모든 mapping을 열거합니다. 따라서 계산 과정의 후보뿐 아니라 최종 출력 크기도 알고리즘이 피할 수 없는 비용이 될 수 있습니다.
+
+공개 출처
+vldb-pdf | pp. 217-218, Introduction and Definition 2
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 3. Decision과 enumeration은 종료 조건이 다르다
+
+3. Decision과 enumeration은 종료 조건이 다르다
+
+발표 대본
+Enumeration에서는 최종 match가 매우 많다면 그 모든 결과를 실제로 전달해야 합니다. SEED의 clique compression은 중간 join 동안 결과를 압축해 유지하지만, 사용자가 distinct match 전체를 요구하면 마지막에는 확장해야 합니다. 그러므로 이 논문의 확장성 주장은 불필요한 intermediate relation을 줄이는 데 초점을 두며, 최종 output 크기의 하한을 없애는 것은 아닙니다.
+
+공개 출처
+vldb-pdf | p. 218, Problem Statement; pp. 224-225, Sec. 7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 4. 기본 match의 두 조건에 대칭 제거 조건을 더한다
+
+4. 기본 match의 두 조건에 대칭 제거 조건을 더한다
+
+발표 대본
+Conflict freedom은 mapping이 injective해야 한다는 뜻입니다. Structure preservation은 pattern의 모든 edge가 data graph에도 있어야 한다는 뜻입니다. 대칭이 있는 pattern에서는 하나의 실제 subgraph가 여러 mapping으로 반복될 수 있으므로 pattern vertex 사이에 partial order를 두고 order preservation을 추가합니다. 논문은 분석 편의를 위해 대칭 제거 뒤의 match 열거에 초점을 둡니다.
+
+공개 출처
+vldb-pdf | p. 218, Definition 2 and Remark 1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 5. Symmetry breaking은 같은 subgraph의 중복 표현을 막는다
+
+5. Symmetry breaking은 같은 subgraph의 중복 표현을 막는다
+
+발표 대본
+Pattern에 A개의 automorphism이 있으면 같은 subgraph가 A개의 match로 나타날 수 있습니다. 논문은 degree와 ID를 이용해 data vertex의 total order를 만들고, pattern vertex 사이의 partial order를 보존하는 mapping만 남깁니다. 이는 duplicate enumeration을 막는 별도의 장치입니다. 어떤 join unit과 join tree를 선택할지는 그 다음 단계의 비용 최적화 문제입니다.
+
+공개 출처
+vldb-pdf | p. 218, Definition 1 and Remark 1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 6. High-degree vertex 하나가 후보를 폭발시킨다
+
+6. High-degree vertex 하나가 후보를 폭발시킨다
+
+발표 대본
+세 edge star는 백만 이웃 중 세 개를 고르는 후보를 만들기 때문에 order 관점에서 10의 18승 규모가 됩니다. TwinTwigJoin은 한두 edge star만 쓰므로 같은 중심에서 두 이웃 후보가 약 10의 12승 규모지만 여전히 매우 큽니다. 반면 clique unit은 이웃끼리 실제 edge가 있는지 local enumeration 중에 검사해 희소한 그래프에서 불필요한 star 후보를 일찍 제거할 수 있습니다. 항상 clique가 더 작다는 보편 정리는 아닙니다.
+
+공개 출처
+vldb-pdf | pp. 217-218, Sec. 1.1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 7. 분산 환경에서는 DFS보다 join으로 나누기 쉽다
+
+7. 분산 환경에서는 DFS보다 join으로 나누기 쉽다
+
+발표 대본
+논문은 depth-first search가 분산시키기 어렵기 때문에 MapReduce와 같은 환경에서 decomposition-and-join을 사용합니다. 각 join unit의 match를 relation처럼 보고 공통 pattern vertex가 같은 mapping끼리 reducer로 보냅니다. 병렬 실행 자체는 자연스럽지만, 잘못된 unit이나 join 순서를 고르면 최종 정답보다 훨씬 큰 intermediate relation을 만들 수 있습니다.
+
+공개 출처
+vldb-pdf | pp. 217 and 219, Secs. 1.1 and 3.1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 8. Pattern relation은 join unit을 결합해 계산한다
+
+8. Pattern relation은 join unit을 결합해 계산한다
+
+발표 대본
+실행의 기본식은 큰 pattern의 match relation을 두 작은 pattern relation의 natural join으로 만드는 것입니다. 공유하는 pattern vertex 집합이 join attribute가 됩니다. Left-deep과 bushy의 차이는 이 두 입력 중 하나가 항상 원시 join unit인지, 아니면 둘 다 이전에 계산한 partial pattern일 수 있는지에 있습니다.
+
+공개 출처
+vldb-pdf | pp. 219-220, Equation 1 and Equation 2
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 9. Reducer는 같은 key라도 tail이 겹치면 버린다
+
+9. Reducer는 같은 key라도 tail이 겹치면 버린다
+
+발표 대본
+Algorithm 1의 reducer는 공유 pattern vertex의 data image를 key로 받아 왼쪽 match 집합 F와 오른쪽 H를 결합합니다. 예시 첫 행은 공유 vertex가 b로 일치하고 나머지 image가 겹치지 않아 합칠 수 있습니다. 둘째 행은 공유 영역 밖에서 a를 중복 사용하므로 conflict freedom을 위반해 버립니다. 이 검사는 relaxed PR estimate와 실제 match 수가 달라지는 이유 중 하나이기도 합니다.
+
+공개 출처
+vldb-pdf | p. 220, Algorithm 1 lines 15-17
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 10. TwinTwigJoin의 optimality에는 두 경계가 있다
+
+10. TwinTwigJoin의 optimality에는 두 경계가 있다
+
+발표 대본
+TwinTwigJoin이 instance optimal이라는 표현은 모든 분산 열거 알고리즘보다 항상 낫다는 뜻이 아닙니다. StarJoin을 한두 edge의 TwinTwigJoin으로 바꾸고 left-deep plan만 고려하는 제한된 공간에서의 결과입니다. SEED는 저장 구조를 바꿔 clique도 join unit으로 허용하고, 두 partial relation을 합칠 수 있는 bushy tree를 탐색합니다. 비용 추정도 실제 그래프의 heavy-tail degree를 반영하도록 PR model을 사용합니다.
+
+공개 출처
+vldb-pdf | pp. 217-220, Secs. 1.1, 3.2 and 3.3
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 11. Left-deep과 bushy는 중간 결과의 모양이 다르다
+
+11. Left-deep과 bushy는 중간 결과의 모양이 다르다
+
+발표 대본
+Left-deep tree에서는 매 join마다 한 입력이 원시 join unit입니다. 그래서 하나의 partial relation이 단계마다 커집니다. Bushy tree는 두 subpattern을 독립적으로 선별한 뒤 합칠 수 있어 power-law graph에서 거대한 intermediate를 피할 수 있습니다. 논문 Figure 2의 예에서는 두 plan 모두 세 round이므로, bushy의 이득을 단순히 round 감소로 설명하면 정확하지 않습니다.
+
+공개 출처
+vldb-pdf | pp. 219-220, Definition 4 and Fig. 2
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 12. SEED는 다섯 구성요소를 하나의 실행 계획에 묶는다
+
+12. SEED는 다섯 구성요소를 하나의 실행 계획에 묶는다
+
+발표 대본
+SCP storage는 가능한 join unit을 늘립니다. PR model은 각 unit과 partial pattern의 match relation 크기를 추정합니다. Dynamic programming은 그 비용을 이용해 bushy plan을 선택합니다. Overlap은 필요한 edge를 조금 중복해 relation을 더 선별적으로 만들고, clique compression은 data graph 안의 큰 clique가 만드는 조합 폭발을 줄입니다. 논문은 이 요소들을 독립 발명 목록이 아니라 하나의 execution-plan framework 안에서 연결합니다.
+
+공개 출처
+vldb-pdf | pp. 218 and 220-225, contributions and Secs. 3-7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 13. 무엇을 local graph에 넣느냐가 join unit을 결정한다
+
+13. 무엇을 local graph에 넣느냐가 join unit을 결정한다
+
+발표 대본
+논문의 Definition 3은 join unit을 storage와 함께 정의합니다. 각 data vertex u에 대해 local graph Gᵤ를 두고, 그 안에서 p의 match를 독립적으로 열거했을 때 전체 union이 global match relation과 같아야 합니다. 단순 adjacency list는 star를 보존하지만 neighbor 사이 edge가 없어 clique를 보존하지 못합니다. 더 많은 구조를 지원하려면 local graph가 커져 workload skew가 심해질 수 있습니다.
+
+공개 출처
+vldb-pdf | p. 219, Definition 3; pp. 220-221, Sec. 4
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 14. Φ₀는 중심과 incident edge만 저장한다
+
+14. Φ₀는 중심과 incident edge만 저장한다
+
+발표 대본
+Φ₀의 local graph Gᵤ⁰는 중심 u, 이웃 N(u), 그리고 u에 incident한 edge만 가집니다. 그러므로 u를 중심으로 한 star는 한 local graph에서 만들 수 있습니다. 하지만 두 이웃 사이의 closing edge는 없으므로 triangle이나 더 큰 clique가 실제로 존재하는지 local graph만 보고 확인할 수 없습니다. SEED가 storage를 바꾸는 직접적인 이유입니다.
+
+공개 출처
+vldb-pdf | p. 220, Sec. 3.2 Graph Storage
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 15. Φ₁는 clique를 보존하지만 skew를 키운다
+
+15. Φ₁는 clique를 보존하지만 skew를 키운다
+
+발표 대본
+Φ₁는 u의 이웃들 사이에 실제로 존재하는 모든 edge를 Gᵤ¹에 넣습니다. 그러면 star와 clique match를 local graph에서 완전하게 열거할 수 있습니다. 하지만 PR 분석에서 추가 edge 기대량이 해당 node의 expected degree 제곱에 거의 비례해 고차수 node의 local graph가 비정상적으로 커질 수 있습니다. 분산 저장의 총량뿐 아니라 한 worker가 담당하는 최대 local graph가 scalability를 제한합니다.
+
+공개 출처
+vldb-pdf | p. 221, Lemmas 1-2
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 16. Φ₂는 triangle closing edge의 owner를 하나로 정한다
+
+16. Φ₂는 triangle closing edge의 owner를 하나로 정한다
+
+발표 대본
+Φ₂의 정확한 규칙은 단순히 작은 ID의 node에 저장한다가 아닙니다. 논문 Definition 1의 data order는 degree가 작으면 먼저 오고, degree가 같을 때 ID가 작으면 먼저 옵니다. Triangle의 최소 vertex u가 중심인 local graph에만 두 이웃 사이 closing edge를 추가합니다. 따라서 같은 triangle이 관련된 모든 local graph에 복제되지 않으며, Gᵤ⁰는 Gᵤ²의 부분이고 Gᵤ²는 Gᵤ¹의 부분입니다.
+
+공개 출처
+vldb-pdf | pp. 218 and 221, Definition 1 and Compact SCP Storage
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 17. 손으로 추적하기: Φ₀에서는 triangle이 보이지 않는다
+
+17. 손으로 추적하기: Φ₀에서는 triangle이 보이지 않는다
+
+발표 대본
+이 예시는 논문의 규칙을 이해하기 위해 독립적으로 구성한 hand trace입니다. 원본에는 a, b, c의 triangle과 추가 leaf d가 있습니다. Φ₀에서 Gₐ는 a와 모든 이웃을 갖지만 edge는 a에 incident한 것만 유지하므로 b-c가 없습니다. 따라서 a를 중심으로 한 two-edge star는 만들 수 있어도 triangle을 local join unit으로 완성할 수 없습니다.
+
+공개 출처
+vldb-pdf | pp. 220-221, Φ₀ and Φ₂ definitions
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 18. 손으로 추적하기: b-c의 owner는 a다
+
+18. 손으로 추적하기: b-c의 owner는 a다
+
+발표 대본
+Order가 a, b, c 순서이므로 a만 두 다른 triangle vertex보다 작습니다. 따라서 b-c를 Gₐ²에 넣습니다. G_b²와 G_c²에는 이 triangle을 위한 closing edge를 넣지 않습니다. 그 결과 Gₐ²에서 세 edge를 모두 확인해 triangle을 열거할 수 있습니다. 이 owner 규칙이 Φ₁보다 compact하면서도 clique-preserved인 핵심입니다.
+
+공개 출처
+vldb-pdf | p. 221, Φ₂ definition and Lemma 3
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 19. Φ₂가 보존하는 join unit은 정확히 star와 clique다
+
+19. Φ₂가 보존하는 join unit은 정확히 star와 clique다
+
+발표 대본
+Lemma 3은 Φ₂에서 pattern p가 join unit일 필요충분조건을 star 또는 clique로 제시합니다. 논문은 임의 motif까지 local unit으로 만들 가능성을 부정하지 않지만, 더 많은 edge를 각 local graph에 넣어야 하므로 크기 bound와 workload skew를 통제하기 어렵다고 설명합니다. 따라서 SEED는 scalability를 위해 의도적으로 star와 clique에 범위를 제한합니다.
+
+공개 출처
+vldb-pdf | p. 221, Lemma 3 and Discussion
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 20. 비용 함수는 Map·Shuffle·Reduce data volume을 더한다
+
+20. 비용 함수는 Map·Shuffle·Reduce data volume을 더한다
+
+발표 대본
+논문 비용 모델은 Map data, Shuffle data, Reduce data의 volume을 합산합니다. 이는 machine 사이 communication I/O와 partial result의 disk I/O가 MapReduce 실행을 지배한다는 가정입니다. 표기상 data graph의 edge 수에도 M을 쓰므로 문맥을 구분해야 합니다. 논문 Remark 3은 Spark처럼 intermediate를 memory에 두는 platform에서는 disk access 항을 조정해야 한다고 명시합니다.
+
+공개 출처
+vldb-pdf | p. 222, Sec. 5 and Remark 3
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 21. Join unit과 partial pattern은 다른 비용식을 쓴다
+
+21. Join unit과 partial pattern은 다른 비용식을 쓴다
+
+발표 대본
+Join unit은 각 local graph에서 match를 생성하므로 local storage scan 비용과 relation 생성 비용이 들어갑니다. 논문은 local graph에 포함된 triangle-edge 규모를 Δ(G)로 표현하고 T(p)를 |Δ(G)| 더하기 3|R(p)|로 정리합니다. 이미 계산한 partial pattern은 relation을 읽고 key를 붙여 shuffle하고 reduce에서 다시 읽고 출력하므로 5|R(Pα)|로 셉니다. 전체 plan cost는 round별 관련 항의 합입니다.
+
+공개 출처
+vldb-pdf | p. 222, Equations 3-5
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 22. PR model은 edge를 확장하며 match 수를 추정한다
+
+22. PR model은 edge를 확장하며 match 수를 추정한다
+
+발표 대본
+SEED는 connected pattern에 DFS tree를 만들고 edge 하나에서 시작합니다. 새 vertex를 붙이는 tree edge는 Equation 6의 degree moment ratio로 match 증가 factor γ를 추정합니다. 이미 mapping된 두 pattern vertex를 잇는 non-tree edge는 Equation 7에서 두 degree moment와 정규화 계수 ρ를 함께 사용합니다. ρ 자체는 edge probability가 아니며, i와 j 사이 edge probability는 w_i w_j ρ입니다. 다음 두 슬라이드에서 기호와 식을 정의합니다. 이 과정은 실제 relation 관측이 아니라 PR random graph에서의 기대량 계산입니다.
+
+공개 출처
+vldb-pdf | pp. 222-223, Equations 6-7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 23. PR 식의 기호: data degree와 pattern degree를 구분한다
+
+23. PR 식의 기호: data degree와 pattern degree를 구분한다
+
+발표 대본
+논문의 PR graph에서는 expected degree sequence w를 주고, i와 j 사이 edge probability를 w_i w_j ρ로 둡니다. ρ는 전체 기대 degree 합의 역수입니다. δ와 δ prime은 data vertex degree가 아니라 edge를 붙이기 직전 partial pattern에서 두 endpoint의 degree입니다. 긴 합의 비율을 한눈에 비교하려고 μ(δ)라는 교육용 축약을 도입했습니다. 이는 새로운 추정기를 제안하는 것이 아니라 원문 Equation 6과 7을 동일하게 다시 쓰는 표기입니다.
+
+공개 출처
+vldb-pdf | pp. 219 and 222, PR model and Equations 6-7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 24. 새 이웃을 붙일 때와 기존 두 정점을 닫을 때의 계산
+
+24. 새 이웃을 붙일 때와 기존 두 정점을 닫을 때의 계산
+
+발표 대본
+새 pattern vertex를 추가하는 tree-edge case에서는 γ=∑w_i^(δ+1)/∑w_i^δ입니다. 이미 mapping된 두 endpoint 사이 non-tree edge를 추가하면 γ=ρ×(∑w_i^(δ+1)/∑w_i^δ)×(∑w_j^(δ′+1)/∑w_j^δ′)입니다. 두 식은 원문 Equations 6과 7입니다. 새로운 endpoint를 고르는 연산과 기존 endpoint 사이 edge를 요구하는 연산을 구분해야 합니다. 이 연쇄 계산은 PR 모델 내부에서 conflict freedom을 완화한 count 추정이며, 실제 graph의 tuple 수나 runtime을 결정적으로 상계한다는 뜻이 아닙니다.
+
+공개 출처
+vldb-pdf | p. 222, Equations 6-7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 25. 같은 pattern도 graph model이 plan 순위를 바꾼다
+
+25. 같은 pattern도 graph model이 plan 순위를 바꾼다
+
+발표 대본
+Table 3은 N 백만, M 이천오백만 설정의 PR graph에서 두 partial pattern의 expected match 수를 billion 단위로 비교합니다. 예를 들어 β가 2.5일 때 left-deep 쪽은 1,993.0 billion, bushy 쪽은 16.3 billion입니다. 논문은 ER model이 E1을, PR model이 E2를 최적으로 고르는 예로 사용합니다. 이 수치는 해당 모델과 패턴에 대한 분석값이지 실제 dataset 측정값은 아닙니다.
+
+공개 출처
+vldb-pdf | p. 222, Table 3 and Remark 4
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 26. PR 비용은 estimate이지 observed guarantee가 아니다
+
+26. PR 비용은 estimate이지 observed guarantee가 아니다
+
+발표 대본
+PR model은 degree heterogeneity를 반영해 ER보다 현실적인 계획을 고르려는 estimator입니다. 그러나 실제 graph의 edge correlation과 community를 모두 재현하지 않습니다. 동일한 PR-model count 계산에서 conflict freedom을 풀면 data vertex 재사용과 self-loop를 허용한 항까지 포함하므로 injective match count에 대한 상한이 됩니다. 이것은 임의의 실제 dataset의 match 수나 runtime에 대한 결정적 상한이 아닙니다. 비용식 역시 MapReduce I/O를 중심으로 하므로 estimated count를 관측된 tuple 수나 runtime 보장처럼 말해서는 안 됩니다.
+
+공개 출처
+vldb-pdf | pp. 219 and 222-223, PR model and Sec. 5
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 27. Bushy plan은 connected edge-subpattern DP로 찾는다
+
+27. Bushy plan은 connected edge-subpattern DP로 찾는다
+
+발표 대본
+Algorithm 2는 pattern의 connected edge subset마다 hash-map entry를 만듭니다. Join unit이면 relation을 다른 join으로 만들 필요가 없으므로 partial execution cost를 0으로 둡니다. 그 외에는 connected left와 right split을 모두 비교해 지금까지 가장 낮은 값을 저장합니다. 마지막에 전체 P의 best split부터 재귀적으로 따라가 bushy tree를 복원합니다. Data graph 크기가 아니라 pattern edge 수 m에 지수적으로 의존합니다.
+
+공개 출처
+vldb-pdf | p. 223, Algorithm 2 and Equation 8
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 28. DP는 subplan과 현재 join input을 함께 센다
+
+28. DP는 subplan과 현재 join input을 함께 센다
+
+발표 대본
+Equation 8의 핵심은 subplan을 만드는 비용 C와 현재 join에서 그 결과를 읽고 보내는 비용 T를 분리해 더한다는 점입니다. 가능한 모든 connected split을 비교하므로 left-deep보다 큰 공간을 탐색할 수 있습니다. Lemma 5의 complexity는 space O(2의 m승), time O(3의 m승)입니다. 논문은 connected pattern만 유지해 실제 planner가 이 worst case보다 빠르다고 보고하지만, 큰 pattern에서는 여전히 지수 병목이 있습니다.
+
+공개 출처
+vldb-pdf | p. 223, Equation 8 and Lemma 5
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 29. Overlap은 edge를 미리 검사해 후보를 줄인다
+
+29. Overlap은 edge를 미리 검사해 후보를 줄인다
+
+발표 대본
+Lemma 6은 pattern에 기존 두 vertex 사이 edge를 하나 더 넣으면 match relation 크기가 커지지 않는다고 말합니다. Join unit들이 edge를 공유하면 각 unit이 더 강한 constraint를 미리 검사해 intermediate result를 줄일 수 있습니다. 다만 모든 overlap subset을 정확히 탐색하면 time complexity가 O(4의 m승)으로 증가해 논문은 all-or-nothing relaxation을 제안합니다.
+
+공개 출처
+vldb-pdf | pp. 223-224, Lemma 6 and Example 3
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 30. All-or-nothing은 overlap search를 O(3ᵐ)으로 되돌린다
+
+30. All-or-nothing은 overlap search를 O(3ᵐ)으로 되돌린다
+
+발표 대본
+Naive overlap search는 cut edge의 모든 subset을 보아 O(4의 m승)이 됩니다. All-or-nothing은 각 split에서 cut edge를 전부 넣거나 전혀 넣지 않는 경우만 봐 O(3의 m승)을 유지합니다. Theorem 1은 baseline optimal cost가 graph edge 수 규모 이상이고, 모든 join에 redundant node가 없을 때 얻은 plan의 cost가 exact overlap optimum과 같은 asymptotic order라고 합니다. 동일 cost나 global exact optimum을 보장하는 정리가 아닙니다.
+
+공개 출처
+vldb-pdf | pp. 223-224, All or Nothing and Theorem 1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 31. 큰 data clique는 정답 조합만으로도 폭발한다
+
+31. 큰 data clique는 정답 조합만으로도 폭발한다
+
+발표 대본
+논문 Example 5는 uk dataset에서 943-node clique를 찾았고, 그 안의 5-clique 조합이 약 6×10의 12승이라고 보고합니다. 각 조합을 tuple로 물질화하는 대신 clique의 vertex set 자체로 표현하면 storage가 clique 크기에 선형이 됩니다. 이 예는 최종 output을 영원히 생략한다는 뜻이 아니라, join 중에 동일한 조합 구조를 compressed relation으로 유지하는 동기입니다.
+
+공개 출처
+vldb-pdf | p. 224, Example 5
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 32. Clique compression은 사전 탐색에서 시작한다
+
+32. Clique compression은 사전 탐색에서 시작한다
+
+발표 대본
+Preprocessing은 아직 query pattern을 모르는 상태에서 수행됩니다. 남은 graph의 최고 degree vertex를 고르고 이를 포함하는 maximal clique를 계산해 크기가 threshold, 예시로 50, 이상이면 저장합니다. 선택된 vertex를 제거하므로 clique set은 node-disjoint입니다. 각 machine은 node가 어느 clique에 속하는지 constant-time으로 찾는 map M을 가집니다. Greedy set이 maximum clique cover라는 보장은 없습니다.
+
+공개 출처
+vldb-pdf | p. 224, Clique Precomputation
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 33. Compressed match는 두 part를 분리한다
+
+33. Compressed match는 두 part를 분리한다
+
+발표 대본
+Online compression에서 local graph의 node를 중심 u와 같은 precomputed clique에 속한 Vᶜ와 나머지 Vⁿ으로 나눕니다. Compressed part fᶜ는 아직 특정 조합을 모두 나열하지 않고 pattern vertex set과 candidate data vertex set을 유지합니다. Non-compressed fⁿ은 일반 partial mapping입니다. 두 부분을 합친 한 tuple이 여러 concrete clique match를 대표합니다.
+
+공개 출처
+vldb-pdf | pp. 224-225, Online Clique Compression
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 34. Partial expansion은 join key에 필요한 부분만 펼친다
+
+34. Partial expansion은 join key에 필요한 부분만 펼친다
+
+발표 대본
+Algorithm 3은 current join attributes Vjoin 가운데 non-compressed part는 이미 mapping을 갖고, compressed part에 속한 attribute만 candidate set에서 조합합니다. 그 concrete values로 key를 만들고, join에 사용하지 않은 candidate는 fᶜ에 남겨 다음 round로 전달합니다. 이 방식은 intermediate materialization을 지연합니다. 최종 distinct matches 전체를 반환할 때는 남은 조합을 결국 확장해야 하므로 output-size lower bound는 그대로입니다.
+
+공개 출처
+vldb-pdf | p. 225, Algorithm 3 lines 12-20
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 35. 실험은 여섯 real graph에서 수행됐다
+
+35. 실험은 여섯 real graph에서 수행됐다
+
+발표 대본
+Master는 m3.xlarge, slave는 c3.4xlarge Amazon instance입니다. 기본 열 대의 slave를 사용하고 scalability 실험에서 6부터 14까지 바꿉니다. 각 machine은 mapper와 reducer를 최대 여섯 개씩 동시에 실행합니다. 가장 큰 Friendster는 약 65.61 million vertices와 1,806.07 million edges입니다. 세 시간 제한, out-of-memory, 기타 error는 모두 INF로 표시되므로 INF끼리의 실제 완료시간 순위는 알 수 없습니다.
+
+공개 출처
+vldb-pdf | p. 225, Tables 4-5 and Algorithms paragraph
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 36. SCP와 large clique는 query 전에 만든다
+
+36. SCP와 large clique는 query 전에 만든다
+
+발표 대본
+Φ₂ local graph construction과 large clique enumeration은 query pattern과 독립적인 preprocessing입니다. Table 5는 그 시간을 따로 제공합니다. 반복 query 환경에서는 amortize할 수 있지만 처음 한 query만 수행한다면 end-to-end latency에 더해야 합니다. 예를 들어 live-journal q6의 baseline SEED query는 1,347초이고 Φ₂ build 54초를 더한 1,401초를 논문이 TT 6,968초와 비교합니다.
+
+공개 출처
+vldb-pdf | pp. 225-226, Table 5 and Exp-2
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 37. q5 on youtube에서 bushy plan은 거대한 reduce2를 피했다
+
+37. q5 on youtube에서 bushy plan은 거대한 reduce2를 피했다
+
+발표 대본
+Table 6의 핵심은 final output이 아니라 두 번째 reducer의 intermediate output입니다. Bushy SEED는 3.2 million, left-deep은 6,110.9 million을 만들었습니다. Runtime은 306초와 7,658초입니다. 논문은 q5의 optimal plan이 bushy이고 ER과 PR plan도 달라 이 비교에 사용했습니다. 비율은 해당 dataset과 query의 관측 결과이며 모든 pattern에서 같은 speedup을 보장하지 않습니다.
+
+공개 출처
+vldb-pdf | p. 226, Table 6 and Exp-1
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 38. 보고된 개선은 query와 graph 구조에 따라 달라진다
+
+38. 보고된 개선은 query와 graph 구조에 따라 달라진다
+
+발표 대본
+논문은 여러 query에서 큰 개선을 보고하지만 원인을 조건과 함께 봐야 합니다. q6 on eu에서는 clique compression이 timeout을 완료로 바꿉니다. q1에서는 SEED+O와 TT가 같은 plan이라 성능도 같습니다. Web graph eu에서 compression 효과가 큰 이유를 논문은 domain 내부 large clique가 많기 때문이라고 추측하며, 이는 authors' speculation입니다. 따라서 graph structure에 따라 이득이 달라집니다.
+
+공개 출처
+vldb-pdf | pp. 226-227, Exps. 2-4 and Figs. 5-7
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 39. Graph와 cluster scaling 실험도 조건부다
+
+39. Graph와 cluster scaling 실험도 조건부다
+
+발표 대본
+Exp-5는 Friendster node의 20%부터 100%까지 subgraph를 만들고, Exp-6은 같은 node set에서 edge를 20%부터 100%까지 sampling해 average degree 11부터 55를 만듭니다. Exp-7은 slave를 6부터 14까지 늘립니다. Machine이 늘면 workload가 분산되지만 data transmission도 늘어 감소폭이 둔화됩니다. 이 결과는 SEED+O의 scaling evidence지만 다른 cluster나 arbitrary pattern에 그대로 외삽할 수 없습니다.
+
+공개 출처
+vldb-pdf | p. 227, Exps. 5-7 and Figs. 8-9
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 40. SEED가 제거하지 못한 경계
+
+40. SEED가 제거하지 못한 경계
+
+발표 대본
+이 논문을 확장성 만능 해법으로 읽으면 안 됩니다. 최종 match가 수조 개면 exact output 자체를 전달해야 합니다. SCP는 star와 clique만 join unit으로 보존합니다. Planner는 작은 pattern을 가정합니다. PR model은 실제 graph를 완전히 표현하지 않고, compression은 large clique가 있어야 효과가 큽니다. 실험 범위도 정해져 있습니다. 그럼에도 storage, estimator, plan, compression을 연결해 candidate explosion을 줄인 설계는 일반적인 분산 query optimization 관점을 제공합니다.
+
+공개 출처
+vldb-pdf | pp. 221-227, Lemmas 3 and 5, Secs. 7-8
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 41. SEED를 기억하는 다섯 문장
+
+41. SEED를 기억하는 다섯 문장
+
+발표 대본
+마지막으로 설계 논리를 연결해 보겠습니다. Candidate explosion은 high-degree star를 먼저 materialize할 때 발생합니다. Φ₂ storage는 clique를 local unit으로 사용할 수 있게 하되 triangle owner를 하나로 제한합니다. PR estimator는 가능한 plan의 relation 크기를 비교하고, bushy DP와 overlap은 더 선별적인 순서를 고릅니다. Clique compression은 combinatorial family를 compact하게 유지합니다. 이 모든 장치는 불필요한 intermediate result 생성을 늦추거나 피하는 방향을 공유합니다.
+
+공개 출처
+vldb-pdf | pp. 217-228, Abstract through Conclusion
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+
+## 42. 공개 출처
+
+42. 공개 출처
+
+발표 대본
+모든 기술적 설명과 수치는 공개 PVLDB PDF를 기준으로 확인했습니다. DOI는 논문의 출판 identity를 확인하는 record입니다. 각 슬라이드 footer의 locator는 PDF viewer의 파일 page가 아니라 논문에 인쇄된 page 217부터 228을 사용합니다. 두 출처 모두 별도 계정 없이 공개적으로 확인할 수 있습니다.
+
+공개 출처
+vldb-pdf | pp. 217-228
+PVLDB public paper PDF
+https://www.vldb.org/pvldb/vol10/p217-lai.pdf
+doi | published record
+Published article DOI record
+https://doi.org/10.14778/3021924.3021937

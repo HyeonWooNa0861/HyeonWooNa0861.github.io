@@ -1,0 +1,119 @@
+---
+type: research-seminar-slides
+paper_id: attention-is-all-you-need-v1
+---
+
+# Attention Is All You Need: v1 판본 보충
+
+논문: Attention Is All You Need — arXiv v1 Companion
+
+저자: Ashish Vaswani et al. (2017)
+
+## 1. Attention Is All You Need: v1 판본 보충
+
+arXiv:1706.03762v1 (2017-06-12) · main lecture의 v7 mechanism을 판본별로 점검한다
+
+
+근거: [arxiv-record](https://arxiv.org/abs/1706.03762) Submission history: v1 dated 12 Jun 2017, [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) p. 1, version stamp and abstract
+
+## 2. 같은 제목, 서로 다른 artifact
+
+Revision date와 publication type을 먼저 적으면 수치 출처가 섞이지 않는다
+
+
+| Artifact | Date | Source type | Lecture role |
+| --- | --- | --- | --- |
+| arXiv v1 | 2017-06-12 | Initial submission | 이 supplement |
+| NeurIPS | 2017 | Proceedings record | 별도 artifact |
+| arXiv v7 | 2023-08-02 | Final arXiv revision | Main mechanism |
+
+핵심: Paper identifier가 같아도 revision과 proceedings는 동일한 text record가 아니다
+
+근거: [arxiv-record](https://arxiv.org/abs/1706.03762) Submission history, [neurips](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html) Official proceedings abstract page
+
+## 3. Backbone은 공유되지만 기록은 동일하지 않다
+
+이 conceptual pipeline은 v1과 v7 모두에 있고 상세 공식은 main lecture의 v7을 따른다
+
+- **Source encoder**: Source tokens + position → encoder ×6 → K,V
+- **Shifted target**: Shifted target + position → masked self → Q
+- **Cross-attention**: Decoder Q + encoder K,V
+- **Decoder output**: FFN → next decoder layer; final softmax
+
+근거: [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) pp. 3-6, architecture and attention, [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) pp. 3-6, canonical mechanism
+
+## 4. 핵심 delta: multi-head 식의 W^O
+
+v1 text와 v7 text에 실제로 적힌 식을 source-location별로 구분한다
+
+
+| Source | Written formula | Observed difference |
+| --- | --- | --- |
+| v1 p. 4 | MultiHead = Concat(heads) | Final W^O가 식에 없음 |
+| v7 p. 5 | MultiHead = Concat(heads) W^O | W^O와 shape가 명시됨 |
+| Main lecture | v7 formula 사용 | 완전한 canonical mechanism |
+
+핵심: v7 식을 v1 인용으로 가장하지 않고 formula source를 명시한다
+
+근거: [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) p. 4, multi-head equation and parameter list, [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) p. 5, multi-head equation and W^O shape
+
+## 5. W^O는 concatenated head features를 혼합한다
+
+두 head만 대표로 표시하며 실제 base configuration은 h=8이다
+
+- **Projected Q,K,V**: Head별 learned subspace inputs
+- **Head 1 output**: d_v-dimensional vector
+- **Head 2 output**: d_v-dimensional vector
+- **Concat**: 모든 head vector를 길게 연결
+- **Multiply by W^O**: hd_v → d_model 선형 변환
+
+근거: [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) p. 5, W^O in Sec. 3.2.2, [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) p. 4, earlier displayed equation
+
+## 6. v1 내부에도 d_ff 값 충돌이 있다
+
+값을 조용히 정정하지 않고 어느 위치가 무엇을 적었는지 그대로 구분한다
+
+
+| Source location | d_model | d_ff | Reading |
+| --- | --- | --- | --- |
+| v1 p. 5 FFN prose | 512 | 2048 | 본문 dimension |
+| v1 Table 3 base | 512 | 1024 | 표의 printed entry |
+| v7 p. 5 prose | 512 | 2048 | 본문 dimension |
+| v7 Table 3 base | 512 | 2048 | 표와 본문 일치 |
+
+핵심: v1 source contains conflicting values; author intent는 추가 근거 없이 진단하지 않는다
+
+근거: [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) p. 5, Sec. 3.3; p. 8, Table 3 base row, [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) p. 5, Sec. 3.3; p. 8, Table 3 base row
+
+## 7. BLEU도 artifact와 location으로 인용한다
+
+아래 값은 하나의 시간순 성능 향상 그래프가 아니라 서로 다른 text records다
+
+
+| Artifact and location | EN-DE | EN-FR | Boundary |
+| --- | --- | --- | --- |
+| arXiv v1 Table 2 | 28.4 | 41.0 | v1 big row |
+| arXiv v7 Table 2 | 28.4 | 41.8 | v7 big row |
+| v7 Sec. 6.1 prose | 28.4 | 41.0 | v7 internal conflict |
+| NeurIPS abstract | 27.5 | 41.1 | Separate artifact |
+
+핵심: 41.0·41.8·41.1 중 하나를 paper의 유일한 EN-FR score라고 부르지 않는다
+
+근거: [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) p. 8, Table 2, [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) p. 8, Table 2 and Sec. 6.1, [neurips](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html) Official abstract metrics
+
+## 8. v1을 보존하며 정확하게 읽는 법
+
+공통 architecture는 main lecture로 돌아가고 version-specific claim만 이 자료에서 확정한다
+
+
+| Question | Safe answer |
+| --- | --- |
+| v1 전체가 틀렸나? | 아니다. 공통 Transformer backbone이 있다 |
+| W^O는 어디서 가르치나? | v7 p. 5의 explicit equation |
+| Base d_ff는 얼마인가? | v1 내부 conflict; v7 기준 2048 |
+| EN-FR score는 하나인가? | Artifact와 location별로 다르다 |
+| Attention cost는 linear인가? | 두 판본 모두 full attention O(n^2 d) |
+
+핵심: 판본 차이는 원문을 버릴 이유가 아니라 citation precision을 높일 근거다
+
+근거: [arxiv-v1](https://arxiv.org/pdf/1706.03762v1) pp. 3-10, architecture and experiments, [arxiv-v7](https://arxiv.org/pdf/1706.03762v7) pp. 3-10, revised architecture and experiments, [arxiv-record](https://arxiv.org/abs/1706.03762) Version history

@@ -1,0 +1,290 @@
+## 1. Billion-node 그래프의 부분그래프 매칭
+
+1. Billion-node 그래프의 부분그래프 매칭
+
+발표 대본
+이 자료는 Sun 등(2012)의 단일 대형 라벨 그래프 부분그래프 매칭 시스템을 소개합니다. 핵심은 거대한 구조 인덱스를 만들지 않고, 작은 STwig 단위의 메모리 탐색과 필요한 join을 결합하는 것입니다.
+
+공개 출처
+paper | title, abstract
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 2. 부분그래프 매칭의 입력과 출력
+
+2. 부분그래프 매칭의 입력과 출력
+
+발표 대본
+원문은 데이터 그래프 G=(V,E,T), 질의 q=(Vq,Eq,Tq)를 정의합니다. 매칭은 질의 정점과 결과 정점 사이의 bijection이 라벨과 질의 간선을 보존하는 경우입니다. 원문 Fig. 1의 질의에는 두 결과가 있습니다.
+
+공개 출처
+paper | p. 3, Definitions 1–2; Fig. 1
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 3. 왜 billion-node 규모에서 기존 방식이 압박을 받는가
+
+3. 왜 billion-node 규모에서 기존 방식이 압박을 받는가
+
+발표 대본
+원문은 web-scale 그래프에서 고급 구조 인덱스의 공간과 구축 비용이 비현실적이라고 설명합니다. 이는 모든 인덱스가 불가능하다는 뜻이 아닙니다. 이 논문의 설계는 그래프 구조 인덱스 대신 라벨에서 노드 ID로 가는 string index만 사용합니다.
+
+공개 출처
+paper | pp. 1–2, §1.1–1.2
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 4. 논문이 대비한 매칭 접근
+
+4. 논문이 대비한 매칭 접근
+
+발표 대본
+이 표는 원문 Table 1과 §1.1의 설명을 교육용으로 압축한 것입니다. 각 방법의 복잡도는 데이터와 질의 모델에 따라 다릅니다. 여기서 이 논문의 차이는 그래프 구조를 미리 자세히 색인하지 않는 데 있습니다.
+
+공개 출처
+paper | pp. 1–2, Table 1 and §1.1
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 5. Trinity 위의 질의 경로
+
+5. Trinity 위의 질의 경로
+
+발표 대본
+원문 Fig. 2는 client, query proxy, 여러 server, intermediate result 교환을 그립니다. Trinity는 partition, 저장, 메시지 전달을 사용자에게 투명하게 보이도록 제공합니다. 이 슬라이드는 그 논리 경로를 단순화한 것으로, proxy가 모든 join을 단독 수행한다고 주장하지 않습니다.
+
+공개 출처
+paper | pp. 3–4, §2.2 and Fig. 2
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 6. join과 탐색은 서로 대체되지 않는다
+
+6. join과 탐색은 서로 대체되지 않는다
+
+발표 대본
+원문 §3은 join-only 방식의 불필요한 중간 결과와 naive exploration의 반복 경로 탐색을 모두 지적합니다. 특히 cycle에서는 나중에 만난 정점이 시작 정점인지 검사해야 하며, 원문은 이를 join과 동등한 제약 확인으로 설명합니다.
+
+공개 출처
+paper | p. 4, §3 and Fig. 3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 7. STwig: 두 단계의 작은 질의 단위
+
+7. STwig: 두 단계의 작은 질의 단위
+
+발표 대본
+원문 §4.1에서 STwig는 정확히 두 레벨의 트리입니다. Fig. 4(b)의 q1은 q1=(a,{b,c})입니다. STwig는 전체 질의를 보장하지 않으므로, 이후 바인딩과 join 단계가 필요합니다.
+
+공개 출처
+paper | p. 5, §4.1 and Fig. 4
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 8. MatchSTwig가 하는 세 번의 접근
+
+8. MatchSTwig가 하는 세 번의 접근
+
+발표 대본
+Algorithm 1은 루트 라벨의 ID 집합을 얻고, 각 루트를 로드한 뒤, 자식 이웃의 라벨을 확인합니다. 원문의 의사코드는 각 자식 라벨에 대한 후보 집합의 곱으로 결과를 추가합니다. 실제 distributed execution에서 child label 확인은 원격 메모리 접근을 일으킬 수도 있습니다.
+
+공개 출처
+paper | pp. 5–6, Algorithm 1 and §4.3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 9. 강의용 축약 추적: a-b-c 패턴
+
+9. 강의용 축약 추적: a-b-c 패턴
+
+발표 대본
+이 슬라이드는 원문 Fig. 1과 Algorithm 1을 따라 만든 교육용 축약 추적입니다. 실제 Fig. 1의 질의에는 a, b, c, d가 있으며 보고된 결과는 (a1,b1,c1,d1)와 (a2,b1,c1,d1)입니다. 여기서는 STwig의 국소 후보 생성만 보여 주기 위해 a-b-c 부분만 떼었습니다.
+
+공개 출처
+paper | p. 3, Fig. 1; p. 5, Algorithm 1
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 10. 전체 매칭의 실행 흐름
+
+10. 전체 매칭의 실행 흐름
+
+발표 대본
+원문 §4.2는 decomposition/order, exploration, join의 세 단계로 설명합니다. join을 탐색 순서대로 즉시 하지 않는 이유는 모든 pruned result를 본 뒤 더 작은 intermediate result를 만드는 join order를 선택하기 위해서입니다.
+
+공개 출처
+paper | pp. 5–6, §4.2
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 11. 바인딩 정보가 다음 탐색의 후보를 줄인다
+
+11. 바인딩 정보가 다음 탐색의 후보를 줄인다
+
+발표 대본
+원문 Fig. 5 예에서 q1 후 Ha={a1,a2,a3}, Hb={b1,b2,b3,b4}, Hc={c1,c2,c3}를 얻습니다. 원문은 G(q1)가 Ha x Hb x Hc와 같지 않다고 명시합니다. 다음 STwig의 root가 이미 bound라면 Index.getID를 다시 호출하지 않고 그 바인딩 집합을 root 후보로 사용합니다.
+
+공개 출처
+paper | p. 6, §4.2 and Fig. 5
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 12. join은 남기되, 순서와 메모리 사용을 조절한다
+
+12. join은 남기되, 순서와 메모리 사용을 조절한다
+
+발표 대본
+원문 §4.2는 sample-based join cost estimation과 cost-based join order selection을 적용한다고 설명합니다. 중간 결과가 여전히 큰 질의에서는 block-based pipeline join을 써서 각 STwig의 result 일부만 참여시키며, available memory가 block size를 제어합니다.
+
+공개 출처
+paper | p. 6, §4.2 Join
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 13. 분산 실행에서 탐색과 결합의 역할
+
+13. 분산 실행에서 탐색과 결합의 역할
+
+발표 대본
+원문 §4.3에서 query decomposition and STwig ordering은 병렬화하지 않으며 proxy가 계획을 broadcast합니다. 각 machine은 STwig matching을 병렬 수행합니다. 그러나 각 machine은 다른 machine의 결과와 join해야 할 수 있어, load set 선택이 핵심입니다.
+
+공개 출처
+paper | pp. 6–7, §4.3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 14. 헤드 STwig가 중복 없는 결과의 기준점이 된다
+
+14. 헤드 STwig가 중복 없는 결과의 기준점이 된다
+
+발표 대본
+원문은 헤드 STwig qh에 대해 Fk,h=empty로 두며 Rk(qh)=Gk(qh)라고 설명합니다. data graph partition이 disjoint이므로 헤드 매칭이 다른 답은 다른 결과가 됩니다. 원문은 homomorphic answers를 서로 다른 answer로 간주한다는 조건도 덧붙입니다.
+
+공개 출처
+paper | p. 7, §4.3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 15. STwig cover 수를 줄이는 이유
+
+15. STwig cover 수를 줄이는 이유
+
+발표 대본
+원문 Problem 1은 각 질의 간선이 정확히 하나의 STwig에 속하는 STwig cover를 정의합니다. Theorem 1은 minimum STwig cover가 minimum vertex cover와 polynomial equivalent라고 보입니다. 따라서 최적 cover 탐색은 NP-hard이며 원문은 2-approximation을 출발점으로 사용합니다.
+
+공개 출처
+paper | p. 7, §5.1, Problem 1 and Theorem 1
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 16. Algorithm 2는 cover와 실행 순서를 함께 만든다
+
+16. Algorithm 2는 cover와 실행 순서를 함께 만든다
+
+발표 대본
+원문 Algorithm 2의 f(v)는 deg(v)/freq(v.label)입니다. 이미 고른 부분에 이어지는 간선을 선택하는 규칙은 후속 STwig의 root가 앞 STwig의 leaf로 bound되도록 합니다. Theorem 2는 생성 STwig 수가 optimal cover의 두 배 이하임을 보입니다. 원문은 이 알고리즘의 시간 복잡도를 O(n^2 log n)으로 제시합니다.
+
+공개 출처
+paper | p. 8, Algorithm 2 and Theorem 2
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 17. 클러스터 그래프로 원격 로드 범위를 줄인다
+
+17. 클러스터 그래프로 원격 로드 범위를 줄인다
+
+발표 대본
+원문 §5.3은 query-specific Gq를 실제 materialize할 필요가 없다고 말합니다. preprocessing 때 서버 쌍마다 가능한 label pair를 기록하고, query edge마다 이를 lookup하여 cluster graph를 만듭니다. Theorem 4의 식은 Fk,t={j | DC(k,j) <= d(rs,rt)}입니다.
+
+공개 출처
+paper | pp. 8–9, §5.3 and Theorem 4
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 18. 헤드 STwig 선택은 통신 반경을 줄이는 문제
+
+18. 헤드 STwig 선택은 통신 반경을 줄이는 문제
+
+발표 대본
+Theorem 5는 head STwig qs의 통신 비용 T(s)를 각 서버 k에서 거리 d(s) 이내 서버 수의 합으로 정의합니다. 저자들은 T(s)를 줄이기 위해 d(s)를 최소화합니다. 여기서 m은 데이터 그래프 크기가 아니라 subgraph pattern q의 vertex 수입니다.
+
+공개 출처
+paper | p. 9, Theorem 5 and §5.3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 19. 실험 조건을 결과와 함께 읽기
+
+19. 실험 조건을 결과와 함께 읽기
+
+발표 대본
+원문은 real-data experiment에 cluster 1, synthetic experiment에 cluster 2를 사용합니다. US Patents는 3,774,768 nodes와 16,522,438 edges, WordNet은 82,670 nodes와 133,445 edges입니다. 각 data graph에서 100 queries의 평균 실행 시간을 기록했고 pipeline join에서는 1,024 matches가 발견되면 종료합니다.
+
+공개 출처
+paper | pp. 9–10, §6.1–6.3
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 20. 실제 데이터에서 보고된 경향
+
+20. 실제 데이터에서 보고된 경향
+
+발표 대본
+원문의 설명은 query 형태별 관찰입니다. DFS query는 random start node에서 DFS로 생성해 첫 N nodes를 보존했고, random query는 N nodes에 E edges를 추가한 뒤 connected graph가 되도록 spanning tree를 만들었습니다. Fig. 9의 1–8 machine speedup은 real-data cluster 1에서의 결과입니다.
+
+공개 출처
+paper | pp. 10–11, Figs. 8–9
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 21. 합성 그래프 결과의 조건부 읽기
+
+21. 합성 그래프 결과의 조건부 읽기
+
+발표 대본
+원문 Table 2에서는 graph loading 시간이 1B nodes에서 266초, 4,096M nodes에서 689초입니다. 이는 query response time이 아닙니다. Fig. 10(a)는 average degree 16을 고정한 graph-size experiment이며, 저자들은 total node count보다 STwig number와 size가 query time에 더 직접적이라고 해석합니다.
+
+공개 출처
+paper | pp. 10–11, Table 2 and Fig. 10
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 22. 이 논문의 설계상 차별점
+
+22. 이 논문의 설계상 차별점
+
+발표 대본
+이 비교는 원문 §§3–5의 설계를 묶어 설명합니다. 논문은 graph exploration만을 주장하지 않고, join을 skeleton으로 남기며 exploration으로 useless candidates를 피한다고 밝힙니다. 따라서 ‘join-free algorithm’이라고 부르면 부정확합니다.
+
+공개 출처
+paper | pp. 4–9, §§3–5
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 23. 해석할 때 남겨야 할 한계
+
+23. 해석할 때 남겨야 할 한계
+
+발표 대본
+원문은 §3에서 naive exploration이 join보다 비쌀 수 있는 경우와 둘 다 잘못될 수 있는 경우를 보입니다. 결론에서는 trillion-scale graph, system speedup, query throughput, response-time bounds, transmitted data의 추가 실험을 future work로 언급합니다.
+
+공개 출처
+paper | p. 4, §3; p. 12, §8
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+
+## 24. 한 장으로 다시 보는 STwig 매칭
+
+24. 한 장으로 다시 보는 STwig 매칭
+
+발표 대본
+마무리에서는 구조 index를 포기하는 대신 라벨 index, 메모리 기반 graph exploration, STwig decomposition, binding information, join ordering, load set selection을 함께 사용한다는 점을 연결합니다. 이 조합이 2012년 논문이 제시한 web-scale matching의 설계입니다.
+
+공개 출처
+paper | pp. 3–12, §§2–8
+Efficient Subgraph Matching on Billion Node Graphs, PVLDB 2012
+https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf
+doi | article record
+DOI: 10.14778/2311906.2311907
+https://doi.org/10.14778/2311906.2311907

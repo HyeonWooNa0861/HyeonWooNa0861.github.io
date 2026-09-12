@@ -80,6 +80,14 @@ PTQ와 pruning은 작은 calibration set을 사용해 weight importance와 activ
 
 EPTQ, QTIP, QuIP# 같은 PTQ 방법을 비교할 때 동일한 calibration set을 쓰더라도 그 set이 어떤 capability를 보존하는지에 따라 downstream 결과가 달라질 수 있다. 따라서 EPTQ 후속실험에서는 quantizer만 바꾸는 ablation 외에 calibration data source/coverage/domain ablation을 별도 축으로 둘 수 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 25장 | <a href="/assets/seminars/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/cola-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/cola-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

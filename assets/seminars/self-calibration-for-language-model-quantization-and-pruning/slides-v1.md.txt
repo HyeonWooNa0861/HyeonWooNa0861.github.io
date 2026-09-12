@@ -1,0 +1,262 @@
+---
+type: research-seminar-slides
+paper_id: self-calibration-for-language-model-quantization-and-pruning
+---
+
+# Self-Calibration: 보정 데이터를 모델에서 얻기
+
+논문: Self-calibration for Language Model Quantization and Pruning
+
+저자: Miles Williams, George Chrysostomou, Nikolaos Aletras (2025)
+
+## 1. Self-Calibration: 보정 데이터를 모델에서 얻기
+
+외부 코퍼스 대신 압축할 LLM이 만든 텍스트로 post-training compression을 보정한다
+
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10149, title and abstract
+
+## 2. 어떤 공개 논문인가
+
+NAACL 2025 Long Paper의 공개 proceedings record를 기준으로 읽는다
+
+- 저자: Miles Williams, George Chrysostomou, Nikolaos Aletras
+- NAACL 2025 Long Papers, pp. 10149–10167
+- DOI: 10.18653/v1/2025.naacl-long.509
+- 핵심 대상은 post-training 양자화와 프루닝의 보정 입력이다
+
+핵심: 이 발표의 수치와 결론은 이 논문이 정한 영어 zero-shot 실험 조건에서만 해석한다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) ACL record; pp. 10149–10167
+
+## 3. 보정 데이터는 압축기의 입력이다
+
+레이블 없는 텍스트가 layer activation을 만들고, 압축 방법은 그 activation을 기준으로 결정을 조정한다
+
+1. **사전학습 LLM**: 압축할 가중치가 이미 주어진다
+2. **보정 예시**: 작은 레이블 없는 텍스트 묶음
+3. **forward pass**: 각 layer의 activation을 얻는다
+4. **기존 압축기**: activation을 참고해 양자화·프루닝한다
+5. **압축 모델**: 다운스트림 성능을 가능한 유지한다
+
+핵심: 보정 텍스트가 바뀌면 같은 압축 방법도 다른 activation을 보고 다른 결과를 낼 수 있다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10149–10150, §2.2
+
+## 4. 왜 무작위 웹 텍스트만으로는 충분하지 않을까
+
+논문은 대표성과 가용성이라는 서로 다른 문제를 분리한다
+
+- **압축할 모델**: 학습 데이터 분포는 완전히 보이지 않는다
+- **대표성 문제**: 임의 표본은 학습 분포에서 멀 수 있다
+- **가용성 문제**: 가중치는 공개돼도 학습 데이터는 없을 수 있다
+- **보정 선택**: 외부 코퍼스는 근사일 뿐이다
+- **연구 질문**: 모델 내부 분포에서 표본을 얻을 수 있는가
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10150–10151, Table 1 and §3
+
+## 5. 바뀌는 것은 압축기보다 보정 데이터의 출처다
+
+두 경로는 비교 조건이며, 한 번의 실행에서 둘을 함께 적용한다는 뜻은 아니다
+
+- **기존 경로**: C4·WikiText 같은 외부 텍스트
+- **self-calibration**: 압축할 모델이 만든 합성 텍스트
+- **동일 압축 방법**: AWQ·GPTQ·SparseGPT·Wanda
+- **비교할 결과**: 압축 뒤 zero-shot 평균 성능
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10149, 10153, Table 2
+
+## 6. self-calibration은 어떻게 텍스트를 만드는가
+
+기본 절차는 외부 prompt 없이 BOS에서 시작한다; 보고된 일부 영어 실험에는 첫 token 제한이 있다
+
+1. **BOS만 입력**: 시작 토큰 외의 prompt를 넣지 않는다
+2. **실험의 첫 token**: Gemma·Mistral·Llama: 영어 stop-word 목록으로 제한
+3. **다음 token 샘플링**: logits 확률분포에 온도 스케줄을 적용한다
+4. **종료 조건**: EOS 또는 최대 길이까지 생성한다
+5. **보정 묶음**: 짧은 생성은 이어 붙여 필요한 길이를 맞춘다
+
+핵심: 외부 보정 코퍼스가 없다는 뜻이지, 생성 모델의 가중치나 forward pass가 없다는 뜻은 아니다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10151, §3.1; p. 10152, §4.1
+
+## 7. 온도는 next-token 확률의 날카로움을 조절한다
+
+논문은 token i에서 logits u를 temperature tᵢ로 나눈 뒤 softmax를 적용한다
+
+- P(wᵢ | w₁:ᵢ₋₁) = exp(uᵢ/tᵢ) / Σⱼ exp(uⱼ/tᵢ)
+- 낮은 t는 높은 확률 token에 더 집중한다
+- 높은 t는 확률질량을 더 넓게 분산한다
+- 처음 n token에서 t_initial에서 t_final까지 선형 이동한다
+- i가 n보다 크면 t_final을 유지한다
+
+핵심: 온도 효과는 별도 ablation에서 확인하며, 모든 결과에 자동 적용되지 않는다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10151–10152, §3.2
+
+## 8. 강의용 계산: 선형 온도 schedule을 직접 따라가기
+
+예시 조건: t_initial=2.0, t_final=1.0, n=4. 이 표는 논문의 성능 결과가 아니다
+
+
+| token i | 계산 | tᵢ |
+| --- | --- | --- |
+| 1 | 2.0 + 1/4 × (1.0 − 2.0) | 1.75 |
+| 2 | 2.0 + 2/4 × (1.0 − 2.0) | 1.50 |
+| 3 | 2.0 + 3/4 × (1.0 − 2.0) | 1.25 |
+| 4 | 2.0 + 4/4 × (1.0 − 2.0) | 1.00 |
+| 5 | i > n 이므로 final 유지 | 1.00 |
+
+핵심: schedule은 생성 전략을 표현하지만 최적값을 보장하지 않는다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10152, §3.2; p. 10153, Table 2
+
+## 9. 무엇과 비교했는가: 다섯 보정 데이터 출처
+
+real, 외부 synthetic, 모델-자체 synthetic을 같은 수량 규칙 안에서 비교한다
+
+
+| 분류 | 출처 | 핵심 성격 |
+| --- | --- | --- |
+| real | C4 | 필터링·중복 제거 웹 텍스트 |
+| real | WikiText | 편집된 Wikipedia 텍스트 |
+| synthetic | Vocabulary | 특수 token을 뺀 무작위 vocabulary token |
+| synthetic | Cosmopedia | 큰 외부 모델이 만든 합성 텍스트 |
+| synthetic | Self-calibration | 압축할 모델이 생성한 텍스트 |
+
+핵심: self-calibration의 비교 대상은 실제 텍스트와 두 종류의 합성 텍스트를 모두 포함한다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10152, §4.1
+
+## 10. 결과를 해석하기 위한 실험 조건
+
+모든 성능 수치는 이 표의 모델·압축·데이터·평가 조건에 묶여 있다
+
+
+| 항목 | 논문 조건 | 해석 주의 |
+| --- | --- | --- |
+| 보정 수량 | 128 예시 × 2,048 token; 출처별 5개 set | 표의 아래첨자는 5개 set 표준편차 |
+| 모델 | Gemma 2B, Phi-2, OPT, Mistral, Llama | 세 모델 첫 token은 English stop-word 제한; prompt 아님 |
+| 양자화 | AWQ·GPTQ, 4-bit weight | activation 양자화 결과가 아니다 |
+| 프루닝 | SparseGPT·Wanda, 2:4 semi-structured | 다른 sparsity와 같다고 할 수 없다 |
+| 평가 | 여러 영어 zero-shot 과제 평균 | 단일 과제·서빙 지연시간이 아니다 |
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10152–10153, §§4.1–4.4
+
+## 11. 주요 결과: 합성 기준선과의 비교
+
+Table 2의 주 비교에서는 self-calibration의 initial·final temperature를 모두 1.0으로 고정했다
+
+- 20개 method-model 조합 중 17개에서 다른 합성 데이터와 같거나 더 높다
+- Gemma 2B를 GPTQ로 압축: self 59.9, Cosmopedia 58.5, Vocabulary 57.9
+- Llama 3.1 8B를 SparseGPT로 프루닝: self 53.8, Cosmopedia 50.9
+- Phi-2·Gemma·OPT에서는 한 예외를 빼고 모든 출처 중 최고 평균을 보고한다
+- Mistral·Llama에서는 real data를 이기지 못한 경우도 있어 결과는 조건부다
+
+핵심: 외부 데이터 없이도 여러 조건에서 경쟁력 있는 보정을 만들 수 있다는 결과다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10153–10154, Table 2 and §5
+
+## 12. 반례를 함께 읽기: OPT 6.7B의 SparseGPT
+
+self-calibration이 모든 데이터 출처보다 최고라는 주장을 막는, Table 2의 가장 작은 차이
+
+
+| 모델 | 압축 방법 | 보정 출처 | 평균 정확도 |
+| --- | --- | --- | --- |
+| OPT 6.7B | SparseGPT | C4 | 52.8 |
+| OPT 6.7B | SparseGPT | Self-calibration | 52.7 |
+
+핵심: 0.1 point 차이지만, 결과를 항상 최고라고 부르지 않아야 하는 직접 근거다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10154, §5 and Table 2
+
+## 13. 왜 프루닝 결과를 별도로 볼까
+
+Gemma 2B에서 best-to-worst calibration-source range가 양자화보다 프루닝에서 더 넓게 보고된다
+
+
+| 방법 | 종류 | range | 논문이 제시한 읽기 |
+| --- | --- | --- | --- |
+| AWQ | 4-bit 양자화 | 0.6 | 출처 선택에 상대적으로 덜 민감 |
+| GPTQ | 4-bit 양자화 | 2.0 | 출처 선택에 상대적으로 덜 민감 |
+| SparseGPT | 2:4 프루닝 | 7.5 | 보정 출처의 영향이 더 크게 보임 |
+| Wanda | 2:4 프루닝 | 3.2 | 보정 출처의 영향이 더 크게 보임 |
+
+핵심: 이 표는 Gemma 2B의 논문 실험 관찰이며, 모든 압축법에 대한 일반 법칙은 아니다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10154, §5
+
+## 14. 보정 예시는 많이 필요할까: 수량 ablation의 한 사례
+
+Fig. 2는 resource 제약 때문에 Gemma 2B와 Phi-2에서만 1~128 예시를 조사한다
+
+
+| 조건 | 예시 수 | 평균 정확도 | 비교 |
+| --- | --- | --- | --- |
+| Phi-2 + SparseGPT + C4 | 128 | 54.3 | 외부 real data |
+| Phi-2 + SparseGPT + Self | 16 | 54.5 | self-calibration |
+| 수량 범위 | 1, 2, 4, 8, 16, 32, 64, 128 | Fig. 2 | Gemma 2B·Phi-2만 |
+
+핵심: 적은 self 예시도 경쟁력 있을 수 있지만, 전 모델의 보장값은 아니다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10154–10155, Fig. 2 and §6.1
+
+## 15. 온도 설정은 효과가 있지만, main result의 전제는 아니다
+
+Fig. 3은 Gemma 2B·Phi-2에서 n=10, initial·final 값을 0~2로 탐색한다
+
+
+| initial, final | 동등한 decoding | 논문 해석 |
+| --- | --- | --- |
+| 0, 0 | greedy decoding | 매 시점 가장 높은 확률 token |
+| 1, 1 | standard sampling | main Table 2의 self 설정 |
+| 같은 값 | constant-temperature | 전체 생성 동안 온도 유지 |
+| 다른 값 | temperature schedule | 초기·후반 생성 특성을 다르게 함 |
+
+핵심: standard sampling도 최대값 0.5 point 이내가 될 수 있으나, 최적 schedule은 아니다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10155, Fig. 3 and §6.2
+
+## 16. 좋은 성능이 곧 더 다양한 텍스트라는 뜻은 아니다
+
+Llama 3.1 8B의 Table 4는 self-generated text가 real data보다 덜 diverse할 수 있음을 보인다
+
+
+| 측정 | Self | C4 | WikiText |
+| --- | --- | --- | --- |
+| Vocabulary coverage | 0.15 | 0.18 | 0.16 |
+| N-gram diversity | 0.58 | 0.62 | 0.65 |
+| Zipf coefficient | 1.24 | 1.16 | 1.12 |
+
+핵심: 생성 텍스트가 coherent해도 실제 텍스트보다 다양하다는 뜻은 아니다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10156, Tables 3–4 and §6.3
+
+## 17. 남는 한계와 윤리적 경계
+
+논문 자체가 영어 범위, 다국어 일반화의 미검증, 생성 텍스트의 유해 가능성을 명시한다
+
+- 실험은 영어 모델·과제·보정 데이터에 한정된다
+- 다국어 모델에 일반화될 것이라는 기대는 후속 연구 과제다
+- 생성 텍스트는 부정확·편향·유해한 내용을 포함할 수 있다
+- 저자들은 그런 내용이 원 모델 가중치에 이미 인코딩돼야 한다고 논증한다
+- 그 논증은 안전성 검증이나 유해성 제거를 의미하지 않는다
+
+핵심: 외부 데이터 의존을 줄여도 분포·언어·안전 문제가 자동 해결되지는 않는다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) p. 10157, Limitations and Ethics
+
+## 18. 한 문장으로 다시 조립하기
+
+학습 데이터를 직접 얻지 못할 때, 모델이 만든 무라벨 텍스트를 기존 PTQ·pruning의 보정 입력으로 사용한다
+
+1. **문제**: 외부 보정 표본은 대표성이 불확실하다
+2. **개입**: 압축 대상 모델이 BOS부터 텍스트를 생성한다
+3. **연결**: 기존 압축기가 그 activation을 읽는다
+4. **근거**: 여러 조건에서 합성 기준선과 경쟁력 있다
+5. **경계**: 영어·선택 방법·조건부 실험 결과다
+
+핵심: 보정 입력의 출처를 바꾸면 기존 압축기의 품질도 달라질 수 있다
+
+근거: [acl-paper](https://aclanthology.org/2025.naacl-long.509/) pp. 10149, 10153–10157, abstract to conclusion

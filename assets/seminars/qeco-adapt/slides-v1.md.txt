@@ -1,0 +1,306 @@
+---
+type: research-seminar-slides
+paper_id: qeco-adapt
+---
+
+# QECO-Adapt: 고밀도 MEC의 초기 학습 손실 줄이기
+
+논문: Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석
+
+저자: 나현우, 이창우 (2026)
+
+## 1. QECO-Adapt: 고밀도 MEC의 초기 학습 손실 줄이기
+
+기존 D3QN/LSTM을 유지하며, 부하에 따라 energy cost와 offloading 제어를 조정한다
+
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 1, 제목·요약; p. 4, 결론
+
+## 2. 왜 최종 성능만으로는 부족한가
+
+학습이 진행되는 동안 생긴 지연과 미완료 task도 서비스가 치르는 비용이다
+
+- 많은 사용자가 하나의 edge에 요청하면 queue와 deadline 실패가 늘 수 있다
+- 후반에 비슷한 성능에 도달하더라도 초반 손실은 이미 누적된다
+- QECO-Adapt는 전체 학습 구간의 QoE·지연·에너지·미완료 task를 함께 본다
+- 목표는 dense 조건의 warm-up 손실 완화이며, 최종 정책의 보편적 우위가 아니다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 1–2, 요약·평가 방식; p. 4, §V
+
+## 3. 1x·3x·5x·8x는 어떻게 정했는가
+
+기준은 QECO 원문의 평균 밀도 50 MD / 5 EN = 10 MD/EN이다
+
+
+| 사용자 N | edge M | N/M | 기준 대비 |
+| --- | --- | --- | --- |
+| 10 | 1 | 10 | 1x |
+| 30 | 1 | 30 | 3x |
+| 50 | 1 | 50 | 5x |
+| 80 | 1 | 80 | 8x |
+
+핵심: 밀도 배율은 사용자 수 / edge 수의 비율이며, 시스템 전체의 동등성을 뜻하지 않는다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 2, §II
+
+## 4. effective load에 들어가는 네 가지 양
+
+L_eff = N × b̄ × ā / M : edge당 평균 task pressure를 나타내는 proxy
+
+
+| 기호 | 정의 | 역할 |
+| --- | --- | --- |
+| N, M | 사용자 수, edge 수 | N이 크거나 M이 작으면 부하 증가 |
+| b̄ | 시간대별 arrival profile의 평균 | 시간에 따른 task 생성 경향 |
+| ā | 사용자별 활동성 계수의 평균 | 사용자 집단의 평균 활동성 |
+| L_eff | N × b̄ × ā / M | 관측 queue length 자체는 아님 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 2, §III, Eq. (1)과 첫 Eq. (2)
+
+## 5. 생성 확률과 load proxy는 항상 같지 않다
+
+교육용 예: 사용자 한 명, edge 하나, b=0.8, a=2를 가정한다
+
+
+| 계산 | 값 | 의미 |
+| --- | --- | --- |
+| b × a | 1.6 | clipping 전 곱 |
+| p_arrive = clip(1.6,0,1) | 1 | 생성 확률은 1을 넘지 않음 |
+| L_eff = N × b̄ × ā / M | 1.6 | 원고 식으로 계산한 proxy |
+
+핵심: L_eff는 부하를 제어값으로 바꾸기 위한 지표이지, queue stability의 증명은 아니다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 2, Eqs. (1)–(2); 정의 기반 구성 예
+
+## 6. 부하 지표가 제어에 반영되는 경로
+
+g는 부하 강도, w_E는 energy cost의 상대 가중치다
+
+- **레인 reward 경로**
+- **레인 action 제어**
+  - **L_eff**: 평균 task pressure
+  - **g(L_eff)**: 부하 강도 변환
+  - **w_E**: energy cost 가중치
+  - **reward**: cost를 바꾸어
+학습 신호에 반영
+  - **offload gating**: 부하 적응형 제어
+세부 판정식 미제시
+- L_eff → g(L_eff) (실선, 단방향)
+- g(L_eff) → w_E (실선, 단방향)
+- w_E → reward (실선, 단방향)
+- g(L_eff) → offload gating: 부하 기반 제어 (점선, 단방향)
+
+핵심: g의 수치가 곧 task를 차단할 확률이라는 해석은 원고로 뒷받침되지 않는다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 2–3, §III; p. 4, 결론
+
+## 7. 부하가 커질 때 energy weight는 어떻게 변하나
+
+원고의 식과 상수: w₀=1.20, ρ=0.35, λ=10
+
+
+| 항목 | 식 또는 성질 | 해석 |
+| --- | --- | --- |
+| gating strength | g = L_eff / (L_eff + Mλ) | 고정 M에서 L_eff 증가 → g 증가 |
+| energy weight | w_E = 1.2 × (1+g)^0.35 | g 증가 → energy cost 가중치 증가 |
+| 범위 | 0 ≤ g < 1 | L_eff ≥ 0, Mλ > 0일 때 |
+| 한계값 | 1.2 ≤ w_E < 약 1.5295 | 상한은 이 식에서 계산한 값 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 2, 두 번째 Eq. (2)와 Eq. (3)
+
+## 8. 교육용 계산: 같은 profile에서 사용자를 늘리면
+
+b̄=0.2, ā=1, M=1을 가정한 계산이며 원고의 실험 설정값이 아니다
+
+
+| N | L_eff | g | w_E |
+| --- | --- | --- | --- |
+| 10 | 2 | 0.1667 | 1.2665 |
+| 30 | 6 | 0.3750 | 1.3415 |
+| 50 | 10 | 0.5000 | 1.3830 |
+| 80 | 16 | 0.6154 | 1.4193 |
+
+핵심: 제어 계수의 증가와 실제 시스템 성능 향상은 별도로 검증할 사항이다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 2, §III 식을 적용한 구성 예
+
+## 9. 학습 보상: 완료 보너스에서 cost를 뺀다
+
+C = 2 × [sD + (1−s)w_E E_sc], 완료 보너스는 4D_max
+
+
+| 항목 | 정의 | 현재 설정 |
+| --- | --- | --- |
+| s | 단말 energy state | delay·energy cost의 상대 반영 |
+| D, E_sc | task delay, scaled energy | w_E는 energy 항에만 적용 |
+| 미완료 task | reward = −C | deadline 안에 끝나지 않음 |
+| 완료 task | reward = 4D_max − C | D_max=10 → 완료 보너스 40 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 3, Eq. (4)와 reward 정의
+
+## 10. 교육용 계산: 완료 여부와 cost를 분리한다
+
+N=50 구성 예의 w_E≈1.383에 s=0.5, D=4, E_sc=2를 넣는다
+
+
+| 단계 | 계산 | 결과 |
+| --- | --- | --- |
+| delay 항 | sD = 0.5 × 4 | 2 |
+| energy 항 | (1−s)w_E E_sc | 약 1.383 |
+| 합산 cost | C = 2 × (2 + 1.383) | 약 6.766 |
+| 완료 / 미완료 | 40−C / −C | 약 33.234 / −6.766 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 2–3, 식을 적용한 구성 예
+
+## 11. 왜 policy-invariant shaping이 아닌가
+
+기존 QECO의 최적 정책을 보존한다고 증명된 reward shaping이 아니다
+
+- w_E가 energy 항의 비중을 바꾸므로 delay와 energy 사이의 선호가 달라진다
+- offloading gating까지 적용하면 실제 실행되는 행동도 영향을 받을 수 있다
+- D3QN/LSTM과 action space를 유지해도 최적화 목표까지 같아지는 것은 아니다
+- 따라서 기존 QECO의 최적 정책을 보존한다는 보장은 주장하지 않는다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 3, §III, policy-invariant shaping 구분
+
+## 12. 기존 QECO에서 유지한 것과 바꾼 것
+
+변경 지점은 부하 적응형 cost·제어이며, 새로운 network architecture를 제안하지 않는다
+
+
+| 구분 | 원고의 설명 | 공개된 상세 수준 |
+| --- | --- | --- |
+| 학습기 | Dueling Double DQN 유지 | 전체 network·target update는 재서술하지 않음 |
+| history 입력 | LSTM 기반 load history 유지 | 기본 QECO 구조를 따름 |
+| reward | energy cost에 w_E 반영 | cost와 완료/미완료 식 제시 |
+| action 제어 | offloading gating, action space 유지 | 구체적 gate 판정식은 미제시 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 2–3, §III; p. 4, §VI
+
+## 13. 실험 조건과 지표를 먼저 고정한다
+
+실험은 edge 하나, 사용자 네 조건, 총 400 episodes이다
+
+
+| 조건 | 원고에 제시된 내용 | 해석 범위 |
+| --- | --- | --- |
+| 부하 | N=10,30,50,80; M=1 | single-edge dense stress |
+| 주 지표 | 전체 episode 평균 | 최종 구간 평균과 다름 |
+| 비교 | QECO·DROO·Tang&Wong DQN | 그림 1–4에 표시된 구현 비교 |
+| 불확실성 | seed 수·분산·CI 미보고 | 통계적 우위를 확정할 수 없음 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 1–4, §II·IV–VI
+
+## 14. 3x 결과: 그림 1의 평균값
+
+30 users / 1 edge · 전체 400 episodes · QECO와 QECO-Adapt 비교
+
+
+| 지표 | QECO | QECO-Adapt | 유리한 방향 |
+| --- | --- | --- | --- |
+| QoE | 11.40 | 12.65 | 높아짐 |
+| Delay | 8.000 | 7.896 | 낮아짐 |
+| Energy | 19.17 | 18.14 | 낮아짐 |
+| Dropped tasks | 362.1 | 340.8 | 낮아짐 |
+
+핵심: 같은 표 안에서는 동일한 그림의 값만 사용하며, 불일치하는 변화량을 섞지 않는다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 3, Fig. 1; Table 1과 구분
+
+## 15. 5x·8x 결과: 그림 2와 그림 3
+
+각 셀은 QECO → QECO-Adapt이며, 원고 그림에 표시된 평균값이다
+
+
+| 지표 | 5x: 50 users | 8x: 80 users |
+| --- | --- | --- |
+| QoE ↑ | 6.488 → 9.177 | 3.728 → 7.066 |
+| Delay ↓ | 8.375 → 8.219 | 8.584 → 8.437 |
+| Energy ↓ | 19.88 → 17.45 | 19.95 → 16.30 |
+| Dropped ↓ | 771.0 → 692.0 | 1386.8 → 1231.9 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 4, Figs. 2–3
+
+## 16. 정량 해석: 표와 그림이 다른 경우
+
+원고의 일부 절대 변화량·부호는 그림과 일치하지 않아 하나의 수치로 확정하지 않는다
+
+
+| 항목 | Table 1 표시 | 그림 표시값에서 계산 |
+| --- | --- | --- |
+| 3x QoE 비율 | −10.97% | 11.40→12.65 : 약 +10.96% |
+| 3x Energy 변화 | −2.142 | 19.17→18.14 : −1.03 |
+| 5x Dropped 변화 | −2.1422 | 771.0→692.0 : −79.0 |
+| 8x Energy 변화 | −2.142 | 19.95→16.30 : −3.65 |
+
+핵심: 원자료 확인 전에는 서로 다른 값의 평균이나 혼합 표를 만들지 않는다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 3–4, Table 1 및 Figs. 1–3
+
+## 17. 저부하 손실과 runtime 비용도 남는다
+
+고밀도에서의 유리한 관측만으로 적용 범위를 무제한 확대할 수 없다
+
+
+| 조건 | 원고의 보고 | 의미 |
+| --- | --- | --- |
+| 1x | Energy 감소, QoE·Delay·Drop 악화 | 낮은 부하의 무조건적 개선 아님 |
+| 3x | 네 주요 지표 개선 방향 | Fig.1의 조건부 관측 |
+| 5x·8x | runtime 약 11% 증가 보고 | Table1 기준 추가 계산 비용 |
+| DROO 비교 | 8x의 energy는 DROO가 더 낮음 | energy 단독 최고 성능 아님 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 3–4, Table 1·Fig. 4·§IV
+
+## 18. 교육용 예: 같은 최종값, 다른 전체 평균
+
+네 시점만 둔 가상 QoE trace이며 QECO 실험값이 아니다
+
+
+| 가상 trace | 초반 2시점 | 후반 2시점 | 전체 평균 |
+| --- | --- | --- | --- |
+| A | 0, 0 | 10, 10 | 5 |
+| B | 6, 6 | 10, 10 | 8 |
+| 비교 | B의 초반 손실이 작음 | 둘 다 평균 10 | 전체 평균은 B가 높음 |
+
+핵심: 전체 평균의 이득은 초반 손실 감소로도 생길 수 있으며, 최종 성능 상승과 동의어가 아니다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 4, §V를 설명하는 구성 예
+
+## 19. 8x 곡선: 이동평균의 교차를 읽는다
+
+Fig.4는 window=25 이동평균이며, 본문은 DROO와의 교차 시점을 설명한다
+
+
+| 지표 | 본문이 언급한 시점 | 무엇을 뜻하나 |
+| --- | --- | --- |
+| Delay | 약 195 episodes 이후 | 표시된 smoothed trace에서 더 낮음 |
+| QoE | 약 272 episodes 이후 | 표시된 smoothed trace에서 더 높음 |
+| Dropped tasks | 약 265 episodes 이후 | 표시된 smoothed trace에서 더 낮음 |
+| Energy | DROO가 전 구간 더 낮음 | QECO-Adapt의 단독 우위 아님 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) p. 4, Fig. 4 및 §IV–VI
+
+## 20. 이 연구로 답한 것과 아직 남은 것
+
+부하 적응 아이디어의 정의와 실험 관측, 재현 가능한 완전한 알고리즘은 구분한다
+
+
+| 대상 | 현재 근거 | 남은 검증 |
+| --- | --- | --- |
+| 수식 | load proxy·g·w_E·reward | arrival clipping·multi-edge 조건 |
+| gating | 제어 적용을 서술 | 구체적 action rule·threshold |
+| 성능 | 단일 edge의 평균·smoothed trace | 다중 seed·CI·공통 평가 산식 |
+| 정량 비교 | 표·그림의 일부 불일치 | 원자료·timing 조건·수치 정합성 |
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 2–4, §III–VI
+
+## 21. 정리: dense 환경의 초반 손실에 개입한다
+
+학습기의 구조 변경보다, 부하에 따른 목적 함수·제어 변화에 초점을 둔 연구다
+
+- L_eff → g → w_E가 energy cost를 부하에 적응시킨다
+- 기존 QECO의 D3QN/LSTM과 action space를 유지하지만 최적화 목표는 달라진다
+- 보고된 3x 이상 그림에서 QECO 대비 평균 지표가 유리하게 관측된다
+- 전체 평균의 개선, 최종 성능, 통계적 우위는 서로 다른 주장이다
+
+근거: [research-2026](https://hyeonwoona0861.github.io/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf) pp. 1–4, 요약·방법·결론

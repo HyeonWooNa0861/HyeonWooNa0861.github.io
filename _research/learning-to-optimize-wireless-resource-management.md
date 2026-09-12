@@ -70,6 +70,14 @@ Wireless resource management는 power control, beamformer design, admission cont
 
 MEC offloading에서도 일부 subproblem은 매번 최적화를 풀기 어렵다. DROO나 QECO 계열은 DRL을 사용하지만, 이 논문은 최적화 알고리즘 자체를 neural approximation으로 대체하는 별도의 설계 축을 제공한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 16장 | <a href="/assets/seminars/learning-to-optimize-wireless-resource-management/learning-to-optimize-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/learning-to-optimize-wireless-resource-management/learning-to-optimize-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/learning-to-optimize-wireless-resource-management/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/learning-to-optimize-wireless-resource-management/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

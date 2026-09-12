@@ -1,0 +1,306 @@
+---
+type: research-seminar-slides
+paper_id: deep-reinforcement-learning-for-online-latency
+---
+
+# DECENT: 온라인 MEC Offloading의 지연·자원 결정
+
+논문: Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+
+저자: Zeinab Akhavan, Mona Esmaeili, Babak Badnava, Mohammad Yousefi, Xiang Sun, Michael Devetsikiotis, Payman Zarkesh-Ha (2022)
+
+## 1. DECENT: 온라인 MEC Offloading의 지연·자원 결정
+
+대기열과 task priority를 관측해 MEC 목적지와 compute resource를 함께 고르는 A2C-style 접근
+
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 1, title and abstract
+
+## 2. 가장 가까운 MEC server가 항상 최선은 아닌 이유
+
+network delay가 작아도 compute resource와 두 대기열의 상태가 나쁘면 response time은 커질 수 있다
+
+1. **task 도착**: BS에 이미 offload할 task가 도착
+2. **가까운 server**: 전송과 E2E delay는 작을 수 있음
+3. **server 상태**: resource 부족과 queue 적체 가능
+4. **응답 지연**: network와 compute delay를 함께 합산
+5. **공동 결정**: 목적지와 resource 양을 같이 선택
+
+핵심: 논문의 핵심은 거리 하나가 아니라 queue·resource·priority를 함께 보는 것이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 1–3, abstract; Fig. 1
+
+## 3. 이 논문이 결정하는 것과 결정하지 않는 것
+
+task는 이미 offloading 대상으로 정해져 있으며, BS가 server와 compute resource를 선택한다
+
+
+| 범위 | 논문이 다루는 결정 | 범위 밖 |
+| --- | --- | --- |
+| offloading | 어느 MEC server로 보낼지 | local execution 여부 |
+| resource | 선택한 server의 discrete resource level | 연속 resource control |
+| 지연 | network와 computing queue wait 포함 | 결과 반환 지연 |
+| 목표 | weighted response time 최소화 | energy를 목적식에 추가 |
+
+핵심: ‘offload할까’가 아니라 ‘이미 offload할 task를 어디에, 얼마의 resource로 보낼까’의 문제다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 2–4, Sec. 3
+
+## 4. MEC 시스템에서 BS가 보는 두 종류의 대기열
+
+BS의 destination별 communication queue와 MEC server의 computing queue가 서로 다른 지연을 만든다
+
+- **레인 arrival decision**
+  - **IoT task**: BS에 task i 도착
+  - **comm queue**: destination별 전송 대기
+  - **network**: 전송과 E2E delay
+  - **compute queue**: resource release 대기
+  - **MEC execution**: 할당 resource로 실행
+- IoT task → comm queue (실선, 단방향)
+- comm queue → network (실선, 단방향)
+- network → compute queue (실선, 단방향)
+- compute queue → MEC execution (실선, 단방향)
+
+핵심: communication queue와 computing queue를 함께 모델링하는 것이 DECENT의 문제 정의다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 2–3, Fig. 1; Sec. 3
+
+## 5. response time은 network path와 computing path를 합친다
+
+목적지 선택과 resource 선택은 각기 다른 항을 바꾸지만 최종 지연에서는 결합된다
+
+- **task i → MEC k**: 선택한 server와 resource
+- **network delay**: 전송 + E2E + 통신 대기
+- **computing delay**: 실행 + compute 대기
+- **response time**: Tᵢₖ = Tᵢₖⁿᵉᵗ + Tᵢₖᶜᵒᵐᵖ
+- **latency score**: weighted response를 계산
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 4, Eqs. (1)–(3)
+
+## 6. P0: priority를 반영한 response time 최소화
+
+각 task는 정확히 한 MEC server를 고르고, resource는 허용된 discrete block 중 하나여야 한다
+
+
+| 요소 | 정의 | 의미 |
+| --- | --- | --- |
+| 목적 | Σᵢ ηᵢ Σₖ xᵢₖ(Tᵢₖᶜᵒᵐᵖ + Tᵢₖⁿᵉᵗ) 최소 | weighted response time |
+| server | Σₖ xᵢₖ = 1 | task마다 목적지 하나 |
+| indicator | xᵢₖ ∈ {0, 1} | server 선택 여부 |
+| resource | rᵢₖ ∈ {0, R₁, …, Rᵐᵃˣ} | 허용된 discrete resource |
+
+핵심: priority η가 클수록 같은 response time이 objective에 더 크게 반영된다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 4, Eqs. (4)–(7)
+
+## 7. 도착 순간의 MDP state는 무엇인가
+
+state는 새 task 정보 하나와 모든 MEC server의 resource·queue 상태를 함께 담는다
+
+
+| state item | 원문 정의 | 결정에 주는 정보 |
+| --- | --- | --- |
+| ηᵢ, lᵢ | 새 task의 priority와 data size | 어떤 지연을 더 중시할지 |
+| C={cₖ} | 각 server의 remaining compute resource | 실행 가능한 resource 여유 |
+| D={dₖ} | 각 computing queue의 workload | compute 대기량 |
+| B={bₖ} | 각 communication queue의 wait | 전송 전 대기량 |
+
+핵심: DECENT는 server의 거리만 아니라 현재 남은 resource와 양쪽 queue state를 입력으로 쓴다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 5, Sec. 4 state definition
+
+## 8. action·reward: server와 resource의 짝
+
+actor는 task i마다 aᵢ={rᵢₖ, xᵢₖ}를 고르고, 환경은 다음 state와 reward를 만든다
+
+- **레인 MDP transition**
+  - **state sᵢ**: ηᵢ, lᵢ, C, D, B
+  - **actor policy**: πθ(aᵢ|sᵢ)
+  - **action aᵢ**: server xᵢₖ와 rᵢₖ
+  - **transition F**: queue·resource state 갱신
+  - **reward rᵢ**: −ηᵢ × response time
+- state sᵢ → actor policy (실선, 단방향)
+- actor policy → action aᵢ (실선, 단방향)
+- action aᵢ → transition F (실선, 단방향)
+- transition F → reward rᵢ (실선, 단방향)
+
+핵심: negative reward를 크게 만든다는 것은 weighted response time을 작게 만든다는 뜻이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 5, Sec. 4 action, transition, reward
+
+## 9. A2C에서 actor와 critic이 나누는 일
+
+replay에서 꺼낸 transition의 TD advantage가 원문 Eq. 11 actor update에 들어간다
+
+- **레인 update**
+  - **transition**: s, a, r, s_next
+sample
+  - **critic values**: V(s)와
+V(s_next)
+  - **TD advantage**: r+gamma Vnext
+−Vnow
+  - **actor gradient**: Eq. 11의
+printed update
+  - **updated policy**: 다음 task의
+policy
+- transition → critic values (실선, 단방향)
+- critic values → TD advantage (실선, 단방향)
+- TD advantage → actor gradient (실선, 단방향)
+- actor gradient → updated policy (실선, 단방향)
+
+핵심: advantage는 critic value와 reward를 actor update에 연결하는 학습 신호다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 5–6, Eqs. (8)–(13); Algorithm 1
+
+## 10. 원문의 actor·critic update와 구현 경계
+
+논문은 update 식을 제시하지만 actor objective의 부호와 action encoding의 구현 세부를 정하지 않는다
+
+
+| 원문 항목 | 명시된 내용 | 강의에서 지킬 경계 |
+| --- | --- | --- |
+| actor update | θ ← θ − βₐ∇θJ(θ) | J 최대화 설명과 sign convention 구분 |
+| critic update | TD residual 제곱을 J(ν)로 최소화 | Eq. (12)–(13) 범위만 설명 |
+| action output | softmax action distribution | pair encoding·mask·ε 연계 미명시 |
+| network | actor·critic hidden layer 각 128 ReLU | 추가 layer·target network 주장 안 함 |
+
+핵심: 원문의 수식은 제시하되, 미명시 code-level 선택을 논문 주장으로 만들지 않는다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 5–6, Eqs. (8)–(13); Algorithm 1
+
+## 11. Algorithm 1: training에서 transition을 모아 update한다
+
+논문은 task-arrival transition collection 뒤 replay sampling과 actor·critic update를 수행한다고 적는다
+
+1. **초기화**: γ, βₐ, βc, ε 설정
+2. **task arrival**: state 관측 후 ε-greedy action
+3. **reward**: rᵢ 계산, next state 획득
+4. **replay buffer**: (s,a,r,s′) transition 저장
+5. **update**: sample 후 actor와 critic 갱신
+
+핵심: 10% random·90% greedy action은 원문이 명시한 exploration setting이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 6, Algorithm 1 and following text
+
+## 12. 강의용 trace: reward와 advantage를 직접 계산해 보기
+
+아래 candidate delay와 critic value는 수식 연습을 위해 만든 값이며 논문 결과가 아니다
+
+
+| 항목 | MEC 1 action A | MEC 2 action B |
+| --- | --- | --- |
+| action | server 1, resource 100 | server 2, resource 60 |
+| 가정 response time | 0.12 s | 0.20 s |
+| reward, η=20 | −20×0.12 = −2.4 | −20×0.20 = −4.0 |
+| advantage | −2.4+0.9(−1)−(−4)=+0.7 | −4.0+0.9(−1)−(−4)=−0.9 |
+
+핵심: 이 invented critic baseline에서는 A가 B보다 더 좋은 one-step advantage를 보인다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 5, reward and Eq. (10)
+
+## 13. 두 baseline은 서로 다른 한 가지 신호만 본다
+
+DECENT의 비교는 nearest server와 largest remaining-resource server라는 두 휴리스틱에 한정된다
+
+- **arriving task**: 같은 task i를 처리
+- **nearest server**: 가장 작은 E2E delay
+- **largest server**: 가장 큰 remaining resource
+- **DECENT comparison**: simulation의 empirical 결과
+- **result reading**: baseline 대비 실험 비교
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 6, baseline definitions
+
+## 14. simulation 조건 1: topology와 resource
+
+모든 결과는 one BS와 four MEC server, 명시된 E2E·capacity·discrete resource set에서 얻었다
+
+
+| 항목 | 보고된 조건 |
+| --- | --- |
+| topology | 1 BS; 4 MEC server; distance 0, 1, 2, 3 km |
+| E2E delay | T=αd+ζ; initially α=.03 s/km, ζ=.03 s |
+| server capacity | Rmax=200 Mcycles/s |
+| link capacity | w=2×10⁹ bits/s |
+| resource r | {10,20,40,60,80,100,120,140,160,200} Mcycles/s |
+
+핵심: 논문의 성능 주장은 이 simulation model과 두 baseline의 비교 범위에서 읽어야 한다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 6, Table 1 and Sec. 5
+
+## 15. simulation 조건 2: workload와 training
+
+task size의 normal-distribution 두 번째 parameter는 원문 표기 그대로 두며 의미를 추정하지 않는다
+
+
+| 항목 | 보고된 조건 |
+| --- | --- |
+| arrival | Poisson λ=50 tasks/s |
+| task size | lᵢ∼N(3×10⁷ bits, 3×10⁵) |
+| computation | μ=.15 CPU cycles/bit |
+| priority | ηᵢ∼U{10,20,50,100} |
+| training | βₐ=.0001; βc=.0002; ε=.1 |
+
+핵심: normal N의 두 번째 parameter는 source가 variance·SD로 명시하지 않는다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) p. 6, Table 1 and Sec. 5
+
+## 16. 무엇이 측정되었고, 어디까지 말할 수 있는가
+
+그림들은 학습과 여러 sensitivity setting의 simulation 결과이며 보편적 guarantee가 아니다
+
+
+| 보고된 관찰 | 조건 | 말할 수 없는 확장 |
+| --- | --- | --- |
+| learning curve | 약 500 episodes 부근에서 수렴 관찰 | convergence theorem |
+| Fig. 3 response | text: weighted <1 s; axis: ms | 다른 arrival pattern |
+| arrival sweep | 6,400 tasks에서 Fig. 4, 500 ms 미만 | 모든 load·topology |
+| priority behavior | higher weight가 낮은 execution time | hard deadline 보장 |
+| μ·α sweep | 두 baseline보다 lowest average | 모든 policy보다 최적 |
+
+핵심: DECENT의 우위는 보고된 simulation 조건에서의 측정 결과이지 일반 정리가 아니다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 6–8, Figs. 2–7 and text
+
+## 17. priority와 execution time: 보고된 관계
+
+큰 η는 같은 delay에 더 큰 penalty를 주며, Figure 5는 높은 weight task의 낮은 execution time을 보고한다
+
+1. **높은 η**: 같은 T에서 r=−ηT가 더 음수
+2. **actor action**: server와 resource pair 선택
+3. **resource effect**: 실행 time과 queue state에 영향
+4. **Fig. 5**: higher weight의 lower execution time 보고
+
+핵심: weight는 논문의 priority signal이지, 만족이 보장되는 deadline constraint가 아니다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 4, 6–7, Eq. (4); Fig. 5 text
+
+## 18. 이 논문을 적용 주장으로 바꾸기 전에 남는 경계
+
+모델의 state 입력과 별도 E2E delay 모델, simulation 구조를 구분해야 한다
+
+
+| 경계 | source가 다룬 범위 | 남는 질문 |
+| --- | --- | --- |
+| observation | state: ηᵢ,lᵢ,C,D,B; E2E는 별도 모델 항 | stale·partial telemetry |
+| decision | one server와 discrete resource | local execution·resource encoding |
+| learning | A2C-style update와 replay sampling | sign·encoding 미명시 |
+| evidence | one-BS/four-server simulations | production overhead·robustness |
+| guarantee | sub-optimal DRL solution 목표 | optimality·convergence theorem |
+
+핵심: DECENT를 이해한다는 것은 policy의 입력·결정·측정 범위를 함께 이해하는 것이다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 4–8, Secs. 3–6
+
+## 19. DECENT의 한 task decision을 다시 연결하면
+
+목적지와 resource를 함께 고르는 이유는 priority와 양쪽 queue state가 response time을 함께 바꾸기 때문이다
+
+1. **관측**: η, size, C, D, B를 읽음
+2. **선택**: server와 discrete resource pair
+3. **평가**: 음의 weighted response reward
+4. **학습**: replay transition과 actor·critic update
+5. **읽기**: simulation result와 guarantee 분리
+
+핵심: DECENT는 관측된 queue·resource state에 따라 server·resource pair를 고른다
+
+근거: [arxiv-v2](https://arxiv.org/abs/2209.05191v2) pp. 4–8, Eqs. (4)–(13); Algorithm 1; conclusion

@@ -63,7 +63,7 @@ Application $$n$$은 $$\{r_n,d_n,G_n\}$$으로 표현된다. $$r_n$$은 offloadi
 
 ### MDP 설계
 
-SATA는 event-driven 방식으로 동작한다. Application arrival event 또는 task completion event가 발생하면, 각 application의 topological/priority list $$\xi_n$$에서 실행 가능한 ready task를 골라 ready queue $$Q^r$$에 넣는다. Priority는 모든 task가 maximum processing capability를 갖는 ECD에 병렬 실행된다고 가정해 추정한 latest completion time $$F^{lct}_{ni}$$의 ascending order로 정한다. Agent가 $$Q^r$$에서 task 하나를 꺼내는 순간이 MDP time step $$\tau$$가 된다.
+SATA는 event-driven 방식으로 동작한다. Application arrival 또는 task completion event가 발생하면, SATA는 각 application의 topological/priority list $$\xi_n$$에서 scheduling-ready task를 골라 ready queue $$Q^r$$에 넣는다. 이는 배치 결정을 내릴 수 있다는 뜻이며, 실제 실행 시작은 Eq. 12의 parent-data arrival과 target ECD queue 조건을 더 기다릴 수 있다. Priority는 모든 task가 maximum processing capability를 갖는 ECD에 병렬 실행된다고 가정해 추정한 latest completion time $$F^{lct}_{ni}$$의 ascending order로 정한다. Agent가 $$Q^r$$에서 task 하나를 꺼내는 순간이 MDP time step $$\tau$$가 된다.
 
 State는 MEC system의 계산 지연과 전송 지연을 요약하는 vector다. 원문은 $$s_\tau=(\hat{\hat{B}}, B^m_n, \hat{\hat{\delta}}, w_r, w_m)$$ 형태로 설명한다. 여기서 $$\hat{\hat{B}}$$는 ECD 간 transmission rate의 합, $$B^m_n$$은 MU와 covering ECD 사이의 transmission rate, $$\hat{\hat{\delta}}$$는 ECD processing capacity의 합, $$w_r$$는 ready queue $$Q^r$$의 total workload, $$w_m$$은 모든 ECD computing queue의 total workload다. 이 값들은 decision controller가 수집하는 real-time status information에서 관찰 가능하다고 둔다.
 
@@ -107,6 +107,14 @@ Task graph는 scientific workflow dataset 중 25개 node를 포함하는 Montage
 두 번째 한계는 simulation 기반 검증이다. CloudSim/EdgeCloudSim/ElasticSim 조합과 Montage workflow, 정해진 Markov transition matrix에서는 결과가 분명하지만, 실제 MEC에서는 wireless channel, ECD queue, mobility, failure, multi-tenant interference가 더 복잡하다. 해결 방향은 trace-driven simulation과 online adaptation을 결합하고, deadline miss가 증가할 때 heuristic fallback이나 safe scheduling guard를 두는 것이다.
 
 세 번째 한계는 reward weight $$\beta,\psi,\eta$$와 deadline multiplier $$6\cdot MS_n$$ 같은 설정값에 대한 민감도다. 확장 연구에서는 multi-objective RL, constrained RL, 또는 Pareto-front analysis를 도입해 makespan, deadline violation, energy consumption, fairness 사이의 trade-off를 명시적으로 다룰 필요가 있다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 30장 | <a href="/assets/seminars/task-graph-offloading-drl-mec/sata-drl-seminar-ko-v3.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/sata-drl-seminar-ko-v3.pptx" download>다운로드</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
 
 ## 참고자료
 

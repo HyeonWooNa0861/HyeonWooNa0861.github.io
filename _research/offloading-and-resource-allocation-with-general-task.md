@@ -104,6 +104,14 @@ Critic은 일반적인 value network가 아니다. Actor가 만든 각 후보 �
 
 One-climb 제한은 복잡도를 줄이지만 모든 일반 DAG에서 최적성을 보장하지는 않는다. 또한 논문 설정은 단일 모바일 장치와 단일 AP를 중심으로 하므로, 다중 사용자 간 경쟁, 서버 큐, 무선 간섭까지 포함하면 행동과 상태 공간이 더 커진다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 18장 | <a href="/assets/seminars/offloading-and-resource-allocation-with-general-task/general-task-mec-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/offloading-and-resource-allocation-with-general-task/general-task-mec-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/offloading-and-resource-allocation-with-general-task/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/offloading-and-resource-allocation-with-general-task/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

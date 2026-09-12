@@ -232,6 +232,10 @@
       url: /research/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/
       description: Hadamard incoherence and E8 lattice codebooks for LLM quantization
       match: /research/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/
+    - title: Calibration Data Impact
+      url: /research/on-the-impact-of-calibration-data-in-post-training-quantization-and-pruning/
+      description: Calibration data effects in post-training quantization and pruning
+      match: /research/on-the-impact-of-calibration-data-in-post-training-quantization-and-pruning/
     - title: Self-Calibration
       url: /research/self-calibration-for-language-model-quantization-and-pruning/
       description: Synthetic calibration data for language model quantization and pruning
@@ -332,6 +336,10 @@
       url: /research/user-centric-cell-free-massive-mimo-survey/
       description: Survey of user-centric cell-free massive MIMO
       match: /research/user-centric-cell-free-massive-mimo-survey/
+    - title: Collaborative MARL Proposal
+      url: /research/collaborative-marl-mec-research-proposal/
+      description: Research proposal for collaborative device-edge and edge-edge offloading
+      match: /research/collaborative-marl-mec-research-proposal/
     - title: Cooperative MARL Offloading
       url: /research/multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing/
       description: Cooperative device-edge and edge-edge offloading under partial observability
@@ -356,6 +364,10 @@
       url: /research/unicon-unified-star-operation-connected-components/
       description: Unified star operations for distributed connected components on commodity clusters
       match: /research/unicon-unified-star-operation-connected-components/
+    - title: CTTP
+      url: /research/mapreduce-triangle-enumeration-with-guarantees/
+      description: Multi-round MapReduce triangle enumeration with space guarantees
+      match: /research/mapreduce-triangle-enumeration-with-guarantees/
     - title: PTE
       url: /research/pte-enumerating-trillion-triangles-distributed-systems/
       description: Pre-partitioned enumeration of trillion-scale graph triangles

@@ -1,0 +1,350 @@
+## 1. QuIP#: Hadamard 변환과 lattice codebook을 이용한 LLM 양자화
+
+1. QuIP#: Hadamard 변환과 lattice codebook을 이용한 LLM 양자화
+
+발표 대본
+QuIP#는 이미 학습된 LLM의 weight를 4 bits 이하로 압축하는 weight-only post-training quantization 방법입니다. 앞선 QuIP의 incoherence와 adaptive rounding을 출발점으로 삼되, Randomized Hadamard Transform, BlockLDLQ와 E8 기반 vector codebook, 선택적 fine-tuning을 추가합니다. 발표에서는 변환이 원래 linear layer 계산과 어떻게 대응되는지, 8개 weight가 하나의 16-bit index가 되는 방식, NoFT와 FT 결과의 차이, 그리고 theorem과 실험이 각각 무엇을 보장하는지 설명합니다.
+
+공개 출처
+quipsharp-paper | pp. 1–2, Abstract and Fig. 2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 2. QuIP#의 범위와 두 결과 경로
+
+2. QuIP#의 범위와 두 결과 경로
+
+발표 대본
+논문은 QuIP#를 weight-only PTQ로 분류합니다. NoFT는 transform과 block quantization으로 끝납니다. FT는 quantized weight matrix를 고정한 채 sign vector, layer normalization, language-model head 같은 선택 parameter를 development data로 최적화합니다. 그러므로 모든 QuIP# 수치를 training-free라고 묶을 수 없습니다. Activation precision은 weight-code bit rate와 별도이며, Algorithm 1과 2는 activation precision을 일반적인 16-bit 경로로 명시하지 않습니다.
+
+공개 출처
+quipsharp-paper | pp. 1–3 and pp. 7–8, Algorithms 1 and 5
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 3. 앞선 QuIP에서 이어받은 세 가지 기반
+
+3. 앞선 QuIP에서 이어받은 세 가지 기반
+
+발표 대본
+QuIP#는 처음부터 새로운 목적 함수를 만드는 방법이 아닙니다. QuIP의 layer-local reconstruction proxy, incoherence processing, LDLQ feedback을 배경으로 사용합니다. QuIP#의 변화는 coordinate transform을 RHT로 바꾸고, scalar rounding을 block vector quantization으로 확장하며, E8 기반 codebook과 optional fine-tuning을 결합한 데 있습니다. 두 논문의 기여를 섞지 않기 위해 QuIP의 RHT나 E8P라고 부르지 않습니다.
+
+공개 출처
+quipsharp-paper | pp. 2–4, Sections 2–3
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+quip-paper | method overview
+QuIP: 2-Bit Quantization of Large Language Models With Guarantees
+https://openreview.net/forum?id=xrk9g5vcXR
+
+## 4. QuIP#가 추가한 세 단계
+
+4. QuIP#가 추가한 세 단계
+
+발표 대본
+전체 pipeline을 네 단계로 먼저 봅니다. RHT는 weight와 Hessian의 coordinate를 바꿉니다. BlockLDLQ는 g개 coordinate를 동시에 quantize하면서 먼저 정한 block의 error를 뒤 block에 feed forward합니다. E8P는 8차원 2-bit-per-scalar codebook이고 RVQ는 이를 3-bit와 4-bit로 확장합니다. 마지막 fine-tuning은 선택 사항이며 NoFT와 별도로 평가됩니다.
+
+공개 출처
+quipsharp-paper | pp. 1–2, contribution list and Fig. 2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 5. 한 layer의 quantization 목표
+
+5. 한 layer의 quantization 목표
+
+발표 대본
+식 (1)과 (2)는 quantized linear layer의 출력이 원래 layer 출력과 얼마나 다른지를 calibration input에서 측정합니다. H는 입력 outer product의 평균으로 민감한 방향을 반영합니다. 이 proxy 덕분에 LLM 전체 task loss를 직접 최적화하지 않고도 layer별 quantization을 수행할 수 있습니다. 다만 layer proxy가 작다는 theorem은 여러 transformer block을 지난 최종 perplexity나 zero-shot accuracy의 보장과 다릅니다.
+
+공개 출처
+quipsharp-paper | pp. 2–3, eqs. 1–2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 6. 교육용 4차원 RHT 계산
+
+6. 교육용 4차원 RHT 계산
+
+발표 대본
+이 계산은 논문의 LLM 결과가 아니라 RHT의 작동을 보여 주는 교육용 4차원 예시입니다. x에 random sign을 적용하면 (3, −1, 0, 0)이 됩니다. 표시한 Hadamard matrix를 곱하고 2로 나누면 (1, 2, 1, 2)가 됩니다. 제곱 norm은 변환 전 10, 변환 후에도 10입니다. 한 coordinate에 더 집중된 값을 여러 coordinate로 분산하지만 완전히 같은 크기로 만든다는 뜻은 아닙니다. 실제 QuIP#는 weight와 Hessian의 양쪽 coordinate에 맞는 scaled Hadamard transform을 사용합니다.
+
+공개 출처
+quipsharp-paper | pp. 3–5, Algorithm 3; values are a constructed example
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 7. RHT와 추론의 대응 관계
+
+7. RHT와 추론의 대응 관계
+
+발표 대본
+Algorithm 1의 NoFT 경로는 W와 H를 RHT basis로 옮긴 뒤 transformed W를 quantize하고 binary sign vector S_U, S_V를 함께 저장합니다. Algorithm 2의 순서는 Had(S_V 곱하기 x), decoded transformed-weight multiply, Had(S_U 곱하기 y)입니다. NoFT에서 quantization error가 없다면 이 orthogonal basis relation이 원래 linear map을 보존합니다. 그러나 Section 5의 fine-tuning은 S_U와 S_V를 real-valued vector로 최적화하므로, FT 뒤의 transform을 같은 의미의 strict orthogonal model-preserving RHT라고 부르면 안 됩니다.
+
+공개 출처
+quipsharp-paper | p. 2, Algorithms 1–2; pp. 3–5, Algorithm 3
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 8. Lemma 3.1의 보장 범위
+
+8. Lemma 3.1의 보장 범위
+
+발표 대본
+Lemma 3.1은 H가 positive semidefinite이고 W가 주어졌을 때 random sign과 orthogonal scaled Hadamard를 적용하면 변환된 H와 W가 high probability로 incoherent해진다고 말합니다. Bound는 dimension과 failure probability delta를 포함합니다. 필요한 Hadamard factor를 구하기 어려운 차원에서는 논문이 RFFT fallback을 제시합니다. 이 lemma는 transform cost나 final language-model perplexity를 직접 보장하지 않습니다.
+
+공개 출처
+quipsharp-paper | pp. 3–5 and p. 15, Lemma 3.1
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 9. Table 1: RHT와 RFFT 비교
+
+9. Table 1: RHT와 RFFT 비교
+
+발표 대본
+Table 1은 fine-tuning 없는 2-bit QuIP#에서 RHT와 RFFT만 비교합니다. 세 Llama 2 model 모두 RHT perplexity가 조금 낮습니다. 논문은 RFFT가 비슷한 theory와 runtime을 제공하고, 적절한 Hadamard factorization이나 빠른 implementation이 없을 때 사용할 수 있다고 설명합니다. 이 수치로 모든 model과 hardware에서 RHT가 더 빠르거나 더 정확하다고 일반화하지 않습니다.
+
+공개 출처
+quipsharp-paper | p. 5, Table 1 and Section 3
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 10. Scalar quantization과 vector quantization의 표현 단위
+
+10. Scalar quantization과 vector quantization의 표현 단위
+
+발표 대본
+RHT-transformed weight는 논문의 설명에서 대략 ball-shaped Gaussian distribution을 이룹니다. Scalar quantization은 각 coordinate에 독립적인 level을 적용하므로 전체 codeword 배치는 hypercube 형태가 됩니다. Vector quantization은 g-dimensional vector를 한 codeword로 선택해 source distribution의 모양을 반영할 수 있습니다. 하지만 일반 codebook는 size가 2의 k 곱하기 g 제곱으로 늘어나므로 저장과 lookup 문제가 생깁니다.
+
+공개 출처
+quipsharp-paper | pp. 3 and 5–6, Sections 2.4 and 4
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 11. Vector quantization의 code rate
+
+11. Vector quantization의 code rate
+
+발표 대본
+Generic vector quantization의 rate를 정리합니다. g-dimensional block을 k bits per scalar로 표현하면 한 block에 k 곱하기 g bits를 쓰고 conceptual codebook에는 2의 k 곱하기 g 제곱 개 codeword가 필요합니다. E8P에서는 g가 8, k가 2이므로 16-bit index가 8개 weight를 가리킵니다. 이 계산은 code index rate이며 sign vector나 scale, shared codebook 같은 overhead를 포함한 전체 model footprint와 다릅니다.
+
+공개 출처
+quipsharp-paper | p. 3, Section 2.4; pp. 5–6, Section 4.2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 12. 교육용 2차원 VQ 예시
+
+12. 교육용 2차원 VQ 예시
+
+발표 대본
+이 수치는 독립적으로 계산한 교육용 toy입니다. Scalar codebook {0,1}을 두 축에 독립적으로 적용하면 0.49는 모두 0이 되고 squared error는 0.4802입니다. 임의로 만든 2D codebook에 (0.50, 0.50)이 있으면 그것을 골라 error가 0.0002가 됩니다. 두 codebook의 크기와 rate가 동등한 benchmark가 아니며 실제 E8P도 아닙니다. 목적은 여러 coordinate를 함께 고를 때 분포에 맞는 codeword를 둘 수 있음을 시각화하는 것입니다.
+
+공개 출처
+quipsharp-paper | pp. 3 and 5–6, VQ motivation; constructed example
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 13. BlockLDLQ의 앞방향 error feedback
+
+13. BlockLDLQ의 앞방향 error feedback
+
+발표 대본
+BlockLDLQ는 scalar LDLQ의 adaptive feedback을 g-coordinate block으로 확장합니다. 첫 block을 vector quantizer로 codeword에 고정하면 original과 quantized block 사이 residual이 생깁니다. Hessian의 block LDL decomposition에서 얻은 feedback coefficient를 사용해 이 residual을 뒤 block의 아직 quantize하지 않은 값에 반영합니다. 그 다음 adjusted block을 quantize합니다. 피드백은 이전 block에서 이후 block으로만 진행하며 이미 고른 code를 다시 최적화하는 iterative refinement가 아닙니다.
+
+공개 출처
+quipsharp-paper | pp. 5–6, Section 4.1 and eq. 3
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 14. Theorem 4.1의 조건과 결론
+
+14. Theorem 4.1의 조건과 결론
+
+발표 대본
+Theorem 4.1의 기호를 화면에 정의했습니다. W는 m by n weight matrix이고 g는 n을 나누는 block size입니다. H는 mu-incoherent해야 하며 vector quantizer의 error covariance가 sigma squared identity 이하라는 조건이 필요합니다. 결론은 quantized W의 Hessian-weighted layer proxy에 대한 expectation bound입니다. 원문은 같은 조건에서 block을 독립적으로 quantize한 bound와 비교합니다. 이 식으로 final LLM perplexity나 zero-shot accuracy의 우위를 증명할 수는 없습니다.
+
+공개 출처
+quipsharp-paper | p. 5, Theorem 4.1
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 15. E8P의 실제 표현 단위
+
+15. E8P의 실제 표현 단위
+
+발표 대본
+E8P는 E8 Padded의 약자이며 8-dimensional 2-bit vector codebook입니다. 8개 scalar에 16-bit index 하나를 쓰므로 index rate가 2 bits per scalar입니다. Conceptually 65,536 codeword를 갖지만 E8 lattice의 sign symmetry와 shift 구조를 이용해 256 곱하기 8 source table과 간단한 operation으로 decode합니다. 논문은 그 representation이 1 KiB라고 보고합니다. 이 1 KiB는 전체 quantized model size가 아니라 shared codebook representation입니다.
+
+공개 출처
+quipsharp-paper | pp. 5–7, Section 4.2; pp. 16–18, Appendix C
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 16. 16-bit E8P index의 구조적 decode
+
+16. 16-bit E8P index의 구조적 decode
+
+발표 대본
+16 bits의 분해를 정확히 읽겠습니다. 첫 8 bits는 source codebook S에서 pattern s를 고릅니다. 다음 7 bits는 sign flip을 지정하고, 여덟째 sign은 그 7개 flip과 선택된 s가 요구하는 parity를 함께 사용해 추론합니다. 마지막 1 bit는 D̂8−1/4 또는 D̂8+1/4 branch를 선택하며, 두 branch의 union이 E8+1/4입니다. 합계는 8+7+1인 16 bits이고 parity sign은 별도 저장 bit가 아닙니다. 이 구조가 65,536 곱하기 8 FP16 table을 직접 저장하는 방식과 다릅니다.
+
+공개 출처
+quipsharp-paper | pp. 6–7, Section 4.2; pp. 16–18, Appendix C
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 17. 교육용 toy와 E8P를 구분하는 기준
+
+17. 교육용 toy와 E8P를 구분하는 기준
+
+발표 대본
+앞의 2D toy는 vector quantization의 선택 단위만 보여 줍니다. Dimension도 2이고 codebook size와 rate를 scalar baseline에 맞추지 않았습니다. Generic VQ는 g-dimensional block과 2의 k g 제곱 codeword라는 일반 규칙입니다. Source-defined E8P는 8D lattice-derived structure, 16-bit group index, compact decode를 함께 가집니다. 따라서 toy의 0.0002 error를 E8P의 error나 LLM result로 인용하지 않습니다.
+
+공개 출처
+quipsharp-paper | pp. 3 and 5–7, Sections 2.4 and 4.2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 18. Residual VQ로 3-bit와 4-bit를 구성한다
+
+18. Residual VQ로 3-bit와 4-bit를 구성한다
+
+발표 대본
+Section 4.3의 exact composition입니다. 3-bit path는 먼저 2-bit E8P codeword를 고르고, 남은 residual을 1-bit E8 codebook으로 quantize해 두 codeword를 더합니다. 4-bit path는 residual에 두 번째 2-bit E8P를 적용합니다. 따라서 4-bit는 2-bit operation 하나가 아니라 두 개의 sequential code stage입니다. 각 stage는 논문이 정한 별도 scale을 사용하며, 일반적인 모든 residual codebook이 같은 결과를 낸다는 주장은 아닙니다.
+
+공개 출처
+quipsharp-paper | p. 7, Section 4.3; p. 24, Appendix F.5
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 19. QuIP#-NoFT pipeline
+
+19. QuIP#-NoFT pipeline
+
+발표 대본
+Algorithm 1의 NoFT 경로를 입력부터 inference-ready output까지 연결했습니다. IP-RHT는 transformed W와 H, sign vector를 만듭니다. BlockLDLQ가 chosen codebook으로 W를 quantize합니다. Output에는 quantized code와 S_U, S_V가 남습니다. 이후 Algorithm 2가 activation에 matched transforms를 적용해 linear layer를 계산합니다. NoFT도 Hessian 생성을 위한 calibration data와 quantization compute가 필요하므로 data-free라고 부르지 않습니다.
+
+공개 출처
+quipsharp-paper | p. 2, Algorithms 1–2; pp. 3–7, Sections 3–4
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 20. Layer proxy 뒤에 fine-tuning을 두는 이유
+
+20. Layer proxy 뒤에 fine-tuning을 두는 이유
+
+발표 대본
+Layer-local proxy는 quantization을 tractable하게 만들지만 transformer stack에서 error가 상호작용할 수 있습니다. Algorithm 5는 먼저 각 transformer block에서 activation MSE를 줄이고, 모든 linear layer를 quantize한 뒤 model logits를 원래 model logits에 맞추는 cross-entropy stage를 수행합니다. 이 과정은 final task label로 전체 model을 다시 학습하는 QAT와 같지 않지만, 분명한 optimization과 development data를 사용합니다.
+
+공개 출처
+quipsharp-paper | pp. 7–8, Section 5; pp. 21 and 24–25, Algorithm 5 and Appendix F.6
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 21. QuIP#-FT에서 고정되는 것과 학습되는 것
+
+21. QuIP#-FT에서 고정되는 것과 학습되는 것
+
+발표 대본
+Algorithm 5에서 각 linear layer를 NoFT로 quantize한 뒤 weight matrix gradient를 disable하지만 S_U와 S_V는 학습할 수 있습니다. Blockwise stage에서는 unquantized layer와 selected parameter가 앞서 quantize한 layer의 activation error를 보상합니다. 전체 quantization 뒤 learnable set에는 layernorm, 모든 S_U와 S_V, language-model head가 남습니다. End-to-end stage는 original model logits를 target으로 cross-entropy를 줄입니다. Validation split과 early stopping도 사용합니다.
+
+공개 출처
+quipsharp-paper | p. 21, Algorithm 5; p. 24, Appendix F.6
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 22. Fine-tuning의 data와 compute 조건
+
+22. Fine-tuning의 data와 compute 조건
+
+발표 대본
+Appendix F의 조건을 붙여 compute를 읽습니다. Llama 2 70B quantization은 NoFT가 10 GPU-hours 미만, FT가 약 100 GPU-hours로 보고됩니다. 두 값 모두 Hessian generation time을 제외합니다. Blockwise fine-tuning은 RedPajama 1T에서 256 development sequence와 128 validation sequence를 사용하고 Adam으로 5 epoch, 160 step을 수행합니다. 대부분의 experiment는 A100에서 실행했고 timing table은 별도 RTX 4090입니다.
+
+공개 출처
+quipsharp-paper | pp. 24–25, Appendices F.6–F.7
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 23. Table 4: Llama 2 70B의 2-bit ablation
+
+23. Table 4: Llama 2 70B의 2-bit ablation
+
+발표 대본
+Table 4의 Llama 2 70B, 2-bit row만 재구성했습니다. Full QuIP#-FT가 가장 낮은 PPL이고, NoFT, NoFT-noE8 순으로 높습니다. NoE8 variant는 E8 lattice codebook 대신 1-dimensional half-integer grid를 사용합니다. 이 ablation은 각 구성의 기여를 지지하지만 모든 implementation factor를 완전히 독립적으로 통제한 theorem은 아닙니다. 세 row 모두 context length 4096 조건입니다.
+
+공개 출처
+quipsharp-paper | p. 9, Table 4 and Section 6.4
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 24. Table 4: Llama 2 7B에서 더 큰 2-bit 격차
+
+24. Table 4: Llama 2 7B에서 더 큰 2-bit 격차
+
+발표 대본
+동일한 Table 4에서 Llama 2 7B의 2-bit row를 봅니다. FT, NoFT, NoFT-noE8 순으로 PPL 차이가 70B보다 크게 나타납니다. 이는 작은 model에서 quantization error가 더 큰 품질 저하로 이어질 수 있다는 실험적 패턴을 보여 줍니다. 그러나 Figure의 scaling trend를 모든 architecture와 dataset에 대한 법칙으로 바꾸지 않습니다.
+
+공개 출처
+quipsharp-paper | p. 9, Table 4
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 25. Table 2와 Table 4의 context 조건은 다르다
+
+25. Table 2와 Table 4의 context 조건은 다르다
+
+발표 대본
+논문 자체가 Llama 2 perplexity 평가에 2048과 native 4096 두 protocol이 존재한다고 설명합니다. Table 2는 2048이고 Table 4는 4096입니다. 따라서 예를 들어 Table 2의 baseline과 Table 4의 QuIP# 숫자를 조건 없이 직접 비교하면 안 됩니다. Appendix F에서 Hessian은 Llama 1은 2048, Llama 2는 4096 native context의 6144 RedPajama sequence로 생성합니다.
+
+공개 출처
+quipsharp-paper | pp. 7–9, Tables 2 and 4; p. 24, Appendix F.2
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 26. Table 5: RTX 4090 proof-of-concept inference
+
+26. Table 5: RTX 4090 proof-of-concept inference
+
+발표 대본
+Table 5는 NVIDIA RTX 4090과 FlashAttention library의 Llama implementation에서 측정한 proof-of-concept generation 결과입니다. 2-bit Llama 2 70B는 32.74 tokens per second와 56.84% peak memory-bandwidth utilization을 보입니다. RHT와 E8P가 fast decode를 고려해 설계됐다는 실증이지만, 다른 GPU, batch size, serving stack에서도 같은 throughput이나 utilization을 보장하지 않습니다. 4-bit 70B는 이 표에서 OOM입니다.
+
+공개 출처
+quipsharp-paper | pp. 8–9, Table 5 and Section 6.3
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 27. 2 bits per weight와 전체 배포 memory의 차이
+
+27. 2 bits per weight와 전체 배포 memory의 차이
+
+발표 대본
+Appendix F.1이 직접 계산하는 추가 overhead는 model 전체에 공유되는 E8P 1 KiB와 sign vectors입니다. Sign-vector overhead는 large Llama matrix에서 weight당 0.01 bit 미만이지만 0은 아닙니다. 표의 마지막 두 행은 paper accounting이 아니라 2-bit weight code와 전체 deployment footprint를 혼동하지 않기 위한 일반적인 배포 고려사항입니다. 이 논문은 scales, retained state, runtime activation, KV cache의 전체 memory를 Appendix F.1에서 정량화하지 않습니다.
+
+공개 출처
+quipsharp-paper | p. 24, Appendix F.1
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 28. Formal guarantee와 model evidence의 경계
+
+28. Formal guarantee와 model evidence의 경계
+
+발표 대본
+논문의 근거는 서로 다른 층에 있습니다. Lemma는 transform의 incoherence를, theorem은 BlockLDLQ의 expected layer proxy를 다룹니다. Perplexity와 zero-shot accuracy는 model experiment이고 throughput은 특정 GPU system experiment입니다. 이 근거를 하나의 universal guarantee로 합치면 안 됩니다. 특히 3-bit scaling 결과는 paper-era model과 benchmark의 empirical observation이며 rate-equivalent theorem이 아닙니다.
+
+공개 출처
+quipsharp-paper | pp. 3–11, Lemma 3.1, Theorem 4.1, Tables 1–5
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html
+
+## 29. QuIP#의 전체 논리
+
+29. QuIP#의 전체 논리
+
+발표 대본
+QuIP#를 한 흐름으로 정리합니다. NoFT의 binary signs와 Hadamard는 quantization이 다루기 쉬운 basis를 만들고 inference activation에 matched transform을 적용합니다. Quantization error가 없다면 이 NoFT relation은 model-preserving입니다. FT에서는 S_U와 S_V가 real-valued optimized parameter가 되므로 같은 strict orthogonal identity로 해석하지 않습니다. BlockLDLQ는 vector block을 quantize하면서 이미 생긴 error를 뒤 block에 전달합니다. E8P는 16-bit index와 공유 1 KiB structure로 8D 2-bit code를 decode하고 RVQ가 3-bit와 4-bit를 구성합니다. 2-bit code rate는 일반 deployment memory 전체의 측정값이 아닙니다. Theory, PPL table, GPU throughput은 각각 다른 범위의 근거입니다.
+
+공개 출처
+quipsharp-paper | pp. 1–12, Sections 1–7
+QuIP# ICML 2024 paper and supplementary material
+https://proceedings.mlr.press/v235/tseng24a.html

@@ -1,0 +1,335 @@
+## 1. Labidus: Streaming Async Instruction RISC-V Overlay
+
+1. Labidus: Streaming Async Instruction RISC-V Overlay
+
+발표 대본
+Labidus는 FPGA 위에 RISC-V soft processor cluster를 만들고, application에 맞춘 custom operator를 자동 구성하는 overlay입니다. 연구 질문은 software programming의 편의성을 유지하면서 application-specific accelerator에 가까운 utilization을 얻을 수 있는가입니다. 이를 위해 asynchronous completion queue, stream-semantic memory, four-core shared operator pool을 결합합니다.
+
+공개 출처
+asap2025 | p. 57, title and abstract
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 2. FPGA 개발의 두 비용
+
+2. FPGA 개발의 두 비용
+
+발표 대본
+FPGA는 application-specific hardware를 만들 수 있지만 높은 성능을 얻으려면 pipeline과 signal timing을 다뤄야 합니다. HLS도 regular kernel에서는 효과적이지만 dynamic loop bound와 irregular control flow에서는 hardware-aware guidance가 필요할 수 있습니다. Soft processor overlay는 software 개발을 쉽게 만들지만 범용 processor control이 chip resource를 사용해 custom accelerator보다 느리기 쉽습니다.
+
+공개 출처
+asap2025 | pp. 57-58, Sections I-II
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 3. Labidus의 설계 목표
+
+3. Labidus의 설계 목표
+
+발표 대본
+Labidus는 C kernel의 compute-heavy region을 분석해 application-specific fused operator를 구성합니다. 그러나 복잡한 operator는 latency가 길 수 있으므로, operator를 추가하는 것만으로는 utilization이 높아지지 않습니다. Completion queue와 stream memory가 여러 request를 동시에 진행시키고, shared pool과 trimming이 남는 hardware instance를 줄입니다.
+
+공개 출처
+asap2025 | p. 57, Introduction
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 4. Programming model의 시스템 경계
+
+4. Programming model의 시스템 경계
+
+발표 대본
+Paper의 programming environment는 kernel software에 적용됩니다. Host software는 accelerator를 호출하고 data movement를 조정하며, 이 부분의 interaction은 programmer에게 남습니다. 또한 current library에서는 operator pool로 보낼 code region을 programmer가 표시해야 합니다. Legacy code에서 custom kernel을 자동 추출하는 기능은 future work입니다.
+
+공개 출처
+asap2025 | pp. 58-59, Section III-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 5. C kernel에서 두 산출물까지
+
+5. C kernel에서 두 산출물까지
+
+발표 대본
+Static analysis tool은 두 output을 만듭니다. Hardware path에서는 application-specific operator pool이 포함된 HDL을 만들고, software path에서는 같은 계산을 asynchronous custom instruction으로 표현하도록 kernel을 수정합니다. 두 산출물은 각각 HDL compiler와 GCC로 compile되어 FPGA bitfile과 core가 실행할 kernel binary가 됩니다.
+
+공개 출처
+asap2025 | pp. 58-59, Section III-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 6. Haversine loop의 fused operator 생성
+
+6. Haversine loop의 fused operator 생성
+
+발표 대본
+Figure 1의 K-means Haversine loop에서 Labidus는 sinsq, coscos, arcsrt를 찾습니다. Sinsq는 두 각도의 차이를 sin 제곱으로 바꾸고, coscos는 두 cosine을 곱하며, arcsrt는 마지막 arcsine과 square root를 묶습니다. 이 복잡한 operator들은 dozens of cycles latency를 가질 수 있지만 fully pipelined라 매 cycle 새 input을 받을 수 있습니다. 다음 단계의 문제는 이 throughput을 실제로 채우는 것입니다.
+
+공개 출처
+asap2025 | pp. 58-59, Fig. 1 and Section III-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 7. FPGA 배치와 실행 lifecycle
+
+7. FPGA 배치와 실행 lifecycle
+
+발표 대본
+Host는 먼저 FPGA에 generated bitfile을 configure하고 kernel binary를 cores에 load합니다. Input은 PCIe를 통해 FPGA의 local DRAM으로 복사하고, host가 모든 core를 시작시킵니다. 결과도 PCIe를 통해 host로 돌아옵니다. 따라서 paper가 평가한 system은 standalone embedded device가 아니라 host-connected accelerator card입니다.
+
+공개 출처
+asap2025 | p. 59, Section III-B
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 8. Host, memory, Labidus tile의 연결
+
+8. Host, memory, Labidus tile의 연결
+
+발표 대본
+Section III-B의 runtime 순서는 host input을 PCIe로 FPGA DRAM에 복사한 뒤 모든 core에 start signal을 보내는 것입니다. 따라서 실선은 Host software에서 PCIe controller를 거쳐 DRAM controller까지의 input data만 보입니다. 점선 start/control은 core가 있는 tile로 가는 제어 경로입니다. Figure 3의 PCIe controller, DRAM controller, tile은 2D mesh endpoint이므로 점선 양방향 2D mesh는 fabric connectivity만 뜻하며 host input이 tile로 복제된다는 뜻이 아닙니다. Result는 DRAM과 PCIe를 거쳐 반대 방향으로 host에 돌아갑니다. Tile 내부 core들은 ring이고, core 수는 configurable이지만 default는 four입니다.
+
+공개 출처
+asap2025 | p. 59, Fig. 3 and Section IV
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 9. 4-core tile과 shared operator pool
+
+9. 4-core tile과 shared operator pool
+
+발표 대본
+Default tile에는 four RV32I cores가 있고, 각 core는 stream-semantic cache와 completion queue를 가집니다. Custom operator pool은 tile 단위로 공유됩니다. Static analysis는 application이 실제로 쓰는 operator와 상대 frequency를 보고 instance 수를 줄입니다. Sharing은 utilization을 높이는 방법이지만, request routing과 queue가 함께 있어야 여러 cores의 long-latency request를 감당할 수 있습니다.
+
+공개 출처
+asap2025 | pp. 57 and 59, Fig. 3
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 10. Core 안의 data path와 control path
+
+10. Core 안의 data path와 control path
+
+발표 대본
+Figure 4와 Figure 5를 함께 보면 RV32I core는 program control과 request issue를 담당합니다. Completion queue는 operator request를 slot에 연결하고 result readiness를 추적합니다. Stream cache는 off-chip data burst를 공급하며 normal RISC-V local memory와 분리되어 있습니다. Operator pool은 실제 fused computation을 수행합니다.
+
+공개 출처
+asap2025 | pp. 59-60, Figs. 4-5
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 11. Asynchronous completion queue의 기본 동작
+
+11. Asynchronous completion queue의 기본 동작
+
+발표 대본
+Operation을 issue하면 completion queue tail에 slot을 예약합니다. Core는 result를 기다리지 않고 다음 custom operation이나 memory request를 issue합니다. Operator가 끝나면 response가 예약한 slot을 채우고, program이 head에서 ready result를 읽습니다. Reserved slot이 아직 incomplete라면 read는 stall하므로 asynchronous semantics가 latency 자체를 제거하는 것은 아닙니다.
+
+공개 출처
+asap2025 | pp. 59-60, Fig. 4 and Section IV-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 12. Circular buffer와 epoch tracking
+
+12. Circular buffer와 epoch tracking
+
+발표 대본
+Completion queue는 fixed-size BRAM circular buffer입니다. Tail이 buffer 끝을 지나면 같은 physical address를 다시 쓰므로 address만으로는 old result와 new reservation을 구분하기 어렵습니다. Labidus는 global epoch를 wrap 때 증가시키고 request와 response에 epoch를 붙입니다. Slot epoch가 이전 generation이면 아직 새 request가 complete되지 않은 것으로 판단합니다.
+
+공개 출처
+asap2025 | p. 60, Section IV-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 13. Latency hiding이 성립하는 조건
+
+13. Latency hiding이 성립하는 조건
+
+발표 대본
+Long-latency operator가 fully pipelined라면 latency와 throughput을 분리할 수 있습니다. Queue capacity가 여러 request를 담고 input stream이 매 cycle 새 operand를 주면 core는 기다리는 시간을 다른 issue work와 겹칠 수 있습니다. 반대로 incomplete head를 읽거나 queue가 가득 차면 stall합니다. 따라서 paper의 표현은 latency hiding이지 latency elimination이 아닙니다.
+
+공개 출처
+asap2025 | pp. 58-60, Figs. 2 and 4
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 14. 교육용 M=3 streaming trace
+
+14. 교육용 M=3 streaming trace
+
+발표 대본
+원문은 completion queue size M에 맞춰 loop iteration을 M개 block으로 처리합니다. 여기서는 M을 3으로 두고 input 0, 1, 2의 실행 순서를 보여줍니다. Sinsq 결과를 cache로 내보내는 동안 coscos input을 공급하고, 첫 coscos result가 준비되면 multiply stage를 시작합니다. 이 예시는 dependency와 overlap을 설명할 뿐 operator latency를 숫자로 가정하지 않습니다.
+
+공개 출처
+asap2025 | pp. 58-59, Fig. 2 and Section III-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 15. Multiply stage의 두 operand stream
+
+15. Multiply stage의 두 operand stream
+
+발표 대본
+Haversine trace에서 multiply의 한 operand는 cache에 저장한 sinsq result이고 다른 operand는 completion queue에 있는 coscos result입니다. 같은 input index의 두 값을 묶어 multiply를 세 번 실행합니다. 원문은 첫 coscos operation이 첫 multiply issue 전에 complete되면 long coscos latency 때문에 system이 stall하지 않는다고 설명합니다.
+
+공개 출처
+asap2025 | p. 59, Section III-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 16. Stream-semantic memory path
+
+16. Stream-semantic memory path
+
+발표 대본
+Labidus는 off-chip access를 word가 아니라 burst로 request합니다. Stream-semantic cache는 RISC-V core의 normal memory hierarchy에 포함되지 않고 completion queue에 연결됩니다. Software가 x29, x30, x31 중 하나를 반복해 읽으면 burst의 다음 word가 이어서 나오고, 반복 write는 write burst를 만듭니다. 세 register만 확장해 hardware overhead를 제한합니다.
+
+공개 출처
+asap2025 | p. 60, Fig. 5 and Section IV-B
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 17. Memory request immediate의 12-bit 구성
+
+17. Memory request immediate의 12-bit 구성
+
+발표 대본
+Modified I-type과 S-type memory instruction의 12-bit immediate는 6-bit burst length, 5-bit repeat count, 1-bit uncached flag로 나뉩니다. Repeat count는 coefficient처럼 같은 memory region을 여러 번 읽을 때 유용합니다. Uncached request는 off-chip access가 cache를 오염시키지 않도록 bypass queue로 보냅니다. 이 encoding은 operator custom instruction의 R-type encoding과 구분해야 합니다.
+
+공개 출처
+asap2025 | p. 60, Section IV-B
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 18. Operator repeat와 stream의 결합
+
+18. Operator repeat와 stream의 결합
+
+발표 대본
+Operator command의 repeat field는 한 issue로 같은 operator를 여러 번 실행하게 합니다. 그러나 normal register를 쓰면 같은 operand에 같은 computation을 반복할 뿐입니다. Memory burst와 stream registers가 매 반복마다 다음 value를 공급할 때 operator pool은 새 data를 처리하며, RISC-V core는 그 사이 control이나 memory command를 수행할 수 있습니다.
+
+공개 출처
+asap2025 | pp. 60-61, Section IV-C
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 19. Custom operator instruction encoding
+
+19. Custom operator instruction encoding
+
+발표 대본
+Operator pool은 new R-type opcode로 호출됩니다. Paper는 register fields를 normal R-type처럼 사용하고, func7으로 operation, func3으로 repeat parameter를 encode한다고 설명합니다. Six-bit opcode는 한 generated hardware instance에서 최대 64 operator types를 가리킵니다. Hardware template에 수백 후보가 있어도 application이 쓰는 operator만 generation time에 배정합니다.
+
+공개 출처
+asap2025 | pp. 60-61, Section IV-C
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 20. Shared operator pool과 trimming
+
+20. Shared operator pool과 trimming
+
+발표 대본
+Repeat와 stream이 있어도 모든 operator가 항상 바쁘지는 않습니다. Labidus는 operator를 tile마다 공유하고 static analysis가 relative frequency를 보수적으로 추정해 각 operator를 one to four instances만 둡니다. Paper는 tested configurations에서 trimming으로 performance loss를 관찰하지 않았고 operator utilization이 benchmarks across average로 'over 100% points' 개선됐다고 표현합니다. 산식은 따로 정의되지 않아 이를 정확한 2배나 100 percentage-point 증가로 재해석하지 않습니다.
+
+공개 출처
+asap2025 | p. 61, Section IV-C and Section V-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 21. Workload별 4-core tile operator 구성
+
+21. Workload별 4-core tile operator 구성
+
+발표 대본
+Table I는 four Labidus cores가 공유하는 operator instance 수를 보여줍니다. Cholesky는 divide와 square root가 필요하고, FFT는 three adders를 둡니다. K-means Haversine은 common multiply와 add 외에 sinsq, coscos, arcsrt를 하나씩 둡니다. 이 표는 모든 possible operator를 항상 넣지 않는다는 점을 보여줍니다.
+
+공개 출처
+asap2025 | p. 61, Table I
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 22. 평가 구현과 자원 조건
+
+22. 평가 구현과 자원 조건
+
+발표 대본
+Labidus는 Amazon AWS F1 environment의 Xilinx Virtex UltraScale에서 250 MHz로 합성했습니다. Operator pool의 LUT usage는 FFT에서 3.4%, Haversine에서 4.2% 사이입니다. Four RV32I cores, four stream caches, four completion queues를 포함하는 cache와 processor는 current configuration에서 160 BRAM blocks, 7%를 사용합니다. 다른 FPGA family나 clock에서 같은 percentage를 보장하지 않습니다.
+
+공개 출처
+asap2025 | p. 61, Section V-A
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 23. 1024-slot latency-hiding resource 비교
+
+23. 1024-slot latency-hiding resource 비교
+
+발표 대본
+Paper는 similar latency-hiding capability의 resource cost를 보기 위해 simple RISC-V processor에 1024-slot reorder buffer를 더한 proxy를 평가합니다. 이 design은 more than 80K LUTs를 사용합니다. Operator pool을 제외한 1024-size completion queue tile baseline은 about 38K LUTs입니다. 기능과 ISA가 완전히 같은 processor의 application benchmark가 아니므로 2배 runtime speedup으로 읽으면 안 됩니다.
+
+공개 출처
+asap2025 | p. 61, Section V-A.2
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 24. 네 application의 비교 조건
+
+24. 네 application의 비교 조건
+
+발표 대본
+Cholesky는 DRAM dependency를 제거하기 위해 whole matrix가 distributed on-chip memory에 fit한다고 가정하고 cores가 size-256 sub-matrix streams를 처리합니다. FIR은 core마다 independent stream을 배정합니다. FFT는 256-point FFT이며 published FFT-4 point는 visibility를 위해 resource와 performance를 32배 표시합니다. K-means는 Haversine distance comparison과 cluster assignment를 multiple cores에 분산합니다.
+
+공개 출처
+asap2025 | pp. 61-62, Fig. 6 and Section V-B
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 25. Cross-publication normalization의 순서
+
+25. Cross-publication normalization의 순서
+
+발표 대본
+Paper는 under-optimized baseline을 피하기 위해 published expert implementations를 모읍니다. Slower clock 결과는 250 MHz로 linearly scale하고, FPGA family 차이는 total LUT inputs로 normalize합니다. 예를 들어 100 MHz의 10 GFLOPS를 250 MHz의 25 GFLOPS로 취급합니다. Authors도 이 방법이 완벽하지 않다고 밝히므로, 작은 point 차이를 strict superiority로 해석하면 안 됩니다.
+
+공개 출처
+asap2025 | pp. 61-62, Section V-B.1
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 26. 성능 headline과 적용 범위
+
+26. 성능 headline과 적용 범위
+
+발표 대본
+Introduction은 chip resource당 performance가 MicroBlaze보다 over 50 times, published soft GPUs보다 almost 10 times라고 요약합니다. Soft-processor comparison은 Cholesky example, favorable baseline configurations, 250 MHz normalization, Labidus의 80% operator utilization assumption을 사용합니다. 반대로 authors는 matrix multiplication과 N-body에서 published RTL cores가 similar resources로 average 4 to 7 times faster였다고 명시합니다. 이 negative result가 target boundary를 선명하게 합니다.
+
+공개 출처
+asap2025 | p. 57 and pp. 62-63, Sections I and V-B-C
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 27. 온디바이스 hardware 판단에 주는 근거
+
+27. 온디바이스 hardware 판단에 주는 근거
+
+발표 대본
+Labidus는 local FPGA fabric에서 software-controlled RV32I cores와 application-specific operators를 함께 구동하는 실제 architecture evidence를 제공합니다. BRAM completion queue와 small stream-register set은 resource-constrained accelerator design에 참고할 수 있습니다. 그러나 evaluated system은 host server와 PCIe-connected FPGA card이며 local DRAM을 사용합니다. Paper에는 smartphone, MCU, battery, thermal, hard real-time, standalone execution measurement가 없습니다.
+
+공개 출처
+asap2025 | pp. 58-63, Sections III-V
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018
+
+## 28. Labidus의 전체 연결
+
+28. Labidus의 전체 연결
+
+발표 대본
+Labidus는 C kernel을 분석해 operator pool hardware와 custom-instruction software를 함께 생성합니다. Runtime에는 burst memory와 stream registers가 operator에 data를 공급하고, completion queue가 long-latency requests를 동시에 진행시킵니다. Four cores가 operator pool을 공유하고 static analysis가 instance 수를 줄입니다. 실험 결과는 2025 paper의 FPGA, workload, normalization 조건 안에서 해석해야 합니다.
+
+공개 출처
+asap2025 | pp. 57-63, Sections I-VI
+Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions, IEEE ASAP 2025
+https://doi.org/10.1109/ASAP65064.2025.00018

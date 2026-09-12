@@ -1,0 +1,344 @@
+## 1. QuaRot: 회전된 LLM의 W4A4KV4 추론
+
+1. QuaRot: 회전된 LLM의 W4A4KV4 추론
+
+발표 대본
+QuaRot의 핵심은 큰 activation coordinate를 버리는 것이 아니라 orthogonal basis change로 여러 coordinate에 분산하는 것입니다. Full-precision 계산에서는 인접 weight에 compensating transform을 넣어 같은 function을 유지하고, 그 뒤 weight, activation, KV cache를 4-bit로 quantize합니다. 이 강의는 21-page arXiv v2의 pagination을 기준으로 하며 별도 proceedings pagination의 숫자를 섞지 않습니다.
+
+공개 출처
+arxiv-record | Version history: v2 dated 29 Oct 2024
+arXiv record and version history
+https://arxiv.org/abs/2404.00456
+arxiv-v2 | p. 1, abstract
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 2. 문제에서 해법까지의 한 줄
+
+2. 문제에서 해법까지의 한 줄
+
+발표 대본
+Activation outlier가 있으면 row 전체에 공유되는 낮은 bit range가 그 큰 coordinate를 표현하는 데 대부분 사용됩니다. QuaRot은 randomized Hadamard rotation으로 coordinate incoherence를 낮춥니다. 같은 full-precision function을 유지하도록 adjacent weights를 함께 변환한 뒤 quantization을 적용합니다. 양자화 오차는 사라지지 않으며, strongest W4 result는 GPTQ를 사용합니다. Custom INT4 kernel도 필요합니다.
+
+공개 출처
+arxiv-v2 | pp. 1-3, motivation and overview
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+arxiv-v2 | pp. 7-8, quantization and results
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 3. 하나의 큰 coordinate가 4-bit range를 지배한다
+
+3. 하나의 큰 coordinate가 4-bit range를 지배한다
+
+발표 대본
+이 숫자는 논문의 Figure 1을 설명하기 위한 교육용 row입니다. Per-token symmetric quantizer는 row의 maximum absolute value로 scale을 잡습니다. 한 coordinate가 4.0인데 나머지는 0.2 근처라면 available integer levels가 큰 값에 맞춰지고 작은 값의 resolution이 나빠집니다. QuaRot은 coordinate basis를 섞어 이러한 concentration을 완화합니다. 모든 vector가 완전히 uniform해진다는 정리는 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 2, Fig. 1 and outlier discussion
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 4. 2차원 normalized Hadamard를 직접 계산한다
+
+4. 2차원 normalized Hadamard를 직접 계산한다
+
+발표 대본
+Normalized two-dimensional Hadamard matrix의 두 row는 서로 orthogonal하고 norm이 1이라 H transpose H가 identity입니다. x equals 4 comma 0을 H로 회전하면 두 coordinate가 각각 2 square root 2가 되어 maximum coordinate가 약 2.828로 줄어듭니다. Weight w equals 3 comma 1에는 inverse에 해당하는 H transpose를 적용합니다. 이 예는 rotation algebra를 재현하기 위한 것이며 실제 model dimension의 randomized transform을 축소해 보여 줍니다.
+
+공개 출처
+arxiv-v2 | p. 3, randomized Hadamard definition; arithmetic is illustrative
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 5. 회전 전후 dot product는 12로 같다
+
+5. 회전 전후 dot product는 12로 같다
+
+발표 대본
+Original dot product는 4 times 3 plus 0 times 1 equals 12입니다. Rotated activation과 compensated weight의 dot product는 2 square root 2 times 2 square root 2 plus 2 square root 2 times square root 2, 즉 8 plus 4 equals 12입니다. 중요한 것은 activation만 회전하는 것이 아니라 adjacent weight에도 inverse factor를 넣는 것입니다. Clipping과 rounding이 시작되면 이 exact equality는 더 이상 자동으로 보장되지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 3-5, orthogonal transformations; arithmetic is illustrative
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 6. Quantization error는 별도의 단계에서 생긴다
+
+6. Quantization error는 별도의 단계에서 생긴다
+
+발표 대본
+이 표는 clipping을 생략한 교육용 max-based symmetric scale 계산입니다. Maximum four를 seven으로 나누면 scale은 약 0.5714입니다. 0.4는 code one이 되어 0.5714로 복원되고, minus 0.2와 0.1은 zero로 round됩니다. 논문의 reported activation experiment는 clipping ratio 0.9를 사용합니다. 따라서 이 산술 예시는 실제 설정 전체를 재현하지 않으며, full-precision rotation의 equality와 quantized approximation error가 별개임을 보여 줍니다.
+
+공개 출처
+arxiv-v2 | p. 7, activation quantization rule; arithmetic is illustrative
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 7. Transformer에서 rotation을 합법화하는 조건
+
+7. Transformer에서 rotation을 합법화하는 조건
+
+발표 대본
+QuaRot은 Q Q transpose equals identity인 orthogonal Q를 사용합니다. Paper의 Eq. 3은 RMSNorm의 learned scale alpha를 adjacent matrices에 흡수한 norm-only simplification에서 rotation commutation을 설명합니다. 이 관계로 residual stream의 basis를 바꾸면서 input-side와 output-side matrices에 compensating factors를 fuse할 수 있습니다. Exact function invariance는 clipping과 quantization 이전의 full-precision network에 대한 주장입니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eq. 3 and RMSNorm simplification
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 8. Global residual-stream rotation은 weight에 bake한다
+
+8. Global residual-stream rotation은 weight에 bake한다
+
+발표 대본
+QuaRot은 randomized Hadamard Q를 residual stream 전체의 basis change로 사용합니다. RMSNorm scale alpha는 neighboring weights에 흡수하고, 예를 들어 key projection은 Q transpose diag alpha W_k 형태로 갱신합니다. Output-side matrices에는 Q factor를 fuse합니다. Weight를 미리 바꾸므로 매 token마다 global Q를 별도 matrix multiplication할 필요는 없습니다. 그러나 FFN gate 내부와 post-RoPE Q/K에는 완전히 fuse할 수 없는 online transforms가 남습니다.
+
+공개 출처
+arxiv-v2 | pp. 4-5, Eq. 3-4 and global rotation
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 9. FFN 경로 1: gate product까지
+
+9. FFN 경로 1: gate product까지
+
+발표 대본
+Figure 3의 앞 절반을 독립적으로 재구성합니다. Rotated residual input XQ는 FP16입니다. RMSNorm은 FP32이며 learned scale은 projection weights에 흡수됩니다. Linear input은 INT4로 quantize되고 up projection과 gate projection의 INT4 GEMM은 INT32로 accumulate한 뒤 FP16 signals를 복원합니다. Nonlinear gated product가 생기면 global basis fusion만으로 internal activation outlier를 제거할 수 없습니다. 마지막 상태 이름은 다음 슬라이드와 같습니다.
+
+공개 출처
+arxiv-v2 | p. 5, Fig. 3 first half
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 10. FFN 경로 2: online H와 down projection
+
+10. FFN 경로 2: online H와 down projection
+
+발표 대본
+두 번째 절반은 FP16 gated activation에서 시작합니다. Down projection 바로 전에 Hadamard transform을 online FP32로 수행합니다. H factor는 down weight에도 fuse되어 stored matrix가 H W_down Q가 됩니다. Hadamard 뒤 activation을 다시 INT4로 quantize하고 INT4 GEMM은 INT32로 accumulate한 뒤 FP16 YQ를 만듭니다. 이 online H는 global rotation처럼 모두 compile away되는 연산이 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 5, Fig. 3 second half
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 11. Fused rotation과 online rotation을 구분한다
+
+11. Fused rotation과 online rotation을 구분한다
+
+발표 대본
+Global residual rotation factors는 weight modification으로 bake할 수 있습니다. 반면 FFN gate 뒤 activation Hadamard는 online입니다. Attention values와 output projection은 paired per-head transform으로 output을 preserve하고, across-head mixing에도 online Hadamard heads construction이 사용됩니다. RoPE 뒤 Q와 K는 둘 다 online head-wise H를 거칩니다. Rotated K와 V는 cache에서 INT4로 저장되지만 attention 계산을 위해 dequantization이 남습니다.
+
+공개 출처
+arxiv-v2 | pp. 5-7, FFN and attention rotations
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 12. Attention value와 output projection의 paired rotation
+
+12. Attention value와 output projection의 paired rotation
+
+발표 대본
+각 attention head h에서 value projection W_v는 오른쪽에 H_dh를 곱하고 output projection W_out은 왼쪽에 H_dh를 곱습니다. Orthogonal pair가 cancel하여 full-precision attention output을 preserve합니다. Paper는 Kronecker construction과 online Hadamard heads로 head 간 transform도 완성합니다. 이 단계는 Q와 K의 post-RoPE treatment와 다른 이유와 위치를 가집니다.
+
+공개 출처
+arxiv-v2 | p. 6, Eqs. 7-9
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 13. Attention의 Q·K·V rotation과 KV cache
+
+13. Attention의 Q·K·V rotation과 KV cache
+
+발표 대본
+Rotary positional embedding 때문에 Q와 K rotation을 projection weights 안으로 단순히 fuse할 수 없습니다. QuaRot은 RoPE 뒤에 같은 head-wise Hadamard를 Q와 K 모두에 online으로 적용합니다. H H transpose identity 때문에 QH times KH transpose는 QK transpose와 같습니다. K만 회전하면 이 equality가 성립하지 않습니다. Query는 FP16으로 유지하고 rotated key는 cache에 quantize합니다. 아래 V 경로는 다릅니다. Head 내 H_dh를 value projection의 Wv H_dh에 미리 합치므로 별도 online V-H 연산이 아닙니다. MHA 출력의 head 사이에 수행하는 online Hadamard heads는 또 다른 연산이며, 앞선 value/output projection 슬라이드에서 설명합니다.
+
+공개 출처
+arxiv-v2 | p. 6, Stage 1c; Eqs. 7-9 and 13-14
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 14. KV cache는 rotated K와 V를 4-bit로 저장한다
+
+14. KV cache는 rotated K와 V를 4-bit로 저장한다
+
+발표 대본
+QuaRot은 post-RoPE caching을 사용합니다. 그러면 autoregressive decoding에서 새 query와 key token만 rotate하면 되고 이미 저장된 모든 keys를 다시 rotate할 필요가 없습니다. Rotated K와 V는 groupwise asymmetric INT4 cache에 저장됩니다. Query는 FP16이고 cache segments는 dot product 전에 FP16으로 dequantize됩니다. 따라서 W4A4KV4라는 이름을 모든 intermediate arithmetic이 INT4라는 뜻으로 읽으면 안 됩니다.
+
+공개 출처
+arxiv-v2 | pp. 6-7, cache placement and attention computation
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 15. W4A4KV4의 실제 precision contract
+
+15. W4A4KV4의 실제 precision contract
+
+발표 대본
+RMSNorm은 FP32로 수행됩니다. Quantized linear layers의 activation과 weight operands는 INT4이고 TensorCore GEMM은 INT32로 accumulate합니다. Input scale과 weight scale을 적용한 recovered signal은 FP16입니다. Default online Hadamard는 FP32로 수행됩니다. KV cache는 INT4지만 query와 dequantized cache의 dot products는 FP16입니다. QuaRot은 selected outlier channels를 high precision으로 남기지 않는 방향이지 모든 operation을 four bits로 바꾸는 method가 아닙니다.
+
+공개 출처
+arxiv-v2 | pp. 5 and 7; Appendix p. 16, precision details
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 16. Weight·activation·KV는 서로 다른 quantizer를 쓴다
+
+16. Weight·activation·KV는 서로 다른 quantizer를 쓴다
+
+발표 대본
+Weights는 default로 GPTQ를 사용하며 per-column symmetric quantization과 squared error 기반 clipping ratio search를 수행합니다. Linear input activations는 online per-token symmetric INT4이고 row maximum divided by seven으로 scale을 잡으며 input clipping ratio는 0.9입니다. KV cache는 group size 128의 asymmetric groupwise quantization과 clipping ratio 0.95를 사용합니다. RTN은 calibration-free ablation이며 strongest W4 claim의 default가 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 7, Quantization section
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 17. Rotation 뒤에도 GPTQ와 RTN은 같은 결과가 아니다
+
+17. Rotation 뒤에도 GPTQ와 RTN은 같은 결과가 아니다
+
+발표 대본
+QuaRot rotation을 적용해도 weight quantizer의 choice는 중요합니다. GPTQ는 calibration data와 second-order information을 이용해 weights를 reconstruct합니다. RTN은 nearest quantization level로 단순 rounding하며 calibration이 필요 없습니다. Table 1의 main W4A4KV4 values는 GPTQ를 사용하고, Table 3의 RTN 4-bit LLaMA-2 70B perplexity는 4.14로 GPTQ result 3.79보다 나쁩니다.
+
+공개 출처
+arxiv-v2 | pp. 7-9, Tables 1 and 3
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+arxiv-v2 | Appendix p. 15, RTN ablation
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 18. Calibration과 implementation 조건
+
+18. Calibration과 implementation 조건
+
+발표 대본
+GPTQ calibration은 WikiText-2 train에서 128 samples, 각 2048 tokens를 사용합니다. RTN은 calibration이 필요 없습니다. Paper는 LLaMA-2 70B rotation modification에 약 5 minutes, GPTQ에 약 2 hours on one A100을 보고합니다. Performance experiments는 RTX3090, CUDA 12.1, CUTLASS와 FlashInfer 기반입니다. 따라서 modification time과 inference speed figure를 같은 hardware 측정으로 합치지 않습니다.
+
+공개 출처
+arxiv-v2 | p. 7, setup and calibration
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+code | Authors' implementation repository
+QuaRot authors' code repository
+https://github.com/spcl/QuaRot
+
+## 19. Main W4A4KV4 WikiText-2 결과
+
+19. Main W4A4KV4 WikiText-2 결과
+
+발표 대본
+Table 1에서 7B는 5.47에서 6.10으로 0.63 증가하고, 13B는 4.88에서 5.40으로 0.52 증가하며, 70B는 3.32에서 3.79로 0.47 증가합니다. Perplexity는 낮을수록 좋으므로 increase는 degradation입니다. Abstract의 at most 0.47 claim은 70B를 가리킵니다. 이를 three model sizes 전체에서 largest loss가 0.47이라고 일반화하면 표와 충돌합니다.
+
+공개 출처
+arxiv-v2 | p. 8, Table 1
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+arxiv-v2 | p. 1, abstract 70B claim
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 20. Zero-shot average도 model size별로 다르다
+
+20. Zero-shot average도 model size별로 다르다
+
+발표 대본
+Table 2는 PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA의 average를 보고합니다. LLaMA-2 70B는 77.07에서 75.98로 1.09 points 감소하며 retained ratio는 약 98.6 percent입니다. 이를 rounded 99 percent라고 표현할 수 있지만 정확한 표 값과 함께 써야 합니다. 7B는 69.82에서 65.64로 4.18 points 감소합니다.
+
+공개 출처
+arxiv-v2 | p. 8, Table 2
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 21. Prefill speedup의 범위
+
+21. Prefill speedup의 범위
+
+발표 대본
+Paper의 Figure 4와 appendix performance tables는 RTX3090에서 sequence length 2048인 single transformer block을 측정합니다. LLaMA-2 7B prefill은 listed batch sizes에서 1.97 to 2.16 times, 70B는 up to 3.33 times speedup을 보고합니다. 이 숫자는 custom kernel과 specific batch setting의 block benchmark이며 whole-model request latency나 모든 hardware의 guarantee가 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 8, Fig. 4; Appendix pp. 20-21
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 22. Decoding에서 확인된 memory saving
+
+22. Decoding에서 확인된 memory saving
+
+발표 대본
+Figure 4의 decoding 실험은 batch size 16, cache length 256부터 4096, generation length 50 tokens 조건입니다. 이 조건 범위에서 reported peak-memory saving은 3.63 to 3.89 times입니다. Rotated K와 V를 groupwise INT4로 저장해 cache capacity를 줄이지만 query는 FP16이고 cache data는 attention dot product를 위해 dequantize됩니다. 측정 대상은 RTX3090의 한 transformer block이므로 full serving stack의 peak memory 결과로 일반화하면 안 됩니다.
+
+공개 출처
+arxiv-v2 | p. 8, Fig. 4; Appendix pp. 20-21
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 23. 작은 decode batch에서는 더 느릴 수도 있다
+
+23. 작은 decode batch에서는 더 느릴 수도 있다
+
+발표 대본
+Appendix performance tables는 low-batch decoding에서 INT4 cache version이 FP16보다 느릴 수 있음을 보여 줍니다. Batch가 작으면 quantization과 dequantization conversion overhead가 줄어든 memory traffic과 compute benefit보다 상대적으로 커질 수 있습니다. 따라서 KV cache memory saving만 보고 모든 decode latency가 개선된다고 결론 내릴 수 없습니다.
+
+공개 출처
+arxiv-v2 | Appendix p. 20, low-batch decoding results
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 24. 같은 source가 보여 주는 LLaMA-3 경계
+
+24. 같은 source가 보여 주는 LLaMA-3 경계
+
+발표 대본
+Appendix Table 11의 ungrouped LLaMA-3 W4 result는 8B perplexity 6.14 to 8.16, 70B 2.86 to 6.66을 보고합니다. Authors도 LLaMA-3가 더 sensitive하다고 설명합니다. 이 evidence는 rotation이 quantization difficulty를 낮추더라도 model family와 grouping, bit setting에 따라 accuracy cost가 크게 달라질 수 있음을 보여 줍니다.
+
+공개 출처
+arxiv-v2 | Appendix p. 17, Table 11
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 25. 아무 orthogonal rotation이나 같은 것은 아니다
+
+25. 아무 orthogonal rotation이나 같은 것은 아니다
+
+발표 대본
+Both transforms can be orthogonal in full precision, but quantized behavior and implementation cost differ. Appendix Table 8 reports randomized Hadamard perplexity 6.10 and random orthogonal 7.45 for LLaMA-2 7B W4A4KV4. 따라서 any rotation works the same이라고 말할 수 없습니다. QuaRot은 structured randomized Hadamard를 선택해 incoherence processing과 efficient implementation을 함께 노립니다.
+
+공개 출처
+arxiv-v2 | Appendix p. 15, Table 8
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 26. QuaRot이 quantization landscape에서 차지하는 위치
+
+26. QuaRot이 quantization landscape에서 차지하는 위치
+
+발표 대본
+GPTQ는 weight reconstruction method이며 QuaRot의 default weight quantizer로 사용됩니다. OWQ and AWQ-style methods는 selected high-precision columns 또는 outlier channels를 보호하는 계열입니다. SmoothQuant는 calibration-derived feature scaling으로 W8A8을 목표로 합니다. QuIP family는 primarily weight-only incoherence를 다룹니다. KV-only quantizers는 cache만 압축합니다. QuaRot의 구별점은 transformer invariance를 이용한 rotations와 weight, activation, KV cache 4-bit treatment를 한 pipeline에 묶는 것입니다.
+
+공개 출처
+arxiv-v2 | pp. 2-3, related work
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+arxiv-v2 | pp. 6-7, W4A4KV4 method
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+
+## 27. QuaRot의 기여와 한계
+
+27. QuaRot의 기여와 한계
+
+발표 대본
+전체 chain을 정리합니다. Orthogonal rotation과 adjacent weight compensation은 full-precision function을 preserve합니다. Randomized Hadamard는 activation coordinate outlier concentration을 완화합니다. 그 representation에서 GPTQ weights, per-token activations, groupwise KV cache를 four bits로 quantize합니다. RMSNorm, online Hadamards, accumulation, recovered signals, query-cache attention에는 higher precision이 남습니다. Accuracy와 speed는 model family, quantizer, kernel, hardware, batch와 sequence 조건에 의존합니다.
+
+공개 출처
+arxiv-v2 | pp. 4-9, method and results
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2
+arxiv-v2 | Appendix pp. 15-21, ablations and performance
+QuaRot arXiv v2 PDF
+https://arxiv.org/pdf/2404.00456v2

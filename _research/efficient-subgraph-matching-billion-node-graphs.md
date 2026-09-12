@@ -103,6 +103,14 @@ Synthetic graph를 100만 node에서 40억 node까지 늘리면서 평균 degree
 
 공식 PDF의 저작권 고지는 server 재게시에는 별도 허가가 필요하다고 명시한다. 따라서 이 블로그는 PDF 사본을 호스팅하지 않고 PVLDB의 공식 PDF와 DOI만 연결한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 24장 | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/stwig-seminar-ko-v2.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/stwig-seminar-ko-v2.pptx" download>다운로드</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

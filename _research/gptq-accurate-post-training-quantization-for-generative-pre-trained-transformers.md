@@ -110,6 +110,14 @@ GPTQ의 핵심은 "Hessian 기반 양자화가 정확하다"가 아니라, 그 �
 
 3-4비트에서는 강한 결과를 보이지만, 2비트 이하에서는 group size와 model size에 따라 손실이 커질 수 있다. 따라서 초저비트 영역은 QTIP, EPTQ, QuaRot 같은 후속 PTQ 연구들이 별도의 codebook, rotation, trellis, lattice 구조를 탐색하게 되는 출발점으로 읽을 수 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/gptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/gptq-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

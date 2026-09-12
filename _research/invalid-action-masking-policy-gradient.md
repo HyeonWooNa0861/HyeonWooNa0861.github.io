@@ -82,6 +82,14 @@ Naive masking은 일부 map에서 높은 episode reward를 보이지만, 논문�
 
 실무 확장 방향은 mask 생성기를 별도의 검증 대상로 두는 것이다. Rule-based mask라면 unit test와 environment consistency check가 필요하고, learned feasibility model을 쓴다면 uncertainty가 큰 action을 완전히 제거하기보다 penalty, fallback sampling, safety shield와 결합하는 편이 안전하다. 연구자의 해석으로는, invalid action masking은 reward shaping이 아니라 action feasibility constraint를 policy distribution에 반영하는 기법으로 읽어야 한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 23장 | <a href="/assets/seminars/invalid-action-masking-policy-gradient/masking-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/invalid-action-masking-policy-gradient/masking-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/invalid-action-masking-policy-gradient/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/invalid-action-masking-policy-gradient/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

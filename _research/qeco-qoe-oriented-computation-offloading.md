@@ -74,6 +74,14 @@ QECO는 computation offloading을 MDP로 정식화하고, 각 mobile device가 �
 
 QECO-Adapt는 이 QECO를 기반으로 dense MEC 조건에서 load-adaptive control을 추가한 확장으로 볼 수 있다. 따라서 QECO 원 논문은 QECO-Adapt의 baseline, reward structure, network architecture를 이해하는 핵심 자료다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 32장 | <a href="/assets/seminars/qeco-qoe-oriented-computation-offloading/qeco-seminar-ko-v3.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/qeco-qoe-oriented-computation-offloading/qeco-seminar-ko-v3.pptx" download>다운로드</a> | <a href="/assets/seminars/qeco-qoe-oriented-computation-offloading/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/qeco-qoe-oriented-computation-offloading/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

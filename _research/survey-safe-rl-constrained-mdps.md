@@ -119,6 +119,14 @@ Survey는 세 접근을 구분한다.
 
 확장 방향은 명확하다. 첫째, method taxonomy와 함께 "어떤 safety metric이 어떤 violation을 놓치는지"를 benchmark별 failure catalog로 연결해야 한다. 둘째, SafeMARL에서는 centralized result를 decentralized protocol로 옮길 때 필요한 communication budget, local observability, constraint factorization 조건을 표준화해야 한다. 셋째, non-stationary setting에서는 robust safe RL, runtime monitoring, meta-learned safety critic을 결합해 policy가 더 이상 안전하지 않은 순간을 빠르게 감지하고 안전한 fallback으로 이동하는 절차가 필요하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 30장 | <a href="/assets/seminars/survey-safe-rl-constrained-mdps/cmdp-survey-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/survey-safe-rl-constrained-mdps/cmdp-survey-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/survey-safe-rl-constrained-mdps/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/survey-safe-rl-constrained-mdps/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

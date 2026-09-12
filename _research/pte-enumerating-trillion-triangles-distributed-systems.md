@@ -110,6 +110,14 @@ PTE의 중요한 통찰은 연산 kernel만 빠르게 만드는 것으로는 충
 
 KDD PDF의 저작권 고지는 server 재게시에는 별도 허가가 필요하다고 명시한다. 따라서 이 블로그는 PDF 사본을 호스팅하지 않고 KDD의 공식 공개 PDF와 DOI만 연결한다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 26장 | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/pte-seminar-ko-v7.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/pte-seminar-ko-v7.pptx" download>다운로드</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/slides-v7.md.txt" download="slides-v7.md">Markdown</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/presenter-notes-v7.md.txt" download="presenter-notes-v7.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -1,0 +1,296 @@
+## 1. 차량의 작업 순서와 오프로딩을 함께 결정하기
+
+1. 차량의 작업 순서와 오프로딩을 함께 결정하기
+
+발표 대본
+이 자료는 You 등, arXiv:2405.11352v1의 15쪽 원문을 기준으로 합니다. 핵심은 이동하는 차량이 선후관계가 있는 sub-task를 처리할 때, 어떤 task를 먼저 실행하고 local 또는 edge 중 어디서 처리하며 branch별 자원을 얼마나 줄지를 함께 고르는 것입니다. 이 원고는 2025년 12월 4일 arXiv에서 철회되었습니다. 공개 사유는 더 이상 개발하거나 투고하지 않겠다는 것입니다. 오류·부정행위 때문이라고 추정하지 않으며, 현행 검증 기술의 추천이 아닌 v1의 설계와 한계를 학습합니다.
+
+공개 출처
+arxiv-v1 | p. 1; title, abstract
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+arxiv-status | v2 withdrawal notice, 4 Dec 2025
+arXiv withdrawal notice, 4 December 2025
+https://arxiv.org/abs/2405.11352
+
+## 2. 원고의 상태와 이 자료의 읽기 범위
+
+2. 원고의 상태와 이 자료의 읽기 범위
+
+발표 대본
+공식 arXiv v1 및 현재 v2 레코드를 2026-09-12 확인했습니다. v2의 철회 사유는 더 이상 후속 개발이나 출판 투고를 하지 않겠다는 것입니다. 원문의 실험 결과가 거짓이라고 판정하는 문구가 아닙니다. 이 발표는 기존 원고를 교육적으로 분석하며 최신 출판 논문이나 배포 가능한 제품으로 권하지 않습니다.
+
+공개 출처
+arxiv-v1 | title; submission history
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+arxiv-status | withdrawal notice; comments; submission history
+arXiv withdrawal notice, 4 December 2025
+https://arxiv.org/abs/2405.11352
+
+## 3. 문제: 차량은 이동하고, 작업은 선행 결과를 기다린다
+
+3. 문제: 차량은 이동하고, 작업은 선행 결과를 기다린다
+
+발표 대본
+원문은 random transmission delay, RSU handover, random sub-task DAG, varying driving speed를 함께 어려움으로 듭니다. 해결 대상은 하나의 V2I simulation 환경에서 joint computation offloading and resource allocation입니다.
+
+공개 출처
+arxiv-v1 | pp. 1-2; abstract; §I
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 4. 무선 RSU 관계와 task DAG 관계는 다르다
+
+4. 무선 RSU 관계와 task DAG 관계는 다르다
+
+발표 대본
+Figure 1은 highway를 따라 균일하게 배치된 RSU와 time-varying vehicle speed를, Figure 2는 task DAG를 보입니다. DAG edge e(i,j)는 task j가 predecessor i가 완료되어야 시작된다는 뜻이며 wireless link가 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 3-4; Figs. 1-2; §III-A
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 5. local과 edge 선택은 서로 다른 cost 항을 만든다
+
+5. local과 edge 선택은 서로 다른 cost 항을 만든다
+
+발표 대본
+원문은 offloading time을 uplink, edge execution, downlink, migration delay의 합으로 둡니다. Edge execution/downlink energy는 UE energy에서 빼고 uplink energy만 edge path energy로 셉니다. Migration은 차량의 이동거리 적분이 RSU coverage를 넘을 때 indicator로 발생합니다. 원문 식 12–17의 범위 판정은 시작 위치 d_i와 처리 중 이동거리의 합입니다. TESC는 서로 다른 단위의 가중합이며 가중치 합이 1이라는 조건만으로 단위가 같아지지는 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 3-5; Eqs. 3-22
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 6. 목적은 비용의 합을 줄이되 실행 제약을 지키는 것
+
+6. 목적은 비용의 합을 줄이되 실행 제약을 지키는 것
+
+발표 대본
+Equation 23은 U=sum_i(beta1 t_i + beta2 e_i + beta3 c_i)로 TESC를 정의하며, nonnegative weight의 합은 1입니다. Equation 24는 predecessor start-time condition을 포함해 task serial number y, k, f, p를 함께 최적화합니다. 이는 source의 objective이며 global solution quality proof는 아닙니다.
+
+공개 출처
+arxiv-v1 | p. 5; Eqs. 18-24
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 7. GAT에는 작업 특성·차량 상태·DAG를 함께 넣는다
+
+7. GAT에는 작업 특성·차량 상태·DAG를 함께 넣는다
+
+발표 대본
+Section IV-A는 in-vehicle application이 보통 20개 이하 sub-task라는 가정 아래 ReLU one-layer GAT를 사용합니다. Paper는 multi-head attention 결과를 concatenate합니다. Feature에는 task data/cycles, execution state, vehicle coordinate, remaining-task count, last five seconds speed가 들어갑니다.
+
+공개 출처
+arxiv-v1 | pp. 5-6; Eqs. 25-27
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 8. attention coefficient가 뜻하는 것과 뜻하지 않는 것
+
+8. attention coefficient가 뜻하는 것과 뜻하지 않는 것
+
+발표 대본
+Equation 25는 transformed endpoint feature에서 attention을 계산합니다. Equation 26은 i 자신을 포함한 neighbor들에 대해 이를 normalize하고, Equation 27은 K heads를 씁니다. ready-task constraint는 attention만으로 생기는 것이 아니라 DAG scheduling model에서 계속 옵니다.
+
+공개 출처
+arxiv-v1 | pp. 5-6; Eqs. 25-27
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 9. 한 action은 세 층으로 정해진다
+
+9. 한 action은 세 층으로 정해진다
+
+발표 대본
+Figure 3과 Equation 28은 hierarchical action을 정의합니다. Paper는 layer 1을 task assignment, layer 2를 offloading decision, layer 3을 continuous parameter selection이라고 부릅니다. local decision에는 f, edge decision에는 p만 쓰므로 두 값을 독립적으로 모두 켜면 irrelevant-parameter coupling이 생깁니다.
+
+공개 출처
+arxiv-v1 | p. 6; Fig. 3; Eq. 28
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 10. PNAF는 이산 선택별로 연속 행동의 Q를 구성한다
+
+10. PNAF는 이산 선택별로 연속 행동의 Q를 구성한다
+
+발표 대본
+Equations 30-35의 요점은 local Q(s,y,k,f)가 transmit power p에 의존하지 않고, edge Q가 local CPU f에 의존하지 않아야 한다는 것입니다. Source는 predicted continuous action 주변의 negative quadratic advantage와 Cholesky decomposition으로 만든 positive-definite matrix를 사용합니다. 이 자료는 예측 중심을 μ로 표기해 평가할 후보 a_c와 구분합니다. 원문 Fig. 4는 V, 연속 중심, L의 병렬 출력을 보입니다. Eq. 31 우변에는 Q(s,a_d)가 인쇄되어 있지만 앞 문장, Fig. 4와 Eqs. 32–35는 V+A를 설명하므로 그 근거를 따릅니다. 이산 행동은 epsilon-greedy, 연속 탐색에는 OU 잡음을 사용합니다. 유효 범위 제약과 학습 오차가 있으므로 μ를 실세계 최적해라고 부르지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 6-7; Eqs. 29-35; Fig. 4
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 11. 계산 예시: 연속 행동이 중심에서 벗어나면 Q가 줄어든다
+
+11. 계산 예시: 연속 행동이 중심에서 벗어나면 Q가 줄어든다
+
+발표 대본
+계산 예시의 V, 중심 μ, P는 임의의 무차원 값입니다. a_c=.2이면 −.5×4×.16=−.32이고 Q=1.68, .6이면 A=0과 Q=2, .9이면 A=−.18과 Q=1.82입니다. 원문의 식 34–35 구조를 설명할 뿐 훈련 결과가 아니며 실제 자원 단위 또는 행동 범위 처리 구현을 재현하지 않습니다.
+
+공개 출처
+arxiv-v1 | p. 7; Fig. 4; Eqs. 34-35
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 12. 순서 예시: 선행 작업 A가 끝나야 B를 선택할 수 있다
+
+12. 순서 예시: 선행 작업 A가 끝나야 B를 선택할 수 있다
+
+발표 대본
+이 표는 교육용 구성 예시입니다. beta1=beta2=beta3=1/3으로 두어 단순 평균을 재계산하게 했고, component는 normalized teaching values입니다. 원문 Table II의 physical units이나 원문 실행 결과를 재현한 수치가 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 5-7; Eqs. 19, 23, 28-35
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 13. 실행 결과의 음수 비용을 replay에 저장해 학습한다
+
+13. 실행 결과의 음수 비용을 replay에 저장해 학습한다
+
+발표 대본
+Equation 37은 immediate reward를 정의합니다. Algorithm 1은 state 관찰, hierarchical action 선택, (s,a,r,s_next) 저장, replay batch sampling, z=r+gamma max V-prime 형성, squared error 최소화, online/target parameter update 순서입니다. Target-network update는 source-specific이므로 actor-critic update로 바꾸지 않습니다. p. 7과 p. 8에서 reward와 target의 식 번호 37이 중복됩니다. γ=.99를 사용한 누적 보상은 원문의 비할인 작업 비용 합과 일반적으로 동일하지 않으므로 최소화의 정확한 동치나 수렴 보장이라고 설명하지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 7-8; Eq. 37; Algorithm 1
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 14. 최근 속도는 통신 범위 이탈의 비용을 학습하는 입력이다
+
+14. 최근 속도는 통신 범위 이탈의 비용을 학습하는 입력이다
+
+발표 대본
+speed vector는 input feature이고, Equations 12-17은 RSU coverage에 대한 travel-distance integral로 migration을 정의합니다. Section V-D는 DHVO가 simulation interpretation에서 last-five-second speed로 risk를 추정한다고 설명합니다. 이는 일반적인 speed-forecasting guarantee가 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 4, 7, 11-12; Eqs. 12-17; §V-D
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 15. 학습 절차와 원문의 표기 불일치를 구분하자
+
+15. 학습 절차와 원문의 표기 불일치를 구분하자
+
+발표 대본
+p. 8 본문은 양의 squared loss를 최소화하는 gradient descent를 말하지만 Algorithm 1과 Eqs. 40/41은 +alpha gradient로 인쇄되어 있습니다. 통상적인 양의 학습률에서는 부호가 맞지 않습니다. Algorithm 1의 target V-prime에는 theta_p, 옆 target 식 37에는 theta_p-prime이 들어가며 식 번호 37은 p. 7 보상과 중복됩니다. 강의는 본문의 학습 의도와 명시된 target GAT copy/PNAF soft update를 전달하되, 검증한 실행 코드나 공식 정정을 확보한 것으로 주장하지 않습니다. Q=V+A는 p. 7 Fig. 4/Eqs. 32–35를 따릅니다.
+
+공개 출처
+arxiv-v1 | p. 8; Algorithm 1; target Eq. 37; Eqs. 38, 40-43
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 16. Table II: simulation 환경을 먼저 고정한다
+
+16. Table II: simulation 환경을 먼저 고정한다
+
+발표 대본
+Table II는 kappa=10^-25, propagation delay 5 s, carrier frequency 915 MHz, path-loss exponent 3, noise power 10^-12 W, computation resource price .1 dollars/Mcycles, migration price 2 dollars/Mcycles도 지정합니다. Paper는 뒤 figure에서 일부 parameter만 바꾸고 나머지는 default를 사용합니다.
+
+공개 출처
+arxiv-v1 | p. 8; Table II
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 17. speed input과 neural-network 조건
+
+17. speed input과 neural-network 조건
+
+발표 대본
+Section V에 따르면 speed collection은 seven days, each measurement는 per second이며, 그 뒤 four 100-second trajectories를 tailored했습니다. Table III는 neural parameter를 보고합니다. Task 수로 graph size가 달라지므로 authors는 fixed-length state vector를 위해 padding을 사용합니다. 각 작업별 출력 차원은 12이고 N개 작업을 모은 graph state의 길이는 N에 따라 달라집니다. 전체 그래프가 무조건 12개 값이라는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 9-10; Fig. 6; Table III; §V-A
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 18. 비교 대상은 무엇을 고정하거나 단순화하는가
+
+18. 비교 대상은 무엇을 고정하거나 단순화하는가
+
+발표 대본
+Section V-A는 ALE, AO, GOE, DQN10을 정의합니다. GOE는 constant 30 km/h로 predict하므로 dynamic-speed DHVO setup과 migration behavior가 다릅니다. DQN10은 continuous interval을 ten equally spaced values로 근사합니다.
+
+공개 출처
+arxiv-v1 | p. 9; §V-A
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 19. convergence 수치는 두 실험 조건을 구분해야 한다
+
+19. convergence 수치는 두 실험 조건을 구분해야 한다
+
+발표 대본
+Page 9는 14-episode convergence observation을 Section V-B에 둡니다. Page 10은 performance comparison에서 DQN10과 DHVO를 40 episodes 학습하고 50 individual tests를 average한다고 적습니다. Timing은 listed software/server platform에 묶인 값이지 end-to-end V2I response guarantee가 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 9-10; §§V-B, V-C
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 20. Figs. 8-11: 어떤 parameter가 바뀔 때의 TESC인가
+
+20. Figs. 8-11: 어떤 parameter가 바뀔 때의 TESC인가
+
+발표 대본
+설명은 Figs. 8-11에 대한 source의 interpretation입니다. bandwidth threshold 2.25 MHz는 그 simulated setting에서 ALE와 AO 비교로 보고됩니다. Deck은 universal handover 또는 price threshold를 추론하지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 10-11; Figs. 8-11
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 21. 정책의 선택과 비용 성분으로 결과를 해석한다
+
+21. 정책의 선택과 비용 성분으로 결과를 해석한다
+
+발표 대본
+Section V-D는 GOE가 fixed 30 km/h speed, DHVO가 recent speed data를 쓴다고 설명하고 GOE migration penalty를 inaccurate constant-speed estimation에 돌립니다. Figure 14는 small fading을 추가해 less-smooth convergence curve를 보이지만 approach가 still learns라고 보고합니다.
+
+공개 출처
+arxiv-v1 | pp. 11-12; Figs. 12-14; §V-D
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 22. 구성요소 제거 실험: DHVO의 정규화 비용이 가장 낮다
+
+22. 구성요소 제거 실험: DHVO의 정규화 비용이 가장 낮다
+
+발표 대본
+p. 13 Fig. 15의 실제 축은 Normalized TESC이며 DHVO 막대가 1.0으로 가장 낮습니다. p. 12 본문은 outperforms라고 쓰지만 높은 값이 우수하다는 뜻이 아닙니다. 정규화 수식이나 정확한 개선 백분율은 원문에 제시되지 않아 만들지 않습니다. PNAF는 GAT를 제거하고 GDQNX는 GAT를 유지한 채 [0,1] 구간을 X개 값으로 근사합니다. 저자는 GDQN5/10의 나쁜 결과를 동일 학습 예산에서의 미수렴으로 설명합니다.
+
+공개 출처
+arxiv-v1 | pp. 12-13; §V-E; Fig. 15
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+
+## 23. 무엇을 이 결과에서 결론내릴 수 없는가
+
+23. 무엇을 이 결과에서 결론내릴 수 없는가
+
+발표 대본
+이 boundary는 stated system assumptions, Table II/III setup, Section VI conclusion을 합친 것입니다. Source는 end-to-end DRL solution과 numerical simulation result를 설명할 뿐 field trial이나 formal optimality theorem은 아닙니다.
+
+공개 출처
+arxiv-v1 | pp. 3-5, 8-9, 12-13; §§III, V, VI
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1
+arxiv-status | v2 withdrawal notice; comments
+arXiv withdrawal notice, 4 December 2025
+https://arxiv.org/abs/2405.11352
+
+## 24. DHVO의 설계를 한 흐름으로 정리하면
+
+24. DHVO의 설계를 한 흐름으로 정리하면
+
+발표 대본
+마무리는 Figures 1-5와 Algorithm 1을 연결합니다. Results in Figures 7-15 are evidence within their speed-trace simulation, baseline, training-budget, and Table II/III conditions. The deck does not treat them as a generic recommendation for every V2I deployment.
+
+공개 출처
+arxiv-v1 | pp. 1-13; Figs. 1-15; Algorithm 1
+Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+https://arxiv.org/abs/2405.11352v1

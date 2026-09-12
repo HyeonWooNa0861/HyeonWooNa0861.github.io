@@ -1,0 +1,341 @@
+---
+type: research-seminar-slides
+paper_id: graph-neural-rl-offloading-mec
+---
+
+# 변하는 MEC 연결을 그래프와 DQN으로 읽기
+
+논문: Offloading Strategy Based on Graph Neural Reinforcement Learning in Mobile Edge Computing
+
+저자: Tao Wang, Xue Ouyang, Dingmi Sun, Yimin Chen, Hao Li (2024)
+
+## 1. 변하는 MEC 연결을 그래프와 DQN으로 읽기
+
+M-GNRL: 두 hop GraphSAGE feature와 edge-score DQN으로 BS offloading을 선택
+
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) title page; abstract
+
+## 2. 논문의 문제와 방법 범위
+
+현재 MD의 이동으로 직접·간접 BS 관계가 달라질 때 system cost를 낮추는 offloading 전략
+
+- MEC graph의 vertex는 MD와 BS이며 현재 MD가 observation point다
+- task는 한 slot 시작에 하나씩 생기며 time·energy를 함께 cost로 둔다
+- 두 hop GraphSAGE가 node feature를 만들고 DQN이 edge score로 BS를 고른다
+- single-agent simulation이며 physical deployment나 multi-agent coordination은 다루지 않는다
+
+핵심: 관계 구조를 feature로 넣어 동적 MEC offloading을 학습하는 논문이다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 1-3; abstract; §1
+
+## 3. MEC structural graph와 coverage
+
+BS와 MD의 연결은 관측 MD의 위치가 바뀌면 달라지고 graph topology도 갱신된다
+
+- **레인 directly connected**
+- **레인 indirectly connected**
+  - **current MD**: task D_n, C_n → observation point
+  - **BS 1**: within coverage
+M(t)
+  - **BS 2**: BS-to-BS
+connectivity
+  - **indirect BS**: outside current
+coverage
+- current MD → BS 1: direct link (실선, 단방향)
+- BS 1 → BS 2: BS link (실선, 단방향)
+- BS 2 → indirect BS: indirect (점선, 단방향)
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 2, 4; Fig. 1; §3
+
+## 4. local과 offload의 cost 구성
+
+선택한 BS의 경로가 direct인지 indirect인지에 따라 transmission 항이 달라진다
+
+
+| 항목 | 원문 정의 | 역할 |
+| --- | --- | --- |
+| rate | R_n,m=B log2(1+P_n,m g_n /(N0+distance^θ)) | direct upload rate |
+| local | T_local=C_n/f_local; E_local=P_n T_local | device가 직접 실행 |
+| direct offload | T_trans=D_n/R_n,m; E_trans=P_n,m T_trans | MD에서 BS로 전송 |
+| indirect BS | forwarding time·energy를 추가 | BS relay가 있는 경로 |
+| BS compute | f_com=weight × remaining resource | BS load와 task 속성 반영 |
+
+핵심: offload cost는 radio transmission과 BS execution을 함께 반영한다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 5-7; Eqs. 1-12
+
+## 5. cost와 multiple constraints
+
+binary BS choice, BS frequency, deadline과 max execution time을 함께 제한한다
+
+- **current task**: D_n(t), C_n(t), deadline
+- **local**: E_local when no BS chosen
+- **offload**: α E_total + β T_compute
+- **Cost_n(t)**: Eq. 13, α+β=1
+- **feasible choice**: at most one BS; Eq. 14
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) p. 7; Eqs. 13-14
+
+## 6. 왜 graph feature가 필요한가
+
+현재 MD는 가까운 node만 보면 간접 BS와 multi-hop 관계를 놓칠 수 있다
+
+- 원문은 irregular MEC relation을 non-Euclidean graph로 모델링한다
+- message passing은 이웃 node의 feature를 현재 node embedding에 반영한다
+- 이 논문은 direct·indirect BS만 다루므로 two-hop information을 사용한다
+- GNN output은 DQN의 environment와 edge-score 계산의 입력이 된다
+
+핵심: GNN은 BS 후보의 관계 정보를 압축하는 feature stage다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 2-3, 9; §1; §4.2
+
+## 7. 두 hop GraphSAGE feature learning
+
+sampled neighbors를 집계해 MD와 BS embedding을 업데이트한다
+
+1. **raw graph**: G_t=(V_g, zeta)
+2. **sample neighbors**: MD-BS와 BS-BS
+3. **layer 1**: neighbor aggregation
+4. **layer 2**: two-hop context
+5. **embedding**: updated h_n, h_m
+
+핵심: layer 수 2는 이 논문의 direct·indirect BS 범위에 맞춘 선택이다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 9-10; Eqs. 15-19
+
+## 8. embedding 학습과 DQN 학습을 분리한다
+
+GraphSAGE embedding loss와 DQN temporal-difference loss는 서로 다른 단계다
+
+
+| 단계 | 입력·목표 | 업데이트 |
+| --- | --- | --- |
+| GraphSAGE | neighbor embedding과 negative samples | Eq. 20; Adam으로 W1, W2 |
+| edge feature | Con(h_n,h_m) → MLP1 → MLP2 → softmax | Eq. 23 |
+| DQN | replay sample의 reward와 Q value | Eq. 26; gradient update Eq. 27 |
+
+핵심: GNN message aggregation과 DQN policy learning을 같은 loss로 합치지 않는다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 10-12; Eqs. 20, 23, 26-27; Alg. 1
+
+## 9. DQN state와 원문 reward
+
+state는 task·deadline·BS load·remaining resource를 포함하며 reward 정의는 원문 그대로 읽는다
+
+
+| 요소 | 원문 내용 | 주의 |
+| --- | --- | --- |
+| state s_t | D_n, C_n, De_n, L_mu(m), L_mu(m)^s | Eq. 22 |
+| on time | r_t=1/Cost_n(t), 0<T_e≤tau_n | Eq. 21의 표기 |
+| otherwise | r_t=.1(tau_n-T_e) | deadline/max time 관련 |
+| experience | (s,a,r,s') replay pool | Algorithm 1 |
+
+핵심: reward의 부호나 cost-to-reward 변환을 덱에서 임의로 고치지 않는다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 10-12; Eqs. 21-22; Alg. 1
+
+## 10. edge feature에서 one-hot BS action까지
+
+updated MD와 BS feature의 softmax score 중 최대값을 택하는 방식이다
+
+1. **h_n, h_m**: updated node features
+2. **concatenate**: Con(h_n,h_m)
+3. **MLP1, MLP2**: edge feature
+4. **softmax**: offloading probabilities
+5. **argmax**: one-hot x_m(t)
+
+핵심: Eq. 23의 edge feature는 graph link 자체와 구별되는 decision score다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 10-11; Eqs. 23-25
+
+## 11. 교육용 edge-score toy
+
+아래 score는 원문 데이터가 아닌 Eq. 23–25를 재계산하는 가정이다
+
+
+| candidate BS | invented softmax score | one-hot x_m | 선택 |
+| --- | --- | --- | --- |
+| BS 1 | .20 | 0 | 아님 |
+| BS 2 | .65 | 1 | max score |
+| indirect BS 3 | .15 | 0 | 아님 |
+| check | .20+.65+.15=1 | one entry | BS 2 |
+
+핵심: 이 toy는 max-probability rule을 보일 뿐 paper experiment를 재현하지 않는다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 7, 10-11; Eqs. 13, 23-25
+
+## 12. Algorithm 1의 training loop
+
+graph embedding을 만든 뒤 DQN replay loop에서 parameter omega를 갱신한다
+
+1. **embedding**: Eqs. 15-20; Adam
+2. **graph environment**: learned graph input
+3. **state and action**: Eqs. 22-24
+4. **store tuple**: s,a,r,s' replay
+5. **mini-batch update**: Eqs. 26-27
+
+핵심: Algorithm 1은 pre-trained scheduler와 replay-based DQN training을 연결한다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) p. 12; Algorithm 1
+
+## 13. 학습된 scheduler 이후 task execution
+
+Fig. 3은 graph data를 scheduler로 보내고, 결과를 local 또는 MEC processing path로 이어 준다
+
+- **레인 local branch**
+- **레인 offload branch**
+  - **new task**: MD relation graph
+  - **scheduler**: offloading
+decision
+  - **local**: device
+processes
+  - **MEC**: BS resource
+allocation
+  - **return**: result to MD
+- new task → scheduler: graph data (실선, 단방향)
+- scheduler → local: local (실선, 단방향)
+- scheduler → MEC: offload (실선, 단방향)
+- local → return: return (실선, 단방향)
+- MEC → return: return (실선, 단방향)
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) p. 8; Fig. 3; §4
+
+## 14. 관측 MD 이동 뒤 adjacency-list update
+
+Algorithm 2는 changed-set 입력 아래 vertex-table addition을 보이는 illustration이다
+
+- **레인 graph update**
+  - **G(t)**: cached list
+  - **changed sets**: C(vertices)
+C(edges)
+  - **addition**: add vertex
+tables
+  - **next decision**: input to
+Algorithm 1
+- G(t) → changed sets: compare (실선, 단방향)
+- changed sets → addition: addition only (실선, 단방향)
+- addition → next decision: refresh (실선, 단방향)
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 12-13; Fig. 5; Algorithm 2
+
+## 15. simulation graph records
+
+실험 입력은 MD record, BS record, connection record의 세 종류다
+
+
+| record | 원문 fields | graph 역할 |
+| --- | --- | --- |
+| MD | ID, D, C, deadline, priority, local CPU, slot | task node feature |
+| BS | ID, F, P, load, remaining resource, range, slot | BS node feature |
+| connection | BS ID, MD/BS ID, rate, distance, slot | edge relation and attributes |
+
+핵심: 원문 실험은 graph input schema를 명시하지만 공개 dataset download는 제공하지 않는다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 13, 18; §5.1; data availability
+
+## 16. Table 2 simulation conditions
+
+수치 결과는 bandwidth, task, CPU, replay setting이 정해진 simulation에서 나온다
+
+
+| 범주 | 조건 | 값 |
+| --- | --- | --- |
+| network | bandwidth; slot sequence | 4 MHz; T=80 |
+| task | size; CPU cycles | 800–2000 kbytes; 1000–2500 Mcycles |
+| compute | MD CPU; BS CPU | .5–1.5 GHz; 4–11 GHz |
+| RL | episodes; batch; replay | 1000/1200/1400; 100; 1500 |
+| RL | gamma; learning rate | .93/.95/.97/.99; .001 |
+
+핵심: reported performance를 MEC deployment specification으로 일반화하면 안 된다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 14-15; Table 2; Fig. 6
+
+## 17. 비교 baseline의 역할
+
+각 baseline은 동일한 GNN-DQN variant가 아니라 서로 다른 policy family다
+
+
+| 방법 | 원문 설명 | 비교 의미 |
+| --- | --- | --- |
+| LOCAL | device에서만 task 실행 | offloading 없음 |
+| RANDOM | offload와 BS selection을 random | nonlearned reference |
+| GNN-A2C | aerial EdgeIoT graph RL framework | GNN plus A2C reference |
+| Coop-UEC | drone cooperative DRL offloading | long-term reward DRL reference |
+
+핵심: M-GNRL의 결과는 이 네 방법 및 논문의 simulation 조건에 대한 비교다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 13-14; §5.1; refs. 23, 32
+
+## 18. discount factor 선택과 convergence
+
+Fig. 7은 gamma=.97을 이후 실험에 쓰게 한 empirical selection이고 Fig. 8은 조건부 convergence 비교다
+
+
+| 방법 또는 setting | reported observation | 조건 |
+| --- | --- | --- |
+| gamma=.97 | Fig. 7의 highest average reward | tested .93, .95, .97, .99 |
+| Coop-UEC | 1050 episode 뒤 .35–.44 | Fig. 8 |
+| GNN-A2C | 920 iteration 뒤 .66–.78 | Fig. 8 |
+| M-GNRL | 950 iteration 뒤 .82–.97 | Fig. 8 |
+
+핵심: GNN-A2C는 약간 더 빠르지만 M-GNRL은 stable state에서 더 높은 reward를 보였다고 보고한다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) p. 15; Figs. 7-8
+
+## 19. arrival rate와 system cost 결과
+
+task load, topology, coverage, BS frequency를 각각 바꾼 simulation 결과를 같은 주장으로 합치지 않는다
+
+- Fig. 9a는 fixed BS resource에서 task volume이 커질 때 task arrival rate를 비교한다
+- Fig. 9b는 direct·indirect BS 수와 MD 수가 다른 six topology를 비교한다
+- Fig. 10은 topology, BS coverage, BS frequency에 따른 system cost를 제시한다
+- 원문은 GNN-A2C가 Coop-UEC 대비 약 22.8%, M-GNRL이 GNN-A2C 대비 약 15.6% cost를 낮췄다고 쓴다
+
+핵심: 22.8%와 15.6%는 서로 다른 baseline에 대한 조건부 비교다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 16-17; Figs. 9-10
+
+## 20. weight coefficient의 경계
+
+time이나 energy 한쪽만 cost에 두면 Fig. 11에서 extreme cost와 uneven allocation이 관찰된다
+
+
+| setting | 원문 비교 | 해석 경계 |
+| --- | --- | --- |
+| alpha=0, beta=1 | time-side only | Fig. 11 conditions |
+| alpha=1, beta=0 | energy-side only | Fig. 11 conditions |
+| alpha=.7, beta=.3 | mixed setting | Fig. 11 condition |
+| alpha=.3, beta=.7 | mixed setting | Fig. 11 condition |
+| alpha=.5, beta=.5 | mixed setting | Fig. 11 condition |
+
+핵심: cost weights는 objective preference이며 paper가 보편적 최적 값을 제시하지 않는다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) p. 17; Fig. 11
+
+## 21. source-grounded limits
+
+논문의 mechanism claim과 evidence boundary를 분리해 읽는다
+
+- Graph update는 adjacency-list addition demonstration이며 deletion은 text에서 similar procedure라고만 말한다
+- Algorithm 1은 single-agent task offloading이며 future work로 multi-agent collaboration·competition을 든다
+- Eq. 13은 local option을 두지만 Eq. 23–25는 BS edge-score action만 구체화한다
+- 결론은 simulation이 idealized setting에 제약된다고 밝히며 real-world test를 future work로 둔다
+
+핵심: M-GNRL은 dynamic graph simulation 전략이며 deployed MEC guarantee가 아니다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 7, 11, 13, 17; Eqs. 13, 23-25
+
+## 22. M-GNRL을 한 흐름으로 읽기
+
+moving MD relation을 graph로 갱신하고, two-hop feature와 DQN edge score를 거쳐 offloading choice를 만든다
+
+1. **MEC graph**: MD-BS relation
+2. **GraphSAGE**: two-hop embeddings
+3. **DQN**: state, reward, replay
+4. **edge action**: softmax and argmax
+5. **execution**: local or MEC path
+
+핵심: 핵심 기여는 graph relation feature를 DQN offloading decision에 연결한 점이다
+
+근거: [mdpi-2024](https://www.mdpi.com/2079-9292/13/12/2387) pp. 8-17; Figs. 3-11; Algs. 1-2

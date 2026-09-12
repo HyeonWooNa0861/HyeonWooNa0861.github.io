@@ -1,0 +1,426 @@
+---
+type: research-seminar-slides
+paper_id: task-graph-offloading-drl-mec
+---
+
+# SATA-DRL: 의존 작업의 실행 위치를 학습하다
+
+논문: Task Graph offloading via Deep Reinforcement Learning in Mobile Edge Computing
+
+저자: Jiagang Liu · Yun Mi · Xinyu Zhang · Xiaocui Li (2024)
+
+## 1. SATA-DRL: 의존 작업의 실행 위치를 학습하다
+
+arrival·completion event로 ready task를 꺼내고, 시간 변화 ECD 상태에서 한 ECD를 선택한다
+
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 1, title and Abstract
+
+## 2. 문제: 독립 task 하나가 아니라 의존 DAG를 배치한다
+
+- 모바일 application은 여러 atomic task와 그 사이의 data dependency로 구성된다.
+- 부모 출력이 도착하고 ECD가 비어야 자식 task의 실행을 시작할 수 있다.
+- ECD의 processing capability와 queue workload가 시간에 따라 달라진다.
+
+핵심: 현재 task의 ECD 선택은 나중 task의 data arrival과 queue를 바꾼다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 1–3, Abstract and §3
+
+## 3. 논문을 읽기 위한 용어
+
+
+| 약어 | 풀어 쓰기 | 이 발표에서의 역할 |
+| --- | --- | --- |
+| MU / ECD | Mobile User / Edge Computing Device | 단말 / 계산 목적지 |
+| PE / DAG | Processing Element / Directed Acyclic Graph | 계산 장치 / 의존 그래프 |
+| MDP / DQN | Markov Decision Process / Deep Q-Network | 의사결정 모델 / Q 학습 |
+| SATA-DRL | Scheduling strAtegy for the Task grAph | DQN 기반 작업 배치 |
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 3–8; §§3–6
+
+## 4. MEC system: 중앙 controller와 ECD queue
+
+controller는 ECD status를 받고, task scheduling decision을 한 곳에서 내린다
+
+- **레인 control and execution**
+  - **mobile user**: application DAG → request and result
+  - **covering ECD**: cellular request
+extract ready task
+  - **decision controller**: observe status
+DQN agent
+  - **target ECD**: one PE → FCFS queue
+- mobile user → covering ECD: application data (실선, 단방향)
+- covering ECD → decision controller: ready task (실선, 단방향)
+- decision controller → target ECD: ECD assignment (실선, 단방향)
+
+핵심: 이 논문의 agent는 decentralized vehicle agent가 아니라 중앙 controller에 있다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 3, Fig. 1 and §3
+
+## 5. DAG의 source·real task·sink
+
+논문은 MU를 fictitious ECD 0으로 두고 dummy source와 sink를 추가한다
+
+- **레인 one application DAG**
+  - **dummy source**: v_n0 at MU
+workload 0
+  - **real task A**: workload rho
+choose one ECD
+  - **edge data**: e_nij → parent output
+  - **real task B**: execute after
+parent data
+  - **dummy sink**: v_nI at MU
+workload 0
+- dummy source → real task A (실선, 단방향)
+- real task A → edge data (실선, 단방향)
+- edge data → real task B (실선, 단방향)
+- real task B → dummy sink (실선, 단방향)
+
+핵심: real task는 local 실행 선택지가 없고, 정확히 한 real ECD에 배치된다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 3–5, Fig. 3 and Eqs. 1–4
+
+## 6. 완료 시간: 입력 도착·큐 준비·실행
+
+
+| 요소 | 언제 생기는가 | 논문 모델 |
+| --- | --- | --- |
+| 데이터 전송 | 부모와 다른 ECD에 배치 | 부모 완료 뒤 링크 전송 |
+| 큐 대기 | 목적지 ECD가 바쁨 | ECD 준비 시각까지 대기 |
+| 실행 | 입력·ECD 모두 준비 | 작업량 / ECD 처리 능력 |
+| 같은 ECD | 부모·자식이 같은 ECD | 두 작업 사이 전송 지연 0 |
+
+핵심: child completion은 가장 늦은 parent data arrival과 target queue를 함께 기다린다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 4–6, Eqs. 5–13
+
+## 7. 목표: application 평균 makespan 최소화
+
+makespan은 요청 시각 뒤 모든 task가 끝날 때까지의 길이다
+
+- **each real task**: one-hot ECD 배치
+- **dependency**: 부모 데이터 도착
+- **target ECD**: ECD 준비 시각
+- **task completion**: max(두 시각) + 실행
+- **application makespan**: 최종 완료 − 요청
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 5–6, Eqs. 1–4 and 14–16
+
+## 8. SATA는 arrival·completion event에서 움직인다
+
+1. **이벤트**: 입력 도착 / 작업 완료
+2. **도착 시 목록**: F_lct 오름차순
+3. **준비 항목**: 각 목록 맨 앞 검사
+4. **다음 작업**: Q_r에서 하나 선택
+5. **ECD 배치**: DQN으로 목적지 결정
+
+핵심: DQN은 임의 DAG 전체를 한 번에 배치하지 않고, ready task 하나씩 결정한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 6–7, Eq. 17; p. 9, Algorithm 1
+
+## 9. F_lct: 기한에서 거꾸로 계산한 우선순위
+
+가상 A→B, A→C; deadline=20. (B,C)의 반환=(2,1), 실행=(3,4), A로부터 전송=(1,2)
+
+
+| 항목 | Eq. 17의 계산 | 의미 |
+| --- | --- | --- |
+| F_lct(B) | 20−2 = 18 | 최종 반환 전에 B 종료 |
+| F_lct(C) | 20−1 = 19 | 최종 반환 전에 C 종료 |
+| F_lct(A) | min(18−3−1, 19−4−2) = 13 | 두 자식 중 더 빠른 요구 |
+| ready 순서 | B와 C가 모두 ready이면 B→C | 작은 F_lct부터 선택 |
+
+핵심: F_lct는 보장된 실제 완료 시각이 아니라 빠른 자원 기준으로 추정한 기한이다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 6, Eq. 17; constructed example
+
+## 10. 배치를 결정하는 시점과 실행 시작은 다르다
+
+
+| 구분 | 원문에 있는 조건 | 설명 범위 |
+| --- | --- | --- |
+| p. 6 ready | 부모의 scheduling plan 이후 | 배치 순서의 조건 |
+| p. 7 보상 설명 | ready의 부모가 완료됨을 가정 | 본문 표현 차이 존재 |
+| Algorithm 1 | 각 목록의 맨 앞 ready만 수집 | 모든 DAG 정점 동시 탐색 아님 |
+| 실제 실행 시작 | max(ECD 준비, 모든 입력 도착) | Eq. 12가 정하는 시각 |
+
+핵심: ready를 곧바로 데이터 도착 완료 또는 실행 시작이라고 부르지 않는다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 5–7, Eqs. 12–13; p. 9, Algorithm 1
+
+## 11. MDP state: 다섯 종류의 지연 관련 관측
+
+
+| state component | 무엇을 요약하는가 | 결정에 필요한 이유 |
+| --- | --- | --- |
+| inter-ECD rate | ECD 간 전송률의 합 | parent output 이동 시간 |
+| MU link rate | MU와 covering ECD link | application input·result 경로 |
+| ECD capability | ECD 처리 능력의 합 | execution time |
+| ready workload | Q_r의 총 workload | 곧 배치할 작업량 |
+| 계산 큐 작업량 | 전체 ECD 큐 작업량 합 | FCFS 대기 시간 |
+
+핵심: state는 DAG 모양 전체가 아니라 link·capacity·queue의 집계 관측이다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 7, §5.2 State Space
+
+## 12. 합계가 같아도 어느 ECD가 빠른지는 다를 수 있다
+
+교육용 두 ECD, 빈 큐·전송 영향 없음, 작업량 6000 MI; 다른 관측은 동일하게 둔다
+
+
+| 상황 | ECD 1 / ECD 2 MIPS | 관측된 합계 | 실행 시간 |
+| --- | --- | --- | --- |
+| A | 6000 / 4000 | 10000 MIPS | ECD 1: 1 s, ECD 2: 1.5 s |
+| B | 4000 / 6000 | 10000 MIPS | ECD 1: 1.5 s, ECD 2: 1 s |
+| 차이 | 빠른 ECD가 바뀜 | 합계 관측은 같음 | 유리한 선택은 바뀜 |
+
+핵심: 집계 state만으로 모든 개별 자원 상태를 구분한다고 보장할 수 없다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 7, §5.2 State Space; constructed example
+
+## 13. action: 현재 ready task를 한 ECD에 배치
+
+one-hot binary action은 task의 target ECD 하나를 뜻한다
+
+- **레인 one ready task**
+  - **ready task v_ni**: 의존성 검사 통과 → workload ρ
+  - **action a_tau**: binary vector
+one selected entry
+  - **target ECD m**: x_ni^m=1
+other entries 0
+  - **FCFS queue**: wait Q(x_ni) → then execute
+- ready task v_ni → action a_tau (실선, 단방향)
+- action a_tau → target ECD m: select one (실선, 단방향)
+- target ECD m → FCFS queue (실선, 단방향)
+
+핵심: action은 CPU allocation이나 bandwidth allocation이 아니라 task-to-ECD assignment다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 5, 7, Eqs. 1–4 and §5.2
+
+## 14. reward = utility - duration - penalty
+
+
+| 항 | 원문 정의 | 직관 |
+| --- | --- | --- |
+| U | β log2(ρ) | 작업량 utility |
+| D | ψ(maxA + Q + E)/ρ | 합으로 만든 지연 비용 |
+| P | η(F − F_lct)/ρ | 일찍 끝나면 음수 가능 |
+| r | U − D − P | 원문 보상 정의 |
+
+핵심: reward는 makespan 하나가 아니라 workload 보정 utility와 두 종류의 지연 비용을 결합한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 7, Eqs. 18–20
+
+## 15. 교육용 계산: 완료 시간과 shaped reward를 구분
+
+가상 값 ρ=100, maxA=2, Q=3, E=1, F_lct=5; 원문 가중치 β=.6, ψ=5, η=40
+
+
+| 계산 | 대입 | 결과 |
+| --- | --- | --- |
+| 실제 완료 F | max(3,2)+1 | 4 |
+| utility U | .6 log2(100) | 약 3.9863 |
+| duration D | 5(2+3+1)/100 | 0.30 |
+| penalty P / reward r | 40(4−5)/100; U−.30−P | −0.40 / 약 4.0863 |
+
+핵심: 기한 추정보다 빠르면 P<0이다; 보상식의 D는 F/ρ와 다르다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 5–7, Eqs. 12,18–20; p. 11; constructed example
+
+## 16. training action은 epsilon-greedy로 고른다
+
+- **state s_tau**: link·capacity·queue
+- **탐색**: 확률 ε: 무작위 ECD
+- **활용**: 확률 1−ε: 최대 Q
+- **execute action**: 현재 작업을 배치
+- **transition**: 다음 상태와 보상
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 8, Eq. 24 and §6.1
+
+## 17. DQN training: replay, target, loss
+
+Q_tar = r + γ max_a Q_target(s′,a); 학습하는 값은 Q_current(s,a)다
+
+- **레인 one training update**
+  - **transition**: s_t, a_t → r_t+1, s_t+1
+  - **replay pool**: store → batch sample
+  - **two Q values**: prediction: Q_cur
+target: Q_tar
+  - **squared loss**: (Q_tar−Q_cur)²
+update θ
+- transition → replay pool (실선, 단방향)
+- replay pool → two Q values (실선, 단방향)
+- two Q values → squared loss (실선, 단방향)
+
+핵심: prediction network는 current Q, target network는 bootstrap target을 제공한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 7–9, Eqs. 22–23; Algorithm 2
+
+## 18. target network: K회 반복 뒤 파라미터 복사
+
+- prediction network θ는 minibatch 손실을 줄이는 방향으로 갱신한다.
+- Algorithm 2의 θ−←θ는 k=1…K 반복문 바깥에 있다.
+- Fig. 4와 본문도 동기화 조건을 만족할 때 target에 복사한다고 설명한다.
+
+핵심: K회 처리 블록과 복사를 구분한다; 매 scheduling 단계 복사라고 읽지 않는다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 8–9, §5.3 and Algorithm 2
+
+## 19. Algorithm 1과 2의 실제 연결
+
+1. **SATA 이벤트**: ready 항목 수집
+2. **상태·보상**: 이전 배치 결과 관측
+3. **DRL 결정**: ε-greedy로 ECD 선택
+4. **현재 배치**: 선택 ECD에 할당
+5. **학습**: 이전 전이 저장·SGD
+
+핵심: SATA가 scheduler의 순서를 만들고, DQN이 각 ready task의 ECD 선택을 학습한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 9, Algorithms 1–2
+
+## 20. 학습 뒤 SATA-Work의 결정
+
+1. **학습 반복**: 여러 episode 경험
+2. **학습된 θ**: prediction 사용
+3. **이벤트**: ready 항목 수집
+4. **최대 Q**: 탐색 없는 선택
+5. **작업 배치**: ECD queue에 할당
+
+핵심: working 단계는 exploration 대신 prediction network의 argmax action을 쓴다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 9–10, Algorithms 3–4 and §6.3
+
+## 21. 교육용 가상 trace: parent output이 child 시작을 바꾼다
+
+가상 값: workload는 instructions, 속도는 instructions/s; 대기 경쟁·초기 입력 전송은 제외한다
+
+
+| 가정 | A: ECD 1 | B: ECD 2 | B: ECD 1 |
+| --- | --- | --- | --- |
+| 작업량 / 속도 | 1000 / 1000 | 1000 / 1000 | 1000 / 1000 |
+| A 완료 | 1 s | 입력 200 bit | 입력 200 bit |
+| 부모 전송 | 가정: 초기 입력 도착 | 200 / 200<br>= 1 s | 같은 ECD: 0 s |
+| B 완료 | 해당 없음 | max(0,2)+1<br>= 3 s | max(1,1)+1<br>= 2 s |
+
+핵심: 이 가정에서 same-ECD placement는 inter-ECD parent transfer를 피한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 4–6, Eqs. 5, 10, 12–13
+
+## 22. 실험 조건: 네 ECD와 Montage 작업 그래프
+
+
+| 항목 | 논문 설정 | 항목 | 논문 설정 |
+| --- | --- | --- | --- |
+| real ECD | 4 | PE | ECD마다 1 |
+| ECD capability | 4000–6000 MIPS | inter-ECD rate | 440 Mbps |
+| MU covering link | 1000 Mbps | workflow | Montage 25 nodes |
+| deadline | r_n + 6 MS_n | capacity dynamics | stated Markov matrix |
+| simulator | CloudSim 확장 | evaluation | simulation |
+
+핵심: 결과는 네 ECD, 정량화된 capacity, Montage workflow라는 simulation 조건에 묶인다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 10, §7.1 and Fig. 5
+
+## 23. deadline metric을 읽을 때의 조건
+
+- 논문은 reference makespan MS_n을 계산한 뒤 deadline을 r_n + 6 MS_n으로 둔다.
+- MS_n은 각 task를 서로 다른 가상 ECD에 5000 MIPS로 배치하고 전송을 무시한 기준이다.
+- deadline violation은 deadline을 넘긴 application 수 / 전체 application 수다.
+
+핵심: deadline violation은 외부 SLA가 아니라 논문이 만든 deadline 규칙의 결과다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 11, §7.1 and §7.4
+
+## 24. DQN agent의 보고된 설정
+
+
+| 구성 | 값 | 구성 | 값 |
+| --- | --- | --- | --- |
+| 완전 연결층 | 5개 층 | 뉴런 수 | 128→64→32→16→5 |
+| optimizer | Adam | learning rate | 0.0006 |
+| experience pool | 200000 | minibatch | 64 |
+| β / ψ / η | 0.6 / 5 / 40 | 할인율 γ | 0.95 |
+
+핵심: 이 설정은 논문 simulation의 재현 단서이며 다른 task graph의 최적값 보장은 아니다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 11, §7.2
+
+## 25. 재현할 때 원문만으로 확정하기 어려운 지점
+
+
+| 지점 | 보고된 내용 | 남는 질문 |
+| --- | --- | --- |
+| 출력 / 행동 | 4 ECD, 출력 5개, a0…a4 | real task의 a0 금지 구현은? |
+| 출력 범위 | 앞 4층 linear, 마지막 softmax | Q-target의 값 범위 처리는? |
+| 기준 5000 | 5000=(6000×4+1000)/6 | 우변은 약 4166.67 |
+| 학습 호출 | K회 뒤 θ−←θ; episode 반복 | 호출 간 buffer·상태 지속은? |
+
+핵심: 모델 제약과 보고된 설정을 구분하고, 미제공 구현은 추정으로 채우지 않는다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 5,7–11; Eqs. 3,23; Algorithms 2–3; §7.2
+
+## 26. cumulative reward 학습 곡선의 범위
+
+- arrival rate lambda 5, 7, 9에서 episode당 10 application을 simulator에 넣는다.
+- Fig. 5는 cumulative reward가 episode와 함께 증가하는 세 곡선을 보인다.
+- 본문은 Fig. 5(c)에서 600 episode 이후 상대적으로 안정적이라고 해석한다.
+
+핵심: 이 곡선은 arrival-rate별 학습 관찰일 뿐, 일반 convergence 증명은 아니다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 10–11, Fig. 5 and §7.3
+
+## 27. optimization 비교의 대상과 측정값
+
+
+| 방법 | 논문에서의 역할 | 두 지표 공통 |
+| --- | --- | --- |
+| Zhang's PCP | 휴리스틱 비교 | makespan·기한 위반 |
+| OnDoc | 온라인 DAG 비교 | makespan·기한 위반 |
+| DTO-CED | 의존 작업 비교 | makespan·기한 위반 |
+| Dueling DQN | 같은 상태·행동·보상 | makespan·기한 위반 |
+| SATA-DRL | 제안 방법 | makespan·기한 위반 |
+
+핵심: 모든 방법은 같은 fetched application을 30회 처리한 평균으로 비교된다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) p. 11, §7.4
+
+## 28. Fig. 6–7의 조건부 결과
+
+
+| 그림 | 실험 조건 | 본문의 보고 |
+| --- | --- | --- |
+| Fig. 6 | 작업 그래프 5–35개<br>λ=5,7,9 | SATA-DRL의 makespan 최소 |
+| Fig. 6 | 같은 simulation | PCP는 부하 증가에 민감 |
+| Fig. 7 | 작업 그래프 5–35개<br>λ=5,7,9 | SATA-DRL의 위반율 더 낮음 |
+| Fig. 6–7 | Dueling DQN 비교 | 이 설정에서 SATA-DRL 우세 |
+
+핵심: 논문은 plotted settings에서 SATA-DRL의 makespan·deadline violation이 낮다고 보고한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 11–12, Figs. 6–7 and §7.4
+
+## 29. 모델을 적용할 때 남는 경계
+
+
+| 경계 | 원문 모델에서의 처리 | 해석상 주의 |
+| --- | --- | --- |
+| control | central controller가 status 수집 | distributed robustness 미검증 |
+| compute | ECD당 one PE, FCFS | parallel scheduler와 다름 |
+| capacity | 5 quantized MIPS levels | continuous runtime dynamics 아님 |
+| 목표 / 평가 | makespan 최소화 / 기한 위반 측정 | energy·cost 최적화 아님 |
+| deadline | transfer-ignoring MS_n에서 구성 | external SLA로 일반화 불가 |
+
+핵심: SATA-DRL은 명시된 simulation MEC model에서의 task-to-ECD scheduling 방법이다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 3, 6, 10–11, §§3,4,7
+
+## 30. SATA-DRL의 전체 연결
+
+1. **DAG**: 부모 출력 의존성
+2. **SATA**: 이벤트·우선순위
+3. **MDP**: 집계 상태·ECD 선택
+4. **DQN**: 경험으로 Q 학습
+5. **결과**: simulation 조건부
+
+핵심: 이 논문은 의존 task의 event-driven 순서와 DQN의 ECD 선택을 결합한다.
+
+근거: [arxiv-v4](https://arxiv.org/abs/2309.10569v4) pp. 3–12, §§3–8

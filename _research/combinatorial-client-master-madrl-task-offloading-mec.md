@@ -77,6 +77,14 @@ MEC에서는 사용자 단말이 계산 집약적 task를 edge server로 offload
 
 QECO-Adapt와 비교하면, 이 논문은 offloading action의 agent 구조 자체를 다루고 QECO는 개별 device의 QoE 중심 decision을 강화한다. Dense MEC 환경에서는 server resource constraint와 dropped task가 중요하므로, client-master coordination은 QECO-Adapt의 load-aware control과 함께 읽을 가치가 있다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 18장 | <a href="/assets/seminars/combinatorial-client-master-madrl-task-offloading-mec/ccm-madrl-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/combinatorial-client-master-madrl-task-offloading-mec/ccm-madrl-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/combinatorial-client-master-madrl-task-offloading-mec/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/combinatorial-client-master-madrl-task-offloading-mec/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

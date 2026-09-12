@@ -1,0 +1,203 @@
+## 1. 배터리 제약 MEC에서: 어느 사용자를 오프로딩할까
+
+1. 배터리 제약 MEC에서: 어느 사용자를 오프로딩할까
+
+발표 대본
+이 자료는 Naderializadeh와 Hashemi의 2019년 논문을 학습용으로 소개합니다. 핵심 질문은 모든 사용자를 한꺼번에 edge로 보내는 것이 아니라, 배터리와 대기열이 계속 변하는 상황에서 각 MEC 서버가 이번 slot에 어느 사용자를 선택할지입니다.
+
+공개 출처
+arxiv-v1 | title, abstract, v1
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 2. 왜 ‘모두 오프로딩’이 답이 아닌가
+
+2. 왜 ‘모두 오프로딩’이 답이 아닌가
+
+발표 대본
+논문은 여러 에너지 제약 사용자가 공유 wireless medium을 통해 여러 MEC server에 offload하는 상황을 다룹니다. 모든 사용자가 offload하면 각자의 communication resource가 줄고 server-side queue와 computation burden도 커질 수 있습니다. 따라서 long-term channel만 보고 정한 association 위에서, time-varying state에 따라 served user를 고르는 문제가 출발점입니다.
+
+공개 출처
+arxiv-v1 | p. 1, abstract and Introduction
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 3. 이 논문이 실제로 결정하는 범위
+
+3. 이 논문이 실제로 결정하는 범위
+
+발표 대본
+사용자 j는 task arrival 전에 strongest long-term channel gain을 가진 MEC server S_j에 association됩니다. 따라서 각 server의 local pool U_i는 disjoint입니다. 각 DQN agent는 매 time interval에 자기 pool의 사용자 한 명만 offloading user로 선택합니다. 다른 사용자는 해당 slot에 local computing을 시도합니다. 이 제한을 알아야 논문을 일반적인 joint association, spectrum allocation, server migration policy로 과장하지 않게 됩니다.
+
+공개 출처
+arxiv-v1 | pp. 2-3, System Model
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 4. 한 time slot에서 변하는 상태와 행동
+
+4. 한 time slot에서 변하는 상태와 행동
+
+발표 대본
+논문의 DQN observation은 associated user별 queue length, energy level, average task waiting time, uplink SNR입니다. 각 user의 task count는 independent Poisson arrival을 따르고, 같은 크기 B bit의 task가 FIFO로 저장됩니다. 한 slot의 action이 queue와 energy를 바꾸고 새 arrival가 더해지므로, 다음 slot은 같은 사용자를 다시 선택할지 판단할 새 state가 됩니다.
+
+공개 출처
+arxiv-v1 | pp. 3-4, System Model and proposed approach
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 5. local computing: battery가 CPU capacity도 제한한다
+
+5. local computing: battery가 CPU capacity도 제한한다
+
+발표 대본
+Local computing power는 slot 시작 battery E_j(t)를 slot duration tau로 나눈 값보다 클 수 없습니다. CPU frequency는 hardware maximum과 energy-derived cubic-root cap의 minimum이며, bit capacity는 tau 곱하기 frequency를 cycles-per-bit L_j로 나눈 값의 floor입니다. FIFO head task가 이 capacity보다 크면 그 slot에는 local task를 처리하지 않고 idle합니다. 따라서 queue가 있다고 해서 항상 local service가 가능한 것은 아닙니다.
+
+공개 출처
+arxiv-v1 | p. 3, Eqs. (2)–(4), Local Computation Model
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 6. offloading: battery·SNR가 uplink bit cap을 정한다
+
+6. offloading: battery·SNR가 uplink bit cap을 정한다
+
+발표 대본
+Offloading user의 transmit power도 E_j(t)/tau와 maximum transmit power의 minimum으로 제한됩니다. 논문은 bandwidth times log2(1 plus SNR times feasible power) 형태로 maximum uplink rate를 정하고, tau 곱하기 rate를 floor한 bit 수만큼 FIFO task를 offload합니다. Multiple users가 spectrum을 공유할 수 있으며 simulation에서는 FDMA를 사용합니다. 선택이 곧 무제한 전송이라는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v1 | p. 3, Eq. (5), Task Offloading Model
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 7. energy transition과 두 평가 지표
+
+7. energy transition과 두 평가 지표
+
+발표 대본
+Energy는 idle이면 epsilon만큼, local이면 local computing energy와 epsilon만큼, offload이면 radio energy와 epsilon만큼 줄어듭니다. System lifetime LT는 모든 user가 positive energy를 갖는 마지막 slot이며, 한 명이라도 battery가 소진되면 episode가 끝납니다. Average task completion time은 종료 전 완료된 task마다 completion slot minus arrival slot을 평균한 값입니다. tau를 곱하지 않는 한 이 값은 초가 아니라 slot 단위입니다.
+
+공개 출처
+arxiv-v1 | p. 3, Energy Model; Eqs. (6)–(8)
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 8. 한 MEC server가 보는 DQN feedback loop
+
+8. 한 MEC server가 보는 DQN feedback loop
+
+발표 대본
+각 MEC server의 DQN agent는 associated users의 queue length, energy, mean waiting time, uplink SNR을 input으로 받고 한 user를 선택합니다. Selected user's immediate individual reward는 offloaded or computed bits divided by that user's offloading energy입니다. 이 reward는 system lifetime과 task completion time을 직접 더한 식이 아닙니다. 실행 뒤 queue와 energy transition, 다음 task arrival가 next observation을 만들며, 동일 slot에 다른 server agents도 각자의 disjoint pool에서 action을 고릅니다.
+
+공개 출처
+arxiv-v1 | p. 4, proposed multi-agent approach
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 9. 학습 reward와 논문이 보고한 KPI를 분리해 읽기
+
+9. 학습 reward와 논문이 보고한 KPI를 분리해 읽기
+
+발표 대본
+논문은 각 selected user's energy efficiency를 individual reward로 정의하고, numerical result에서는 system lifetime과 average task completion time을 함께 보고합니다. 따라서 bit per joule reward가 이 two-KPI trade-off로 이어지는 것은 이 paper의 simulation evidence로 읽어야 합니다. 이 short paper 안에는 reward가 두 KPI의 globally optimal scalarization이라는 theorem은 제시되지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 1, 4-5, abstract and numerical results
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 10. 교육용 한 slot 계산: 선택 뒤 무엇이 다음 state가 되나
+
+10. 교육용 한 slot 계산: 선택 뒤 무엇이 다음 state가 되나
+
+발표 대본
+이 표는 논문 결과가 아닌 teaching-only construction입니다. A와 B가 한 server pool에 있고, A에는 한 task arrival, B에는 arrival가 없다고 가정합니다. Policy가 B를 선택했을 때 B가 2,000 bit를 offload하고 radio energy 0.2 J를 쓰면 immediate reward는 10,000 bits/J입니다. A의 local service, B의 offload, idle epsilon은 모두 다음 battery와 queue state를 바꿉니다. 실제 paper에서는 task size가 1 KB이고 channel·feasibility가 service bit를 정합니다.
+
+공개 출처
+arxiv-v1 | pp. 3-4, system transition; constructed example
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 11. episode와 DQN training은 어떻게 진행되는가
+
+11. episode와 DQN training은 어떻게 진행되는가
+
+발표 대본
+매 episode의 시작에는 users와 MEC servers를 10 m by 10 m 영역에 무작위로 배치하고 all users에 maximum energy를 둡니다. Slots를 진행하다 적어도 한 node의 battery가 소진되면 episode가 종료되며, locations, task buffers, energy levels를 reset합니다. Simulation은 replay buffer 100,000, discount factor 0.9, batch size 64를 사용하고 episode 끝마다 DQN을 update합니다.
+
+공개 출처
+arxiv-v1 | p. 4, training and simulation setup
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 12. 보고된 simulation 조건: 결과를 떼어 읽지 않기
+
+12. 보고된 simulation 조건: 결과를 떼어 읽지 않기
+
+발표 대본
+논문은 random locations in a 10 m by 10 m area, 100 ms time slot, 20 MHz bandwidth, FDMA, 1 KB homogeneous task, mean arrival rate 10을 사용합니다. Initial maximum energy는 episode 시작마다 uniform distribution over 0.01 to 1 J에서 뽑습니다. DQN은 200-node tanh hidden layer 두 개를 쓰고, epsilon-greedy action은 첫 100 pretraining episode에서 모두 random이며 이후 10,000 intervals에 걸쳐 1 percent로 줄어듭니다.
+
+공개 출처
+arxiv-v1 | p. 4, simulation setup
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 13. 비교 baseline은 어떤 사용자만 우선하는가
+
+13. 비교 baseline은 어떤 사용자만 우선하는가
+
+발표 대본
+Time-Greedy는 every time interval에 average task waiting time이 가장 큰 user를 선택합니다. Energy-Greedy는 current energy level이 가장 낮은 user를 선택합니다. DQN은 queue length, energy, average waiting time, uplink SNR을 observation으로 써 learned action을 정합니다. 이 baseline definition은 각 rule이 어떤 KPI를 반드시 optimal하게 만든다는 증명은 아닙니다.
+
+공개 출처
+arxiv-v1 | p. 4, baseline definitions
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 14. Figure 4: training 중 server 수가 바꾸는 모습
+
+14. Figure 4: training 중 server 수가 바꾸는 모습
+
+발표 대본
+Figure 4는 5 users를 두고 1, 2, 3 MEC servers일 때 DQN training episode별 system lifetime과 average task completion time curve를 그립니다. 본문은 DQN agents가 around 1,000 episodes 이후 converge한다고 설명하고, multiple servers가 load balancing을 개선한다고 해석합니다. Figure plot은 table data가 아니므로, 이 자료에서는 curve의 대략 숫자를 정밀한 reported value처럼 인용하지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 4-5, Fig. 4
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 15. Figure 5의 핵심: 한 방법이 두 축을 모두 이기지 않는다
+
+15. Figure 5의 핵심: 한 방법이 두 축을 모두 이기지 않는다
+
+발표 대본
+Rendered Figure 5의 x-axis는 number of servers이며 3, 4, 5를 표시합니다. Plot상 Time-Greedy는 shorter completion time 쪽, Energy-Greedy는 longer lifetime 쪽에 있고 DQN은 양쪽 extreme 사이의 balance를 보입니다. 다만 Figure 5를 소개하는 p.4 prose는 ‘3 MEC servers와 5 users를 fix’했다고 써서 visible x-axis와 충돌합니다. 이 자료는 이를 해소하지 않고 source internal inconsistency로 남기며, exact numerical comparison을 만들지 않습니다.
+
+공개 출처
+arxiv-v1 | pp. 4-5, Fig. 5 and adjacent prose
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 16. 이 논문에서 얻을 수 있는 것과 아직 남는 것
+
+16. 이 논문에서 얻을 수 있는 것과 아직 남는 것
+
+발표 대본
+이 논문은 multi-server MEC에서 battery·queue·channel state를 관측해 per-server offloading user를 선택하는 구조를 명확히 보여 줍니다. 그러나 experiment는 10 m by 10 m, homogeneous 1 KB tasks, given simulator parameter에서 이뤄졌고, source에는 seed number, confidence interval, error bar가 없습니다. 또한 action은 fixed association 아래 one user selection입니다. 따라서 field deployment, dynamic association, or a universal optimality claim으로 확장해서 읽지 않아야 합니다.
+
+공개 출처
+arxiv-v1 | pp. 2-5, model and numerical results
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485
+
+## 17. 논문의 논리 사슬을 한 장으로 정리
+
+17. 논문의 논리 사슬을 한 장으로 정리
+
+발표 대본
+이 논문의 핵심은 multi-agent라는 이름만이 아닙니다. Fixed association으로 만든 disjoint user pool 안에서, each server agent가 current queue, energy, waiting time, SNR을 보고 one user를 offload하도록 선택합니다. Feasibility와 energy transition이 next state를 만들고, immediate bit/J reward로 학습된 policy를 lifetime과 completion-time trade-off에서 평가합니다. 이 chain을 분리해서 읽으면 reward, action space, and reported result의 경계를 지킬 수 있습니다.
+
+공개 출처
+arxiv-v1 | pp. 1-5, abstract through conclusion
+Energy-Aware Multi-Server Mobile Edge Computing: A Deep Reinforcement Learning Approach, arXiv:1912.10485v1
+https://arxiv.org/abs/1912.10485

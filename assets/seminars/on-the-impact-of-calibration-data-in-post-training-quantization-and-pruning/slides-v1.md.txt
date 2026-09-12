@@ -1,0 +1,292 @@
+---
+type: research-seminar-slides
+paper_id: on-the-impact-of-calibration-data-in-post-training-quantization-and-pruning
+---
+
+# Calibration Data가 LLM PTQ·Pruning에 미치는 영향
+
+논문: On the Impact of Calibration Data in Post-training Quantization and Pruning
+
+저자: Miles Williams and Nikolaos Aletras (2024)
+
+## 1. Calibration Data가 LLM PTQ·Pruning에 미치는 영향
+
+작은 unlabeled text set이 압축 weight 선택과 downstream 성능에 왜 영향을 줄 수 있는가
+
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) Abstract, [arxiv-v2](https://arxiv.org/abs/2311.09755) v2, 2024-08-12
+
+## 2. 먼저 범위: calibration은 training data가 아니다
+
+이 논문은 이미 학습된 model을 다시 학습시키지 않는 post-training compression을 다룬다
+
+
+| 구분 | calibration data | evaluation data |
+| --- | --- | --- |
+| 용도 | layer activation을 만들어 압축 weight 선택에 사용 | 압축 뒤 성능을 측정 |
+| 라벨 | 작은 unlabeled text set | zero-shot task 정답과 WikiText test |
+| weight update | 학습 gradient로 모델을 update하지 않음 | weight를 update하지 않음 |
+| 논문의 보호 장치 | zero-shot evaluation data를 source로 쓰지 않음 | calibration과 분리해 측정 |
+
+핵심: calibration은 retraining용 정답 데이터가 아니라, 압축 결정을 위한 activation 표본이다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 2-3, Sections 2.1 and 3.3
+
+## 3. Calibration text가 압축 선택에 들어가는 경로
+
+원 model의 학습 weight는 고정한 채, calibration activation에 맞는 compressed weight를 고른다
+
+- **레인 PT 압축**
+  - **표본 text**: unlabeled text → 128 examples
+  - **activation X**: 각 layer input을 기록
+  - **layer proxy**: W X와 Wc X 차이
+  - **압축 선택**: quantize 또는 prune
+  - **압축 model**: weight Wc로 저장
+- 표본 text → activation X (실선, 단방향)
+- activation X → layer proxy (실선, 단방향)
+- layer proxy → 압축 선택 (실선, 단방향)
+- 압축 선택 → 압축 model (실선, 단방향)
+
+핵심: X가 바뀌면 layer proxy가 바뀌고, 압축 weight 선택도 달라질 수 있다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 2, Section 2.1
+
+## 4. 교육용 toy: activation 표본이 후보 순위를 바꾼다
+
+보고된 실험 수치가 아닌, layer proxy의 역할을 검산하는 작은 예
+
+
+| activation | 원 output | 후보 C1=(1,0) | 후보 C2=(0,1) | proxy 선택 |
+| --- | --- | --- | --- | --- |
+| xA=(2,0) | W xA=2 | 오차 0 | 오차 4 | C1 |
+| xB=(0,2) | W xB=2 | 오차 4 | 오차 0 | C2 |
+
+핵심: 같은 W와 후보라도, X의 방향이 달라지면 proxy의 후보 순위가 뒤집힌다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 2, layer-wise compression objective; illustrative arithmetic
+
+## 5. 같은 calibration도 compressor가 읽는 방식은 다르다
+
+
+| 방법 | 종류 | activation/Hessian의 역할 | 논문 setting |
+| --- | --- | --- | --- |
+| GPTQ | quantization | inverse-Hessian 정보 | 4-bit weight |
+| SpQR | quantization | Hessian과 outlier 처리 | 4-bit weight, high-precision outlier |
+| SparseGPT | pruning | inverse-Hessian으로 순차 prune·update | 2:4 sparsity |
+| Wanda | pruning | weight magnitude와 input activation norm | 2:4 sparsity |
+
+핵심: calibration sensitivity는 data만이 아니라 compressor와의 결합된 성질이다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 2-3, Sections 2.1 and 3.1; p. 12, Table 3
+
+## 6. 연구는 calibration 선택을 큰 실험 격자로 바꿨다
+
+source와 random set을 바꾸고, compressor·model·evaluation을 교차했다
+
+1. **5 source**: 서로 다른 text source
+2. **10 set씩**: 총 50 calibration set
+3. **4 × 9**: compressor와 LLM 교차
+4. **1,800 model**: 압축된 model 수
+5. **11 evaluation**: 19,800 measurements
+
+핵심: 5 × 10 × 4 × 9 = 1,800 compressed models, 그리고 1,800 × 11 = 19,800 evaluations이다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 3, Section 3
+
+## 7. 50 calibration set의 생성 규칙
+
+각 source에서 128개 example을 중복 없이 뽑고, source 안에서는 10개 set이 서로 겹치지 않게 했다
+
+- **레인 sampling protocol**
+  - **한 source dataset**: C4 등 5개 source
+  - **random sample**: without replacement → 128 examples
+  - **fixed size**: example당 2,048 tokens
+  - **10 distinct sets**: non-overlap → 262,144 tokens/set
+- 한 source dataset → random sample (실선, 단방향)
+- random sample → fixed size (실선, 단방향)
+- fixed size → 10 distinct sets (실선, 단방향)
+
+핵심: 128 × 2,048 tokens/set을 고정하고 random-sampling variation을 따로 관찰했다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 4, Sections 3.5-3.6; p. 8, footnote 5
+
+## 8. Source 비교는 단일 속성의 조작 실험이 아니다
+
+
+| source | 논문이 설명한 성격 | 해석 시 남는 묶인 요인 |
+| --- | --- | --- |
+| C4 | filtered Common Crawl의 clean English web text | web text, filtering, length, content가 함께 변함 |
+| CNN/DM | news article 기반 long-form text | news genre만의 효과를 분리하지 않음 |
+| RedPajama | LLaMA pretraining data의 open reproduction | pretraining similarity를 직접 조작하지 않음 |
+| RefinedWeb·Wikipedia | curated web / cleaned encyclopedic text | curation·domain·time 등 다수 속성이 함께 변함 |
+
+핵심: source 비교는 유용하지만, 단일 data feature의 causal effect를 식별하지는 않는다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 3-4, Section 3.3
+
+## 9. 나머지 조건도 함께 고정해 읽어야 한다
+
+
+| 축 | 실제 조건 | 숫자를 읽을 때의 경계 |
+| --- | --- | --- |
+| LLM | LLaMA·Vicuna: 7B/13B/33B; OPT: 6.7B/13B/30B | 9개 English LLM의 결과 |
+| pruning | GPU acceleration을 위한 2:4 semi-structured, 50% sparsity | unstructured pruning 일반 결과가 아님 |
+| quantization | GPTQ·SpQR의 4-bit weight setting | 다른 bit width에 그대로 적용 불가 |
+| 실행 | single NVIDIA A100 SXM 80GB, LM Evaluation Harness | throughput/production latency benchmark가 아님 |
+
+핵심: ‘calibration 효과’는 model family, compressor setting, task와 함께 붙여야 의미가 있다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 3-4, Sections 3.1-3.5; p. 12, Table 3
+
+## 10. 평가는 ‘mean accuracy 하나’가 아니라 두 종류의 지표다
+
+
+| 지표 | 무엇을 재나 | 읽는 데 필요한 주의 |
+| --- | --- | --- |
+| 10 zero-shot task accuracy | ARC-e/c, BoolQ, HellaSwag 등 task별 정확도 | 평균은 task별 큰 range를 가릴 수 있음 |
+| mean zero-shot accuracy | 10 task accuracy의 평균 | 같은 source의 10 set에 대해 mean·standard deviation |
+| WikiText perplexity | language-model prediction quality | downstream task robustness의 대용물이 아님 |
+| RTE | 277-example evaluation split | 작은 task set이라 range estimate가 덜 안정적일 수 있음 |
+
+핵심: PPL과 task accuracy는 다른 지표다. 하나가 안정적이어도 다른 하나는 아닐 수 있다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 3-4, Section 3.2; p. 12, Table 4
+
+## 11. 결과 1: 같은 C4 source 안에서도 sample range가 보였다
+
+LLaMA-7B를 SparseGPT로 prune하고, C4에서 뽑은 10 calibration set을 비교한 한 configuration
+
+
+| task | 가장 낮은 accuracy | 가장 높은 accuracy | range |
+| --- | --- | --- | --- |
+| RTE | 52.7% | 61.7% | 9.0%p |
+| BoolQ | 66.4% | 73.0% | 6.6%p |
+
+핵심: 같은 source라도 결과가 같지는 않다. 이 range는 한 model·method·task 조건의 관찰이다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 4; Fig. 2, p. 5
+
+## 12. 결과 2: sensitivity는 method·model에 따라 달랐다
+
+50 calibration set에서 본 OPT-6.7B mean zero-shot accuracy의 best–worst range
+
+
+| compression method | range | 논문이 허용하는 해석 |
+| --- | --- | --- |
+| GPTQ | 1.6%p | 이 model과 4-bit setting에서의 range |
+| SpQR | 0.9%p | 이 model과 4-bit setting에서의 range |
+| SparseGPT | 2.4%p | 이 model과 2:4 setting에서의 range |
+| Wanda | 2.4%p | 이 model과 2:4 setting에서의 range |
+
+핵심: pruning 쪽 range가 대체로 컸지만, universal ranking이나 causal proof는 아니다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 6; Fig. 4, p. 8
+
+## 13. 결과 3: ‘최고 calibration corpus’ 하나는 나오지 않았다
+
+
+| 관찰 | 원전의 예 | 정확한 결론 |
+| --- | --- | --- |
+| 일부 경향 | SparseGPT에서 RefinedWeb은 9 model 중 8개에서 최고 mean accuracy | configuration별 pattern |
+| 반례 | LLaMA-7B + Wanda는 RedPajama 52.7%, RefinedWeb 52.2% | source winner가 고정되지 않음 |
+| 작은 차이 | SpQR source 차이는 보통 약 0.2% | source 간 우열이 불명확한 경우도 있음 |
+
+핵심: 핵심 질문은 ‘최고 corpus’가 아니라 내 configuration의 set sensitivity다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 5; Table 1, p. 6
+
+## 14. 결과 4: PPL 안정성이 task 안정성은 아니다
+
+Vicuna-7B·SparseGPT·CNN/DM의 10 calibration set 비교
+
+
+| metric | mean ± SD | 관찰 범위 | 해석 |
+| --- | --- | --- | --- |
+| WikiText PPL | 12.72 ± 0.18 | 표준편차가 작음 | LM metric만 보면 안정적으로 보일 수 있음 |
+| BoolQ accuracy | 66.7% ± 4.7 | 57.0%–71.6% | downstream task에서는 큰 variation |
+
+핵심: PPL만으로 calibration robustness를 판단하지 말고 intended task도 함께 본다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 7; Table 2
+
+## 15. Calibration example 수와 compression cost
+
+LLaMA-7B·C4에서 1–512 example을 비교한 quantity sweep
+
+
+| 관찰 | 원전의 수치 | 과잉 해석 방지 |
+| --- | --- | --- |
+| GPTQ PPL | 1 example 6.13 ± 0.05 → 128 examples 5.90 ± 0.03 | 이 source·model·setting의 변화 |
+| SparseGPT PPL | 1 example 55.26 ± 10.82 → 128 examples 11.12 ± 0.26 | 작은 n에서 특히 불안정할 수 있음 |
+| SparseGPT task accuracy | 128의 4배 example에서 mean zero-shot +0.4% | example 증가에는 compression cost도 듦 |
+| SpQR | PPL 5.74 ± 0.01로 거의 일정 | method별 plateau가 다름 |
+
+핵심: 128은 공통 protocol일 뿐 universal optimum은 아니다. sample 수와 비용은 조건별로 달랐다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 6-7; Fig. 3
+
+## 16. 분산 읽기: 10 set의 평균·표준편차·range
+
+
+| 표현 | 이 논문에서 뜻하는 것 | 뜻하지 않는 것 |
+| --- | --- | --- |
+| mean ± standard deviation | 같은 source의 10 calibration set에 대한 summary | training randomness만의 error bar |
+| best–worst range | 선택한 calibration set에 따른 관찰 범위 | 모집단의 신뢰구간 |
+| source comparison | 5 source의 set summary 비교 | source feature 하나의 causal estimate |
+| task difference | task별 dispersion이 다름 | 모든 task가 같은 안정성을 가짐 |
+
+핵심: 이 uncertainty는 sample variation이지, statistical superiority나 causal proof는 아니다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 4-8; Tables 1-2 and Figs. 2-4
+
+## 17. 저자들의 세 가지 권고: release · vary · inspect
+
+성능 보장 규칙이 아니라 reproducibility와 diagnosis를 위한 실무 권고
+
+1. **Release**: calibration data 자체를 공유
+2. **Version**: source·sampling artifact를 기록
+3. **Vary**: 여러 set에서 task 성능 확인
+4. **Inspect**: 작은 set의 anomalous example 점검
+
+핵심: seed만 공유하지 말고 calibration artifact를 보존하며, 하나의 set으로 결론내리지 않는다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 8, Section 5 and footnote 5
+
+## 18. 이식 가능한 연구·실무 습관
+
+
+| 습관 | 이 논문이 주는 근거 | 안전한 적용 |
+| --- | --- | --- |
+| artifact 관리 | sample variation이 결과를 바꿀 수 있음 | source, set ID, tokenizer, software version 기록 |
+| multi-set stress test | source당 10 non-overlap set을 사용 | 목표 model·method·task에서 repeat |
+| metric 분리 | PPL과 BoolQ variation이 엇갈린 예 | PPL과 intended task를 함께 측정 |
+| 조건 표기 | model·method·source별 pattern이 다름 | bit width·sparsity·hardware도 함께 표기 |
+
+핵심: calibration data는 metadata가 아니라 압축 실험의 versioned input이다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 4-8, Sections 4-5
+
+## 19. 이 논문이 아직 답하지 않는 것
+
+
+| 원전이 지지하는 결론 | 원전만으로는 말할 수 없는 결론 |
+| --- | --- |
+| 명시된 English model·data·task·method 조건에서 calibration choice에 따른 variation | 모든 LLM·language·compressor에 대한 universal law |
+| dataset-level source comparison | 뉴스성·길이·curation 하나의 causal effect |
+| PPL과 downstream task가 엇갈릴 수 있는 예 | PPL이 쓸모없거나 항상 misleading함 |
+| release/vary/inspect 권고 | 권고를 따르면 accuracy가 반드시 상승함 |
+
+핵심: 결론은 조건부 sensitivity다. 원인과 보편성은 controlled study가 더 필요하다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) p. 9, Limitations; pp. 5-8
+
+## 20. 마무리: calibration은 압축 과정의 숨은 입력이다
+
+- calibration text는 activation X를 만들고, X는 layer-wise quantization·pruning 선택에 들어간다.
+- 같은 source 안 random set, source, model, compressor, task에 따라 결과 pattern이 달랐다.
+- PPL 하나로 downstream robustness를 대체하지 말고, mean·range·task 조건을 함께 읽어야 한다.
+- 실무의 안전한 행동은 artifact를 기록하고 여러 calibration set에서 intended task를 확인하는 것이다.
+
+핵심: 핵심은 ‘최고 corpus’가 아니라 내 compression configuration의 calibration sensitivity다.
+
+근거: [acl2024](https://aclanthology.org/2024.acl-long.544/) pp. 1, 8-9, Abstract, Conclusion, Limitations, [arxiv-v2](https://arxiv.org/abs/2311.09755) v2 record

@@ -152,6 +152,14 @@ Baseline은 fine-tuning DRL, HEFT-based scheduling, Greedy, 그리고 작은 ins
 
 또 다른 한계는 Optimal 대비 여전히 gap이 있다는 점이다. 해결 방향은 sample-efficient off-policy meta-RL, uncertainty-aware policy update, 그리고 graph/DAG encoder의 더 강한 inductive bias를 결합하는 것이다. 특히 online service에서는 빠른 update만큼 update safety도 중요하므로, adaptation step마다 latency regression guard를 두는 방식이 필요하다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 16장 | <a href="/assets/seminars/fast-adaptive-task-offloading-meta-rl/mrlco-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/fast-adaptive-task-offloading-meta-rl/mrlco-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/fast-adaptive-task-offloading-meta-rl/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/fast-adaptive-task-offloading-meta-rl/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

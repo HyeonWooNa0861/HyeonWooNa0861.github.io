@@ -1,0 +1,127 @@
+---
+type: research-seminar-slides
+paper_id: multi-agent-deep-reinforcement-learning-for-cooperative
+---
+
+# 부분 관측 MEC의 협력적 MARL 연구 구상
+
+논문: Multi-Agent Deep Reinforcement Learning for Cooperative Task Offloading in Partially Observable Mobile Edge Computing Environment
+
+저자: Iman Rahmati (연도 미상)
+
+## 1. 부분 관측 MEC의 협력적 MARL 연구 구상
+
+여러 의사결정자가 전체 상태를 보지 못하는 환경에서 작업 오프로딩을 어떻게 조정할지 묻는 2쪽 제안서
+
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) title page
+
+## 2. 확인된 연구 방향과 확인되지 않은 구현
+
+
+| 제안서가 말함 | 제안서가 아직 말하지 않음 |
+| --- | --- |
+| P1 device–edge와 P2 edge–edge | 메시지·타이밍·프로토콜 |
+| Dec-POMDP 모델링 방향 | agent·관측·행동·보상 정의 |
+| DDPG 또는 D3QN 후보 | 선택된 알고리즘과 구조 |
+| 시뮬레이션 계획 | 기준선·지표·수치 결과 |
+
+핵심: MARL이라는 이름만으로 학습 방식과 협력 규칙이 자동으로 정해지지 않는다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) pp. 1–2
+
+## 3. P1과 P2는 서로 다른 오프로딩 결정이다
+
+1. **모바일 장치**: 계산이 큰 작업을 가지고 가까운 edge를 선택한다.
+2. **P1 device–edge**: 장치가 작업을 어느 인접 edge에 보낼지 결정한다.
+3. **로컬 edge**: 받은 작업과 제한된 계산·저장·통신 자원을 관리한다.
+4. **P2 edge–edge**: 필요하면 작업을 여유 있는 이웃 edge로 다시 보낸다.
+
+핵심: P1은 장치의 첫 목적지 선택이고, P2는 edge 사이의 작업 재분배다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, Problem Statement
+
+## 4. 부분 관측: 각 agent는 전체 시스템의 일부만 본다
+
+아래 관측 항목은 개념을 설명하기 위한 예시이며 원문의 확정 벡터가 아니다.
+
+
+| 관점 | 볼 수 있는 정보 예시 | 보지 못할 수 있는 정보 |
+| --- | --- | --- |
+| 장치 agent | 자기 queue·무선 채널 | 다른 edge의 전체 부하 |
+| edge agent | 자기 queue·가용 자원 | 모든 장치와 이웃의 전체 상태 |
+| 전체 시스템 상태 | 모든 agent 정보를 합친 개념 | 개별 agent가 직접 소유한다고 가정하지 않음 |
+
+핵심: local observation은 전체 state와 같지 않으며, 이 차이가 Dec-POMDP 모델의 출발점이다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, Problem Model
+
+## 5. 다른 agent의 학습이 내 환경을 움직이게 만든다
+
+1. **Agent A가 선택 변경**: A가 다른 edge로 작업을 보내기 시작한다.
+2. **공유 부하 변화**: 선택된 edge의 queue와 자원 경쟁이 달라진다.
+3. **Agent B의 결과 변화**: 같은 행동도 이전과 다른 지연이나 보상을 낼 수 있다.
+4. **학습 기준 이동**: B에게 환경이 계속 변하는 것처럼 보일 수 있다.
+
+핵심: 협력은 여러 정책이 서로의 전이와 보상에 영향을 주는 문제를 다뤄야 한다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, Motivation
+
+## 6. Dec-POMDP는 문제 틀을 주지만 해법을 완성하지 않는다
+
+
+| Dec-POMDP가 표현 | 추가로 정해야 함 |
+| --- | --- |
+| 여러 agent가 공동 환경에서 행동 | 누가 agent인지 |
+| 각 agent가 부분 observation 사용 | 각 observation에 무엇이 들어가는지 |
+| 행동들이 시스템 전이에 함께 영향 | 가능한 offloading action |
+| 공동 목적을 모델링할 수 있음 | 보상 공유와 coordination 방식 |
+
+핵심: Dec-POMDP라는 이름만으로 중앙 학습, 통신, 보상 공유가 결정되지는 않는다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, Problem Model
+
+## 7. 후보 알고리즘: 일반 RL 배경과 제안서의 선택을 구분
+
+
+| 후보 | 일반 RL 배경 설명 | 이 제안서에서의 상태 |
+| --- | --- | --- |
+| DDPG | 연속 행동을 다루는 actor–critic 계열 | 사용 가능성이 언급됨 |
+| D3QN | 이산 행동 가치를 dueling·double 구조로 학습 | 사용 가능성이 언급됨 |
+| 선택 기준 | 행동 표현과 coordination 설계에 따라 달라짐 | 행동 공간 자체가 아직 미정 |
+
+핵심: 행동 공간을 정의하기 전에는 두 후보 중 무엇이 맞는지 결정할 수 없다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, candidates, [ddpg](https://arxiv.org/abs/1509.02971) abstract, [dueling](https://arxiv.org/abs/1511.06581) abstract, [double-dqn](https://arxiv.org/abs/1509.06461) abstract
+
+## 8. 재현 가능한 MARL 연구에 필요한 명세
+
+
+| 항목 | 명세해야 할 내용 | 제안서 상태 |
+| --- | --- | --- |
+| Agent | 장치·edge 중 누가 학습하는가 | 미정 |
+| 관측과 행동 | local view와 offloading 선택지 | 미정 |
+| 보상과 전이 | 공동 목표·경쟁·동역학 | 미정 |
+| Coordination | 정보 교환과 충돌 해결 | 방향만 언급 |
+| 평가 | 환경·기준선·지표·반복 | 시뮬레이션 계획만 제시 |
+
+핵심: 협력이라는 목표를 agent, 정보, 행동, 보상의 명시적 규칙으로 바꿔야 한다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) pp. 1–2
+
+## 9. 연구 구상을 검증하기 위한 평가 설계
+
+아래는 원문 결과가 아니라 제안을 시험 가능하게 만드는 교육용 확장이다.
+
+
+| 검증 대상 | 비교 또는 측정 |
+| --- | --- |
+| 협력의 효과 | 비협력 또는 단일 agent 기준선과 동일 조건 비교 |
+| 부분 관측의 영향 | 관측 범위를 바꾼 조건과 성능 차이 |
+| 비정상성 대응 | 동시 학습 중 안정성과 seed별 변동 |
+| 확장성 | agent 수 증가에 따른 성능·통신·학습 비용 |
+| MEC 효율 | 지연·에너지·자원 사용·실패율 |
+
+핵심: 협력 성능뿐 아니라 agent 수가 늘 때 생기는 비용까지 함께 보고해야 한다.
+
+근거: [research-idea](https://imanrht.github.io/assets/Multi_AgentDRL.pdf) p. 1, Simulation and Challenges

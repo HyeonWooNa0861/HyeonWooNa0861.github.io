@@ -69,7 +69,7 @@ G-TORA는 세 단계로 구성된다.
 2. Supervised GNN training: graph instance와 GA label을 이용해 GNN을 학습한다.
 3. Online inference: base station이 현재 graph를 입력하면 GNN이 빠르게 offloading decision을 출력한다.
 
-Genetic algorithm은 chromosome으로 offloading assignment를 encoding하고, response delay의 inverse를 fitness로 사용한다. Roulette selection, crossover, mutation을 통해 label quality를 높인다. GA는 느리지만 offline label generator로 사용되므로, online stage에서는 GNN inference만 수행한다.
+본문은 fitness가 task response delay에 반비례한다고 설명하지만, Algorithm 1은 $$Eval(Q^k)=\beta(1-\beta)^{k-1}$$을 적고 delay에서 $$k$$로의 mapping을 명시하지 않는다. 따라서 GA label은 응답 지연을 평가하는 offline heuristic 결과로 읽되, 정확한 fitness 구현은 원문만으로 완전히 복원되지 않는다. Online stage에서는 학습된 GNN으로 offloading decision을 추론한다.
 
 GNN은 task node feature $$(d_i,c_i)$$, service node feature $$f_j$$, edge feature인 transmission rate를 사용한다. 두 개의 graph convolution layer로 second-order neighborhood 정보를 모으고, MLP가 최종 offloading probability를 만든다. Training loss는 GA label과 GNN prediction 사이의 cross-entropy이며, optimizer는 Adam이다.
 
@@ -126,6 +126,14 @@ Transmission power를 0.5 W에서 1 W로 높이면 GNN total delay는 1.135초�
 둘째, time slot 내부의 communication state가 비교적 정적으로 처리된다. 고속 이동성에서는 link prediction error가 커지므로 temporal GNN, mobility-aware edge feature, uncertainty-aware resource allocation으로 확장해야 한다.
 
 셋째, 논문은 response delay 중심으로 평가한다. 실제 서비스 홍보 관점에서는 low-latency cooperative perception, AR navigation, fleet analytics 같은 응용을 붙일 수 있지만, 연구적으로는 deadline miss ratio, reliability, fairness, multi-hop cooperation까지 확장해야 서비스 품질을 더 설득력 있게 보여줄 수 있다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 24장 | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/g-tora-seminar-ko-v3.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/g-tora-seminar-ko-v3.pptx" download>다운로드</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
 
 ## 참고자료
 

@@ -325,6 +325,14 @@ Friedman test 결과, 네 질문 모두에서 다섯 interface 간 유의미한 
 
 넷째, 댓글은 화면 하단에 표시되므로 subtitle이나 중요한 시각 정보와 겹칠 수 있다. Dynamic placement, summarization, keyword highlighting, eye-tracking 기반 주의 분산 분석이 후속 연구로 제시된다.
 
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 29장 | <a href="/assets/seminars/comvi-context-aware-comment-display/comvi-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/comvi-context-aware-comment-display/comvi-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/comvi-context-aware-comment-display/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/comvi-context-aware-comment-display/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

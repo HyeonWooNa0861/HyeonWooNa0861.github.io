@@ -113,7 +113,7 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 
 ### 핵심 결과
 
-논문 v1은 DHVO neural network가 14 episode 안에 수렴한다고 보고한다. One-batch training time은 1.58초, inference time은 0.0018초로 제시된다. 이 수치는 online decision 자체는 충분히 빠르지만, training은 offline 또는 controller-side update로 보는 것이 자연스럽다는 뜻이다.
+논문 v1은 DHVO neural network가 14 episode 안에 수렴하고 one-batch training 1.58초, inference 0.0018초라고 보고한다. 이 값은 v1의 실험 환경에서 측정된 모델 실행 시간이며, 현재 배포 가능성이나 실제 V2I end-to-end latency를 입증하지 않는다.
 
 결과 해석의 핵심은 migration risk다. GOE처럼 greedy하게 edge offloading을 선호하는 방법은 real speed variation 때문에 RSU coverage를 벗어나 migration penalty를 크게 받을 수 있다. ALE처럼 local execution에 치우친 방법은 migration은 피하지만 local time/energy cost가 커진다. DHVO는 speed vector와 DAG dependency를 state에 넣고, local/edge 및 resource parameter를 함께 선택해 TESC를 낮춘다고 주장한다.
 
@@ -141,6 +141,14 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 가장 큰 한계는 publication status다. 현재 공식 arXiv record는 2025-12-04에 withdrawn 되었고, comments에는 저자 측이 더 이상 development나 submission을 진행하지 않겠다고 밝힌다. 따라서 이 글의 활용 가치는 "아이디어와 모델 구조를 공부하는 reference"에 두어야 한다. 해결 방향은 reproducible code, updated dataset split, peer-reviewed revision, 또는 유사한 published follow-up과의 교차 검증이다.
 
 모델 측면에서는 single-vehicle 중심 simulation과 제한된 traffic/channel parameter가 현실성을 제한한다. 실제 V2I 서비스로 확장하려면 multi-vehicle competition, RSU queueing, handover failure, packet loss, broader mobility trace를 포함해야 한다. 방법적으로는 multi-agent hierarchical RL, uncertainty-aware speed prediction, migration-risk-constrained reward, adaptive option discovery가 자연스러운 확장 방향이다.
+
+## 세미나 강의자료
+
+슬라이드와 함께 학습 원고·발표자 노트를 볼 수 있습니다.
+
+| 자료 | 분량 | PDF | PowerPoint | 학습 원고 | 발표자 노트 |
+| --- | ---: | --- | --- | --- | --- |
+| 한국어 강의 | 24장 | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/dhvo-seminar-ko-v1.pdf" target="_blank" rel="noopener">보기</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/dhvo-seminar-ko-v1.pptx" download>다운로드</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
 
 ## 참고자료
 

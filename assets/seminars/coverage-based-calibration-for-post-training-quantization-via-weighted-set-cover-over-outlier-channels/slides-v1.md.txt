@@ -1,0 +1,297 @@
+---
+type: research-seminar-slides
+paper_id: covercal
+---
+
+# COVERCAL: PTQ calibration을 outlier channel coverage로 고르기
+
+논문: Coverage-Based Calibration for Post-Training Quantization via Weighted Set Cover over Outlier Channels
+
+저자: Ibne Farabi Shihab, Sanjeda Akter, Anuj Sharma (2026)
+
+## 1. COVERCAL: PTQ calibration을 outlier channel coverage로 고르기
+
+작은 calibration budget에서 무엇을 포함할지 weighted set cover로 정하는 방법
+
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) title page, arXiv v1
+
+## 2. PTQ에서 calibration sample이 만드는 문제
+
+작은 set으로 본 activation range가 quantization scale에 들어가므로, 어떤 sample을 넣는지가 중요하다
+
+1. **FP16 model**: pre-trained weight와 calibration input
+2. **activation 관측**: 각 layer와 hidden channel의 range를 본다
+3. **low-bit scale**: 관측된 activation으로 PTQ scale을 잡는다
+4. **inference**: 보지 못한 큰 activation은 clipping될 수 있다
+
+핵심: calibration set은 단순한 text sample이 아니라 quantization scale을 정하는 관측 창이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 1, 3, abstract and Eq. 1
+
+## 3. outlier channel과 coverage의 정의
+
+layer마다 reference pool에서 큰 activation을 보인 hidden channel을 먼저 찾는다
+
+
+| 항목 | source 정의 | selection에서의 의미 | 실험 설정 |
+| --- | --- | --- | --- |
+| channel score | set S에서 최대 absolute activation | 한 sample이 channel을 강하게 켰는지 | layer l, channel c마다 계산 |
+| threshold | tau(l)=mean(l)+6 × std(l) | threshold 초과면 outlier | reference-pool statistic |
+| covered | selected S 안에 threshold 초과 sample 존재 | 그 channel의 range를 관측 | strictly greater than tau |
+| candidate pool | P에서 sample을 고름 | K개 budget이 selection을 제한 | reference pool = P |
+
+핵심: coverage는 text topic의 다양성이 아니라 layer-channel activation event의 집합이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 3-4, Eqs. 2-3
+
+## 4. 같은 sample 수라도 놓치는 channel이 다를 수 있다
+
+높은 activation을 여러 번 보아도 같은 channel만 반복하면 새 coverage가 늘지 않는다
+
+
+| selected sample | c1 | c2 | high-weight c3 | coverage 결과 |
+| --- | --- | --- | --- | --- |
+| sample A | covered | covered | missed | c1, c2만 관측 |
+| sample B | covered | missed | covered | c1, c3 관측 |
+| A와 A' | 반복 | 반복 | missed | 새 channel gain 없음 |
+| A와 B | covered | covered | covered | 서로 보완하는 coverage |
+
+핵심: COVERCAL은 ‘강한 sample’ 하나를 반복해 고르기보다 아직 안 보인 channel을 보완한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 4, 8, weighted coverage and Table 2 analysis; illustrative example
+
+## 5. 왜 모든 outlier channel을 같은 값으로 세지 않는가
+
+weight는 normalized outlier magnitude와 weight-column sensitivity를 함께 반영한다
+
+
+| weight 요소 | 계산 | 큰 경우 | coverage에서의 효과 |
+| --- | --- | --- | --- |
+| activation magnitude | (reference outlier / tau)² | threshold보다 훨씬 큰 activation | missed clipping의 상대적 위험이 큼 |
+| weight-column norm | squared norm of W(:,c) | channel c의 error가 layer output에 크게 전달 | 같은 activation도 더 큰 weight |
+| full weight | 두 요소의 product | 두 조건이 함께 큼 | greedy marginal gain이 커짐 |
+| ablation | 각 요소만 쓴 variant도 평가 | LLaMA-3-8B AWQ INT4 K=128 | full product가 가장 높게 보고됨 |
+
+핵심: channel count보다 weighted coverage를 최대화해 high-impact channel을 우선한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 4, Eq. 4; p. 8 and Table 6
+
+## 6. weighted set cover로 바뀐 calibration selection
+
+K개 sample이 cover한 outlier channel weight의 합을 크게 만드는 cardinality-constrained 문제다
+
+1. **candidate pool P**: 각 sample의 outlier mask를 준비
+2. **channel weights**: high-impact channel에 큰 w를 준다
+3. **budget K**: K개 sample만 선택할 수 있다
+4. **objective F(S)**: 한 번 이상 covered된 weight를 합산
+
+핵심: 이미 covered된 channel을 또 cover하면 objective의 marginal gain은 0이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 4, Eq. 5 and Proposition 3.2
+
+## 7. COVERCAL의 greedy update
+
+cached mask에서 아직 uncovered인 weighted channel만 더해 marginal gain을 계산한다
+
+- **레인 selection on CPU**
+  - **초기화**: S=empty
+covered=0
+  - **marginal gain**: uncovered weight
+합산
+  - **argmax sample**: 가장 큰 gain
+sample 선택
+  - **coverage update**: 선택 sample의
+channel을 mark
+- 초기화 → marginal gain (실선, 단방향)
+- marginal gain → argmax sample (실선, 단방향)
+- argmax sample → coverage update (실선, 단방향)
+
+핵심: selection은 K번 반복하지만, 새로 cover하는 weight만 계산하므로 redundancy가 감점된다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 5-6, Eq. 8 and Algorithm 1
+
+## 8. 교육용 greedy trace: 중복 channel의 gain
+
+가상 channel weight c1=5, c2=3, c3=2를 둔 한 번의 selection trace
+
+
+| 단계 | sample별 새 weighted gain | 선택 | covered after update |
+| --- | --- | --- | --- |
+| 시작 | A: c1+c2=8; B: c2+c3=5; C: c1=5 | A | c1, c2 |
+| 다음 | B: c3=2; C: 0 | B | c1, c2, c3 |
+| 결과 | F(S)=5+3+2=10 | A, B | C를 더해도 새 gain 0 |
+
+핵심: A와 B는 서로 c2를 겹치지만, 두 번째 선택에서는 새 channel c3만 gain으로 센다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 5, Algorithm 1; illustrative trace
+
+## 9. 두 이론 문장과 그 경계
+
+classical greedy bound와 clipping surrogate consistency는 서로 다른 질문에 답한다
+
+
+| source 결과 | 무엇에 대한 결과인가 | 조건 | 말하지 않는 것 |
+| --- | --- | --- | --- |
+| Theorem 4.1 | weighted coverage F(S) | monotone submodular, budget K | LLM accuracy의 1-1/e |
+| Proposition 3.3 | stylized clipping surrogate | covered deficit 0, missed deficit bound | full Frobenius loss upper bound |
+| weight choice | missed weighted mass | per-channel independence surrogate | 모든 PTQ backend의 exact loss |
+| experiments | downstream metrics | 모델·backend·budget setup | universal quality law |
+
+핵심: 1-1/e는 coverage objective의 approximation guarantee이며, accuracy guarantee가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 4-6, Proposition 3.3 and Theorem 4.1; pp. 14-15, Discussion
+
+## 10. 기존 PTQ backend와 연결되는 위치
+
+COVERCAL은 quantizer parameter를 학습하거나 backend를 교체하지 않고 calibration set을 선택한다
+
+1. **FP16 profiling**: pool P를 한 번 통과해 activation을 기록
+2. **mask와 weight**: outlier threshold와 weighted matrix를 cache
+3. **COVERCAL**: CPU greedy로 K sample을 선택
+4. **AWQ 또는 GPTQ**: 선택 set으로 기존 PTQ calibration 실행
+
+핵심: 방법의 개입점은 PTQ 앞의 calibration selection이며, AWQ/GPTQ 자체는 그대로다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 5-7, Method and experiments
+
+## 11. profiling cost와 selection cost는 다르다
+
+GPU가 전혀 필요 없다는 말은 greedy selection 단계에만 해당한다
+
+
+| phase | 입력 | reported setup | wall-clock |
+| --- | --- | --- | --- |
+| offline profiling | 10,000 sequences × length 2048 | 7B model, 1 × A100 | about 15 min |
+| greedy selection | cached weighted mask | same pool and K=128 | CPU only, under 10 s |
+| PTQ backend | selected calibration set | AWQ or GPTQ INT4 | source가 end-to-end latency를 표로 보고하지 않음 |
+| reuse | same model profile | different K와 downstream evaluations | profiling cost can amortize |
+
+핵심: selection 자체는 cheap하지만, outlier mask를 얻는 profiling pass는 별도의 GPU 비용이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 5-6; p. 13, Table 8
+
+## 12. main evaluation protocol
+
+reported gain은 model, backend, bit-width, sample budget, pool, metric을 함께 붙여 읽는다
+
+
+| 항목 | reported condition | 항목 | reported condition |
+| --- | --- | --- | --- |
+| models | LLaMA-2-7B, LLaMA-3-8B, Mistral-7B | backends | AWQ and GPTQ, INT4, group size 128 |
+| pool | 10,000 RedPajama sequences, length 2048 | budgets | K=32, 64, 128, 256 |
+| main table | Table 1 caption: three seeds | random baseline | Section 5: Random five seeds |
+| metrics | MMLU, ARC-C, HellaSwag, WinoGrande | language metric | WikiText-2 perplexity |
+
+핵심: seed 수는 Table 1 caption과 Section 5의 Random 설명이 서로 다르다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 6-7, experiment setup and Table 1
+
+## 13. Table 1 예시: LLaMA-3-8B의 AWQ INT4 결과
+
+K=128 결과다. Table 1 caption은 3 seeds, Section 5는 Random만 5 seeds라고 적는다
+
+
+| calibration | MMLU | ARC-C | HellaSwag | Wiki-PPL down |
+| --- | --- | --- | --- | --- |
+| FP16 | 65.3 | 59.4 | 82.1 | 6.14 |
+| Random | 63.1 | 57.2 | 80.5 | 6.42 |
+| Max-ActVar | 63.8 | 57.6 | 80.8 | 6.38 |
+| COVERCAL | 64.6 | 58.7 | 81.5 | 6.22 |
+
+핵심: 이 조건에서 COVERCAL은 Random보다 MMLU 1.5 point 높고 Wiki-PPL은 0.20 낮다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 7, Table 1
+
+## 14. Table 2: measured coverage가 제안한 mechanism과 맞는가
+
+K=128에서 COVERCAL은 channel count와 weighted mass를 모두 더 많이 cover했다고 보고한다
+
+
+| method | channel coverage | weighted coverage | 해석 |
+| --- | --- | --- | --- |
+| Random | 16.8% | 14.7% | 기준 selection |
+| Max-PPL | 9.9% | 8.6% | high-perplexity sample priority |
+| Max-ActVar | 10.4% | 9.7% | 중복 coverage가 많다고 분석 |
+| COVERCAL | 26.9% | 24.8% | weighted new coverage 직접 최적화 |
+
+핵심: COVERCAL의 advantage는 높은 sample score보다 selected set의 낮은 redundancy와 연결된다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 8, Table 2 and analysis
+
+## 15. Figure 1과 Table 5: 작은 budget에서의 비교
+
+LLaMA-3-8B, AWQ INT4에서 COVERCAL K=64가 Random K=256보다 높은 MMLU를 보였다
+
+
+| method | K=32 | K=64 | K=128 | K=256 |
+| --- | --- | --- | --- | --- |
+| Random | 61.2 | 62.1 | 63.1 | 63.8 |
+| Max-ActVar | 61.8 | 62.7 | 63.8 | 64.1 |
+| COVERCAL | 63.0 | 64.0 | 64.6 | 64.9 |
+| FP16 reference | 65.3 | 65.3 | 65.3 | 65.3 |
+
+핵심: 64 selected samples reach 64.0 MMLU, exceeding Random 256 samples at 63.8 in this setup
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 12, Fig. 1 and Table 5
+
+## 16. weight와 threshold ablation의 읽는 법
+
+full weight는 이 setup에서 가장 높았고, threshold 안정성도 특정 5–7 sigma 구간에서만 보였다
+
+
+| test | variant / threshold | MMLU | Wiki-PPL down | condition |
+| --- | --- | --- | --- | --- |
+| weight | unweighted coverage | 64.0 | 6.31 | L3-8B, AWQ4, K128 |
+| weight | full product | 64.6 | 6.22 | same setting |
+| threshold | 5 sigma | 64.4 | 6.24 | same setting |
+| threshold | 6 sigma | 64.6 | 6.22 | main threshold |
+| threshold | 7 sigma | 64.2 | 6.28 | 5–7 stable |
+
+핵심: full weight와 6 sigma result는 LLaMA-3-8B AWQ INT4 ablation의 관측이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 7-8; p. 12, Table 6; p. 13, Table 7
+
+## 17. Table 10: missed outlier와 layer error
+
+이 table은 LLaMA-3-8B의 Layer 14 세 channel을 의도적으로 isolate한 reconstruction-error construction이다
+
+
+| layer group | uncovered error | covered error | reduction | 해석 |
+| --- | --- | --- | --- | --- |
+| Layer 14 | 4.44 | 0.22 | 95% | three channels activated by added samples |
+| total | 7.24 | 2.95 | 59% | same constructed comparison |
+| condition | AWQ INT4, Random K=128 | Random K=128 + activating samples | fixed-budget 비교 아님 | channels 1847, 2903, 4011 |
+| boundary | Frobenius reconstruction error | n/a | n/a | downstream accuracy share가 아님 |
+
+핵심: covered set은 Random K=128에 활성 sample을 더한 구성이지 같은 budget 비교가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) p. 15, Table 10 and discussion
+
+## 18. COVERCAL의 적용 경계
+
+coverage는 useful calibration-selection objective이지만, PTQ 품질 전체를 대체하는 단일 설명은 아니다
+
+- candidate pool에 sample이 없으면 selector가 channel을 cover할 수 없다
+- mean+6 sigma는 heuristic이며, source는 이 setup의 5–7 sigma 안정성만 보였다
+- 실험은 INT4에 한정되고 INT3 이하에서의 결과는 보고하지 않는다
+- greedy guarantee는 weighted coverage objective에만 적용된다
+- clipping surrogate와 downstream quality의 연결은 empirical evidence다
+
+핵심: outlier coverage는 이 PTQ calibration regime의 중요한 설명 변수다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 14-15, Limitations and surrogate discussion
+
+## 19. 논문의 핵심 논리
+
+missed high-impact activation channel을 발견하고, K개 sample의 collective coverage로 PTQ calibration을 고른다
+
+1. **failure mode**: unseen outlier channel이 clipping risk를 만든다
+2. **representation**: sample을 outlier-channel set으로 표현
+3. **selection**: weighted new coverage를 greedy로 최대화
+4. **integration**: selected set을 AWQ/GPTQ calibration에 입력
+5. **evidence boundary**: coverage theorem과 conditional PTQ results를 구분
+
+핵심: COVERCAL은 calibration data를 대표 sample보다 coverage resource로 보는 관점이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2604.24008) pp. 1, 4-9, Conclusion

@@ -1,0 +1,326 @@
+## 1. CTTP: 여러 round로 triangle 열거하기
+
+1. CTTP: 여러 round로 triangle 열거하기
+
+발표 대본
+이 발표는 MapReduce Triangle Enumeration With Guarantees 논문을 소개합니다. 논문의 핵심 질문은 triangle을 찾는 국소 알고리즘보다, 필요한 edge 묶음을 reducer에 모으는 shuffle이 한 round의 시스템 용량을 넘지 않게 만드는 방법입니다. CTTP는 기존 TTP의 triangle-type subproblem을 유지하고 modular rule로 여러 MapReduce round에 배치합니다. 그 결과 한 round에 활성화되는 intermediate data를 aggregate limit 안에 두면서, expected guarantee와 추가 조건 아래의 high-probability guarantee를 제시합니다.
+
+공개 출처
+paper-doi | bibliographic record
+ACM DOI record
+https://doi.org/10.1145/2661829.2662017
+author-pdf | p. 1, Abstract
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 2. Triangle enumeration의 출력 경계
+
+2. Triangle enumeration의 출력 경계
+
+발표 대본
+먼저 문제의 출력 범위를 분명히 하겠습니다. Triangle은 서로 다른 세 vertex 사이에 세 edge가 모두 존재하는 경우입니다. 논문은 reducer 안에서 triangle을 발견하면 local enum 함수를 호출할 수 있다고 둡니다. 따라서 열거 결과를 반드시 31 billion개의 별도 record로 저장해야 한다는 요구와는 다릅니다. 물론 실제 system은 enum이 무엇을 하는지 정해야 하지만, 이 논문의 space analysis는 전체 출력 파일을 materialize하는 비용까지 강제하지 않습니다. 이 경계를 알아야 input과 shuffle data의 병목을 output storage 문제와 섞지 않을 수 있습니다.
+
+공개 출처
+author-pdf | p. 3, Sec. 3.2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 3. 원본 graph보다 커지는 shuffle
+
+3. 원본 graph보다 커지는 shuffle
+
+발표 대본
+MapReduce에서 원본 graph가 여러 machine에 나뉘어 있다는 사실만으로 job이 실행되는 것은 아닙니다. 한 edge가 여러 color subproblem에 필요하면 mapper는 같은 edge를 여러 reducer key로 보냅니다. Shuffle은 이 복제본을 key별로 모으므로 reducer가 실제 triangle을 찾기 전에 system-wide intermediate data가 크게 늘어날 수 있습니다. 논문은 적은 round를 사용하는 기존 방법이 input보다 훨씬 큰 intermediate data를 만들 수 있고, 이것이 congestion과 performance degradation, out-of-space failure를 일으킬 수 있다고 지적합니다.
+
+공개 출처
+author-pdf | pp. 1-2, Introduction and Sec. 2.1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 4. MR(m, M)의 resource limits
+
+4. MR(m, M)의 resource limits
+
+발표 대본
+기호를 정확히 구분하겠습니다. E는 input graph의 edge 수입니다. m은 한 mapper 또는 reducer 함수가 사용할 수 있는 maximum memory를 word 단위로 나타냅니다. M은 한 machine의 RAM이 아니라, 같은 round에 실행되는 모든 map과 reduce 함수의 aggregate memory-space limit입니다. 따라서 어떤 reducer 하나의 key group이 m을 넘으면 local failure가 생기고, 각 reducer가 m 이하더라도 전체 key group 합이 M을 넘으면 round 자체를 수용할 수 없습니다. 논문은 이 두 limit를 동시에 만족하도록 subproblem 크기와 round 수를 정합니다.
+
+공개 출처
+author-pdf | p. 2, Table 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | p. 3, Sec. 3.1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 5. 색은 vertex identity가 아니라 partition label
+
+5. 색은 vertex identity가 아니라 partition label
+
+발표 대본
+CTTP는 각 vertex v에 xi(v)라는 color label을 배정합니다. rho는 가능한 label 수입니다. Base algorithm은 rho를 ceil of square root of 6E over m으로 둡니다. Edge의 두 endpoint color를 작은 값부터 i와 j로 쓰면 E_(i,j)는 그런 color pair를 가진 모든 original edge의 집합입니다. 여기서 color는 proper coloring이 아닙니다. 인접한 두 vertex도 같은 color를 받을 수 있고, 같은 color를 받은 vertex들이 하나의 vertex로 합쳐지는 것도 아닙니다. 이 label은 edge group과 reducer task를 정하기 위한 randomized partition입니다.
+
+공개 출처
+author-pdf | pp. 3-4, Sec. 4 opening
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 6. Color label로 정한 세 triangle type
+
+6. Color label로 정한 세 triangle type
+
+발표 대본
+세 vertex의 color label만 보고 triangle type을 정합니다. 0, 1, 2처럼 세 label이 모두 다르면 type-3입니다. 0, 0, 1처럼 정확히 두 vertex가 같은 label이면 type-2입니다. 1, 1, 1처럼 셋이 모두 같으면 type-1입니다. 예를 들어 type-2에서 color 0인 두 vertex는 여전히 서로 다른 vertex이며 그 사이의 실제 edge가 E_(0,0)에 들어갑니다. 세 번째 vertex로 가는 두 edge는 모두 E_(0,1)에 들어갑니다. Recoloring하면 같은 original triangle의 type이 바뀔 수 있으므로 type은 graph의 영구 속성이 아닙니다.
+
+공개 출처
+author-pdf | p. 4, triangle types
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 7. TTP와 CTTP가 사용하는 두 task family
+
+7. TTP와 CTTP가 사용하는 두 task family
+
+발표 대본
+TTP가 만든 task family는 두 종류입니다. 서로 다른 color i, j, k를 가진 triple task는 세 cross-color group E_(i,j), E_(i,k), E_(j,k)를 받아 type-3 triangle을 찾습니다. Pair task (i,j)는 E_(i,i), E_(i,j), E_(j,j)를 받아 type-1과 type-2 triangle을 찾습니다. Pair task가 두 internal group을 모두 받는 이유는 color i만으로 된 type-1과 color j만으로 된 type-1을 함께 cover하기 위해서입니다. CTTP의 triangle partition 자체도 이 두 family를 그대로 사용하며 새로 추가한 것은 round scheduling과 load analysis입니다.
+
+공개 출처
+author-pdf | p. 4, task families and Algorithm 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 8. 교육용 예시: Type-2 triangle의 routing
+
+8. 교육용 예시: Type-2 triangle의 routing
+
+발표 대본
+교육용 예시를 끝까지 따라가겠습니다. a와 b는 서로 다른 vertex지만 두 vertex의 color label이 모두 0입니다. c의 label은 1입니다. a와 b 사이의 original edge ab는 endpoint pair가 0, 0이므로 E_(0,0)에 들어갑니다. ac와 bc는 0, 1 pair이므로 E_(0,1)에 들어갑니다. 화면의 group boxes는 ab를 E00에, ac와 bc를 E01에 묶고 두 group을 pair reducer (0,1)로 전달하는 관계를 보여 줍니다. Pair reducer는 E_(0,0), E_(0,1), E_(1,1)의 union을 받으며, E_(1,1)이 비어 있어도 필요한 세 edge를 확인해 enum을 호출할 수 있습니다.
+
+공개 출처
+author-pdf | p. 4, pair subproblems
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 9. 교육용 예시: rho=4의 edge routing
+
+9. 교육용 예시: rho=4의 edge routing
+
+발표 대본
+rho가 4인 교육용 routing을 계산하겠습니다. Internal edge E_(0,0)는 color 0을 포함한 pair task (0,1), (0,2), (0,3)에 필요하므로 세 copy가 생깁니다. Cross edge E_(0,1)는 pair task (0,1)과 triple task (0,1,2), (0,1,3)에 필요해 역시 세 copy가 생깁니다. 일반적으로 두 경우 모두 rho-1개의 TTP-style task에 전달됩니다. Color가 모두 0인 type-1 triangle은 세 pair task 안에 모두 나타날 수 있습니다. 모든 triangle을 cover한다는 주장과 같은 triangle을 정확히 한 번 계산한다는 주장은 다릅니다.
+
+공개 출처
+author-pdf | p. 4, TTP-style task families
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+pte-doi | related-work context on type-1 repetition
+PTE paper DOI record
+https://doi.org/10.1145/2939672.2939757
+
+## 10. GP와 TTP의 constant-factor 차이
+
+10. GP와 TTP의 constant-factor 차이
+
+발표 대본
+TTP가 GP를 constant factor만큼 개선한다는 뜻을 정확히 보겠습니다. 논문이 사용한 고른 분포 계산에서 GP의 three-color task는 expected 9E over rho squared edge를 받습니다. TTP는 type-3 task에 필요한 cross-color group만 보내 expected 6E over rho squared로 줄이고, type-1과 type-2 pair task는 expected 4E over rho squared입니다. E와 rho에 대한 성장 형태는 같은 O(E over rho squared)이므로 asymptotic order는 달라지지 않습니다. 9를 6으로 줄였다는 사실도 모든 graph와 cluster에서 1.5배 빨라진다는 runtime guarantee가 아닙니다.
+
+공개 출처
+author-pdf | p. 7, Sec. 5.2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 11. CTTP가 유지한 것과 추가한 것
+
+11. CTTP가 유지한 것과 추가한 것
+
+발표 대본
+CTTP라는 이름은 Colored TTP를 뜻합니다. CTTP는 TTP의 triple task와 pair task를 그대로 사용합니다. Base setting에서 rho는 ceil of square root of 6E over m으로 정합니다. R은 전체 MapReduce round 수이며 construction은 rho E over M 규모의 round로 subproblem을 나눕니다. Base CTTP는 arbitrary input graph에서도 expected load를 분석하기 위해 uniformly selected 4-wise independent coloring family를 사용합니다. 이것이 모든 reducer load를 deterministic하게 bound한다는 뜻은 아닙니다. 강한 high-probability result는 뒤에서 다른 coloring treatment와 memory condition을 추가합니다.
+
+공개 출처
+author-pdf | pp. 3-5, Sec. 4 and Algorithm 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 12. Subproblem의 modular round assignment
+
+12. Subproblem의 modular round assignment
+
+발표 대본
+각 subproblem을 어느 round에서 실행할지 modular sum으로 정합니다. Triple task (i,j,k)는 i+j+k를 R로 나눈 residue가 현재 r일 때 실행합니다. Pair task (i,j)는 i+j의 residue가 r일 때 실행합니다. Mapper는 input edge의 color pair를 구한 뒤, 현재 round에 예정된 task key만 emit합니다. R개의 round를 모두 실행하면 모든 residue가 처리되어 필요한 logical subproblem이 빠짐없이 실행됩니다. 이 rule은 별도 queue나 storage mechanism이 아니라 deterministic round assignment입니다.
+
+공개 출처
+author-pdf | p. 4, Algorithm 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | p. 5, Lemma 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 13. 교육용 예시: rho=4, R=2의 round 분산
+
+13. 교육용 예시: rho=4, R=2의 round 분산
+
+발표 대본
+rho 4와 R 2인 교육용 예시입니다. Cross edge E_(0,1)는 pair task (0,1), triple task (0,1,2), triple task (0,1,3)에 필요합니다. Pair index sum 1은 round 1에 배정됩니다. Triple sums 3과 4는 mod 2에서 각각 round 1과 round 0입니다. 따라서 round 0에는 한 copy, round 1에는 두 copies가 전달됩니다. One-round execution의 세 copies를 없앤 것이 아니라 두 round에 1과 2로 나눈 것입니다. 이 숫자 설정은 mechanism 설명용이며 논문의 실험 parameter라고 해석하면 안 됩니다.
+
+공개 출처
+author-pdf | p. 4, modular schedule; constructed example
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 14. 한 edge가 현재 round를 통과하는 과정
+
+14. 한 edge가 현재 round를 통과하는 과정
+
+발표 대본
+하나의 edge record가 현재 round에서 처리되는 과정을 보겠습니다. Mapper는 edge (u,v)를 읽고 두 endpoint의 color를 계산한 뒤 ordered pair i,j를 정합니다. 이어서 이 edge가 필요한 pair와 triple task 중 current round residue와 맞는 key만 emit합니다. Shuffle은 같은 task key의 edge를 모읍니다. Reducer는 자신의 task family에 맞는 세 edge group의 union을 받아 local triangle enumerator를 실행합니다. 다른 residue의 task는 다음 round에서 처리하므로 input graph를 다시 map해야 합니다.
+
+공개 출처
+author-pdf | p. 4, Algorithm 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 15. Round 수와 data movement의 tradeoff
+
+15. Round 수와 data movement의 tradeoff
+
+발표 대본
+R을 늘렸을 때 무엇이 줄고 무엇이 남는지 구분하겠습니다. 논문에서 per-round shuffled data는 (rho-1)E over R입니다. R이 커지면 한 round에 보내는 edge copy가 줄어 aggregate peak를 M 안에 두기 쉬워집니다. 그러나 모든 logical task가 사라지는 것은 아닙니다. 전체 round를 마치면 필요한 TTP-style deliveries가 수행됩니다. 또한 CTTP는 각 round에서 input을 다시 map하므로 disk read와 mapper startup cost가 반복됩니다. 즉 CTTP의 tradeoff는 total computation을 없애는 것이 아니라 한 번에 감당할 data를 줄이는 것입니다.
+
+공개 출처
+author-pdf | pp. 7-8, Eqs. 5-6 and Sec. 5.3.1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 16. Theorem 1: Base CTTP의 expected guarantee
+
+16. Theorem 1: Base CTTP의 expected guarantee
+
+발표 대본
+Theorem 1의 base guarantee를 항목별로 읽겠습니다. Round complexity는 O of E to 1.5 over M square root m입니다. 한 mapper가 쓰는 space는 M over E이고 한 round의 aggregate space는 M입니다. 한 reducer의 space m과 total work O(E to 1.5)는 expectation 수준입니다. 또한 모든 triangle을 cover합니다. 4-wise-independent coloring이 arbitrary graph에서 이 expected analysis를 지지하지만, unlucky coloring에서도 모든 reducer가 반드시 O(m)이라는 deterministic statement는 아닙니다. 이 차이가 high-probability variant가 필요한 이유입니다.
+
+공개 출처
+author-pdf | p. 5, Theorem 1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 17. Theorem 2의 worst-case round lower bound
+
+17. Theorem 2의 worst-case round lower bound
+
+발표 대본
+Theorem 2는 capacity argument입니다. Reducer i가 m_i words를 가진다면 stated memory-word assumption 아래 최대 m_i to the 1.5 distinct triangles를 열거할 수 있습니다. 각 m_i는 m 이하이고 모든 reducer input 합은 M 이하이므로, 한 round 전체가 열거할 수 있는 triangle은 최대 M square root m입니다. 따라서 t개의 distinct triangle이 있는 graph는 worst case에서 Omega of t over M square root m rounds가 필요합니다. Graph가 E to the 1.5 규모의 triangle을 가질 수 있으므로 Theorem 1의 round order와 맞습니다. 이 optimality는 모든 graph와 모든 framework에서 가장 빠르다는 뜻이 아닙니다.
+
+공개 출처
+author-pdf | p. 5, Theorem 2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 18. Expected load와 last-reducer risk
+
+18. Expected load와 last-reducer risk
+
+발표 대본
+Expected reducer space가 m이라는 사실만으로 모든 reducer가 안전한 것은 아닙니다. 많은 reducer가 작아도 한 color pair나 task key에 edge가 몰리면 그 reducer가 m을 넘거나 훨씬 오래 걸릴 수 있습니다. MapReduce round는 가장 늦은 reducer를 기다리므로 maximum load가 실제 completion time을 좌우합니다. 논문은 이를 curse of the last reducer라고 설명합니다. 해결 방향은 같은 4-wise coloring을 단순히 반복하는 것이 아니라 degree에 따라 vertex를 나누고 stronger hash와 deterministic assignment를 결합하는 것입니다.
+
+공개 출처
+author-pdf | p. 6, Sec. 4.2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 19. Theorem 3: 추가 조건 아래의 high-probability guarantee
+
+19. Theorem 3: 추가 조건 아래의 high-probability guarantee
+
+발표 대본
+Theorem 3의 full variant는 세 단계를 구분해야 합니다. 먼저 degree가 square root of E m보다 큰 very-high-degree vertex가 포함된 triangle을 sorting으로 별도 처리합니다. 남은 vertex 중 degree가 square root E 이하인 low-degree vertex는 log-E-wise hash로 color를 배정합니다. 그보다 높은 degree이면서 square root E m 이하인 vertex는 color별 total degree mass가 균형을 이루도록 deterministic하게 배정합니다. 추가 memory condition은 m = Omega of E to 3/4 times square root log E입니다. 이 조건 아래 임의의 양의 constant epsilon에 대해 probability at least 1 - 1/E^epsilon으로 모든 reducer가 O(m), total work가 O(E^1.5)가 됩니다. Round order는 O((E/M)sqrt(E/m)) 형태를 유지합니다.
+
+공개 출처
+author-pdf | p. 3, degree preprocessing
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | p. 6, Sec. 4.2 and Theorem 3
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 20. 2014 Hadoop experiment setup
+
+20. 2014 Hadoop experiment setup
+
+발표 대본
+실험 결과를 보기 전에 환경을 고정하겠습니다. 저자들은 Java로 GP, TTP, CTTP를 구현해 Hadoop cluster에서 비교했습니다. Cluster는 40 machines로 구성되고 각 machine은 4 GB memory를 가졌습니다. Default reducer 수는 80입니다. 이 hardware memory 수치를 theoretical model의 m과 M에 그대로 대입했다고 단정하면 안 됩니다. 아래 결과는 2014년의 이 implementation과 cluster에서 얻은 empirical evidence이며, 현재의 모든 distributed graph framework에 동일한 threshold가 적용된다는 뜻은 아닙니다.
+
+공개 출처
+author-pdf | p. 7, experimental setup
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 21. Twitter에서 관찰한 one-round shuffle peak
+
+21. Twitter에서 관찰한 one-round shuffle peak
+
+발표 대본
+Twitter experiment는 intermediate data 병목을 구체적인 unit로 보여 줍니다. Input graph는 32 GB였지만 R=1인 CTTP execution은 985 GB의 shuffle data를 만들었습니다. 단순 비율은 약 30.8배입니다. 논문은 R이 4보다 작은 경우 map과 shuffle path에 massive intermediate data가 몰려 예상보다 긴 runtime이 나타났다고 설명합니다. R을 늘리면 per-round shuffle은 줄지만 input을 다시 읽고 job startup과 map 작업을 반복해야 합니다. 이 수치는 reported cluster의 측정값이며 universal capacity threshold가 아닙니다.
+
+공개 출처
+author-pdf | pp. 7-8, Fig. 1 and Sec. 5.3.1
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 22. YahooWeb subgraph의 data scalability 결과
+
+22. YahooWeb subgraph의 data scalability 결과
+
+발표 대본
+Data scalability experiment는 YahooWeb에서 random subgraph를 만들어 0.2, 0.4, 0.8, 1.6, 3.2, 6.4 billion edges까지 늘렸습니다. CTTP는 모든 reported point를 완료했습니다. TTP와 GP는 1.6 billion edges보다 큰 reported subgraph에서 out-of-space error로 실패했습니다. 별도의 Twitter machine-scaling plot에서는 세 방법 가운데 CTTP가 ideal scaling에 가장 가까웠다고 보고합니다. 이 결과는 multi-round scheduling이 해당 implementation의 aggregate intermediate-data pressure를 낮춘다는 경험적 근거지만, 다른 cluster의 절대 한계를 정하는 값은 아닙니다.
+
+공개 출처
+author-pdf | p. 8, Fig. 3 and Sec. 5.3.2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | p. 9, Fig. 6
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 23. Real graph의 reported enumeration time
+
+23. Real graph의 reported enumeration time
+
+발표 대본
+Selected real graph timing을 minutes 단위로 비교합니다. 작은 LiveJournal에서는 세 방법이 모두 1 minute이지만 Twitter와 SubDomain에서는 CTTP가 TTP와 GP보다 짧았습니다. ClueWeb09에서는 CTTP가 1,328 minutes에 완료했고 TTP와 GP는 실패했습니다. 논문은 preprocessing 후 ClueWeb09가 4.8 billion vertices, 7.9 billion edges, 31,013,037,486 triangles를 가졌고 CTTP가 약 23 hours에 이를 열거했다고 정리합니다. 여기서 listed라는 표현은 31 billion output records를 하나의 파일에 저장했다는 증거가 아닙니다. Problem specification은 local enum call을 허용합니다.
+
+공개 출처
+author-pdf | p. 6, Table 2
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | p. 9, Figs. 5-6 and Conclusion
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+
+## 24. Later PTE paper와의 관계
+
+24. Later PTE paper와의 관계
+
+발표 대본
+이 슬라이드는 CTTP의 실험 결과가 아니라 후속 PTE 논문의 related-work 맥락입니다. CTTP는 TTP-style edge-task copies를 modular rule로 여러 round에 배치해 one-round aggregate peak를 제한합니다. 하지만 전체 run에서는 필요한 task deliveries가 남고 매 round input을 다시 읽습니다. PTE는 massive intermediate data와 기존 type-partition의 중복 문제를 지적하고 data partition과 read timing을 다르게 구성한 별도 distributed enumeration method를 제안합니다. 두 논문의 runtime 숫자를 이 슬라이드에서 직접 비교하지 않으며, CTTP와 PTE를 동일 algorithm이라고 부르지 않습니다.
+
+공개 출처
+author-pdf | pp. 7-8, CTTP data tradeoff
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+pte-doi | related work and method context
+PTE paper DOI record
+https://doi.org/10.1145/2939672.2939757
+
+## 25. CTTP의 핵심과 주장 범위
+
+25. CTTP의 핵심과 주장 범위
+
+발표 대본
+전체 내용을 정리하겠습니다. CTTP는 TTP의 pair와 triple color tasks를 유지하고 color-index sum으로 여러 round에 배치합니다. Base theorem은 expected reducer space와 total work를 제시합니다. 모든 reducer에 대한 high-probability O(m) bound는 very-high-degree preprocessing, low-degree log-E-wise hashing, high-degree deterministic degree-mass coloring, 그리고 m에 대한 threshold가 함께 있어야 합니다. Experiment는 2014 Hadoop cluster에서 intermediate-data peak를 줄인 효과를 보여 주지만 모든 platform의 failure threshold를 정하지 않습니다. 또한 local enum action을 허용하므로 전체 triangle list를 반드시 저장하는 model도 아닙니다.
+
+공개 출처
+author-pdf | pp. 4-6, Algorithms and Theorems 1-3
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf
+author-pdf | pp. 7-9, experiments and Conclusion
+Public author-hosted paper
+https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf

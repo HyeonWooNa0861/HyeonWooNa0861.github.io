@@ -1,0 +1,374 @@
+---
+type: research-seminar-slides
+paper_id: joint-task-offloading-resource-allocation-multi-server-mec
+---
+
+# 다중 서버 MEC에서 무엇을 함께 최적화할까
+
+논문: Joint Task Offloading and Resource Allocation for Multi-Server Mobile-Edge Computing Networks
+
+저자: Tuyen X. Tran, Dario Pompili (2017)
+
+## 1. 다중 서버 MEC에서 무엇을 함께 최적화할까
+
+JTORA: 오프로딩 위치·상향링크 전력·서버 CPU를 하나의 문제로 묶는 방법
+
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) title page; abstract; v1
+
+## 2. 논문이 푸는 범위와 풀지 않는 범위
+
+한 사용자의 한 atomic task를 local 또는 한 서버·한 sub-band에 배치한다
+
+- 각 BS는 MEC server를 하나씩 가지며, 사용자는 가까운 BS 중 하나로 task input을 보낸다
+- 결정은 local/offload 하나가 아니라 user·server·sub-band 조합이다
+- 고정된 배치에서는 uplink power와 server CPU share를 연속적으로 최적화한다
+- partial task partitioning, neural policy, online queue control은 이 논문의 모델이 아니다
+
+핵심: 이 논문은 다중 서버 배치와 연속 자원 할당을 결합한 offline optimization이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 6-11; §§III-IV
+
+## 3. 여러 BS의 MEC server가 선택지와 간섭을 함께 만든다
+
+user는 한 server에 task input을 올리지만, 같은 sub-band의 다른 cell 전송은 간섭을 만든다
+
+- **레인 selected path**
+- **레인 potential association**
+  - **user task**: input d_u → workload c_u
+  - **BS 1 + MEC**: selected uplink
+sub-band j
+  - **nearby BS + MEC**: possible server
+association
+  - **server execution**: shared CPU rate
+f_us
+- user task → BS 1 + MEC: offload x^j_us=1 (실선, 단방향)
+- user task → nearby BS + MEC: potential (점선, 단방향)
+- BS 1 + MEC → server execution: CPU share (실선, 단방향)
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) p. 6; Fig. 1; §III
+
+## 4. local과 offload는 time·energy accounting이 다르다
+
+offload가 유리하려면 uplink overhead와 server contention까지 local 비용보다 작아야 한다
+
+
+| 경로 | completion time | device energy | 원문 가정 |
+| --- | --- | --- | --- |
+| local | c_u / f_lu | kappa (f_lu)^2 c_u | task는 device CPU에서 실행 |
+| offload | upload + server execution | p_u × upload time | output downlink delay 생략 |
+| server | c_u / f_us | device energy가 아님 | 각 server CPU를 users가 공유 |
+| radio | d_u / R_us | same-cell OFDMA | other cells는 interference |
+
+핵심: 서버가 있어도 업로드 지연·에너지와 CPU 경합 때문에 모든 task를 offload하지 않는다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 6-9; Eqs. 1, 3-9
+
+## 5. 오프로딩 변수는 세 가지 선택을 동시에 담는다
+
+x^j_us=1은 user u가 server s의 sub-band j를 쓰는 하나의 entry다
+
+- **candidate entry**: x^j_us ∈ {0,1}
+- **user constraint**: 한 task는 최대 한 entry
+- **BS-sub-band constraint**: 한 j에는 최대 한 user
+- **feasible X**: local 또는 한 server·sub-band
+- **offloader sets**: U_s 와 U_off를 결정
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 7, 10; Eqs. 2, 12b-12d
+
+## 6. utility는 local 대비 time·energy 개선의 가중합이다
+
+user preference와 provider preference가 서로 다른 역할을 한다
+
+
+| 기호 | 의미 | 범위 | 최적화에서의 역할 |
+| --- | --- | --- | --- |
+| beta_ut | completion-time 선호 | 0에서 1 | beta_ue와 합이 1 |
+| beta_ue | energy-saving 선호 | 0에서 1 | battery-sensitive user가 높일 수 있음 |
+| J_u | local 대비 상대 개선 | offload user에만 합산 | time·energy improvement |
+| lambda_u | provider의 user 선호 | 0보다 크고 1 이하 | system utility에서 J_u를 가중 |
+
+핵심: 목적은 raw delay 최소화 하나가 아니라 provider-weighted offloading utility 최대화다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 9-10; Eqs. 10-11
+
+## 7. JTORA: scheduling과 allocation이 섞인 MINLP
+
+X, P, F를 한 번에 바꾸면 association·interference·CPU sharing이 서로 얽힌다
+
+1. **X**: user-server-sub-band entry 선택
+2. **P**: offloader uplink power 선택
+3. **F**: server별 CPU share 선택
+4. **constraints**: binary·radio·power·CPU budget
+5. **maximize**: sum lambda_u J_u
+
+핵심: 논문은 JTORA를 NP-hard MINLP로 두고 최적 전수 탐색 대신 분해를 택한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 10-11; Eqs. 12a-12g
+
+## 8. 고정된 X에서 연속 자원을 풀고, 그 값을 X의 점수로 쓴다
+
+분해의 순서를 거꾸로 읽으면 power와 CPU가 scheduling 이후에 왜 다시 계산되는지 놓친다
+
+- **JTORA**: maximize J(X,P,F)
+- **RA for fixed X**: P와 F를 최적화
+- **TO**: J*(X)를 최대화
+- **value feedback**: RA optimum이 J*(X)를 제공
+- **final tuple**: X*, P*, F*
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 10-12; Eqs. 13-15
+
+## 9. RA는 uplink power와 server CPU의 두 문제로 다시 나뉜다
+
+fixed X에서는 total offloading overhead가 P와 F 항의 합으로 분리된다
+
+- **UPA**: power-dependent upload overhead
+- **CRA**: CPU-share execution overhead
+- **RA optimum**: P*(X)와 F*(X)
+- **J*(X)**: TO가 비교할 offload-set value
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 12-13; Eqs. 16-20
+
+## 10. UPA는 inter-cell interference를 upper-bound로 근사한다
+
+원래 SINR은 다른 cell의 power와 얽혀 있어 nonconvex다
+
+1. **exact SINR**: same sub-band의 other-cell power 포함
+2. **upper bound**: other users가 P_k를 쓴다고 가정
+3. **approximate SINR**: user별 Gamma_s(p_u) 구성
+4. **strict quasi-convex**: Lemma 1의 조건
+5. **per-user solution**: bisection으로 p_u* 선택
+
+핵심: UPA는 coupled interference를 exact로 풀지 않는 근사다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 13-14; Eqs. 20-23; Lemma 1
+
+## 11. Algorithm 1: Omega 부호로 power 이분 탐색
+
+root가 budget 안에 있으면 interval을 줄이고, 아니면 maximum power를 선택한다
+
+1. **Omega(P_u)**: Eq. 24의 boundary sign 계산
+2. **nonpositive**: p_u*=P_u로 종료
+3. **positive**: 0과 P_u로 interval 시작
+4. **midpoint**: Omega sign에 맞춰 한쪽 끝 교체
+5. **tolerance**: interval 길이 epsilon 이하
+
+핵심: Algorithm 1은 learned policy가 아닌 deterministic bisection이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 14-15; Eq. 24; Algorithm 1
+
+## 12. CRA는 server CPU를 sqrt(eta_u)에 비례해 나눈다
+
+한 server 안에서 높은 eta_u의 task가 더 큰 CPU share를 얻되, total은 f_s를 넘지 않는다
+
+
+| 요소 | 원문 식 | 결론 | 해석 |
+| --- | --- | --- | --- |
+| objective | sum eta_u / f_us | execution overhead 최소화 | f_us가 작으면 penalty가 큼 |
+| constraint | sum f_us ≤ f_s | server별 CPU budget | association된 user만 share |
+| curvature | Hessian positive definite | convex problem | KKT 적용 가능 |
+| solution | f_us* proportional to sqrt(eta_u) | closed form | fixed X에서만 계산 |
+
+핵심: CRA의 closed form은 server가 user task를 임의로 동등 분할한다는 규칙과 다르다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 15-16; Eqs. 25-28
+
+## 13. outer TO는 두 matroid 제약 아래 set value를 최대화한다
+
+candidate ground set은 모든 user·server·sub-band entry의 집합이다
+
+- constraint 하나는 한 user가 최대 한 entry만 선택하게 한다
+- 다른 constraint는 한 server-sub-band에 최대 한 user만 두게 한다
+- 각 feasible X의 value J*(X)는 UPA와 CRA를 푼 뒤에야 계산된다
+- 전수 탐색은 n=S×U×N일 때 2^n개의 scheduling decision을 평가한다
+
+핵심: outer search의 어려움은 연속 변수보다 feasible set 조합의 수에 있다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 16-17; Eq. 30
+
+## 14. Routine 1: 새 entry의 충돌을 지운다
+
+candidate x^j_us를 넣을 때 같은 user 또는 같은 server-sub-band의 선택을 제거한다
+
+- **레인 current set**
+- **레인 candidate update**
+  - **current X**: selected entries
+  - **candidate**: x^j_us outside X
+  - **remove conflicts**: same user and
+same server-sub-band
+  - **exchange result**: add candidate
+keep feasibility
+- current X → remove conflicts (실선, 단방향)
+- candidate → remove conflicts (실선, 단방향)
+- remove conflicts → exchange result (실선, 단방향)
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) p. 17; Routine 1
+
+## 15. Algorithm 2: 개선될 때만 remove·exchange
+
+처음부터 전수 탐색하지 않고 best singleton에서 local search를 시작한다
+
+1. **best singleton**: J*({x})가 최대인 x로 X 시작
+2. **remove test**: existing entry 제거가 factor 개선?
+3. **accept remove**: J*가 1+epsilon/n^2 배 초과
+4. **exchange test**: outside candidate 교환이 factor 개선?
+5. **stop**: 어느 개선도 없으면 local solution
+
+핵심: 다항 시간은 local heuristic의 running time이지 global guarantee가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 17-18; Algorithm 2; Remarks 1-2
+
+## 16. 교육용 가상 trace: 한 sub-band에서 exchange를 판정한다
+
+교육용 가정: users A,B; server 1; sub-band 1; epsilon=.1; n=2
+
+
+| 단계 | X 또는 candidate | 계산 | 결과 |
+| --- | --- | --- | --- |
+| 시작 | X={x^1_A1} | 가정한 J*(X)=.70 | A가 sub-band 1 사용 |
+| candidate | x^1_B1 | same server-sub-band라 A와 충돌 | exchange는 A를 제거 |
+| gate | exchange value=.83 | (1+.1/2^2)×.70=.7175 | .83>.7175 이므로 수락 |
+| 다음 X | {x^1_B1} | feasible entry 하나 유지 | B로 교체 |
+
+핵심: 숫자는 교육용 가정이며, trace는 Routine 1의 feasibility와 Algorithm 2의 gate만 보인다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 17-18; Routine 1; Algorithm 2
+
+## 17. local search는 각 candidate X의 RA value를 비교한다
+
+remove·exchange 수용검사는 fixed-X UPA·CRA가 만든 J*(X)를 매 candidate마다 다시 쓴다
+
+1. **candidate X**: remove 또는 exchange 제안
+2. **fixed-X RA**: UPA P*(X), CRA F*(X)
+3. **score**: J*(X) 계산
+4. **accept?**: factor gate 통과 시 반복
+5. **final tuple**: X*, P*(X*), F*(X*)
+
+핵심: 최종 P*, F*는 X*에 대응하지만 RA는 Algorithm 2의 candidate scoring 안에도 있다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 10-18; Eqs. 13-19, 29-30; Alg. 2; Remark 2
+
+## 18. 비교 방법의 scheduling·coordination 범위
+
+모든 baseline이 같은 형태의 최적해를 푸는 것은 아니다
+
+
+| 방법 | offloading choice | resource allocation | 원문 역할 |
+| --- | --- | --- | --- |
+| Exhaustive | 2^n decisions 전체 탐색 | 각 candidate에 계산 | small setting의 optimal reference |
+| GOJRA | channel gain 순으로 greedy admit | joint allocation | all-admissible offload rule |
+| IOJRA | home BS sub-band random 후 독립 결정 | joint allocation | independent decision baseline |
+| DORA | 각 BS가 자기 cell만 결정 | local per-BS | distributed baseline |
+
+핵심: hJTORA의 비교 우위는 정해진 baselines와 simulation conditions 안에서 읽어야 한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) p. 19; §VI; baseline definitions
+
+## 19. 기본 simulation 조건이 result의 해석 범위를 정한다
+
+여기서의 utility와 runtime은 이 channel·CPU·task profile에서 나온 값이다
+
+
+| 범주 | 기본 조건 | 의미 |
+| --- | --- | --- |
+| cell and radio | S=7, 1 km spacing, B=20 MHz, P_u=20 dBm | single-antenna uplink model |
+| noise and channel | noise -100 dBm, 8 dB shadowing | distance-dependent path loss |
+| compute | server 20 GHz, local 1 GHz | server CPU is finite |
+| task | d_u=420 KB, c_u=1000 Megacycles | face-recognition task |
+| preference | beta_ut=.2, beta_ue=.8, lambda_u=1 | energy weighted default |
+
+핵심: numerical evidence는 7-cell default setting에 조건부다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 18-19; §VI settings
+
+## 20. small network: hJTORA는 Exhaustive에 가깝고 빠르다
+
+near-optimal claim은 U=6, S=4, N=2와 500 shadowing realization 조건의 비교다
+
+
+| 관찰 | 보고된 값 | 조건 또는 주의 |
+| --- | --- | --- |
+| utility | Exhaustive의 2% 이내 | c_u=1000, 2000 Megacycles |
+| baseline gain | DORA 13%; GOJRA 17%; IOJRA 47% | Fig. 2의 두 workload setting |
+| hJTORA runtime | 19.3±0.7 ms | Windows 7, 3.6 GHz CPU, 16 GB RAM |
+| Exhaustive runtime | 1923±1.4 ms | 같은 small setting에서 약 100배 |
+| uncertainty | 95% confidence interval | 500 large-scale fading realizations |
+
+핵심: near-optimal·100배 speed는 small setting의 관측값이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 19-20; Table I; Fig. 2
+
+## 21. load·task profile이 offloading gain을 바꾼다
+
+더 많은 user가 항상 더 큰 system utility를 뜻하지는 않는다
+
+
+| 변화 | 보고된 관찰 | 원문의 이유 |
+| --- | --- | --- |
+| users per cell 1에서 10 | 작을 때 증가 후 threshold 뒤 감소 | radio·CPU contention 증가 |
+| uniform workload | c_u=1000 Megacycles | Fig. 3a 조건 |
+| nonuniform workload | cells 1,3,5,7은 500; 2,4,6은 2000 | Fig. 3b 조건 |
+| workload c_u 증가 | 모든 scheme utility 증가 | MEC compute saving가 커짐 |
+| input d_u 증가 | 모든 scheme utility 감소 | upload overhead가 커짐 |
+
+핵심: small input과 high workload가 offloading에 더 유리하다는 관찰은 Fig. 3-4 조건부 결과다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 20-22; Figs. 3-4
+
+## 22. time preference↑ → energy cost↑ (experiment)
+
+beta_ut를 .1에서 .9로 올리고 beta_ue=1-beta_ut로 둔 hJTORA 결과다
+
+1. **time weight up**: beta_ut: .1 to .9
+2. **energy weight down**: beta_ue=1-beta_ut
+3. **time result**: average time consumption 감소
+4. **energy result**: average energy consumption 증가
+5. **load effect**: U=21이 U=14보다 두 값이 큼
+
+핵심: user preference는 time와 energy를 하나의 방향으로 동시에 개선하는 knob가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 22-23; Fig. 5
+
+## 23. 근사: 25 dBm 아래 exact curve와 거의 일치
+
+Fig. 6은 approximation을 proof가 아니라 power sweep에서의 empirical check로 읽게 한다
+
+
+| 비교 | 조건 | 관찰 | 해석 경계 |
+| --- | --- | --- | --- |
+| exact vs approximation | U=14와 U=21 | P_u<25 dBm에서 거의 동일 | 해당 sweep의 system utility |
+| higher power | P_u>25 dBm | gap이 커짐 | approximation error가 보임 |
+| LTE reference | UE maximum 23 dBm | 실용 범위 argument | 표준 자체를 재검증한 결과 아님 |
+| method boundary | Eq. 21 upper bound | UPA separability 제공 | exact coupled optimum 보장 아님 |
+
+핵심: 근사의 신뢰성은 reported power range와 channel model에 묶인 simulation evidence다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 23-24; Fig. 6; Eq. 21
+
+## 24. 결과를 넘어 일반화하면 안 되는 모델 경계
+
+정확한 optimizer 설명에는 가정과 evidence boundary가 함께 필요하다
+
+- atomic task는 local 또는 한 MEC로 가며 output downlink delay는 생략한다
+- single antenna·OFDMA; fast fading은 interval 평균으로 둔다
+- UPA는 inter-cell interference upper bound로 separable approximation을 만든다
+- Algorithm 2는 local solution이고 global ratio를 제시하지 않는다
+- near-optimal result·runtime은 small simulation과 Table I hardware에 한정된다
+
+핵심: JTORA는 decomposition 예시이며 modern MEC 전체 모델은 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 6-8, 13, 18-20; §§III,V-VI
+
+## 25. JTORA를 한 줄로 연결하면
+
+feasible offload set을 고르고, 그 set의 radio·CPU value를 계산해 local search를 반복한다
+
+1. **model**: time·energy utility와 shared constraints
+2. **schedule**: X를 remove·exchange로 탐색
+3. **allocate**: UPA bisection과 CRA closed form
+4. **evaluate**: J*(X)로 candidate 비교
+5. **qualify**: simulation conditions와 limits 유지
+
+핵심: 핵심은 scheduling과 resource allocation을 value로 연결한 분해다
+
+근거: [arxiv-v1](https://arxiv.org/abs/1705.00704v1) pp. 10-24; §§IV-VII

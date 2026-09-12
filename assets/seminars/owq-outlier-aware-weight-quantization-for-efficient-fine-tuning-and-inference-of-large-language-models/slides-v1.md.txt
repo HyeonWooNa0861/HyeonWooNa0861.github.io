@@ -1,0 +1,331 @@
+---
+type: research-seminar-slides
+paper_id: owq-outlier-aware-weight-quantization
+---
+
+# OWQ: 민감한 가중치 열을 보존하는 LLM 양자화
+
+논문: OWQ: Outlier-Aware Weight Quantization for Efficient Fine-Tuning and Inference of Large Language Models
+
+저자: Changhun Lee, Jungyu Jin, Taesu Kim, Hyungjun Kim, Eunhyeok Park (2024)
+
+## 1. OWQ: 민감한 가중치 열을 보존하는 LLM 양자화
+
+activation outlier가 만드는 weak column을 fp16으로 남기고 나머지 가중치를 저비트로 압축하는 weight-only PTQ
+
+
+근거: [aaai-paper](https://ojs.aaai.org/index.php/AAAI/article/view/29237) AAAI-24 record, [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 1, Abstract
+
+## 2. OWQ의 정확한 범위
+
+
+| 구분 | OWQ가 하는 것 | 범위 밖 |
+| --- | --- | --- |
+| 대상 | linear layer의 weight | activation·KV cache 양자화 |
+| 절차 | calibration 기반 layer-wise PTQ | 대규모 재학습을 전제로 한 QAT |
+| 정밀도 | 저비트 dense weight + fp16 일부 열 | 모든 값이 같은 3.01-bit scalar |
+| 예외 | embedding과 head는 full precision | 완전한 W3A3 모델 |
+
+핵심: OWQ는 weight-only 혼합 정밀도 PTQ이며 3.01-bit는 평균 저장 비용이다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 2–4
+
+## 3. 문제 정의: 가중치 오차가 아니라 출력 오차를 줄인다
+
+1. **원래 weight W**: full-precision linear layer의 가중치다.
+2. **calibration X**: 대표 입력 activation으로 민감도를 관찰한다.
+3. **양자화 weight W_hat**: 압축 목표를 만족하는 저정밀 표현이다.
+4. **출력 비교**: WX와 W_hat X의 제곱 오차를 최소화한다.
+
+핵심: 같은 weight 오차라도 자주 크고 중요한 입력 방향에 놓이면 출력 영향이 커질 수 있다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 3, Eq. 3
+
+## 4. Weak column은 작은 열이 아니라 양자화에 민감한 열이다
+
+
+| 판별 기준 | 보는 값 | OWQ와의 관계 |
+| --- | --- | --- |
+| Weight magnitude | 가중치 자체의 절댓값 | 선택 기준이 아님 |
+| Weight perturbation | 반올림 전후 weight 변화 | 민감도 점수의 한 요소 |
+| Activation sensitivity | calibration 입력 방향의 에너지 | Hessian 대각값으로 반영 |
+| Weak column | 두 요소가 만든 출력 영향 | 상위 k개 열을 fp16 보존 |
+
+핵심: OWQ는 큰 weight outlier가 아니라 output error에 민감한 전체 입력 열을 고른다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 4, Figs. 2–3
+
+## 5. Calibration activation에서 열별 민감도로
+
+1. **입력 행렬 X**: 행은 input feature, 열은 calibration token이다.
+2. **H = 2XX transpose**: layer output error의 곡률을 나타내는 행렬이다.
+3. **대각값 lambda_j**: feature j의 calibration activation 에너지를 반영한다.
+4. **열별 점수**: lambda_j와 해당 열의 양자화 오차를 곱한다.
+
+핵심: lambda_j는 calibration 데이터에서 얻은 민감도 성분이며 영구적인 중요도 보장은 아니다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 3, Eqs. 4–5
+
+## 6. 교육용 계산 1: X가 Hessian 대각값을 만든다
+
+논문 실험값이 아니라 식 4를 설명하기 위해 독립적으로 계산한 2×2 예다.
+
+
+| 행렬 | 열 1 | 열 2 | 의미 |
+| --- | --- | --- | --- |
+| X의 feature 1 | 1 | 0 | feature 1 크기 1 |
+| X의 feature 2 | 0 | 3 | feature 2 크기 3 |
+| H = 2XX transpose | 2 | 18 | 대각값 lambda_1, lambda_2 |
+
+핵심: feature 2가 3배 크므로 제곱 에너지는 9배, Hessian 대각값도 9배가 된다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 3, Eq. 4
+
+## 7. 교육용 계산 2: 더 작은 weight 오차의 열이 선택된다
+
+
+| 열 j | lambda_j | delta W 열의 제곱합 | 점수 s_j | fp16 보존 |
+| --- | --- | --- | --- | --- |
+| 1 | 2 | 0.0200 | 0.0400 | 아니오 |
+| 2 | 18 | 0.0032 | 0.0576 | 예 |
+
+핵심: 열 2는 raw weight 오차가 더 작아도 activation 민감도가 커서 fp16 예산을 받는다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 4, Eq. 6
+
+## 8. Weak column 선택 절차
+
+1. **임시 양자화**: 각 열의 저비트 반올림 결과를 만든다.
+2. **Weight perturbation**: 원래 열과 임시 양자화 열의 차이를 계산한다.
+3. **Sensitivity score**: lambda_j와 열 perturbation 제곱합을 곱한다.
+4. **Top-k 선택**: 점수가 큰 k개 input column을 weak로 지정한다.
+5. **정밀도 분리**: weak 열은 fp16, 나머지는 저비트 대상으로 둔다.
+
+핵심: Hessian만도 weight 오차만도 아닌 두 요소의 결합이 OWQ 선택 기준이다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 4 and 8, Eq. 6 and Table 7
+
+## 9. Ablation: weight 오차만 보면 민감한 열을 놓친다
+
+WikiText-2 perplexity이며 낮을수록 좋다.
+
+
+| 모델 | 제안 점수 | Hessian만 | Weight 오차만 | Weight 크기합 |
+| --- | --- | --- | --- | --- |
+| OPT-6.7B | 11.23 | 11.25 | 13.08 | 14.77 |
+| LLaMA-7B | 6.64 | 6.76 | 11.57 | 10.12 |
+
+핵심: 이 설정에서는 activation sensitivity를 포함한 기준이 weight-only 기준보다 낫다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 8, Table 7
+
+## 10. OWQ 저장 형식: 전체 열 단위 혼합 정밀도
+
+열 2가 weak로 선택된 3×4 weight matrix의 편집 가능한 구조 예시다.
+
+
+| 출력 행 | 열 1 | 열 2 weak | 열 3 | 열 4 |
+| --- | --- | --- | --- | --- |
+| row 1 | 3-bit | fp16 | 3-bit | 3-bit |
+| row 2 | 3-bit | fp16 | 3-bit | 3-bit |
+| row 3 | 3-bit | fp16 | 3-bit | 3-bit |
+| 별도 저장 | dense low-bit | idx=2 + fp16 열 | dense low-bit | dense low-bit |
+
+핵심: 저비트 행렬의 weak 위치는 0으로 두고, fp16 열과 column index를 별도 보관한다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 4, OWQ storage format
+
+## 11. 나머지 열은 OPTQ로, weak 열은 마지막에 남긴다
+
+1. **열 순서 재배치**: 저비트 대상 열을 앞에, weak fp16 열을 뒤에 둔다.
+2. **저비트 열 양자화**: OPTQ가 열을 순차적으로 quantize한다.
+3. **오차 보상**: 아직 양자화하지 않은 열의 값을 갱신한다.
+4. **Weak 열 유지**: 보상값을 받은 weak 열은 끝까지 fp16으로 남는다.
+
+핵심: 마지막까지 유연한 fp16 열이 앞선 저비트 양자화 오차를 흡수할 수 있다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 3–4, Eqs. 1–2
+
+## 12. 논문의 OPTQ 기준과 나중 repository 옵션을 구분한다
+
+
+| 구분 | 원래 OPTQ 설명 | 논문 실험의 처리 |
+| --- | --- | --- |
+| 기본 열 순서 | 순차 column quantization | OWQ의 weak 열은 뒤로 이동 |
+| Act-order | 원 논문 이후 repository에 추가 | OPTQ 기준선에 TS+AO 사용 |
+| True-sequential | 원 논문 이후 repository에 추가 | OPTQ 기준선에 TS+AO 사용 |
+| OWQ 적용 | 별도 선택 사항 | 명시되지 않으면 TS·AO 미사용 |
+
+핵심: OPTQ라는 이름이 가리키는 기본 논문 방법과 이후 코드 옵션은 같은 조건이 아니다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 5, Experimental Setup
+
+## 13. OWQ는 quantization range도 calibration으로 조정한다
+
+1. **Min–max 초기 범위**: weight의 전체 범위에서 step과 zero point를 시작한다.
+2. **후보 범위 축소**: truncation 정도를 바꾸며 2D grid search한다.
+3. **RTN 오차 평가**: 각 후보의 reconstruction error를 비교한다.
+4. **OPTQ 적용**: 선택된 설정 위에서 순차 보상 양자화를 수행한다.
+
+핵심: 범위 축소의 이점은 weak 열을 fp16으로 보호한 이 설정에서 관찰된 구현 선택이다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 4–5, Quantization Configuration Search
+
+## 14. 추론은 두 GeMV 경로의 출력을 더한다
+
+- **입력 activation x**: fp16 입력 벡터
+- **저비트 dense 경로**: fp16 복원 후 GeMV
+- **Weak fp16 경로**: 선택 channel gather 후 GeMV
+- **두 출력 합산**: 동일 output 축에서 add
+- **Linear layer 출력**: 혼합 정밀도 결과
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 6, Acceleration on Real Device
+
+## 15. WCT는 선택된 기존 열만 학습한다
+
+
+| 항목 | WCT | LoRA·QLoRA |
+| --- | --- | --- |
+| 학습 대상 | OWQ가 남긴 fp16 weak columns | 추가된 low-rank adapter |
+| Base weight | 저비트 dense 부분 고정 | base weight 고정 |
+| 추가 구조 | 기존 weight 열을 직접 갱신 | 별도 저랭크 branch 추가 |
+| OWQ와 관계 | OWQ 생성 뒤 task별 tuning | 서로 다른 PEFT 구조 |
+
+핵심: WCT는 LoRA의 다른 이름이 아니라 weak column 선택을 학습 파라미터 선택에도 재사용한다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 5, PEFT with WCT
+
+## 16. 결과를 읽기 전에 실험 조건을 고정한다
+
+
+| 항목 | 논문 조건 |
+| --- | --- |
+| 모델 | OPT 125M–66B, LLaMA 7B–65B |
+| Calibration | C4 무작위 128개 × 2,048 tokens |
+| PTQ | 재학습 없이 layer-wise quantization |
+| 반복 | OWQ 수치는 서로 다른 seed 3회와 오차 범위 |
+| 하드웨어 | A100 80 GB 또는 RTX3090 24 GB |
+
+핵심: 성능과 overhead 수치는 이 calibration, 모델, 구현, GPU 조건에서 해석해야 한다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 5, Experimental Setup
+
+## 17. WikiText-2: 작은 fp16 예산이 3-bit 손실을 줄인다
+
+
+| 모델 | 방법 | Effective bits | Perplexity 낮을수록 좋음 |
+| --- | --- | --- | --- |
+| OPT-6.7B | OPTQ | 3 | 12.88 |
+| OPT-6.7B | OWQ | 3.01 | 11.21 ± 0.05 |
+| OPT-6.7B | OPTQ | 4 | 11.14 |
+| OPT-6.7B | OWQ | 3.1 | 11.14 ± 0.03 |
+| LLaMA-7B | OPTQ → OWQ | 3 → 3.01 | 8.13 → 6.66 ± 0.04 |
+
+핵심: 선택된 설정에서 OWQ 3.1-bit는 OPTQ 4-bit와 비슷하지만 fp16에는 아직 못 미친다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 6, Tables 1–2
+
+## 18. Few-shot 평균에서도 3-bit 기준선 격차를 줄인다
+
+LLaMA-7B의 ARC-Challenge 25-shot, HellaSwag 10-shot, MMLU 5-shot 평균이다.
+
+
+| 방법 | Effective bits | 평균 점수 높을수록 좋음 | 조건 |
+| --- | --- | --- | --- |
+| Full precision | 16 | 54.81 | 원본 모델 |
+| OPTQ | 4 | 52.91 | 4-bit 기준선 |
+| OWQ | 3.1 | 51.93 ± 0.48 | fp16 weak 열 포함 |
+| OWQ | 3.01 | 50.21 ± 0.45 | fp16 weak 열 포함 |
+| OPTQ | 3 | 47.06 | TS+AO 기준선 |
+
+핵심: OWQ의 이득은 perplexity뿐 아니라 지정된 few-shot 묶음에서도 관찰된다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 6–7, Table 4
+
+## 19. Group-wise 양자화와 OWQ는 서로 직교한다
+
+
+| LLaMA-7B 방법 | WikiText-2 PPL | C4 PPL | Winogrande |
+| --- | --- | --- | --- |
+| OPTQ 3-bit | 8.08 | 10.26 | 64.33 |
+| OPTQ 3-bit, group 128 | 6.56 | 8.36 | 67.60 |
+| OWQ 3.01-bit | 6.65 | 8.62 | 67.05 |
+| OWQ 3.01-bit, group 128 | 6.40 | 8.18 | 69.57 |
+
+핵심: Grouping을 OWQ에 더할 수 있지만, 별도 quantization parameter 저장 비용도 생긴다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 8, Table 6
+
+## 20. Weak column 예산이 늘면 품질 이득은 포화된다
+
+OPT-6.7B, OPTQ 3-bit 기준 상대 overhead이며 latency 절댓값이 아니다.
+
+
+| Effective bits | WikiText-2 PPL | Latency overhead | Memory overhead |
+| --- | --- | --- | --- |
+| 3.005 | 11.38 | 2.89% | 0.21% |
+| 3.01 | 11.22 | 2.91% | 0.41% |
+| 3.05 | 11.19 | 4.19% | 2.04% |
+| 3.10 | 11.17 | 6.21% | 3.95% |
+| 3.30 | 11.13 | 8.69% | 10.95% |
+
+핵심: Top-k 비율은 정확도·latency·memory를 교환하는 조절점이지 고정된 최적값이 아니다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 8, Table 8
+
+## 21. Latency 주장은 custom kernel 내부 비교다
+
+
+| LLaMA-7B layer group | OWQ 3.01-bit overhead | 비교 기준 |
+| --- | --- | --- |
+| k/q/v/o | 3.21% | 논문의 3-bit OPTQ kernel |
+| up/gate | 2.34% | 논문의 3-bit OPTQ kernel |
+| down | 2.03% | 논문의 3-bit OPTQ kernel |
+
+핵심: 이 수치는 fp16 대비 end-to-end speedup이나 모든 3-bit 형식의 보편 overhead가 아니다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 6–7, Table 5
+
+## 22. WCT 결과는 작은 GPT-4 judge 평가에 조건부다
+
+
+| 설정 | WCT r=64 | QLoRA | 해석 |
+| --- | --- | --- | --- |
+| 비교 결과 | 81 wins | 54 wins | 25 ties |
+| 평가 표본 | Vicuna 80 questions | 두 제시 순서 | 총 160 judgments |
+| Base와 tuning | LLaMA-7B 4-bit OWQ | OpenAssistant subset | task adaptation |
+| 생성 조건 | nucleus p=0.9 | temperature 0.7 | GPT-4 judge |
+
+핵심: WCT가 더 많이 이긴 결과는 이 judge·질문·생성 설정을 벗어난 일반 선호도 증명이 아니다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) p. 7, Fig. 4
+
+## 23. OWQ를 주변 방법과 구분하기
+
+
+| 방법 | 핵심 단위 | OWQ와의 차이 |
+| --- | --- | --- |
+| RTN | 각 weight 독립 반올림 | 출력 민감도·순차 보상 없음 |
+| OPTQ·GPTQ | Hessian 기반 순차 weight 보상 | weak 전체 열을 fp16으로 남기지 않음 |
+| Magnitude outlier | 큰 weight 값 | OWQ는 출력 민감도로 열 선택 |
+| LoRA·QLoRA | 추가 low-rank adapter | WCT는 기존 weak 열을 갱신 |
+| W4A4·KV 방법 | activation 또는 cache도 압축 | OWQ weight-only 범위 밖 |
+
+핵심: OWQ는 민감한 input column을 보존과 tuning에 함께 쓴다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 2–5
+
+## 24. 논문이 보여 준 것과 남은 한계
+
+
+| 축 | 확인된 근거 | 해석 한계 |
+| --- | --- | --- |
+| 정확도 | OPT·LLaMA의 PPL과 few-shot 개선 | 모든 LLM·task로 일반화 불가 |
+| 민감도 | Calibration Hessian 기반 열 선택 | 분포 이동 시 열 순위 변화 가능 |
+| 효율 | A100 custom kernel overhead 측정 | 다른 hardware의 속도 보장 아님 |
+| 예산 | Effective bit sweep의 trade-off | 보편 최적 top-k 없음 |
+| 미세조정 | GPT-4 judge에서 WCT 비교 | 소규모 judge 평가에 조건부 |
+
+핵심: 열 선택과 속도는 calibration과 kernel에 의존한다.
+
+근거: [aaai-pdf](https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335) pp. 5–8

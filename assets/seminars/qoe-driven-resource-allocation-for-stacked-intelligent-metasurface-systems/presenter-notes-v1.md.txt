@@ -1,0 +1,251 @@
+## 1. 전송률을 넘어 사용자 경험으로: SIM 자원 할당
+
+1. 전송률을 넘어 사용자 경험으로: SIM 자원 할당
+
+발표 대본
+이 자료는 Zarini 등 여섯 저자의 IEEE PIMRC 2025 논문을 설명합니다. 시스템의 큰 설계와 논문이 보고한 결과를 배우되, 수식과 그림에 남아 있는 불일치는 별도로 구분합니다. 완전히 재현 가능한 제어 알고리즘이 검증되었다는 뜻은 아닙니다.
+
+공개 출처
+pimrc2025 | p. 1, title and abstract
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 2. 같은 전송률 증가가 같은 만족도 증가를 뜻하지는 않는다
+
+2. 같은 전송률 증가가 같은 만족도 증가를 뜻하지는 않는다
+
+발표 대본
+논문은 웹·비디오·음성 서비스가 서로 다른 만족도 특성을 가진다는 데서 출발합니다. MOS라는 이름은 주관적 평가 척도에서 왔지만, 이 논문의 수치 실험은 전송률이나 지연 등을 MOS로 변환하는 모델을 사용합니다. 실제 사용자에게 설문한 점수라고 설명하면 안 됩니다.
+
+공개 출처
+pimrc2025 | pp. 1, 3, Introduction; QoE Preliminaries
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 3. 기지국의 전파가 여러 SIM 층을 지나 사용자에게 도달한다
+
+3. 기지국의 전파가 여러 SIM 층을 지나 사용자에게 도달한다
+
+발표 대본
+SIM은 기지국을 둘러싼 여러 투과형 metasurface 층으로 모델링됩니다. 각 층의 meta-atom은 통과하는 전파의 위상을 바꿉니다. 사용자는 단일 안테나이고 F≥U를 가정합니다. 송신 stream과 BS 안테나의 대응은 미리 정해져 있으며 안테나 선택은 최적화하지 않습니다. SIM의 빠른 전파 통과와 학습 알고리즘 전체의 지연을 동일시하지 않습니다.
+
+공개 출처
+pimrc2025 | p. 2, Fig. 1; Sec. II.A–C
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 4. 두 층으로 줄여 보면 위상과 전파 연산의 순서가 보인다
+
+4. 두 층으로 줄여 보면 위상과 전파 연산의 순서가 보인다
+
+발표 대본
+Γˡ은 대각 원소 exp(jκˡ_f)를 갖는 위상 행렬이며 각 원소의 크기는 1입니다. Bˡ은 원소 간 거리와 회절 모델로 주어지는 층 사이 전파 행렬입니다. 오른쪽 행렬부터 입력에 적용되므로 Γ¹→B²→Γ² 순서입니다. 일반식은 ΓᴸBᴸ…Γ²B²Γ¹입니다. B¹은 BS 안테나와 첫 층 사이의 결합이고 Ω에는 포함하지 않습니다. 두 층 그림은 연산 순서를 설명하기 위한 축약이지 실험 설정 L=2라는 뜻은 아닙니다.
+
+공개 출처
+pimrc2025 | p. 2, Eqs. (1)–(2)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 5. SINR는 원하는 신호와 간섭을 함께 반영한다
+
+5. SINR는 원하는 신호와 간섭을 함께 반영한다
+
+발표 대본
+g 표기는 복잡한 원문 gain을 간단히 보기 위해 도입한 표기입니다. SINR는 첫 항을 셋째 항으로 나눈 값입니다. Eq. (4)에는 대역폭이 없으므로 R를 bit/s라고 확정하지 않습니다. 웹 지연식은 bit 단위 파일 크기를 R로 나누므로 필요한 대역폭·단위 변환이 원문만으로 완결되지 않습니다. 강의에서는 없는 대역폭을 넣어 식을 고치지 않습니다.
+
+공개 출처
+pimrc2025 | p. 3, Eqs. (3)–(4)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 6. MOS로 바꾸는 경로는 서비스마다 다르다
+
+6. MOS로 바꾸는 경로는 서비스마다 다르다
+
+발표 대본
+PSNR은 Peak Signal-to-Noise Ratio입니다. 논문의 K 상수는 서비스와 부호화·목표 rate 조건에 따라 설정되며 모든 사용자에게 보편적인 상수라고 하지 않습니다. Audio 단락은 RF>1일 때 최대 MOS라고 쓰면서 동시에 1<RF<100 중간식을 제시해 조건이 중첩됩니다. 외부 표준의 숫자로 조용히 바꾸지 않고 세부 수치 재현이 불확실하다고 설명합니다.
+
+공개 출처
+pimrc2025 | p. 3, Sec. II.D; Eq. (5)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 7. 논문은 서비스 종류별로 세 개의 최적화 문제를 정의한다
+
+7. 논문은 서비스 종류별로 세 개의 최적화 문제를 정의한다
+
+발표 대본
+Eq. (6) 뒤에는 서비스 인덱스에 따라 실제로 세 개의 별도 문제라고 설명되어 있습니다. 시스템 그림에 여러 종류 사용자가 있다고 해서 모든 서비스가 섞인 한 환경에서 공정성까지 입증되었다고 확장하지 않습니다. MOS 합 최대화와 최소 MOS 제약은 서로 다른 역할을 합니다.
+
+공개 출처
+pimrc2025 | p. 3, Eq. (6) and following paragraph
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 8. 전력만 맞추면 가능한 action이 되는 것은 아니다
+
+8. 전력만 맞추면 가능한 action이 되는 것은 아니다
+
+발표 대본
+위상 계수는 exp(jκ)이므로 크기 1인 복소 계수입니다. 원문의 최적화 문제에 제약이 적혀 있다는 사실과 학습 정책의 모든 출력이 제약을 만족한다는 사실은 다릅니다. 제약 투영이나 action 파라미터화의 상세 구현을 원문에서 확정할 수 없으며, 보상 penalty만으로 hard feasibility가 자동 보장된다고 말하지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 3–4, Eq. (6); MDP transformation
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 9. MDP에서는 이전 SINR로 현재 전력과 SIM 응답을 정한다
+
+9. MDP에서는 이전 SINR로 현재 전력과 SIM 응답을 정한다
+
+발표 대본
+원문 state는 [SINRᵤ[n−1]]이고 action은 Ψ[n]입니다. 제어 agent가 edge node에 있다는 것과 계산 task의 MEC offloading 정책이라는 것은 다릅니다. 이전 SINR만으로 일반 이동 환경의 Markov 성질이 증명되었다고 확장하지 않습니다. 원문은 state transition 시간 인덱스와 reward indicator를 충분히 닫힌 구현으로 명시하지 않아 이 도식은 설계 관계를 보여줍니다.
+
+공개 출처
+pimrc2025 | p. 4, Sec. III.A
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 10. CQL을 채택한 동기: 데이터 밖 행동을 과신하지 않기
+
+10. CQL을 채택한 동기: 데이터 밖 행동을 과신하지 않기
+
+발표 대본
+논문은 Conservative Q-Learning을 데이터 분포 밖 행동의 Q 과대평가를 줄이려는 동기로 사용합니다. p.4는 J, L, J_CQL을 제시하지만 실제 어느 목적을 어떤 부호로 최소화하는지 연결이 불명확합니다. 이 그림은 Bellman 적합과 보수성이라는 두 역할만 구분하며 원문의 학습식을 표준 CQL 구현으로 조용히 대체하지 않습니다.
+
+공개 출처
+pimrc2025 | p. 4, Sec. III.B
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 11. 메타학습: 새 task에 적응할 시작점 찾기
+
+11. 메타학습: 새 task에 적응할 시작점 찾기
+
+발표 대본
+pp.4–5는 task별 inner learning rate η와 meta learning rate β를 나눕니다. 공유 초기값에서 task별 업데이트를 수행한 뒤 그 결과를 이용해 초기값을 다시 학습하는 구조입니다. 원문은 trust region을 언급하지만 이를 실행할 완전한 제약식과 task 분포를 주지 않습니다. policy-gradient 최대화 설명과 subtract-gradient update의 부호도 확정되지 않으므로, 이 자료는 검증된 MAML/CQL 결합 코드나 적응 속도 보장을 제시하지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 4–5, Sec. III.C; Eq. (7)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 12. 강의용 예제: 같은 총 rate라도 분배 결과는 다를 수 있다
+
+12. 강의용 예제: 같은 총 rate라도 분배 결과는 다를 수 있다
+
+발표 대본
+논문 Eq. (3)과 (4)의 관계를 작은 수치로 추적하는 예제입니다. 가상 만족도 m은 실제 Web/Video/Audio MOS 중 어느 것도 아니며, 복잡한 서비스 변환을 대체하는 실험 모델도 아닙니다. 유효 gain은 이미 주어진 값으로 가정하므로 위상 최적화를 수행한 결과가 아닙니다.
+
+공개 출처
+pimrc2025 | p. 3, Eqs. (3)–(6); constructed teaching example
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 13. 전력 합과 rate 합이 같아도 최소 만족도는 달라진다
+
+13. 전력 합과 rate 합이 같아도 최소 만족도는 달라진다
+
+발표 대본
+A의 SINR는 4×1/(1×1+1)=2입니다. B의 사용자1은 4×1.5/(1×0.5+1)=4, 사용자2는 4×0.5/(1×1.5+1)=0.8입니다. rate 합은 두 경우 모두 log2(9)입니다. 가상 포화 효용 m=1+min(R,2)를 적용하면 B의 사용자1 이득은 포화되고 사용자2는 최소조건에 못 미칩니다. 이는 MOS 모델과 제약이 목표를 바꿀 수 있다는 예시이지 CQL이 A를 선택함을 증명하지 않습니다.
+
+공개 출처
+pimrc2025 | p. 3, Eqs. (3)–(6); constructed teaching example
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 14. 원문의 reward indicator는 두 곳에서 반대 의미로 쓰인다
+
+14. 원문의 reward indicator는 두 곳에서 반대 의미로 쓰인다
+
+발표 대본
+이 표는 원문 표현을 대수적으로 비교한 것이지 저자의 코드를 진단한 것은 아닙니다. S는 MOS 합입니다. 원문 정의대로 다섯 제약을 모두 만족하면 χ 합은5이므로 보상은 −4S가 됩니다. 이를 위반 indicator로 고치면 의도와 맞아 보일 수 있으나 저자가 실제로 그렇게 구현했는지 근거가 없습니다. 수정 가설을 논문 알고리즘으로 가르치지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 4, 6, Reward Function; Fig. 2 discussion
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 15. CQL의 목적함수 이름과 update 연결도 확인이 필요하다
+
+15. CQL의 목적함수 이름과 update 연결도 확인이 필요하다
+
+발표 대본
+p.4의 식들은 기대값 표기와 목표 이름도 서로 완전히 연결되지 않습니다. 이 강의는 없는 target-network, action projection, optimizer, offline dataset 수집법을 추가하지 않습니다. 실제 재현에는 정정된 저자 설명이나 구현이 필요합니다. 원문에 CQL이라는 이름이 나온다는 것만으로 모든 표준 CQL 가정·보장이 여기서 성립한다고 보지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 4–5, Sec. III.B–C
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 16. 논문 수치는 이 simulation 설정에서 읽는다
+
+16. 논문 수치는 이 simulation 설정에서 읽는다
+
+발표 대본
+p.6의 기본값을 그대로 옮겼습니다. σ²=-174dBm을 dBm/Hz로 조용히 바꾸거나 대역폭을 추정하지 않습니다. pp.2–3은 full CSI, quasi-static flat fading을 가정합니다. 그림별 sweep은 기본 설정을 일부 대체합니다. Fig.2의 가로축 epochs0–3000을 기본 episode100과 같은 단위·실험횟수로 단정하지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 2–3, 6, System Model; Performance Evaluation
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 17. 논문이 보고한 결과: MOS 개선과 학습 곡선
+
+17. 논문이 보고한 결과: MOS 개선과 학습 곡선
+
+발표 대본
+개선률은 p.1 abstract와 p.6 본문이 보고한 값입니다. percentage point나 모든 조건의 최소 개선율이 아니며, 집계 식과 상세 baseline 구현이 완전히 명시되지는 않습니다. Fig.2의 높은 reward를 wall-clock 속도나 제약 위반률의 측정값으로 바꾸지 않습니다. source의 reward 정의 충돌 때문에 음수 곡선의 원인을 확정된 penalty 식으로 재현할 수도 없습니다.
+
+공개 출처
+pimrc2025 | pp. 1, 5–6, Figs. (2)–(5)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 18. Fig. 3·4는 캡션과 실제 가로축이 다르다
+
+18. Fig. 3·4는 캡션과 실제 가로축이 다르다
+
+발표 대본
+원본 PDF의 실제 축을 시각 확인했습니다. Fig.3과4의 인쇄 캡션은 실제 x축과 맞지 않습니다. 여기서는 x축과 p.6의 설명을 함께 근거로 쓰되 원문 캡션 오류를 숨기지 않습니다. Fig.5는 안테나와 사용자 수를 1:1로 두므로 안테나 수의 효과만 독립적으로 바꾼 비교로 해석하지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 5–6, Figs. (2)–(5)
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 19. 높은 평균 MOS와 최소 MOS 보장은 같은 주장이 아니다
+
+19. 높은 평균 MOS와 최소 MOS 보장은 같은 주장이 아니다
+
+발표 대본
+만약 같은 사용자 집합 모두의 점수가3.5이상이라면 그 평균도3.5이상이어야 합니다. 그러나 Fig.4의 x=3.5에서 두 곡선은 약1.7과1.25로 보입니다. 이는 작은 근사 판독 오차로 해소되는 차이가 아닙니다. 구체적인 원인이 구현의 soft penalty인지, metric 또는 대상 집합의 차이인지, 그림의 추가 오류인지 원문은 설명하지 않습니다. 코드 버그라고 단정하지 않고 hard feasibility 증거로 사용할 수 없다는 점만 결론냅니다.
+
+공개 출처
+pimrc2025 | pp. 3, 5–6, Eq. (6) C1; Fig. 4
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 20. 고정 신경망의 비용과 시스템 확장성은 다르다
+
+20. 고정 신경망의 비용과 시스템 확장성은 다르다
+
+발표 대본
+p.5의 복잡도 표현은 고정된 망의 layer 폭과 학습 반복에 의존합니다. 그러나 state와 action 크기는 U 및 SIM 구성에 영향을 받으므로 문제 크기가 바뀌어도 같은 입력·출력 차원을 유지하는 표현이 필요합니다. 원문은 이를 명시하지 않습니다. 모든 convex solver가 차원에 지수적으로 느리다는 일반 명제로 확장하지도 않습니다. SIM 전파 처리 동기와 전체 제어·학습 시스템의 측정된 에너지 절감은 다릅니다.
+
+공개 출처
+pimrc2025 | pp. 2, 4–6, Sec. III.D; Performance Evaluation
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
+
+## 21. 이 논문에서 가져갈 핵심과 확인할 경계
+
+21. 이 논문에서 가져갈 핵심과 확인할 경계
+
+발표 대본
+핵심은 통신 자원을 서비스 경험의 관점으로 재정의하고, SIM과 전력을 함께 제어하려는 프레임워크입니다. 학습자가 가져갈 것은 변수들의 관계와 조건부 실험 해석입니다. reward, 손실 연결, 단위, 그림과 feasibility의 공백이 있으므로 구현이 완전히 검증되었다고 결론내리지 않습니다.
+
+공개 출처
+pimrc2025 | pp. 1–6, framework and evidence boundaries
+QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems, IEEE PIMRC 2025
+https://doi.org/10.1109/PIMRC62392.2025.11275274
