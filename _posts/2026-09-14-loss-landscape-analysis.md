@@ -3,6 +3,7 @@ layout: post
 title: "Loss Landscape Analysis: Bayesian Ensembles, Mode Connectivity, and Model Merging"
 nav_title: "Loss Landscape Analysis"
 date: 2026-09-14 16:22:00 +0900
+last_modified_at: 2026-09-14 22:41:00 +0900
 categories: [Machine Learning, Neural Networks]
 tags: [Loss Landscape, Bayesian Neural Networks, Mode Connectivity, Model Merging, Permutation Symmetry]
 permalink: /posts/loss-landscape-analysis/
@@ -203,7 +204,7 @@ $$
 \qquad \lambda_i\ge0,\quad\sum_i\lambda_i=1
 $$
 
-로 표현된다. $$k=1$$이면 선분, 독립적인 꼭짓점 셋이면 삼각형이다. 계수의 합이 1이므로 좌표 원점을 바꾸어도 같은 기하학적 점을 나타내는 affine combination이 된다. 꼭짓점 손실이 낮아도 내부 손실이 낮지는 않으므로 내부를 sampling해 최적화·검증해야 한다.
+로 표현된다. 꼭짓점이 affine 독립일 때 $$k=1$$은 선분, $$k=2$$는 삼각형이다. 계수의 합이 1이므로 좌표 원점을 바꾸어도 같은 기하학적 점을 나타내는 affine combination이 된다. 꼭짓점 손실이 낮아도 내부 손실이 낮지는 않으므로 내부를 sampling해 최적화·검증해야 한다.
 
 여기서 volume은 **구성한 부분공간의 차원에 따른 부피**다. 전체 매개변수 차원보다 낮은 차원의 simplex는 전체 공간의 Lebesgue 부피가 0일 수 있다. “넓은 공간”이라는 그림만으로 full-dimensional posterior mass를 확보했다고 말할 수 없다. simplex에서 균일 sampling한 분포도 일반적으로 posterior와 다르다.
 
@@ -438,4 +439,11 @@ $$
 
 - Local source: `Loss surface analysis.pdf`, *Loss Landscape Analysis*, 25 pages — locally supplied; not redistributed. 로컬 보관명은 `loss-surface-analysis.pdf`이며 원본 bytes는 변경하지 않았다. 공개 원본 URL·재배포 허가·발표자·발표일은 확인되지 않았다.
 - 이 글은 공개 원 논문을 링크한 독자적 해설이다. PDF·슬라이드 그림·전체 번역은 첨부하지 않는다. 각 절의 논문 링크는 해당 주장 바로 옆에서 확인할 수 있다.
+
+핵심 주장과 수식의 대조에 사용한 공개 원 논문 PDF는 다음과 같다. 공개 웹에는 사본을 재업로드하지 않았다.
+
+- 불확실성·분포 정렬: [Deep Ensembles — 예측 불확실성](https://papers.nips.cc/paper_files/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf){:target="_blank" rel="noopener"} · [Rossi et al. — Bayesian posterior 순열 정렬](https://arxiv.org/pdf/2310.10171){:target="_blank" rel="noopener"}.
+- 연결 경로·효율: [Garipov et al. — mode connectivity와 FGE](https://proceedings.neurips.cc/paper_files/paper/2018/file/be3087e74e9100d4bc4c6268cdbe8456-Paper.pdf){:target="_blank" rel="noopener"} · [Draxler et al. — low-loss path](https://proceedings.mlr.press/v80/draxler18a/draxler18a.pdf){:target="_blank" rel="noopener"} · [Benton et al. — simplexes](https://proceedings.mlr.press/v139/benton21a/benton21a.pdf){:target="_blank" rel="noopener"} · [Yun et al. — function-space bridge](https://proceedings.mlr.press/v202/yun23a/yun23a.pdf){:target="_blank" rel="noopener"}.
+- 여러 모델 병합: [Git Re-Basin — permutation matching](https://arxiv.org/pdf/2209.04836){:target="_blank" rel="noopener"} · [Ito et al. — multiple-model LMC](https://raw.githubusercontent.com/mlresearch/v267/main/assets/ito25a/ito25a.pdf){:target="_blank" rel="noopener"} · [Sonthalia et al. — star-domain 가설](https://arxiv.org/pdf/2403.07968){:target="_blank" rel="noopener"}.
+- 최적화·학습 이론: [SAM — 주변 손실](https://arxiv.org/pdf/2010.01412){:target="_blank" rel="noopener"} · [SWA — 가중치 평균](https://arxiv.org/pdf/1803.05407){:target="_blank" rel="noopener"} · [NTK — 무한 너비 극한](https://arxiv.org/pdf/1806.07572){:target="_blank" rel="noopener"}.
 - 연결해서 읽기: [AI Education]({{ "/post/ai-education/" | relative_url }}) · [Machine Learning Basics]({{ "/study/machine-learning-basic/" | relative_url }}) · [Stanford CS236]({{ "/study/cs236/" | relative_url }}).

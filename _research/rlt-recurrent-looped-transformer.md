@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-14 16:37:00 +0900
+last_modified_at: 2026-09-14 22:40:00 +0900
 title: "RLT"
 nav_title: "RLT"
 topic: "Recurrent latent computation and full-history policy replay"
@@ -28,7 +29,7 @@ Source: [Official project page](https://yifanzhang-pro.github.io/recurrent-loope
 | Author | Yifan Zhang |
 | Report date | September 12, 2026 |
 | Material type | Technical report and project documentation |
-| Reviewed version | 19-page English report and repository README accessed September 14, 2026 |
+| Reviewed version | Original 19-page English PDF, repository README, and experiment figure accessed September 14, 2026 |
 | Evidence boundary | Report definitions and analytical arguments; separate preliminary synthetic results in the README |
 
 ## One-Line Summary
@@ -188,6 +189,8 @@ $$
 
 여기에는 중요한 조건이 있다. 긴 prompt를 encoder가 먼저 처리하더라도 decoder는 각 위치에서 해당 prefix만 읽어야 한다. 이전 토큰의 decoder 계산을 건너뛰거나 캐시를 초기화하면 동일한 $$F_t$$의 반복이라는 전제가 깨진다. 또한 이 정리는 실수 연산의 동치에 관한 것이며, 다른 GPU kernel의 부동소수점 결과가 bitwise 동일하다는 증명은 아니다.
 
+저자의 별도 [prefill–decode kernel mismatch 보고서](https://raw.githubusercontent.com/yifanzhang-pro/Pretraining-RL-Science/master/Prefill_Decode_Kernel_Mismatch.pdf){:target="_blank" rel="noopener"}는 같은 가중치에서도 실행 경로·정밀도·sampling 변환에 따라 실제 분포가 달라질 수 있으며, 한 파라미터 값에서 forward 확률이 같아도 gradient가 같다는 결론은 따르지 않는다고 구분한다. 이는 RLT의 구조적 경계 불변성과 별도로 확인해야 할 실행 조건이다.
+
 작성자가 권하는 검사는 동일한 토큰열을 여러 chunk 크기와 경계로 나눠 실행한 뒤, 출력 확률뿐 아니라 매 시점의 $$s_t$$와 각 층의 KV를 함께 비교하는 것이다. 확률만 비교하면 readout에 드러나지 않은 상태 차이가 뒤에서 커지는 버그를 놓칠 수 있다.
 
 ## 4. Loss Masking Is Not Gradient Masking
@@ -312,6 +315,14 @@ $$
 
 반면 고정 창 $$W$$만 읽는 local attention 항은 $$O(T\min(W,T)d_k)$$로 계산할 수 있다. 이는 attention score 부분의 큰 차수 분석이며 projection·FFN·통신 비용을 모두 포함한 실행시간 공식은 아니다. Local cache가 bounded라고 해서 전역 encoder 메모리까지 상수 공간이 되는 것은 아니다.
 
+원문 식 (3.3)은 이 구분을 추론 cache 저장량에도 적용한다. 유효 KV 폭을 $$d_{\mathrm{KV}}$$, decoder KV 폭을 $$d_{\mathrm{KV}}^D$$, encoder-memory group 수를 $$G$$라고 하면 시점 $$t$$의 저장량은 대략 다음과 같다.
+
+$$
+O\!\left((L_E+G)t d_{\mathrm{KV}}+L_D\min(t,W-1)d_{\mathrm{KV}}^D+d\right).
+$$
+
+첫 항은 encoder cache와 전역 메모리 때문에 길이에 따라 증가하고, 둘째 항만 decoder SWA의 **보존된 과거**를 뜻한다. 현재 위치의 일시적인 KV는 그 둘째 항에 세지 않는다. 마지막 $$O(d)$$는 순환 출력이다. 따라서 decoder 창을 고정해도 **전체 추론 상태가 상수 공간이 되는 것은 아니다.** 이것은 저장량의 차수식이지 실제 GPU 메모리 사용량이나 속도 측정치는 아니다. 원문 식 (3.2)의 prefill 연산량 추정도 순차 decoder 경로를 없애지는 않는다.
+
 RLT의 weight tying은 저장 파라미터 수와 반복 계산량을 구분해서 해석해야 한다. 동일한 행렬을 두 번 곱하면 행렬 저장은 한 번이어도 곱셈은 두 번이다. 따라서 속도 검증에는 같은 파라미터 수뿐 아니라 sequence 길이, batch 크기, precision, FLOPs, 지연시간과 메모리 측정이 필요하다.
 
 ### 6.2 Cache validity as a reproducibility contract
@@ -324,16 +335,16 @@ Conversation에서 user·tool 입력은 모델이 샘플한 action이 아니어�
 
 ## 7. Preliminary Results and What They Establish
 
-**19쪽 보고서와 현재 README를 같은 증거로 합치지 않는다.** 보고서는 측정된 효율·scaling 결과를 제시하지 않는다. 별도의 [README experiment section](https://github.com/yifanzhang-pro/recurrent-looped-tranformer#preliminary-synthetic-experiments){:target="_blank" rel="noopener"}에는 약 79K 파라미터, 3 seeds, 학습 길이 32 operations의 synthetic state-tracking 실험이 있다. 과제·길이별 test program 수는 2,048이며 parameter/data budget은 맞췄지만 FLOPs는 맞추지 않았다.
+**19쪽 보고서와 현재 README를 같은 증거로 합치지 않는다.** 보고서는 측정된 효율·scaling 결과를 제시하지 않는다. 별도의 [README experiment section](https://github.com/yifanzhang-pro/recurrent-looped-tranformer#preliminary-synthetic-experiments){:target="_blank" rel="noopener"}과 [원본 결과 그림](https://raw.githubusercontent.com/yifanzhang-pro/recurrent-looped-tranformer/master/assets/rlt-state-tracking-results.png){:target="_blank" rel="noopener"}에는 약 79K 파라미터, 3 seeds, 학습 길이 32 operations의 synthetic state-tracking 실험이 있다. 과제·길이별 test program 수는 2,048이며 parameter/data budget은 맞췄지만 FLOPs는 맞추지 않았다.
 
 | Task | RLT at 32 operations | RLT at 128 operations | Stated chance level |
 |---|---|---|---|
 | Parity | Approximately 100% | 60.8% | 50% |
 | Five-state transitions | Approximately 100% | 20.7% | 20% |
 
-32-operation 값은 그림의 근사 판독치이고 128-operation 값은 그림에 표시된 수치다. 원문의 whisker는 seed 최솟값·최댓값이며 신뢰구간이 아니다. 비교 Transformer의 128-operation 값은 각각 약 48%, 약 21%로 제시된다. 이 글에서 실험을 재실행한 결과는 아니다.
+32-operation 값은 그림의 근사 판독치이고 128-operation 값은 그림에 표시된 수치다. 원문의 whisker는 seed 최솟값·최댓값이며 신뢰구간이 아니다. 128-operation 비교군에서 Transformer는 각각 약 48%, 약 21%로 제시되지만, **GRU는 parity 100%, five-state 99.97%**로 표시된다. 즉 이 그림은 RLT의 두 과제 학습 길이 적합을 보여 주지만, 긴 길이에서 RLT가 모든 비교군보다 우수하다는 근거는 아니다. 이 글에서 실험을 재실행한 결과는 아니다.
 
-작성자 해석은 다음과 같다. Parity의 60.8%는 기재된 chance보다 10.8 percentage points 높지만, five-state의 20.7%는 0.7 points 차이다. 이를 보고 두 과제 모두 안정적인 4배 길이 일반화를 달성했다고 요약해서는 안 된다. 개별 seed 결과와 불확실성 분석 없이 작은 차이의 통계적 유의성을 확정할 수도 없다. 대규모 언어 reasoning, RL scaling, wall-clock 향상으로 결론을 확장하려면 각각의 추가 실험이 필요하다.
+작성자 해석은 다음과 같다. Parity의 60.8%는 기재된 chance보다 10.8 percentage points 높지만, five-state의 20.7%는 0.7 points 차이다. 특히 같은 그림의 GRU는 이 두 합성 과제에서 128 operations까지 거의 완전한 정확도를 유지한다. 이를 보고 RLT가 두 과제에서 안정적인 4배 길이 일반화를 달성했다거나, 이 실험의 GRU 기준선을 앞섰다고 요약해서는 안 된다. 개별 seed 결과와 불확실성 분석 없이 작은 차이의 통계적 유의성을 확정할 수도 없다. 대규모 언어 reasoning, RL scaling, wall-clock 향상으로 결론을 확장하려면 각각의 추가 실험이 필요하다.
 
 ## 8. Interpretation and Next Tests
 
@@ -360,8 +371,8 @@ Conversation에서 user·tool 입력은 모델이 샘플한 action이 아니어�
 | Complete state | Hidden output 외에 decoder KV도 포함 | Attention 반례와 block Jacobian으로 확인 |
 | SFT prompt masking | 손실 선택과 계산 경로가 다름 | 동일 forward·상이한 gradient 예제 추가 |
 | RL replay | 값 재계산과 gradient 보존이 별개 | Stale-state 예제와 support 반례 추가 |
-| Results | 보고서와 README의 실험 범위가 다름 | 출처를 분리하고 근사·정확 표기를 유지 |
-| Verification scope | 공개 웹 원문·수식 텍스트와 독립 계산을 대조 | 원본 PDF 전 페이지 시각 검증·실험 재현 완료로 주장하지 않음 |
+| Results | 보고서와 README의 실험 범위가 다르고 그림의 GRU 기준선이 강함 | 출처를 분리하고 128-operation GRU 100%/99.97%를 명시 |
+| Verification scope | 원본 19쪽 PDF 전 페이지와 README 결과 그림을 시각 대조 | 수식·그림·결론의 출처를 확인했으나 실험 재현이나 독립 벤치마크는 수행하지 않음 |
 
 ## Key Takeaways
 
@@ -378,4 +389,6 @@ Conversation에서 user·tool 입력은 모델이 샘플한 action이 아니어�
 - Yifan Zhang. [Recurrent Looped Transformer — project overview](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"}, September 12, 2026.
 - Yifan Zhang. [Recurrent Looped Transformer — technical report, 19 pages](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/Recurrent_Looped_Transformer.pdf){:target="_blank" rel="noopener"}. Architecture: Sections 2–3; training and serving: Sections 5–6; execution and gradients: Appendices A–C.
 - [Official README and preliminary synthetic experiments](https://github.com/yifanzhang-pro/recurrent-looped-tranformer#preliminary-synthetic-experiments){:target="_blank" rel="noopener"}, accessed September 14, 2026.
+- [Official synthetic-results figure](https://raw.githubusercontent.com/yifanzhang-pro/recurrent-looped-tranformer/master/assets/rlt-state-tracking-results.png){:target="_blank" rel="noopener"}, accessed September 14, 2026.
+- [Related prefill–decode kernel mismatch report](https://raw.githubusercontent.com/yifanzhang-pro/Pretraining-RL-Science/master/Prefill_Decode_Kernel_Mismatch.pdf){:target="_blank" rel="noopener"}, cited for execution and gradient-parity limits.
 - [Repository license](https://github.com/yifanzhang-pro/recurrent-looped-tranformer/blob/master/LICENSE){:target="_blank" rel="noopener"}.
