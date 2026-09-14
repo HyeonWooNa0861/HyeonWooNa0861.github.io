@@ -376,6 +376,10 @@
       url: /research/efficient-subgraph-matching-billion-node-graphs/
       description: Index-free distributed matching with STwig query units
       match: /research/efficient-subgraph-matching-billion-node-graphs/
+    - title: RLT
+      url: /research/rlt-recurrent-looped-transformer/
+      description: Recurrent latent computation, complete-state gradients, and policy replay
+      match: /research/rlt-recurrent-looped-transformer/
 
 - title: Assignment
   url: /assignment/
