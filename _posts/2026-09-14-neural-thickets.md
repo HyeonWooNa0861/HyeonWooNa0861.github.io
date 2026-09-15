@@ -3,17 +3,18 @@ layout: post
 title: "Neural Thickets: Dense and Diverse Experts Near Pretrained Weights"
 nav_title: "Neural Thickets"
 date: 2026-09-14 22:40:00 +0900
+last_modified_at: 2026-09-15 12:00:00 +0900
 categories: [Machine Learning, Neural Networks]
 tags: [Neural Thickets, RandOpt, Weight Space, Post-Training, Ensemble Learning]
 permalink: /posts/neural-thickets/
 section: ai-education
 ---
 
-Source PDF: `Neural Thickets.pdf` (13-slide seminar deck, Yang Ji-Woong, MLPR Laboratory, Kookmin University) — locally supplied; not redistributed. Primary paper: Yulu Gan and Phillip Isola, *Neural Thickets: Diverse Task Experts Are Dense Around Pretrained Weights*, arXiv:2603.12228v1 (2026); <a href="https://arxiv.org/pdf/2603.12228v1" target="_blank" rel="noopener">read the original paper PDF</a>.
+Source Slides: <a href="{{ "/assets/pdfs/post/ai-education/neural-thickets.pdf" | relative_url }}" target="_blank" rel="noopener">Neural Thickets.pdf</a> — Yang Ji-Woong, MLPR Laboratory, Kookmin University (13 slides). Primary Paper: <a href="https://arxiv.org/pdf/2603.12228v1" target="_blank" rel="noopener">Gan and Isola, Neural Thickets, arXiv:2603.12228v1</a>.
 
 > **핵심 메시지:** 큰 사전학습 모델의 가중치 $$\theta$$ 주변에서 무작위 변동을 주면, 특정 과제의 점수를 높이는 모델이 드물지만은 않을 수 있다. 그러나 그 모델들이 **모든 과제에 동시에 강한 일반가라기보다 서로 다른 전문 모델**이라는 점이 중요하다. RandOpt는 이웃을 무작위로 탐색해 좋은 후보를 고르고 투표로 결합한다. 이 결과는 **사전학습의 가치와 선택·앙상블의 가능성**을 보여주지만, 경사 기반 학습의 불필요함이나 낮은 추론 비용을 증명하지는 않는다.
 
-이 글은 위 13쪽 세미나 자료 전체를 읽고, 그 근거인 [Gan–Isola 원 논문](https://arxiv.org/abs/2603.12228){:target="_blank" rel="noopener"}의 정의·그림·실험 조건을 대조하여 쓴 독자적 한국어 해설이다. 원문 문장, 그림, PDF는 공개 저장소에 복제하지 않는다. 세미나 슬라이드에 없는 원 논문의 추가 결과는 별도로 표시하고, 설명을 위해 새로 든 수치 예제는 실제 실험으로 오해하지 않도록 구분한다.
+이 글은 **Neural Thickets 논문을 분석한 13장 슬라이드의 해설**이다. [Gan–Isola 원 논문](https://arxiv.org/abs/2603.12228){:target="_blank" rel="noopener"}의 정의·그림·실험 조건을 함께 살펴본다. 슬라이드 밖의 추가 결과와 이해를 돕는 검산 예제는 해당 부분에서 구분한다.
 
 ## Reading Map
 
@@ -174,7 +175,7 @@ $$
 
 ## References
 
-- Source PDF: `Neural Thickets.pdf` (Yang Ji-Woong seminar slides, 13 pages; locally stored as `neural-thickets.pdf`) — locally supplied; not redistributed. Slides and embedded figures are not published here.
-- <a href="https://arxiv.org/abs/2603.12228" target="_blank" rel="noopener">Gan and Isola, Neural Thickets: Diverse Task Experts Are Dense Around Pretrained Weights, arXiv:2603.12228v1</a> — primary paper; <a href="https://arxiv.org/pdf/2603.12228v1" target="_blank" rel="noopener">read the version-pinned original PDF</a>. The locally downloaded PDF is for private study; no PDF is bundled with this post.
+- Analysis Slides: <a href="{{ "/assets/pdfs/post/ai-education/neural-thickets.pdf" | relative_url }}" target="_blank" rel="noopener">Neural Thickets.pdf</a> — Yang Ji-Woong, 13 slides.
+- Primary Paper: <a href="https://arxiv.org/abs/2603.12228" target="_blank" rel="noopener">Gan and Isola, Neural Thickets: Diverse Task Experts Are Dense Around Pretrained Weights</a> · <a href="https://arxiv.org/pdf/2603.12228v1" target="_blank" rel="noopener">Original PDF (v1)</a>.
 - <a href="https://thickets.mit.edu/" target="_blank" rel="noopener">MIT Neural Thickets project page</a> — authors’ figures, explanation, and RandOpt overview.
 - <a href="https://github.com/sunrainyg/RandOpt" target="_blank" rel="noopener">Official RandOpt codebase</a> — implementation reference; this post does not claim an independent reproduction.

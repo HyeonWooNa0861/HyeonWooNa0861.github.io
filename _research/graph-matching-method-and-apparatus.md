@@ -114,7 +114,12 @@ violation: prune / satisfied: continue
 
 ## Source Integrity Note
 
-공개 PDF에는 비표준 embedded attachment object `STOC`가 포함되어 있었다. Local research archive에서는 해당 attachment만 제거한 안전본으로 본문과 도면을 검토했으며, 블로그에는 PDF 사본을 두지 않고 공식 patent record와 공식 PDF를 연결한다.
+공개 PDF에는 비표준 embedded attachment object `STOC`가 포함되어 있었다. Local research archive에서는 해당 attachment만 제거한 안전본으로 본문과 도면을 검토했다. 공식 patent record와 원문 PDF는 아래 참고자료에서 확인할 수 있다.
+
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 26 slides | <a href="/assets/seminars/graph-matching-method-and-apparatus/graph-matching-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/graph-matching-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/graph-matching-method-and-apparatus/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

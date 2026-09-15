@@ -1,0 +1,290 @@
+## 1. OWQ: 민감한 가중치 열을 보존하는 LLM 양자화
+
+1. OWQ: 민감한 가중치 열을 보존하는 LLM 양자화
+
+발표 대본
+OWQ는 모든 가중치를 같은 비트로 양자화할 때 생기는 품질 손실을 줄이는 방법입니다. 핵심은 큰 가중치 값을 찾는 것이 아니라, calibration activation 때문에 출력 오차에 민감해진 입력 방향의 가중치 열을 찾는 것입니다. 선택된 열은 fp16으로 보존하고 나머지는 OPTQ 방식으로 저비트 양자화합니다.
+
+공개 출처
+aaai-paper | AAAI-24 record
+AAAI-24 proceedings record
+https://ojs.aaai.org/index.php/AAAI/article/view/29237
+aaai-pdf | p. 1, Abstract
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 2. OWQ의 정확한 범위
+
+2. OWQ의 정확한 범위
+
+발표 대본
+논문은 입력 activation은 fp16으로 두고 weight만 sub-4-bit로 양자화하는 계열에 속합니다. 선택된 weak column과 그 index가 추가되므로 3.01-bit는 각 scalar의 물리적 비트 수가 아니라 전체 표현을 평균한 effective bit-width입니다.
+
+공개 출처
+aaai-pdf | pp. 2–4
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 3. 문제 정의: 가중치 오차가 아니라 출력 오차를 줄인다
+
+3. 문제 정의: 가중치 오차가 아니라 출력 오차를 줄인다
+
+발표 대본
+논문의 식 3은 layer output reconstruction error를 최소화하면서 압축 목표를 만족하는 W_hat을 찾습니다. 따라서 평가 기준은 W와 W_hat이 숫자로 얼마나 가까운지만이 아니라 실제 calibration input을 통과한 출력이 얼마나 가까운지입니다.
+
+공개 출처
+aaai-pdf | p. 3, Eq. 3
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 4. Weak column은 작은 열이 아니라 양자화에 민감한 열이다
+
+4. Weak column은 작은 열이 아니라 양자화에 민감한 열이다
+
+발표 대본
+Figure 3은 선택된 weak column이 단순히 min-max 범위가 큰 열과 일치하지 않음을 보여 줍니다. weak라는 이름은 값이 약하다는 뜻이 아니라 저비트 반올림에 취약하다는 뜻입니다. 보존 단위는 개별 scalar나 output channel이 아니라 weight matrix의 전체 input column입니다.
+
+공개 출처
+aaai-pdf | p. 4, Figs. 2–3
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 5. Calibration activation에서 열별 민감도로
+
+5. Calibration activation에서 열별 민감도로
+
+발표 대본
+논문은 각 output row의 Hessian이 동일하게 2XX transpose라고 유도합니다. 대각값 lambda_j는 특정 input feature 방향의 activation 에너지가 얼마나 큰지 반영합니다. 이는 calibration 분포에 의존하므로 실제 배포 입력이 달라지면 민감한 열도 달라질 수 있습니다.
+
+공개 출처
+aaai-pdf | p. 3, Eqs. 4–5
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 6. 교육용 계산 1: X가 Hessian 대각값을 만든다
+
+6. 교육용 계산 1: X가 Hessian 대각값을 만든다
+
+발표 대본
+X를 대각 행렬 [[1,0],[0,3]]으로 두면 XX transpose의 대각은 1과 9이고, 논문의 Hessian 정의 H = 2XX transpose에 따라 2와 18이 됩니다. 이 예는 계산을 이해하기 위한 값이며 모델에서 측정한 통계가 아닙니다.
+
+공개 출처
+aaai-pdf | p. 3, Eq. 4
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 7. 교육용 계산 2: 더 작은 weight 오차의 열이 선택된다
+
+7. 교육용 계산 2: 더 작은 weight 오차의 열이 선택된다
+
+발표 대본
+점수는 s_j = lambda_j × 해당 weight column perturbation의 제곱합입니다. 열 1은 2 × 0.0200 = 0.0400, 열 2는 18 × 0.0032 = 0.0576입니다. 따라서 top-1을 남기면 열 2를 선택합니다. 절대 점수와 출력 SSE를 동일시하지 않고 식 6의 순위 계산에만 사용합니다.
+
+공개 출처
+aaai-pdf | p. 4, Eq. 6
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 8. Weak column 선택 절차
+
+8. Weak column 선택 절차
+
+발표 대본
+Table 7에서는 제안 점수와 Hessian-only 기준이 weight-error-only 기준보다 해당 설정에서 더 낮은 perplexity를 보입니다. 핵심은 output error에 기여하는 activation sensitivity와 quantization perturbation을 함께 보는 것입니다.
+
+공개 출처
+aaai-pdf | pp. 4 and 8, Eq. 6 and Table 7
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 9. Ablation: weight 오차만 보면 민감한 열을 놓친다
+
+9. Ablation: weight 오차만 보면 민감한 열을 놓친다
+
+발표 대본
+Table 7은 제안 점수 lambda_j × column perturbation 제곱합, Hessian-only, weight-error-only, weight magnitude 합을 비교합니다. 제안 점수와 Hessian-only가 두 모델에서 weight-only 기준보다 낮은 perplexity를 보입니다. 두 모델의 ablation이므로 보편적 순위 증명으로 확대하지 않습니다.
+
+공개 출처
+aaai-pdf | p. 8, Table 7
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 10. OWQ 저장 형식: 전체 열 단위 혼합 정밀도
+
+10. OWQ 저장 형식: 전체 열 단위 혼합 정밀도
+
+발표 대본
+OWQ는 선택된 열의 모든 output-row weight를 fp16으로 저장합니다. 저비트 dense matrix에서는 그 열 위치를 zero-fill하고, weak column 값과 정수 index를 별도 저장합니다. 실제 구현은 이 두 부분을 합산해 원래 linear output을 만듭니다.
+
+공개 출처
+aaai-pdf | p. 4, OWQ storage format
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 11. 나머지 열은 OPTQ로, weak 열은 마지막에 남긴다
+
+11. 나머지 열은 OPTQ로, weak 열은 마지막에 남긴다
+
+발표 대본
+OPTQ는 한 열을 양자화한 뒤 inverse Hessian 정보를 이용해 아직 처리하지 않은 열을 갱신합니다. OWQ는 weak column을 뒤로 보내므로 다른 열의 오차가 이 fp16 열을 통해 보상되고, weak 열 자체는 양자화되지 않아 보상된 값을 보존합니다.
+
+공개 출처
+aaai-pdf | pp. 3–4, Eqs. 1–2
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 12. 논문의 OPTQ 기준과 나중 repository 옵션을 구분한다
+
+12. 논문의 OPTQ 기준과 나중 repository 옵션을 구분한다
+
+발표 대본
+OWQ 논문은 act-order와 true-sequential이 OPTQ 논문에는 없었고 이후 공식 GitHub에 추가되었다고 명시합니다. 비교를 위해 OPTQ에는 기본적으로 TS+AO 결과를 제시하지만, OWQ에는 별도 표기가 없으면 적용하지 않습니다. 이 조건을 빼면 표의 방법 비교가 흐려집니다.
+
+공개 출처
+aaai-pdf | p. 5, Experimental Setup
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 13. OWQ는 quantization range도 calibration으로 조정한다
+
+13. OWQ는 quantization range도 calibration으로 조정한다
+
+발표 대본
+일반 OPTQ에 truncation을 바로 적용하면 key와 query의 큰 weak 값까지 잘려 품질이 크게 나빠질 수 있습니다. OWQ는 그 열을 fp16으로 제외한 뒤 나머지 dense weight의 step size와 zero point를 탐색합니다. truncation이 언제나 좋다는 보편 명제가 아닙니다.
+
+공개 출처
+aaai-pdf | pp. 4–5, Quantization Configuration Search
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 14. 추론은 두 GeMV 경로의 출력을 더한다
+
+14. 추론은 두 GeMV 경로의 출력을 더한다
+
+발표 대본
+논문의 CUDA 경로는 저비트 dense matrix를 fp16으로 decompress한 뒤 GeMV를 수행합니다. 동시에 weak column index에 해당하는 activation channel만 gather해서 fp16 weak matrix와 두 번째 GeMV를 수행하고, 두 결과를 더합니다. 따라서 latency 주장은 이 구현과 GPU에 조건부입니다.
+
+공개 출처
+aaai-pdf | p. 6, Acceleration on Real Device
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 15. WCT는 선택된 기존 열만 학습한다
+
+15. WCT는 선택된 기존 열만 학습한다
+
+발표 대본
+WCT는 먼저 OWQ base model을 만든 뒤, fp16으로 남은 기존 weak column만 task-specific data로 미세조정합니다. 저비트 dense matrix는 고정됩니다. LoRA처럼 새로운 low-rank 행렬을 더하지 않으며 low-rank 동등성을 주장하지도 않습니다.
+
+공개 출처
+aaai-pdf | p. 5, PEFT with WCT
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 16. 결과를 읽기 전에 실험 조건을 고정한다
+
+16. 결과를 읽기 전에 실험 조건을 고정한다
+
+발표 대본
+논문은 OPTQ와 같은 calibration 설정을 사용하고, OWQ 수치는 세 seed의 오차 범위를 보고합니다. zero-shot와 few-shot은 lm-evaluation-harness를 사용합니다. 모든 LLM과 모든 하드웨어로 결과를 일반화하지 않습니다.
+
+공개 출처
+aaai-pdf | p. 5, Experimental Setup
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 17. WikiText-2: 작은 fp16 예산이 3-bit 손실을 줄인다
+
+17. WikiText-2: 작은 fp16 예산이 3-bit 손실을 줄인다
+
+발표 대본
+OPT-6.7B에서는 OWQ 3.1-bit와 OPTQ 4-bit가 모두 11.14로 보고됩니다. 이것은 특정 모델과 WikiText-2에서의 비교이지 모든 평가에서 동일하다는 뜻은 아닙니다. LLaMA-7B fp16 perplexity는 5.68이므로 OWQ가 full precision을 복원했다고 말하지 않습니다.
+
+공개 출처
+aaai-pdf | p. 6, Tables 1–2
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 18. Few-shot 평균에서도 3-bit 기준선 격차를 줄인다
+
+18. Few-shot 평균에서도 3-bit 기준선 격차를 줄인다
+
+발표 대본
+Table 4의 평균은 세 과제와 서로 다른 shot 설정을 합친 값입니다. OWQ 3.01-bit는 OPTQ 3-bit보다 높지만 4-bit OPTQ와 full precision보다 낮습니다. 이 평균을 모든 downstream task의 성능으로 일반화하지 않습니다.
+
+공개 출처
+aaai-pdf | pp. 6–7, Table 4
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 19. Group-wise 양자화와 OWQ는 서로 직교한다
+
+19. Group-wise 양자화와 OWQ는 서로 직교한다
+
+발표 대본
+Table 6은 group size를 줄이는 세밀한 uniform quantization과 OWQ를 함께 적용할 수 있음을 보여 줍니다. 논문은 ungrouped 3.01-bit OWQ가 grouped OPTQ 128과 비슷한 품질을 더 작은 추가 저장 비용으로 제공한다고 설명합니다. 표의 수치는 LLaMA-7B 조건입니다.
+
+공개 출처
+aaai-pdf | p. 8, Table 6
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 20. Weak column 예산이 늘면 품질 이득은 포화된다
+
+20. Weak column 예산이 늘면 품질 이득은 포화된다
+
+발표 대본
+Table 8의 여섯 점 중 대표 다섯 점을 표시했습니다. 비트 예산이 커질수록 perplexity 개선 폭은 줄어들지만 latency와 memory overhead는 계속 증가합니다. 논문의 약 0.3% 일반 설명과 특정 모델의 정확한 overhead를 혼동하지 않습니다.
+
+공개 출처
+aaai-pdf | p. 8, Table 8
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 21. Latency 주장은 custom kernel 내부 비교다
+
+21. Latency 주장은 custom kernel 내부 비교다
+
+발표 대본
+Table 5는 특정 layer group에서 OWQ의 두 번째 GeMV가 더하는 overhead를 논문의 OPTQ 3-bit kernel과 비교합니다. 모델 전체 serving latency, batching, prefill, decode를 모두 포함한 fp16 비교가 아닙니다.
+
+공개 출처
+aaai-pdf | pp. 6–7, Table 5
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 22. WCT 결과는 작은 GPT-4 judge 평가에 조건부다
+
+22. WCT 결과는 작은 GPT-4 judge 평가에 조건부다
+
+발표 대본
+논문은 제시 순서 편향을 줄이기 위해 두 ordering을 모두 평가해 160 judgments를 보고합니다. r=64에서 WCT가 81회, QLoRA가 54회 이기고 25회 동률입니다. 사람 평가가 아니며 80개 질문과 GPT-4 judge에 조건부입니다.
+
+공개 출처
+aaai-pdf | p. 7, Fig. 4
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 23. OWQ를 주변 방법과 구분하기
+
+23. OWQ를 주변 방법과 구분하기
+
+발표 대본
+OPTQ의 Hessian 보상을 계승하지만 weak column을 fp16으로 보존하고, quantization range를 조정하며, WCT에서 같은 열을 학습 대상으로 재사용한다는 점이 OWQ의 연결된 기여입니다. activation이나 KV cache까지 압축하는 방법으로 확대 해석하지 않습니다.
+
+공개 출처
+aaai-pdf | pp. 2–5
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335
+
+## 24. 논문이 보여 준 것과 남은 한계
+
+24. 논문이 보여 준 것과 남은 한계
+
+발표 대본
+논문의 중심 증거는 activation-aware weak column 선택이 매우 낮은 weight precision에서 품질 손실을 줄이고, 같은 열을 WCT에 사용할 수 있다는 것입니다. 동시에 calibration shift, mixed representation의 하드웨어 의존성, top-k trade-off, judge 기반 WCT 평가라는 한계를 함께 남깁니다.
+
+공개 출처
+aaai-pdf | pp. 5–8
+AAAI-24 camera-ready paper PDF
+https://ojs.aaai.org/index.php/AAAI/article/download/29237/30335

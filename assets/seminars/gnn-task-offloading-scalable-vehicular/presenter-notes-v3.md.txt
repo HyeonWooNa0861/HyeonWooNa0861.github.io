@@ -1,0 +1,287 @@
+## 1. G-TORA: 차량 그래프에서 오프로딩을 예측하는 GNN
+
+1. G-TORA: 차량 그래프에서 오프로딩을 예측하는 GNN
+
+발표 대본
+이 발표는 G-TORA가 차량 네트워크의 오프로딩을 어떻게 그래프 문제로 바꾸는지 설명합니다. 핵심은 학습 단계와 운용 단계를 분리하는 것입니다. 유전 알고리즘이 먼저 오프로딩 라벨을 만들고, GNN은 그 라벨을 지도학습으로 배웁니다. 학습된 GNN은 기지국에서 현재 차량 그래프를 받아 결정을 예측합니다.
+
+공개 출처
+iet-doi | p. 1, title and Abstract
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 2. 문제: 차량 수와 연결이 계속 달라진다
+
+2. 문제: 차량 수와 연결이 계속 달라진다
+
+발표 대본
+논문은 한 기지국이 한 방향 도로를 덮고, 차량 수와 링크가 시간 slot마다 변하는 상황을 둡니다. task vehicle은 계산을 요청하고 service vehicle은 유휴 자원을 제공합니다. 논문은 고정 차원 DNN이 이 가변 입력을 처리하기 어렵고, 부족한 자리는 0으로 채우거나 범위를 넘는 차량을 따로 다루게 된다고 설명합니다.
+
+공개 출처
+iet-doi | pp. 2–4, §§1 and 3.1
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 3. 한 slot의 차량 오프로딩 구조
+
+3. 한 slot의 차량 오프로딩 구조
+
+발표 대본
+그림은 논문 Fig. 1과 §3.1을 편집 가능한 개념도로 옮긴 것입니다. 차량이 기지국 범위에 들어오면 task 상태, 위치, 계산 능력을 전송하고, 기지국 agent가 오프로딩을 결정합니다. 각 task vehicle은 local에서 실행하거나 하나 이상의 가까운 service vehicle 후보와 V2V 링크를 통해 오프로딩할 수 있습니다. 이 논문은 cloud 경로를 실제 시스템 모델에 넣지 않습니다.
+
+공개 출처
+iet-doi | p. 4, Fig. 1 and §3.1
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 4. 그래프의 정점과 엣지는 무엇을 뜻하는가
+
+4. 그래프의 정점과 엣지는 무엇을 뜻하는가
+
+발표 대본
+논문은 차량 네트워크를 G_t=(V_t,E_t)로 정의합니다. task와 service vehicle 모두 정점입니다. task 정점은 입력 데이터 크기 d_i와 계산 요구량 c_i를, service 정점은 계산 능력 f_j를 feature로 사용합니다. 엣지는 통신 링크이며 transmission rate를 feature로 갖습니다. 기지국이 수집한 slot t의 상태가 이 그래프를 만듭니다.
+
+공개 출처
+iet-doi | pp. 4, 7, §§3.1 and 4.3
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 5. local과 offload의 지연 구성
+
+5. local과 offload의 지연 구성
+
+발표 대본
+Eq. 2는 local delay를 c_i/f_i로 둡니다. Eq. 3은 task 입력을 V2V로 보내는 transmission delay d_i/R_i,j이고, Eq. 4는 service vehicle이 배정한 주파수 f_i,j에서의 compute delay c_i/f_i,j입니다. 논문은 결과 데이터가 입력보다 훨씬 작다고 가정해 반환 지연을 무시합니다. 이 가정은 결과가 큰 작업에는 바로 적용할 수 없습니다.
+
+공개 출처
+iet-doi | pp. 4–5, Eqs. 1–4
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 6. 목표와 두 제약: 한 경로 선택, service 용량 준수
+
+6. 목표와 두 제약: 한 경로 선택, service 용량 준수
+
+발표 대본
+Eq. 7은 모든 slot과 task에 걸친 response delay 합을 최소화합니다. C1은 각 task가 local 또는 하나의 service 선택을 정확히 하나만 갖게 합니다. C2는 service vehicle j가 task들에게 배정한 compute capacity의 합이 f_j를 넘지 못하게 합니다. C3은 선택 indicator가 binary임을 둡니다. 논문은 이 조합적 선택과 연속 resource allocation 때문에 문제를 NP-hard라고 설명합니다.
+
+공개 출처
+iet-doi | p. 5, Eqs. 5–7 and C1–C3
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 7. 고정된 선택 뒤의 자원 배분
+
+7. 고정된 선택 뒤의 자원 배분
+
+발표 대본
+이 구분은 과장 방지에 중요합니다. p. 5의 본문은 x_i,j가 결정되면 원 문제가 convex optimization problem으로 단순화된다고 말합니다. 그러나 이어지는 GNN 절은 action label과 action prediction을 설명할 뿐, 고정 action에 대한 CPU allocation solver나 해를 전개하지 않습니다. 따라서 이 발표는 GNN의 직접 출력이 offloading decision이라고만 말합니다.
+
+공개 출처
+iet-doi | p. 5, §3.4 after Eq. 7
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 8. 가변 차량 수에서 GNN을 쓰는 이유
+
+8. 가변 차량 수에서 GNN을 쓰는 이유
+
+발표 대본
+이 비교는 논문 p. 9의 baseline 정의와 p. 2의 동기에서 나옵니다. MLP는 고정 input/output 차원을 가정하므로, 차량이 적을 때 0을 채우고 많을 때 초과 task vehicle을 local로 둡니다. GNN은 가변 수의 node와 edge가 있는 graph를 처리하도록 사용됩니다. 이것은 임의로 큰 네트워크에서의 성능 보장이나 복잡도 정리를 뜻하지는 않습니다.
+
+공개 출처
+iet-doi | pp. 2, 7, 9, §§1, 4.3, 5.2
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 9. G-TORA의 라벨 생성·학습·추론 흐름
+
+9. G-TORA의 라벨 생성·학습·추론 흐름
+
+발표 대본
+Fig. 2와 §4.1은 세 단계로 data preparation, offline training, online inference를 구분합니다. data preparation에서 GA가 instance의 offloading decision을 label로 만듭니다. offline training에서 GNN은 graph 입력과 label을 이용해 지도학습합니다. 마지막으로 저장된 GNN을 base station에 배치해 현재 vehicle network graph로 decision을 예측합니다.
+
+공개 출처
+iet-doi | pp. 5–6, Fig. 2 and §4.1
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 10. GA는 오프로딩 라벨을 어떻게 만드는가
+
+10. GA는 오프로딩 라벨을 어떻게 만드는가
+
+발표 대본
+Algorithm 1은 random population으로 시작해 각 chromosome의 total response delay를 Eq. 6으로 계산하고, roulette-wheel selection, crossover probability P_c, mutation probability P_m을 적용합니다. 논문은 exhaustive search가 많은 조합을 검사해야 하므로 다항 시간에 풀기 어렵다고 설명하고 GA를 approximate solution을 위한 heuristic으로 사용합니다. 따라서 deck에서는 이 결과를 최적 해라고 부르지 않습니다.
+
+공개 출처
+iet-doi | pp. 6–7, §4.2 and Algorithm 1
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 11. GA fitness 식에는 재현상 빈틈이 있다
+
+11. GA fitness 식에는 재현상 빈틈이 있다
+
+발표 대본
+p. 6의 prose는 fitness가 task response delay에 inversely proportional하다고 설명합니다. 그러나 p. 7 Algorithm 1 line 5는 Eval(Q^k)=beta(1-beta)^(k-1)라는 rank형 식을 적고, Eq. 6의 delay에서 k 또는 Eval로 가는 mapping을 정의하지 않습니다. 이 슬라이드는 논문의 오류를 단정하는 것이 아니라, 재현 시 추가 명세가 필요하다는 source-grounded 경계입니다.
+
+공개 출처
+iet-doi | pp. 6–7, §4.2 and Algorithm 1 line 5
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 12. GNN 입력: node feature와 link feature
+
+12. GNN 입력: node feature와 link feature
+
+발표 대본
+p. 7은 task node에 d_i와 c_i, computing node에 f_j, edge에 transmission rate를 둔다고 설명합니다. p. 8은 computational capability와 task demand 같은 node feature를 [0,1] min-max로 normalize하고 edge weight를 real-time SNR로 동적으로 조절한다고 말합니다. Fig. 3은 task, service, channel raw feature가 GNN 2 layers로 들어가는 그림입니다.
+
+공개 출처
+iet-doi | pp. 7–8, Fig. 3 and §4.3
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 13. 두 GNN layer의 이웃 정보 집계
+
+13. 두 GNN layer의 이웃 정보 집계
+
+발표 대본
+Eq. 8은 인접 hidden state를 aggregate해 message를 정의합니다. Eq. 9는 현재 node feature와 attention-weighted message를 concatenate한 뒤 learned transformation과 activation을 적용합니다. Eq. 10은 normalized attention alpha_i,j를 정의합니다. 논문은 second-order neighborhood 정보를 모으기 위해 GNN layer 수를 two로 둡니다. 이 그림은 논문이 명시한 adjacent-node aggregation을 넘어 임의의 물리적 message 방향을 만들지 않습니다.
+
+공개 출처
+iet-doi | pp. 7–8, Eqs. 8–10
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 14. edge embedding에서 offloading decision까지
+
+14. edge embedding에서 offloading decision까지
+
+발표 대본
+Fig. 3은 GNN layer 뒤의 task vehicle embedding, service vehicle embedding, link hidden state를 MLP로 보냅니다. Eq. 11은 node feature와 edge feature를 결합해 x_i,j를 MLP로 추론한다고 적습니다. 본문은 task vehicle과 service vehicle 사이의 edge를 classify하여 offloading action을 결정한다고 설명합니다. 따라서 이것은 node 하나만 독립 분류하는 구조로 설명하면 안 됩니다.
+
+공개 출처
+iet-doi | pp. 7–8, Fig. 3 and Eq. 11
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 15. 지도학습 training loop
+
+15. 지도학습 training loop
+
+발표 대본
+Algorithm 2는 raw vehicle information을 nodes, edges, attributes가 있는 graph data로 바꾸고, batch별로 model forward, attention aggregation, offloading output, GA label과의 comparison, cross-entropy loss, backpropagation, Adam update를 반복합니다. 종료 뒤 trained GNN parameter를 base station에 저장합니다. 따라서 이 논문은 GA-supervised cross-entropy training입니다.
+
+공개 출처
+iet-doi | p. 8, Algorithm 2
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 16. 교육용 가상 trace: 한 task의 경로 비교
+
+16. 교육용 가상 trace: 한 task의 경로 비교
+
+발표 대본
+이것은 설명용으로 새로 만든 숫자이며, 논문 결과나 GNN 실제 출력이 아닙니다. d=10 MB, c=10^9 cycles, local f_i=1 GHz이면 Eq. 2의 local delay는 1.00 s입니다. 관측 rate를 100 MB/s, service allocation을 4 GHz로 가정하면 Eq. 3과 4의 offload delay는 0.10+0.25=0.35 s입니다. 반환 지연은 논문의 가정대로 넣지 않았습니다. 실제 action은 capacity와 다른 task의 선택도 만족해야 합니다.
+
+공개 출처
+iet-doi | pp. 4–5, Eqs. 2–4 and C1–C2
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 17. 시뮬레이션 입력과 학습 설정
+
+17. 시뮬레이션 입력과 학습 설정
+
+발표 대본
+Table 1의 task data, cycles, capacity, transmit power, bandwidth, distance를 옮겼습니다. Table 1의 channel noise는 100 dBm/Hz로 인쇄되어 있어 여기서는 부호를 임의로 고치지 않았습니다. p. 9은 2 convolution layers, node embedding 256, MLP hidden 128, 3000 epochs, Adam initial learning rate 10^-3과 hardware/software environment를 보고합니다. 이 슬라이드는 field deployment 조건을 주장하지 않습니다.
+
+공개 출처
+iet-doi | pp. 8–9, Table 1 and §5.1.2
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 18. 비교 대상이 측정하는 trade-off
+
+18. 비교 대상이 측정하는 trade-off
+
+발표 대본
+p. 9의 §5.2는 GA, hill climbing CH, fixed-dimension MLP, online multi-armed bandit OMAB를 baseline으로 정의합니다. 특히 MLP는 차량 수가 입력 차원보다 많으면 extra task vehicle이 local computation을 하고, 적으면 남은 dimension을 0으로 채웁니다. 논문은 이후 figure에서 proposed method를 GNN으로 줄여 부릅니다.
+
+공개 출처
+iet-doi | p. 9, §5.2
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 19. task vehicle 수를 5에서 10으로 늘린 비교
+
+19. task vehicle 수를 5에서 10으로 늘린 비교
+
+발표 대본
+§5.3은 service vehicle 수를 4로 고정하고 task vehicle을 5에서 10으로 바꿉니다. p. 10은 10 task vehicle에서 GNN processing delay가 GA보다 약 17%, CH보다 약 1% 높지만 MLP보다 26%, OMAB보다 41% 낮다고 보고합니다. Fig. 6의 GNN inference delay는 0.03 s보다 작지만 OMAB와 MLP가 더 낮습니다. Fig. 7의 total delay 결과를 각각의 부분 지연 최저와 혼동하면 안 됩니다.
+
+공개 출처
+iet-doi | pp. 9–10, Figs. 4–7 and §5.3
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 20. transmit power sweep의 결과
+
+20. transmit power sweep의 결과
+
+발표 대본
+§5.4와 Figs. 8–10은 transmit power를 0.5 W에서 1 W로 변화시킵니다. p. 10은 processing delay의 endpoints를 방법별로 보고하며, p. 11은 network problem size가 일정하므로 inference delay가 power에 따라 상대적으로 변하지 않는다고 설명합니다. GNN total delay는 1.135 s에서 0.780 s로 낮아졌다고 보고합니다. 이 결과는 power sweep 조건의 simulation 관찰입니다.
+
+공개 출처
+iet-doi | pp. 10–11, Figs. 8–10 and §5.4
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 21. service compute capacity sweep
+
+21. service compute capacity sweep
+
+발표 대본
+§5.5는 service vehicle의 average computing capacity를 3에서 7 GHz로 바꿉니다. Fig. 11은 processing delay가 capacity 증가와 함께 낮아지는 모양을 보여 주고, Fig. 12는 GNN total delay가 0.923 s에서 0.817 s로 내려간다고 보고합니다. 논문은 GA와 CH에서는 inference delay가 total delay에 더 크게 영향을 주어 total 변화가 작다고 해석합니다.
+
+공개 출처
+iet-doi | pp. 11–12, Figs. 11–12 and §5.5
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 22. 이 논문에서 scalability가 성립하는 범위
+
+22. 이 논문에서 scalability가 성립하는 범위
+
+발표 대본
+Abstract와 p. 7은 GNN이 variable-sized graph와 dynamic topology에 적합하다고 주장합니다. 하지만 실제 §5.3의 node-count experiment는 task vehicle 5부터 10까지이고 service vehicle 수는 4입니다. 논문에는 임의 network size에 대한 정리나 distribution 밖의 generalization 측정이 없습니다. 발표에서는 이 조건부 evidence와 일반 설계 동기를 분리합니다.
+
+공개 출처
+iet-doi | pp. 1, 7, 9–10, Abstract, §4.3, §5.3
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 23. 논문이 직접 밝힌 적용 한계
+
+23. 논문이 직접 밝힌 적용 한계
+
+발표 대본
+Conclusion은 GA-generated labels와 large volumes of network topology data에 의존하는 training 부담을 첫 한계로 듭니다. 둘째로 각 time slot 안에서 static communication state를 가정해 high mobility와 fast-changing connectivity를 완전히 표현하지 못한다고 말합니다. QoS deadlines, reliability, sub-task dependencies, multi-hop transmission은 현재 구현 범위가 아니라 future work로 나열됩니다. 또한 Data Availability Statement는 research data가 공유되지 않는다고 적습니다.
+
+공개 출처
+iet-doi | p. 12, §6 and Data Availability
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064
+
+## 24. G-TORA를 한 문장씩 다시 연결하기
+
+24. G-TORA를 한 문장씩 다시 연결하기
+
+발표 대본
+마지막으로 다섯 층을 분리해 기억하면 됩니다. 시스템은 task/service vehicle과 V2V link이고, 목표는 response delay입니다. GA는 offline teacher로 label을 만들며, GNN은 two-layer neighbor aggregation과 edge-level decision prediction으로 label을 배웁니다. 결과는 명시된 simulation envelope 안에서 읽고, GA label 명세와 static slot channel이라는 한계를 함께 보아야 합니다.
+
+공개 출처
+iet-doi | pp. 4–12, §§3–6
+IET Communications 2025 primary paper
+https://doi.org/10.1049/cmu2.70064

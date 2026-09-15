@@ -92,6 +92,11 @@ Response time은 request propagation, uplink transmission, queueing, processing,
 
 따라서 CHESTNUT은 완성된 “모든 MEC QoS의 정답 dataset”이라기보다, mobile edge QoS 연구를 공개 benchmark 기반으로 옮기는 출발점으로 보는 것이 적절하다. 서비스 홍보 관점에서도 이 점은 장점이다. dataset을 기반으로 위치·시간·부하를 고려한 edge recommendation의 필요성을 설명하고, 이후 더 많은 도시와 telemetry로 확장 가능한 구조를 제시할 수 있기 때문이다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 21 slides | <a href="/assets/seminars/chestnut-qos-dataset-mobile-edge/chestnut-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/chestnut-qos-dataset-mobile-edge/chestnut-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/chestnut-qos-dataset-mobile-edge/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/chestnut-qos-dataset-mobile-edge/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

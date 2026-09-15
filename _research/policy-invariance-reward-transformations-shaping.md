@@ -94,6 +94,11 @@ $$
 
 해결 방향은 shaping reward를 설계할 때 세 가지를 명시하는 것이다. 첫째, shaping term이 $$F(s,a,s')=\gamma\Phi(s')-\Phi(s)$$ 형태인지 확인한다. 둘째, terminal 또는 absorbing state의 potential normalization을 점검한다. 셋째, learned potential을 쓰는 경우에는 ablation과 off-policy evaluation으로 optimal policy 순서가 바뀌지 않았는지 확인한다. 이 절차를 통과하지 못한 reward 추가는 policy-invariant shaping이 아니라 새로운 objective 설계로 보고 해석해야 한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 20 slides | <a href="/assets/seminars/policy-invariance-reward-transformations-shaping/reward-shaping-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/policy-invariance-reward-transformations-shaping/reward-shaping-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/policy-invariance-reward-transformations-shaping/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/policy-invariance-reward-transformations-shaping/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

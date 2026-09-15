@@ -127,6 +127,11 @@ Transmission power를 0.5 W에서 1 W로 높이면 GNN total delay는 1.135초�
 
 셋째, 논문은 response delay 중심으로 평가한다. 실제 서비스 홍보 관점에서는 low-latency cooperative perception, AR navigation, fleet analytics 같은 응용을 붙일 수 있지만, 연구적으로는 deadline miss ratio, reliability, fairness, multi-hop cooperation까지 확장해야 서비스 품질을 더 설득력 있게 보여줄 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 24 slides | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/g-tora-seminar-ko-v3.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/g-tora-seminar-ko-v3.pptx" download>Download</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

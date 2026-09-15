@@ -199,6 +199,11 @@ TTS가 길면 무조건 쉬워진다고 보기 어렵다. 짧은 TTS는 운동�
 
 따라서 이 결과를 모든 연속 입력 인터랙션에 그대로 일반화하기보다는, CTP가 기존 temporal pointing과 다른 구조를 가진다는 근거로 읽는 편이 적절하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 23 slides | <a href="/assets/seminars/user-performance-in-consecutive-temporal-pointing/temporal-pointing-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/user-performance-in-consecutive-temporal-pointing/temporal-pointing-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/user-performance-in-consecutive-temporal-pointing/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/user-performance-in-consecutive-temporal-pointing/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 - [PDF 원문](/assets/pdfs/research/user-performance-in-consecutive-temporal-pointing/user-performance-in-consecutive-temporal-pointing.pdf)

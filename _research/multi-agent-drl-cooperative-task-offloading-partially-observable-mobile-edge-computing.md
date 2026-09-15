@@ -109,6 +109,11 @@ MEC의 task offloading은 단말이 계산을 로컬에서 수행할지 인근 e
 
 Agent 수 증가에 따른 joint action explosion은 parameter sharing, neighborhood-based critic, graph neural network 또는 mean-field approximation으로 완화할 수 있다. 협력 메시지의 신뢰성과 비용은 bandwidth budget, delayed message, packet loss를 포함한 ablation으로 검증해야 한다. 마지막으로 실제 MEC로 확장하려면 mobility와 server failure를 observation noise로만 다루지 말고 robust 또는 constrained MARL의 안전 제약으로 포함할 필요가 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 9 slides | <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-cooperative/cooperative-marl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-cooperative/cooperative-marl-mec-proposal-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-cooperative/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-cooperative/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

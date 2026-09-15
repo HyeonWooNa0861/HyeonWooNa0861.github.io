@@ -3,18 +3,18 @@ layout: post
 title: "Loss Landscape Analysis: Bayesian Ensembles, Mode Connectivity, and Model Merging"
 nav_title: "Loss Landscape Analysis"
 date: 2026-09-14 16:22:00 +0900
-last_modified_at: 2026-09-14 22:41:00 +0900
+last_modified_at: 2026-09-15 12:00:00 +0900
 categories: [Machine Learning, Neural Networks]
 tags: [Loss Landscape, Bayesian Neural Networks, Mode Connectivity, Model Merging, Permutation Symmetry]
 permalink: /posts/loss-landscape-analysis/
 section: ai-education
 ---
 
-Source PDF: `Loss surface analysis.pdf` — locally supplied; not redistributed.
+Source Slides: <a href="{{ "/assets/pdfs/post/ai-education/loss-surface-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Loss surface analysis.pdf</a> — Loss Landscape Analysis (25 slides).
 
 > **핵심 메시지:** 신경망의 서로 다른 해 사이에 낮은 손실 경로가 존재할 수 있고, 숨은 뉴런의 순서를 맞추면 직선 보간도 좋아질 수 있다. 그러나 **경로의 존재, 예측의 다양성, 가중치 평균의 품질, Bayesian posterior의 정확성은 서로 다른 문제**다. 이 차이를 이해해야 loss landscape 그림을 앙상블·모델 병합·압축 연구의 근거로 올바르게 사용할 수 있다.
 
-이 글은 표지에 *Loss Landscape Analysis*와 Kookmin University Seminar가 적힌 25쪽 자료를 바탕으로 한 독자적 한국어 해설이다. 특정 정규 교과목·발표자·발표일은 PDF에서 확인되지 않아 추정하지 않았다. 원문 전체를 번역하거나 그림을 재배포하지 않고, 주요 논지를 공개 원 논문과 대조했다. 아래의 유도와 수치 예제는 별도 표시가 없는 한 **복습을 위한 작성자 보충 설명**이며, 세미나에서 실행한 실험 결과가 아니다.
+이 글은 **손실 지형 관련 연구를 분석한 25장 슬라이드의 해설**이다. Bayesian ensemble, mode connectivity, 모델 병합을 연결하고 각 논문의 가정과 결과를 대조한다. 별도 표시가 없는 유도와 수치 예제는 **복습을 위한 보충 설명**이다.
 
 ## Reading Map
 
@@ -437,10 +437,9 @@ $$
 
 ## Source Materials
 
-- Local source: `Loss surface analysis.pdf`, *Loss Landscape Analysis*, 25 pages — locally supplied; not redistributed. 로컬 보관명은 `loss-surface-analysis.pdf`이며 원본 bytes는 변경하지 않았다. 공개 원본 URL·재배포 허가·발표자·발표일은 확인되지 않았다.
-- 이 글은 공개 원 논문을 링크한 독자적 해설이다. PDF·슬라이드 그림·전체 번역은 첨부하지 않는다. 각 절의 논문 링크는 해당 주장 바로 옆에서 확인할 수 있다.
+- Analysis Slides: <a href="{{ "/assets/pdfs/post/ai-education/loss-surface-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Loss surface analysis.pdf</a> — Loss Landscape Analysis, Kookmin University Seminar, 25 slides.
 
-핵심 주장과 수식의 대조에 사용한 공개 원 논문 PDF는 다음과 같다. 공개 웹에는 사본을 재업로드하지 않았다.
+핵심 주장과 수식의 대조에 사용한 원 논문은 다음과 같다.
 
 - 불확실성·분포 정렬: [Deep Ensembles — 예측 불확실성](https://papers.nips.cc/paper_files/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf){:target="_blank" rel="noopener"} · [Rossi et al. — Bayesian posterior 순열 정렬](https://arxiv.org/pdf/2310.10171){:target="_blank" rel="noopener"}.
 - 연결 경로·효율: [Garipov et al. — mode connectivity와 FGE](https://proceedings.neurips.cc/paper_files/paper/2018/file/be3087e74e9100d4bc4c6268cdbe8456-Paper.pdf){:target="_blank" rel="noopener"} · [Draxler et al. — low-loss path](https://proceedings.mlr.press/v80/draxler18a/draxler18a.pdf){:target="_blank" rel="noopener"} · [Benton et al. — simplexes](https://proceedings.mlr.press/v139/benton21a/benton21a.pdf){:target="_blank" rel="noopener"} · [Yun et al. — function-space bridge](https://proceedings.mlr.press/v202/yun23a/yun23a.pdf){:target="_blank" rel="noopener"}.

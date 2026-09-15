@@ -1,0 +1,308 @@
+## 1. Double DQN
+
+1. Double DQN
+
+발표 대본
+이 발표는 Deep Reinforcement Learning with Double Q-Learning 논문을 소개합니다. 논문의 출발점은 DQN이 Atari에서 높은 성능을 보였지만 행동 가치를 크게 과대평가할 수 있다는 관찰입니다. Double DQN은 새 네트워크를 하나 더 추가하지 않습니다. DQN이 이미 사용하는 온라인 네트워크와 target 네트워크가 다음 행동의 선택과 평가를 나누어 맡도록 target 계산만 바꿉니다.
+
+공개 출처
+aaai-record | bibliographic record
+AAAI proceedings record
+https://ojs.aaai.org/index.php/AAAI/article/view/10295
+aaai-paper | p. 1, Abstract
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 2. 논문의 질문
+
+2. 논문의 질문
+
+발표 대본
+DQN은 Deep Q-Network의 약자입니다. Q 값에는 함수 근사와 학습 과정에서 생긴 오차가 포함됩니다. max는 이 오차를 평균내지 않고 그중 가장 큰 값을 고릅니다. 따라서 선택된 값에는 양의 오차가 끼어 있을 가능성이 높습니다. 부트스트래핑은 다음 상태의 추정값으로 현재 학습 target을 계산하는 방식이며, Double DQN은 이 지점을 직접 수정합니다.
+
+공개 출처
+aaai-paper | pp. 1-3, Background and Double Q-learning
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 3. Q-learning의 기본 기호
+
+3. Q-learning의 기본 기호
+
+발표 대본
+기호를 먼저 정의하겠습니다. 에이전트는 현재 상태 Sₜ에서 행동 Aₜ를 수행하고 보상 Rₜ₊₁과 다음 상태 Sₜ₊₁을 관측합니다. Q 값은 지금 받는 보상만 뜻하지 않습니다. 그 행동을 한 뒤 해당 정책을 따를 때 앞으로 받을 할인 누적 보상의 기대값을 추정합니다. DQN과 Double DQN의 차이는 네트워크 전체 구조보다 학습 target Yₜ의 계산식에 있습니다.
+
+공개 출처
+aaai-paper | p. 2, Eqs. 1-3
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 4. DQN의 학습 구성
+
+4. DQN의 학습 구성
+
+발표 대본
+Experience replay에서 transition을 뽑습니다. online θ는 현재 상태와 실제 행동의 Q(Sₜ, Aₜ)를 예측하고, target θ_target은 다음 상태의 행동 가치를 계산하여 학습 target Yₜ를 만듭니다. 다음 상태가 종료 상태이면 Yₜ는 관측 보상뿐입니다. 현재 예측과 Yₜ의 오차를 이용해 online θ만 갱신합니다. θ_target은 과거 시점 θ의 snapshot이며, 정해진 복사 시점에만 갱신하고 그 사이에는 고정합니다. 복사는 매 transition마다 수행하는 순차 단계가 아닙니다. Double DQN도 replay와 주기적 복사 구조를 유지하되, 다음 행동 선택을 위해 online θ의 다음 상태 Q도 계산합니다.
+
+공개 출처
+aaai-paper | p. 2, Deep Q Networks
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 5. max가 양의 오차를 선호하는 이유
+
+5. max가 양의 오차를 선호하는 이유
+
+발표 대본
+이 표는 논문의 실험값이 아니라 max 편향을 직접 계산하기 위한 교육용 예시입니다. 두 행동의 참값을 모두 0으로 두고 각 추정 오차가 -1 또는 +1일 확률을 각각 1/2로 설정합니다. 이 예시에서는 두 오차가 독립이므로 네 조합의 확률이 각각 1/4입니다. 각 행동의 추정값 자체는 평균이 0이지만 네 경우 중 세 경우에서 max는 +1을 선택하므로 max의 기대값은 0.5입니다. 독립성은 이 예시의 계산을 위한 가정이며 논문 Theorem 1의 필수 가정은 아닙니다.
+
+공개 출처
+aaai-paper | pp. 2-4, Theorem 1 and Figs. 1-2
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 6. 과대평가의 전파 경로
+
+6. 과대평가의 전파 경로
+
+발표 대본
+과대평가가 학습에 영향을 주는 경로를 순서대로 보겠습니다. 행동별 오차가 다르면 max는 가장 크게 추정된 행동을 고릅니다. 부트스트래핑은 그 큰 값을 앞선 상태의 target에 포함합니다. 이런 과정이 반복되면 과대평가가 이전 상태로 전파될 수 있습니다. 다만 모든 행동에 똑같은 상수가 더해지면 순위는 변하지 않습니다. 논문의 관심은 행동과 상태에 따라 달라지는 오차가 상대 선호를 바꾸는 경우입니다.
+
+공개 출처
+aaai-paper | pp. 2-4, Double Q-learning and Figs. 1-2
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 7. DQN target의 역할 결합
+
+7. DQN target의 역할 결합
+
+발표 대본
+DQN target 식에서 max를 풀어서 읽어 보겠습니다. 이 식은 다음 상태가 비종료 상태인 전이입니다. target 네트워크가 다음 상태의 모든 행동 값을 계산합니다. argmax는 Q 값이 가장 큰 행동을 반환하고 max는 그 행동의 Q 값을 반환합니다. 선택과 평가에 같은 snapshot을 쓰므로 우연히 큰 추정값이 bootstrap target에 들어갈 수 있습니다. 다음 상태가 종료 상태라면 bootstrap 항을 사용하지 않고 target은 관측 보상 R입니다.
+
+공개 출처
+aaai-paper | p. 2, Eq. 3
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 8. Double Q-learning의 분리 원리
+
+8. Double Q-learning의 분리 원리
+
+발표 대본
+원래의 표형 Double Q-learning은 먼저 이번에 갱신할 추정기를 무작위로 정합니다. A를 갱신하는 경우를 보겠습니다. A가 다음 행동 a*를 고르고 B가 그 같은 행동의 값을 평가합니다. B의 평가와 관측 보상으로 target을 만든 뒤 A를 갱신합니다. B를 갱신하는 경우에는 역할이 반대가 됩니다. 따라서 선택을 일으킨 A의 오차가 평가값으로 그대로 재사용되지 않습니다. Double DQN은 이 분리 원리를 기존 online과 target 네트워크에 적용하며, 두 추정기를 무작위로 번갈아 갱신하는 구조까지 그대로 복사한 것은 아닙니다.
+
+공개 출처
+aaai-paper | pp. 2-3, Double Q-learning
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 9. Double DQN target
+
+9. Double DQN target
+
+발표 대본
+Double DQN의 식에서 가장 중요한 부분은 argmax 안과 바깥의 파라미터가 다르다는 점입니다. 이 흐름은 다음 상태가 비종료 상태인 전이에 적용합니다. 온라인 네트워크 θ에서 argmax는 가장 좋아 보이는 행동 a*를 반환합니다. target 네트워크 θ_target은 자신이 좋아하는 행동을 다시 고르지 않고 바로 그 a*의 값만 조회합니다. 다음 상태가 종료 상태이면 이 bootstrap 계산을 하지 않고 target을 관측 보상 R로 둡니다. target 복사와 replay 구조는 그대로입니다.
+
+공개 출처
+aaai-paper | p. 4, Double DQN target equation
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 10. 계산 예시의 입력
+
+10. 계산 예시의 입력
+
+발표 대본
+이제 같은 입력으로 두 target을 직접 계산하겠습니다. 이 숫자는 논문 실험 결과가 아니라 알고리즘의 데이터 흐름을 보여 주는 교육용 예시입니다. 온라인 네트워크는 left를 5, right를 4로 봅니다. target 네트워크는 left를 2, right를 4로 봅니다. 보상은 1이고 할인율은 0.9입니다. 다음 두 슬라이드에서 DQN과 Double DQN이 어느 값에 접근하는지 추적하겠습니다.
+
+공개 출처
+aaai-paper | pp. 2 and 4, target equations; numerical values are a constructed example
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 11. DQN target 계산
+
+11. DQN target 계산
+
+발표 대본
+DQN부터 계산하겠습니다. DQN은 target 네트워크의 벡터 2와 4 중 큰 값을 찾습니다. right가 선택되고, 같은 target 네트워크의 right 값 4가 평가값으로 사용됩니다. 따라서 target은 1 더하기 0.9 곱하기 4로 4.6입니다. 여기서 target 네트워크는 선택과 평가를 모두 수행했습니다.
+
+공개 출처
+aaai-paper | p. 2, Eq. 3; numerical values are a constructed example
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 12. Double DQN target 계산
+
+12. Double DQN target 계산
+
+발표 대본
+Double DQN은 먼저 온라인 벡터 5와 4에서 left를 선택합니다. 다음으로 target 네트워크가 left의 값 2를 평가합니다. target 네트워크가 선호하는 right로 행동을 바꾸지 않는다는 점이 중요합니다. 선택된 같은 행동 left를 조회하므로 target은 1 더하기 0.9 곱하기 2로 2.8입니다. 온라인 네트워크의 큰 값 5가 평가값으로 그대로 들어가지 않습니다.
+
+공개 출처
+aaai-paper | p. 4, Double DQN target equation; numerical values are a constructed example
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 13. 두 target의 올바른 해석
+
+13. 두 target의 올바른 해석
+
+발표 대본
+두 결과를 비교할 때 과도한 결론을 피해야 합니다. 이 예시는 Double DQN의 2.8이 참값에 더 가깝다고 증명하지 않습니다. left와 right의 실제 가치가 주어지지 않았기 때문입니다. 계산이 보여 주는 사실은 온라인 네트워크의 5가 선택에는 쓰이지만 평가에는 자동으로 재사용되지 않는다는 점입니다. 논문의 실험은 별도로 실제 return과 추정값을 비교해 과대평가 감소를 평가합니다.
+
+공개 출처
+aaai-paper | p. 4, Double DQN; numerical values are a constructed example
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 14. 변경된 부분과 유지된 부분
+
+14. 변경된 부분과 유지된 부분
+
+발표 대본
+무엇이 바뀌고 무엇이 그대로인지 정리하겠습니다. Double DQN도 experience replay를 사용하고 target 네트워크를 주기적으로 복사합니다. 새로 독립 학습하는 세 번째 네트워크를 추가하지 않으며 파라미터 수도 늘리지 않습니다. 핵심 변경은 온라인 네트워크가 행동을 고르고 target 네트워크가 그 행동을 평가하도록 target 식을 바꾼 것입니다. 그래서 논문은 이 방법을 DQN에 대한 최소 수정으로 설명합니다.
+
+공개 출처
+aaai-paper | p. 4, Double DQN
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 15. 함수 근사만으로도 생기는 과대평가
+
+15. 함수 근사만으로도 생기는 과대평가
+
+발표 대본
+논문 Figure 2의 논리를 보겠습니다. 참값은 상태에 따라 변하지만, 같은 상태 안에서는 열 개 행동의 참값이 모두 같습니다. 표본으로 관측한 값은 정확해도 각 행동의 근사 함수가 표본 사이에서 서로 다른 오차를 만듭니다. max는 그중 가장 높은 곡선을 선택하므로 해당 상태의 공통 참값보다 큰 결과가 나타납니다. 따라서 과대평가는 환경의 보상이 확률적일 때만 생기는 현상이 아닙니다.
+
+공개 출처
+aaai-paper | pp. 3-4, Fig. 2
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 16. Atari 2600 실험 설계
+
+16. Atari 2600 실험 설계
+
+발표 대본
+실험 조건을 확인하겠습니다. 논문은 Atari 2600의 49개 게임을 중심으로 DQN과 Double DQN을 비교합니다. 네트워크 구조와 학습 설정은 DQN에 맞추고, 통제된 비교에서 알고리즘 차이를 target 계산으로 둡니다. 한편 표의 DQN 수치는 이 논문이 모든 baseline을 새로 같은 run으로 재현한 값이라고 단정하면 안 됩니다. Table 1 caption은 Mnih 등의 DQN 점수를, Table 2 caption은 Nair 등의 DQN 점수를 기준으로 제시합니다.
+
+공개 출처
+aaai-paper | p. 4, Empirical results; pp. 5-6, Tables 1-2 captions
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+arxiv-v3 | p. 9, Experimental Details
+arXiv:1509.06461v3
+https://arxiv.org/abs/1509.06461v3
+
+## 17. 추정값과 실제 return의 비교
+
+17. 추정값과 실제 return의 비교
+
+발표 대본
+과대평가를 주장하려면 네트워크의 숫자만 볼 수 없습니다. 논문은 평가 중 방문한 상태마다 greedy Q 추정을 구해 평균하고, 각 상태에서 최종 정책이 실제로 얻은 할인 return도 평균해 비교합니다. 이 비교를 독립적으로 다시 학습한 여섯 개 seed에서 수행합니다. 추정값이 실제 return보다 크게 남아 있으면 과대평가의 증거가 됩니다. 이 검사는 점수 집계와 다른 질문을 답합니다.
+
+공개 출처
+aaai-paper | p. 5, Fig. 3 and Value estimates
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 18. Figure 3의 해석
+
+18. Figure 3의 해석
+
+발표 대본
+Figure 3은 여섯 게임의 학습 곡선을 보여 줍니다. DQN의 가치 추정이 실제 return보다 크게 올라가는 경우가 보입니다. 특히 Asterix와 Wizard of Wor에서는 과대평가 증가와 평가 점수 하락이 함께 나타납니다. Double DQN은 표시된 사례에서 더 안정적입니다. 그러나 논문도 과대평가가 항상 정책 품질을 해치는 것은 아니라고 설명하므로 이 결과를 모든 게임에 대한 보편 법칙으로 확대하면 안 됩니다.
+
+공개 출처
+aaai-paper | p. 5, Fig. 3 and discussion
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 19. No-op 평가 조건
+
+19. No-op 평가 조건
+
+발표 대본
+Table 1의 점수를 이해하려면 평가 조건과 정규화를 함께 봐야 합니다. 에이전트는 시작 전에 0회에서 30회의 no-op을 수행하고 18,000 frame 동안 ε-greedy 정책으로 행동합니다. 게임마다 100 episode를 평균합니다. 점수는 random agent와 human expert를 기준으로 정규화합니다. 따라서 330.3퍼센트라는 수치는 승률이나 성공 확률이 아니라 여러 게임에서 집계한 human-normalized score입니다.
+
+공개 출처
+aaai-paper | pp. 5-6, Quality of the learned policies and Table 1
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 20. No-op 평가 결과
+
+20. No-op 평가 결과
+
+발표 대본
+No-op 조건에서 DQN baseline의 중앙값은 93.5퍼센트이고 평균은 241.1퍼센트입니다. Double DQN은 각각 114.7퍼센트와 330.3퍼센트입니다. 차이는 중앙값 21.2퍼센트포인트, 평균 89.2퍼센트포인트입니다. 평균이 중앙값보다 훨씬 큰 것은 일부 큰 점수의 영향을 받을 수 있으므로 두 집계를 함께 봐야 합니다. 또한 개별 게임 표에는 Double DQN 점수가 더 낮은 경우도 있습니다.
+
+공개 출처
+aaai-paper | pp. 5-6, Table 1 and caption
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 21. Human-start 평가
+
+21. Human-start 평가
+
+발표 대본
+Human-start 평가는 초기 상태를 더 다양하게 만듭니다. 논문은 사람 전문가의 플레이 궤적에서 게임마다 100개의 시작 상태를 뽑습니다. 에이전트는 그 상태에서 이어서 행동하며 최대 108,000 frame까지 실행합니다. 점수에는 표본 시작 이후의 보상만 포함됩니다. 이 조건은 deterministic emulator의 같은 초기 sequence에 정책이 과도하게 맞는 문제를 줄이고 더 다양한 상태에서 정책을 평가합니다.
+
+공개 출처
+aaai-paper | p. 6, Robustness to human starts and Table 2
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 22. Human-start 결과와 tuned 변형
+
+22. Human-start 결과와 tuned 변형
+
+발표 대본
+Human-start 조건에서 DQN baseline은 중앙값 47.5퍼센트, 평균 122.0퍼센트입니다. 기본 Double DQN은 88.4퍼센트와 273.1퍼센트입니다. tuned Double DQN은 116.7퍼센트와 475.2퍼센트로 더 높습니다. 다만 tuned 변형은 target 복사 간격을 늘리고 학습과 평가의 탐색률을 조정하며 상위층 bias도 바꿉니다. 그러므로 tuned 결과 전체를 target 식 하나의 순수 효과로 해석하면 안 됩니다.
+
+공개 출처
+aaai-paper | p. 6, Table 2 and tuned Double DQN description
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+arxiv-v3 | p. 9, Experimental Details
+arXiv:1509.06461v3
+https://arxiv.org/abs/1509.06461v3
+
+## 23. 논문이 지지하는 주장 범위
+
+23. 논문이 지지하는 주장 범위
+
+발표 대본
+마지막으로 주장 범위를 분명히 하겠습니다. 논문은 Atari에서 max 기반 과대평가가 실제 deep reinforcement learning에 나타나며, Double DQN이 이를 줄이고 aggregate score를 개선한다는 근거를 제시합니다. 그러나 target 네트워크는 온라인 네트워크를 주기적으로 복사한 snapshot이므로 두 추정기가 완전히 독립이지 않습니다. 세부 게임에서는 항상 Double DQN이 높은 것도 아닙니다. 이 논문 하나로 모든 환경과 모든 불안정성에 대한 보편적 해결을 주장할 수 없습니다.
+
+공개 출처
+aaai-paper | pp. 6-7, Discussion
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 24. Double DQN의 핵심
+
+24. Double DQN의 핵심
+
+발표 대본
+전체 내용을 한 흐름으로 정리하겠습니다. max는 여러 오차 중 큰 값을 선택하기 때문에 과대평가를 만들 수 있습니다. DQN에서는 target 네트워크 하나가 행동을 선택하고 같은 추정값으로 평가합니다. Double DQN은 온라인 네트워크가 행동을 선택하고 target 네트워크가 그 같은 행동을 평가합니다. 논문은 Atari에서 과대평가 감소와 aggregate score 개선을 확인했습니다. 다만 두 snapshot은 연관되어 있고 모든 게임에서 우세하거나 모든 불안정성을 해결한다고 보장하지 않습니다.
+
+공개 출처
+aaai-paper | pp. 1, 4, and 7, Abstract, Double DQN, Discussion
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154
+
+## 25. 부록: 행동 정책과 학습 target의 구분
+
+25. 부록: 행동 정책과 학습 target의 구분
+
+발표 대본
+질문이 자주 생기는 구분을 부록에 남깁니다. 에이전트가 환경에서 실제 행동을 고르는 시점에는 현재 상태 Sₜ와 ε-greedy 정책을 사용합니다. 반면 Double DQN 식의 argmax는 replay에서 뽑은 다음 상태 Sₜ₊₁에 대한 학습 target을 계산하는 내부 단계입니다. 두 과정 모두 온라인 Q 값을 볼 수 있지만 목적과 상태가 다릅니다. target 복사는 또 다른 과정이며 일정 간격으로 온라인 파라미터를 snapshot에 반영합니다.
+
+공개 출처
+aaai-paper | p. 2, Deep Q Networks; p. 4, Double DQN
+AAAI-16 conference paper
+https://ojs.aaai.org/index.php/AAAI/article/download/10295/10154

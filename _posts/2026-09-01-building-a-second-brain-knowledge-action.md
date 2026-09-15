@@ -118,7 +118,6 @@ Second Brain의 목적은 정보를 많이 보관하는 것이 아니라 **CODE�
 
 ## 11. Official Sources
 
-이 글은 책과 저자 공식 자료를 바탕으로 작성한 자체 해설이다. 원문 전체, 로컬 PDF, 공식 템플릿이나 로고를 재배포하지 않으며, 아래 정식 페이지에서 도서와 최신 자료를 확인할 수 있다.
 
 <ul>
   <li><a href="https://www.simonandschuster.com/books/Building-a-Second-Brain/Tiago-Forte/9781982167387" target="_blank" rel="noopener">Simon &amp; Schuster, <em>Building a Second Brain</em></a></li>

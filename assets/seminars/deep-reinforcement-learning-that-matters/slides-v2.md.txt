@@ -1,0 +1,274 @@
+---
+type: research-seminar-slides
+paper_id: deep-reinforcement-learning-that-matters
+---
+
+# Deep Reinforcement Learning that Matters: 재현 가능한 비교
+
+논문: Deep Reinforcement Learning that Matters
+
+저자: Peter Henderson, Riashat Islam, Philip Bachman, Joelle Pineau, Doina Precup, David Meger (2018)
+
+## 1. Deep Reinforcement Learning that Matters: 재현 가능한 비교
+
+deep RL의 성능 비교를 재현성·불확실성 관점에서 점검한 실험 연구
+
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 1, title, abstract; arXiv v3
+
+## 2. 논문의 역할: deep RL 결과를 검증하는 실험 연구
+
+핵심 대상은 continuous-control policy-gradient baseline의 비교와 보고 방식이다
+
+
+| 항목 | 원문 범위 | 강의에서 지킬 경계 |
+| --- | --- | --- |
+| 질문 | 보고된 성능 향상이 의미 있는가 | 새 control algorithm 설명으로 확장하지 않음 |
+| 알고리즘 | TRPO, DDPG, PPO, ACKTR | 이 넷의 모든 성질을 일반화하지 않음 |
+| 환경 | MuJoCo continuous control | field deployment 결과로 해석하지 않음 |
+| 기여 | variance와 reporting 절차 조사 | 보편적 통계 검정을 증명하지 않음 |
+
+핵심: 논문의 산출물은 더 신뢰할 수 있는 비교를 위한 증거와 권고안이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 1-2, abstract and Technical Background
+
+## 3. 한 개의 learning curve만으로는 비교 조건이 부족하다
+
+알고리즘 이름 외의 선택이 run과 최종 성능 주장을 함께 바꾼다
+
+- **레인 result production**
+  - **method**: TRPO·DDPG
+PPO·ACKTR
+  - **conditions**: network·scale
+seed·code·env
+  - **multiple runs**: return curve
+seed별 차이
+  - **evaluation**: mean·CI·test
+metric 선택
+  - **claim**: 조건 아래의
+성능 주장
+- method → conditions (실선, 단방향)
+- conditions → multiple runs (실선, 단방향)
+- multiple runs → evaluation (실선, 단방향)
+- evaluation → claim (실선, 단방향)
+
+핵심: 성능은 algorithm 하나의 속성보다, 명시된 실험 조건 아래의 관측값으로 읽어야 한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 1-2, introduction and Experimental Analysis
+
+## 4. variance의 두 출처
+
+논문은 내부 randomness와 외부 실험 선택을 함께 점검한다
+
+- **같은 baseline 비교**: 알고리즘과 task를 정함
+- **intrinsic**: seed·environment randomness
+- **extrinsic**: hyperparameter·codebase
+- **observed return**: 평균·곡선·순위가 달라질 수 있음
+- **비교의 해석**: 조건·분산·평가를 함께 보고
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 1, 7, introduction and Discussion
+
+## 5. 주요 실험의 공통 프로토콜
+
+조건을 읽지 않으면 표와 curve의 숫자를 공정하게 비교할 수 없다
+
+
+| 요소 | 원문 설정 | 의미 |
+| --- | --- | --- |
+| baseline | TRPO·DDPG·PPO·ACKTR | 공개 구현을 쓰는 policy-gradient 비교 |
+| 환경 | Hopper-v1·HalfCheetah-v1 | 불안정성과 dynamics가 다른 MuJoCo task |
+| 반복 | 평가마다 preset seed 5개 | 같은 seed set으로 평균과 standard error |
+| architecture 표 | 2M samples 뒤 마지막 100 trajectories | final average return의 조건 |
+
+핵심: 원문 숫자는 ‘5 seed, 특정 환경·구현·학습량’이라는 조건을 떼어낼 수 없다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 2, 4, experiment setup; Tables 1-2
+
+## 6. network 구조와 activation은 baseline 성능의 일부다
+
+원문은 policy/value MLP의 구조와 activation을 하나씩 바꾸어 영향을 측정했다
+
+
+| 바꾼 요소 | 원문 후보 | 결과를 읽는 법 |
+| --- | --- | --- |
+| MLP 구조 | (64,64), (100,50,25), (400,300) | 알고리즘·환경마다 효과가 다름 |
+| activation | tanh, ReLU, Leaky ReLU | 한 activation의 보편적 우위로 말할 수 없음 |
+| policy/value | policy와 value 또는 Q를 각각 변화 | 변수 사이 상호작용 가능 |
+| 측정 | 5 trials, 2M samples | Table 1-2의 final return ± SE |
+
+핵심: baseline 설정을 생략하면, method 차이와 configuration 차이를 분리하기 어렵다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 2-4, Fig. 2; Tables 1-2
+
+## 7. reward scale은 학습 신호의 크기를 바꾼다
+
+DDPG에서는 환경 reward에 scalar를 곱한 값을 학습에 사용할 수 있다
+
+- **DDPG 실험 조건**: 같은 환경에서 설정을 비교
+- **reward scale**: r-hat = r × sigma-hat
+- **layer norm**: 적용 또는 미적용
+- **조건별 DDPG 학습**: 설정 조합마다 학습
+- **관측된 return**: 조건별 성능을 대조
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 3, Fig. 3, reward-scale section
+
+## 8. seed만 바꾼 10개 run도 다른 평균 curve를 만들 수 있다
+
+Figure 5는 동일 TRPO 설정을 두 개의 다섯-seed 평균으로 나눈 실험이다
+
+- **레인 same setup**
+  - **고정 조건**: TRPO·HC
+같은 설정
+  - **10 trials**: seed만 다르게
+각 run을 학습
+  - **두 group**: 5개씩 분할
+두 group 구성
+  - **group average**: 각 group의
+curve 평균
+  - **차이 관측**: 같은 method도
+평균은 달라짐
+- 고정 조건 → 10 trials (실선, 단방향)
+- 10 trials → 두 group (실선, 단방향)
+- 두 group → group average (실선, 단방향)
+- group average → 차이 관측 (실선, 단방향)
+- 시간축: 왼쪽에서 오른쪽으로 진행
+
+핵심: 두 group은 경쟁 algorithm이 아니라, 동일 configuration의 seed grouping이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 5, Fig. 5 and Random Seeds and Trials
+
+## 9. 구성 예시: top run 선택이 평균을 어떻게 바꾸는가
+
+아래 숫자는 원문 데이터가 아닌, selective reporting을 설명하기 위한 산술 예시다
+
+
+| 보고 방식 | 사용한 constructed returns | 계산 | 표시값 |
+| --- | --- | --- | --- |
+| 모든 5 runs | 70, 80, 90, 100, 110 | 450 ÷ 5 | mean 90 |
+| 상위 2 runs | 100, 110 | 210 ÷ 2 | mean 105 |
+| 차이 | 같은 5개 run에서 선택만 변경 | (105 - 90) ÷ 90 | 16.7% 증가 |
+
+핵심: 선택 평균 상승은 method 향상의 증거보다, 보고 규칙 변화의 신호일 수 있다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 5, Random Seeds and Trials
+
+## 10. benchmark environment가 바꾸는 algorithm 순위
+
+Table 3은 각 환경에서의 bootstrap mean과 95% bound를 따로 보고한다
+
+
+| 환경 | DDPG | TRPO | 읽을 때의 경계 |
+| --- | --- | --- | --- |
+| HalfCheetah-v1 | 5037 (3664, 6574) | 1254.5 (999, 1464) | 이 표의 seed·구현·평가 조건 |
+| Hopper-v1 | 1632 (607, 2370) | 2965 (2854, 3076) | 다른 dynamics에서 결과가 달라짐 |
+| Swimmer-v1 | 31 (21, 46) | 214 (141, 287) | return이 행동 품질을 완전히 뜻하지 않음 |
+
+핵심: 한 환경에서의 우세를 모든 benchmark 또는 실제 응용의 우세로 확대할 수 없다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 4-5, Table 3 and environment section
+
+## 11. 같은 algorithm, 다른 codebase의 비교 조건
+
+원문은 TRPO와 DDPG의 여러 널리 쓰인 implementation을 같은 설정으로 대조했다
+
+1. **algorithm label**: TRPO 또는 DDPG
+2. **implementation**: original·Baselines·rllab 등
+3. **숨은 선택**: optimizer·baseline·network
+4. **observed return**: 같은 설정에서도 차이 발생
+5. **보고**: code와 구현 detail 공개
+
+핵심: baseline 재현은 algorithm name 매칭보다 implementation 조건의 공개를 요구한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 5-6, Fig. 6; Tables 1-2
+
+## 12. return을 보고하기 전, 평가 관점을 정해야 한다
+
+원문은 online-learning return과 target-policy offline evaluation을 구분한다
+
+- **학습한 policy**: 어떤 return을 성능으로 볼지 결정
+- **online view**: 탐색·활용 중 얻은 return
+- **policy optimization**: target policy의 평가 return
+- **reporting metric**: 평가 관점과 metric을 명시
+- **해석 가능한 결과**: 측정 대상을 독자에게 전달
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 6, Online View vs. Policy Optimization
+
+## 13. 원문이 탐색한 uncertainty 분석 절차
+
+여러 seed run의 return을 요약한 뒤, bootstrap과 검정을 보조 근거로 사용한다
+
+1. **run-level returns**: seed별 평가 return을 보존
+2. **bootstrap**: 복원 추출 → mean·95% bound
+3. **power check**: 1.25배 예시의 유의한 비율
+4. **tests**: t·KS·percent difference
+5. **qualified report**: 평균과 uncertainty 제시
+
+핵심: 원문은 이 도구들을 제안적 출발점으로 다루며, RL의 보편 정답으로 확정하지 않는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 6-7, bootstrap, power, significance
+
+## 14. source example: 작은 평균 차이의 해석
+
+Walker2d-v1에서 ACKTR과 DDPG를 비교한 원문의 수치다
+
+
+| 분석 | 원문 수치 | 원문의 해석 |
+| --- | --- | --- |
+| two-sample t | t = 1.03, p = 0.334 | ACKTR의 작은 우세는 significant하지 않음 |
+| KS | KS = 0.40, p = 0.697 | 분포 차이의 근거가 약함 |
+| bootstrap difference | 44.47% (-80.62%, 111.72%) | 95% interval이 0을 가로지름 |
+
+핵심: 평균이 조금 높다는 관측과, 더 나은 method라는 결론은 다른 주장이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 7, significance example
+
+## 15. 재현 가능한 비교의 기록
+
+독자가 같은 조건을 재구성하고 결과의 범위를 판단할 수 있어야 한다
+
+- **레인 publication record**
+  - **baseline check**: 원 결과를
+재현 가능한가
+  - **configuration**: HP setting
+implementation
+  - **setup**: env·seed·trial
+metric
+  - **uncertainty**: mean과
+range·CI
+  - **code release**: code와 detail
+공개
+- baseline check → configuration (실선, 단방향)
+- configuration → setup (실선, 단방향)
+- setup → uncertainty (실선, 단방향)
+- uncertainty → code release (실선, 단방향)
+
+핵심: 재현성은 code 공개 하나가 아니라, 비교를 규정한 조건과 불확실성을 함께 남기는 일이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) p. 7, Discussion and Conclusion
+
+## 16. 논문 결과의 적용 범위
+
+권고안은 중요한 출발점이지만, source가 주장하지 않은 보편 법칙으로 넓히면 안 된다
+
+
+| 경계 | 원문 근거 | 해석 |
+| --- | --- | --- |
+| algorithm·task | policy-gradient와 MuJoCo continuous control | 모든 RL family의 실증 증명은 아님 |
+| trial 수 | 대부분 평가 5 trials, seed 실험 10 | 보편적으로 충분한 N을 제시하지 않음 |
+| 통계 | 여러 test와 bootstrap을 탐색 | RL에 맞는 최선의 test는 추가 연구 필요 |
+| 현실 적용 | benchmark는 real-world proxy | deployment robustness를 보장하지 않음 |
+
+핵심: 좋은 보고는 더 강한 결론을 꾸미는 일이 아니라, 결론이 성립하는 조건을 남기는 일이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 5-7, seed, significance, conclusion
+
+## 17. 결론: 성능 주장은 조건과 불확실성을 포함해야 한다
+
+이 논문은 ‘어떤 algorithm이 이겼는가’보다 ‘그 비교를 믿을 근거가 충분한가’를 묻는다
+
+- seed·environment의 intrinsic variance와 hyperparameter·codebase의 extrinsic 선택을 구분한다
+- 환경별 결과, implementation, 평균 밖의 uncertainty를 함께 제시해야 비교의 뜻이 분명해진다
+- bootstrap·power·검정은 유용한 출발점이지만 RL에 맞는 보편 해법으로 단정하지 않는다
+- 재현 가능한 baseline과 공개된 설정·코드·평가 절차가 누적 가능한 연구의 기반이 된다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1709.06560v3) pp. 1, 7, abstract and conclusion

@@ -105,6 +105,11 @@ QTIP은 weight-only PTQ 방법이다. Activation quantization과 KV cache quanti
 
 생성 예시와 benchmark 결과는 유용하지만, production serving에서는 batch size, context length, model parallelism, kernel availability에 따라 throughput이 달라진다. 따라서 QTIP은 algorithmic quantization quality와 hardware decoding structure를 함께 검증해야 하는 방법으로 읽어야 한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 22 slides | <a href="/assets/seminars/qtip/qtip-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/qtip/qtip-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/qtip/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/qtip/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

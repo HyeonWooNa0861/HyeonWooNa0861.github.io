@@ -97,6 +97,11 @@ Transformer는 network state의 memory와 prediction을 보강하는 역할로 �
 
 셋째, reward 설계가 task priority를 반영하지만 safety constraint를 엄밀한 hard constraint로 보장하지는 않는다. Critical task에는 constrained RL, safe exploration, admission control을 함께 붙여 drop bound나 deadline violation probability를 직접 제한하는 확장이 자연스럽다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 42 slides | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/tomac-ppo-seminar-ko-v3.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/tomac-ppo-seminar-ko-v3.pptx" download>Download</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/tomac-ppo-task-offloading-marl/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

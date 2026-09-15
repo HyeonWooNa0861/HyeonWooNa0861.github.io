@@ -1,0 +1,408 @@
+---
+type: research-seminar-slides
+paper_id: unicon-connected-components-on-commodity-cluster
+---
+
+# UniCon: 범용 클러스터의 연결 요소 계산
+
+논문: UniCon: A Unified Star-Operation to Efficiently Find Connected Components on a Cluster of Commodity Hardware
+
+저자: Chaeeun Kim, Changhun Han, and Ha-Myung Park (2022)
+
+## 1. UniCon: 범용 클러스터의 연결 요소 계산
+
+Unified star, overlap partition, edge filtering, HybridMap을 하나의 정확한 흐름으로 읽는다
+
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) title and abstract
+
+## 2. Connected components의 정확한 출력
+
+각 vertex u를 같은 component에서 ID가 가장 작은 representative로 mapping한다
+
+- **레인 component A**
+- **레인 component B**
+  - **입력 edges**: (4,1) → (6,4)
+  - **연결 집합**: {1,4,6}, min=1
+  - **대표 mapping**: 1:1 → 4:1 → 6:1
+  - **입력 edge**: (9,2)
+  - **연결 집합**: {2,9}, min=2
+  - **대표 mapping**: 2:2 → 9:2
+- 입력 edges → 연결 집합 (실선, 단방향)
+- 연결 집합 → 대표 mapping (실선, 단방향)
+- 입력 edge → 연결 집합 (실선, 단방향)
+- 연결 집합 → 대표 mapping (실선, 단방향)
+
+핵심: UniCon의 representative는 임의 label이 아니라 component의 minimum vertex ID다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 4-5, Table 1 and Definition 1
+
+## 3. 기호와 상태의 의미
+
+Formula보다 먼저 graph, partition, threshold, 보관 edge를 정의한다
+
+
+| 기호 | 정의 | 발표에서의 역할 |
+| --- | --- | --- |
+| G=(V,E) | Vertex set V와 undirected edge set E | 현재 graph |
+| rho | Partition 개수 | Worker-local view 수 |
+| xi(u) | Vertex u의 random hash partition ID | Component label이 아님 |
+| tau | Single-machine Rem 전환 threshold | Hardware별 tuning |
+| F | case 1/2의 sep edge 누적 set | Finishing에서 복원 |
+
+핵심: Partition ID와 component representative는 서로 다른 label이다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 4-6, Table 1 and Algorithm 1
+
+## 4. 대규모 CC에서 memory와 I/O가 함께 문제다
+
+Input graph뿐 아니라 반복 중 생성되는 records도 저장하고 이동해야 한다
+
+
+| 방식 | 주 저장 위치 | Scale 한계 | 남는 비용 |
+| --- | --- | --- | --- |
+| Single machine | 한 machine의 RAM | RAM 초과 시 OOM | 외부 저장 algorithm 필요 |
+| Distributed memory | 여러 worker의 RAM | 전체 graph와 state가 RAM 초과 | Machine 수와 memory 의존 |
+| MapReduce | Distributed storage | RAM 한계 완화 | Disk, sort, network I/O |
+| UniCon 목표 | Storage와 local RAM 혼합 | Intermediate records 억제 | I/O 자체는 남음 |
+
+핵심: Distributed storage를 쓰면 OOM 위험은 줄지만 intermediate-data I/O가 병목이 된다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 1-3
+
+## 5. Alternating, PACC, UniCon의 차이
+
+세 방법은 같은 star operation을 다른 이름으로 부르는 관계가 아니다
+
+
+| Method | 반복 operation | Partition awareness | 핵심 한계 또는 변화 |
+| --- | --- | --- | --- |
+| Alternating | Large-star와 small-star 교대 | 없음 | 두 distributed rounds 반복 |
+| PACC | PA-large-star와 PA-small-star 교대 | 있음 | Load balance 개선, data 이동 지속 |
+| UniCon | UniStar 하나를 반복 | Overlap subgraph | Local CC와 중복 억제 결합 |
+| DSP-CC | External-memory Union-Find 계열 | 해당 없음 | 별도 single-machine method |
+
+핵심: UniCon은 PACC sketching을 쓰지만 partitioning의 star semantics를 새로 정의한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 3-6, [pacc-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936) pp. 6-15
+
+## 6. UniStar-naive의 data explosion
+
+같은 edge를 양 endpoint 관점에서 다시 만들면 다음 round에서 그 copies가 또 복제된다
+
+1. **Original**: |E|=14
+2. **Round 1**: |E|=25
+3. **Round 2**: |E|=29
+4. **Repeated copies**: Edge (17,16)이 (17,12)와 (17,16)으로 재발행
+
+핵심: Unified operation 자체보다 duplicate propagation을 막는 semantics가 중요하다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 6-7, Fig. 2
+
+## 7. UniCon의 전체 pipeline
+
+Sketching 뒤의 edge count가 threshold tau보다 큰지에 따라 distributed round와 Rem이 갈린다
+
+- **Sketching**: Edge chunks의 local CC로 compact E 생성
+- **|E| > tau**: UniStar-opt, sep는 F에 누적
+- **|E| ≤ tau**: Single-machine Rem으로 E 축소
+- **Convergence**: Remaining E와 F를 보존
+- **Finishing**: Minimum representative mapping
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 5-6, Algorithm 1 and Fig. 1
+
+## 8. Partition은 disjoint output group이 아니다
+
+G_i는 partition i의 vertices에 incident한 edges로 만든 local view다
+
+- xi: V to [rho]는 random hash이며 vertex마다 work partition을 지정한다.
+- Partition i의 edge set E_i는 [V]_i vertices에 incident한 edges를 포함한다.
+- Cross-partition edge는 endpoint가 속한 두 subgraph에 모두 나타날 수 있다.
+- 따라서 G_0, G_1, ...은 서로 겹치는 subgraphs이며 component partition이 아니다.
+
+핵심: Overlap은 중복 비용의 원인이면서 cross-partition connectivity를 보존하는 재료다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 5 and 7, Fig. 3
+
+## 9. 작은 path에서 overlap과 Rem 따라가기
+
+입력 E={(4,1),(6,4)}, rho=2, xi(1)=0, xi(4)=1, xi(6)=0인 교육용 계산
+
+- **레인 G_0 view**
+- **레인 G_1 view**
+  - **Input E**: (4,1) → (6,4)
+  - **Incident edges**: (4,1) → (6,4)
+  - **Rem on G_0**: Local CC min=1
+  - **Parent p_0**: 1:1 → 4:1 → 6:1
+  - **Incident edges**: (4,1) → (6,4)
+  - **Rem on G_1**: Local CC min=1
+  - **Parent p_1**: 1:1 → 4:1 → 6:1
+- Input E → Incident edges (실선, 단방향)
+- Input E → Incident edges (실선, 단방향)
+- Incident edges → Rem on G_0 (실선, 단방향)
+- Rem on G_0 → Parent p_0 (실선, 단방향)
+- Incident edges → Rem on G_1 (실선, 단방향)
+- Rem on G_1 → Parent p_1 (실선, 단방향)
+
+핵심: 같은 cross edges가 두 local views에 존재하며 각 Rem은 같은 minimum parent를 찾는다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 7-8, Fig. 3 and Theorem 1; values illustrative
+
+## 10. Parent mapping에서 output edge까지
+
+두 local outputs의 set union은 duplicate를 한 번만 남기고 같은 component를 표현한다
+
+
+| State | Vertex 1 | Vertex 4 | Vertex 6 | Edge set |
+| --- | --- | --- | --- | --- |
+| Input | self | adjacent to 1,6 | adjacent to 4 | {(4,1),(6,4)} |
+| p on G_0 | 1 | 1 | 1 | local CC min=1 |
+| p on G_1 | 1 | 1 | 1 | local CC min=1 |
+| Union output | representative | 4 to 1 | 6 to 1 | {(4,1),(6,1)} |
+
+핵심: Input path와 output star는 edge가 달라도 component {1,4,6}을 동일하게 보존한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 7-8, Theorem 1; values illustrative
+
+## 11. UniStar 한 round의 실제 계산
+
+Partition-local CC를 먼저 찾고 같은 hash group의 local minimum을 경유해 output edges를 만든다
+
+1. **Hash vertices**: xi(u)로 rho partitions 지정
+2. **Build G_i**: [V]_i에 incident한 edges를 모아 overlap view 생성
+3. **Run Rem**: p(u)=minimum of local component 계산
+4. **Emit local stars**: Partition-local minimum 또는 p(u)에 연결
+5. **Set union**: 모든 G'_i edges를 합치고 duplicate 제거
+
+핵심: Global minimum 대신 local minimum 경로로 connectivity를 유지한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 7-8, Fig. 3 and Theorem 1
+
+## 12. Intact tag가 duplicate input을 줄인다
+
+Intact는 한 partition output에서 edge가 변하지 않았다는 상태 tag다
+
+
+| 현재 edge 상태 | Map emission | 다음 round 의미 |
+| --- | --- | --- |
+| Cross edge, tag 없음 | xi(u)와 xi(v)에 모두 emit | 두 overlap views에 포함 |
+| Partition i에서 intact tag | 반대쪽 duplicate emission 생략 | 한 local view에서 유지 |
+| Reduce 시작 | 이전 tags를 clear | 새 output 변화로 tag 재판정 |
+| Connectivity | Edge 자체를 모두 제거하지 않음 | 중복 record만 제외 |
+
+핵심: Intact exclusion은 이미 안정된 cross edge의 두 번째 copy를 생략하는 규칙이다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 8-9, Fig. 4 and Algorithm 2 lines 1-4
+
+## 13. UniStar-opt의 세 filtering cases
+
+Case 1과 2는 sep에 보관하고 case 3만 counterpart가 남는 조건에서 discard한다
+
+
+| Case | 판정 핵심 | Next round | Finishing |
+| --- | --- | --- | --- |
+| 1 | Same partition, u의 following neighbor 없음 | 제외 | sep to F로 복원 |
+| 2 | xi(v)=i, v의 모든 incident edge가 intact | 제외 | sep to F로 복원 |
+| 3 | xi(u)=i, u의 유일 incident edge이며 intact | Discard | 복원 불필요 |
+
+핵심: Filtering은 세 edge를 같은 방식으로 삭제하는 optimization이 아니다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 9-10, Algorithm 2 and Fig. 5
+
+## 14. Filtered edge의 state 변화
+
+다음 round input에서 빠진다는 사실과 final result에서 사라진다는 사실은 다르다
+
+1. **UniStar-opt**: Output edge의 filtering case 판정
+2. **Case 1 or 2**: Edge를 sep로 emit
+3. **Accumulate F**: 여러 rounds의 sep를 set union
+4. **Rem on remaining E**: |E|가 tau 이하이면 single-machine Rem
+5. **Finishing**: Remaining E와 F로 final mapping 계산
+
+핵심: F는 버린 edge 모음이 아니라 final connectivity를 위해 보존한 evidence다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 5-6 and 9-10, Algorithms 1-2
+
+## 15. Case 3 discard의 보존 조건
+
+xi(u)=i에서 u의 유일 incident edge가 intact이면 반대 partition의 copy 또는 대체 edge가 남는다
+
+- Original non-intact cross edge는 처음에 두 endpoint partitions에 존재한다.
+- 한 view에서 intact가 되어 제외되더라도 opposite view가 같은 edge를 유지할 수 있다.
+- Opposite view가 edge를 바꾸면 u와 다른 neighbor를 잇는 replacement가 생긴다.
+- 따라서 case 3의 local duplicate는 final connectivity를 끊지 않는다.
+
+핵심: Case 3은 arbitrary deletion이 아니라 counterpart 또는 replacement existence에 의존한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) p. 10, Theorem 2
+
+## 16. Threshold tau와 Rem 전환
+
+Tau는 correctness constant가 아니라 distributed I/O와 single-machine memory 사이의 tuning parameter다
+
+
+| Condition | 실행 | 이유 | 위험 |
+| --- | --- | --- | --- |
+| \|E\| > tau | UniStar-opt | Distributed reduction 지속 | Round I/O |
+| \|E\| ≤ tau | Rem(E) | 추가 distributed rounds 절약 | Single-machine OOM |
+| tau=2000M | GSH, CW, HL에서 실패 | Too-early Rem 전환 | 한 machine memory 초과 |
+| Reported result | Dataset별 optimal tau | Measured tuning | Universal default 아님 |
+
+핵심: Tau를 크게 잡으면 rounds는 줄 수 있지만 remaining graph가 한 machine에 맞지 않을 수 있다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 5-6 and 12, Algorithm 1 and Fig. 6
+
+## 17. HybridMap이 worker RAM을 구성하는 방법
+
+자기 partition vertices는 array에, 외부 incident vertices는 hash table에 둔다
+
+
+| Node group | Data structure | Access 특성 | Memory role |
+| --- | --- | --- | --- |
+| [V]_i | Compact array | Index access가 빠름 | Expected \|V\|/rho |
+| V_i minus [V]_i | Hash table | 외부 key만 저장 | At most incident-edge scale |
+| Original Rem p | Universe-size array | 빠른 index | Worker마다 \|V\|라 OOM 위험 |
+| All-hash alternative | Hash table | O(\|V_i\|) space | Array보다 lookup 느림 |
+
+핵심: HybridMap은 full array를 피하고 frequent local keys에 array speed를 쓴다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) p. 11, HybridMap section
+
+## 18. Theorem 3의 expected memory bound
+
+V는 vertices, E는 edges, rho는 partitions이며 bound는 random and even hash assumption에 조건부다
+
+
+| Term | Expected worker share | 근거 | 보장하지 않는 것 |
+| --- | --- | --- | --- |
+| Local array | \|V\|/rho | Random vertex partition | Worst-case exact size |
+| Incident edges | 2\|E\|/rho | Cross edge가 두 views에 가능 | Tail concentration |
+| HybridMap total | O((\|V\|+\|E\|)/rho) | Array plus external keys | Fixed byte ceiling |
+| Increasing rho | Expected memory 감소 | 더 작은 local views | Runtime always 감소 |
+
+핵심: Theorem 3은 expected asymptotic bound이며 16GB worker의 worst-case 안전 증명은 아니다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) p. 11, Theorem 3 and Fig. 7
+
+## 19. 증명과 측정을 구분하는 기준
+
+Connectivity theorem, expected memory theorem, empirical speedups는 서로 다른 종류의 claim이다
+
+
+| Claim | 종류 | Condition | 범위 |
+| --- | --- | --- | --- |
+| G와 G'의 same connectivity | Theorem 1 | UniStar construction | Correctness |
+| Case 3 counterpart remains | Theorem 2 | Cross edge와 only-edge condition | Safe discard |
+| Expected memory bound | Theorem 3 | Random and even hash | Asymptotic expectation |
+| 4x, 8x, 4096x | Experiment | 2022 stack and datasets | Measured comparison |
+
+핵심: 실험 배수는 theorem constant가 아니며 record 감소와 byte 감소도 다르다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 8-11, Theorems 1-3; pp. 14-18
+
+## 20. Experiment hardware와 software 조건
+
+결과는 10대 commodity machines와 2022년 공개 구현 조건에서 측정됐다
+
+
+| Item | Reported condition | 해석 경계 |
+| --- | --- | --- |
+| Cluster | 10 machines, master also worker | All 10 workers used by default |
+| Each machine | Xeon E3-1220, 4 cores, 3.10GHz | CPU generation specific |
+| Memory and storage | 16GB RAM, two 1TB SSDs | Commodity condition |
+| Stack | Hadoop 3.2.1, Spark 3.0.1, MPICH 3.3 | Stack-specific |
+| Rem | C++11 implementation | Single-machine phase |
+
+핵심: 성능 배수는 hardware, implementation, tau와 rho tuning을 함께 적어야 한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) p. 12, Experimental settings
+
+## 21. UniStar와 naive 통합의 비교
+
+UniCon-base와 UniCon-naive를 비교해 partition-aware processing과 intact exclusion 효과를 측정했다
+
+
+| Metric | Reported maximum | Comparison | Source condition |
+| --- | --- | --- | --- |
+| Round input ratio | naive / UniStar up to 4x | Fig. 8 datasets | Input records |
+| Map output ratio | naive / UniStar up to 8x | Fig. 8 datasets | Intermediate records |
+| Operation time ratio | naive / UniStar = 2 to 5x | Every reported case | Fig. 9 |
+| Total time ratio | naive / base up to 4.3x | Rounds also fewer | Fig. 9 |
+
+핵심: UniStar의 효과는 data records 감소와 fewer rounds가 함께 만든 조건부 결과다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 14-15, Figs. 8-9
+
+## 22. Filtering과 HybridMap의 measured effects
+
+두 수치는 CW graph와 해당 experiment configuration에 묶여 있다
+
+
+| Technique | Reported result | Condition | 해석 |
+| --- | --- | --- | --- |
+| Edge filtering | 80.4% average input shrink per round | CW, tau=0 | Case 1/2 edges return at finishing |
+| HybridMap | 22.7% lower runtime | CW, vs all-hash | Array access benefit |
+| Array-only p | OOM on GSH, CW, HL | \|V\| array per worker | Universe array bottleneck |
+| All-hash p | Memory succeeds | Hash lookup | HybridMap보다 느림 on CW |
+
+핵심: 80.4%와 22.7%는 universal constants가 아니라 CW에서의 measured results다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 15-17, Figs. 10 and 12-13
+
+## 23. Scale 결과의 조건과 범위
+
+4096x는 이 cluster에서 LACC와 FastSV가 먼저 OOM한 RMAT comparison이다
+
+
+| Result | Reported value | Exact context | 일반화 한계 |
+| --- | --- | --- | --- |
+| Largest relative scale | 4096x larger | Vs LACC and FastSV on RMAT | Hardware-independent law 아님 |
+| Largest real graph HL | 3.443B vertices, 128.737B edges | Table 2 | Prepared CC input |
+| CW success | Only UniCon and PACC | 10-machine experiment | 다른 implementation 조건 |
+| PACC comparison | PACC time / UniCon-opt time = 1.43 | Real-world set report | 143% faster로 쓰지 않음 |
+
+핵심: 4096x는 graph size의 실험 비교이며 runtime 배수나 theorem bound가 아니다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 12-13 and 17-18, Table 2 and Figs. 14-15
+
+## 24. UniCon 결과의 적용 한계
+
+Correctness와 measured scalability를 다른 graph task나 system stack으로 자동 확장하지 않는다
+
+- Theorem 3은 expectation이며 reducer별 worst-case RAM 또는 tail bound를 주지 않는다.
+- Record count 감소는 compressed bytes, sort spill, network traffic의 같은 비율 감소를 보장하지 않는다.
+- Tau와 rho는 hardware와 dataset에 따라 조정해야 한다.
+- 2022년 CC 결과를 triangle, shortest path, arbitrary graph processing에 적용할 근거는 없다.
+
+핵심: UniCon은 CC 전용이며 system condition이 바뀌면 성능을 다시 측정해야 한다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 11-19
+
+## 25. UniCon의 기여를 이루는 네 요소
+
+한 요소만 떼어 설명하면 correctness, I/O reduction, worker memory의 연결이 사라진다
+
+1. **Unified star**: Overlapping G_i에서 local CC 계산
+2. **Intact exclusion**: Stable cross-edge duplicate를 다음 round에서 생략
+3. **Recoverable filtering**: Case 1/2는 F에 보관, case 3만 discard
+4. **HybridMap**: Local array와 external-key hash를 결합
+
+핵심: UniCon은 unified star, duplicate suppression, edge preservation, HybridMap의 결합이다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 5-11 and p. 19
+
+## 26. 정확한 UniCon 설명
+
+Output, overlap, filtering, evidence boundary를 한 문장씩 확인한다
+
+
+| 정확한 설명 | 피해야 할 오해 |
+| --- | --- |
+| CC output은 vertex별 minimum representative mapping이다 | Partition ID가 component ID다 |
+| Cross edge는 overlapping G_i views에 있을 수 있다 | 각 edge는 정확히 한 worker만 본다 |
+| Case 1/2 edges는 F를 거쳐 finishing에 돌아온다 | Filtering은 모두 영구 삭제다 |
+| 4096x는 10-machine RMAT OOM comparison이다 | 모든 hardware에서 4096배 확장된다 |
+
+핵심: 핵심은 intermediate records를 줄이며 connectivity evidence를 보존하는 방법이다
+
+근거: [unicon-paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527) pp. 4-19

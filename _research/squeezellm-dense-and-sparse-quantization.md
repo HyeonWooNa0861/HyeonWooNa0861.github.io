@@ -68,6 +68,11 @@ LLM 추론, 특히 작은 batch의 autoregressive generation은 연산량보다 
 
 SqueezeLLM은 OWQ처럼 민감한 일부 weight를 별도로 보존한다. 다만 OWQ가 outlier-aware column mixed precision과 WCT에 초점을 둔다면, SqueezeLLM은 dense-and-sparse decomposition과 sensitivity-based non-uniform quantization을 결합한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 35 slides | <a href="/assets/seminars/squeezellm-dense-and-sparse-quantization/squeezellm-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/squeezellm-dense-and-sparse-quantization/squeezellm-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/squeezellm-dense-and-sparse-quantization/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/squeezellm-dense-and-sparse-quantization/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

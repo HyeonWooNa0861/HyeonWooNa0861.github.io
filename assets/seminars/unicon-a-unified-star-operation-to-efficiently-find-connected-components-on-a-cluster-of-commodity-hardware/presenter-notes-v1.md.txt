@@ -1,0 +1,314 @@
+## 1. UniCon: 범용 클러스터의 연결 요소 계산
+
+1. UniCon: 범용 클러스터의 연결 요소 계산
+
+발표 대본
+UniCon은 MapReduce 기반 connected components algorithm입니다. 이 자료는 먼저 CC의 정확한 output을 정의하고, PACC까지 남은 intermediate-data 문제를 확인합니다. 이어서 UniStar의 overlapping partition semantics, intact-edge 처리, 세 filtering cases와 HybridMap을 설명한 뒤 조건이 붙은 experiment results를 읽습니다.
+
+공개 출처
+unicon-paper | title and abstract
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 2. Connected components의 정확한 출력
+
+2. Connected components의 정확한 출력
+
+발표 대본
+입력은 totally ordered vertex IDs를 가진 undirected graph입니다. Edge는 큰 ID가 먼저 오도록 ordered pair로 기록합니다. CC output은 각 vertex u를 component Lambda of u의 가장 preceding vertex, 즉 minimum ID에 mapping하는 것입니다. 예시에서는 1, 4, 6이 같은 component라 모두 1에 mapping되고, 2와 9는 2에 mapping됩니다.
+
+공개 출처
+unicon-paper | pp. 4-5, Table 1 and Definition 1
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 3. 기호와 상태의 의미
+
+3. 기호와 상태의 의미
+
+발표 대본
+rho는 partition count이고 xi는 vertex를 partition ID로 보내는 random hash입니다. 이 color label은 작업 분할에 쓰이며 component 결과가 아닙니다. tau는 remaining edge count가 충분히 작아졌을 때 distributed UniStar 대신 single-machine Rem으로 전환하는 threshold입니다. F는 filtering case one과 two에서 sep로 분리한 edges를 누적하며 final finishing에 다시 사용합니다.
+
+공개 출처
+unicon-paper | pp. 4-6, Table 1 and Algorithm 1
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 4. 대규모 CC에서 memory와 I/O가 함께 문제다
+
+4. 대규모 CC에서 memory와 I/O가 함께 문제다
+
+발표 대본
+Distributed-memory algorithms는 input graph와 processing state를 aggregate RAM에 올려야 하므로 commodity cluster에서 OOM이 날 수 있습니다. MapReduce는 distributed storage를 사용해 이 조건을 완화하지만 각 round의 records를 disk에 쓰고 network로 shuffle합니다. UniCon은 I/O를 없애지 않습니다. 대신 star operations가 만드는 intermediate edges와 불필요한 next-round inputs를 줄입니다.
+
+공개 출처
+unicon-paper | pp. 1-3
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 5. Alternating, PACC, UniCon의 차이
+
+5. Alternating, PACC, UniCon의 차이
+
+발표 대본
+Alternating algorithm은 large-star와 small-star를 번갈아 실행합니다. PACC는 partition-aware versions로 reducer concentration을 줄였지만 두 operations를 계속 교대하며 intermediate data를 옮깁니다. UniCon은 두 operations를 단순히 합치지 않고, overlapping partition subgraph에서 local CC를 계산하는 UniStar를 도입합니다. DSP-CC는 external memory를 쓰는 separate single-machine algorithm이라 UniCon을 그 분산판으로 부르면 안 됩니다.
+
+공개 출처
+unicon-paper | pp. 3-6
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+pacc-paper | pp. 6-15
+PACC: Large Scale Connected Component Computation on Hadoop and Spark
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 6. UniStar-naive의 data explosion
+
+6. UniStar-naive의 data explosion
+
+발표 대본
+Figure 2의 input은 14 edges인데 naïve round one에서 25, round two에서 29로 늘어납니다. 원문은 edge 17 comma 16을 예로 듭니다. Endpoint 16 관점의 minimum은 12이고 endpoint 17 관점의 minimum은 16이라 round one에서 17 comma 12와 17 comma 16으로 copy됩니다. 이 copies가 이후 round에서 다시 처리되어 data explosion이 이어집니다.
+
+공개 출처
+unicon-paper | pp. 6-7, Fig. 2
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 7. UniCon의 전체 pipeline
+
+7. UniCon의 전체 pipeline
+
+발표 대본
+Algorithm 1은 sketching, partitioning, finishing의 세 phases로 구성됩니다. Sketching은 PACC에서 가져온 input reduction과 load-balancing step입니다. Partitioning에서는 edge count가 tau보다 크면 UniStar-opt를 반복하고 case one과 two sep edges를 F에 누적합니다. Edge count가 threshold 이하이면 Rem을 사용합니다. Finishing은 remaining E와 F를 함께 사용해 final representative mapping을 만듭니다.
+
+공개 출처
+unicon-paper | pp. 5-6, Algorithm 1 and Fig. 1
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 8. Partition은 disjoint output group이 아니다
+
+8. Partition은 disjoint output group이 아니다
+
+발표 대본
+UniStar는 vertices를 random hash로 partitions에 배정합니다. 하지만 partition subgraph G_i는 vertex shard만 보는 것이 아니라 그 partition vertices에 incident한 edges를 모두 받습니다. Cross edge는 양 endpoint partitions의 local views에 들어갈 수 있습니다. 이 overlap을 제거한 disjoint sharding으로 바꾸어 설명하면 Theorem 1의 connectivity-preservation 논리와 intact-edge optimization을 모두 왜곡합니다.
+
+공개 출처
+unicon-paper | pp. 5 and 7, Fig. 3
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 9. 작은 path에서 overlap과 Rem 따라가기
+
+9. 작은 path에서 overlap과 Rem 따라가기
+
+발표 대본
+Vertex 1과 6은 partition zero, vertex 4는 partition one입니다. G zero는 vertices 1과 6에 incident한 두 edges를 모두 포함합니다. G one도 vertex 4에 incident한 두 edges를 모두 포함합니다. 따라서 local graph는 두 views에서 같고 Rem은 parent mapping one to one, four to one, six to one을 계산합니다. 이 예시는 overlap semantics를 설명하며 각 edge를 exactly one worker에서만 처리한다는 뜻이 아닙니다.
+
+공개 출처
+unicon-paper | pp. 7-8, Fig. 3 and Theorem 1; values illustrative
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 10. Parent mapping에서 output edge까지
+
+10. Parent mapping에서 output edge까지
+
+발표 대본
+Input edge set은 path one to four to six입니다. 각 local Rem parent는 all vertices를 one에 mapping합니다. UniStar output을 set union하고 duplicates를 제거하면 four to one과 six to one이 남습니다. Input과 output graph의 edge topology는 다르지만 connected component는 같습니다. Theorem 1은 각 local path를 direct 또는 two-hop path로 대체해 이 connectivity를 보존함을 보입니다.
+
+공개 출처
+unicon-paper | pp. 7-8, Theorem 1; values illustrative
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 11. UniStar 한 round의 실제 계산
+
+11. UniStar 한 round의 실제 계산
+
+발표 대본
+각 G_i에서 Rem이 local component minimum p of u를 계산합니다. Node u가 자기 hash partition subset의 minimum이 아니면 먼저 그 subset minimum에 연결되고, 그 local minimum은 p of u에 연결됩니다. 이 two-hop structure는 load concentration을 줄이면서 local component connectivity를 유지합니다. 모든 local output edge sets를 union해 next graph를 만듭니다.
+
+공개 출처
+unicon-paper | pp. 7-8, Fig. 3 and Theorem 1
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 12. Intact tag가 duplicate input을 줄인다
+
+12. Intact tag가 duplicate input을 줄인다
+
+발표 대본
+일반 cross-partition edge는 두 endpoint partition keys로 emit됩니다. 이전 round에서 partition i의 output edge가 unchanged라 intact tag를 받으면 다음 round에서 그 edge를 다른 local subgraph에 다시 복제하지 않습니다. Figure 4의 edge 4 comma 1은 one view에만 남습니다. Reduce는 tags를 clear한 뒤 이번 round의 changed set을 기준으로 새 tags를 붙입니다.
+
+공개 출처
+unicon-paper | pp. 8-9, Fig. 4 and Algorithm 2 lines 1-4
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 13. UniStar-opt의 세 filtering cases
+
+13. UniStar-opt의 세 filtering cases
+
+발표 대본
+Case one은 same-partition edge에서 u에게 following neighbor가 없는 경우입니다. Case two는 xi(v)=i, 즉 v가 partition i에 속하고 G_i에서 v의 모든 incident edges가 intact인 경우입니다. 두 cases의 edges는 subsequent rounds에서 빼지만 sep로 F에 축적해 finishing input에 다시 넣습니다. Case three는 xi(u)=i이며 (u,v)가 G_i에서 u의 유일한 incident edge이고 그 edge가 intact인 경우입니다. 단지 intact edge가 하나라는 조건이 아닙니다. 반대 partition의 copy 또는 replacement edge가 남으므로 sep 없이 discard합니다.
+
+공개 출처
+unicon-paper | pp. 9-10, Algorithm 2 and Fig. 5
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 14. Filtered edge의 state 변화
+
+14. Filtered edge의 state 변화
+
+발표 대본
+Algorithm 1에서 F는 initially empty입니다. UniStar-opt가 case one과 two edges를 sep로 내보낼 때마다 F와 union합니다. 이 edges는 반복 input에서만 제외됩니다. Remaining E가 작아지면 Rem을 실행하고, final finishing은 Rem output과 F를 함께 사용합니다. Case three는 이 route에 들어가지 않으며 Theorem 2가 counterpart preservation을 뒷받침합니다.
+
+공개 출처
+unicon-paper | pp. 5-6 and 9-10, Algorithms 1-2
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 15. Case 3 discard의 보존 조건
+
+15. Case 3 discard의 보존 조건
+
+발표 대본
+Theorem 2는 cross edge (u,v)가 xi(u)=i인 G_i에서 u의 유일한 incident edge일 때 반대 partition에도 해당 edge가 있음을 보입니다. Case three는 이 유일 edge가 intact라는 조건도 요구합니다. 다른 non-intact incident edge가 있는데 intact edge만 하나인 경우는 여기에 해당하지 않습니다. Non-intact edge는 두 views에 기본적으로 복제됩니다. Opposite view가 그대로 emit하면 copy가 남고, 바꾸면 u를 다른 node와 잇는 replacement edge가 생깁니다. 이 조건이 있으므로 u-side duplicate를 sep 없이 discard할 수 있습니다.
+
+공개 출처
+unicon-paper | p. 10, Theorem 2
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 16. Threshold tau와 Rem 전환
+
+16. Threshold tau와 Rem 전환
+
+발표 대본
+UniCon은 remaining edge count가 tau 이하가 되면 Rem으로 전환합니다. 이 choice는 correctness를 바꾸는 constant가 아니라 performance tuning입니다. Experiment에서 tau equals two thousand million은 GSH, CW, HL을 single machine으로 처리하려다 OOM을 냈습니다. 논문은 각 dataset에 optimal tau를 사용했으므로 하나의 tau를 모든 hardware에 권장할 수 없습니다.
+
+공개 출처
+unicon-paper | pp. 5-6 and 12, Algorithm 1 and Fig. 6
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 17. HybridMap이 worker RAM을 구성하는 방법
+
+17. HybridMap이 worker RAM을 구성하는 방법
+
+발표 대본
+Rem의 parent map p를 universe-size array로 만들면 each worker가 total vertex count size를 부담합니다. HybridMap은 자기 partition vertex range를 compact array에 두고, local subgraph에 incident하지만 partition 밖인 vertices만 hash table에 둡니다. Local keys가 대부분 array에 있으므로 all-hash보다 lookup을 줄이고, full array보다 memory를 크게 낮춥니다.
+
+공개 출처
+unicon-paper | p. 11, HybridMap section
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 18. Theorem 3의 expected memory bound
+
+18. Theorem 3의 expected memory bound
+
+발표 대본
+Theorem 3 assumes random vertex partition and evenly distributed edges. Expected local vertex count is V over rho, and expected edge-view count is two E over rho because a cross edge can enter two subgraphs. 따라서 HybridMap memory는 expected O of V plus E over rho입니다. 논문은 high-probability concentration이나 deterministic byte limit을 제공하지 않습니다. Rho를 늘리면 memory는 줄지만 partition-aware benefit와 performance가 약해질 수 있습니다.
+
+공개 출처
+unicon-paper | p. 11, Theorem 3 and Fig. 7
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 19. 증명과 측정을 구분하는 기준
+
+19. 증명과 측정을 구분하는 기준
+
+발표 대본
+Theorem one is a connectivity correctness result. Theorem two supports case-three filtering under its structural condition. Theorem three is an expected asymptotic memory result. In contrast, input reduction, intermediate-data reduction, speedups and maximum processable sizes are measurements. Edge record count가 줄어도 compression, sort spill, network bytes, JVM overhead가 같은 비율로 줄어든다는 theorem은 없습니다.
+
+공개 출처
+unicon-paper | pp. 8-11, Theorems 1-3; pp. 14-18
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 20. Experiment hardware와 software 조건
+
+20. Experiment hardware와 software 조건
+
+발표 대본
+실험 cluster는 10 machines로 구성됩니다. 각 machine은 four-core Intel Xeon E3-1220 at 3.10 gigahertz, 16 gigabytes RAM, two one-terabyte SSDs를 갖습니다. Hadoop 3.2.1, Spark 3.0.1, MPICH 3.3을 사용했고 master도 worker로 참여했습니다. 비교 algorithm은 원 저자 code를 사용했으며 Rem은 C plus plus eleven으로 구현했습니다.
+
+공개 출처
+unicon-paper | p. 12, Experimental settings
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 21. UniStar와 naive 통합의 비교
+
+21. UniStar와 naive 통합의 비교
+
+발표 대본
+Figure 8에서 UniStar는 UniStar-naive보다 input data를 up to four times, Map output intermediate data를 up to eight times 줄였습니다. Figure 9에서 single UniStar operation은 two to five times faster였고, UniCon-base는 rounds도 줄어 total runtime을 up to 4.3 times 낮췄습니다. These are reported maxima across experiment conditions, not fixed constants for all graphs.
+
+공개 출처
+unicon-paper | pp. 14-15, Figs. 8-9
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 22. Filtering과 HybridMap의 measured effects
+
+22. Filtering과 HybridMap의 measured effects
+
+발표 대본
+Figure 10은 filtering 효과를 분리하려고 tau를 zero로 고정합니다. CW에서 UniCon-opt는 round당 input size를 평균 80.4 percent 줄였습니다. 마지막 input이 다시 늘어나는 이유는 finishing이 case one과 two edges를 되돌려 받기 때문입니다. Figure 13은 CW에서 HybridMap runtime이 all-hash보다 22.7 percent 낮다고 보고합니다. Array-only는 worker마다 V-size array를 할당해 GSH, CW, HL에서 실패했습니다.
+
+공개 출처
+unicon-paper | pp. 15-17, Figs. 10 and 12-13
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 23. Scale 결과의 조건과 범위
+
+23. Scale 결과의 조건과 범위
+
+발표 대본
+Figure 14 reports that UniCon handles up to 4096 times larger RMAT graphs than LACC and FastSV on this cluster because competitors hit OOM earlier. HL has 3,443,082,324 vertices and 128,736,914,167 edges. On CW only UniCon and PACC succeed. Figure 15 expresses UniCon-opt speed as 143 percent of PACC, corresponding to PACC runtime divided by UniCon-opt runtime of 1.43. 이를 143 percent faster라고 바꾸면 안 됩니다.
+
+공개 출처
+unicon-paper | pp. 12-13 and 17-18, Table 2 and Figs. 14-15
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 24. UniCon 결과의 적용 한계
+
+24. UniCon 결과의 적용 한계
+
+발표 대본
+Connectivity preservation은 algorithm semantics에 대한 theorem이지만 performance claims는 system-dependent입니다. Expected memory bound를 worst-case 16-gigabyte guarantee로 바꿀 수 없습니다. Record reduction과 physical bytes reduction도 identical하지 않습니다. Tau와 rho tuning이 결과에 영향을 주며, 이 paper는 connected components만 다룹니다. 다른 graph algorithms나 current clusters에는 별도 evidence가 필요합니다.
+
+공개 출처
+unicon-paper | pp. 11-19
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 25. UniCon의 기여를 이루는 네 요소
+
+25. UniCon의 기여를 이루는 네 요소
+
+발표 대본
+UniStar alone은 overlapping partitions에서 local connectivity를 빠르게 압축합니다. Intact tag는 stable cross edge의 duplicate copy를 줄입니다. Filtering은 completed structures를 next rounds에서 제외하되 case one and two edges를 F에 보존합니다. HybridMap은 each worker의 parent state를 compact하게 유지합니다. 이 네 요소가 함께 commodity-cluster CC scalability를 목표로 합니다.
+
+공개 출처
+unicon-paper | pp. 5-11 and p. 19
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527
+
+## 26. 정확한 UniCon 설명
+
+26. 정확한 UniCon 설명
+
+발표 대본
+UniCon을 요약하면 다음과 같습니다. Overlapping partition subgraphs에서 local connected components를 계산해 unified star output을 만들고, intact duplicate와 completed edges를 구분해 next-round records를 줄입니다. Case one and two evidence는 F에 보존하고 HybridMap으로 worker memory를 제한합니다. Reported scale results는 2022년 10-machine configuration에 조건부입니다.
+
+공개 출처
+unicon-paper | pp. 4-19
+UniCon, PLOS ONE 17(11): e0277527
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277527

@@ -83,6 +83,11 @@ COVERCAL은 각 sample이 어떤 outlier channel을 활성화하는지 보고, �
 
 EPTQ, QTIP, QuIP# 같은 연구가 quantizer geometry와 rounding 구조를 다룬다면, COVERCAL은 calibration input이 activation statistics를 어떻게 왜곡하는지에 집중한다. YAQA가 원 모델 출력 KL을 평가축으로 제안한다면, COVERCAL은 그 평가축을 개선하기 위한 calibration set 설계 문제로 연결될 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 19 slides | <a href="/assets/seminars/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/covercal-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/covercal-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

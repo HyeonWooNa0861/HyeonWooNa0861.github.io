@@ -99,9 +99,10 @@ Synthetic graph를 100만 node에서 40억 node까지 늘리면서 평균 degree
 
 실험 platform과 hardware는 2012년 환경이며 label selectivity가 낮거나 query가 dense하면 STwig intermediate result가 커질 수 있다. SEED식 clique unit과 adaptive cardinality estimation, 특허의 symmetry-breaking constraint, modern RDMA·GPU neighborhood filtering을 결합하면 candidate explosion을 줄일 수 있다. Streaming graph에는 changed block만 invalidation하고 affected STwig를 재실행하는 incremental matching을 적용할 수 있다.
 
-## Source Availability Note
-
-공식 PDF의 저작권 고지는 server 재게시에는 별도 허가가 필요하다고 명시한다. 따라서 이 블로그는 PDF 사본을 호스팅하지 않고 PVLDB의 공식 PDF와 DOI만 연결한다.
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 24 slides | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/stwig-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/stwig-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
 
 ## 참고자료
 

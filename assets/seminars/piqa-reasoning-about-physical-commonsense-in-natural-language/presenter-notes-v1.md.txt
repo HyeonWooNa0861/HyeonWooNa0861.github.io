@@ -1,0 +1,191 @@
+## 1. PIQA: 자연어로 묻는 물리적 상식
+
+1. PIQA: 자연어로 묻는 물리적 상식
+
+발표 대본
+PIQA는 Physical Interaction: Question Answering의 약자입니다. 이 논문은 문장 자체가 자연스러운지를 묻는 대신, 일상 물체를 조작하는 goal에 대해 두 solution 중 어느 것이 더 적절한지를 묻습니다. 오늘은 benchmark의 동기, 데이터를 만든 방식, 편향을 줄이려 한 장치, 그리고 2019년 평가 결과를 차례로 살펴봅니다.
+
+공개 출처
+piqa-v1 | p. 1, title and abstract
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 2. 왜 자연어 모델에 물리적 상식을 따로 묻는가
+
+2. 왜 자연어 모델에 물리적 상식을 따로 묻는가
+
+발표 대본
+원문의 문제의식은 reporting bias입니다. 사람들은 목표를 말할 때 가장 전형적인 도구와 방법을 떠올리기 쉽고, 일상 물체의 많은 대안적 사용법이나 물리적 전제조건은 글에 충분히 남지 않을 수 있습니다. PIQA는 물체의 성질과 조작 결과를 고려해야 하는 자연어 판단을 따로 측정하려고 합니다. 이 그림의 두 branch는 시간 순서가 아니라 서로 다른 정보의 성격을 구분합니다.
+
+공개 출처
+piqa-v1 | pp. 1–2, Introduction; Dataset
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 3. PIQA의 한 문항: goal과 두 solution
+
+3. PIQA의 한 문항: goal과 두 solution
+
+발표 대본
+원문은 multiple-choice question answering으로 task를 정의합니다. goal은 보통 달성해야 할 post-condition이고, solution은 그 상태에 이르는 절차입니다. 핵심 계약은 solution 둘 중 정확히 하나가 맞다는 것입니다. 따라서 PIQA accuracy가 높다고 모델이 스스로 다양한 도구를 찾아 새로운 절차를 생성한다는 뜻은 아닙니다.
+
+공개 출처
+piqa-v1 | p. 2, Dataset
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 4. 형식을 읽는 자체 제작 예시
+
+4. 형식을 읽는 자체 제작 예시
+
+발표 대본
+이 슬라이드의 goal과 두 solution은 강의를 위해 만든 자체 제작 예시입니다. PIQA 데이터의 문장을 번역하거나 재현한 것이 아닙니다. 학습자는 비닐 봉투와 젖은 수건이 물의 접촉에 어떤 차이를 만드는지 추론해 A를 고를 수 있습니다. 실제 benchmark에서는 이처럼 두 문장이 더 미세한 차이만 가질 수도 있습니다.
+
+공개 출처
+piqa-v1 | p. 2, Dataset task definition
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 5. 원문이 보인 두 종류의 물리적 판단
+
+5. 원문이 보인 두 종류의 물리적 판단
+
+발표 대본
+원문 Figure 2의 왼쪽 사례들은 flexibility, curvature, porousness처럼 물체의 기본 속성을 요구합니다. 오른쪽 사례들은 두 방법이 기술적으로 가능할 수 있어도 더 편리하고 선호되는 방법을 구별합니다. 이 분류는 논문이 제시한 예시 범주이며, 모든 PIQA 문항을 완전히 둘로 나누는 공식 taxonomy라고 확대하지 않습니다.
+
+공개 출처
+piqa-v1 | p. 2, Fig. 2 caption
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 6. 데이터는 어떻게 만들어졌는가
+
+6. 데이터는 어떻게 만들어졌는가
+
+발표 대본
+원문은 자유로운 task-tool prompt를 먼저 시도했지만, 전형적인 주방·차고 도구가 과도하게 나오며 reporting bias가 커졌다고 설명합니다. 그래서 Instructables 링크를 보고 annotator가 두 component task를 만들도록 했습니다. annotator는 physical goal, valid solution, 그리고 자기 solution을 무효하게 만드는 permutation인 trick을 작성했습니다. 이 flow는 원문의 제작 의존 관계를 압축한 것이며 실제 annotation 화면의 시간축 재현은 아닙니다.
+
+공개 출처
+piqa-v1 | pp. 2–3, Collecting data; Fig. 3
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 7. 사람이 만든 문항도 검증과 제거를 거친다
+
+7. 사람이 만든 문항도 검증과 제거를 거친다
+
+발표 대본
+원문 footnote는 main HIT 이전 qualification을 설명합니다. annotator는 잘 구성된 goal-solution 쌍과 underspecified 쌍을 80% 초과로 구별해야 했습니다. 데이터는 수천 triple 단위로 수집되고 다른 annotator가 correctness를 검증했으며, agreement가 낮은 사용자는 de-qualified 되었습니다. 낮은 합의 사례와 전문 영역 지식을 요구하는 사례도 제거했습니다. 이 절차가 annotation 오류를 모두 없앤다는 보장은 아닙니다.
+
+공개 출처
+piqa-v1 | p. 3, validation; footnote 2
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 8. 원문이 보고한 데이터 규모와 균형 단서
+
+8. 원문이 보고한 데이터 규모와 균형 단서
+
+발표 대본
+원문 Statistics와 Figure 4는 train 16,000 초과, dev 약 2,000, test 약 3,000을 보고합니다. SpaCy 기준 goal 평균은 7.8단어이고 정답·오답 solution은 모두 평균 21.3단어입니다. Figure 4에서 두 solution 길이 분포는 거의 같습니다. 명사·동사·형용사·부사의 정답/오답 어휘 겹침도 각각 최소 85%입니다. 이 수치는 v1의 설명이며 다른 후속 release의 정확한 split 수와 혼동하지 않습니다.
+
+공개 출처
+piqa-v1 | p. 3, Statistics; Fig. 4
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 9. AFLite: 쉽게 맞힐 수 있는 표면 artifact를 더 줄이기
+
+9. AFLite: 쉽게 맞힐 수 있는 표면 artifact를 더 줄이기
+
+발표 대본
+AFLite는 주어진 feature representation들이 함께 target label을 매우 잘 나타내는 instance를 discard한다고 원문이 설명합니다. 이 논문에서는 원 데이터 5,000개로 BERT-Large를 fine-tune한 뒤 남은 instance의 embedding을 계산하고, random subset으로 학습한 linear classifier ensemble을 사용합니다. 따라서 AFLite의 목표는 불필요한 annotation artifact 완화입니다. 모든 bias 제거, 모든 문항의 물리적 타당성 자동 보증, 혹은 모델이 물리를 배웠다는 증명은 아닙니다.
+
+공개 출처
+piqa-v1 | pp. 3–4, Removing Annotation Artifacts
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 10. 평가: 각 후보를 score하고 둘 중 하나를 고른다
+
+10. 평가: 각 후보를 score하고 둘 중 하나를 고른다
+
+발표 대본
+원문은 GPT 124M, BERT-Large 340M, RoBERTa-Large 355M을 평가합니다. 두 solution choice를 독립적으로 처리하며, 각각 goal과 choice 및 special CLS token이 입력됩니다. 마지막 layer의 CLS hidden state에 linear transformation을 적용하고 두 option에 softmax를 적용합니다. fine-tuning loss는 두 option에 대한 cross-entropy입니다. 여기에 없는 model architecture 또는 decoding 절차를 추가해 설명하지 않습니다.
+
+공개 출처
+piqa-v1 | p. 4, Experiments
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 11. 2019년 원문 Table 1: 모델과 사람의 격차
+
+11. 2019년 원문 Table 1: 모델과 사람의 격차
+
+발표 대본
+이 표는 원문 Table 1을 수치만 옮긴 것입니다. Random chance는 validation과 test 모두 50.0%, majority class는 50.5%와 50.4%입니다. GPT는 70.9%와 69.2%, BERT는 67.1%와 66.8%, RoBERTa는 79.2%와 77.1%입니다. Human 94.9%는 development data에서 majority vote로 계산되었고 원문 표에는 human test score가 없습니다. 그러므로 94.9와 77.1을 완전히 같은 split에서 얻은 정면 비교 수치로 표현하면 안 됩니다.
+
+공개 출처
+piqa-v1 | p. 5, Table 1 and evaluation notes
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 12. 작은 문장 차이도 물리적 결과를 크게 바꾼다
+
+12. 작은 문장 차이도 물리적 결과를 크게 바꾼다
+
+발표 대본
+Figure 6에서 원문은 punctuation을 제거하고 lowercase token string에 edit, insertion, deletion 비용 1을 주어 최소 edit distance를 계산합니다. train과 validation 모두 약 60%가 1–2 word edit에 속합니다. 아래 그래프는 minimum edit distance별 validation accuracy를 보이고, 원문 본문은 pair가 멀어질수록 dataset complexity가 대체로 증가한다고 설명합니다. 이것은 상관적 진단이며, edit distance 하나가 난이도를 완전하게 설명한다는 주장은 아닙니다.
+
+공개 출처
+piqa-v1 | pp. 5–6, Fig. 6
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 13. 무엇에서 어려움을 보였는가
+
+13. 무엇에서 어려움을 보였는가
+
+발표 대본
+원문 Figure 7과 8은 solution 두 개가 특정 word 하나에서 달라지는 사례를 골라 RoBERTa의 validation accuracy를 살핍니다. before, after, top, bottom 같은 관계어는 거의 chance로 보고되며, water는 75%, spoon은 90%, freeze는 66%입니다. 물이라는 단어가 training에 300개 사례로 나타나도 다양한 affordance 때문에 어렵고, spoon은 대체 후보의 범위가 더 좁을 수 있다는 것이 원문의 해석입니다. 이 분석은 선택된 subset의 관찰입니다.
+
+공개 출처
+piqa-v1 | pp. 6–7, Figs. 7–8
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 14. 자체 제작 trace: 한 단어 차이를 물성으로 검증하기
+
+14. 자체 제작 trace: 한 단어 차이를 물성으로 검증하기
+
+발표 대본
+이 trace도 PIQA 문항이 아닌 자체 제작 수업 예시입니다. 접시의 물기를 없애는 post-condition을 먼저 두고, 각 재료가 물을 흡수하는지 또는 단지 표면을 덮는지를 비교합니다. 실제 PIQA의 선택지에는 관계, 순서, 도구의 affordance, 전제조건 등 더 여러 종류의 차이가 있을 수 있습니다. 이 예시의 목적은 두 문장의 단어 차이를 물리적 결과로 검증하는 읽기 방법을 연습하는 것입니다.
+
+공개 출처
+piqa-v1 | pp. 5–7, Figs. 6–9 diagnostic method
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 15. PIQA 점수로 말할 수 있는 것과 없는 것
+
+15. PIQA 점수로 말할 수 있는 것과 없는 것
+
+발표 대본
+원문 결론은 언어만으로 세계를 배운다는 방식의 한계를 강조하며, 결국 interaction으로 지식을 배우고 언어로 전달해야 한다는 방향을 제시합니다. 그러나 논문은 embodied training algorithm이나 로봇 deployment 실험을 제안하지 않습니다. 또한 2지선다 형식은 후보 생성, 열린 행동 공간의 탐색, 다단계 수행 성공을 직접 측정하지 않습니다. PIQA의 가치는 이 한계를 숨기지 않고 언어모델의 특정 물리 상식 오류를 관찰 가능하게 하는 데 있습니다.
+
+공개 출처
+piqa-v1 | p. 7, Conclusion; related work
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1
+
+## 16. PIQA를 읽는 다섯 가지 핵심
+
+16. PIQA를 읽는 다섯 가지 핵심
+
+발표 대본
+마무리에서는 PIQA의 세 층을 연결합니다. 첫째, task는 두 후보 중 goal을 달성할 물리적으로 적절한 절차를 선택합니다. 둘째, 데이터는 human-written trick, 길이와 어휘의 균형, AFLite로 쉬운 언어 단서를 줄이려 합니다. 셋째, 원문의 모델 결과와 오류 분석은 당시 언어모델이 관계와 다양한 affordance에서 보인 한계를 진단합니다. 이 셋을 분리하면 benchmark 점수의 의미를 과장하지 않고 이해할 수 있습니다.
+
+공개 출처
+piqa-v1 | pp. 1–7, abstract through conclusion
+arXiv:1911.11641v1 — PIQA: Reasoning about Physical Commonsense in Natural Language
+https://arxiv.org/abs/1911.11641v1

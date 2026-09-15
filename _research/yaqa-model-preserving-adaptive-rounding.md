@@ -122,6 +122,11 @@ EPTQ는 FE8 lattice, weight scale normalization, adaptive critical weight preser
 
 YAQA는 EPTQ의 경쟁 방법이라기보다 평가 철학을 바꾸는 자료로 읽는 것이 유용하다. EPTQ가 2-bit deployment를 위해 codebook geometry와 cache behavior를 설계했다면, YAQA는 "그 양자화 모델이 원 모델과 같은 모델인가"라는 보존성 질문을 던진다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 30 slides | <a href="/assets/seminars/model-preserving-adaptive-rounding/yaqa-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/model-preserving-adaptive-rounding/yaqa-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/model-preserving-adaptive-rounding/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/model-preserving-adaptive-rounding/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

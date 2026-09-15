@@ -136,6 +136,11 @@ System cost 측면에서도 M-GNRL의 개선이 강조된다. 논문은 GNN-A2C�
 
 또한 DQN 기반 discrete action은 offloading target 선택에는 맞지만, bandwidth, CPU frequency, transmit power 같은 continuous resource control은 별도 확장이 필요하다. 이를 해결하려면 hierarchical RL, parameterized action RL, 또는 graph policy와 convex resource allocator를 결합하는 hybrid controller가 자연스러운 확장이다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 22 slides | <a href="/assets/seminars/graph-neural-rl-offloading-mec/gnn-rl-mec-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/graph-neural-rl-offloading-mec/gnn-rl-mec-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/graph-neural-rl-offloading-mec/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/graph-neural-rl-offloading-mec/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -1,0 +1,371 @@
+## 1. EPTQ: Factored E8로 2-bit LLM 양자화 읽기
+
+1. EPTQ: Factored E8로 2-bit LLM 양자화 읽기
+
+발표 대본
+이 자료는 EPTQ 공개 원고를 읽기 위한 강의입니다. EPTQ는 post-training quantization, 즉 재학습 없이 이미 학습된 LLM 가중치를 압축하는 방법입니다. 발표의 핵심은 세 요소입니다. Factored-E8은 큰 8차원 코드북을 작게 표현하고, WSN은 양자화하기 좋은 분포로 가중치를 재표현하며, CWP는 민감한 8차원 벡터만 FP16으로 남깁니다. 결과 수치는 특정 모델과 H100 실험 조건 안에서 읽습니다.
+
+공개 출처
+eptq-draft | p. 1, title and abstract
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 2. 먼저 확인할 공개 상태
+
+2. 먼저 확인할 공개 상태
+
+발표 대본
+원고의 표지와 마지막 결론을 함께 읽어야 합니다. CIKM ’26 형식이 보이지만 저자는 익명이고 DOI와 ISBN은 placeholder입니다. 또한 p. 9는 코드와 모델을 acceptance 뒤 공개하겠다고 말합니다. 그래서 여기서는 이를 공개 manuscript라고 부릅니다. 논문이 이미 ACM에 수락되었다거나 구현물이 공개되었다고 말하지 않습니다.
+
+공개 출처
+eptq-draft | pp. 1, 9, title page and conclusion
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 3. 2-bit PTQ의 출발점: 작은 코드와 빠른 조회를 함께 얻기
+
+3. 2-bit PTQ의 출발점: 작은 코드와 빠른 조회를 함께 얻기
+
+발표 대본
+원고는 scalar rounding만의 문제보다 vector quantization의 코드북 접근 비용을 문제로 둡니다. 8개 가중치를 하나의 벡터로 보고 16-bit code 하나를 저장하면 정상 벡터는 2 bits per weight가 됩니다. 그러나 직접 E8 코드북은 65,536개의 8차원 FP16 점을 보관해야 해 1 MiB입니다. EPTQ는 이 65,536개 후보의 조합 능력은 유지하면서 실제 저장 테이블을 줄이려 합니다.
+
+공개 출처
+eptq-draft | pp. 3–4, Sec. 4.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 4. 양자화 목표는 출력 변화가 작은 W-hat 찾기
+
+4. 양자화 목표는 출력 변화가 작은 W-hat 찾기
+
+발표 대본
+p. 3의 Eq. 1은 W X와 W-hat X의 Frobenius norm 차이를 작게 하는 quantization function을 설계하는 문제입니다. X는 calibration input이고, 낮은 bit 수라는 제약 아래 W-hat를 구합니다. 이 한 장은 전체 네트워크 정확도를 직접 전역 최적화한다는 뜻이 아니라, 주어진 calibration 입력에서 층 출력 변화로 근사하는 목적을 보여 줍니다.
+
+공개 출처
+eptq-draft | p. 3, Eq. (1)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 5. 양자화 단위는 한 column 안의 8-row vector
+
+5. 양자화 단위는 한 column 안의 8-row vector
+
+발표 대본
+Algorithm 2와 3의 표기는 W의 8b부터 8b+7행, 고정 column j를 꺼냅니다. 즉 8차원 벡터는 가로 8개가 아니라 세로 8개입니다. 이 벡터마다 column j의 robust scale alpha를 사용하고, 같은 column j에서 순차적인 compensation을 진행합니다. 이후 도식의 방향은 모두 이 정의를 유지합니다.
+
+공개 출처
+eptq-draft | pp. 5–7, Algorithms 2–3
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 6. 4-D half의 type은 좌표 형식과 합의 parity로 정한다
+
+6. 4-D half의 type은 좌표 형식과 합의 parity로 정한다
+
+발표 대본
+E8 정의에서 4차원 half는 좌표가 정수인지 half-integer인지, 그리고 좌표합이 짝수인지 홀수인지로 네 type 중 하나가 됩니다. 표의 벡터는 type을 판별하는 강의용 예입니다. 예를 들어 (1,1,0,0)은 integer이고 합이 2라 type 0이며, (1,0,0,0)은 integer지만 합이 1이라 type 2입니다.
+
+공개 출처
+eptq-draft | p. 3, Sec. 4.1.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 7. E8 후보는 같은 type의 두 half만 결합한다
+
+7. E8 후보는 같은 type의 두 half만 결합한다
+
+발표 대본
+p. 4 Eq. 2의 핵심은 E8이 F_t 곱하기 F_t의 네 product로 정확히 분해된다는 점입니다. a와 b는 같은 parity class이고 같은 coordinate type이어야 합니다. 따라서 integer-even half와 integer-odd half를 섞어 후보로 쓰면 안 됩니다. 최적화도 각 half가 독립적으로 type을 고르는 것이 아니라, 하나의 t를 정한 뒤 그 t 안에서 두 half 거리를 함께 최소화합니다.
+
+공개 출처
+eptq-draft | p. 4, Eq. (2) and Sec. 4.1.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 8. 강의용 type 조합: parity가 다르면 결합할 수 없다
+
+8. 강의용 type 조합: parity가 다르면 결합할 수 없다
+
+발표 대본
+이 표는 앞 슬라이드의 정의를 산술로 확인합니다. 첫 행은 두 half가 모두 integer이고 합이 짝수라 type 0입니다. 둘째 행은 모두 integer-odd라 type 2입니다. 셋째와 넷째는 좌표 표현은 비슷해 보여도 parity가 달라 허용되지 않습니다. 실제 FE8 검색은 허용된 각 type에 대해 두 half의 거리 합을 계산한 뒤 가장 작은 type을 선택합니다.
+
+공개 출처
+eptq-draft | p. 4, Eq. (2)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 9. FE8: 512개 4-D vector로 65,536개 후보 만들기
+
+9. FE8: 512개 4-D vector로 65,536개 후보 만들기
+
+발표 대본
+각 type에서 원점에 가까운 128개의 4차원 point를 retain합니다. 그러면 총 512개의 4차원 벡터만 저장하고도 각 type에서 128 곱하기 128 pair를 만들 수 있습니다. 네 type을 합치면 65,536개의 8차원 quantization point가 됩니다. 원고는 이것이 full E8 codebook capacity와 맞는다고 설명합니다. 다만 FE8은 full E8의 직접 8차원 table을 보관하는 방식과 동일하다고 말하면 안 됩니다.
+
+공개 출처
+eptq-draft | p. 4, Sec. 4.1.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 10. 코드북 table footprint 계산
+
+10. 코드북 table footprint 계산
+
+발표 대본
+직접 E8은 65,536개의 8차원 FP16 벡터이므로 1,048,576 byte, 즉 1 MiB입니다. FE8은 네 type 각각 128개, 각 point가 4차원 FP16이므로 4,096 byte, 즉 4 KiB입니다. 비율은 정확히 256입니다. 이 수치는 코드북만의 footprint이며, activation, scale, compressed weights, kernel 비용을 포함하는 전체 메모리 비교가 아닙니다.
+
+공개 출처
+eptq-draft | p. 4, Sec. 4.1.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 11. FE8 search는 type별 두 half 거리의 합을 비교한다
+
+11. FE8 search는 type별 두 half 거리의 합을 비교한다
+
+발표 대본
+Eq. 3의 quantizer는 alpha를 곱한 candidate와 v의 거리를 최소화합니다. 모든 65,536개를 단순 열거하는 대신, type마다 앞 half와 뒤 half의 128개 sub-distance를 계산합니다. 그 type에서 i와 j의 최소를 더하고, 네 type 중 총합이 가장 작은 type을 택합니다. 따라서 앞 half가 type 0, 뒤 half가 type 2를 각자 고르는 독립 선택은 허용되지 않습니다.
+
+공개 출처
+eptq-draft | p. 4, Sec. 4.1.2 and Eq. (3)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 12. 16-bit code는 type과 두 subindex를 pack한다
+
+12. 16-bit code는 type과 두 subindex를 pack한다
+
+발표 대본
+원고는 index를 type의 상위 bits와 i, j의 7-bit 위치로 pack합니다. 강의용 예로 2 곱하기 128의 제곱 더하기 3 곱하기 128 더하기 5는 33,157입니다. 이 숫자는 원문 tensor의 실제 index가 아니라 packing을 이해시키기 위한 계산입니다. code 65,535는 unquantized vector를 알리는 reserved value라 정상 FE8 point에 쓰지 않습니다.
+
+공개 출처
+eptq-draft | pp. 4, 6, Sec. 4.1.2 and Sec. 4.3
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 13. WSN: quantization 전 scale 불균형 줄이기
+
+13. WSN: quantization 전 scale 불균형 줄이기
+
+발표 대본
+Fig. 3은 원래 W에서 row와 column variance가 퍼져 있고, scaled W-prime에서 더 모여 보인다는 예입니다. 원고의 motivation은 near-zero mean Gaussian weight입니다. 구현은 outlier에 덜 민감하도록 L2가 아니라 L1 mean absolute value를 맞춥니다. 그러므로 WSN을 모든 상황에서 variance를 정확히 같게 만드는 보장이라고 부르면 안 됩니다.
+
+공개 출처
+eptq-draft | pp. 4–5, Sec. 4.2 and Fig. 3
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 14. WSN의 alternating scale update
+
+14. WSN의 alternating scale update
+
+발표 대본
+Algorithm 1은 g와 h를 초기화하고 |W|에 대해 row와 column update를 번갈아 수행합니다. 원고는 보통 5회 미만 반복으로 수렴한다고 서술합니다. 마지막 W-prime은 W를 g h-transpose의 outer-product scale로 elementwise 나눈 값입니다. 이 과정은 양자화 전에 linear mapping을 보존하는 재표현이며, 양자화 오류 자체를 없애는 단계는 아닙니다.
+
+공개 출처
+eptq-draft | p. 5, Algorithm 1 and Sec. 4.2
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 15. 강의용 WSN 계산: scale을 곱해도 양자화 전 출력은 같다
+
+15. 강의용 WSN 계산: scale을 곱해도 양자화 전 출력은 같다
+
+발표 대본
+이 표의 수는 Algorithm 1의 행과 열 L1 update가 만드는 간단한 강의용 예입니다. W의 row sums는 6과 3이므로 초기 h가 ones일 때 g는 3과 1.5가 됩니다. 이어서 h는 2/3과 4/3이 되고 W-prime은 all ones입니다. x=[1,2]를 대입하면 원래 W와 scale된 표현 모두 [10,5]를 냅니다. 이 확인은 FE8 rounding 전까지만 성립합니다.
+
+공개 출처
+eptq-draft | p. 5, Algorithm 1 and Sec. 4.2
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 16. CWP score: 한 vector의 local loss proxy
+
+16. CWP score: 한 vector의 local loss proxy
+
+발표 대본
+Eq. 5는 S b,j를 v와 v-hat의 squared L2 error를 inverse calibration Gram matrix의 j번째 diagonal으로 나눈 값으로 둡니다. Appendix A는 compensation을 포함한 constrained quadratic minimization에서 이 식을 유도합니다. 그래서 score는 이 근사와 X 아래의 local quantity입니다. 모델 전체에서 절대적으로 가장 중요한 weight라는 일반적 의미로 바꾸면 안 됩니다.
+
+공개 출처
+eptq-draft | pp. 5, 10, Eq. (5) and Eq. (12)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 17. rho와 Kneedle은 서로 다른 역할을 한다
+
+17. rho와 Kneedle은 서로 다른 역할을 한다
+
+발표 대본
+Algorithm 2는 N개 score를 내림차순으로 정렬합니다. rho로 정한 K는 Kneedle을 적용할 steep region의 길이입니다. 그 안에서 normalized rank와 normalized log score를 만들고, diagonal에서의 거리가 큰 점을 knee로 택해 tau로 씁니다. tau 이상인 모든 vector가 mask에 들어가므로 실제 f는 score 분포와 matrix에 따라 달라집니다.
+
+공개 출처
+eptq-draft | p. 6, Algorithm 2 and Eqs. (7)–(8)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 18. 강의용 Kneedle 계산: rho=.1이 f=.1은 아니다
+
+18. 강의용 Kneedle 계산: rho=.1이 f=.1은 아니다
+
+발표 대본
+이 표는 원문 실험값이 아닌 Algorithm 2를 재계산한 예입니다. N=40이고 rho=.1이면 K=4입니다. leading scores를 1000, 10, 2, 1로 두고 나머지 36개를 .5로 두면 Kneedle distance가 둘째 순위에서 최대입니다. 따라서 tau=10, preserve되는 것은 score 1000과 10의 두 vector여서 2/40=5%입니다. rho는 10%였지만 f는 5%입니다.
+
+공개 출처
+eptq-draft | p. 6, Algorithm 2 and Eqs. (7)–(8)
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 19. sentinel은 mask만 없애고 FP16은 남긴다
+
+19. sentinel은 mask만 없애고 FP16은 남긴다
+
+발표 대본
+p. 6은 code 65,535를 preservation marker로 사용해 별도 binary mask를 저장하지 않는다고 설명합니다. Appendix B는 normal 8-D vector가 16 bits, preserved vector가 code 16 bits와 FP16 values 128 bits로 144 bits라고 계산합니다. 그래서 preserved vector는 18 bpw입니다. zero bit-overhead라는 표현은 mask bit가 별도로 필요 없다는 맥락에서만 읽어야 합니다.
+
+공개 출처
+eptq-draft | pp. 6, 10, Sec. 4.3 and Appendix B
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 20. Appendix B의 bpw는 f와 scale vector를 함께 센다
+
+20. Appendix B의 bpw는 f와 scale vector를 함께 센다
+
+발표 대본
+Appendix B는 normal vector 2 bpw와 preserved vector 18 bpw를 (1-f)와 f로 가중해 2+16f를 만듭니다. 그 뒤 scale vectors g와 h의 FP16 storage를 더합니다. 전형적 LLM dimension에서는 이 scale 항이 .01보다 작다고 적습니다. 반면 Algorithm 2와 3에서 사용하는 per-column alpha의 별도 저장은 Appendix B에 명시되어 있지 않습니다. 따라서 alpha overhead가 없다고 가정하지 않습니다.
+
+공개 출처
+eptq-draft | p. 10, Appendix B
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 21. EPTQ Algorithm 3: mask와 column compensation
+
+21. EPTQ Algorithm 3: mask와 column compensation
+
+발표 대본
+Algorithm 3의 순서를 유지하는 것이 중요합니다. 먼저 WSN으로 W-prime, g, h를 얻습니다. effective calibration input은 X-prime=diag(h)X입니다. 이를 이용해 Hessian-related state와 Cholesky factor를 준비하고, Algorithm 2로 mask를 precompute합니다. 그 뒤 column 순서와 block 순서로 FE8 quantization과 compensation을 수행합니다. 마지막에 g h-transpose를 다시 elementwise 곱합니다.
+
+공개 출처
+eptq-draft | pp. 6–7, Algorithm 3 and Sec. 4.4
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 22. block 처리: FP16 보존 또는 FE8 quantization
+
+22. block 처리: FP16 보존 또는 FE8 quantization
+
+발표 대본
+Algorithm 3 line 14는 mask M으로 initial quantized result와 W-prime의 current value 중 무엇을 쓸지 고릅니다. critical block은 raw original W를 그대로 복구한다는 뜻이 아닙니다. 이전 block의 compensation이 반영된 현재 W-prime block을 FP16으로 유지합니다. 그 다음 error를 계산해 아직 처리하지 않은 column 부분에 compensation을 전파합니다. Cholesky factor는 이 순차 update를 효율적으로 계산하기 위한 구성 요소입니다.
+
+공개 출처
+eptq-draft | p. 7, Algorithm 3, lines 8–18
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 23. 실험을 읽는 최소 조건
+
+23. 실험을 읽는 최소 조건
+
+발표 대본
+원고는 128개의 C4 calibration sample을 각 2048 tokens로 자르고, fine-tuning 없이 평가합니다. PPL은 WikiText-2와 C4, zero-shot은 PIQA, ARC-easy, ARC-challenge, HellaSwag, WinoGrande입니다. 모든 실험은 single NVIDIA H100 GPU에서 수행했다고 적습니다. 하지만 decode throughput의 batch size, sequence length, 정확한 kernel timing protocol은 본문에 제시되지 않습니다. 그래서 다른 accelerator나 온디바이스 결론을 이 표로 만들 수 없습니다.
+
+공개 출처
+eptq-draft | p. 7, Sec. 5.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 24. Table 1: 한 quality metric의 우위가 전체 우위는 아니다
+
+24. Table 1: 한 quality metric의 우위가 전체 우위는 아니다
+
+발표 대본
+Table 1에서 Llama-3-8B의 rho=.02 rows를 보면 VPTQ는 2.27 bpw, WikiText-2 PPL 13.01, average 60.30입니다. EPTQ FE8은 2.03 bpw, PPL 11.95, average 58.82입니다. PPL 하나에서는 FE8이 더 좋지만 five-task average에서는 VPTQ가 더 좋습니다. 게다가 bpw도 완전히 같지 않습니다. 이 비교는 보고된 조건에서의 trade-off를 보여 주며 universal winner를 정하지 않습니다.
+
+공개 출처
+eptq-draft | p. 8, Table 1, Llama-3-8B rows
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 25. 38% faster than FP16은 한 Table 1 조건에서 재계산된다
+
+25. 38% faster than FP16은 한 Table 1 조건에서 재계산된다
+
+발표 대본
+이 headline은 Table 1에서 직접 검산할 수 있습니다. Llama-2-13B FP16 decode throughput은 104.4 tok/s이고, EPTQ FE8 rho=.1은 144.4 tok/s입니다. 144.4를 104.4로 나눈 뒤 1을 빼면 .38314, 즉 38.31%입니다. 원고의 ‘up to 38%’는 이 row를 가리키는 조건부 주장으로는 맞습니다. 다른 model, rho, accelerator, kernel에서도 같은 비율이라고 확장하지 않습니다.
+
+공개 출처
+eptq-draft | p. 8, Table 1, Llama-2-13B rows
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 26. Table 1에는 FE8이 느린 비교도 있다
+
+26. Table 1에는 FE8이 느린 비교도 있다
+
+발표 대본
+Table 1의 Llama-2-70B row에서 QTIP decode throughput은 38.9 tok/s이고 FE8 rho=.02는 36.4 tok/s입니다. 따라서 FE8이 모든 displayed comparison에서 최고 throughput이라고 말할 수 없습니다. 같은 표의 QTIP Llama-2-13B decode column은 unavailable이고 0이 아닙니다. 70B FP16 row의 dagger도 one GPU에 model이 fit하지 않아 측정하지 못했다는 뜻입니다.
+
+공개 출처
+eptq-draft | p. 8, Table 1 footnotes and Llama-2-70B rows
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 27. Table 2: WSN quality gain, FE8 r=1.75
+
+27. Table 2: WSN quality gain, FE8 r=1.75
+
+발표 대본
+Table 2는 WSN을 넣기 전과 후의 gain을 표기하며, 조건은 FE8와 radius 1.75입니다. 마지막 row의 absolute zero-shot values는 56.6과 60.9로 표시되어 단순 뺄셈은 4.3입니다. 그러나 table의 printed delta는 +4.2입니다. 이는 endpoint가 rounded display일 수 있는 표기 차이이므로, 발표에서는 printed +4.2를 인용하고 absolute values가 rounded임을 함께 말합니다.
+
+공개 출처
+eptq-draft | p. 9, Table 2 and Sec. 5.3.1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 28. Figure 6: rho가 아닌 realized global fraction
+
+28. Figure 6: rho가 아닌 realized global fraction
+
+발표 대본
+Section 5.3.2는 adaptive method를 rho로 실행해 per-matrix threshold를 얻은 뒤, 실제로 preserve된 critical weights의 global fraction을 계산한다고 설명합니다. fixed-ratio baseline에는 이 global fraction을 그대로 부여합니다. 그러므로 Fig. 6의 각 점은 동일 rho가 아니라 동일 realized preservation budget에서 selection rule만 바꾼 비교입니다. x축도 Critical Weight Ratio percent입니다.
+
+공개 출처
+eptq-draft | p. 9, Fig. 6 and Sec. 5.3.2
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 29. Figure 7: radius r sensitivity의 조건
+
+29. Figure 7: radius r sensitivity의 조건
+
+발표 대본
+Figure 7은 Llama-2-13B, C4 PPL이라는 좁은 조건의 hyperparameter sensitivity입니다. 여러 rho 곡선마다 red outline best point가 다를 수 있습니다. 원고는 theoretical prediction r approximately 1.77에 맞추어 1.75를 default로 택했다고 설명하지만, 모든 rho에서 single best value는 아니라고 분명히 적습니다. 이 슬라이드는 model-conditional result라는 점을 강조합니다.
+
+공개 출처
+eptq-draft | p. 9, Fig. 7 and Sec. 5.3.3
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 30. 원고가 아직 보여 주지 않는 것
+
+30. 원고가 아직 보여 주지 않는 것
+
+발표 대본
+이 표는 원고를 깎아내리기 위한 것이 아니라 근거 범위를 분명히 하기 위한 것입니다. H100 실험은 H100에 대한 관측이지 다른 accelerator의 benchmark가 아닙니다. Table 1은 tok/s를 제공하지만 kernel, batch, sequence protocol이 상세히 제시되지 않습니다. code/model은 future release라고 쓰므로 현재 재현 패키지가 있다고 말할 수 없습니다. 또한 Table 1에는 FE8와 다른 vector method가 metric별로 교차하는 rows가 있습니다.
+
+공개 출처
+eptq-draft | pp. 7–9, Secs. 5–6 and Table 1
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf
+
+## 31. EPTQ를 한 문장으로 다시 조립하면
+
+31. EPTQ를 한 문장으로 다시 조립하면
+
+발표 대본
+마지막으로 EPTQ의 세 component를 연결합니다. FE8은 codebook footprint를 작게 만들고, WSN은 quantizer가 보는 weight distribution을 정돈하며, CWP는 score가 큰 block을 FP16으로 예외 처리합니다. Algorithm 3은 이것들을 Hessian-aware compensation과 연결합니다. Table 1과 2는 그 설계가 H100과 특정 Llama 조건에서 낸 결과입니다. 다만 공개 manuscript의 신분, 수치의 조건성, missing hardware evidence도 함께 기억해야 합니다.
+
+공개 출처
+eptq-draft | pp. 3–10, Secs. 4–6 and Appendix B
+EPTQ public manuscript
+https://hyeonwoona0861.github.io/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf

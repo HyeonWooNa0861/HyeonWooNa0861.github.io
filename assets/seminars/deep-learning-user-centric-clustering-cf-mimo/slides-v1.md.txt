@@ -1,0 +1,259 @@
+---
+type: research-seminar-slides
+paper_id: deep-learning-user-centric-clustering-cf-mimo
+---
+
+# LSTM 기반 User-Centric AP–UE Clustering
+
+논문: A Deep Learning Approach for User-Centric Clustering in Cell-Free Massive MIMO Systems
+
+저자: Giovanni Di Gennaro, Amedeo Buonanno, Gianmarco Romano, Stefano Buzzi, Francesco A.N. Palmieri (2024)
+
+## 1. LSTM 기반 User-Centric AP–UE Clustering
+
+Cell-Free Massive MIMO에서 user-centric clustering을 확률 출력과 제약으로 이해하기
+
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 1, title and abstract
+
+## 2. 왜 모든 AP가 모든 UE를 서비스하지 않을까
+
+Cell-free는 cell 경계를 없애지만, 전 AP 연결은 사용자 증가와 함께 부담이 커진다
+
+1. **분산 AP**: 여러 AP가 같은 영역의 UE를 공동 서비스
+2. **전면 연결**: 각 UE가 많은 AP 후보와 연결될 수 있다
+3. **부담 증가**: UE가 늘면 fronthaul과 계산량도 증가
+4. **부분집합 선택**: UE별 AP subset만 남겨 user-centric cluster 구성
+
+핵심: 이 논문의 결정 대상은 UE별 서비스 AP 집합 L_k이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 1, Abstract and Secs. I–II
+
+## 3. 시스템에서 실제로 무엇을 결정하는가
+
+K개의 UE와 L개의 AP가 같은 영역에서 downlink 통신을 한다
+
+
+| 기호 | 논문에서의 뜻 | 결정과 제약 |
+| --- | --- | --- |
+| L, N | AP 수, AP당 안테나 수 | L×N이 K보다 큰 massive-MIMO regime |
+| K | single-antenna UE 수 | UE마다 AP 집합 L_k를 선택 |
+| β_kℓ | UE k와 AP ℓ의 large-scale fading | master AP와 LSTM feature에 사용 |
+| L_k | UE k를 서비스하는 AP subset | 비어 있으면 안 됨 |
+| ρ_kℓ, ρ_max | AP ℓ의 UE k 전력, AP별 상한 | AP별 전력 합은 ρ_max 이하 |
+
+핵심: 클러스터는 link 선택이고, 전력은 그 선택 뒤에 제약을 만족하도록 배분된다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 1–2, Sec. II and Eqs. (1)–(9)
+
+## 4. master AP는 연결이 끊기지 않게 만든다
+
+가장 큰 large-scale fading을 가진 AP가 master가 되고, 최종 cluster는 비어 있을 수 없다
+
+- **레인 UE k cluster**
+  - **β 측정**: AP별 large-scale fading
+  - **master**: 가장 큰 β의 AP 선택
+  - **확률 출력**: 각 AP link의 활성 확률
+  - **연결 보장**: threshold 뒤에도 master 유지
+  - **L_k**: 비어 있지 않은 AP subset
+- β 측정 → master (실선, 단방향)
+- master → 확률 출력 (실선, 단방향)
+- 확률 출력 → 연결 보장 (실선, 단방향)
+- 연결 보장 → L_k (실선, 단방향)
+
+핵심: Eq. (1)의 master 선택과 Eq. (9b)의 nonempty 제약은 같은 안전장치가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 2 and 4, Eqs. (1), (9b), (11)
+
+## 5. 목적은 SE와 active link 수를 함께 본다
+
+Eq. (9)은 sum SE를 키우면서 UE별 활성 AP 수에 fixed penalty를 준다
+
+
+| 항 | 무엇을 높이거나 제한하나 | 해석 |
+| --- | --- | --- |
+| Σ SE_k | 모든 UE의 downlink spectral efficiency 합 | 통신 성능을 높이는 항 |
+| − λ\|L_k\| | UE k의 active AP link 수 | 연결 하나마다 fixed penalty |
+| L_k ≠ ∅ | 모든 UE에 적어도 하나의 AP | 연결 끊김 방지 |
+| Σ ρ_iℓ ≤ ρ_max | AP ℓ가 서비스한 UE들의 power 합 | AP별 송신 전력 상한 |
+
+핵심: λ는 학습되는 값이 아니라 사전에 정한 positive weighting factor다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 2, Eqs. (8)–(9)
+
+## 6. cluster 선택은 downlink SE를 바꾼다
+
+pilot, channel estimation, MR precoding을 거쳐 cluster가 원하는 신호와 interference를 함께 바꾼다
+
+1. **pilot**: master AP가 UE에 pilot을 할당
+2. **MMSE 추정**: AP가 UE channel estimate를 얻음
+3. **MR precoding**: 선택된 AP가 UE signal을 송신
+4. **SINR**: 원하는 신호와 다른 UE interference를 함께 계산
+5. **SE**: tau_d/tau_c 곱하기 log2(1+SINR)
+
+핵심: link를 바꾸면 원하는 신호와 interference가 함께 바뀌어 독립 선택이 어렵다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 2, Eqs. (2)–(8); p. 3, Sec. III
+
+## 7. LSTM은 master AP 순서를 따른다
+
+고정 AP 순서와 AP 내부 channel-gain 순서가 cell 간 context를 의미 있게 만든다
+
+- **레인 UE 처리 순서**
+  - **AP 순서**: 고정 AP 위치 순서
+  - **master 묶음**: master UE 묶음
+  - **gain 정렬**: UE gain 정렬
+  - **LSTM cell**: 한 cell이 한 UE 처리
+  - **context**: 다음 cell로 state 전달
+- AP 순서 → master 묶음 (실선, 단방향)
+- master 묶음 → gain 정렬 (실선, 단방향)
+- gain 정렬 → LSTM cell (실선, 단방향)
+- LSTM cell → context (실선, 단방향)
+
+핵심: 공유 recurrent cell이 길이가 다른 UE chain에 재사용되지만, proper scheduling이 필요하다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 3, Fig. 1 and Sec. III
+
+## 8. 한 UE feature에서 L개의 link 확률이 나온다
+
+LSTM cell은 모든 AP의 large-scale fading과 UE 위치를 받고, FC head는 shared다
+
+- **레인 AP-link 확률**
+  - **입력 ξ_j**: 모든 β_kℓ와 UE 위치 x_k, y_k
+  - **LSTM**: 이전 hidden·cell state와 함께 처리
+  - **shared FC**: 모든 cell에 같은 FC block 적용
+  - **L 확률**: UE k와 각 AP의 link activation
+- 입력 ξ_j → LSTM (실선, 단방향)
+- LSTM → shared FC (실선, 단방향)
+- shared FC → L 확률 (실선, 단방향)
+
+핵심: 이 output은 link probability이며 L개 AP의 transmit-power vector가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 3, Fig. 1 and Eq. (10)
+
+## 9. 학습은 Bernoulli activation을 샘플링한다
+
+원문은 sampled activation으로 SE와 connection 수를 계산하고 loss gradient를 backpropagate한다고 설명한다
+
+- **레인 training 흐름**
+  - **L 확률**: sigmoid link 확률
+  - **Bernoulli**: 확률별 무작위 activation
+  - **측정**: connection 수와 해당 SE 계산
+  - **Eq. 9a**: SE 보상과 link penalty
+  - **weight**: gradient backpropagate
+- L 확률 → Bernoulli (실선, 단방향)
+- Bernoulli → 측정 (실선, 단방향)
+- 측정 → Eq. 9a (실선, 단방향)
+- Eq. 9a → weight (실선, 단방향)
+
+핵심: 원문은 Bernoulli sample의 gradient estimator나 pseudocode를 제공하지 않는다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 3, Sec. III, training paragraph
+
+## 10. 시험은 threshold 뒤에 feasible power를 배분한다
+
+시험 시 50% 초과 link를 켜고, master를 보장한 뒤 Eq. (11)로 AP power cap을 만족시킨다
+
+- **레인 test cluster**
+  - **L 확률**: 학습된 LSTM과 FC output
+  - **50% 초과**: 0.5 초과 link 활성화
+  - **master 유지**: 모든 UE에 최소 한 AP
+  - **cluster**: AP별 served UE 확정
+  - **Eq. 11**: sqrt beta 비례 분배
+- L 확률 → 50% 초과 (실선, 단방향)
+- 50% 초과 → master 유지 (실선, 단방향)
+- master 유지 → cluster (실선, 단방향)
+- cluster → Eq. 11 (실선, 단방향)
+
+핵심: Eq. (11)은 cluster 뒤의 allocation rule이지 learned power optimizer가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 3–5, test rule; Eq. (11); conclusion
+
+## 11. 강의용 3-AP threshold 예시
+
+아래 SE=2.00은 penalty 계산을 위한 가정이며 원문 실험값이나 SINR 계산 결과가 아니다
+
+1. **feature**: β=[9,4,1], 확률=[0.92,0.61,0.20]
+2. **master**: 가장 큰 β=9이므로 AP 1
+3. **threshold**: 0.5 초과인 AP 1, AP 2 선택
+4. **cluster**: L_1={1,2}; master가 남아 nonempty
+5. **penalty**: 가정 SE=2.00, λ=0.04면 2.00−0.04×2=1.92
+
+핵심: 연결을 하나 더 켜려면 SE 이득이 fixed link penalty를 상쇄해야 한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 2–4, Eqs. (1), (9), (11); Table I
+
+## 12. 보고된 simulation은 어떤 조건에서 수행됐나
+
+수치 결과는 25 AP, 10 UE, 두 pilot regime의 특정 numerical setting에 한정된다
+
+
+| 범주 | 보고된 값 | 읽는 법 |
+| --- | --- | --- |
+| 공간 | 25 AP, AP당 4 antennas, 700×700 m² | grid 기반 random displacement |
+| UE data | 10 single-antenna UE; train 1,000, test 200 | test는 training 미사용 |
+| network | LSTM hidden state 512; FC 256, 128, 25 | 25 output은 L=25 AP와 대응 |
+| training | 200 epochs; LR 0.00001; batch 64; λ=0.04 | 고정 setting |
+| pilot | tau_p=3 또는 tau_p=10 | 강한 pilot interference 비교 |
+
+핵심: 여기서의 결과를 AP 수·분포·pilot 정보가 다른 환경의 보편 보증으로 바꾸면 안 된다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 4, Fig. 2 and Table I
+
+## 13. Table II: 평균 결과는 pilot regime에 따라 다르다
+
+두 행 모두 test-set average이며, [6]의 strategy와 논문 방법을 비교한다
+
+
+| pilot | [6] SE sum | ours SE sum | [6] links | ours links |
+| --- | --- | --- | --- | --- |
+| tau_p=3 | 24.42 | 23.94 | 75 | 32.60 |
+| tau_p=10 | 24.65 | 25.42 | 250 | 38.18 |
+
+핵심: link 수는 두 조건에서 크게 감소하지만, SE 우위는 tau_p=10 조건에서만 Table II에 나타난다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 4, Table II and Sec. IV
+
+## 14. Fig. 4–5는 평균이 아닌 선택된 위치 예시다
+
+저자들은 두 pilot scenario의 average sum SE와 가까운 test locations를 골라 연결 구조를 보였다
+
+
+| 그림 조건 | baseline | proposed after training | 무엇을 보이나 |
+| --- | --- | --- | --- |
+| Fig. 4, tau_p=3 | 75 links, 23.84 bit/s/Hz | 33 links, 23.42 bit/s/Hz | link를 크게 줄여도 이 위치의 SE 차이는 작음 |
+| Fig. 5, tau_p=10 | 250 links, 24.63 bit/s/Hz | 33 links, 25.39 bit/s/Hz | 적은 link와 높은 SE가 함께 나타남 |
+
+핵심: Figure example과 Table-II average를 같은 숫자라고 읽지 않는 것이 중요하다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) p. 5, Figs. 3–5
+
+## 15. 논문의 claim과 증거 범위를 분리해 읽기
+
+LSTM의 가변 길이 처리, numerical result, 그리고 아직 다루지 않은 문제는 서로 다르다
+
+
+| 말할 수 있는 것 | 원문 근거 | 말하면 안 되는 확장 |
+| --- | --- | --- |
+| UE 수 변화 대응 | 공유 LSTM cell로 chain 길이를 바꿔 retraining 없이 동작한다고 주장 | AP 수 L 변화도 보장된다는 뜻은 아님 |
+| link 수 감소 | Table II 두 pilot 조건에서 평균 active connection이 낮음 | 모든 channel이나 topology에서 보장하지 않음 |
+| SE 결과 | tau_p=10에서 이 setting의 평균 sum SE가 높음 | pilot interference가 커도 항상 우위라는 뜻은 아님 |
+| power 처리 | cluster 뒤 Eq. (11) allocation rule 사용 | joint transmit-power learning을 이미 푼 것은 아님 |
+
+핵심: 논문 결론도 energy efficiency와 joint transmit-power optimization을 future work로 남긴다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 1, 3–5; Table II; conclusion
+
+## 16. 한 UE의 결정 경로를 다시 연결하면
+
+측정값에서 출발해 ordered recurrent inference, threshold, feasibility, 그리고 조건부 SE 평가로 이어진다
+
+1. **측정**: β_kℓ와 UE position을 준비
+2. **순서**: master AP와 channel-gain order로 cell 배치
+3. **추론**: LSTM과 shared FC가 L link 확률 생성
+4. **결정**: 50% 초과 link와 master로 L_k 확정
+5. **평가**: Eq. 11 power, SE와 λ penalty를 함께 확인
+
+핵심: 확률이 바로 power가 되는 것이 아니라, feasible cluster 선택으로 변환된다는 점이 핵심이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2410.02775v1) pp. 2–5, Eqs. (1), (9)–(11) and Figs. 1–5

@@ -121,7 +121,6 @@ GTD의 핵심은 일을 더 많이 담는 것이 아니라 **모든 약속을 �
 
 ## 11. Official Sources
 
-이 글은 책과 공식 보조자료를 바탕으로 작성한 자체 해설이다. 원문 전체나 로컬 PDF는 공개하지 않으며, 아래 공식 페이지에서 도서와 최신 자료를 확인할 수 있다.
 
 <ul>
   <li><a href="https://www.penguinrandomhouse.com/books/316489/getting-things-done-by-david-allen/" target="_blank" rel="noopener">Penguin Random House, <em>Getting Things Done</em></a></li>
@@ -131,4 +130,8 @@ GTD의 핵심은 일을 더 많이 담는 것이 아니라 **모든 약속을 �
   <li><a href="https://gettingthingsdone.com/wp-content/uploads/2016/04/GTD-WeeklyReview.pdf" target="_blank" rel="noopener">Official GTD Weekly Review Checklist</a></li>
   <li><a href="https://gettingthingsdone.com/wp-content/uploads/2022/06/GTD_Incompletion_Trigger_List.pdf" target="_blank" rel="noopener">Official Incompletion Trigger List</a></li>
   <li><a href="https://gettingthingsdone.com/wp-content/uploads/2014/10/2016-Horizons-of-Focus.pdf" target="_blank" rel="noopener">Official Horizons of Focus</a></li>
+  <li><a href="https://gettingthingsdone.com/wp-content/uploads/2014/10/2016-Stalking-Wild-Projects-.pdf" target="_blank" rel="noopener">Official Project Definition Guide</a></li>
+  <li><a href="https://gettingthingsdone.com/wp-content/uploads/2021/09/Threefold-Nature-of-Work.pdf" target="_blank" rel="noopener">Official Threefold Nature of Work</a></li>
+  <li><a href="https://gettingthingsdone.com/wp-content/uploads/2014/10/2016-Organizing-Your-Workspace.pdf" target="_blank" rel="noopener">Official Workspace Organization Guide</a></li>
+  <li><a href="https://gettingthingsdone.com/wp-content/uploads/2014/10/2017-Getting-Your-Inbox-to-Zero.pdf" target="_blank" rel="noopener">Official Inbox Zero Guide</a></li>
 </ul>

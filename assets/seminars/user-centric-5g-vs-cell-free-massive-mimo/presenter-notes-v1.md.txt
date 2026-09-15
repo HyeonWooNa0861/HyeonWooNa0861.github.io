@@ -1,0 +1,326 @@
+## 1. User-Centric 5G와 Cell-Free Massive MIMO
+
+1. User-Centric 5G와 Cell-Free Massive MIMO
+
+발표 대본
+이 논문은 cell-free massive MIMO의 모든 AP가 모든 사용자를 서비스하는 구조와, 각 AP가 일부 사용자만 고르는 user-centric 구조를 비교합니다. AP와 이동국 모두 여러 안테나를 갖는 설정으로 확장하고, 파일럿 기반 채널 추정, 채널 반전 빔포밍, 상향·하향링크 전력 제어를 하나의 체계로 다룹니다.
+
+공개 출처
+buzzi-uc-cf-v1 | title page and abstract
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 2. 모든 AP가 모든 사용자를 돕는 것이 항상 이득은 아니다
+
+2. 모든 AP가 모든 사용자를 돕는 것이 항상 이득은 아니다
+
+발표 대본
+저자들은 cell-free 구조가 cell-edge 문제를 줄이는 장점이 있지만, 모든 AP가 모든 MS를 서비스한다는 가정은 큰 영역에서 비효율적일 수 있다고 지적합니다. User-centric는 단일 AP에 사용자를 고정하는 small cell이 아니라, 선택된 여러 AP가 한 사용자를 계속 공동 서비스하는 구조입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 1–2, §I
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 3. 이 논문이 확장하고 비교하는 범위
+
+3. 이 논문이 확장하고 비교하는 범위
+
+발표 대본
+기존의 대표적인 cell-free 비교 논문은 주로 단일 안테나 AP와 사용자를 다뤘습니다. 이 논문은 MS에도 여러 안테나가 있을 때 MS 쪽 채널 추정 없이 수신하도록 채널 반전 빔포밍과 고정 결합기를 제안하고, CF와 UC 양쪽에서 상향·하향 전력 제어를 비교합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 1–2, abstract and §I
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 4. 시스템 모델의 객체와 집합
+
+4. 시스템 모델의 객체와 집합
+
+발표 대본
+K(m)은 AP 관점의 서비스 목록이고 M(k)는 사용자 관점의 AP 목록입니다. 논문의 수치 실험에서는 각 AP가 estimated channel Frobenius norm이 큰 N명의 사용자를 고릅니다. N을 K로 두면 모든 AP가 모든 사용자를 서비스하므로 CF 구조가 됩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 2–5, Eqs. 16–17
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 5. 같은 AP·MS 배치에서 협력 범위만 바꾼다
+
+5. 같은 AP·MS 배치에서 협력 범위만 바꾼다
+
+발표 대본
+두 방식은 같은 영역, 채널 모델, TDD 절차, 안테나 수를 공유합니다. 차이는 AP m이 모든 사용자에게 전송·검출 통계를 만들지, K(m)에 포함된 사용자에게만 만들지입니다. 따라서 결과를 읽을 때 구조 외의 조건이 같다는 점을 먼저 확인해야 합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 2–5, §II–III
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 6. 설명용 top-2 선택: estimated-channel norm을 정렬한다
+
+6. 설명용 top-2 선택: estimated-channel norm을 정렬한다
+
+발표 대본
+논문이 수치 결과에서 사용하는 top-N 규칙을 작은 예로 만든 것입니다. AP1은 norm이 큰 u1과 u3, AP2는 u2와 u3를 고릅니다. 이 norm 값은 설명을 위해 만든 수치이며 SINR, rate, power가 아닙니다. N=3이면 두 AP가 세 사용자 모두를 고르므로 CF가 됩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | p. 4, Eqs. 16–17
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 7. 설명용 집합을 AP 관점과 사용자 관점으로 읽기
+
+7. 설명용 집합을 AP 관점과 사용자 관점으로 읽기
+
+발표 대본
+앞 슬라이드의 발명 예시를 편집 가능한 네이티브 도식으로 다시 읽습니다. AP별 K(m)을 만든 뒤 사용자별로 역색인하면 M(k)가 됩니다. 실제 시스템은 M개 AP와 K개 사용자에 대해 이 관계를 만들며, 이 예시는 알고리즘의 집합 의미만 설명합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | p. 4, Eqs. 16–17
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 8. 한 coherence interval의 세 단계
+
+8. 한 coherence interval의 세 단계
+
+발표 대본
+논문은 TDD coherence interval을 uplink channel estimation, downlink transmission, uplink transmission으로 나눕니다. 세 단계의 전체 길이는 coherence time을 넘을 수 없습니다. CPU 결합은 uplink 데이터 처리의 마지막 연산이며, UC에서는 선택된 AP의 통계만 합칩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 2–3, §II and §III
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 9. Pilot-matched channel estimation
+
+9. Pilot-matched channel estimation
+
+발표 대본
+Equation 9의 pilot-matched 추정기는 AP의 관측 Y_m에 사용자 k의 pilot을 맞춥니다. 결과에는 원하는 G(k,m), 다른 사용자의 non-orthogonal pilot이 만든 교차항, noise가 포함됩니다. 이 계산은 모든 AP에서 모든 사용자에 대해 수행된 뒤, 실제 전송·검출 참여 범위가 CF 또는 UC에 따라 달라집니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 3–4, Eqs. 7–11
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 10. Pilot 길이 부족은 contamination을 남긴다
+
+10. Pilot 길이 부족은 contamination을 남긴다
+
+발표 대본
+논문은 모든 사용자 pilot row가 pairwise orthogonal이려면 tau_p가 K times N_MS 이상이어야 한다고 설명합니다. 실제로는 training이 coherence interval의 일부여야 하므로 이 조건이 보통 어렵습니다. 따라서 각 사용자의 내부 row는 직교하지만 서로 다른 사용자 pilot은 비직교인 최대길이 sequence를 사용하고 contamination을 포함해 평가합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 3–4, Eqs. 9–11
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 11. Downlink: AP의 channel inversion과 MS의 고정 결합
+
+11. Downlink: AP의 channel inversion과 MS의 고정 결합
+
+발표 대본
+AP는 estimated channel을 true channel처럼 사용해 Equation 12의 channel-inversion precoder를 계산합니다. CF는 모든 AP가 사용자 k에게 보내고 UC는 M(k)의 AP만 보냅니다. MS의 L_k는 channel realization과 무관한 고정 구조입니다. 이 설계는 MS-side channel estimation을 요구하지 않는 것이 목적입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 3–4, Eqs. 12–20
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 12. Channel hardening이 MS-side CSI를 대신하는 범위
+
+12. Channel hardening이 MS-side CSI를 대신하는 범위
+
+발표 대본
+저자들은 many transmitting APs가 만드는 channel hardening과 calibrated TDD reciprocity를 이용합니다. MS는 observation vector를 stream group으로 나누고 fixed L_k로 합칩니다. 이 논문의 수치 실험과 모델 안에서 평가된 설계이며, 향후 주파수나 sparse deployment에서도 같은 hardening이 보장된다고 확장하면 안 됩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 2–4, §II and Eqs. 12–20
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 13. Downlink에서 CF와 UC의 차이
+
+13. Downlink에서 CF와 UC의 차이
+
+발표 대본
+Equations 13–20을 비교하면 CF와 UC 모두 같은 channel-inversion beamforming과 fixed combiner를 사용합니다. UC에서는 k가 K(m)에 없으면 AP m의 해당 power coefficient가 0이고, 사용자 k의 원하는 신호 합도 M(k)로 제한됩니다. 이것이 구조적 차이입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 3–4, Eqs. 13–20
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 14. Uplink: AP local statistic을 CPU에서 합친다
+
+14. Uplink: AP local statistic을 CPU에서 합친다
+
+발표 대본
+각 AP는 local channel estimate로 user k의 received signal을 처리해 soft statistic을 만듭니다. CF에서는 모든 AP의 통계를 합치고 UC에서는 M(k)에 포함된 AP의 통계만 합칩니다. AP는 K(m)에 속한 사용자 통계만 계산하므로 계산량과 backhaul 항목 수가 함께 줄어듭니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 4–5, Eqs. 21–25
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 15. Backhaul에 실리는 정보와 실리지 않는 정보
+
+15. Backhaul에 실리는 정보와 실리지 않는 정보
+
+발표 대본
+논문은 channel estimates와 beamforming matrices가 backhaul로 전파되지 않는다고 명시합니다. Uplink에서 AP가 CPU로 보내는 것은 local processing을 거친 soft estimates입니다. UC는 AP가 담당하는 사용자 수를 줄이므로 이 통계의 수와 downlink payload 전달 범위를 줄입니다. 논문은 backhaul bit 수의 상세 모델보다 구조적 차이를 강조합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 1–5, §I and Eqs. 22–25
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 16. 세 power allocation 기준은 서로 다른 목표를 가진다
+
+16. 세 power allocation 기준은 서로 다른 목표를 가진다
+
+발표 대본
+논문은 uniform, sum-rate maximizing, minimum-rate maximizing 전략을 비교합니다. SR Max와 MR Max는 같은 최적화의 다른 이름이 아니라 서로 다른 목적함수입니다. 따라서 한 figure의 우열을 모든 자원 할당 방식에 일반화할 수 없습니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 5–10, §§IV–VI
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 17. Downlink power control의 successive lower-bound loop
+
+17. Downlink power control의 successive lower-bound loop
+
+발표 대본
+Section IV-A는 alternating optimization과 sequential convex programming을 결합합니다. Approximate objective와 constraints는 원래 함수의 lower bound이며 현재 점에서 값과 gradient가 일치해야 합니다. Algorithms 1과 2는 AP별 power block을 순환하고 각 block 안에서도 surrogate를 갱신합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 5–8, Eqs. 32–41 and Algorithms 1–2
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 18. Optimization guarantee를 정확히 읽기
+
+18. Optimization guarantee를 정확히 읽기
+
+발표 대본
+Proposition 1은 Algorithm 1의 각 update 뒤 sum-rate가 줄지 않고 sequence가 수렴하며 limit point가 KKT first-order conditions를 만족한다고 말합니다. Sequential lower-bound 이론의 추가 가정과 constraint qualifications가 필요합니다. Non-convex 원문제를 전역적으로 푼다는 보장은 아닙니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 5–7, Properties P1–P3 and Proposition 1
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 19. Downlink와 uplink의 변수 규모가 다르다
+
+19. Downlink와 uplink의 변수 규모가 다르다
+
+발표 대본
+Downlink는 각 AP가 각 사용자에게 할당하는 power coefficient를 가져 KM 규모가 됩니다. 저자들은 complexity를 위해 AP 단위 block을 순환합니다. Uplink는 사용자마다 하나의 transmit power를 가져 K 변수이므로 한 block으로 동시에 최적화하는 방식을 중심으로 설명합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 5–8, §§IV–V and Remark 1
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 20. Simulation의 공통 조건
+
+20. Simulation의 공통 조건
+
+발표 대본
+Section VI의 기본 조건입니다. Shadow fading과 path loss의 세부 parameter도 논문에 고정되어 있지만 발표에서는 비교 해석에 직접 필요한 area, bandwidth, carrier, antennas, pilots, averaging을 우선 제시합니다. Wrap-around는 무한 영역을 흉내 내 boundary effect를 줄이는 simulation 기법입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 8–9, §VI
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 21. 두 density case와 N-sweep 조건
+
+21. 두 density case와 N-sweep 조건
+
+발표 대본
+Figures 1–3과 5–7은 high/low density case를 비교하고, Figures 4와 8은 M=60, K=10, tau_p=16에서 N을 바꿉니다. N=10이면 CF와 같은 전체 사용자 선택입니다. 서로 다른 density plot의 차이를 AP 수 하나의 효과로만 읽으면 안 됩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 9–10, Figs. 1–8
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 22. Downlink 결과는 power objective에 따라 갈린다
+
+22. Downlink 결과는 power objective에 따라 갈린다
+
+발표 대본
+저자들은 Figures 1–4를 보고 uniform과 minimum-rate maximization에서는 UC가 CF보다 좋고, sum-rate maximization에서는 CF가 UC보다 좋지만 차이가 제한적이라고 서술합니다. CDF의 exact percentile을 화면에서 근사해 숫자로 만들지 않고 source prose의 방향과 조건만 가르칩니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 9–10, Figs. 1–4 and §VI
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 23. N은 협력 범위와 backhaul을 함께 바꾼다
+
+23. N은 협력 범위와 backhaul을 함께 바꾼다
+
+발표 대본
+Figures 4와 8은 M=60, K=10, tau_p=16에서 N을 1부터 K까지 바꾼 sum-rate를 보여 줍니다. N을 줄이면 AP-user 관계 수와 전달할 backhaul 항목 수가 줄어듭니다. 이 곡선은 interference, coverage, cooperation의 개별 인과 효과를 분해한 실험은 아닙니다. 결과는 power strategy와 link direction, CSI quality에 묶여 있으므로 단일 최적값으로 일반화하지 않습니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 9–10, Figs. 4 and 8
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 24. Uplink에서는 UC가 세 power strategy 모두에서 앞선다
+
+24. Uplink에서는 UC가 세 power strategy 모두에서 앞선다
+
+발표 대본
+Figures 5–8과 결론은 uplink에서 UC가 고려한 모든 power strategy에서 CF보다 좋았다고 요약합니다. 일부 상황에서 many-fold improvement가 나타난다고 하지만, 하나의 고정 배수나 보장으로 말하지 않습니다. 실험 조건과 top-N selection rule에 묶인 결과입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 10–11, Figs. 5–8 and §VII
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 25. 비슷한 제목의 small-cell 비교 논문과는 질문이 다르다
+
+25. 비슷한 제목의 small-cell 비교 논문과는 질문이 다르다
+
+발표 대본
+Ngo et al.의 Cell-Free Massive MIMO versus Small Cells는 이 논문의 reference [7]이며 motivation과 channel model의 기반입니다. 그러나 이 논문은 AP와 MS가 모두 multiple antenna인 경우, CF와 UC의 serving-set 차이, channel-inversion beamforming과 두 power objective를 다룹니다. 두 자료를 하나로 합치면 연구 질문이 흐려집니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 1–2, §I
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+ngo-cf-smallcells-v2 | pp. 1–2, Abstract and §I
+Cell-Free Massive MIMO versus Small Cells
+https://arxiv.org/abs/1602.08232v2
+
+## 26. 논문 결과의 적용 경계
+
+26. 논문 결과의 적용 경계
+
+발표 대본
+결론은 millimetre-wave, URLLC, NOMA를 future research로 제시합니다. 따라서 이 논문이 이 영역을 검증했다고 말하면 안 됩니다. Power algorithm도 first-order convergence이고, serving-set rule은 하나의 가능한 설계입니다. 실험은 지정된 carrier, bandwidth, antennas, power, channel model의 simulation입니다.
+
+공개 출처
+buzzi-uc-cf-v1 | pp. 8–11, §VI–VII
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1
+
+## 27. 정리: 협력의 범위를 channel strength로 선택한다
+
+27. 정리: 협력의 범위를 channel strength로 선택한다
+
+발표 대본
+이 논문을 한 문장으로 정리하면, cell-free의 distributed cooperation을 버리지 않고 AP마다 강한 사용자 subset만 남겨 power, computation, backhaul을 집중하는 접근입니다. Channel estimation, downlink precoding, uplink statistics, power control이 모두 이 serving-set 위에서 동작합니다. 결과는 특히 uplink에서 UC의 장점을 보이지만 조건부 simulation이라는 경계를 유지해야 합니다.
+
+공개 출처
+buzzi-uc-cf-v1 | abstract; pp. 4–11, §§III–VII
+User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
+https://arxiv.org/abs/1803.02261v1

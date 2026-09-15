@@ -1,0 +1,320 @@
+## 1. PACC: 대규모 연결 요소 계산
+
+1. PACC: 대규모 연결 요소 계산
+
+발표 대본
+이 자료는 PACC 논문을 통해 대규모 무방향 그래프의 connected component 계산을 설명합니다. Connected component 계산의 출력은 각 정점을 같은 component 안에서 ID가 가장 작은 정점에 대응시키는 것입니다. PACC는 partition-aware star 연산으로 한 reducer에 이웃이 몰리는 현상을 줄이고, edge filtering으로 반복 입력을 줄이며, sketching으로 초기 그래프를 압축합니다. 각 기법의 정확한 데이터 흐름과 논문이 증명한 범위를 분리해서 살펴보겠습니다.
+
+공개 출처
+plos | p. 1, Abstract
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+doi | article record
+Publisher DOI record
+https://doi.org/10.1371/journal.pone.0229936
+
+## 2. 연결 요소 계산의 출력
+
+2. 연결 요소 계산의 출력
+
+발표 대본
+논문의 정의 1은 연결 요소를 내부 정점끼리 경로가 있고 외부 정점으로 가는 경로가 없는 정점 집합으로 정의합니다. 정의 2는 계산 결과를 각 정점에서 도달 가능한 최소 ID로 표현합니다. Figure 1의 세 component 대표자는 5, 3, 1입니다. 이 표현은 정점 ID가 서로 다르고 전체 순서가 있다는 전제를 사용합니다. PACC는 마지막에 모든 정점에 이 대표 ID를 붙입니다.
+
+공개 출처
+plos | p. 5, Definitions 1-2 and Fig. 1
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 3. 분산 CC의 세 병목
+
+3. 분산 CC의 세 병목
+
+발표 대본
+분산 connected component는 세 비용을 함께 봐야 합니다. Round가 많으면 MapReduce job 준비와 저장소 입출력이 반복됩니다. Intermediate edge가 많으면 shuffle과 disk 비용이 커집니다. Graph가 별 모양으로 수렴하면 최소 ID 정점의 이웃이 한 key로 모여 last reducer가 느려질 수 있습니다. PACC는 partition-aware 연산, edge filtering, sketching을 서로 다른 병목에 대응시킵니다. 이 세 효과를 하나의 메모리 보장으로 합쳐 설명하면 안 됩니다.
+
+공개 출처
+plos | pp. 4-7, Related Work and Proposed Method
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 4. Hash 계열과 alternating 비교
+
+4. Hash 계열과 alternating 비교
+
+발표 대본
+관련연구 비교입니다. PACC 논문은 Hash-Greater-to-Min에 O(log |V|) round 보장이 있다고 인용하고, Hash-to-Min은 그 보장이 없지만 실무상 더 빠르다고 설명합니다. 두 hash 방법 모두 원래 graph의 두 배를 넘는 intermediate data를 만들 수 있다고 서술합니다. Alternating은 한 round의 intermediate를 입력 이하로 유지하지만 별 모양 수렴 과정에서 중심 key가 커집니다. Alt-opt는 고차 정점 복제로 분산을 시도하지만 edge 수가 늘 수 있고 편향이 남습니다. 이 주장은 PACC 논문의 관련연구 요약과 실험 비교 범위입니다.
+
+공개 출처
+plos | pp. 4-6, Related Work and Preliminaries
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 5. Alternating의 last reducer 경로
+
+5. Alternating의 last reducer 경로
+
+발표 대본
+Alternating의 large-star와 small-star는 이웃을 minimum ID 방향으로 재연결합니다. 반복하면 각 connected component가 minimum ID를 중심으로 한 star graph가 됩니다. 다음 MapReduce round는 node ID를 key로 이웃을 모으므로 component가 크면 minimum ID의 neighbor list가 한 reducer로 들어갑니다. 이 reducer가 마지막까지 남아 전체 running time을 결정하는 현상을 논문은 curse of the last reducer라고 설명합니다. PACC는 global minimum으로 바로 모으는 대신 partition local minimum을 경유시킵니다.
+
+공개 출처
+plos | pp. 5-7, Fig. 3
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 6. PACC 전체 파이프라인
+
+6. PACC 전체 파이프라인
+
+발표 대본
+PACC 계열의 포함 관계를 먼저 고정하겠습니다. PACC-base는 partitioning과 최종 CC-Computation만 사용합니다. PACC-ef는 여기에 edge filtering을 더합니다. 완전한 PACC는 입력 앞에 두 단계 sketching까지 추가합니다. Partitioning은 PA-large-star와 PA-small-star를 번갈아 실행합니다. Filtering이 만든 in과 cc는 답에서 버리지 않고 누적한 뒤 final out과 함께 CC-Computation에 넣습니다. Sketching output은 원래 connectivity를 유지하는 더 작은 입력 graph입니다.
+
+공개 출처
+plos | pp. 6-13, Fig. 2 and Algorithms 4-8
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 7. Hash partition은 작업 라벨이다
+
+7. Hash partition은 작업 라벨이다
+
+발표 대본
+PACC는 hash function ξ로 각 정점을 ρ개 partition 중 하나에 배정합니다. 이 partition은 connected component를 미리 아는 분할이 아닙니다. 서로 다른 partition의 정점 사이 edge도 존재할 수 있고, local minimum을 global minimum에 잇는 edge가 connectivity를 유지합니다. 마지막 CC-Computation은 undirected edge (u,v)에서 큰 endpoint u의 partition ξ(u)로 edge를 보냅니다. 각 reducer가 받는 것은 partition 정점 집합 자체가 아니라 그 정점에 incident한 edge-induced subgraph이므로 subgraph끼리 정점을 공유할 수 있습니다.
+
+공개 출처
+plos | pp. 7-9, Algorithms 1-3
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 8. PA-star 연산의 기호
+
+8. PA-star 연산의 기호
+
+발표 대본
+Γ⁻는 중심보다 작은 이웃, Γ⁺는 큰 이웃입니다. m(u)는 중심과 모든 이웃을 합친 집합의 최소 ID입니다. m_i(u)는 그 집합을 partition i로 제한했을 때의 최소 ID입니다. Figure 4에서 node 7의 global minimum은 1이고 partition 1과 2의 local minimum은 각각 1과 2입니다. PA-large는 큰 이웃을 담당하고 PA-small은 작은 이웃과 중심을 담당하면서 local minimum을 global minimum에 연결합니다.
+
+공개 출처
+plos | pp. 5 and 7-8, Fig. 4
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 9. Figure 4의 node 7 입력
+
+9. Figure 4의 node 7 입력
+
+발표 대본
+Figure 4가 제공하는 node 7의 local neighborhood를 정확히 적었습니다. 화면의 여섯 undirected edge가 이 예제에서 사용하는 입력 edge 전부입니다. 이 예제는 ρ=2이고 partition 1에는 1, 7, 9가, partition 2에는 2, 4, 8, 10이 있습니다. 일반 정의는 partition index 0부터 ρ−1을 쓰지만 Figure 4의 표기는 P1과 P2입니다. Node 7보다 작은 이웃은 1, 2, 4이고 큰 이웃은 8, 9, 10입니다. Global minimum은 1이며 두 partition의 local minimum은 1과 2입니다. 전체 Figure 1 그래프의 다른 edge를 이 화면에서 추정하지 않습니다.
+
+공개 출처
+plos | p. 8, Fig. 4(a)
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 10. PA-large-star의 출력 관계
+
+10. PA-large-star의 출력 관계
+
+발표 대본
+PA-large-star는 node 7의 큰 이웃 8, 9, 10을 처리합니다. Partition 1의 큰 이웃 9는 local minimum 1로 갑니다. Partition 2의 큰 이웃 8과 10은 local minimum 2로 갑니다. 8과 10이 global minimum 1로 바로 몰리지 않는 것이 partition-aware 재배선의 핵심입니다. 이 슬라이드는 이전 화면의 같은 Figure 4 입력에 PA-large-star만 적용한 출력 관계입니다. 다음 PA-small 화면의 결과를 이어서 적용한 중간 graph가 아닙니다.
+
+공개 출처
+plos | p. 8, Fig. 4(b) and Algorithm 1
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 11. PA-small-star의 출력 관계
+
+11. PA-small-star의 출력 관계
+
+발표 대본
+PA-small-star는 같은 Figure 4 입력에서 작은 이웃과 node 7 자신을 처리합니다. Node 7은 partition 1 local minimum이자 global minimum인 1로 갑니다. Node 4는 partition 2 local minimum 2로 갑니다. Local minimum 2는 global minimum 1과 연결됩니다. 2에서 1로 가는 관계가 있어 각 partition의 local minimum이 전체 component 대표자 경로를 유지합니다. 이 화면도 PA-large 출력 다음 상태가 아니라 동일 입력에 PA-small-star만 적용한 독립 설명입니다.
+
+공개 출처
+plos | p. 8, Fig. 4(c) and Algorithm 2
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 12. Partition별 LocalCC가 가능한 이유
+
+12. Partition별 LocalCC가 가능한 이유
+
+발표 대본
+Partitioning이 끝나면 partition i의 정점들은 그 partition의 local minimum에 연결되고, local minimum은 component의 global minimum과 연결됩니다. CC-Computation은 edge (u,v)에서 큰 endpoint u의 ξ(u)를 key로 보내 edge-induced subgraph를 만듭니다. Subgraph는 정점을 공유할 수 있지만 각 partition의 정점이 global minimum까지 가는 path를 포함합니다. 각 reducer가 Union-Find 기반 LocalCC를 독립 실행한 뒤 대표 ID를 결합하면 원래 component를 복원할 수 있습니다.
+
+공개 출처
+plos | pp. 8-9, Algorithm 3 and Lemma 1
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 13. PACC-base의 반복과 종료
+
+13. PACC-base의 반복과 종료
+
+발표 대본
+Algorithm 4의 PACC-base는 out을 입력 edge E로 초기화합니다. PA-large-star와 PA-small-star를 순서대로 실행한 뒤 edge 추가 또는 삭제가 있었는지 확인합니다. 변경이 없을 때까지 반복하고 마지막 graph에 CC-Computation을 수행합니다. 논문은 이 convergence 조건을 의사코드에 명시하지만 PACC의 round 수를 O(log |V|)처럼 정리한 별도 점근 상한은 제시하지 않습니다. Hash-Greater-to-Min의 관련연구 보장을 이 알고리즘에 옮기면 안 됩니다.
+
+공개 출처
+plos | p. 9, Algorithm 4
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 14. Edge filtering의 세 출력
+
+14. Edge filtering의 세 출력
+
+발표 대본
+PACC-ef는 매 round에서 out, in, cc를 만듭니다. Out은 다음 star round에서 계속 처리할 edge입니다. In은 같은 partition 안에서 정착해 독립 LocalCC가 가능한 forest edge이고, cc는 더 이상 바뀌지 않는 완성된 star edge입니다. In과 cc는 분산 저장소에 누적됩니다. Out edge 수가 threshold τ 이하이면 반복 MapReduce 대신 잔여 out만 single-machine LocalCC로 바꿉니다. 마지막 CC-Computation 입력은 out과 누적 in, cc의 union입니다.
+
+공개 출처
+plos | pp. 10-12, Fig. 6 and Algorithms 5-7
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 15. 보관 edge와 잔여 edge의 합류
+
+15. 보관 edge와 잔여 edge의 합류
+
+발표 대본
+Edge filtering의 보존 관계를 데이터 흐름으로 확인하겠습니다. In과 cc는 다음 반복의 out에서 빠지지만 분산 저장소에 누적됩니다. 반복이 끝난 final out 또는 threshold 아래에서 LocalCC로 정리한 out이 다른 입력 경로입니다. 마지막에는 두 경로를 out union in union cc로 결합하고 CC-Computation을 수행합니다. 따라서 filtered edge를 삭제했다고 표현하면 정답 복원에 쓰이는 경로를 놓치게 됩니다. Threshold 전환은 잔여 out 처리 방식을 바꿀 뿐 final distributed computation을 없애지 않습니다.
+
+공개 출처
+plos | pp. 10-12, Algorithm 5 and Fig. 6
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 16. Sketching 1단계: chunk LocalCC
+
+16. Sketching 1단계: chunk LocalCC
+
+발표 대본
+완전 PACC의 sketching은 input storage chunk에서 시작합니다. 각 edge는 정확히 한 chunk에 들어가므로 chunk끼리 edge가 겹치지 않습니다. 각 machine은 chunk의 edge-induced subgraph에서 LocalCC를 실행하고, 각 정점을 그 chunk component의 최소 대표자 r_i(u)에 잇는 edge만 출력합니다. 이 단계는 논문에서 network communication 없이 병렬 수행된다고 설명합니다. Edge 수는 줄지만 여러 chunk의 대표자가 같은 작은 ID에 모이면 reduced graph G'가 skew될 수 있습니다. 그래서 두 번째 localization이 필요합니다.
+
+공개 출처
+plos | pp. 12-13, Fig. 7 and Algorithm 8
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 17. Sketching 2단계: localization
+
+17. Sketching 2단계: localization
+
+발표 대본
+Chunk LocalCC만 적용하면 작은 대표자에 많은 edge가 모일 수 있습니다. Localization은 node u와 partition i마다 그 partition의 큰 이웃 중 최소인 m_i⁺(u)를 anchor로 고릅니다. Anchor는 u와 직접 연결한 채로 두고, 같은 partition의 나머지 큰 이웃 v가 u로 향하던 edge를 anchor로 바꿉니다. 그러면 v는 anchor를 거쳐 u에 도달하므로 connectivity가 유지됩니다. 이 연산은 edge를 새로 복제하지 않고 각 edge를 다른 edge로 바꿉니다.
+
+공개 출처
+plos | pp. 12-14, Fig. 7, Algorithm 8 and Lemma 4
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 18. 정확성 증명의 연결 고리
+
+18. 정확성 증명의 연결 고리
+
+발표 대본
+Lemma 2는 PA-large와 PA-small이 connectivity를 끊지 않는다고 보입니다. Lemma 4는 chunk LocalCC와 localization을 포함한 sketch graph가 원본과 같은 connected component를 가진다고 보입니다. Filtering의 in은 forest이며, 종료 시 in, cc, out의 union도 각 원래 component를 global minimum root의 tree로 나타냅니다. 각 partition subgraph는 local minimum에서 global minimum으로 가는 path를 포함하므로 독립 LocalCC가 같은 대표자를 복원합니다. 이것이 Theorem 2의 핵심입니다.
+
+공개 출처
+plos | pp. 13-14, Lemmas 2-4 and Theorem 2
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 19. 간선 상한과 보장되지 않은 비용
+
+19. 간선 상한과 보장되지 않은 비용
+
+발표 대본
+Lemma 5는 star 연산이 edge를 복제하지 않아 edge 수를 늘리지 않는다고 보입니다. Lemma 7은 PACC-ef의 final CC-Computation 입력이 forest이므로 최대 |V|−1 edge라고 보입니다. Lemma 8은 sketch output이 |E|와 C|V| 중 작은 값 이하임을 보입니다. Lemma 9는 localization 뒤 한 node의 큰 이웃 수가 expected O(|V|/ρ+ρ)라고 보입니다. 이 결과들은 Map의 양방향 emit, duplicate 제거 전 shuffle, external sort의 임시공간, peak RAM, hash tail concentration까지 제한하지 않습니다.
+
+공개 출처
+plos | pp. 14-16, Lemmas 5-9
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 20. Hadoop와 Spark 구현 선택
+
+20. Hadoop와 Spark 구현 선택
+
+발표 대본
+알고리즘의 edge-count 결과만으로 구현이 끝나지 않습니다. Hadoop에서 PA-large와 PA-small Map은 edge를 양방향으로 emit합니다. Combiner는 reduce에 필요 없는 이웃을 shuffle 전에 줄입니다. Cycle에서 생기는 duplicate edge는 큰 hash table 대신 external-memory sort와 scan으로 제거합니다. Spark에서는 out만 다음 RDD로 유지하고 누적 in과 cc는 HDFS에 저장합니다. Neighbor grouping은 groupByKey 대신 partitionBy와 external sort를 사용합니다. 논문은 memory를 사용하지 않는다고 주장하지 않습니다.
+
+공개 출처
+plos | pp. 16-18, Algorithms 9-10 and Implementation
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 21. 실험 조건과 데이터 규모
+
+21. 실험 조건과 데이터 규모
+
+발표 대본
+실험 cluster는 20대 machine으로 구성됩니다. 각 machine은 6-core 2.40 GHz CPU, RAM 32 GB, 2 TB HDD 네 개를 가집니다. Hadoop 2.7.3과 Spark 2.2.0을 사용하고 container memory는 7 GB입니다. PACC 기본 parameter는 partition 80개와 threshold 2천만 edge입니다. Running time은 HDFS에서 data를 읽고 결과를 쓰는 시간을 포함합니다. 가장 큰 ClueWeb12는 약 62.6억 정점과 717.5억 edge이며 self-loop와 duplicate를 사전에 제거했습니다.
+
+공개 출처
+plos | pp. 18-19, Table 2 and Setup
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 22. 세 기법의 실험 효과
+
+22. 세 기법의 실험 효과
+
+발표 대본
+Figure 9에서 PACC 계열은 YahooWeb의 reducer running-time 분포에서 매 iteration 가장 좋은 load balance를 보입니다. Figure 10에서 edge filtering을 포함한 PACC input edge 수는 수정된 edge 수의 lower bound에 가깝게 줄어듭니다. Figure 11에서 Twitter의 최적 threshold는 이 실험에서 2×10⁷입니다. Figure 12의 sketching reduction ratio는 Twitter 11.1, Friendster 1.7로 크게 다릅니다. 각 결과는 해당 dataset과 cluster 조건에 묶어 읽어야 합니다.
+
+공개 출처
+plos | pp. 19-21, Figs. 9-12
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 23. Hadoop와 Spark 결과의 분리
+
+23. Hadoop와 Spark 결과의 분리
+
+발표 대본
+Hadoop Figure 14에서 PACC는 Alt-opt보다 Friendster 2.9배에서 YahooWeb 10.7배까지 빠릅니다. ClueWeb12 처리는 PACC와 PACC-ef만 성공합니다. Spark Figure 16은 ClueWeb12에서 모든 알고리즘이 실패해 해당 결과를 생략했습니다. 나머지 시험 graph에서 PACC는 Alt-opt보다 2.3배에서 8.8배 빠릅니다. 작은 graph에서는 distributed job 준비 비용 때문에 single-machine Union-Find나 PowerGraph가 더 빠를 수 있습니다. Hadoop 성공을 Spark의 성공으로 확대하면 안 됩니다.
+
+공개 출처
+plos | pp. 21-23, Figs. 13-17
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 24. PACC 결과의 적용 한계
+
+24. PACC 결과의 적용 한계
+
+발표 대본
+PACC의 실험은 2020년 software와 HDD cluster 조건입니다. Hash partition에 대한 Lemma 9는 기대값이며 구체적인 independence나 high-probability tail bound를 제시하지 않습니다. Edge-count lemma는 shuffle byte, disk spill, peak RAM의 상한이 아닙니다. ClueWeb12 성공은 Hadoop 결과이고 Spark에서는 모두 실패했습니다. 마지막으로 정확성 증명은 undirected connected component와 minimum-root forest 구조에 의존합니다. Triangle enumeration이나 shortest path에 같은 filtering 논리를 자동으로 적용할 근거는 없습니다.
+
+공개 출처
+plos | pp. 14-24, Analyses through Conclusion
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 25. PACC의 핵심 흐름
+
+25. PACC의 핵심 흐름
+
+발표 대본
+PACC의 핵심을 한 흐름으로 정리하겠습니다. 모든 변환은 원래 connectivity를 유지합니다. Partition local minimum을 경유해 edge가 global minimum 하나로 바로 집중되는 현상을 줄입니다. Edge filtering은 이미 정착한 in과 cc를 다음 round에서 제외하지만 final union까지 보관합니다. 종료 시 forest와 overlapping edge-induced subgraph는 각 partition의 정점이 global minimum까지 가는 path를 포함합니다. 그래서 independent LocalCC가 원래 component representative를 복원합니다.
+
+공개 출처
+plos | pp. 6-16 and p. 24, Proposed Method and Conclusion
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+
+## 26. 공개 출처
+
+26. 공개 출처
+
+발표 대본
+PLOS ONE article은 CC BY로 공개된 1차 논문 출처입니다. DOI는 정식 article record로 연결됩니다. PACC GitHub repository는 논문이 공개한 구현 자료입니다. 이 자료의 알고리즘 정의, lemma, 실험 수치는 PLOS 원문을 기준으로 정리했고 repository를 논문 주장 근거의 대체물로 사용하지 않았습니다.
+
+공개 출처
+plos | full article
+PLOS ONE open-access article
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229936
+doi | article record
+Publisher DOI record
+https://doi.org/10.1371/journal.pone.0229936
+code | repository root
+PACC source-code repository cited by the paper
+https://github.com/kmudmlab/PACC

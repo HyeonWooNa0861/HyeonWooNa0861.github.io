@@ -106,9 +106,10 @@ PTE의 중요한 통찰은 연산 kernel만 빠르게 만드는 것으로는 충
 
 고정된 hash partition은 hub와 community가 강한 graph에서 edge-set skew를 만들 수 있다. Degree-aware coloring, adaptive repartitioning과 straggler detection을 추가하면 tail latency를 줄일 수 있다. Streaming graph에는 변경된 color pair의 edge set만 갱신하고 affected triangle만 재계산하는 incremental enumeration을 결합할 수 있다. Output이 수십 TB에 이르는 경우에는 approximate counting이 아니라도 streaming aggregation, compressed motif index 또는 downstream feature extraction을 callback에 직접 연결하는 방식이 실용적이다.
 
-## Source Availability Note
-
-KDD PDF의 저작권 고지는 server 재게시에는 별도 허가가 필요하다고 명시한다. 따라서 이 블로그는 PDF 사본을 호스팅하지 않고 KDD의 공식 공개 PDF와 DOI만 연결한다.
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 26 slides | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/pte-seminar-ko-v7.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/pte-seminar-ko-v7.pptx" download>Download</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/slides-v7.md.txt" download="slides-v7.md">Markdown</a> | <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/presenter-notes-v7.md.txt" download="presenter-notes-v7.md">Markdown</a> |
 
 ## 참고자료
 

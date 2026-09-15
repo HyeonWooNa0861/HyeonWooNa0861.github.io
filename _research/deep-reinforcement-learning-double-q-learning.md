@@ -72,6 +72,11 @@ Double DQN은 online network로 다음 action을 선택하고, target network로
 
 QECO 및 MEC offloading 연구에서 DQN 계열을 사용할 때 target overestimation은 불안정한 action 선택으로 이어질 수 있다. Deadline, queue, energy cost가 얽힌 환경에서는 잘못 과대평가된 offloading action이 dropped task 누적으로 연결될 수 있으므로 Double DQN은 안정성 측면에서 중요하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 25 slides | <a href="/assets/seminars/deep-reinforcement-learning-double-q-learning/double-dqn-seminar-ko-v3.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/deep-reinforcement-learning-double-q-learning/double-dqn-seminar-ko-v3.pptx" download>Download</a> | <a href="/assets/seminars/deep-reinforcement-learning-double-q-learning/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/deep-reinforcement-learning-double-q-learning/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

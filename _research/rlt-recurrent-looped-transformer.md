@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-14 16:37:00 +0900
-last_modified_at: 2026-09-14 22:40:00 +0900
+last_modified_at: 2026-09-15 12:00:00 +0900
 title: "RLT"
 nav_title: "RLT"
 topic: "Recurrent latent computation and full-history policy replay"
@@ -18,7 +18,7 @@ keywords:
 
 # Recurrent Looped Transformer
 
-Source: [Official project page](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"} · [Technical report PDF](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/Recurrent_Looped_Transformer.pdf){:target="_blank" rel="noopener"} · [Official repository](https://github.com/yifanzhang-pro/recurrent-looped-tranformer){:target="_blank" rel="noopener"}
+Source: [Official project page](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"} · [Technical report PDF]({{ "/assets/pdfs/research/rlt-recurrent-looped-transformer/rlt-recurrent-looped-transformer.pdf" | relative_url }}){:target="_blank" rel="noopener"} · [Official repository](https://github.com/yifanzhang-pro/recurrent-looped-tranformer){:target="_blank" rel="noopener"}
 
 ## Paper Information
 
@@ -384,11 +384,11 @@ Conversation에서 user·tool 입력은 모델이 샘플한 action이 아니어�
 
 ## References
 
-이 글은 짧은 원문 소개와 독자적 수학 해설이며 전체 번역이 아니다. PDF·그림·실행 코드는 블로그에 복제하지 않고 저자가 제공한 원문으로 연결한다. 공식 저장소는 Apache-2.0 표기를 제공하지만, 이 글은 별도 자료 재배포에 의존하지 않는다.
+아래 기술보고서와 공식 실험 자료에서 구조·수식·결과를 함께 확인할 수 있다.
 
 - Yifan Zhang. [Recurrent Looped Transformer — project overview](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"}, September 12, 2026.
-- Yifan Zhang. [Recurrent Looped Transformer — technical report, 19 pages](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/Recurrent_Looped_Transformer.pdf){:target="_blank" rel="noopener"}. Architecture: Sections 2–3; training and serving: Sections 5–6; execution and gradients: Appendices A–C.
+- Yifan Zhang. [Recurrent Looped Transformer — technical report, 19 pages]({{ "/assets/pdfs/research/rlt-recurrent-looped-transformer/rlt-recurrent-looped-transformer.pdf" | relative_url }}){:target="_blank" rel="noopener"}. Architecture: Sections 2–3; training and serving: Sections 5–6; execution and gradients: Appendices A–C.
 - [Official README and preliminary synthetic experiments](https://github.com/yifanzhang-pro/recurrent-looped-tranformer#preliminary-synthetic-experiments){:target="_blank" rel="noopener"}, accessed September 14, 2026.
 - [Official synthetic-results figure](https://raw.githubusercontent.com/yifanzhang-pro/recurrent-looped-tranformer/master/assets/rlt-state-tracking-results.png){:target="_blank" rel="noopener"}, accessed September 14, 2026.
 - [Related prefill–decode kernel mismatch report](https://raw.githubusercontent.com/yifanzhang-pro/Pretraining-RL-Science/master/Prefill_Decode_Kernel_Mismatch.pdf){:target="_blank" rel="noopener"}, cited for execution and gradient-parity limits.
-- [Repository license](https://github.com/yifanzhang-pro/recurrent-looped-tranformer/blob/master/LICENSE){:target="_blank" rel="noopener"}.
+- Unmodified report by Yifan Zhang, redistributed under [Apache-2.0]({{ "/assets/pdfs/research/rlt-recurrent-looped-transformer/LICENSE.txt" | relative_url }}). [Repository license](https://github.com/yifanzhang-pro/recurrent-looped-tranformer/blob/master/LICENSE){:target="_blank" rel="noopener"}.

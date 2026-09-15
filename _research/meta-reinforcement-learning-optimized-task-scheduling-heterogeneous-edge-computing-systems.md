@@ -111,6 +111,11 @@ Meta-RL 실험은 일반 DRL의 최종 return만 비교해서는 부족하다. �
 
 세 계층의 time scale 차이는 hierarchical meta-RL 또는 bilevel optimization으로 다룰 수 있다. Slow policy는 placement를, fast policy는 offloading과 resource allocation을 담당하고, shared context encoder가 환경 변화를 요약하는 구조다. 실제 운영 확장을 위해서는 adaptation 중 SLA regression을 막는 constraint 또는 safety shield와 rollback 기준도 필요하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 9 slides | <a href="/assets/seminars/meta-reinforcement-learning-for-optimized-task/meta-rl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/meta-reinforcement-learning-for-optimized-task/meta-rl-mec-proposal-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/meta-reinforcement-learning-for-optimized-task/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/meta-reinforcement-learning-for-optimized-task/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

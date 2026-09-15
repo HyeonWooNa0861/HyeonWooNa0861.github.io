@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-09-10 16:02:00 +0900
+last_modified_at: 2026-09-15 12:10:00 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -31,7 +31,7 @@ keywords:
 
 # Speech and Audio Recognition Lecture 2: Digital Signal Processing I
 
-Source PDF: `SpeechAudio_Lecture2.pdf` (locally supplied; not redistributed)
+Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture2.pdf</a> — Inkyu An, Kookmin University (40 pages).
 
 이 글은 국민대학교 안인규 교수의 *Speech And Audio Recognition* 강의 자료 중 *Digital Signal Processing 1*을 바탕으로, 소리가 디지털 표본이 되고 주파수 표현으로 바뀌는 과정을 한 흐름으로 재구성한 학습 노트다. 원본 슬라이드의 그림을 그대로 복제하지 않고 핵심 개념·수식·예시를 설명하며, 표기가 잘못되었거나 전제가 생략된 부분은 별도로 바로잡았다.
 
@@ -1944,7 +1944,7 @@ Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-
 
 ## Source Materials
 
-원본 PDF는 로컬로 제공된 수업자료이며 재배포 근거가 확인되지 않아 첨부하지 않는다. 아래에는 슬라이드가 명시한 공개 출처와 강의 맥락을 확인할 수 있는 자료를 빠짐없이 정리했다.
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture Slides: Digital Signal Processing 1 — Inkyu An (40 pages)</a>
 
 <ul>
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a></li>

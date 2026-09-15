@@ -67,6 +67,11 @@ DMRO의 첫 번째 축은 deep reinforcement learning이다. State는 task와 ne
 2. Reward 설계는 delay와 energy trade-off를 좌우한다. 운영 환경에서는 SLA, monetary cost, reliability, privacy constraint까지 반영한 configurable reward 또는 constrained RL로 확장할 수 있다.
 3. Meta-learning은 빠른 adaptation을 돕지만, 학습된 initial parameter가 오래된 workload에 과적합될 수 있다. Online meta-update, continual learning, federated edge training을 결합하면 환경 변화에 더 안정적으로 대응할 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 28 slides | <a href="/assets/seminars/dmro-deep-meta-rl-task-offloading/dmro-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/dmro-deep-meta-rl-task-offloading/dmro-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/dmro-deep-meta-rl-task-offloading/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/dmro-deep-meta-rl-task-offloading/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 - [Local source PDF](/assets/pdfs/research/dmro-deep-meta-rl-task-offloading/dmro-deep-meta-rl-task-offloading.pdf){:target="_blank" rel="noopener"}

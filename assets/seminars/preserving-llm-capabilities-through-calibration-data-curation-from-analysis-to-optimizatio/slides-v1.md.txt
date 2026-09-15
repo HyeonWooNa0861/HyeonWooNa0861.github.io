@@ -1,0 +1,371 @@
+---
+type: research-seminar-slides
+paper_id: cola
+---
+
+# COLA: 압축 뒤 LLM 능력을 지키는 보정 데이터 큐레이션
+
+논문: Preserving LLM Capabilities through Calibration Data Curation: From Analysis to Optimization
+
+저자: Bowei He, Lihao Yin, Huiling Zhen, Shuqi Liu, Han Wu, Xiaokun Zhang, Mingxuan Yuan, Chen Ma (2025)
+
+## 1. COLA: 압축 뒤 LLM 능력을 지키는 보정 데이터 큐레이션
+
+압축 알고리즘을 바꾸지 않고, 그 알고리즘이 볼 보정 입력을 고르는 방법을 묻는다
+
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 1, title and abstract
+
+## 2. 이 강의가 따르는 공개 원문
+
+arXiv v1을 기준으로, 보고된 실험과 방법의 범위를 분리해 읽는다
+
+- arXiv:2510.10618v1, 2025년 10월 12일 제출본
+- 공개 arXiv record는 NeurIPS 2025 accepted를 표시한다
+- 저자 8명: Bowei He 외 7명
+- 이 자료의 수치·식·페이지는 해당 42쪽 v1 PDF를 따른다
+- 후속 개정본이나 미확인 구현 결과를 덧붙이지 않는다
+
+핵심: ‘accepted’ 표기는 공개 record의 상태이며, 이 덱의 과학적 근거는 고정한 v1 PDF다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) arXiv record; p. 1
+
+## 3. 보정 데이터는 기존 압축기가 보는 관측 창이다
+
+작은 입력 묶음이 layer activation을 만들고, 그 activation이 기존 압축 결정을 안내한다
+
+1. **보정 입력**: 작은 calibration 입력 표본
+2. **forward pass**: 압축 전 LLM에 표본을 통과
+3. **layer activation**: 입력별 반응 패턴을 얻는다
+4. **기존 압축기**: 가중치 제거·근사 규칙을 적용
+5. **압축 모델**: 여러 능력 평가로 보존 정도를 본다
+
+핵심: 같은 압축 방법이라도 어떤 보정 입력을 보았는지에 따라 다른 능력이 더 손실될 수 있다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 1–2, §1; p. 17, App. A
+
+## 4. COLA가 바꾸는 것과 바꾸지 않는 것
+
+압축기 자체가 아니라, 그 앞단의 calibration set을 고르고 가공하고 대표 표본을 뽑는다
+
+
+| 대상 | COLA가 하는 일 | COLA가 하지 않는 일 |
+| --- | --- | --- |
+| 압축 방법 | 기존 방법에 맞는 입력을 준비 | AWQ·GPTQ·SparseGPT·Wanda를 대체하지 않음 |
+| 모델 가중치 | 압축 전 반응을 관찰 | 사전학습·fine-tuning으로 새 능력을 가르치지 않음 |
+| 보정 데이터 | 도메인·형식·활성화 공간을 기준으로 큐레이션 | 원 학습 코퍼스를 복원한다고 주장하지 않음 |
+| 목표 | 이미 학습된 능력의 손실을 줄이려 시도 | 모든 능력 보존을 보장하지 않음 |
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 1–2, §1; pp. 7–8, §4
+
+## 5. 논문은 네 질문을 순서대로 잇는다
+
+관찰(Q1·Q2)에서 최적성(Q3), 그리고 실제 큐레이션(Q4)로 넘어간다
+
+
+| 질문 | 무엇을 바꾸나 | 다음 단계에 주는 근거 |
+| --- | --- | --- |
+| Q1 | 길이·개수·출처·형식 | 구성적 속성의 영향 |
+| Q2 | 언어·주제·추론 난이도 | 배포 도메인 대응 |
+| Q3 | 관찰을 하나의 기준으로 묶기 | 대표성·다양성의 정의 |
+| Q4 | 후보 데이터에서 실제 set 만들기 | COLA 3단계 프레임워크 |
+
+핵심: COLA는 먼저 데이터 민감성을 실험으로 관찰한 뒤, 그 관찰을 선택 규칙으로 바꾼다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 1–2, §1
+
+## 6. 관찰을 해석하기 위한 실험 조건
+
+결론은 두 Instruct 모델, 네 사후학습 압축 설정, 정해진 능력 평가 안에서 나온다
+
+
+| 항목 | 논문 조건 | 해석 경계 |
+| --- | --- | --- |
+| LLM | LLaMA3-8B-Instruct, Qwen2.5-7B-Instruct | 모든 모델 구조를 대표하지 않음 |
+| pruning | SparseGPT 50%, Wanda 4:8 | 구조적 pruning은 평가하지 않음 |
+| quantization | GPTQ·AWQ, 4-bit | 다른 bit·activation 설정의 보장 아님 |
+| 기본 보정 | 출처별 128개 × 2,048 token | 길이·개수 실험에서는 달라짐 |
+| 능력 평가 | PPL·상식·수학·코드·다국어 | 지표마다 방향과 의미가 다름 |
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 3, §3.1; p. 18, App. C
+
+## 7. Q1: 텍스트의 구성적 속성도 압축 뒤 능력을 바꾼다
+
+한 축을 늘리는 단순 규칙이 아니라, 능력·모델·압축법별 반응을 함께 본다
+
+
+| 바꾼 축 | 논문이 관찰한 패턴 | 바로 일반화할 수 없는 이유 |
+| --- | --- | --- |
+| sequence length | 수학·pruning이 특히 민감한 경우 | code는 비단조 곡선을 보임 |
+| sample amount | 핵심 activation 뒤에는 체감 이득 | 더 많은 표본이 특화 과제를 악화시킬 수 있음 |
+| source | C4·WikiText·SlimPajama 선호가 다름 | 선호는 능력과 compressor마다 다름 |
+| format | 명시적 reasoning QA가 추론 과제에서 유리 | 모든 과제·입력에서의 보장 아님 |
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 3–5, §3.2 and Figs. 2–5
+
+## 8. 반례: 표본 수 증가가 code 점수를 올리지는 않는다
+
+Figure 3의 두 조건은 ‘보정 표본 수 증가 = 성능 향상’이라는 해석을 막는다
+
+
+| 모델·압축 | 16개 표본 | 128개 표본 | 논문이 보여 주는 점 |
+| --- | --- | --- | --- |
+| LLaMA3-8B + AWQ | code 46.40 | code 38.71 | 더 많은 표본이 이 조건에서는 하락 |
+| Qwen2.5-7B + GPTQ | code 57.67 | code 34.03 | 비단조 반응이 더 크게 나타남 |
+| LLaMA3-8B + SparseGPT | 적은 표본에서 math 17.9% 하락 | 별도 조건 | pruning은 표본 수에 더 민감할 수 있음 |
+
+핵심: COLA가 sample count를 고정 상수가 아니라 선택해야 할 설계 변수로 다루는 출발점이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 4, §3.2 and Fig. 3
+
+## 9. Q2: 배포 도메인에 맞춘 입력은 다른 경로를 활성화한다
+
+언어·주제·난이도를 목표 능력과 맞추되, 일반 성능과의 trade-off를 함께 점검한다
+
+
+| 대응 축 | 원문의 관찰 | 큐레이션에 주는 질문 |
+| --- | --- | --- |
+| 언어 | 특화 능력에서 차이가 크며, 다국어 평가는 같은 언어 입력이 유리할 수 있음 | 주 사용자 언어는 무엇인가 |
+| 주제 | MathQA·CodeQA 등이 대응 능력을 높일 수 있음 | 어떤 능력을 우선 보존할 것인가 |
+| 난이도 | hard는 reasoning 이득, mixed는 균형을 보일 수 있음 | 전문 과제인가 일반 배포인가 |
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 6–7, §3.3 and Table 1; pp. 18–19, App. D
+
+## 10. 주제 일치의 이득에는 PPL 비용이 있을 수 있다
+
+Table 1의 Qwen2.5-7B + AWQ 사례는 MathQA가 math를 높이면서 PPL을 높이는 모습을 보인다
+
+
+| calibration data | PPL 낮을수록 좋음 | Math 높을수록 좋음 | 읽는 법 |
+| --- | --- | --- | --- |
+| WikiText | 17.36 | 47.34 | 일반 텍스트 기준선 |
+| MathQA | 19.25 | 54.42 | 목표 math는 상승, PPL은 악화 |
+| CodeQA | 18.95 | 43.85 | 다른 주제는 math 보존의 대안이 아님 |
+
+핵심: ‘가장 좋은 calibration’은 하나의 점수가 아니라 배포 우선순위가 정하는 다목적 선택이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 7, Table 1
+
+## 11. 관찰을 두 기준으로 압축하기: 대표성 + 다양성
+
+저자들은 좋은 보정 set을 텍스트의 표면적 특징보다 activation space의 두 성질로 설명한다
+
+- 대표성: 목표 도메인에서 전형적인 activation pattern을 잘 유발하는가
+- 다양성: 서로 다른 activation pattern을 충분히 폭넓게 포함하는가
+- 도메인·언어·주제의 일치는 대표성의 한 단서가 될 수 있다
+- mixed 난이도·format richness·여러 표본은 다양성의 한 단서가 될 수 있다
+- 두 기준의 균형은 general deployment와 targeted deployment에서 다를 수 있다
+- 이는 원문 실험에서 얻은 설계 관점이며, 최적성 정리는 아니다
+
+핵심: COLA의 핵심 선택 단위는 ‘좋아 보이는 문장’이 아니라 모델이 보이는 activation 공간이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 7, §4.1; pp. 19–22, App. E
+
+## 12. COLA 흐름: 데이터셋에서 대표 표본까지
+
+세 큐레이션 단계가 끝난 뒤에만 기존 compressor가 그 작은 set을 읽는다
+
+1. **후보 데이터 D**: 사전학습·도메인 후보 풀
+2. **Stage 1 선택**: 목표 능력·도메인에 맞는 출처
+3. **Stage 2 가공**: 길이·형식·reasoning richness 조정
+4. **Stage 3 표본**: activation 공간에서 대표·다양 표본
+5. **기존 압축**: 선택 set으로 AWQ·GPTQ·pruning 수행
+
+핵심: COLA의 output은 압축된 가중치가 아니라, 기존 압축기에 넣을 calibration set이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, §4.2
+
+## 13. Stage 1: 먼저 배포 목표에 맞는 후보 출처를 고른다
+
+원문 Eq. (1)은 capability별 우선순위와 coverage를 이용해 S를 D에서 선택한다
+
+
+| 기호 | 의미 | Stage 1에서의 역할 |
+| --- | --- | --- |
+| D | 사용 가능한 dataset 후보 풀 | S를 고를 출발점 |
+| C | 보존하려는 capability 집합 | 예: language·math·code |
+| w_c | capability c의 중요도 | 배포 우선순위를 반영 |
+| coverage(S,c) | S가 c를 얼마나 덮는지 | 가중 합을 크게 하는 S를 선택 |
+
+핵심: 읽기 쉬운 형태로 쓰면 ‘S ⊆ D에서 Σ w_c × coverage(S,c)를 최대화’하는 선택이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, Eq. (1) and §4.2; p. 24, Eq. (5)
+
+## 14. Stage 2: 출처를 과제 맞춤 입력으로 가공한다
+
+원문은 길이와 format richness를 조정하되, 한 가지 길이·형식이 항상 최고라고 말하지 않는다
+
+1. **선택한 출처**: Stage 1에서 고른 dataset
+2. **길이 설정**: 보통 2,048 token, 방법별 조정 가능
+3. **구조 확인**: 질문·답·추론 구조가 있는지 본다
+4. **format 보강**: 가능할 때 explicit reasoning QA로 변환
+5. **처리된 후보**: Stage 3가 고를 sample pool
+
+핵심: 형식 보강은 모든 텍스트에 reasoning을 만들라는 뜻이 아니라 조건부 처리 단계다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, §4.2; p. 5, Fig. 5
+
+## 15. Stage 3: activation 공간에서 대표 표본을 고른다
+
+원문 Eqs. (2)–(3)은 압축 전 모델 반응을 줄여서 군집화하고, 각 중심에 가까운 표본을 택한다
+
+1. **원 모델 forward**: 후보 x_i를 압축 전 모델에 통과
+2. **activation 벡터**: layer별 hidden state를 집계
+3. **random projection**: D차원을 더 작은 d차원으로 축소
+4. **k-means**: 투영 벡터를 k개 cluster로 묶음
+5. **centroid 대표**: 각 중심에 가장 가까운 x_i를 선택
+
+핵심: k는 final sample 수이며, centroid 가까움은 그 cluster의 대표성을 노린다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, Eqs. (2)–(3) and §4.2; p. 24, App. G
+
+## 16. 강의용 계산: centroid 대표를 직접 고르기
+
+가정: 투영 뒤 a=(1,1), b=(1,2), c=(2,2)는 C1, d=(8,8)는 C2이며 k=2다
+
+
+| 표본 | projected a-prime | cluster | centroid까지 거리 | 선택 |
+| --- | --- | --- | --- | --- |
+| a | (1, 1) | C1 | 약 0.75 | 아님 |
+| b | (1, 2) | C1 | 약 0.47 | C1 대표 |
+| c | (2, 2) | C1 | 약 0.75 | 아님 |
+| d | (8, 8) | C2 | 0 | C2 대표 |
+
+핵심: 최종 set은 {b, d}: 각 cluster에서 ‘가장 대표적인’ activation 반응 하나씩이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, Eq. (3); teaching toy
+
+## 17. 이 toy가 보여 주는 것과 보여 주지 않는 것
+
+nearest-centroid 규칙은 selection 규칙을 설명하지만, 실제 모델의 activation 계산을 대체하지 않는다
+
+- b와 d는 원문 실험에서 최고 점수를 낸 문장이 아니다
+- ‘두 cluster’는 toy의 선택이며, 실제 k는 최종 sample 수를 제어한다
+- random projection 숫자도 toy의 가정이며, 논문 측정값이 아니다
+- 한 cluster의 중심에 가까움은 그 cluster 안에서의 대표성이다
+- 여러 cluster를 남기는 것이 activation-space 다양성을 표현한다
+- 텍스트 의미가 비슷해도 activation이 같다는 뜻은 아니다
+
+핵심: COLA는 전역 최고 문장 순위보다 여러 activation 영역을 대표 표본으로 덮는 방식에 가깝다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 8, §4.2; teaching toy boundary
+
+## 18. 일반 배포 결과: 한 조건을 같은 행에서 비교하기
+
+Table 2의 LLaMA3-8B + SparseGPT 50%에서 commonsense score는 COLA가 가장 높다
+
+
+| calibration approach | commonsense score | WikiText 대비 | 조건 |
+| --- | --- | --- | --- |
+| WikiText random | 41.85 | 기준 | general deployment |
+| Self-Gen | 43.61 | +1.76 point | 같은 SparseGPT 50% |
+| COLA | 44.23 | +2.38 point | LLaMA3-8B |
+
+핵심: 이 수치는 한 model·compressor·metric의 경험적 1–2 point대 개선일 뿐, 보장은 아니다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 9, Table 2 and §4.3
+
+## 19. 목표 배포 결과: code용 calibration을 고른 조건
+
+Table 6의 Qwen2.5-7B + AWQ 4-bit, code deployment에서 COLA가 가장 높은 code score를 보고한다
+
+
+| calibration approach | code score | CodeQA random 대비 | 조건 |
+| --- | --- | --- | --- |
+| CodeQA random | 68.73 | 기준 | targeted code deployment |
+| Self-Gen | 70.05 | +1.32 point | 같은 AWQ 4-bit |
+| COLA | 72.18 | +3.45 point | Qwen2.5-7B |
+
+핵심: 목표 도메인 선택은 이 조건에서 차이가 컸지만, 다른 deployment 성능을 대변하지 않는다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 23, Table 6; pp. 22–23, App. F
+
+## 20. 더 큰 모델에서도 본 조건부 관찰
+
+Appendix H는 큰 모델의 general deployment에서도 같은 비교 틀을 추가로 보고한다
+
+
+| 모델·압축 | metric | WikiText random | COLA | 차이 |
+| --- | --- | --- | --- | --- |
+| LLaMA3.1-70B + AWQ 4-bit | commonsense | 71.84 | 74.15 | +2.31 point |
+| Qwen2.5-32B + GPTQ 4-bit | math | 45.62 | 47.26 | +1.64 point |
+
+핵심: 대형 모델 표도 가능성을 보일 뿐, 논문이 측정한 조합에 한정된다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 24–25, Table 9 and App. H
+
+## 21. spectral analysis는 보조 설명이지 정리는 아니다
+
+Appendix E는 GPTQ 4-bit에서 FFN weight의 주파수·energy 그림을 비교해 activation-space 해석을 보강한다
+
+- Figure 7은 LLaMA3-8B 32개 layer의 FFN spectrum을 시각화한다
+- Figure 8은 compressed/original magnitude ratio가 1에 가까운지를 본다
+- Figure 9는 low·mid·high band energy 분포를 layer별로 비교한다
+- 저자들은 COLA가 원 모델의 분포에 더 가까운 패턴을 보인다고 해석한다
+- 그러나 이 분석은 GPTQ 4-bit와 해당 시각화 설정의 empirical evidence다
+- 특정 frequency band가 특정 능력을 ‘저장한다’는 인과 정리를 증명하지 않는다
+
+핵심: 이 그림들은 COLA 설계의 해석 근거이지, activation-space 최적성의 형식 증명은 아니다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 19–22, App. E and Figs. 7–9
+
+## 22. Proxy pilot: coverage 추정 가능성
+
+Appendix J는 작은 proxy 평가가 full evaluation 기반 coverage와 얼마나 맞는지 별도로 살핀다
+
+
+| capability | 상관 r | proxy 설정 | 해석 경계 |
+| --- | --- | --- | --- |
+| commonsense | 0.97 | BoolQ 대표 benchmark | 이 논문의 후보 데이터·5회 평균 |
+| math | 0.93 | GSM8K 대표 benchmark | full evaluation을 일반적으로 대체한다는 보장 아님 |
+| code | 0.91 | HumanEval 대표 benchmark | unseen dataset까지 검증하지 않음 |
+| end-to-end | 평균 gap ≤ 0.2 point | LLaMA3-8B만 | 시간 제한으로 제한된 실험 |
+
+핵심: proxy는 수동 heuristic을 줄일 가능성을 보인 pilot이지, 자동 선택 보증은 아니다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 26–27, Tables 11–12 and App. J
+
+## 23. 큐레이션의 one-time offline 비용
+
+Table 14는 general scenario에서 네 main compressor에 평균한 Self-Gen과 COLA breakdown을 보고한다
+
+
+| 모델 | Self-Gen 시간 | COLA 전체 시간 | COLA peak memory |
+| --- | --- | --- | --- |
+| LLaMA3-8B | 2.58 min | 6.35 min | 7.90 GB |
+| Qwen2.5-7B | 2.35 min | 5.54 min | 7.52 GB |
+
+핵심: COLA에는 compact calibration set을 위한 one-time offline 비용이 있다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 28, Table 14 and App. L
+
+## 24. Pretraining/SFT와 calibration curation은 다르다
+
+Appendix P는 ‘새 능력을 가르치는 데이터’와 ‘압축 중 기존 능력을 보존할 입력’을 구분한다
+
+
+| 관점 | pretraining / SFT | post-training calibration curation |
+| --- | --- | --- |
+| 시점 | 학습 중 능력 습득·정렬 | 학습 뒤 압축 중 능력 보존 |
+| 규모 | 대규모 corpus 중심 | 대개 매우 작은 표본 set |
+| 데이터 역할 | 지식·행동을 새로 학습 | 기존 parameter 반응을 드러내는 진단 입력 |
+| 선정 기준 | 일반화용 coverage와 품질 | activation-space 대표성·다양성 |
+
+핵심: 둘 다 curation이지만, COLA를 fine-tuning recipe로 읽으면 안 된다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) pp. 29–30, App. P
+
+## 25. 마무리: calibration 최적성은 조건부다
+
+COLA는 deployment-aligned source·processing·activation-space selection을 묶어 기존 압축 앞단을 바꾼다
+
+- 문제: compressor가 볼 작은 input set이 능력 손실의 방향을 바꿀 수 있다
+- 제안: domain·구성·activation-space의 3단계 curation
+- 근거: 두 base LLM과 정해진 pruning·quantization 조건에서의 empirical tables
+- 한계: 더 많은 architecture·압축 비율·능력·장기 domain shift는 미검증
+- 이론: optimal calibration의 최소 조건이나 보장은 아직 제시되지 않았다
+- 실무: 우선 보존 능력을 정한 뒤 coverage weight를 정한다
+
+핵심: 압축법이 관찰할 activation도 설계 대상이라는 관점이 핵심이다
+
+근거: [arxiv](https://arxiv.org/abs/2510.10618v1) p. 9, §5; pp. 30–31, App. R

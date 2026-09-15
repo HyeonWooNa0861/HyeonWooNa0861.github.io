@@ -79,6 +79,11 @@ OWQ는 weight column별 양자화 민감도를 평가하고, 민감한 작은 �
 
 QTIP, QuIP#, EPTQ가 codebook geometry와 vector quantization을 통해 낮은 bit 표현력을 높인다면, OWQ는 outlier-sensitive column을 고정밀로 남기는 혼합 정밀도 전략이다. 극저비트 LLM PTQ를 볼 때 "어떤 weight를 양자화하지 않을 것인가"라는 preservation 축을 제공한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 24 slides | <a href="/assets/seminars/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/owq-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/owq-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

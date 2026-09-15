@@ -1,0 +1,2 @@
+# Preserve Markdown hard line breaks in downloadable seminar source notes.
+assets/seminars/**/*.md.txt whitespace=-blank-at-eol

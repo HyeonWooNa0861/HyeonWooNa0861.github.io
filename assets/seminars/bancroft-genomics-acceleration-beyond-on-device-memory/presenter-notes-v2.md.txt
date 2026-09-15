@@ -1,0 +1,299 @@
+## 1. Bancroft: HBM 밖 게놈 데이터를 위한 압축 경로
+
+1. Bancroft: HBM 밖 게놈 데이터를 위한 압축 경로
+
+발표 대본
+Bancroft는 가속기 보드의 메모리에 원본 게놈 데이터 전체를 올리는 대신, 호스트에 압축 형태로 두고 필요한 페이지를 PCIe로 가져온 뒤 FPGA 안에서 풀어 사용자 커널에 공급합니다. 이 발표에서는 압축 자체보다도 ‘어느 데이터가 어디에 있고, 어느 대역폭과 용량이 병목이 되는가’를 중심으로 읽겠습니다.
+
+공개 출처
+pact-2025 | p. 306, title and abstract
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 2. 왜 빠른 HBM이 있어도 큰 게놈 작업은 멈추는가
+
+2. 왜 빠른 HBM이 있어도 큰 게놈 작업은 멈추는가
+
+발표 대본
+논문은 가속기가 HBM처럼 빠르지만 비교적 작은 메모리를 가진다는 점을 출발점으로 둡니다. 여기서 on-device는 FPGA 또는 GPU 카드에 붙은 메모리라는 물리적 위치입니다. Bancroft가 해결하려는 것은 저장된 대규모 데이터에 가속기 연산을 연결하는 문제이지, HBM 용량 자체를 늘리는 기술이 아닙니다.
+
+공개 출처
+pact-2025 | pp. 306-307, §I
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 3. 용량과 대역폭은 다른 제약이다
+
+3. 용량과 대역폭은 다른 제약이다
+
+발표 대본
+이 구분이 발표 전체의 핵심입니다. HBM capacity는 reference와 buffer를 몇 개나 둘 수 있는지를 제한합니다. HBM bandwidth는 이미 HBM에 있는 reference를 얼마나 빨리 읽는지를 말합니다. 압축 DB는 host 쪽에 있고, PCIe에는 여전히 compressed page가 흐릅니다. 따라서 논문의 effective bandwidth는 압축률의 도움을 받은 데이터 공급 효과이지 PCIe 사양의 교체가 아닙니다.
+
+공개 출처
+pact-2025 | pp. 306, 308, §I and §II-C
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 4. Bancroft가 다루는 두 genomic stream
+
+4. Bancroft가 다루는 두 genomic stream
+
+발표 대본
+FASTA는 base만, FASTQ는 base와 quality score를 함께 담습니다. 논문은 둘 모두를 lossless로 처리하지만 quality score 압축에는 genome reference를 쓰지 않습니다. ‘같은 header 구조’는 decoder를 단순하게 하려는 형식상의 공통점이며, 두 데이터가 같은 통계적 성질이라는 뜻은 아닙니다.
+
+공개 출처
+pact-2025 | pp. 306, 308-309, §I and §III-A
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 5. 전체 경로: host의 압축 DB를 FPGA 안에서 복원한다
+
+5. 전체 경로: host의 압축 DB를 FPGA 안에서 복원한다
+
+발표 대본
+Fig. 3과 Fig. 5의 데이터 의존관계를 재구성했습니다. Host의 compressed page는 PCIe를 통해 decoder에 도달합니다. Decoder는 header의 offset에 따라 HBM reference의 실제 base data를 읽어 복원 stream을 user kernel에 보냅니다. 두 실선 입력은 압축 페이지와 reference data로 역할이 다릅니다. Host B+ tree는 원본 file-line offset을 compressed 4 KB page로 찾는 별도 metadata이며 HBM reference의 위치를 찾는 구조가 아닙니다. 도식은 data 공급만 나타내고 reference request나 buffer 제어의 모든 wire를 묘사하지 않습니다.
+
+공개 출처
+pact-2025 | pp. 310-312, Fig. 3 and §IV
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 6. 같은 ‘압축’도 FPGA와 host가 나눠서 한다
+
+6. 같은 ‘압축’도 FPGA와 host가 나눠서 한다
+
+발표 대본
+압축의 cuckoo offset table은 human genome에서 적어도 16 GB가 필요해 U55C 같은 medium-range FPGA에도 공간이 없다고 논문은 설명합니다. 그래서 accelerator는 parser·hash·filter를, software manager는 table query와 encoding을 맡습니다. 반대로 decompression은 fixed-width format과 HBM reference read에 맞아 FPGA에 둡니다.
+
+공개 출처
+pact-2025 | pp. 310-311, §IV-A
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 7. base read: 2-bit header가 다음 32-bit field를 정한다
+
+7. base read: 2-bit header가 다음 32-bit field를 정한다
+
+발표 대본
+원문 Table I을 정리했습니다. sequence 쪽에는 16개의 2-bit header와 fixed 32-bit payload가 있고, 00은 2-bit base encoding으로 S bases를 담습니다. 01과 10은 각각 forward와 reverse-complement K-mer의 offset입니다. 11 continuation은 offset을 새로 담지 않고 직전 match의 바로 옆 K-mer를 이어 갑니다. prototype parameter는 K=64, S=16입니다.
+
+공개 출처
+pact-2025 | p. 309, Fig. 1a and Table I
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 8. base compression: fixed K와 fixed S로 한 창씩 전진
+
+8. base compression: fixed K와 fixed S로 한 창씩 전진
+
+발표 대본
+고정 K-mer가 exact match이면 32-bit offset으로 encode하고 K만큼 이동합니다. 어느 후보도 맞지 않으면 S base를 verbatim으로 encode하고 S만큼 이동합니다. cuckoo hash는 false negative를 낼 수 있으나, 그 경우 exact match를 놓쳐 압축률이 떨어질 뿐 decoder의 correctness는 깨지지 않습니다. 논문은 prototype에서 K=64, S=16을 사용합니다.
+
+공개 출처
+pact-2025 | pp. 309-310, Fig. 2 and §III-B1
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 9. quality score: reference 대신 최근 값과 p1/p2를 쓴다
+
+9. quality score: reference 대신 최근 값과 p1/p2를 쓴다
+
+발표 대본
+원문 Table II에 따른 quality header입니다. 6-bit score 다섯 개는 30 bit를 사용하므로 32-bit field에 2 bit가 남습니다. p1/p2의 bit mask는 고정 위치에 있어 hardware parse가 쉽습니다. 첫 field는 verbatim으로 강제되어 block 내부 dependency를 끊습니다. HG002에서 p1=I, p2=D는 source의 한 data-point일 뿐 보편 값이 아닙니다.
+
+공개 출처
+pact-2025 | p. 309, Fig. 1b and Table II
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 10. 설명용 trace: header가 어떤 종류의 복원을 고르는가
+
+10. 설명용 trace: header가 어떤 종류의 복원을 고르는가
+
+발표 대본
+이 슬라이드의 문자열과 K=4, S=2는 source가 아닌 설명용으로 만든 trace입니다. source에서 보장하는 것은 header semantics와 fixed K/S 방식입니다. 특히 sequence 11은 adjacent continuation이고 quality 11은 p1/p2 mask라서, 같은 bit pattern이라도 stream type에 따라 decoder 의미가 다릅니다.
+
+공개 출처
+pact-2025 | p. 309, Tables I-II; illustrative trace
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 11. decompression: page를 gap-free stream으로 만든다
+
+11. decompression: page를 gap-free stream으로 만든다
+
+발표 대본
+Fig. 5와 §IV-B를 순서로 풀어 쓴 것입니다. decompressor는 input, header parser, index/verbatim 처리, reference HBM controller, shuffler로 구성됩니다. source는 512-bit bus at 250 MHz를 설명합니다. random reference lookup 때문에 effective HBM bandwidth는 sequential peak와 같지 않으므로, 이 수치를 모든 workload의 실측 throughput으로 바꾸어 말하면 안 됩니다.
+
+공개 출처
+pact-2025 | pp. 311-312, Fig. 5 and §IV-B
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 12. 임의 위치 읽기: 원본 offset에서 compressed 4 KB page로
+
+12. 임의 위치 읽기: 원본 offset에서 compressed 4 KB page로
+
+발표 대본
+논문은 original file offset에서 compressed 4 KB page로 가는 B+ tree를 software interface의 중요한 기능으로 설명합니다. long read boundary padding은 I/O를 쉽게 하기 위한 장치입니다. 이 방법은 source가 주장하는 file-level random access이며, 모든 base가 하나의 HBM buffer에 무작위로 즉시 도달한다는 뜻은 아닙니다.
+
+공개 출처
+pact-2025 | p. 312, §IV-C
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 13. U50 prototype에서 module 수를 정하는 실제 자원
+
+13. U50 prototype에서 module 수를 정하는 실제 자원
+
+발표 대본
+Table III의 resource utilization과 §IV architecture 설명을 합쳤습니다. human compression reference가 3 channels를 쓰며, source는 U50 32 PC에서 up to ten decompressor가 가능하다고 서술합니다. 이는 다른 reference, buffer, accelerator board에도 자동으로 성립하는 일반 공식이 아닙니다.
+
+공개 출처
+pact-2025 | pp. 310, 312, Table III
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 14. 결과를 읽기 전에: platform·dataset·baseline을 고정한다
+
+14. 결과를 읽기 전에: platform·dataset·baseline을 고정한다
+
+발표 대본
+§VI-A와 §VI-B를 기반으로 한 reading frame입니다. U50 host transfer rate는 download 9.1 GB/s, upload 8.4 GB/s로 측정되었다고 기술됩니다. Table IV dataset은 HG16/HG38 reference, HG002-4 long reads, mouse, maize를 포함합니다. Figs. 6-7은 ASCII baseline, Figs. 8-9는 2-bit binary baseline이므로 그래프 높이를 서로 직접 비교할 수 없습니다.
+
+공개 출처
+pact-2025 | pp. 312-313, §VI-A-B and Table IV
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 15. K와 S는 hardware-friendly 형식의 경험적 선택이다
+
+15. K와 S는 hardware-friendly 형식의 경험적 선택이다
+
+발표 대본
+Fig. 6의 design-space exploration은 S와 K를 바꾸어 compression ratio를 비교합니다. 논문은 eventual setting으로 S=16, K=64를 쓰지만 maize에서 K=128이 최선일 수 있다고 적습니다. quality score는 S=5를 사용합니다. parameter choice와 accelerator bus width는 관련되지만 같은 결정이 아닙니다.
+
+공개 출처
+pact-2025 | p. 313, Figs. 6-7 and §VI-B
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 16. 측정 1: 한 decompressor가 output bus에 가깝게 간다
+
+16. 측정 1: 한 decompressor가 output bus에 가깝게 간다
+
+발표 대본
+Fig. 10의 막대는 decompressor ×1 throughput과 PCIe pressure를 나란히 둡니다. source 문장은 ‘nearly saturate the 512-bit output bus’를 사용합니다. 이 문장은 compression ratio가 좋고 해당 evaluation data라는 조건을 포함합니다. output bandwidth가 피크에 가깝다는 말과 physical PCIe bandwidth가 증가했다는 말은 구별해야 합니다.
+
+공개 출처
+pact-2025 | p. 314, Fig. 10 and §VI-D1
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 17. 측정 2: 여러 stream을 병렬로 복원할 때
+
+17. 측정 2: 여러 stream을 병렬로 복원할 때
+
+발표 대본
+Table V와 §VI-D2를 설명합니다. 예를 들어 1R3은 one reference and three long reads를 뜻합니다. Fig. 11의 네 decompressor 결과는 한 module의 수치를 단순히 임의 n배한 synthetic result가 아니라 paper가 구성한 ensemble measurement입니다. 여러 species 데이터는 이 실험에서 biological comparison의 대상이라기보다 compression characteristic이 다른 realistic inputs 역할을 합니다.
+
+공개 출처
+pact-2025 | p. 314, Table V, Fig. 11 and §VI-D2
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 18. 측정 3: U50 HBM 전력 제한에 닿는다
+
+18. 측정 3: U50 HBM 전력 제한에 닿는다
+
+발표 대본
+§VI-D3는 Fig. 12에서 real-world measured throughput이 약 70 GB/s에서 stall하는 이유를 U50의 7.8 W HBM power throttling으로 설명합니다. source text는 이 상황에서 Bancroft가 power-throttled U50 HBM의 sustained real-world performance 약 34%에 도달한다고 말합니다. 그림의 ‘nominal HBM’ annotation과 혼동하지 않도록, 여기서는 본문 문구를 따릅니다.
+
+공개 출처
+pact-2025 | p. 314, Fig. 12 and §VI-D3
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 19. U55C 결과는 ‘측정’이 아니라 조건부 projection이다
+
+19. U55C 결과는 ‘측정’이 아니라 조건부 projection이다
+
+발표 대본
+논문은 no power throttling device such as U55C에서 available HBM bandwidth가 closer to 512 GB/s라고 설명하고, ten decompressor에서 160 GB/s·31% of peak HBM·almost 2× DDR4를 projection으로 제시합니다. 슬라이드에서 ‘가정’과 ‘projection’을 계속 보이는 이유는 measured U50 Fig. 12와 섞지 않기 위해서입니다.
+
+공개 출처
+pact-2025 | p. 315, Fig. 13 and §VI-D3
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 20. compression: FPGA offload 뒤에도 host lookup은 남는다
+
+20. compression: FPGA offload 뒤에도 host lookup은 남는다
+
+발표 대본
+Fig. 14는 HG002 long read dataset에서 software, Hash, Encoder+Hash, Encoder+Hash+Filter partition 및 host thread 수를 비교합니다. parser나 hash를 offload해도 32-bit random cuckoo lookup의 cache miss가 host memory bottleneck을 만들었다고 paper는 설명합니다. probabilistic filter가 host CPU/memory pressure를 줄인 뒤, 16 CPU threads에서 maximum performance에 도달합니다.
+
+공개 출처
+pact-2025 | p. 315, Fig. 14 and §VI-D4
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 21. accelerator 비교는 숫자보다 조건을 먼저 읽는다
+
+21. accelerator 비교는 숫자보다 조건을 먼저 읽는다
+
+발표 대본
+§VI-D5는 Bancroft가 host memory에 cuckoo hash를 두므로 raw LUT count comparison이 inaccurate하다고 명시합니다. Fig. 15의 GPU 비교에서는 일부 multi-GPU 결과를 single GPU 기준으로 normalize하고, Guo13은 modern RTX 4090 대비 relative performance로 scaled projection도 제시합니다. 따라서 이 슬라이드의 speedup은 source figure의 조건부 trend로만 소개합니다.
+
+공개 출처
+pact-2025 | p. 315, Fig. 15 and §VI-D5
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 22. case study: SHD filtering에 stream을 공급한다
+
+22. case study: SHD filtering에 stream을 공급한다
+
+발표 대본
+§VI-E의 SHD case study입니다. Fig. 16의 작은 예는 three shifted references를 보여 주지만, actual evaluation은 edit distance threshold 5에 11 shifted references를 사용합니다. SHD algorithm을 Bancroft compression algorithm과 혼동하면 안 됩니다. Bancroft는 pre-alignment filter가 필요한 large genomic input을 PCIe bottleneck에 덜 묶이게 공급하는 platform 역할을 합니다.
+
+공개 출처
+pact-2025 | p. 316, Figs. 16-17 and §VI-E
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 23. Fig. 17의 두 Bancroft 점은 같은 종류의 결과가 아니다
+
+23. Fig. 17의 두 Bancroft 점은 같은 종류의 결과가 아니다
+
+발표 대본
+Fig. 17의 Bancroft point 두 개는 source가 의도적으로 B-R과 B-I로 나눕니다. B-R은 U50 real-world HBM power throttle 조건이고, B-I는 power throttling을 제거한 ideal U50 projection입니다. source는 PCIe-limited accelerator utilization과 비교하며 filter throughput을 제시합니다. 7.5×와 21× annotation도 그림의 해당 placement와 baseline 조건을 벗어나지 않게 읽어야 합니다.
+
+공개 출처
+pact-2025 | p. 316, Fig. 17 and §VI-E2
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 24. 어디까지가 Bancroft의 주장인가
+
+24. 어디까지가 Bancroft의 주장인가
+
+발표 대본
+마지막으로 paper의 platform demonstration과 우리가 일반화하지 않아야 할 범위를 분리합니다. source는 up to TB-scale datasets, U50 prototype, compression-co-designed platform, SHD case study를 다룹니다. 이로부터 on-device inference, mobile edge deployment, arbitrary storage engine, universal genomics speedup을 도출할 근거는 없습니다.
+
+공개 출처
+pact-2025 | pp. 306, 312-316, abstract and §VI
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036
+
+## 25. 정리: 압축 format이 memory hierarchy의 일부가 된다
+
+25. 정리: 압축 format이 memory hierarchy의 일부가 된다
+
+발표 대본
+논문을 한 문장으로 요약하면, accelerator memory에 다 들어가지 않는 genomics data를 압축으로 host에 보관하고, hardware-friendly fixed format으로 FPGA에서 즉시 복원해 user kernel에 공급하는 platform입니다. 가장 중요한 비판적 독해는 capacity, raw bandwidth, effective bandwidth, and evaluation labels를 한 단어의 ‘성능’으로 섞지 않는 것입니다.
+
+공개 출처
+pact-2025 | pp. 306, 309-312, 314-316
+Bancroft: Genomics Acceleration Beyond On-Device Memory, PACT 2025
+https://doi.org/10.1109/PACT65351.2025.00036

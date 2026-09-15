@@ -111,6 +111,11 @@ Source PDF: `federated-drl-continuous-improving-intradependente-task-offloading-
 
 두 번째 과제는 non-IID와 system heterogeneity다. FedProx, clustered federation 또는 personalized head를 비교하고, client sampling과 asynchronous aggregation으로 느린 장치의 영향을 측정해야 한다. 세 번째는 privacy와 poisoning이다. Secure aggregation과 robust aggregation을 별도 layer로 적용하되 정확도와 통신량 손실을 함께 보고해야 한다. 이러한 검증을 통과하면 inter-edge collaboration과 multi-cluster federation으로 확장할 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 9 slides | <a href="/assets/seminars/federated-deep-reinforcement-learning-for-continuous/federated-drl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/federated-deep-reinforcement-learning-for-continuous/federated-drl-mec-proposal-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/federated-deep-reinforcement-learning-for-continuous/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/federated-deep-reinforcement-learning-for-continuous/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

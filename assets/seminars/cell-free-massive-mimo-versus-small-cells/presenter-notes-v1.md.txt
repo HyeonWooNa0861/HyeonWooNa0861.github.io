@@ -1,0 +1,314 @@
+## 1. 셀프리 Massive MIMO는 왜 small cell과 다른가
+
+1. 셀프리 Massive MIMO는 왜 small cell과 다른가
+
+발표 대본
+이 자료는 Ngo, Ashikhmin, Yang, Larsson, Marzetta의 논문을 교육용으로 소개합니다. 핵심은 AP 수가 많다는 사실만이 아닙니다. 모든 AP가 같은 사용자를 함께 서비스하는 셀프리 모델과, 한 AP가 한 사용자를 맡는 논문의 small-cell 기준선을 구분해야 합니다.
+
+공개 출처
+arxiv-v2 | p. 1, title and abstract
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+ieee-doi | publication record
+Cell-Free Massive MIMO versus Small Cells, IEEE TWC publication record
+https://doi.org/10.1109/TWC.2017.2655515
+
+## 2. 이 덱에서 지키는 읽기 경계
+
+2. 이 덱에서 지키는 읽기 경계
+
+발표 대본
+원문은 무한대 M 분석, 유한 M achievable lower bound, 그리고 랜덤 위치·shadowing에 대한 수치 실험을 함께 사용합니다. 또한 셀프리 구현에는 큰 backhaul 부담이 따르고 small cell은 훨씬 적은 backhaul을 요구한다고 결론에서 분명히 말합니다. 따라서 이후의 숫자는 일반적인 상용망 순위가 아니라 논문의 조건부 비교입니다.
+
+공개 출처
+arxiv-v2 | pp. 3, 5-6, 10, 14-15
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 3. 출발점: 약한 user의 rate를 어떻게 끌어올릴까
+
+3. 출발점: 약한 user의 rate를 어떻게 끌어올릴까
+
+발표 대본
+셀프리 구조에서는 많은 지리적으로 분산된 AP가 더 적은 수의 users를 같은 시간·주파수 자원에서 동시에 서비스합니다. 논문은 이 구조가 한 AP에만 의존하는 small-cell 구성보다 특히 약한 user의 throughput을 개선할 수 있는지, 그리고 pilot assignment와 power control이 그 개선에 어떤 역할을 하는지를 다룹니다.
+
+공개 출처
+arxiv-v2 | pp. 1-2, abstract and contributions
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 4. 두 구조의 핵심 차이: 누가 한 user를 서비스하는가
+
+4. 두 구조의 핵심 차이: 누가 한 user를 서비스하는가
+
+발표 대본
+논문의 small-cell baseline에서는 임의 순서의 user가 가장 큰 large-scale coefficient beta를 가진 available AP를 선택하며, 선택된 AP는 다른 user에게 더는 available하지 않습니다. 반대로 cell-free 모델은 모든 AP가 모든 user의 signal processing에 참여합니다. 이 baseline은 일반적인 모든 small-cell 설계의 정의가 아니라 이 논문의 비교 구성입니다.
+
+공개 출처
+arxiv-v2 | pp. 3, 8-9
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 5. 원문의 실제 정보 흐름: local CSI, CPU aggregation
+
+5. 원문의 실제 정보 흐름: local CSI, CPU aggregation
+
+발표 대본
+Uplink에서는 각 AP가 자신의 channel estimate로 matched filtering을 한 뒤 processed signal을 CPU에 보냅니다. Downlink에서는 AP가 local estimate로 conjugate beamforming을 수행합니다. CPU는 payload data와 power-control coefficient를 교환하지만, 원문은 AP가 local channel estimate를 서로 또는 CPU와 공유하지 않는다고 명시합니다. 이 흐름은 perfect backhaul을 가정합니다.
+
+공개 출처
+arxiv-v2 | pp. 3-4, System Model and Eqs. (10), (18)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 6. 한 coherence interval의 TDD 순서
+
+6. 한 coherence interval의 TDD 순서
+
+발표 대본
+논문은 TDD coherence interval을 uplink training, downlink payload transmission, uplink payload transmission으로 나눕니다. TDD reciprocity를 사용하므로 AP는 uplink pilot에서 얻은 estimate를 downlink processing에도 사용합니다. Reciprocity와 perfect calibration은 이 시스템 모델의 가정입니다. 원문은 collocated massive MIMO에서 calibration feasibility가 입증되었다고 언급하며, cell-free에서 imperfect calibration이 미치는 영향은 future work로 둡니다.
+
+공개 출처
+arxiv-v2 | p. 3, TDD protocol and assumptions
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 7. 채널의 두 층: 빠르게 변하는 h와 느린 beta
+
+7. 채널의 두 층: 빠르게 변하는 h와 느린 beta
+
+발표 대본
+원문은 g_mk를 large-scale fading beta_mk와 small-scale fading h_mk로 구성합니다. beta는 path loss와 shadow fading을 포함하며 long time-scale에서 바뀌므로 central pilot assignment와 power control에 활용할 수 있습니다. h의 independent Rayleigh model은 넓게 분산된 AP와 독립 scatterer를 가정한 분석 모델입니다.
+
+공개 출처
+arxiv-v2 | pp. 3-4, Eqs. (1), (8)-(9)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 8. pilot contamination은 왜 생기는가
+
+8. pilot contamination은 왜 생기는가
+
+발표 대본
+각 user는 tau_cf 길이의 pilot을 동시에 보냅니다. tau_cf가 K 이상이면 모두 직교 pilot을 쓸 수 있어 cross-pilot term을 없앨 수 있습니다. 그러나 일반적으로 coherence interval이 제한되므로 tau_cf가 K보다 작을 수 있고, 이때 다른 user pilot과의 inner product가 channel estimate에 남습니다. 원문은 이 항을 pilot contamination의 원인으로 설명합니다.
+
+공개 출처
+arxiv-v2 | pp. 3-4, Eqs. (2)-(9)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 9. 강의용 pilot 계산: 직교와 overlap의 차이
+
+9. 강의용 pilot 계산: 직교와 overlap의 차이
+
+발표 대본
+이 표는 teaching-only calculation입니다. 두 길이-2 벡터의 내적이 0이면 같은 AP가 user 1 pilot으로 project했을 때 user 2의 pilot 항은 사라집니다. 내적이 1이면 완전히 같은 pilot이라 구별되지 않습니다. 원문의 실제 pilot assignment score는 모든 AP와 다른 users의 beta 및 pilot inner product를 함께 합산하므로, 이 작은 예시는 그 한 성분만 보여 줍니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eqs. (6)-(9); constructed example
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 10. DL: local conjugate beamforming과 AP별 전력 제한
+
+10. DL: local conjugate beamforming과 AP별 전력 제한
+
+발표 대본
+Downlink에서 AP m은 local channel estimate의 conjugate와 user data symbol을 가중 합해 전송합니다. 원문은 각 AP에 대해 users 전체의 eta_mk gamma_mk 합이 1을 넘지 않는 constraint를 둡니다. gamma는 estimation quality 계수이므로 같은 eta라도 pilot과 large-scale fading 상태에 따라 AP budget에서 차지하는 양이 달라집니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eq. (5) and constraints (6)-(8)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 11. UL: local matched filtering 뒤 CPU sum
+
+11. UL: local matched filtering 뒤 CPU sum
+
+발표 대본
+Uplink에서는 AP m이 local estimate의 conjugate로 received signal을 matched filter한 뒤, 그 processed signal을 CPU에 전달합니다. CPU가 AP마다의 결과를 합산해 user data를 검출합니다. 이 구조는 raw signal이나 all instantaneous CSI를 중앙으로 옮기는 설명과 다르며, 원문도 ideal backhaul을 가정하는 이유를 함께 밝혀 둡니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eqs. (10)-(11)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 12. channel hardening과 favorable propagation은 다르다
+
+12. channel hardening과 favorable propagation은 다르다
+
+발표 대본
+Favorable propagation은 서로 다른 users의 channel vector가 대규모 AP 조건에서 직교에 가까워지는 성질입니다. Channel hardening은 합쳐진 effective channel gain이 집중되어 user가 매 순간의 gain보다 통계에 의존해 decoding할 수 있는 성질입니다. 원문은 large-M limit에서 여러 항이 사라져도 pilot contamination은 남는다고 보입니다.
+
+공개 출처
+arxiv-v2 | pp. 5-6, Eqs. (14)-(18), Fig. 2, Remarks 3-5
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 13. large-M 분석과 finite-M rate를 과장하지 않기
+
+13. large-M 분석과 finite-M rate를 과장하지 않기
+
+발표 대본
+원문의 asymptotic result는 deterministic large-scale fading coefficient 아래 M이 커지는 limit를 분석합니다. Finite-M downlink와 uplink expression은 채널 추정오차, beamforming uncertainty, interference, noise를 포함한 achievable rate lower bound입니다. 따라서 bound와 simulator outcome 모두를 deployment measurement처럼 읽어서는 안 됩니다.
+
+공개 출처
+arxiv-v2 | pp. 5-6, Eqs. (14)-(18), Theorems 1-2, Eqs. (24),(27)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 14. greedy pilot assignment: 누구의 pilot을 바꾸는가
+
+14. greedy pilot assignment: 누구의 pilot을 바꾸는가
+
+발표 대본
+원문의 Algorithm 1은 random assignment에서 시작합니다. 각 iteration에 lowest downlink rate user를 고르고, 그 user의 pilot을 orthogonal candidate set 중 다른 users와의 beta-weighted pilot-overlap sum이 최소인 후보로 교체합니다. 이 계산은 large-scale coefficient의 slow variation을 이용하므로 CPU가 pilot index를 AP와 user에 알리는 구조입니다.
+
+공개 출처
+arxiv-v2 | p. 7, Algorithm 1 and Eqs. (29)-(31)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 15. max-min power control: 평균이 아니라 bottleneck rate
+
+15. max-min power control: 평균이 아니라 bottleneck rate
+
+발표 대본
+논문은 downlink와 uplink 모두 per-user throughput의 minimum을 maximize합니다. Downlink는 AP-user coefficient eta_mk를, uplink는 user별 eta_k를 제어합니다. Max-min objective의 optimum에서는 source model 안에서 users의 rate가 같은 값에 맞춰진다고 설명하지만, 이 목표는 sum throughput 또는 모든 KPI의 동시 향상과 동일하지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 7-8, Eqs. (32)-(37), Propositions 1-2
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 16. DL·UL max-min의 다른 feasibility 형태
+
+16. DL·UL max-min의 다른 feasibility 형태
+
+발표 대본
+Downlink max-min problem은 quasiconcave여서 bisection으로 candidate rate를 정하고 second-order cone feasibility를 검사합니다. Uplink max-min problem도 quasi-linear 형태여서 bisection을 쓰지만, candidate rate feasibility는 linear program으로 확인합니다. 같은 ‘공정성’이라는 말이 두 solver의 수학적 형태까지 같다는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v2 | pp. 7-8, Algorithm 2, Eqs. (34)-(35); Proposition 2, Eq. (37)
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 17. 강의용 2 AP·2 user toy: service와 feasibility
+
+17. 강의용 2 AP·2 user toy: service와 feasibility
+
+발표 대본
+이 표는 teaching-only construction입니다. beta는 large-scale coefficient, gamma는 estimation-quality coefficient를 흉내 낸 가상 값입니다. Small-cell column은 원문의 user-order-dependent available-AP construction을 보이고, cell-free column은 eta가 모두 1인 경우 AP별 weighted sum이 각각 0.8과 0.9라 feasibility constraint를 만족함을 보입니다. 실제 rate에는 pilot, fading, interference, noise 항이 더 들어갑니다.
+
+공개 출처
+arxiv-v2 | pp. 4, 8-9; constructed example
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 18. small cell도 같은 방식으로 DL CSI를 쓰지 않는다
+
+18. small cell도 같은 방식으로 DL CSI를 쓰지 않는다
+
+발표 대본
+원문은 cell-free downlink rate lower bound에서 user가 instantaneous effective channel realization을 모른 채 통계를 안다고 둡니다. Small-cell baseline의 한 AP Rayleigh channel은 channel hardening이 없으므로 user와 AP가 effective channel을 estimate해야 하며, small-cell coherence interval에는 UL과 DL training이 모두 들어갑니다. 이것이 net throughput 비교의 fairness 조건 일부입니다.
+
+공개 출처
+arxiv-v2 | pp. 5-6, 8-10
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 19. 수치 결과를 읽기 위한 실험 envelope
+
+19. 수치 결과를 읽기 위한 실험 envelope
+
+발표 대본
+원문은 1 km by 1 km 영역에서 AP와 users를 무작위 배치하고 200개의 location 및 shadow-fading realization을 생성합니다. Carrier는 1.9 GHz, bandwidth는 20 MHz, coherence interval은 200 samples입니다. Cell-free와 small-cell의 total radiated power를 맞추는 normalization도 수행합니다. 따라서 숫자를 다른 bandwidth, density, mobility에 그대로 옮길 수 없습니다.
+
+공개 출처
+arxiv-v2 | pp. 10-11, Table I and numerical setup
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 20. 조건부 DL 결과: 95%-likely net throughput
+
+20. 조건부 DL 결과: 95%-likely net throughput
+
+발표 대본
+Table II는 95%-likely downlink net throughput을 보고합니다. Greedy pilot assignment와 power control을 쓴 row에서, uncorrelated shadow fading은 cell-free 14.00 Mbit/s와 small-cell 2.08 Mbit/s, correlated shadow fading은 8.12와 0.83을 보입니다. 표의 PC는 power control이며, uncor.와 corr.는 shadow-fading correlation 조건입니다.
+
+공개 출처
+arxiv-v2 | p. 15, Table II; pp. 10-13 conditions
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 21. 조건부 UL 결과: 95%-likely net throughput
+
+21. 조건부 UL 결과: 95%-likely net throughput
+
+발표 대본
+Table III는 같은 M=100, K=40, training length 20 조건의 95%-likely uplink net throughput입니다. Greedy pilot assignment와 power control row에서 cell-free와 small cell은 uncorrelated shadowing 6.29와 2.04 Mbit/s, correlated shadowing 3.55와 0.31 Mbit/s입니다. Uplink는 local matched filtering과 CPU summation을 사용하므로 downlink beamforming result를 그대로 복사한 값이 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 15, Table III; pp. 4-6
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 22. pilot과 power control은 어떤 차이를 만들었나
+
+22. pilot과 power control은 어떤 차이를 만들었나
+
+발표 대본
+표의 DL과 UL example은 Table II와 III의 greedy plus PC, random plus PC, greedy without PC rows를 직접 비교한 것입니다. 원문은 greedy pilot assignment가 random assignment보다 95%-likely throughput을 약 20 percent 개선할 수 있고, power control의 영향이 더 크다고 해석합니다. 이 문장은 해당 simulator와 percentile 조건에 한정됩니다.
+
+공개 출처
+arxiv-v2 | pp. 12-13, Figs. 7-9; p. 15, Tables II-III
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 23. 공동 service가 동일 전력을 뜻하지는 않는다
+
+23. 공동 service가 동일 전력을 뜻하지는 않는다
+
+발표 대본
+원문 Fig. 9는 어떤 user에게 할당된 총 downlink power의 95 percent 이상을 제공하는 AP 수를 effective AP count로 정의합니다. M=100, K=40 실험에서 pilot length에 따라 대략 10에서 20개 AP가 효과적인 기여자로 나타납니다. 이 그림은 cell-free processing이 물리적으로 모든 AP에서 동일한 power를 내보낸다는 오해를 막는 데 유용하지만, 다른 setting의 보편적인 sparsity theorem은 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 12, Fig. 9 and discussion
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 24. 왜 correlated shadowing이 비교를 더 어렵게 만드는가
+
+24. 왜 correlated shadowing이 비교를 더 어렵게 만드는가
+
+발표 대본
+원문은 correlated shadow fading을 AP와 users 사이의 위치에 의존하는 model로 생성하고, decorrelation distance 0.1 km와 correlation coefficient 0.5를 사용합니다. Greedy plus power-control row에서 shadowing correlation은 두 architecture의 95%-likely rate를 모두 낮추지만, 표에서는 cell-free와 small cell의 차이가 남습니다. 이는 측정된 도시망 결과가 아니라 이 shadow model 아래의 numerical result입니다.
+
+공개 출처
+arxiv-v2 | pp. 10, 12-15, shadow model and Tables II-III
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 25. 성능표 밖에서 반드시 함께 말할 가정
+
+25. 성능표 밖에서 반드시 함께 말할 가정
+
+발표 대본
+원문은 AP와 CPU 사이 backhaul을 perfect, error-free, infinite-capacity로 둡니다. 또한 TDD reciprocity와 perfect calibration을 가정합니다. 원문은 collocated massive MIMO에서 calibration feasibility가 입증되었다고 언급하며, cell-free에서 imperfect calibration이 미치는 영향은 future work로 둡니다. 결론은 small-cell implementation이 훨씬 적은 backhaul을 필요로 한다고 말합니다. 이 제약들은 numerical rate 표와 분리하지 않고 함께 제시해야 합니다.
+
+공개 출처
+arxiv-v2 | pp. 3, 14, system assumptions and conclusion
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2
+
+## 26. 한 문장씩 정리하면
+
+26. 한 문장씩 정리하면
+
+발표 대본
+이 논문은 distributed AP cooperation이 weak-user throughput을 크게 바꿀 수 있음을 분석과 numerical comparison으로 보여 줍니다. 그러나 그 설명은 local CSI processing, pilot contamination, fairness control, ideal backhaul, synchronization 및 채널 model이라는 묶음으로 완성됩니다. 발표에서 마지막 표의 숫자만 남기지 말고, 그 숫자를 성립시킨 architecture와 assumptions를 함께 회상시키는 것이 중요합니다.
+
+공개 출처
+arxiv-v2 | pp. 1-15, abstract through conclusion
+Cell-Free Massive MIMO versus Small Cells, arXiv:1602.08232v2
+https://arxiv.org/pdf/1602.08232v2

@@ -1,0 +1,263 @@
+## 1. 변하는 MEC 연결을 그래프와 DQN으로 읽기
+
+1. 변하는 MEC 연결을 그래프와 DQN으로 읽기
+
+발표 대본
+이 덱은 Wang 등, Electronics 2024, 13, 2387의 원문을 기준으로 합니다. 제안법은 M-GNRL이며 GraphSAGE와 DQN을 결합합니다.
+
+공개 출처
+mdpi-2024 | title page; abstract
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 2. 논문의 문제와 방법 범위
+
+2. 논문의 문제와 방법 범위
+
+발표 대본
+원문은 service coverage constraint와 동적 연결을 핵심 동기로 듭니다. discrete action에는 DQN을 사용한다고 명시하며 actor-critic을 제안하지 않습니다.
+
+공개 출처
+mdpi-2024 | pp. 1-3; abstract; §1
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 3. MEC structural graph와 coverage
+
+3. MEC structural graph와 coverage
+
+발표 대본
+Fig. 1은 current device, BS, coverage circle 및 MEC structure graph를 함께 보여 줍니다. Section 3은 M을 directly connected BS, M+s를 indirectly connected BS로 둡니다.
+
+공개 출처
+mdpi-2024 | pp. 2, 4; Fig. 1; §3
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 4. local과 offload의 cost 구성
+
+4. local과 offload의 cost 구성
+
+발표 대본
+식 1은 rate, 식 2–3은 local time·energy, 식 4–7은 direct/forward transmission과 total energy입니다. 식 8–12는 BS resource scheduling과 load factor를 정의합니다.
+
+공개 출처
+mdpi-2024 | pp. 5-7; Eqs. 1-12
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 5. cost와 multiple constraints
+
+5. cost와 multiple constraints
+
+발표 대본
+식 13은 선택 합이 0이면 local energy, 1이면 offloading energy와 compute time의 가중합을 씁니다. 식 14는 binary choice, task sequence, BS CPU, execution-time 및 at-most-one 제약을 둡니다.
+
+공개 출처
+mdpi-2024 | p. 7; Eqs. 13-14
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 6. 왜 graph feature가 필요한가
+
+6. 왜 graph feature가 필요한가
+
+발표 대본
+Section 1은 기존 DRL이 entity connection을 충분히 고려하지 못한다고 동기를 설명합니다. Section 4.2는 direct·indirect BS 때문에 I=2라고 명시합니다.
+
+공개 출처
+mdpi-2024 | pp. 2-3, 9; §1; §4.2
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 7. 두 hop GraphSAGE feature learning
+
+7. 두 hop GraphSAGE feature learning
+
+발표 대본
+식 15는 device embedding, 식 16–19는 BS가 device·BS neighbor를 집계하는 방법입니다. W parameters와 activation은 학습되며, 무작정 모든 graph depth를 쓰는 설계가 아닙니다.
+
+공개 출처
+mdpi-2024 | pp. 9-10; Eqs. 15-19
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 8. embedding 학습과 DQN 학습을 분리한다
+
+8. embedding 학습과 DQN 학습을 분리한다
+
+발표 대본
+식 20은 random-walk neighbor와 negative sampling을 포함한 embedding loss입니다. Algorithm 1은 먼저 node embedding을 얻고, 이어 DQN replay loop를 수행합니다.
+
+공개 출처
+mdpi-2024 | pp. 10-12; Eqs. 20, 23, 26-27; Alg. 1
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 9. DQN state와 원문 reward
+
+9. DQN state와 원문 reward
+
+발표 대본
+식 21의 piecewise reward는 성공 시간 조건에서 1/Cost_n(t)를 씁니다. 이 덱은 reciprocal-cost 표기를 source 그대로 두며, 별도 sign-conversion 해석을 더하지 않습니다.
+
+공개 출처
+mdpi-2024 | pp. 10-12; Eqs. 21-22; Alg. 1
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 10. edge feature에서 one-hot BS action까지
+
+10. edge feature에서 one-hot BS action까지
+
+발표 대본
+식 23은 concatenated node feature를 두 MLP와 softmax로 보내 edge feature를 만듭니다. 식 24–25는 action vector와 최고 score BS의 one-hot choice를 정의합니다.
+
+공개 출처
+mdpi-2024 | pp. 10-11; Eqs. 23-25
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 11. 교육용 edge-score toy
+
+11. 교육용 edge-score toy
+
+발표 대본
+교육용으로 score를 가정했습니다. 식 25의 argmax rule을 따르면 BS 2를 선택합니다. Eq. 13의 local option과 Eq. 23–25의 BS-only score vector 연결은 원문이 충분히 설명하지 않는 한계입니다.
+
+공개 출처
+mdpi-2024 | pp. 7, 10-11; Eqs. 13, 23-25
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 12. Algorithm 1의 training loop
+
+12. Algorithm 1의 training loop
+
+발표 대본
+Algorithm 1의 1–10행은 GNN embedding, 11행은 learned graph를 DRL environment로 사용, 12–21행은 replay pool과 mini-batch parameter update입니다. actor·critic은 없습니다.
+
+공개 출처
+mdpi-2024 | p. 12; Algorithm 1
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 13. 학습된 scheduler 이후 task execution
+
+13. 학습된 scheduler 이후 task execution
+
+발표 대본
+Fig. 3은 MD layer의 graph data가 offloading scheduler로 들어간 뒤, scheduler가 local execution 또는 MEC resource allocation/processing 중 하나를 고르게 하는 흐름입니다. 두 결과는 MD로 return될 수 있지만 local execution이 MEC processing으로 들어간다는 뜻은 아닙니다.
+
+공개 출처
+mdpi-2024 | p. 8; Fig. 3; §4
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 14. 관측 MD 이동 뒤 adjacency-list update
+
+14. 관측 MD 이동 뒤 adjacency-list update
+
+발표 대본
+Fig. 5는 t, t+5, t+10에서 observation node가 바뀌며 graph와 embedding이 바뀌는 그림입니다. Algorithm 2는 adjacency linked list를 초기화하고 changed-set input 아래 vertex-table addition을 보입니다. deletion은 surrounding prose가 similar procedure라고만 말하며, printed algorithm이 edge deletion/update를 보이지는 않습니다.
+
+공개 출처
+mdpi-2024 | pp. 12-13; Fig. 5; Algorithm 2
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 15. simulation graph records
+
+15. simulation graph records
+
+발표 대본
+Section 5.1은 세 record format을 나열하고 mobile devices are uniformly distributed within each BS service range라고 설명합니다. Data availability statement는 data are contained in the article라고만 말합니다.
+
+공개 출처
+mdpi-2024 | pp. 13, 18; §5.1; data availability
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 16. Table 2 simulation conditions
+
+16. Table 2 simulation conditions
+
+발표 대본
+Table 2에는 theta=[.5,1], BS coverage=[.5,4] km도 있습니다. Fig. 6 scenario는 4 km by 4 km 영역과 BS coverage .5 km를 사용합니다.
+
+공개 출처
+mdpi-2024 | pp. 14-15; Table 2; Fig. 6
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 17. 비교 baseline의 역할
+
+17. 비교 baseline의 역할
+
+발표 대본
+Section 5.1이 LOCAL, RANDOM, GNN-A2C, Coop-UEC를 정의합니다. GNN-A2C와 Coop-UEC는 다른 application context의 cited method이므로 동일 architecture라고 부르지 않습니다.
+
+공개 출처
+mdpi-2024 | pp. 13-14; §5.1; refs. 23, 32
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 18. discount factor 선택과 convergence
+
+18. discount factor 선택과 convergence
+
+발표 대본
+원문은 gamma 증가와 reward가 linear relation이 아니라고 말합니다. Fig. 8의 range와 timing은 paper의 graph interpretation이며, 일반 convergence guarantee가 아닙니다.
+
+공개 출처
+mdpi-2024 | p. 15; Figs. 7-8
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 19. arrival rate와 system cost 결과
+
+19. arrival rate와 system cost 결과
+
+발표 대본
+Fig. 9의 topology label은 (4+5) times 20처럼 direct BS, indirect BS, MD counts를 표기합니다. Fig. 10의 percentage statements는 paper가 동일 experimental environment의 averaged cost difference로 설명한 값입니다.
+
+공개 출처
+mdpi-2024 | pp. 16-17; Figs. 9-10
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 20. weight coefficient의 경계
+
+20. weight coefficient의 경계
+
+발표 대본
+Fig. 11 legend는 (alpha,beta)=(0,1),(1,0),(.7,.3),(.3,.7),(.5,.5)의 다섯 pair를 보입니다. adjacent prose는 three sets라고 적어 figure/prose가 내부적으로 다르므로, 이 덱은 visible legend의 다섯 condition을 따릅니다. task 1–6은 Fig. 9a 값을 쓰며, 저자들은 one-sided case에서 extreme cost와 uneven resource allocation을 해석합니다.
+
+공개 출처
+mdpi-2024 | p. 17; Fig. 11
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 21. source-grounded limits
+
+21. source-grounded limits
+
+발표 대본
+single-agent boundary는 p. 11, idealized simulation boundary는 p. 17 conclusion에 있습니다. Eq. 13과 Eqs. 23–25의 local-action 연결은 source text가 완전히 해소하지 않는 modeling ambiguity로 표시합니다.
+
+공개 출처
+mdpi-2024 | pp. 7, 11, 13, 17; Eqs. 13, 23-25
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387
+
+## 22. M-GNRL을 한 흐름으로 읽기
+
+22. M-GNRL을 한 흐름으로 읽기
+
+발표 대본
+마무리는 원문의 Fig. 3–5 및 Algorithm 1–2 순서를 연결합니다. 결과 수치와 generalization claim은 Table 2와 Figures 7–11의 simulation 조건에 묶어 해석해야 합니다.
+
+공개 출처
+mdpi-2024 | pp. 8-17; Figs. 3-11; Algs. 1-2
+Wang et al., Electronics 2024, 13(12), 2387
+https://www.mdpi.com/2079-9292/13/12/2387

@@ -76,6 +76,11 @@ MEC 시스템에서 edge node는 제한된 processing capacity를 가진다. 많
 
 QECO 논문과 QECO-Adapt는 이 연구의 구조적 영향을 직접적으로 받는다. LSTM, dueling DQN, double DQN을 함께 사용하는 offloading model은 deadline, energy, edge load가 결합된 MEC 문제에서 기본적인 DRL 설계 사례로 볼 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 22 slides | <a href="/assets/seminars/drl-task-offloading-mobile-edge-computing-systems/drl-mec-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/drl-task-offloading-mobile-edge-computing-systems/drl-mec-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/drl-task-offloading-mobile-edge-computing-systems/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/drl-task-offloading-mobile-edge-computing-systems/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

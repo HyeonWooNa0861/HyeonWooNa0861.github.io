@@ -1,0 +1,347 @@
+## 1. 문맥에 맞춰 댓글을 재생하는 ComVi
+
+1. 문맥에 맞춰 댓글을 재생하는 ComVi
+
+발표 대본
+ComVi는 일반 동영상 플랫폼의 댓글을 재생 시점과 연결해 영상 위에 표시하는 시스템입니다. 이 자료는 문제 정의, 댓글-시점 매핑, 읽기 시간 제약, 점수와 동적 계획법, 사용자 평가의 순서로 논문의 전체 흐름을 설명합니다.
+
+공개 출처
+paper | title page and abstract
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 2. 댓글에는 내용뿐 아니라 보여 줄 시점도 필요하다
+
+2. 댓글에는 내용뿐 아니라 보여 줄 시점도 필요하다
+
+발표 대본
+일반 플랫폼 댓글은 영상 전체에 달리지만 특정 표시 시점이 없습니다. 그래서 아직 보지 않은 장면의 댓글이 먼저 보이거나 현재 장면과 무관한 댓글을 읽을 수 있습니다. Danmaku는 시점 정보가 있지만 많은 댓글이 한꺼번에 나타날 수 있습니다. ComVi는 일반 댓글에서 표시 시점을 계산하고 읽기 시간을 고려해 일부만 선택합니다.
+
+공개 출처
+paper | §1, pp. 1-2; Fig. 2
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 3. 논문의 세 층위를 먼저 분리한다
+
+3. 논문의 세 층위를 먼저 분리한다
+
+발표 대본
+ComVi의 sequence는 논문이 정한 후보와 점수 안에서 최적입니다. 그러나 점수 자체가 인간의 모든 선호를 표현한다는 뜻은 아닙니다. 사용자 연구는 특정 인터페이스와 영상 조건에서 자기보고 경험을 비교하며, 의미 정렬의 전역적 정확도나 시청 이해도의 보장을 증명하지 않습니다.
+
+공개 출처
+paper | §§1, 3, 5-6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 4. ComVi의 전체 처리 흐름
+
+4. ComVi의 전체 처리 흐름
+
+발표 대본
+입력은 영상, 댓글 집합, 좋아요 수와 사용자 정보입니다. 각 댓글을 audio와 visual 내용에 맞는 하나 이상의 시점으로 mapping해 timed comment를 만듭니다. 읽기 시간이 겹치지 않는 sequence 후보를 구성하고, 관련성과 인기도를 합친 점수의 총합이 가장 큰 sequence를 동적 계획법으로 선택합니다. 마지막으로 선택된 댓글을 재생 시점에 표시합니다.
+
+공개 출처
+paper | Fig. 1; §3, p. 3
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 5. 입력 단계에서 comment identity를 정리한다
+
+5. 입력 단계에서 comment identity를 정리한다
+
+발표 대본
+논문은 댓글의 텍스트가 완전히 같으면 좋아요 수가 가장 많은 하나만 남깁니다. 이후 하나의 원래 댓글 C_i를 여러 시점 t에 대응하는 timed comment C_i,t로 바꿀 수 있습니다. 따라서 후보 수는 댓글 수와 같지 않으며, 같은 원래 댓글을 한 sequence에서 반복 선택하지 않는 규칙이 따로 필요합니다.
+
+공개 출처
+paper | §3.1, pp. 3-4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 6. 댓글은 audio와 visual 두 관점에 동시에 맞춘다
+
+6. 댓글은 audio와 visual 두 관점에 동시에 맞춘다
+
+발표 대본
+Audio view는 해당 시점이 속한 subtitle 문장입니다. 자막이 없으면 speech-to-text로 생성할 수 있습니다. Visual view는 PySceneDetect로 나눈 shot을 Tarsier가 설명한 문장입니다. 댓글, subtitle, shot 설명을 모두 Sentence-BERT all-mpnet-base-v2로 encoding하고 cosine similarity를 계산합니다.
+
+공개 출처
+paper | §3.1, p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 7. 두 similarity를 합쳐 0부터 1로 정규화한다
+
+7. 두 similarity를 합쳐 0부터 1로 정규화한다
+
+발표 대본
+논문의 Corr는 audio와 visual cosine을 제곱 평균한 뒤 제곱근을 취하고, 다시 Norm으로 0과 1 사이에 맞춘 값입니다. 이 최종 Corr가 0.3보다 크면 timed comment 후보가 됩니다. 댓글 작성자가 30:53처럼 시간을 직접 적었다면 embedding 계산 대신 그 시점에 직접 mapping합니다.
+
+공개 출처
+paper | §3.1, Eq. (1), p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 8. 계산 예시: 결합값과 최종 Corr를 구분한다
+
+8. 계산 예시: 결합값과 최종 Corr를 구분한다
+
+발표 대본
+이 예시는 두 similarity의 결합만 계산합니다. 0.6과 0.8을 넣으면 Norm 이전 값은 약 0.707입니다. 논문은 Norm의 정확한 기준 집합과 계산식을 본문에서 정의하지 않습니다. 따라서 0.707은 Norm 이전 값이며 최종 Corr=0.3과 직접 비교할 수 없습니다.
+
+공개 출처
+paper | §3.1, Eq. (1), p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 9. 후보 sequence는 읽을 수 있는 시간부터 확보한다
+
+9. 후보 sequence는 읽을 수 있는 시간부터 확보한다
+
+발표 대본
+기본 alpha_user는 글자당 0.068초이고 tau_max는 6초입니다. 계산된 소수 시간은 1초 해상도에 맞춰 올림합니다. 현재 댓글이 t에 시작하고 읽기 시간이 r이면 다음 댓글은 t+r 이후에 시작해야 합니다. 이 제약 때문에 가장 높은 Corr 후보가 다른 선택과 겹쳐 최종 sequence에서 빠질 수 있습니다.
+
+공개 출처
+paper | §3.2, p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 10. 관련성·인기도·읽기 시간을 하나의 score로 묶는다
+
+10. 관련성·인기도·읽기 시간을 하나의 score로 묶는다
+
+발표 대본
+좋아요 수는 긴 꼬리 분포이므로 양수에 Box-Cox를 적용한 뒤 0과 1 사이로 정규화하고, 0 likes는 0으로 둡니다. 기본 weight는 Corr 2, Likes 1입니다. Reading을 곱하지 않으면 같은 시간에 짧은 댓글을 더 많이 넣어 총점이 커질 수 있으므로, 논문은 이를 완화하려고 읽기 시간을 가중합니다.
+
+공개 출처
+paper | §3.3, p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 11. 동적 계획법은 feasible sequence의 총점을 비교한다
+
+11. 동적 계획법은 feasible sequence의 총점을 비교한다
+
+발표 대본
+논문은 모든 feasible candidate sequence 가운데 timed-comment score 합이 가장 큰 S star를 동적 계획법으로 얻는다고 설명합니다. 선택 개수 n은 고정 입력이 아니라 영상 길이와 읽기 제약에서 결정됩니다. 논문에는 구체적인 recurrence나 pseudocode가 없으므로, 이 자료도 구현 세부를 새로 만들어 넣지 않습니다.
+
+공개 출처
+paper | §§3.2-3.4, p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 12. 구성 예시: 최고 개별 score보다 조합이 중요하다
+
+12. 구성 예시: 최고 개별 score보다 조합이 중요하다
+
+발표 대본
+이 표는 논문에 없는 구성 예시입니다. A와 B는 [4,5)에서 겹쳐 함께 선택할 수 없습니다. A+C는 11.1, B+C는 10.4이고 단일 후보보다도 큽니다. 따라서 이 예시에서는 A+C가 선택됩니다. 실제 ComVi는 훨씬 많은 timed comment와 데이터 의존 Norm 값을 사용합니다.
+
+공개 출처
+paper | §§3.2-3.4, p. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 13. 선택 결과는 재생 중 한 줄의 시간표가 된다
+
+13. 선택 결과는 재생 중 한 줄의 시간표가 된다
+
+발표 대본
+Figure 4에서 각 막대의 시작점은 댓글이 나타나는 시점, 길이는 표시 시간을 뜻합니다. 인터페이스는 영상 하단에 댓글과 profile, like 수를 보여 줍니다. 기본 모드에서는 한 순간에 하나만 보이며, 사용자가 동시 표시 확장을 켜면 이 규칙이 바뀝니다.
+
+공개 출처
+paper | Fig. 4, p. 6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 14. 개인화는 mapping 전후의 서로 다른 지점을 바꾼다
+
+14. 개인화는 mapping 전후의 서로 다른 지점을 바꾼다
+
+발표 대본
+동시 표시 모드에서는 다음 시작 시점이 현재 댓글 종료 뒤일 필요는 없지만, 새 댓글이 시작할 때 활성 댓글 수가 N_user보다 작아야 합니다. Query curation은 user query와 댓글 embedding의 cosine similarity가 경험적 threshold 0.6보다 큰 댓글만 남긴 뒤 기본 pipeline을 실행합니다.
+
+공개 출처
+paper | §3.5, p. 5; Fig. 3
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 15. Figure 4: 큰 comment pool의 축약
+
+15. Figure 4: 큰 comment pool의 축약
+
+발표 대본
+Figure 4의 V1은 14,880개 댓글을 가진 3분 34초 영상입니다. ComVi는 46개를 선택했고 평균 표시 시간은 4.65초였습니다. 선택 댓글의 평균 raw likes는 1,069.24였습니다. 이 숫자는 한 영상의 산출물 기술이며, 비교군을 둔 사용자 연구 결과가 아닙니다.
+
+공개 출처
+paper | §4, pp. 5-6; Fig. 4
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 16. semantic 평가의 세 조건
+
+16. semantic 평가의 세 조건
+
+발표 대본
+Semantic analysis는 documentary, movie, news 세 영상에서 수행했습니다. ComVi condition은 popularity 영향을 없애기 위해 Likes를 0으로 둡니다. Ground-truth는 작성자가 timestamp를 직접 쓴 댓글을 강한 관련성 증거로 사용한 proxy입니다. Random은 ComVi와 같은 개수의 댓글을 뽑아 ComVi의 동일 시점에 놓습니다.
+
+공개 출처
+paper | §4.1, pp. 5-6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 17. 세 영상에서 Corr는 Random보다 높고 proxy와 비슷했다
+
+17. 세 영상에서 Corr는 Random보다 높고 proxy와 비슷했다
+
+발표 대본
+표의 평균은 documentary에서 0.66, movie에서 0.66, news에서 0.74입니다. Ground-truth proxy는 각각 0.76, 0.61, 0.72이고 Random은 0.14, 0.17, 0.24입니다. Reading constraint 때문에 높은 Corr 후보가 겹치면 ComVi가 다른 후보를 선택할 수 있어 proxy보다 낮아지는 경우가 있습니다.
+
+공개 출처
+paper | §4.1, pp. 5-6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 18. likes term은 선택 sequence의 popularity 분포를 바꿨다
+
+18. likes term은 선택 sequence의 popularity 분포를 바꿨다
+
+발표 대본
+ComVi의 평균 normalized likes는 세 장르에서 0.94, 0.76, 0.93이었습니다. Likes-ablated는 0.14, 0.31, 0.12이고 전체 댓글은 0.10, 0.15, 0.09였습니다. 이는 score의 likes term이 의도대로 작동하는 분석이지, 인기 댓글이 항상 더 유익하다는 증거는 아닙니다.
+
+공개 출처
+paper | §4.2, p. 6; Fig. 6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 19. reading speed를 느리게 잡으면 선택 수가 줄어든다
+
+19. reading speed를 느리게 잡으면 선택 수가 줄어든다
+
+발표 대본
+Figure 7은 V5에서 alpha_user를 0.048, 0.068, 0.088로 바꿨습니다. 평균 표시 시간은 3.45, 3.89, 4.63초로 늘고 선택 수는 85, 75, 63으로 줄었습니다. 이 관계는 같은 영상 길이 안에서 비중첩 reading interval이 길어지기 때문에 발생합니다.
+
+공개 출처
+paper | §4.3, p. 6; Fig. 7
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 20. 동시 표시와 query는 sequence 구성을 다르게 바꾼다
+
+20. 동시 표시와 query는 sequence 구성을 다르게 바꾼다
+
+발표 대본
+Figure 8에서 N_user가 2에서 3으로 늘자 선택 수가 65에서 96으로 증가했고 동시 표시 수는 설정값을 넘지 않았습니다. Figure 9는 같은 영상 구간에 서로 다른 query를 적용하면 선택 댓글 집합이 달라지는 예를 보입니다. 후자는 user preference의 만족도를 평가한 실험이 아니라 기능 동작 예시입니다.
+
+공개 출처
+paper | §4.4, p. 6; Figs. 8-9
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 21. sequence 계산 시간과 준비 비용을 분리한다
+
+21. sequence 계산 시간과 준비 비용을 분리한다
+
+발표 대본
+논문의 sequence computation은 AMD EPYC 7352 24-core CPU, 62GB RAM, RTX A5000 한 장에서 측정했습니다. 5개 영상에 17초부터 1분 11초가 걸렸지만 video와 comments 수집, visual text representation 생성은 제외했습니다. PySceneDetect는 약 20초, Tarsier caption 생성은 약 10분으로 별도 보고됩니다.
+
+공개 출처
+paper | §4.5, p. 8; Table 1
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 22. 사용자 연구: 다섯 interface 비교
+
+22. 사용자 연구: 다섯 interface 비교
+
+발표 대본
+32명이 다섯 interface를 모두 경험했으며 interface 순서는 무작위였습니다. 각 condition에는 서로 다른 video가 배정됐고 10개의 겹치지 않는 interface-video pairing을 참가자 사이에서 counterbalance했습니다. 연구는 온라인으로 수행됐고 참가자는 보상을 받지 않았습니다.
+
+공개 출처
+paper | §§5.1-5.3, pp. 8-10; Table 2
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 23. 단일 댓글 표시 변형도 비교 조건에 포함한다
+
+23. 단일 댓글 표시 변형도 비교 조건에 포함한다
+
+발표 대본
+YouTube condition은 영상 아래 scrollable comment list입니다. Danmaku는 각 일반 댓글을 Corr가 가장 높은 시점에 붙이고 한 시점 최대 20개를 보여 줍니다. YouTube-1ver.는 한 번에 하나만 scroll로 보이고, Danmaku-1ver.는 시점마다 Corr가 가장 높은 하나를 순서대로 이동시킵니다. 이들은 실제 플랫폼 로그가 아니라 논문이 구현한 비교 interface입니다.
+
+공개 출처
+paper | §5.1, pp. 8-10; Fig. 10
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 24. 통계 분석은 전체 차이 뒤에 ComVi pair를 확인한다
+
+24. 통계 분석은 전체 차이 뒤에 ComVi pair를 확인한다
+
+발표 대본
+각 문항에 대해 먼저 다섯 조건의 Friedman test를 수행했고 모든 문항에서 p가 0.001보다 작았습니다. 이어 ComVi와 나머지 네 조건을 two-tailed Wilcoxon signed-rank test로 비교하고 Holm-Bonferroni correction을 적용했습니다. 결과 해석은 실제로 유의한 pair에만 제한해야 합니다.
+
+공개 출처
+paper | §5.3, pp. 10-11
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 25. ComVi의 네 self-report mean을 조건별로 읽는다
+
+25. ComVi의 네 self-report mean을 조건별로 읽는다
+
+발표 대본
+Mental demand는 Danmaku와 Danmaku-1ver.보다 낮았지만 YouTube 계열과의 유의한 차이는 보고되지 않았습니다. Physical demand는 YouTube, YouTube-1ver., Danmaku보다 낮았지만 Danmaku-1ver.와의 유의 차이는 보고되지 않았습니다. Alignment와 engagement는 네 비교 condition 모두보다 유의하게 높았습니다.
+
+공개 출처
+paper | §5.3, pp. 10-11; Fig. 11
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 26. 선호도에서는 23명에 해당하는 71.9%가 ComVi를 골랐다
+
+26. 선호도에서는 23명에 해당하는 71.9%가 ComVi를 골랐다
+
+발표 대본
+32명 가운데 71.9%, 즉 반올림되지 않은 인원수로 23명이 ComVi를 가장 선호했습니다. YouTube는 6명, Danmaku-1ver.는 2명, YouTube-1ver.는 1명, Danmaku는 0명이었습니다. 이 비율은 전체 플랫폼 이용자 집단의 시장 선호도를 추정한 값이 아닙니다.
+
+공개 출처
+paper | §5.3, p. 11; Fig. 11
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 27. ComVi가 놓치는 comment와 viewing context가 있다
+
+27. ComVi가 놓치는 comment와 viewing context가 있다
+
+발표 대본
+특정 순간이 아니라 영상 전체에 대한 댓글은 낮은 Corr로 빠질 수 있습니다. Sentence-BERT의 lexical overlap 경향은 narration을 되풀이하는 댓글을 우선할 수 있습니다. 정보가 밀집된 장면에서는 댓글이 추가 인지부하를 만들 수 있고, 하단 표시가 subtitle을 가릴 수 있습니다. 논문은 gaze와 content comprehension을 측정하지 않았습니다.
+
+공개 출처
+paper | §6, pp. 10-12
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 28. 최종 주장은 근거의 종류에 맞춰 제한한다
+
+28. 최종 주장은 근거의 종류에 맞춰 제한한다
+
+발표 대본
+동적 계획법은 정의된 score에 대해서만 최적입니다. Proxy 분석은 세 영상의 embedding correlation과 normalized likes를 비교합니다. Runtime은 전처리를 제외한 특정 장비 결과입니다. 사용자 연구는 N=32의 자기보고 demand, alignment, engagement와 preference를 측정했습니다. 이 네 근거를 하나의 보편 보장으로 합치면 안 됩니다.
+
+공개 출처
+paper | §§3-6
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018
+
+## 29. ComVi를 한 문장씩 다시 연결한다
+
+29. ComVi를 한 문장씩 다시 연결한다
+
+발표 대본
+ComVi는 audio와 visual 텍스트 표현으로 댓글을 시점에 mapping하고, 읽기 시간이 겹치지 않는 후보만 구성합니다. 관련성과 인기도를 reading time과 함께 scoring하고 동적 계획법으로 sequence를 선택합니다. 세 영상의 proxy 분석과 32명 사용자 연구는 이 설계의 조건부 효과를 지지하지만, 의미 이해나 장기 사용의 보편적 보장은 아닙니다.
+
+공개 출처
+paper | Fig. 1; §§3-7
+ComVi: Context-Aware Optimized Comment Display in Video Playback
+https://doi.org/10.1145/3772318.3791018

@@ -74,6 +74,11 @@ QuIP#은 EPTQ와 직접 연결되는 중요한 선행 흐름이다. EPTQ의 Fact
 | QTIP | trellis-coded quantization으로 high-dimensional quantization을 효율화 |
 | EPTQ | E8/FE8 codebook과 cache-friendly lookup을 결합 |
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 29 slides | <a href="/assets/seminars/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/quip-sharp-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/quip-sharp-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

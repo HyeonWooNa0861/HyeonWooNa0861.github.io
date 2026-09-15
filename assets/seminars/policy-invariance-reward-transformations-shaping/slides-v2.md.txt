@@ -1,0 +1,321 @@
+---
+type: research-seminar-slides
+paper_id: policy-invariance-reward-transformations-shaping
+---
+
+# Potential-Based Shaping: 목표를 바꾸지 않는 보너스
+
+논문: Policy Invariance Under Reward Transformations: Theory and Application to Reward Shaping
+
+저자: Andrew Y. Ng, Daishi Harada, and Stuart Russell (1999)
+
+## 1. Potential-Based Shaping: 목표를 바꾸지 않는 보너스
+
+추가 reward가 학습을 안내하면서도 원래 MDP의 최적 policy를 보존하려면 무엇이 필요한가
+
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 1, title and abstract, [author-record](https://www.robotics.stanford.edu/~ang/papers.php) ICML 1999 entry
+
+## 2. 진행 보너스는 목표를 바꿀 수 있다
+
+국소적으로 좋아 보이는 event reward가 반복 가능한 loop를 더 매력적으로 만들 수 있다
+
+1. **원래 과제**: Goal에 도달하는 policy가 원래 reward에서 최선
+2. **추가 보너스**: Goal 쪽으로 움직일 때마다 양의 reward를 더함
+3. **반복 경로**: 가까워지는 이동만 반복해 보너스를 누적
+4. **정책 변화**: Goal보다 loop가 transformed reward에서 유리해질 수 있음
+
+핵심: Shaping은 반복 loop를 원래 goal보다 유리하게 만들 수 있다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 1-2, Introduction
+
+## 3. 원래 MDP와 학습용 transformed MDP
+
+상태와 dynamics는 그대로 두고 learner가 받는 transition reward만 R에서 R+F로 바꾼다
+
+
+| 구성 | 원래 M | 학습용 M′ | 바뀌지 않는 것 |
+| --- | --- | --- | --- |
+| Reward | R(s,a,s′) | R(s,a,s′) + F(s,a,s′) | 같은 transition에서 계산 |
+| State·action | S, A | S, A | 상태와 선택지는 동일 |
+| Dynamics | T | T | 다음 상태의 확률은 동일 |
+| 질문 | 원래 task의 최적 policy | 학습 중 최적 policy | 두 argmax가 같은가 |
+
+핵심: F는 같은 transition에 덧붙이는 training reward다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 2-3, Secs. 2.1-2.2
+
+## 4. 보존하려는 것은 reward 값이 아니라 행동 순위
+
+한 상태에서 가능한 행동 중 어느 것이 최대 Q값을 갖는지가 원래 과제의 policy를 정한다
+
+
+| 고정된 상태 s | 행동 left | 행동 right | Policy 판단 |
+| --- | --- | --- | --- |
+| 원래 Q* | 10 | 8 | left가 최대 |
+| Shaping 후 Q′* | 7 | 5 | 둘 다 3만큼 이동 |
+| 보존 여부 | 값은 달라짐 | 값은 달라짐 | 최대 행동은 동일 |
+| 일반식 | Q′*=Q*−Φ(s) | 같은 state offset | argmax가 유지됨 |
+
+핵심: Policy invariance는 reward 값이 아니라 action ranking의 보존이다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 5, Corollary 2; values are a constructed example
+
+## 5. Transition마다 potential의 할인된 변화를 더한다
+
+F는 도착 상태만의 보너스가 아니라 출발 potential을 함께 빼는 transition-level signal이다
+
+- **레인 한 transition**
+  - **현재 state s**: potential Φ(s)
+  - **action a**: 환경 transition 실행
+  - **다음 state s′**: potential Φ(s′)
+  - **학습 reward**: R + γΦ(s′) − Φ(s)
+- 현재 state s → action a (실선, 단방향)
+- action a → 다음 state s′ (실선, 단방향)
+- 다음 state s′ → 학습 reward (실선, 단방향)
+
+핵심: Potential-based shaping의 정확한 형태는 F(s,a,s′)=γΦ(s′)−Φ(s)다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 4, Theorem 1, Eq. 2
+
+## 6. γ=1에서 closed cycle의 shaping 합은 0
+
+순수한 potential difference는 출발 state로 돌아오면 누적 보너스를 남기지 않는다
+
+
+| 순서 | Transition | Shaping term | 누적에서 남는 항 |
+| --- | --- | --- | --- |
+| 1 | u → v | Φ(v) − Φ(u) | +Φ(v), −Φ(u) |
+| 2 | v → w | Φ(w) − Φ(v) | +Φ(w), −Φ(v) |
+| 3 | w → u | Φ(u) − Φ(w) | +Φ(u), −Φ(w) |
+| 합 | closed cycle | 0 | 각 state 항이 상쇄 |
+
+핵심: Closed loop에 양의 보너스가 남으면 순수 potential difference가 아니다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 4, Main results discussion
+
+## 7. Discounted trajectory에서도 중간 potential은 지워진다
+
+시간을 앞으로 펼치면 각 state의 플러스 항과 다음 transition의 마이너스 항이 같은 γ 거듭제곱으로 만난다
+
+- **레인 trajectory**
+  - **S₀ = s**: −Φ(S₀)
+  - **S₁**: +γΦ(S₁), −γΦ(S₁)
+  - **S₂**: +γ²Φ(S₂), −γ²Φ(S₂)
+  - **남는 tail**: +γ^(T+1)Φ(S_(T+1))
+- S₀ = s → S₁ (실선, 단방향)
+- S₁ → S₂ (실선, 단방향)
+- S₂ → 남는 tail (실선, 단방향)
+- 시간축: 왼쪽에서 오른쪽으로 진행
+
+핵심: Σ γ^tF_t는 −Φ(S₀) + γ^(T+1)Φ(S_(T+1))로 정리된다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 5, proof of sufficiency
+
+## 8. Residual을 없애는 조건은 γ에 따라 다르다
+
+수식의 cancellation만 보지 말고 마지막 potential을 통제하는 가정까지 함께 읽어야 한다
+
+
+| Setting | 필요한 조건 | 남는 term의 처리 | 발표에서 말할 결론 |
+| --- | --- | --- | --- |
+| 0 < γ < 1 | Φ가 bounded | γ^(T+1)Φ(S_(T+1)) → 0 | discounted return은 −Φ(s)만 이동 |
+| γ = 1 | absorbing s₀, 모든 policy proper | 결국 s₀에 도달 | Φ(s₀)=0으로 WLOG 정규화 |
+| finite state | 유한한 Φ range | boundedness가 자동 | 정리의 기본 대상 |
+| infinite state | 추가 regularity와 bounded Φ | 기댓값 존재도 필요 | 원 논문은 조건부 일반화만 언급 |
+
+핵심: γ=1은 proper absorption이 핵심이며, terminal constant는 WLOG 정규화한다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 2-3, Sec. 2.1; p. 5, proof
+
+## 9. Bellman equation은 transformed Q의 형태를 고정한다
+
+원래 optimal Q에서 Φ(s)를 뺀 후보가 R+F를 쓰는 M′의 Bellman equation을 만족한다
+
+1. **원래 optimal Q**: R과 미래 최대 Q로 Bellman update
+2. **state offset**: Q_M*(s,a)에서 Φ(s)를 뺌
+3. **F 대입**: γΦ(s′)−Φ(s)를 R에 더함
+4. **같은 Bellman 식**: 후보 Q가 M′의 optimal equation을 만족
+5. **결론**: Q_M′*(s,a)=Q_M*(s,a)−Φ(s)
+
+핵심: 증명은 shaping return의 직관을 Bellman optimality equation으로 엄밀하게 확인한다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 5, proof of sufficiency
+
+## 10. 같은 state에서는 모든 action에 같은 값을 뺀다
+
+Φ(s)는 action a가 아니라 출발 state s에만 의존하므로 action ordering을 바꾸지 않는다
+
+
+| state s | 원래 Q_M*(s,a) | Shaped Q_M′*(s,a) | argmax |
+| --- | --- | --- | --- |
+| action a₁ | Q_M*(s,a₁) | Q_M*(s,a₁) − Φ(s) | 원래와 같은 비교 |
+| action a₂ | Q_M*(s,a₂) | Q_M*(s,a₂) − Φ(s) | 원래와 같은 비교 |
+| action a₃ | Q_M*(s,a₃) | Q_M*(s,a₃) − Φ(s) | 원래와 같은 비교 |
+| 최적 policy | 가장 큰 원래 Q 선택 | 같은 가장 큰 index 선택 | optimal set 보존 |
+
+핵심: Potential-based shaping은 original optimal-policy set을 보존한다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 4-5, Theorem 1 and Corollary 2
+
+## 11. ‘필요’는 unknown MDP에 대한 보장의 범위다
+
+Non-potential F는 어떤 fixed MDP에서는 우연히 괜찮을 수 있지만 arbitrary proper MDP 전체에는 보장할 수 없다
+
+
+| 질문 | Fixed known MDP | T와 R을 모르는 universal setting |
+| --- | --- | --- |
+| 무엇을 아는가 | 특정 T와 R의 구조를 안다 | S, A, γ 외의 상세를 모른다 |
+| Non-potential F | 특정 task에서 ranking이 우연히 보존될 수 있음 | 어떤 proper T,R에서는 policy를 바꿀 수 있음 |
+| Theorem 1의 necessity | 다른 설계를 완전히 금지하지 않음 | Potential form이 필요 |
+| 정확한 표현 | task-specific analysis 필요 | universal policy-invariance guarantee |
+
+핵심: Potential form의 necessity는 unknown MDP 전체에 대한 보장이다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 4-5, Theorem 1 discussion; pp. 9-10, Appendix A
+
+## 12. 할인된 loop 보너스도 원래 최적 행동을 뒤집을 수 있다
+
+교육용 γ=0.9 예시: 원래 goal 보상은 1, loop 보상은 0이다
+
+1. **원래 선택**: u 또는 v → Goal: R=1, F=0
+2. **u → v**: R=0, F=+1
+3. **v → u**: R=0, F=+1
+4. **계속 반복**: R+F return=1/(1−0.9)=10
+
+핵심: 원래는 즉시 Goal이 최선이지만, 잘못된 shaping 후에는 loop의 return이 10이다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 4-5, Theorem 1; constructed discounted example
+
+## 13. Policy invariance와 learning speed는 다른 주장
+
+Theorem은 objective ranking을 다루고, 실험은 특정 learner와 heuristic 아래의 learning curve를 보여 준다
+
+
+| 구분 | 논문이 이론으로 보임 | 실험 또는 별도 평가가 필요한 것 |
+| --- | --- | --- |
+| 최적 policy | 원래 M과 M′의 optimal set 보존 | 가정이 맞는지 확인 |
+| Near-optimal policy | 임의 policy에도 value offset identity | finite training에서 얼마나 가까운지 |
+| Learning speed | 일반적 속도 정리는 아님 | Φ, exploration, learner에 의존 |
+| Approximation | neural optimizer를 직접 분석하지 않음 | function approximation과 tuning 평가 |
+| 실행 결과 | transformed reward만으로 충분하지 않음 | terminal 처리와 implementation 점검 |
+
+핵심: Policy 보존 theorem은 자동 speedup theorem이 아니다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 5, Remark 1; p. 6, Experiments opening
+
+## 14. Exact value와 heuristic은 모두 potential 후보
+
+Φ=V_M*는 transformed optimal value를 0으로 만들지만, theorem은 정확한 V_M*를 요구하지 않는다
+
+
+| Potential 선택 | 의미 | 논문에서의 역할 |
+| --- | --- | --- |
+| Φ(s)=V_M*(s) | 이상적으로 정확한 original optimal value | V_M′*(s)=0이 되는 특별한 선택 |
+| 거리 heuristic | Goal까지 남은 비용의 거친 estimate | 10×10 shortest path에서 Φ₀ 구성 |
+| 0.5Φ₀ | 정확한 value에서 더 먼 scaled heuristic | 그래도 learning guidance가 될 수 있음을 비교 |
+| Subgoal heuristic | ordered progress를 potential jump로 표현 | 5×5 flags task에서 사용 |
+
+핵심: Potential은 exact optimal value일 필요가 없다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 5-7, Corollary 2 and Sec. 4
+
+## 15. Distance-to-goal grid world의 실험 조건
+
+이 결과는 no-discount shortest-path task에서 Sarsa가 받은 shaping을 비교한 historical experiment다
+
+
+| 항목 | 10×10 task | 50×50 task | 공통 학습 조건 |
+| --- | --- | --- | --- |
+| 시작과 goal | 서로 반대 corner | 같은 shortest-path 구성 | steps-to-goal 측정 |
+| Reward | 매 step −1, no discount | 같은 reward | 원래 task reward |
+| Action dynamics | 4 compass, 80% intended | 같은 dynamics | 20% random; 경계 stay |
+| Potential 비교 | none, Φ₀, 0.5Φ₀ | 같은 비교 | Sarsa; ε=0.10; α=0.02 |
+| 집계 | 40 independent runs 평균 | 40 independent runs 평균 | Fig. 1 curve |
+
+핵심: Reported curve는 stochastic dynamics와 Sarsa protocol 아래의 결과다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 6-7, Fig. 1 and footnote 4
+
+## 16. 거리 heuristic은 potential로 바꿔야 한다
+
+목표까지의 Manhattan distance를 0.8로 보정한 Φ₀를 사용하고, result는 reported steps-to-goal curve로 읽는다
+
+
+| 구성 | 정의 또는 조건 | Fig. 1에서의 관찰 | 말할 수 없는 것 |
+| --- | --- | --- | --- |
+| Φ₀ | −MANHATTAN(s,GOAL) / 0.8 | no shaping보다 빠른 학습 curve | 정확한 V_M*라는 주장 |
+| 0.5Φ₀ | Φ₀의 절반 | 초기 학습을 여전히 도움 | 모든 task에서 같은 개선율 |
+| 50×50 | 같은 구성의 더 큰 grid | visual gap이 더 크게 보임 | 현재 hardware benchmark |
+| Result 범위 | reported Sarsa averages | steps-to-goal 감소 | 모든 RL algorithm의 speedup |
+
+핵심: 거친 distance estimate도 potential form이면 learning guidance가 될 수 있다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 6-7, Fig. 1 and Sec. 4
+
+## 17. Ordered subgoal은 state progress를 확장한다
+
+5×5 task에서는 1, 2, 3, 4, G를 정해진 순서로 방문했는지가 state에 포함된다
+
+- **레인 collected progress**
+  - **start**: 아직 flag 없음
+  - **flag 1**: 순서 1 완료
+  - **flag 2**: 순서 2 완료
+  - **flag 3·4**: 남은 순서 진행
+  - **G**: final goal
+- start → flag 1 (실선, 단방향)
+- flag 1 → flag 2 (실선, 단방향)
+- flag 2 → flag 3·4 (실선, 단방향)
+- flag 3·4 → G (실선, 단방향)
+- 시간축: 왼쪽에서 오른쪽으로 진행
+
+핵심: Subgoal potential은 collected flag를 포함한 expanded state 위에 정의된다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) p. 7, Fig. 2a and Sec. 4
+
+## 18. Subgoal reward도 potential jump로 구성한다
+
+단순 Φ₀는 nonfinal subgoal을 지나면 jump하고, refined Φ₁는 state별 remaining time estimate를 사용한다
+
+
+| Potential | 구성 아이디어 | Transition에서 생기는 F | Fig. 2 비교 |
+| --- | --- | --- | --- |
+| 단순 Φ₀ | 남은 subgoal 수와 예상 time | nonfinal subgoal 도달 때 potential jump | no shaping보다 빠른 curve |
+| Refined Φ₁ | 각 state의 남은 time을 더 세밀하게 estimate | 같은 γΦ(s′)−Φ(s) form | Φ₀보다 더 좋은 curve |
+| 공통 조건 | 5×5 ordered flags task | policy ranking 보존 form | Sarsa averages |
+| 해석 | subgoal bonus를 임의로 누적하지 않음 | departure term도 포함 | specific task evidence |
+
+핵심: Subgoal bonus도 potential difference로 만들면 original goal을 대체하지 않는다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 7-8, Fig. 2 and Sec. 4
+
+## 19. 적용 전 확인할 다섯 가지
+
+이 checklist는 논문의 theorem boundary를 새 task에 옮길 때 빠뜨리기 쉬운 조건을 드러낸다
+
+
+| 질문 | 확인할 내용 | 놓치면 생기는 위험 |
+| --- | --- | --- |
+| Discount는? | F에 같은 γ를 사용했는가 | discounted guarantee가 사라짐 |
+| Terminal은? | γ=1: proper absorption, terminal 상수 정규화 | 종료 tail 통제 불가 |
+| Potential은? | Φ가 state만의 bounded function인가 | action preference 주입 |
+| 원래 objective는? | R과 R+F의 optimal policy를 구분했는가 | 보너스 loop를 task로 오인 |
+| 실제 효율은? | learner와 exploration에서 별도 evaluate했는가 | invariance를 speedup으로 과장 |
+
+핵심: Potential form 검증과 empirical learning evaluation은 서로 대체할 수 없는 두 단계다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 2-5, assumptions and Theorem 1
+
+## 20. 결론: 보너스가 바꾸면 안 되는 것은 action ranking이다
+
+Potential-based shaping은 learning signal을 추가하면서도 original MDP의 optimal-policy set을 유지하는 정리된 방법이다
+
+- F(s,a,s′)=γΦ(s′)−Φ(s)는 discounted return에서 중간 potential을 상쇄시킨다.
+- 각 state의 Q에는 같은 −Φ(s)가 더해져 argmax가 보존된다.
+- 필요충분은 unknown MDP 전체의 guarantee이지 fixed MDP 설계 금지가 아니다.
+- γ=1은 absorbing·proper, γ<1은 bounded Φ가 필요하다.
+- Grid result는 Sarsa 조건의 evidence이며 speedup theorem은 아니다.
+
+핵심: Bonus는 discounted potential difference로 설계해야 original action ranking을 지킨다
+
+근거: [author-paper](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) pp. 4-8, Theorem 1, Corollary 2, and experiments

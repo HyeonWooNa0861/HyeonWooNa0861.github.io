@@ -85,6 +85,11 @@ $$
 
 따라서 QECO-Adapt의 의미는 “모든 MEC 환경에서 QECO를 대체하는 범용 알고리즘”이 아니라, 단일 edge에 부하가 집중되는 dense 조건에서 QECO의 초기 손실을 줄이는 lightweight adaptive variant로 정리하는 것이 적절하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 21 slides | <a href="/assets/seminars/qeco-adapt/qeco-adapt-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/qeco-adapt/qeco-adapt-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/qeco-adapt/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/qeco-adapt/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

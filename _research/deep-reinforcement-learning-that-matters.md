@@ -66,6 +66,11 @@ network architecture와 activation도 결과를 바꾼다. 논문은 MLP hidden 
 2. 논문은 평가 원칙을 제시하지만, 하나의 표준 metric을 완전히 고정하지는 않는다. 이후 연구에서는 interquartile mean, stratified bootstrap CI, probability of improvement처럼 더 robust한 집계 지표를 결합해 사용할 수 있다.
 3. codebase 차이를 줄이려면 단순히 코드를 공개하는 것을 넘어, dependency version, environment wrapper, preprocessing, evaluation protocol, trained checkpoint까지 재사용 가능한 형태로 공개해야 한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 17 slides | <a href="/assets/seminars/deep-reinforcement-learning-that-matters/drl-that-matters-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/deep-reinforcement-learning-that-matters/drl-that-matters-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/deep-reinforcement-learning-that-matters/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/deep-reinforcement-learning-that-matters/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 - [Local source PDF](/assets/pdfs/research/deep-reinforcement-learning-that-matters/deep-reinforcement-learning-that-matters.pdf){:target="_blank" rel="noopener"}

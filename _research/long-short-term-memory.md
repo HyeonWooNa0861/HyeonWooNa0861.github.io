@@ -74,6 +74,11 @@ LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant err
 
 MEC offloading에서 LSTM은 task arrival, edge load, queue length처럼 시간적 의존성이 있는 state를 기억하기 위해 사용된다. 원 논문은 LSTM이 왜 장기 상태 추적에 적합한지 이론적 출발점을 제공한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 26 slides | <a href="/assets/seminars/long-short-term-memory/lstm-1997-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/long-short-term-memory/lstm-1997-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/long-short-term-memory/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/long-short-term-memory/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -1,0 +1,299 @@
+## 1. Dataset Pruning: 영향으로 학습 데이터를 줄이는 법
+
+1. Dataset Pruning: 영향으로 학습 데이터를 줄이는 법
+
+발표 대본
+이 논문은 학습 데이터를 무조건 많이 남기는 대신, 제거해도 모델이 크게 달라지지 않는 예제를 찾습니다. 핵심은 각 예제를 따로 평가하는 점수가 아니라 여러 예제를 함께 제거할 때 생기는 영향 벡터의 합입니다. 논문은 ICLR 2023에 발표되었고, 이 자료는 arXiv v2와 동일한 13쪽 원문을 기준으로 설명합니다.
+
+공개 출처
+paper | pp. 1–2, abstract and introduction
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 2. 학습 데이터의 중복이 반복 계산 비용을 키운다
+
+2. 학습 데이터의 중복이 반복 계산 비용을 키운다
+
+발표 대본
+논문은 모델 파라미터 pruning과 구분되는 데이터 중복 문제를 다룹니다. 모든 부분집합을 직접 시험하면 데이터가 n개일 때 2의 n제곱 번 재학습해야 합니다. 저자들은 이 비용을 피하면서 제거 집합의 공동 영향을 고려하는 방법을 제안합니다. 여기서 작은 데이터셋 자체가 목적이 아니라, 허용한 변화 안에서 학습 비용을 줄이는 것이 목적입니다.
+
+공개 출처
+paper | pp. 1–2, §1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 3. 데이터를 줄이는 세 가지 질문
+
+3. 데이터를 줄이는 세 가지 질문
+
+발표 대본
+기존 sample selection은 예산을 먼저 고정하고 그 안에서 좋은 예제를 고르는 경우가 많습니다. Dataset condensation은 실제 예제를 고르는 대신 합성 데이터를 만듭니다. 이 논문의 주 문제는 허용 가능한 parameter 변화 epsilon을 먼저 정하고 제거할 예제를 최대화하는 것입니다. 논문은 비교 실험을 위해 제거량 m을 고정한 변형도 함께 정의합니다.
+
+공개 출처
+paper | pp. 2–4, §2–§4.2
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 4. 개별 영향이 커도 함께 제거하면 상쇄될 수 있다
+
+4. 개별 영향이 커도 함께 제거하면 상쇄될 수 있다
+
+발표 대본
+이 숫자는 논문의 개념을 설명하기 위해 만든 예입니다. 두 벡터의 크기는 각각 3이지만 방향이 반대라 합은 0입니다. 따라서 개별 점수만 보면 중요해 보이는 두 예제가 집합으로는 작은 변화를 만들 수 있습니다. 실제 방법은 gradient 자체가 아니라 Hessian inverse가 반영된 parameter influence를 사용합니다.
+
+공개 출처
+paper | pp. 1, 4 and 8, group effect
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 5. 문제에 등장하는 집합과 모델
+
+5. 문제에 등장하는 집합과 모델
+
+발표 대본
+D hat은 제거 후보이고 D tilde은 실제로 남는 학습 데이터입니다. 이 구분을 뒤집으면 Eq. 3의 W가 무엇을 선택하는지 잘못 이해하게 됩니다. W_i가 1이라는 뜻은 예제 i를 유지한다는 뜻이 아니라 제거 집합에 넣는다는 뜻입니다. theta hat은 원본 전체에서 학습한 기준 모델입니다.
+
+공개 출처
+paper | p. 3, §3 and Definition 1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 6. ε-redundant subset의 정의
+
+6. ε-redundant subset의 정의
+
+발표 대본
+Definition 1은 직접 test accuracy를 제한하지 않습니다. 먼저 parameter 변화가 작은 집합을 중복으로 정의합니다. 저자들은 neural network가 local하게 smooth하므로 가까운 parameter가 가까운 mapping과 generalization으로 이어진다는 논리를 사용하고, Section 5에서 expected loss gap의 상계를 제시합니다. 이 연결은 뒤에서 가정과 approximation을 함께 확인해야 합니다.
+
+공개 출처
+paper | p. 3, Definition 1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 7. 정확한 subset 검사는 2ⁿ번 재학습을 요구한다
+
+7. 정확한 subset 검사는 2ⁿ번 재학습을 요구한다
+
+발표 대본
+데이터가 n개이면 가능한 부분집합 수는 2의 n제곱입니다. 논문은 정확한 재학습 비교를 수행하지 않고, 전체 데이터에서 학습한 theta hat 주변의 1차 영향으로 제거 효과를 근사합니다. 이 계산 절감이 방법의 출발점이지만, 근사 정확도는 model과 제거 규모에 따라 달라질 수 있습니다.
+
+공개 출처
+paper | pp. 1 and 4, §1 and §4
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 8. 한 예제의 제거 영향을 재학습 없이 근사한다
+
+8. 한 예제의 제거 영향을 재학습 없이 근사한다
+
+발표 대본
+Influence Function은 예제 z의 weight를 아주 조금 바꿀 때 ERM 해가 움직이는 방향을 미분합니다. 논문의 정의는 I_param(z) equals minus H inverse times the sample gradient입니다. 실제로 한 예제를 제거하는 weight 변화는 minus one over n이므로 제거 parameter 변화는 minus I_param divided by n으로 근사합니다. Hessian은 average training loss의 curvature이며 positive definite라고 가정합니다.
+
+공개 출처
+paper | p. 4, §4.1 and Eq. (2)
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 9. Influence Function이 계산하는 것과 계산하지 않는 것
+
+9. Influence Function이 계산하는 것과 계산하지 않는 것
+
+발표 대본
+원래 식은 전체 parameter vector에 대해 정의됩니다. 그러나 실험은 계산 효율을 위해 마지막 linear layer의 parameter influence만 구합니다. 또한 Hessian inverse는 second-order optimization trick으로 추정합니다. 따라서 이 구현에서 얻은 constraint가 모든 parameter의 정확한 재학습 이동을 직접 측정한 것은 아닙니다.
+
+공개 출처
+paper | pp. 4 and 7, §4.1 and §6.1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 10. Subset 영향은 선택한 vector의 합이다
+
+10. Subset 영향은 선택한 vector의 합이다
+
+발표 대본
+논문의 S 표기는 각 removal influence를 모은 행렬입니다. 행과 열 방향은 구현 표기에 따라 전치될 수 있지만 W transpose S는 선택된 vector의 합을 뜻합니다. 가장 흔한 오해는 W_i equals one을 남긴다는 뜻으로 읽는 것입니다. 이 논문에서는 one이 제거 집합에 포함됨을 뜻합니다.
+
+공개 출처
+paper | p. 4, §4.2
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 11. Eq. (3): 허용 영향 안에서 제거 수를 최대화한다
+
+11. Eq. (3): 허용 영향 안에서 제거 수를 최대화한다
+
+발표 대본
+Eq. 3은 binary optimization입니다. 목적은 W의 1 개수를 최대화하고, 선택된 influence vector의 합 norm을 epsilon 이하로 제한합니다. 이 식은 actual test accuracy를 직접 constraint하지 않습니다. 논문은 parameter 영향과 expected loss gap의 관계를 Section 5에서 연결합니다.
+
+공개 출처
+paper | p. 4, Eq. (3)
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 12. Eq. (4): 제거 수를 고정하면 영향 norm을 최소화한다
+
+12. Eq. (4): 제거 수를 고정하면 영향 norm을 최소화한다
+
+발표 대본
+Eq. 4는 sum W_i equals m으로 제거 개수를 고정하고 선택 집합의 influence norm을 최소화합니다. Figure 1의 baseline 비교는 제거 비율을 맞추기 위해 Eq. 4를 사용합니다. 따라서 Figure 1을 Eq. 3이 직접 찾아낸 최대 제거량의 비교라고 설명하면 안 됩니다.
+
+공개 출처
+paper | pp. 4 and 8, Eq. (4) and §6.3
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 13. Algorithm 1과 이후 평가의 흐름
+
+13. Algorithm 1과 이후 평가의 흐름
+
+발표 대본
+Algorithm 1은 random initialized network를 전체 D에서 학습해 theta hat을 먼저 구합니다. 이후 각 예제의 influence를 계산해 S에 저장하고 binary optimization을 풉니다. 선택된 D hat을 제거한 D tilde가 반환됩니다. 실험 성능은 이 pruned dataset에서 새 random initialized model을 다시 학습해 측정합니다.
+
+공개 출처
+paper | p. 5, Algorithm 1; p. 8, §6.3
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 14. 강의용 최적화 예: 큰 두 vector가 함께 사라진다
+
+14. 강의용 최적화 예: 큰 두 vector가 함께 사라진다
+
+발표 대본
+이 계산은 논문 수치가 아니라 Eq. 3을 이해하기 위한 강의용 예입니다. s1은 0.6 comma 0, s2는 minus 0.6 comma 0, s3은 0 comma 0.7입니다. s1과 s2는 각각 epsilon을 넘지만 함께 선택하면 합이 zero라 feasible합니다. s3이 포함된 나머지 조합은 norm이 0.7 또는 약 0.92라 constraint를 위반합니다.
+
+공개 출처
+paper | p. 4, Eq. (3); constructed teaching example
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 15. Theorem 1: expected loss gap의 상계
+
+15. Theorem 1: expected loss gap의 상계
+
+발표 대본
+이 슬라이드에서 L은 논문의 expected test loss, θ_before는 전체 데이터의 추정 모델, θ_after는 선택한 데이터를 제거한 뒤의 추정 모델을 뜻합니다. 원문의 θ hat과 제거 집합 첨자가 붙은 θ hat을 각각 before와 after로 풀어 쓴 표기입니다. Theorem 1은 expected test loss의 차이를 big O epsilon over n plus m over n squared로 씁니다. 증명은 test loss를 theta hat 주변에서 first-order Taylor expansion하고 Cauchy–Schwarz를 적용합니다. 논문은 higher-order term을 작다고 취급합니다. 따라서 특정 run의 accuracy drop이 정확히 이 값 이하라는 finite constant bound로 읽으면 안 됩니다.
+
+공개 출처
+paper | pp. 5–6, Theorem 1 and Eq. (7)
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 16. Guarantee를 읽을 때 남겨야 할 조건
+
+16. Guarantee를 읽을 때 남겨야 할 조건
+
+발표 대본
+Eq. 3은 s_i equals minus I_param divided by n을 더한 값에 epsilon을 적용합니다. 반면 Theorem 1의 premise는 unscaled sum I_param을 epsilon 이하로 둡니다. 같은 epsilon 기호를 그대로 연결하면 n 배 scale 차이를 놓칠 수 있습니다. 또한 실제 구현은 last layer approximation과 simulated annealing을 사용하므로 analytical program의 exact solution과 구분해야 합니다.
+
+공개 출처
+paper | pp. 4–7, Eq. (2)–(14) and §6.1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 17. Figure 2: influence와 관측 loss gap
+
+17. Figure 2: influence와 관측 loss gap
+
+발표 대본
+여기서 θ_after와 θ_before는 앞의 정리 슬라이드와 같이 선택한 데이터 제거 후·전의 추정 모델이며, L은 이 실험에서 평가한 test loss입니다. Figure 2는 pruning size를 늘리며 epsilon over n과 observed test loss gap을 함께 그립니다. 저자 방법의 두 curve는 비슷한 scale로 움직이고 random pruning보다 작습니다. Caption과 본문은 m over n squared term이 훨씬 작아 생략했다고 설명합니다. 이 상관은 특정 benchmark에서 approximation이 유용하다는 evidence이며 exact bound constant나 universal calibration을 제공하지 않습니다.
+
+공개 출처
+paper | pp. 6–7, Fig. 2 and §6.2
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 18. 실험 조건
+
+18. 실험 조건
+
+발표 대본
+CIFAR-10과 CIFAR-100은 각각 50,000 training images이고 TinyImageNet은 100,000입니다. 학습은 200 epochs, batch 128, learning rate 0.01, cosine annealing, SGD momentum 0.9, weight decay five times ten to the minus four입니다. Random crop과 horizontal flip도 사용합니다. Hessian inverse 추정과 last-layer influence는 계산 비용을 줄이기 위한 구현 선택입니다.
+
+공개 출처
+paper | p. 7, §6.1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 19. Figure 1의 비교는 같은 pruning ratio에서 수행한다
+
+19. Figure 1의 비교는 같은 pruning ratio에서 수행한다
+
+발표 대본
+Figure 1은 CIFAR-10, CIFAR-100과 TinyImageNet에서 pruning ratio에 따른 test accuracy를 비교합니다. 저자 방법의 curve가 대체로 가장 높고 높은 pruning ratio에서 차이가 커집니다. 그러나 이 그래프는 특정 dataset과 training recipe에서의 empirical result입니다. 모든 분포와 architecture에서 우월하다는 theorem은 아닙니다.
+
+공개 출처
+paper | pp. 7–8, Fig. 1 and §6.3
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 20. Pruned dataset은 더 큰 network에서도 평가된다
+
+20. Pruned dataset은 더 큰 network에서도 평가된다
+
+발표 대본
+저자들은 작은 network에서 만든 pruned dataset이 더 큰 unknown architecture에도 잘 작동한다고 해석합니다. 다만 원문은 1.25M model의 이름을 experiment setup에서 SqueezeNet, Figure 3 caption과 Section 6.4에서 SENet으로 다르게 씁니다. 이 자료는 어느 쪽이 맞다고 추정하지 않고 불일치를 그대로 공개합니다. 결과도 CIFAR-10과 세 architecture 조합에 한정합니다.
+
+공개 출처
+paper | pp. 7–8, §6.1, Fig. 3 and §6.4
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 21. Figure 4: pruning ratio와 convergence의 trade-off
+
+21. Figure 4: pruning ratio와 convergence의 trade-off
+
+발표 대본
+Figure 4의 annotated points를 읽으면 whole dataset은 약 3200 seconds에서 95.1 percent, 40 percent pruning은 1800 seconds에서 93.8 percent, 60 percent pruning은 1250 seconds에서 92.3 percent입니다. 40 percent pruning의 accuracy 차이는 1.3 percentage points이고 time ratio는 약 0.56입니다. 이를 모든 training workload의 보장된 2배 speedup으로 일반화하면 안 됩니다.
+
+공개 출처
+paper | p. 9, Fig. 4 and §6.5
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 22. NAS에서 작은 proxy dataset을 반복 사용한다
+
+22. NAS에서 작은 proxy dataset을 반복 사용한다
+
+발표 대본
+NAS 실험은 depth, width, pooling, activation과 normalization이 다른 720 ConvNets search space를 사용합니다. 각 proxy dataset은 CIFAR-10 class당 100장으로 총 1000장입니다. 각 architecture를 100 epochs 학습하고 ranking과 선택 결과를 whole dataset 기준과 비교합니다. Hardware는 Tesla V100으로 보고됩니다.
+
+공개 출처
+paper | p. 9, §6.5 and Table 1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 23. Table 1: CIFAR-10 NAS proxy 결과
+
+23. Table 1: CIFAR-10 NAS proxy 결과
+
+발표 대본
+Table 1의 performance는 proxy에서 고른 best architecture를 whole dataset에서 평가한 평균 test performance입니다. Correlation은 selected top 10 models의 proxy validation accuracy와 whole-dataset validation accuracy 사이 Spearman coefficient입니다. 모든 proxy search time은 113 minutes이고 whole dataset은 3029 minutes입니다. 이 표는 720 ConvNets, CIFAR-10, Tesla V100 조건입니다.
+
+공개 출처
+paper | p. 9, Table 1
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 24. Dataset pruning의 비용과 적용 경계
+
+24. Dataset pruning의 비용과 적용 경계
+
+발표 대본
+이 방법은 데이터만 보고 즉시 pruning하지 않습니다. 먼저 full dataset으로 model을 학습하고, example별 influence를 계산하고, discrete solver를 실행합니다. 따라서 한 번만 학습하는 작은 문제에서는 준비 비용이 이득보다 클 수 있습니다. 논문이 가장 설득력 있게 보여 준 사용 사례는 같은 dataset에서 많은 architecture를 반복 학습하는 NAS입니다.
+
+공개 출처
+paper | pp. 5, 7 and 9, Algorithm 1 and §6
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329
+
+## 25. 정리: 제거 집합의 공동 영향으로 data를 줄인다
+
+25. 정리: 제거 집합의 공동 영향으로 data를 줄인다
+
+발표 대본
+논문의 중요한 전환은 개별 example score를 정렬하는 대신 제거 subset 전체의 parameter influence를 최적화하는 것입니다. 이론은 parameter influence constraint와 expected loss gap을 연결하고, 실험은 CIFAR와 NAS에서 효율을 보여 줍니다. 하지만 theorem의 scaling convention과 approximation assumption, source의 small-network label inconsistency, last-layer influence와 simulated annealing 구현은 적용 전에 확인해야 합니다.
+
+공개 출처
+paper | pp. 1–9, method, analysis and experiments
+Yang et al., Dataset Pruning, ICLR 2023, arXiv:2205.09329v2
+https://arxiv.org/abs/2205.09329

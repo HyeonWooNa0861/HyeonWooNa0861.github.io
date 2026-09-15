@@ -91,6 +91,11 @@ Agent의 reward는 선택된 사용자가 offloading으로 처리한 bit 수를 
 
 각 서버의 agent가 부분 관측만 사용하므로, 서버 간 간섭이나 사용자 이동성이 커지는 환경에서는 coordination 문제가 더 중요해질 수 있다. 또한 reward가 energy efficiency에 집중되어 있어, 지연 민감 애플리케이션의 deadline violation 같은 제약은 별도 확장이 필요하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 17 slides | <a href="/assets/seminars/energy-aware-multi-server-mobile-edge-computing/energy-aware-mec-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/energy-aware-multi-server-mobile-edge-computing/energy-aware-mec-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/energy-aware-multi-server-mobile-edge-computing/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/energy-aware-multi-server-mobile-edge-computing/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

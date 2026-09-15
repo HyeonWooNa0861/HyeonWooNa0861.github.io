@@ -109,6 +109,11 @@ DECENT의 핵심은 DRL을 썼다는 사실보다 상태 설계에 있다. 큐 �
 
 시뮬레이션 기반 검증이므로 실제 MEC 환경에서의 상태 관측 지연, 예측 오차, 서버 간 제어 오버헤드는 추가 검증이 필요하다. 또한 모든 작업이 이미 오프로딩 대상이라고 가정하므로, 로컬 실행과 오프로딩 여부를 함께 결정하는 문제까지 확장하면 정책 공간이 더 커진다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 19 slides | <a href="/assets/seminars/deep-reinforcement-learning-for-online-latency/decent-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/deep-reinforcement-learning-for-online-latency/decent-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/deep-reinforcement-learning-for-online-latency/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/deep-reinforcement-learning-for-online-latency/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

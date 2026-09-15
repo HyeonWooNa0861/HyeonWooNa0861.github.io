@@ -128,6 +128,11 @@ Task dependency는 현재 모델에서 제외된다. 이를 해결하려면 DAG 
 
 논문 참고문헌 [2]가 가리키는 `NimaSamadi007/iDEASImplementation` 저장소는 2026-08-19 확인 시 HTTP 404를 반환했고, 공개된 대체 경로도 확인하지 못했다. 재현용 코드가 다시 공개되기 전까지는 논문 PDF의 알고리즘과 파라미터를 기준으로 해석해야 한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 30 slides | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

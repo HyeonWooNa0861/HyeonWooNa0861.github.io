@@ -270,6 +270,11 @@ Seed-and-extend alignment에서는 seeding 단계가 많은 후보 match를 만�
 | Platform sensitivity | HBM power throttling, HBM channel 수, PCIe 세대에 따라 성능이 달라진다. |
 | Domain specificity | FASTA/FASTQ genomics format에 최적화된 설계다. |
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 25 slides | <a href="/assets/seminars/bancroft-genomics-acceleration-beyond-on-device-memory/bancroft-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/bancroft-genomics-acceleration-beyond-on-device-memory/bancroft-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/bancroft-genomics-acceleration-beyond-on-device-memory/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/bancroft-genomics-acceleration-beyond-on-device-memory/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

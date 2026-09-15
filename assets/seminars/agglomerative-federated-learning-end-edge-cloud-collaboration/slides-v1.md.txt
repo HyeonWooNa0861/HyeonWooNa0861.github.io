@@ -1,0 +1,307 @@
+---
+type: research-seminar-slides
+paper_id: agglomerative-federated-learning-end-edge-cloud-collaboration
+---
+
+# 이기종 모델을 잇는 계층형 연합학습
+
+논문: Agglomerative Federated Learning: Empowering Larger Model Training via End-Edge-Cloud Collaboration
+
+저자: Zhiyuan Wu · Sheng Sun · Yuwei Wang · Min Liu · Bo Gao · Quyang Pan · Tianliu He · Xuefeng Jiang (2024)
+
+## 1. 이기종 모델을 잇는 계층형 연합학습
+
+FedAgg: End–Edge–Cloud에서 파라미터 평균 대신 양방향 bridge-sample 지식증류를 반복한다.
+
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 131, title and abstract
+
+## 2. 문제: 데이터 위치와 모델 크기가 함께 다르다
+
+단말은 데이터를 갖지만 작은 모델을, 상위 계층은 더 큰 모델을 둘 수 있다.
+
+1. **End**: 로컬 데이터·작은 모델
+2. **Edge**: 여러 단말을 잇는 중간 모델
+3. **Cloud**: 더 큰 전역 모델
+4. **핵심 질문**: 서로 다른 모델을 어떻게 함께 학습할까?
+
+핵심: FedAgg의 출발점은 데이터 분할뿐 아니라 모델 이질성이다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 131–133; Fig. 1–2
+
+## 3. End–Edge–Cloud: 역할과 능력의 계층
+
+공간적 계층도이며, 한 라운드의 시간 순서를 뜻하지 않는다.
+
+- **레인 End**
+- **레인 Edge**
+- **레인 Cloud**
+  - **단말**: 로컬 데이터·M1
+  - **에지**: 중간 모델·M2
+  - **클라우드**: 큰 모델·M3
+- 단말 → 에지: 계층 연결 (점선, 단방향)
+- 에지 → 클라우드: 계층 연결 (점선, 단방향)
+
+핵심: 실험 모델은 M1=3-layer CNN, M2=ResNet-10, M3=ResNet-18이다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 133, Fig. 1; p. 137, Table I
+
+## 4. 핵심 구분: 공통 벡터 평균이 아니다
+
+FedAgg는 모델 구조가 다른 계층을 대상으로 한다.
+
+
+| 질문 | 동형 평균의 전제 | FedAgg의 대응 |
+| --- | --- | --- |
+| 모델 | 같은 파라미터 형태 | M1·M2·M3처럼 달라도 됨 |
+| 상위 전달 | 파라미터 벡터 결합 | bridge sample의 logits |
+| 학습 | 평균 뒤 각자 갱신 | 교사·학생 역할을 양방향 교대 |
+
+핵심: ‘aggregation’이라는 이름만으로 FedAvg식 평균을 추정하면 안 된다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 132, 134–135
+
+## 5. 무엇이 어디에 남고, 무엇이 전달되는가
+
+raw sample, embedding, bridge sample, logits를 같은 화살표로 섞지 않는다.
+
+- **레인 상태 흐름**
+  - **단말의 raw X,y**: 로컬에 유지
+  - **enc(X)=ε**: ε와 label 생성
+  - **상위 저장소**: ε → label
+  - **dec(ε)·logits**: bridge sample로 지도
+- 단말의 raw X,y → enc(X)=ε: 로컬 인코딩 (실선, 단방향)
+- enc(X)=ε → 상위 저장소: ε + label (실선, 단방향)
+- 상위 저장소 → dec(ε)·logits: decode·teacher (실선, 단방향)
+
+핵심: 논문은 부모에 raw X를 저장한다고 말하지 않는다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 134–135; Fig. 3–4, Alg. 2
+
+## 6. BSBODP는 양방향 교사–학생 갱신이다
+
+한 쌍의 노드는 한 방향만 끝내지 않고, 교사·학생을 바꿔 다시 수행한다.
+
+- **레인 방향 A**
+- **레인 방향 B**
+  - **부모 교사**: bridge logits 생성
+  - **전달 객체**: teacher logits
+  - **자식 학생**: distillation 갱신
+  - **자식 교사**: bridge logits 생성
+  - **전달 객체**: teacher logits
+  - **부모 학생**: distillation 갱신
+- 부모 교사 → 전달 객체: logits (실선, 단방향)
+- 전달 객체 → 자식 학생: 지도 (실선, 단방향)
+- 자식 교사 → 전달 객체: logits (실선, 단방향)
+- 전달 객체 → 부모 학생: 지도 (실선, 단방향)
+
+핵심: 역할이 바뀌므로 ‘cloud만 teacher’라는 단순 그림은 부정확하다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 134–135; Fig. 3, Alg. 1
+
+## 7. 학생의 위치가 손실을 바꾼다
+
+Eq. (2)는 non-leaf, Eq. (4)는 leaf의 손실이다.
+
+- **bridge 상태**: teacher logits
+- **non-leaf**: CE + β·KL
+- **leaf**: local CE + γL
+- **student update**: 현재 모델 갱신
+- **역방향**: 역할을 바꿔 반복
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 135, Eqs. 2–5
+
+## 8. 초기화: embedding과 label을 재귀적으로 저장
+
+Algorithm 2의 INIT은 학습 라운드와 구분되는 준비 단계다.
+
+- **레인 INIT**
+  - **leaf**: enc(X), ε·label 저장
+  - **intermediate**: child 상태 수신·저장
+  - **root**: 하위 ε·label 보관
+- leaf → intermediate: ε + label (실선, 단방향)
+- intermediate → root: 저장 상태 (실선, 단방향)
+
+핵심: 상위 노드가 쓰는 것은 raw sample이 아니라 저장된 ε와 label이다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 135, Alg. 2 INIT; Eq. 5
+
+## 9. 실제 반복 단위: Algorithm 2의 재귀 학습 라운드
+
+internal non-root의 병렬 for에서 각 child 분기는 재귀 호출 직후 같은 v*–parent BSBODP를 실행한다.
+
+- **레인 node v***
+- **레인 child branch u1**
+- **레인 child branch u2**
+  - **for u in Child(v*)**: child 분기를 병렬 시작
+  - **FedAggTrain(u1,E)**: u1 subtree 재귀
+  - **BSBODP(v*,parent)**: u1 분기 안에서 실행
+  - **FedAggTrain(u2,E)**: u2 subtree 재귀
+  - **BSBODP(v*,parent)**: u2 분기 안에서 실행
+- for u in Child(v*) → FedAggTrain(u1,E): 병렬 분기 (실선, 단방향)
+- FedAggTrain(u1,E) → BSBODP(v*,parent): 같은 분기 (실선, 단방향)
+- for u in Child(v*) → FedAggTrain(u2,E): 병렬 분기 (실선, 단방향)
+- FedAggTrain(u2,E) → BSBODP(v*,parent): 같은 분기 (실선, 단방향)
+
+핵심: leaf는 BSBODP를 한 번 호출하고, root는 child 호출만 수행하며 parent 교환은 하지 않는다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 135, Alg. 2 FedAggTrain
+
+## 10. 동적 계층 변경: 정리가 보장하는 범위
+
+두 정리는 같은 계층 parent 교체의 가능 조건과 partial-order protocol의 반례 기반 한계를 구분한다.
+
+
+| 정리 | 가정과 결론 | 말하지 않는 것 |
+| --- | --- | --- |
+| Theorem 1 | equivalence protocol이면 같은 level의 다른 parent로 교체 가능 | 정확도·수렴 보장 아님 |
+| Theorem 2 | partial-order protocol에서는 같은 교체가 반드시 가능하지 않음 | partial order 보존 정리 아님 |
+| 그림 1 | same-level parent switching을 예시 | 실험적 migration 성능 아님 |
+
+핵심: equivalence는 교체를 허용하지만, partial order만으로는 같은 교체를 보장할 수 없다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 133, 136–137; Fig. 1, Thm. 1–2
+
+## 11. 손실을 손으로 계산해 보기: 명시적 가상 예시
+
+아래 확률과 계산은 논문 데이터가 아니라 Eq. (2)의 형태를 읽기 위한 invented toy다.
+
+
+| 항 | 가상 값 | 계산 |
+| --- | --- | --- |
+| teacher q | (0.70, 0.20, 0.10) | 온도 적용 뒤의 가상 확률 |
+| student p | (0.50, 0.30, 0.20) | bridge label은 class 1 |
+| CE | −ln(0.50) | 0.6931 |
+| KL·loss | KL(p\|\|q)≈0.09203 | β=10이면 ≈1.61348 (4자리 1.6135) |
+
+핵심: 두 번째 방향에서는 teacher와 student를 바꿔 같은 구조를 다시 계산한다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 135, Eq. 2; p. 137, setup
+
+## 12. 실험 모델과 autoencoder의 규모
+
+Table I의 구성은 이 논문의 실험 선택이며 모든 FedAgg 배포의 고정 규격이 아니다.
+
+
+| 구성 | 모델 | feature extractor | classifier |
+| --- | --- | --- | --- |
+| M1 / End | 3-layer CNN | 9.31K | 10.88K |
+| M2 / Edge | ResNet-10 | — | 4.67M |
+| M3 / Cloud | ResNet-18 | — | 10.65M |
+| Autoencoder | 6 layers | encoder 1.90K | decoder 2.47K |
+
+핵심: 모델 규모 차이가 지식증류 연결을 요구하는 직접적 실험 맥락이다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 137, Table I and setup
+
+## 13. 결과를 읽기 위한 실험 조건
+
+정확도 숫자에는 dataset, K, α, tree, 모델, hyperparameter가 함께 붙는다.
+
+
+| 항목 | CIFAR-10 | CIFAR-100 | 공통 설정 |
+| --- | --- | --- | --- |
+| client K | 225, 400 | 144, 196, 225 | one cloud, √K edge |
+| heterogeneity | α=1, 3 | α=3 reported | 1=high, 3=low |
+| optimization | LR .001, batch 8 | LR .001, batch 8 | γ=1, T=3, β=10 |
+| baselines | 4개 모두 | HierFAVG, DemLearn lv=3/5/7/10 | dataset별 비교군이 다름 |
+
+핵심: α의 high/low 해석은 이 논문 표기의 조건부 약속이다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 137, experimental setup
+
+## 14. CIFAR-10 cloud-model accuracy: 네 조건을 함께 읽기
+
+Table II의 값은 test accuracy(%)이며, 모든 열이 K와 α로 조건화된다.
+
+
+| 방법 | 225 α=3 | 225 α=1 | 400 α=3 | 400 α=1 |
+| --- | --- | --- | --- | --- |
+| HierFAVG | 10.15 | 18.35 | 22.25 | 18.73 |
+| DemLearn | 30.55 | 32.13 | 29.25 | 28.06 |
+| FedGKT | 27.39 | 26.59 | 30.54 | 29.22 |
+| FedDKC | 32.43 | 30.09 | 30.79 | 28.78 |
+| FedAgg | 36.76 | 33.87 | 35.83 | 33.74 |
+
+핵심: 각 열에서 FedAgg의 best-listed-baseline 대비 이득은 4.33·1.74·5.04·4.52 points다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 138, Table II
+
+## 15. CIFAR-100 α=3: client 수별 비교
+
+Table III는 α=3 설정에서 cloud-model test accuracy(%)를 비교한다.
+
+
+| 방법 | K=144 | K=196 | K=225 |
+| --- | --- | --- | --- |
+| HierFAVG | 9.11 | 9.42 | 5.03 |
+| DemLearn level 3 | 15.75 | 14.94 | 14.81 |
+| DemLearn level 5 | 14.99 | 14.59 | 14.55 |
+| DemLearn level 7 | 14.52 | 13.97 | 13.89 |
+| FedAgg | 17.07 | 17.33 | 16.50 |
+
+핵심: FedAgg의 Table-III best-listed-baseline 대비 이득은 1.32·2.39·1.69 points다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 138, Table III
+
+## 16. 통신 라운드 표: 시간이나 에너지로 읽지 않기
+
+Tables IV–V는 named target accuracy까지의 communication-round count다.
+
+
+| dataset | 조건 | 낮은 target | 높은 target | FedAgg rounds |
+| --- | --- | --- | --- | --- |
+| CIFAR-10 | 225, α=3 | 25% | 30% | 0 / 2 |
+| CIFAR-10 | 225, α=1 | 25% | 30% | 1 / 7 |
+| CIFAR-10 | 400, α=3 | 25% | 30% | 1 / 4 |
+| CIFAR-100 | 144, α=3 | 9% | 14% | 0 / 5 |
+| CIFAR-100 | 225, α=3 | 9% | 14% | 0 / 7 |
+
+핵심: 0 round는 해당 target이 통신 전부터 충족됐다는 표기이며, 0 ms가 아니다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 138, Tables IV–V
+
+## 17. 민감도: β와 모델 이질성의 한정된 관찰
+
+모두 CIFAR-10, K=225, α=1이라는 Table VI–VIII의 조건을 유지한다.
+
+
+| 검사 | 설정 | accuracy (%) | 해석 경계 |
+| --- | --- | --- | --- |
+| β ablation | 0.1 / 1 / 3 | 33.14 / 35.33 / 34.66 | β=1이 이 표에서는 최고 |
+| β ablation | 10 / 50 | 33.87 / 27.21 | main β=10도 최적 보장 아님 |
+| client model | 20%: M1→M2 | 32.83 vs 33.87 | heterogeneous vs homogeneous |
+| cloud model | CNN / R10 / R18 | 23.84 / 31.11 / 33.87 | 이 설정의 cloud 비교 |
+
+핵심: 한 ablation의 최고값을 모든 데이터·모델에 대한 규칙으로 일반화할 수 없다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) p. 139, Tables VI–VIII
+
+## 18. 논문이 지지하는 주장과 지지하지 않는 주장
+
+조건부 실험 결과와 formal statement의 범위를 분리한다.
+
+
+| 주장 | 논문 근거 | 넘어가면 안 되는 해석 |
+| --- | --- | --- |
+| raw data 완화 | ε·decoder bridge 설계 | formal privacy guarantee |
+| 정확도 비교 | CIFAR-10/100 표의 조건 | 배포 throughput·energy |
+| 계층 변경 | equivalence의 허용 / partial-order 반례 | 임의 migration accuracy |
+| 라운드 수 | target accuracy counts | wall-clock latency |
+
+핵심: 좋은 재현 질문은 ‘어떤 조건에서 어떤 metric인가’를 먼저 묻는다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 134–139; Fig. 4, Thm. 1–2, Tables II–VIII
+
+## 19. 읽기 순서로 정리하기
+
+상태 → 양방향 protocol → 재귀 round → 조건부 evidence의 순서로 논문을 다시 읽는다.
+
+1. **상태**: X,y / ε+label / bridge / logits 분리
+2. **protocol**: 양방향 BSBODP와 역할 교대
+3. **round**: 각 child 분기: recursion 뒤 BSBODP
+4. **evidence**: Tables I–VIII의 조건을 보존
+
+핵심: 핵심은 ‘무엇을 평균’이 아니라 ‘무엇을 어떤 방향으로 지도’했는가다.
+
+근거: [ieee-infocom](https://doi.org/10.1109/INFOCOM52122.2024.10621254) pp. 134–139; Alg. 1–2, Tables I–VIII

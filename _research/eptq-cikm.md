@@ -249,6 +249,11 @@ EPTQ의 기여는 2-bit compression을 단순한 quantization level 문제로 �
 
 실험은 single NVIDIA H100 GPU에서 수행되었다. 따라서 다른 GPU architecture, CPU inference, mobile/edge accelerator에서 같은 throughput gain이 유지되는지는 추가 확인이 필요하다. 또한 저자 정보와 DOI가 anonymized/placeholder 상태이므로, 최종 출판본에서는 인용 정보가 달라질 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 31 slides | <a href="/assets/seminars/eptq-cikm/eptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/eptq-cikm/eptq-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/eptq-cikm/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/eptq-cikm/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

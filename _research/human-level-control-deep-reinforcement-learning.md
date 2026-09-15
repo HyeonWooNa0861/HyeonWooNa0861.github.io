@@ -72,6 +72,11 @@ DQN은 convolutional neural network로 Q-function을 근사한다. 입력은 최
 
 QECO, DROO, LyDROO 같은 MEC offloading 연구에서 DQN 계열을 사용하는 배경에는 이 논문이 있다. MEC 상태는 pixel은 아니지만 channel, queue, energy, deadline 등 고차원 상태를 action value로 연결해야 한다는 점에서 DQN의 function approximation 관점이 이어진다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 20 slides | <a href="/assets/seminars/human-level-control-deep-reinforcement-learning/dqn-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/human-level-control-deep-reinforcement-learning/dqn-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/human-level-control-deep-reinforcement-learning/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/human-level-control-deep-reinforcement-learning/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

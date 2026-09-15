@@ -1,0 +1,251 @@
+## 1. HAP 보조 MEC의 온라인 오프로딩: EEDO
+
+1. HAP 보조 MEC의 온라인 오프로딩: EEDO
+
+발표 대본
+이 논문은 지상 통신 인프라가 부족한 원격 지역을 모델로 삼습니다. 여러 Ground Device, 즉 GD가 작업 일부를 스스로 처리하고 나머지를 HAP의 edge server로 보냅니다. 핵심은 단순히 에너지를 가장 적게 쓰는 행동이 아니라, GD와 HAP 양쪽에 쌓이는 작업을 안정적으로 다루며 장기 에너지를 낮추는 온라인 제어입니다.
+
+공개 출처
+paper | title page and Abstract
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 2. 원문 범위와 용어
+
+2. 원문 범위와 용어
+
+발표 대본
+저자는 Sihan Chen과 Wanchun Jiang입니다. 이 논문은 실제 HAP 비행 시험을 보고하지 않습니다. 따라서 이후의 모든 결과는 HAP-assisted MEC의 수학적 모델과 정해진 simulation parameter 아래의 결과로 읽어야 합니다. EEDO는 reward를 학습하는 RL agent가 아니라 매 slot의 queue와 통신 상태를 사용하는 Lyapunov 제어 규칙입니다.
+
+공개 출처
+paper | p. 1 Abstract; pp. 8–10 Evaluation
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 3. 왜 HAP 보조 MEC인가
+
+3. 왜 HAP 보조 MEC인가
+
+발표 대본
+중요한 직관은 HAP이 있다고 해서 모든 작업을 올리면 된다는 뜻이 아니라는 점입니다. HAP에는 유한한 CPU capacity가 있고, 여러 GD가 같은 자원을 공유합니다. EEDO는 local CPU, radio offload, HAP 처리량의 세 조절 손잡이를 같이 선택합니다.
+
+공개 출처
+paper | pp. 1–2 Introduction
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 4. 작업의 경로와 두 queue
+
+4. 작업의 경로와 두 queue
+
+발표 대본
+이 그림은 원문 Fig. 1과 Eqs. 7–8을 교육용으로 편집 가능한 도형으로 다시 표현한 것입니다. Q는 GD에 쌓인 task이며, D_l과 D_o가 그 값을 줄입니다. H는 해당 GD가 HAP으로 보낸 task가 쌓이는 별도 queue입니다. Eq. 8에서는 HAP이 C만큼 처리한 뒤 D_o가 H에 더해집니다. 화살표는 작업의 논리적 경로를 보여 주며, slot의 물리적 미세 순서를 그림만으로 단정하지 않습니다.
+
+공개 출처
+paper | pp. 3–4, Fig. 1 and Eqs. 5–8
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 5. 에너지 장부: 세 항을 함께 센다
+
+5. 에너지 장부: 세 항을 함께 센다
+
+발표 대본
+원문의 energy model은 세 종류를 명시합니다. local energy는 CPU frequency의 제곱과 처리량에 연결되고, radio energy는 보내는 bit 수와 전력에 비례하면서 rate로 나뉩니다. HAP도 처리 bit당 에너지를 냅니다. 이 모델의 E(t)에 포함되지 않은 이동, 냉각, 배터리 열화 같은 항까지 이 논문이 최적화한다고 확대하면 안 됩니다.
+
+공개 출처
+paper | p. 4, Eqs. 9–12
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 6. P1: 장기 평균 에너지, 네 feasibility 제약
+
+6. P1: 장기 평균 에너지, 네 feasibility 제약
+
+발표 대본
+P1은 T가 커질 때 expected E(t)의 평균을 최소화합니다. C1부터 C4는 각 slot의 물리적 혹은 queue feasibility입니다. Q와 H가 무한히 쌓이지 않게 하는 안정성은 Lyapunov 분석과 Theorem 2의 조건부 bound가 다룹니다. C1–C4에 aggregate HAP capacity가 적혀 있지는 않지만 Algorithm 1은 C_h로 이를 시행합니다. 논문이 특정 millisecond latency SLA를 제시하거나 latency만을 목적함수로 삼는 것은 아닙니다.
+
+공개 출처
+paper | p. 4, Eq. 13 and C1–C4
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 7. 긴 미래를 매 slot 제어로 바꾸기
+
+7. 긴 미래를 매 slot 제어로 바꾸기
+
+발표 대본
+Lyapunov optimization의 핵심은 기다렸다가 전체 미래를 푸는 대신, queue가 커지는 경향과 에너지를 함께 벌점으로 두는 것입니다. 논문은 Eq. 16에서 V를 도입하고 Theorem 1의 bound를 만듭니다. ‘prior statistical information이 필요 없다’는 문구는 과거 분포를 미리 알아야 한다는 뜻이 아니라는 뜻이며, 현재 Q, H, P, R 같은 값은 Eq. 25–29에서 직접 사용됩니다.
+
+공개 출처
+paper | pp. 5–6, Eqs. 14–23 and Thm. 1
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 8. EEDO의 GD 결정은 두 갈래다
+
+8. EEDO의 GD 결정은 두 갈래다
+
+발표 대본
+P2의 세 결정은 f, D_o, C입니다. 이 화면은 그중 각 GD가 구하는 local CPU와 offloading control만 보여 줍니다. 두 결과는 GD의 f, D_l, D_o controls로 읽습니다. HAP allocation은 별도의 shared-capacity scheduling이며 다음 슬라이드에서 설명합니다. 따라서 세 subproblem이라는 말을 모든 처리 단계가 독립적으로 동시에 물리 실행된다는 뜻으로 읽지 않습니다.
+
+공개 출처
+paper | pp. 6–7, Eqs. 23–29 and Alg. 1
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 9. 결정 1: local CPU frequency
+
+9. 결정 1: local CPU frequency
+
+발표 대본
+Eq. 25를 수식 형태 그대로 외우기보다 두 clipping을 읽는 것이 좋습니다. stationary candidate는 Q divided by 3Vxi phi의 square root입니다. Q가 커질수록 CPU를 더 쓰게 하고, V 또는 xi, phi가 커질수록 덜 쓰게 합니다. 그러나 결과는 f_max뿐 아니라 그 slot에 Q가 허용하는 양에도 묶입니다. 이 rule은 논문의 CPU energy model에서 나온 것이므로 다른 CPU power model에도 같은 closed form이 자동으로 성립한다고 말할 수 없습니다.
+
+공개 출처
+paper | p. 6, Eqs. 24–25
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 10. 결정 2: offload는 threshold rule
+
+10. 결정 2: offload는 threshold rule
+
+발표 대본
+이 표의 첫 행은 Eq. 27의 정확한 threshold입니다. Q는 device가 밀려 있는 정도라서 offload를 촉진하지만, H는 HAP도 밀려 있음을 뜻해서 offload를 억제합니다. P/R는 bit당 전송 energy에 해당하는 요소입니다. 따라서 signal rate가 좋고 H가 비어 있으며 Q가 크면 보내고, 그 반대면 보내지 않는 two-choice rule입니다.
+
+공개 출처
+paper | p. 6, Eqs. 26–27
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 11. 결정 3: HAP의 남은 CPU를 배정하기
+
+11. 결정 3: HAP의 남은 CPU를 배정하기
+
+발표 대본
+Eq. 28은 HAP allocation coefficient가 V l_1 - H임을 보여 줍니다. Algorithm 1은 먼저 HAP이 그 slot에 처리할 수 있는 total C_h를 정하고, coefficient가 작은 GD부터 살핍니다. eligible이면 min of H and remaining C_h만큼 배정하고 C_h를 줄입니다. 이 반복 때문에 HAP subproblem에는 shared-resource scheduling의 순서가 있습니다.
+
+공개 출처
+paper | pp. 6–7, Eqs. 28–29 and Alg. 1
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 12. Algorithm 1의 한 slot 읽는 순서
+
+12. Algorithm 1의 한 slot 읽는 순서
+
+발표 대본
+Algorithm 1은 input으로 A, Q, H를 받고, 각 GD의 CPU와 offloading을 구한 뒤 HAP capacity를 배정합니다. 마지막에 queues가 갱신됩니다. Eq. 8의 algebra는 max(H-C,0)+D_o입니다. 따라서 이 deck에서는 같은 slot에 새 D_o가 먼저 HAP service를 받는 것처럼 가르치지 않습니다. 이는 queue update 식을 읽기 위한 모델상의 순서입니다.
+
+공개 출처
+paper | pp. 4, 7; Eqs. 7–8 and Alg. 1
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 13. 구성 예시: 한 GD의 decision 계산
+
+13. 구성 예시: 한 GD의 decision 계산
+
+발표 대본
+이 슬라이드부터는 논문 실험값이 아니라 명시적으로 구성한 toy trace입니다. CPU candidate는 square root of 2, 약 1.41이지만 f_max 1로 clip됩니다. Radio coefficient는 0이므로 Eq. 27에서 capacity 3만큼 offload합니다. HAP coefficient는 음수이고 capacity가 2이므로 2만 service합니다. unit을 1로 둔 것은 계산을 단순화한 것이며 원문 simulation을 재현하지 않습니다.
+
+공개 출처
+paper | pp. 4, 6; Eqs. 5, 25, 27, 29; teaching toy
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 14. 구성 예시: 두 queue의 다음 값
+
+14. 구성 예시: 두 queue의 다음 값
+
+발표 대본
+이 다음 값은 앞 슬라이드의 toy를 계속 계산한 것입니다. GD Q는 local 1과 offload 3을 빼고 new arrival 2를 더해 4가 됩니다. HAP H는 기존 4에서 service 2를 뺀 다음 new offload 3을 더해 5가 됩니다. 이 예시는 offload가 항상 end-to-end backlog를 즉시 낮추지는 않는다는 점을 보여 줍니다.
+
+공개 출처
+paper | p. 4, Eqs. 7–8; teaching toy
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 15. V trade-off: theorem이 실제로 말하는 것
+
+15. V trade-off: theorem이 실제로 말하는 것
+
+발표 대본
+Theorem 2의 두 식은 강력하지만 조건부입니다. 논문은 Lemma 1의 independent stochastic decision과 arrival rate lambda plus epsilon을 사용합니다. 첫 식은 average energy가 optimum에 Z/V만큼 더해진다고 말하고, 둘째는 queue upper bound에 V가 들어감을 말합니다. 이론은 formal model 위의 trade-off를 보이며, 어떤 실제 네트워크에서도 arbitrary V가 최적이라는 보장은 아닙니다.
+
+공개 출처
+paper | p. 7, Lemma 1 and Thm. 2; Eqs. 30–32
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 16. 시뮬레이션 envelope
+
+16. 시뮬레이션 envelope
+
+발표 대본
+여기에는 Fig. 2부터 9를 읽기 위한 핵심 parameter만 모았습니다. 원문은 HAP이 정해진 elevation에서 static하다고 합니다. task arrival, transmit power, CPU, bandwidth 등도 구체적으로 고정하거나 분포로 둡니다. simulation이므로 battery model이나 HAP mobility를 포함한 현실의 모든 조건을 대표한다고 해석하지 않습니다.
+
+공개 출처
+paper | p. 8, Evaluation and Table 2
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 17. V를 바꾼 결과: 낮은 energy, 높은 queue
+
+17. V를 바꾼 결과: 낮은 energy, 높은 queue
+
+발표 대본
+Figure 2에서는 V가 커질수록 energy consumption이 낮아지고, Figure 3에서는 mean queue length가 높아집니다. 논문은 이를 Eq. 31–32의 결과와 align된다고 설명합니다. 그래프의 축을 임의의 production KPI나 exact recommended V로 바꾸지 않고, energy와 backlog 사이의 관찰된 방향성으로 읽는 것이 안전합니다.
+
+공개 출처
+paper | p. 8, Figs. 2–3 and Thm. 2
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 18. 부하와 GD 수가 늘면 무엇이 보이나
+
+18. 부하와 GD 수가 늘면 무엇이 보이나
+
+발표 대본
+Figure 4–5에서는 alpha 0.6, 0.8, 1.0을 비교합니다. Figure 6–7에서는 GD 수 50부터 120을 바꿉니다. energy와 queue가 모두 늘 수 있다는 사실은 모순이 아닙니다. 작업이 더 많이 들어오거나 더 많은 device가 HAP capacity를 공유하면 처리해야 할 양이 커집니다. 논문의 ‘equilibrium’ 설명도 해당 simulation의 observation으로 한정합니다.
+
+공개 출처
+paper | pp. 8–9, Figs. 4–7
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 19. 비교 실험: energy만 보면 틀릴 수 있다
+
+19. 비교 실험: energy만 보면 틀릴 수 있다
+
+발표 대본
+이 비교의 교육 포인트는 Offload-only가 Figure 8에서 낮은 energy를 보일 수 있어도 Figure 9에서 queue가 계속 커진다는 점입니다. GTCO-21도 많은 task를 HAP에 보내려다 finite capacity를 넘는다고 원문은 설명합니다. EEDO는 Local-only보다 energy를 낮추면서 queue stability를 유지한다고 보고됩니다. 이는 그 simulation baseline과 setting에서의 비교입니다.
+
+공개 출처
+paper | pp. 9–10, Figs. 8–9
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 20. EEDO가 주장하는 것과 아닌 것
+
+20. EEDO가 주장하는 것과 아닌 것
+
+발표 대본
+논문 초록과 conclusion은 future statistical information 없이 online decision을 얻는다고 말합니다. 그러나 equations에는 Q, H, P, R가 들어갑니다. 그래서 이것은 관측이 필요 없는 black box가 아닙니다. 또한 논문은 static HAP와 명시된 channel model의 analysis와 simulation을 제시합니다. field deployment의 universal guarantee나 RL 학습 성능을 주장하지 않습니다.
+
+공개 출처
+paper | pp. 1, 5–7, 11; Abstract, Eqs. 25–29
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5
+
+## 21. 마무리: 세 개의 제어와 한 개의 trade-off
+
+21. 마무리: 세 개의 제어와 한 개의 trade-off
+
+발표 대본
+정리하면 EEDO는 task를 local 혹은 HAP으로 보내는 binary slogan이 아닙니다. partial offloading과 HAP allocation을 포함해 세 개의 decision을 동시에 관리합니다. GD Q와 HAP H를 분리해서 보는 이유는 radio가 부담을 없애는 대신 HAP에 옮길 수 있기 때문입니다. 적용을 검토할 때에는 current-state measurements, capacity, channel model, latency requirement가 이 논문의 가정과 맞는지 별도로 확인해야 합니다.
+
+공개 출처
+paper | pp. 4–11, Eqs. 5–32 and Conclusion
+Journal of Cloud Computing version of record
+https://link.springer.com/article/10.1186/s13677-024-00645-5

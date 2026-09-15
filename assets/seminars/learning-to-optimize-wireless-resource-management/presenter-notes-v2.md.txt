@@ -1,0 +1,191 @@
+## 1. Learning to Optimize: DNN으로 WMMSE 전력 제어를 근사하기
+
+1. Learning to Optimize: DNN으로 WMMSE 전력 제어를 근사하기
+
+발표 대본
+이 발표는 2017년 SPAWC 논문을 대상으로 합니다. 논문은 간섭 채널의 전력 제어에서 WMMSE 알고리즘이 내놓는 전력 벡터를 DNN으로 근사합니다. 전개 순서는 문제와 간섭 구조, WMMSE, supervised label 생성, DNN의 제약 처리, 작은 계산 예시, 정리의 범위, 실험 결과와 한계입니다.
+
+공개 출처
+spawc2017 | p. 1, title and abstract
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 2. 간섭 채널 전력 제어 문제
+
+2. 간섭 채널 전력 제어 문제
+
+발표 대본
+IC는 interference channel의 약자입니다. h_kk는 송신기 k에서 자신의 수신기 k로 가는 direct channel이고, h_kj는 송신기 j에서 수신기 k로 들어오는 interference channel입니다. p_k는 송신 전력이고, 각 수신기는 원하는 신호와 다른 송신기의 간섭 및 noise를 함께 받습니다. 논문은 p 벡터로 weighted sum-rate, 줄여서 WSR을 최대화합니다. 각 송신기는 개별 power budget P_max를 가지며, 총전력 예산을 따로 도입하지 않습니다.
+
+공개 출처
+spawc2017 | p. 2, Sec. II-A and Eq. (1)
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 3. WSR은 원하는 신호와 간섭을 함께 계산한다
+
+3. WSR은 원하는 신호와 간섭을 함께 계산한다
+
+발표 대본
+논문의 Eq. (1)은 channel magnitude와 power vector에서 두 항을 병렬로 계산합니다. 분자는 |h_kk| 제곱 곱하기 p_k인 원하는 신호이고, 분모는 j가 k와 다른 모든 |h_kj| 제곱 곱하기 p_j의 합에 noise power sigma_k 제곱을 더한 값입니다. 두 항의 비가 SINR_k이며, 여기에 log 1 더하기를 적용하고 alpha_k로 가중해 모든 k에 대해 합산합니다. 원하는 신호가 간섭 분모를 만들어 내는 순차 관계가 아닙니다. p 벡터의 각 성분은 자신의 direct signal을 높이는 동시에 다른 수신기의 분모에 interference로 들어갑니다.
+
+공개 출처
+spawc2017 | p. 2, Eq. (1)
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 4. 강의용 두 링크 계산 예시
+
+4. 강의용 두 링크 계산 예시
+
+발표 대본
+이 슬라이드의 숫자는 원문 실험이나 WMMSE 출력이 아니라 Eq. (1)을 설명하기 위해 만든 normalized 예시입니다. alpha_1과 alpha_2는 1로 두고, 자연로그를 사용한다고 명시합니다. 직접 채널 크기는 1, cross channel 크기는 0.2이므로 cross gain의 제곱은 0.04입니다. p_1을 1, p_2를 0.5로 놓으면 SINR_1은 8.3333이고 SINR_2는 3.5714입니다. 두 log 항의 합은 약 3.7534입니다. 계산의 핵심은 p_1이 링크 2의 분모에, p_2가 링크 1의 분모에 들어간다는 점입니다.
+
+공개 출처
+spawc2017 | p. 2, Eq. (1)
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 5. WMMSE는 반복으로 power를 갱신한다
+
+5. WMMSE는 반복으로 power를 갱신한다
+
+발표 대본
+WMMSE는 weighted minimum mean-square error의 약자입니다. Weighted sum-rate 문제를 weighted MSE minimization으로 바꾼 뒤 v, u, w를 block coordinate descent로 갱신합니다. Fig. 1은 먼저 v_0를 허용 범위에서 초기화하고, 그 값으로 초기 u_0와 w_0를 계산합니다. 반복 안에서는 v를 갱신한 뒤 u와 w를 차례로 다시 계산하며, 목적값 변화가 epsilon 이하가 되면 멈춥니다. 마지막 power는 p_k=(v_k)^2입니다. 이 논문은 stationary solution을 설명하며 이를 global optimum이라고 부르지 않습니다.
+
+공개 출처
+spawc2017 | p. 3, Eqs. (2)-(3) and Fig. 1
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 6. 이 논문은 WMMSE 단계를 한 층씩 펼치지 않는다
+
+6. 이 논문은 WMMSE 단계를 한 층씩 펼치지 않는다
+
+발표 대본
+논문은 ISTA처럼 반복 한 번을 neural network 한 층에 명시적으로 대응시키는 unfolding을 하지 않는다고 설명합니다. WMMSE에는 inversion과 projection 같은 복잡한 연산이 포함되므로 그 반복을 단순한 layer로 만들기 어렵다는 것이 저자들의 출발점입니다. 대신 고정된 초기화에서 finite WMMSE procedure가 만드는 channel-to-final-power mapping을 DNN이 end-to-end로 근사합니다. 이 슬라이드의 두 branch는 실제 데이터 생성과 추론의 두 경로를 나타내며, DNN 내부의 각 층이 WMMSE의 한 update를 복제한다는 의미가 아닙니다.
+
+공개 출처
+spawc2017 | pp. 2-3, Sec. I and Sec. III-A
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 7. WMMSE 출력이 supervised training label이 된다
+
+7. WMMSE 출력이 supervised training label이 된다
+
+발표 대본
+각 channel realization i에서 논문은 P_max와 sigma_k를 고정하고 WMMSE를 v_k의 초기값 sqrt P_max로 실행합니다. obj_new와 obj_old의 차이가 10의 마이너스 3보다 작아지면 종료합니다. input은 channel magnitude 집합이고 label은 WMMSE가 낸 power vector입니다. DNN은 label과 output 사이 MSE를 최소화합니다. 저자들은 mini-batch RMSprop을 사용하고 decay rate 0.9을 둡니다. 따라서 이 방법은 reinforcement learning의 reward optimization이 아니라 supervised regression입니다.
+
+공개 출처
+spawc2017 | p. 4, Sec. III-B Data Generation and Training Stage
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 8. DNN은 channel magnitude를 feasible power로 바꾼다
+
+8. DNN은 channel magnitude를 feasible power로 바꾼다
+
+발표 대본
+논문은 fully connected DNN을 사용합니다. input은 channel coefficient의 magnitude이고 output은 K개의 power allocation입니다. Gaussian IC의 input size는 K 제곱이고, IMAC의 input size는 N 곱하기 K입니다. 보고된 numerical setup은 hidden layer 세 개로 각각 200, 80, 80 neurons이며 hidden activation은 ReLU입니다. Eq. (7)은 모든 출력 z_k를 0과 P_max 사이로 연속 clipping합니다. Gaussian IC 수치 실험에서는 WMMSE 출력이 대체로 binary라는 관찰에 따라 DNN prediction을 0 또는 P_max로 한 번 더 이산화합니다. 논문은 이 binary 후처리를 IMAC 결과에 적용했다고 말하지 않습니다. 연속 clipping은 box constraint를 보장하지만 WSR optimality를 보장하지 않습니다.
+
+공개 출처
+spawc2017 | pp. 3-4, Fig. 2, Eq. (7), Secs. III-B and IV-B
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 9. Theorem 1은 approximation 가능성의 조건부 주장이다
+
+9. Theorem 1은 approximation 가능성의 조건부 주장이다
+
+발표 대본
+Theorem 1은 compact input X와 compact initialization set Y_0에서, 각 f_t가 continuous인 finite iterative algorithm의 final mapping F_T를 sufficiently large one-hidden-layer sigmoid network가 uniformly approximate할 수 있다는 형태입니다. 저자들은 WMMSE의 각 iteration이 continuous이므로 이 틀에 들어간다고 설명합니다. 그러나 theorem은 reported 200/80/80 architecture의 exact error, WSR global optimum, train-test distribution mismatch, 혹은 arbitrary deployment의 robustness를 보장하지 않습니다. 이 구분이 실험 결과를 읽을 때 중요합니다.
+
+공개 출처
+spawc2017 | p. 3, Eqs. (4)-(6) and Theorem 1
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 10. 실험 조건과 구현 환경
+
+10. 실험 조건과 구현 환경
+
+발표 대본
+논문은 DNN을 Python 3.6.0과 TensorFlow 1.0.0으로 구현했고 한 computer node에 two 8-core Intel CPUs, two Nvidia GPUs, 128 GB memory를 사용했습니다. GPUs는 training time을 줄이는 용도이고 testing에는 쓰지 않았습니다. Gaussian IC는 K 10, 20, 30을 보며, 이 결과에서는 DNN prediction을 0 또는 P_max로 이산화합니다. 논문은 이 binary 후처리를 IMAC에 적용했다고 말하지 않습니다. 각 network scenario에서 channel realization 100만 개를 만들고 99퍼센트를 training, 1퍼센트를 validation으로 사용합니다. 주실험의 testing channel은 training과 같은 distribution에서 만듭니다. Table I에는 K명으로 학습하고 K/2명으로 시험한 별도 행이 있지만, 이는 임의의 distribution shift에 대한 보장을 뜻하지 않습니다.
+
+공개 출처
+spawc2017 | p. 4, Sec. IV-A; p. 5, Sec. IV-B
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 11. Figure 3: 두 지정 조건에서의 sum-rate CDF
+
+11. Figure 3: 두 지정 조건에서의 sum-rate CDF
+
+발표 대본
+Figure 3은 10,000 randomly generated testing data point에 대한 empirical CDF입니다. Panel a는 Gaussian IC의 K=10이며 DNN prediction에 0 또는 P_max binary 후처리를 적용합니다. Panel b는 IMAC의 N=3, K=24이고 논문은 여기에 같은 binary 후처리를 적용했다고 말하지 않습니다. Caption은 WMMSE와 비교할 때 평균적으로 Gaussian IC에서 97.92퍼센트, IMAC에서 93.02퍼센트 accuracy를 달성했다고 말합니다. 가로축이 sum-rate이므로 더 높은 rate는 CDF 곡선이 위로 올라간다는 뜻이 아니라 오른쪽으로 이동한다는 뜻입니다. RAND는 random power, MP는 maximum power baseline입니다.
+
+공개 출처
+spawc2017 | p. 5, Fig. 3 and Sec. IV-C
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 12. Table I: Gaussian IC에서 K가 늘어날 때
+
+12. Table I: Gaussian IC에서 K가 늘어날 때
+
+발표 대본
+Table I은 Gaussian IC에서 K가 10, 20, 30일 때의 relative CPU time과 sum-rate를 제공합니다. WMMSE 관련 행은 WMMSE power를 teacher label로 학습한 DNN을 WMMSE와 비교합니다. Greedy 관련 행은 Greedy binary power allocation을 teacher로 삼아 별도로 학습한 DNN을 Greedy와 비교한 실험입니다. 따라서 동일한 WMMSE 학습 DNN의 분모만 Greedy로 바꾼 값이 아닙니다. DNN/WMMSE rate ratio는 0.9792, 0.9265, 0.8566이고, Greedy 학습 DNN/Greedy rate ratio는 0.9666, 0.9187, 0.8521입니다. Table에는 K/2 user test 행도 별도로 있으며 ratio는 0.9922, 0.9278, 0.8777입니다.
+
+공개 출처
+spawc2017 | p. 5, Table I and Sec. IV-D
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 13. Table II: IMAC에서의 relative sum-rate와 CPU time
+
+13. Table II: IMAC에서의 relative sum-rate와 CPU time
+
+발표 대본
+Table II는 IMAC channel에서 N과 K 조합이 3,18, 3,24, 7,28, 3,60인 네 scenario를 비교합니다. Sec. IV-A의 network-scenario 목록에는 3,16이 인쇄되어 있지만, 이 슬라이드는 Table II에 인쇄된 3,18 열을 그대로 보존합니다. DNN sum-rate relative to WMMSE는 각각 0.9532, 0.9302, 0.9207, 0.9058입니다. RAND와 maximum-power baseline은 해당 table에서 훨씬 낮은 relative sum-rate를 보입니다. DNN test time은 WMMSE Python 대비 0.0009에서 0.0002이고, WMMSE C 대비 0.0322에서 0.0032입니다. 이 값은 source 구현의 relative CPU test time이며 network transmission latency나 edge-device energy를 직접 측정한 값이 아닙니다.
+
+공개 출처
+spawc2017 | p. 5, Table II and Sec. IV-D
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 14. 반복 WMMSE와 DNN forward pass의 test time
+
+14. 반복 WMMSE와 DNN forward pass의 test time
+
+발표 대본
+WMMSE는 각 새 channel realization에서 v, u, w의 block-coordinate update를 반복합니다. DNN은 offline training 뒤 network weight를 고정하고 test channel을 forward pass에 넣습니다. 이 차이가 논문이 주장하는 real-time compute advantage의 근거입니다. 그러나 label generation과 network training은 별도 offline 비용입니다. 논문은 GPU를 training에 사용했고 testing에는 사용하지 않았다고 명시합니다. Table I과 Table II의 test-time ratio는 그러한 source implementation 비교에서 읽어야 하며, end-to-end radio latency나 mobile device energy measurement로 바꾸어 말할 수 없습니다.
+
+공개 출처
+spawc2017 | pp. 1-2, abstract and Sec. I; pp. 4-5, Secs. III-B and IV
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 15. 논문이 남긴 적용 범위와 다음 질문
+
+15. 논문이 남긴 적용 범위와 다음 질문
+
+발표 대본
+논문 결론은 현재 작업을 DNN과 관련 learning algorithm의 능력을 이해하기 위한 very preliminary step이라고 표현합니다. 저자들은 test distribution이 training distribution과 다른 scenario, DNN complexity를 더 줄이는 방법과 depth의 theoretical justification, 그리고 IC나 IMAC beamforming 같은 더 challenging problem으로의 extension을 질문으로 제시합니다. 발표에서는 DNN이 WMMSE label을 잘 모사했다는 empirical conclusion과 broader optimization or deployment claims를 구분합니다.
+
+공개 출처
+spawc2017 | p. 5, Sec. V
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766
+
+## 16. 논문의 전체 구조
+
+16. 논문의 전체 구조
+
+발표 대본
+마지막으로 논문의 argument를 한 문장씩 연결합니다. IC 전력 제어에서는 p 벡터가 모든 link의 WSR에 coupled effect를 냅니다. WMMSE는 반복으로 stationary power allocation을 만들고, 논문은 그 final output을 label로 하여 DNN을 MSE supervised learning으로 훈련합니다. Testing에서는 새 channel을 DNN에 한 번 통과시켜 power를 얻고 Eq. 7로 각 output을 feasible interval에 clip합니다. Table I과 II의 낮은 test-time ratio는 이 offline-online 분리에서 나옵니다. 이 결과의 범위는 source의 matched simulation protocol과 WMMSE-teacher target에 묶여 있습니다.
+
+공개 출처
+spawc2017 | pp. 1-5, abstract; Eqs. (1), (4)-(7); Tables I-II
+IEEE SPAWC 2017 proceedings paper record
+https://doi.org/10.1109/SPAWC.2017.8227766

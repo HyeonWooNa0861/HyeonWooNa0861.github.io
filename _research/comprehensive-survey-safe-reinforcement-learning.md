@@ -93,6 +93,11 @@ Risk-sensitive criterion에서는 $$\beta$$가 중요한 해석 변수다. 논�
 
 또 하나의 과제는 early risk와 long-term risk를 동시에 다루는 것이다. Risk function이 학습된 뒤 위험을 피하는 방법은 초반 시행착오를 막지 못할 수 있고, teacher advice는 초반에는 강하지만 human monitoring과 subjective judgment에 의존한다. 실용적인 확장 방향은 prior knowledge, demonstrations, runtime shields, uncertainty-aware constraints를 결합해 초기 탐색을 제한하고, 충분한 data가 쌓인 뒤에는 learned risk model과 constrained optimization으로 정책을 정교화하는 것이다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 23 slides | <a href="/assets/seminars/comprehensive-survey-safe-reinforcement-learning/safe-rl-survey-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/comprehensive-survey-safe-reinforcement-learning/safe-rl-survey-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/comprehensive-survey-safe-reinforcement-learning/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/comprehensive-survey-safe-reinforcement-learning/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

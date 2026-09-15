@@ -142,6 +142,11 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 
 모델 측면에서는 single-vehicle 중심 simulation과 제한된 traffic/channel parameter가 현실성을 제한한다. 실제 V2I 서비스로 확장하려면 multi-vehicle competition, RSU queueing, handover failure, packet loss, broader mobility trace를 포함해야 한다. 방법적으로는 multi-agent hierarchical RL, uncertainty-aware speed prediction, migration-risk-constrained reward, adaptive option discovery가 자연스러운 확장 방향이다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 24 slides | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/dhvo-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/dhvo-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

@@ -1,0 +1,342 @@
+---
+type: research-seminar-slides
+paper_id: dueling-network-architectures-deep-reinforcement-learning
+---
+
+# Dueling Network Architecture
+
+논문: Dueling Network Architectures for Deep Reinforcement Learning
+
+저자: Ziyu Wang, Tom Schaul, Matteo Hessel, Hado van Hasselt, Marc Lanctot, Nando de Freitas (2016)
+
+## 1. Dueling Network Architecture
+
+상태에 공통인 가치와 행동별 차이를 나누어 Q 벡터를 표현하는 방법
+
+
+근거: [pmlr-record](https://proceedings.mlr.press/v48/wangf16.html) bibliographic record, [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 1, Abstract and Fig. 1
+
+## 2. Q network가 예측하는 값
+
+Q 값은 지금의 보상이 아니라 이후 정책까지 포함한 기대 할인 return이다
+
+
+| 기호 | 뜻 | 읽는 질문 |
+| --- | --- | --- |
+| s | 현재 상태 | 에이전트가 무엇을 보고 있는가 |
+| a | 현재 선택할 행동 | 이 상태에서 무엇을 할 것인가 |
+| Q^pi(s,a) | a 이후 pi를 따를 기대 할인 return | 이 행동의 장기적 가치는 얼마인가 |
+| Q 벡터 | 상태 s에서 가능한 모든 행동의 Q 값 | 어떤 행동의 값이 가장 큰가 |
+
+핵심: Dueling 구조도 최종적으로는 행동마다 하나의 Q 값을 출력한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 3, Sec. 2, Eqs. (1)-(3)
+
+## 3. 정책의 가치와 advantage
+
+정의상 advantage는 한 행동의 Q 값이 정책 평균에서 얼마나 벗어나는지 나타낸다
+
+
+| 정책량 | 정의 | 의미 |
+| --- | --- | --- |
+| V^pi(s) | pi가 고르는 행동에 대한 Q^pi의 기댓값 | 상태 s에서 정책 전체의 평균적 가치 |
+| A^pi(s,a) | Q^pi(s,a) - V^pi(s) | 행동 a가 정책 가치보다 높은지 낮은지 |
+| 기댓값 성질 | pi에 따른 A^pi의 기댓값은 0 | 양수와 음수의 편차가 정책 평균에서 상쇄 |
+
+핵심: 정책량의 정의와 network stream의 출력 의미를 먼저 구분해야 한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 3, Sec. 2, Eqs. (2)-(3)
+
+## 4. 일반적인 Q network
+
+하나의 feature representation에서 행동별 Q 값을 직접 출력한다
+
+1. **상태 입력**: Atari에서는 여러 frame을 묶은 상태를 받는다
+2. **공통 feature**: convolution layer가 상태 표현을 만든다
+3. **단일 상위 경로**: 한 fully connected 경로가 행동별 값을 계산한다
+4. **Q 벡터**: 각 이산 행동에 하나의 Q 값을 출력한다
+
+핵심: 기존 구조는 상태 공통 성분과 행동별 차이를 명시적으로 나누지 않는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 1, Fig. 1; p. 3, Sec. 2.1
+
+## 5. 비슷한 행동이 많은 상태
+
+행동 선택이 거의 영향을 주지 않는 상태와 즉시 구별해야 하는 상태가 함께 존재한다
+
+
+| 상태 | 행동 간 차이 | 필요한 표현 |
+| --- | --- | --- |
+| 충돌 위험이 멀리 있음 | 여러 조향 행동의 단기 결과가 비슷할 수 있음 | 상태 전반의 공통 가치 |
+| 장애물이 바로 앞에 있음 | 조향 선택이 결과를 크게 바꿈 | 행동별 상대 차이 |
+| 논문의 가설 | 비슷한 행동이 많을수록 공통 성분을 공유할 여지가 큼 | 공통 성분과 행동 차이의 분리 |
+
+핵심: Enduro 사례는 동기를 설명하는 해석 자료이며 보편적 인과 증명이 아니다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 2, opening discussion and Fig. 2
+
+## 6. Dueling network의 분기와 결합
+
+공통 feature 뒤에서 scalar stream과 행동 수 크기의 vector stream이 갈라진다
+
+- **공통 feature**: 상태 s의 shared representation
+- **V stream**: 모든 행동에 공통인 scalar 1개
+- **A stream**: 행동마다 raw score 1개
+- **Aggregation**: raw A를 중심화한 뒤 V와 더함
+- **Q vector**: 행동마다 최종 Q 값 1개
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 1, Fig. 1; p. 4, Sec. 3
+
+## 7. Architecture와 학습 알고리즘의 구분
+
+Dueling, Double DQN, prioritized replay는 서로 다른 부분을 바꾼다
+
+
+| 방법 | 바꾸는 대상 | Dueling과의 관계 |
+| --- | --- | --- |
+| Dueling | Q 벡터의 network 표현 | 공통 성분과 행동별 차이를 분리 |
+| DQN | Q-learning target과 network 학습 | Dueling 출력을 학습할 수 있음 |
+| Double DQN | 다음 행동의 선택과 평가 역할 | 논문의 Atari 실험에서 함께 사용 |
+| Prioritized replay | replay 표본의 추출 확률 | 추가로 결합할 수 있으나 효과가 상호작용 |
+
+핵심: Dueling은 target 식이나 replay sampling을 대체하지 않는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 3-4, Secs. 2.1-3; pp. 6-8, Sec. 4.2
+
+## 8. 단순 합산 Eq. (7)
+
+정의에서 출발하면 Q(s,a) = V(s) + A(s,a)라는 결합이 자연스럽게 보인다
+
+- **공통 feature**: 상태 s의 shared representation
+- **V stream**: scalar V(s)를 출력
+- **A stream**: 행동별 raw A(s,a)를 출력
+- **단순 합산**: 각 행동에 Q = V + A를 계산
+- **최종 Q vector**: 행동별 Q(s,a) 값
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 4, Eq. (7) and following text
+
+## 9. Eq. (7)의 non-identifiability
+
+공통 offset을 두 stream 사이에서 옮겨도 최종 Q 벡터는 그대로다
+
+
+| 교육용 설정 | V | raw A | Q = V + A |
+| --- | --- | --- | --- |
+| 첫 표현 | 10 | [3, 0, -1] | [13, 10, 9] |
+| 공통 offset c | +4 | 각 원소에서 4를 뺌 | 변화 없음 |
+| 둘째 표현 | 14 | [-1, -4, -5] | [13, 10, 9] |
+| 관찰 가능한 값 | 서로 다름 | 서로 다름 | 완전히 같음 |
+
+핵심: Q supervision만으로는 공통 offset이 V와 raw A 중 어디에 속하는지 식별할 수 없다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 4, Eq. (7) and non-identifiability discussion
+
+## 10. Max-centered 대안 Eq. (8)
+
+가장 큰 raw advantage를 빼서 greedy 행동의 centered advantage를 0으로 만든다
+
+
+| 항목 | Eq. (8)의 처리 | 결과 |
+| --- | --- | --- |
+| 기준값 | 모든 raw A 중 최댓값 | greedy 행동을 기준으로 삼음 |
+| 중심화 | 각 raw A에서 최댓값을 뺌 | greedy 행동의 centered A가 0 |
+| Q 결합 | V에 centered A를 더함 | greedy 행동에서는 Q와 V가 같음 |
+| 논문의 선택 | 가능한 제약으로 제시 | 보고된 실험은 Eq. (9)를 사용 |
+
+핵심: Eq. (8)은 모호성을 제한하지만 논문의 최종 실험 aggregation은 Eq. (9)다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 4-5, Eq. (8) and following paragraph
+
+## 11. Mean-centered aggregation Eq. (9)
+
+raw A의 평균을 빼서 행동별 상대 차이만 남긴 뒤 scalar V와 결합한다
+
+- **공통 feature**: theta가 만든 상태 representation
+- **V scalar**: beta stream이 값 1개를 출력
+- **raw A vector**: alpha stream이 행동별 점수를 출력
+- **Mean centering**: A의 평균을 빼고 V를 더함
+- **Q vector**: Q = V + A - mean(A)
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 5, Eq. (9) and end of Sec. 3
+
+## 12. Eq. (9) 수치 계산
+
+교육용 예시에서 raw A를 중심화하고 최종 Q를 직접 계산한다
+
+
+| 계산 단계 | 값 | 확인 |
+| --- | --- | --- |
+| Stream 출력 | V_raw = 10, A_raw = [5, 2, 2] | 세 행동은 left, straight, right |
+| A 평균 | (5 + 2 + 2) / 3 = 3 | 공통 offset 3 |
+| Centered A | [5, 2, 2] - 3 = [2, -1, -1] | 합은 0 |
+| 최종 Q | 10 + [2, -1, -1] = [12, 9, 9] | Q 평균은 10 |
+| 행동 선택 | argmax Q = left | raw A의 순위와 같음 |
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 5, Eq. (9); numerical values are a constructed example
+
+## 13. Eq. (9)이 보존하는 것
+
+Mean centering은 하나의 표현 규칙을 정하지만 stream에 참된 정책 의미를 감독하지 않는다
+
+
+| 성질 | 보존 또는 성립 | 보장되지 않는 해석 |
+| --- | --- | --- |
+| 행동 간 차이 | Q(a1) - Q(a2)는 raw A의 차이와 같음 | 행동별 Q 값이 서로 독립이라는 뜻 |
+| 행동 순위 | argmax Q와 argmax raw A가 같음 | A stream만으로 target 값을 계산한다는 뜻 |
+| 평균 | 행동에 대한 Q의 단순 평균은 V scalar | V가 모든 정책의 V^pi라는 뜻 |
+| 표현 제약 | centered A의 합이 0 | raw A의 offset이 별도 정답으로 정해졌다는 뜻 |
+
+핵심: Network stream 이름과 참된 V^pi, A^pi의 의미 사이에는 해석 경계가 남는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 5, Eq. (9) discussion
+
+## 14. 기존 Q-learning 방식으로 학습
+
+별도의 V label이나 A label 없이 aggregated Q의 TD error가 두 stream으로 역전파된다
+
+1. **Replay 표본**: 상태, 행동, 보상, 다음 상태를 꺼낸다
+2. **학습 target**: DQN이나 DDQN 방식으로 bootstrap 값을 만든다
+3. **Aggregated Q**: 선택한 행동의 최종 Q 값을 조회한다
+4. **TD error**: target과 Q의 차이를 계산한다
+5. **공동 역전파**: 공통 feature와 V, A stream을 함께 갱신한다
+
+핵심: Dueling은 Q loss가 흐르는 내부 표현을 바꾸며 별도 학습 알고리즘을 추가하지 않는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 3-6, Secs. 2.1-4.2
+
+## 15. Corridor 실험의 통제 조건
+
+No-op 행동을 추가해 비슷한 행동 수만 바꾸고 policy evaluation error를 비교한다
+
+1. **세 corridor**: 수직 두 구간 10 state와 수평 50 state
+2. **기본 행동 5개**: 상하좌우 이동과 no action을 둔다
+3. **행동 수 변형**: 추가 no-op으로 5, 10, 20개를 만든다
+4. **고정 정책 평가**: epsilon 0.001의 정책을 TD로 평가한다
+5. **오차 측정**: 학습 Q와 정확한 Q^pi의 squared error 합
+
+핵심: 이 실험은 exploration 전체가 아니라 비슷한 행동 수와 가치 추정의 관계를 분리한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 5-6, Sec. 4.1 and Fig. 3
+
+## 16. Corridor 결과가 지지하는 범위
+
+행동 수가 늘어난 조건에서 dueling의 squared-error curve가 더 낮아졌다
+
+
+| 행동 수 | 논문의 관찰 | 해석 범위 |
+| --- | --- | --- |
+| 5 | 두 architecture의 수렴 속도가 비슷함 | 기본 조건에서는 뚜렷한 차이가 작음 |
+| 10 | Dueling curve가 single-stream보다 낮아짐 | 추가 no-op에서 공통 성분 공유가 유리 |
+| 20 | Dueling의 상대적 차이가 더 커짐 | 통제된 corridor에서 가설을 더 강하게 지지 |
+| 범위 밖 | 연속 행동이나 다른 task는 시험하지 않음 | 행동 수가 크면 항상 우세하다는 정리 아님 |
+
+핵심: Figure 3은 설계된 환경의 메커니즘 근거이며 모든 큰 action space에 대한 보장은 아니다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 6, Fig. 3; p. 8, Sec. 5
+
+## 17. Atari 실험 설계
+
+57개 게임에서 comparable-capacity single stream과 dueling DDQN을 비교한다
+
+
+| 항목 | 설정 | 읽는 법 |
+| --- | --- | --- |
+| 환경 | Arcade Learning Environment 57개 게임 | raw pixel과 reward로 학습 |
+| 공통 하위 구조 | DQN과 같은 세 convolution layer | 저수준 feature 조건을 맞춤 |
+| Dueling 상위 구조 | 512-unit fully connected stream 두 개 | Eq. (9)으로 Q 벡터를 생성 |
+| Single Clip | 유사한 parameter 수로 다시 학습한 baseline | architecture 비교의 통제를 강화 |
+| 학습 알고리즘 | Atari dueling model은 DDQN 사용 | representation과 target 변경을 결합 |
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 6, Sec. 4.2
+
+## 18. 두 Atari 평가 조건
+
+30 no-ops와 Human Starts는 서로 다른 시작 상태 다양성을 시험한다
+
+
+| 평가 | 시작 상태 | 점수 해석 |
+| --- | --- | --- |
+| 30 no-ops | 시작 전에 0회부터 30회의 no-op | 비교적 제한된 시작 변형 |
+| Human Starts | 전문가 trajectory에서 게임당 100개 상태 표본 | 사람이 도달한 다양한 상태에서 시작 |
+| Human Starts 보상 | 표본 시작 이후 보상만 집계 | 시작 전 전문가 보상은 제외 |
+| 실행 상한 | 표본 상태에서 시작한 평가 episode를 최대 108,000 frame 실행 | 평가 길이 조건을 함께 읽음 |
+| 표 수치 | Human-normalized score의 mean과 median | 확률이나 승률이 아님 |
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 7, Table 1 and evaluation text
+
+## 19. Table 1의 aggregate 결과
+
+57개 게임의 human-normalized score이며 각 게임에서 항상 우세했다는 뜻은 아니다
+
+
+| Model | No-op mean | No-op median | HS mean | HS median |
+| --- | --- | --- | --- | --- |
+| Single Clip | 341.2% | 132.6% | 302.8% | 114.1% |
+| Duel Clip | 373.1% | 151.5% | 343.8% | 117.1% |
+| Duel - Single | +31.9%p | +18.9%p | +41.0%p | +3.0%p |
+
+핵심: Duel Clip의 aggregate score는 높지만 개별 게임 우세를 보장하지 않는다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 7, Table 1
+
+## 20. 결합 실험과 해석 경계
+
+Prior. Duel Clip과 saliency map은 각각 호환성과 해석을 지지하지만 단일 원인 증명은 아니다
+
+
+| 근거 | 지지하는 설명 | 넘어서는 설명 |
+| --- | --- | --- |
+| Prior. Duel Clip | Prioritized replay와 dueling을 함께 사용할 수 있음 | 결합 성능 향상을 dueling 하나의 효과로 귀속 |
+| Gradient clipping | 학습 설정의 일부로 함께 적용 | Duel Clip이 stream 분리만 뜻한다고 단정 |
+| 9-game retuning | 결합 구성에서 hyperparameter 상호작용을 고려 | 모든 Atari 게임에 독립적으로 같은 설정을 최적화 |
+| Saliency map | 학습된 model이 본 입력 영역을 해석 | Stream의 참된 인과 의미를 증명 |
+
+핵심: 결합 결과는 방법 간 호환성을 보여 주지만 architecture 효과의 단일 변수 ablation이 아니다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 2 and 7-8, Figs. 2 and 5, Sec. 4.2
+
+## 21. Dueling architecture의 핵심
+
+Q 벡터의 공통 성분과 행동별 차이를 분리하고 식별 가능한 규칙으로 다시 결합한다
+
+1. **표현 문제**: 비슷한 행동도 Q 값을 각각 출력해야 한다
+2. **Stream 분리**: 공통 scalar와 행동별 raw vector를 만든다
+3. **Eq. (9)**: raw A의 평균을 빼고 V와 합쳐 Q를 만든다
+4. **학습 방식**: 기존 DQN이나 DDQN target으로 Q를 학습한다
+5. **실험 범위**: Corridor와 Atari에서 가설을 지지하는 결과를 보고한다
+
+핵심: Dueling은 Q-learning의 출력 형식을 유지하면서 network 내부 representation을 재구성한다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 1 and 4-8, Figs. 1, 3, 5 and Eq. (9)
+
+## 22. 부록: Network parameter 표기
+
+논문의 theta, alpha, beta는 공유 부분과 두 stream의 parameter 집합을 구분한다
+
+
+| 기호 | 담당 부분 | 출력과의 관계 |
+| --- | --- | --- |
+| theta | 공통 convolutional feature | V와 A stream이 함께 사용 |
+| beta | Value stream의 parameter | 상태마다 scalar V를 출력 |
+| alpha | Advantage stream의 parameter | 행동마다 raw A를 출력 |
+| 전체 Q | theta, alpha, beta를 모두 사용 | Eq. (9) aggregation 뒤 TD loss로 학습 |
+
+핵심: Parameter 집합은 나뉘지만 shared feature와 Q loss 때문에 두 stream은 공동으로 학습된다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) p. 4, Sec. 3, paragraph before Eq. (7)
+
+## 23. 부록: Dueling Double DQN의 한 update
+
+Representation과 target 계산을 한 학습 단계 안에서 각각 구분한다
+
+
+| 단계 | Dueling이 담당 | Double DQN이 담당 |
+| --- | --- | --- |
+| 현재 상태 Q | V와 centered A를 합쳐 Q 벡터 생성 | 현재 행동의 Q를 그대로 사용 |
+| 다음 행동 선택 | Online network 내부에서 같은 aggregation 수행 | Online Q가 가장 큰 행동을 선택 |
+| 다음 행동 평가 | Target network도 dueling Q 벡터 생성 | Target Q가 선택된 행동의 값을 평가 |
+| Loss와 update | Aggregated Q의 gradient가 두 stream에 전달 | 분리한 target으로 online parameter를 갱신 |
+
+핵심: Dueling은 Q 표현이고 Double DQN은 두 snapshot의 target 역할 분담이다
+
+근거: [arxiv-v3](https://arxiv.org/abs/1511.06581v3) pp. 3-6, Eqs. (6), (9) and Sec. 4.2

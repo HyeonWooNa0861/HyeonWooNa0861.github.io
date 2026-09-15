@@ -1,0 +1,215 @@
+## 1. MRD로 만드는 지정 길이 하이라이트
+
+1. MRD로 만드는 지정 길이 하이라이트
+
+발표 대본
+이 논문은 YouTube의 Most Replayed Data, 즉 MRD를 이용해 사용자가 지정한 길이의 하이라이트를 만드는 방법을 제안합니다. 핵심은 가장 높은 replay point만 모으는 것이 아닙니다. 각 segment가 너무 짧아져 맥락이 끊기지 않도록 길이 보상까지 넣고, 동적 계획법으로 정확한 출력 길이의 편집 path를 고릅니다.
+
+공개 출처
+paper | title, abstract
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 2. 좋은 순간만 고르면 지정 길이가 맞지 않는다
+
+2. 좋은 순간만 고르면 지정 길이가 맞지 않는다
+
+발표 대본
+기존 자동 highlight 방법 중 다수는 중요한 frame이나 segment를 추출하지만, 최종 길이는 선택된 조각에 따라 달라집니다. 지정 길이에 맞추는 threshold 방식도 높은 score frame을 단순히 모으면 짧고 급격한 cut을 만들 수 있습니다. 이 논문은 사용자가 L_user로 최종 length를 정하면, 어떤 moment를 몇 초 동안 보여 줄지까지 함께 결정하려고 합니다.
+
+공개 출처
+paper | pp. 1-3, Secs. 1, 3.1.1
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 3. MRD는 영상 시간별 replay intensity다
+
+3. MRD는 영상 시간별 replay intensity다
+
+발표 대본
+YouTube MRD graph는 video player에서 시간에 따른 replay intensity를 보여 줍니다. 논문은 원본 길이에 관계없이 MRD가 100개의 time point를 제공한다고 설명하고, 이를 one-second interval로 interpolate한 뒤 0에서 1의 normalized value를 reward로 씁니다. MRD peak가 축구의 주요 event와 잘 맞는 사례를 보이지만, 이것이 의미나 서사를 완벽히 이해한 label이라는 뜻은 아닙니다. 충분한 views가 있는 uploaded video에만 MRD가 제공되며 정확한 threshold는 공개되지 않았습니다.
+
+공개 출처
+paper | pp. 2-3, Fig. 2; p. 5, Sec. 4.2.1
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 4. MRD는 다른 engagement signal과 같지 않다
+
+4. MRD는 다른 engagement signal과 같지 않다
+
+발표 대본
+Section 2는 2018 France–Argentina soccer video에서 MRD peak가 goal과 yellow-card turn point 근처에 놓이는 것을 보입니다. MRD와 in-video sound의 cosine similarity는 .79, MRD와 live chat frequency는 .70입니다. 동시에 sound는 event가 없는 구간에서도 흔들리고 chat은 off-topic spam 때문에 peak가 생길 수 있어, MRD가 이 사례에서 event timing과 더 잘 맞았다고 분석합니다. 이 관찰은 방법의 input choice를 뒷받침하지만 모든 video category에서의 semantic correctness proof는 아닙니다.
+
+공개 출처
+paper | pp. 2-3, Fig. 2, Sec. 2
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 5. 입력 signal을 legal editing path로 바꾼다
+
+5. 입력 signal을 legal editing path로 바꾼다
+
+발표 대본
+입력에는 original video, its MRD graph, 그리고 target L_user가 있습니다. MRD를 second-level reward로 맞춘 뒤, 논문은 timestamp와 current segment duration의 조합으로 graph를 만듭니다. Dynamic programming은 L_user개 selected step으로 구성된 legal path 중 total reward가 최대인 것을 선택합니다. 실제 video rendering은 이 deck의 algorithm diagram 밖의 output assembly이며, Table 1 computation time도 rendering을 제외합니다.
+
+공개 출처
+paper | pp. 4-5, Fig. 3, Secs. 4.1-4.3
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 6. node {t,d}: time과 segment duration
+
+6. node {t,d}: time과 segment duration
+
+발표 대본
+Figure 3의 gray node는 {t,d}입니다. t는 original video의 second이고 d는 last segment transition 이후 현재 segment가 얼마나 재생됐는지입니다. Maximum D는 30 seconds로 설정합니다. 이 two-dimensional state 덕분에 algorithm은 same segment를 1초 더 이어갈 때와, 멀리 떨어진 새로운 segment로 jump할 때를 구분하고 duration reward도 정확히 적용합니다.
+
+공개 출처
+paper | p. 4, Fig. 3, Sec. 4.1.1
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 7. edge rule은 이어 보기와 새 moment 시작을 구분한다
+
+7. edge rule은 이어 보기와 새 moment 시작을 구분한다
+
+발표 대본
+Same-segment edge는 t'=t+1, d'=d+1입니다. New-segment edge는 d'=0이고 t'가 t+1이 아닌 경우, t'는 t+5 이상이어야 합니다. Source는 이 five-second minimum interval을 서로 다른 moment를 분명히 구별하고 one-second interruption을 피하기 위한 empirical rule이라고 설명합니다. 이 rule은 shot boundary detector가 아니라 editing transition의 시간 constraint입니다.
+
+공개 출처
+paper | pp. 4-5, Fig. 3, Sec. 4.1.2
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 8. reward: high MRD와 segment duration
+
+8. reward: high MRD와 segment duration
+
+발표 대본
+Source의 node reward는 R_MRD(t)+w R_dur(d)이고 w=.2입니다. MRD reward는 interpolate된 intensity value입니다. Duration reward는 current segment가 끝나고 new segment가 시작되는 node에서만 적용합니다. It increases until recommended minimum tau=8 seconds and remains 1 afterward. 따라서 high MRD frame이더라도 frequent transition으로 잘게 자르면 duration term이 불리해집니다.
+
+공개 출처
+paper | p. 5, Eqs. 1 and duration reward
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 9. 구성 예시: MRD 합이 path를 가른다
+
+9. 구성 예시: MRD 합이 path를 가른다
+
+발표 대본
+이 표의 MRD 값과 path는 teaching-only construction이며 paper result가 아닙니다. Both paths select six seconds, split into two 3-second segments, so each has the same transition/duration pattern and therefore the same duration-reward contribution. Both obey the five-second minimum gap. MRD sum is 3.45 for P_A and 2.50 for P_B, so P_A wins among these two under the source reward. Actual algorithm considers all legal candidates and adds the weighted duration reward.
+
+공개 출처
+paper | pp. 4-5, Secs. 4.1-4.3; constructed example
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 10. DP가 maximum-reward path를 찾는다
+
+10. DP가 maximum-reward path를 찾는다
+
+발표 대본
+논문은 P star를 L_user개의 node로 구성된 highlight editing path 중 reward sum을 최대화하는 path로 정의합니다. Dynamic programming은 legal predecessor로부터의 best cumulative score를 이용해 이 maximum path를 구합니다. 이 자료에서는 implementation detail을 생략하지만, source의 decision type은 learned policy나 threshold clipping이 아니라 discrete graph path optimization입니다.
+
+공개 출처
+paper | p. 5, Sec. 4.3
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 11. 사용자는 timestamp를 include/exclude할 수 있다
+
+11. 사용자는 timestamp를 include/exclude할 수 있다
+
+발표 대본
+사용자가 include/exclude timestamp를 고르면 source는 R_user(t)를 MRD reward에 더합니다. Include에는 positive Gaussian, exclude에는 negative Gaussian을 씁니다. Gaussian center는 user timestamp alpha이고, standard deviation은 1.333, lambda는 10으로 설정합니다. 여러 timestamp는 corresponding reward function을 더할 수 있습니다. 이 과정은 output length L_user를 바꾸지 않고 preferred moment의 path score만 바꿉니다.
+
+공개 출처
+paper | p. 5, Eq. 2, Sec. 4.4
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 12. 긴 target은 segment 수와 duration을 늘린다
+
+12. 긴 target은 segment 수와 duration을 늘린다
+
+발표 대본
+Figure 5는 L_user 30, 60, 90, 120의 soccer example입니다. 30 seconds에서 source는 top MRD peak 세 개를 선택합니다. Target length가 늘면 그 segment duration을 늘리고 additional segment를 포함합니다. Figure 6은 five YouTube video의 average로, segment count와 average segment duration은 증가하고 average MRD는 감소합니다. 이는 algorithm이 high peak 주변의 lower-MRD region을 점차 포함하기 때문입니다. Duration reward 때문에 observed average segment duration은 모든 L_user setting에서 8 seconds를 넘습니다.
+
+공개 출처
+paper | pp. 6-7, Figs. 5-6
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 13. 긴 원본과 긴 target은 path optimization 시간을 늘린다
+
+13. 긴 원본과 긴 target은 path optimization 시간을 늘린다
+
+발표 대본
+Table 1은 video rendering을 명시적으로 제외한 path optimization time만 보고합니다. 2m10s original에서 30-second target은 2.72 seconds, one-minute target은 4.34 seconds입니다. 10m21s original에서 two- and three-minute target은 7m16s와 9m59s입니다. Measurement는 2.20 GHz Intel Xeon Silver 4214 processor, 32GB memory, Python을 사용했습니다. 따라서 end-to-end rendering 또는 online service latency로 부르면 안 됩니다.
+
+공개 출처
+paper | p. 8, Table 1, Sec. 5.3
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 14. Study 1: proposed와 threshold의 같은 MRD 비교
+
+14. Study 1: proposed와 threshold의 같은 MRD 비교
+
+발표 대본
+Study 1에는 두 study 모두에 참여한 30 participants, 15 male과 15 female이 있습니다. Authors는 five YouTube video를 모으고 모든 method의 L_user를 60 seconds로 둡니다. Proposed와 threshold는 같은 MRD importance score를 사용합니다. Threshold는 frame을 MRD로 sort하고 high에서 low로 target length까지 고른 뒤 original order로 되돌립니다. Random은 MRD를 사용하지 않고 k non-overlapping equal-length segment를 고르며 k는 proposed method의 segment count와 같습니다. Participants는 original video 없이 sound를 켠 full highlight를 보고, video set과 within-set method order는 randomized됩니다.
+
+공개 출처
+paper | p. 8, Sec. 6.1.1
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 15. User Study 1에서 제안법은 세 viewer rating 모두 높았다
+
+15. User Study 1에서 제안법은 세 viewer rating 모두 높았다
+
+발표 대본
+Friedman test는 Q1, Q2, Q3에서 significant method difference를 보이며 chi-square는 37.16, 40.99, 38.97이고 모두 p<.0001입니다. Source는 Holm–Bonferroni correction을 둔 two-tailed Wilcoxon signed-rank post-hoc test를 씁니다. Proposed-versus-threshold와 proposed-versus-random은 각 question에서 p<.001입니다. 이 table은 7-point Likert mean이며 objective video-quality metric 또는 모든 target duration의 결과가 아닙니다.
+
+공개 출처
+paper | pp. 8-9, Fig. 8, Sec. 6.1.2
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 16. User Study 2: human short와 preference 비교
+
+16. User Study 2: human short와 preference 비교
+
+발표 대본
+Study 2는 10개의 YouTube video와 대응 YouTube Shorts pair를 선택한다. 각 pair에서 자동 편집의 L_user는 human-edited short 길이에 맞춰 20~60초로 설정한다. Human-edited highlight가 vertical short-form crop인 경우, authors는 original video와 frame matching하여 원래 aspect ratio로 복원한다. 참가자는 순서를 무작위로 받은 뒤 자동 편집, human short, equal preference 중 하나를 투표한다. Friedman 결과는 chi-square(2)=5.8919, p=.0526이다. 따라서 source는 세 선택지 사이의 statistically significant difference가 없고 comparable quality라고 보고한다. Non-significant test는 시청자가 두 결과를 구별할 수 없거나 모든 조건에서 품질이 동등하다는 proof로 바꾸어 말할 수 없다.
+
+공개 출처
+paper | pp. 9-10, Fig. 10, Sec. 6.2
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 17. MRD data와 video structure의 한계
+
+17. MRD data와 video structure의 한계
+
+발표 대본
+원문은 MRD가 unuploaded 또는 insufficient-view video에는 없을 수 있으며, MRD prediction은 future extension이라고 말한다. 매우 긴 video는 node와 path가 늘어 비용이 커지고, 1-second precision을 희생하는 coarser node interval을 제안한다. 이 방법은 shot boundary를 명시적으로 쓰지 않고 original aspect ratio를 보존하며, MRD peak가 뚜렷하지 않으면 만족스럽지 않을 수 있다. Short highlight는 engaging moment를 우선하므로 full narrative를 재구성할 필요는 없다.
+
+공개 출처
+paper | pp. 10-11, Secs. 7.1-7.4
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880
+
+## 18. 핵심 정리
+
+18. 핵심 정리
+
+발표 대본
+이 논문을 이해하는 가장 정확한 방식은 MRD-based video understanding model로 부르는 것이 아니라 constrained editing optimizer로 보는 것입니다. MRD provides a viewer-behavior signal; the graph makes legal contiguous or separated segments explicit; reward balances MRD and duration; and dynamic programming finds the requested-length path. Controlled viewer ratings support the design in the studied conditions, while availability, scale, visual transition, format, and narrative limits remain.
+
+공개 출처
+paper | abstract; pp. 4-11
+CHI '25 paper record
+https://doi.org/10.1145/3706598.3713880

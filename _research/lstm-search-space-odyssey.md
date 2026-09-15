@@ -72,6 +72,11 @@ LSTM은 long-term dependency를 다루는 대표적인 recurrent architecture지
 
 MEC offloading 연구에서 LSTM은 edge load, queue, task arrival의 시간적 변화를 기억하는 데 사용된다. 이 논문은 왜 LSTM을 사용할 때 gate 구성과 activation choice가 중요한지 empirical background를 제공한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 32 slides | <a href="/assets/seminars/lstm-search-space-odyssey/lstm-odyssey-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/lstm-search-space-odyssey/lstm-odyssey-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/lstm-search-space-odyssey/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/lstm-search-space-odyssey/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

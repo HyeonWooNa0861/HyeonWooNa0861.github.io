@@ -73,6 +73,11 @@ Multi-user multi-server MEC에서는 사용자의 이동으로 computing request
 
 QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 spatial mobility와 temporal dependency를 강조한다. 두 관점은 상호 보완적이며, 실제 MEC 시스템에서는 부하 집중, 이동성, channel competition이 함께 발생한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 31 slides | <a href="/assets/seminars/joint-task-offloading-channel-allocation-spatial-temporal-mec/toica-seminar-ko-v3.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/joint-task-offloading-channel-allocation-spatial-temporal-mec/toica-seminar-ko-v3.pptx" download>Download</a> | <a href="/assets/seminars/joint-task-offloading-channel-allocation-spatial-temporal-mec/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/joint-task-offloading-channel-allocation-spatial-temporal-mec/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

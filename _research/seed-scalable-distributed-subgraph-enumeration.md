@@ -107,6 +107,11 @@ Power-law 기반 추정은 graph domain이나 query가 달라질 때 오차가 �
 
 원문은 CC BY-NC-ND 4.0 조건으로 제공된다. 이 블로그의 local PDF는 원문을 변경하지 않은 사본이며, 저자와 공식 출처를 함께 표시한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 42 slides | <a href="/assets/seminars/seed-scalable-distributed-subgraph-enumeration/seed-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/seed-scalable-distributed-subgraph-enumeration/seed-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/seed-scalable-distributed-subgraph-enumeration/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/seed-scalable-distributed-subgraph-enumeration/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

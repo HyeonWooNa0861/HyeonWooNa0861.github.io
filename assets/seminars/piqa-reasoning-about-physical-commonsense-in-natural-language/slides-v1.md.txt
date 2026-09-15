@@ -1,0 +1,254 @@
+---
+type: research-seminar-slides
+paper_id: piqa-reasoning-about-physical-commonsense-in-natural-language
+---
+
+# PIQA: 자연어로 묻는 물리적 상식
+
+논문: PIQA: Reasoning about Physical Commonsense in Natural Language
+
+저자: Yonatan Bisk, Rowan Zellers, Ronan Le Bras, Jianfeng Gao, Yejin Choi (2019)
+
+## 1. PIQA: 자연어로 묻는 물리적 상식
+
+일상 물체를 어떻게 다룰지 묻는 두 선택지 benchmark가 언어모델의 물리 상식을 어떻게 진단하는가
+
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 1, title and abstract
+
+## 2. 왜 자연어 모델에 물리적 상식을 따로 묻는가
+
+사람이 글로 자주 쓰는 해결책과 물체의 실제 성질·관계는 같은 정보가 아니다
+
+- **일상 행동의 goal**: 물체를 고치고·만들고·조작한다
+- **보고 편향**: 전형적 도구와 절차가 더 자주 서술됨
+- **필요한 물리 지식**: 물성·형상·관계·전제조건을 판단
+- **빈틈**: 말뭉치만으로는 덜 보고된 상식이 남음
+- **PIQA**: 두 solution 중 물리적으로 적절한 것을 선택
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 1–2, Introduction; Dataset
+
+## 3. PIQA의 한 문항: goal과 두 solution
+
+입력 q, s1, s2가 주어지며 두 solution 중 정확히 하나가 가장 적절한 정답이다
+
+
+| 요소 | 역할 | 무엇을 판단하는가 |
+| --- | --- | --- |
+| goal q | 달성할 post-condition | 무엇이 성공인가 |
+| solution s1 | 후보 절차 하나 | 물리적으로 성립하는가 |
+| solution s2 | 다른 후보 절차 | 더 적절한 선택은 무엇인가 |
+| label | 정답 하나 | 두 후보 중 선택 |
+
+핵심: PIQA는 새 계획을 만드는 문제가 아니라 주어진 두 후보를 비교하는 문제다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 2, Dataset
+
+## 4. 형식을 읽는 자체 제작 예시
+
+아래 문항은 PIQA 원문·데이터가 아니라 두 선택지 형식을 설명하기 위해 새로 만든 예시다
+
+
+| 항목 | 내용 | 판단 근거 |
+| --- | --- | --- |
+| goal | 비 오는 날 메모를 젖지 않게 보관 | 물이 종이에 닿지 않아야 함 |
+| 선택지 A | 지퍼 비닐 봉투에 메모를 넣기 | 차단된 봉투가 물을 막음 |
+| 선택지 B | 젖은 수건으로 메모를 감싸기 | 수분이 종이에 전달됨 |
+| 정답 | A | 이 예시에서만의 물리적 판단 |
+
+핵심: 문장 유창성보다 goal의 성공 조건과 각 행동의 물리적 결과를 연결해야 한다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 2, Dataset task definition
+
+## 5. 원문이 보인 두 종류의 물리적 판단
+
+Fig. 2는 물체의 기본 속성을 묻는 경우와 여러 방법 중 더 편리한 것을 고르는 경우를 함께 보인다
+
+- **goal과 두 solution**: 어떤 절차가 더 적절한지 비교
+- **shape·material·purpose**: 다공성·곡률·용도 같은 기본 물성
+- **convenience**: 가능한 방법 중 더 편리한 방법
+- **정답 선택**: 목표와 물리적 결과를 연결
+- **주의**: 편리성 판단은 단순 참·거짓과 다를 수 있음
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 2, Fig. 2 caption
+
+## 6. 데이터는 어떻게 만들어졌는가
+
+how-to 자료는 annotator가 비전형적 일상 재료를 떠올리게 하는 발상 scaffold였다
+
+1. **Instructables 참고**: 여섯 범주의 how-to를 발상으로 사용
+2. **physical goal**: 성공 post-condition을 문장으로 작성
+3. **valid solution**: goal을 달성하는 절차를 작성
+4. **plausible trick**: 그럴듯하지만 틀린 변형을 작성
+5. **QA pair**: 두 solution 중 하나만 정답으로 구성
+
+핵심: trick은 무작위 오답이 아니라 물리·전제조건을 미세하게 어긴 그럴듯한 후보다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 2–3, Collecting data; Fig. 3
+
+## 7. 사람이 만든 문항도 검증과 제거를 거친다
+
+qualification과 후속 validation은 애매하거나 전문 지식에 의존하는 문항을 줄이려는 장치다
+
+- **레인 quality control**
+  - **qualification**: 80% 초과로 통과해야 참여
+  - **annotation**: goal·solution·trick 작성
+  - **validation**: 다른 annotator가 정답 확인
+  - **filter**: low agreement 사례를 제거
+  - **dataset**: 일상 상식 범위의 QA pair
+- qualification → annotation (실선, 단방향)
+- annotation → validation (실선, 단방향)
+- validation → filter (실선, 단방향)
+- filter → dataset (실선, 단방향)
+
+핵심: 정답 label은 자동 추론 결과가 아니라 사람의 작성·검증·합의 필터를 거친 결과다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 3, validation; footnote 2
+
+## 8. 원문이 보고한 데이터 규모와 균형 단서
+
+정답과 trick의 표면 길이·어휘를 가깝게 만들어 단순한 문장 단서만으로 맞히기 어렵게 하려 했다
+
+
+| 항목 | 원문 보고 | 의미 |
+| --- | --- | --- |
+| split | train 16K 초과; dev 약 2K; test 약 3K | v1에서의 대략 규모 |
+| 길이 | goal 7.8단어; solution 21.3단어 평균 | 정답·trick 길이 분포가 거의 같음 |
+| 어휘 | 품사별 정답·trick 어휘 최소 85% 겹침 | 표면 단서 축소를 시도 |
+| 어휘량 | 3.7M 초과 train lexical token | 일상 물체·조작 표현 포함 |
+
+핵심: 길이와 어휘 균형은 필요한 통제지만, 모든 annotation artifact를 없애지는 못한다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 3, Statistics; Fig. 4
+
+## 9. AFLite: 쉽게 맞힐 수 있는 표면 artifact를 더 줄이기
+
+AFLite는 표현 embedding만으로 label을 너무 잘 예측하게 만드는 instance를 찾아 버리는 bias-reduction 절차다
+
+- **레인 artifact filtering**
+  - **5,000개 seed**: BERT-Large fine-tune
+  - **embedding**: 남은 instance 표현 계산
+  - **선형 ensemble**: random subset classifiers
+  - **predictability**: label을 쉽게 예측하는가
+  - **filtered data**: 쉬운 instance를 discard
+- 5,000개 seed → embedding (실선, 단방향)
+- embedding → 선형 ensemble (실선, 단방향)
+- 선형 ensemble → predictability (실선, 단방향)
+- predictability → filtered data (실선, 단방향)
+
+핵심: AFLite는 물리 정답 판정기가 아니라 표현 기반 예측 가능성을 낮추려는 filter다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 3–4, Removing Annotation Artifacts
+
+## 10. 평가: 각 후보를 score하고 둘 중 하나를 고른다
+
+원문의 transformer fine-tuning은 goal과 각 solution을 독립적으로 넣고 두 score에 softmax를 적용한다
+
+- **레인 choice scoring**
+  - **goal q**: 달성해야 할 상태
+  - **두 입력**: q+s1 과 q+s2를 각각 구성
+  - **transformer**: 각 choice의 CLS hidden state
+  - **두 score**: linear transformation을 적용
+  - **prediction**: softmax 뒤 더 큰 option 선택
+- goal q → 두 입력 (실선, 단방향)
+- 두 입력 → transformer (실선, 단방향)
+- transformer → 두 score (실선, 단방향)
+- 두 score → prediction (실선, 단방향)
+
+핵심: 측정되는 것은 두 문장 후보의 상대적 선택 정확도이며, 실제 행동을 실행한 성공률이 아니다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 4, Experiments
+
+## 11. 2019년 원문 Table 1: 모델과 사람의 격차
+
+가장 높은 test 모델 수치는 RoBERTa 77.1%였고, human 94.9%는 development set majority vote로 측정됐다
+
+
+| 방법 | Validation accuracy | Test accuracy |
+| --- | --- | --- |
+| random / majority | 50.0% / 50.5% | 50.0% / 50.4% |
+| OpenAI GPT 124M | 70.9% | 69.2% |
+| Google BERT 340M | 67.1% | 66.8% |
+| FAIR RoBERTa 355M | 79.2% | 77.1% |
+| human | 94.9% | 원문 표에 test 값 없음 |
+
+핵심: human·모델 차이는 원문 조건의 진단 신호이며, 조건을 지운 단일 순위가 아니다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 5, Table 1 and evaluation notes
+
+## 12. 작은 문장 차이도 물리적 결과를 크게 바꾼다
+
+원문은 train·validation의 약 60%가 두 solution 사이 1–2단어 edit라고 보고하며, 이를 진단에 활용한다
+
+
+| 관찰 | 원문의 방법 | 해석 |
+| --- | --- | --- |
+| 편집 거리 | tokenized·lowercase string의 edit distance | 두 후보가 얼마나 다른지 측정 |
+| 분포 | 약 60%가 1–2단어 edit | 미세한 차이도 흔함 |
+| 난이도 | 거리가 커질수록 대체로 어려움 증가 | 작은 edit도 충분히 혼동 가능 |
+| 진단 | 한 phrase 차이를 가진 사례를 분석 | 어떤 상식 지식이 필요한지 관찰 |
+
+핵심: 두 답이 비슷해 보여도, 차이를 물리 결과와 연결해야 정답을 고를 수 있다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 5–6, Fig. 6
+
+## 13. 무엇에서 어려움을 보였는가
+
+원문의 RoBERTa 진단은 흔한 단어라도 관계·다양한 affordance·동사 변화가 어려울 수 있음을 보였다
+
+
+| 원문 관찰 | Validation 분석 수치 | 읽는 방법 |
+| --- | --- | --- |
+| 관계어 | before·after·top·bottom에서 거의 chance | 미묘한 공간·시간 관계 |
+| water | 75% | 여러 물성과 용도를 가진 폭넓은 명사 |
+| spoon | 90% | 범위가 더 좁은 affordance 사례 |
+| freeze | 66% | 동사 변화도 어려운 사례 |
+
+핵심: 이 값은 선택된 validation subset의 진단값이지, 전체 물리 상식 점수는 아니다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 6–7, Figs. 7–8
+
+## 14. 자체 제작 trace: 한 단어 차이를 물성으로 검증하기
+
+아래는 원문 문항이 아닌 강의용 예시로, goal의 성공 조건을 먼저 적으면 선택 근거를 재계산할 수 있다
+
+
+| 단계 | 자체 제작 예시 | 검증 |
+| --- | --- | --- |
+| goal | 젖은 접시를 닦아 물기를 없앤다 | 접시 표면의 물을 흡수해야 함 |
+| A | 마른 천으로 접시를 닦는다 | 천이 물을 흡수하므로 성공 |
+| B | 비닐 랩으로 접시를 닦는다 | 흡수가 아니라 표면에 물을 밀 수 있음 |
+| 선택 | A | 목적의 post-condition으로 역검증 |
+
+핵심: 정답을 고른 뒤에도 ‘어떤 물성 때문에 goal이 달성되는가’를 말할 수 있어야 한다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 5–7, Figs. 6–9 diagnostic method
+
+## 15. PIQA 점수로 말할 수 있는 것과 없는 것
+
+PIQA는 자연어 두 후보의 물리적 적절성 선택을 진단하지만, 실제 행동의 모든 능력을 직접 측정하지는 않는다
+
+
+| PIQA가 직접 측정 | 직접 보장하지 않음 | 원문이 남긴 방향 |
+| --- | --- | --- |
+| goal과 두 solution의 상대 선택 | 새 solution 생성·장기 계획 | world interaction과 language 연결 |
+| 자연어 표현의 physical commonsense | 로봇의 실제 조작 성공 | interaction으로 지식을 정교화 |
+| 선택된 모델의 오류 양상 | 모든 언어·문화의 상식 | 언어만의 학습 한계 탐색 |
+
+핵심: PIQA는 물리 상식의 일부를 드러내는 diagnostic이며, 실제 조작 능력의 완결된 시험은 아니다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) p. 7, Conclusion; related work
+
+## 16. PIQA를 읽는 다섯 가지 핵심
+
+benchmark의 구성 요소와 평가 수치를 함께 보아야 ‘물리 상식’이라는 주장 범위를 정확히 읽을 수 있다
+
+- 문제는 자연어의 유창함보다 goal을 이루는 물리 결과를 고르는 것이다.
+- Instructables와 human-written trick은 비전형적 도구·미세 오류를 끌어낸다.
+- 길이·어휘 균형과 AFLite는 다른 표면 artifact를 줄이려는 장치다.
+- Table 1과 오류 분석은 특정 모델·split·subset의 조건부 증거다.
+- 결론은 언어와 세계 interaction을 연결하는 표현을 향한다.
+
+핵심: 좋은 PIQA 해석은 높은 점수 하나가 아니라 문항 생성·통제·오류 양상을 함께 설명한다
+
+근거: [piqa-v1](https://arxiv.org/abs/1911.11641v1) pp. 1–7, abstract through conclusion

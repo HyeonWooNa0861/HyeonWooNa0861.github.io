@@ -92,6 +92,11 @@ $$\tau_p=3$$에서는 제안 방식이 SE를 약간 낮추는 대신 link 수를
 2. 목적식은 sum SE와 active connection penalty에 집중한다. 논문이 결론에서 언급하듯 energy efficiency, latency, fronthaul budget, transmit power를 함께 다루는 multi-objective formulation으로 확장할 수 있다.
 3. Pilot assignment와 power control은 완전히 end-to-end로 학습되지 않는다. Clustering, pilot allocation, power allocation을 joint policy로 다루면 pilot contamination과 load balancing을 더 직접적으로 줄일 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 16 slides | <a href="/assets/seminars/deep-learning-user-centric-clustering-cf-mimo/cf-mimo-clustering-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/deep-learning-user-centric-clustering-cf-mimo/cf-mimo-clustering-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/deep-learning-user-centric-clustering-cf-mimo/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/deep-learning-user-centric-clustering-cf-mimo/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 - [Local source PDF](/assets/pdfs/research/deep-learning-user-centric-clustering-cf-mimo/deep-learning-user-centric-clustering-cf-mimo.pdf){:target="_blank" rel="noopener"}

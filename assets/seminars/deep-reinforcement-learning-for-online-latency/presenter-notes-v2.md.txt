@@ -1,0 +1,227 @@
+## 1. DECENT: 온라인 MEC Offloading의 지연·자원 결정
+
+1. DECENT: 온라인 MEC Offloading의 지연·자원 결정
+
+발표 대본
+이 발표는 Akhavan 등의 DECENT 논문을 소개합니다. 논문은 이미 offloading하기로 결정된 IoT task가 도착할 때, 어느 MEC server로 보낼지와 얼마나 많은 computing resource를 줄지를 함께 고릅니다. 핵심 목적은 priority를 반영한 cumulative response time을 낮추는 것입니다. 여기서 제시되는 결과는 특정 simulation의 비교 결과이며, global optimality나 field deployment 보장은 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 1, title and abstract
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 2. 가장 가까운 MEC server가 항상 최선은 아닌 이유
+
+2. 가장 가까운 MEC server가 항상 최선은 아닌 이유
+
+발표 대본
+MEC는 remote cloud보다 가까운 compute resource를 제공할 수 있지만, 논문은 가까운 MEC server가 computing resource의 제한 때문에 최선이 아닐 수 있다고 설명합니다. BS는 destination별 communication queue를, MEC server는 computing queue를 유지합니다. 따라서 어떤 server가 좋은지는 network side와 compute side의 현재 적체, 그리고 task priority에 따라 달라집니다.
+
+공개 출처
+arxiv-v2 | pp. 1–3, abstract; Fig. 1
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 3. 이 논문이 결정하는 것과 결정하지 않는 것
+
+3. 이 논문이 결정하는 것과 결정하지 않는 것
+
+발표 대본
+논문은 tasks have already been determined to be offloaded라고 명시합니다. 그러므로 local versus offloading policy로 확장해서 설명하면 안 됩니다. resource management는 MEC server에서 task에 줄 compute resource의 양입니다. 또한 return result를 device로 보내는 delay는 모델에서 고려하지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 2–4, Sec. 3
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 4. MEC 시스템에서 BS가 보는 두 종류의 대기열
+
+4. MEC 시스템에서 BS가 보는 두 종류의 대기열
+
+발표 대본
+Figure 1은 BS가 여러 communication queue를 갖고, 각 MEC server가 computing queue를 갖는 구조를 보여줍니다. communication queue는 task가 해당 MEC server로 전송되기 전 대기하는 곳이고, computing queue는 충분한 compute resource가 풀리기까지 대기하는 곳입니다. 이 도식은 한 task의 logical path를 설명하며, training episode의 시간축은 아닙니다.
+
+공개 출처
+arxiv-v2 | pp. 2–3, Fig. 1; Sec. 3
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 5. response time은 network path와 computing path를 합친다
+
+5. response time은 network path와 computing path를 합친다
+
+발표 대본
+Network delay는 transmission time, BS와 MEC server 사이 E2E delay, 그리고 해당 destination의 communication-queue wait를 합칩니다. Computing delay는 execution time과 computing-queue wait를 합칩니다. source Eq. 3에서 execution time은 μlᵢ/rᵢₖ이므로, resource allocation은 computing path를 바꿉니다. split branches는 논리적 분해이며, 두 branch가 병렬로 독립 실행된다는 뜻은 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eqs. (1)–(3)
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 6. P0: priority를 반영한 response time 최소화
+
+6. P0: priority를 반영한 response time 최소화
+
+발표 대본
+P0의 ηᵢ는 task priority 또는 weight입니다. ηᵢ가 크면 system이 그 task의 response time을 더 줄이려 한다고 논문은 설명합니다. constraint 5는 task 하나가 하나의 MEC server에만 offload됨을, constraint 7은 rᵢₖ가 CPU core 수 같은 discrete computing-resource block임을 뜻합니다. 논문은 P0를 NP-hard라고 부르고 DRL로 sub-optimal solution을 찾습니다. 별도의 NP-hardness proof는 제공하지 않습니다.
+
+공개 출처
+arxiv-v2 | p. 4, Eqs. (4)–(7)
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 7. 도착 순간의 MDP state는 무엇인가
+
+7. 도착 순간의 MDP state는 무엇인가
+
+발표 대본
+Section 4는 state sᵢ를 ηᵢ, lᵢ, C, D, B로 명시합니다. C는 task i 도착 순간 서버에서 실행 중인 task들의 r을 뺀 remaining resource입니다. D는 computing queue workload이고 B는 destination별 communication queue의 waiting time입니다. source는 이 값들이 관측 가능하다고 모델링하며, stale telemetry나 partial observability를 평가하지 않습니다.
+
+공개 출처
+arxiv-v2 | p. 5, Sec. 4 state definition
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 8. action·reward: server와 resource의 짝
+
+8. action·reward: server와 resource의 짝
+
+발표 대본
+논문은 action aᵢ를 {rᵢₖ, xᵢₖ}로 정의합니다. reward는 rᵢ=−ηᵢΣₖxᵢₖ(Tᵢₖᶜᵒᵐᵖ+Tᵢₖⁿᵉᵗ)입니다. 따라서 작은 weighted response time은 덜 음수인, 더 큰 reward를 만듭니다. source는 actor softmax가 action distribution을 만든다고 쓰지만, legal server-resource pair를 flatten하는지 factorize하는지, 혹은 mask하는지는 지정하지 않습니다.
+
+공개 출처
+arxiv-v2 | p. 5, Sec. 4 action, transition, reward
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 9. A2C에서 actor와 critic이 나누는 일
+
+9. A2C에서 actor와 critic이 나누는 일
+
+발표 대본
+이 slide는 action generation이 아니라 replay에서 sample한 transition의 update dependency를 보여 줍니다. 원문 Eq. 8은 discounted expected cumulative reward J(theta)를, Eq. 9는 policy-gradient expression을, Eq. 10은 TD advantage를, Eq. 11은 printed actor update를 제시합니다. 원문은 critic input을 state-action pair라고 설명하면서 output은 state value V(s)로 표기합니다. 이 interface를 특정 implementation으로 정규화하지 않습니다. Arrows는 learning dependency이며 physical MEC queue의 time axis가 아닙니다. Eq. 11의 sign convention도 원문만으로 해결되지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 5–6, Eqs. (8)–(13); Algorithm 1
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 10. 원문의 actor·critic update와 구현 경계
+
+10. 원문의 actor·critic update와 구현 경계
+
+발표 대본
+Source text는 actor가 J(theta)를 maximize한다고 말하지만 Eq. 11은 theta에서 beta_a times gradient J를 빼는 형태로 print되어 있고 gradient descend라고 부릅니다. 따라서 source만으로는 implementation이 negative loss를 minimize했는지, gradient sign을 바꿨는지, 표기에 부호 문제가 있는지 결정할 수 없습니다. Softmax probabilities와 stated epsilon-greedy selection을 어떻게 연결하는지, legal server-resource pair encoding과 masking도 source는 정하지 않습니다. 이 덱은 printed update를 제시하지만 특정 code correction을 단정하지 않습니다. Algorithm 1의 replay buffer도 source에 명시되므로 standard on-policy A2C라고 덧붙이지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 5–6, Eqs. (8)–(13); Algorithm 1
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 11. Algorithm 1: training에서 transition을 모아 update한다
+
+11. Algorithm 1: training에서 transition을 모아 update한다
+
+발표 대본
+Algorithm 1은 training episode와 task arrival의 nested loop를 보입니다. 각 arrival에서 state를 얻고, epsilon-greedy로 [xᵢₖ,rᵢₖ]를 계산하고, reward를 계산해 transition을 replay buffer에 넣습니다. 그 후 sampled transitions로 actor Eq. 11과 critic Eq. 13을 update합니다. 논문은 epsilon-greedy가 10% random, 90% greedy action이라고 명시하지만, replay sampling batch size나 convergence criterion은 주지 않습니다. 이 flow는 training procedure 순서입니다.
+
+공개 출처
+arxiv-v2 | p. 6, Algorithm 1 and following text
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 12. 강의용 trace: reward와 advantage를 직접 계산해 보기
+
+12. 강의용 trace: reward와 advantage를 직접 계산해 보기
+
+발표 대본
+이 slide는 source Eqs. 10의 계산을 위한 teaching toy입니다. η=20, gamma=0.9, V(sᵢ)=−4, V(sᵢ₊₁)=−1을 가정합니다. MEC 1의 response time 0.12 s와 MEC 2의 0.20 s도 invented values입니다. A의 reward는 −2.4, B의 reward는 −4.0이며, advantage는 각각 +0.7과 −0.9입니다. 따라서 A는 이 critic baseline보다 좋고 B는 나쁘다는 뜻입니다. 이것은 policy optimality theorem도, source experiment의 latency도 아닙니다.
+
+공개 출처
+arxiv-v2 | p. 5, reward and Eq. (10)
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 13. 두 baseline은 서로 다른 한 가지 신호만 본다
+
+13. 두 baseline은 서로 다른 한 가지 신호만 본다
+
+발표 대본
+Nearest server baseline은 BS에서 lowest E2E delay를 가진 MEC server를 고릅니다. Largest server baseline은 largest remaining computing resource를 가진 MEC server를 고릅니다. 이들은 paper p. 6의 두 baseline입니다. DECENT는 state C, D, B, eta, l을 함께 쓰도록 설계되지만, 이 comparison만으로 모든 alternative policy보다 우수하다고 말할 수는 없습니다.
+
+공개 출처
+arxiv-v2 | p. 6, baseline definitions
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 14. simulation 조건 1: topology와 resource
+
+14. simulation 조건 1: topology와 resource
+
+발표 대본
+Section 5는 one BS와 four MEC servers를 사용하며 distance는 0, 1, 2, 3 km입니다. E2E delay는 T=alpha d+zeta이고 initially alpha=.03 s/km, zeta=.03 s입니다. Rmax=200 Mcycles/s, link capacity w=2 times 10 to the 9 bits/s입니다. Resource set은 {10,20,40,60,80,100,120,140,160,200} Mcycles/s이며 continuous range가 아닙니다. Arrival, task-size distribution, task parameters, training rates는 다음 slide에서 분리해 표시합니다.
+
+공개 출처
+arxiv-v2 | p. 6, Table 1 and Sec. 5
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 15. simulation 조건 2: workload와 training
+
+15. simulation 조건 2: workload와 training
+
+발표 대본
+Task arrival은 average rate 50 tasks/s의 Poisson distribution입니다. Task size는 source가 exactly l_i~N(3 times 10 to the 7 bits, 3 times 10 to the 5)로 print합니다. Second parameter를 variance나 standard deviation으로 이름 붙이지 않으므로 이 slide도 원문 표기만 보존합니다. Computation intensity는 mu=.15 CPU cycles/bit이고 task weight는 {10,20,50,100}에서 uniform하게 선택됩니다. Table 1은 actor learning rate .0001, critic .0002, exploration epsilon .1을 줍니다.
+
+공개 출처
+arxiv-v2 | p. 6, Table 1 and Sec. 5
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 16. 무엇이 측정되었고, 어디까지 말할 수 있는가
+
+16. 무엇이 측정되었고, 어디까지 말할 수 있는가
+
+발표 대본
+Figure 2 text는 learning curve가 around 500 episodes에 quickly converge한다고 말합니다. Figure 3 prose는 average arrival rate 50 tasks/s에서 task별 weighted response time을 비교하며 DECENT가 1 second보다 작다고 설명합니다. 그러나 rendered Figure 3 y-axis는 Response time (ms)로 label되어 있어 source-label inconsistency가 있습니다. 이 덱은 이를 weighted metric으로 silently resolve하지 않습니다. Figure 4는 6,400 tasks에서 arrival rate를 바꾼 결과이고 DECENT는 plotted range에서 500 ms보다 작다고 말합니다. Figures 6–7도 mu와 alpha를 바꾼 source scenarios에서 two baselines 대비 lowest average weighted response time을 보고합니다.
+
+공개 출처
+arxiv-v2 | pp. 6–8, Figs. 2–7 and text
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 17. priority와 execution time: 보고된 관계
+
+17. priority와 execution time: 보고된 관계
+
+발표 대본
+Source는 higher weight가 task가 lower delay에 실행되어야 한다는 뜻이라고 설명합니다. Figure 5는 DECENT에서 weight class별 average network and computing delay를 보이고 higher-weight tasks가 lower execution time을 가진다고 서술합니다. 그러나 paper는 hard deadline constraint, admission control, priority fairness theorem을 주지 않습니다. 이 slide는 Figure 5의 measured behavior를 objective의 eta와 연결할 뿐, deadline guarantee를 주장하지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 4, 6–7, Eq. (4); Fig. 5 text
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 18. 이 논문을 적용 주장으로 바꾸기 전에 남는 경계
+
+18. 이 논문을 적용 주장으로 바꾸기 전에 남는 경계
+
+발표 대본
+마지막으로 scope를 확인합니다. Source의 explicit MDP state는 eta_i, l_i, C, D, B입니다. E2E delay는 network delay model 항이며 source는 network controller가 이를 monitor할 수 있다고 설명하지만 separate state component로 열거하지 않습니다. Action은 one MEC destination과 discrete resource level이지만 exact softmax action encoding은 명시하지 않습니다. Algorithm 1은 replay storage와 sampling을 적습니다. Evidence는 one BS와 four servers의 simulation이고 source는 global optimality, convergence theorem, field deployment overhead를 제공하지 않습니다.
+
+공개 출처
+arxiv-v2 | pp. 4–8, Secs. 3–6
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2
+
+## 19. DECENT의 한 task decision을 다시 연결하면
+
+19. DECENT의 한 task decision을 다시 연결하면
+
+발표 대본
+정리하면 DECENT는 destination MEC server와 compute resource를 함께 정합니다. State에는 새 task priority와 size, remaining resource, computing workload, communication queue wait가 들어갑니다. Reward는 negative weighted response time이고, actor–critic update는 Algorithm 1의 replay training loop 안에서 사용됩니다. 결과를 읽을 때는 nearest and largest-resource baselines, one-BS/four-server setting, 그리고 measured simulation이라는 범위를 유지해야 합니다.
+
+공개 출처
+arxiv-v2 | pp. 4–8, Eqs. (4)–(13); Algorithm 1; conclusion
+arXiv:2209.05191v2 — Deep Reinforcement Learning for Online Latency Aware Workload Offloading in Mobile Edge Computing
+https://arxiv.org/abs/2209.05191v2

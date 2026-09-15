@@ -1,0 +1,251 @@
+## 1. VPTQ: 초저비트 벡터 사후 양자화
+
+1. VPTQ: 초저비트 벡터 사후 양자화
+
+발표 대본
+VPTQ는 이미 학습된 대규모 언어 모델의 weight를 매우 낮은 유효 bit 폭으로 줄이는 post-training quantization 방법입니다. 출발점은 2비트 스칼라 양자화가 각 weight에 네 개의 값만 허용한다는 한계입니다. 이 논문은 인접한 weight를 짧은 vector로 묶고, vector 전체를 대표 vector 하나의 index로 저장합니다. 발표에서는 vector quantization의 저장 구조, column을 순서대로 처리하며 오차를 전달하는 방법, 선택적으로 붙는 residual과 outlier 경로, 그리고 실제 추론 경로를 차례로 구분합니다.
+
+공개 출처
+paper | p. 1, abstract
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 2. 초저비트 weight-only PTQ의 문제
+
+2. 초저비트 weight-only PTQ의 문제
+
+발표 대본
+이 논문이 다루는 것은 weight-only PTQ입니다. Activation을 함께 낮은 bit로 바꾸는 방법이 아니라 weight 표현을 줄이는 방법입니다. 저자는 극저비트 스칼라 양자화의 표현력 부족, vector 방법에서 생길 수 있는 오차 누적, 그리고 codebook을 읽어 복원하는 비용을 함께 문제로 둡니다. 따라서 VPTQ의 결과를 단순한 k-means 결과나 단순한 파일 압축 결과로 설명하면 부족합니다. 정확도와 속도는 표현 형식, 양자화 순서, 그리고 kernel 구현의 결합된 결과입니다.
+
+공개 출처
+paper | pp. 1-3, introduction
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 3. 스칼라 양자화와 벡터 양자화
+
+3. 스칼라 양자화와 벡터 양자화
+
+발표 대본
+스칼라 양자화에서는 weight마다 허용된 scalar level 하나를 고릅니다. 반면 vector quantization에서는 column 안의 인접 weight들을 길이 v의 vector로 만들고, 그 vector에 가장 가까운 centroid를 찾습니다. 저장되는 것은 centroid vector 자체가 아니라 그 codebook의 index이며 centroid는 많은 vector가 공유합니다. 그래서 index 하나가 여러 scalar를 동시에 복원합니다. 다만 codebook도 저장해야 하므로 index bit 수만 보면 전체 bit 폭을 잘못 이해할 수 있습니다.
+
+공개 출처
+paper | pp. 3-4, Fig. 1 and Eq. 2
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 4. 두 entry codebook으로 보는 VQ
+
+4. 두 entry codebook으로 보는 VQ
+
+발표 대본
+이 슬라이드의 값은 논문 실험이 아니라 vector quantization의 단위를 보여 주는 교육용 계산입니다. Codebook entry가 정확히 두 개이므로 index는 0 또는 1이며 vector 하나당 1 bit입니다. Vector 길이가 2이므로 index 비용만 보면 scalar 하나당 0.5 bit입니다. v1은 C0로, v2는 C1로 복원됩니다. 각 좌표 차이를 제곱해 더하면 0.02와 0.04입니다. 이 예에서 완전 복원이 나오지 않는 점이 중요합니다. VQ는 오차를 없애는 기법이 아니라 제한된 index와 codebook으로 오차를 줄이는 표현입니다.
+
+공개 출처
+paper | pp. 3-4, Eq. 2; illustrative arithmetic
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 5. index bit와 유효 bit 폭은 다르다
+
+5. index bit와 유효 bit 폭은 다르다
+
+발표 대본
+두 entry 예시에서는 index 비용이 vector당 1 bit이지만 codebook을 저장하는 비용은 따로 있습니다. 실제 VPTQ의 Appendix B는 index와 codebook 모두를 포함해 effective bitwidth를 계산합니다. Residual VQ를 쓰면 추가 index와 codebook이 들어가고, outlier tile에 별도 codebook을 쓰는 경우도 형식 비용이 달라집니다. 따라서 논문의 2.02-bit나 2.26-bit 표기는 LLaMA-2의 transformer block별로 계산한 format-effective bitwidth입니다. 한 scalar가 똑같이 두 개 또는 두 점 이육 bit로 저장된다는 뜻으로 읽으면 안 됩니다.
+
+공개 출처
+paper | p. 12, Appendix B
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 6. 양자화 오차를 단순 거리보다 민감하게 본다
+
+6. 양자화 오차를 단순 거리보다 민감하게 본다
+
+발표 대본
+논문은 양자화된 weight를 원래 weight에 Delta W를 더한 것으로 두고 loss 변화의 Taylor 근사를 사용합니다. Local optimum 근처에서는 first-order gradient가 작다고 보고 Hessian을 포함한 quadratic term에 주목합니다. 이 관점에서는 숫자상 같은 weight 오차라도 민감한 방향에서는 더 큰 손실을 낼 수 있습니다. 하지만 실제로 전체 모델의 full Hessian을 저장해 정확히 최소화하는 것은 아닙니다. 논문은 diagonal Hessian 근사와 inverse-Hessian 기반 보상을 사용하며, 이를 설계 근거로 읽어야 합니다.
+
+공개 출처
+paper | p. 3, Eq. 1 and Sec. 3
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 7. VPTQ의 핵심 선택: column을 순서대로 고정
+
+7. VPTQ의 핵심 선택: column을 순서대로 고정
+
+발표 대본
+VPTQ는 vector codebook을 쓰지만 column 전체를 한꺼번에 고정하지는 않습니다. 한 column을 선택하고 그 column을 길이 v의 vector들로 나누어 병렬로 양자화합니다. 그때 생긴 오차는 아직 양자화하지 않은 뒤 column에 반영됩니다. 논문은 GPTVQ가 여러 column을 동시에 처리하는 방식과 이 순서를 대조하며, VPTQ의 순서가 error propagation을 더 이르게 적용한다는 동기를 제시합니다. 여기서 channel-independent는 column별 schedule을 뜻합니다. Vector 안의 scalar가 서로 무관하다는 뜻은 아닙니다.
+
+공개 출처
+paper | pp. 4-5, Algorithm 1 and Sec. 3.1
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 8. 한 column의 오차를 뒤 column으로 전달한다
+
+8. 한 column의 오차를 뒤 column으로 전달한다
+
+발표 대본
+이 도식은 Algorithm 1의 순서를 축소해 보여 줍니다. 먼저 현재 column W[:, t]를 선택합니다. 그 안의 길이 v vector 조각들을 병렬로 codebook index에 할당합니다. 선택 결과와 원래 vector의 차이에서 current-column error가 생기며, inverse-Hessian 관련 계수를 사용해 아직 양자화하지 않은 뒤 column을 update합니다. 이미 index가 정해진 현재 column을 다시 full precision으로 되돌리는 절차가 아닙니다. 따라서 순서가 중요합니다. 다음 column은 이미 앞쪽의 근사 오차를 고려하도록 수정된 값에서 출발합니다.
+
+공개 출처
+paper | pp. 4-5, Algorithm 1
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 9. Codebook 초기화에 diagonal Hessian을 쓴다
+
+9. Codebook 초기화에 diagonal Hessian을 쓴다
+
+발표 대본
+VPTQ는 Hessian-weighted proxy를 diagonal part와 off-diagonal part로 나누고, diagonal term이 지배적이라는 근사 아래 weighted k-means를 codebook initialization에 사용합니다. 가중치가 큰 coordinate의 대표 오차는 더 크게 취급됩니다. 이 단계는 centroid를 시작시키는 방법이며 모든 codebook 결과가 diagonal Hessian만으로 정해진다는 뜻은 아닙니다. 또한 off-diagonal interaction이 수학적으로 zero라고 주장하지 않습니다. 논문의 선택은 극저비트에서 좋은 시작점을 만들기 위한 계산 가능한 근사입니다.
+
+공개 출처
+paper | p. 6, Sec. 3.2.1
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 10. VPTQ의 기본 양자화 흐름
+
+10. VPTQ의 기본 양자화 흐름
+
+발표 대본
+이 흐름은 논문의 기본 path를 요약합니다. Calibration data에서 weight 변화에 대한 정보를 준비하고, diagonal Hessian을 가중치로 사용해 codebook을 초기화합니다. 이후 한 column 안의 vector들을 index로 양자화합니다. 현재 column에서 발생한 error는 미래 column의 값에 반영됩니다. 마지막으로 각 vector의 index와 공유 codebook을 저장합니다. Residual VQ, outlier codebook, fine-tuning은 이 기본 절차에 붙을 수 있는 선택 경로이며, 모든 결과 행이 그 옵션을 쓴 것은 아닙니다.
+
+공개 출처
+paper | pp. 4-7, Algorithms 1-2
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 11. Residual VQ는 첫 근사의 남은 오차를 다시 code화한다
+
+11. Residual VQ는 첫 근사의 남은 오차를 다시 code화한다
+
+발표 대본
+Residual VQ는 첫 번째 codebook centroid C만으로 남는 vector 차이를 다시 하나의 vector로 보고 두 번째 codebook으로 표현합니다. 복원할 때는 C와 residual centroid R을 더합니다. 그래서 표현력이 늘 수 있지만 residual index와 residual codebook 저장 비용이 생깁니다. 교육용 두 entry 예시와 달리 이 절차가 항상 exact reconstruction을 만드는 것은 아닙니다. 논문은 이를 선택적 refinement로 제시하며, 2.02-bit 같은 표의 행이 residual VQ를 반드시 사용한다는 식으로 일반화하면 안 됩니다.
+
+공개 출처
+paper | p. 6, Sec. 3.2.2
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 12. Outlier와 fine-tuning은 선택 경로다
+
+12. Outlier와 fine-tuning은 선택 경로다
+
+발표 대본
+논문은 기본 vector PTQ 외에 세 가지 선택 경로를 제시합니다. Outlier elimination은 특정 outlier를 가진 tile에 별도 codebook을 배정합니다. Residual VQ는 base approximation의 residual을 추가 codebook으로 표현합니다. Fine-tuning은 양자화 후에 layer-wise 또는 end-to-end로 모델 parameter를 더 조정하는 경로입니다. 이들은 모두 결과를 바꿀 수 있으므로, Appendix C의 fine-tuning 결과와 Table 2의 PTQ 결과를 한 묶음으로 읽으면 안 됩니다. 슬라이드나 표에는 해당 configuration을 함께 표시해야 합니다.
+
+공개 출처
+paper | pp. 6-7, Algorithm 2; p. 13, Appendix C
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 13. 2.02-bit와 2.26-bit의 읽는 법
+
+13. 2.02-bit와 2.26-bit의 읽는 법
+
+발표 대본
+VPTQ의 effective bitwidth는 base index, base codebook, 그리고 configuration에 따라 residual과 outlier codebook의 저장량까지 포함합니다. Appendix B는 LLaMA-2의 four attention-linear와 three FFN-linear layer를 포함한 transformer block별로 Table 2의 total bitwidth를 계산한다고 명시합니다. 따라서 2.02-bit와 2.26-bit는 단순 scalar level 수나 모델 전체 하나의 고정 average를 뜻하지 않습니다. Vector length, codebook size, grouping, optional path에 따라 실제 memory가 달라지므로 bit 폭과 Table 2 memory GB를 함께 읽어야 합니다.
+
+공개 출처
+paper | p. 12, Appendix B; p. 7, Table 2
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 14. Prompt와 decode는 다른 실행 경로를 쓴다
+
+14. Prompt와 decode는 다른 실행 경로를 쓴다
+
+발표 대본
+Appendix D.2는 prompt phase와 decode phase를 다르게 구현합니다. Long prompt를 처리할 때는 weight를 FP16으로 복원한 뒤 torch.matmul을 사용합니다. 반면 autoregressive decoding에서는 index lookup, dequantization, GEMV를 QGemv kernel에서 결합해 FP16 weight를 매번 별도 materialize하지 않도록 합니다. 따라서 논문의 tok/s는 decode-phase throughput입니다. 이를 prompt latency, time-to-first-token, 또는 모든 PyTorch 구현의 속도로 해석하면 안 됩니다. 성능을 설명할 때 model, phase, GPU, kernel을 함께 말해야 합니다.
+
+공개 출처
+paper | p. 15, Appendix D.2
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 15. LLaMA-2 7B의 결과
+
+15. LLaMA-2 7B의 결과
+
+발표 대본
+이 표는 논문 Table 2(a)의 LLaMA-2 7B 행을 다시 정리한 것입니다. FP16은 기준점이고 AQLM과 VPTQ는 서로 다른 representation과 runtime을 갖는 비교 방법입니다. VPTQ 2.02-bit는 WikiText-2 6.13, C4 8.07, 39.9 decode tok/s, 2.28GB를 보고합니다. 2.26-bit VPTQ는 더 많은 형식 예산으로 PPL을 낮추지만 tok/s는 35.7입니다. 따라서 이 표가 보여 주는 것은 단일 최고 수치보다 accuracy, format size, decoding throughput 사이의 configuration trade-off입니다. 외부 구현에서 같은 순위가 항상 나온다는 보장은 아닙니다.
+
+공개 출처
+paper | p. 7, Table 2(a)
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 16. LLaMA-2 13B에서도 bit 폭과 속도의 trade-off가 남는다
+
+16. LLaMA-2 13B에서도 bit 폭과 속도의 trade-off가 남는다
+
+발표 대본
+LLaMA-2 13B의 Table 2(b)에서 2.02-bit VPTQ는 WikiText-2 5.32, C4 7.15, 26.9 tok/s, 4.03GB입니다. 2.18-bit 행은 PPL은 5.28과 7.04로 더 낮지만 18.5 tok/s와 4.31GB입니다. 이 두 행은 vector size, codebook configuration, runtime 효과가 함께 반영된 측정점입니다. 따라서 bit 폭 하나만으로 속도나 정확도를 단조롭게 예측하지 말아야 합니다. 이 슬라이드는 paper table의 reported operating points를 보여 주며 다른 GPU나 implementation의 보편 법칙을 주장하지 않습니다.
+
+공개 출처
+paper | p. 7, Table 2(b)
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 17. Column 순서의 ablation
+
+17. Column 순서의 ablation
+
+발표 대본
+이 ablation은 LLaMA-2 13B, nominal 2.02-bit, vector length 6, codebook size 4096, WikiText-2와 C4 sequence length 4096, group number 1, residual codebook 없음 k2=-1, outlier와 fine-tuning 없음이라는 고정 configuration을 비교합니다. Channel-independent가 yes인 행은 WikiText-2 6.29와 C4 8.29이고 no인 행은 7.25와 9.80입니다. 이는 논문이 제시한 column-by-column error propagation의 근거입니다. 다만 이 표 하나가 모든 model, vector size, codebook에 대한 causal theorem은 아닙니다. 발표에서 고정된 조건을 함께 읽어야 합니다.
+
+공개 출처
+paper | p. 10, Table 10
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 18. 속도와 양자화 비용의 측정 조건
+
+18. 속도와 양자화 비용의 측정 조건
+
+발표 대본
+논문은 128개의 무작위 C4 calibration segment를 사용합니다. Table 2에 적힌 quantization cost는 4개의 80GB A100 GPU에서 측정한 offline 비용입니다. Decode throughput은 one prompt token을 제공한 뒤 256 token을 생성하고 각 output token의 시간을 재는 Appendix D.1 procedure의 tok/s입니다. Appendix D.2에서 prompt phase는 별도 FP16 matmul path이고 decode는 fused QGemv path입니다. 저자는 Table 2의 7B와 13B 비교에서 VPTQ가 AQLM보다 1.6에서 1.8배 빠르다고 보고하지만, baseline implementation과 measurement 조건 밖의 일반 속도 법칙으로 읽을 수 없습니다.
+
+공개 출처
+paper | pp. 7, 9, Tables 2-3; Appendix A.1
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 19. 가까운 방법과 다른 표현 단위
+
+19. 가까운 방법과 다른 표현 단위
+
+발표 대본
+RTN이나 GPTQ 같은 scalar PTQ는 weight 하나를 scalar level에 배정합니다. VPTQ는 vector를 centroid index에 배정하고 column-by-column compensation을 사용합니다. GPTVQ도 vector codebook을 쓰므로 차이는 단순히 VQ 사용 여부가 아니라 논문이 강조한 channel-independent processing schedule에 있습니다. AQLM은 additive vector codebook을 쓰지만 codebook 구성, optimization 또는 fine-tuning, runtime path가 다를 수 있으므로 표의 숫자만으로 구조가 같다고 할 수 없습니다. SqueezeLLM은 scalar LUT와 sparse FP16 value path를 결합한다는 점에서 VPTQ의 vector codebook format과 다릅니다.
+
+공개 출처
+paper | pp. 2-5, related work and Sec. 3
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 20. 논문이 남긴 경계와 한계
+
+20. 논문이 남긴 경계와 한계
+
+발표 대본
+논문 자체의 한계를 마지막에 분명히 해야 합니다. Diagonal Hessian을 사용하는 것은 계산 가능한 proxy를 위한 근사이고, weight 사이의 모든 상호작용을 보존하지는 않습니다. Residual VQ, outlier elimination, fine-tuning은 각기 다른 configuration입니다. Decode-phase tok/s는 prompt 처리나 전체 request latency와 다릅니다. 또한 저자는 긴 70B fine-tuning을 수행할 GPU resource의 제한과 LLaMA-3에서 일부 baseline을 비교하지 못한 점을 언급합니다. 따라서 발표자는 VPTQ를 extreme low-bit PTQ의 한 설계와 측정 결과로 소개해야 합니다.
+
+공개 출처
+paper | pp. 6, 9, 12-15, limitations and appendices
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf
+
+## 21. VPTQ를 한 문장씩 정리하면
+
+21. VPTQ를 한 문장씩 정리하면
+
+발표 대본
+VPTQ는 vector codebook만으로 요약하면 중요한 절반을 놓칩니다. Weight는 vector index와 shared centroid로 저장되고, quantization 절차는 한 column을 처리한 뒤 그 오차를 미래 column에 전달합니다. Deployed system에서는 prompt와 decode가 다른 path를 사용하며, paper의 throughput claim은 fused decode kernel이라는 조건을 포함합니다. 결과를 비교할 때는 유효 bit 폭, optional residual 또는 outlier path, fine-tuning 유무, model과 dataset, phase와 hardware를 확인합니다. 이 구분이 있으면 VPTQ를 단순한 2-bit 숫자가 아니라 재현 가능한 설계로 설명할 수 있습니다.
+
+공개 출처
+paper | pp. 3-7, 9, 12, 15
+VPTQ, EMNLP 2024 paper
+https://aclanthology.org/2024.emnlp-main.467.pdf

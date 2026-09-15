@@ -1,0 +1,380 @@
+---
+type: research-seminar-slides
+paper_id: hierarchical-rl-task-offloading-v2i
+---
+
+# 차량의 작업 순서와 오프로딩을 함께 결정하기
+
+논문: Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
+
+저자: Xinyu You, Haojie Yan, Yuedong Xu, Lifeng Wang, Liangui Dai (2024)
+
+## 1. 차량의 작업 순서와 오프로딩을 함께 결정하기
+
+DHVO: 그래프 주의집중과 계층형 Q-learning | 철회된 2024년 사전공개 원고의 교육적 분석
+
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 1; title, abstract, [arxiv-status](https://arxiv.org/abs/2405.11352) v2 withdrawal notice, 4 Dec 2025
+
+## 2. 원고의 상태와 이 자료의 읽기 범위
+
+분석 대상은 2024년 v1이며, arXiv는 2025년 12월 철회를 공지했다
+
+
+| 구분 | 확인된 사실 | 학습할 때의 의미 |
+| --- | --- | --- |
+| 분석 원문 | arXiv:2405.11352v1 · 2024-05-18 | 해당 버전의 설계·실험을 설명 |
+| 현재 상태 | 2025-12-04 철회 | 현재 출판된 검증 기술로 소개하지 않음 |
+| 공개 사유 | 후속 개발·투고를 진행하지 않음 | 이유를 오류·부정행위로 확대하지 않음 |
+| 활용 범위 | DAG 표현 + 혼합 행동 설계 사례 | 결과의 한계와 표기 불일치도 함께 읽기 |
+
+핵심: 철회 상태를 숨기지 않고, 무엇을 제안했는지와 무엇이 확인되지 않았는지를 구분한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) title; submission history, [arxiv-status](https://arxiv.org/abs/2405.11352) withdrawal notice; comments; submission history
+
+## 3. 문제: 차량은 이동하고, 작업은 선행 결과를 기다린다
+
+차량–인프라 통신(V2I)에서 계산 속도뿐 아니라 연결 범위, 작업 순서, 비용을 함께 고려한다
+
+- 차량 단말(UE)은 속도가 변하면서 여러 도로변 기지국(RSU)의 통신 범위를 지난다
+- 한 응용프로그램은 방향성 비순환 그래프(DAG)로 표현한 여러 작업으로 나뉜다
+- 후속 작업은 바로 앞의 모든 선행 작업이 완료되어야 시작할 수 있다
+- 목적값 TESC는 작업 시간·단말 에너지·서비스 요금을 가중합한 비용이다
+
+핵심: 어떤 작업을 먼저, 어디서, 어느 자원 수준으로 처리할지를 함께 정한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 1-2; abstract; §I
+
+## 4. 무선 RSU 관계와 task DAG 관계는 다르다
+
+RSU coverage는 통신 가능성을, DAG edge는 실행 순서를 뜻한다
+
+- **레인 V2I coverage**
+- **레인 application DAG**
+  - **vehicle UE**: speed varies → one application
+  - **current RSU**: within
+coverage
+  - **edge server**: fixed CPU
+resource
+  - **task A**: input, output
+CPU cycles
+  - **task B**: waits for
+A completion
+- vehicle UE → current RSU: 802.11p link (실선, 단방향)
+- current RSU → edge server: offload path (실선, 단방향)
+- task A → task B: precedence (실선, 단방향)
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 3-4; Figs. 1-2; §III-A
+
+## 5. local과 edge 선택은 서로 다른 cost 항을 만든다
+
+edge path는 upload, edge execution, download에 coverage 이탈 시 migration delay·charge가 더해진다
+
+
+| path | time / energy | charge 또는 constraint |
+| --- | --- | --- |
+| local k=0 | t_local=C/f; e_local=kappa C f^2 | local service charge 없음 |
+| edge k=1 | upload + edge + download + migration | UE energy는 uplink만 계산 |
+| 통신 범위 | 시작 위치 + 처리 중 이동거리가 범위를 넘는가 | 넘으면 전파 지연·이관 요금 발생 |
+| precedence | T_start(i) >= max predecessor end | ready task만 실행 가능 |
+
+핵심: edge가 항상 빠르거나 싼 것은 아니다. coverage 이탈은 시간과 service cost를 바꾼다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 3-5; Eqs. 3-22
+
+## 6. 목적은 비용의 합을 줄이되 실행 제약을 지키는 것
+
+시간·단말 에너지·서비스 요금의 가중합이 TESC다. 선행 작업 완료와 자원 상한도 만족해야 한다
+
+- **작업 정보**: 데이터·연산량·선후관계
+- **단말 실행**: k=0; CPU 주파수 f
+- **엣지 실행**: k=1; 송신 전력 p
+- **작업별 비용**: 시간·에너지·요금 가중합
+- **전체 비용 최소화**: 순서·CPU·전력 제약
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 5; Eqs. 18-24
+
+## 7. GAT에는 작업 특성·차량 상태·DAG를 함께 넣는다
+
+그래프 주의집중 신경망(GAT)은 인접 관계를 이용해 작업마다 새로운 특성 벡터를 만든다
+
+
+| 입력 또는 단계 | 담는 정보 | 역할 |
+| --- | --- | --- |
+| 작업 특성 | 입력량·출력량·연산량·완료 여부 | 무엇을 처리하며 어떤 작업이 남았는가 |
+| 차량 상태 | 좌표·남은 작업 수·최근 5초 속도 | 작업 특성에 함께 붙이는 환경 정보 |
+| 인접 행렬 | 작업 DAG의 연결 관계 | 어느 이웃 정보를 모을 것인가 |
+| GAT 출력 | 2개 head × 6개 = 작업당 12개 특성 | 전체 작업 벡터를 구성하고 길이를 맞춤 |
+
+핵심: 작업·환경 정보와 인접 행렬은 공동 입력이다. 서로를 순차 변환하는 단계가 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 5-6; Eqs. 25-27
+
+## 8. attention coefficient가 뜻하는 것과 뜻하지 않는 것
+
+GAT는 node i의 neighbor j feature가 i encoding에 얼마나 반영될지를 learned coefficient로 정한다
+
+
+| source operation | 교육적 해석 | 피해야 할 해석 |
+| --- | --- | --- |
+| e_ij=a(W h_i, W h_j) | pairwise feature relevance score | DAG scheduling priority 자체 |
+| softmax over neighbors | i 주변의 normalized attention | network bandwidth allocation |
+| multi-head concatenate | 여러 relation view를 feature로 결합 | 여러 task를 동시에 실행 |
+| one GAT layer | source의 small-DAG design choice | 모든 graph depth를 본다는 보장 |
+
+핵심: attention은 task 관계를 state에 넣지만 precedence constraint를 대체하지 않는다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 5-6; Eqs. 25-27
+
+## 9. 한 action은 세 층으로 정해진다
+
+ready task를 고른 뒤 local 또는 edge를 정하고, 그 branch에만 맞는 continuous parameter를 선택한다
+
+- **레인 shared discrete choice**
+- **레인 local branch**
+- **레인 edge branch**
+  - **ready tasks**: predecessors done
+  - **layer 1: y**: select one
+task
+  - **layer 2: k**: local or
+edge
+  - **layer 3: f**: CPU frequency
+when k=0
+  - **layer 3: p**: transmit power
+when k=1
+- ready tasks → layer 1: y: valid y (실선, 단방향)
+- layer 1: y → layer 2: k: chosen task (실선, 단방향)
+- layer 2: k → layer 3: f: k=0 (실선, 단방향)
+- layer 2: k → layer 3: p: k=1 (실선, 단방향)
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 6; Fig. 3; Eq. 28
+
+## 10. PNAF는 이산 선택별로 연속 행동의 Q를 구성한다
+
+Parameterized Normalized Advantage Function: 값 V와 연속 행동의 이득 A를 합쳐 Q를 만든다
+
+
+| 신경망의 출력·계산 | 의미 | 결합 관계 |
+| --- | --- | --- |
+| V(s, a_d) | 이산 행동 a_d=(작업, 실행 위치)의 값 | 연속 행동이 중심일 때 Q=V |
+| 연속 중심 μ, 하삼각 L | 해당 분기의 연속 행동과 곡률을 예측 | V와 병렬 출력; P=L Lᵀ |
+| A=−½(a_c−μ)ᵀP(a_c−μ) | 중심에서 벗어나면 줄어드는 이득 | P가 양의 정부호이면 A≤0 |
+| Q=V+A | 현재 후보 연속 행동까지 포함한 평가 | 각 분기에 맞는 f 또는 p만 사용 |
+
+핵심: 중심 μ에서 A=0이다. 학습한 Q의 최대점이지 실세계 최적성 보장은 아니다.
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 6-7; Eqs. 29-35; Fig. 4
+
+## 11. 계산 예시: 연속 행동이 중심에서 벗어나면 Q가 줄어든다
+
+한 유효 분기에서 V=2, μ=0.6, P=4로 가정한다. 원문 측정값이 아닌 1차원 교육 예시다
+
+
+| 연속 후보 a_c | 차이 a_c−μ | A=−½×4×(차이)² | Q=2+A |
+| --- | --- | --- | --- |
+| 0.2 | −0.4 | −0.32 | 1.68 |
+| 0.6 | 0 | 0 | 2.00 |
+| 0.9 | +0.3 | −0.18 | 1.82 |
+
+핵심: 이 분기의 Q는 0.6에서 최대다. 다른 분기나 실제 비용의 최적성을 뜻하지 않는다.
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 7; Fig. 4; Eqs. 34-35
+
+## 12. 순서 예시: 선행 작업 A가 끝나야 B를 선택할 수 있다
+
+가중치는 각각 1/3, 성분은 무차원 교육용 값이다. 원문 실험값이나 최적 정책의 재현이 아니다
+
+
+| 단계 | 유효한 행동 | 가정한 비용 성분 | 재계산 |
+| --- | --- | --- | --- |
+| 1 | A만 준비됨; 엣지 k=1, p=0.5 | 시간 .6, 에너지 .3, 요금 .9 | 합/3 = .60 |
+| 2 | A 완료 → B가 준비됨 | 1단계에서 B는 선택 불가 | 선행 제약 충족 |
+| 3 | B를 단말에서 k=0, f=0.8 | 시간 .8, 에너지 .6, 요금 0 | 합/3 ≈ .47 |
+| 분기 | 엣지는 p, 단말은 f만 사용 | 관련 없는 연속 변수는 제외 | 공통 이산 선택 + 분기별 자원 |
+
+핵심: 준비된 작업 → 실행 위치 → 그 위치의 자원 변수 순으로 선택을 해석한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 5-7; Eqs. 19, 23, 28-35
+
+## 13. 실행 결과의 음수 비용을 replay에 저장해 학습한다
+
+선택 작업의 TESC가 작을수록 보상은 커진다. 할인된 보상으로 Q를 학습한다
+
+1. **관찰**: GAT 상태 표현
+2. **선택**: y, k, f 또는 p
+3. **실행**: 작업 처리
+4. **보상**: r=−작업 TESC
+5. **replay 갱신**: 목표 V′·제곱오차
+
+핵심: 음수 TESC의 할인 합(γ=.99)은 비할인 비용 합과 정확히 같지 않다.
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 7-8; Eq. 37; Algorithm 1
+
+## 14. 최근 속도는 통신 범위 이탈의 비용을 학습하는 입력이다
+
+시작 위치와 처리 중 이동거리가 범위를 넘으면 작업 이관의 지연과 요금이 추가된다
+
+- **최근 속도**: 5초 이력·차량 위치
+- **범위 내 완료**: 이관 비용 없음
+- **범위 밖 완료**: 이관 지연·요금
+- **TESC 피드백**: 시간·에너지·요금
+- **replay 학습**: 다음 선택에 반영
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 4, 7, 11-12; Eqs. 12-17; §V-D
+
+## 15. 학습 절차와 원문의 표기 불일치를 구분하자
+
+본문은 목표값과 Q의 제곱오차 최소화를 설명한다. 인쇄된 갱신식을 그대로 실행 코드로 옮기면 안 된다
+
+
+| 항목 | 원문 근거 | 읽을 때 주의 |
+| --- | --- | --- |
+| 경험·목표 | (s,a,r,s′) → z=r+γ max V′ | Algorithm 1의 θ_p에는 목표 prime 누락 |
+| 손실·학습 | 제곱오차 L; 본문은 gradient descent | 식 40–41은 +∇L로 인쇄되어 불일치 |
+| 목표 GAT | θ_g′ ← θ_g | 온라인 값을 복사 |
+| 목표 PNAF | θ_p′ ← τθ_p+(1−τ)θ_p′ | 복사가 아니라 soft update |
+
+핵심: 학습 의도와 표기 불일치를 분리한다. 인쇄식만으로 실행 구현을 확정하지 않는다.
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 8; Algorithm 1; target Eq. 37; Eqs. 38, 40-43
+
+## 16. Table II: simulation 환경을 먼저 고정한다
+
+아래 수치가 고정 또는 변화될 때에만 이후 TESC plots를 해석할 수 있다
+
+
+| category | source setting | value |
+| --- | --- | --- |
+| road | RSU coverage; slot | 200 m; 1 s |
+| application | tasks; input/output | 8-12; 2.5-3.5 MByte |
+| compute | cycles; local / edge peak | 800-1200 Mcycles; 10^8 / 10^9 cycles/s |
+| radio | bandwidth; peak power; distance | 2 MHz; 200 mW; 100 m |
+| cost | beta1, beta2, beta3 | .33, .33, .33 |
+
+핵심: 결과는 작업 크기·통신·요금·범위·가중치라는 실험 조건에 묶여 있다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 8; Table II
+
+## 17. speed input과 neural-network 조건
+
+실험은 real-world speed data를 input으로 쓰지만, V2I system과 workload는 simulation으로 구성한다
+
+
+| item | source condition | boundary |
+| --- | --- | --- |
+| speed trajectories | CPIPC data; four tailored 100 s traces | 7일간 초 단위 수집 |
+| GAT | 1층; 2 heads × 6개 특성 | 작업당 12개; 길이 맞춤 |
+| PNAF network | one hidden layer; 128 neurons; ReLU | Adam; lr=.01 |
+| training | gamma=.99; soft update=.1 | max 20 episodes in Table III |
+| platform | PyTorch / Python 3.5; Ubuntu server | not a vehicle deployment |
+
+핵심: 실제 속도 이력을 입력했어도 전체 비용 결과는 시뮬레이션이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 9-10; Fig. 6; Table III; §V-A
+
+## 18. 비교 대상은 무엇을 고정하거나 단순화하는가
+
+DHVO의 비교는 다섯 policy family가 같은 simulation 조건에서 내는 TESC를 보는 방식이다
+
+
+| method | source rule | 비교 기준 |
+| --- | --- | --- |
+| ALE | all local at peak local CPU | offloading 없는 기준 |
+| AO | all edge at peak transmit power | always offload 기준 |
+| GOE | 30 km/h constant-speed return prediction | greedy edge rule |
+| DQN10 | 10 equally spaced continuous values + GAT DQN | finite discretization |
+| DHVO | GAT + PNAF hierarchical actions | proposed method |
+
+핵심: 비교 우위는 이 네 기준 정책과 해당 실험 조건에 한정된다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) p. 9; §V-A
+
+## 19. convergence 수치는 두 실험 조건을 구분해야 한다
+
+별도 convergence setup과 parameter-sweep comparison은 training episodes와 목적이 다르다
+
+- convergence subsection: buffer transition 500개 초과 후 training, batch 256
+- source는 DHVO가 해당 setup에서 14 episode 안에 converge했다고 보고한다
+- reported batch training time는 1.58 s, inference는 .0018 s다
+- later parameter comparisons: DQN10과 DHVO를 40 episodes train하고 50 individual tests 평균
+
+핵심: 14회 수렴 관찰과 40회 학습 비교는 서로 다른 실험 절차다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 9-10; §§V-B, V-C
+
+## 20. Figs. 8-11: 어떤 parameter가 바뀔 때의 TESC인가
+
+plot의 공통 결론보다, 바꾼 variable과 비교 범위를 먼저 읽는다
+
+
+| figure | varied parameter | source interpretation |
+| --- | --- | --- |
+| Fig. 8 | RSU coverage | ALE는 local-only라 constant; other costs decrease |
+| Fig. 9 | bandwidth | below 2.25 MHz에서는 ALE가 AO보다 낫다고 보고 |
+| Fig. 10 | cycles; input/output size | cycles는 local, data size는 edge 영향이 큼 |
+| Fig. 11 | compute price; migration price | migration price가 AO/GOE에 더 큰 영향 |
+| all | Table II defaults except varied | simulation trend, deployment guarantee 아님 |
+
+핵심: 엣지의 이점은 대역폭·통신 범위·이관 요금에 따라 달라진다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 10-11; Figs. 8-11
+
+## 21. 정책의 선택과 비용 성분으로 결과를 해석한다
+
+action count와 TESC composition은 저자 해석을 보조하지만 각각 동일한 evidence type은 아니다
+
+
+| evidence | reported condition | safe reading |
+| --- | --- | --- |
+| Fig. 12 | 200 applications, each 8-12 tasks | DHVO local/edge balance; migration count 비교 |
+| Fig. 13 | delay, energy, cost distribution | ALE energy; AO/GOE migration charge 해석 |
+| Fig. 14 | small fading complex Gaussian | curve is less smooth but learning observed |
+| mechanism claim | last-five-second speed feature | source explanation, general forecast proof 아님 |
+
+핵심: 저자는 단말·엣지의 혼합 선택이 이관을 줄였다고 해석한다. 근거는 시뮬레이션이다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 11-12; Figs. 12-14; §V-D
+
+## 22. 구성요소 제거 실험: DHVO의 정규화 비용이 가장 낮다
+
+Fig. 15의 세로축은 Normalized TESC다. 성능 점수가 아니라 비용이므로 낮을수록 좋다
+
+
+| 방법 | 바꾼 구성 | 확인된 해석 |
+| --- | --- | --- |
+| DHVO | GAT + PNAF | 그림에서 가장 낮은 비용; 기준 막대 1.0 |
+| PNAF | GAT 없이 PNAF만 사용 | 그래프 특성 추출의 기여 비교 |
+| GDQN2/5/10 | GAT + 연속 구간의 이산화 DQN | PNAF와 이산화 방법 비교 |
+| 학습 예산 | 모두 같은 수의 episode | 저자는 5/10의 미수렴이 영향을 줬다고 설명 |
+
+핵심: 두 구성요소의 기여는 확인되지만, 이산화 구간을 늘리면 항상 나쁘다는 뜻은 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 12-13; §V-E; Fig. 15
+
+## 23. 무엇을 이 결과에서 결론내릴 수 없는가
+
+DHVO는 source의 V2I simulator에서 TESC를 줄이는 정책이며, 모든 road deployment를 해결했다는 증거는 아니다
+
+- 원문 system model은 한 vehicle UE와 한 application DAG를 중심으로 둔다
+- edge server는 abundant resource와 fixed frequency를 가정한다
+- 실제 입력은 속도 이력이다. 작업·통신·요금·RSU는 모의 환경이다
+- GAT one-layer and task count assumptions은 source design 범위다
+- 철회된 원고다. 식에 불일치가 있고 최적성·현장 배포는 검증되지 않았다
+
+핵심: 속도 이력 기반 시뮬레이션의 가능성이지 실제 도로에서의 성능 보장은 아니다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 3-5, 8-9, 12-13; §§III, V, VI, [arxiv-status](https://arxiv.org/abs/2405.11352) v2 withdrawal notice; comments
+
+## 24. DHVO의 설계를 한 흐름으로 정리하면
+
+DAG와 이동 상태를 표현하고, 작업·실행 위치·자원을 골라 실행한 결과로 Q를 학습한다
+
+1. **V2I + DAG**: 위치·속도·준비 작업
+2. **GAT**: 이웃 정보로 표현
+3. **PNAF**: y, k, f 또는 p
+4. **환경**: 시간·에너지·요금
+5. **replay**: 음수 비용으로 학습
+
+핵심: 그래프 표현과 분기별 Q 구성을 배우되, 철회 상태와 재현 한계도 함께 기억한다
+
+근거: [arxiv-v1](https://arxiv.org/abs/2405.11352v1) pp. 1-13; Figs. 1-15; Algorithm 1

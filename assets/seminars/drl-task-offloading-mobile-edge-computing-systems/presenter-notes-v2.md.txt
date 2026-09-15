@@ -1,0 +1,263 @@
+## 1. 대기열·마감시한 MEC Offloading을 위한 분산 DRL
+
+1. 대기열·마감시한 MEC Offloading을 위한 분산 DRL
+
+발표 대본
+이 자료는 Tang과 Wong의 논문을 따라, mobile device가 새 task를 local 처리할지 또는 어느 edge node로 보낼지를 고르는 문제를 소개합니다. 핵심은 offloading 자체가 아니라 queue와 deadline을 넣었을 때 feedback가 늦게 오고 edge load가 보이지 않는다는 점입니다. 논문은 model-free distributed DRL로 이를 다루며, LSTM, dueling DQN, double DQN을 함께 사용합니다.
+
+공개 출처
+paper | title, abstract
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 2. 왜 한 slot 안에 끝난다고 가정할 수 없을까
+
+2. 왜 한 slot 안에 끝난다고 가정할 수 없을까
+
+발표 대본
+기존 비교 연구 일부는 task 처리와 전송이 한 slot 안, 또는 다음 task 도착 전 끝난다고 두었습니다. 이 논문은 non-divisible task가 device queue와 edge queue에서 여러 slot을 지날 수 있게 모델링합니다. 따라서 새 task가 도착했을 때 현재 delay는 과거 action의 결과를 물려받고, task의 cost도 바로 다음 slot에 관측되지 않을 수 있습니다.
+
+공개 출처
+paper | pp. 1986–1988, §1–2
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 3. 먼저 고정해야 하는 모델 경계
+
+3. 먼저 고정해야 하는 모델 경계
+
+발표 대본
+논문은 task를 나누지 않고 local 또는 하나의 edge에 보냅니다. Device는 local computation FIFO와 transmission FIFO를 갖고, edge는 각 device마다 하나의 FIFO queue를 가집니다. Edge CPU는 active queue들에게 동일하게 capacity를 나눕니다. Wireless는 orthogonal channel과 constant transmission rate를 두므로, 실제 radio interference와 packet error를 포함한 production scheduler로 일반화하면 안 됩니다.
+
+공개 출처
+paper | pp. 1986–1989, §2
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 4. 새 task가 만나는 세 대기 지점
+
+4. 새 task가 만나는 세 대기 지점
+
+발표 대본
+Figure 1을 교육용으로 풀어 쓴 도식입니다. x가 1이면 task는 device computation queue에, x가 0이면 transmission queue에 들어갑니다. Transmission이 끝난 task는 선택 edge의 해당 device queue에 도착하고, edge CPU는 active device queues에 capacity를 equal-share GPS로 배분합니다. 두 lane은 local과 offload라는 배타적 action 결과를 비교하기 위한 것이지, 한 task가 동시에 두 lane을 실행한다는 뜻이 아닙니다.
+
+공개 출처
+paper | pp. 1987–1989, Fig. 1, §2
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 5. slot 순서: enqueue 뒤 service, 다음 job은 다음 slot
+
+5. slot 순서: enqueue 뒤 service, 다음 job은 다음 slot
+
+발표 대본
+논문은 processing 또는 transmission이 어느 slot에서 완료되면, queue의 다음 task는 다음 slot의 beginning에 시작한다고 둡니다. 이 순서는 local wait와 transmission wait을 계산할 때 이전 task의 completion/drop slot으로부터 정해집니다. 그림의 흐름은 within-slot procedure를 보여 주며, 각 칸을 별도 transmission frame이라고 뜻하지 않습니다.
+
+공개 출처
+paper | p. 1987, §2.1; Eqs. 2–6
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 6. local FIFO wait은 completion·drop slot으로 계산한다
+
+6. local FIFO wait은 completion·drop slot으로 계산한다
+
+발표 대본
+두 번째 행은 source가 직접 든 example입니다. Task 1의 completion slot이 5이고 slot 3에 새 local task가 들어가려 하면 wait은 3 slots입니다. Local completion/drop slot은 waiting, size, device CPU capacity, slot duration, processing density를 사용해 계산한 service end와 deadline end 중 작은 값입니다. 같은 방식이 transmission queue에도 적용되지만, edge processing completion은 미래 active queue 수에 따라 결정되어 선택 순간에는 알 수 없습니다.
+
+공개 출처
+paper | pp. 1987–1988, Eqs. 2–6
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 7. edge 처리 지연은 왜 action 순간에 확정되지 않는가
+
+7. edge 처리 지연은 왜 action 순간에 확정되지 않는가
+
+발표 대본
+Edge n은 device별 queue를 유지하고, active queue 집합의 각 queue가 equal processing capacity share를 받습니다. B_n(t)는 새 arrivals와 기존 queue length에 의해 시간에 따라 바뀌므로, 현재 action을 결정할 때 future edge queuing delay는 unknown입니다. 논문은 그래서 그것을 state에 직접 넣지 않고, edge가 broadcast하는 past active-queue counts를 history matrix H(t)로 넣습니다.
+
+공개 출처
+paper | pp. 1988–1989, Eqs. 7–13
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 8. state에는 관측 가능한 것과 예측해야 할 것을 분리한다
+
+8. state에는 관측 가능한 것과 예측해야 할 것을 분리한다
+
+발표 대본
+Source Eq. 13의 state는 task size, computation wait, transmission wait, prior-slot own edge-queue vector, 그리고 H(t)입니다. H(t)의 각 column은 edge node 하나, 각 row는 past slot 하나에 대응하며, 값은 active queue count입니다. 논문은 edge node가 매 slot end에 이를 broadcast한다고 가정합니다. Footnote 2는 future edge queuing delay를 decision time에 알 수 없으므로 state에서 제외했다고 명시합니다.
+
+공개 출처
+paper | p. 1989, Eqs. 12–13, footnotes 2–3
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 9. action은 ‘local인가’와 ‘어느 edge인가’의 결합이다
+
+9. action은 ‘local인가’와 ‘어느 edge인가’의 결합이다
+
+발표 대본
+x_m(t)=1은 local processing이고 x_m(t)=0은 offloading입니다. x가 0일 때 y vector는 정확히 한 edge node를 가리킵니다. 논문의 action space 표기는 binary vector이지만 Eq. 1이 placement feasibility를 더합니다. 이 구분은 여러 destination에 task fraction을 보낼 수 있는 partial offloading 모델과 다릅니다.
+
+공개 출처
+paper | p. 1987, Eq. 1; p. 1989, Eq. 14
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 10. reward가 아니라 discounted cost를 최소화한다
+
+10. reward가 아니라 discounted cost를 최소화한다
+
+발표 대본
+Processed task의 cost는 arrival slot부터 completed slot까지의 delay입니다. Dropped task는 delay 대신 positive constant C penalty를 받습니다. 각 device는 discount factor gamma를 사용한 expected long-term cost를 최소화하는 policy를 찾습니다. 즉 이 논문의 epsilon-greedy exploitation은 maximum reward가 아니라 minimum Q-value action을 고릅니다. Energy와 subscription fee는 extension으로 언급될 뿐 source experiment의 cost에는 들어가지 않습니다.
+
+공개 출처
+paper | pp. 1989–1990, Eqs. 15–19
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 11. current feature와 load history의 두 input path
+
+11. current feature와 load history의 두 input path
+
+발표 대본
+Figure 2는 current state features와 H(t)를 다른 input path로 넣습니다. Task size, local/transmission waits, own edge queue vector는 FC input으로, H(t)는 LSTM input으로 들어갑니다. LSTM의 last unit output은 load-level dynamics information을 다음 layer에 전달합니다. Two FC layers use ReLU; A&V layer는 action advantage와 state value를 별도로 학습합니다. 이 matrix의 숫자는 구조를 보이기 위한 editable example이지 source dataset 값이 아닙니다.
+
+공개 출처
+paper | pp. 1990–1991, Figs. 2–3, §4.1
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 12. dueling DQN: state 자체의 비용과 action 차이를 나눈다
+
+12. dueling DQN: state 자체의 비용과 action 차이를 나눈다
+
+발표 대본
+Source Eq. 20은 Q(s,a)를 V(s)와 A(s,a)의 합에서 action advantage 평균을 뺀 형태로 씁니다. V는 state 자체에서 발생하는 expected long-term cost portion, A는 action choice가 더하는 portion입니다. 이 slide의 split은 neural computation branches이며 MEC system에 value queue와 advantage queue가 있다는 뜻이 아닙니다.
+
+공개 출처
+paper | p. 1991, §4.1.4, Eq. 20
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 13. runtime action과 edge-assisted learning은 분리된다
+
+13. runtime action과 edge-assisted learning은 분리된다
+
+발표 대본
+각 mobile device m에는 training을 돕는 assigned edge n_m가 있습니다. 새 task에서 device는 parameter request를 보내 current Net_m vector u_m를 받고 epsilon-greedy action을 선택합니다. Task가 processed 또는 dropped되어 cost가 관측되면 device는 delayed experience를 edge로 보냅니다. 아래 feedback lane은 그 완료된 과거 task의 experience가 D_m, Net_m(k+1), Target Net_m으로 진행하는 bounded unroll입니다. 따라서 current action의 나중 feedback을 역방향 화살표로 그리지 않습니다. Edge node는 device별 replay memory, evaluation Net, Target Net을 유지합니다.
+
+공개 출처
+paper | pp. 1991–1993, Algorithms 1–2
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 14. multi-slot task의 delayed cost feedback
+
+14. multi-slot task의 delayed cost feedback
+
+발표 대본
+일반적인 one-step teaching example과 달리, source는 action slot t에서 task t의 cost가 t+1 시작에 관측되지 않을 수 있다고 명시합니다. 그래서 completed-or-dropped task의 original arrival slot들을 포함하는 set을 정의하고, 그 set의 각 task experience를 edge node로 전송합니다. H(t) history는 edge broadcast로 이미 알 수 있으므로 source says the device need not transmit it again with the experience.
+
+공개 출처
+paper | pp. 1992–1993, Eq. 23, Algorithms 1–2
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 15. double DQN target: action 선택과 평가를 분리한다
+
+15. double DQN target: action 선택과 평가를 분리한다
+
+발표 대본
+Source Eq. 25는 evaluation Net에서 next state의 minimum-Q action을 고릅니다. Eq. 26은 Target Net이 그 action의 Q를 평가하여 immediate cost c_i와 discounted target Q를 더합니다. Edge node는 squared difference loss를 줄여 Net parameters를 update하고 Replace Threshold마다 Target Net parameters를 Net에서 복사합니다. 논문은 double DQN이 traditional DQN보다 expected long-term cost estimation을 개선할 수 있다고 설명합니다.
+
+공개 출처
+paper | p. 1993, Eqs. 24–26
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 16. 구성 예시: local queue만으로 기다림을 다시 계산해 보자
+
+16. 구성 예시: local queue만으로 기다림을 다시 계산해 보자
+
+발표 대본
+이 slide의 2-slot service와 deadline 8은 construction입니다. Source가 제시한 rule인 local wait 계산만 사용합니다. Previous completion slot 5와 new arrival slot 3에서 wait은 3입니다. Then service start is slot 6, and 2 service slots yield completion slot 7 under the paper’s inclusive slot accounting. Because 7 is earlier than deadline end slot 8, task is processed and its delay is 5 slots. Edge side future B_n(t)는 unknown이므로 숫자를 임의로 넣어 prediction example처럼 보이지 않게 했습니다.
+
+공개 출처
+paper | pp. 1987–1988, Eqs. 2–3; constructed example
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 17. 비교 방법은 무엇을 다르게 가정하는가
+
+17. 비교 방법은 무엇을 다르게 가정하는가
+
+발표 대본
+Method comparison에는 No Offl., random offloading, PGOA, ULOOF가 포함됩니다. PGOA는 potential game best response에 기반하고, source footnote 8은 PGOA가 each task processing이 one time slot 안에 끝난다고 assume한다고 설명합니다. ULOOF는 historical observations에서 capacity estimation을 합니다. 이 비교는 exact algorithmic equivalence를 증명하는 ablation이 아니라 source simulation under the stated settings입니다.
+
+공개 출처
+paper | pp. 1994–1995, §5.2, footnote 8
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 18. reported result를 읽기 위한 simulation 조건
+
+18. reported result를 읽기 위한 simulation 조건
+
+발표 대본
+Section 5의 simulation은 50 mobile devices와 five edge nodes를 둡니다. Table 1은 slot duration 0.1 second, device CPU 2.5 GHz, edge CPU 41.8 GHz, transmission rate 14 Mbps, task size 2.0 to 5.0 Mbits, deadline 10 slots, arrival probability 0.3을 둡니다. Neural network는 batch size 16, learning rate 0.001, gamma 0.9, RMSProp, decreasing exploration을 사용합니다. Fig. 4 convergence study는 stationary environment에서 100-slot episode 1,000개를 사용합니다.
+
+공개 출처
+paper | pp. 1993–1994, Table 1, §5.1, Fig. 4
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 19. drop ratio와 average delay는 반드시 함께 읽는다
+
+19. drop ratio와 average delay는 반드시 함께 읽는다
+
+발표 대본
+Source는 dropped-task ratio를 dropped tasks를 total arrivals로 나눈 값으로, average delay를 processed tasks의 average delay로 정의합니다. Figure 5 discussion은 high arrival probability에서 더 많은 task가 drop되어 average에서 제외되면 일부 method의 average delay가 낮아질 수 있다고 명시합니다. 또한 proposed DRL은 drop이 더 적으므로 high load에서 다른 method보다 average delay가 더 클 수도 있습니다. 이는 contradiction이 아니라 metric definition의 결과입니다.
+
+공개 출처
+paper | p. 1995, §5.2, Fig. 5
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 20. source가 보고한 조건부 결과
+
+20. source가 보고한 조건부 결과
+
+발표 대본
+이 표는 source numbers와 그 conditions를 함께 남깁니다. Arrival probability 0.1 to 0.5에서 source는 DRL drop ratio가 0.2 below, benchmarks가 0.5 above라고 report합니다. Deadline 0.6 second에서 drop-ratio reduction은 65.8 to 79.3 percent입니다. Deadline 1.4 seconds에서 DRL average delay는 0.54 second around으로 converge하고 other methods는 0.84 second를 exceed합니다. Figure 7은 80 devices에서 drop ratio below 0.05, 150 devices에서 PGOA·ULOOF보다 9.0 percent lower average delay를 report합니다. 이 observations은 wireless error나 interference를 test하지 않습니다.
+
+공개 출처
+paper | p. 1995, Figs. 5–7
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 21. 논문이 보여 주지 않은 것까지 확장하지 않는다
+
+21. 논문이 보여 주지 않은 것까지 확장하지 않는다
+
+발표 대본
+Section 4.2.3은 neural networks가 Q values를 approximate하므로 DRL algorithm의 convergence guarantee가 open이라고 말합니다. Section 6은 simplified wireless modeling, practical demo evaluation, computational complexity, network-parameter transmission, non-stationary environment, strategic interaction을 directions로 듭니다. Paper는 energy나 subscription fees를 cost에 add할 수 있다고 mention하지만 energy optimization result를 report하지 않습니다. 이는 queue model의 failure가 아니라 source boundary입니다.
+
+공개 출처
+paper | pp. 1993, 1995–1996, §4.2.3, §6
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871
+
+## 22. 핵심 정리
+
+22. 핵심 정리
+
+발표 대본
+마지막으로 다섯 연결을 기억하면 됩니다. Queue and deadline change the meaning of an action; unknown future edge load means the state must use history rather than unavailable future delay; DQN additions have distinct roles; device-side action and edge-side learning are not the same procedure; and source metrics require joint reading. Reported gains are conditioned simulation findings, while convergence and deployment questions remain open.
+
+공개 출처
+paper | abstract; §§2–6
+Tang and Wong — Deep Reinforcement Learning for Task Offloading in Mobile Edge Computing Systems
+https://doi.org/10.1109/TMC.2020.3036871

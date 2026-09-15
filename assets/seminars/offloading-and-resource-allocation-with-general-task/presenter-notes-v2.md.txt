@@ -1,0 +1,215 @@
+## 1. 일반 Task Graph MEC Offloading
+
+1. 일반 Task Graph MEC Offloading
+
+발표 대본
+이 자료는 일반적인 task dependency graph를 가진 하나의 mobile application에서 task를 mobile device와 edge 중 어디에 둘지 설명합니다. 이 논문의 핵심은 DNN 하나가 모든 결정을 직접 내리는 구조가 아닙니다. DNN은 binary offloading 후보를 제안하고, 논문이 유도한 resource-allocation optimizer가 각 후보의 energy and time cost, 즉 ETC를 정확히 평가합니다.
+
+공개 출처
+paper | title page, abstract; arXiv v1
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 2. 왜 task 하나씩 독립적으로 offload할 수 없을까
+
+2. 왜 task 하나씩 독립적으로 offload할 수 없을까
+
+발표 대본
+논문은 task dependency를 directed acyclic graph G로 모델링합니다. 정점 i의 workload는 L_i이고, edge k에서 i는 k가 끝나고 output data O_k,i를 받을 때까지 i가 시작하지 못한다는 뜻입니다. 따라서 task i의 location은 i만의 CPU time을 바꾸는 것이 아니라 parent와 child 사이 transfer 여부와 child의 ready time도 바꿉니다. 순차 chain보다 general graph가 어려운 이유는 여러 parent path 중 가장 늦은 path가 merge task를 막기 때문입니다.
+
+공개 출처
+paper | pp. 2-3, Fig. 1, Sec. II-A
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 3. location 경계가 uplink와 downlink를 만든다
+
+3. location 경계가 uplink와 downlink를 만든다
+
+발표 대본
+논문은 virtual entry task 0과 exit task M+1을 local에 고정하고, actual task는 하나의 side에서만 실행합니다. Parent가 local이고 child가 edge이면 uplink가, parent가 edge이고 child가 local이면 downlink가 필요합니다. 같은 side에 있으면 그 dependency edge에서는 data transfer가 추가되지 않습니다. 이 그림은 한 dependency edge의 규칙을 보인 것이며, 실제 general graph에서는 모든 parent edge의 ready condition이 함께 작동합니다.
+
+공개 출처
+paper | pp. 3-5, Eqs. 1-12
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 4. device energy와 종료시간을 함께 최소화한다
+
+4. device energy와 종료시간을 함께 최소화한다
+
+발표 대본
+Local computing time은 workload를 local CPU frequency로 나눈 값이고, local energy는 frequency 제곱에 비례합니다. Edge compute time과 boundary transfer time도 final completion time에 들어갑니다. 이 논문의 E는 MD energy를 뜻하며, objective eta는 beta_e E와 beta_t FT_l(M+1)의 weighted sum입니다. 따라서 빠른 edge CPU만 보고 location을 정하면 uplink energy나 final return delay를 놓칠 수 있습니다.
+
+공개 출처
+paper | pp. 3-5, Eqs. 1-15
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 5. 고정 action의 종료시간은 가장 늦은 path가 만든다
+
+5. 고정 action의 종료시간은 가장 늦은 path가 만든다
+
+발표 대본
+General graph에는 source-to-exit loop-free path가 여러 개 있습니다. Lemma 3.1은 final finish time이 각 path time의 maximum임을 보입니다. 이 표현은 offloading vector a가 고정되면 local CPU frequency와 Tmax를 푸는 P2로 이어지고, P2는 convex problem입니다. 이 분해가 뒤의 evaluator가 candidate를 점수화할 수 있는 근거입니다. 여기서 path maximum은 모든 task time을 단순 합산한다는 뜻이 아닙니다.
+
+공개 출처
+paper | pp. 7-13, Lemma 3.1, P2, Algorithm 1
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 6. critic은 학습 network가 아니라 optimizer다
+
+6. critic은 학습 network가 아니라 optimizer다
+
+발표 대본
+Source의 Algorithm 1은 fixed action에서 optimum local CPU frequency를 찾습니다. Path constraint에 대한 dual multiplier를 update하고, derivation으로 얻은 frequency expression을 f_peak 이하로 projection합니다. Section IV는 이를 critic network라고 부르지만 conventional learned critic DNN을 train하지 않는다고 명시합니다. 발표에서는 혼동을 피하기 위해 analysis-based evaluator 또는 optimization critic이라고 부릅니다.
+
+공개 출처
+paper | pp. 11-13, Eq. 19, Algorithm 1; p. 16
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 7. actor는 state에서 relaxed location vector를 낸다
+
+7. actor는 state에서 relaxed location vector를 낸다
+
+발표 대본
+At epoch t, actor DNN input은 wireless channel h_t와 edge CPU frequency f_t^c입니다. Actor output g_theta는 M task에 대한 relaxed values입니다. Actual offloading variable는 binary여야 하므로, 논문은 relaxed vector를 direct action으로 실행하지 않습니다. 이 다음 GNOP quantization이 B개의 binary vectors를 만듭니다. State에는 task DAG 자체를 매 epoch 입력하는 model이 아니라, 본 논문에서 fixed application graph 아래 channel과 edge CPU state가 들어갑니다.
+
+공개 출처
+paper | pp. 12-15, Fig. 3, Eqs. 25-29
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 8. GNOP는 순서를 보존해 binary 후보를 만든다
+
+8. GNOP는 순서를 보존해 binary 후보를 만든다
+
+발표 대본
+GNOP는 Gaussian noise-added order-preserving quantization입니다. 먼저 a1은 actor output의 각 entry를 0.5에서 threshold하여 만듭니다. Ordinary B/2 candidate는 actor score가 0.5에서 얼마나 가까운지의 순서로 threshold를 옮겨 만듭니다. Other B/2 candidate는 Gaussian noise를 더하고 sigmoid를 적용한 score에 같은 quantization을 적용합니다. 이 단계는 combinatorial space 전체 탐색을 대체하는 candidate proposal입니다. 모든 B candidate의 actual ETC는 다음 evaluator가 계산하므로, quantization score 자체를 ETC 혹은 Q-value라고 부르면 안 됩니다.
+
+공개 출처
+paper | pp. 14-15, Eqs. 26-29
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 9. best candidate가 replay label이 된다
+
+9. best candidate가 replay label이 된다
+
+발표 대본
+Evaluator가 Omega_t 중 최소 eta star candidate를 a_t star로 고른 뒤, state-action pair를 replay memory에 넣습니다. Memory가 half full을 넘으면, 논문은 delta epoch마다 batch를 sample하여 average cross-entropy loss를 Adam으로 최소화합니다. 그래서 a_t star는 Q-learning target이나 sampled return이 아니라 source optimizer가 만든 supervised label과 유사한 역할을 합니다. 이 설명은 source의 actor-critic terminology를 더 정확히 읽기 위한 것입니다.
+
+공개 출처
+paper | pp. 15-16, Eqs. 30-31
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 10. one-climb: path별 MD에서 edge로 한 번만 이동
+
+10. one-climb: path별 MD에서 edge로 한 번만 이동
+
+발표 대본
+Definition 3은 각 path의 execution이 MD에서 edge로 at most once migrate한다고 말합니다. Local에서 edge로 갔다가 local로 돌아오는 것은 한 번의 MD-to-edge migration이므로 definition에 맞습니다. 다시 edge로 가면 violation입니다. Appendix D는 한 path에서 two-time scheme을 continuous edge run으로 바꾸는 cost comparison을 분석하지만, overlapping tasks가 있는 다른 path의 ETC를 늘릴 수 있다고 명시합니다. 따라서 source는 mild conditions에서의 optimum statement를 제공합니다.
+
+공개 출처
+paper | p. 17, Definition 3; pp. 27-31, App. D
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 11. 구성 예시: parallel parent는 maximum으로 합친다
+
+11. 구성 예시: parallel parent는 maximum으로 합친다
+
+발표 대본
+이 슬라이드의 숫자는 source experiment가 아니라 constructed teaching example입니다. Start에서 A와 B가 parallel로 시작하고 둘 다 C의 parent라고 둡니다. All-local fixed times are A=4, B=2, C=6, so C is ready at max(4,2)=4 and exit is 10. All-edge toy times use parallel uplink plus edge compute: A branch .2+.8=1.0, B branch .2+.4=.6, then C=1.2 and return=.2, so 2.4. The source model permits concurrent transfers/execution under its sufficient-channel/core assumptions. Real ETC would also include MD energy and optimize resources via Algorithm 1.
+
+공개 출처
+paper | pp. 5, 7-11; constructed example
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 12. 한 epoch의 hybrid decision loop
+
+12. 한 epoch의 hybrid decision loop
+
+발표 대본
+전체 loop를 두 층으로 보면 이해하기 쉽습니다. Actor는 channel과 edge CPU state에 맞는 candidate neighborhood를 만들고, GNOP가 binary action set Omega_t를 형성합니다. Optimizer evaluator는 candidate마다 fixed-action resource allocation을 solve하여 ETC를 평가하고 best action을 고릅니다. 그 action이 replay label로 돌아가 actor가 시간이 지날수록 좋은 candidate set을 만들도록 합니다. 이 구조가 exhaustive 2^M action evaluation과 다른 지점입니다.
+
+공개 출처
+paper | pp. 12-17, Fig. 3, Algorithm 1
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 13. 수치 실험: 8-task graph와 wireless setting
+
+13. 수치 실험: 8-task graph와 wireless setting
+
+발표 대본
+Fig. 6의 mesh, tree, general graph는 각각 여덟 actual task와 같은 workload vector를 사용합니다. Source는 bandwidth 2 MHz, Rician fading, 2에서 50 GHz 사이의 time-varying edge CPU, beta_e=beta_t=.5를 둡니다. DNN은 hidden layer 160, 120, 80을 쓰고, 이후 simulation은 learning rate .01, batch 128, replay memory 1024, interval 10을 사용합니다. 이 값들은 MEC hardware system 전체로 이전된다는 주장이 아니라 source의 condition입니다.
+
+공개 출처
+paper | pp. 18-19, Table I, Fig. 6
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 14. 학습 지표를 정확히 읽는 법
+
+14. 학습 지표를 정확히 읽는 법
+
+발표 대본
+Fig. 7은 tuning choice를 비교하고, source는 이후 simulation에 learning rate .01과 batch 128을 선택합니다. Fig. 8은 각 graph condition에서 300 training step 뒤 moving-average loss가 .1 아래라고 보고합니다. Accuracy chi는 DRL ETC와 average exhaustive optimum ETC의 차이로 정의되므로 task label classification accuracy가 아닙니다. General graph의 Table II는 99.9 percent를 보고합니다. 이 모든 수치는 specified simulation setting과 training process에 묶여 있습니다.
+
+공개 출처
+paper | pp. 19-23, Figs. 7-9, Table II
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 15. ETC comparison: adaptive 후보 선택의 효과
+
+15. ETC comparison: adaptive 후보 선택의 효과
+
+발표 대본
+Fig. 10에서 source는 first 20,000 time epoch를 warm-up으로 제외하고, 각 point를 50 independent realization으로 average합니다. 두 DRL variant가 이 setting에서 exhaustive와 Gibbs에 가까운 ETC를 얻고 all-edge와 all-local보다 낮다고 서술합니다. One-climb result는 여기서는 empirical result이며 앞의 appendix qualification과 함께 읽어야 합니다. Task count가 8이므로 arbitrary M에 대한 scale claim은 아닙니다.
+
+공개 출처
+paper | pp. 22-23, Fig. 10, Table II
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 16. candidate filter가 source 계산시간을 낮춘다
+
+16. candidate filter가 source 계산시간을 낮춘다
+
+발표 대본
+Table III는 B=16으로 고정한 average computation time per realization입니다. One-climb GNOP은 mesh, tree, general graph에서 0.9240, 1.3421, 1.0464 seconds이고, ordinary GNOP은 1.4702, 1.4107, 1.5821 seconds입니다. Source는 GNOP 대비 reduction을 각각 37.15, 4.86, 33.86 percent라고 보고합니다. 이 timing은 paper의 simulation implementation에서 나온 값이며 measured mobile/edge hardware service guarantee가 아닙니다.
+
+공개 출처
+paper | pp. 23-24, Table III, Fig. 11
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 17. source가 보인 것과 보이지 않은 것
+
+17. source가 보인 것과 보이지 않은 것
+
+발표 대본
+Source scope는 one MD와 one AP, known application DAG, binary whole-task placement, 그리고 concurrent execution/transmission을 위한 충분한 core와 channel이라는 model assumption입니다. 가장 중요한 transferable design idea는 role separation입니다. Learner가 combinatorial search를 좁히고 analytical optimizer가 coupled continuous resource를 평가합니다. Numerical result는 multi-user scheduler, hardware latency guarantee, 또는 모든 overlapping DAG에서 unconditional one-climb optimality를 보인 것이 아닙니다.
+
+공개 출처
+paper | pp. 5, 17, 22-24, App. D
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119
+
+## 18. 핵심 정리
+
+18. 핵심 정리
+
+발표 대본
+마지막으로 네 가지를 기억하면 됩니다. First, general graph의 difficulty는 dependency data와 critical path입니다. Second, action a와 CPU frequency f를 분리하면 fixed action에 대한 continuous evaluator를 만들 수 있습니다. Third, actor learns to propose candidates, while the source's critic is analytical rather than a learned value network. Finally, Table II and III are encouraging but conditional simulation results; they should not be generalized to hardware deployment or every DAG without checking model fit.
+
+공개 출처
+paper | abstract; pp. 7-17, 22-24
+Yan, Bi, and Zhang, arXiv:2002.08119v1
+https://arxiv.org/abs/2002.08119

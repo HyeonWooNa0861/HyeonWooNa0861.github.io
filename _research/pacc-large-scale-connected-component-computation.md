@@ -96,6 +96,11 @@ PACC의 의의는 graph algorithm과 distributed data layout을 분리하지 않
 
 Static graph 중심의 batch 처리라는 조건은 dynamic connectivity로 확장할 수 있다. Edge update가 들어온 partition만 다시 계산하는 incremental component maintenance, hub를 분산하는 skew-aware partitioning, cloud object storage의 read 비용까지 포함한 cost model을 결합하면 현대 data platform에 더 잘 맞는다. UniCon식 operation fusion을 함께 적용하면 round 수와 round당 data size를 동시에 줄이는 후속 설계도 가능하다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 26 slides | <a href="/assets/seminars/pacc-large-scale-connected-component-computation/pacc-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/pacc-large-scale-connected-component-computation/pacc-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/pacc-large-scale-connected-component-computation/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/pacc-large-scale-connected-component-computation/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

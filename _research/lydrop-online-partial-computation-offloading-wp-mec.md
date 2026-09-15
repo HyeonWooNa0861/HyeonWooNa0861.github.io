@@ -74,6 +74,11 @@ LyDROP은 Lyapunov optimization으로 stochastic online problem을 per-frame det
 
 QECO 계열 연구가 binary 또는 discrete action 중심이라면, LyDROP은 partial offloading이라는 더 연속적이고 세밀한 decision space를 다룬다. Dense MEC 확장에서는 partial offloading이 load balancing을 더 부드럽게 만들 가능성이 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 23 slides | <a href="/assets/seminars/lydrop-online-partial-computation-offloading-wp-mec/lydrop-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/lydrop-online-partial-computation-offloading-wp-mec/lydrop-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/lydrop-online-partial-computation-offloading-wp-mec/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/lydrop-online-partial-computation-offloading-wp-mec/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

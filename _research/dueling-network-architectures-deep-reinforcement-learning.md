@@ -72,6 +72,11 @@ Dueling architecture는 neural network의 마지막 부분을 두 stream으로 �
 
 MEC offloading에서도 많은 action이 비슷한 cost를 가질 수 있다. 예를 들어 부하가 낮은 상태에서는 local과 edge offloading의 차이가 작을 수 있고, 특정 edge 간 차이가 미세할 수 있다. Dueling architecture는 이런 상황에서 state quality와 action-specific advantage를 분리해 학습 안정성을 높인다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 23 slides | <a href="/assets/seminars/dueling-network-architectures-deep-reinforcement-learning/dueling-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/dueling-network-architectures-deep-reinforcement-learning/dueling-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/dueling-network-architectures-deep-reinforcement-learning/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/dueling-network-architectures-deep-reinforcement-learning/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

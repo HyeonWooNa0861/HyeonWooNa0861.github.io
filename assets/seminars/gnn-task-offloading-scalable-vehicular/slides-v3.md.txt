@@ -1,0 +1,339 @@
+---
+type: research-seminar-slides
+paper_id: gnn-task-offloading-scalable-vehicular
+---
+
+# G-TORA: 차량 그래프에서 오프로딩을 예측하는 GNN
+
+논문: Graph Neural Network-Based Task Offloading and Resource Allocation for Scalable Vehicular Networks
+
+저자: Menghan Shao · Rongqing Zhang · Liuqing Yang (2025)
+
+## 1. G-TORA: 차량 그래프에서 오프로딩을 예측하는 GNN
+
+가변 차량 수와 V2V 링크를 그래프로 입력해, GA 라벨을 모사하는 지도학습 모델
+
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 1, title and Abstract
+
+## 2. 문제: 차량 수와 연결이 계속 달라진다
+
+같은 기지국 범위 안에서도 task vehicle과 service vehicle의 수가 slot마다 바뀐다
+
+- 차량은 들어오고 나가며, 가까운 차량과의 V2V 링크도 달라진다.
+- task vehicle은 계산이 부족할 수 있고, service vehicle은 유휴 계산 자원을 제공한다.
+- 고정 길이 벡터를 쓰는 MLP는 차량 수가 바뀌면 padding 또는 별도 처리가 필요하다.
+
+핵심: 입력의 핵심은 차량 목록만이 아니라 현재의 연결 구조다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 2–4, §§1 and 3.1
+
+## 3. 한 slot의 차량 오프로딩 구조
+
+기지국은 정보를 모으고, task vehicle은 local 또는 가까운 service vehicle을 선택한다
+
+- **레인 control**
+- **레인 execution**
+  - **vehicle state**: task state → position → compute
+  - **base station**: collect state
+make decision
+  - **task vehicle**: input d_i → cycles c_i
+  - **offload choice**: local or V2V
+service vehicle
+  - **service vehicle**: allocated CPU
+f_i,j
+- vehicle state → base station: on entry (실선, 단방향)
+- base station → offload choice: decision (점선, 단방향)
+- task vehicle → offload choice (실선, 단방향)
+- offload choice → service vehicle: V2V when chosen (실선, 단방향)
+
+핵심: 기지국이 결정하지만, 계산 경로는 local 또는 task-to-service V2V다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 4, Fig. 1 and §3.1
+
+## 4. 그래프의 정점과 엣지는 무엇을 뜻하는가
+
+정점은 차량, 엣지는 차량 간 통신 링크이며 feature가 역할에 따라 다르다
+
+- **레인 graph G_t**
+  - **task-node**: input d_i → cycles c_i
+  - **V2V edge**: link feature
+transmission rate
+  - **service-node**: capacity f_j → nearby candidate
+  - **G_t=(V_t,E_t)**: current topology
+at slot t
+- task-node → V2V edge (실선, 단방향)
+- V2V edge → service-node: rate R_i,j (실선, 단방향)
+- service-node → G_t=(V_t,E_t) (실선, 단방향)
+
+핵심: 그래프는 현재 연결을 담으므로, 노드 수가 달라도 같은 GNN 구조에 넣을 수 있다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 4, 7, §§3.1 and 4.3
+
+## 5. local과 offload의 지연 구성
+
+
+| 경로 | 계산 | 통신 | 논문이 세는 지연 |
+| --- | --- | --- | --- |
+| local | c_i / f_i | 없음 | T_i^loc |
+| service vehicle | c_i / f_i,j | d_i / R_i,j | T_i,j^trans + T_i,j^edge |
+| 결과 반환 | 완료 뒤 전송 | 작다고 가정 | 지연에서 제외 |
+
+핵심: 오프로딩은 전송 시간이 추가되지만 더 큰 service CPU를 쓸 수 있다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 4–5, Eqs. 1–4
+
+## 6. 목표와 두 제약: 한 경로 선택, service 용량 준수
+
+논문은 slot들의 총 response delay를 최소화한다
+
+- **task i**: local 또는 service 후보
+- **local**: x_i,0=1; T_i^loc
+- **offload**: x_i,j=1; T_i,j^trans+T_i,j^edge
+- **binary choice**: local+all service indicators = 1
+- **capacity check**: sum f_i,j ≤ f_j for each service
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 5, Eqs. 5–7 and C1–C3
+
+## 7. 고정된 선택 뒤의 자원 배분
+
+- 논문은 offloading action을 고정하면 남은 resource-allocation 문제가 convex가 된다고 말한다.
+- 그래서 다음 절은 주로 binary offloading variable을 어떻게 예측할지에 집중한다.
+- 하지만 fixed action 뒤의 allocation solver나 닫힌 형태의 해는 제시하지 않는다.
+
+핵심: GNN이 자원 배분까지 어떤 계산으로 푸는지 논문만으로 재현할 수는 없다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 5, §3.4 after Eq. 7
+
+## 8. 가변 차량 수에서 GNN을 쓰는 이유
+
+
+| 방법 | 입력 크기 변화 | 논문이 말한 처리 |
+| --- | --- | --- |
+| 고정 MLP | 고정 | 적은 차량은 0 padding |
+| 고정 MLP | 범위 초과 | 추가 task vehicle은 local 처리 |
+| GNN | 그래프 정점·엣지 변화 | 현재 topology를 graph로 입력 |
+
+핵심: 논문의 scalability 주장은 가변 크기 graph 입력을 같은 GNN 구조로 처리한다는 뜻이다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 2, 7, 9, §§1, 4.3, 5.2
+
+## 9. G-TORA의 라벨 생성·학습·추론 흐름
+
+label 생성과 학습은 offline, 배포된 GNN의 결정 예측은 online이다
+
+1. **1. instance sample**: vehicle-network parameter를 뽑는다
+2. **2. GA label**: GA가 offloading chromosome을 탐색한다
+3. **3. supervised GNN**: graph와 GA label로 cross-entropy 학습
+4. **4. BS inference**: 현재 graph에서 decision을 예측한다
+
+핵심: GA가 운용 중 매번 해를 찾는 구조가 아니라, GNN의 교사 역할을 한다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 5–6, Fig. 2 and §4.1
+
+## 10. GA는 오프로딩 라벨을 어떻게 만드는가
+
+각 chromosome은 여러 task vehicle의 offloading decision 후보를 담는다
+
+1. **initial population**: random decision chromosome 생성
+2. **evaluate**: Eq. 6의 total response delay 계산
+3. **evolve**: roulette selection, crossover, mutation
+4. **best chromosome**: GNN 학습용 decision label 반환
+
+핵심: GA label은 exhaustive optimum이 아니라 휴리스틱 탐색 결과다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 6–7, §4.2 and Algorithm 1
+
+## 11. GA fitness 식에는 재현상 빈틈이 있다
+
+- 본문은 response delay가 낮을수록 fitness가 높다고 설명한다.
+- Algorithm 1 line 5는 Eval(Q^k)=beta(1-beta)^(k-1)를 인쇄한다.
+- 그 식의 rank k가 delay에서 어떻게 정해지는지는 논문이 설명하지 않는다.
+
+핵심: GA label의 정확한 fitness 구현은 원문만으로 완전히 복원되지 않는다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 6–7, §4.2 and Algorithm 1 line 5
+
+## 12. GNN 입력: node feature와 link feature
+
+입력 전 task demand와 compute feature를 min-max scaling하고, edge weight는 SNR로 조정한다
+
+- **레인 vehicle graph features**
+  - **raw features**: task: d_i, c_i → service: f_j → link: rate, SNR
+  - **graph preparation**: node min-max
+edge SNR weight
+  - **GNN layers**: two-layer
+aggregation
+  - **embeddings**: task, service
+and edge context
+- raw features → graph preparation (실선, 단방향)
+- graph preparation → GNN layers (실선, 단방향)
+- GNN layers → embeddings (실선, 단방향)
+
+핵심: feature는 역할별로 다르고, link 품질도 decision에 들어간다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 7–8, Fig. 3 and §4.3
+
+## 13. 두 GNN layer의 이웃 정보 집계
+
+각 정점은 자기 hidden state와 인접 정점의 message를 함께 업데이트한다
+
+- **current node**: hidden state h_i^k
+- **adjacent nodes**: AGG of neighbor hidden states
+- **attention**: learned weight alpha_i,j
+- **concatenate**: self plus weighted neighbor message
+- **next state**: activation gives h_i^(k+1)
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 7–8, Eqs. 8–10
+
+## 14. edge embedding에서 offloading decision까지
+
+task node, service node, link feature를 합쳐 candidate edge의 decision을 분류한다
+
+1. **node embedding**: task와 service의 updated state
+2. **edge context**: 두 node와 link feature concatenate
+3. **MLP**: Linear, ReLU, LeakyReLU, Softmax
+4. **decision**: task vehicle의 offloading output
+
+핵심: 논문은 task-service 후보 link를 판단 단위로 결합해 MLP에 넣는다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 7–8, Fig. 3 and Eq. 11
+
+## 15. 지도학습 training loop
+
+GA label과 prediction의 cross-entropy가 GNN parameter를 갱신한다
+
+1. **batch graph**: nodes, edges, attributes를 train loader에 저장
+2. **GNN forward**: attention aggregation과 edge decision 출력
+3. **cross-entropy**: prediction과 GA label을 비교
+4. **Adam update**: backpropagation으로 weight 갱신
+5. **deploy**: trained GNN을 base station에 저장
+
+핵심: online 단계에서 탐색 보상을 누적하는 RL loop는 이 논문에 없다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 8, Algorithm 2
+
+## 16. 교육용 가상 trace: 한 task의 경로 비교
+
+아래 수치는 논문 실험값이 아니라 Eq. 2–4를 읽기 위한 가정이다
+
+
+| 가정 | local | service vehicle | 선택 |
+| --- | --- | --- | --- |
+| d=10 MB, c=10^9 cycles | f_i=1 GHz | rate=100 MB/s<br>f_i,j=4 GHz | trained GNN이<br>service edge 선택 |
+| 계산 | 10^9 / 10^9<br>=1.00 s | 10/100 + 10^9/(4×10^9)<br>=0.10+0.25 | 0.35 s |
+| capacity | local 자원 | f_i,j=4 GHz가<br>service f_j 이내 | C1·C2 충족 |
+
+핵심: 좋은 V2V rate와 큰 배정 CPU가 전송 지연을 상쇄할 때 offload가 유리하다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 4–5, Eqs. 2–4 and C1–C2
+
+## 17. 시뮬레이션 입력과 학습 설정
+
+
+| 항목 | 논문 설정 | 항목 | 논문 설정 |
+| --- | --- | --- | --- |
+| task data | {10,20,50,100} MB | task cycles | [1,2]×10^9 |
+| vehicle capacity | [3,5] GHz | bandwidth | 10 MHz |
+| transmit power | 100 mW | distance | [20,500] m |
+| GNN layers | 2 | embedding | 256 |
+| epochs / optimizer | 3000 / Adam | platform | Python 3.8, PyTorch |
+
+핵심: 결과는 이 범위와 simulation platform에서 얻은 조건부 비교다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 8–9, Table 1 and §5.1.2
+
+## 18. 비교 대상이 측정하는 trade-off
+
+
+| 방법 | 논문에서의 역할 | 입력 크기 처리 |
+| --- | --- | --- |
+| GA | heuristic label generator | 매 slot search |
+| CH | local-search heuristic | local optimum 가능 |
+| MLP | fixed DNN baseline | 0 padding 또는 excess local |
+| OMAB | epsilon-greedy online bandit | 탐색·활용 조절 |
+| GNN | GA-supervised proposal | current topology graph |
+
+핵심: 낮은 processing delay와 빠른 inference는 서로 다른 측정값이다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 9, §5.2
+
+## 19. task vehicle 수를 5에서 10으로 늘린 비교
+
+service vehicle 수는 4로 고정한 simulation이다
+
+
+| 측정 | 관찰 | 읽을 때의 조건 |
+| --- | --- | --- |
+| loss | GNN은 약 0.2로 수렴 | Fig. 4, 3000 epochs |
+| processing | 10대에서 GNN은 GA보다 약 17% 높음 | CH보다 약 1% 높음 |
+| processing | GNN은 MLP보다 26% 낮음 | OMAB보다 41% 낮음 |
+| inference | GNN은 0.03 s 미만 | GA 14.664에서 31.016 s |
+| total | GNN이 가장 낮게 보고됨 | Fig. 7 조건에서만 |
+
+핵심: GNN은 이 조건에서 total delay가 가장 낮게 보고됐다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 9–10, Figs. 4–7 and §5.3
+
+## 20. transmit power sweep의 결과
+
+문제 크기가 고정된 상태에서 power를 0.5 W에서 1 W로 바꾼다
+
+
+| 방법 | 0.5 W processing | 1 W processing | inference |
+| --- | --- | --- | --- |
+| GA | 1.056 s | 0.690 s | 크게 변하지 않음 |
+| CH | 1.101 s | 0.727 s | 크게 변하지 않음 |
+| GNN | 1.126 s | 0.771 s | 크게 변하지 않음 |
+| MLP | 1.418 s | 1.036 s | 크게 변하지 않음 |
+| OMAB | 1.840 s | 1.163 s | 크게 변하지 않음 |
+
+핵심: power 증가로 통신 지연은 줄고, inference는 거의 유지됐다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 10–11, Figs. 8–10 and §5.4
+
+## 21. service compute capacity sweep
+
+- 평균 computing capacity를 3 GHz에서 7 GHz로 올리면 모든 방법의 processing delay가 감소한다.
+- GNN의 total delay는 0.923 s에서 0.817 s로 보고된다.
+- GA와 CH의 total delay는 inference delay의 영향으로 비교적 안정적이라고 논문은 해석한다.
+
+핵심: CPU가 빨라져도 전체 지연은 계산 지연과 decision inference 지연의 합으로 읽어야 한다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 11–12, Figs. 11–12 and §5.5
+
+## 22. 이 논문에서 scalability가 성립하는 범위
+
+- 동일한 GNN architecture가 다른 수의 graph node와 edge를 입력으로 받을 수 있다.
+- 실험에서 직접 바꾼 범위는 task vehicle 5–10대이며 service vehicle은 4대로 고정했다.
+- 논문은 arbitrary network size 성능, 통신 비용, 또는 formal scalability theorem을 제시하지 않는다.
+
+핵심: scalability는 구조적 입력 적응성과 해당 simulation 범위의 결과로 제한해 읽어야 한다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 1, 7, 9–10, Abstract, §4.3, §5.3
+
+## 23. 논문이 직접 밝힌 적용 한계
+
+
+| 한계 | 왜 중요한가 | 논문이 제안한 이후 방향 |
+| --- | --- | --- |
+| GA supervision | 많은 topology data와 label이 필요 | semi- 또는 unsupervised GNN |
+| slot 내 static channel | 고속 이동의 link 변화를 충분히 반영 못함 | real-time dynamics model |
+| 제외한 QoS | deadline·reliability를 보장하지 않음 | QoS-aware offloading |
+| 제외한 task 구조 | subtask dependency·multi-hop 미모델 | future extension |
+
+핵심: G-TORA의 decision은 현재 model의 mobility·QoS 한계를 가진다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) p. 12, §6 and Data Availability
+
+## 24. G-TORA를 한 문장씩 다시 연결하기
+
+1. **network**: task/service vehicle과 V2V link를 graph로 표현
+2. **objective**: local 또는 offload response delay를 최소화
+3. **teacher**: GA heuristic이 offline decision label 생성
+4. **learner**: two-layer GNN이 link context로 label 모사
+5. **scope**: simulation 범위와 static-slot 가정에서 해석
+
+핵심: 가변 차량 topology를 graph 입력과 GNN inference로 연결한다.
+
+근거: [iet-doi](https://doi.org/10.1049/cmu2.70064) pp. 4–12, §§3–6

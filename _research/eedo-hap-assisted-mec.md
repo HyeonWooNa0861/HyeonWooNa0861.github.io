@@ -73,6 +73,11 @@ EEDO는 system stability를 유지하면서 energy consumption을 줄이는 것�
 
 QECO-Adapt가 dense terrestrial MEC를 다룬다면, 이 연구는 infrastructure-limited environment에서 aerial MEC의 역할을 강조한다. Offloading decision의 목적 함수도 QoE나 delay뿐 아니라 energy efficiency와 service coverage로 확장된다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 21 slides | <a href="/assets/seminars/eedo-hap-assisted-mec/eedo-hap-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/eedo-hap-assisted-mec/eedo-hap-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/eedo-hap-assisted-mec/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/eedo-hap-assisted-mec/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

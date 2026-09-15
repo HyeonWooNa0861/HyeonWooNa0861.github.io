@@ -108,6 +108,11 @@ Task graph는 scientific workflow dataset 중 25개 node를 포함하는 Montage
 
 세 번째 한계는 reward weight $$\beta,\psi,\eta$$와 deadline multiplier $$6\cdot MS_n$$ 같은 설정값에 대한 민감도다. 확장 연구에서는 multi-objective RL, constrained RL, 또는 Pareto-front analysis를 도입해 makespan, deadline violation, energy consumption, fairness 사이의 trade-off를 명시적으로 다룰 필요가 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 30 slides | <a href="/assets/seminars/task-graph-offloading-drl-mec/sata-drl-seminar-ko-v3.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/sata-drl-seminar-ko-v3.pptx" download>Download</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/slides-v3.md.txt" download="slides-v3.md">Markdown</a> | <a href="/assets/seminars/task-graph-offloading-drl-mec/presenter-notes-v3.md.txt" download="presenter-notes-v3.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

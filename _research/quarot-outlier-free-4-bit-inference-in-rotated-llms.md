@@ -102,6 +102,11 @@ QuaRot은 Hadamard transform과 low-bit kernel support에 의존한다. Rotation
 
 LLAMA-3 결과에서는 LLAMA-2보다 quantization sensitivity가 더 크게 나타난다. 이는 같은 rotation scheme이라도 model family와 training distribution에 따라 quantization robustness가 달라질 수 있음을 시사한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 27 slides | <a href="/assets/seminars/quarot-outlier-free-4-bit-inference-in-rotated-llms/quarot-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/quarot-outlier-free-4-bit-inference-in-rotated-llms/quarot-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/quarot-outlier-free-4-bit-inference-in-rotated-llms/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/quarot-outlier-free-4-bit-inference-in-rotated-llms/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

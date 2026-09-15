@@ -1,0 +1,107 @@
+## 1. Federated DRL: 종속 task offloading의 연구 구상
+
+1. Federated DRL: 종속 task offloading의 연구 구상
+
+발표 대본
+이 자료는 Iman Rahmati의 두 쪽 Research Idea 문서를 설명합니다. 완성 알고리즘이나 실험 논문이 아닙니다. 첫 쪽은 문제와 연구 방법을 제안하고 둘째 쪽은 참고문헌입니다. 원문에는 발행 연도가 없으므로 참고문헌의 2024년을 이 제안의 발행 연도로 사용하지 않습니다. 제목의 Intradependente 표기는 원문 그대로입니다.
+
+공개 출처
+research-idea | pp. 1–2, title and document structure
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 2. 제안한 것과 아직 검증하지 않은 것
+
+2. 제안한 것과 아직 검증하지 않은 것
+
+발표 대본
+문서는 Motivation에서 학습 가속, 공동 참여, 새 장치가 들어오는 상황의 지속 학습을 기대 장점으로 듭니다. Methodology는 구현과 시뮬레이션을 미래 계획으로 제시합니다. 따라서 이를 이미 검증된 성능 또는 privacy guarantee라고 소개하면 안 됩니다.
+
+공개 출처
+research-idea | p. 1, Motivation and Research Methodology
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 3. 종속 task는 실행 순서와 데이터 전달을 함께 정한다
+
+3. 종속 task는 실행 순서와 데이터 전달을 함께 정한다
+
+발표 대본
+원문은 task 내부 종속성을 Task Call Graph로 표현하자고 제안합니다. 도식의 A→B는 그 필요성을 이해시키는 단순한 강의용 선후관계입니다. 모든 call graph가 DAG라고 주장하거나 이 예시의 timing model을 논문 정의라고 간주하지 않습니다. 구체적 node/edge feature, 실행 규칙, encoder는 원문에 없습니다.
+
+공개 출처
+research-idea | p. 1, Problem Statement
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 4. 강의용 계산: 전송을 빠뜨리면 완료 시간을 작게 센다
+
+4. 강의용 계산: 전송을 빠뜨리면 완료 시간을 작게 센다
+
+발표 대본
+원문에는 timing equation이나 수치 실험이 없습니다. 이 예에서는 queue, 병렬 overlap, 통신 시작·종료 overhead를 생략하고 A와 B의 실행 시간을 위치와 무관하게 고정했습니다. 이 가정 아래 A가 끝나고 전송을 마친 다음 B를 실행하므로 5 ms 또는 6 ms입니다. 실제 offloading 최적해나 제안 기법의 성능 향상을 계산한 것은 아닙니다.
+
+공개 출처
+research-idea | p. 1, Problem Statement; constructed teaching example
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 5. 공동 학습: local data 대신 model update를 모은다
+
+5. 공동 학습: local data 대신 model update를 모은다
+
+발표 대본
+원문 Motivation의 주기적 local update 전송과 중앙 aggregation을 순서도로 표현했습니다. A와 B는 구분을 위한 예시 장치이며 고정된 두-device 시스템이 아닙니다. 오른쪽은 다음 round의 local 학습에서 각 장치가 global model을 반영한다는 순서 설명입니다. 실선은 model 정보 전달입니다. 원시 데이터가 중앙으로 이동한다는 화살표는 그리지 않았습니다. 이는 정보 흐름 설명이지 특정 aggregation equation이나 완성된 distributed algorithm이 아닙니다.
+
+공개 출처
+research-idea | p. 1, Motivation
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 6. Actor-Critic과 D3QN은 연구 후보로 제시된다
+
+6. Actor-Critic과 D3QN은 연구 후보로 제시된다
+
+발표 대본
+Research Methodology는 federated Actor-Critic 또는 federated D3QN을 후보로 제시합니다. 선택된 architecture, aggregation rule, loss, hyperparameter는 명시하지 않습니다. References의 Actor-Critic은 age-sensitive MEC, D3QN 계열 인용은 SDN-based IoT traffic monitoring입니다. 이 제안의 종속 task offloading에서 같은 성능이 입증되었다는 의미가 아닙니다.
+
+공개 출처
+research-idea | pp. 1–2, Problem Model, Methodology and references [3]–[4]
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 7. local data를 보내지 않는 것과 privacy 보장은 다르다
+
+7. local data를 보내지 않는 것과 privacy 보장은 다르다
+
+발표 대본
+원문은 preserving data privacy 또는 without compromising user privacy라는 동기 표현을 사용하지만, secure aggregation·differential privacy·공격 평가와 같은 보호 절차를 명시하지 않습니다. 따라서 이 자료에서는 privacy가 검증된 알고리즘이 아니라 추가 검증이 필요한 기대 목표라고 설명합니다. 특정 공격 성공률을 주장하지 않습니다.
+
+공개 출처
+research-idea | p. 1, Motivation and Key Challenges
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 8. 새 장치와 이질적인 환경을 어떻게 받아들일 것인가
+
+8. 새 장치와 이질적인 환경을 어떻게 받아들일 것인가
+
+발표 대본
+원문은 새 mobile device가 참여하는 동안 continuous learning을 지원하자는 기대를 듭니다. 동시에 communication efficiency와 heterogeneity를 핵심 challenge로 적습니다. 여기서는 문서에 없는 personalization, asynchronous update, 특정 convergence theorem을 완성 구성요소로 추가하지 않습니다.
+
+공개 출처
+research-idea | p. 1, Motivation and Key Challenges
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf
+
+## 9. 연구 제안을 검증할 때 분리해야 할 효과
+
+9. 연구 제안을 검증할 때 분리해야 할 효과
+
+발표 대본
+이 평가는 원문에서 도출한 강의용 제안입니다. 원문은 Python 또는 적합한 platform으로 simulated MEC를 개발하고 다양한 network condition에서 평가할 계획만 제시합니다. 표의 지표와 비교 축은 완료된 실험이 아닙니다. 요약하면 이 Research Idea의 기여는 task dependency와 federated DRL을 연결한 문제 설정이며, 알고리즘·실험·privacy 검증은 후속 작업입니다.
+
+공개 출처
+research-idea | p. 1, Research Methodology; teaching evaluation design
+Iman Rahmati, two-page Research Idea (undated)
+https://imanrht.github.io/assets/FederatedDRL.pdf

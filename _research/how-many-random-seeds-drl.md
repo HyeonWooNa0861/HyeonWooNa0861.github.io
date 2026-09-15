@@ -80,6 +80,11 @@ Half-Cheetah 예시는 이 논문의 문제의식을 잘 보여준다. 저자들
 
 실무적 해결 방향은 세 가지다. 첫째, historical benchmark와 pilot run을 이용해 $$s_1,s_2$$를 명시적으로 추정한다. 둘째, 논문에는 평균 곡선뿐 아니라 raw seed score, confidence interval, 검정 방식, multiple comparison 보정 여부를 함께 공개한다. 셋째, 계산 예산이 제한될 때는 sequential 또는 adaptive design을 쓰되, 중단 규칙을 사전에 고정해 유리한 seed만 남기는 선택 편향을 막아야 한다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 21 slides | <a href="/assets/seminars/how-many-random-seeds-drl/how-many-seeds-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/how-many-random-seeds-drl/how-many-seeds-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/how-many-random-seeds-drl/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/how-many-random-seeds-drl/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

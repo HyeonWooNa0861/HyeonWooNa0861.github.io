@@ -1,0 +1,429 @@
+---
+type: research-seminar-slides
+paper_id: quip-2-bit-quantization-of-large-language-models-with-guarantees
+---
+
+# QuIP: 보장이 있는 2비트 LLM 양자화
+
+논문: QuIP: 2-Bit Quantization of Large Language Models With Guarantees
+
+저자: Jerry Chee, Yaohui Cai, Volodymyr Kuleshov, Christopher M. De Sa (2023)
+
+## 1. QuIP: 보장이 있는 2비트 LLM 양자화
+
+좌표계를 바꾸고 오차를 다음 좌표에 전달해 layer 출력 proxy를 줄이는 weight-only PTQ
+
+
+근거: [neurips-record](https://proceedings.neurips.cc/paper_files/paper/2023/hash/0df38cd13520747e1e64e5b123a78ef8-Abstract-Conference.html) title and abstract, [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 1-2, abstract and §1
+
+## 2. QuIP의 문제 범위
+
+
+| 구분 | QuIP이 하는 일 | 범위 밖의 주장 |
+| --- | --- | --- |
+| 대상 | linear layer의 weight | activation 전체 양자화 |
+| 시점 | 학습 뒤 calibration으로 PTQ | 원 모델의 재학습 |
+| 목적 | layer 출력 변화의 quadratic proxy | 전체 task loss 직접 최적화 |
+| 표현 | 낮은 bit의 scalar grid | QuIP#의 vector codebook |
+| 검증 | 정리의 proxy bound와 LLM 실험 | 모든 2비트 모델의 정확도 보장 |
+
+핵심: QuIP은 weight-only PTQ이며 이론과 end-to-end 실험을 서로 다른 증거로 제시한다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 1-3, abstract and §§1-3, [quip-sharp](https://proceedings.mlr.press/v235/tseng24a.html) p. 1, abstract
+
+## 3. 2비트에서 독립 반올림이 어려운 이유
+
+같은 크기의 weight 오차도 입력이 자주 쓰는 방향에 따라 출력 영향이 달라진다
+
+
+| 상황 | weight 오차 | 출력에 미치는 영향 |
+| --- | --- | --- |
+| 자주 쓰는 입력 방향 | 작아 보여도 반복 증폭 | layer 출력 변화가 클 수 있음 |
+| 드문 입력 방향 | 같은 크기의 오차 | 출력 영향이 상대적으로 작을 수 있음 |
+| 소수의 큰 좌표 | 좁은 grid range를 차지 | 나머지 좌표의 resolution을 줄임 |
+| 독립 반올림 | 각 좌표를 따로 선택 | 서로 상쇄할 기회를 사용하지 못함 |
+
+핵심: QuIP은 weight MSE 대신 입력 민감도로 가중한 출력 proxy를 사용한다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 1-3, motivation and Eq. 1
+
+## 4. 보존 대상은 calibration 입력에서의 layer 출력
+
+proxy: E_x ‖(W_hat−W)x‖² = tr((W_hat−W)H(W_hat−W)^T)
+
+- **calibration 입력 x**: 한 linear layer가 받는 대표 입력
+- **원래 출력**: full-precision weight W로 Wx 계산
+- **양자화 출력**: quantized weight W_hat으로 W_hat x 계산
+- **출력 차이**: 같은 입력에서 두 출력의 차를 계산
+- **quadratic proxy**: 차이의 평균 제곱을 줄이는 weight 선택
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 3, Eq. 1
+
+## 5. H는 입력 방향의 민감도와 상관을 기록한다
+
+H=E[xx^T]는 calibration 입력의 second moment이며 whole-model Hessian이 아니다
+
+
+| 기호 | 형식 | 직관 |
+| --- | --- | --- |
+| W | m×n weight matrix | 양자화할 한 linear layer |
+| W_hat | W와 같은 크기 | grid 값으로 표현한 weight |
+| x | n차원 입력 | calibration set에서 뽑은 layer 입력 |
+| H | E[xx^T] | 입력 방향의 크기와 좌표 간 상관 |
+| H_12=0.8 | 교육용 correlated 예 | 1번과 2번 좌표의 오차가 함께 작용 |
+
+핵심: H의 off-diagonal 항이 크면 두 좌표의 오차 부호 조합도 proxy를 바꾼다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 3, Eq. 1 and symbol definitions
+
+## 6. adaptive rounding은 과거 오차를 미래 좌표에 전달한다
+
+이미 grid에 고정한 column은 되돌리지 않고 아직 자유로운 column만 보정한다
+
+- **레인 column order**
+  - **column 1**: Q로 code를 고정
+  - **residual**: W_1−W_hat_1 계산
+  - **linear feedback**: residual과 U_12를 곱해 더함
+  - **column 2**: 보정된 값을 Q로 고정
+- column 1 → residual (실선, 단방향)
+- residual → linear feedback (실선, 단방향)
+- linear feedback → column 2 (실선, 단방향)
+
+핵심: strictly upper-triangular U가 앞선 column에서 뒤 column으로만 피드백을 보낸다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-4, Eq. 2 and §3.1
+
+## 7. LDLQ 식에서 각 항의 역할
+
+W_hat=Q(W+(W−W_hat)U), U는 strictly upper triangular
+
+
+| 항 | 역할 | 처리 시점 |
+| --- | --- | --- |
+| Q | nearest 또는 unbiased stochastic rounding | 현재 column의 code 고정 |
+| W−W_hat | 이미 처리한 column의 residual | 고정 뒤 계산 |
+| U | residual을 뒤 column에 전달하는 계수 | H에서 선택 |
+| W+(W−W_hat)U | 보정된 아직 자유로운 값 | 다음 rounding 입력 |
+| column k | 1부터 n까지 순서대로 처리 | 미래 code는 아직 미정 |
+
+핵심: LDLQ의 Q는 scalar quantizer이고 성능 차이는 피드백 U와 전처리에서 나온다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-4, Eq. 2 and §3.1
+
+## 8. H의 LDL 분해가 피드백 U를 정한다
+
+H=(U_bar+I)D(U_bar+I)^T로 분해하고 U=U_bar를 선택한다
+
+1. **proxy geometry H**: 입력 민감도와 상관을 담음
+2. **LDL factorization**: H를 triangular factor와 diagonal D로 분해
+3. **feedback U**: strict upper factor U_bar를 사용
+4. **sequential rounding**: 앞선 residual을 뒤 column에 전달
+5. **proxy bound**: loss가 tr(D)로 표현됨
+
+핵심: LDLQ는 H의 좌표 결합 구조를 rounding 순서의 보정 계수로 바꾼다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 4, Eqs. 3-4
+
+## 9. 교육용 2×2 LDLQ 재계산의 설정
+
+논문 실험이 아닌 unbounded integer grid 예시이며 nearest rounding을 사용한다
+
+
+| 항목 | 값 | 의미 |
+| --- | --- | --- |
+| 한 row w | [0.49, 0.49] | 두 column을 1번부터 처리 |
+| H | [[1,0.8],[0.8,1]] | positive correlation |
+| D | diag(0.36, 1) | LDL diagonal |
+| U_12 | 0.8 | 첫 residual을 둘째 값에 전달 |
+| grid | 모든 integer | finite 2-bit grid가 아님 |
+
+핵심: 이 예시는 feedback 방향과 proxy 산술만 검산하며 LLM 성능을 나타내지 않는다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-4, Eqs. 2 and 4; educational calculation
+
+## 10. 첫 residual이 둘째 code를 0에서 1로 바꾼다
+
+
+| 단계 | 독립 nearest | LDLQ feedback |
+| --- | --- | --- |
+| 첫 code | q1=0 | q1=0 |
+| 첫 residual | 0.49−0=0.49 | 0.49−0=0.49 |
+| 둘째 입력 | 0.49 | 0.49+0.49×0.8=0.882 |
+| 둘째 code | q2=0 | q2=1 |
+| 최종 error q−w | [−0.49,−0.49] | [−0.49,0.51] |
+
+핵심: positive coupling에서는 같은 부호의 두 오차보다 반대 부호 오차가 덜 비쌀 수 있다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-4, Eqs. 2 and 4; educational calculation
+
+## 11. 교육용 proxy loss를 직접 확인한다
+
+한 row의 proxy는 eHe^T이며 e=q−w로 계산한다
+
+
+| 방법 | error e | eHe^T | 해석 |
+| --- | --- | --- | --- |
+| 독립 nearest | [−0.49,−0.49] | 0.86436 | 같은 부호가 coupling을 더함 |
+| LDLQ | [−0.49,0.51] | 0.10036 | 반대 부호가 coupling을 상쇄 |
+| 차이 | 같은 grid와 순서 | 0.76400 감소 | 이 예시 안에서만 성립 |
+
+핵심: LDLQ는 개별 error가 아니라 결합된 quadratic cost를 줄인다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-4, Eqs. 1-4; educational calculation
+
+## 12. Theorem 1이 실제로 보장하는 범위
+
+
+| 구분 | 내용 | 경계 |
+| --- | --- | --- |
+| 방법군 | Eq. 2의 linear-feedback rounding | U는 H에만 의존 |
+| 입력 geometry | positive semidefinite H | layer-local proxy 설정 |
+| grid | 모든 integer로 rounding | finite clamp는 별도 문제 |
+| quantizer | nearest 또는 stochastic | 정리의 지정 조건 |
+| 결론 | LDLQ가 stated worst·average bound 최소 | end-to-end 정확도 정리 아님 |
+
+핵심: 여기서 optimal은 제한된 방법군과 proxy bound에 대한 표현이다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 4, Theorem 1
+
+## 13. 피드백만으로 해결되지 않는 좌표 집중
+
+중요한 크기나 민감도 방향이 특정 축에 몰리면 작은 uniform grid가 불리하다
+
+
+| 대상 | 집중된 상태 | rounding에 생기는 문제 |
+| --- | --- | --- |
+| weight W | 소수 entry가 매우 큼 | range가 큰 entry에 맞춰짐 |
+| geometry H | eigenvector가 coordinate axis와 정렬 | 중요 방향이 한 좌표에 집중 |
+| low-bit grid | 표현 level 수가 작음 | 집중된 축을 세밀하게 표현하기 어려움 |
+| LDLQ | 오차 결합은 조정 | 나쁜 좌표계 자체는 남음 |
+
+핵심: QuIP의 두 번째 전략은 rounding 전에 더 고른 좌표계로 바꾸는 것이다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 4-6, Definition 1 and §4
+
+## 14. incoherence는 고르게 퍼진 좌표 구조를 뜻한다
+
+
+| 대상 | 논문의 조건 | 교육적 해석 |
+| --- | --- | --- |
+| W | 각 entry가 Frobenius norm에 비해 작음 | 몇 weight가 range를 독점하지 않음 |
+| H | eigenvector entry가 μ/√n 이하 | 민감 방향이 한 축에 정렬되지 않음 |
+| μ | incoherence 정도를 나타내는 상수 | 작을수록 더 고르게 퍼짐 |
+| random basis | 높은 확률로 μ가 polylog 크기 | 모든 entry가 정확히 같다는 뜻은 아님 |
+
+핵심: incoherence는 정보 삭제가 아니라 같은 양을 다른 basis에 분산하는 구조적 조건이다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 4-5, Definition 1
+
+## 15. Lemma 2의 low-rank 직관에는 조건이 붙는다
+
+tr(D) ≤ (μ²/n)(tr(H^1/2))²이며 rank(H)=k이면 spectrum bound를 연결할 수 있다
+
+
+| 필요 조건 | bound에서의 역할 | 생략하면 안 되는 이유 |
+| --- | --- | --- |
+| H PSD | LDL과 proxy geometry 정의 | 임의 행렬에 적용하지 않음 |
+| μ-incoherent H | tr(D)를 spectrum으로 제한 | μ가 크면 이득이 약해짐 |
+| rank(H)=k | trace 관계로 k를 도입 | 무조건적인 k/n 개선이 아님 |
+| μ²k<n | baseline보다 작은 asymptotic bound | dimension과 rank 조건 필요 |
+
+핵심: low-rank 이점은 incoherence·μ·k·n 조건을 함께 만족할 때의 proxy bound다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 4-5, Lemma 2 and following comparison
+
+## 16. QuIP의 전처리·양자화·후처리 경로
+
+W,H를 rescale하고 같은 seed의 직교 basis에서 LDLQ한 뒤 matched inverse를 적용한다
+
+1. **W,H 입력**: full-precision weight와 calibration geometry
+2. **rescale**: diagonal conditioning과 finite range 준비
+3. **orthogonal basis**: W와 H를 incoherent basis로 이동
+4. **LDLQ와 clamp**: 피드백 rounding으로 low-bit code 생성
+5. **inverse**: 같은 seed로 원래 convention에 복원
+
+핵심: transform 전 proxy identity와 rounding 뒤 approximation은 다르다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 5-7, Algorithms 1-3 and Lemma 5
+
+## 17. Algorithm 3의 실제 데이터와 seed 의존성
+
+main path는 W,H에서 W_hat으로 진행하고 seed는 transform과 inverse를 같은 쌍으로 묶는다
+
+- **레인 data path**
+  - **W,H**: weight와 input geometry
+  - **rescale**: diagonal·range 조정
+  - **basis change**: U W V^T, V H V^T
+  - **LDLQ**: feedback와 clamp
+  - **inverse**: same seed로 basis 복원
+- W,H → rescale (실선, 단방향)
+- rescale → basis change (실선, 단방향)
+- basis change → LDLQ (실선, 단방향)
+- LDLQ → inverse (실선, 단방향)
+
+핵심: seed가 transform과 inverse를 같은 orthogonal pair로 묶는다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 5-7, Algorithms 1-3 and §4.1
+
+## 18. unbounded 정리와 finite grid의 조건 차이
+
+- **adaptive rounding**: H에서 얻은 feedback으로 column을 순차 처리
+- **Theorem 1 path**: 모든 integer로 rounding하며 clamp 없음
+- **base QuIP path**: b-bit range로 scale한 뒤 code를 clamp
+- **조건 비교**: clamp가 feedback 경로를 바꿈
+- **적용 경계**: finite clamp는 Theorem 1 밖
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 7-8, §5.2 and Fig. 4
+
+## 19. finite-grid 보장에는 별도 알고리즘이 필요하다
+
+
+| 경로 | 동작 | 논문에서의 위치 |
+| --- | --- | --- |
+| base QuIP | LDLQ 뒤 finite range에 clamp | 일반 실험에서 사용 |
+| 위험 | clipping이 feedback trace를 왜곡 | Fig. 4 counterexample |
+| Algorithm 5 | 추가 convex program과 stochastic rounding | finite-grid bound용 |
+| Theorem 7 | 적절한 조건에서 no overflow와 proxy bound | 기본 path의 자동 보장 아님 |
+| 실용 선택 | clipping이 드물어 base QuIP 선호 | 추가 계산을 피함 |
+
+핵심: 논문의 stronger finite-grid theorem은 더 비싼 special procedure에 붙어 있다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 7-8, Eq. 7, Theorem 7; Supplement p. 29, Algorithm 5
+
+## 20. LDLQ와 OPTQ의 관계는 지정된 알고리즘에 한정된다
+
+
+| 비교 | 논문 결론 | 주의 |
+| --- | --- | --- |
+| 방법군 | OPTQ가 Eq. 2의 linear feedback에 포함 | 임의 OPTQ 구현 전체가 아님 |
+| 출력 | paper setup에서 LDLQ와 equivalence | clamp·order 조건을 유지 |
+| 계산 | LDLQ는 inversion 없이 one Cholesky | 논문의 구현 비교 |
+| IncP | QuIP=LDLQ+incoherence processing | LDLQ 단독과 QuIP을 구분 |
+
+핵심: QuIP의 차별점은 LDLQ 피드백뿐 아니라 incoherence pre·post processing의 결합이다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 6-7, §5.1 and Theorem 6
+
+## 21. calibration의 blockwise 전파
+
+128개의 C4 segment를 사용하고 각 segment 길이는 2048 token이다
+
+- **레인 blockwise PTQ**
+  - **C4 calibration**: 128 segments × 2048 tokens
+  - **block 1**: H 계산 뒤 weight quantize
+  - **quant output**: 다음 block input
+  - **block 2**: quant input으로 H 계산
+  - **later blocks**: 같은 절차 반복
+- C4 calibration → block 1 (실선, 단방향)
+- block 1 → quant output (실선, 단방향)
+- quant output → block 2 (실선, 단방향)
+- block 2 → later blocks (실선, 단방향)
+
+핵심: 뒤 block의 H는 앞서 quantized된 출력의 영향을 반영한다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 8, §6 Setup
+
+## 22. Llama 2 70B 2비트 결과의 조건부 비교
+
+Table 1의 같은 protocol 안에서 PPL은 낮을수록 좋고 task accuracy는 높을수록 좋다
+
+
+| 방법 | WikiText2 PPL↓ | C4 PPL↓ | ArcE↑ | PiQA↑ |
+| --- | --- | --- | --- | --- |
+| FP16 | 3.319 | 5.709 | 59.72 | 80.90 |
+| OPTQ 2-bit | 123.908 | 70.541 | 25.34 | 50.54 |
+| QuIP 2-bit | 6.326 | 8.937 | 54.38 | 75.08 |
+| QuIP 3-bit | 3.853 | 6.135 | 59.81 | 80.25 |
+
+핵심: 이 표는 해당 Llama 2 70B 평가에서 QuIP 2-bit와 OPTQ 2-bit의 큰 차이를 보여 준다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 9, Table 1
+
+## 23. OPT-30B 2비트 ablation에서 IncP의 영향
+
+Table 2의 WikiText2 PPL이며 동일 model·bit·metric 조건 안에서 비교한다
+
+
+| rounding | baseline processing | incoherence processing | 읽는 방법 |
+| --- | --- | --- | --- |
+| OPTQ / QuIP | 71.70 | 11.48 | LDLQ 계열에 IncP 추가 |
+| LDLQ-RG | 49.40 | 11.68 | reorder·greedy variant |
+| Greedy | 4816.6 | 11.59 | 같은 Table 2 조건 |
+| Nearest | 41547.8 | 12.04 | IncP 뒤 nearest도 viable |
+| FP16 reference | 9.56 | 9.56 | 양쪽 표의 동일 기준 |
+
+핵심: 이 control은 OPT-30B Table 2에서 preprocessing이 2비트 결과를 크게 바꾼다는 증거다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) p. 9, Table 2
+
+## 24. reported inference time에는 hardware 조건이 붙는다
+
+A6000, OPT-66B, batch 1, generated sequence length 128의 average per-token time
+
+
+| 방법 | 평균 per-token time | 비교 | 해석 경계 |
+| --- | --- | --- | --- |
+| OPTQ | 53 ms | baseline | efficient quantized forward pass |
+| QuIP | 81 ms | 약 1.5× 느림 | IncP addition은 PyTorch 구현 |
+| 측정 조건 | A6000 | batch 1 | OPT-66B, length 128 |
+| 용어 | latency/time | 낮을수록 빠름 | paper heading의 throughput과 구분 |
+
+핵심: 2 bits per weight만으로 total deployment memory나 speed가 자동 결정되지는 않는다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 9-10, Table 4 and Throughput Comparison
+
+## 25. QuIP이 확립한 것과 남은 경계
+
+
+| 구분 | 확립한 내용 | 확립하지 않은 내용 |
+| --- | --- | --- |
+| proxy | layer input으로 가중한 quadratic objective | whole-model task loss와 동일 |
+| LDLQ | 제한된 linear-feedback family의 bound | finite codebook의 global optimum |
+| incoherence | 높은 확률의 구조 개선과 proxy 분석 | rounding error 소멸 |
+| finite grid | 별도 Algorithm 5와 Theorem 7 | base clamp path의 자동 보장 |
+| LLM 결과 | 지정 model·dataset의 empirical evidence | 모든 2-bit LLM 정확도 보장 |
+
+핵심: QuIP의 guarantee는 좋은 basis와 feedback 아래의 proxy를 다룬다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-11, Theorems 1, 4, 7 and §7
+
+## 26. QuIP과 QuIP#은 별개 방법이다
+
+
+| 구분 | QuIP | QuIP# |
+| --- | --- | --- |
+| 발표 | NeurIPS 2023 | ICML 2024 |
+| incoherence transform | random orthogonal Kronecker factors | randomized Hadamard transform |
+| quantizer | scalar LDLQ | BlockLDLQ와 E8 lattice codebook |
+| 추가 단계 | base method에 fine-tuning 없음 | inter-layer fine-tuning 포함 |
+| 관계 | incoherence와 feedback의 출발점 | 그 계보를 확장한 후속 논문 |
+
+핵심: Hadamard·E8 codebook·fine-tuning을 QuIP의 내부 단계로 설명하면 논문이 섞인다
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 5-7, Algorithms 1-3, [quip-sharp](https://proceedings.mlr.press/v235/tseng24a.html) pp. 1-2, abstract and overview
+
+## 27. 핵심 notation
+
+
+| 기호 | 뜻 | 결정되는 시점 |
+| --- | --- | --- |
+| W | 한 linear layer의 full-precision weight | quantization 전 |
+| W_hat | grid code를 거친 quantized weight | rounding 뒤 |
+| x | calibration set의 layer input | data forward 시 |
+| H | E[xx^T] second-moment geometry | calibration에서 계산 |
+| U,D,μ | feedback, LDL diagonal, incoherence 정도 | factorization·analysis에서 결정 |
+
+근거: [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 3-5, Eqs. 1-4 and Definition 1
+
+## 28. 공개 출처
+
+
+| 자료 | 공개 위치 | 용도 |
+| --- | --- | --- |
+| QuIP proceedings | NeurIPS 2023 paper record | 서지와 abstract |
+| QuIP paper | NeurIPS public PDF | 식·정리·알고리즘·실험 |
+| QuIP arXiv | arXiv 2307.13304 | 공개 version history |
+| QuIP code | github.com/Cornell-RelaxML/QuIP | 저자 공개 구현 |
+| QuIP# paper | PMLR 235, tseng24a | 후속 방법의 경계 비교 |
+
+근거: [neurips-record](https://proceedings.neurips.cc/paper_files/paper/2023/hash/0df38cd13520747e1e64e5b123a78ef8-Abstract-Conference.html) paper record, [neurips-paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/0df38cd13520747e1e64e5b123a78ef8-Paper-Conference.pdf) pp. 1-11, [arxiv-record](https://arxiv.org/abs/2307.13304) version history, [code](https://github.com/Cornell-RelaxML/QuIP) repository root, [quip-sharp](https://proceedings.mlr.press/v235/tseng24a.html) paper record and abstract

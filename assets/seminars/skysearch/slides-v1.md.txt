@@ -1,0 +1,401 @@
+---
+type: research-seminar-slides
+paper_id: skysearch
+---
+
+# SkySearch: 대규모 위성 비디오 검색
+
+논문: SkySearch: Satellite Video Search at Scale
+
+저자: Minyoung Choe, Geon Lee, Changhun Han, Suji Kim, Woong Hu, Hyebeen Hwang, Geunseok Park, Byeongyeon Kim, Hyesook Lee, Ha-Myung Park, Kijung Shin (2025)
+
+## 1. SkySearch: 대규모 위성 비디오 검색
+
+라벨 없는 시계열을 압축하고, 시간 구간과 그래프를 함께 탐색하는 검색 시스템
+
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) title page, abstract
+
+## 2. 논문과 공개 구현의 위치
+
+검색·머신러닝·기상 위성 운영이 만나는 응용 연구
+
+- KDD 2025 Applied Data Science Track의 12쪽 논문이다
+- Corrected Version of Record V1.1은 2025년 8월 15일 공개되었다
+- 한국 기상청 운영 환경에 배포한 시스템과 실험을 함께 보고한다
+- 공식 저장소는 압축·예측 코드와 온라인 부록을 공개한다
+
+핵심: 이 논문은 검색 알고리즘 하나가 아니라 학습·인덱스·질의·UI를 잇는 시스템을 평가한다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) title page; pp. 1–2, [code](https://github.com/geon0325/skysearch) README
+
+## 3. 출발점: 지금과 비슷했던 과거를 찾고 싶다
+
+분류 이름보다 구름의 모양과 시간에 따른 변화 자체가 중요한 검색 문제
+
+- 질의는 한 장의 사진이 아니라 연속된 위성 영상이다
+- 과거 기록에서 공간 형태와 시간 변화가 모두 비슷한 구간을 찾는다
+- 각 비디오에 태풍·전선 같은 정답 라벨이 있다고 가정하지 않는다
+- 운영자는 검색된 과거 사례를 비교해 현재 상황을 해석할 수 있다
+
+핵심: SkySearch의 목표는 사건을 분류하는 것이 아니라 유사한 과거 전개를 검색하는 것이다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 1–2, §1–2
+
+## 4. 검색 문제를 정확히 정의하면
+
+시간표가 있는 이미지 데이터베이스에서 길이 L의 연속 구간을 후보로 만든다
+
+1. **이미지 기록 D**: 각 위성 이미지에 관측 시각이 있음
+2. **후보 비디오**: 1시간 간격 L장 sliding window
+3. **외부 질의 Q**: 후보와 같은 형식의 L장 비디오
+4. **유사도 검색**: 공간 형태와 시간 변화를 비교
+5. **순위 목록 C**: 가장 유사한 후보 비디오를 반환
+
+핵심: 기본 설정에서 L=12이므로 한 후보는 12시간의 변화를 담는다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 2, §2.1
+
+## 5. 원본 그대로 비교하기 어려운 규모
+
+비디오 한 개의 픽셀과 전체 후보 수가 동시에 커진다
+
+
+| 대상 | 논문 설정 | 규모가 만드는 문제 |
+| --- | --- | --- |
+| 비디오 1개 | 600×748×12 = 5,385,600 pixels | 모든 후보와 원본 픽셀 비교가 무거움 |
+| COMS | 837,525 images, 295,713 videos | 10년 기록에서 후보가 계속 누적 |
+| GK2A | 292,506 images, 209,373 videos | 추가 위성도 같은 검색 체계가 필요 |
+| 전체 | 1,130,031 images, 505,086 videos | 압축·인덱스·후보 제한이 모두 필요 |
+
+핵심: SkySearch는 계산량을 한 번에 줄이지 않고 표현 크기·후보 수·시간 범위를 차례로 줄인다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 3, 5, §3.1, Table 1
+
+## 6. 다섯 모듈이 하나의 질의를 처리한다
+
+학습된 표현과 검색 인덱스는 사전에 준비하고, 질의 때 후보를 좁혀 순위를 만든다
+
+1. **압축**: 비디오를 256차원 embedding으로 변환
+2. **선택적 예측**: 현재 질의 뒤의 미래 frame을 생성
+3. **후보 검색**: 시간 block과 kNN graph를 탐색
+4. **순위화**: 거리 또는 perceptual metric으로 정렬
+5. **시각화**: 관측 시각과 유사 영상을 UI에 표시
+
+핵심: 예측은 선택 사항이지만 압축·후보 검색·순위화는 기본 검색 경로다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 2, Fig. 1 and §3.1
+
+## 7. 압축은 검색용 표현을 만든다
+
+원본 비디오와 검색용 embedding은 서로 다른 역할을 가진다
+
+
+| 표현 | 크기 | 검색에서의 역할 |
+| --- | --- | --- |
+| 원본 비디오 | 약 5.14 MB | 세부 픽셀과 사람이 볼 영상을 보존 |
+| 256-d embedding | 1 KB | 후보 간 거리를 빠르게 계산 |
+| 보고된 감소 | 5,260× | 인덱싱과 대규모 비교를 현실화 |
+
+핵심: embedding은 원본 저장의 대체물이 아니라 검색 후보를 빠르게 비교하기 위한 요약이다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 3, §3.2
+
+## 8. 시간 간격이 학습 신호가 된다
+
+사건 라벨 대신 촬영 시각의 가까움과 멂으로 positive·negative를 만든다
+
+- **Anchor 비디오**: 기준이 되는 12시간 구간
+- **Positive**: delta 시간 이내의 구간
+- **Negative**: delta 시간보다 먼 구간
+- **거리 margin 학습**: 가까운 쌍을 더 가깝게 배치
+- **검색 embedding**: 시간 변화를 반영한 256차원 표현
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 3, Eqs. 1–2; p. 8, Fig. 8a
+
+## 9. 공간을 먼저 배우고 시간 변화를 이어서 배운다
+
+두 단계 학습으로 프레임 표현과 비디오 표현을 분리한다
+
+1. **단일 이미지**: 위성 frame 한 장을 입력
+2. **Spatial encoder**: 합성곱·pooling으로 image embedding 학습
+3. **공간부 고정**: 학습한 spatial encoder의 parameter를 freeze
+4. **ConvRNN**: 연속 image embedding의 시간 관계를 학습
+5. **Video embedding**: 12시간 구간을 256차원으로 요약
+
+핵심: 검색 표현은 한 프레임의 모양과 프레임 사이의 변화 정보를 함께 담도록 설계된다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 3, §3.2
+
+## 10. 장기 검색에서는 질의의 미래를 선택적으로 덧붙인다
+
+현재까지의 12시간만 있을 때 다음 12시간을 예측해 24시간 검색 질의를 만든다
+
+1. **관측 12 frames**: 현재 시점까지 확보한 query video
+2. **SimVP 기반 예측**: 다음 12 frames를 생성
+3. **Query 결합**: 관측 12 + 예측 12 = 24시간
+4. **장기 후보 검색**: 24시간 변화가 유사한 과거를 검색
+
+핵심: 예측은 현재 조건을 질의할 때 쓰는 선택 경로이며 단기 검색의 필수 단계가 아니다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 3, §3.3
+
+## 11. 예측 모델은 세 학습 목적을 번갈아 사용한다
+
+각 학습 step에서 하나의 목적을 확률적으로 선택하는 방식
+
+
+| 선택 목적 | 역할 | 논문 설정 확률 |
+| --- | --- | --- |
+| MSE | 예측 frame과 실제 frame의 pixel 차이를 줄임 | 0.3 |
+| Generator adversarial | 판별기를 속일 수 있는 미래 frame을 생성 | 0.6 |
+| Discriminator adversarial | 실제와 생성 frame을 구분하도록 판별기 학습 | 0.1 |
+
+핵심: 세 손실을 한 식으로 단순 합산한다고 설명하면 논문의 학습 절차와 다르다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 3, §3.3 and footnote 2
+
+## 12. 검색 공간을 kNN graph로 바꾼다
+
+모든 후보와 비교하는 대신 가까운 embedding을 간선으로 연결해 탐색한다
+
+- **레인 Graph index**
+  - **Video embeddings**: 각 후보의 256차원
+검색 표현
+  - **NNDescent**: 근사 k-nearest
+neighbor graph 구축
+  - **Triangle pruning**: 2-hop으로 우회 가능한
+중복 edge 제거
+  - **Search graph**: 질의 때 neighbor를
+따라 후보를 확장
+- Video embeddings → NNDescent (실선, 단방향)
+- NNDescent → Triangle pruning (실선, 단방향)
+- Triangle pruning → Search graph (실선, 단방향)
+
+핵심: k가 크면 연결성과 search accuracy에 유리하지만 index memory와 탐색량도 늘어난다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.4
+
+## 13. 후보 검색은 가장 유망한 정점부터 graph를 넓힌다
+
+본문 후보 검색 절차는 candidate set과 visited set을 분리해 관리한다
+
+1. **무작위 시작**: 전체 DB에서 C개 embedding을 candidate로 선택
+2. **Best-first 방문**: query similarity가 가장 큰 candidate를 꺼냄
+3. **동적 문턱**: 현재 C번째 visited similarity + epsilon
+4. **Neighbor 확장**: 문턱을 넘지 않으면 미방문 이웃을 추가
+5. **Top C 반환**: 방문한 정점 중 가장 유사한 C개
+
+핵심: 동적 문턱은 이웃 확장을 멈추는 기준이며 결과의 exactness를 보장하는 식이 아니다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.4 Candidate Search
+
+## 14. 강의용 추적: candidate와 visited가 어떻게 바뀌는가
+
+구성 예시: C=2, epsilon=.05; similarity A=.92, B=.88, C=.61, D=.79
+
+
+| 순서 | 꺼낸 정점 | 판정 | 다음 candidate |
+| --- | --- | --- | --- |
+| 초기 | — | A와 C를 무작위 시작점으로 둠 | A, C |
+| 1 | A | visited<2이므로 이웃 B 추가 | B, C |
+| 2 | B | .88+.05=.93; .88≤.93 | C, D |
+| 3 | D | .79≤.93; 새 이웃 없음 | C |
+| 4 | C | 후보 소진; visited의 상위 2개 선택 | 결과 A, B |
+
+핵심: 이 숫자와 graph는 교육용 구성 예시이며 논문 실험의 한 query를 복제한 것이 아니다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.4 Candidate Search
+
+## 15. 시간 구간 조건을 언제 적용할 것인가
+
+넓은 전체 graph를 먼저 찾고 나중에 거르면 좁은 시간 query에서 낭비가 커진다
+
+- **시간 제한 query**: 특정 기간 안의 유사 비디오 요청
+- **Filter after search**: 전체 graph 탐색 뒤 시간 밖 후보 제거
+- **MBI search**: 겹치는 시간 block graph만 탐색
+- **후보 비교**: 허용 시간 안의 visited 후보를 모음
+- **Temporal top C**: 시간·유사도를 만족한 순위 결과
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.4 Time-Restricted k-NN
+
+## 16. MBI는 시간을 계층 block으로 묶는다
+
+작은 인접 block을 상위 block으로 묶고, 각 완성 block에 검색 graph를 둔다
+
+- **레인 시간 index**
+  - **새 embeddings**: t1 → t2 → t3 → t4
+  - **Leaf block**: 마지막 미완성 block에
+시간순으로 누적
+  - **Parent block**: 인접 block이 차면
+상위 구간을 구성
+  - **Block graphs**: 완성된 구간마다
+kNN graph를 유지
+- 새 embeddings → Leaf block (실선, 단방향)
+- Leaf block → Parent block (실선, 단방향)
+- Parent block → Block graphs (실선, 단방향)
+
+핵심: 미완성 leaf는 전수 비교하고 완성된 block graph는 lazy하게 만든다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.4 Data Accumulation
+
+## 17. 최종 순위는 속도와 정밀도를 선택한다
+
+candidate search 뒤의 작은 후보 집합에 더 비싼 metric을 선택적으로 적용할 수 있다
+
+
+| 순위 방식 | 입력 | 장점 | 비용·주의 |
+| --- | --- | --- | --- |
+| Embedding distance | 256-d vectors | 기본값, 가장 빠름 | perceptual 세부 비교는 제한 |
+| LPIPS | 원본 frames | deep feature 기반 비교 | 기본 대비 4.29×10^3 overhead |
+| FSIM | 원본 frames | feature similarity | 기본 대비 4.16×10^5 overhead |
+| SSIM | 원본 frames | 구조적 유사도 | 기본 대비 7.19×10^3 overhead |
+| Lite variants | 50% downsample | 약 75% runtime 감소 | 성능 저하 최대 0.21% |
+
+핵심: 비싼 metric은 검색 전체가 아니라 정확도가 중요한 경우의 refinement 단계다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, §3.5; p. 11, Table 3
+
+## 18. 운영 화면까지 이어지는 질의 경로
+
+위성·channel·시작 시각을 고르고, 결과의 시각과 거리를 함께 확인한다
+
+1. **Query 선택**: satellite, channel, initial timestamp
+2. **조건 적용**: 검색할 time period를 선택
+3. **검색 실행**: query embedding과 block graph를 탐색
+4. **결과 표시**: rank, 날짜, 거리와 frames를 함께 제시
+
+핵심: 논문의 UI는 알고리즘 결과를 기상 실무자가 사례 단위로 검토하게 한다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 4, Fig. 2 and §3.6
+
+## 19. 배포와 평가의 시스템 조건
+
+속도 수치는 데이터·hardware·index 설정과 함께 읽어야 한다
+
+
+| 항목 | 논문 조건 | 해석 |
+| --- | --- | --- |
+| CPU server | AMD EPYC 7742, 64 cores, 256 threads | candidate search와 시스템 처리 |
+| Memory | 1 TB RAM | 대규모 graph index를 메모리에 유지 |
+| GPU | NVIDIA A100 40 GB | compression·prediction 학습과 추론 |
+| Input channels | IR, SWIR, WV | 개별 적용; joint input은 미래 과제 |
+| Image preprocessing | 약 1300×1500 → 600×748 | mean pooling과 crop 후 실험 |
+
+핵심: 논문의 초 단위 응답을 임의의 edge device나 작은 memory 환경으로 그대로 옮길 수는 없다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 5, §4.1
+
+## 20. 검색 품질 실험의 조건
+
+질의 기간과 prediction 유무에 따라 비교 대상의 길이가 달라진다
+
+
+| 항목 | 설정 | 주의점 |
+| --- | --- | --- |
+| 학습·DB | COMS IR, 2014–2018 | 과거 기간을 database로 사용 |
+| Query | 2019–2020에서 무작위 2,000개 | 시간적으로 뒤의 기간에서 sampling |
+| Short-term | 12시간 query와 12시간 result | prediction 없는 변형이 직접 비교 |
+| Long-term | 관측 12 + 예측 12시간 | 비교 방식은 이후 12시간까지 평가 |
+| Metrics | LPIPS↓, FSIM↑, SSIM↑ | 기상학적 정답 metric은 아님 |
+
+핵심: 성능표는 동일한 query 길이와 평가 구간을 확인한 뒤 읽어야 한다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 5–6, §4.2
+
+## 21. 단기와 장기에서 유리한 변형이 다르다
+
+Table 2의 best 값은 task horizon별로 읽는다
+
+
+| 설정 | LPIPS↓ | FSIM↑ | SSIM↑ | 해석 |
+| --- | --- | --- | --- | --- |
+| Short: w/o prediction | .1943 | .3502 | .2784 | 12시간 세 metric 모두 best |
+| Short: w/ prediction | .1960 | .3495 | .2775 | 단기에는 소폭 낮음 |
+| Long: w/o prediction | .1974 | .3490 | .2751 | 후반 frame에서 품질 저하 |
+| Long: w/ prediction | .1965 | .3494 | .2766 | 24시간 세 metric 모두 best |
+
+핵심: prediction은 장기 변화 검색을 돕지만 단기 결과까지 항상 개선하지는 않는다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 6, Table 2
+
+## 22. 후보 검색 속도는 recall 조건과 함께 보고된다
+
+query interval length가 넓은지 좁은지에 따라 비교 baseline의 병목도 달라진다
+
+
+| 평가 항목 | 논문 조건 | 보고된 관찰 |
+| --- | --- | --- |
+| 결과 수 | C=50, 500 | 두 retrieval 규모를 평가 |
+| 시간 범위 | 전체 기간의 1%–100% | 좁고 넓은 interval을 모두 포함 |
+| 정확도 filter | recall ≥99%인 설정만 보고 | 99%가 이론적 보장은 아님 |
+| 대 BSBF | 최대 112.50× 빠름 | 넓은 interval에서 전체 비교 비용 회피 |
+| 대 PyNNDescent | 최대 943.87× 빠름 | 좁은 interval에서 시간 block 활용 |
+
+핵심: 최대 speedup은 특정 interval·C·dataset 설정의 관측값이다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 6–7, §4.3, Figs. 5–6
+
+## 23. 빠른 graph search에는 index memory 비용이 따른다
+
+Deep1B subset은 위성 자료 밖의 고차원 vector에서도 scalability를 확인한다
+
+
+| 대상 | 크기 | 의미 |
+| --- | --- | --- |
+| 원본 vectors | 10M × 96-d, 3.92 GB | 임의 timestamp를 붙인 Deep1B subset |
+| SkySearch index | 18.24 GB | 원본의 약 5배 memory |
+| 평가 결론 | QPS·recall 비교 | 큰 vector DB에도 query는 가능 |
+| 남는 비용 | graph와 block 중복 | memory가 충분한 server 조건이 필요 |
+
+핵심: SkySearch는 원본보다 작은 index를 보장하지 않으며 속도를 위해 추가 memory를 사용한다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) p. 7, §4.3 and Fig. 6
+
+## 24. 예측 모듈은 평균과 실패 사례를 함께 봐야 한다
+
+장기 평균은 개선되지만 구름 형태에 따라 예측 난도가 달라진다
+
+
+| 근거 | 관찰 | 해석 |
+| --- | --- | --- |
+| Prediction LPIPS | SkySearch .2170, SimVP .3907 | 제안 학습이 평균 예측 품질 개선 |
+| delta ablation | 8시간에서 모든 변형 best | default positive 범위의 실험 근거 |
+| 24-frame curve | prediction 변형이 후반부에 안정적 | 장기 검색 품질 유지에 기여 |
+| Scattered clouds | 불만족스러운 예측 사례 | 복잡한 구름은 여전히 어려움 |
+| Ground truth 비교 | 마지막 20–24h는 실제 미래가 소폭 우세 | 예측이 관측과 같지는 않음 |
+
+핵심: 평균 향상은 개별 query의 미래 예측 신뢰도를 제공하지 않는다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 6, 8, 11; §4.3; Figs. 4, 8, 10
+
+## 25. 논문이 보여 준 것과 아직 보여 주지 않은 것
+
+시스템 성과와 해석 경계를 함께 기억한다
+
+
+| 보여 준 것 | 조건 | 아직 남은 질문 |
+| --- | --- | --- |
+| 초 단위 대규모 검색 | 서버·RAM·평가 dataset | 더 작은 hardware에서의 성능 |
+| 라벨 없는 표현 학습 | 시간 근접성으로 학습 | 기상 현상 의미와의 완전한 일치 |
+| 장기 검색 평균 개선 | 예측을 붙인 COMS IR 평가 | query별 prediction confidence |
+| IR·SWIR·WV 적용 사례 | channel별 입력 | joint multichannel representation |
+| metric 기반 유사도 | LPIPS·FSIM·SSIM proxy | 표준 기상학적 similarity 기준 |
+
+핵심: 실용적 검색 기반이지만 similarity와 uncertainty 문제는 남는다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 6, 9–11; §4.2, §6; Appendices B–D
+
+## 26. SkySearch를 한 문장씩 다시 연결하면
+
+각 구성요소는 서로 다른 병목을 해결한다
+
+1. **Learn**: 시간 근접성으로 검색 embedding을 학습
+2. **Index**: embedding을 kNN graph와 시간 block으로 구성
+3. **Search**: 유망한 neighbor와 겹치는 block만 방문
+4. **Rank**: 거리 또는 선택적 perceptual metric으로 정렬
+5. **Inspect**: 과거 사례의 시각·시각값·거리로 비교
+
+핵심: 표현·시간·graph·UI를 잇는 검색 설계가 핵심이다
+
+근거: [paper](https://doi.org/10.1145/3711896.3737263) pp. 2–10, Fig. 1; §3–6

@@ -105,6 +105,11 @@ UniCon은 connected-components 문제의 계산 복잡도만이 아니라 distri
 
 실험은 10-node Hadoop cluster와 static graph에 집중한다. Dynamic graph에서는 edge update마다 전체 round를 다시 실행하지 않도록 incremental connectivity와 affected-partition recomputation을 결합할 수 있다. 현대 환경에서는 object storage, RDMA, cloud autoscaling 비용까지 포함한 cost model을 추가하고, skew-aware partitioning으로 hub가 많은 graph의 tail latency를 낮추는 방향으로 확장할 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 26 slides | <a href="/assets/seminars/unicon-a-unified-star-operation-to-efficiently-find-connected-components-on-a-cluster-of-commodity-hardware/unicon-seminar-ko-v1.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/unicon-a-unified-star-operation-to-efficiently-find-connected-components-on-a-cluster-of-commodity-hardware/unicon-seminar-ko-v1.pptx" download>Download</a> | <a href="/assets/seminars/unicon-a-unified-star-operation-to-efficiently-find-connected-components-on-a-cluster-of-commodity-hardware/slides-v1.md.txt" download="slides-v1.md">Markdown</a> | <a href="/assets/seminars/unicon-a-unified-star-operation-to-efficiently-find-connected-components-on-a-cluster-of-commodity-hardware/presenter-notes-v1.md.txt" download="presenter-notes-v1.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

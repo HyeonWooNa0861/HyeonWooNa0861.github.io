@@ -1,0 +1,389 @@
+---
+type: research-seminar-slides
+paper_id: labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions
+---
+
+# Labidus: Streaming Async Instruction RISC-V Overlay
+
+논문: Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions
+
+저자: Gongjin Sun, Seongyoung Kang, Jane He, Se-Min Lim, and Sang-Woo Jun (2025)
+
+## 1. Labidus: Streaming Async Instruction RISC-V Overlay
+
+Software-defined FPGA overlay에서 긴 operator latency와 범용 control overhead를 함께 줄이는 구조
+
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 57, title and abstract
+
+## 2. FPGA 개발의 두 비용
+
+Custom hardware와 processor overlay는 서로 다른 비용을 줄인다
+
+
+| 접근 | 얻는 것 | 남는 비용 |
+| --- | --- | --- |
+| RTL | 응용에 맞춘 pipeline과 data path | 낮은 수준의 hardware design expertise |
+| HLS | C 계열 언어에서 hardware 생성 | 비정규 loop와 control에 상세 guidance 필요 |
+| Soft processor overlay | 기존 language와 compiler 활용 | instruction decode와 control logic의 LUT overhead |
+
+핵심: Labidus는 overlay의 개발 편의성을 유지하면서 control overhead를 줄이는 문제를 다룬다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 57-58, Sections I-II
+
+## 3. Labidus의 설계 목표
+
+1. **C kernel**: Programmer가 software로 계산을 표현
+2. **Static analysis**: 반복되는 operation tree를 분석
+3. **Custom operators**: 복잡한 연산을 fused instruction으로 구성
+4. **High utilization**: Stream과 async queue로 실행을 겹침
+
+핵심: 핵심은 custom operator를 만드는 일보다 계속 바쁘게 유지하는 데 있다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 57, Introduction
+
+## 4. Programming model의 시스템 경계
+
+
+| 영역 | Labidus가 처리하는 범위 | Programmer 책임 |
+| --- | --- | --- |
+| Host software | Generated accelerator를 호출 | Host와 kernel의 interaction 작성 |
+| Kernel software | Custom instruction call이 삽입됨 | C code와 compute-heavy region 제공 |
+| FPGA hardware | Operator pool과 core cluster 생성 | 현재 library에서는 offload region 지정 |
+
+핵심: 현재 Labidus는 host-kernel 연결과 offload 구간을 완전히 자동화하지 않는다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-59, Section III-A
+
+## 5. C kernel에서 두 산출물까지
+
+Static analysis는 hardware와 software를 함께 바꾼다
+
+- **C kernel**: 계산 구간을 지정
+- **Hardware path**: Operator pool HDL 생성
+- **Software path**: Async call을 kernel에 삽입
+- **Compile**: Vivado와 GCC를 사용
+- **Deployment pair**: Bitfile과 kernel binary
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-59, Section III-A
+
+## 6. Haversine loop의 fused operator 생성
+
+Operation tree를 leaf부터 묶되 two inputs와 one output 형태를 유지한다
+
+- **레인 static analysis**
+  - **C loop**: 좌표와 K개 center의 거리 계산
+  - **Operation tree**: sin, cos, sqrt, multiply를 분석
+  - **Fused operators**: sinsq → coscos → arcsrt
+  - **Operator pool**: 응용에 필요한 instance만 배치
+- C loop → Operation tree (실선, 단방향)
+- Operation tree → Fused operators (실선, 단방향)
+- Fused operators → Operator pool (실선, 단방향)
+
+핵심: Fused operator는 수십 cycle latency를 가질 수 있어도 매 cycle 새 input을 받을 수 있다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-59, Fig. 1 and Section III-A
+
+## 7. FPGA 배치와 실행 lifecycle
+
+1. **Configure FPGA**: Generated HDL bitfile을 load
+2. **Load kernels**: Compiled binary를 모든 core에 배치
+3. **Copy input**: Host가 PCIe로 FPGA DRAM에 전송
+4. **Start cores**: 모든 core에 start signal 전달
+5. **Return results**: FPGA DRAM에서 host로 복사
+
+핵심: Evaluation 대상은 host와 PCIe로 연결된 FPGA accelerator card다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 59, Section III-B
+
+## 8. Host, memory, Labidus tile의 연결
+
+실선은 host input을 DRAM까지, 점선은 start/control과 fabric connectivity를 보인다
+
+- **레인 host boundary**
+- **레인 FPGA mesh**
+- **레인 local memory**
+  - **Host software**: Data copy와
+start를 제어
+  - **PCIe controller**: 2D mesh endpoint
+host link
+  - **DRAM controller**: 2D mesh endpoint
+local FPGA DRAM
+  - **Labidus tile**: 2D mesh endpoint
+core cluster
+- Host software → PCIe controller: input data (실선, 단방향)
+- PCIe controller → DRAM controller: to FPGA DRAM (실선, 단방향)
+- PCIe controller → Labidus tile: start/control (점선, 단방향)
+- DRAM controller → Labidus tile: 2D mesh (점선, 양방향)
+
+핵심: Tile 내부 ring과 tile 간 2D mesh가 서로 다른 network level을 이룬다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 59, Fig. 3 and Section IV
+
+## 9. 4-core tile과 shared operator pool
+
+- **레인 one tile**
+  - **RV32I cores**: core 0 → core 1 → core 2 → core 3
+  - **Per-core resources**: cache 0 and queue 0 → cache 1 and queue 1 → cache 2 and queue 2 → cache 3 and queue 3
+  - **Shared operator pool**: 네 core가 같은 hardware units 사용
+- RV32I cores → Per-core resources (실선, 단방향)
+- Per-core resources → Shared operator pool (실선, 단방향)
+
+핵심: Operator를 core마다 복제하지 않고 공유해 낮은 utilization의 instance를 줄인다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 57 and 59, Fig. 3
+
+## 10. Core 안의 data path와 control path
+
+
+| 구성요소 | 주요 역할 | 연결되는 대상 |
+| --- | --- | --- |
+| RV32I core | Custom op와 memory command issue | Completion queue와 local mem |
+| Completion queue | Slot reservation과 async result 정렬 | Operator pool과 stream cache |
+| Stream cache | Off-chip burst를 stream으로 공급 | Router, DRAM, completion queue |
+| Operator pool | Fused computation을 pipeline 실행 | Tile의 four cores가 공유 |
+
+핵심: RV32I core는 control을 issue하고, queue와 cache가 data readiness를 흡수한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 59-60, Figs. 4-5
+
+## 11. Asynchronous completion queue의 기본 동작
+
+Operation issue 순서와 result completion 시점을 분리한다
+
+- **레인 queue state**
+  - **Issue**: Custom op 요청 생성
+  - **Reserve tail**: Slot과 epoch 예약
+  - **Continue**: 다음 command issue
+  - **Async fill**: Operator가 slot 채움
+  - **Read head**: Ready result 사용
+- Issue → Reserve tail (실선, 단방향)
+- Reserve tail → Continue (실선, 단방향)
+- Continue → Async fill (실선, 단방향)
+- Async fill → Read head (실선, 단방향)
+- 시간축: 왼쪽에서 오른쪽으로 진행
+
+핵심: Result가 head에 도달하기 전에 ready되면 operator latency를 다른 work와 겹칠 수 있다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 59-60, Fig. 4 and Section IV-A
+
+## 12. Circular buffer와 epoch tracking
+
+1. **Reserve slot**: Tail 위치를 request에 연결
+2. **Tag epoch**: 현재 wrap generation을 request에 기록
+3. **Tail wraps**: Buffer 끝에서 global epoch 증가
+4. **Response arrives**: Address와 epoch가 slot을 식별
+5. **Check readiness**: Old epoch slot과 new result를 구분
+
+핵심: Epoch는 같은 physical slot을 여러 바퀴 재사용할 때 completion generation을 구분한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 60, Section IV-A
+
+## 13. Latency hiding이 성립하는 조건
+
+
+| 조건 | 성립할 때 | 깨질 때 |
+| --- | --- | --- |
+| Operator pipeline | 긴 latency에도 매 cycle input 수용 | Initiation interval이 길면 공급률 감소 |
+| In-flight capacity | Queue가 여러 request를 유지 | Queue가 차면 새 request가 대기 |
+| Head readiness | Head 도달 전에 result complete | Incomplete head read에서 stall |
+| Input stream | Cache와 repeat가 새 operand 공급 | 같은 register value만 반복 |
+
+핵심: Labidus는 single-operation latency보다 pipeline utilization을 개선하는 구조다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-60, Figs. 2 and 4
+
+## 14. 교육용 M=3 streaming trace
+
+원문 Figure 2의 M-input block을 세 input으로 펼친 constructed example
+
+1. **Issue sinsq x3**: Inputs 0, 1, 2의 request를 연속 생성
+2. **Stream results**: Ready sinsq 값을 queue에서 cache로 이동
+3. **Issue coscos x3**: 동시에 다음 세 input을 operator에 공급
+4. **Wait for first ready**: 첫 coscos가 complete된 뒤 multiply 시작
+
+핵심: M=3은 실행 순서를 설명하는 예시이며 measured cycle count나 speedup이 아니다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-59, Fig. 2 and Section III-A
+
+## 15. Multiply stage의 두 operand stream
+
+M=3 constructed example의 같은 index 값을 결합한다
+
+- **Cached sinsq**: sinsq[0..2]를 cache에서 읽음
+- **Queued coscos**: coscos[0..2]를 queue에서 읽음
+- **Multiply x3**: 같은 index의 두 값을 곱함
+- **Three intermediates**: 다음 distance operator로 전달
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 59, Section III-A
+
+## 16. Stream-semantic memory path
+
+Burst request가 word별 load/store instruction을 줄인다
+
+- **레인 data stream**
+  - **Router and DRAM**: Off-chip data burst를 반환
+  - **Stream cache**: Burst와 uncached bypass를 관리
+  - **Stream registers**: x29 → x30 → x31
+  - **Queue and operators**: 연속 operand를 consume
+- Router and DRAM → Stream cache (실선, 단방향)
+- Stream cache → Stream registers (실선, 단방향)
+- Stream registers → Queue and operators (실선, 단방향)
+
+핵심: Stream cache는 normal RISC-V local memory와 분리되고 completion queue 전용으로 연결된다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 60, Fig. 5 and Section IV-B
+
+## 17. Memory request immediate의 12-bit 구성
+
+
+| Field | Bits | 역할 |
+| --- | --- | --- |
+| Burst length | 6 | 한 request가 다룰 stream 길이 |
+| Repeat count | 5 | 같은 memory region의 반복 접근 횟수 |
+| Uncached flag | 1 | Cache 대신 BRAM bypass queue 사용 |
+
+핵심: Burst와 repeat가 memory command 수를 줄이고 uncached bit가 bypass 여부를 정한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 60, Section IV-B
+
+## 18. Operator repeat와 stream의 결합
+
+- **One RISC-V issue**: Repeat count를 함께 encode
+- **Operator repeat**: Pool이 같은 op를 연속 실행
+- **Memory burst**: Cache가 새 operand를 연속 공급
+- **Stream registers**: x29, x30, x31에서 값 갱신
+- **Overlapped work**: Core control과 pool 실행을 겹침
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 60-61, Section IV-C
+
+## 19. Custom operator instruction encoding
+
+
+| R-type field | Labidus의 사용 | 주의점 |
+| --- | --- | --- |
+| Register fields | rd, rs1, rs2 register fields | Normal R-type 위치를 유지 |
+| func7 | 호출할 operator 선택 | Generated design의 operator 집합 |
+| func3 | Operator repeat count | Memory immediate의 repeat와 별도 |
+| 6-bit opcode | 한 instance에서 최대 64 operator types | Template의 수백 후보 중 사용분만 배정 |
+
+핵심: Generated hardware마다 실제 사용 operator에 opcode를 다시 배정한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 60-61, Section IV-C
+
+## 20. Shared operator pool과 trimming
+
+1. **Count operations**: Static analysis가 상대 frequency 추정
+2. **Share per tile**: Four cores가 one pool을 사용
+3. **Choose instances**: Operator마다 1개에서 4개 배치
+4. **Remove idle copies**: 낮은 utilization의 hardware를 줄임
+
+핵심: Trimming은 사용하지 않는 operator와 과도한 core별 복제를 줄인다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 61, Section IV-C and Section V-A
+
+## 21. Workload별 4-core tile operator 구성
+
+
+| Workload | 공통 arithmetic instances | Application-specific instances |
+| --- | --- | --- |
+| Cholesky | multiply 2, divide 1, add 2, sqrt 1 | none |
+| FIR | multiply 2, add 2 | none |
+| FFT | multiply 2, add 3 | none |
+| K-means | multiply 2, add 2 | sinsq 1, coscos 1, arcsrt 1 |
+
+핵심: Operator pool은 workload마다 달라지는 hardware 구성이다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 61, Table I
+
+## 22. 평가 구현과 자원 조건
+
+
+| 항목 | Paper configuration | 해석 |
+| --- | --- | --- |
+| FPGA platform | Amazon AWS F1, Xilinx Virtex UltraScale | Host-connected accelerator card |
+| Synthesis clock | 250 MHz | 비교 normalization의 기준 clock |
+| Operator-pool LUT | FFT 3.4% to Haversine 4.2% | Workload configuration에 따라 변화 |
+| Cache and processor | 160 BRAM blocks, 7% | Four cores, caches, queues의 current setup |
+
+핵심: 모든 resource 수치는 이 FPGA와 current tile configuration에 묶여 있다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 61, Section V-A
+
+## 23. 1024-slot latency-hiding resource 비교
+
+Application runtime이 아니라 queue-style control hardware의 LUT estimate다
+
+
+| Design | 조건 | LUT result |
+| --- | --- | --- |
+| Deep-pipeline proxy | 1024-slot reorder buffer, matching ISA change 없음 | More than 80K, about 7% |
+| Labidus tile baseline | 1024-entry completion queue, operator pool 제외 | About 38K, about 3% |
+
+핵심: Paper는 이 비교를 2배가 넘는 resource-efficiency improvement로 해석한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 61, Section V-A.2
+
+## 24. 네 application의 비교 조건
+
+
+| Application | Labidus condition | Compared implementations |
+| --- | --- | --- |
+| Cholesky | Sub-matrix 256, matrix fits distributed on-chip memory | OmpSs, RTL, HLS, MicroBlaze |
+| FIR | One independent stream per core | Xilinx, ANL HLS, soft GPU, MicroBlaze |
+| FFT | 256-point FFTs across cores | Xilinx, OpenCL, HLS, RTL, MBx32 |
+| K-means | Haversine comparisons across cores | Internal RTL and HLS, published RTL |
+
+핵심: Figure 6은 서로 다른 publication과 platform을 한 축에서 비교한다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 61-62, Fig. 6 and Section V-B
+
+## 25. Cross-publication normalization의 순서
+
+1. **Collect published results**: Expert-optimized RTL과 HLS 결과 선택
+2. **Scale slower clocks**: Performance를 250 MHz로 선형 환산
+3. **Normalize LUT inputs**: FPGA family의 LUT input 수를 맞춤
+4. **Plot performance per LUT**: Given resource의 efficiency를 비교
+
+핵심: Figure 6은 같은 board의 직접 대결이 아니라 normalization을 포함한 비교다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 61-62, Section V-B.1
+
+## 26. 성능 headline과 적용 범위
+
+
+| Paper statement | 직접 조건 | 해석 경계 |
+| --- | --- | --- |
+| Over 50x vs MicroBlaze | Chip resource당 performance headline | 모든 workload의 raw runtime ratio가 아님 |
+| Almost 10x vs soft GPUs | Published designs와 Cholesky-based normalization | 같은 board의 end-to-end measurement가 아님 |
+| RTL is 4-7x faster | Matrix multiplication과 N-body, similar resources | Regular control kernel은 Labidus target이 아님 |
+
+핵심: 강점은 irregular control이며 regular dense kernel은 RTL이 앞설 수 있다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) p. 57 and pp. 62-63, Sections I and V-B-C
+
+## 27. 온디바이스 hardware 판단에 주는 근거
+
+
+| Paper가 보여주는 것 | Paper만으로 보장할 수 없는 것 |
+| --- | --- |
+| FPGA 안에서 RV32I와 custom operator 결합 | Smartphone 또는 MCU deployment |
+| BRAM queue로 many in-flight operations 지원 | Battery와 thermal constraint 충족 |
+| Three stream registers와 burst memory path | Host 없이 standalone execution |
+| Workload별 operator generation과 trimming | Hard real-time, DNN, ASIC, NPU superiority |
+
+핵심: Labidus는 edge accelerator의 설계 재료를 제공하지만 mobile on-device 검증 논문은 아니다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 58-63, Sections III-V
+
+## 28. Labidus의 전체 연결
+
+1. **Analyze C kernel**: 응용별 fused operator를 선택
+2. **Generate both paths**: Hardware HDL과 modified software 생성
+3. **Feed streams**: Burst와 three registers로 operand 공급
+4. **Hide latency**: Completion queue가 requests를 겹침
+5. **Share and trim**: Four cores의 operator utilization 개선
+
+핵심: Labidus의 성능 논리는 compile-time specialization과 runtime latency hiding의 결합이다.
+
+근거: [asap2025](https://doi.org/10.1109/ASAP65064.2025.00018) pp. 57-63, Sections I-VI

@@ -276,6 +276,11 @@ $$
 
 마지막으로 narrative-driven highlight에는 추가적인 semantic understanding이 필요하다. MRD peak가 높은 구간은 관심도가 높은 순간을 알려주지만, 스토리의 시작, 갈등, 전환, 결말을 의도적으로 구성하는 편집까지 자동으로 보장하지는 않는다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 18 slides | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/highlight-videos-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/highlight-videos-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

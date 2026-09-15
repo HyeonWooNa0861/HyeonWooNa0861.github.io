@@ -86,6 +86,11 @@ MAPPO를 선택한 이유는 multi-agent setting에서 discrete decision과 cont
 
 해결 및 확장 방향은 비교적 명확하다. 첫째, user feedback과 online telemetry를 이용해 QoE weight와 logistic normalization parameter를 서비스별로 보정해야 한다. 둘째, $$\mu_n$$ 선택은 channel uncertainty와 task drift에 robust하도록 online adaptation 또는 safe exploration과 결합할 수 있다. 셋째, 제한된 device에서는 pruning, quantization, knowledge distillation을 적용해 semantic encoder를 경량화하고, $$\mu_n$$ 범위를 device capability에 맞게 제한하는 deployment profile을 둘 수 있다.
 
+## Seminar Materials
+| Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |
+| --- | ---: | --- | --- | --- | --- |
+| Korean Seminar | 24 slides | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/qoe-semantic-seminar-ko-v2.pdf" target="_blank" rel="noopener">View</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/qoe-semantic-seminar-ko-v2.pptx" download>Download</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/slides-v2.md.txt" download="slides-v2.md">Markdown</a> | <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/presenter-notes-v2.md.txt" download="presenter-notes-v2.md">Markdown</a> |
+
 ## 참고자료
 
 <ul>

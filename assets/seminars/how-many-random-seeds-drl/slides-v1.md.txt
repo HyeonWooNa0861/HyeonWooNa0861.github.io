@@ -1,0 +1,320 @@
+---
+type: research-seminar-slides
+paper_id: how-many-random-seeds-drl
+---
+
+# DRL 실험의 random seed: 몇 번이 아니라 어떻게 설계할까
+
+논문: How Many Random Seeds? Statistical Power Analysis in Deep Reinforcement Learning Experiments
+
+저자: Cédric Colas, Olivier Sigaud, Pierre-Yves Oudeyer (2018)
+
+## 1. DRL 실험의 random seed: 몇 번이 아니라 어떻게 설계할까
+
+효과크기·변동성·오류 위험을 함께 정해 비교 실험의 N을 계획하는 2018년 tutorial
+
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 1, title·abstract; arXiv v2
+
+## 2. 5개 seed의 그럴듯한 그림이 왜 위험한가
+
+학습곡선의 평균과 band는 출발점일 뿐, 두 알고리즘의 차이 검정 그 자체가 아니다
+
+- **5회 실행**: Half-Cheetah 평균과 95% 구간
+- **겉보기**: Algo 1이 더 좋아 보인다
+- **검정 전 사실**: 표본 변동과 오류율은 아직 모른다
+- **원문의 반례**: 두 곡선은 실제로 같은 DDPG였다
+- **교훈**: 그림 뒤에 차이 검정과 설계가 필요
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 2, 4, 10; Fig. 1; Example 1
+
+## 3. 한 seed 실행은 평균이 아니라 확률변수의 한 관측이다
+
+같은 설정에서도 seed·초기 상태·환경 확률성 때문에 실행 성능이 달라질 수 있다
+
+- **레인 반복 실행**
+  - **비교 조건**: 알고리즘·환경·지표를 명시
+  - **seed별 실행**: seed·초기상태·환경이 변동
+  - **관측 성능**: x1 → x2 → … → xN
+  - **표본 요약**: 평균 x̄와 표본 SD s를 계산
+  - **효과크기**: ε는 두 평균 성능의 차이
+- 비교 조건 → seed별 실행 (실선, 단방향)
+- seed별 실행 → 관측 성능 (실선, 단방향)
+- 관측 성능 → 표본 요약 (실선, 단방향)
+- 표본 요약 → 효과크기 (실선, 단방향)
+
+핵심: N이 커지면 평균·SD 추정은 안정하지만, N은 효과와 오류 목표에 따라 정한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 3, §2.1, Eq. (1)
+
+## 4. 비교 전에 무엇을 주장할지: 양측과 단측
+
+대칭적인 차이 질문과 방향을 사전에 가진 질문은 서로 다른 가설 계약이다
+
+
+| 질문 | 귀무가설 H0 | 대립가설 Ha |
+| --- | --- | --- |
+| 양측 | μdiff = 0 | μdiff ≠ 0 |
+| 단측 | μdiff ≤ 0 | μdiff > 0 |
+| p-value | H0 아래의 극단성 | H0가 참일 확률은 아님 |
+
+핵심: 단측은 Algo 1이 더 낫다는 방향을 관측 전부터 정당화할 수 있을 때만 원문이 제시한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 4, §2.2, Eq. (2)–(3)
+
+## 5. 두 오류와 power: 같은 threshold의 두 위험
+
+검정은 H0 또는 Ha를 결정하지만, 실제 상태와 판단은 엇갈릴 수 있다
+
+
+| 판단 / 실제 | H0가 참 | Ha가 참 |
+| --- | --- | --- |
+| H0를 유지 | true negative: 1−α | false negative: β |
+| H0를 기각 | false positive: α | true positive: 1−β |
+| power | — | 1−β: 참 차이를 잡을 확률 |
+
+핵심: α를 낮추면 보수적이 되지만, N을 늘리지 않으면 β가 커질 수 있다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 5–6, Table 1; pp. 8–9, Fig. 2
+
+## 6. 여러 비교를 하면 α 하나로 끝나지 않는다
+
+원문은 NE개의 비교에서 familywise false positive 위험을 따로 다룬다
+
+1. **비교 family 정의**: 어떤 알고리즘·환경 대비를 함께 판단할지 정한다
+2. **각 비교의 검정**: 선택한 α와 같은 규칙을 적용
+3. **누적 위험**: 원문은 NE가 늘면 false positive가 증가한다고 경고
+4. **보정 예**: Bonferroni: αBon = α / NE
+5. **보고**: 비교 수와 보정 규칙을 함께 공개
+
+핵심: 원문은 다중 비교 보정은 다루지만, 중간 p값으로 N을 늘리는 순차 설계는 정의하지 않는다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 5, §2.2; Rice (1989) citation
+
+## 7. 두 검정 도구의 역할과 전제
+
+원문은 unequal variance 비교에는 Welch를, 분포 가정이 어려울 때는 bootstrap CI를 설명한다
+
+
+| 도구 | 무엇을 계산하는가 | 핵심 전제·주의 |
+| --- | --- | --- |
+| 2-sample t-test | 평균 차이의 t 통계량 | 두 분산이 같다는 가정 |
+| Welch t-test | 평균 차이와 추정 자유도 | 연속·대표성·독립·종형 분포 |
+| bootstrap CI | 재표집 mean difference의 구간 | 표본이 분포를 충분히 대표해야 함 |
+| KS test | 두 분포가 같은지 | 원문은 순서 관계 주장에는 부적절하다고 설명 |
+
+핵심: ‘distribution-free’ bootstrap도 작은 표본이 분포를 대표한다는 문제를 없애지 않는다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 6–10, §3.1–3.2; footnote 3
+
+## 8. Welch t-test는 평균 차이를 불확실성으로 나눈다
+
+같은 N을 쓰는 경우에도 두 알고리즘의 표본 SD는 서로 달라도 된다
+
+- **Algo 1 표본**: x̄1, s1, N1
+- **Algo 2 표본**: x̄2, s2, N2
+- **Welch statistic**: 평균 차이 ÷ 두 표본의 표준오차
+- **판정**: t와 자유도를 α 기준으로 비교
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 7, §3.1, Eq. (4)
+
+## 9. 유의하지 않음은 ‘같다’가 아니다
+
+원문은 t가 임계값보다 작을 때 증거 부족과 type-II error 가능성을 구분한다
+
+- **관측된 평균 차이**: x̄diff와 표본 SD, N으로 검정
+- **t가 임계값 이상**: 선택한 α에서 H0를 기각
+- **t가 임계값 미만**: 그 차이를 보일 증거가 부족
+- **두 번째 경우의 가능성**: noise와 작은 N이 β를 키울 수 있다
+- **다음 질문**: 목표 효과를 잡을 N과 power는 충분한가
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 9, §3.1
+
+## 10. bootstrap CI: 재표집 평균 차이의 구간
+
+두 알고리즘의 표본을 각각 replacement로 재표집하고, 반복 mean difference의 분위수를 사용한다
+
+1. **원 표본**: Algo 1과 Algo 2의 N개 성능을 준비
+2. **B회 재표집**: 각 표본에서 N개를 replacement로 다시 뽑기
+3. **각 평균**: 재표집마다 두 empirical mean 계산
+4. **mean difference**: B개의 평균 차이를 모은다
+5. **CI 판정**: 0이 구간에 들어가는지 본다
+
+핵심: B>1000은 재표집 횟수의 예일 뿐, 작은 원 표본의 대표성 문제를 고치지 못한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 9–10, §3.2
+
+## 11. pilot·power 결정·최종 평가는 역할이 다르다
+
+원문의 3단계는 pilot n으로 변동성을 추정한 뒤, 목표 beta를 만족하는 최종 N을 선택하고 검정한다
+
+1. **질문 고정**: 비교, 양측/단측, α, 목표 효과 ε를 정한다
+2. **pilot n**: 각 알고리즘의 평균과 s1, s2를 추정
+3. **power 계산**: ε와 α에서 β 대 N 곡선을 계산
+4. **final N 선택**: 허용 β를 만족하는 각 알고리즘의 N
+5. **최종 평가**: 각 알고리즘의 N개 표본으로 검정 실행
+
+핵심: pilot에서 본 차이는 N 결정을 위한 입력이며, 같은 관측을 최종 확증 증거로 과장하지 않는다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 11–14, §4.1–4.3
+
+## 12. 원문 pilot: 작은 n은 planning 입력
+
+Half-Cheetah에서 두 DDPG perturbation variant를 n=5로 관찰한 조건부 사례다
+
+
+| 항목 | Algo 1 | Algo 2 | 해석 |
+| --- | --- | --- | --- |
+| 변형 | action noise | parameter noise | 두 DDPG variant 비교 |
+| pilot 평균 | 3523 | 4905 | 차이 x̄diff = 1382 |
+| pilot SD | 1341 | 990 | power 계산의 입력 |
+| Welch 결과 | p = 0.1 | — | α=0.05에서는 H0 미기각 |
+| bootstrap CI | [795, 2692] | — | 0을 포함하지 않는 구간 |
+
+핵심: 두 검정이 다를 수 있으므로, 수치 하나를 진실로 읽지 말고 전제와 power를 함께 점검한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 12, §4.1; Fig. 3
+
+## 13. 원문의 power curve를 읽는 법: N은 조건부 출력
+
+α, 목표 효과 ε, pilot SD 추정치가 고정될 때만 β 대 N의 곡선이 정의된다
+
+
+| 고정한 입력 | 원문 조건 | curve에서 읽는 결과 |
+| --- | --- | --- |
+| 검정·유의수준 | Welch; α = 0.05 | critical value와 β 계산에 사용 |
+| pilot SD | s1=1341, s2=990 | 변동성이 큰 만큼 더 큰 N 필요 |
+| 목표 효과 | ε = 1382 | 관측 차이를 해당 curve에 표시 |
+| N=5 | β = 0.51 | 그 효과를 놓칠 확률이 51% |
+| N=10 | β = 0.19 | β≤0.2 요구를 이 사례에서 충족 |
+
+핵심: N=10은 이 효과·분산·α·β 요구 아래의 예시일 뿐 다른 task의 권장 seed 수가 아니다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 13, §4.2; Fig. 4; Eq. (8)
+
+## 14. 원문 N=10 관측: 더 좁은 구간
+
+N을 늘린 뒤 같은 Half-Cheetah 비교에서 두 검정이 모두 H0를 기각한 사례다
+
+
+| 항목 | 원문 N=5 | 원문 N=10 |
+| --- | --- | --- |
+| 각 알고리즘 표본 수 | 5 | 10 |
+| 평균 (Algo 1, Algo 2) | 3523, 4905 | 3690, 5323 |
+| SD (Algo 1, Algo 2) | 1341, 990 | 1086, 1454 |
+| Welch | p = 0.1 | p = 0.0037 |
+| bootstrap CI | [795, 2692] | [732, 2612] |
+
+핵심: 더 많은 seed는 불확실성을 줄일 수 있지만, 결과는 이 알고리즘·환경·지표 조건의 관측이다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 14, §4.3; Fig. 5
+
+## 15. 자체 제작 산술 예시: Welch statistic을 손으로 따라가기
+
+아래 값은 원문 데이터가 아닌, Eq. (4)의 입력·출력을 확인하기 위한 새 예시다
+
+
+| 계산 단계 | 방법 A | 방법 B | 차이 검정 입력 |
+| --- | --- | --- | --- |
+| 5개 seed return | 96, 99, 100, 103, 102 | 91, 94, 95, 98, 97 | 강의용으로 만든 수 |
+| 표본 평균 | x̄1 = 100 | x̄2 = 95 | x̄diff = 5 |
+| 표본 SD | s1 ≈ 2.74 | s2 ≈ 2.74 | SE = √(7.5/5 + 7.5/5) ≈ 1.73 |
+| Welch 계산 | — | — | t ≈ 5 / 1.73 = 2.89; df ≈ 8 |
+
+핵심: 평균 차이뿐 아니라 seed별 변동과 표본 수가 t를 바꾼다; power는 별도로 설계한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 7, Eq. (4); 자체 제작 예시
+
+## 16. 같은 알고리즘 split으로 empirical α 점검
+
+H0가 참임을 알 수 있는 동일 알고리즘의 2N회 결과를 이용해 false-positive 비율을 추정한다
+
+- **레인 empirical α audit**
+  - **동일 Algo 2N**: run 1 → … → run 2N
+  - **두 split**: 각 N개; H0 참인 가짜 Algo
+  - **차이 검정**: H0 기각 여부를 1회 기록
+  - **T회 반복**: 원문은 예로 T=1000을 든다
+  - **기각 비율**: 이 비율이 empirical α 추정치
+- 동일 Algo 2N → 두 split (실선, 단방향)
+- 두 split → 차이 검정 (실선, 단방향)
+- 차이 검정 → T회 반복 (실선, 단방향)
+- T회 반복 → 기각 비율 (실선, 단방향)
+
+핵심: nominal α가 아니라 이 데이터·test·N에서 실제 false-positive 비율을 확인하는 audit다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 15, §5.1; Example 3
+
+## 17. Fig. 6의 작은-N 경고를 과장하지 않기
+
+원문은 42개 성능 관측에서 N=2..21을 바꾸어 nominal α=0.05와 empirical false-positive를 비교했다
+
+
+| 원문 관측 | 설명 | 말할 수 없는 것 |
+| --- | --- | --- |
+| bootstrap, 작은 N | 그 실험에서 nominal 5%보다 훨씬 큰 false positive | 모든 DRL task의 같은 비율 |
+| Welch, 작은 N | 더 보수적이지만 empirical α가 약간 과소평가될 수 있음 | 가정 위반이 없다는 보장 |
+| Fig. 6의 데이터 | 42 available measures; N=2..21 | 모든 algorithm의 calibration curve |
+| 결론의 보수적 문구 | bootstrap CI는 N<20에 쓰지 말 것 | 모든 비교의 N은 20이면 충분 |
+
+핵심: 원문은 α의 경험적 점검을 권하지만, 한 calibration 그림을 범용 benchmark로 만들지 않는다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 15–16, Example 3; Fig. 6; p. 19
+
+## 18. pilot SD 과소추정은 power를 낙관시킨다
+
+작은 n에서 s1·s2가 실제보다 작게 추정되면 β를 낮게 보고 필요한 N도 작게 선택할 수 있다
+
+- **작은 pilot n**: s1, s2의 추정 자체가 크게 흔들린다
+- **SD 과소추정**: 표준오차와 critical term을 낙관적으로 계산
+- **β 과소추정**: 목표 효과를 잡기 쉽다고 오판
+- **N 선택 오류**: power 계산이 요구하는 N보다 작게 고를 수 있다
+- **원문의 대응**: pilot을 키우고 계산값보다 큰 N을 선택
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 16–18, §5.2; Figs. 7–8
+
+## 19. 원문의 ‘20’을 올바른 자리에서 읽기
+
+서로 다른 숫자와 역할을 섞으면 ‘항상 20 seed’라는 잘못된 규칙이 된다
+
+
+| 기호·수치 | 원문에서의 역할 | 바꾸면 안 되는 주장 |
+| --- | --- | --- |
+| pilot n≥20 | s1·s2를 robust하게 추정하라는 final recommendation | 모든 최종 비교 N이 20이면 충분 |
+| bootstrap N<20 | final conclusion의 bootstrap CI 사용 금지 경계 | Welch에도 같은 보편 cutoff |
+| Example N=10 | 특정 ε, α, pilot SD, β에서의 Half-Cheetah 사례 | 다른 task의 권장 seed 수 |
+| larger N | SD 오차 보상을 위한 source guidance | 정확한 보편 여유분 |
+
+핵심: 최종 N은 지표 변동성, 목표 효과, α·β 요구, 검정 가정과 calibration에 따라 정한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) p. 19, Conclusion; final recommendations
+
+## 20. 논문에 남겨야 할 비교 설계 카드
+
+‘seed를 몇 개 썼다’만으로는 독자가 오류 위험과 재현 가능성을 평가할 수 없다
+
+
+| 보고 항목 | 반드시 적을 조건 | 이 논문과의 연결 |
+| --- | --- | --- |
+| estimand·metric | 한 실행의 성능 정의와 집계 방식 | X, xi, 평균·SD의 대상 |
+| 가설·α | 양측/단측, 사전 방향, 유의수준 | type-I error 계약 |
+| pilot과 final | n, s1·s2, 목표 ε·β, 각 알고리즘 N | power analysis의 입력·출력 |
+| test·가정 | Welch/bootstrp, 독립·분포·대표성 점검 | 가정 위반 시 α가 흔들림 |
+| 비교 family | NE와 보정, stopping design | Bonferroni 예와 source 경계 |
+
+핵심: 재현 가능한 비교는 seed 수뿐 아니라 그 수의 오류 목표와 조건도 기록한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 3–5, 7–19; synthesized reporting aid
+
+## 21. 결론: seed 수는 관례가 아니라 검정 설계의 결과다
+
+원문의 가장 중요한 기여는 ‘더 많이’보다 ‘어떤 오류를, 어떤 조건에서 줄일 것인가’를 묻게 만든 데 있다
+
+- 한 run은 확률변수의 관측이며, 평균 곡선만으로 성능 우위를 단정할 수 없다.
+- P(false positive)=α, P(false negative)=β, power=1−β.
+- pilot n으로 SD를 추정하고 목표 ε·α·β 아래 final N을 정해 비교한다.
+- 검정 전제·empirical α와 다중 비교·stopping rule을 공개한다.
+- n≥20, bootstrap N<20, Example N=10은 문맥별 숫자이지 보편 seed 수가 아니다.
+
+핵심: 좋은 DRL 비교는 seed 수보다 조건부 오류 위험을 투명하게 설계·검증·보고한다
+
+근거: [colas-v2](https://arxiv.org/abs/1806.08295v2) pp. 18–19, Message 4; Conclusion
