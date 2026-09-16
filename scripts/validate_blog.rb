@@ -118,6 +118,7 @@ DYNAMIC_LINK_TARGET_ALLOWLIST = {
   ]),
   "_includes/study-catalog.html" => Set.new(["{{ study.url | relative_url | escape }}"]),
   "pages/assignment/aix.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
+  "pages/assignment/algorithms.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
   "pages/assignment/cpp.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
   "pages/assignment/machine-learning-basic.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
   "pages/main/assignment.md" => Set.new(["{{ child.url | relative_url | escape }}"]),

@@ -384,6 +384,10 @@
 - title: Assignment
   url: /assignment/
   children:
+    - title: Algorithms
+      url: /assignment/algorithms/
+      description: Algorithm complexity proofs and worked assignment solutions
+      match: /assignment/algorithms/
     - title: C++
       url: /assignment/cpp/
       description: C++ assignment summaries
