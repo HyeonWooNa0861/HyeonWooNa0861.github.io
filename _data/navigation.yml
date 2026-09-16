@@ -30,6 +30,11 @@
 - title: Post
   url: /post/
   children:
+    - title: 26-2 Research Paper Seminar
+      url: /post/26-2-paper-research-seminar/
+      description: Paper discussions on loss landscapes, neural thickets, and recurrent transformers
+      match: /post/26-2-paper-research-seminar/
+      section: 26-2-paper-research-seminar
     - title: Industry Lectures
       url: /post/industry-lectures/
       description: 2026 industry lecture and exhibition reports

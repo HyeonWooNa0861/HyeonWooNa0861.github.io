@@ -7,7 +7,7 @@ last_modified_at: 2026-09-15 12:00:00 +0900
 categories: [Machine Learning, Neural Networks]
 tags: [Loss Landscape, Bayesian Neural Networks, Mode Connectivity, Model Merging, Permutation Symmetry]
 permalink: /posts/loss-landscape-analysis/
-section: ai-education
+section: 26-2-paper-research-seminar
 ---
 
 Source Slides: <a href="{{ "/assets/pdfs/post/ai-education/loss-surface-analysis.pdf" | relative_url }}" target="_blank" rel="noopener">Loss surface analysis.pdf</a> — Loss Landscape Analysis (25 slides).

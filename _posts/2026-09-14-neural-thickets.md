@@ -7,7 +7,7 @@ last_modified_at: 2026-09-15 12:00:00 +0900
 categories: [Machine Learning, Neural Networks]
 tags: [Neural Thickets, RandOpt, Weight Space, Post-Training, Ensemble Learning]
 permalink: /posts/neural-thickets/
-section: ai-education
+section: 26-2-paper-research-seminar
 ---
 
 Source Slides: <a href="{{ "/assets/pdfs/post/ai-education/neural-thickets.pdf" | relative_url }}" target="_blank" rel="noopener">Neural Thickets.pdf</a> — Yang Ji-Woong, MLPR Laboratory, Kookmin University (13 slides). Primary Paper: <a href="https://arxiv.org/pdf/2603.12228v1" target="_blank" rel="noopener">Gan and Isola, Neural Thickets, arXiv:2603.12228v1</a>.
