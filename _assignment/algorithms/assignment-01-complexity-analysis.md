@@ -41,8 +41,15 @@ def matmul(A, B, M, n):
 
 ### 1(a). Count Basic Operations
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: 곱셈 $$n^3$$회, 덧셈 $$n^3-n^2$$회, 결과 원소 저장 $$n^3$$회이다. 산술·저장을 각각 단위 비용으로 세면 총 $$3n^3-n^2$$회이다.
+
+</details>
+
 <details markdown="block">
-<summary>Solution: exact operation counts</summary>
+<summary>Derivation</summary>
 
 풀이과정: 먼저 무엇을 기본 연산으로 세는지 정한다. 여기서는 **스칼라 곱셈, 스칼라 덧셈, 결과 원소 저장**을 각각 1회로 센다. `+=`는 덧셈 1회와 저장 1회로 분리한다. 인덱싱 및 반복 제어 비용은 이 표와 구분한다.
 
@@ -86,8 +93,15 @@ $$
 
 ### 1(b). Derive the Time Complexity
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n^3)$$이다. 산술 연산만 세면 $$2n^3-n^2$$회이며, 저장까지 세면 $$3n^3-n^2$$회이다.
+
+</details>
+
 <details markdown="block">
-<summary>Solution: cubic running time</summary>
+<summary>Derivation</summary>
 
 풀이과정: 산술 연산만 세면
 
@@ -125,8 +139,15 @@ $$
 
 증명 대상: $$6n^3-15n^2+20\in O(n^3)$$.
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$6n^3-15n^2+20\in O(n^3)$$. 정의를 만족하는 상수는 $$c=6,\ n_0=3$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: choose c = 6 and n0 = 3</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$n\ge3$$이면
 
@@ -148,8 +169,15 @@ $$
 
 증명 대상: $$7n^2-4n\log_2n\in\Omega(n^2)$$.
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$7n^2-4n\log_2n\in\Omega(n^2)$$. 정의를 만족하는 상수는 $$c=3,\ n_0=1$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: choose c = 3 and n0 = 1</summary>
+<summary>Derivation</summary>
 
 풀이과정: 양의 정수 $$n$$에서 $$\log_2n\le n$$임을 먼저 확인한다. $$2^1\ge1$$이고, $$2^n\ge n$$이면
 
@@ -177,8 +205,15 @@ $$
 
 증명 대상: $$3n^2+5n-2\in\Theta(n^2)$$.
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$3n^2+5n-2\in\Theta(n^2)$$. $$c_1=3,\ c_2=8,\ n_0=1$$로 잡으면 된다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: choose c1 = 3, c2 = 8 and n0 = 1</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$n\ge1$$이면 $$5n-2\ge0$$이므로
 
@@ -216,8 +251,15 @@ def fn(n):
 
 ### 3(a). Build the Runtime Recurrence
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: 실행시간 점화식은 $$T(1)=b,\ T(n)=T(n/3)+d$$이다($$b,d>0$$). 재귀 호출은 한 번이며, 반환값의 점화식과 구분한다.
+
+</details>
+
 <details markdown="block">
-<summary>Solution: count calls, not the returned coefficient</summary>
+<summary>Derivation</summary>
 
 풀이과정: `fn(n / 3)`을 한 번 호출한 뒤, 그 반환값에 곱셈 1회와 덧셈 1회를 수행한다. 조건 검사와 인자 나눗셈도 상수 비용이다. 비기저 호출의 자체 비용을 $$d>0$$, 기저 호출 비용을 $$b>0$$라 두면
 
@@ -247,8 +289,15 @@ $$
 
 ### 3(b). Iterative Substitution
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=b+d\log_3n\in O(\log n)$$이며, 더 정확히는 $$\Theta(\log n)$$이다. 반복 대입은 $$\log_3n$$단계에서 기저에 도달한다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: expand until the base case</summary>
+<summary>Derivation</summary>
 
 풀이과정: 같은 식을 재귀 항에 반복 대입한다.
 
@@ -279,8 +328,15 @@ $$
 
 ### 3(c). Guess and Verification
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(3^k)=dk+b$$라는 추측을 귀납법으로 검증하면 $$T(n)\in O(\log n)$$을 얻는다. 기저 $$k=0$$과 귀납 단계를 모두 확인한다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: verify the guess by induction</summary>
+<summary>Derivation</summary>
 
 풀이과정: 입력이 매번 3분의 1이 되므로 $$T(n)=d\log_3n+b$$를 추측한다. $$n=3^k$$에 대해 $$T(3^k)=dk+b$$를 귀납법으로 검증한다.
 
@@ -339,8 +395,15 @@ $$
 
 $$T(n)=2T(n/3)+n.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n)$$. Master Theorem Case 3이며, 정규성 조건의 비율은 $$2/3<1$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 3 with regularity ratio 2/3</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_3 2<1$$이다. $$\varepsilon=1-\log_3 2>0$$로 두면 $$f(n)=n=n^{p+\varepsilon}$$이다. 정규성 조건도
 
@@ -354,8 +417,15 @@ $$2f(n/3)=2n/3=(2/3)f(n)$$
 
 $$T(n)=T(n/3)+n.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n)$$. Master Theorem Case 3이며, 정규성 조건의 비율은 $$1/3<1$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 3 with regularity ratio 1/3</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_3 1=0$$이므로 임계 함수는 $$n^0=1$$이다. $$\varepsilon=1$$이면 $$f(n)=n=n^{p+\varepsilon}$$이며,
 
@@ -369,8 +439,15 @@ $$f(n/3)=n/3=(1/3)f(n).$$
 
 $$T(n)=4T(n/2)+n.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n^2)$$. Master Theorem Case 1이며, 임계 지수는 $$2$$, 다항식 차이는 $$\varepsilon=1$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 1 with polynomial gap 1</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_2 4=2$$이다. $$f(n)=n=O(n^{2-1})$$이므로 $$\varepsilon=1$$을 택할 수 있다. Case 1에 따라 **$$T(n)=\Theta(n^2)$$**이다. 깊이 $$j$$의 작업은 $$4^j(n/2^j)=n2^j$$로 증가하며, 잎 수도 $$4^{\log_2 n}=n^2$$이다.
 
@@ -380,8 +457,15 @@ $$T(n)=4T(n/2)+n.$$
 
 $$T(n)=T(n/2)+1.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(\log n)$$. Master Theorem Case 2이며, 각 레벨의 작업량이 상수이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 2 with constant work per level</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_2 1=0$$이고 $$f(n)=1=\Theta(n^0)$$이다. Case 2에 따라 **$$T(n)=\Theta(\log n)$$**이다. 깊이는 $$\log_2n$$이고 각 비기저 레벨에서 1씩 더하므로, $$T(1)=b_0$$라면 정확히 $$T(n)=b_0+\log_2n$$이다.
 
@@ -391,8 +475,15 @@ $$T(n)=T(n/2)+1.$$
 
 $$T(n)=4T(n/2)+n^2.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n^2\log n)$$. Master Theorem Case 2이며, 각 레벨의 작업량이 $$n^2$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 2 with quadratic work per level</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=2$$이고 $$f(n)=n^2=\Theta(n^p)$$이므로 Case 2이다. 깊이 $$j$$에서
 
@@ -406,8 +497,15 @@ $$4^j(n/2^j)^2=n^2$$
 
 $$T(n)=8T(n/2)+n^3.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n^3\log n)$$. Master Theorem Case 2이며, 각 레벨의 작업량이 $$n^3$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 2 with cubic work per level</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_2 8=3$$이며 $$f(n)=n^3=\Theta(n^p)$$이다. Case 2가 적용된다. 깊이 $$j$$의 비용은
 
@@ -421,8 +519,15 @@ $$8^j(n/2^j)^3=n^3$$
 
 $$T(n)=5T(n/5)+n^2.$$
 
+<details markdown="block" open>
+<summary>Answer</summary>
+
+답변: $$T(n)=\Theta(n^2)$$. Master Theorem Case 3이며, 정규성 조건의 비율은 $$1/5<1$$이다.
+
+</details>
+
 <details markdown="block">
-<summary>Proof: Case 3 with regularity ratio 1/5</summary>
+<summary>Derivation</summary>
 
 풀이과정: $$p=\log_5 5=1$$이다. $$\varepsilon=1$$로 두면 $$f(n)=n^2=n^{p+\varepsilon}$$이며,
 
