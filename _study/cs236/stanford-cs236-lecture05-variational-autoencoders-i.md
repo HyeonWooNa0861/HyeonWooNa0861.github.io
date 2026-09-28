@@ -260,4 +260,4 @@ Lecture 5의 핵심은 VAE를 "simple prior + neural conditional + hard posterio
 
 - [Lecture video](https://www.youtube.com/watch?v=MAGBUh77bNg){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `research_files/stanford-cs236-deep-generative-models-2023/slides/lecture05-variational-autoencoders-i.pdf`
+- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture05-variational-autoencoders-i.pdf`

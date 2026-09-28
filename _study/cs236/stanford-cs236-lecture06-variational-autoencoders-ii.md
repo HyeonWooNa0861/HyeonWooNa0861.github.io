@@ -277,4 +277,4 @@ Lecture 6의 핵심은 VAE가 "ELBO를 최적화하는 encoder-decoder generativ
 
 - [Lecture video](https://www.youtube.com/watch?v=8cO61e_8oPY){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `research_files/stanford-cs236-deep-generative-models-2023/slides/lecture06-variational-autoencoders-ii.pdf`
+- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture06-variational-autoencoders-ii.pdf`

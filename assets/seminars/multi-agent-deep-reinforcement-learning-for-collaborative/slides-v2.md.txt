@@ -1,0 +1,210 @@
+---
+type: research-seminar-slides
+paper_id: multi-agent-deep-reinforcement-learning-for-collaborative
+---
+
+# 협력 MEC offloading을 위한 multi-agent DRL 제안
+
+논문: Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
+
+저자: Iman Rahmati (연도 미상)
+
+## 1. 협력 MEC offloading을 위한 multi-agent DRL 제안
+
+MD-to-EN과 EN-to-EN offloading을 함께 보려는 undated research proposal
+
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) p. 1, title and abstract
+
+## 2. 먼저 범위 확인: 제안서가 말한 것과 말하지 않은 것
+
+문서는 abstract, introduction, problem statement, references로 구성된 research proposal이다.
+
+
+| 원문에 있는 것 | 원문에 없는 것 |
+| --- | --- |
+| D2E와 E2E를 잇는 협력 offloading 구상 | 완전한 algorithm 또는 pseudocode |
+| queue-based multi-layer scenario | queue 위치·discipline·update 식 |
+| Dec-POMDP와 multi-agent DDPG 후보 | state·action·reward 정의 |
+| decentralized actor, centralized critic | critic input·network·training update |
+| 두 개의 contribution 문장 | experiment·표·figure·result·proof |
+
+핵심: 이 덱은 proposal의 설계 방향을 설명하며, 없는 구현 세부를 보충하지 않는다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-3, all sections and references
+
+## 3. 왜 D2E만으로는 부족하다고 보는가
+
+제안은 EN 사이의 unused computing resource도 활용해 collaborative offloading을 넓히려 한다.
+
+1. **MD task**: compute-intensive task가 생긴다
+2. **D2E**: MD가 가까운 EN으로 offload
+3. **EN resource**: 공유 가능한 unused capacity
+4. **E2E**: EN이 다른 EN으로 다시 offload
+
+핵심: 제안의 차별점은 MD만이 아니라 EN도 offloading decision-maker로 둔다는 것이다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, Introduction
+
+## 4. D2E·E2E link와 decision-maker
+
+원문은 D2E·E2E link와 MD·EN decision-maker를 제시한다. 두 link의 항상적인 순서는 정하지 않았다.
+
+- **레인 D2E**
+- **레인 E2E**
+  - **MD task**: task to offload
+  - **MD agent**: D2E decision candidate
+  - **D2E link**: MD to an EN
+  - **an EN**: D2E destination
+  - **EN agent**: E2E decision candidate
+  - **E2E link**: EN to an EN
+  - **particular EN**: if an EN forwards
+- MD task → MD agent (실선, 단방향)
+- MD agent → D2E link (실선, 단방향)
+- D2E link → an EN (실선, 단방향)
+- EN agent → E2E link (실선, 단방향)
+- E2E link → particular EN (실선, 단방향)
+
+핵심: D2E·E2E는 원문이 언급한 별도 link다. forwarding rule과 queue policy는 미정이다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, abstract and Introduction
+
+## 5. queue-based multi-layer의 범위
+
+‘queue-based’라는 한 문장은 scheduling model 전체를 자동으로 정의하지 않는다.
+
+
+| proposal이 명시 | 추가 정의가 필요한 항목 | 지금 말할 수 없는 결론 |
+| --- | --- | --- |
+| queue-based multi-layer scenario | queue 위치와 task arrival | 어느 node가 항상 bottleneck인지 |
+| MD·EN이 layer decision 수행 | service·drop·forward rule | 어떤 route가 항상 최적인지 |
+| 다른 time point의 decision | layer clock과 synchronization | 정확한 latency 감소량 |
+| resource availability 반영 | wireless·CPU feasibility | energy·rate trade-off 수치 |
+
+핵심: queue-based는 연구 방향이며, queue equation이나 placement의 대체어가 아니다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, abstract and Solution Approach
+
+## 6. 왜 Dec-POMDP인가
+
+원문 framing은 MD·EN이 각자의 limited information으로 system performance에 기여하려는 상황이다.
+
+
+| 요소 | proposal의 설명 | 명세 상태 |
+| --- | --- | --- |
+| agents | 각 MD와 EN이 agent를 구성·훈련 | agent 수와 grouping 미정 |
+| observation | global network의 partial observation | feature vector 미정 |
+| decision | 서로 다른 layer의 offloading | action encoding 미정 |
+| goal | overall system performance | reward·objective 식 미정 |
+| dynamics | online·asynchronous environment | transition model 미정 |
+
+핵심: Dec-POMDP는 이 문제를 보는 틀이고, 아직 fully specified environment는 아니다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) p. 2, Problem Statement and Solution Approach
+
+## 7. single-agent RL 대신 MARL을 제안하는 논리
+
+다른 agent의 policy가 변하면 한 agent가 보는 environment도 변한다는 non-stationarity가 출발점이다.
+
+1. **여러 agent**: MD와 EN이 함께 action
+2. **partial view**: 각 agent의 관측은 제한적
+3. **peer 변화**: 다른 policy도 학습 중
+4. **non-stationarity**: single-agent 학습이 흔들릴 수 있음
+5. **MARL 후보**: distributed decision 협력을 목표
+
+핵심: MARL은 비정상성에 대응하려는 후보이며, 이 제안서에서 효과는 검증되지 않았다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, Introduction
+
+## 8. 서로 다른 layer·time point의 결정
+
+원문은 task offloading decision을 decouple하고, 서로 다른 layers가 different time points에서 결정한다고 제안한다.
+
+
+| 원문이 말한 것 | 원문이 정하지 않은 것 |
+| --- | --- |
+| 서로 다른 layer의 offloading decision | MD·EN과 layer의 고정 mapping |
+| 서로 다른 time point의 decision | 두 decision의 순서·주기 |
+| state·resource에 따른 dynamic adjustment | 동시 action의 conflict 처리 |
+
+핵심: asynchronous는 서로 다른 decision timing을 지향하지만, 순서와 timeline은 미정이다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) p. 2, Solution Approach
+
+## 9. multi-agent DDPG는 candidate다
+
+원문은 decentralized actor와 centralized critic을 명시하지만, training interface까지 명시하지는 않는다.
+
+
+| 명시된 내용 | 명시되지 않은 내용 |
+| --- | --- |
+| 각 MD·EN agent가 actor를 가짐 | actor observation과 action dimension |
+| actor는 decentralized | execution message와 coordination protocol |
+| critic은 centralized | critic input·parameter sharing·update |
+| multi-agent DDPG를 design | replay·target·optimizer·network depth |
+| global optimization을 목표 | reward 또는 loss formula |
+
+핵심: ‘centralized critic’만으로는 중앙이 무엇을 보고 어떻게 학습하는지 결정되지 않는다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) p. 2, Solution Approach; ref. 17
+
+## 10. 강의용 가상 trace: 서로 다른 시점의 두 decision
+
+숫자·reward·성능을 넣지 않은 teaching-only routing trace다. 원문 experiment나 learned policy가 아니다.
+
+1. **task arrival**: 가상의 MD task가 생김
+2. **MD decision**: 가상의 D2E choice
+3. **EN receives**: task가 EN에 도착
+4. **EN decision**: 나중에 E2E 여부 선택
+5. **target EN**: forward라면 다른 EN 도착
+
+핵심: trace는 MD·EN decision 분리 예시일 뿐 optimal choice를 말하지 않는다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, proposed D2E/E2E and timing; constructed trace
+
+## 11. 가상 trace가 보여 주는 것과 보여 주지 않는 것
+
+교육용 trace를 수치 실험이나 algorithm evaluation으로 오해하지 않기 위한 경계다.
+
+
+| 보여 주는 것 | 보여 주지 않는 것 |
+| --- | --- |
+| MD와 EN 모두 decision-maker | 어떤 agent policy가 학습됐는지 |
+| D2E 다음에 E2E가 가능한 경로 | forward가 local service보다 좋은지 |
+| 다른 layer의 다른 decision time | latency·energy·throughput 수치 |
+| partial observation이라는 설계 동기 | state·action·reward의 실제 값 |
+
+핵심: toy는 source의 개념을 압축할 뿐, proposal이 결과를 이미 보였다는 증거가 아니다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-3, proposal content and references
+
+## 12. proposal을 재현 가능한 method로 만들 때 필요한 명세
+
+아래 항목은 원문이 이미 해결했다고 주장하지 않는, 다음 연구 단계의 specification checklist다.
+
+
+| 명세 | 왜 필요한가 | 원문 상태 |
+| --- | --- | --- |
+| state·observation | partial view를 tensor로 정의 | 미정 |
+| action·feasibility | D2E·E2E offloading action과 feasibility를 정의 | 미정 |
+| queue transition | arrival·service·forward를 갱신 | 미정 |
+| 목적·보상 | global performance를 학습 signal로 연결 | 미정 |
+| training·evaluation | critic update와 비교 실험 검증 | 미정 |
+
+핵심: proposal은 협력 방향을 정했고 algorithm에는 명세·검증이 더 필요하다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-3, stated approach and absent specifications
+
+## 13. 정리: 이 proposal이 남긴 설계 질문
+
+완성된 MARL system의 성능 결론이 아니라, collaborative MEC research agenda로 읽는 것이 정확하다.
+
+- MD의 D2E와 EN의 E2E decision을 함께 다루려 한다.
+- MD·EN의 partial observation을 Dec-POMDP로 framing한다.
+- 서로 다른 layer와 time point의 asynchronous decision을 제안한다.
+- decentralized actor와 centralized critic을 candidate로 둔다.
+- reward·constraints·update·evaluation은 후속 명세와 검증이 필요하다.
+
+핵심: 핵심은 성능 수치가 아니라 협력 offloading 문제를 정하는 출발점이다
+
+근거: [proposal](https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf) pp. 1-2, abstract, Introduction, Solution Approach

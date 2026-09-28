@@ -238,4 +238,4 @@ Lecture 4의 핵심은 generative model 학습을 "데이터 분포와 모델 �
 
 - [Lecture video](https://www.youtube.com/watch?v=bt3dqcbMLa0){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `research_files/stanford-cs236-deep-generative-models-2023/slides/lecture04-maximum-likelihood-learning.pdf`
+- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture04-maximum-likelihood-learning.pdf`

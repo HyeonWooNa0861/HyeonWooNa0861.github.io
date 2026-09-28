@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Missing Revolution</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#F4F6F7;
+  --surface:#FFFFFF;
+  --sunk:#EDF1F3;
+  --ink:#101519;
+  --ink2:#55626B;
+  --ink3:#8996A0;
+  --rule:#DCE3E7;
+  --axis:#B9C5CB;
+  --s1:#0A6E8F;
+  --s1-soft:#0A6E8F;
+  --s2:#C6480F;
+  --ok-bg:#E3F0F4;
+  --warn-bg:#F7E9E1;
+  --shadow:0 1px 2px rgba(16,21,25,.06);
+  --sans:"IBM Plex Sans KR",-apple-system,system-ui,"Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1417;
+    --surface:#161E22;
+    --sunk:#111A1E;
+    --ink:#E8EEF1;
+    --ink2:#94A5AE;
+    --ink3:#6B7C86;
+    --rule:#26333A;
+    --axis:#3C4C55;
+    --s1:#56C3E8;
+    --s1-soft:#56C3E8;
+    --s2:#FF8A50;
+    --ok-bg:#11303A;
+    --warn-bg:#3A2213;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1417;
+  --surface:#161E22;
+  --sunk:#111A1E;
+  --ink:#E8EEF1;
+  --ink2:#94A5AE;
+  --ink3:#6B7C86;
+  --rule:#26333A;
+  --axis:#3C4C55;
+  --s1:#56C3E8;
+  --s1-soft:#56C3E8;
+  --s2:#FF8A50;
+  --ok-bg:#11303A;
+  --warn-bg:#3A2213;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:960px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:28px 40px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+/* ---------- header ---------- */
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+h1{
+  margin:0;
+  font-size:27px;
+  font-weight:600;
+  letter-spacing:-.015em;
+  text-wrap:balance;
+  line-height:1.2;
+}
+.thesis{margin:0;color:var(--ink2);max-width:62ch}
+.mv{font-family:var(--mono);font-style:italic;color:var(--ink)}
+
+/* ---------- parameter rail ---------- */
+.rail{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+  border-radius:8px;
+  overflow:hidden;
+}
+.par{
+  flex:1 1 96px;
+  background:var(--surface);
+  padding:9px 12px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+}
+.par dt{
+  font-family:var(--mono);
+  font-style:italic;
+  font-size:11.5px;
+  color:var(--ink3);
+  letter-spacing:.02em;
+}
+.par dd{
+  margin:0;
+  font-family:var(--mono);
+  font-size:15px;
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+}
+.par.hero{background:var(--ok-bg)}
+.par.hero dd{color:var(--s1)}
+
+/* ---------- panels ---------- */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.panels{grid-template-columns:1fr}}
+.panel{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  padding:12px 12px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+.panel h2{
+  margin:0;
+  font-size:13.5px;
+  font-weight:600;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.panel h2 span{
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:400;
+  color:var(--ink3);
+  letter-spacing:.02em;
+}
+.panel svg{width:100%;height:auto;display:block;overflow:visible}
+.panel svg text{font-family:var(--mono);font-size:11px;fill:var(--ink3)}
+.panel svg text.n{fill:var(--ink2);font-size:11.5px;font-weight:500}
+.panel svg text.n.on{fill:var(--ink);font-weight:500}
+
+/* ---------- legend ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.leg{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.leg .swatch{width:26px;height:0;border-top-width:3px;border-top-style:solid;flex:none}
+.leg b{font-weight:500;font-family:var(--mono);font-style:italic}
+.leg small{color:var(--ink3);font-family:var(--mono);font-style:normal;font-size:12px}
+
+/* ---------- timeline ---------- */
+.timeline{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  padding:14px 16px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.tl-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:4px;
+}
+.tl-head h2{margin:0;font-size:13.5px;font-weight:600}
+.tl-head .clock{
+  font-family:var(--mono);
+  font-variant-numeric:tabular-nums;
+  font-size:15px;
+  font-weight:500;
+}
+input[type=range]{
+  appearance:none;-webkit-appearance:none;
+  width:100%;height:22px;margin:0;padding:0;
+  background:transparent;display:block;
+}
+input[type=range]::-webkit-slider-runnable-track{height:22px;background:transparent}
+input[type=range]::-moz-range-track{height:22px;background:transparent}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:18px;height:18px;margin-top:2px;border-radius:50%;
+  background:var(--ink);border:3px solid var(--surface);
+  box-shadow:0 0 0 1px var(--ink);cursor:grab;
+}
+input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--ink);border:3px solid var(--surface);
+  box-shadow:0 0 0 1px var(--ink);cursor:grab;
+}
+input[type=range]:focus-visible{outline:2px solid var(--s1);outline-offset:3px;border-radius:4px}
+.track{
+  position:relative;height:6px;
+  background:var(--sunk);
+  border:1px solid var(--rule);
+  border-radius:3px;
+  margin-inline:9px;
+}
+.ticks{position:relative;height:26px;margin-inline:9px}
+.tick{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tick i{display:block;width:1px;height:7px;background:var(--axis)}
+.tick em{
+  font-family:var(--mono);font-style:normal;font-size:11px;
+  color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.tick.on i{background:var(--ink);width:2px}
+.tick.on em{color:var(--ink);font-weight:500}
+.tick.edge i{height:11px;background:var(--rule)}
+.tick.edge em{color:var(--ink3);font-style:italic}
+
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.presets button{
+  font:inherit;font-size:13px;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;
+  padding:5px 11px;
+  border:1px solid var(--rule);
+  border-radius:999px;
+  background:var(--surface);
+  color:var(--ink2);
+  cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s;
+}
+.presets button:hover{background:var(--sunk);color:var(--ink)}
+.presets button[aria-pressed="true"]{
+  background:var(--ink);color:var(--surface);border-color:var(--ink);
+}
+.presets button:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+
+/* ---------- readout ---------- */
+.readout{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.verdict{
+  padding:11px 16px;
+  font-size:13.5px;
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.verdict .tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:500;
+}
+.verdict.match{background:var(--ok-bg)}
+.verdict.match .tag{color:var(--s1)}
+.verdict.gap{background:var(--warn-bg)}
+.verdict.gap .tag{color:var(--s2)}
+.verdict .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th,.tbl td{
+  padding:9px 16px;text-align:right;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--rule);
+  white-space:nowrap;
+}
+.tbl th{
+  font-weight:400;font-size:11px;color:var(--ink3);
+  letter-spacing:.05em;text-transform:uppercase;padding-block:7px;
+}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl td.who{font-style:italic;font-weight:500}
+.tbl .k1{color:var(--s1)}
+.tbl .k2{color:var(--s2)}
+.scroll{overflow-x:auto}
+
+/* ---------- note ---------- */
+.note{
+  border-left:2px solid var(--s2);
+  padding:2px 0 2px 16px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.note p{margin:0;color:var(--ink2);max-width:66ch}
+.eq{
+  font-family:var(--mono);font-size:14.5px;color:var(--ink);
+  overflow-x:auto;padding-bottom:2px;
+}
+.eq sub{font-size:.72em}
+.eq sup{font-size:.72em}
+footer{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink3);
+  border-top:1px solid var(--rule);padding-top:12px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+</style>
+<style>html,body{margin:0}</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Speech and Audio Recognition · Lecture 2 · p.38</div>
+  <h1>The Missing Revolution</h1>
+  <p class="thesis">
+    Sampling cannot distinguish basis index <span class="mv">k</span> from <span class="mv">k+N</span>.
+    The second signal makes <strong>one additional revolution</strong> between samples,
+    which the sampler never observes.
+  </p>
+</header>
+
+<dl class="rail" id="rail"></dl>
+
+<div class="panels">
+  <section class="panel">
+    <h2>Continuous time <span>actual position</span></h2>
+    <svg id="p-cont" viewBox="0 0 300 300" role="img"
+         aria-label="Current positions and trajectories of the 1 Hz and 9 Hz rotating vectors in the complex plane"></svg>
+  </section>
+  <section class="panel">
+    <h2>8 Hz sampling <span>recorded positions only</span></h2>
+    <svg id="p-samp" viewBox="0 0 300 300" role="img"
+         aria-label="Both signals occupy the same position at all eight sample instants in one period"></svg>
+  </section>
+</div>
+
+<div class="legend">
+  <div class="leg">
+    <span class="swatch" style="border-top-color:var(--s1);border-top-style:solid"></span>
+    <b>k = 1</b> <small>1 Hz · circle marker</small>
+  </div>
+  <div class="leg">
+    <span class="swatch" style="border-top-color:var(--s2);border-top-style:dashed"></span>
+    <b>k = 9 = 1 + N</b> <small>9 Hz · square marker</small>
+  </div>
+</div>
+
+<div class="timeline">
+  <div class="tl-head">
+    <h2>Eight samples in one period <span class="mv" style="font-size:13px">P</span> = 1 s</h2>
+    <div class="clock" id="clock">t = 0.0625 s</div>
+  </div>
+  <div class="track"></div>
+  <input id="time" type="range" min="0" max="1000" step="0.5" value="62.5"
+         aria-label="Time t in milliseconds">
+  <div class="ticks" id="ticks"></div>
+  <div class="presets" id="presets"></div>
+</div>
+
+<div class="readout">
+  <div class="verdict" id="verdict"></div>
+  <div class="scroll">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th scope="col">Basis</th>
+          <th scope="col">Frequency</th>
+          <th scope="col">Phase (mod 360°)</th>
+          <th scope="col">Total revolutions</th>
+          <th scope="col">(Re, Im)</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="note">
+  <div class="eq">e<sup>j2π(k+N)n/N</sup> = e<sup>j2πkn/N</sup> · e<sup>j2πn</sup> = e<sup>j2πkn/N</sup></div>
+  <p>
+    Each sample advances the phase by <span class="mv">2πk/N</span>.
+    The advances for <span class="mv">k</span>=1 and <span class="mv">k</span>=9 are 45° and 405°;
+    their 360° difference is invisible at sample instants.
+    Consequently, continuous-series components combine in the DTFS coefficient as
+    <span class="mv">d<sub>k</sub></span> = Σ<sub>r</sub> <span class="mv">c<sub>k+rN</sub></span>.
+  </p>
+  <p>
+    A centered choice of <span class="mv">N</span> distinct frequency-bin representatives is
+    −<span class="mv">N</span>/2 ≤ <span class="mv">k</span> &lt; <span class="mv">N</span>/2;
+    for <span class="mv">N</span>=8, these are the eight integers −4 through 3.
+    Index 9 maps to index 1 because 9 − 8 = 1. If an analog signal can contain 9 Hz,
+    sampling at 8 Hz cannot uniquely recover it: a suitable band limit and
+    <span class="mv">f<sub>s</sub></span> &gt; 2<span class="mv">f<sub>max</sub></span> are needed for the usual reconstruction guarantee.
+  </p>
+</div>
+
+<footer>
+  <span>MAIR Lab · Kookmin University</span>
+  <span>f₀ = 1 Hz · f_s = 8 Hz · N = 8</span>
+</footer>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---- 파라미터 (슬라이드 38 표기법) -------------------------------
+  const F0 = 1;          // 기본 주파수 f0 [Hz]  → ω0 = 2π rad/s
+  const P  = 1 / F0;     // 주기 P = 1 s
+  const FS = 8;          // 샘플링 주파수 f_s [Hz]
+  const T  = 1 / FS;     // 샘플링 주기 T = 0.125 s
+  const N  = Math.round(P / T);  // 한 주기 안의 샘플 수 = 8
+  const KA = 1;                  // 기저 인덱스 k
+  const KB = KA + N;             // 기저 인덱스 k + N = 9
+
+  const TAU = Math.PI * 2;
+  const $ = id => document.getElementById(id);
+  const slider = $("time");
+  let t = 0.0625;
+
+  // ---- 파라미터 레일 ----------------------------------------------
+  const rail = [
+    ["f₀", F0.toFixed(0) + " Hz"],
+    ["ω₀", "2π rad/s"],
+    ["P", P.toFixed(0) + " s"],
+    ["f_s", FS.toFixed(0) + " Hz"],
+    ["T", T.toFixed(3) + " s"],
+    ["N = P/T", String(N), true]
+  ];
+  $("rail").innerHTML = rail.map(([k, v, hero]) =>
+    `<div class="par${hero ? " hero" : ""}"><dt>${k}</dt><dd>${v}</dd></div>`
+  ).join("");
+
+  // ---- 타임라인 눈금 (N = 8 을 시간축에서도 보이게) ----------------
+  const tickHtml = [];
+  for (let n = 0; n < N; n++) {
+    tickHtml.push(
+      `<div class="tick" data-n="${n}" style="left:calc((100% ) * ${n / N})">` +
+      `<i></i><em>n=${n}</em></div>`
+    );
+  }
+  tickHtml.push(`<div class="tick edge" style="left:100%"><i></i><em>P</em></div>`);
+  $("ticks").innerHTML = tickHtml.join("");
+  const tickEls = [...$("ticks").querySelectorAll(".tick[data-n]")];
+
+  // ---- 프리셋 -----------------------------------------------------
+  const presets = [
+    ["n=0", 0],
+    ["Between samples", 62.5],
+    ["n=1", 125],
+    ["n=4", 500],
+    ["n=7", 875],
+    ["P (1 s)", 1000]
+  ];
+  $("presets").innerHTML = presets.map(([label, ms]) =>
+    `<button type="button" data-ms="${ms}" aria-pressed="false">${label}</button>`
+  ).join("");
+  const presetEls = [...$("presets").querySelectorAll("button")];
+
+  // ---- SVG 그리기 --------------------------------------------------
+  const CX = 150, CY = 150, R = 96, RLAB = 126;
+
+  const txt = (x, y, s, cls = "", anchor = "middle") =>
+    `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}"${cls ? ` class="${cls}"` : ""}>${s}</text>`;
+
+  const line = (x1, y1, x2, y2, stroke, w = 1, dash = "") =>
+    `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" ` +
+    `stroke="${stroke}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+
+  // labelled=false 인 패널(샘플 패널)에서는 Re/Im 글자를 생략한다 —
+  // 그 자리에는 n 라벨이 놓이므로 겹친다.
+  function frame(labelled) {
+    let s = `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="var(--axis)" stroke-width="1"/>`;
+    s += line(CX - R - 12, CY, CX + R + 12, CY, "var(--axis)");
+    s += line(CX, CY + R + 12, CX, CY - R - 12, "var(--axis)");
+    if (labelled) {
+      s += txt(CX + R + 10, CY + 20, "Re");
+      s += txt(CX + 13, CY - R - 13, "Im", "", "start");
+    }
+    return s;
+  }
+
+  // 지나온 궤적: 현재 위치(반지름 R)에서 시작해 과거로 갈수록 안쪽으로 감기는 나선.
+  // 감긴 고리 수 = 그 신호가 지금까지 돈 바퀴 수.
+  function trail(freq, now, color, dashed) {
+    if (now <= 0) return "";
+    const total = TAU * freq * now;
+    const turns = total / TAU;
+    const steps = Math.max(48, Math.min(640, Math.round(turns * 60)));
+    let d = "";
+    for (let i = 0; i <= steps; i++) {
+      const a = total * i / steps;
+      const rr = R * (1 - 0.05 * (total - a) / TAU);
+      d += (i ? "L" : "M") + (CX + rr * Math.cos(a)).toFixed(2) + " " +
+           (CY - rr * Math.sin(a)).toFixed(2) + " ";
+    }
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" ` +
+           `stroke-opacity="0.55"${dashed ? ` stroke-dasharray="4 3"` : ""}/>`;
+  }
+
+  function marker(angle, color, square, emphasis) {
+    const x = CX + R * Math.cos(angle), y = CY - R * Math.sin(angle);
+    if (square) {
+      const h = emphasis ? 7.5 : 6.5;
+      return `<rect x="${(x - h).toFixed(1)}" y="${(y - h).toFixed(1)}" ` +
+             `width="${(h * 2).toFixed(1)}" height="${(h * 2).toFixed(1)}" ` +
+             `fill="none" stroke="${color}" stroke-width="${emphasis ? 2.6 : 2}"/>`;
+    }
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${emphasis ? 4.2 : 3.6}" fill="${color}"/>`;
+  }
+
+  function vector(angle, color, width, dash) {
+    const x = CX + R * Math.cos(angle), y = CY - R * Math.sin(angle);
+    return line(CX, CY, x, y, color, width, dash) +
+           line(x, y, x, CY, color, 1, "2 5") +
+           line(x, y, CX, y, color, 1, "2 5");
+  }
+
+  function drawContinuous(now) {
+    const c1 = "var(--s1)", c2 = "var(--s2)";
+    const a1 = TAU * KA * F0 * now, a2 = TAU * KB * F0 * now;
+    let s = frame(true);
+    s += trail(KA * F0, now, c1, false);
+    s += trail(KB * F0, now, c2, true);
+    s += vector(a2, c2, 2, "6 4");
+    s += vector(a1, c1, 3, "");
+    s += marker(a2, c2, true, false);
+    s += marker(a1, c1, false, false);
+    $("p-cont").innerHTML = s;
+  }
+
+  function drawSampled(activeN) {
+    const c1 = "var(--s1)", c2 = "var(--s2)";
+    let s = frame(false);
+    for (let n = 0; n < N; n++) {
+      const tn = n * T;
+      const a1 = TAU * KA * F0 * tn, a2 = TAU * KB * F0 * tn;
+      const on = n === activeN;
+      if (on) {
+        s += line(CX, CY, CX + R * Math.cos(a1), CY - R * Math.sin(a1), "var(--ink)", 1, "3 3");
+      }
+      s += marker(a2, c2, true, on);
+      s += marker(a1, c1, false, on);
+      s += txt(CX + RLAB * Math.cos(a1), CY - RLAB * Math.sin(a1) + 4,
+               "n=" + n, on ? "n on" : "n");
+    }
+    $("p-samp").innerHTML = s;
+  }
+
+  // ---- 수치 ---------------------------------------------------------
+  const deg = rad => (rad * 180 / Math.PI) % 360;
+  const clean = v => Math.abs(v) < 5e-4 ? 0 : v;
+  const fmt3 = v => clean(v).toFixed(3);
+
+  function row(label, cls, k, freq, now) {
+    const a = TAU * freq * now;
+    const ph = ((deg(a) % 360) + 360) % 360;
+    return `<tr>
+      <td class="who ${cls}">${label}</td>
+      <td>${freq.toFixed(0)} Hz</td>
+      <td>${ph.toFixed(1)}°</td>
+      <td>${(freq * now).toFixed(2)} rev</td>
+      <td>(${fmt3(Math.cos(a))}, ${fmt3(Math.sin(a))})</td>
+    </tr>`;
+  }
+
+  function draw() {
+    const idxRaw = Math.round(t / T);
+    const isSample = Math.abs(t - idxRaw * T) < 1e-6;
+    const activeN = isSample ? idxRaw % N : -1;
+
+    $("clock").textContent = "t = " + t.toFixed(4) + " s";
+    drawContinuous(t);
+    drawSampled(activeN);
+
+    tickEls.forEach(el => el.classList.toggle("on", +el.dataset.n === activeN));
+    presetEls.forEach(el => el.setAttribute("aria-pressed",
+      String(Math.abs(+el.dataset.ms / 1000 - t) < 1e-9)));
+
+    $("rows").innerHTML =
+      row("k = 1", "k1", KA, KA * F0, t) +
+      row("k = 9", "k2", KB, KB * F0, t);
+
+    const a1 = TAU * KA * F0 * t, a2 = TAU * KB * F0 * t;
+    let diff = Math.abs(((deg(a2) - deg(a1)) % 360 + 360) % 360);
+    if (diff > 180) diff = 360 - diff;
+    const v = $("verdict");
+    if (isSample) {
+      const lap = (KB - KA) * F0 * t;
+      v.className = "verdict match";
+      v.innerHTML = `<span class="tag">Match</span><span>` +
+        `Sample <span class="num">n = ${activeN}</span> — both phases are ` +
+        `<span class="num">${(((deg(a1) % 360) + 360) % 360).toFixed(1)}°</span>. ` +
+        `Their revolution difference is the integer <span class="num">${lap.toFixed(0)}</span>, so the sampler records the same value.` +
+        `</span>`;
+    } else {
+      v.className = "verdict gap";
+      v.innerHTML = `<span class="tag">Between samples</span><span>` +
+        `The phases differ by <span class="num">${diff.toFixed(1)}°</span>. ` +
+        `The signals are different, but this instant is not recorded.` +
+        `</span>`;
+    }
+  }
+
+  slider.addEventListener("input", () => { t = +slider.value / 1000; draw(); });
+  presetEls.forEach(btn => btn.addEventListener("click", () => {
+    slider.value = btn.dataset.ms;
+    t = +btn.dataset.ms / 1000;
+    draw();
+  }));
+
+  draw();
+})();
+</script>
+
+</body>
+</html>

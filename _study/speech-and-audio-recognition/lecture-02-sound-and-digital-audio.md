@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-09-15 12:10:00 +0900
+last_modified_at: 2026-09-21 00:00:00 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -1711,6 +1711,8 @@ $$
 Windowing과 short-time Fourier transform은 다음 강의에서 이어질 기반 개념이다. 여기서는 **DFT가 finite sequence를 periodic extension으로 해석한다**는 점을 먼저 확실히 이해하면 된다.
 
 ## 12. Speech processing으로 이어지는 연결
+
+이어 읽기: [FFT, STFT, and Mel Spectrograms](/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/)에서 후속 슬라이드, 실습 코드의 15개 그림, 로그 스케일과 Mel 특징, aliasing·직사각형 창·sinc의 관계를 수식과 함께 설명한다.
 
 이번 강의의 수학은 speech model 앞단의 feature extraction과 직접 연결된다.
 
