@@ -34,6 +34,13 @@ Source PDF: [Perception 1]({{ "/assets/pdfs/study/autonomous-driving/lecture-03-
 | Perception 5, 24 pages | Dense detection·RetinaNet, pp. 7–12; YOLO·FCOS, pp. 13–20 | [Lecture 7](/study/autonomous-driving/lecture-07-perception-05/) |
 | Perception 6, 30 pages | Semantic segmentation·upsampling, pp. 7–17; instance segmentation, pp. 18–26 | [Lecture 8](/study/autonomous-driving/lecture-08-perception-06/) |
 
+## 용어 정의
+
+| 용어 | 이 리뷰에서의 뜻 |
+|---|---|
+| Perception (인지) | 센서 데이터에서 주변 장면의 의미 있는 정보를 추정하는 과정이다. 강의의 도입부에서는 물체를 ‘식별’한다고 표현하지만, 이 리뷰에서는 분류뿐 아니라 물체의 위치와 개수, 픽셀별 범주와 개체 경계를 알아내는 검출·분할까지 포함한다. |
+| Convolution (합성곱) | 작은 필터(커널)를 입력의 국소 영역마다 적용해 대응하는 값들을 곱한 뒤 합산하고 특징맵을 만드는 연산이다. CNN에서는 같은 커널 가중치를 여러 위치에서 공유한다. 실무의 많은 CNN 구현은 커널을 뒤집지 않는 교차상관(cross-correlation)을 관례적으로 convolution이라고 부른다. |
+
 ## 1. 먼저 출력의 의미를 정한다
 
 같은 카메라 영상이라도 질문이 달라지면 정답 데이터와 출력 형태가 달라진다. 이미지 전체에 자동차가 있다는 사실만으로 자동차의 위치나 개수를 알 수는 없다.

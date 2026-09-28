@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-09-28 16:29:58 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -14,13 +15,16 @@ keywords:
   - "Cepstrum"
   - "MFCC"
   - "Aliasing"
+  - "ASR"
+  - "WER"
+  - "CTC"
 ---
 
 # Speech and Audio Recognition Lecture 2: Spectral Analysis Lab
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02-2.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture2-2.pdf</a> — Inkyu An, Kookmin University (23 pages).
 
-앞선 [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)에서 sampling, Fourier basis, DFT의 출발점을 다뤘다. 이 글은 두 번째 강의 PDF의 DFT 실습·STFT·mel·cepstrum을 연결한다. **원문에 없는 FFT 유도, sampling spectrum, rect/sinc 관계는 작성자의 보충 설명**으로 구분한다. 강의 슬라이드의 Colab 실습 화면(pp.8, 15, 18, 23)은 결과 그림이 무엇을 검사하는지 설명하되, 별도 notebook의 코드와 실행 결과를 이 글에서 재현했다고 주장하지 않는다.
+앞선 [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)에서 sampling, Fourier basis, DFT의 출발점을 다뤘다. 이 글은 두 번째 강의 PDF의 DFT 실습·STFT·mel·cepstrum을 연결한다. **원문에 없는 FFT 유도, sampling spectrum, rect/sinc 관계와 ASR 연결은 작성자의 보충 설명**으로 구분한다. 강의 슬라이드의 Colab 실습 화면(pp.8, 15, 18, 23)은 결과 그림이 무엇을 검사하는지 설명하되, 별도 notebook의 코드와 실행 결과를 이 글에서 재현했다고 주장하지 않는다.
 
 > **핵심:** FFT는 DFT의 정의를 바꾸지 않고 계산을 재사용한다. STFT는 유한한 시간 창마다 주파수를 계산해 시간 변화를 드러내지만 창 길이와 모양 때문에 시간·주파수 분해능과 spectral leakage가 함께 결정된다. Mel filterbank, log, DCT는 표현을 다시 조직하는 단계이지 인식 정확도를 보장하는 연산이 아니다.
 
@@ -192,6 +196,10 @@ c[q]=\frac{1}{N_{\mathrm{FFT}}}\sum_{k=0}^{N_{\mathrm{FFT}}-1}
 \log\!\bigl(\max(\lvert S[k]\rvert,\epsilon)\bigr)e^{j2\pi kq/N_{\mathrm{FFT}}}.
 $$
 
+**왜 harmonic 간격을 찾을 수 있나? — 작성자 보충 유도.** $$\Delta f=f_s/N_{\mathrm{FFT}}$$ Hz이고 harmonic 간격 $$F_0$$가 정확히 $$P=F_0/\Delta f$$개의 bin에 해당한다고 가정하자. 로그 스펙트럼의 반복 성분을 $$L[k]\approx A\cos(2\pi k/P)$$로 단순화하면, cosine을 두 복소 지수로 나눈 위 역 DFT 합은 직교성 때문에 $$q=N_{\mathrm{FFT}}/P=f_s/F_0$$와 대칭 bin 부근에서 커진다. 따라서 양의 작은 quefrency는 $$q/f_s=1/F_0$$초다. 예를 들어 $$f_s=16000$$ Hz, $$N_{\mathrm{FFT}}=1024$$, $$F_0=250$$ Hz이면 $$P=16$$ bin, $$q=64$$ sample, $$q/f_s=0.004$$ s다. 이 등식은 이상적인 정수 bin 예제의 검산이고 실제 음성의 $$F_0$$와 harmonic peak는 창·잡음·성도 공진 때문에 정확한 격자에 놓이지 않는다.
+
+로그 스펙트럼의 완만한 성도 envelope는 대체로 낮은 quefrency에, 촘촘히 반복되는 harmonic 구조는 그보다 높은 비영점 quefrency에 나타난다. **역 DFT는 로그 크기 스펙트럼의 주기를 분석하는 것이지 원 음성 파형으로 되돌리는 연산이 아니다.** 원 스펙트럼의 phase를 이미 버렸기 때문이다. 이 구조와 저·고 quefrency의 해석은 <a href="https://speechprocessingbook.aalto.fi/representations/melcepstrum/" target="_blank" rel="noopener">Aalto University의 cepstrum 해설</a>과도 대조할 수 있다.
+
 이 식은 원문의 'inverse DFT of log spectrum'을 **역변환에 $$1/N_{\mathrm{FFT}}$$을 두는 NumPy/SciPy 관례**로 쓴 real cepstrum 정의다. 앞의 PDF p.2처럼 **앞변환에 $$1/N$$을 두는 관례와 위치가 달라졌으며**, 전체 계수의 scale만 바뀐다. $$q$$는 무차원 index, $$q/f_s$$는 초다. $$\log X[k]$$처럼 복소수 전체의 로그를 취하는 complex cepstrum과 구분해야 한다. $$q=0$$ 부근에는 완만한 spectral envelope나 평균 수준의 큰 값이 있을 수 있으므로, 유성 구간의 적절한 **비영점 quefrency 범위**에서 peak를 찾는다. 무성음·잡음·여러 음원이 겹친 경우에는 선명한 $$1/F_0$$ peak가 없거나 다른 peak가 더 클 수 있다. p.23 실습 그림의 약 373.7 Hz 주기는 $$1/373.7\approx0.00268$$ s, 즉 2.68 ms라는 검산이 된다.
 
 PDF p.22의 MFCC는 cepstrum과 관련되지만 **log-mel band 값에 DCT를 적용한 계수**다. 앞 절처럼 power mel 값을 쓰기로 정했다면 band $$b=0,\ldots,B-1$$의 log 값 $$L[m,b]$$에 대해 대표적인 DCT-II convention은
@@ -202,6 +210,8 @@ C[m,r]=\sum_{b=0}^{B-1}L[m,b]\cos\!\left[\frac{\pi r}{B}\left(b+\frac12\right)\r
 $$
 
 $$B,r$$는 무차원 band·coefficient 수다. 라이브러리에서는 DCT normalization, $$C_0$$ 포함 여부, coefficient 개수, liftering 등이 달라질 수 있다. DCT는 filterbank 축의 완만한 패턴을 앞쪽 계수로 모으기 쉬우나, 일부 계수만 남기는 순간 정보는 손실된다. **STFT→mel filterbank→log→DCT**라는 원문 순서를 실제 계산으로 읽으려면 STFT 뒤의 magnitude/power 선택, filter 합산, 0 floor를 함께 지정해야 한다.
+
+따라서 **harmonic 간격을 직접 찾는 real cepstrum**과 **mel 축에서 완만한 spectral envelope를 압축하는 MFCC**는 목적도 다르다. Mel 필터가 인접 주파수를 합치고 낮은 차수의 MFCC만 보존하면 세밀한 harmonic 간격은 약해질 수 있다. MFCC 그림의 계수 번호를 Hz나 $$F_0$$로 읽거나 MFCC 하나에서 pitch를 바로 복원해서는 안 된다.
 
 ## 5. Sampling aliasing과 sinc 복원은 어디서 이어지는가 — 작성자 보충
 
@@ -502,9 +512,44 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 | N=8 HTML 설명 | **확인된 범위 오류** | $$-N/2<k<N/2$$는 $$N=8$$에서 정수 $$-3,\ldots,3$$의 **7개**만 포함하므로 8개 bin의 유일 대표 범위가 아니다. 한 convention은 $$-4\le k<4$$이고, Nyquist 경계 bin은 $$+4$$와 $$-4$$가 같은 나머지류다. 반면 원 신호에 $$\lvert f\rvert<f_s/2$$를 요구하는 strict bandlimit는 별개의 복원 조건이다. |
 | N=8 HTML 초기 화면·script | 해석 주의 | $$t=0.0625$$ s에는 두 회전 위치가 다르며, 동일성은 $$t=n/8$$ s의 8개 sample에서 성립한다. Spiral은 회전 표식이지 감쇠가 아니다. |
 
+
+## 7. ASR: 음향 특징에서 전사까지 — 작성자 보충
+
+이 절은 Lecture 2-2 PDF의 23쪽에 없는 후속 개념이다. 앞 절의 mel·MFCC가 음성을 수치 특징으로 바꾸는 방법이라면, 자동 음성 인식(ASR)은 시간에 따라 들어온 특징에서 단어 또는 subword의 순서를 추정한다. 아래 WER 정의와 CTC·attention 모델 설명은 각각 NIST의 평가 자료, CTC 원 논문, Listen, Attend and Spell 원 논문에 근거한 별도 보충이며 강의 슬라이드의 주장으로 표시하지 않는다.
+
+### 7.1 WER과 S·D·I·N의 관계
+
+WER(Word Error Rate)은 정답 전사(reference)와 인식 결과(hypothesis)를 **단어 단위로 정렬**한 뒤 필요한 편집 횟수를 정답 단어 수로 나눈 값이다. S는 다른 단어로 바뀐 substitution, D는 빠진 deletion, I는 추가된 insertion, N은 정답 단어 수다. N이 0보다 클 때 정의는
+
+$$
+\mathrm{WER}=\frac{S+D+I}{N}
+=\frac{S}{N}+\frac{D}{N}+\frac{I}{N}.
+$$
+
+따라서 ‘SDIN’은 독립적인 성능 점수나 경험적 상관계수가 아니라 **같은 정렬에서 WER을 구성하는 네 개의 수**로 읽어야 한다. 정답과 일치한 단어 수를 C, 결과 단어 수를 H라 하면 같은 정렬에서 $$N=C+S+D$$, $$H=C+S+I=N-D+I$$다. S는 길이를 바꾸지 않고, D는 결과를 짧게, I는 길게 만든다. 하지만 WER 값 하나만으로 S·D·I의 분배는 역산할 수 없다. N이 고정되어 있을 때 오류 하나는 WER에 $$1/N$$을 더하므로 짧은 문장일수록 한 오류의 비율이 크다.
+
+예를 들어 reference가 “I like green apples”, hypothesis가 “I love apples today”라면 한 정렬에서 like→love는 S=1, green의 누락은 D=1, today의 추가는 I=1, N=4다. 그러므로 WER은 $$3/4=0.75$$, 즉 75%다. 삽입이 많으면 WER은 100%를 넘을 수도 있다. S·D·I 사이에 항상 일정한 **통계적 상관관계**가 있는 것은 아니다. 출력 길이·발음 혼동·문장 정규화·정렬 방식에 따라 분해가 달라지므로, 모델을 비교할 때는 같은 데이터·단어 분할·정규화·평가 절차에서 WER과 S/N·D/N·I/N을 함께 본다.
+
+### 7.2 DL 기반 ASR의 encode와 decode
+
+**Encode:** 파형을 짧은 시간 프레임으로 나누고 log-mel spectrum 같은 음향 특징을 계산하거나, 모델이 파형에서 특징을 직접 학습한다. Encoder는 길이 T의 입력 특징열 $$x_{1:T}$$를 앞뒤 음향 문맥을 반영한 표현 $$h_t=f_\theta(x_{1:T})_t$$로 바꾼다. $$t$$는 frame index, $$\theta$$는 학습 파라미터이며 모두 무차원이다. 입력 프레임 수 T와 출력 token 수 U는 보통 다르므로 **어느 프레임이 어느 글자인지**를 처리하는 decode 방식이 필요하다.
+
+**CTC decode:** CTC head는 각 encoder 시점에서 token 집합 V와 blank(∅)의 확률 $$p_t(k)$$를 낸다. 길이 T의 경로 $$\pi$$에서 연속된 같은 기호를 먼저 하나로 합치고 blank를 지우는 함수 $$\mathcal{B}$$를 적용하면 출력열 $$y$$를 얻는다. 예컨대 “a, a, ∅, a”는 “aa”가 되지만 “a, a, a”는 “a”가 된다. Blank는 **이 프레임에서 새 token을 내지 않음**이지 공백 문자나 반드시 무음이라는 뜻이 아니다. 반복되는 같은 글자를 분리할 때도 필요하다.
+
+$$
+P(y\mid x)=\sum_{\pi:\mathcal{B}(\pi)=y}\prod_{t=1}^{T}p_t(\pi_t\mid x),
+\qquad L_{\mathrm{CTC}}=-\log P(y\mid x).
+$$
+
+이 식은 가능한 frame-to-token 정렬 경로의 확률을 모두 더하므로 정답 글자의 정확한 시간 경계가 없어도 학습할 수 있다. CTC head의 시점별 출력은 **encoder 표현이 주어졌을 때** 조건부 독립으로 모델링하지만 encoder 자체는 넓은 시간 문맥을 볼 수 있다. 추론에서는 매 시점의 최댓값을 고르는 greedy 경로 또는 여러 접두 경로를 모으는 beam search를 사용할 수 있다. Greedy 경로의 전사 결과가 항상 가장 확률 높은 **전사열**은 아니다.
+
+**Attention encoder–decoder:** 다른 계열은 encoder 표현을 보면서 decoder가 이전 출력 $$y_{<u}$$에 조건부로 다음 token을 생성한다. 예를 들어 Listen, Attend and Spell은 attention으로 음향 구간을 참고하고 시작·종료 기호를 사용해 글자를 순차 출력한다. 이 방식은 앞서 생성한 글자에 의존하며, **CTC blank가 필수는 아니다.** CTC와 attention은 같은 ASR 목적을 풀지만 정렬·출력 확률의 가정과 decode 절차가 다르다.
+
 ## 마지막 핵심 정리
 
 **FFT는 DFT를 빠르게 계산하고, STFT는 창을 움직여 시간 위치를 얻으며, mel·MFCC는 spectrum을 목적에 맞게 재표현한다.** 주파수 peak를 읽을 때는 정규화·표본화율·창 길이·창 함수·dB 기준을 먼저 확인한다. DFT의 ±주파수 대칭, sampling aliasing, window leakage는 서로 다른 원인이다. Rectangular window의 sinc형 확산과 ideal low-pass의 sinc 보간도 같은 함수가 서로 다른 축에서 쓰인 예다.
+
+ASR에서는 인코딩된 음향 특징을 글자열로 디코딩한다. WER은 S·D·I의 합을 정답 단어 수 N으로 나눈 값이며, CTC blank는 frame-to-token 정렬에 쓰는 기호이지 모든 ASR 모델의 필수 기호가 아니다.
 
 ## Study Guide
 
@@ -512,6 +557,7 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 2. pp.9–15에서는 창 $$L$$과 hop $$H$$를 표본 수에서 초로 환산하고, magnitude·phase·power·dB가 무엇을 버리고 무엇을 남기는지 적는다. iSTFT를 말할 때는 복원 조건을 동반한다.
 3. pp.16–23에서는 HTK/Slaney 척도, filterbank의 power 합, log floor, cepstrum의 quefrency, MFCC의 DCT를 순서대로 설명한다. 실제 학습 성능은 별도 평가 문제다.
 4. 시각화에서 초기 0.0625초와 8개의 표본 순간을 번갈아 본다. 7개 정수만 포함하는 strict 범위 오류를 찾아 대표 bin과 bandlimit를 구분한다.
+5. ASR 보충에서는 한 문장을 직접 단어 단위로 정렬해 S·D·I·N과 WER을 계산하고, CTC 경로의 반복 병합과 blank 제거 순서를 확인한다.
 
 ## 복습 질문
 
@@ -557,6 +603,20 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 
 </details>
 
+<details markdown="block">
+<summary>7. WER이 같으면 substitution, deletion, insertion의 구성도 같은가?</summary>
+
+답변: 아니다. WER은 $$(S+D+I)/N$$이므로 오류의 합과 정답 단어 수만으로 결정된다. 서로 다른 S·D·I 조합이 같은 WER을 만들 수 있다. 결과 길이도 $$H=N-D+I$$로 달라질 수 있다.
+
+</details>
+
+<details markdown="block">
+<summary>8. CTC blank는 무음 또는 띄어쓰기이며 모든 ASR decoder에 필요한가?</summary>
+
+답변: 아니다. Blank는 CTC 경로의 해당 시점에서 새 token을 내지 않는 기호다. 연속 반복 기호를 합친 뒤 blank를 제거하므로 같은 글자를 연속 출력할 때 두 글자 사이의 blank가 구분을 만든다. Attention encoder–decoder에는 CTC blank가 필수가 아니다.
+
+</details>
+
 ## PDF
 
 <ul>
@@ -564,6 +624,11 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 </ul>
 
 ## References
+
+- <a href="https://speechprocessingbook.aalto.fi/representations/melcepstrum/" target="_blank" rel="noopener">Aalto University: Cepstrum, Mel-Cepstrum and MFCC</a> — harmonic 간격과 quefrency 및 mel-DCT의 구분.
+- <a href="https://trec.nist.gov/pubs/trec9/sdrt9_slides/tsld017.htm" target="_blank" rel="noopener">NIST: ASR Metrics</a> — WER의 편집 오류 합과 reference 단어 수 정의.
+- <a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al. (2006): Connectionist Temporal Classification</a> — blank, 경로 합, decoding.
+- <a href="https://research.google/pubs/listen-attend-and-spell-a-neural-network-for-large-vocabulary-conversational-speech-recognition/" target="_blank" rel="noopener">Chan et al. (2016): Listen, Attend and Spell</a> — attention encoder–decoder ASR.
 
 - <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.stft.html" target="_blank" rel="noopener">SciPy STFT documentation</a> — window, one-sided output, NOLA/iSTFT 조건.
 - <a href="https://librosa.org/doc/main/api/generated/librosa.mel_frequencies.html" target="_blank" rel="noopener">librosa mel frequencies</a> 및 <a href="https://librosa.org/doc/main/api/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">mel spectrogram</a> — HTK/Slaney 척도와 filterbank 옵션.
