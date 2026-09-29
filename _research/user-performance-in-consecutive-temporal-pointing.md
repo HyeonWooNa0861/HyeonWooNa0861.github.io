@@ -30,8 +30,6 @@ Consecutive Temporal Pointing(CTP)은 두 번의 일반 temporal pointing을 단
 
 ## 핵심 내용
 
-이 절은 논문 원문을 축어적으로 번역한 것이 아니라, Consecutive Temporal Pointing 연구의 전체 흐름을 한국어로 재구성한 번역형 해설이다. TTF, TTS, Type I/II CTP, Press-Press, Press-Release 같은 핵심 용어는 원문 기준을 유지했다.
-
 논문은 temporal pointing을 한 번의 입력이 아니라 짧은 시간 안에 연속으로 수행되는 두 입력의 문제로 확장한다. 리듬 게임의 롱 노트, 더블 클릭, 차지 공격처럼 첫 번째 입력과 두 번째 입력 사이의 관계가 중요한 인터랙션에서는 단순히 ordinary temporal pointing 두 번을 이어 붙이는 설명이 충분하지 않을 수 있다.
 
 CTP는 TTF와 TTS라는 두 시간 변수로 정리된다. TTF는 과제가 시작된 뒤 첫 번째 입력 목표까지의 시간이고, TTS는 첫 번째 입력 목표에서 두 번째 입력 목표까지의 시간이다. Type I CTP는 첫 번째 입력을 사용자가 시작하고 두 번째 입력에 시간 조건이 붙는 형태이며, Type II CTP는 두 입력 모두 외부 목표 시점에 맞춰야 하는 형태다.

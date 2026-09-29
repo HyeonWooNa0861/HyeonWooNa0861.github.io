@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-05.pdf`
 
-> **핵심:** **기저 변환에서 바뀌는 것은** 벡터 자체가 아니라 좌표 표현. **similar matrix가 중요한 이유는** 같은 선형 변환의 다른 기저 표현이며 고유값을 공유.
+> **핵심:** 기저를 바꾸어도 벡터 자체는 변하지 않고 그 좌표 표현만 달라진다. Similar matrix는 같은 선형 변환을 서로 다른 기저에서 나타낸 것으로 고유값을 공유한다.
 
 ## 전체 흐름
 

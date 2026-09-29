@@ -71,6 +71,8 @@ Query graph node로 만들 수 있는 permutation을 생성하고, 서로 동형
 
 기준 graph만 남을 때까지 반복하면 query node 사이의 priority constraint가 완성된다. 현대 graph-algorithm 용어로는 automorphism orbit에서 대표 순서를 정하는 symmetry-breaking constraint로 해석할 수 있다.
 
+다만 명세서의 C4 예시에서 [0071]은 경우의 수를 32개로 적고, 도 12는 두 묶음에 총 16개를 제시한다. 네 정점의 순열 수 $$4!=24$$와 일치하지 않는다. 또한 [0089]의 조건 축약은 앞서 둔 $$p<s$$를 누락한다. 이 예시만으로 일반적인 완전 분할이나 priority constraint의 정당성을 증명했다고 보기는 어렵다.
+
 ### 3단계: Priority-aware matching
 
 Matching은 query node를 data node에 대응시키면서 priority를 즉시 검사한다. 예를 들어 $$p<q<r$$인데 partial mapping의 data-node number가 $$q<r$$을 위반하면, 아직 매칭하지 않은 다음 query node를 시도할 필요 없이 해당 branch를 종료한다.

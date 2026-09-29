@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 세 번째 강의는 LLM을 본격적으로 정의하면서 시작한다. Language model은 token sequence에 probability를 assign하고 next token probability를 예측하는 모델이며, LLM은 model size, pre-training data, compute가 모두 큰 language model로 설명된다.
+> **핵심:** 언어 모델은 토큰 시퀀스의 확률을 학습해 다음 토큰을 예측한다. 큰 모델의 유용성은 파라미터 수뿐 아니라 학습 데이터와 계산 자원, MoE 같은 구조, 디코딩 방식, KV cache를 포함한 추론 설계에 달려 있다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-세 번째 강의는 LLM을 본격적으로 정의하면서 시작한다. Language model은 token sequence에 probability를 assign하고 next token probability를 예측하는 모델이며, LLM은 model size, pre-training data, compute가 모두 큰 language model로 설명된다. 강의에서는 현대 LLM이 보통 최소 billion 단위 parameter, hundreds of billions 또는 trillions of tokens 규모의 data, 많은 GPU compute를 필요로 한다고 말한다. 현재 정의에서 BERT는 text를 생성하지 않는 encoder-only 모델이므로 LLM으로 보지 않고, LLM은 text-to-text를 수행하는 decoder-only 모델로 둔다. GPT, LLaMA, Gemma, DeepSeek, Mistral, Qwen 등이 예로 나오며, modern day LLM의 90% 이상이 decoder-only라고 설명한다.
+언어 모델은 토큰 시퀀스에 확률을 부여하고 다음 토큰의 분포를 예측한다. 이 강의에서 LLM은 모델 크기, 사전학습 데이터, 계산 자원이 모두 큰 언어 모델을 뜻하며, 보통 최소 수십억 개의 parameter와 수천억~수조 token의 데이터, 많은 GPU 계산 자원을 전제로 한다. 강의는 텍스트를 생성하지 않는 encoder-only BERT를 여기서의 LLM 정의에서 제외하고, text-to-text를 수행하는 decoder-only 구조에 초점을 맞춘다. GPT, LLaMA, Gemma, DeepSeek, Mistral, Qwen이 예로 나오며, 현대 LLM의 90% 이상이 decoder-only라는 강의 설명도 함께 제시된다.
 
 그 다음은 mixture of experts(MoE)와 generation 방법이다. MoE는 모든 parameter를 매 forward pass에 활성화하지 않고, gate/router G가 input x에 대해 어떤 expert E_i를 사용할지 정하는 구조다. Dense MoE는 모든 expert output에 weight를 두고, sparse MoE는 top-k expert만 선택해 FLOPs를 줄인다. 현대 LLM에서는 MoE를 주로 FFN 위치에 넣는데, FFN은 d_model에서 더 큰 d_FF로 갔다가 다시 d_model로 돌아가며 많은 parameter와 operation을 차지하기 때문이다. Expert는 token level로 routing될 수 있고, routing collapse를 막기 위해 expert별 token fraction f_i와 average routing probability p_i가 uniform에 가까워지도록 auxiliary loss를 더한다. Noisy gating도 언급된다. 이어서 next token 선택 방식으로 greedy decoding, beam search, sampling을 비교한다. Beam search는 k개의 path를 유지하고 sequence log probability를 token log probability의 합으로 보지만 짧은 sequence를 선호하는 문제가 있어 보정항이 필요하고, translation 같은 작업에 더 자주 쓰인다고 한다. Sampling은 probability distribution에서 token을 뽑는 방식이며 top-k, top-p, temperature가 소개된다. Temperature T는 softmax에서 logits를 T로 나누는 hyperparameter이고, low temperature는 spiky distribution, high temperature는 uniform에 가까운 distribution을 만든다. T=0은 이론적으로 deterministic하지만 실제 GPU 연산 순서 때문에 non-determinism이 생길 수 있다는 설명도 있다. Guided decoding은 JSON 같은 형식을 위해 invalid next token을 generation 중에 필터링하고, finite state machine이나 context grammar가 관련 키워드로 언급된다.
 

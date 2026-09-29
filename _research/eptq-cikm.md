@@ -32,8 +32,6 @@ EPTQ는 LLM을 2-bit 수준으로 압축할 때 scalar quantization의 성능 �
 
 ## 핵심 내용
 
-이 절은 원문 전체를 그대로 옮긴 번역이 아니라, EPTQ 논문의 문제 설정부터 방법, 실험, 결론까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
 초록과 서론에서 논문은 2-bit PTQ의 핵심 난점을 제기한다. GPTQ, AWQ, OmniQuant, SEPTQ 같은 scalar quantization 기반 방법은 2-bit에서 성능이 크게 무너질 수 있다. 반대로 VPTQ나 QTIP 같은 vector quantization 계열은 정확도 측면에서 유리하지만, quantization pipeline이 오래 걸리거나 inference throughput이 낮아 실제 배포에서 부담이 된다. EPTQ는 이 둘 사이의 trade-off를 줄이는 것을 목표로 한다.
 
 방법의 첫 번째 축은 Factored-E8 quantization이다. E8 lattice는 8D 공간에서 weight vector의 spherical distribution을 잘 표현할 수 있지만, full codebook은 1 MB 규모라 GPU L1 cache에 올리기 어렵다. EPTQ는 8D vector를 두 개의 4D half로 나누고, 같은 coset type끼리 결합하는 구조를 이용해 65,536개 point capacity를 유지하면서도 codebook을 4 KB로 줄인다. 이 설계는 lookup을 cache-friendly하게 만들어 decode throughput을 크게 높인다.

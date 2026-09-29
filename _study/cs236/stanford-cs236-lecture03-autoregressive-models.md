@@ -36,7 +36,7 @@ keywords:
 | 6 | RNN과 Transformer | Sequence history를 hidden state 또는 attention으로 다루는 방식은 어떤 trade-off를 갖는가? |
 | 7 | 이미지·음성 응용 | PixelRNN, PixelCNN, WaveNet, PixelDefend는 같은 원리를 어떻게 적용하는가? |
 
-### 원문 36페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -45,7 +45,7 @@ keywords:
 | pp. 18–27 | RNN, attention, transformer, sequence examples | pp. 18–20의 recurrence·conditional을 아래에서 대조; 사례 화면은 증명 대상 없음 |
 | pp. 28–36 | PixelRNN/CNN, PixelDefend, WaveNet, summary | p. 28의 RGB factorization을 아래에서 대조; 성능 그림·응용은 결과/사례로 분류 |
 
-> 위 범위는 공식 PDF 36페이지 전체를 page-scoped text와 page image로 대조한 결과다. 수식의 정확한 모델 정의와 실제 data distribution에 대한 근사를 아래에서 분리했다.
+> 아래에서는 강의 자료의 모델 정의와 실제 data distribution에 대한 근사를 구분한다.
 
 ## 핵심 내용
 
@@ -81,7 +81,7 @@ Attention과 transformer는 이 병목을 줄이기 위해 등장한다. Attenti
 
 이미지와 음성 응용도 같은 틀이다. PixelRNN은 image pixel을 raster order로 예측하고, RGB channel도 red, green, blue 순서로 factorize한다. PixelCNN은 masked convolution을 사용해 같은 autoregressive order를 유지하면서 training을 더 병렬화한다. PixelDefend는 clean image distribution을 PixelCNN으로 학습한 뒤 adversarial input의 likelihood가 낮은지 확인하는 응용이다. WaveNet은 dilated convolution으로 receptive field를 넓혀 speech signal을 autoregressive하게 생성한다.
 
-### 원문 수식 감사: FVSBN과 NADE의 parameter 수
+### FVSBN과 NADE의 parameter 수
 
 > **근거 위치:** 공식 Lecture 3 PDF p. 7의 FVSBN parameter count와 pp. 9–10의 NADE weight sharing. 아래 합 계산은 원문 주장을 풀어 쓴 정확한 산술 전개다.
 
@@ -95,7 +95,7 @@ $$
 
 ### 핵심 수식 유도: joint likelihood가 token loss의 합이 되는 이유
 
-> **근거 위치:** 공식 Lecture 3 PDF pp. 6–7의 autoregressive chain factorization과 FVSBN likelihood evaluation. Page-scoped PDF text extraction으로 확인했고, log를 취한 합 형태는 작성자가 정리한 정확한 대수 전개다.
+> **근거 위치:** 공식 Lecture 3 PDF pp. 6–7의 autoregressive chain factorization과 FVSBN likelihood evaluation. Log를 취한 합 형태는 원문 식에서 도출한 **작성자 보충**이다.
 
 Autoregressive factorization은 **chain rule 항등식**이고, neural conditional은 그 항들을 근사하는 모델이다. 각 조건부가 정규화된 확률분포이고 관측 sequence에 0이 아닌 확률을 줄 때,
 
@@ -109,9 +109,9 @@ $$
 
 따라서 negative log-likelihood는 위치별 cross-entropy의 합이다. $$n$$은 sequence 길이, $$i$$는 무차원 index, $$x_{<i}$$는 prefix다. Training에서는 모든 정답 prefix가 주어져 항들을 병렬 계산할 수 있지만, generation에서는 아직 생성하지 않은 $$x_i$$를 조건으로 쓸 수 없어 순차성이 남는다. Mask가 미래 token을 한 번이라도 보게 하면 factorization과 실제 sampling procedure가 어긋나므로 valid autoregressive likelihood라는 해석이 깨진다.
 
-### 원문 수식 감사: NADE/RNADE, categorical, RNN, PixelRNN
+### NADE/RNADE, categorical, RNN, PixelRNN
 
-> **근거 위치:** 공식 Lecture 3 PDF pp. 9–10(NADE), p. 12(categorical softmax), pp. 13–14(RNADE), pp. 18–20(RNN conditional과 제약), p. 28(PixelRNN RGB factorization). Page-scoped PDF text extraction으로 확인했다. Numerical-failure와 exact-model/true-distribution 구분은 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 3 PDF pp. 9–10(NADE), p. 12(categorical softmax), pp. 13–14(RNADE), pp. 18–20(RNN conditional과 제약), p. 28(PixelRNN RGB factorization). Numerical-failure와 exact-model/true-distribution 구분은 작성자 보충이다.
 
 > **슬라이드 원문 정리:** Binary NADE는 shared prefix weight로
 

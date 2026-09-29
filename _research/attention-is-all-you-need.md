@@ -31,8 +31,6 @@ keywords:
 
 ## 핵심 내용
 
-이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, 논문의 흐름을 한국어로 따라 읽을 수 있도록 재구성한 번역형 해설이다. 원문의 핵심 용어와 수식, 실험 수치, v1-v7 비교 정보는 유지하되 문장 구성은 학습용 설명에 맞게 다시 정리했다.
-
 초록과 서론의 핵심은 sequence transduction에서 recurrence와 convolution이 필수라는 기존 가정을 뒤집는 데 있다. 기존 RNN 계열 모델은 입력 token을 순서대로 처리하므로 병렬화에 불리하고, 멀리 떨어진 token 관계를 여러 단계의 hidden state를 통해 전달해야 한다. Transformer는 이 병목을 줄이기 위해 self-attention을 중심 연산으로 두고, 모든 token이 다른 token을 직접 참고할 수 있게 만든다.
 
 모델 구조는 encoder와 decoder stack으로 구성된다. Encoder는 입력 문장의 token 관계를 self-attention으로 계산하고, decoder는 masked self-attention과 encoder-decoder attention을 통해 이전 출력과 입력 문맥을 함께 사용한다. Scaled Dot-Product Attention은 query와 key의 내적으로 관련성을 구하고, softmax weight를 value에 곱해 필요한 정보를 모은다. $$\sqrt{d_k}$$ scaling은 dot product가 커져 softmax gradient가 작아지는 문제를 줄이기 위한 안정화 장치다.

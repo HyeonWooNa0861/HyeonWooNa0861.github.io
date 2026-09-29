@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-13.pdf`
 
-> **핵심:** **standard normal distribution은** 평균 0, 분산 1인 Gaussian. **multivariate Gaussian의 parameter는** mean vector $$\mu$$, covariance matrix $$\Sigma$$.
+> **핵심:** Standard normal distribution은 평균이 0이고 분산이 1인 Gaussian이다. Multivariate Gaussian은 평균 벡터 $$\mu$$와 공분산 행렬 $$\Sigma$$로 정의된다.
 
 ## 전체 흐름
 

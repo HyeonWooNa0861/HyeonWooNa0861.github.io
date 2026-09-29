@@ -35,9 +35,9 @@ keywords:
 
 이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요하다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문이다.
 
-핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 어떤 channel을 할당받는지에 따라 transmission delay와 interference가 달라진다. 따라서 task offloading과 channel allocation을 joint action으로 묶어야 실제 completion delay를 줄일 수 있다.
+핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 channel 배분에 따라 transmission delay와 interference가 달라진다. 논문은 두 결정을 하나의 action으로 합치지 않고, offloading 결과를 바탕으로 channel을 배분한 뒤 그 결과를 offloading 학습의 reward에 반영한다.
 
-D3QN 구조는 이런 결합 action에서 value estimation을 안정화하려는 선택이다. Dueling 구조는 state 자체가 좋은지와 특정 action이 얼마나 이득인지 분리하고, double Q-learning은 과대평가를 줄인다. 이 논문은 MEC에서 spatial-temporal dynamics를 다룰 때 "edge 선택"만으로는 부족하고 radio resource까지 함께 decision surface에 올려야 한다는 점을 보여준다.
+D3QN은 실행 위치를 고르는 offloading action의 value estimation을 안정화한다. Dueling 구조는 state value와 action advantage를 분리하고, double Q-learning은 과대평가를 줄인다. Radio resource의 영향은 별도 channel allocation 결과를 reward에 넣어 학습한다.
 
 ## 전체 흐름
 
@@ -57,6 +57,8 @@ Multi-user multi-server MEC에서는 사용자의 이동으로 computing request
 ## 2. 제안 방법
 
 논문은 task dependency를 priority evaluation으로 먼저 완화하고, channel allocation은 grouped knapsack 문제로 구성한다. 이후 D3QN을 사용해 offloading decision을 학습하며, channel allocation 결과를 reward feedback에 포함한다.
+
+DTO의 D3QN은 local 실행 또는 한 edge server를 선택하고, DCA는 선택된 단말별 subchannel 수를 최적화한다. 구체적인 subchannel ID는 그 수량에 맞춰 무작위 배정된다. D3QN이 channel ID를 직접 출력하는 구조는 아니다.
 
 | 구성 | 역할 |
 |---|---|

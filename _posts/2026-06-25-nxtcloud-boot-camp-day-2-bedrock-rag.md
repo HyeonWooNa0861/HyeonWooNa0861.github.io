@@ -13,9 +13,9 @@ section: nxtcloud-boot-camp
 
 ## 1. 교육 과정 개요
 
-nxtcloud Boot Camp 2일차는 Amazon Bedrock 기반 RAG(Retrieval-Augmented Generation) 구조를 이해하고, 지식 기반을 사용해 모델 응답을 외부 문서와 연결하는 과정을 정리한 자료다. 1일차가 모델 호출 방식과 챗봇 API 선택에 초점을 두었다면, 2일차는 “모델이 모르는 사내 문서, 매뉴얼, FAQ를 어떻게 답변 근거로 사용할 수 있는가”를 다룬다.
+nxtcloud Boot Camp 2일차의 주제는 Amazon Bedrock 기반 RAG(Retrieval-Augmented Generation)다. 1일차의 모델 호출 방식과 챗봇 API 선택에서 나아가, 모델이 모르는 사내 문서·매뉴얼·FAQ를 어떻게 답변 근거로 연결할지 다룬다.
 
-이 글은 NxtCloud Workshop의 Bedrock RAG 과정 링크를 기준으로 2일차 흐름을 구성하고, Amazon Bedrock 공식 Knowledge Bases 문서와 API 문서를 함께 대조해 개념을 보강한 정리본이다. 원본 링크는 참고자료로 보존하되, 본문은 RAG를 구성하는 데이터 준비, 임베딩, 벡터 검색, 검색 결과 기반 생성, API 선택 기준을 중심으로 재구성한다.
+2일차 과정은 데이터 준비와 임베딩, 벡터 검색, 검색 결과 기반 생성, API 선택으로 이어진다. Knowledge Base의 구성과 검색 API 설명은 Amazon Bedrock의 공식 Knowledge Bases·API 문서를 따른다.
 
 ## 2. 전체 학습 흐름
 
@@ -110,8 +110,6 @@ RAG 품질은 하나의 설정만으로 결정되지 않는다. 검색 품질, c
 ## 9. 2일차 핵심 정리
 
 2일차의 핵심은 Bedrock 챗봇을 단순 생성형 응답에서 문서 기반 응답으로 확장하는 것이다. RAG는 모델을 다시 학습시키지 않고도 외부 문서를 답변 근거로 사용할 수 있게 해 준다. 이를 위해 문서를 chunk로 나누고 embedding으로 변환해 vector store에 저장한 뒤, 사용자 질문과 의미적으로 가까운 문서를 검색해 모델 응답에 반영한다.
-
-가장 중요한 결론은 다음과 같다.
 
 - RAG는 LLM의 일반 지식에 외부 문서 context를 결합하는 구조다.
 - Knowledge Base는 문서 ingestion, embedding, indexing, retrieval을 관리한다.

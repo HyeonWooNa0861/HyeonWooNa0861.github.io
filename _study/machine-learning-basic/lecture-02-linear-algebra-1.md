@@ -18,7 +18,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-02.pdf`
 
-> **핵심:** **REF와 RREF의 차이는** RREF는 pivot이 1이고 pivot 열의 다른 값이 0. **기본 행 연산 3가지는** 행 교환, 행 스케일, 행 더하기.
+> **핵심:** RREF는 REF보다 조건이 엄격해 각 pivot이 1이고 해당 pivot 열의 다른 값은 모두 0이다. 행 교환, 행의 상수배, 다른 행의 배수를 더하기가 세 가지 기본 행 연산이다.
 
 ## 전체 흐름
 

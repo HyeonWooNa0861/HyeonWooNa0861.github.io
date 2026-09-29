@@ -30,8 +30,6 @@ Labidus는 FPGA를 순수 C software처럼 쉽게 프로그래밍하면서도 cu
 
 ## 핵심 내용
 
-이 절은 Labidus 논문을 축어적으로 번역한 것이 아니라, 논문의 전체 구조를 한국어로 재구성한 번역형 해설이다. RISC-V overlay, custom instruction, completion queue, stream-semantic memory 같은 핵심 용어는 원문의 의미를 유지했다.
-
 논문은 FPGA의 productivity-performance trade-off를 문제로 제기한다. RTL은 최고 성능을 낼 수 있지만 개발 난도가 높고, HLS는 C/C++ 기반 개발을 돕지만 irregular control이 많은 경우 많은 최적화 지식이 필요하다. Soft processor overlay는 software처럼 프로그래밍할 수 있지만 일반 softcore는 resource 대비 성능이 낮다. Labidus는 이 중간 지점에서 software programming model을 유지하면서 성능 격차를 줄이는 것을 목표로 한다.
 
 Labidus의 구조는 RV32I soft core 여러 개와 application-specific custom operator pool을 결합한다. 개발자는 C kernel을 작성하고, static analysis tool은 compute-heavy region을 찾아 fused operator와 custom instruction을 생성한다. 이 방식은 pure software code를 FPGA overlay 위의 custom datapath와 연결하는 흐름으로 볼 수 있다.

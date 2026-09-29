@@ -37,7 +37,7 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 | 7 | Parallel WaveNet | 느린 teacher와 빠른 student를 결합해 generation을 어떻게 가속하는가? |
 | 8 | MintNet과 Gaussianization | Masked convolution과 Gaussianization은 flow 설계를 어떤 방향으로 확장하는가? |
 
-### 원문 35페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -46,7 +46,7 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 | pp. 17–25 | autoregressive Gaussian, MAF/IAF, Parallel WaveNet | pp. 18–20의 방향별 식과 pp. 23–25의 reverse-KL를 아래에서 유도·구분 |
 | pp. 26–35 | MintNet, Gaussianization, rotation, summary | p. 26의 triangular structure와 pp. 29–33의 CDF 변환을 본문에 설명; 결과·요약은 별도 증명 대상 없음 |
 
-> 위 범위는 공식 PDF 35페이지 전체를 page-scoped text와 page image로 대조한 결과다. Hardware speed-up과 teacher/student 오차 해석은 작성자 보충으로 표시했다.
+> Hardware speed-up과 teacher/student 오차에 관한 해석은 강의 자료와 구분한 보충 해설이다.
 
 ## 핵심 내용
 
@@ -78,7 +78,7 @@ Parallel WaveNet은 이 tradeoff를 실용적으로 결합한 사례다. 먼저 
 
 ### 핵심 수식 유도: affine coupling의 Jacobian
 
-> **근거 위치:** 공식 Lecture 8 PDF p. 14의 RealNVP affine coupling과 triangular Jacobian. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 8 PDF p. 14의 RealNVP affine coupling과 triangular Jacobian.
 
 두 블록 $$z_a=z_{1:d}$$, $$z_b=z_{d+1:n}$$에 대해 $$x_a=z_a$$, $$x_b=z_b\odot e^{\alpha(z_a)}+\mu(z_a)$$는 scale이 유한한 한 invertible한 **모델 정의**다. Jacobian은
 
@@ -95,9 +95,9 @@ $$
 
 별표 항의 복잡한 derivative는 determinant에 영향을 주지 않는다. $$d,n,j$$는 무차원 index, $$\alpha$$는 log-scale라 무차원이며 $$\mu$$와 $$z_b$$는 같은 좌표 단위다. $$e^\alpha$$가 0은 아니어도 극단값이면 ill-conditioning이 발생한다. 한 layer에서 $$z_a$$는 변하지 않으므로 permutation이나 여러 coupling layer가 없으면 표현력도 제한된다.
 
-### 원문 수식 감사: MAF/IAF 방향과 Parallel WaveNet
+### MAF/IAF 방향과 Parallel WaveNet
 
-> **근거 위치:** 공식 Lecture 8 PDF pp. 18–19(MAF), p. 20(IAF), pp. 23–25(Parallel WaveNet). Page-scoped PDF text extraction으로 확인했다. Hardware-dependent speed와 teacher-limited accuracy 설명은 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 8 PDF pp. 18–19(MAF), p. 20(IAF), pp. 23–25(Parallel WaveNet). Hardware-dependent speed와 teacher-limited accuracy 설명은 작성자 보충이다.
 
 > **슬라이드 원문 정리:** MAF의 forward, 즉 base noise에서 data sample로 가는 식은
 

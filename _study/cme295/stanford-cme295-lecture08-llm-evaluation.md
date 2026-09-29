@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 이 강의는 LLM 평가를 출력 품질 평가로 좁혀 정의한다. LLM은 자연어, 코드, 수학 reasoning 등 자유 형식 출력을 만들기 때문에 보편적 지표를 만들기 어렵다.
+> **핵심:** 자연어·코드·수학처럼 형태가 다른 LLM 출력을 하나의 지표로 평가하기는 어렵다. 사람 평가와 규칙 기반 지표, LLM-as-a-Judge는 각각 비용·일관성·편향의 문제가 있어 과제에 맞춰 평가 기준을 정하고 결과를 교차 확인해야 한다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-이 강의는 LLM 평가를 출력 품질 평가로 좁혀 정의한다. LLM은 자연어, 코드, 수학 reasoning 등 자유 형식 출력을 만들기 때문에 보편적 지표를 만들기 어렵다. 이상적으로는 모든 출력을 사람이 평가할 수 있지만, 비용과 속도 문제가 크고 rating task 자체가 주관적일 수 있으므로 inter-rater agreement를 추적해야 한다. 단순 agreement rate는 우연 일치의 baseline을 반영하지 못하므로 Cohen's kappa, Fleiss's kappa, Krippendorff's alpha 같은 지표가 소개된다.
+이 강의에서 평가 대상은 응답 속도나 가격보다 출력의 품질이다. 자연어·코드·수학 추론처럼 형태가 다른 LLM 출력을 한 지표로 평가하기는 어렵다. 사람이 직접 평가하면 비용과 시간이 들고 판단도 주관적일 수 있으므로 평가자 간 일치도를 함께 본다. 단순 일치율은 우연히 같은 판정을 내릴 가능성을 반영하지 못한다. Cohen's kappa, Fleiss's kappa, Krippendorff's alpha가 이를 보완하는 지표로 소개된다.
 
 그 다음 강의는 reference output을 고정하고 METEOR, BLEU, ROUGE 같은 rule-based metric으로 예측 출력과 비교하는 방식을 설명한다. METEOR는 precision, recall, ordering penalty를 조합하고, BLEU는 n-gram precision과 brevity penalty를 사용하며, ROUGE는 summarization에서 자주 쓰인다. 그러나 이런 지표들은 문체적 변형을 충분히 허용하지 못하고 human rating과의 상관도 제한적이어서, prompt, response, criteria를 다른 LLM에 넣어 rationale과 score를 얻는 LLM-as-a-Judge가 핵심 방법으로 제시된다.
 

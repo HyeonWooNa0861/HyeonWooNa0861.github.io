@@ -37,7 +37,7 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 | 7 | Jensen-Shannon divergence | Optimal discriminator 아래 GAN objective는 어떤 divergence를 최소화하는가? |
 | 8 | Practical challenges | GAN이 강력하지만 학습이 불안정하고 mode collapse가 생기는 이유는 무엇인가? |
 
-### 원문 26페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -46,7 +46,7 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 | pp. 12–17 | discriminator, GAN objective, optimal discriminator, JS divergence | pp. 13–16의 pointwise optimum과 JS 등가를 아래에서 유도 |
 | pp. 18–26 | minibatch algorithm, implicit generator, optimization, mode collapse | p. 18의 update를 아래에서 대조; p. 22는 informal convergence statement이므로 보편 수렴 증명으로 취급하지 않음 |
 
-> 위 범위는 공식 PDF 26페이지 전체를 page-scoped text와 page image로 대조한 결과다. 원문의 이상적 optimal-discriminator 정리와 finite-capacity·alternating-optimization 한계에 대한 작성자 보충을 분리했다.
+> 이상적 optimal-discriminator 정리와 finite-capacity·alternating-optimization 한계에 관한 보충 해설을 구분한다.
 
 ## 핵심 내용
 
@@ -88,7 +88,7 @@ $$
 
 ### 핵심 수식 유도: optimal discriminator와 JS divergence
 
-> **근거 위치:** 공식 Lecture 9 PDF p. 13의 optimal discriminator, p. 15의 GAN objective와 Jensen–Shannon divergence 유도, p. 16의 Jensen–Shannon divergence 성질. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 9 PDF p. 13의 optimal discriminator, p. 15의 GAN objective와 Jensen–Shannon divergence 유도, p. 16의 Jensen–Shannon divergence 성질.
 
 이 결과는 두 분포가 density를 갖고 discriminator를 점별로 자유롭게 최적화할 수 있다는 이상적 가정 아래의 **정리**다. 고정된 $$G$$에서 한 점의 목적 $$g(D)=p_{\mathrm{data}}\log D+p_G\log(1-D)$$를 미분하면
 
@@ -106,9 +106,9 @@ $$
 
 확률과 divergence는 무차원이다. Finite-capacity discriminator가 optimum에 도달하지 않으면 이 JS 해석은 정확하지 않고, 두 support가 분리되면 JS가 포화되어 generator gradient가 약해질 수 있다.
 
-### 원문 수식 감사: likelihood 반례, two-sample statistic, minibatch update
+### Likelihood 반례, two-sample statistic, minibatch update
 
-> **근거 위치:** 공식 Lecture 9 PDF p. 5의 data/noise 또는 discrete noise-mixture likelihood bounds, p. 9의 two-sample statistic, p. 18의 minibatch gradient updates. Page-scoped PDF text extraction으로 확인했다. Vector-valued calibration과 alternating-update 한계는 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 9 PDF p. 5의 data/noise 또는 discrete noise-mixture likelihood bounds, p. 9의 two-sample statistic, p. 18의 minibatch gradient updates. Vector-valued calibration과 alternating-update 한계는 작성자 보충이다.
 
 > **슬라이드 원문 정리:** $$\varepsilon=0.01$$이고
 

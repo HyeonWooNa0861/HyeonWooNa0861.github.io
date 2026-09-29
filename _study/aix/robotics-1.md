@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `Robotics_1.pdf`
 
-> **핵심:** **imitation learning** expert demonstration을 policy 학습에 사용하는 방식. **behavioral cloning** expert trajectory를 observation-to-action supervised learning으로 학습.
+> **핵심:** Imitation learning은 전문가의 시연에서 로봇의 행동 정책을 학습한다. 그중 behavioral cloning은 전문가 궤적의 관측과 행동을 짝지어 지도학습하는 가장 직접적인 방법이다.
 
 ## 전체 흐름
 

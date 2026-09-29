@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `2_Overview_TF.pdf`
 
-> **핵심:** **positional encoding이 필요한 이유는** self-attention만으로는 순서 정보를 알기 어렵기 때문. **Q, K, V의 역할은** query는 찾는 정보, key는 비교 기준, value는 가져올 내용.
+> **핵심:** Self-attention만으로는 토큰의 순서가 드러나지 않아 positional encoding이 필요하다. Attention에서는 query가 찾는 정보를 나타내고, key는 관련성을 비교할 기준, value는 그 결과에 따라 모을 내용을 담는다.
 
 ## 전체 흐름
 

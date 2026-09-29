@@ -32,8 +32,6 @@ QTIP은 기존 VQ 기반 LLM PTQ가 낮은 vector dimension에 묶이는 문제�
 
 ## 핵심 내용
 
-이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, QTIP 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
 QTIP이 다루는 문제는 2-bit weight-only LLM quantization에서 정확도와 inference 효율을 동시에 얻기 어렵다는 점이다. Scalar quantization은 단순하고 빠르지만 낮은 bit-width에서 표현력이 부족하고, VQ는 여러 weight를 함께 표현해 정확도를 높일 수 있지만 codebook size와 lookup 비용이 dimension에 대해 지수적으로 커진다.
 
 논문은 먼저 incoherence processing으로 weight matrix를 quantization-friendly하게 만든다. Random Hadamard transform을 적용하면 특정 coordinate에 몰린 큰 값이 분산되고, weight가 대략 i.i.d. Gaussian source처럼 보이게 된다. 이 처리는 trellis-coded quantization이 잘 다루는 source 형태를 만들기 위한 전처리로 기능한다.

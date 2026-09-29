@@ -23,7 +23,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 14](https://www.youtube.com/watch?v=E69Lp_T9nVg){:target="_blank" rel="noopener"}
 - Source Slides: [lecture_14_comp.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture_14_comp.pptx){:target="_blank" rel="noopener"}
 
-> **Preview note:** 이 원본은 외부 PPTX이고 공식 PowerPoint for the web iframe이 제공되지 않아 블로그의 문서 모달에서 직접 미리보기하지 않는다. `Source Slides`를 새 탭에서 열어야 하며, 아래 번호는 PPTX package의 1-based slide 순서를 따른다. 정적 viewer에서는 animation 단계나 equation image가 누락될 수 있다.
+> **슬라이드 열람:** 원문 PPTX는 `Source Slides`에서 새 탭으로 연다. 슬라이드 번호는 원본 파일의 순서를 따르며, 정적 뷰어에서는 애니메이션이나 수식 이미지가 빠질 수 있다.
 
 > **핵심:** Lecture 14는 제목상 Energy-Based Models III로 묶여 있지만 실제 전개는 score-based model을 diffusion model로 확장하는 강의다. 지난 강의에서 score model은 $$s_\theta(x)\approx \nabla_x\log p_{\mathrm{data}}(x)$$를 학습하고 Langevin dynamics로 sample을 만들었다.
 
@@ -77,7 +77,7 @@ $$
 
 ### 핵심 수식 유도: conditional score decomposition
 
-> **Source mapping:** Official Lecture 14 PPTX slide 38의 Bayes score decomposition에 대응한다. Exact Office Viewer slide ID로 전체 42개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 14 PPTX slide 38의 Bayes score decomposition.
 
 Bayes rule $$p(x\mid y)=p(x)p(y\mid x)/p(y)$$의 로그를 $$x$$로 미분한다. $$p(y)$$는 $$x$$와 무관하므로
 
@@ -93,7 +93,7 @@ $$
 
 ### NCSN, SDE, ODE, likelihood 식 (작성자 보충; 강의의 continuous-time 전개)
 
-> **Source mapping:** Official Lecture 14 PPTX slides 17--22의 NCSN/weighted loss, slides 29--30의 forward·reverse SDE, slides 34--35의 probability-flow ODE와 likelihood에 대응한다. Exact Office Viewer slide ID로 전체 42개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 14 PPTX slides 17--22의 NCSN/weighted loss, slides 29--30의 forward·reverse SDE, slides 34--35의 probability-flow ODE와 likelihood.
 
 Noise level $$\sigma_i$$에서 $$\tilde x\mid x\sim\mathcal N(x,\sigma_i^2I)$$라 두면 강의의 weighted NCSN loss를 다음처럼 쓸 수 있다.
 

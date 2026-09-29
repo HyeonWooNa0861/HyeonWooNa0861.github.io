@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 첫 강의는 CME 295의 목표와 운영 방식을 소개한 뒤, LLM을 이해하기 위한 기본 NLP 문제들을 분류한다. 텍스트 입력에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 입력받아 텍스트를 생성하는 generation을 구분하고, sentiment extraction, NER, machine translation, question answering, summarization 같은 예를 든다.
+> **핵심:** NLP 문제는 입력 텍스트에서 라벨을 고르는 분류, 여러 위치의 값을 예측하는 다중 분류, 새로운 텍스트를 만드는 생성으로 나눌 수 있다. 토큰화와 임베딩으로 문장을 수치화한 뒤 RNN의 순차 처리 한계를 살펴보면, self-attention과 Transformer가 필요한 이유가 드러난다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-첫 강의는 CME 295의 목표와 운영 방식을 소개한 뒤, LLM을 이해하기 위한 기본 NLP 문제들을 분류한다. 텍스트 입력에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 입력받아 텍스트를 생성하는 generation을 구분하고, sentiment extraction, NER, machine translation, question answering, summarization 같은 예를 든다. 평가 지표로는 accuracy, precision, recall, F1, BLEU, ROUGE, perplexity를 소개하며, 특히 BLEU/ROUGE는 reference text가 필요하고 perplexity는 모델 출력 확률에서 모델이 얼마나 놀라는지를 본다고 설명한다.
+LLM을 이해하려면 먼저 NLP 작업의 입력과 출력을 구분해야 한다. 텍스트에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 생성하는 generation이 기본 범주다. Sentiment extraction, NER, machine translation, question answering, summarization이 각각의 예로 이어진다. 평가 지표는 accuracy, precision, recall, F1, BLEU, ROUGE, perplexity 등이 있으며, BLEU/ROUGE에는 reference text가 필요하다. Perplexity는 실제 토큰 시퀀스에 모델이 부여한 확률을 통해 예측의 적합도를 본다.
 
 그 다음 텍스트를 모델 입력으로 만들기 위한 tokenization과 representation을 다룬다. word-level, subword-level, character-level tokenizer의 장단점을 비교하며, word-level은 Out Of Vocabulary 위험이 크고 subword는 어근을 활용하지만 sequence length가 길어지며, character-level은 오탈자에 강하지만 sequence가 매우 길어진다고 설명한다. One-Hot Encoding은 모든 토큰 벡터가 서로 직교하므로 의미적 유사도를 담기 어렵고, Word2vec은 Continuous Bag of Words와 Skip-gram 같은 proxy task를 통해 의미 있는 embedding을 학습한다. 예시 네트워크에서는 vocabulary size v의 one-hot input을 더 작은 hidden dimension d로 투영하고, cross-entropy loss와 backpropagation으로 다음 단어 예측을 학습한 뒤 hidden representation을 word representation으로 사용한다.
 

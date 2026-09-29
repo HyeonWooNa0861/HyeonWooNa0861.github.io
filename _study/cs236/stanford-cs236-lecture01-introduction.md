@@ -35,7 +35,7 @@ keywords:
 | 5 | 위험과 책임 | deepfake와 synthetic content는 왜 생성 모델의 성능뿐 아니라 사용 맥락까지 요구하는가? |
 | 6 | 수업 로드맵 | representation, learning, inference라는 세 축이 이후 모델군과 어떻게 연결되는가? |
 
-### 원문 슬라이드 전수 대조
+### 강의 자료 범위
 
 | 공식 PPTX 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -45,7 +45,7 @@ keywords:
 | slides 20–44 | image, audio, language, code, video, robotics, molecule, deepfake 사례 | 결과·사례 중심이며 별도 증명 대상 없음 |
 | slides 45–50 | course roadmap, prerequisite, logistics, project | slide 45의 학습 목표를 아래 작성자 보충으로 명시; 나머지는 운영 정보 |
 
-> **PPTX viewer 한계:** 이번 독립 감사에서는 공식 PPTX의 50개 slide XML text와 순서를 모두 대조했지만, 로컬 Quick Look renderer가 sandbox 정책으로 실행되지 않아 animation/build layer를 포함한 시각 재현은 독립적으로 완료하지 못했다. 기존 편집 기록의 Office Viewer 확인은 참고 증거이며, 외부 viewer는 animation 단계나 slide ID를 다르게 처리할 수 있다. 따라서 이 글은 원문에 실제로 있는 slides 16–17의 식과 slide 45의 도식을 구분하고, 추가 전개는 명시적으로 작성자 보충으로 표시한다.
+> **원문 확인 범위:** 공식 PPTX 50장의 텍스트와 순서는 확인했지만, 애니메이션에 따라 달라지는 수식의 표시 상태까지 독립적으로 확인하지는 못했다. 아래 해설은 slides 16–17의 수식과 slide 45의 로드맵을 기준으로 하며, 원문에 없는 전개는 작성자 보충으로 표시한다.
 
 ## 핵심 내용
 
@@ -63,7 +63,7 @@ keywords:
 
 마지막으로 강의는 기술의 양면성을 짚는다. 생성 모델이 실제와 구분하기 어려운 얼굴, 음성, 영상, 문서를 만들 수 있다는 것은 창작과 과학에는 큰 가능성이지만, deepfake와 misinformation 같은 위험도 함께 만든다. 따라서 이 수업의 목표는 최신 시스템을 표면적으로 사용하는 법보다, 어떤 모델링 가정이 결과를 만들고 어떤 실패 가능성을 남기는지 이해하는 데 있다.
 
-### 원문 수식 감사: joint와 conditional, missing data
+### Joint·conditional distribution과 missing data
 
 > **근거 위치:** 공식 Lecture 1 PPTX slides 16–17. PPTX XML에서 conditional/joint notation과 Bayes-rule fraction을 대조했다. Animation 단계에 따라 fraction 일부가 외부 viewer에서 달리 보일 수 있다. 아래 marginalization은 slide 17의 missing-data 주장을 풀어 쓴 작성자 보충이다.
 

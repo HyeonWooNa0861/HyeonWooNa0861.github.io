@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-06.pdf`
 
-> **핵심:** **norm과 inner product의 관계는** 모든 내적은 norm을 만들지만 모든 norm이 내적에서 오지는 않는다. **SPD 행렬의 의미는** 내적을 표현할 수 있는 symmetric positive definite 행렬.
+> **핵심:** 모든 내적은 norm을 만들지만, 모든 norm이 내적에서 유도되지는 않는다. Symmetric positive definite(SPD) 행렬은 내적을 나타내는 데 사용할 수 있다.
 
 ## 전체 흐름
 

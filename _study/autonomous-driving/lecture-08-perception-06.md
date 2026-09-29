@@ -18,7 +18,7 @@ keywords:
 
 Source PDF: [8 Perception (6).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-08-perception-06.pdf" | relative_url }})
 
-국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 8강을 바탕으로 한 학습 노트다. 7강의 single-stage object detection을 복습한 뒤, 픽셀별 class와 개체별 mask가 어떻게 다른지 학습한다. 슬라이드의 convolution 그림과 수치 예제를 재구성했으며, 슬라이드에 없는 단계별 계산은 **작성자 보충**으로 표시했다. 다른 Perception 강의와의 연결은 [통합 Perception 학습 노트]({{ "/study/autonomous-driving/perception-overview/" | relative_url }})를 참고한다.
+객체 검출이 물체마다 상자를 찾는다면, segmentation은 픽셀 단위의 영역을 예측한다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 8강은 7강의 single-stage detection을 복습하고 픽셀별 class와 개체별 mask를 비교한다. 슬라이드의 convolution 그림과 수치 예제에 없는 단계별 계산은 **작성자 보충**으로 표시했다. 다른 강의와의 연결은 [통합 Perception 학습 노트]({{ "/study/autonomous-driving/perception-overview/" | relative_url }})에서 다룬다.
 
 > **핵심:** Semantic segmentation은 각 픽셀이 **무슨 종류인지** 예측하되 같은 종류의 서로 다른 개체를 구분하지 않는다. Instance segmentation은 검출된 각 **thing 개체마다 별도 mask**를 만든다. FCN은 전체 영상의 dense class score를 한꺼번에 계산하고, Mask R-CNN은 Faster R-CNN의 RoI별 분류·box 경로에 정렬된 mask 경로를 더한다. Downsampling으로 얻은 문맥과 upsampling으로 복원한 경계 사이의 trade-off를 이해해야 결과를 바르게 읽을 수 있다.
 

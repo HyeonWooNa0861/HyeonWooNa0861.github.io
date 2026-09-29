@@ -40,7 +40,7 @@ Source: [Official project page](https://yifanzhang-pro.github.io/recurrent-loope
 
 공식 소개의 세 축은 잠재 공간의 순환 계산, 하드웨어를 고려한 실행, RL 정책 재평가의 일관성이다. Encoder는 전역 문맥을 제공하고 decoder는 이전 출력과 층별 sliding-window attention(SWA) 캐시를 이어받는다. Prompt와 response 경계에서도 이 상태를 유지한다. [Project overview](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"}
 
-읽을 때는 세 질문을 분리해야 한다. **계산 경로가 존재하는가**, **그 경로에서 유용한 정보와 gradient가 유지되는가**, **동일한 비용에서 성능이 좋아지는가**는 다른 문제다. 아래는 이 구분을 위한 독자적 수학 해설이다. 원문 전체의 번역이 아니며, 작은 수치 예제와 검증 제안은 이 글에서 추가했다.
+**계산 경로의 존재**, **유용한 정보와 gradient의 보존**, **동일 비용에서의 성능 이점**은 서로 다른 주장이다. 이어지는 수학 해설에는 원문에 없는 작은 수치 예제와 검증 제안이 포함되어 있으며, 보고서 전체의 번역은 아니다.
 
 ## Reading Map
 
@@ -90,7 +90,7 @@ $$H_t$$는 **decoder의** 완전 상태이지 서비스 전체의 모든 상태�
 
 ### 1.2 Why separate memories are necessary
 
-아래는 attention의 일반적 계산을 단순화한 설명이다. Key가 어떤 값에 주목할지 결정하고 value가 결합할 정보를 담는다고 하자. 한 head의 계산은 다음과 같다.
+Attention 계산을 단순화하면, key는 query와의 유사도를 결정하고 value는 결합할 정보를 담는다. 한 head의 계산은 다음과 같다.
 
 $$
 a_j=\frac{\exp(q^{\top}k_j/\sqrt{d_k})}
@@ -342,7 +342,7 @@ Conversation에서 user·tool 입력은 모델이 샘플한 action이 아니어�
 | Parity | Approximately 100% | 60.8% | 50% |
 | Five-state transitions | Approximately 100% | 20.7% | 20% |
 
-32-operation 값은 그림의 근사 판독치이고 128-operation 값은 그림에 표시된 수치다. 원문의 whisker는 seed 최솟값·최댓값이며 신뢰구간이 아니다. 128-operation 비교군에서 Transformer는 각각 약 48%, 약 21%로 제시되지만, **GRU는 parity 100%, five-state 99.97%**로 표시된다. 즉 이 그림은 RLT의 두 과제 학습 길이 적합을 보여 주지만, 긴 길이에서 RLT가 모든 비교군보다 우수하다는 근거는 아니다. 이 글에서 실험을 재실행한 결과는 아니다.
+32-operation 값은 그림의 근사 판독치이고 128-operation 값은 그림에 표시된 수치다. 원문의 whisker는 seed 최솟값·최댓값이며 신뢰구간이 아니다. 128-operation 비교군에서 Transformer는 각각 약 48%, 약 21%로 제시되지만, **GRU는 parity 100%, five-state 99.97%**로 표시된다. 즉 이 그림은 RLT의 두 과제 학습 길이 적합을 보여 주지만, 긴 길이에서 RLT가 모든 비교군보다 우수하다는 근거는 아니다. 실험을 재실행한 결과가 아닌 원문 보고값이다.
 
 작성자 해석은 다음과 같다. Parity의 60.8%는 기재된 chance보다 10.8 percentage points 높지만, five-state의 20.7%는 0.7 points 차이다. 특히 같은 그림의 GRU는 이 두 합성 과제에서 128 operations까지 거의 완전한 정확도를 유지한다. 이를 보고 RLT가 두 과제에서 안정적인 4배 길이 일반화를 달성했다거나, 이 실험의 GRU 기준선을 앞섰다고 요약해서는 안 된다. 개별 seed 결과와 불확실성 분석 없이 작은 차이의 통계적 유의성을 확정할 수도 없다. 대규모 언어 reasoning, RL scaling, wall-clock 향상으로 결론을 확장하려면 각각의 추가 실험이 필요하다.
 

@@ -30,7 +30,7 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 
 24쪽 전체를 페이지 이미지로 대조했다. fd 0/1/2는 운영체제의 식별 번호이고 `setw(n)`·`setprecision(n)`의 $$n$$은 API parameter다. 자료에는 throughput 공식이나 buffer-size 모델 같은 정량식이 없으므로 수학 증명은 추가하지 않고, buffering과 descriptor 연결의 작동 조건을 설명했다.
 
-> **핵심:** **`stdin`** 표준 입력, fd 0. **`stdout`** 정상 출력, fd 1.
+> **핵심:** 표준 입력 `stdin`은 보통 파일 디스크립터 0, 표준 출력 `stdout`은 1에 연결된다. 두 스트림의 대상을 바꾸는 리디렉션은 프로그램 코드를 고치지 않고도 입력과 출력의 흐름을 바꾼다.
 
 ## 전체 흐름
 

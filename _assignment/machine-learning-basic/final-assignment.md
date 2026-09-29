@@ -12,7 +12,7 @@ Source PDF: `machine-learning-basic-final-assignment.pdf`
 
 ## 과제 개요
 
-이 글은 `기말과제.pdf`를 평가 대비형 과제 자료로 다시 작성한 것이다. 단순 정답만 적지 않고, 각 문항이 어떤 개념을 묻는지, 풀이를 어떻게 시작해야 하는지, 어떤 변형 문제가 나올 수 있는지까지 함께 정리한다.
+`기말과제.pdf`의 네 문항은 Bayes 정리, gradient descent, convexity, polynomial regression을 다룬다.
 
 **핵심 메시지:** 정답을 암기하기보다 Bayes의 evidence, gradient의 방향과 차원, convex 정의, design matrix라는 출발점을 정확히 세우면 각 계산을 일관되게 완성할 수 있다.
 
@@ -25,7 +25,7 @@ Source PDF: `machine-learning-basic-final-assignment.pdf`
 | 3 | Convex function | 정의로 convex를 증명하거나 반례로 non-convex를 판단 |
 | 4 | Polynomial regression, MLE, predictive distribution | Feature matrix를 만들고 MLE 해와 예측분포를 계산 |
 
-이 과제형 자료의 핵심은 다음 네 가지다.
+네 문항을 풀기 전에 확인할 기준은 다음과 같다.
 
 1. 확률 문제는 Bayes 정리의 분모, 즉 evidence를 정확히 계산해야 한다.
 2. 최적화 문제는 gradient 부호와 row/column convention을 헷갈리지 않아야 한다.

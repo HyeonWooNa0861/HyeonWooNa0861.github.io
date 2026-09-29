@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `Autonomous_Driving_2.pdf`
 
-> **핵심:** **2022 Tesla occupancy pivot의 의미는** object list보다 dense 3D geometry를 중심 representation으로 둔 것. **Occupancy가 safety에 유리한 이유는** unknown obstacle도 차 있는 공간으로 표현할 수 있기 때문.
+> **핵심:** 2022년 Tesla의 occupancy 접근은 객체 목록보다 조밀한 3D 공간 표현을 중심에 둔다. 이름을 모르는 장애물도 점유 공간으로 나타낼 수 있다는 점이 안전 판단에 유용하다.
 
 ## 전체 흐름
 

@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS22_shortest_path.pdf`
 
-> **핵심:** **shortest path** weight 합이 최소가 되는 경로. **shortest distance** 최단 경로의 비용 값.
+> **핵심:** Shortest path는 두 정점 사이에서 간선 weight의 합이 가장 작은 경로다. Shortest distance는 그 경로의 총비용을 뜻한다.
 
 ## 전체 흐름
 

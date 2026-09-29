@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 5강은 pre-training과 SFT 이후의 preference tuning을 중심으로 진행된다. SFT model은 assistant처럼 동작할 수 있지만 tone, friendliness, safety 같은 human preference와 완전히 맞지 않을 수 있다.
+> **핵심:** SFT만으로는 응답의 어조, 유용성, 안전성에 대한 사람의 선호를 충분히 반영하기 어렵다. 선호 데이터에서 보상 신호를 학습해 정책을 조정하는 RLHF와, 선호 쌍을 직접 최적화하는 DPO는 서로 다른 비용과 한계를 가진다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-5강은 pre-training과 SFT 이후의 preference tuning을 중심으로 진행된다. SFT model은 assistant처럼 동작할 수 있지만 tone, friendliness, safety 같은 human preference와 완전히 맞지 않을 수 있다. 이를 위해 prompt에 대한 winning response와 losing response를 모은 preference pair를 만들고, pointwise/listwise보다 pairwise preference data가 일반적으로 다루기 쉽다고 설명한다. Pair는 positive temperature로 여러 completion을 sampling하거나, 로그에서 나쁜 응답을 찾아 좋은 응답으로 rewrite하는 방식으로 만들 수 있으며, rating은 human, LLM-as-a-judge, BLEU/ROUGE 같은 metric으로 얻을 수 있다.
+SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호와 어긋날 수 있다. Preference tuning은 같은 prompt에 대한 선호 응답과 비선호 응답을 비교해 이 차이를 학습한다. 강의는 pointwise·pairwise·listwise 중 pairwise data가 비교적 다루기 쉽다고 설명한다. 선호 쌍은 양의 temperature로 여러 completion을 sampling하거나 기존 로그의 나쁜 응답을 다시 쓰는 방식으로 만들 수 있다. 평가는 사람, LLM-as-a-Judge 또는 BLEU/ROUGE 같은 지표를 활용할 수 있다.
 
 강의의 중심은 RLHF이다. 전통적인 RL의 agent, state, action, policy, reward를 LLM에 대응시키면 agent는 LLM, state는 지금까지의 input, action은 next token, policy는 next-token probability distribution, reward는 completion에 대한 preference signal이다. RLHF는 먼저 preference pair로 reward model을 학습하고, 그 frozen reward model을 사용해 SFT model의 policy를 더 높은 reward 쪽으로 조정한다. Reward model 학습에는 Bradley-Terry formulation이 쓰이며, P(yi > yj) = exp(ri) / (exp(ri) + exp(rj)) = sigma(ri - rj), loss는 -E log sigma(r_w - r_l) 형태로 설명된다.
 

@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 4강은 전통적인 작업별 모델 학습에서 전이학습 기반 LLM 학습으로 넘어가는 흐름을 설명한다. 사전학습은 거대한 텍스트와 코드 말뭉치에서 다음 토큰을 예측하도록 학습하는 가장 비싼 단계이며, Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 출처가 언급된다.
+> **핵심:** LLM 학습은 대규모 다음 토큰 예측으로 범용 표현을 얻은 뒤, SFT 등으로 특정 사용 목적에 맞춘다. 사전학습의 규모가 커질수록 데이터·파라미터·계산 자원의 균형뿐 아니라 메모리와 데이터 이동을 줄이는 분산 학습 설계가 중요해진다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-4강은 전통적인 작업별 모델 학습에서 전이학습 기반 LLM 학습으로 넘어가는 흐름을 설명한다. 사전학습은 거대한 텍스트와 코드 말뭉치에서 다음 토큰을 예측하도록 학습하는 가장 비싼 단계이며, Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 출처가 언급된다. 데이터 규모는 수천억에서 수십조 토큰까지 갈 수 있고, GPT-3는 300B 토큰, Llama 3는 15T 토큰으로 예시화된다. 강의는 FLOPs와 FLOPS를 구분하고, 학습 비용이 토큰 수와 파라미터 수에 대략 비례하며, Chinchilla law처럼 고정 compute에서 파라미터 수와 학습 토큰 수의 균형이 중요하다고 설명한다.
+작업마다 새 모델을 처음부터 학습하는 대신, 대규모 사전학습 모델을 목적에 맞게 조정할 수 있다. 사전학습은 Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 텍스트·코드 말뭉치에서 다음 토큰을 예측하는 비용 큰 단계다. 학습 데이터는 수천억에서 수십조 토큰까지 커지며, 강의는 GPT-3의 300B 토큰과 Llama 3의 15T 토큰을 예로 든다. FLOPs는 총 연산량, FLOPS는 초당 연산 속도를 뜻한다. 학습 비용은 토큰 수와 파라미터 수에 대략 비례하므로, 고정된 계산량에서는 Chinchilla law가 강조하는 두 규모의 균형을 고려해야 한다.
 
 이후에는 실제 대규모 학습을 가능하게 하는 시스템 기법이 이어진다. forward pass의 activation, backward pass의 gradient, Adam의 first/second moment optimizer state가 GPU 메모리를 차지하므로 data parallelism, ZeRO 1/2/3, expert/tensor/pipeline parallelism 같은 분산 기법이 필요하다. FlashAttention은 HBM과 SRAM의 속도 차이를 이용해 attention 계산의 HBM read/write를 줄이고, tiling과 recomputation으로 exact attention을 더 빠르고 메모리 효율적으로 만든다.
 

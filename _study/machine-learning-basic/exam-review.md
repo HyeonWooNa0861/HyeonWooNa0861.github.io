@@ -29,7 +29,7 @@ Source PDFs:
 
 이 글은 머신러닝기초 11강부터 17강까지의 정리 자료에서 시험 범위에 해당하는 부분만 뽑아 재구성한 시험 대비용 추출본이다. 출제 조건은 확률과 분포 3문제, 최적화 이론 2문제, Model and Data 1문제, 선형회귀 1문제이므로, 아래 내용도 그 배점에 맞추어 정리한다.
 
-> **핵심:** **PMF** $$p_X(x)=P(X=x)$$. **PDF** $$P(a<X\le b)=\int_a^b f_X(x)\,dx$$.
+> **핵심:** 이산확률변수의 PMF는 각 값에 할당된 확률 $$p_X(x)=P(X=x)$$를 나타낸다. 연속확률변수의 PDF는 구간 적분으로 확률을 구하며, $$P(a<X\le b)=\int_a^b f_X(x)\,dx$$이다.
 
 ## 전체 흐름
 
@@ -1581,7 +1581,7 @@ $$
 
 ## 5. 출제 배분에 맞춘 7문제 모의 구성
 
-아래 7문제는 사용자가 정리한 출제 조건을 그대로 반영한 예상 구성이다.
+다음 7문제는 앞서 정리한 출제 범위와 형식에 맞춘 연습 문제다.
 
 <details markdown="block">
 <summary>1. Joint PMF table에서 marginal probability와 conditional probability를 계산하라.</summary>

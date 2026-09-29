@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-12.pdf`
 
-> **핵심:** **독립의 정의는** joint distribution이 marginal distribution들의 곱으로 분해되는 것. **IID는 무엇인가** 서로 독립이고 같은 분포를 따르는 확률변수들의 집합.
+> **핵심:** 확률변수들이 독립이면 joint distribution이 각 marginal distribution의 곱으로 분해된다. IID 표본은 서로 독립이며 모두 같은 분포를 따른다.
 
 ## 전체 흐름
 

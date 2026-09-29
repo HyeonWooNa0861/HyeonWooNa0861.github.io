@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS23_minimum_spanning_tree.pdf`
 
-> **핵심:** **spanning tree** 모든 정점을 포함하는 tree 형태의 부분 그래프. **MST** spanning tree 중 간선 weight 총합이 최소인 tree.
+> **핵심:** Spanning tree는 그래프의 모든 정점을 포함하면서 cycle이 없는 부분 그래프다. MST는 가능한 spanning tree 중 간선 weight의 총합이 가장 작은 트리다.
 
 ## 전체 흐름
 

@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS21_graph_traversal.pdf`
 
-> **핵심:** **graph traversal** 그래프의 정점을 방문하며 구조를 파악하는 절차. **BFS** queue를 사용해 시작 정점에서 가까운 정점부터 방문.
+> **핵심:** Graph traversal은 정점을 차례로 방문해 그래프의 연결 구조를 파악하는 절차다. BFS는 queue를 사용해 시작 정점에서 간선 수가 적은 정점부터 방문한다.
 
 ## 전체 흐름
 

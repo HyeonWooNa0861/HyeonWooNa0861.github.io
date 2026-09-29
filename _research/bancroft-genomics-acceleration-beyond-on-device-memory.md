@@ -31,8 +31,6 @@ Bancroft는 FPGA accelerator의 on-device HBM 용량을 넘어서는 대규모 �
 
 ## 핵심 내용
 
-이 절은 Bancroft 논문 원문을 그대로 번역한 것이 아니라, 논문의 전체 전개를 한국어로 다시 읽을 수 있게 만든 번역형 해설이다. 논문에서 쓰는 FASTA, FASTQ, HBM, PCIe, reference-based compression 같은 핵심 용어는 원문 표현을 유지했다.
-
 논문은 genomics accelerator에서 계산 성능보다 memory capacity와 data movement가 먼저 병목이 된다는 문제에서 출발한다. FPGA나 GPU는 높은 throughput을 제공할 수 있지만, on-device HBM은 대규모 genomic dataset 전체를 담기에 충분하지 않다. Host에서 raw data를 계속 가져오면 PCIe bandwidth가 병목이 되므로, accelerator의 내부 계산 성능이 충분해도 end-to-end 처리량은 낮아질 수 있다.
 
 Bancroft의 핵심 아이디어는 host에 genomic data를 압축된 형태로 두고, FPGA가 필요한 compressed page를 가져온 뒤 내부에서 즉시 decompress하여 user kernel에 공급하는 것이다. 여기서 compression은 단순 저장공간 절약이 아니라 bandwidth amplification 수단이다. 압축률이 높을수록 PCIe로 이동하는 byte 수가 줄고, accelerator 입장에서는 더 높은 effective bandwidth를 얻는다.

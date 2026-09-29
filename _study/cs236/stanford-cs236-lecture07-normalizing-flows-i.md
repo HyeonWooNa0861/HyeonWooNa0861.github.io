@@ -36,7 +36,7 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 | 7 | 효율적인 Jacobian 구조 | $$O(n^3)$$ determinant 계산을 피하려면 어떤 transformation 구조가 필요한가? |
 | 8 | Planar flow 예시 | 간단한 residual 형태의 변환은 어떤 장점과 invertibility 제약을 갖는가? |
 
-### 원문 19페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -45,7 +45,7 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 | pp. 13–16 | flow composition, exact likelihood, learning | p. 14의 합성 log-determinant를 아래에서 유도 |
 | pp. 17–19 | determinant complexity, triangular Jacobian, planar flow | pp. 17–18의 $$O(n^3)\to O(n)$$ 근거와 p. 19의 determinant·충분조건을 아래에서 대조 |
 
-> 위 범위는 공식 PDF 19페이지 전체를 page-scoped text와 page image로 대조한 결과다. Planar-flow strict sufficient condition은 원문 조건을 더 명확히 푼 작성자 보충으로 표시했다.
+> Planar-flow의 strict sufficient condition은 강의 자료의 조건을 더 명확히 풀어 쓴 보충 해설이다.
 
 ## 핵심 내용
 
@@ -77,7 +77,7 @@ Flow라는 이름은 invertible transformation을 여러 개 합성할 수 있�
 
 ### 핵심 수식 유도: change of variables와 log-determinant
 
-> **근거 위치:** 공식 Lecture 7 PDF pp. 7–8의 1D change of variables, p. 11의 다변량 일반화, p. 14의 flow composition, pp. 17–18의 일반 determinant $$O(n^3)$$ 및 triangular Jacobian $$O(n)$$ 비교. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 7 PDF pp. 7–8의 1D change of variables, p. 11의 다변량 일반화, p. 14의 flow composition, pp. 17–18의 일반 determinant $$O(n^3)$$ 및 triangular Jacobian $$O(n)$$ 비교.
 
 이는 bijective하고 미분 가능한 변환 $$x=f(z)$$에 대한 **정리**다. $$f^{-1}$$도 미분 가능하고 Jacobian determinant가 0이 아닌 영역을 가정한다. 작은 부피 $$dz$$가 $$dx=\lvert\det J_f(z)\rvert dz$$로 늘어나지만 확률질량은 보존되므로
 
@@ -89,9 +89,9 @@ $$
 
 로그를 취하면 $$\log p_X(x)=\log p_Z(z)-\log\lvert\det J_f(z)\rvert$$다. 합성 $$f=f_M\circ\cdots\circ f_1$$에서는 chain rule과 determinant의 곱셈성 때문에 log-determinant가 layer별 합이 된다. $$x,z$$는 같은 차원의 continuous vector, $$J_f$$는 좌표 단위의 비율을 담는 Jacobian이다. 차원이 다르거나 mapping이 many-to-one이면 이 식을 쓸 수 없고, determinant가 0에 가까우면 density와 수치 오차가 폭주한다.
 
-### 원문 수식 감사: planar flow determinant와 invertibility
+### Planar flow determinant와 invertibility
 
-> **근거 위치:** 공식 Lecture 7 PDF p. 19의 planar-flow 식, determinant, tanh sufficient condition. Page-scoped PDF text extraction으로 확인했다. 아래 strict-condition 유도와 sufficient/not-necessary 분류는 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 7 PDF p. 19의 planar-flow 식, determinant, tanh sufficient condition. 아래 strict-condition 유도와 sufficient/not-necessary 분류는 작성자 보충이다.
 
 > **슬라이드 원문 정리:** Planar flow $$f(z)=z+u h(w^{\top}z+b)$$에서 $$a=w^{\top}z+b$$, $$\psi(z)=h'(a)w$$로 두면
 

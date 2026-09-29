@@ -29,7 +29,7 @@ Source PDF: `hierarchical-rl-task-offloading-v2i.pdf`
 
 ## Source Status
 
-이 글은 로컬에 보관된 arXiv v1 PDF(2024-05-18)를 기준으로 한 해설이다. 공식 arXiv record는 2025-12-04 v2에서 withdrawn 상태이며, 현재 withdrawn version에는 PDF가 제공되지 않는다. 따라서 아래 내용은 "논문 v1이 주장한 방법과 실험"으로 읽어야 하고, peer-reviewed publication이나 최신 공식 version의 확정 결과로 해석하면 안 된다.
+해설의 기준은 로컬에 보관된 arXiv v1 PDF(2024-05-18)다. 공식 arXiv record는 2025-12-04 v2에서 withdrawn 상태이며, 현재 withdrawn version에는 PDF가 제공되지 않는다. 따라서 제시된 방법과 실험은 v1의 주장으로 한정되며 peer-reviewed publication이나 최신 공식 version의 확정 결과가 아니다.
 
 ## 한 줄 요약
 
@@ -113,7 +113,7 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 
 ### 핵심 결과
 
-논문 v1은 DHVO neural network가 14 episode 안에 수렴한다고 보고한다. One-batch training time은 1.58초, inference time은 0.0018초로 제시된다. 이 수치는 online decision 자체는 충분히 빠르지만, training은 offline 또는 controller-side update로 보는 것이 자연스럽다는 뜻이다.
+논문 v1은 DHVO neural network가 14 episode 안에 수렴한다고 보고한다. One-batch training time은 1.58초, inference time은 0.0018초로 제시된다. 이는 해당 실험의 신경망 실행 시간이며, 통신·큐잉·handover를 포함한 V2I 종단 간 지연이나 실제 배포 성능을 입증하지는 않는다.
 
 결과 해석의 핵심은 migration risk다. GOE처럼 greedy하게 edge offloading을 선호하는 방법은 real speed variation 때문에 RSU coverage를 벗어나 migration penalty를 크게 받을 수 있다. ALE처럼 local execution에 치우친 방법은 migration은 피하지만 local time/energy cost가 커진다. DHVO는 speed vector와 DAG dependency를 state에 넣고, local/edge 및 resource parameter를 함께 선택해 TESC를 낮춘다고 주장한다.
 
@@ -138,7 +138,7 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 
 ### 한계와 해결 방향
 
-가장 큰 한계는 publication status다. 현재 공식 arXiv record는 2025-12-04에 withdrawn 되었고, comments에는 저자 측이 더 이상 development나 submission을 진행하지 않겠다고 밝힌다. 따라서 이 글의 활용 가치는 "아이디어와 모델 구조를 공부하는 reference"에 두어야 한다. 해결 방향은 reproducible code, updated dataset split, peer-reviewed revision, 또는 유사한 published follow-up과의 교차 검증이다.
+가장 큰 한계는 publication status다. 현재 공식 arXiv record는 2025-12-04에 withdrawn 되었고, comments에는 저자 측이 더 이상 development나 submission을 진행하지 않겠다고 밝힌다. 따라서 검증된 결과보다 아이디어와 모델 구조를 탐색하는 참고자료로 활용하는 것이 적절하다. 해결 방향은 reproducible code, updated dataset split, peer-reviewed revision, 또는 유사한 published follow-up과의 교차 검증이다.
 
 모델 측면에서는 single-vehicle 중심 simulation과 제한된 traffic/channel parameter가 현실성을 제한한다. 실제 V2I 서비스로 확장하려면 multi-vehicle competition, RSU queueing, handover failure, packet loss, broader mobility trace를 포함해야 한다. 방법적으로는 multi-agent hierarchical RL, uncertainty-aware speed prediction, migration-risk-constrained reward, adaptive option discovery가 자연스러운 확장 방향이다.
 

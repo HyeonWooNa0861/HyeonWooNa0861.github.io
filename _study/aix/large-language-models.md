@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `3_Large_Language_Models.pdf`
 
-> **핵심:** **Decoder-only 모델이 생성에 적합한 이유는** 이전 token으로 다음 token을 예측하는 autoregressive 구조와 맞기 때문. **MoE의 핵심 장점은** 전체 capacity를 키우면서 token당 compute를 제한할 수 있다.
+> **핵심:** Decoder-only Transformer는 앞선 토큰으로 다음 토큰을 예측하는 자기회귀 생성과 구조가 맞는다. Mixture of Experts(MoE)는 토큰마다 일부 expert만 활성화해 전체 모델 용량을 늘리면서 토큰당 연산량을 제한한다.
 
 ## 전체 흐름
 

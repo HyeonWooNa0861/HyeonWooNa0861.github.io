@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `4_NLP_Transformer.pdf`
 
-> **핵심:** **Bag-of-Words의 한계는** 순서와 긴 문맥을 잘 반영하지 못한다. **LSTM이 RNN보다 나은 점은** gate로 장기 기억을 더 안정적으로 유지한다.
+> **핵심:** Bag-of-Words는 단어의 순서와 긴 문맥을 충분히 담지 못한다. RNN은 순차 정보를 처리하지만 장기 의존성에 약할 수 있으며, LSTM은 gate를 사용해 정보를 더 오래 유지하도록 설계되었다.
 
 ## 전체 흐름
 

@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 13](https://www.youtube.com/watch?v=8G-OsDs1RLI){:target="_blank" rel="noopener"}
 - Source Slides: [lecture 13.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx){:target="_blank" rel="noopener"}
 
-> **Preview note:** 이 원본은 외부 PPTX이고 공식 PowerPoint for the web iframe이 제공되지 않아 블로그의 문서 모달에서 직접 미리보기하지 않는다. `Source Slides`를 새 탭에서 열어야 하며, 아래 번호는 PPTX package의 1-based slide 순서를 따른다. 정적 viewer에서는 animation 단계나 equation image가 누락될 수 있다.
+> **슬라이드 열람:** 원문 PPTX는 `Source Slides`에서 새 탭으로 연다. 슬라이드 번호는 원본 파일의 순서를 따르며, 정적 뷰어에서는 애니메이션이나 수식 이미지가 빠질 수 있다.
 
 > **핵심:** Lecture 13은 score-based model의 출발점을 정리한다. 지금까지의 generative model은 크게 세 가지 표현으로 나눌 수 있다.
 
@@ -87,7 +87,7 @@ $$
 
 ### Vanilla Fisher score matching에서 implicit objective까지 (작성자 보충)
 
-> **Source mapping:** Official Lecture 13 PPTX slides 15--17의 score field 비교, Fisher divergence, score-matching 계산식에 대응한다. Exact Office Viewer slide ID로 전체 44개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 13 PPTX slides 15--17의 score field 비교, Fisher divergence, score-matching 계산식.
 
 $$x\in\Omega\subseteq\mathbb R^d$$, data density를 $$p(x)$$, 그 정확한 score를 $$s_p(x)=\nabla_x\log p(x)$$, 학습 가능한 vector field를 $$s_\theta(x)\in\mathbb R^d$$라 하자. Vanilla Fisher score-matching objective는 두 score field의 평균 제곱 거리를 측정한다.
 
@@ -161,7 +161,7 @@ $$
 
 ### 핵심 수식 유도: denoising target이 perturbed score를 주는 이유
 
-> **Source mapping:** Official Lecture 13 PPTX slides 18--23의 denoising score-matching 식에 대응한다. Exact Office Viewer slide ID로 전체 44개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 13 PPTX slides 18--23의 denoising score-matching 식.
 
 Gaussian corruption $$q_\sigma(\tilde x\mid x)=\mathcal N(x,\sigma^2I)$$에서 log-density를 $$\tilde x$$로 미분하면
 
@@ -181,7 +181,7 @@ $$
 
 ### Tweedie 공식과 sliced objective (작성자 보충; 강의의 denoising/sliced 식 전개)
 
-> **Source mapping:** Official Lecture 13 PPTX slides 26--27의 Tweedie 공식과 slides 28--31의 sliced score-matching objective에 대응한다. Exact Office Viewer slide ID로 전체 44개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 13 PPTX slides 26--27의 Tweedie 공식과 slides 28--31의 sliced score-matching objective.
 
 Gaussian observation $$Y=X+\varepsilon$$, $$\varepsilon\sim\mathcal N(0,\sigma^2I)$$에서 noisy marginal을 $$p_Y$$라 두면 Tweedie의 공식은
 
@@ -225,7 +225,7 @@ $$
 
 ### Disjoint-support mixture에서 mode weight가 score에서 사라지는 이유 (작성자 보충)
 
-> **Source mapping:** Official Lecture 13 PPTX slides 42--43의 two-mode disjoint-support mixture와 Langevin slow-mixing 식에 대응한다. Exact Office Viewer slide ID로 전체 44개 슬라이드를 열어 시각 감사했으며, 해당 formula/media object와 XML을 교차 확인했다. Static viewer capture에서 드러나지 않는 animation 단계는 package object와 XML을 기준으로 확인했다.
+> **강의 자료:** Lecture 13 PPTX slides 42--43의 two-mode disjoint-support mixture와 Langevin slow-mixing 식.
 
 정규화된 두 density $$p_1,p_2$$와 무차원 mixture weight $$0<\pi<1$$에 대해
 

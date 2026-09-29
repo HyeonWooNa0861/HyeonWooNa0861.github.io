@@ -32,7 +32,7 @@ Source PDF: `Autonomous_Driving_1.pdf`
 | Occupancy representation | 28–29 | 3D cell의 occupied/free/semantic 상태는 원본 도표와 설명을 따른다. 확률 모델이나 loss 식은 원본에 없다. |
 | Fleet data engine | 34–36 | Mining → labeling → training → redeployment 폐루프는 원본의 시스템 흐름이며, 성능 향상을 보장하는 수학적 정리는 아니다. |
 
-> **핵심:** **Modular ADS의 기본 module은** localization, perception, prediction, planning, control. **RSS의 핵심 목적은** learned policy와 별도로 검증 가능한 safety envelope 제공.
+> **핵심:** 모듈형 자율주행 시스템은 localization, perception, prediction, planning, control을 연결해 주행을 결정한다. RSS는 학습된 주행 정책과 별도로 검증할 수 있는 안전 경계를 제시한다.
 
 ## 전체 흐름
 

@@ -9,7 +9,7 @@ permalink: /posts/harness-engineering-self-improvement/
 section: ai-agents
 ---
 
-이 글은 Lilian Weng의 글 <a href="https://lilianweng.github.io/posts/2026-07-04-harness/" target="_blank" rel="noopener">Harness Engineering for Self-Improvement</a>를 바탕으로, AI agent를 둘러싼 harness가 왜 recursive self-improvement 논의에서 중요한지 정리한 해설이다. 원문은 harness를 단순한 prompt wrapper가 아니라 모델이 도구를 호출하고, context를 관리하고, 파일에 상태를 남기고, 결과를 평가하며, 실패를 다시 학습하는 실행 시스템으로 본다.
+Lilian Weng의 <a href="https://lilianweng.github.io/posts/2026-07-04-harness/" target="_blank" rel="noopener">Harness Engineering for Self-Improvement</a>는 recursive self-improvement를 모델 자체의 변화만으로 설명하지 않는다. 원문에서 harness는 단순한 prompt wrapper가 아니라 모델의 도구 호출, context 관리, 상태 기록, 평가와 실패 학습을 조직하는 실행 시스템이다.
 
 핵심은 모델 자체의 지능만 보지 말고, 모델 주변의 실행 환경을 함께 봐야 한다는 점이다. coding agent가 실제 repository에서 파일을 읽고 수정하고 테스트를 실행할 수 있는 이유는 base model만으로 설명되지 않는다. 어떤 도구를 언제 쓸 수 있는지, 실패 로그를 어디에 남기는지, sub-agent를 어떻게 띄우고 회수하는지, 어떤 검증을 통과해야 완료로 볼 것인지가 모두 harness의 설계 문제다.
 
@@ -131,7 +131,7 @@ AlphaEvolve는 candidate program과 prompt를 저장하고, LLM이 diff를 만�
 
 ## 12. 읽을 때 잡아야 할 관점
 
-이 글은 agent를 “똑똑한 모델 하나”로 이해하는 관점을 교정한다. 실제 성능은 base model, tool, context, workflow, memory, evaluator, permission이 결합된 system-level 결과다.
+Agent의 성능을 “똑똑한 모델 하나”로만 설명하면 실행 환경의 역할이 빠진다. 실제 성능은 base model, tool, context, workflow, memory, evaluator, permission이 결합된 system-level 결과다.
 
 따라서 AI agent를 설계하거나 사용할 때는 다음 질문을 먼저 봐야 한다.
 

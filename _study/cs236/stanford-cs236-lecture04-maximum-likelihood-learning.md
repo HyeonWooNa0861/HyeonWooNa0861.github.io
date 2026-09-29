@@ -35,7 +35,7 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 | 6 | Generalization | 강한 모델이 training data를 외우지 않도록 bias-variance, regularization, validation을 어떻게 써야 하는가? |
 | 7 | Conditional generation | 전체 joint distribution이 아니라 $$P_{\theta}(Y\mid X)$$만 학습해도 되는 경우는 무엇인가? |
 
-### 원문 25페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -44,7 +44,7 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 12–19 | Monte Carlo, coin MLE, gradient, SGD | pp. 12–13과 p. 19의 estimator 조건을 아래에서 대조 |
 | pp. 20–25 | inductive bias, generalization, conditional likelihood | 원리·모델 선택 설명이며 p. 24의 conditional loss는 joint와 같은 log-rule 적용 |
 
-> 위 범위는 공식 PDF 25페이지 전체를 page-scoped text와 page image로 대조한 결과다. 원문의 정리·항등식과 finite-sample/optimization 한계에 대한 작성자 보충을 구분했다.
+> 강의 자료의 정리·항등식과 finite-sample·optimization 한계에 관한 보충 해설을 구분한다.
 
 ## 핵심 내용
 
@@ -81,7 +81,7 @@ $$
 
 마지막으로 강의는 likelihood가 전부는 아니라고 강조한다. $$P_{\theta}(x)\approx 0$$인 실제 데이터가 있으면 log-loss가 크게 증가하므로 forward KL은 data support를 넓게 덮으려는 성질을 가진다. 반대로 reverse KL은 model이 만든 샘플 쪽을 더 보게 되어 mode-seeking 성향이 강해질 수 있다. 또 높은 log-likelihood가 항상 더 그럴듯한 sample을 의미하지는 않는다. 모델 family가 너무 약하면 bias가 크고, 너무 강하면 variance와 overfitting이 커진다. 따라서 hypothesis space 제한, weight sharing, regularization, held-out validation이 함께 필요하다.
 
-### 원문 수식 감사: KL divergence가 음수가 아닌 이유
+### KL divergence가 음수가 아닌 이유
 
 > **근거 위치:** 공식 Lecture 4 PDF p. 7의 Jensen 부등식을 이용한 KL non-negativity proof.
 
@@ -100,7 +100,7 @@ $$
 
 ### 핵심 수식 유도: forward KL에서 MLE까지
 
-> **근거 위치:** 공식 Lecture 4 PDF pp. 9–11의 forward KL, expected log-likelihood, empirical MLE 전개. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 4 PDF pp. 9–11의 forward KL, expected log-likelihood, empirical MLE 전개.
 
 이 전환은 **정확한 등식과 Monte Carlo 근사**를 구분해야 한다. $$P_{\mathrm{data}}$$가 $$P_\theta$$에 대해 절대연속이고 기대값이 유한하다고 가정하면,
 
@@ -122,9 +122,9 @@ $$
 
 로 근사한다. $$N$$과 $$j$$는 무차원 표본 수와 index다. 유한 데이터, 비-IID 표본, train/test shift에서는 이 empirical objective가 population KL을 잘 대표하지 않을 수 있다. 또한 data support에서 $$P_\theta(x)=0$$이면 KL이 무한대가 되므로 support 조건이 핵심이다.
 
-### 원문 수식 감사: Monte Carlo gradient estimator
+### Monte Carlo gradient estimator
 
-> **근거 위치:** 공식 Lecture 4 PDF pp. 12–13의 Monte Carlo estimator·unbiasedness·variance 조건과 p. 19의 stochastic-gradient 적용. Page-scoped PDF text extraction으로 확인했다. 미분과 기댓값 교환 조건 및 failure 사례는 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 4 PDF pp. 12–13의 Monte Carlo estimator·unbiasedness·variance 조건과 p. 19의 stochastic-gradient 적용. 미분과 기댓값 교환 조건 및 failure 사례는 작성자 보충이다.
 
 > **슬라이드 원문 정리:** $$x^{(1)},\ldots,x^{(T)}\overset{\mathrm{iid}}{\sim}P$$와 integrable한 $$g$$에 대해
 
@@ -238,4 +238,3 @@ Lecture 4의 핵심은 generative model 학습을 "데이터 분포와 모델 �
 
 - [Lecture video](https://www.youtube.com/watch?v=bt3dqcbMLa0){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture04-maximum-likelihood-learning.pdf`

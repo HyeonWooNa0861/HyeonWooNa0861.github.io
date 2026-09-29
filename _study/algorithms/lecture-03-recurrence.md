@@ -20,7 +20,7 @@ keywords:
 
 Source PDF: [3 Recurrence.pdf](/assets/pdfs/study/algorithms/03-recurrence.pdf)
 
-이 글은 국민대학교 Youngwook Kim 교수의 *Algorithms* 3강 PDF(30쪽)를 바탕으로 작성한 학습 노트다. 슬라이드의 빈칸형 예제에는 풀이와 검산을 채우고, 원문에서 생략하거나 단순화한 가정은 **작성자 보충** 또는 **Source Check**로 분리했다. 점근 표기법의 의미는 [2강 Algorithm Analysis](/study/algorithms/lecture-02-algorithm-analysis/)를 먼저 참고할 수 있다.
+재귀 호출의 전체 비용은 하위 문제의 크기와 개수, 각 호출에서 드는 추가 비용에 따라 달라진다. 국민대학교 Youngwook Kim 교수의 *Algorithms* 3강 PDF(30쪽)에 나온 점화식과 빈칸형 예제를 풀이·검산하고, 원문에서 생략하거나 단순화한 가정은 **작성자 보충** 또는 **Source Check**로 구분한다. 점근 표기법이 낯설다면 [2강 Algorithm Analysis](/study/algorithms/lecture-02-algorithm-analysis/)가 출발점이다.
 
 > **핵심:** 재귀 알고리즘의 실행량은 작은 입력에서의 실행량을 이용한 **점화식**으로 나타난다. 점화식을 푸는 대표 경로는 전개하여 합을 계산하기, 답을 추측한 뒤 귀납적으로 검증하기, 조건을 확인하고 마스터 정리를 적용하기다. 셋 모두 **기저 조건과 정의역**을 확인해야 한다.
 

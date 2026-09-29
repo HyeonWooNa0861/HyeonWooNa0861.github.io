@@ -31,8 +31,6 @@ ComVi는 일반 동영상 플랫폼의 댓글을 영상의 현재 장면과 의�
 
 ## 핵심 내용
 
-이 절은 원문 전체를 그대로 옮긴 번역이 아니라, ComVi 논문의 문제 설정부터 사용자 연구까지를 한국어로 다시 따라갈 수 있게 재구성한 번역형 해설이다. 시스템명, 수식, 실험 조건, DOI와 같은 고유 정보는 원문 기준을 유지했다.
-
 초록과 서론에서 논문은 일반 동영상 댓글이 영상 재생 맥락과 분리되어 있다는 문제를 제기한다. YouTube식 댓글 목록은 현재 장면과 관계없는 내용이나 spoiler를 먼저 노출할 수 있고, Danmaku식 댓글은 timestamp metadata가 있는 경우에 강하지만 일반 댓글에는 그대로 적용하기 어렵다. ComVi는 timestamp가 없는 일반 댓글을 영상 장면과 의미적으로 맞는 시간에 배치하고, 사용자가 읽을 수 있는 방식으로 정렬하는 시스템으로 제안된다.
 
 ComVi의 방법은 댓글과 영상 timestamp 사이의 audio-visual correlation을 계산하는 데서 시작한다. Subtitle 또는 speech-to-text 결과는 audio context를 제공하고, shot segmentation과 video captioning 결과는 visual context를 제공한다. 댓글과 각 timestamp의 관련성은 Sentence-BERT embedding 기반 cosine similarity로 계산되며, threshold를 넘는 댓글은 timed comment 후보가 된다. 명시적인 timestamp reference가 있는 댓글은 작성자의 의도를 우선해 해당 시점에 직접 배치된다.

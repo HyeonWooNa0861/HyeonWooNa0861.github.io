@@ -65,6 +65,8 @@ Application $$n$$은 $$\{r_n,d_n,G_n\}$$으로 표현된다. $$r_n$$은 offloadi
 
 SATA는 event-driven 방식으로 동작한다. Application arrival event 또는 task completion event가 발생하면, 각 application의 topological/priority list $$\xi_n$$에서 실행 가능한 ready task를 골라 ready queue $$Q^r$$에 넣는다. Priority는 모든 task가 maximum processing capability를 갖는 ECD에 병렬 실행된다고 가정해 추정한 latest completion time $$F^{lct}_{ni}$$의 ascending order로 정한다. Agent가 $$Q^r$$에서 task 하나를 꺼내는 순간이 MDP time step $$\tau$$가 된다.
 
+Ready queue에 들어간 시점은 배치 결정을 내릴 수 있는 시점이지 실제 실행 시작 시점이 아니다. 원문의 Eq. (12)에 따르면 실행은 부모 task의 결과 데이터가 도착하고 대상 ECD의 대기열이 준비된 뒤에 시작한다.
+
 State는 MEC system의 계산 지연과 전송 지연을 요약하는 vector다. 원문은 $$s_\tau=(\hat{\hat{B}}, B^m_n, \hat{\hat{\delta}}, w_r, w_m)$$ 형태로 설명한다. 여기서 $$\hat{\hat{B}}$$는 ECD 간 transmission rate의 합, $$B^m_n$$은 MU와 covering ECD 사이의 transmission rate, $$\hat{\hat{\delta}}$$는 ECD processing capacity의 합, $$w_r$$는 ready queue $$Q^r$$의 total workload, $$w_m$$은 모든 ECD computing queue의 total workload다. 이 값들은 decision controller가 수집하는 real-time status information에서 관찰 가능하다고 둔다.
 
 Action은 현재 ready task를 어느 ECD에 배치할지 고르는 vector $$a_\tau=(a^0,a^1,\ldots,a^M)$$다. Dummy task를 제외한 task는 network 안의 ECD 중 하나에 scheduling될 수 있고, 각 $$a^m$$은 binary variable이다. Reward는

@@ -27,11 +27,11 @@ Source Materials:
   <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
 
-이 자료는 기말고사 대비용 최종 정리본이다. 문제의 중심은 `AIX Quiz Review Before Midterm`, `AIX Midterm Review`, `AIX Quiz Review After Midterm`에 두되, 새로 정리한 `Robotics 1`, `Robotics 2`는 imitation learning과 robotics scaling 파트를 깊게 이해하기 위한 핵심 보강 자료로 사용한다.
+기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행한다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룬다.
 
-핵심 전략은 간단하다. 중간고사 전 범위는 기본 개념과 오답 제거 기준을 빠르게 확인하고, 중간고사 이후 범위는 LLM, 자율주행, imitation learning, robotics scaling을 더 깊게 본다.
+중간고사 전 범위에서는 기본 개념과 오답을 가르는 기준을 확인한다. 중간고사 이후 범위에서는 LLM, 자율주행, imitation learning, robotics scaling의 연결을 더 깊게 살펴본다.
 
-> **핵심:** **Linear Regression** $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. **Logistic Regression** linear score에 sigmoid를 붙여 class probability로 해석한다.
+> **핵심:** 이 강의의 최소제곱 선형 회귀는 $$\hat{y}=w^Tx+b$$로 값을 예측하고, 잔차 $$y-\hat{y}$$의 제곱을 손실로 사용한다. 로지스틱 회귀는 선형 점수를 sigmoid에 통과시켜 이진 분류 확률로 해석한다.
 
 ## 전체 흐름
 

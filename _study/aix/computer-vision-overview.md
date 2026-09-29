@@ -18,7 +18,7 @@ keywords:
 
 Source PDF: `03_Computer_Vision.pdf`
 
-> **핵심:** **CNN이 이미지에 잘 맞는 이유는** locality, weight sharing, spatial hierarchy를 활용하기 때문. **ImageNet이 중요했던 이유는** 대규모 benchmark가 deep CNN 학습과 비교를 가능하게 했기 때문.
+> **핵심:** CNN은 국소 연결, 가중치 공유, 공간적 계층 구조를 활용해 이미지의 패턴을 학습한다. ImageNet은 대규모 데이터와 공통 벤치마크를 제공해 깊은 CNN을 학습하고 비교하는 기반이 되었다.
 
 ## 전체 흐름
 

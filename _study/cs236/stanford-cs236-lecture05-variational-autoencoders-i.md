@@ -35,7 +35,7 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 | 6 | Monte Carlo와 importance sampling | Uniform sampling은 왜 variance가 크고, $$q(z)$$로 중요한 completion을 더 자주 뽑아야 하는가? |
 | 7 | ELBO 도입 | Jensen's inequality로 log marginal likelihood의 계산 가능한 lower bound를 어떻게 만드는가? |
 
-### 원문 29페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -44,7 +44,7 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 15–20 | marginalization, naive Monte Carlo, importance sampling | pp. 15–19의 evidence 식과 p. 20의 log bias를 아래에서 유도 |
 | pp. 21–29 | Jensen, ELBO, KL gap, posterior approximation | pp. 21–25의 bound와 equality condition을 아래에서 유도; pp. 26–29는 해석·요약 |
 
-> 위 범위는 공식 PDF 29페이지 전체를 page-scoped text와 page image로 대조한 결과다. Delta-method 오차와 finite-variance 조건은 원문 식의 적용 범위를 명확히 한 작성자 보충이다.
+> Delta-method 오차와 finite-variance 조건은 강의 자료의 식이 성립하는 범위를 설명하는 보충 해설이다.
 
 ## 핵심 내용
 
@@ -152,7 +152,7 @@ $$
 
 ### 핵심 수식 유도: Jensen 부등식으로 ELBO 만들기
 
-> **근거 위치:** 공식 Lecture 5 PDF pp. 21–23의 Jensen/ELBO 전개와 p. 25의 $$\log p=\mathrm{ELBO}+\mathrm{KL}$$ 분해. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 5 PDF pp. 21–23의 Jensen/ELBO 전개와 p. 25의 $$\log p=\mathrm{ELBO}+\mathrm{KL}$$ 분해.
 
 이는 **하한(bound)** 이며 등식은 특정 조건에서만 성립한다. $$q(z\mid x)>0$$ whenever $$p_\theta(x,z)>0$$이고 관련 기대값이 유한하다고 가정한다.
 
@@ -260,4 +260,3 @@ Lecture 5의 핵심은 VAE를 "simple prior + neural conditional + hard posterio
 
 - [Lecture video](https://www.youtube.com/watch?v=MAGBUh77bNg){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture05-variational-autoencoders-i.pdf`

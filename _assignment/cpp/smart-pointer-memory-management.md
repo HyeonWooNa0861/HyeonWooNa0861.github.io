@@ -12,7 +12,7 @@ Source PDF: `Smart Pointer, RAII, Reference Counting.pdf`
 
 ## 과제 개요
 
-이 과제는 C++의 스마트 포인터가 왜 필요한지, `std::shared_ptr`의 reference counting이 어떻게 동작하는지, 그리고 JVM의 Garbage Collection과 어떤 차이가 있는지 정리한 내용이다. C++은 직접 메모리를 제어할 수 있다는 장점이 있지만, 그만큼 메모리 누수, dangling pointer, double deletion 같은 위험도 함께 가진다.
+C++은 메모리를 직접 제어할 수 있지만 누수, dangling pointer, double deletion 같은 위험도 함께 가진다. 스마트 포인터는 소유권을 명시해 이 위험을 줄인다. 특히 `std::shared_ptr`의 reference counting은 JVM의 Garbage Collection과 해제 시점 및 순환 참조 처리 방식이 다르다.
 
 **핵심 메시지:** 스마트 포인터 선택의 기준은 편의성이 아니라 소유권이다. 단독 소유는 `unique_ptr`, 실제 공유 소유는 `shared_ptr`, 공유 객체에 대한 비소유 관찰과 순환 참조 차단은 `weak_ptr`로 표현해야 한다.
 

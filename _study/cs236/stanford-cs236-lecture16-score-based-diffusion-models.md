@@ -23,9 +23,9 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 16](https://www.youtube.com/watch?v=VsllsC2JMGY){:target="_blank" rel="noopener"}
 - Source Slides: [lecture16-2023-comp.pptx](https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx){:target="_blank" rel="noopener"}
 
-> **Preview note:** 이 원본은 외부 PPTX이고 공식 PowerPoint for the web iframe이 제공되지 않아 블로그의 문서 모달에서 직접 미리보기하지 않는다. `Source Slides`를 새 탭에서 열어야 하며, 아래 번호는 PPTX package의 1-based slide 순서를 따른다. 정적 viewer에서는 animation 단계나 equation image가 누락될 수 있다.
+> **슬라이드 열람:** 원문 PPTX는 `Source Slides`에서 새 탭으로 연다. 슬라이드 번호는 원본 파일의 순서를 따르며, 정적 뷰어에서는 애니메이션이나 수식 이미지가 빠질 수 있다.
 
-> **Source verification scope:** 공식 PPTX 48장을 Office Viewer의 정확한 slide ID로 모두 render해 완성된 layout을 시각 검사했고, formula object와 embedded equation media도 함께 대조했다. Slide 41의 staged animation은 OOXML animation state와 완성 상태를 보여 주는 slide 45를 교차 확인했다.
+> **수식 읽기:** 강의 PPTX의 수식 개체를 기준으로 설명한다. Slide 41의 단계별 애니메이션은 완성 상태를 보여 주는 slide 45와 함께 읽어야 한다.
 
 > **핵심:** Lecture 16은 score-based model과 diffusion model을 하나의 관점으로 묶는다. Density $$p(x)$$ 자체보다 시간별 score field를 학습하고, noise에서 출발한 reverse process로 sample을 만드는 것이 핵심이다.
 
@@ -74,7 +74,7 @@ Hierarchical VAE 관점에서는 $$x_1,\ldots,x_T$$가 latent variables이고, f
 
 ### Score matching: Fisher divergence에서 implicit objective까지 (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slide 3의 explicit/implicit score-matching 식과 formula object를 대조했다. 아래 유도 기준은 [Hyvärinen (2005)](https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf){:target="_blank" rel="noopener"}의 표준 score matching objective다.
+> **강의 자료:** Lecture 16 slide 3의 explicit/implicit score-matching 식. 아래 유도는 [Hyvärinen (2005)](https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf){:target="_blank" rel="noopener"}의 표준 score matching objective를 따른다.
 
 Data density를 $$p(x)$$, model score를 $$s_\theta(x)$$, data score를 $$s_p(x)=\nabla_x\log p(x)$$라 하자. 두 score의 Fisher divergence는
 
@@ -129,7 +129,7 @@ $$
 
 ### Denoising score matching: marginal과 conditional target의 동치 (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slide 4의 denoising score-matching 식과 formula object를 대조했다.
+> **강의 자료:** Lecture 16 slide 4의 denoising score-matching 식.
 
 Gaussian corruption을 $$q_\sigma(\tilde x\mid x)=\mathcal N(x,\sigma^2I)$$라 하고 perturbed marginal을
 
@@ -187,7 +187,7 @@ $$
 
 ### NCSN multiscale objective와 noise 표기의 경계 (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit에서 official Lecture 16의 NCSN/annealed Langevin recap 구간과 수식 object를 대조했다. 표기는 [NCSN](https://arxiv.org/pdf/1907.05600){:target="_blank" rel="noopener"}의 multiscale denoising objective를 따른다.
+> **강의 자료:** Lecture 16의 NCSN/annealed Langevin 복습 구간. 표기는 [NCSN](https://arxiv.org/pdf/1907.05600){:target="_blank" rel="noopener"}의 multiscale denoising objective를 따른다.
 
 Noise scale $$\sigma_1>\cdots>\sigma_L>0$$마다 corrupted sample $$\tilde x=x+\sigma_i z$$를 만들면 NCSN loss의 한 convention은
 
@@ -229,7 +229,7 @@ $$
 
 ### DDPM joint, hierarchical-VAE ELBO, Gaussian KL (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slides 11, 14, 18--20의 forward marginal, reverse Gaussian, hierarchical-VAE ELBO, noise prediction과 ancestral update를 formula/media object와 대조했다. 유도는 [DDPM](https://arxiv.org/pdf/2006.11239){:target="_blank" rel="noopener"}의 notation을 따른다.
+> **강의 자료:** Lecture 16 slides 11, 14, 18--20의 forward marginal, reverse Gaussian, hierarchical-VAE ELBO, noise prediction과 ancestral update. 유도는 [DDPM](https://arxiv.org/pdf/2006.11239){:target="_blank" rel="noopener"}의 notation을 따른다.
 
 Forward Markov chain과 learned reverse joint는 각각
 
@@ -368,7 +368,7 @@ $$t,T,\alpha_t,\beta_t,\bar\alpha_t$$는 무차원이고, 표준화된 image와 
 
 ### Continuous DSM과 backward Euler--Maruyama 부호 (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slides 24--25의 continuous-time SDE와 reverse process를 formula object와 대조했다. 이론적 기준은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}다.
+> **강의 자료:** Lecture 16 slides 24--25의 continuous-time SDE와 reverse process. 이론적 기준은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}다.
 
 강의의 drift-free toy case를 일반적인 scalar diffusion coefficient로 쓰면
 
@@ -436,7 +436,7 @@ $$x$$의 단위가 $$U$$이고 time 단위가 $$T_0$$이면 $$f$$는 $$U/T_0$$, 
 
 ### Probability-flow ODE: same marginal과 invertibility (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slides 29--31의 probability-flow ODE와 likelihood를 formula/media object와 대조했다. Same-marginal 구성은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}, ODE flow와 instantaneous change of variables는 [Neural ODE](https://arxiv.org/pdf/1806.07366){:target="_blank" rel="noopener"}를 따른다.
+> **강의 자료:** Lecture 16 slides 29--31의 probability-flow ODE와 likelihood. Same-marginal 구성은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}, ODE flow와 instantaneous change of variables는 [Neural ODE](https://arxiv.org/pdf/1806.07366){:target="_blank" rel="noopener"}를 따른다.
 
 Forward SDE의 Fokker--Planck equation은 scalar $$g(t)$$일 때
 
@@ -521,7 +521,7 @@ $$
 
 ### Sampling speed claim의 성격
 
-> **Source mapping:** 48-slide visual audit 중 slide 34의 ParaDDPM iteration/error display와 slide 37의 latent VAE diagram·KL relation을 확인했다.
+> **강의 자료:** Lecture 16 slide 34의 ParaDDPM iteration/error display와 slide 37의 latent VAE diagram·KL relation.
 
 ParaDDPM은 전체 reverse trajectory $$\mathbf X=(x_0,\ldots,x_T)$$를 순차적으로 한 번에 확정하는 대신, 현재 trajectory에서 reverse update operator $$\mathcal F$$를 병렬 평가하는 fixed-point iteration으로 정리할 수 있다.
 
@@ -560,7 +560,7 @@ Progressive distillation의 **두 step을 한 step으로 합치는 2-to-1 절차
 
 ### Classifier-free guidance의 Bayes 전개와 convention (작성자 보충)
 
-> **Source mapping:** 48-slide visual audit 중 official Lecture 16 slides 40, 45--46의 conditional denoising과 CFG 식을 completed layout, embedded equation media와 formula object로 대조했다. Slide 41의 staged animation은 OOXML과 completed slide 45를 함께 확인했다. CFG convention의 원 출처는 [Classifier-Free Diffusion Guidance](https://arxiv.org/pdf/2207.12598){:target="_blank" rel="noopener"}다.
+> **강의 자료:** Lecture 16 slides 40, 45--46의 conditional denoising과 CFG 식. Slide 41의 단계별 애니메이션은 완성 상태의 slide 45와 연결된다. CFG convention의 원 출처는 [Classifier-Free Diffusion Guidance](https://arxiv.org/pdf/2207.12598){:target="_blank" rel="noopener"}다.
 
 Slide 40의 conditional denoising objective를 DDPM noise-prediction notation으로 쓰면
 

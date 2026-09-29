@@ -19,9 +19,7 @@ keywords:
 
 Source PDF: `02-sensors.pdf`
 
-이 글은 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 2강 자료를 바탕으로, 자율주행 센서가 perception의 입력을 만드는 과정과 camera·LiDAR·RADAR의 상호보완 관계를 복습하기 좋게 재구성한 노트다.
-
-강의 슬라이드가 직접 제시한 개념·수치·사례를 중심에 두고, 실제 구현에서 필요한 calibration, synchronization, failure condition과 system safety 관점은 **작성자 보충**으로 구분해 공식 기술 자료를 함께 연결한다.
+자율주행의 perception은 camera·LiDAR·RADAR가 각기 다른 물리 신호로 관측한 장면에서 출발한다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 2강을 바탕으로 센서의 상호보완 관계를 살펴본다. Calibration, synchronization, 실패 조건과 시스템 안전성에 관한 설명은 강의의 개념·수치·사례와 구분해 **작성자 보충**으로 표시하고 공식 기술 자료를 연결했다.
 
 > **핵심:** 자율주행 센서 선택의 목적은 가장 뛰어난 센서 하나를 고르는 것이 아니다. 운행 환경에서 필요한 색·형태·거리·속도 정보를 안정적으로 확보하고, 서로 다른 실패 조건을 가진 센서를 조합해 perception의 신뢰도를 높이는 것이 핵심이다.
 

@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-16.pdf`
 
-> **핵심:** **ERM이 최소화하는 값은** training data 전체의 평균 loss, 즉 empirical risk. **ERM에서 i.i.d. 가정이 필요한 이유는** empirical risk가 true risk의 근사로 의미를 가지려면 data가 같은 분포에서 독립적으로 나와야 하기 때문.
+> **핵심:** ERM은 training data의 평균 loss인 empirical risk를 최소화한다. 이 평균을 true risk의 근사로 해석하려면 표본이 같은 분포에서 독립적으로 뽑혔다는 i.i.d. 가정이 중요하다.
 
 ## 전체 흐름
 

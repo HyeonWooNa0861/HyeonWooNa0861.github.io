@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-07.pdf`
 
-> **핵심:** **determinant의 기하학적 의미는** 부피/면적 변화율. **$$\det(A)=0$$이면** 가역 불가능, full rank 아님.
+> **핵심:** Determinant는 선형 변환이 면적이나 부피를 얼마나 바꾸는지 나타낸다. $$\det(A)=0$$이면 변환이 차원을 압축하므로 행렬은 full rank가 아니며 역행렬도 없다.
 
 ## 전체 흐름
 

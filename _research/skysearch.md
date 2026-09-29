@@ -31,8 +31,6 @@ SkySearch는 대규모 위성 이미지 DB에서 현재 기상 상황과 유사�
 
 ## 핵심 내용
 
-이 절은 SkySearch 논문의 원문 전체를 그대로 옮긴 번역이 아니라, 논문 전체 흐름을 한국어로 재구성한 번역형 해설이다. Satellite video, self-supervised video compression, query augmentation, MBI, LPIPS 같은 핵심 용어와 수치는 원문 기준을 유지했다.
-
 논문은 기상 예보에서 과거의 유사한 위성 영상 사례를 빠르게 찾는 문제를 다룬다. 현재 구름 패턴과 유사하게 전개된 과거 사례를 찾으면 forecaster가 수치예보모델만으로 설명하기 어려운 cloud dynamics를 보조적으로 판단할 수 있다. 하지만 위성 비디오는 라벨이 없고, 고해상도이며, 시간적 변화를 포함하고, 예보 업무에서는 몇 초 안에 결과가 필요하므로 일반 image retrieval보다 어렵다.
 
 SkySearch는 위성 이미지 시퀀스를 satellite video로 보고, self-supervised 방식으로 256차원 embedding으로 압축한다. 시간적으로 가까운 비디오는 positive pair, 먼 비디오는 negative pair로 두어 embedding space에서 가까운 시간 패턴은 가깝게, 먼 패턴은 멀게 배치한다. 이 구조는 별도의 similarity label 없이도 기상적으로 자연스러운 temporal proximity를 supervision으로 활용한다.

@@ -21,7 +21,7 @@ QECO-Adapt는 기존 QECO의 D3QN/LSTM 구조와 action space를 유지하면서
 
 ## 핵심 내용
 
-QECO-Adapt 자료는 외부 논문 번역본이 아니라 자체 연구 정리 자료다. 핵심은 dense Mobile Edge Computing 환경에서 기존 QECO의 구조를 크게 바꾸지 않고 초기 수렴 손실과 dropped-task 누적을 줄일 수 있는지를 검토하는 것이다.
+자체 연구인 QECO-Adapt의 핵심 질문은 dense Mobile Edge Computing 환경에서 기존 QECO의 구조를 크게 바꾸지 않고 초기 수렴 손실과 dropped-task 누적을 줄일 수 있는지다.
 
 문제 상황은 edge node에 사용자가 몰릴 때 발생한다. 모바일 디바이스가 task를 edge로 offloading하면 로컬 연산 부담은 줄어들 수 있지만, edge backlog와 transmission delay가 커지면 deadline miss와 dropped task가 증가한다. 특히 학습 초기에는 policy가 안정되지 않아 불리한 offloading action이 누적될 수 있다.
 

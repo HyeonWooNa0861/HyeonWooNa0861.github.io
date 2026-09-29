@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-08.pdf`
 
-> **핵심:** **Cholesky 분해가 가능한 행렬은** SPD 행렬. **대각화 가능 조건은** 선형 독립인 고유벡터가 충분히 있음.
+> **핵심:** Cholesky 분해는 symmetric positive definite(SPD) 행렬에 적용할 수 있다. 행렬이 대각화되려면 공간을 이루는 만큼 선형 독립인 고유벡터가 있어야 한다.
 
 ## 전체 흐름
 

@@ -111,7 +111,7 @@ BS power budget이 커지면 feasible region이 넓어져 web MOS가 증가한�
 
 원문 reward 설명은 constraint indicator를 “constraint가 만족되면 $$\chi_i=1$$, 아니면 0”으로 정의한 뒤 MOS 합에서 $$\chi_i$$가 곱해진 항을 빼도록 적는다. 이 정의를 문자 그대로 적용하면 constraint를 더 많이 만족할수록 reward가 더 크게 감소하므로, 바로 다음 문장의 `constraint adherence` 목적과 반대가 된다.
 
-일반적인 penalty 설계라면 violation일 때 indicator가 1이 되거나, 만족 시 1인 indicator에는 반대 부호 구조가 필요하다. 따라서 구현 전 저자 코드 또는 정정 자료로 $$\chi_i$$ 정의를 확인해야 한다. 이 글은 원문의 수식을 임의로 수정하지 않고, 재현 과정에서 확인해야 할 표기 문제로 남긴다.
+일반적인 penalty 설계라면 violation일 때 indicator가 1이 되거나, 만족 시 1인 indicator에는 반대 부호 구조가 필요하다. 따라서 구현 전 저자 코드 또는 정정 자료로 $$\chi_i$$ 정의를 확인해야 한다. 원문 수식은 그대로 제시하되, 이 표기 불일치는 재현 과정에서 확인해야 한다.
 
 ## 논문의 핵심 기여
 

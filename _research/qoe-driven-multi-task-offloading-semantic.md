@@ -62,7 +62,7 @@ QoE metric은 execution latency, execution energy consumption, task performance�
 
 ### $$\mu_n$$ trade-off와 그림 해석
 
-이 글에서 $$\mu_n$$은 "클수록 항상 좋다"거나 "작을수록 항상 빠르다"는 단일 방향 변수가 아니다. 원문의 semantic extraction factor 그림은 $$\mu_n$$이 extraction overhead, transmitted data, task accuracy 사이의 trade-off를 바꾼다는 점을 보여준다. 더 강한 semantic extraction은 전송해야 할 data volume을 줄일 수 있지만, semantic extraction 자체의 계산 overhead와 task accuracy 변화가 함께 발생한다.
+$$\mu_n$$은 "클수록 항상 좋다"거나 "작을수록 항상 빠르다"는 단일 방향 변수가 아니다. 원문의 semantic extraction factor 그림은 $$\mu_n$$이 extraction overhead, transmitted data, task accuracy 사이의 trade-off를 바꾼다는 점을 보여준다. 더 강한 semantic extraction은 전송해야 할 data volume을 줄일 수 있지만, semantic extraction 자체의 계산 overhead와 task accuracy 변화가 함께 발생한다.
 
 따라서 논문은 $$\mu_n$$을 고정 hyperparameter로 두지 않고 action space에 포함한다. Semantic-aware MAPPO는 각 UE의 task type, channel condition, queue, energy constraint, accuracy requirement를 관측한 뒤 $$\mu_n$$과 resource allocation을 동시에 선택한다. 연구자의 해석으로는, 이 논문에서 semantic awareness의 실질적 의미는 "semantic compression을 적용했다"가 아니라, $$\mu_n$$이 QoE objective 안에서 동적으로 조절된다는 데 있다.
 
@@ -76,7 +76,7 @@ MAPPO를 선택한 이유는 multi-agent setting에서 discrete decision과 cont
 
 실험은 SST-2 text classification, CIFAR-10 image classification, VQAv2 VQA를 사용한다. Text semantic extraction에는 BERT 기반 text embedding, image semantic extraction에는 Vision Transformer(ViT), VQA에는 BERT와 ViT 및 cross-modal fusion 구조를 사용한다. 계산량은 text classification 3.72 GFLOPs, image classification 8.43 GFLOPs, VQA 8.31 GFLOPs로 보고된다. Training 설정은 AdamW, learning rate $$3\times10^{-5}$$, batch size 50, weight decay $$1\times10^{-4}$$이며, 실험 platform은 NVIDIA RTX 4090과 Intel i9-13900K다.
 
-주요 결과는 semantic-aware MAPPO가 semantic-unaware approach 대비 사용자 QoE를 12.68% 향상시킨다는 것이다. Bandwidth가 증가하면 QoE가 개선되고, noise power가 커지거나 user 수가 늘어나면 congestion과 channel degradation 때문에 QoE가 낮아지는 경향이 나타난다. 그럼에도 semantic-aware MAPPO는 D3QN, local execution, semantic-unaware baselines보다 높은 QoE를 유지한다.
+논문은 semantic-aware MAPPO의 사용자 QoE가 semantic-unaware MAPPO보다 12.68%, semantic-unaware D3QN보다 14.48% 높다고 보고한다. Bandwidth가 증가하면 QoE가 개선되고, noise power가 커지거나 user 수가 늘어나면 congestion과 channel degradation 때문에 QoE가 낮아지는 경향이 나타난다. 그럼에도 semantic-aware MAPPO는 비교한 D3QN, local execution, semantic-unaware baselines보다 높은 QoE를 유지한다.
 
 또한 user preference figure는 QoE weight가 달라질 때 policy가 latency, energy, accuracy의 균형을 다르게 잡을 수 있음을 보여준다. 예를 들어 지연 가중치가 커지면 더 빠른 execution을 선호하고, accuracy 가중치가 커지면 더 높은 task performance를 위해 semantic extraction과 resource allocation을 다르게 선택한다. 이는 논문이 주장하는 personalized QoE 확장 가능성의 근거다.
 

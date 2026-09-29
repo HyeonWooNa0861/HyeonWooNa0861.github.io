@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 두 번째 강의는 Lecture 1의 self-attention과 Transformer 구조를 복습한 뒤, 원래 Transformer에서 변형되어 온 핵심 구성요소를 다룬다. 먼저 position embedding을 설명한다.
+> **핵심:** Self-attention에는 토큰 순서가 자체적으로 들어 있지 않으므로 위치 정보를 별도로 주어야 한다. 위치 표현, normalization, attention 계산·메모리 비용을 바꾸는 방법이 Transformer의 여러 모델 계열을 이해하는 열쇠다.
 
 ## 전체 흐름
 
@@ -38,7 +38,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-두 번째 강의는 Lecture 1의 self-attention과 Transformer 구조를 복습한 뒤, 원래 Transformer에서 변형되어 온 핵심 구성요소를 다룬다. 먼저 position embedding을 설명한다. Self-attention은 모든 token을 직접 연결하므로 RNN처럼 순서가 자연스럽게 들어오지 않는다. 원 논문은 position별 embedding을 input token embedding에 더하는 방식을 사용했고, learned embedding과 sinusoidal embedding을 모두 시험했다. Sinusoidal 방식은 omega_i = 10000^{-2i/d_model} 형태의 frequency를 사용해 sine/cosine 값을 만들며, position m과 n의 dot product가 relative distance에 의존하도록 한다. 이후 T5의 relative position bias, ALiBi의 deterministic linear bias, RoPE(Rotary Position Embeddings)가 소개된다. RoPE는 query와 key를 position에 따른 각도로 회전시켜 QK^T 안에서 relative distance가 직접 반영되게 하며, 현대 모델에서 많이 쓰인다고 설명한다.
+Self-attention은 모든 토큰을 직접 연결하지만 RNN처럼 순서를 자연스럽게 전달하지는 않는다. 원래 Transformer는 위치별 embedding을 입력 토큰 embedding에 더했고, 학습형과 sinusoidal 방식을 모두 시험했다. Sinusoidal 방식은 omega_i = 10000^{-2i/d_model} 꼴의 주파수로 sine/cosine 값을 만들어 서로 다른 위치의 내적에 상대 거리가 반영되게 한다. 이후 등장한 T5 relative position bias와 ALiBi는 attention score에 거리 정보를 더한다. 현대 모델에서 널리 쓰이는 RoPE(Rotary Position Embeddings)는 query와 key를 위치별 각도로 회전시켜 QK^T에 상대 거리를 직접 반영한다.
 
 다음으로 normalization과 attention 변형을 다룬다. 원 Transformer의 add and norm은 post-norm 형태였지만 현대 모델은 sublayer 앞에서 normalization을 수행하는 pre-norm을 주로 사용한다고 설명한다. 또한 LayerNorm은 mean/std와 gamma, beta를 쓰지만, RMSNorm은 root mean square로 x를 normalize하고 gamma만 학습해 비슷한 convergence 특성을 더 적은 parameter로 얻는다고 한다. Attention은 sequence length n에 대해 O(n^2) complexity를 갖기 때문에 LongFormer와 sliding window attention처럼 local attention을 쓰거나, 일부 layer에서 local/global attention을 섞는 방식이 소개된다. Mistral은 sliding window attention 예시로 나오며, KV cache 메모리를 줄이기 위해 key/value projection을 head 사이에 공유하는 MQA와 GQA도 설명된다. MQA는 모든 head가 같은 K/V projection을 공유하고, GQA는 group 단위로 K/V를 공유한다.
 

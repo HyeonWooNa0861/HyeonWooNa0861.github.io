@@ -32,8 +32,6 @@ QuaRot은 LLM의 output을 바꾸지 않는 회전 변환으로 activation outli
 
 ## 핵심 내용
 
-이 절은 원문 전체를 그대로 옮긴 번역이 아니라, QuaRot 논문의 문제 설정, 방법, 실험, 한계를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
 QuaRot이 출발하는 문제는 activation outlier다. Weight-only quantization은 LLM memory footprint를 줄일 수 있지만, activation과 KV cache가 high precision으로 남으면 end-to-end inference 비용은 여전히 크다. 특히 4-bit activation quantization에서는 일부 feature의 큰 값이 전체 quantization range를 지배해 작은 값들의 표현 정확도를 떨어뜨린다.
 
 논문은 이 문제를 channel별 예외 처리 대신 rotation으로 해결한다. Randomized Hadamard transform을 hidden state에 적용하면 특정 channel에 몰린 큰 값이 여러 coordinate로 퍼져 outlier가 완화된다. Transformer block의 computational invariance를 이용하면, 이런 회전은 weight matrix에 흡수되거나 attention/FFN 내부의 online transform으로 배치되어 model output을 유지할 수 있다.

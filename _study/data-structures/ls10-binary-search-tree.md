@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS10_binary_search_tree.pdf`
 
-> **핵심:** **BST 조건은** 왼쪽은 작고 오른쪽은 크며 모든 서브트리도 BST. **`findHelper`의 종료 조건은** `rt == null` 또는 key 일치.
+> **핵심:** BST에서는 각 노드의 왼쪽에 더 작은 key, 오른쪽에 더 큰 key가 놓이고 모든 서브트리도 같은 조건을 만족한다. `findHelper`는 탐색 위치가 `rt == null`이 되거나 원하는 key를 만나면 종료한다.
 
 ## 전체 흐름
 

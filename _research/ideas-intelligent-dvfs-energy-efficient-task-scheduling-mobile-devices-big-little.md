@@ -100,7 +100,7 @@ DQN은 3-layer fully connected network, replay buffer, target network, $$\epsilo
 | 평가 항목 | 주요 관찰 |
 |---|---|
 | Workload response | 낮은 utilization에서는 LITTLE core를 우선하고, 부하가 높아지면 big core와 offloading을 더 사용함 |
-| Deadline behavior | 정규화 utilization 0.375까지 task drop이 거의 없고 이후 자원 한계로 drop이 증가함 |
+| Deadline behavior | Fig. 5에서 정규화 utilization 0.375의 task drop은 2.588%이며, 0.5에서는 17.770%로 증가함. 낮은 부하에서도 drop이 0은 아님 |
 | Edge-only 비교 | 두 task set 모두에서 약 84.26% 낮은 energy consumption을 보고함 |
 | Local-only 비교 | Task Set I과 II에서 각각 81.13%, 79.18% 개선을 보고함 |
 | Random policy 비교 | Task Set I과 II에서 각각 62.8%, 59.75% 개선을 보고함 |
@@ -110,7 +110,7 @@ DQN은 3-layer fully connected network, replay buffer, target network, $$\epsilo
 
 원문은 최대 75%의 energy reduction과 task drop 감소를 핵심 결과로 제시한다. 다만 workload intensity와 RRLO/DRLDO 감소율의 대응에는 원문 내부 불일치가 있다. Abstract와 contribution 설명은 computationally intensive workload를 54%와 72%, light workload를 69%와 75%에 연결한다. 반면 Section V의 Fig. 8 설명은 더 무거운 Task Set I에 69%와 75%, 더 가벼운 Task Set II에 54%와 72%를 연결한다.
 
-따라서 네 수치 자체와 최대 75% 개선은 원문 보고값으로 유지하되, workload label별 정확한 대응은 저자 코드와 figure data로 재확인할 필요가 있다. 이 글에서는 상충하는 두 설명 중 하나를 임의로 확정하지 않는다.
+따라서 네 수치 자체와 최대 75% 개선은 원문 보고값으로 유지하되, 상충하는 설명 때문에 workload label별 정확한 대응은 저자 코드와 figure data로 재확인하기 전까지 확정할 수 없다.
 
 ### 논문의 의의
 

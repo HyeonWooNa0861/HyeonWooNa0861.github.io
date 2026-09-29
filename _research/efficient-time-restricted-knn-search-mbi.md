@@ -32,8 +32,6 @@ keywords:
 
 ## 핵심 내용
 
-이 절은 MBI 논문 원문을 그대로 옮긴 번역이 아니라, 논문의 전체 주장을 한국어로 다시 따라갈 수 있게 구성한 번역형 해설이다. Time-Restricted kNN, m-AkNN, Multi-Level Block Indexing, $$\tau$$ threshold와 같은 핵심 용어와 수식은 원문 의미를 유지했다.
-
 논문은 고차원 embedding 데이터에서 kNN 검색을 수행할 때, similarity 조건뿐 아니라 timestamp나 수치 속성 범위 조건이 함께 붙는 상황을 다룬다. 일반 ANN index는 전체 database에서 가까운 vector를 빠르게 찾는 데 적합하지만, 사용자가 특정 기간 안의 결과만 요구하면 검색 후 filter 과정에서 많은 후보가 버려질 수 있다. 반대로 먼저 시간 구간을 잘라 brute-force로 찾으면 구간이 길 때 계산량이 커진다.
 
 이 문제를 해결하기 위해 논문은 Multi-Level Block Indexing(MBI)을 제안한다. Timestamp 순서로 정렬된 데이터를 leaf block에 넣고, 인접 block을 계층적으로 합쳐 parent block을 만든다. 각 block은 자체 graph index를 가진다. Query time window가 짧으면 작은 block을 사용하고, 길면 큰 block을 사용하므로 BSBF와 SF의 약점을 절충할 수 있다.

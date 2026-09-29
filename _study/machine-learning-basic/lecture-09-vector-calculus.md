@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-09.pdf`
 
-> **핵심:** **gradient가 중요한 이유는** loss를 줄이는 update 방향을 계산하기 위해. **Taylor series의 역할은** 복잡한 함수를 기준점 근처에서 근사.
+> **핵심:** Gradient는 loss를 줄이기 위한 업데이트 방향을 정하는 데 쓰인다. Taylor series는 복잡한 함수를 기준점 근처에서 다항식으로 근사한다.
 
 ## 전체 흐름
 

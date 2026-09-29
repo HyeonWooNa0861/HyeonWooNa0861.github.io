@@ -36,7 +36,7 @@ keywords:
 | 6 | Neural parameterization | Logistic regression과 neural network는 table 대신 어떤 functional form을 가정하는가? |
 | 7 | Continuous variables | density, Gaussian mixture, VAE preview는 같은 확률적 틀을 어떻게 확장하는가? |
 
-### 원문 29페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -45,7 +45,7 @@ keywords:
 | pp. 15–24 | generative/discriminative, Naive Bayes, logistic regression | pp. 16–17과 pp. 21–22의 모델 식·조건을 아래에서 대조 |
 | pp. 25–29 | neural parameterization, continuous density, VAE preview | pp. 25–26의 비선형 경계는 아래에서 유도; 나머지는 정의·예시 중심 |
 
-> 위 범위는 공식 PDF 29페이지 전체를 page-scoped text와 page image로 대조한 결과다. 원문 모델 식은 아래에 페이지를 붙였고, smoothing·단위·failure 조건은 작성자 보충으로 구분했다.
+> 강의 PDF의 모델 식에는 해당 페이지를 표시했다. Smoothing·단위·적용 실패 조건은 원문 설명과 구분한 보충 해설이다.
 
 ## 핵심 내용
 
@@ -75,7 +75,7 @@ Continuous variable도 같은 원리가 적용된다. Table은 불가능하므�
 
 ### 핵심 수식 유도: 확률 chain rule
 
-> **근거 위치:** 공식 Lecture 2 PDF p. 8의 chain rule. Page-scoped PDF text extraction으로 수식과 조건을 확인했다.
+> **근거 위치:** 공식 Lecture 2 PDF p. 8의 chain rule.
 
 이 식은 모델의 근사가 아니라 **확률의 곱셈 법칙에서 나오는 항등식**이다. 조건부확률이 정의되도록 분모가 되는 주변확률이 0이 아닌 영역에서 다음이 성립한다.
 
@@ -89,9 +89,9 @@ $$
 
 을 얻는다. 여기서 $$x_{1:n}$$은 전체 변수열, $$x_{1:i-1}$$은 현재 변수보다 앞선 값들이며 모두 무차원 확률변수 표기다. 이 항등식에는 독립 가정이 없다. $$p(x_i\mid x_{1:i-1})\approx p(x_i\mid x_{i-1})$$처럼 history를 줄이는 순간부터는 **Markov 근사**가 된다. 실제 데이터에 긴 의존성이 있으면 이 근사는 실패하며, chain rule 자체가 parameter 수를 줄여 주지도 않는다.
 
-### 원문 수식 감사: Bayes rule, Bayesian network, Naive Bayes
+### Bayes rule, Bayesian network, Naive Bayes
 
-> **근거 위치:** 공식 Lecture 2 PDF p. 8(Bayes rule), pp. 10–11(BN factorization과 DAG 정의), pp. 16–17(Naive Bayes 독립 가정·posterior). Page-scoped PDF text extraction으로 확인했다. 조건부 독립의 실패와 smoothing 설명은 작성자 보충이다.
+> **근거 위치:** 공식 Lecture 2 PDF p. 8(Bayes rule), pp. 10–11(BN factorization과 DAG 정의), pp. 16–17(Naive Bayes 독립 가정·posterior). 조건부 독립의 실패와 smoothing 설명은 작성자 보충이다.
 
 > **슬라이드 원문 정리:** $$p(x)>0$$이면 Bayes rule은
 

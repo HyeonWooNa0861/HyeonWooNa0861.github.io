@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: [6 Perception (4).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-06-perception-04.pdf" | relative_url }})
 
-이 글은 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 6강을 바탕으로, [5강의 Fast R-CNN]({{ "/study/autonomous-driving/lecture-05-perception-03/" | relative_url }})에서 남은 region proposal 병목을 **RPN**으로 해결하고, 검출 대상의 크기 차이를 **FPN**으로 다루는 흐름을 재구성한 노트다. 강의 그림의 수치와 이후 논문의 구현 세부는 구분해서 설명한다.
+[5강의 Fast R-CNN]({{ "/study/autonomous-driving/lecture-05-perception-03/" | relative_url }})은 영역별 CNN 계산을 줄였지만 region proposal을 만드는 별도 단계는 남겼다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 6강에서는 이를 **RPN**으로 통합하고, 다양한 크기의 물체를 **FPN**으로 처리하는 흐름을 다룬다. 강의 그림의 수치와 이후 논문의 구현 세부는 구분한다.
 
 > **핵심:** Faster R-CNN은 별도의 Selective Search 대신 공유 CNN feature 위에서 RPN이 objectness와 anchor별 box 보정을 예측한다. 그래도 깊은 feature map 하나만 사용하면 작은 물체의 공간 정보가 부족할 수 있다. FPN은 높은 층의 의미 정보와 낮은 층의 위치 해상도를 top-down·lateral 연결로 합쳐 여러 크기의 물체를 처리한다.
 

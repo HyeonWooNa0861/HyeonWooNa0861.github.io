@@ -9,7 +9,7 @@ permalink: /posts/building-a-second-brain-knowledge-action/
 section: knowledge-productivity
 ---
 
-Tiago Forte의 *Building a Second Brain*은 메모를 많이 모으는 방법보다, 정보를 실제 결과물로 전환하는 개인 지식 관리 시스템을 설명한다. 이 글은 한국어판의 들어가는 글과 1장부터 10장까지를 검토하고, CODE와 PARA를 중심으로 학습·연구·글쓰기 작업에 적용할 수 있도록 재구성한 해설이다.
+Tiago Forte의 *Building a Second Brain*은 메모를 많이 모으는 방법보다, 정보를 실제 결과물로 전환하는 개인 지식 관리 시스템을 설명한다. 자료 범위는 한국어판의 들어가는 글과 1장부터 10장까지다.
 
 > **핵심 메시지:** Second Brain의 목적은 정보 보관량을 늘리는 것이 아니라, 공명하는 자료를 수집하고 실행 단위로 정리한 뒤 핵심을 추출해 실제 결과물로 표현하는 데 있다. CODE는 이 흐름을 만들고 PARA는 현재 행동 가능성을 기준으로 자료의 위치를 정한다.
 

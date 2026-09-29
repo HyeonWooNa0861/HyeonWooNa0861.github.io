@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS15_quick_sort_R1.pdf`
 
-> **핵심:** **partition의 반환값은** 피벗의 최종 위치. **Lomuto 방식의 피벗은** 강의 기준 배열의 마지막 원소 `A[r]`.
+> **핵심:** Partition은 피벗을 최종 위치에 놓고 그 위치를 반환한다. 이 강의의 Lomuto 방식에서는 배열의 마지막 원소 `A[r]`을 피벗으로 사용한다.
 
 ## 전체 흐름
 

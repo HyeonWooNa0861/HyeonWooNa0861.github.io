@@ -36,7 +36,7 @@ Source PDFs:
 
 이번 범위의 중심은 sorting, hashing, graph이며, 서술형은 heap sort, 그래프 표현 및 순회, 최단 경로를 직접 추적하고 설명하는 능력이 중요하다.
 
-> **핵심:** **Sorting** 알고리즘별 시간복잡도, stable 여부, in-place 여부를 조건과 함께 외운다. **Heap sort** max heap을 만든 뒤 root와 마지막 원소를 바꾸며 오른쪽 sorted area를 키운다.
+> **핵심:** 정렬 알고리즘은 시간복잡도뿐 아니라 stable·in-place 여부와 그 조건을 함께 비교해야 한다. Heap sort는 먼저 max heap을 만들고, root를 마지막 원소와 교환하며 오른쪽의 정렬 완료 영역을 넓힌다.
 
 ## 전체 흐름
 
@@ -382,9 +382,9 @@ target -> prev[target] -> ... -> source
 | 선택 구조 | queue | minDistVertex 또는 min-heap |
 | 갱신 | $$d[v]=d[u]+1$$ | $$D[v]=D[u]+w(u,v)$$ |
 
-## 5. MST는 어디까지 볼 것인가
+## 5. MST와 최단 경로의 비교
 
-사용자가 지정한 서술형 중심은 최단 경로까지다. 다만 그래프 객관식에서 Prim과 Dijkstra 비교가 나올 수 있으므로 최소한 다음만 확인한다.
+이 자료의 서술형 대비 범위는 최단 경로까지다. 그래프 알고리즘을 비교할 때는 Prim과 Dijkstra가 무엇을 최소화하는지도 함께 확인한다.
 
 | 비교 | Dijkstra | Prim |
 |---|---|---|

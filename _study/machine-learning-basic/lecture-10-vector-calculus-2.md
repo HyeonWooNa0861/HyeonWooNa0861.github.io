@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-10.pdf`
 
-> **핵심:** **backpropagation의 수학적 기반은** chain rule. **automatic differentiation의 두 흐름은** forward pass와 backward pass.
+> **핵심:** Backpropagation은 chain rule을 이용해 출력에서 입력 방향으로 gradient를 전파한다. 강의에서 다루는 reverse-mode automatic differentiation은 계산값을 만드는 forward pass와 gradient를 누적하는 backward pass로 이루어진다.
 
 ## 전체 흐름
 

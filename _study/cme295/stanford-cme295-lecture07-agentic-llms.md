@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 이 강의는 이전 강의의 reasoning model과 GRPO를 짧게 복습한 뒤, LLM이 학습 시점의 지식에 갇혀 있다는 문제에서 출발한다. 모델 가중치를 계속 재학습하는 방식은 회귀 위험과 유지보수 비용이 크고, 모든 최신 정보를 긴 프롬프트에 넣는 방식은 컨텍스트 길이, needle-in-a-haystack 성능 저하, 토큰 비용 때문에 부적절하다.
+> **핵심:** 학습이 끝난 LLM은 이후의 정보를 자동으로 알 수 없고, 긴 프롬프트에 모든 지식을 넣기도 어렵다. RAG는 필요한 문서를 검색해 답변에 연결하고, tool calling은 모델이 외부 기능을 사용하게 하며, 에이전트는 이 두 능력을 여러 단계의 작업으로 조직한다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-이 강의는 이전 강의의 reasoning model과 GRPO를 짧게 복습한 뒤, LLM이 학습 시점의 지식에 갇혀 있다는 문제에서 출발한다. 모델 가중치를 계속 재학습하는 방식은 회귀 위험과 유지보수 비용이 크고, 모든 최신 정보를 긴 프롬프트에 넣는 방식은 컨텍스트 길이, needle-in-a-haystack 성능 저하, 토큰 비용 때문에 부적절하다. 그래서 RAG는 질문에 필요한 관련 문서만 검색해 프롬프트를 보강하고 답을 생성하는 retrieve, augment, generate 절차로 제시된다.
+학습이 끝난 LLM의 가중치에는 이후의 정보가 자동으로 반영되지 않는다. 가중치를 계속 갱신하면 회귀 위험과 유지보수 비용이 생기고, 모든 최신 정보를 긴 프롬프트에 넣으면 컨텍스트 길이와 토큰 비용, 긴 문맥에서의 정보 검색 성능이 문제가 된다. RAG는 질문에 필요한 문서만 찾아 프롬프트에 더한 뒤 답을 만드는 retrieve–augment–generate 절차로 이 문제를 다룬다.
 
 RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 나누고 임베딩을 만든 뒤, candidate retrieval에서는 bi-encoder와 cosine similarity, approximate nearest neighbor, BM25 또는 하이브리드 검색으로 후보를 줄인다. 이어 reranking에서는 query와 chunk를 함께 넣는 cross-encoder로 더 정밀한 relevance score를 만들며, NDCG, reciprocal rank, precision@k, recall@k, MTEB 같은 기준으로 retriever를 평가한다. 강의는 chunk size, overlap, embedding size, context를 붙이는 방법, prompt caching 같은 실무적 선택도 다룬다.
 

@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-14.pdf`
 
-> **핵심:** **gradient descent update는** $$x_{i+1}=x_i-\gamma_i\nabla f(x_i)$$. **step size가 너무 작으면** 수렴이 느려진다.
+> **핵심:** Gradient descent는 $$x_{i+1}=x_i-\gamma_i\nabla f(x_i)$$에 따라 해를 갱신한다. Step size $$\gamma_i$$가 너무 작으면 한 번에 이동하는 거리가 짧아져 수렴이 느려진다.
 
 ## 전체 흐름
 

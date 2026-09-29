@@ -32,8 +32,6 @@ GPTQ는 거대 GPT 계열 모델을 재학습 없이 3-4비트 weight로 압축�
 
 ## 핵심 내용
 
-이 절은 원문 전체를 축어적으로 옮긴 번역본이 아니라, GPTQ 논문의 문제 설정부터 방법, 실험, 한계까지를 한국어로 따라 읽을 수 있게 재구성한 번역형 해설이다. 논문 고유명사, 수식 기호, 모델명, 실험 수치는 원문 기준을 유지했다.
-
 GPTQ가 다루는 문제는 거대 생성형 Transformer의 추론 비용이다. GPT/OPT/BLOOM 계열 모델은 parameter 수가 커질수록 weight memory만으로도 단일 GPU 용량을 넘기 쉽고, 여러 GPU에 나누어 실행하면 비용과 운영 복잡도가 커진다. 논문은 이러한 문제를 재학습 없는 one-shot PTQ로 줄이려 한다.
 
 방법의 출발점은 layer-wise reconstruction이다. 각 linear layer에서 $$WX$$와 $$\widehat{W}X$$의 차이를 줄이도록 quantized weight를 선택하며, 단순 nearest rounding이 아니라 Hessian 정보를 사용해 양자화 error를 남은 weight에 보상한다. 이는 OBQ의 아이디어지만, 원래 OBQ는 계산량과 메모리 접근 패턴 때문에 GPT 규모에 그대로 쓰기 어렵다.

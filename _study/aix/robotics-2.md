@@ -33,7 +33,7 @@ Source PDF: `Robotics_2.pdf`
 | Physical RL과 simulation ecosystem | 35–39 | Real-world RL, digital twins/cousins, 세 입력의 결합은 원본 설명이며 성능 보장 정리는 아니다. |
 | Physical Turing test와 장기 horizon | 41–44 | Milestone과 timeline은 원본의 전망이며 수학적 예측 모델이 아니다. |
 
-> **핵심:** **robotics scaling thesis** LLM의 scaling recipe가 robotics에도 적용될 수 있다는 주장. **three-phase recipe** pre-training, action fine-tuning, physical RL.
+> **핵심:** Robotics scaling thesis는 LLM의 규모 확장 전략을 로봇 학습에도 적용할 수 있다는 주장이다. 강의는 이를 pre-training, action fine-tuning, physical RL의 세 단계로 설명한다.
 
 ## 전체 흐름
 

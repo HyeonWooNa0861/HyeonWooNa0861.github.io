@@ -69,7 +69,7 @@ G-TORA는 세 단계로 구성된다.
 2. Supervised GNN training: graph instance와 GA label을 이용해 GNN을 학습한다.
 3. Online inference: base station이 현재 graph를 입력하면 GNN이 빠르게 offloading decision을 출력한다.
 
-Genetic algorithm은 chromosome으로 offloading assignment를 encoding하고, response delay의 inverse를 fitness로 사용한다. Roulette selection, crossover, mutation을 통해 label quality를 높인다. GA는 느리지만 offline label generator로 사용되므로, online stage에서는 GNN inference만 수행한다.
+Genetic algorithm은 chromosome으로 offloading assignment를 encoding한다. 본문은 fitness가 response delay에 반비례한다고 설명하지만, Algorithm 1에는 chromosome index $$k$$를 쓰는 $$\mathrm{Eval}(Q^k)=\beta(1-\beta)^{k-1}$$가 제시되며 delay를 $$k$$에 대응시키는 방법이 없다. 따라서 정확한 fitness label 생성식은 원문만으로 재현하기 어렵다. Roulette selection, crossover, mutation을 거쳐 label을 생성하고, online stage에서는 학습된 GNN으로 offloading을 결정한다.
 
 GNN은 task node feature $$(d_i,c_i)$$, service node feature $$f_j$$, edge feature인 transmission rate를 사용한다. 두 개의 graph convolution layer로 second-order neighborhood 정보를 모으고, MLP가 최종 offloading probability를 만든다. Training loss는 GA label과 GNN prediction 사이의 cross-entropy이며, optimizer는 Adam이다.
 

@@ -36,7 +36,7 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 | 7 | Autoencoder perspective | VAE objective는 reconstruction term과 prior regularization으로 어떻게 해석되는가? |
 | 8 | Research directions | Encoder, decoder, objective를 더 강하게 만드는 대표 방향은 무엇인가? |
 
-### 원문 26페이지 전수 대조
+### 강의 자료 범위
 
 | 공식 PDF 범위 | 대조한 내용 | 수식·증명 판단 |
 |---|---|---|
@@ -45,7 +45,7 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 17–21 | amortized inference, reconstruction-minus-KL | p. 20의 목적함수와 encoder 해석을 아래에서 대조 |
 | pp. 22–26 | summary와 research directions | 개념·문헌 안내 중심이며 새로운 증명 대상 없음 |
 
-> 위 범위는 공식 PDF 26페이지 전체를 page-scoped text와 page image로 대조한 결과다. Finite-$$K$$ unbiasedness와 variance rate는 작성자 보충임을 해당 절 제목에 명시했다.
+> Finite-$$K$$ unbiasedness와 variance rate는 강의 자료에 없는 보충 해설이며, 해당 절에서 구분해 설명한다.
 
 ### 중요 수식의 페이지-본문 대응표
 
@@ -60,7 +60,7 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 17–19 | $$x_i\mapsto\phi_i$$ amortized map과 amortized ELBO | `핵심 내용`의 amortized inference | 원문 개념과 목적함수의 재서술 |
 | p. 20 | reconstruction-minus-KL objective | `핵심 내용`, `핵심 수식 유도` | joint factorization에서 나오는 정확한 등식 |
 
-공식 PDF와 강의 영상은 공개 원문 링크이며, 아래의 local transfer source는 페이지 대조를 위한 로컬 audit copy다. 이 글은 슬라이드 문장을 연속 복제하지 않고 모델 정의와 목적함수를 학습용으로 재구성했다. 특히 estimator의 유한 표본 성질, total-derivative 전개, 적용 실패 조건은 슬라이드 원문이 아니라 **작성자 보충**이므로 원문의 주장으로 읽으면 안 된다.
+추정량의 유한 표본 성질, total-derivative 전개, 적용 실패 조건은 강의 자료의 모델 정의와 목적함수에서 출발한 **작성자 보충**이다. 원문에 직접 제시된 결과와 구분해 읽어야 한다.
 
 ## 핵심 내용
 
@@ -132,7 +132,7 @@ $$
 
 ### 핵심 수식 유도: ELBO 분해와 reparameterization
 
-> **근거 위치:** 공식 Lecture 6 PDF p. 8의 ELBO gap, pp. 15–16의 reparameterization과 Monte Carlo gradient, p. 20의 reconstruction-minus-KL 형태. Page-scoped PDF text extraction으로 확인했다.
+> **근거 위치:** 공식 Lecture 6 PDF p. 8의 ELBO gap, pp. 15–16의 reparameterization과 Monte Carlo gradient, p. 20의 reconstruction-minus-KL 형태.
 
 먼저 joint factorization $$p_\theta(x,z)=p(z)p_\theta(x\mid z)$$을 ELBO에 대입하면 다음 **정확한 항등식**을 얻는다.
 
@@ -277,4 +277,3 @@ Lecture 6의 핵심은 VAE가 "ELBO를 최적화하는 encoder-decoder generativ
 
 - [Lecture video](https://www.youtube.com/watch?v=8cO61e_8oPY){:target="_blank" rel="noopener"}
 - [Official slide PDF](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf){:target="_blank" rel="noopener"}
-- Local transfer source: `stanford/cs236/research_files/stanford-cs236-deep-generative-models-2023/slides/lecture06-variational-autoencoders-ii.pdf`

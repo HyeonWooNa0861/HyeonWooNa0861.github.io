@@ -155,7 +155,7 @@ RemoteLM은 aggregation 단계에서 충분한 정보가 있으면 최종 답변
 | MinionS 3B local | remote-only 성능의 93.4% 회복, cloud cost 16.6% 사용 |
 | 평균 cost reduction | MinionS는 remote-only 대비 평균 5.7배 비용 절감 |
 
-기존 Together AI blog의 요약 표현과 논문 표의 숫자는 약간 다르게 보일 수 있다. 이 글에서는 로컬 PDF의 arXiv v1 기준으로 8B local MinionS의 비용을 18.0%로 정리한다.
+8B local MinionS의 비용 18.0%는 arXiv v1 PDF의 표를 기준으로 한 수치다. Together AI 블로그의 요약 표현과는 다르게 보일 수 있다.
 
 ## 7. 설계 변수와 trade-off
 

@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 마지막 강의는 세 부분으로 구성된다. 첫 부분은 전체 수업 복습으로, tokenization과 word2vec에서 시작해 RNN의 long-range dependency 한계, self-attention, transformer encoder와 decoder, RoPE, grouped query attention, pre-norm, BERT, GPT, T5, mixture of experts, temperature sampling까지 이어진다.
+> **핵심:** 현대 LLM은 토큰 표현과 Transformer 구조 위에 효율적인 학습·추론 기법, 선호 조정, 검색·도구 사용, 평가 체계를 쌓아 발전했다. 마지막 강의는 이 흐름을 복습하고 멀티모달·diffusion 기반 언어 모델 등 이후의 연구 방향과 연결한다.
 
 ## 전체 흐름
 
@@ -37,7 +37,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-마지막 강의는 세 부분으로 구성된다. 첫 부분은 전체 수업 복습으로, tokenization과 word2vec에서 시작해 RNN의 long-range dependency 한계, self-attention, transformer encoder와 decoder, RoPE, grouped query attention, pre-norm, BERT, GPT, T5, mixture of experts, temperature sampling까지 이어진다. 이어 scaling law 관점에서 parameter 수와 token 수의 균형, 100B parameter 모델에는 최소 2T token 정도가 필요하다는 rule of thumb, FlashAttention의 HBM과 SRAM 최적화, data parallelism과 model parallelism을 복습한다.
+토큰화와 word2vec은 텍스트를 모델이 처리할 표현으로 바꾸고, RNN의 긴 의존성 문제는 self-attention과 Transformer로 이어진다. 강의는 encoder·decoder 구조에서 RoPE, grouped-query attention, pre-norm, BERT·GPT·T5, MoE와 temperature sampling까지 주요 변형을 다시 연결한다. 학습 규모에서는 파라미터 수와 토큰 수의 균형, 100B 파라미터에 최소 2T 토큰이라는 강의의 경험칙, FlashAttention의 HBM·SRAM 최적화, data/model parallelism을 복습한다.
 
 강의는 LLM 학습 과정을 pre-training, SFT, preference tuning으로 다시 정리한다. preference tuning에서는 LLM을 policy처럼 보고 reward model과 Bradley-Terry formulation을 사용하며, reward hacking을 막기 위해 base model 또는 이전 RL iteration에서 너무 멀어지지 않도록 한다. Reasoning model에서는 chain of thought 또는 hidden reasoning chain을 만들도록 RL을 사용하고, PPO와 달리 GRPO는 value model 없이 여러 completion의 상대 reward로 advantage를 계산한다. GRPO Done Right와 DAPO는 length bias를 줄이는 extension으로 언급된다. 이어 RAG, tool calling, agentic workflow, LLM-as-a-Judge, 주요 benchmark가 final exam 범위로 묶여 복습된다.
 

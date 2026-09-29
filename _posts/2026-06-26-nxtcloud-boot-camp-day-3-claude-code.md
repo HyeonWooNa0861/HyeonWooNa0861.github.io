@@ -13,9 +13,9 @@ section: nxtcloud-boot-camp
 
 ## 1. 교육 과정 개요
 
-nxtcloud Boot Camp 3일차는 Claude Code를 개발 작업에 적용하는 흐름을 정리한 자료다. 1일차와 2일차가 Amazon Bedrock 기반 모델 호출과 RAG 구조를 다루었다면, 3일차는 AI coding agent를 실제 개발 환경에서 어떻게 사용하고 통제할 것인지에 초점을 둔다.
+nxtcloud Boot Camp 3일차의 주제는 Claude Code다. 1·2일차의 Amazon Bedrock 모델 호출과 RAG에서 나아가, AI coding agent를 실제 개발 환경에서 어떻게 사용하고 통제할지 다룬다.
 
-이 글은 NxtCloud Workshop의 Claude Code 과정 URL을 참고자료로 보존하고, 공개적으로 확인 가능한 Anthropic Claude Code 공식 문서를 중심으로 3일차 학습 흐름을 재구성한 정리본이다. 원본 workshop 페이지는 현재 직접 본문 확인이 제한되어, 본문은 Claude Code의 agentic loop, 설치와 첫 세션, 프로젝트 컨텍스트, 권한 모드, MCP와 hooks, 실무 workflow를 중심으로 정리한다.
+Workshop 원문 페이지의 본문은 직접 확인할 수 없어 세부 실습 내용을 단정하지 않는다. Agentic loop, 첫 세션, 프로젝트 컨텍스트, 권한 모드, MCP·hooks, 실무 workflow의 설명은 Anthropic 공식 문서를 기준으로 하며, 공개 과정 URL은 과정 순서의 참고 근거다.
 
 ## 2. 전체 학습 흐름
 
@@ -112,8 +112,6 @@ Skills와 hooks도 workflow 표준화에 사용된다. Skill은 반복 가능한
 ## 10. 3일차 핵심 정리
 
 3일차의 핵심은 Claude Code를 단순한 코드 생성 도구가 아니라 개발 workflow를 수행하는 agent로 이해하는 것이다. Claude Code는 프로젝트를 읽고, 파일을 수정하고, 명령을 실행하고, 테스트로 결과를 확인할 수 있다. 이 능력을 제대로 활용하려면 명확한 작업 목표, 프로젝트 컨텍스트, 권한 설정, 검증 기준이 함께 필요하다.
-
-가장 중요한 결론은 다음과 같다.
 
 - Claude Code는 codebase context와 terminal tool을 결합한 agentic coding tool이다.
 - 좋은 요청은 작업 목적, 관련 범위, 성공 기준, 검증 명령을 포함한다.

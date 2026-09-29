@@ -31,8 +31,6 @@ keywords:
 
 ## 핵심 내용
 
-이 절은 원문 전체의 축어 번역이 아니라, 논문의 핵심 논지와 방법, 실험, 한계를 한국어로 이어 읽을 수 있게 정리한 번역형 해설이다. Most Replayed Data, dynamic programming, reward 설계와 같은 기술 용어는 원문 의미를 유지했다.
-
 논문은 자동 highlight video 생성에서 두 가지 요구가 동시에 필요하다고 본다. 하나는 시청자가 중요하다고 느끼는 장면을 고르는 것이고, 다른 하나는 사용자가 지정한 정확한 길이에 맞추는 것이다. 기존 방법은 frame importance가 높은 구간을 모으는 데 강하지만, 결과 길이가 임의로 정해지거나 너무 짧은 cut이 반복되어 맥락이 깨질 수 있다.
 
 제안 방법은 YouTube의 Most Replayed Data를 crowd-sourced attention signal로 사용한다. 많은 시청자가 다시 본 구간은 영상 안에서 관심도가 높은 순간일 가능성이 크다. 논문은 이 신호가 live chat frequency나 sound intensity보다 key moment를 더 안정적으로 반영할 수 있다고 보고, MRD를 highlight reward의 핵심 입력으로 사용한다.
@@ -145,7 +143,7 @@ R_{ctx}(d) =
 \end{cases}
 $$
 
-논문은 cinematographic principle을 참고해 $$\tau=8$$초를 권장 최소 segment 길이로 둔다. 이 설계는 높은 MRD peak만 짧게 찍고 넘어가는 편집을 피하게 만든다. 즉, 장면의 관심도뿐 아니라 시청자가 상황을 이해할 수 있는 최소 맥락을 함께 확보한다.
+논문은 cinematographic principle을 참고해 $$\tau=8$$초를 duration reward가 포화되는 기준으로 둔다. 8초 미만의 segment는 보상이 낮아지지만 선택 자체가 금지되지는 않는다. 따라서 8초는 짧은 cut을 억제하는 선호 길이이지, 각 segment의 최소 길이를 강제하는 제약은 아니다.
 
 최종 목표는 사용자가 지정한 길이만큼의 path 중 reward 합이 최대인 path를 찾는 것이다.
 
@@ -186,7 +184,7 @@ $$
 | 길이가 증가할수록 | 평균 segment 수와 segment duration이 함께 증가한다. |
 | 평균 MRD | 낮은 MRD 주변 구간도 포함되므로 전체 평균은 감소한다. |
 
-중요한 점은 모든 $$L_{user}$$ 조건에서 평균 segment duration이 8초 이상으로 유지되었다는 것이다. 이는 duration reward가 실제로 지나치게 짧은 cut을 억제했음을 보여준다.
+모든 $$L_{user}$$ 조건에서 평균 segment duration은 8초 이상이었다. 이는 duration reward가 평균적으로 짧은 cut을 억제했다는 결과이며, 모든 개별 segment가 8초 이상이라는 뜻은 아니다.
 
 사용자 지정 예시에서는 4분 24초, 7분 11초, 9분 19초, 10분 42초, 11분 57초 timestamp를 포함하도록 설정했다. 시스템은 해당 장면들을 반영하면서도 남은 길이를 1분 46초, 3분 33초, 6분 03초 부근의 높은 MRD peak로 채웠다. 이는 사용자의 의도와 crowd interest signal을 함께 사용하는 방식으로 해석할 수 있다.
 

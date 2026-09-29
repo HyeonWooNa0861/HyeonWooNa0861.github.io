@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `LS19_hash_search_2.pdf`
 
-> **핵심:** **Open Hashing과 Closed Hashing의 차이는** 외부 리스트 사용 vs 테이블 내부 probing. **chaining의 장점은** 삭제가 쉽고 load factor가 높아도 비교적 안정적.
+> **핵심:** Open Hashing은 충돌 원소를 외부 리스트에 연결하고, Closed Hashing은 테이블 내부에서 빈 위치를 탐색한다. Chaining은 삭제가 쉽고 load factor가 높아져도 비교적 안정적으로 동작한다.
 
 ## 전체 흐름
 

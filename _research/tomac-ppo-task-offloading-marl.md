@@ -33,7 +33,7 @@ TOMAC-PPO는 cloud-edge collaborative MEC의 task offloading과 resource allocat
 
 ## 핵심 내용
 
-이 논문은 cloud-edge collaborative MEC 환경에서 task offloading, resource scheduling, delay, energy, task drop을 하나의 joint optimization 문제로 묶고, edge server들을 agent로 둔 task-oriented multi-agent reinforcement learning 전략인 TOMAC-PPO를 제안한다. 단순히 "PPO를 MEC에 적용했다"는 수준이 아니라, task queue, wireless/wired transmission, node failure, delayed reward, task priority까지 포함해 offloading decision이 실제 service cost에 미치는 영향을 모델링한 점이 핵심이다.
+이 논문은 cloud-edge collaborative MEC 환경에서 task offloading, resource scheduling, delay, energy, task drop을 하나의 joint optimization 문제로 묶는 TOMAC-PPO를 제안한다. 초록은 edge server를 agent로 소개하지만, §4.3의 구체적 구성에서는 hop-based subnet마다 차수가 가장 높은 commentator node 하나를 agent로 선출하고 일반 node가 관측을 전달한다. Task queue, wireless/wired transmission, node failure, delayed reward, task priority까지 포함해 offloading decision이 service cost에 미치는 영향을 모델링한다.
 
 ## 논문 전개
 
@@ -67,7 +67,7 @@ Task class도 reward를 바꾼다. High-priority task는 energy term을 제외�
 
 ### TOMAC-PPO의 방법
 
-TOMAC-PPO는 edge server를 agent로 보고, 각 agent가 local observation과 synchronization message를 바탕으로 offloading/scheduling action을 선택하게 한다. Markov decision process는 fixed time slot 대신 task arrival과 processing event를 중심으로 구성된다. 이 설계는 병렬 task 처리와 delayed reward를 더 직접적으로 반영하려는 선택이다.
+TOMAC-PPO는 각 hop-based subnet의 commentator node를 agent로 선출하고, 일반 node의 관측과 synchronization message를 모아 offloading/scheduling action을 선택한다. Markov decision process는 fixed time slot 대신 task arrival과 processing event를 중심으로 구성된다. 이 설계는 병렬 task 처리와 delayed reward를 더 직접적으로 반영하려는 선택이다.
 
 Policy update는 PPO의 clipped objective `L^{CLIP}(\theta)`를 사용한다. 논문은 policy network를 gradient ascent로 갱신하고, value network와 target network update ratio `\sigma`를 함께 둔다. Algorithm 1의 주요 input은 training round `e_max`, pruning parameter `\varsigma`, learning rate `\alpha`, discount factor `\gamma`, target update ratio `\sigma`이며, output은 각 agent의 policy `\pi(a|s;\theta^j)`이다. 저자들은 알고리즘 복잡도를 agent 수 `n`과 training round `e_max`에 대해 `O(n e_max)`로 제시한다.
 

@@ -21,7 +21,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
-> **핵심:** 6강은 preference tuning과 RLHF를 바탕으로 reasoning model을 다룬다. 강의는 reasoning을 주로 math나 coding problem처럼 multi-step reasoning process가 필요한 문제를 푸는 능력으로 정의한다.
+> **핵심:** 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에서는 최종 답뿐 아니라 추론 과정에 사용할 계산량도 성능을 좌우한다. 정답을 검증할 수 있는 보상과 그룹 내 상대 보상을 이용하는 GRPO는 이러한 추론 능력을 학습하는 한 방법이다.
 
 ## 전체 흐름
 
@@ -38,7 +38,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 ## 핵심 내용
 
-6강은 preference tuning과 RLHF를 바탕으로 reasoning model을 다룬다. 강의는 reasoning을 주로 math나 coding problem처럼 multi-step reasoning process가 필요한 문제를 푸는 능력으로 정의한다. Vanilla LLM은 code/debugging, essay, poem generation에는 강하지만 limited reasoning, static knowledge cutoff, action 부재, free-form text 평가 어려움 같은 약점이 있다고 설명한다. Reasoning model은 바로 answer를 내기보다 reasoning chain을 먼저 생성하고 answer를 내며, chain-of-thought를 큰 규모로 확장한 아이디어와 연결된다. 더 많은 reasoning token은 더 많은 forward pass, 즉 더 많은 compute budget을 뜻한다고 설명된다.
+수학·코딩처럼 여러 단계를 거쳐야 하는 문제에는 답을 바로 내는 방식보다 중간 추론을 활용하는 방식이 도움이 될 수 있다. 강의는 일반 LLM이 코드 작성·디버깅·수필·시 창작에는 강해도 복잡한 추론, 고정된 지식 시점, 외부 행동의 부재, 자유 형식 출력 평가에서 제약을 갖는다고 설명한다. Reasoning model은 답 앞에 reasoning chain을 생성하는 방식으로 소개되며, chain-of-thought를 더 큰 규모로 확장한 발상과 이어진다. 추론 토큰이 늘어나면 생성 단계와 계산 비용도 증가한다.
 
 이후에는 reasoning 평가와 학습 방법을 정리한다. Coding benchmark로 HumanEval, CodeForces, SWE-bench가, math benchmark로 AIME와 GSM 8K가 언급된다. pass@k는 k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric이며, n개 sample 중 c개가 성공했을 때 1 - C(n-c, k) / C(n, k)로 유도된다. Temperature는 낮으면 diverse하지 않고 높으면 token quality가 흔들릴 수 있어 benchmark마다 명시되어야 하며, consensus@k와 self-consistency도 관련 metric으로 소개된다.
 

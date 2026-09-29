@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-17.pdf`
 
-> **핵심:** **회귀** $$x$$로 연속적인 $$y$$를 예측하는 문제. **Gaussian noise** $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$.
+> **핵심:** 회귀는 입력 $$x$$에서 연속적인 값 $$y$$를 예측하는 문제다. Gaussian noise를 가정하면 관측값은 $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$로 표현된다.
 
 ## 전체 흐름
 

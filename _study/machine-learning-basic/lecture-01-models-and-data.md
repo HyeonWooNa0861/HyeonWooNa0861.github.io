@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-01.pdf`
 
-> **핵심:** **feature vector란** 원본 데이터를 모델 입력용 수치 벡터로 표현한 것. **preprocessing이 중요한 이유는** 스케일과 품질을 맞춰 학습을 안정화하기 위해.
+> **핵심:** Feature vector는 원본 데이터를 모델이 입력받을 수 있는 수치 벡터로 표현한 것이다. Preprocessing은 feature의 스케일과 품질을 정리해 학습을 안정화한다.
 
 ## 전체 흐름
 

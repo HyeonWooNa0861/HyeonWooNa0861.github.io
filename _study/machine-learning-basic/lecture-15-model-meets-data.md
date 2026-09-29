@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-15.pdf`
 
-> **핵심:** **데이터 벡터화란** 원본 데이터를 feature vector 또는 feature matrix로 바꾸는 과정. **continuous feature를 평균 0, 분산 1로 맞추는 이유는** scale 차이를 줄이고 gradient 기반 학습을 안정화하기 위해.
+> **핵심:** 데이터 벡터화는 원본 데이터를 feature vector나 feature matrix로 표현하는 과정이다. 연속형 feature를 평균 0, 분산 1로 표준화하면 scale 차이가 줄어 gradient 기반 학습이 안정될 수 있다.
 
 ## 전체 흐름
 

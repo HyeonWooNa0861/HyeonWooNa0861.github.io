@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: [5 Perception (3).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-05-perception-03.pdf" | relative_url }})
 
-이 글은 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 5강을 바탕으로, 두 단계 객체 검출기의 **추론 후처리·평가·계산량 개선**을 공부하기 좋게 재구성한 해설이다. 4강의 R-CNN과 이어지며, 6강의 Faster R-CNN·FPN으로 넘어가기 전에 필요한 기반을 다룬다.
+R-CNN에서는 여러 후보 상자가 한 물체를 가리킬 수 있고, 후보마다 CNN을 다시 실행하는 비용도 크다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 5강은 이 문제를 추론 후처리·평가·계산량의 관점에서 다룬다. 4강의 R-CNN과 6강의 Faster R-CNN·FPN을 잇는 내용이다.
 
 > **핵심:** R-CNN은 한 물체에 여러 예측 상자를 낼 수 있으므로 NMS로 중복을 줄이고, 단일 confidence threshold의 accuracy가 아닌 class별 precision–recall 곡선의 AP로 평가한다. Fast R-CNN은 proposal마다 CNN을 다시 실행하는 낭비를 없애기 위해 이미지 전체의 feature map을 공유하고, RoI pooling으로 가변 크기 영역을 고정 크기 특징으로 바꾼다.
 
