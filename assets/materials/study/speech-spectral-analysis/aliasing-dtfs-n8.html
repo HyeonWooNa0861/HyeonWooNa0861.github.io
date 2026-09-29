@@ -328,10 +328,10 @@ footer{
 <header>
   <div class="eyebrow">Speech and Audio Recognition · Lecture 2 · p.38</div>
   <h1>The Missing Revolution</h1>
-  <p class="thesis">
-    Sampling cannot distinguish basis index <span class="mv">k</span> from <span class="mv">k+N</span>.
-    The second signal makes <strong>one additional revolution</strong> between samples,
-    which the sampler never observes.
+  <p class="thesis" lang="ko">
+    샘플링은 <span class="mv">k</span>번 기저와 <span class="mv">k+N</span>번 기저를 구별하지 못한다.
+    두 신호는 샘플과 샘플 사이에 <strong>정확히 한 바퀴</strong>만큼 더 돌지만,
+    샘플러는 그 한 바퀴를 보지 못하기 때문이다.
   </p>
 </header>
 
@@ -374,7 +374,7 @@ footer{
 </div>
 
 <div class="readout">
-  <div class="verdict" id="verdict"></div>
+  <div class="verdict" id="verdict" role="status" aria-live="polite"></div>
   <div class="scroll">
     <table class="tbl">
       <thead>
@@ -393,20 +393,22 @@ footer{
 
 <div class="note">
   <div class="eq">e<sup>j2π(k+N)n/N</sup> = e<sup>j2πkn/N</sup> · e<sup>j2πn</sup> = e<sup>j2πkn/N</sup></div>
-  <p>
-    Each sample advances the phase by <span class="mv">2πk/N</span>.
-    The advances for <span class="mv">k</span>=1 and <span class="mv">k</span>=9 are 45° and 405°;
-    their 360° difference is invisible at sample instants.
-    Consequently, continuous-series components combine in the DTFS coefficient as
-    <span class="mv">d<sub>k</sub></span> = Σ<sub>r</sub> <span class="mv">c<sub>k+rN</sub></span>.
+  <p lang="ko">
+    정수 표본 <span class="mv">n</span>에서 한 표본이 지날 때마다 위상은 <span class="mv">2πk/N</span>만큼 전진한다.
+    <span class="mv">k</span>=1은 45°, <span class="mv">k</span>=9는 405° 전진하므로 표본 위치의 위상은 같지만,
+    그 사이의 연속 궤적은 다르다. CTFS 급수를 표본에 대입하고 같은 basis의 항을 묶을 수 있을 만큼 수렴한다면,
+    DTFS 계수는 <span class="mv">d<sub>k</sub></span> = Σ<sub>r</sub> <span class="mv">c<sub>k+rN</sub></span>처럼
+    겹친 원래 성분들의 합이 된다.
   </p>
-  <p>
-    A centered choice of <span class="mv">N</span> distinct frequency-bin representatives is
-    −<span class="mv">N</span>/2 ≤ <span class="mv">k</span> &lt; <span class="mv">N</span>/2;
-    for <span class="mv">N</span>=8, these are the eight integers −4 through 3.
-    Index 9 maps to index 1 because 9 − 8 = 1. If an analog signal can contain 9 Hz,
-    sampling at 8 Hz cannot uniquely recover it: a suitable band limit and
-    <span class="mv">f<sub>s</sub></span> &gt; 2<span class="mv">f<sub>max</sub></span> are needed for the usual reconstruction guarantee.
+  <p lang="ko">
+    중심에 놓인 대표 index는 −<span class="mv">N</span>/2 ≤ <span class="mv">k</span> &lt; <span class="mv">N</span>/2로 고를 수 있다.
+    <span class="mv">N</span>=8이면 −4, −3, −2, −1, 0, 1, 2, 3의 <strong>8개</strong>다.
+    경계의 +4와 −4는 같은 표본 basis여서 한쪽만 대표로 둔다. 이 선택은 표본의 index 규약이지 원래 주파수의 복원 보장은 아니다.
+    <span class="mv">k</span>=9와 <span class="mv">k</span>=1도 9 − 8 = 1이므로 같은 표본을 만든다.
+    원 신호에 9 Hz까지 들어올 수 있다면 8 Hz sampling에서는 1 Hz와 구별할 수 없다.
+    일반적인 대역 제한 복원 보장을 받으려면 입력을 적절히 대역 제한하고
+    <span class="mv">f<sub>s</sub></span> &gt; 2<span class="mv">f<sub>max</sub></span>를 만족해야 한다.
+    여기서는 8 &gt; 2·9가 성립하지 않는다.
   </p>
 </div>
 
@@ -565,13 +567,16 @@ footer{
   }
 
   // ---- 수치 ---------------------------------------------------------
-  const deg = rad => (rad * 180 / Math.PI) % 360;
+  const phaseDeg = rad => {
+    const phase = ((rad * 180 / Math.PI) % 360 + 360) % 360;
+    return Math.abs(phase - 360) < 1e-9 ? 0 : phase;
+  };
   const clean = v => Math.abs(v) < 5e-4 ? 0 : v;
   const fmt3 = v => clean(v).toFixed(3);
 
   function row(label, cls, k, freq, now) {
     const a = TAU * freq * now;
-    const ph = ((deg(a) % 360) + 360) % 360;
+    const ph = phaseDeg(a);
     return `<tr>
       <td class="who ${cls}">${label}</td>
       <td>${freq.toFixed(0)} Hz</td>
@@ -590,7 +595,7 @@ footer{
     drawContinuous(t);
     drawSampled(activeN);
 
-    tickEls.forEach(el => el.classList.toggle("on", +el.dataset.n === activeN));
+    tickEls.forEach(el => el.classList.toggle("on", isSample && +el.dataset.n === idxRaw));
     presetEls.forEach(el => el.setAttribute("aria-pressed",
       String(Math.abs(+el.dataset.ms / 1000 - t) < 1e-9)));
 
@@ -599,20 +604,20 @@ footer{
       row("k = 9", "k2", KB, KB * F0, t);
 
     const a1 = TAU * KA * F0 * t, a2 = TAU * KB * F0 * t;
-    let diff = Math.abs(((deg(a2) - deg(a1)) % 360 + 360) % 360);
+    let diff = Math.abs(phaseDeg(a2) - phaseDeg(a1));
     if (diff > 180) diff = 360 - diff;
     const v = $("verdict");
     if (isSample) {
       const lap = (KB - KA) * F0 * t;
       v.className = "verdict match";
-      v.innerHTML = `<span class="tag">Match</span><span>` +
-        `Sample <span class="num">n = ${activeN}</span> — both phases are ` +
-        `<span class="num">${(((deg(a1) % 360) + 360) % 360).toFixed(1)}°</span>. ` +
+      v.innerHTML = `<span class="tag">Match</span> <span>` +
+        `Sample <span class="num">n = ${idxRaw}</span>${idxRaw === N ? " (same position as n = 0)" : ""} — both phases are ` +
+        `<span class="num">${phaseDeg(a1).toFixed(1)}°</span>. ` +
         `Their revolution difference is the integer <span class="num">${lap.toFixed(0)}</span>, so the sampler records the same value.` +
         `</span>`;
     } else {
       v.className = "verdict gap";
-      v.innerHTML = `<span class="tag">Between samples</span><span>` +
+      v.innerHTML = `<span class="tag">Between samples</span> <span>` +
         `The phases differ by <span class="num">${diff.toFixed(1)}°</span>. ` +
         `The signals are different, but this instant is not recorded.` +
         `</span>`;

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-09-29 17:16:12 +0900
 title: "Lecture 7: Single-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "RetinaNet, Focal Loss, YOLO, and FCOS"
@@ -18,7 +19,7 @@ keywords:
 
 Source PDF: [7 Perception (5).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-07-perception-05.pdf" | relative_url }})
 
-Faster R-CNN처럼 후보 영역을 다시 분류하는 두 단계 방식과 달리, single-stage detector는 feature map에서 곧바로 물체를 예측한다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 7강은 이 흐름을 RetinaNet, YOLO, FCOS로 이어 간다. 슬라이드 밖의 수식 유도와 예제는 **작성자 보충**으로 구분했으며, 강의 사이의 관계는 [통합 Perception 학습 노트]({{ "/study/autonomous-driving/perception-overview/" | relative_url }})에서 다룬다.
+Faster R-CNN은 후보 영역을 만든 뒤 각 후보를 다시 판정하지만, single-stage detector는 feature map의 밀집 위치에서 클래스와 box를 직접 예측한다. 국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 7강은 이 차이에서 출발해 RetinaNet, YOLO, FCOS를 살펴본다. 슬라이드에 없는 수식 유도와 수치 예제는 **작성자 보충**으로 구분했고, [통합 Perception 학습 노트]({{ "/study/autonomous-driving/perception-overview/" | relative_url }})에서는 여러 강의의 연결 관계를 설명한다.
 
 > **핵심:** Single-stage detector는 region proposal별 두 번째 분류 단계를 거치지 않고 밀집 위치에서 곧바로 클래스와 box를 예측한다. 그 대신 엄청난 배경 후보의 학습 불균형과 부정확한 box 품질이 과제가 된다. RetinaNet은 focal loss로 쉬운 배경의 기여를 줄이고, FCOS는 anchor 대신 위치별 네 방향 거리와 centerness를 예측한다. 빠른 추론 가능성은 자율주행에 매력적이지만 속도와 정확도는 **모델·입력 크기·하드웨어·평가 조건에 종속**된다.
 
