@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
+last_modified_at: 2026-09-29 16:48:00 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -23,7 +24,7 @@ keywords:
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture3.pdf</a> — Inkyu An, Kookmin University (51 slides).
 
-앞선 [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)와 [Spectral Analysis Lab](/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/)에서 파형을 표본과 spectral feature로 바꿨다. 이번 강의는 그 feature를 문자·단어열로 바꾸는 **automatic speech recognition(ASR)**의 첫 단계를 다룬다. 아래의 슬라이드 번호는 PDF의 물리적 페이지 번호다. 수식의 완전한 유도와 조건, 수치 검산, 원문 표현의 정정은 원본 설명과 구분해 작성자가 보충했다.
+앞선 [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)와 [Spectral Analysis Lab](/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/)에서 파형을 표본과 spectral feature로 바꿨다. 이번 강의는 그 feature를 문자·단어열로 바꾸는 **automatic speech recognition(ASR)**의 첫 단계를 다룬다. 아래의 슬라이드 번호는 PDF의 물리적 페이지 번호다. 강의에 없는 유도와 수치 예제는 해당 위치에서 출처를 구분한다.
 
 > **음성 프레임 수와 정답 글자 수가 다르고 둘의 정렬도 주어지지 않는다.** CTC는 여러 프레임별 경로를 하나의 텍스트로 접는 규칙을 정의하고, 같은 정답으로 접히는 경로의 확률을 모두 더해 학습한다. 평가에는 WER/CER을, 실제 문장 선택에는 greedy 또는 beam decoding과 필요시 언어 모델을 사용한다.
 
@@ -82,7 +83,7 @@ WER은 비율이지만 상한이 1은 아니다. 삽입 단어가 많으면 $$S+
 
 ## 3. CTC의 blank, 경로, 학습 목표
 
-Connectionist Temporal Classification(CTC)은 token 집합에 별도 기호 **blank** $$\epsilon$$을 추가한다. 이 기호는 공백 문자(space)도 단어 경계도 아니며, 해당 프레임에서 출력 문자 하나를 확정하지 않는 CTC 경로 기호다. 출력 경로 $$\pi=(\pi_1,\ldots,\pi_T)$$를 문장으로 바꾸는 함수 $$\mathcal B$$는 **먼저 연속 중복을 합치고, 다음에 blank를 삭제**한다(pp. 21–22). 순서를 바꾸면 결과가 달라진다.
+Connectionist Temporal Classification(CTC)은 token 집합에 별도 기호 **blank** $$\epsilon$$을 추가한다. 이 기호는 공백 문자(space)나 단어 경계가 아니고, 음향적으로 무음임을 확정하는 표지도 아니다. 한 출력 프레임을 차지하되 최종 전사에는 남지 않는 CTC 경로 기호다. 출력 경로 $$\pi=(\pi_1,\ldots,\pi_T)$$를 문장으로 바꾸는 함수 $$\mathcal B$$는 **먼저 연속 중복을 합치고, 다음에 blank를 삭제**한다(pp. 21–22). 순서를 바꾸면 결과가 달라진다.
 
 ```text
 h h e l l ε l o  →  h e l ε l o  →  hello
@@ -92,21 +93,33 @@ l l            →  l            →  l
 
 따라서 같은 글자 `ll`을 내보내려면 둘 사이에 blank가 필요하다. 프레임 출력 길이 $$T$$는 단순히 $$U$$ 이상이어야 할 뿐 아니라, 정답의 **인접한 동일 token 쌍 수**를 $$R$$이라 하면 최소 $$T\ge U+R$$이어야 유효 CTC 경로가 존재한다. 이는 collapse 규칙에서 곧장 따라오는 필요조건이다.
 
+슬라이드 p. 23의 다섯 경로를 **중복 병합 → blank 삭제** 순서로 직접 접으면 결과가 갈린다.
+
+| 프레임 경로 | 중복 병합 후 | blank 삭제 후 |
+|---|---|---|
+| `h ε e l ε l ε o o o` | `h ε e l ε l ε o` | **`hello`** |
+| `h ε e l l l ε l o o` | `h ε e l ε l o` | **`hello`** |
+| `ε h h h e l ε l o o` | `ε h e l ε l o` | **`hello`** |
+| `h ε e l ε l ε l o o` | `h ε e l ε l ε l o` | `helllo` |
+| `ε h h h e l ε l ε ε` | `ε h e l ε l ε` | `hell` |
+
+첫 세 경로는 동일한 정답을 만들지만 네 번째는 blank로 분리된 `l`이 셋이고, 다섯 번째는 `o`가 없다. **유효 경로**란 음향적으로 그럴듯한 경로 전체가 아니라, collapse 결과가 목표 전사와 정확히 같은 경로다.
+
 ### 3.1 경로 합과 loss의 차이
 
-정답 $$y$$를 만드는 경로는 하나가 아니다(pp. 23–28). Encoder 출력이 주어졌을 때 CTC는 시간별 token 선택이 조건부 독립이라고 가정하여 한 경로의 확률을 곱하고, 같은 문장으로 접히는 경로를 모두 더한다.
+정답 $$y$$를 만드는 경로는 하나가 아니다(pp. 23–28). Encoder의 매 출력 프레임에서 softmax는 blank를 포함한 token별 확률 분포를 낸다. 각 프레임의 확률은 1로 합해지지만, 이 값 하나가 문장 전체의 확률은 아니다. CTC는 $$X$$가 주어졌을 때 경로의 프레임별 출력을 조건부 독립으로 분해한다. 따라서 한 경로에서는 각 프레임에서 선택한 token 확률을 **곱하고**, 같은 문장으로 접히는 서로 다른 경로들의 확률은 **더한다**.
 
 $$
 P_{\mathrm{CTC}}(y\mid X)=\sum_{\pi:\mathcal B(\pi)=y}\prod_{t=1}^{T}p_t(\pi_t\mid X)
 $$
 
-이 값은 **정답 문장의 확률**이다. 최대로 만들려는 학습 목적과 최소화할 **loss**는 다음처럼 부호와 로그가 다르다.
+예컨대 슬라이드 pp. 24–27의 확률 그림에서는 한 열이 한 시각의 분포이고, 경로 한 개는 각 열에서 token 한 칸씩 선택한다. 원문에 표시된 세 경로의 곱은 각각 약 0.00123, 0.00112, 0.00001이다. 이 숫자를 단순히 최대값 하나로 대체하지 않고, 같은 전사로 접히는 나머지 경로까지 합한 값이 **정답 전사의 확률**이다. 최대로 만들려는 이 확률과 최소화할 **loss**는 다음처럼 부호와 로그가 다르다.
 
 $$
 \mathcal L_{\mathrm{CTC}}(X,y)=-\log P_{\mathrm{CTC}}(y\mid X)
 $$
 
-슬라이드 p. 28은 경로 확률을 더하는 대목에 `CTC Loss`라고 쓰지만, 합 자체를 loss로 최소화하면 방향이 반대다. 이는 슬라이드 설명을 보완한 정정이다. 조건부 독립은 $$X$$가 주어졌을 때의 출력 경로에 대한 모델 가정이며, encoder가 음향 문맥을 전혀 이용하지 않는다는 뜻은 아니다.
+슬라이드 p. 28은 경로 확률을 더하는 대목에 `CTC Loss`라고 쓰지만, 합 자체를 loss로 최소화하면 방향이 반대다. **높은 정답 확률 → 작은 음의 로그 손실**이라는 관계가 정확하다. 조건부 독립은 $$X$$가 주어졌을 때의 출력 경로에 대한 모델 가정이며, encoder가 음향 문맥을 전혀 이용하지 않는다는 뜻은 아니다.
 
 ### 3.2 왜 forward dynamic programming이 필요한가
 
@@ -116,21 +129,74 @@ $$
 z=(\epsilon,y_1,\epsilon,y_2,\ldots,\epsilon,y_U,\epsilon),\qquad S=2U+1
 $$
 
-$$z_s$$는 확장열의 $$s$$번째 기호다. $$\alpha_{t,s}$$를 **시각 $$t$$에 $$z_s$$ 상태로 끝나는 모든 유효 경로의 확률 합**으로 정의한다. 마지막 프레임에 그 상태로 오는 방법은 같은 상태에 머물기, 한 상태 전진하기, 조건부로 두 상태 건너뛰기뿐이므로 앞부분의 합을 재사용할 수 있다. 다음은 pp. 29–32의 그림을 1-based index로 명시한 **작성자 유도**다.
+$$z_s$$는 확장열의 $$s$$번째 기호다. $$\alpha_{t,s}$$를 **시각 $$t$$에 $$z_s$$ 상태로 끝나는 허용된 부분 경로들의 확률 합**으로 정의한다. 아직 정답을 완성하지 않은 중간 상태도 이 합에 포함되며, 최종 두 상태에서만 완성된 전사의 확률을 읽는다. 마지막 프레임에 그 상태로 오는 방법은 같은 상태에 머물기, 한 상태 전진하기, 조건부로 두 상태 건너뛰기뿐이므로 앞부분의 합을 재사용할 수 있다. 다음은 pp. 29–32의 그림을 1-based index로 명시한 **작성자 유도**다.
 
 $$
 \alpha_{t,s}=p_t(z_s\mid X)\left[\alpha_{t-1,s}+\alpha_{t-1,s-1}+\mathbf{1}[s\ge 3,\ z_s\ne\epsilon,\ z_s\ne z_{s-2}]\alpha_{t-1,s-2}\right]
 $$
 
-유효 범위 밖의 $$\alpha$$는 0으로 둔다. 처음에는 $$\alpha_{1,1}=p_1(\epsilon\mid X)$$, $$\alpha_{1,2}=p_1(y_1\mid X)$$이고 나머지는 0이다. 두 칸 건너뛰기는 도착 기호가 blank가 아니고 두 칸 앞의 기호와 다를 때만 허용한다. 이 조건이 없다면 `ll`을 blank 없이 한 글자로 잘못 합치거나, 불필요한 blank 상태를 뛰어넘는 경로를 허용한다. 끝에서는 마지막 label 상태와 마지막 blank 상태를 합한다.
+유효 범위 밖의 $$\alpha$$는 0으로 둔다. 처음에는 $$\alpha_{1,1}=p_1(\epsilon\mid X)$$, $$\alpha_{1,2}=p_1(y_1\mid X)$$이고 나머지는 0이다. 두 칸 건너뛰기는 도착 기호가 blank가 아니고 두 칸 앞의 기호와 다를 때만 허용한다. 같은 글자의 두 상태를 blank 없이 건너뛰면 실제 collapse 결과는 글자 하나인데 반복 글자 정답의 경로로 잘못 셀 수 있다. 끝에서는 마지막 label 상태와 마지막 blank 상태를 합한다.
 
 $$
 P_{\mathrm{CTC}}(y\mid X)=\alpha_{T,S-1}+\alpha_{T,S}
 $$
 
-이 유도는 유효 경로가 마지막 시각에 두 상태 중 하나에서만 종료되고, 각 종료 상태의 바로 전 전이가 위 세 경우로 완전히 분할된다는 사실에 기초한다. 상태 $$S=2U+1$$개와 시각 $$T$$개를 한 번씩 계산하므로 시간 복잡도는 $$O(TU)$$다. 실제 구현은 매우 작은 확률의 곱에서 수치 underflow가 생기지 않게 log-domain 또는 scaling을 쓴다.
+이 유도는 유효 경로가 마지막 시각에 두 상태 중 하나에서만 종료되고, 각 종료 상태의 바로 전 전이가 위 세 경우로 완전히 분할된다는 사실에 기초한다. 같은 상태로 끝나는 이전 경로들은 이후에 동일한 전이 선택지를 가지므로, 이전 경로의 개별 목록 대신 그 **확률 합 하나**만 다음 프레임에 전달해도 된다. 상태 $$S=2U+1$$개와 시각 $$T$$개를 한 번씩 계산하므로 시간 복잡도는 $$O(TU)$$다. 실제 구현은 매우 작은 확률의 곱에서 수치 underflow가 생기지 않게 log-domain 또는 scaling을 쓴다.
 
-### 3.3 슬라이드 예제의 수치 검산
+### 3.3 경로별 계산과 forward DP가 만나는 예
+
+다음은 계산 과정을 한눈에 보기 위한 **작성자 예제**다. 세 프레임에서 token 분포를 아래처럼 정하고 정답을 `AB`로 둔다. 각 열의 합은 1이다. 확률은 모델이 각 시각에 내놓은 값이라는 가정이지, 문장을 미리 나눈 확률이 아니다.
+
+| Token | $$t=1$$ | $$t=2$$ | $$t=3$$ |
+|---|---:|---:|---:|
+| $$\epsilon$$ | 0.2 | 0.3 | 0.2 |
+| $$A$$ | 0.6 | 0.3 | 0.2 |
+| $$B$$ | 0.2 | 0.4 | 0.6 |
+
+총 $$3^3=27$$개 경로 가운데 `AB`로 접히는 것은 다음 다섯 개뿐이다. `AAB`와 `ABB`는 각각 붙어 있는 중복을 하나로 합치고, blank가 든 경로는 중복 처리 후 blank를 지운다.
+
+| 유효 경로 | collapse 과정 | 프레임 확률의 곱 |
+|---|---|---:|
+| `εAB` | `εAB → AB` | $$0.2\cdot0.3\cdot0.6=0.036$$ |
+| `AεB` | `AεB → AB` | $$0.6\cdot0.3\cdot0.6=0.108$$ |
+| `AAB` | `AAB → AB` | $$0.6\cdot0.3\cdot0.6=0.108$$ |
+| `ABε` | `ABε → AB` | $$0.6\cdot0.4\cdot0.2=0.048$$ |
+| `ABB` | `ABB → AB` | $$0.6\cdot0.4\cdot0.6=0.144$$ |
+
+예컨대 `AεA`는 두 `A` 사이가 분리되어 `AA`로 접히므로 이 표에 포함되지 않는다. 반면 `AAε`는 `A` 하나로 접힌다. 이 차이가 반복 token 사이에 blank 상태를 두는 이유다. 다섯 경로가 서로 겹치지 않으므로,
+
+$$
+P_{\mathrm{CTC}}(AB\mid X)=0.036+0.108+0.108+0.048+0.144=0.444,
+\qquad
+\mathcal L_{\mathrm{CTC}}=-\ln(0.444)\approx0.81193.
+$$
+
+경로를 열거하지 않아도 같은 값이 나오는지 forward DP로 확인할 수 있다. 확장열 $$z=(\epsilon,A,\epsilon,B,\epsilon)$$에 대해 각 상태에서 끝나는 **누적 확률 합**은 다음과 같다. `—`는 아직 도달할 수 없는 상태다.
+
+| 상태 $$z_s$$ | $$t=1$$ | $$t=2$$ | $$t=3$$ |
+|---|---:|---:|---:|
+| $$s=1:\epsilon$$ | 0.2 | 0.06 | 0.012 |
+| $$s=2:A$$ | 0.6 | 0.24 | 0.060 |
+| $$s=3:\epsilon$$ | — | 0.18 | 0.084 |
+| $$s=4:B$$ | — | 0.24 | **0.396** |
+| $$s=5:\epsilon$$ | — | — | **0.048** |
+
+처음에는 첫 blank 또는 첫 `A`에만 도달한다. $$t=2$$의 `A`는 blank에서 한 칸 전진하거나 `A`에 머무르므로 $$\alpha_{2,2}=(0.2+0.6)\times0.3=0.24$$다. $$t=2$$의 `B`는 서로 다른 `A`에서 두 칸 건너뛰어 $$\alpha_{2,4}=0.6\times0.4=0.24$$가 된다. 마지막 `B`에는 이전 `A`의 skip, 가운데 blank의 전진, `B`의 stay가 각각 들어온다.
+
+$$
+\alpha_{3,4}
+=p_3(B\mid X)\bigl(\alpha_{2,2}+\alpha_{2,3}+\alpha_{2,4}\bigr)
+=0.6(0.24+0.18+0.24)=0.396.
+$$
+
+이 상태에는 `εAB`, `AεB`, `AAB`, `ABB` 네 경로의 합이 들어 있다. 끝 blank는 `ABε` 하나이므로 $$\alpha_{3,5}=0.2\times0.24=0.048$$이다. **두 종료 상태의 합 $$0.396+0.048=0.444$$가 경로 열거와 정확히 같다.** 아래 그림의 파란 칸은 이 두 종료 상태이며, 화살표는 마지막 `B`에 합류하는 세 종류의 전이다.
+
+<figure>
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/ctc-forward-ab-trellis.svg" | relative_url }}" alt="정답 AB의 CTC forward 계산. 다섯 상태와 세 프레임의 누적 확률 표에서 마지막 B 0.396과 blank 0.048을 합쳐 전사 확률 0.444를 얻는다." loading="lazy">
+  <figcaption>CTC forward trellis — 프레임별 분포에서 선택한 경로의 곱을 같은 상태별로 합친다.</figcaption>
+</figure>
+
+### 3.4 슬라이드 예제의 수치 검산
 
 pp. 33–35는 목표 `ab`, 확장열 $$(\epsilon,a,\epsilon,b,\epsilon)$$, 네 프레임을 사용한다. 각 열의 세 확률은 1로 합해진다.
 
@@ -140,13 +206,23 @@ pp. 33–35는 목표 `ab`, 확장열 $$(\epsilon,a,\epsilon,b,\epsilon)$$, 네 
 | $$a$$ | 0.3 | 0.5 | 0.2 | 0.1 |
 | $$b$$ | 0.1 | 0.3 | 0.5 | 0.5 |
 
-예를 들어 둘째 프레임의 $$a$$ 상태는 시작 blank 또는 시작 $$a$$에서 도달한다. 따라서 $$\alpha_{2,2}=(0.6+0.3)\times0.5=0.45$$다. 마지막 프레임의 $$b$$ 상태에는 머물기·한 칸 전진·두 칸 건너뛰기가 모두 가능하다.
+슬라이드 p. 34의 확률 흐름을 위 forward 식으로 채우면 다음 표가 된다. 첫 프레임에는 앞의 두 상태만 열려 있고, 각 다음 칸은 허용된 이전 칸의 **합에 현재 token 확률을 곱한 값**이다.
+
+| 상태 $$z_s$$ | $$t=1$$ | $$t=2$$ | $$t=3$$ | $$t=4$$ |
+|---|---:|---:|---:|---:|
+| $$s=1:\epsilon$$ | 0.6 | 0.12 | 0.036 | 0.0144 |
+| $$s=2:a$$ | 0.3 | 0.45 | 0.114 | 0.0150 |
+| $$s=3:\epsilon$$ | — | 0.06 | 0.153 | 0.1068 |
+| $$s=4:b$$ | — | 0.09 | 0.300 | **0.2835** |
+| $$s=5:\epsilon$$ | — | — | 0.027 | **0.1308** |
+
+예를 들어 둘째 프레임의 $$a$$ 상태는 시작 blank 또는 시작 $$a$$에서 도달한다. 따라서 $$\alpha_{2,2}=(0.6+0.3)\times0.5=0.45$$다. $$t=3$$의 가운데 blank는 앞의 $$a$$와 같은 blank에서 들어오므로 $$(0.45+0.06)\times0.3=0.153$$이다. 마지막 프레임의 $$b$$ 상태에는 머물기·한 칸 전진·두 칸 건너뛰기가 모두 가능하다.
 
 $$
 \alpha_{4,4}=(0.300+0.153+0.114)\times0.5=0.2835
 $$
 
-마지막 blank 상태는 $$\alpha_{4,5}=(0.300+0.027)\times0.4=0.1308$$이다. 두 종료 상태를 더하면 **$$P_{\mathrm{CTC}}(ab\mid X)=0.4143$$**으로 슬라이드 p. 35의 결과와 일치한다. 이 검산은 원문 표의 전이가 수식과 같은지 확인하는 것이며 일반 데이터에서의 모델 성능을 뜻하지 않는다.
+마지막 blank 상태는 $$\alpha_{4,5}=(0.300+0.027)\times0.4=0.1308$$이다. 두 종료 상태를 더하면 **$$P_{\mathrm{CTC}}(ab\mid X)=0.4143$$**으로 슬라이드 p. 35의 결과와 일치하고, 이 예제의 손실은 $$-\ln(0.4143)\approx0.88116$$이다. 확률표 → 유효 경로 합 → 음의 로그 손실이라는 순서를 뒤집지 않아야 한다. 이 검산은 원문 표의 전이가 수식과 같은지 확인하는 것이며 일반 데이터에서의 모델 성능을 뜻하지 않는다.
 
 ## 4. CTC decoding: 프레임 경로와 문장 확률은 다르다
 
@@ -154,24 +230,45 @@ Greedy decoding은 매 프레임 가장 큰 확률의 token 하나씩을 택한 
 
 **작성자 보충 — 정규화된 반례.** 두 프레임 모두 $$(p(\epsilon),p(a),p(b))=(0.5,0.4,0.1)$$이라고 하자. 가장 높은 개별 경로는 $$(\epsilon,\epsilon)$$이고 그 확률은 0.25라서 greedy 결과는 빈 문자열이다. 그러나 `a`를 만드는 경로 $$(a,a),(a,\epsilon),(\epsilon,a)$$의 합은 $$0.16+0.20+0.20=0.56$$이다. 경로 최빈값과 문장 최빈값이 실제로 다르다. 슬라이드 p. 37의 수치는 개념도용 부분 예시여서 완전한 정규화 분포로 읽지 않았다.
 
-Beam search는 시각마다 후보 prefix를 확장하고, 같은 출력으로 접히는 경로의 점수를 합친 뒤, beam size만큼 후보를 남긴다(pp. 38–41). Beam size 1은 보통 greedy에 가깝고, 넓힐수록 좋은 후보를 더 보존하지만 메모리·계산 비용이 늘어난다. **유한 beam은 근사**이고, 전체 경로 합을 정확하게 계산한다고 해서 acoustic model의 인식 결과가 항상 정답이 되는 것도 아니다.
+Beam search는 시각마다 후보 전사 prefix를 확장하고, **같은 전사로 접히는 경로의 확률을 합친 다음** 상위 후보만 남긴다(pp. 38–41). 단순 경로 beam이라면 `AAB`와 `ABB`를 별개 경로로 보유하지만, CTC prefix beam은 두 경로가 같은 `AB`에 기여한다는 사실을 반영한다. 같은 prefix 안에서도 마지막 프레임이 blank인 확률 $$p_b$$와 non-blank인 확률 $$p_{nb}$$를 따로 저장한다. 마지막 글자가 `A`일 때 `AA`가 이어지면 출력은 여전히 `A`지만, `AεA`는 새 `A`가 추가되어 `AA`가 되기 때문이다.
+
+한 프레임을 갱신할 때 blank는 기존 $$p_b+p_{nb}$$에 새 blank 확률을 곱해 **같은 prefix의 $$p_b$$**로 보낸다. 다른 글자 $$c$$를 붙이면 같은 합에 $$p_t(c)$$를 곱해 **확장 prefix의 $$p_{nb}$$**로 보낸다. 다만 $$c$$가 현재 prefix의 마지막 글자와 같다면, 직전 non-blank에서 이어지는 경로는 **기존 prefix에 머무르고**, 직전 blank에서 오는 경로만 반복 글자가 추가된 prefix로 간다. 이 분기 덕분에 반복 글자를 잃지 않고 같은 전사의 경로 확률을 모을 수 있다. 각 프레임에서 $$p_b+p_{nb}$$가 큰 상위 $$K$$개 prefix만 유지하는 것이 beam의 절단 단계다.
+
+$$K$$가 작으면 이른 시점에 버린 prefix를 나중에 회복하지 못하고, $$K$$가 커지면 후보별 갱신과 선택 비용이 증가한다. **유한 beam은 근사**이며 $$K=1$$인 prefix beam도 경로 단위의 프레임별 greedy와 일반적으로 같은 알고리즘은 아니다. 언어 모델을 결합할 수 있지만 점수 가중치와 어휘 제약에 따라 결과가 바뀐다. 탐색을 정확히 하더라도 음향 모델의 확률이 잘못되었다면 전사 자체의 정답을 보장하지 않는다.
+
+CTC의 장점은 **프레임-문자 정렬을 주석으로 주지 않아도 학습**할 수 있고, forward DP로 유효 정렬의 확률을 효율적으로 합산한다는 점이다. 반면 기본 CTC의 경로 확률은 $$X$$를 조건으로 프레임별 출력을 곱하므로 출력 token 사이의 언어적 의존성을 직접 표현하지 않는다. 반복 token에는 blank 프레임이 필요하고, 시간축을 너무 줄이면 유효 경로 자체가 사라진다. 외부 언어 모델이나 더 풍부한 decoder가 추론을 보완할 수 있지만 계산량과 지연 비용도 늘어난다.
 
 슬라이드는 CTC가 streamable하다고 요약한다(p. 36). 다만 **실시간 처리 가능 여부는 encoder와 decoder가 미래 프레임을 요구하는지에 달려 있다.** 양방향 encoder나 긴 look-ahead를 쓰면 CTC loss를 사용하더라도 전체 발화를 기다려야 할 수 있다. CTC trellis의 높은 확률 경로는 학습 중 명시 정렬 없이 얻는 *추정 정렬*이지, 사람이 확정한 음소 경계가 아니다.
 
 ## 5. Encoder: Deep Speech 2와 Conformer
 
-강의 p. 42의 Deep Speech 2 도식은 spectrogram → convolution → bidirectional recurrent layers → CTC 출력이라는 흐름을 보여 준다. 원문은 학습 자료 약 11,900시간, 약 3,500만 parameter, 16 GPU에서 3–5일의 학습을 소개한다. 이 수치는 **원 논문의 특정 시스템과 당시 조건**의 값으로, 오늘날 ASR의 보편적 요구량이 아니다. 같은 슬라이드의 WER 비교는 다음과 같다.
+강의 p. 42의 Deep Speech 2 도식은 spectrogram → 1D/2D convolution → recurrent/GRU 층 → fully connected 출력 → CTC라는 흐름을 보여 준다. 입력단의 1D convolution은 **시간축**, 2D convolution은 **시간·주파수축**의 인접 패턴을 먼저 추출하고, recurrent 층은 시점에 걸친 문맥을 누적한다. 원 논문에는 양방향 RNN 구성뿐 아니라 미래 문맥을 제한하는 단방향 RNN과 lookahead convolution 구성도 있으므로, 강의의 양방향 그림 하나를 전체 모델의 유일한 형태로 보아서는 안 된다. 학습에는 CTC로 정렬되지 않은 전사를 사용하고, 추론에는 언어 모델을 결합한 beam search를 사용한다.
+
+슬라이드는 학습 자료 약 11,900시간, 약 3,500만 parameter, 16 GPU에서 3–5일의 학습을 소개한다. 이 수치는 **원 논문의 특정 시스템과 당시 조건**의 값으로, 오늘날 ASR의 보편적 요구량이 아니다. 같은 슬라이드의 WER 비교는 다음과 같다.
 
 | Evaluation set | Deep Speech 1 | Deep Speech 2 | Human |
 |---|---:|---:|---:|
-| WSJ’92 | 4.94% | 3.60% | 5.00% |
+| WSJ’92 | 4.94% | 3.60% | 5.03% |
 | WSJ’93 | 6.94% | 4.98% | 8.08% |
 | LibriSpeech test-clean | 7.89% | 5.33% | 5.83% |
 | LibriSpeech test-other | 21.74% | 13.25% | 12.69% |
 
 이 표에서는 DS2가 첫 세 평가 조건의 표시된 human WER보다 낮지만, `test-other`에서는 높다. 따라서 p. 42의 `super human quality on clean sets`를 모든 음성 조건에서 인간보다 우수하다는 주장으로 확대하지 않는다. 위 수치는 **강의 슬라이드 표의 전사**이며 재현 실험 결과는 아니다.
 
-Conformer는 convolution의 지역 패턴 처리와 self-attention의 넓은 문맥 처리를 결합한다(pp. 43–45). 그림의 한 block은 half-step feed-forward → multi-head self-attention → convolution module → half-step feed-forward 순으로 잔차 연결을 사용한다. Convolution module 안에는 pointwise convolution, GLU, 1-D depthwise convolution, batch normalization, Swish, 또 하나의 pointwise convolution이 있다. **Depthwise**는 채널마다 시간 방향 filter를 적용하고, **pointwise**는 채널을 섞는다. 1-D kernel 폭 $$K$$, 입력 채널 $$C_{\mathrm{in}}$$, 출력 채널 $$C_{\mathrm{out}}$$라면 bias를 제외한 parameter 수는 일반 convolution에서 $$K C_{\mathrm{in}}C_{\mathrm{out}}$$, depthwise+pointwise에서 $$K C_{\mathrm{in}}+C_{\mathrm{in}}C_{\mathrm{out}}$$다. 이 비교는 구조상 정확한 count이며 실제 속도 개선 폭은 구현·하드웨어에 따라 다르다.
+Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에서 처리한다**는 데 있다(pp. 43–45). Self-attention은 멀리 떨어진 시각 사이의 관계에 내용 기반으로 가중치를 주고, convolution은 인접 프레임에 반복적으로 나타나는 짧은 음향 패턴을 공유 필터로 잡는다. 음소의 시작·전이처럼 가까운 시각의 구조를 국소 필터로 다루면서 발화 전반의 문맥을 attention으로 연결하므로 둘 중 하나만 둔 encoder와 역할이 다르다. 원 논문의 비교 실험도 convolution 모듈의 설계와 위치가 정확도에 영향을 준다고 보고하지만, 모든 설정에서 같은 향상 폭을 보장하는 결과는 아니다.
+
+한 블록은 **half-step feed-forward → 상대 위치를 반영한 multi-head self-attention → convolution module → half-step feed-forward → 최종 LayerNorm** 순서다. 두 feed-forward 층은 각각 출력에 $$\tfrac12$$ 배 잔차 기여를 더하는 macaron 형태다. Convolution module 내부에서는 먼저 LayerNorm 후 pointwise convolution으로 채널을 두 배로 펼치고, GLU gate가 그 절반을 걸러 필요한 feature를 선택한다. 이어 **1D depthwise convolution**이 채널마다 인접 시간 프레임을 훑고, BatchNorm·Swish를 거쳐 마지막 pointwise convolution이 채널을 다시 섞는다. Dropout과 잔차 연결을 포함한 이 흐름은 단순한 표준 convolution 한 층이 아니다.
+
+1D kernel 폭 $$K$$, 입력 채널 $$C_{\mathrm{in}}$$, 출력 채널 $$C_{\mathrm{out}}$$에서 bias를 빼면 일반 convolution은 $$K C_{\mathrm{in}}C_{\mathrm{out}}$$개, depthwise 뒤 pointwise를 한 번 적용한 분리 convolution은 $$K C_{\mathrm{in}}+C_{\mathrm{in}}C_{\mathrm{out}}$$개 parameter를 쓴다. 이는 **두 기본 연산을 비교한 식**이지 GLU와 두 번의 pointwise 층을 포함하는 Conformer convolution module 전체의 parameter 수가 아니다. 실제 속도·정확도는 구현과 하드웨어에도 좌우된다.
+
+### 핵심 구조 비교
+
+| 모델 | Encoder의 중심 | 원 논문의 전사 방식 |
+|---|---|---|
+| Deep Speech 2 | Convolution 뒤에 recurrent/GRU 층을 쌓아 시간 문맥을 누적 | **CTC 학습**, 언어 모델을 결합한 beam decoding |
+| Conformer | 상대 위치 self-attention, 국소 depthwise convolution, 두 half-step feed-forward 층을 한 블록에 결합 | **Transducer 학습**, 단일 LSTM decoder |
+
+강의 p. 43의 그림은 Conformer의 encoder 구조를 강조한다. 원 논문의 전체 ASR 실험은 위 표처럼 Transducer를 사용했으므로, Conformer 자체를 CTC 전용 모델이라고 부르지 않는다.
 
 ## 6. Subword tokenization과 시간 축 축소
 
@@ -179,7 +276,11 @@ Conformer는 convolution의 지역 패턴 처리와 self-attention의 넓은 문
 
 슬라이드 p. 47의 Byte Pair Encoding(BPE)은 문자 vocabulary에서 시작해 **가장 빈번한 인접 token 쌍**을 새 token으로 합치는 과정을 목표 vocabulary 크기에 도달할 때까지 반복한다. 자료의 `aaabdaaabac` 예시는 `aa → Z`, `ab → Y`, `ZY → X`를 순서대로 적용하여 `ZabdZabac → ZYdZYac → XdXac`로 압축한다. `low/lowest/newer` 그림도 `lo`를 새 token으로 만드는 예다. WordPiece와 Unigram은 함께 열거되지만(pp. 46–47), **동일한 병합 규칙의 다른 이름이 아니다.** 이 슬라이드는 둘의 학습 목적식까지 설명하지 않으므로 여기서 BPE와 동치라고 두지 않는다.
 
-Temporal subsampling은 stride convolution, 2-D convolution+projection, frame stacking+projection으로 encoder 프레임 수를 줄이는 방법이다(p. 48). 예컨대 stride가 시간을 두 배 줄이면 이후 층의 시간축 연산은 줄지만, **CTC 출력 길이 $$T'$$가 목표 token 수와 반복 token의 최소 조건 $$T'\ge U+R$$을 만족해야 한다.** `10 ms`, `20 ms`, `40 ms`가 표시된 원문 그림은 가능한 시간 해상도의 개념도이지 모든 모델의 고정 축소율을 뜻하지 않는다. 지나친 subsampling은 짧은 음소와 반복 token을 구별할 여지를 없앨 수 있다.
+Temporal subsampling은 stride convolution, 2-D convolution+projection, frame stacking+projection 등으로 encoder가 처리할 프레임 수를 줄이는 방법이다(p. 48). 긴 음성에서 이후 층의 연산량과 메모리를 줄이지만, 지나치면 짧은 음소나 가까운 반복을 구별할 시간 해상도도 잃는다. **CTC를 출력 목표로 쓰는 모델**이라면 축소 후 길이 $$T'$$가 최소한 $$T'\ge U+R$$을 만족해야 유효 경로가 남는다. 이 조건을 앞의 Conformer 원 논문 Transducer 실험에 그대로 적용해서는 안 된다.
+
+Conformer 원 논문의 입력단은 이 일반 선택지 가운데 구체적인 한 구현이다. 25 ms 분석 창에서 10 ms 간격으로 얻은 80채널 filterbank feature를 **3×3 CNN 두 층, 각 층의 시간 stride 2**에 통과시켜 시간축을 대략 4배 줄인다. 그래서 encoder 블록에 들어가는 출력 간격은 약 **40 ms**다. 여기서 40 ms는 새 프레임의 **간격**이지 40 ms 길이의 분석 창을 뜻하지 않는다. Padding 등에 따라 실제 출력 프레임 수의 반올림 방식은 달라질 수 있다. 축소 결과는 선형 투영과 dropout을 거쳐 여러 Conformer 블록으로 들어간다.
+
+이 **입력단 subsampling CNN**과 블록 안의 **1D depthwise convolution**은 위치와 목적이 다르다. 앞의 것은 시간축 길이를 줄이고, 뒤의 것은 이미 줄어든 시퀀스에서 국소 음향 패턴을 모델링한다. 강의 p. 48은 일반적인 축소 방식을 비교하고, p. 43은 Conformer의 10 ms → 40 ms 입력 흐름을 보여 준다.
 
 ## 7. 언어 모델을 언제 결합하는가
 
@@ -205,28 +306,21 @@ $$
 | pp. 2, 4–6 | `SST`는 통상 `STT`; `D > S > I`는 평가식의 가중치가 아님 | 약어를 바로잡고 오류의 의미 영향은 조건부로 설명 |
 | pp. 17–22 | 시간 index와 vocabulary index가 겹쳐 보이고, 반복 글자는 blank가 필요 | $$T,U,\mathcal V',\mathcal B$$를 분리해 정의 |
 | p. 28 | 경로 확률 합에 `CTC Loss` 표기 | 합은 $$P_{\mathrm{CTC}}$$, 최소화할 loss는 $$-\log P_{\mathrm{CTC}}$$로 구분 |
-| pp. 29–35 | 전이 조건·초기값의 텍스트 설명이 부족 | 확장열, skip 조건, 양쪽 종료 상태, 예제 0.4143을 검산 |
-| pp. 36–38 | `streamable`, greedy 비교는 추가 조건이 필요 | 미래 문맥 조건과 정규화된 반례를 명시 |
-| p. 42 | `super human`을 모든 평가 집합으로 일반화할 수 없음 | 슬라이드의 네 평가 행을 같은 표에서 비교 |
+| pp. 29–35 | 전이 조건·초기값의 텍스트 설명이 부족 | 확장열, skip 조건, 상태별 trellis, 양쪽 종료 상태와 손실을 검산 |
+| pp. 36–41 | `streamable`, greedy 및 beam 비교는 추가 조건이 필요 | 미래 문맥 조건, 정규화된 반례, prefix별 확률 병합을 명시 |
+| p. 42 | `super human`을 모든 평가 집합으로 일반화할 수 없고 WSJ’92 Human 값은 5.03% | 슬라이드 이미지의 네 평가 행을 다시 대조해 표기 |
+| pp. 43–48 | Conformer의 시간축 축소와 블록 내부 convolution은 별개 | 원 논문의 4배 입력 축소와 Transducer 사용을 구분 |
 | p. 51 | `large/light model (ASR)`의 지칭 대상이 불명확 | 규모 권장에 대한 단정 없이 두 결합 절차만 설명 |
 
 이 해설은 강의 PDF 51쪽의 텍스트·도식·수식과 위 전이 예제를 대상으로 한다. 오디오 실험이나 모델 학습 결과를 제시하는 글은 아니다.
 
-## 시험 포인트
-
-1. WER의 $$S,D,I,N$$을 설명하고, 예측 문장과 정답 문장을 최소 편집으로 정렬할 수 있어야 한다.
-2. CTC의 blank가 왜 필요한지, **중복 병합 후 blank 삭제** 순서로 `ll` 같은 반복 글자를 직접 decode할 수 있어야 한다.
-3. `가장 높은 경로`와 `가장 높은 문장`을 구분하고 greedy보다 beam search가 필요한 이유를 설명할 수 있어야 한다.
-4. 확장열의 forward 상태, skip 조건, 두 종료 상태의 합을 사용해 짧은 CTC 예제를 계산할 수 있어야 한다.
-5. Conformer의 attention/conv 역할과 rescoring/shallow fusion의 LM 적용 시점을 비교할 수 있어야 한다.
-
 ## 마지막 핵심 정리
 
-ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보다 **정답 정렬을 모른 채 학습해야 한다**는 데 있다. CTC는 blank와 collapse 규칙으로 가능한 정렬을 정의하고, forward DP로 그 확률을 효율적으로 합한다. 이 확률의 negative log가 학습 loss다. 추론에서는 경로별 greedy보다 문장별 확률을 모으는 beam search가 적합할 수 있으며, 외부 LM은 beam 도중 또는 후보 생성 후에 문맥 정보를 보탠다. Encoder 구조와 subsampling은 연산량을 바꾸지만 시간축의 정보와 CTC의 유효 경로 조건을 함께 지켜야 한다.
+ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보다 **정답 정렬을 모른 채 학습해야 한다**는 데 있다. CTC는 blank와 collapse 규칙으로 가능한 정렬을 정의한다. 각 경로에서는 프레임 확률을 곱하고, 같은 전사의 경로끼리는 더한다. Forward DP는 그 합을 중복 계산 없이 구하며, **정답 전사의 확률에 음의 로그를 취한 값이 CTC loss**다. 짧은 예제의 경로 합 $$0.444$$와 DP 종료 상태 합 $$0.396+0.048$$은 일치한다. 추론에서는 경로별 greedy보다 문장별 확률을 모으는 prefix beam search가 적합할 수 있으며, 외부 LM은 beam 도중 또는 후보 생성 후에 문맥 정보를 보탠다. Deep Speech 2는 recurrent encoder와 CTC의 조합이고, Conformer 원 논문은 국소 convolution과 전역 attention을 함께 쓰는 encoder에 Transducer decoder를 연결했다. 입력단 subsampling은 연산량과 시간 해상도를 동시에 바꾼다.
 
 ## Study Guide
 
-먼저 WER 예제를 직접 정렬해 보며 평가 단위를 익힌다. 이어 pp. 20–22의 반복 문자 문제를 손으로 decode하고, p. 30의 확장열에서 `stay/advance/skip` 세 전이를 추적한다. 마지막으로 pp. 33–35의 0.4143을 직접 재계산한 뒤, p. 51의 두 언어 모델 결합 도식에서 **LM을 언제 호출하는지** 표시하면 학습·추론·평가가 서로 섞이지 않는다.
+먼저 WER 예제를 직접 정렬해 평가 단위를 익힌다. 이어 pp. 20–23의 반복 문자와 blank 경로를 손으로 접어 보고, 3.3절의 다섯 경로 곱을 더한 값이 trellis 종료 두 칸의 합과 일치하는지 계산한다. 다음으로 pp. 33–35의 0.4143을 같은 recurrence로 재계산하면 forward DP의 세 전이와 loss의 부호가 분명해진다. p. 43의 입력 축소와 p. 44의 블록 내부 convolution을 구별하고, p. 51의 두 언어 모델 결합 도식에서 **LM을 언제 호출하는지** 표시하면 학습·추론·평가가 서로 섞이지 않는다.
 
 ## 복습 질문
 
@@ -275,6 +369,7 @@ ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보�
 
 <ul>
   <li><a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al., Connectionist Temporal Classification (ICML 2006)</a> — CTC 경로 합과 forward–backward 학습의 원 논문.</li>
-  <li><a href="https://arxiv.org/abs/1512.02595" target="_blank" rel="noopener">Amodei et al., Deep Speech 2 (2015/2016)</a> — 강의의 encoder·평가 사례와 관련된 원 논문.</li>
-  <li><a href="https://arxiv.org/abs/2005.08100" target="_blank" rel="noopener">Gulati et al., Conformer (Interspeech 2020)</a> — attention과 convolution 결합 구조의 원 논문.</li>
+  <li><a href="https://arxiv.org/pdf/1408.2873" target="_blank" rel="noopener">Hannun et al., First-Pass Large Vocabulary Continuous Speech Recognition using Bi-Directional Recurrent DNNs (2014)</a> — CTC prefix beam에서 blank/non-blank 종료 확률을 분리하는 절차.</li>
+  <li><a href="https://proceedings.mlr.press/v48/amodei16.pdf" target="_blank" rel="noopener">Amodei et al., Deep Speech 2 (ICML 2016)</a> — convolution·recurrent encoder, CTC 학습, LM beam decoding.</li>
+  <li><a href="https://www.interspeech2020.org/uploadfile/pdf/Thu-3-10-9.pdf" target="_blank" rel="noopener">Gulati et al., Conformer (Interspeech 2020)</a> — encoder 블록, 입력단 4배 subsampling, Transducer 실험.</li>
 </ul>

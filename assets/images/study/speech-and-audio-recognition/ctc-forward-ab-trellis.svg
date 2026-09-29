@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 570" role="img" aria-labelledby="title desc">
+  <title id="title">CTC forward trellis for the target AB</title>
+  <desc id="desc">Five expanded target states across three frames. At the final frame, B has probability 0.396 and the following blank has probability 0.048. Their sum is the transcription probability 0.444.</desc>
+  <defs>
+    <style>
+      .heading { font: 700 24px system-ui, sans-serif; fill: #15345c; }
+      .subhead { font: 16px system-ui, sans-serif; fill: #456184; }
+      .axis { font: 700 18px system-ui, sans-serif; fill: #254a78; }
+      .state { font: 600 19px system-ui, sans-serif; fill: #193a66; }
+      .value { font: 600 20px system-ui, sans-serif; fill: #15345c; }
+      .emphasis { font: 700 21px system-ui, sans-serif; fill: #fff; }
+      .note { font: 16px system-ui, sans-serif; fill: #456184; }
+      .result { font: 700 24px system-ui, sans-serif; fill: #154eac; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 8 5 L 0 10 z" fill="#4680d4"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="918" height="568" rx="20" fill="#f7faff" stroke="#cad8ec" stroke-width="2"/>
+  <text class="heading" x="42" y="50">Forward DP: five states, three frames</text>
+  <text class="subhead" x="42" y="78">Target AB · expanded states ε → A → ε → B → ε</text>
+  <text class="axis" x="279" y="119" text-anchor="middle">t = 1</text>
+  <text class="axis" x="509" y="119" text-anchor="middle">t = 2</text>
+  <text class="axis" x="739" y="119" text-anchor="middle">t = 3</text>
+
+  <text class="state" x="75" y="170">s1  ε</text>
+  <text class="state" x="75" y="240">s2  A</text>
+  <text class="state" x="75" y="310">s3  ε</text>
+  <text class="state" x="75" y="380">s4  B</text>
+  <text class="state" x="75" y="450">s5  ε</text>
+
+  <path d="M 583 232 C 628 235, 638 358, 663 372" fill="none" stroke="#4680d4" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M 583 302 C 620 310, 638 361, 663 372" fill="none" stroke="#4680d4" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M 583 372 L 663 372" fill="none" stroke="#4680d4" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g fill="#fff" stroke="#b7cbe6" stroke-width="2">
+    <rect x="205" y="139" width="148" height="52" rx="10"/>
+    <rect x="205" y="209" width="148" height="52" rx="10"/>
+    <rect x="205" y="279" width="148" height="52" rx="10"/>
+    <rect x="205" y="349" width="148" height="52" rx="10"/>
+    <rect x="205" y="419" width="148" height="52" rx="10"/>
+    <rect x="435" y="139" width="148" height="52" rx="10"/>
+    <rect x="435" y="209" width="148" height="52" rx="10"/>
+    <rect x="435" y="279" width="148" height="52" rx="10"/>
+    <rect x="435" y="349" width="148" height="52" rx="10"/>
+    <rect x="435" y="419" width="148" height="52" rx="10"/>
+    <rect x="665" y="139" width="148" height="52" rx="10"/>
+    <rect x="665" y="209" width="148" height="52" rx="10"/>
+    <rect x="665" y="279" width="148" height="52" rx="10"/>
+  </g>
+  <rect x="665" y="349" width="148" height="52" rx="10" fill="#2366c4"/>
+  <rect x="665" y="419" width="148" height="52" rx="10" fill="#2366c4"/>
+
+  <g class="value" text-anchor="middle">
+    <text x="279" y="173">0.2</text>
+    <text x="279" y="243">0.6</text>
+    <text x="279" y="313">—</text>
+    <text x="279" y="383">—</text>
+    <text x="279" y="453">—</text>
+    <text x="509" y="173">0.06</text>
+    <text x="509" y="243">0.24</text>
+    <text x="509" y="313">0.18</text>
+    <text x="509" y="383">0.24</text>
+    <text x="509" y="453">—</text>
+    <text x="739" y="173">0.012</text>
+    <text x="739" y="243">0.060</text>
+    <text x="739" y="313">0.084</text>
+  </g>
+  <g class="emphasis" text-anchor="middle">
+    <text x="739" y="383">0.396</text>
+    <text x="739" y="453">0.048</text>
+  </g>
+  <text class="note" x="42" y="510">Three arrows into B: skip from A · advance from ε · stay on B</text>
+  <text class="result" x="42" y="546">P(AB | X) = 0.396 + 0.048 = 0.444</text>
+</svg>
