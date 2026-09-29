@@ -67,11 +67,19 @@ $$
 \mathop{\mathrm{argmin}}_{\widehat{W}} \; \lVert W X - \widehat{W} X \rVert_2^{2}
 $$
 
-여기서 $$W$$는 원래 weight, $$X$$는 calibration input, $$\widehat{W}$$는 quantized weight다. 중요한 점은 weight 자체의 round error가 아니라, 그 weight가 실제 input에 곱해졌을 때 생기는 output error를 줄인다는 것이다.
+여기서 $$W$$는 원래 weight, $$X$$는 양자화 전에 출력 변화를 측정하는 calibration input, $$\widehat{W}$$는 quantized weight다. 중요한 점은 weight 자체의 round error가 아니라, 그 weight가 calibration input에 곱해졌을 때 생기는 output error를 줄인다는 것이다.
+
+### 출력 오차와 보정의 작은 예시
+
+다음은 논문 실험값이 아니라 식 (1)을 하나의 출력 행에 제한해 보정의 작동을 보여 주는 예시다. 이 경우 출력 오차는 각 calibration input에서 생긴 오차의 제곱을 더해 계산한다. Weight 행을 $$w=(0.6, 0.4)$$, 두 calibration input을 $$x^{(1)}=(1,1)^{\top}$$, $$x^{(2)}=(1,0)^{\top}$$이라고 하자. 원래 출력 $$wx^{(1)}$$과 $$wx^{(2)}$$는 각각 $$1.0$$과 $$0.6$$이다.
+
+이 예시에서만 첫 번째 weight의 양자화 격자를 $$\{0,1\}$$로 두면 $$0.6$$은 가까운 값 $$1$$로 고정된다. 두 번째 weight를 그대로 두었을 때 출력은 $$1.4$$와 $$1.0$$으로 바뀌고, 원래 출력과의 제곱오차 합은 $$0.4^2+0.4^2=0.32$$다. 아직 양자화하지 않은 두 번째 weight를 $$w_2$$라고 하면, 첫 번째 출력은 $$1+w_2$$이고 두 번째 출력은 $$1$$로 고정된다. 따라서 $$w_2$$를 $$0.4$$에서 $$0$$으로 보정하면 출력은 $$1.0$$과 $$1.0$$이 되고, 제곱오차 합은 $$0^2+0.4^2=0.16$$으로 줄어든다. 두 번째 입력은 $$w_2$$에 곱해지는 값이 $$0$$이므로 그 출력 오차는 남는다.
+
+이 예시는 한 weight의 양자화 오차를 남은 weight로 일부 보상하는 목적을 보여 준다. 실제 보정량은 calibration input에 따라 달라진다. 목적식은 주어진 $$X$$ 위의 오차만 측정하고 이후 남은 weight도 양자화되므로, 다른 입력이나 최종 layer에서도 오차가 항상 이 예시처럼 줄어든다는 보장은 없다.
 
 ## 3. OBQ에서 GPTQ로
 
-GPTQ는 Optimal Brain Quantization(OBQ)의 아이디어를 가져온다. OBQ는 하나의 weight를 양자화한 뒤, 그 error가 layer output에 미치는 영향을 줄이도록 아직 양자화되지 않은 weight를 inverse Hessian 기반으로 보정한다.
+GPTQ는 Optimal Brain Quantization(OBQ)의 아이디어를 가져온다. 위 예시에서 두 번째 weight를 조정한 것이 보정의 기본 동작이다. 논문 3절의 OBQ는 각 weight row의 출력 제곱오차가 남은 weight에 대해 이차식이라는 점을 이용한다. 아직 양자화하지 않은 weight의 index 집합을 $$F$$, 그에 대응하는 입력 행을 $$X_F$$라고 하면 Hessian(오차의 곡률을 나타내는 행렬)은 $$H_F=2X_F X_F^{\top}$$다. OBQ는 하나의 weight를 양자화한 뒤 $$H_F^{-1}$$을 이용해 남은 weight의 보정량을 계산한다. 이 역행렬 표기는 $$H_F$$가 비특이일 때 성립한다. 논문의 실제 GPTQ 알고리즘은 작은 damping 항 $$\lambda I$$($$I$$는 항등행렬)을 더한 $$\left(2XX^{\top}+\lambda I\right)^{-1}$$을 사용하고 Cholesky 재정식화로 수치 불안정성을 줄인다. 따라서 예시의 $$0.4\rightarrow0$$은 모든 입력에 적용되는 고정 규칙이 아니라, 이 두 calibration input에서 출력 제곱오차를 줄이는 한 경우다.
 
 하지만 원래 OBQ는 column 수에 대해 cubic한 비용을 가지며, row마다 greedy order와 inverse update를 반복해야 하므로 GPT 규모에는 직접 적용하기 어렵다. GPTQ는 다음 수정으로 이 병목을 줄인다.
 

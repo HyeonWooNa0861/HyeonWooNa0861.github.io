@@ -24,29 +24,42 @@ C++에서 `new`로 할당한 메모리는 `delete`로 직접 해제해야 한다
 
 ## 2. 스마트 포인터와 RAII
 
-스마트 포인터는 원시 포인터를 객체로 감싸서, 스코프를 벗어날 때 소멸자를 통해 자동으로 메모리를 해제하는 도구이다. C++ 표준 라이브러리는 대표적으로 `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`를 제공한다.
+RAII(Resource Acquisition Is Initialization)는 자원의 획득과 해제를 객체 수명에 묶는 방식이다. C++ 표준 라이브러리의 `std::unique_ptr`와 `std::shared_ptr`는 소유권에 따라 대상 객체를 정리한다. `std::weak_ptr`는 대상을 소유하지 않으므로, 자신이 소멸해도 대상 객체를 파괴하지 않는다.
 
-`std::unique_ptr`는 하나의 객체가 하나의 자원만 소유하도록 만든다. 복사는 불가능하고 `std::move`를 통해 소유권을 이동할 수 있다. 단독 소유가 명확한 자원에 적합하다.
+`std::unique_ptr`는 한 자원에 소유자를 하나만 둔다. 복사는 불가능하고 `std::move`로 소유권을 넘기면 원래 포인터는 비게 된다. 단독 소유가 명확한 자원에 적합하다.
 
 `std::shared_ptr`는 여러 포인터가 하나의 객체를 공유할 때 사용한다. 내부적으로 참조 횟수를 관리하며, 마지막 소유자가 사라질 때 객체를 해제한다. 여러 모듈이 같은 자원을 함께 사용해야 할 때 유용하다.
 
-`std::weak_ptr`는 `shared_ptr`가 관리하는 객체를 비소유 방식으로 참조한다. 참조 카운트를 증가시키지 않기 때문에 순환 참조를 끊는 데 사용된다.
+`std::weak_ptr`는 `shared_ptr`가 관리하는 객체를 비소유 방식으로 관찰한다. 객체에 접근할 때는 `lock()`으로 유효한 소유권을 얻고, 반환된 `shared_ptr`가 비어 있지 않은지 확인한다.
 
 ## 3. Reference Counting 동작 원리
 
-Reference counting은 객체를 참조하는 소유자의 수를 기록하고, 그 수가 0이 되는 순간 객체를 해제하는 방식이다. `std::shared_ptr`는 이 방식을 사용하며, 실제 객체와 별도로 control block을 두어 use count와 weak count를 관리한다.
+`std::shared_ptr`의 reference counting은 객체를 가리키는 모든 포인터가 아니라 **소유권을 공유하는 `shared_ptr`의 수**를 센다. 같은 객체의 소유자들은 control block을 공유하며, 이 블록이 소유자 수(use count)와 `weak_ptr`의 존재를 관리한다. 소유자 수가 0이 되면 대상 객체가 파괴된다.
 
-예를 들어 하나의 `shared_ptr`를 다른 변수에 복사하면 use count가 증가한다. 복사본이 스코프를 벗어나거나 `reset()`을 호출하면 use count가 감소한다. 마지막 `shared_ptr`가 사라져 use count가 0이 되면 실제 객체가 파괴된다.
+```cpp
+#include <memory>
 
-이 방식의 장점은 객체가 더 이상 사용되지 않는 시점에 즉시 해제된다는 것이다. 파일 핸들, 네트워크 소켓처럼 메모리 외 자원을 스코프 기반으로 관리할 때도 예측 가능한 수명 관리가 가능하다.
+int main() {
+    auto first = std::make_shared<int>(10); // 소유자 1명
+    std::weak_ptr<int> view = first;        // 여전히 1명
+    {
+        auto second = first;                // 소유자 2명
+    }                                       // 다시 1명
+    first.reset();                          // 0명: int 객체 파괴
+    auto alive = view.lock();               // 빈 shared_ptr 반환
+    return alive ? 1 : 0;                   // 0: 객체에 접근할 수 없음
+}
+```
+
+`view`가 남아 있어도 마지막 소유자인 `first`가 `reset()`되면 객체는 파괴된다. 다만 `weak_ptr`가 남아 있는 동안 control block은 유지될 수 있으므로, 객체 파괴와 메모리 할당 전체의 반환은 구분해야 한다. 파일 핸들처럼 소멸자에서 정리하는 자원은 이 소유권 종료 시점에 정리할 수 있다.
 
 ## 4. Reference Counting의 한계
 
 Reference counting에는 비용과 구조적 한계가 있다. `shared_ptr`를 복사하거나 해제할 때마다 카운트를 증가·감소해야 하며, 멀티스레드 환경에서는 원자적 연산이 필요해 성능 오버헤드가 발생한다.
 
-가장 대표적인 문제는 순환 참조이다. 두 객체가 서로를 `shared_ptr`로 참조하면 두 객체 모두 use count가 0이 되지 않아 메모리가 해제되지 않는다. 이런 경우 한쪽 참조를 `weak_ptr`로 바꾸어 소유 관계를 끊어야 한다.
+순환 참조에서는 소유자가 남아 있어 객체가 파괴되지 않는다. `A→B`와 `B→A`가 모두 `shared_ptr`이고 외부 변수 `a`, `b`도 각각 `A`, `B`를 소유하면, 연결 직후 소유자 수는 `A=2(a, B→A)`, `B=2(b, A→B)`이다. 외부의 `a`, `b`가 사라진 뒤에도 내부 소유권이 남아 `A=1`, `B=1`이다. 반대로 `B→A`를 `weak_ptr<A>`로 바꾸면 `A=1`, `B=2`에서 시작해 `b` 해제 후 `B=1`, `a` 해제 후 `A=0`이 된다. 이때 `A`의 소멸자가 `A→B`를 해제하므로 `B=0`이 된다. 이는 두 외부 변수 이외에 다른 소유자가 없을 때의 흐름이다.
 
-또한 control block이 별도 메모리 공간에 존재하기 때문에 캐시 지역성이 떨어질 수 있다. 따라서 모든 포인터를 무조건 `shared_ptr`로 바꾸는 것은 좋은 설계가 아니며, 소유권 구조에 맞게 `unique_ptr`, `shared_ptr`, `weak_ptr`를 구분해야 한다.
+원문 PDF 3쪽의 "control block이 별도 메모리 공간에 존재한다"는 설명은 모든 생성 방식에 적용되지 않는다. `std::make_shared`는 객체와 control block을 한 번에 할당할 수 있다(<a href="https://learn.microsoft.com/en-us/cpp/standard-library/memory-functions?view=msvc-170#make_shared" target="_blank" rel="noopener">Microsoft Learn: make_shared</a>). 따라서 모든 포인터를 무조건 `shared_ptr`로 바꾸기보다, 소유권 구조와 카운트 관리 비용에 맞게 `unique_ptr`, `shared_ptr`, `weak_ptr`를 구분해야 한다.
 
 ## 5. JVM Garbage Collection과 비교
 
@@ -64,12 +77,12 @@ C++ 스마트 포인터와 JVM GC는 모두 개발자가 직접 `delete`를 호�
 | `unique_ptr` | 복사할 수 없는 단독 소유권이며, 소유권 이전에는 `std::move`를 사용한다. |
 | `shared_ptr` | control block의 use count로 공유 소유권을 관리하며 마지막 소유자가 사라질 때 객체를 파괴한다. |
 | `weak_ptr` | use count를 늘리지 않는 비소유 참조로 `shared_ptr` 순환을 끊는다. |
-| 비용 | 참조 카운트 갱신, 멀티스레드 원자적 연산, 별도 control block에 따른 오버헤드가 있다. |
+| 비용 | 참조 카운트 갱신, 멀티스레드 원자적 연산, control block 관리에 따른 오버헤드가 있다. |
 | JVM GC와 차이 | C++ RAII는 해제 시점을 비교적 예측할 수 있고, tracing GC는 순환 참조를 회수하지만 실행 시점이 비결정적일 수 있다. |
 
 ## 결론 및 학습 성과
 
-스마트 포인터는 C++에서 안전한 메모리 관리를 위해 매우 중요한 도구이지만, 모든 문제를 자동으로 해결해 주지는 않는다. 핵심은 소유권 구조를 명확히 설계하는 것이다. 단독 소유에는 `unique_ptr`, 공유 소유에는 `shared_ptr`, 순환 참조 방지에는 `weak_ptr`를 사용해야 한다. 결국 C++의 자동 메모리 관리는 언어가 제공하는 도구와 개발자의 설계 판단이 함께 작동할 때 효과가 크다.
+스마트 포인터는 수동 `delete`에서 생기는 오류를 줄이지만, 순환 소유권이나 공유 비용까지 자동으로 해결하지는 않는다. 이 과제에서 확인할 판단 기준은 실제 소유 관계를 따라가며 마지막 소유자가 사라지는 경로가 있는지 점검하는 것이다.
 
 ## PDF
 
