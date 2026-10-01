@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-09-29 16:48:00 +0900
+last_modified_at: 2026-10-01 15:55:35 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -272,9 +272,43 @@ Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에
 
 ## 6. Subword tokenization과 시간 축 축소
 
-글자 단위로 길고 반복된 정답을 내면 CTC의 유효 경로가 적어지거나, encoder 시간축이 지나치게 짧을 때 경로가 아예 없어질 수 있다. Subword는 빈번한 문자 묶음을 하나의 token으로 만들므로 목표 token 수를 줄이고 문맥 있는 단위를 표현할 수 있다(p. 46). 다만 subword가 언제나 정확도를 올린다는 뜻은 아니다. 어휘 크기, 언어, 학습 데이터, decoder에 따라 결과가 달라진다.
+글자 단위로 길고 반복된 정답을 내면 CTC의 유효 경로가 적어지거나, encoder 시간축이 지나치게 짧을 때 경로가 아예 없어질 수 있다. 반대로 단어 하나를 token 하나로 두면 출력열은 짧지만, 단어 종류가 매우 많아지고 학습에서 보지 못한 단어를 그대로 나타내기 어렵다. **Subword는 글자보다 긴 빈출 조각을 학습하되 필요하면 더 작은 단위로 분해하여, 글자열의 긴 출력과 단어 어휘의 희소성 사이를 조절한다.** 그래서 목표 token 수를 줄이고 반복되는 철자 문맥을 공유할 수 있지만, 언제나 정확도가 오른다는 뜻은 아니다. 적절한 어휘 크기와 분할은 언어, 학습 말뭉치, ASR 구조와 decoder에 따라 달라진다(p. 46).
 
-슬라이드 p. 47의 Byte Pair Encoding(BPE)은 문자 vocabulary에서 시작해 **가장 빈번한 인접 token 쌍**을 새 token으로 합치는 과정을 목표 vocabulary 크기에 도달할 때까지 반복한다. 자료의 `aaabdaaabac` 예시는 `aa → Z`, `ab → Y`, `ZY → X`를 순서대로 적용하여 `ZabdZabac → ZYdZYac → XdXac`로 압축한다. `low/lowest/newer` 그림도 `lo`를 새 token으로 만드는 예다. WordPiece와 Unigram은 함께 열거되지만(pp. 46–47), **동일한 병합 규칙의 다른 이름이 아니다.** 이 슬라이드는 둘의 학습 목적식까지 설명하지 않으므로 여기서 BPE와 동치라고 두지 않는다.
+### 6.1 BPE는 무엇을 학습하고 어떻게 적용하는가
+
+슬라이드 p. 47의 Byte Pair Encoding(BPE)은 문자 vocabulary에서 시작해 **학습 말뭉치에서 가장 빈번한 인접 symbol 쌍**을 새 symbol로 합치는 과정을 정해진 병합 횟수 또는 목표 vocabulary 크기까지 반복한다. 여기서 빈도는 서로 다른 단어 종류를 한 번씩 세는 값이 아니다. 같은 단어가 말뭉치에 여러 번 나오면 그 횟수만큼 그 단어 내부의 인접 쌍 빈도에 가중치를 준다. 또한 Sennrich 등의 word-segmentation 방식은 먼저 공백·구두점 규칙으로 pretokenization한 뒤, **단어 경계를 가로지르는 쌍은 세지 않고** 단어 끝 표지를 사용해 원래 경계를 복원한다. 각 병합의 순서가 곧 merge rank이며, 먼저 학습된 쌍일수록 높은 우선순위를 갖는다.
+
+**작성자 보충 — 빈도 가중 병합 예제.** 계산을 재현할 수 있도록 초기 base alphabet에는 `l, o, w, e, r, s, t`와 경계 symbol `</w>`가 미리 등록되어 있고, pretokenization한 병합 학습 말뭉치에는 `low`가 5회, `lower`가 2회 있다고 가정한다. 각 단어 뒤에는 `</w>`를 별도 token으로 붙이고, 단어 사이 쌍은 만들지 않는다. 첫 단계에서 `(l, o)`와 `(o, w)`는 모두 7회로 동률이다. 이 예제에서는 동률이면 왼쪽에서 더 먼저 나타나는 쌍을 고른다고 명시적으로 정한다. 실제 구현은 자체적인 결정적 tie-breaking 규칙을 사용해야 같은 merge table을 재현할 수 있다.
+
+```text
+학습 vocabulary(빈도 포함)
+5 × l o w </w>
+2 × l o w e r </w>
+
+1순위: (l, o), 빈도 7  →  lo
+5 × lo w </w>
+2 × lo w e r </w>
+
+2순위: (lo, w), 빈도 7  →  low
+5 × low </w>
+2 × low e r </w>
+```
+
+두 번 병합한 뒤 symbol vocabulary에는 기존 문자와 함께 `lo`, `low`가 추가된다. 슬라이드의 `aaabdaaabac`도 같은 원리로 `aa → Z`, `ab → Y`, `ZY → X`를 순서대로 적용하여 `ZabdZabac → ZYdZYac → XdXac`로 압축한다. 다만 슬라이드의 단일 문자열 예제와 달리, 실제 말뭉치 학습에서는 위처럼 **단어별 출현 빈도를 반영한 전체 쌍 통계**가 병합 순서를 정한다.
+
+추론할 때는 새 입력만 보고 BPE를 다시 학습하지 않는다. 학습 때 저장한 merge rank를 그대로 적용한다. 예를 들어 위 두 병합만 배운 tokenizer에 처음 보는 `lowest`가 들어오면 `l o w e s t </w>`에서 `(l, o)`를 먼저 합치고 `(lo, w)`를 합쳐 `low e s t </w>`를 얻는다. `lowest` 전체가 학습 vocabulary에 없더라도 이미 배운 `low`와 남은 기본 symbol로 표현하는 것이다. 입력마다 병합 통계를 다시 계산하면 같은 문자열의 분할이 주변 입력에 따라 달라지고, 학습 때 사용한 ASR 출력 label 집합과도 일치하지 않는다.
+
+### 6.2 어휘 크기와 ASR decoding의 절충
+
+병합을 많이 할수록 vocabulary는 커지고 자주 등장하는 구간은 더 긴 token 하나가 되므로 목표열 길이 $$U$$는 대체로 짧아진다. CTC에서는 짧아진 $$U$$와 줄어든 반복 label 수가 유효 경로에 필요한 최소 출력 frame 수를 낮출 수 있다. 그러나 CTC prefix beam 자체는 token 수 $$U$$가 아니라 encoder 출력 frame $$T$$를 한 칸씩 진행하므로, tokenization만 바꿨다고 beam의 시간 단계 수 $$T$$가 자동으로 줄어드는 것은 아니다. 반면 acoustic model의 마지막 층은 blank를 포함한 각 token의 logit을 내야 하므로, vocabulary가 커지면 각 frame에서 계산·저장할 logit 차원도 커진다. 드문 긴 subword는 학습 신호가 적어 추정이 불안정할 수도 있다.
+
+병합을 적게 하면 출력층은 작고 희귀 단어를 작은 단위로 조합하기 쉽지만, 한 발화를 표현하는 token 수가 늘어난다. CTC beam에서 후보 prefix를 확장하는 label 단위도 문자, subword, 단어 중 무엇을 쓰는지에 따라 달라지므로, 같은 $$T$$와 beam width라도 frame마다 고려할 vocabulary와 prefix 집합의 비용은 같지 않다. Subword beam은 단어 중간 조각도 후보로 유지하며, 단어 경계 복원과 외부 언어 모델 결합 시에는 ASR token과 LM의 점수 단위가 어떻게 대응하는지도 정해야 한다. Token 수 감소가 직접 decoding step 감소로 이어지는 설명은 LAS나 RNN-T처럼 출력 token 단계가 있는 decoder에 해당하며, frame별 CTC 전체에 일반화할 수 없다. 따라서 **큰 vocabulary는 짧은 정답열, 작은 vocabulary는 작은 출력층**이라는 절충을 검증 집합의 오류율·속도·메모리로 함께 선택해야 한다.
+
+### 6.3 문자 BPE와 byte-level BPE의 범위
+
+이름에 `Byte`가 들어가지만 Sennrich 등의 NLP 적용은 원래 압축 알고리즘을 변형해 **Unicode 문자와 문자열**을 기본 symbol로 병합한다. 이 방식은 자연스러운 문자 경계를 유지하지만, tokenizer의 초기 문자 vocabulary에 없는 문자가 추론에 나타나면 별도 unknown 처리나 fallback이 필요할 수 있다. 반면 byte-level BPE는 UTF-8 텍스트를 byte 단위 symbol로 시작한다. 256개 byte를 모두 기본 vocabulary에 포함하면 임의의 유효 byte열을 분해해 표현할 수 있지만, 한 글자가 여러 byte token으로 길어질 수 있고 정규화·pretokenization·special token·vocabulary filtering 같은 전체 pipeline의 다른 단계까지 자동으로 해결되는 것은 아니다.
+
+따라서 **모든 BPE가 보편적으로 OOV-free라고 단정할 수는 없다.** Sennrich 등의 문자 BPE 논문도 미지 문자가 unknown일 수 있고 joint BPE에서는 한 언어 쪽에만 나타난 segment가 다른 쪽에서 unknown이 되는 예외를 명시한다. 기본 단위가 입력을 완전히 덮는지, 학습된 symbol vocabulary를 inference에서도 동일하게 쓰는지, unknown fallback이 무엇인지까지 확인해야 한다. WordPiece와 Unigram은 강의에서 함께 열거되지만(pp. 46–47), **동일한 병합 규칙의 다른 이름이 아니다.** 이 슬라이드는 둘의 학습 목적식까지 설명하지 않으므로 여기서 BPE와 동치라고 두지 않는다.
 
 Temporal subsampling은 stride convolution, 2-D convolution+projection, frame stacking+projection 등으로 encoder가 처리할 프레임 수를 줄이는 방법이다(p. 48). 긴 음성에서 이후 층의 연산량과 메모리를 줄이지만, 지나치면 짧은 음소나 가까운 반복을 구별할 시간 해상도도 잃는다. **CTC를 출력 목표로 쓰는 모델**이라면 축소 후 길이 $$T'$$가 최소한 $$T'\ge U+R$$을 만족해야 유효 경로가 남는다. 이 조건을 앞의 Conformer 원 논문 Transducer 실험에 그대로 적용해서는 안 된다.
 
@@ -310,6 +344,7 @@ $$
 | pp. 36–41 | `streamable`, greedy 및 beam 비교는 추가 조건이 필요 | 미래 문맥 조건, 정규화된 반례, prefix별 확률 병합을 명시 |
 | p. 42 | `super human`을 모든 평가 집합으로 일반화할 수 없고 WSJ’92 Human 값은 5.03% | 슬라이드 이미지의 네 평가 행을 다시 대조해 표기 |
 | pp. 43–48 | Conformer의 시간축 축소와 블록 내부 convolution은 별개 | 원 논문의 4배 입력 축소와 Transducer 사용을 구분 |
+| pp. 46–47 | BPE의 빈도 계산, 학습·추론 구분과 OOV 조건은 슬라이드에 생략 | Sennrich 등의 원 논문과 공식 구현을 대조해 빈도 가중 병합, 고정 merge rank, 문자·byte 변형과 예외를 명시 |
 | p. 51 | `large/light model (ASR)`의 지칭 대상이 불명확 | 규모 권장에 대한 단정 없이 두 결합 절차만 설명 |
 
 이 해설은 강의 PDF 51쪽의 텍스트·도식·수식과 위 전이 예제를 대상으로 한다. 오디오 실험이나 모델 학습 결과를 제시하는 글은 아니다.
@@ -372,4 +407,6 @@ ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보�
   <li><a href="https://arxiv.org/pdf/1408.2873" target="_blank" rel="noopener">Hannun et al., First-Pass Large Vocabulary Continuous Speech Recognition using Bi-Directional Recurrent DNNs (2014)</a> — CTC prefix beam에서 blank/non-blank 종료 확률을 분리하는 절차.</li>
   <li><a href="https://proceedings.mlr.press/v48/amodei16.pdf" target="_blank" rel="noopener">Amodei et al., Deep Speech 2 (ICML 2016)</a> — convolution·recurrent encoder, CTC 학습, LM beam decoding.</li>
   <li><a href="https://www.interspeech2020.org/uploadfile/pdf/Thu-3-10-9.pdf" target="_blank" rel="noopener">Gulati et al., Conformer (Interspeech 2020)</a> — encoder 블록, 입력단 4배 subsampling, Transducer 실험.</li>
+  <li><a href="https://arxiv.org/abs/1508.07909" target="_blank" rel="noopener">Sennrich, Haddow, and Birch, Neural Machine Translation of Rare Words with Subword Units (ACL 2016)</a> — 문자 기반 BPE의 빈도 가중 병합, 단어 경계, 추론 시 학습된 병합 적용과 OOV 조건.</li>
+  <li><a href="https://github.com/rsennrich/subword-nmt" target="_blank" rel="noopener">Sennrich et al., subword-nmt official implementation</a> — 학습한 code를 재사용하는 절차와 문자 BPE·byte-level BPE 구현 차이.</li>
 </ul>

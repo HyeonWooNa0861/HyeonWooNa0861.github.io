@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
+last_modified_at: 2026-10-01 16:01:38 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -9,6 +10,8 @@ major_topic: "Speech and Audio Processing"
 keywords:
   - "Attention"
   - "Sequence-to-Sequence"
+  - "Autoregressive Decoding"
+  - "Teacher Forcing"
   - "Cross-Entropy"
   - "Listen Attend and Spell"
   - "RNN-Transducer"
@@ -72,6 +75,8 @@ $$
 
 ### 2.1 하나의 고정 벡터와 입력 state열
 
+슬라이드 pp. 3–5의 **NLP case는 기계번역**이다. 입력 문장의 token열을 $$X=(x_1,\ldots,x_T)$$, 번역 문장의 token열을 $$y=(y_1,\ldots,y_U)$$로 놓는다. 언어마다 어순과 표현 길이가 다르므로 입력의 몇 번째 token을 출력의 같은 위치에 그대로 대응시킬 수 없다. Encoder는 원문을 표현하고 decoder는 번역문을 생성한다. Decoder가 **이미 생성한 번역 prefix를 다음 예측에 다시 사용하는 방식**이 autoregressive generation이다.
+
 기본 encoder–decoder는 길이 $$T$$의 입력을 표현하고 길이 $$U$$의 출력을 생성한다(pp. 3–5). 길이가 다른 것 자체는 오류가 아니다. 어려운 점은 각 출력에 필요한 입력 정보가 서로 다르고, 둘 사이의 정렬이 주어지지 않는다는 것이다.
 
 입력 전체를 마지막 state 하나로 압축하면 긴 문장의 세부 정보를 그 벡터 안에 유지해야 한다. Attention은 encoder의 각 state $$h_1,\ldots,h_T$$를 남겨 두고, 출력 단계마다 필요한 state를 가중합한다. 학습 가능한 soft alignment이므로 특정 source 위치를 사람이 정답으로 지정하지 않아도 된다.
@@ -115,19 +120,84 @@ $$
 
 음성에서는 가로축이 encoder의 음향 프레임이 된다. 문자는 소리가 지속되는 여러 프레임을 참고할 수 있다. 다만 attention weight는 학습된 정보 결합 계수이며, **밝은 칸 하나가 모델 판단의 유일한 원인임을 증명하지는 않는다**. 일반 full attention도 시간 순서를 반드시 단조롭게 강제하지 않는다.
 
-## 3. 출력 분포와 cross-entropy 학습
+## 3. Autoregressive generation과 cross-entropy 학습
 
-### 3.1 문장 확률을 token 확률로 분해하기
+### 3.1 Autoregressive의 의미
 
-LAS 같은 autoregressive decoder는 이전 출력열을 조건으로 다음 token의 분포를 만든다(pp. 12–13). 문장 끝 기호를 $$y_{U+1}=\mathrm{EOS}$$로 포함하면 확률의 chain rule에 따라 다음처럼 분해한다.
+**Autoregressive decoder는 앞에서 생성한 출력열을 조건으로 다음 출력의 분포를 계산한다.** 기계번역의 첫 token은 원문과 시작 상태를 보고 예측하고, 두 번째는 원문과 첫 출력 token을, 세 번째는 원문과 앞의 두 출력 token을 함께 본다. $$y_{<u}=(y_1,\ldots,y_{u-1})$$는 출력 단계 $$u$$ 이전의 prefix다. $$\theta$$는 모델이 학습한 파라미터이며, $$q_u(k)$$는 그 prefix에서 token $$k$$를 낼 확률이다.
+
+$$
+q_u(k)=P_{\theta}(y_u=k\mid y_{<u},X)
+$$
+
+여기서 생성한 token이 다음 계산의 입력으로 되돌아온다. 이름에 `regressive`가 들어가지만 반드시 연속값을 예측하는 선형 회귀를 사용한다는 뜻은 아니다. 이 강의의 decoder는 vocabulary 위의 확률 분포를 만드는 신경망이다. RNN만 가능한 방식도 아니며, causal target mask를 쓰는 Transformer decoder도 같은 출력 조건을 구현할 수 있다.
+
+$$X$$는 기계번역에서는 원문 token열, LAS에서는 음향 feature열이다. **Target prefix만 과거로 제한한다는 것과 encoder가 미래 음향을 보지 않는다는 것은 서로 다른 조건**이다. 입력 문장을 전부 읽은 offline 번역이나 전체 음성을 읽는 LAS도 출력은 autoregressive하게 생성할 수 있다.
+
+### 3.2 문장 확률의 곱은 어디에서 나오는가
+
+조건부 확률의 정의에서 시작하면 이전 출력에 조건화하는 이유가 드러난다. 나눗셈으로 조건부 확률을 정의하는 각 단계에서 $$P(y_{<u}\mid X)>0$$을 가정한다. 아래 두 번째 token 식에는 $$P(y_1\mid X)>0$$, 세 번째 token 식에는 $$P(y_1,y_2\mid X)>0$$이 필요하다. 확률이 0인 prefix의 완성 경로도 확률이 0이며, 그 prefix에는 아래 나눗셈 유도를 그대로 적용하지 않는다.
+
+$$
+P(y_2\mid y_1,X)=\frac{P(y_1,y_2\mid X)}{P(y_1\mid X)}
+$$
+
+분모를 이항하면 두 token의 결합 확률을 얻는다. 세 번째 token에도 같은 정의를 적용한다.
+
+$$
+P(y_1,y_2\mid X)=P(y_1\mid X)P(y_2\mid y_1,X)
+$$
+
+$$
+P(y_1,y_2,y_3\mid X)=P(y_1,y_2\mid X)P(y_3\mid y_1,y_2,X)
+$$
+
+이를 반복하고 문장 끝 기호 $$y_{U+1}=\mathrm{EOS}$$를 포함하면 확률의 chain rule을 얻는다. 다음 유도는 **작성자 보충 설명**이며, 슬라이드 pp. 3–5, 12–13의 decoder를 연결하는 관계다.
 
 $$
 P(y,\mathrm{EOS}\mid X)=\prod_{u=1}^{U+1}P(y_u\mid y_{<u},X)
 $$
 
-이 등식은 이전 token을 독립으로 가정한 것이 아니다. 모델은 각 조건부 분포를 근사한다. 학습의 기본적인 teacher forcing에서는 정답 prefix를 입력하고, 추론에서는 실제로 생성한 prefix를 입력한다. 따라서 추론 중 잘못 낸 token은 다음 예측에도 영향을 줄 수 있다. 원래 LAS는 이 차이를 줄이는 방법으로 정답 대신 모델에서 뽑은 이전 token을 일부 사용하는 학습도 실험한다.
+Chain rule 자체는 독립성 가정 없이 성립하는 확률 항등식이다. 신경망은 각 조건부 분포를 학습된 $$P_{\theta}$$로 근사한다. 이전 출력을 조건에서 제거한 $$\prod_u P(y_u\mid X)$$는 다른 모델링 가정이며, 출력끼리 독립으로 처리한다. 또한 autoregressive가 바로 앞 token 하나만 보는 1차 Markov 모델이라는 뜻도 아니다. 원칙적으로 전체 prefix를 조건으로 두되 실제로 보존하는 정보는 decoder 구조와 context 길이에 달려 있다.
 
-### 3.2 One-hot 정답에서는 왜 음의 로그 하나가 남는가
+### 3.3 기계번역 예시를 단계별로 읽기
+
+다음은 **작성자가 구성한 예시**다. 원문 `I am a student`를 번역하고, 설명을 위해 출력 token을 단어 단위 `나는`, `학생이다`로 정했다고 하자. 실제 모델에서는 tokenizer에 따라 더 작은 subword로 나뉠 수 있다.
+
+| 단계 | Decoder가 사용하는 출력 prefix | 예시에서 선택한 token | 해당 조건부 확률 |
+|---|---|---|---:|
+| 1 | 없음; 시작 기호 BOS | `나는` | 0.9 |
+| 2 | `나는` | `학생이다` | 0.8 |
+| 3 | `나는 학생이다` | EOS | 0.95 |
+
+모든 단계는 동일한 원문 $$X$$도 함께 사용한다. 각 숫자는 **그 단계의 prefix가 주어졌을 때 선택한 token의 확률**이지 전체 문장의 확률이 아니다. 종료까지 포함한 이 번역 경로의 확률은 다음과 같다.
+
+$$
+P_{\theta}(\text{나는, 학생이다, EOS}\mid X)=0.9\times0.8\times0.95=0.684
+$$
+
+첫 token을 `저는`으로 생성했다면 두 번째 단계의 조건도 `저는`으로 바뀐다. 위의 0.8은 `나는` prefix에서의 값이므로 그 다른 경로에 그대로 재사용할 수 없다. 이것이 생성된 출력이 다음 예측에 영향을 주는 구체적인 의미다. Token 선택에는 greedy, sampling, beam search 등을 사용할 수 있다. **Autoregressive는 분포의 조건 관계이고 greedy는 그 분포에서 무엇을 선택할지 정하는 방법**이다.
+
+### 3.4 학습과 추론에서 무엇을 다시 입력하는가
+
+기본적인 teacher forcing은 정답 prefix로 다음 정답 token을 예측하도록 학습한다. 위 번역의 decoder 입력과 정답을 한 칸 어긋나게 배치하면 다음과 같다.
+
+```text
+Decoder input: BOS    나는      학생이다
+Target:        나는   학생이다  EOS
+```
+
+두 번째 위치의 decoder 입력에 있는 `나는`은 첫 위치의 정답이다. **현재 예측해야 하는 `학생이다`나 그 뒤의 EOS를 현재 출력의 조건으로 보여 주는 방식은 아니다.** Transformer decoder에서 여러 위치를 한 번에 계산할 때는 causal mask로 이후 target 위치를 가려 이 조건을 유지한다. 따라서 학습 계산을 병렬화할 수 있다는 사실과 확률 분해가 autoregressive하다는 사실은 충돌하지 않는다. RNN decoder는 hidden state의 시간 의존성 때문에 teacher forcing을 해도 recurrent 계산이 순차적이다.
+
+추론에는 정답 prefix가 없으므로 실제로 생성한 token을 다시 입력한다. 앞에서 잘못 선택한 token은 이후 조건을 바꾸며 오류가 이어질 수 있다. 이 학습·추론 입력의 차이를 exposure bias라고 부른다. 원래 LAS는 이 차이를 줄이는 방법으로 정답 대신 모델에서 뽑은 이전 token을 일부 사용하는 학습도 실험한다. 학습 예시를 먼저 이해한 뒤 이 보완 기법을 읽으면 무엇을 바꾸려는지 분명해진다.
+
+### 3.5 Autoregressive와 attention은 같은 개념인가
+
+두 연산은 담당하는 질문이 다르다. **Autoregressive 조건은 “어떤 출력을 이미 만들었는가”, cross-attention은 “그 prefix에서 다음 출력을 만들 때 원문의 어디를 참고할 것인가”**를 처리한다. Decoder는 이전 출력으로 상태를 갱신하고 그 상태에 맞춰 원문 state의 attention weight를 다시 계산한다.
+
+고정된 encoder 벡터 하나만 사용하는 decoder도 이전 출력을 조건으로 다음 token을 내면 autoregressive다. 반대로 attention을 쓴다는 사실만으로 출력이 autoregressive라고 결론 낼 수는 없다. 기본 LAS에서는 두 기능을 함께 사용하고, RNN-T에서는 prediction network가 이전 출력 prefix를 반영하면서 별도의 시간·token lattice를 따른다. 이들의 출력 이력 조건과 정렬 처리 방법을 따로 보아야 한다.
+
+### 3.6 One-hot 정답에서는 왜 음의 로그 하나가 남는가
 
 정답 분포 $$p(k)$$와 예측 분포 $$q(k)$$의 cross-entropy는 다음으로 정의한다. $$q(k)>0$$인 조건에서 쓰며, 정답 확률이 양수인 위치의 $$q(k)=0$$이면 손실은 무한대로 해석한다.
 
@@ -149,7 +219,7 @@ $$
 
 세 출력 단계의 정답을 `dog, cat, bird`로 두면, 슬라이드의 각 정답 확률은 $$0.7,0.9,0.8$$이다. 이는 **슬라이드 숫자를 이용해 작성자가 구성한 목표열 예시**다. 그 문장 prefix의 조건부 확률 곱은 $$0.504$$이고, EOS를 제외한 해당 세 단계 손실 합은 $$-\log 0.504\approx0.685179$$다. 이 세 값만으로 종료까지 포함한 전체 문장 확률을 계산했다고 보아서는 안 된다.
 
-### 3.3 어떤 확률을 높이도록 학습하는가
+### 3.7 어떤 확률을 높이도록 학습하는가
 
 Logit을 $$z_k$$, $$q(k)=\exp(z_k)/\sum_j\exp(z_j)$$로 놓으면 one-hot 손실을 다음처럼 변형할 수 있다. 아래는 **작성자 유도**다.
 
@@ -163,7 +233,7 @@ $$
 
 첫 분포의 gradient는 $$(0.1,-0.3,0.2)$$다. Gradient descent는 정답 `dog`의 logit을 높이고 다른 logit을 낮추는 방향으로 움직인다. 이 gradient가 출력층과 decoder, attention을 거쳐 encoder까지 전달되므로 어떤 음향 표현과 정렬이 정답 예측에 유용한지도 학습된다. 실제 파라미터 변화는 learning rate와 각 층의 Jacobian에도 의존한다.
 
-### 3.4 “분포가 다를수록 커진다”의 정확한 의미
+### 3.8 “분포가 다를수록 커진다”의 정확한 의미
 
 Cross-entropy는 일반적인 대칭 거리도 아니고, 임의의 분포 사이 거리 순서를 그대로 따르는 값도 아니다. 정의를 전개하면 다음 정확한 관계를 얻는다.
 
@@ -399,25 +469,44 @@ Subsampling은 $$T$$를, subword는 보통 $$U$$를 줄일 수 있다. 하지만
 
 ## 8. CTC, LAS, RNN-T를 비교하는 기준
 
-### 8.1 구조와 streaming 조건
+### 8.1 CTC와 LAS가 정렬을 처리하는 방식
+
+CTC와 LAS는 모두 음성과 전사만으로 학습할 수 있고, 각 문자가 어느 프레임에 대응하는지를 정답으로 지정하지 않는다. 차이는 그 미지의 정렬과 출력 이력을 모델 안에서 처리하는 위치다.
+
+CTC는 encoder 프레임마다 문자·subword·blank의 분포를 만든다. 정답 문자열로 collapse되는 여러 단조 정렬 경로의 확률을 더한 뒤 그 합에 음의 로그를 취한다. LAS는 출력 단계마다 encoder state에 attention을 적용하고, 정답 prefix에서 다음 token을 예측하도록 cross-entropy를 학습한다. 표준 LAS의 soft attention은 가중합으로 context를 만드는 연산이지, CTC의 이산 정렬 경로를 열거해 합산하는 loss가 아니다.
+
+$$
+\mathcal L_{\mathrm{CTC}}=-\log\left[\sum_{\pi:\mathcal B(\pi)=y}\prod_{t=1}^{T}p_t(\pi_t\mid X)\right]
+$$
+
+$$
+\mathcal L_{\mathrm{LAS}}=-\sum_{u=1}^{U+1}\log P_{\theta}(y_u^*\mid y_{<u}^*,X)
+$$
+
+CTC의 합은 정렬 경로에 대한 합이고, LAS의 합은 문장 확률의 곱에 로그를 적용한 출력 단계별 손실의 합이다. 둘 다 합 기호가 있다는 이유로 같은 학습 계산이라고 볼 수 없다. LAS는 정답 prefix를 직접 조건으로 쓰지만, 기본 CTC 프레임 분포에는 이전에 선택한 출력 token이 직접 들어가지 않는다. CTC encoder가 넓은 음향 문맥을 보거나 별도의 LM을 decoder에 결합할 수 있다는 사실은 이 차이와 별개다.
+
+출력 종료도 다르다. CTC의 blank는 프레임 경로를 문자열로 바꿀 때 제거되는 기호이며, 기본 CTC는 입력 프레임을 처리한 뒤 collapse 결과를 얻는다. LAS의 EOS는 decoder가 문장을 끝내는 출력 token이다. **작성자 예시로** 문자열 `aa`를 보면 CTC에는 `a, blank, a`처럼 같은 글자 두 개를 구분할 중간 blank가 필요하다. 문자 단위 LAS는 `a`, `a`, EOS를 차례로 생성하면 되며 반복 병합을 하지 않는다. 이 차이는 서로 다른 loss·출력 규칙의 결과이지 어느 방식의 정확도가 항상 더 높다는 근거는 아니다.
+
+### 8.2 RNN-T를 포함한 구조와 streaming 조건
 
 | 항목 | CTC | 기본 LAS | RNN-T |
 |---|---|---|---|
 | 출력 이력 | 경로 분포에 이전 선택 token을 직접 조건화하지 않음 | 이전 token을 조건으로 다음 token 생성 | Prediction network가 prefix 표현 |
 | 정렬 처리 | 프레임 경로 합과 collapse | 출력마다 입력 state에 attention | 시간·token lattice의 경로 합 |
+| 학습 목적 | 정답으로 collapse되는 경로들의 확률 합 최대화 | 정답 prefix에서 다음 token 확률 최대화 | 정답을 만드는 blank/token 경로들의 확률 합 최대화 |
 | Blank / 종료 | 반복 병합 후 blank 제거 | EOS로 출력 종료; 기본 LAS에는 CTC blank가 없음 | Blank는 시간 진행, token은 prefix 진행 |
 | Streaming | Encoder와 decoder의 지연 조건에 따름 | 양방향 encoder·full attention이면 offline | Causal/chunk encoder일 때 가능 |
 | 추론의 순차 의존 | Greedy frame 선택은 출력 이력 계산이 없음 | Token별 decoder state 갱신 | Blank/token 선택별 상태 진행 |
 
 외부 LM과 decoder를 붙이면 실제 시스템의 동작은 표의 기본 모델보다 복잡해진다. 예를 들어 CTC에 LM을 결합하면 문장 후보의 점수에는 이전 단어가 영향을 준다.
 
-### 8.2 계산량 표에서 무엇을 생략했는가
+### 8.3 계산량 표에서 무엇을 생략했는가
 
 슬라이드 pp. 19, 20, 44의 `enc`, `dec`, `T`, `bs`는 계산 차이를 보여 주는 약식 표기이며 vocabulary·attention·종료 조건 등이 충분히 정의되지 않았다. 이를 보편적인 복잡도 공식으로 그대로 옮길 수는 없다.
 
 Encoder 이후 프레임 수를 $$T$$, 출력 길이를 $$U$$라고 고정하면, standard LAS의 full attention은 각 token마다 모든 프레임을 비교해 적어도 score 계산에 $$O(UT)$$의 위치 조합을 사용한다. Beam 폭 $$K$$와 어휘 크기 $$V$$까지 고려하면 후보 확장·LM 호출·prefix merging 비용도 추가된다. RNN-T greedy의 경로는 $$T$$번의 blank와 생성한 $$U$$번의 token 전이로 이루어지므로 joint/prediction 호출도 대체로 그 진행에 맞춰 반복된다. Training의 dense $$T(U+1)$$ grid와 inference의 한 경로를 혼동하지 않는 것이 먼저다.
 
-### 8.3 WER 표는 같은 조건의 순위표가 아니다
+### 8.4 WER 표는 같은 조건의 순위표가 아니다
 
 원문 pp. 18, 43에는 서로 다른 연구의 수치가 모여 있다. 아래는 원 논문의 표로 확인한 **LibriSpeech test-clean / test-other WER(%)**와 중요한 조건이다.
 
@@ -485,7 +574,7 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
 ## 마지막 핵심 정리
 
 - Attention은 출력별 score를 입력 위치에 걸쳐 정규화하고 state를 가중합한다. 입력 정렬에 대한 soft weight와 출력 token 분포는 다르다.
-- Autoregressive 학습은 정답 prefix, 추론은 생성 prefix를 사용한다. One-hot cross-entropy는 정답 token 확률의 음의 로그다.
+- Autoregressive는 이전 출력 prefix를 조건으로 다음 token을 생성하는 방식이다. Attention은 참고할 입력 위치를 고르는 별도 연산이다. 기본 teacher forcing 학습은 정답 prefix, 추론은 생성 prefix를 사용한다. One-hot cross-entropy는 정답 token 확률의 음의 로그다.
 - LAS의 원래 세 pyramidal 층은 음향 시간을 8배 줄인다. 기본 양방향 encoder와 full attention 구성은 offline이다.
 - RNN-T는 blank로 시간 축, token으로 출력 축을 진행한다. CTC의 반복 병합 규칙을 적용하지 않는다.
 - RNN-T loss는 모든 유효 정렬의 확률 합에 음의 로그를 취한다. Forward DP와 경로 열거 예시는 모두 $$P(a\mid X)=0.52$$로 일치한다.
@@ -568,12 +657,20 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
 
 </details>
 
+<details markdown="block">
+<summary>11. Autoregressive이면 반드시 RNN 또는 greedy decoder인가?</summary>
+
+답변: 아니다. Autoregressive는 다음 token의 확률이 앞의 출력 prefix를 조건으로 한다는 뜻이다. RNN과 causal-masked Transformer는 그 관계를 구현하는 서로 다른 구조이며, greedy·sampling·beam search는 조건부 분포에서 출력 후보를 고르는 서로 다른 방법이다. Teacher forcing과 causal mask를 쓰면 Transformer 학습은 여러 위치를 병렬로 계산하면서도 각 위치가 미래 정답을 보지 않게 할 수 있다.
+
+</details>
+
 ## Source Check
 
-48쪽 전체를 시각적으로 대조하고 attention·loss·전이·메모리 수치를 확인했다. 아래 정정은 원저자의 공식 정정문이 아니라 원 논문 및 직접 계산에 따른 검토다.
+48쪽 전체를 시각적으로 대조하고 attention·loss·전이·메모리 수치를 확인했다. 아래 보충·정정은 원저자의 공식 정정문이 아니라 원 논문 및 직접 계산에 따른 검토다.
 
 | 위치 | 원문 표현 | 본문의 처리·근거 |
 |---|---|---|
+| pp. 3–5, 12–13 | NLP 기계번역의 decoder와 이전 출력 사용 | Autoregressive의 정의, chain rule 유도, 번역 수치 예시, teacher forcing·causal mask와 attention의 역할 구분 보충 |
 | p. 13 | 정답 `dot`, 분포 차이와 CE의 포괄적 설명 | Vocabulary와 one-hot에 맞게 `dog`로 정정. 고정 정답의 CE–KL 관계와 수치로 조건 설명 |
 | p. 16 | RNN의 긴 입력 처리, 4× 그림과 8× 설명 | 계산·최적화 부담으로 설명. 원 LAS의 세 pBLSTM 층과 단순 그림의 두 층 구분 |
 | pp. 18, 43 | DS2 5.15/12.73, LAS 3.2/9.8, RNN-T 2.1/4.3 | DS2 원문 Table 13의 5.33/13.25로 정정. LAS의 LM 사용과 Conformer-L Transducer 조건 명시 |
@@ -594,6 +691,8 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a> and <a href="https://github.com/markovka17/dla" target="_blank" rel="noopener">DLA Course Materials</a> — lecture source collections.</li>
   <li><a href="https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html" target="_blank" rel="noopener">Lena Voita: Seq2seq and Attention</a> — course source used by the lecture figures.</li>
   <li><a href="https://arxiv.org/abs/1409.3215" target="_blank" rel="noopener">Sequence to Sequence Learning with Neural Networks</a> — encoder–decoder and sequence probability.</li>
+  <li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a> — shifted decoder targets and causal masking preserve autoregressive conditioning during parallel training.</li>
+  <li><a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Connectionist Temporal Classification (ICML 2006)</a> — framewise path probabilities, blank and alignment marginalization.</li>
   <li><a href="https://arxiv.org/abs/1409.0473" target="_blank" rel="noopener">Neural Machine Translation by Jointly Learning to Align and Translate</a> — additive attention and source context.</li>
   <li><a href="https://arxiv.org/abs/1508.01211" target="_blank" rel="noopener">Listen, Attend and Spell</a> — pyramidal Listener, Speller, training and decoding.</li>
   <li><a href="https://arxiv.org/abs/1211.3711" target="_blank" rel="noopener">Sequence Transduction with Recurrent Neural Networks</a> — RNN-T lattice, forward–backward and alignment marginalization.</li>
