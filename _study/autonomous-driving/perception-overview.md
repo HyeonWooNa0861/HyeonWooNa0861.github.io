@@ -4,7 +4,7 @@ date: 2026-09-21 00:00:00 +0900
 title: "Perception Review: From Image Classification to Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Integrated Review of Visual Representations, Detection, and Segmentation"
-order: 9
+order: 12
 major_topic: "Autonomous Systems"
 keywords:
   - "Visual Perception"
