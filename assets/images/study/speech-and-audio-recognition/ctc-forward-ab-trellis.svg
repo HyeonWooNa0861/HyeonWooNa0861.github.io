@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 570" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 750" role="img" aria-labelledby="title desc">
   <title id="title">CTC forward trellis for the target AB</title>
-  <desc id="desc">Five expanded target states across three frames. At the final frame, B has probability 0.396 and the following blank has probability 0.048. Their sum is the transcription probability 0.444.</desc>
+  <desc id="desc">Each cell sums the probabilities of partial paths. At the final B, the three incoming cells contribute 0.24 times 0.6, 0.18 times 0.6, and 0.24 times 0.6, totaling 0.396. The final blank contributes 0.24 times 0.2, or 0.048. The two terminal cells sum to the transcription probability 0.444.</desc>
   <defs>
     <style>
       .heading { font: 700 24px system-ui, sans-serif; fill: #15345c; }
@@ -16,7 +16,7 @@
       <path d="M 0 0 L 8 5 L 0 10 z" fill="#4680d4"/>
     </marker>
   </defs>
-  <rect x="1" y="1" width="918" height="568" rx="20" fill="#f7faff" stroke="#cad8ec" stroke-width="2"/>
+  <rect x="1" y="1" width="918" height="748" rx="20" fill="#f7faff" stroke="#cad8ec" stroke-width="2"/>
   <text class="heading" x="42" y="50">Forward DP: five states, three frames</text>
   <text class="subhead" x="42" y="78">Target AB · expanded states ε → A → ε → B → ε</text>
   <text class="axis" x="279" y="119" text-anchor="middle">t = 1</text>
@@ -70,6 +70,12 @@
     <text x="739" y="383">0.396</text>
     <text x="739" y="453">0.048</text>
   </g>
-  <text class="note" x="42" y="510">Three arrows into B: skip from A · advance from ε · stay on B</text>
-  <text class="result" x="42" y="546">P(AB | X) = 0.396 + 0.048 = 0.444</text>
+  <rect x="30" y="489" width="860" height="178" rx="12" fill="#fff" stroke="#b7cbe6"/>
+  <text class="axis" x="50" y="520">Incoming path sums × current-frame probability</text>
+  <text class="note" x="50" y="550">A → B (skip): (0.06 + 0.18) × 0.6 = 0.144</text>
+  <text class="note" x="50" y="580">Middle ε → B (advance): 0.18 × 0.6 = 0.108</text>
+  <text class="note" x="50" y="610">B → B (stay): 0.24 × 0.6 = 0.144</text>
+  <text class="value" x="50" y="646">Final B: 0.144 + 0.108 + 0.144 = 0.396</text>
+  <text class="note" x="42" y="696">Final blank: 0.24 × 0.2 = 0.048 · the other final cells are incomplete</text>
+  <text class="result" x="42" y="732">P(AB | X) = 0.396 + 0.048 = 0.444</text>
 </svg>
