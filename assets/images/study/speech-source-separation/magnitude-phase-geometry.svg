@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480" role="img" aria-labelledby="title desc">
+  <title id="title">Magnitude and phase determine complex error together</title>
+  <desc id="desc">Clean spectrum has magnitude 1 and phase 60 degrees. With predicted phase fixed at zero, magnitude 1 gives squared error 1. The projection at magnitude 0.5 gives squared error 0.75.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#34669f"/></marker></defs>
+  <rect width="720" height="480" rx="16" fill="#f7faff"/>
+  <g font-family="Arial, sans-serif" fill="#19334f">
+    <text x="28" y="39" font-size="23" font-weight="700">Fixed phase: the best magnitude is a projection</text>
+    <text x="28" y="70" font-size="17">One complex bin; clean magnitude 1, phase difference 60°.</text>
+    <g stroke="#91a9c3" stroke-width="2"><path d="M90 346H600"/><path d="M110 368V102"/></g>
+    <text x="604" y="352" font-size="16">Real</text><text x="117" y="107" font-size="16">Imaginary</text>
+    <g stroke="#34669f" stroke-width="4" marker-end="url(#arrow)"><path d="M110 346L240 121"/><path d="M110 346H370"/></g>
+    <path d="M240 121V346" stroke="#6485a8" stroke-width="2" stroke-dasharray="7 6"/>
+    <path d="M240 121L370 346" stroke="#c05b55" stroke-width="2" stroke-dasharray="7 6"/>
+    <path d="M161 346A51 51 0 0 0 136 302" fill="none" stroke="#6485a8" stroke-width="2"/>
+    <text x="170" y="309" font-size="18">60°</text>
+    <circle cx="240" cy="121" r="6" fill="#34669f"/>
+    <circle cx="240" cy="346" r="6" fill="#34817b"/>
+    <circle cx="370" cy="346" r="6" fill="#c05b55"/>
+    <text x="250" y="119" font-size="18" font-weight="700">Clean S = 0.5 + j√3/2</text>
+    <text x="169" y="377" font-size="17">a = 0.5</text>
+    <text x="345" y="377" font-size="17">a = 1</text>
+    <text x="410" y="188" font-size="17" fill="#34817b">Projection: error² = 0.75</text>
+    <text x="410" y="223" font-size="17" fill="#a34843">Same magnitude: error² = 1</text>
+    <text x="28" y="424" font-size="18">Magnitude-only loss prefers a = 1.</text>
+    <text x="28" y="452" font-size="18">Complex loss with fixed phase prefers a = cos(60°) = 0.5.</text>
+  </g>
+</svg>
