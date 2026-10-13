@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 16:37:00 +0900
-last_modified_at: 2026-09-03 19:42:41 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"
@@ -371,9 +371,16 @@ a.splice(pos, b);
 
 > **작성자 보충:** 아래 복잡도는 유효한 iterator와 호환 allocator가 이미 주어진 전체-list 또는 단일 원소 splice에 대한 표준 복잡도 보장을 조건과 함께 풀어 쓴 것이다.
 
+핵심은 연결을 바꿀 위치가 이미 주어졌는지다. 전체 list나 단일 원소의 node 연결 변경 자체는 상수 시간이지만, 위치를 찾는 선형 탐색은 별도 비용이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: When list splice is constant time</summary>
+
 위의 `a.splice(pos, b)`는 `b` 전체의 첫 노드와 마지막 노드를 `a`의 `pos` 앞에 연결하도록 몇 개의 link만 바꾼다. 이동 원소 수를 $$m$$이라 해도 원소별 복사·이동을 하지 않으므로, **`pos`와 두 list가 이미 주어지고 allocator가 호환되는 전체-list splice** 자체의 link 변경 횟수는 상수이고 시간복잡도는 $$O(1)$$이다. 단일 원소를 유효한 iterator로 지정한 splice도 같은 이유로 $$O(1)$$이다.
 
 이 보장은 위치를 찾는 비용을 포함하지 않는다. 위 코드의 `std::find`는 최대 $$n$$개 노드를 방문하므로 전체 예제는 $$O(n)$$이다. 임의 구간 splice는 구현이 이동 구간 길이를 세어야 하는 경우 $$O(m)$$일 수 있으며, 서로 다른 list 사이의 splice는 allocator가 같아야 한다. 유효하지 않은 iterator, 대상 위치를 포함하는 잘못된 self-splice 구간, 호환되지 않는 allocator에서는 이 설명을 적용할 수 없다.
+
+</details>
 
 ## 7. `std::array`
 
@@ -417,6 +424,11 @@ int* p = a.data();
 
 > **작성자 보충:** 아래 복잡도는 대응 원소를 모두 교환한다는 `std::array::swap`의 보장을, 원소 swap 비용이 상수라는 조건 아래 유도한 것이다.
 
+`std::array`는 $$N$$개 원소를 객체 안에 직접 보관한다. 따라서 pointer 하나만 교환하는 것이 아니라 대응하는 $$N$$쌍을 모두 swap하며, 원소 swap이 상수 시간이면 전체 비용은 $$O(N)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why array swap is linear in its fixed size</summary>
+
 `std::array<T, N>`은 내부 buffer 포인터만 교환하는 동적 컨테이너가 아니라 $$N$$개 원소를 객체 안에 직접 보관한다. 따라서 `a.swap(b)`는 대응하는 원소 쌍
 
 $$
@@ -430,6 +442,8 @@ T_{\texttt{array::swap}}(N)=\sum_{i=0}^{N-1}S_T=N S_T.
 $$
 
 `T`의 swap이 $$O(1)$$이면 전체는 정확히 $$N$$번의 원소 swap, 즉 $$O(N)$$이다. $$N=0$$이면 수행할 원소 swap도 0개다. `T`의 swap 비용이 상수가 아니거나 예외를 던질 수 있으면 전체 비용과 예외 안전성도 그 원소 swap의 성질을 따른다. 두 배열은 같은 `T`와 같은 $$N$$을 가진 동일한 `std::array` 타입이어야 한다.
+
+</details>
 
 `data()`는 첫 원소의 raw pointer를 반환한다. 그래서 C 스타일 함수를 호출할 때도 사용할 수 있다.
 
@@ -824,6 +838,11 @@ for (const auto& w : words) {
 
 > **작성자 보충:** 원문의 “트리 기반, 키 순 정렬”과 삽입·검색·삭제 $$O(\log n)$$ 표기에 대한 유도다.
 
+`set`과 `map`의 단일 키 연산은 정렬된 탐색 경로 하나만 따라간다. 표준의 로그 복잡도 보장을 균형 이진 탐색 트리로 해석하면, 높이가 $$O(\log n)$$이므로 비교 횟수도 같은 차수가 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Logarithmic lookup in ordered associative containers</summary>
+
 여기서 $$n$$은 컨테이너에 저장된 원소 수이며 단위는 `원소 개수`다. `std::set`과 `std::map`의 구현 자료구조 자체가 표준에 고정된 것은 아니지만, 단일 키의 `find`, `insert`, `erase(key)` 등은 로그 복잡도를 보장한다. 이를 전형적인 균형 이진 탐색 트리로 해석하면 높이 $$h(n)$$이 어떤 상수 $$a,b$$에 대해
 
 $$
@@ -839,6 +858,8 @@ $$
 이다. 삽입과 삭제도 탐색 경로를 찾은 뒤 균형을 복구하는 작업이 트리 높이에 비례하므로 같은 상한을 갖는다.
 
 이 유도는 **키 비교 한 번이 $$O(1)$$**이라고 가정한다. 문자열처럼 비교 비용이 키 길이 $$L$$에 따라 최악 $$O(L)$$이면 전체 비용은 최악 $$O(L\log n)$$이 될 수 있다. 비교 함수가 strict weak ordering을 만족하지 않으면 컨테이너의 정렬 전제가 깨진다. 또한 `erase(iterator)`처럼 별도 복잡도 보장을 가진 overload나 범위 연산을 단일 키 연산과 같은 $$O(\log n)$$으로 뭉뚱그리면 안 된다.
+
+</details>
 
 ## 17. STL 알고리즘의 공통 패턴
 
@@ -1218,6 +1239,11 @@ if (it == v.end()) {
 
 > **작성자 보충:** 원문의 정렬 전제와 $$O(\log n)$$ 표기를 후보 범위가 줄어드는 과정으로 유도한다.
 
+이진 검색은 비교할 때마다 후보 구간의 절반을 버린다. 같은 comparator로 정렬된 범위라면 후보가 $$n$$개에서 1개 이하가 될 때까지 필요한 단계 수는 $$\lceil\log_2 n\rceil$$ 차수다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why binary search needs logarithmic comparisons</summary>
+
 처음 후보 원소 수를 $$m_0=n$$이라 하자. 가운데 원소와 비교한 뒤 한쪽 절반만 남기므로 각 단계의 후보 수는
 
 $$
@@ -1239,6 +1265,8 @@ $$
 번의 단계가 필요하다. 비교 한 번의 비용을 상수로 보면 비교 횟수는 $$O(\log n)$$이다. $$n$$과 $$m_t$$의 단위는 `원소 개수`, $$t$$는 `비교 단계 수`이며 모두 무차원 정수다.
 
 이 결론은 범위가 **같은 비교 기준으로 정렬 또는 partition**되어 있을 때만 올바르다. 정렬되지 않았거나 정렬에 쓴 comparator와 검색 comparator가 다르면 반환 결과를 신뢰할 수 없다. 또한 `vector`·`array` 같은 random-access 범위에서는 위치 이동도 빠르지만, forward iterator만 제공하는 범위에 `lower_bound`를 적용하면 비교 횟수는 로그여도 iterator 증가 횟수는 선형이 될 수 있다.
+
+</details>
 
 ## 23. 집계 알고리즘
 
@@ -1412,7 +1440,12 @@ auto it = std::find_if(v.begin(), v.end(),
 
 STL의 진짜 힘은 여러 알고리즘을 조합할 때 드러난다.
 
-```cpp
+입력은 이름과 점수를 가진 `Student` 배열이다. 처리는 점수 정렬, 조건 집계, 합계 누적, 상위 집합 복사 순서이며, 출력은 합격 인원·평균·90점 이상 명단이다. 각 algorithm은 원본 또는 출력 container의 어느 범위를 읽고 쓰는지 확인해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Sorting, aggregating, and filtering student records</summary>
+
+~~~cpp
 #include <algorithm>
 #include <iostream>
 #include <numeric>
@@ -1461,7 +1494,9 @@ int main() {
         std::cout << s.name << "(" << s.score << ")\n";
     }
 }
-```
+~~~
+
+</details>
 
 이 예제에는 STL의 핵심 패턴이 모두 들어 있다.
 
@@ -1476,6 +1511,11 @@ int main() {
 ## 보충 해설: 원문 컨테이너 복잡도의 조건
 
 원문에서 강조한 주요 컨테이너 연산을 최악 비용과 상각 또는 평균 비용을 구분해 다시 적으면 다음과 같다. $$n$$은 현재 원소 수이며, 원소 한 개의 이동·비교·해시 비용이 상수라는 가정이다.
+
+본문에서 기억할 구분은 `worst`, `average`, `amortized`다. 특히 `vector::push_back`의 amortized $$O(1)$$은 모든 개별 호출이 상수 시간이라는 뜻이 아니고, 재할당이 발생한 한 호출은 $$O(n)$$일 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Container complexity assumptions and amortized growth</summary>
 
 | 컨테이너/연산 | 보장 또는 대표 비용 | 성립 조건과 구분 |
 |---|---|---|
@@ -1497,6 +1537,8 @@ $$
 $$
 
 이다. 일반 삽입 $$N$$회의 비용 $$N$$을 더해도 총 $$O(N)$$, 한 번당 평균은 amortized $$O(1)$$이다. 이는 **상각 분석**이며 개별 호출의 worst case는 재할당 때문에 $$O(n)$$이다. 성장 정책이 기하급수적이지 않거나 원소 이동 비용이 상수가 아니면 이 단순한 결론을 그대로 적용할 수 없다. 중간 삽입·삭제가 $$O(n)$$인 이유는 뒤쪽 최대 $$n$$개 원소를 이동해야 하기 때문이다.
+
+</details>
 
 ## 마지막 핵심 정리
 

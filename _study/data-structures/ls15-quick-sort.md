@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS15 Quick Sort"
 course: "Data Structures"
 topic: "Quick Sort"
@@ -220,6 +220,11 @@ $$
 
 ## Partition 정확성과 점화식
 
+Partition이 끝나면 pivot 왼쪽에는 pivot보다 작거나 같은 값, 오른쪽에는 크거나 같은 값이 놓이는 불변식이 남는다. 분할이 균형 잡히면 $$\Theta(n\log n)$$, 한쪽으로 치우치면 $$\Theta(n^2)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Proof: partition invariant and quick-sort recurrence</summary>
+
 > **분류:** 앞부분은 Lomuto partition의 **루프 불변식 증명**, 뒷부분은 분할 품질에 따른 **점화식 해석**이다. 비교 가능한 원소와 마지막 원소 피벗을 가정한다.
 
 > **원문 추적:** `LS15_quick_sort_R1.pdf` pp.12–68은 partition 코드와 단계별 실행을, pp.69–70은 평균 $$O(n\log n)$$·최악 $$O(n^2)$$ 및 재귀 깊이를 제시한다. 루프 불변식과 두 점화식의 전개는 작성자 보충이다.
@@ -249,6 +254,8 @@ T(n)=T(n-1)+cn
 $$
 
 “평균 $$O(n\log n)$$”은 무작위 피벗이나 입력 순서에 대한 확률 가정이 있는 기대값이다. 고정된 마지막 원소 피벗과 정렬·역정렬 입력에는 그 기대 보장을 그대로 적용할 수 없다. 모든 동일 key를 한쪽으로 보내는 2-way partition은 중복값이 많은 입력에서 불균형해질 수 있어 3-way partition이 더 적합할 수 있다.
+
+</details>
 
 ## PDF
 

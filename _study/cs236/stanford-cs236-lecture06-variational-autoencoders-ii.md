@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 20:25:45 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 6: Variational Autoencoders II"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -130,7 +130,8 @@ $$
 
 첫 항은 encoder가 만든 $$z$$로 decoder가 $$x$$를 잘 복원하도록 만드는 reconstruction term이다. 두 번째 항은 encoder가 만든 latent distribution이 prior $$p(z)$$와 너무 멀어지지 않게 하는 regularization이다. 이 regularization 덕분에 generation 단계에서 encoder 없이 $$z\sim p(z)$$를 뽑아도 decoder가 plausible한 $$x$$를 만들 수 있다.
 
-### 핵심 수식 유도: ELBO 분해와 reparameterization
+<details markdown="block">
+<summary markdown="span">Derivation: ELBO decomposition and reparameterization</summary>
 
 > **근거 위치:** 공식 Lecture 6 PDF p. 8의 ELBO gap, pp. 15–16의 reparameterization과 Monte Carlo gradient, p. 20의 reconstruction-minus-KL 형태.
 
@@ -154,7 +155,10 @@ $$
 
 은 $$z$$의 분포를 바꾸지 않는 **reparameterization 항등식**이다. Randomness가 $$\epsilon$$으로 분리되므로, decoder가 미분 가능하고 기대값과 미분을 교환할 regularity가 있으면 $$\nabla_\phi\mathbb{E}_\epsilon[f(g_\phi(\epsilon))]$$를 pathwise backpropagation으로 추정할 수 있다. $$\epsilon$$은 standard normal에서 뽑은 무차원 noise이고, $$\mu,\sigma,z$$는 서로 같은 latent-coordinate 단위를 가진다. Latent coordinate 자체를 무차원으로 정의했다면 이 셋도 무차원이다. $$\phi,\theta$$는 model parameter이며 단위는 parameterization에 따라 정해진다. Discrete $$z$$, $$\sigma_i=0$$, non-differentiable decoder에서는 이 유도가 그대로 적용되지 않는다.
 
-### Finite-$$K$$ Monte Carlo gradient estimators (작성자 보충; 강의 슬라이드 13--16)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Finite-sample Monte Carlo gradient estimators</summary>
 
 $$r_{\theta,\phi}(z)=\log p_\theta(x,z)-\log q_\phi(z\mid x)$$라고 하자. 먼저 $$q_\phi$$가 $$\theta$$에 의존하지 않고 derivative와 expectation을 교환할 수 있으면
 
@@ -191,6 +195,8 @@ $$
 Base noise distribution이 $$\phi$$와 무관하고, $$g_\phi$$와 $$r_{\theta,\phi}$$가 거의 모든 $$\epsilon$$에서 미분 가능하며, gradient를 지배하는 적분가능 함수가 존재하면 두 estimator는 각각의 population gradient에 대해 **unbiased**다. 각 per-sample gradient의 second moment가 유한하면 covariance는 $$1/K$$, componentwise standard error는 $$O(K^{-1/2})$$로 줄어든다. 이는 확률적 오차율이지 개별 finite-$$K$$ draw에 대한 deterministic bound가 아니다. Correlated samples에서는 유효 표본 수가 $$K$$보다 작고, heavy-tailed gradient에서는 이 분산식과 central-limit approximation이 실패할 수 있다.
 
 $$K$$와 sample index는 무차원이다. Gradient의 단위는 dimensionless ELBO를 해당 parameter 단위로 나눈 값이며, $$z,\mu,\sigma$$의 좌표 단위는 서로 같아야 한다. Discrete latent variable, parameter-dependent base noise, non-differentiable transform, support가 $$\phi$$에 따라 불연속적으로 바뀌는 distribution에서는 이 pathwise 유도를 그대로 사용할 수 없다.
+
+</details>
 
 ## 핵심 개념 표
 

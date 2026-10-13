@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"
@@ -141,6 +141,11 @@ $$
 
 ## 핵심 수식 유도
 
+Grad-CAM은 target score의 feature-map gradient를 channel별로 평균해 공간 heatmap을 만든다. Detection의 IoU와 loss는 위치 겹침과 class·box 예측 오차를 각각 측정하며, heatmap이나 단일 loss 값만으로 모델의 인과적 판단 전체를 설명할 수는 없다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Grad-CAM weights, IoU, and detection losses</summary>
+
 ### 작성자 보충: Grad-CAM channel weight
 
 Target class score $$y^c$$가 마지막 convolution feature map $$A^k\in\mathbb R^{H\times W}$$에 대해 미분 가능하다고 하자. 공간 위치 수는 정확히
@@ -179,6 +184,8 @@ $$
 ### 작성자 보충: IoU와 detection loss
 
 IoU는 두 box 영역 $$A,B$$에 대한 **정의** $$\operatorname{IoU}=\lvert A\cap B\rvert/\lvert A\cup B\rvert$$이며 $$\lvert A\cup B\rvert=\lvert A\rvert+\lvert B\rvert-\lvert A\cap B\rvert$$에서 계산된다. 면적 단위가 약분되어 IoU는 무차원이고 $$[0,1]$$ 범위다. 겹치지 않는 box에서는 IoU와 그 직접 loss의 gradient가 0이므로 GIoU/DIoU 같은 보완 loss가 필요할 수 있다. Detection total loss는 classification, box regression, mask 항의 weighted sum이라는 **설계 선택**이며 weight는 서로 다른 scale을 맞추는 hyperparameter이지 수학적으로 유일한 값이 아니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

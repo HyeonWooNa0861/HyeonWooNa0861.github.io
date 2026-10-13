@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"
@@ -118,6 +118,11 @@ PDF는 CDF의 변화율로 이해할 수 있고, 구간 확률은 PDF를 적분�
 주의할 점: PDF 값은 1보다 클 수 있다. 1보다 클 수 없는 것은 확률과 CDF 값이다.
 
 ## 8. 확률식의 유도와 단위
+
+합집합·조건부 확률은 동일한 사건의 확률을 겹침 없이 나누는 법칙이고, CDF·PDF·PMF는 합이나 적분으로 확률을 보존한다. 연속 밀도는 확률이 아니라 단위를 가진 밀도라는 점을 유지하며, 세부 유도는 아래에서 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Probability identities, densities, and marginalization</summary>
 
 ### 8.1 여사건과 합집합 공식
 
@@ -279,6 +284,8 @@ F_X(x)=
 $$
 
 예를 들어 $$X\sim\operatorname{Uniform}(2,4)$$이면 $$f_X(x)=1/2$$가 1보다 작지만, 더 좁은 $$\operatorname{Uniform}(0,1/2)$$에서는 $$f_X(x)=2>1$$이다. 두 경우 모두 면적은 정확히 1이다. $$X$$의 단위가 second이면 $$a,b,x$$는 second, PDF는 $$\mathrm{s}^{-1}$$, CDF와 구간확률은 무차원이다. 끝점 하나의 포함 여부는 연속분포의 확률을 바꾸지 않지만, 위 piecewise 표기는 CDF의 연속성을 명확히 보이기 위해 닫힌 구간으로 썼다.
+
+</details>
 
 ## 마지막 핵심 정리
 

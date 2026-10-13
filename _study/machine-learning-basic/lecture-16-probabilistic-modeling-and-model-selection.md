@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -482,6 +482,11 @@ Evidence는 모델의 fit과 complexity를 동시에 반영한다. 너무 유연
 
 ## 18. 확률 모델 식의 유도와 해석 경계
 
+MAP는 likelihood와 prior의 negative log를 더한 목적함수이고, DGM factorization은 graph가 표현하는 조건부 독립 가정에서 나온다. Evidence의 복잡도 효과는 자동적인 정리가 아니라 prior와 데이터 조건에 의존하는 적분 결과이므로, 아래에서 수식과 해석 경계를 함께 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: MAP objectives, graph factorization, and model evidence</summary>
+
 ### 18.1 MAP objective
 
 Bayes 정리에서 evidence $$p(\mathcal D)$$는 $$\theta$$에 대해 상수이므로
@@ -520,6 +525,8 @@ $$
 는 likelihood의 prior 평균이라는 **정의·정확한 등식**이다. 넓은 parameter 공간 중 작은 영역에서만 likelihood가 높으면 적분 평균은 낮아질 수 있다. 이를 Occam penalty라고 해석하지만 “항상 더 단순한 모델이 이긴다”는 정리는 아니다. prior가 부적절하거나 모델이 misspecified되면 evidence 비교도 왜곡될 수 있다.
 
 확률·likelihood ratio·posterior weight는 무차원으로 해석하지만 연속분포의 density는 변수 단위의 역수를 가진다. 잠재변수 $$z$$와 parameter $$\theta$$의 단위는 모델 정의에 따르며, 적분 measure와 density 단위가 상쇄되어 evidence가 일관된 단위를 가져야 한다.
+
+</details>
 
 ## 마지막 핵심 정리
 

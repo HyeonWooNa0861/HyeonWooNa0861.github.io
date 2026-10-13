@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-21 12:29:52 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
@@ -516,6 +516,11 @@ $$
 
 ## 18. 학습 목적식의 유도와 구분
 
+Empirical risk는 유한 표본에서 계산한 평균 손실이고 true risk는 미지의 데이터 분포에 대한 기댓값이다. Gaussian likelihood는 squared error를, Gaussian prior는 L2 penalty를 만들며, 두 연결의 상세 계산은 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Empirical risk, Gaussian likelihood, and L2 regularization</summary>
+
 ### 18.1 Empirical risk와 true risk
 
 데이터 분포를 $$p(x,y)$$, loss를 $$\ell$$이라 하면
@@ -555,6 +560,8 @@ $$
 따라서 MAP의 negative log objective는 NLL과 L2 penalty의 합이다. $$\lambda=\sigma^2/\tau^2$$처럼 scale convention에 따라 계수가 달라질 수 있으므로, “Gaussian prior와 L2가 연결된다”는 형태는 정확하지만 특정 $$\lambda$$ 값은 objective 정규화 방식에 의존한다.
 
 확률과 평균 loss는 보통 무차원으로 정규화한다. $$y$$가 물리 단위 $$u$$를 가지면 squared error는 $$u^2$$, Gaussian NLL의 제곱항은 $$\sigma^2$$로 나뉘어 무차원이 된다. $$N$$은 표본 수인 무차원 정수다.
+
+</details>
 
 ## 마지막 핵심 정리
 

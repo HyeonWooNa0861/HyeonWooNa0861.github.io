@@ -6,6 +6,8 @@ permalink: /assignment/aix/
 
 <h1 class="branch-logo page-branch-logo" data-label="AIX">AIX</h1>
 
+<p>This legacy assignment directory remains available for existing links. <a href="/study/aix/">Open the unified AIX Study catalog</a> for lecture notes and assignments.</p>
+
 <ul class="post-list">
   {% assign assignments = site.assignment | where: "course", "AIX" | sort: "order" %}
   {% for assignment in assignments %}

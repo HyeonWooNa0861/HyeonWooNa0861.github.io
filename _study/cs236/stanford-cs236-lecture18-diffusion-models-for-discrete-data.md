@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 18: Diffusion Models for Discrete Data"
 course: "CS236"
 topic: "Diffusion Models for Discrete Data"
@@ -70,7 +70,8 @@ Sampling은 Continuous-Time Markov Chain으로 구성된다. Discrete state는 c
 
 Likelihood와 perplexity도 중요한 평가 축이다. Autoregressive model은 chain rule 때문에 likelihood가 직접 계산되지만, discrete diffusion은 reverse process와 score ratio를 통해 우회적으로 평가해야 한다. 강의는 weighted score entropy가 likelihood bound를 형성할 수 있고, discrete diffusion이 autoregressive model과 perplexity 기준에서도 경쟁할 수 있음을 강조한다. 따라서 이 접근은 단순히 빠른 sampling trick이 아니라, discrete probabilistic modeling 자체를 AR 중심에서 확장하려는 시도다.
 
-### 핵심 수식 유도: CTMC generator가 확률을 보존하는 조건
+<details markdown="block">
+<summary markdown="span">Derivation: Probability preservation by a CTMC generator</summary>
 
 > **Source mapping:** Official Lecture 18 PDF pp. 29--30의 column-vector master equation, nonnegative off-diagonal rate, column-sum-zero generator 정의에 대응한다.
 
@@ -83,7 +84,10 @@ $$
 
 따라서 $$\mathbf1^\top p_t=1$$이 보존된다. Diagonal은 $$(Q_t)_{jj}=-\sum_{i\ne j}(Q_t)_{ij}$$라 현재 상태에서 빠져나가는 총 rate의 음수다. 이는 valid CTMC를 위한 **정확한 조건**이며, row-vector convention에서는 row-sum-zero로 전치된다. $$Q_t$$의 단위는 시간의 역수, $$p_t$$와 concrete score ratio $$p_t(y)/p_t(x)$$는 무차원이다. 음의 off-diagonal rate나 합 조건 위반은 probability를 음수로 만들거나 총합을 깨뜨린다. 여러 jump를 큰 time step 하나로 근사하는 sampler는 병렬화에는 유리하지만 discretization bias가 커질 수 있다.
 
-### Concrete score와 Score Entropy 목적함수 (작성자 보충; 강의 슬라이드 18--27)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Concrete scores and the Score Entropy objective</summary>
 
 > **Source mapping:** Official Lecture 18 PDF pp. 18--22의 concrete score/Score Entropy, pp. 23--25의 implicit form, pp. 26--27의 denoising form에 대응한다.
 
@@ -130,7 +134,10 @@ $$
 
 이 식은 corruption transition을 평가할 수 있고 denominator가 양수일 때 noisy marginal concrete score를 겨냥한다. Neighbor sum이 매우 크면 implicit form도 비싸고, conditional ratio가 극단적이면 DSE variance와 numerical overflow가 커진다. Log output parameterization은 positivity를 보장하지만 ratio 자체를 exponentiate할 때 clipping bias가 생길 수 있다.
 
-### Reverse CTMC와 likelihood bound (작성자 보충; 강의 슬라이드 35--47)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Reverse-time CTMC rates and the likelihood bound</summary>
 
 > **Source mapping and correction disclosure:** Official Lecture 18 PDF pp. 29--30이 $$\dot p_t=Q_tp_t$$와 column-sum-zero인 column-source convention을 확립한다. P. 35는 time-dependent denoising Score Entropy를 제시한다. P. 37의 첫 reverse-rate 식은 같은 페이지의 두 번째 식 및 pp. 29--30의 convention과 index 방향이 충돌하므로, 아래에서는 두 번째 식과 앞선 convention에 algebraically consistent한 corrected version을 사용한다. P. 47의 likelihood-bound weight $$Q_t(x_t,y)$$는 원문 그대로 유지한다. 같은 페이지의 perplexity 식은 `DSE`의 부호 정의와 $$\theta$$-독립 boundary constant의 포함 여부를 함께 명시해야 해석할 수 있다.
 
@@ -188,6 +195,8 @@ $$
 가 된다. P. 47에 인쇄된 $$\mathrm{PPL}\le e^{-\mathrm{DSE}/d}$$를 성립시키려면 그 `DSE`를 이 글과 반대 부호의 log-likelihood lower-bound quantity로 정의해야 한다. 반대로 이 글처럼 $$\mathrm{DSE}_{\mathrm{full}}$$을 NLL의 upper bound로 정의하면 위의 **양의 지수**가 algebraically consistent하다. 적분항만 `DSE`라고 부르면 지수 안에 $$C_{Q,\pi}$$를 반드시 더해야 한다.
 
 Bound의 증명은 CTMC path-space likelihood를 forward process에 대한 variational bound로 바꾸고, jump compensator와 reverse-rate log term을 모으면 시간가중 Score Entropy가 된다는 흐름이다. 위 식은 **증명 개요**만 제시하며 regularity, support coverage와 finite jump intensity를 가정한다. NLL, DSE, perplexity는 무차원이다. Finite time sampling, Monte Carlo time/state estimate, neighbor subsampling과 learned score 때문에 계산한 bound는 noisy할 수 있고, terminal distribution mismatch나 누락된 support가 있으면 bound가 느슨하거나 무한해질 수 있다.
+
+</details>
 
 ## 핵심 개념
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS10 Binary Search Trees"
 course: "Data Structures"
 topic: "Binary Search Trees"
@@ -51,6 +51,11 @@ $$
 
 ### 노드 수와 높이 공식의 증명
 
+높이 $$h$$인 완전한 이진 트리의 최대 노드 수는 레벨별 노드 수를 더한 $$2^{h+1}-1$$이고, 이를 뒤집으면 균형 잡힌 트리의 높이가 로그 규모임을 알 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: binary-tree node count and height</summary>
+
 > **분류:** 이진 트리의 정의에서 따르는 **정리와 증명 개요**다. 루트 레벨을 0, 높이 $$h$$를 루트에서 가장 먼 리프까지의 간선 수로 정의한다.
 
 > **원문 추적:** `LS10_binary_search_tree.pdf` pp.14–20은 레벨별 최대 노드 수, 높이별 합, 최소 레벨 수를 제시하고, pp.25–27은 완전 이진 트리의 배열 인덱스 식을 제시한다. 귀납법과 기하급수 전개는 작성자 보충이다.
@@ -70,6 +75,8 @@ h\ge\left\lceil\log_2(n+1)\right\rceil-1.
 $$
 
 따라서 최소 레벨 수 $$h+1$$은 $$\lceil\log_2(n+1)\rceil$$이다. 이 하한은 레벨을 빈틈없이 채울 때 달성되며, 편향 이진 트리는 높이가 $$n-1$$까지 커질 수 있다. 또 비어 있지 않은 트리에서 루트를 제외한 $$n-1$$개 노드는 정확히 하나의 부모 간선을 가지므로 간선 수도 $$n-1$$이다. 사이클이나 두 부모를 허용하면 더 이상 트리가 아니므로 이 결론을 적용할 수 없다.
+
+</details>
 
 ## 2. 완전 이진 트리의 배열 표현
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 14: Generative Models 2"
 course: "CS231N"
 topic: "Generative Models 2"
@@ -84,6 +84,11 @@ Pixel 공간의 고해상도 diffusion은 비싸다. Latent diffusion은 VAE enc
 
 ## 핵심 수식 유도
 
+GAN의 optimal discriminator는 data와 generator density의 상대 크기로 결정되고, 이상적인 discriminator를 대입하면 generator objective가 JS divergence와 연결된다. Rectified flow는 data와 noise 사이의 직선 경로 속도를 회귀하지만 finite network와 수치 적분 오차까지 없애 주지는 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: GAN divergence and rectified-flow velocity</summary>
+
 ### 작성자 보충: optimal discriminator와 JS divergence
 
 고정 generator의 density를 $$q(x)=p_G(x)$$, data density를 $$p(x)=p_{\mathrm{data}}(x)$$라 쓰면 원래 GAN value function은
@@ -145,6 +150,8 @@ $$
 $$
 
 가 된다. 그러므로 $$f^*=m$$이 **MSE 위험의 정확한 최적해**다. 이는 finite network가 그 함수를 정확히 표현하거나 Euler sampling이 오차 없이 분포를 운반한다는 보장은 아니다. $$x,z,v$$는 같은 data 단위를, $$t$$는 무차원을 가지며, 물리적 시간 단위가 아니라 정규화된 경로 parameter다. Curved transport, finite step, distribution shift, model approximation error에서는 직선 sample-level 유도와 실제 생성 궤적이 달라질 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

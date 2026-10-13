@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Multi-Layer Perceptron"
 course: "AIX"
 topic: "MLPs and Generalization"
@@ -164,6 +164,11 @@ $$
 
 각 layer는 자신의 local derivative만 알면 되고, 전체 gradient는 chain rule로 연결된다. 이 구조 덕분에 깊은 네트워크를 사람이 직접 미분하지 않고도 학습할 수 있다.
 
+두 층 MLP에서는 출력 오차를 먼저 계산하고, $$W_2^\top$$을 통해 hidden layer로 전달한 뒤 activation derivative를 곱한다. 이렇게 얻은 각 layer의 local error와 입력 activation의 outer product가 weight gradient가 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Two-layer MLP backpropagation</summary>
+
 ### 두 층 MLP의 단계별 backpropagation
 
 다음 계산은 $$x\in\mathbb{R}^{d}$$, hidden width $$m$$, output width $$k$$이고 loss와 activation이 미분 가능하다고 가정한다.
@@ -179,6 +184,8 @@ $$
 4. 따라서 $$\frac{\partial L}{\partial W_1}=\delta_1x^T$$, $$\frac{\partial L}{\partial b_1}=\delta_1$$다.
 
 각 식은 chain rule의 **정확한 등식**이다. Gradient descent는 이 값을 이용해 $$W_l\leftarrow W_l-\eta\frac{\partial L}{\partial W_l}$$로 별도 갱신한다. ReLU는 $$z=0$$에서 미분되지 않으므로 구현이 선택한 subgradient를 쓰며, 포화 activation에서는 $$\phi'(z)$$가 작아져 앞쪽 gradient가 사라질 수 있다. 기호들은 정규화된 수치 tensor라 보통 무차원이며, 물리 단위를 가진 입력이면 각 weight가 층 사이 단위를 변환한다.
+
+</details>
 
 ## 7. Cross Validation과 일반화
 
@@ -207,6 +214,11 @@ K-fold cross validation은 데이터를 `K`개의 fold로 나누고, 각 fold를
 
 Generalization gap은 training error와 test error의 차이다. gap이 크면 훈련 데이터에 과하게 맞았을 가능성이 높다.
 
+Squared error에서는 예측 오차의 기대값을 bias 제곱, dataset에 따른 variance, 줄일 수 없는 noise로 분해할 수 있다. 이 분해는 zero-mean independent noise와 squared loss라는 조건에 의존한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Bias-variance decomposition</summary>
+
 ### Bias-variance decomposition
 
 슬라이드의 분해식은 squared error, $$Y=f(x)+\varepsilon$$, $$\mathbb{E}[\varepsilon\mid x]=0$$, $$\operatorname{Var}(\varepsilon\mid x)=\sigma^2$$, 그리고 noise가 training set $$D$$의 무작위성과 독립이라는 가정에서 성립한다. $$\bar f(x)=\mathbb{E}_D[\hat f_D(x)]$$라 두면
@@ -225,6 +237,8 @@ $$
 3. $$f-\hat f_D=(f-\bar f)+(\bar f-\hat f_D)$$를 대입한다. $$\mathbb{E}_D[\bar f-\hat f_D]=0$$이므로 다시 교차항이 사라져 bias 제곱과 variance가 남는다.
 
 이것은 위 가정 아래의 **정확한 등식**이다. 세 항의 단위는 모두 target 단위의 제곱이다. 절대오차 같은 다른 loss, heteroscedastic noise, noise와 dataset이 연관된 경우에는 이 형태를 그대로 적용할 수 없다.
+
+</details>
 
 ## 9. Regularization
 

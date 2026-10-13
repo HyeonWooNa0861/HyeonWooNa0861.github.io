@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
 topic: "Recurrent Neural Networks"
@@ -122,6 +122,11 @@ $$h_t$$는 $$h_{t-1}$$가 준비되어야 계산할 수 있어 시간축 병렬�
 
 ## 핵심 수식 유도
 
+RNN의 먼 시점 gradient는 여러 Jacobian의 곱이다. 각 Jacobian norm이 일정하게 1보다 작으면 곱이 지수적으로 줄어 vanishing gradient가 생기며, LSTM의 cell path는 forget gate를 통해 더 직접적인 전달 경로를 만든다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Recurrent Jacobians and gradient stability</summary>
+
 ### 작성자 보충: 반복 Jacobian과 gradient 안정성
 
 Vanilla RNN의 먼 시점 gradient는 chain rule로 Jacobian 곱 $$\partial h_t/\partial h_k=\prod_{j=k+1}^{t}J_j$$이 된다. 모든 step에서 하나의 상수 $$0\le\rho<1$$에 대해 $$\lVert J_j\rVert_2\le\rho$$라는 **uniform bound**가 있으면 submultiplicativity로
@@ -133,6 +138,8 @@ $$
 $$
 
 이므로 vanishing이 증명된다. 반대로 각 $$\lVert J_j\rVert_2>1$$이라는 사실만으로는 expanding 방향이 step마다 달라질 수 있어 explosion이 증명되지 않는다. 예를 들어 모든 step의 최소 singular value가 하나의 $$\gamma>1$$ 이상이면 $$\lVert(\prod_jJ_j)v\rVert_2\ge\gamma^{t-k}\lVert v\rVert_2$$가 되어 폭주하는 충분조건을 얻는다. 실제 RNN에서는 product가 유지하는 방향과 activation derivative가 핵심이며, 이 설명은 norm bound에 근거한 **증명 개요**다. LSTM에서는 gate의 간접 의존 경로를 잠시 고정해 본 direct cell path에서 cell update $$c_t=f_t\odot c_{t-1}+i_t\odot g_t$$로부터 $$\partial c_t/\partial c_{t-1}=f_t$$가 생긴다. Gate와 hidden state는 보통 무차원 activation이다. $$f_t$$가 장기간 0에 가깝거나 gate가 saturation되면 LSTM도 긴 기억을 보장하지 않는다.
+
+</details>
 
 ## 마지막 핵심 정리
 

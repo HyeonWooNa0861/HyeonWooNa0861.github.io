@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
@@ -59,6 +59,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 | Model collapse | LLM generated text가 다양성이 낮아 training data distribution을 바꾸고 학습 품질을 떨어뜨릴 수 있다는 문제로 소개된다. |
 
 ## 수식 해설: recap 식과 empirical trend의 경계
+
+이 복습에서는 attention, RoPE, preference tuning, GRPO, FlashAttention을 하나의 흐름으로 연결한다. 핵심은 각 식이 구조의 정의인지, 계산을 보존하는 항등식인지, 특정 실험 조건에서 얻은 경험 법칙인지를 구분하는 것이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Attention, RoPE, GRPO, and online softmax recap</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
@@ -152,6 +157,8 @@ u'=e^{m-m'}u+\sum_{j\in B}e^{s_j-m'}v_j,
 $$
 
 모든 block 뒤에는 $$o'=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 되어 real arithmetic에서 vanilla attention과 같다. 이는 00:18:19–00:20:16의 exact tiling 설명에 대한 작성자 보충이며, unmasked finite score가 하나 이상 있어 $$\ell'>0$$이어야 한다. Floating-point reduction 순서 때문에 bitwise equality까지 뜻하지 않는다.
+
+</details>
 
 ## 학습 포인트
 

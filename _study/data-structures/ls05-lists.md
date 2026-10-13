@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS05 Lists"
 course: "Data Structures"
 topic: "Lists"
@@ -193,6 +193,11 @@ after:  [10, 20, 40, 50, _]
 
 ### 배열 리스트 복잡도의 산출 근거
 
+배열 리스트는 인덱스 접근은 한 번에 가능하지만, 중간 삽입·삭제는 뒤 원소를 이동해야 하므로 최악 $$\Theta(n)$$이다. 용량 확장을 포함한 맨 뒤 삽입은 확장 정책에 따라 상환 $$O(1)$$로 해석한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: array-list access, shifting, and resizing costs</summary>
+
 > **분류:** 배열 주소 계산과 이동 횟수에 따른 **복잡도 증명 개요**다. 원소 폭 $$w$$가 고정이고 RAM에서 주소 산술과 한 원소 접근이 상수 시간이라고 가정한다.
 
 > **원문 추적:** `LS05_lists_full.pdf` pp.29–40은 배열 기반 구현, 삽입 시 이동, $$O(1)$$ 접근과 $$O(n)$$ 삽입·삭제를 설명한다. 주소식과 $$n-i$$ 이동 횟수의 명시적 산출은 작성자 보충이다.
@@ -214,6 +219,8 @@ $$
 | 중간 삽입/삭제가 매우 많다. | 부적합 |
 | 메모리를 연속적으로 쓰고 싶다. | 적합 |
 | 데이터 크기 변화가 매우 크다. | 재할당 비용을 고려해야 함 |
+
+</details>
 
 ## PDF
 

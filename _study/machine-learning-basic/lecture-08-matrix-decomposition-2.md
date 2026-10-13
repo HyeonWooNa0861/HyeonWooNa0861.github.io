@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 08 Matrix Decomposition 2"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 2"
@@ -118,6 +118,11 @@ Rank-$$k$$ approximation은 큰 데이터 행렬을 중요한 $$k$$개의 성분
 
 ## 7. 분해식의 유도와 조건
 
+Cholesky는 symmetric positive definite 행렬에서만 실수 대각 원소를 양수로 고정해 유일해진다. SVD는 $$A^TA$$의 고유벡터를 오른쪽 singular vector로 사용하며, rank-$$k$$ 절단의 최적성은 선택한 norm 조건 아래에서 성립한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Cholesky construction, SVD, and rank-k approximation</summary>
+
 ### 7.1 Cholesky 분해의 구성, 존재와 유일성
 
 이 절은 원문이 제시한 $$A=LL^T$$를 단계별로 확인하기 위한 **보충 증명 개요**다. $$A\in\mathbb{R}^{n\times n}$$가 symmetric positive definite(SPD), 즉 $$A=A^T$$이고 모든 $$x\ne0$$에 대해 $$x^TAx>0$$라고 가정한다. $$L$$은 양의 대각 원소를 갖는 하삼각행렬로 둔다.
@@ -214,6 +219,8 @@ $$
 $$
 
 이다. 이 보장은 두 norm에 대한 전역 최적성이지, downstream prediction error나 의미 보존까지 보장하는 것은 아니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

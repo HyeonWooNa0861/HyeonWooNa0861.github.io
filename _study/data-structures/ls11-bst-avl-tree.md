@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"
@@ -224,6 +224,11 @@ x
 
 ## AVL 높이가 $$O(\log n)$$인 증명 개요
 
+AVL 트리는 양쪽 subtree 높이 차이를 1 이하로 제한한다. 이 조건 때문에 높이 $$h$$를 만들려면 필요한 최소 노드 수가 Fibonacci처럼 증가하고, 결과적으로 높이는 노드 수의 로그를 넘지 않는다. 회전은 inorder 순서를 보존하면서 이 높이 조건만 복구한다.
+
+<details markdown="block">
+<summary markdown="span">Proof: logarithmic AVL height and rotation order</summary>
+
 > **분류:** AVL 균형 조건에서 따르는 **정리**다. 빈 트리 높이를 $$-1$$, 리프 높이를 0으로 두고, $$N(h)$$를 높이 $$h$$인 AVL 트리의 최소 노드 수라 하자.
 
 > **원문 추적:** `LS11_BST_AVL_tree.pdf` p.19는 BST 비용이 높이에 좌우됨을, pp.21–48은 AVL 균형 조건과 네 회전 유형을 제시한다. 최소 노드 점화식과 $$O(\log n)$$ 증명은 원문 결론을 엄밀화한 작성자 보충이다.
@@ -248,6 +253,8 @@ $$
 ### 회전이 BST 순서를 보존하는 이유
 
 LL 회전 전 key 구간을 $$A<y<B<z<C$$로 쓰면, 회전 전 inorder는 $$A,y,B,z,C$$다. `y`를 위로 올리고 `B`를 `z`의 왼쪽으로 옮긴 뒤에도 inorder는 $$A,y,B,z,C$$로 같다. 회전은 부모 관계만 바꾸며 key의 전체 순서를 바꾸지 않으므로 BST 불변식이 보존된다. LR/RL도 첫 회전으로 꺾인 구조를 직선 구조로 바꾼 뒤 같은 논리를 두 번 적용한다.
+
+</details>
 
 ## PDF
 

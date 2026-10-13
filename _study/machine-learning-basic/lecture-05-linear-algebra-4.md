@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 05 Linear Algebra 4"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 4"
@@ -206,6 +206,11 @@ $$
 
 ## 8. 핵심 식의 유도와 증명
 
+기저 변환은 같은 선형 사상의 좌표 표현을 바꾸고, 닮음 변환은 동일한 입력·출력 공간의 기저를 함께 바꾼 결과다. Rank-nullity는 변환이 보존하는 방향과 잃는 방향을 분리하며, 상세 유도는 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Change of basis, similarity, and rank-nullity</summary>
+
 ### 8.1 입력·출력 기저가 모두 바뀌는 일반 정리
 
 $$\Phi:V\to W$$가 선형이고, 정의역의 옛·새 정렬 기저를 $$B,\widetilde B$$, 공역의 옛·새 정렬 기저를 $$C,\widetilde C$$라 하자. 다음 행렬을 정의한다.
@@ -277,6 +282,8 @@ $$
 정의역이 $$n$$차원이면 $$\operatorname{rank}(A)+\operatorname{nullity}(A)=n$$이다. 영공간 방향 $$z$$는 $$Az=0$$이므로 $$A(x+z)=Ax$$가 되어 서로 다른 입력을 구분하지 못한다. 따라서 nullity는 사라지는 독립 방향의 수이고 rank는 출력에 남는 독립 방향의 수다.
 
 $$A,P$$와 좌표 벡터는 추상 계산에서 무차원이다. 실제 데이터 변환에서 $$A$$의 원소는 출력 단위/입력 단위를 가질 수 있고, bias $$a$$는 출력과 같은 단위를 가져야 $$Ax+a$$가 성립한다.
+
+</details>
 
 ## 마지막 핵심 정리
 

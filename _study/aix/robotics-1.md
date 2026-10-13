@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
@@ -162,6 +162,11 @@ Behavioral cloning은 주로 expert state distribution에서 학습한다. 하�
 
 여기서 $$\epsilon$$은 한 step에서 policy가 실수할 확률 또는 error rate의 직관적 표현이다. 중요한 것은 sequential setting에서는 error가 독립적으로 끝나지 않고 다음 입력을 나쁘게 만든다는 점이다.
 
+$$T\epsilon$$은 같은 기준 분포에서 발생하는 step 오류를 단순히 합한 기대값이다. $$O(T^2\epsilon)$$은 앞선 오류가 이후 입력 분포까지 바꿀 때 생길 수 있는 보수적인 누적-cost 상한이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Linear versus compounding imitation errors</summary>
+
 ### $$T\epsilon$$과 $$O(T^2\epsilon)$$의 의미
 
 이 표기는 실제 오류가 항상 정확히 그 값이라는 등식이 아니라, 단순화된 가정 아래의 **기대 오류 또는 worst-case 상한의 차수**다. $$T$$는 단위 없는 horizon step 수, $$\epsilon\in[0,1]$$은 expert 분포에서의 step별 오류율이라고 둔다.
@@ -171,6 +176,8 @@ Behavioral cloning은 주로 expert state distribution에서 학습한다. 하�
 3. Off-distribution 상태에서 step당 추가 cost가 상수로 제한된다고 보면 누적 추가 cost의 상한은 $$\sum_{t=1}^{T}O(t\epsilon)=O(T^2\epsilon)$$이다.
 
 따라서 quadratic 표기는 covariate shift가 만들 수 있는 **보수적 compounding-error bound**이지 모든 trajectory의 정확한 관측값이 아니다. Policy가 오류에서 빠르게 회복하거나 환경이 state를 다시 안정화하면 훨씬 작을 수 있고, off-distribution cost가 제한되지 않으면 이 단순 상한도 적용할 수 없다. 이 논리의 formal한 online-learning 조건과 DAggER 보장은 <a href="https://proceedings.mlr.press/v15/ross11a.html" target="_blank" rel="noopener">Ross, Gordon, and Bagnell (2011)</a>에서 확인할 수 있다.
+
+</details>
 
 ## 6. DAggER의 핵심 아이디어
 

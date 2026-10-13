@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-13 15:47:15 +0900
+last_modified_at: 2026-10-13 17:00:20 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -129,7 +129,12 @@ $$m,k,r$$는 무차원 index이고 $$H,L,N_{\mathrm{FFT}}$$는 samples로 센 �
 
 PDF p.14는 rectangular와 Hann 창의 spectrogram/phase 그림을 비교한다. 유한 프레임을 그대로 잘라내는 것은 $$w[r]=1$$인 rectangular window를 곱하는 것이다. 프레임 양끝 값이 주기적으로 이어지지 않으면 DFT가 가정하는 반복 경계에 점프가 생겨 에너지가 주변 bin으로 퍼진다. 이것이 **spectral leakage**다. Hann 창 $$w[r]=\tfrac12[1-\cos(2\pi r/(L-1))]$$ ($$0\le r<L$$, 대칭형 convention)은 양 끝을 0으로 낮춰 먼 sidelobe를 줄일 수 있지만, main lobe가 넓어지는 절충이 있다. 라이브러리의 periodic Hann은 분모가 $$L$$이므로 끝점과 복원 조건이 달라질 수 있다. 창을 쓴다고 모든 leakage가 사라지지는 않는다.
 
-**왜 sinc가 연결되는가 — 원문 밖의 연속시간 보충:** 중심 0, 폭 $$T_w>0$$초인 연속 rectangular pulse $$r(t)=1$$ ($$\lvert t\rvert\le T_w/2$$)의 Fourier transform은 정의에서 바로 적분된다. $$f$$의 단위는 Hz다.
+**왜 sinc가 연결되는가 — 원문 밖의 연속시간 보충:** 중심 0, 폭 $$T_w>0$$초인 연속 rectangular pulse $$r(t)=1$$ ($$\lvert t\rvert\le T_w/2$$)의 Fourier transform은 $$R(f)=T_w\operatorname{sinc}(fT_w)$$다. 첫 영점은 $$f=\pm1/T_w$$이므로, 짧은 창일수록 주파수의 중심 lobe가 넓어진다. 시간에서 창을 곱하면 주파수에서는 원 spectrum과 창 spectrum이 convolution되므로 한 주파수 성분도 주변으로 퍼진다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Rectangular Windows, Sinc, and the Discrete Dirichlet Response</summary>
+
+연속 rectangular pulse의 transform은 정의에서 직접 적분한다. $$f$$의 단위는 Hz다.
 
 $$
 \begin{aligned}
@@ -140,7 +145,7 @@ R(f)&=\int_{-T_w/2}^{T_w/2}e^{-j2\pi ft}\,dt
 \end{aligned}
 $$
 
-$$R$$의 단위는 초다. 첫 영점은 $$f=\pm1/T_w$$이며 짧은 창일수록 중심 lobe가 넓어진다. 시간에서 곱셈은 주파수에서 convolution이므로 원래 spectrum의 한 선도 창의 sinc형 응답만큼 퍼진다. 이 연속 rect–sinc 쌍을 **이산 rectangular window의 정확한 DTFT와 동일시하면 안 된다.** 길이 $$L$$의 이산 창은 기하급수 합으로
+$$R$$의 단위는 초다. 이 연속 rect–sinc 쌍을 **이산 rectangular window의 정확한 DTFT와 동일시하면 안 된다.** 길이 $$L$$의 이산 창은 기하급수 합으로
 
 $$
 W(e^{j\omega})=\sum_{r=0}^{L-1}e^{-j\omega r}
@@ -148,6 +153,8 @@ W(e^{j\omega})=\sum_{r=0}^{L-1}e^{-j\omega r}
 $$
 
 가 되며, 분모가 0인 점은 연속 극한으로 정의한다. $$\omega$$는 rad/sample로 무차원이고 이 응답은 $$2\pi$$-주기인 Dirichlet-kernel 형태다. 연속 sinc의 직관은 도움이 되지만 이산 식의 주기성과 정확한 영점은 이 식으로 확인한다. MIT의 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">Fourier Transform Lecture 4, pp.2–4</a>는 연속 rectangular pulse 적분을 전개한다.
+
+</details>
 
 ### 2.3 Magnitude·phase·dB와 iSTFT의 경계
 
@@ -239,7 +246,14 @@ c[q]=\frac{1}{N_{\mathrm{FFT}}}\sum_{k=0}^{N_{\mathrm{FFT}}-1}
 \log\!\bigl(\max(\lvert S[k]\rvert,\epsilon)\bigr)e^{j2\pi kq/N_{\mathrm{FFT}}}.
 $$
 
-**왜 harmonic 간격을 찾을 수 있나? — 작성자 보충 유도.** $$\Delta f=f_s/N_{\mathrm{FFT}}$$ Hz이고 harmonic 간격 $$F_0$$가 정확히 $$P=F_0/\Delta f$$개의 bin에 해당한다고 가정하자. 로그 스펙트럼의 반복 성분을 $$L[k]\approx A\cos(2\pi k/P)$$로 단순화하면, cosine을 두 복소 지수로 나눈 위 역 DFT 합은 직교성 때문에 $$q=N_{\mathrm{FFT}}/P=f_s/F_0$$와 대칭 bin 부근에서 커진다. 따라서 양의 작은 quefrency는 $$q/f_s=1/F_0$$초다. 예를 들어 $$f_s=16000$$ Hz, $$N_{\mathrm{FFT}}=1024$$, $$F_0=250$$ Hz이면 $$P=16$$ bin, $$q=64$$ sample, $$q/f_s=0.004$$ s다. 이 등식은 이상적인 정수 bin 예제의 검산이고 실제 음성의 $$F_0$$와 harmonic peak는 창·잡음·성도 공진 때문에 정확한 격자에 놓이지 않는다.
+Harmonic 간격이 $$F_0$$ Hz이면 이상적인 cepstrum은 약 $$1/F_0$$초의 quefrency에 구조를 만든다. 이 관계는 주파수축에서 반복되는 간격을 다시 Fourier 분석한 결과다. 실제 음성에서는 창·잡음·성도 공진 때문에 peak가 정확한 격자에 놓이지 않으므로 유성 구간과 탐색 범위를 함께 확인해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Harmonic Spacing and the Cepstral Peak</summary>
+
+$$\Delta f=f_s/N_{\mathrm{FFT}}$$ Hz이고 harmonic 간격 $$F_0$$가 정확히 $$P=F_0/\Delta f$$개의 bin에 해당한다고 가정하자. 로그 스펙트럼의 반복 성분을 $$L[k]\approx A\cos(2\pi k/P)$$로 단순화하면, cosine을 두 복소 지수로 나눈 위 역 DFT 합은 직교성 때문에 $$q=N_{\mathrm{FFT}}/P=f_s/F_0$$와 대칭 bin 부근에서 커진다. 따라서 양의 작은 quefrency는 $$q/f_s=1/F_0$$초다. 예를 들어 $$f_s=16000$$ Hz, $$N_{\mathrm{FFT}}=1024$$, $$F_0=250$$ Hz이면 $$P=16$$ bin, $$q=64$$ sample, $$q/f_s=0.004$$ s다. 이 등식은 이상적인 정수 bin 예제의 검산이다.
+
+</details>
 
 로그 스펙트럼의 완만한 성도 envelope는 대체로 낮은 quefrency에, 촘촘히 반복되는 harmonic 구조는 그보다 높은 비영점 quefrency에 나타난다. **역 DFT는 로그 크기 스펙트럼의 주기를 분석하는 것이지 원 음성 파형으로 되돌리는 연산이 아니다.** 원 스펙트럼의 phase를 이미 버렸기 때문이다. 이 구조와 저·고 quefrency의 해석은 <a href="https://speechprocessingbook.aalto.fi/representations/melcepstrum/" target="_blank" rel="noopener">Aalto University의 cepstrum 해설</a>과도 대조할 수 있다.
 
@@ -274,7 +288,12 @@ $$
 
 ### Sampling comb and reconstruction gain
 
-복제식의 계수 $$f_s$$도 확인할 수 있다. 표본화 comb $$p(t)=\sum_n\delta(t-nT_s)$$는 주기 $$T_s$$당 단위 면적 impulse 하나를 갖는다. Fourier series의 각 계수는 한 주기 적분에서 $$1/T_s=f_s$$가 되어 $$p(t)=f_s\sum_r e^{j2\pi r f_st}$$이다. 따라서 $$P(f)=f_s\sum_r\delta(f-rf_s)$$이고, $$x_s(t)=x(t)p(t)$$의 Fourier transform은 convolution으로
+표본화 comb가 spectrum 복제본마다 $$f_s$$를 곱하고, 복원 low-pass가 $$T_s=1/f_s$$의 이득으로 이를 상쇄한다. 이 scale을 포함해야 sinc 보간식의 각 표본값이 원래 진폭과 일치한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sampling-Comb Scale and Sinc Reconstruction Gain</summary>
+
+표본화 comb $$p(t)=\sum_n\delta(t-nT_s)$$는 주기 $$T_s$$당 단위 면적 impulse 하나를 갖는다. Fourier series의 각 계수는 한 주기 적분에서 $$1/T_s=f_s$$가 되어 $$p(t)=f_s\sum_r e^{j2\pi r f_st}$$이다. 따라서 $$P(f)=f_s\sum_r\delta(f-rf_s)$$이고, $$x_s(t)=x(t)p(t)$$의 Fourier transform은 convolution으로
 
 $$
 X_s(f)=X(f)*P(f)=f_s\sum_r X(f-rf_s)
@@ -289,7 +308,11 @@ h_{\mathrm{rec}}(t)
 =\operatorname{sinc}(f_st).
 $$
 
-마지막으로 $$x_s*h_{\mathrm{rec}}$$에서 각각의 impulse가 이동된 sinc 하나를 만들므로 $$x(t)=\sum_n x(nT_s)\operatorname{sinc}(f_st-n)$$이다. **시간에서 잘라낸 rect는 주파수에서 sinc형 누설을 만들고, 주파수의 이상적 rect 통과대역은 시간에서 sinc 보간 커널을 만든다.** 둘 다 Fourier 쌍이지만 sampling aliasing을 이미 겪은 표본의 정보를 창 함수가 되살린다는 뜻은 아니다.
+마지막으로 $$x_s*h_{\mathrm{rec}}$$에서 각각의 impulse가 이동된 sinc 하나를 만들므로 $$x(t)=\sum_n x(nT_s)\operatorname{sinc}(f_st-n)$$이다.
+
+</details>
+
+**시간에서 잘라낸 rect는 주파수에서 sinc형 누설을 만들고, 주파수의 이상적 rect 통과대역은 시간에서 sinc 보간 커널을 만든다.** 둘 다 Fourier 쌍이지만 sampling aliasing을 이미 겪은 표본의 정보를 창 함수가 되살린다는 뜻은 아니다.
 
 
 ### N=8 시각화: 같은 sample과 서로 다른 중간 궤적

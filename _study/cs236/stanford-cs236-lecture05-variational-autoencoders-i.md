@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 5: Variational Autoencoders I"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -95,7 +95,8 @@ $$
 
 이 값이 Evidence Lower Bound, ELBO다. 전개하면 $$E_q[\log p_{\theta}(x,z)] + H(q)$$가 되며, $$q(z)=p_{\theta}(z\mid x)$$이면 bound는 정확히 $$\log p_{\theta}(x)$$와 같아진다. Posterior가 계산 불가능할 때는 tractable family $$q(z;\phi)$$를 정하고, 이를 true posterior에 가깝게 맞추는 variational inference 문제가 된다.
 
-### 핵심 수식 유도: finite-$$K$$ importance sampling과 log bias
+<details markdown="block">
+<summary markdown="span">Derivation: Finite-sample importance sampling and logarithmic bias</summary>
 
 > **Source mapping:** Official Lecture 5 PDF p. 19의 finite-sample importance estimator와 unbiasedness, p. 20의 log-likelihood estimator와 expectation/log 불일치에 대응한다. Finite-variance 조건과 delta-method 오차식은 작성자 보충이다.
 
@@ -150,7 +151,10 @@ $$
 
 로 준다. 두 식은 finite-$$K$$ **근사**이며 exact identity가 아니다. 적절한 적분가능성과 $$p_\theta(x)>0$$ 아래에서 $$K\to\infty$$이면 law of large numbers와 continuity로 $$\widehat\ell_K\to\log p_\theta(x)$$가 되지만, finite $$K$$에서는 Jensen gap이 남는다. 모든 sampled weight가 0이면 $$\log\widehat p_K=-\infty$$이고, heavy-tailed weight에서는 위 delta approximation도 실패할 수 있다. $$K$$와 sample index는 무차원이다. Discrete probability mass에서는 weight와 evidence가 무차원이다. Continuous $$z$$에서 numerator와 proposal density는 같은 latent reference measure를 사용해야 하며, $$w=p(x,z)/q(z)$$는 $$x$$에 대한 marginal density의 단위를 남긴다. 따라서 continuous log-density의 수치는 고정된 $$x$$ reference measure와 unit convention 아래에서만 비교한다.
 
-### 핵심 수식 유도: Jensen 부등식으로 ELBO 만들기
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Constructing the ELBO with Jensen's inequality</summary>
 
 > **근거 위치:** 공식 Lecture 5 PDF pp. 21–23의 Jensen/ELBO 전개와 p. 25의 $$\log p=\mathrm{ELBO}+\mathrm{KL}$$ 분해.
 
@@ -174,6 +178,8 @@ $$
 $$
 
 따라서 $$q$$가 true posterior와 같을 때만 bound가 tight하다. $$x$$는 관측값, $$z$$는 latent variable, $$q$$는 variational posterior, $$\theta$$는 generative parameter이며 모두 물리 단위가 없는 확률모형 기호다. Variational family가 posterior를 표현하지 못하면 inference gap이 남고, 높은 ELBO가 곧 좋은 perceptual sample을 보장하지도 않는다.
+
+</details>
 
 ## 핵심 개념 표
 

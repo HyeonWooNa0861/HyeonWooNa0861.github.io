@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-13 16:49:01 +0900
 title: "Lecture 5: Merge Sort and Quick Sort"
 course: "Algorithms"
 topic: "Divide-and-Conquer Sorting"
@@ -44,6 +45,9 @@ Source PDF: [5 Sorting (2).pdf](/assets/pdfs/study/algorithms/05-sorting-02.pdf)
 
 `merge_sort(arr, l, r)`는 중간점 $$m=\lfloor(l+r)/2\rfloor$$을 잡아 $$[l,m)$$과 $$[m,r)$$을 각각 정렬한 후 병합한다(11–13쪽). 두 부분의 길이는 최대 1 차이이므로 재귀 깊이는 $$\Theta(\log n)$$이다. 다음은 빈 배열까지 안전하게 처리하고, 동점 원소의 기존 순서를 유지하도록 정리한 버전이다. 원문 코드와 다른 조건은 Source Check에서 설명한다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Stable merge sort over a half-open interval</summary>
+
 ```python
 def merge_sort(arr, l=0, r=None):
     if r is None:
@@ -72,6 +76,12 @@ def merge_sort(arr, l=0, r=None):
             arr[k] = right[j]
             j += 1
 ```
+
+- 입력은 배열 `arr`와 반열린 구간 `[l, r)`이며, 결과는 같은 구간을 제자리에서 오름차순으로 바꾼 배열이다.
+- 재귀 호출은 구간을 `[l, m)`과 `[m, r)`로 줄인다. 병합은 두 정렬된 조각의 첫 미사용 값만 비교해 `arr[l:r]`를 다시 채운다.
+- 동점에서 왼쪽 값을 먼저 선택하는 `<=`가 원래 상대 순서를 보존한다. `left`와 `right` 사본 때문에 현재 구간 길이에 비례한 임시 공간을 쓴다.
+
+</details>
 
 슬라이드(14, 16쪽)는 두 부분을 하나의 `tmp = arr[l:r]`에 복사하고, 왼쪽 포인터 `i=0`, 오른쪽 포인터 `j=m-l`, 출력 위치 `k=l`을 사용하는 동등한 병합 구조를 보여 준다. 위 코드는 좌우를 별도 조각으로 표현해 포인터 경계를 읽기 쉽게 한 작성자 재구성이다.
 
@@ -103,6 +113,9 @@ $$
 
 퀵 정렬은 먼저 피벗을 기준으로 구간을 분할한다(18–22쪽). 슬라이드는 마지막 원소 `arr[r-1]`을 피벗으로 잡는다. 분할 결과 피벗 위치를 $$p$$라고 하면, 왼쪽 $$[l,p)$$에는 피벗 이하의 원소, 오른쪽 $$[p+1,r)$$에는 피벗보다 큰 원소가 놓인다. 이때 피벗은 최종 정렬 위치에 있으므로 양쪽만 재귀적으로 정렬하면 된다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Partition and recursive quick sort</summary>
+
 ```python
 def partition(arr, l, r):
     pivot = arr[r - 1]
@@ -112,8 +125,6 @@ def partition(arr, l, r):
             arr[i], arr[j] = arr[j], arr[i]
             i += 1
     return i - 1
-
-
 def quick_sort(arr, l=0, r=None):
     if r is None:
         r = len(arr)
@@ -123,6 +134,12 @@ def quick_sort(arr, l=0, r=None):
     quick_sort(arr, l, p)
     quick_sort(arr, p + 1, r)
 ```
+
+- `partition`의 입력은 `[l, r)`이고 출력은 피벗의 확정 인덱스다. 배열 자체도 피벗 이하·피벗·피벗 초과 구간으로 바뀐다.
+- 포인터 `i`는 피벗 이하 구간의 다음 빈 위치다. `j`가 피벗까지 훑으므로 마지막 반복에서 피벗이 `i` 위치로 이동하고 `i - 1`이 반환된다.
+- `quick_sort`는 확정된 피벗을 제외한 `[l, p)`와 `[p + 1, r)`만 다시 처리한다. 분할 직후 두 하위 구간 내부는 아직 정렬되지 않았다.
+
+</details>
 
 이 코드는 슬라이드의 분할 방식(22, 24쪽)을 따른다. 흔히 소개되는 Lomuto 분할은 피벗 직전까지만 훑고 마지막에 피벗을 교환하지만, **여기서는 `range(l,r)`가 피벗까지 포함**한다. 마지막 반복에서 피벗을 `arr[i]`로 옮기므로 별도의 마지막 교환은 필요 없다.
 

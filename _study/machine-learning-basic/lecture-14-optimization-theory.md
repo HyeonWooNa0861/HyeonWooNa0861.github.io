@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 14 Optimization Theory"
 course: "Machine Learning Basic"
 topic: "Optimization Theory"
@@ -370,6 +370,11 @@ $$
 
 ## 17. 최적화식의 보강 증명
 
+Gradient descent의 감소 보장은 smoothness와 충분히 작은 step size가 필요하고, Newton update는 local quadratic approximation의 stationary point에서 나온다. Convex 함수에서는 선분 조건과 1차 최적성 조건 때문에 local minimum이 global minimum이 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Descent conditions, Newton updates, and convex optimality</summary>
+
 ### 17.1 Gradient descent가 내려가는 조건
 
 $$f$$의 gradient가 $$L$$-Lipschitz라고 가정하면 descent lemma로
@@ -408,6 +413,8 @@ $$
 이므로 local minimum 정의와 모순이다. 따라서 모든 local minimum은 global minimum이다. 정의역이 convex이고 함수가 convex라는 조건이 모두 필요하다.
 
 $$\alpha$$는 parameter 단위/gradient 단위를 가져 update의 차원을 맞춘다. loss가 무차원이고 parameter가 $$u$$ 단위라면 gradient는 $$u^{-1}$$, Hessian은 $$u^{-2}$$ 단위다. 딥러닝의 learning rate는 구현상 숫자로 취급되지만 feature scaling에 민감한 이유가 여기에 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

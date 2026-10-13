@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"
@@ -60,6 +60,11 @@ RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 �
 
 ## 수식 해설: retrieval score와 ranking metric
 
+Retrieval은 query와 document의 lexical 또는 embedding similarity로 후보를 고르고, ranking metric은 relevant item이 상위에 얼마나 잘 놓였는지 측정한다. Cosine, BM25, Precision/Recall@$$k$$, NDCG는 서로 다른 질문에 답하므로 한 지표를 relevance 전체의 증명으로 해석하면 안 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Similarity, BM25, and ranking metrics</summary>
+
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
 | Cosine similarity retrieval | 00:28:25–00:33:24 | Embedding 비교와 top-candidate retrieval은 강의 원문이며, 범위·zero-vector 조건은 작성자 보충이다. |
@@ -110,6 +115,8 @@ $$
 $$
 
 $$f(t,D)$$는 document term frequency, $$\lvert D\rvert$$와 $$\operatorname{avgdl}>0$$은 document 길이와 corpus 평균 길이, $$N$$은 문서 수, $$n_t$$는 term $$t$$를 포함한 문서 수다. $$k_1>0$$은 term-frequency 증가를 포화시키고, $$0\le b\le1$$은 길이 정규화 강도를 조절한다. 위 IDF는 rare term에 더 큰 nonnegative weight를 주는 convention이며, 구현에 따라 log의 $$+1$$, query-term factor, duplicate query term 처리가 다르다. 높은 BM25가 semantic relevance의 theorem인 것은 아니며 tokenizer와 corpus statistics에 따라 순위가 바뀐다.
+
+</details>
 
 ## 학습 포인트
 

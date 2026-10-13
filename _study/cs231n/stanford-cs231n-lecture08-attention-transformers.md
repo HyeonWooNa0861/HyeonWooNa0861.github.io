@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
 topic: "Attention and Transformers"
@@ -143,6 +143,11 @@ $$
 
 ## 핵심 수식 유도
 
+Scaled dot-product attention은 query/key 차원이 커질 때 score variance가 커지는 것을 $$\sqrt{d_k}$$로 보정한다. RMSNorm은 vector의 RMS로 공통 scale을 제거하지만 평균을 빼지 않으므로 LayerNorm과 같은 변환은 아니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Attention scaling and RMSNorm</summary>
+
 ### 작성자 보충: scaled dot product의 분산
 
 독립이고 평균 0, 분산 1인 query/key 성분을 가정하면 dot product $$q^\top k=\sum_{i=1}^{d_k}q_ik_i$$의 분산은 $$d_k$$다. 따라서 $$q^\top k/\sqrt{d_k}$$의 분산은 1이 된다. 이는 가정 아래의 **분산 계산**이며 softmax saturation을 줄이는 scaling 근거다. $$d_k$$는 무차원 차원 수다. 성분이 강하게 상관되거나 norm이 별도 정규화되면 정확한 분산은 달라지며, scaling만으로 attention collapse를 막을 수는 없다.
@@ -165,6 +170,8 @@ $$
 $$
 
 즉 양의 공통 scale $$a>0$$에는 정규화 결과가 변하지 않고, 음수 scale에는 부호만 바뀐다. 이는 $$\epsilon=0$$인 정의에서 나오는 **정확한 항등식**이다. 실제 구현의 $$\epsilon>0$$에서는 denominator가 $$\sqrt{a^2\operatorname{RMS}_0(x)^2+\epsilon}$$이므로 작은 norm 영역의 완전한 scale invariance는 깨지지만 0으로 나누는 것을 막는다. $$x$$와 $$\gamma$$가 각각 feature와 output scale을 정하며, RMS로 나눈 값 자체는 무차원이다. RMSNorm은 평균을 제거하지 않으므로 LayerNorm과 동일한 변환이나 동일한 학습 동역학을 보장하지 않는다.
+
+</details>
 
 ## 마지막 핵심 정리
 

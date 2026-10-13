@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS14 Merge Sort"
 course: "Data Structures"
 topic: "Merge Sort"
@@ -225,6 +225,11 @@ result = [2, 3, 4, 5, 6, 7]
 
 ## 점화식으로 확인하는 시간 복잡도
 
+Merge sort는 입력을 절반씩 나누어 깊이가 $$\log_2 n$$인 재귀 트리를 만들고, 각 level에서 전체 $$n$$개 원소를 병합하므로 $$\Theta(n\log n)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: merge-sort recurrence and recursion levels</summary>
+
 > **분류:** 병합 정렬의 **점화식과 증명 개요**다. 설명을 단순화하려고 $$n=2^k$$, 비교·복사 한 번을 상수 시간으로 가정한다.
 
 > **원문 추적:** `LS14_merge_sort.pdf` pp.52–55는 recursion depth $$\log n$$과 각 level의 총 $$n$$개 병합으로 $$O(n\log n)$$을 설명한다. 아래 점화식의 단계별 전개는 작성자 보충이다.
@@ -251,6 +256,8 @@ T(n)=nT(1)+cn\log_2n
 $$
 
 직관적으로도 각 레벨의 모든 부분 배열 길이 합이 $$n$$이고 레벨이 $$\log_2n$$개다. $$n$$이 2의 거듭제곱이 아니어도 두 부분의 크기는 floor/ceiling으로 한 칸만 달라져 같은 점근 결과다. 외부 정렬에서는 비교 횟수와 별개로 I/O 비용 모형을 분석해야 한다.
+
+</details>
 
 ## Properties
 

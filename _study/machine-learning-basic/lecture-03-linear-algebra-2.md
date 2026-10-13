@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 03 Linear Algebra 2"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 2"
@@ -171,6 +171,11 @@ $$
 
 ## 7. 핵심 명제의 증명
 
+영공간은 선형성 때문에 부분공간이지만, $$b\ne0$$인 $$Ax=b$$의 해 집합은 원점을 포함하지 않아 일반적으로 아핀 공간이다. 세부 증명은 아래에서 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why homogeneous solution sets are subspaces</summary>
+
 ### 7.1 $$Ax=0$$의 해 집합은 왜 부분공간인가?
 
 이는 **정리**이며 다음은 완결된 증명이다. $$U=\{x\in\mathbb{R}^n:Ax=0\}$$라 두고, 행렬곱의 선형성만 가정한다.
@@ -196,6 +201,8 @@ $$
 이므로 한 벡터가 나머지의 선형 조합이다. 역으로 이 표현을 한쪽으로 옮기면 모두 0은 아닌 계수로 0 벡터를 만들 수 있다. 이 등식은 실수 또는 복소수 벡터공간에서 성립하며, 나누는 계수 $$a_j$$가 0이 아니어야 한다.
 
 모든 기호 $$A,u,v,x,b,a_i$$는 이 강의의 추상 공간에서는 단위를 두지 않는다. 실제 feature에 단위가 섞여 있다면 선형 결합 전 scaling과 단위 호환성을 별도로 확인해야 한다.
+
+</details>
 
 ## 마지막 핵심 정리
 

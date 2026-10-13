@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 17: Discrete Latent Variable Models"
 course: "CS236"
 topic: "Discrete Latent Variable Optimization"
@@ -111,7 +111,8 @@ $$
 
 Temperature $$\tau$$가 작으면 one-hot categorical에 가까워져 bias가 줄지만 gradient variance가 커진다. $$\tau$$가 크면 distribution은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete sample과 멀어진다. Straight-through estimator는 forward pass에서는 hard discrete sample을 쓰고 backward pass에서는 soft relaxation의 gradient를 흘려보내는 practical compromise다.
 
-### 핵심 수식 유도: score-function estimator와 baseline
+<details markdown="block">
+<summary markdown="span">Derivation: Score-function estimators and baselines</summary>
 
 > **Source mapping:** Official Lecture 17 PDF pp. 10--13의 log-derivative estimator와 constant-baseline identity에 대응한다.
 
@@ -128,7 +129,10 @@ $$
 
 또한 $$\mathbb E_q[\nabla_\phi\log q]=\sum_z\nabla_\phi q(z)=\nabla_\phi1=0$$이므로 $$z$$와 무관한 baseline $$B$$를 빼도 unbiasedness가 유지된다. $$z$$, $$\phi$$, probability는 무차원이다. Monte Carlo 표본이 적으면 variance가 크며, baseline이 sampled $$z$$에 임의로 의존하면 bias가 생길 수 있다. Gumbel-Softmax와 straight-through gradient는 이 항등식과 달리 discrete objective의 **편향된 relaxation/휴리스틱**이며, $$\tau\to0$$에서 sample은 one-hot에 가까워져도 gradient 안정성이 보장되지는 않는다.
 
-### 일반 control variate와 최적 계수 (작성자 보충; 강의 슬라이드 14--17의 분산 계산)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: General control variates and the optimal coefficient</summary>
 
 > **Source mapping:** Official Lecture 17 PDF pp. 14--15의 일반 control variate와 pp. 16--17의 optimal coefficient 및 $$1-\rho^2$$ variance factor에 대응한다.
 
@@ -167,6 +171,8 @@ $$
 마지막 줄은 $$\rho_{F,H}=\operatorname{Cov}(F,H)/(\sqrt{\operatorname{Var}(F)}\sqrt{\operatorname{Var}(H)})$$를 대입한 항등식이다. 따라서 상관의 부호가 아니라 절댓값이 1에 가까울수록 감소 폭이 크고, $$\rho=0$$이면 이 최적 선형 보정도 이득이 없다. $$F$$와 $$H$$가 같은 단위를 가지면 $$a$$와 $$\rho$$는 무차원이며 variance는 그 단위의 제곱이다.
 
 실제 gradient는 vector이므로 component별 $$a_j^*$$를 쓰거나 전체 covariance trace를 최소화하는 scalar를 정할 수 있다. 위 계수를 같은 finite minibatch로 추정해 즉시 대입하면 추가 noise와 bias가 생길 수 있고, $$\eta$$를 정확히 모르는 learned baseline도 더 이상 위의 단순 unbiasedness 증명을 그대로 적용할 수 없다. Score-function baseline은 sampled $$z$$와 무관하거나 조건부로 zero-mean이어야 하며, control variate를 학습하는 비용이 절감한 variance보다 클 수도 있다.
+
+</details>
 
 ## 핵심 개념
 

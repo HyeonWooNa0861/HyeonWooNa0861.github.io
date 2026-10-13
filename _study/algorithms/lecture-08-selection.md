@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
+last_modified_at: 2026-10-13 16:49:01 +0900
 title: "Lecture 8: Selection Algorithms"
 course: "Algorithms"
 topic: "Order Statistics, Randomized Quickselect, and Median of Medians"
@@ -100,6 +101,9 @@ $$
 
 목표 $$i$$가 $$[m_1,m_2)$$ 안이면 값 $$v$$가 답이다. 이 방식은 모든 원소가 같을 때도 한 번의 partition으로 끝난다. 다음 코드는 설명과 실행 검산을 위한 copy-based 구현이다. 각 partition에서 현재 구간 크기만큼 보조 저장 공간을 사용하며, 제자리 구현이 필요하면 Dutch national flag 방식으로 세 구간을 만들 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Duplicate-safe randomized Quickselect</summary>
+
 ```python
 from random import Random
 
@@ -131,6 +135,12 @@ def quickselect(values, i, seed=0):
         else:
             lo = m2
 ```
+
+- 입력 `values`는 보존되고 사본 `a`만 바뀐다. `i`는 전체 배열의 0-based 순위이며, `seed`는 설명 예시의 피벗 선택을 재현한다.
+- 각 반복은 활성 구간 `[lo, hi)`를 `lower`, `equal`, `higher`로 분리한다. 목표 순위가 `equal` 구간에 들어오면 pivot 값이 답이다.
+- 목표가 바깥에 있으면 필요한 한쪽 경계만 갱신한다. 정렬 전체를 만들지 않는 것이 Quicksort와의 핵심 차이다.
+
+</details>
 
 13쪽의 입력 `[11, 1, 9, 2, 7, 13, 12, 8, 6, 3, 10]`에 $$i=3$$을 넣으면 정렬 결과가 `[1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13]`이므로 답은 `6`이다. 위 구현을 독립 실행한 결과도 `6`이었다. 중복 예제 `[7, 2, 7, 4, 7, 1, 4]`, $$i=3$$은 `4`를 반환했다.
 
@@ -224,6 +234,9 @@ Median of medians는 입력값이나 난수 운에 관계없이 충분히 중앙
 
 다음 구현은 절차와 중복 처리를 분명히 보여 주기 위한 copy-based 버전이다. 마지막 5개 미만 그룹도 포함하고, 작은 입력은 직접 정렬한다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Deterministic median-of-medians selection</summary>
+
 ```python
 def median_of_medians_select(values, i):
     if not 0 <= i < len(values):
@@ -250,6 +263,12 @@ def median_of_medians_select(values, i):
         i - len(lower) - len(equal),
     )
 ```
+
+- 입력은 값 배열과 0-based 순위 `i`다. 길이 5 이하의 기저 구간만 직접 정렬하고, 큰 구간은 5개 그룹의 중앙값들에서 pivot을 재귀 선택한다.
+- pivot을 기준으로 세 구간을 만들고 목표 순위가 포함된 한 구간만 재귀 처리한다. `equal` 구간은 중복 pivot의 전체 순위 범위를 한 번에 확정한다.
+- 이 구현은 새 리스트를 만드는 설명용 형태다. 최악 선형 시간의 근거는 제자리 여부가 아니라 재귀할 큰 쪽이 상수 비율로 제한된다는 점이다.
+
+</details>
 
 독립 실행 예제 `[31, 4, 17, 9, 2, 26, 11, 8, 20, 14, 6]`, $$i=5$$는 정렬 배열 `[2, 4, 6, 8, 9, 11, 14, 17, 20, 26, 31]`의 인덱스 5인 `11`을 반환했다. 이 코드는 매 단계 새 리스트를 만들어 보조 공간을 사용한다. Median of medians의 최악 선형 **시간** 보장은 제자리 구현 여부와 별개의 성질이다.
 

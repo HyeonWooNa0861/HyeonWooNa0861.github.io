@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
 topic: "Generative Models 1"
@@ -96,6 +96,11 @@ $$
 
 ## 핵심 수식 유도
 
+VAE는 계산하기 어려운 marginal log-likelihood 대신 reconstruction expectation에서 posterior-prior KL을 뺀 ELBO를 최대화한다. ELBO와 실제 log-likelihood의 차이는 approximate posterior와 true posterior 사이의 KL이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: ELBO and its posterior gap</summary>
+
 ### 작성자 보충: ELBO의 전체 유도와 gap
 
 고정된 관측 $$x$$에 대해 $$q_\phi(z\mid x)$$가 필요한 support를 덮고, density ratio와 아래 expectation이 적분 가능하다고 가정하자. Marginal likelihood에 $$q_\phi(z\mid x)$$를 곱하고 나누면
@@ -142,6 +147,8 @@ $$
 로 쓸 수 있다. KL은 음수가 아니므로 inequality가 따르고, $$q_\phi(z\mid x)=p_\theta(z\mid x)$$일 때만 bound가 tight하다. 첫 expectation identity에는 joint density가 $$q$$에 대해 절대연속인 shared-support 조건이 필요하고, gap 표현에는 $$q$$가 true posterior에 대해 절대연속이어야 KL이 유한하다. Continuous density의 log는 선택한 base measure에 의존하지만 density ratio, KL과 ELBO gap은 무차원이다.
 
 Gaussian encoder에서 $$z=\mu+\sigma\odot\epsilon$$, $$\epsilon\sim\mathcal N(0,I)$$로 쓰는 것은 분포를 보존하는 reparameterization이다. 표준화 latent 좌표에서는 $$z,\mu,\sigma,\epsilon$$을 무차원으로 둔다. Variational family가 좁으면 posterior를 덮지 못해 bound가 느슨하고, decoder가 너무 강하면 KL collapse로 latent가 무시될 수 있다. Monte Carlo sample 수가 적으면 reconstruction expectation의 gradient variance도 커진다.
+
+</details>
 
 ## 마지막 핵심 정리
 

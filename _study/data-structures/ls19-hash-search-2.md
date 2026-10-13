@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:13:13 +0900
-last_modified_at: 2026-09-03 19:35:19 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
@@ -201,6 +201,11 @@ linear probing에서는 어떤 key가 클러스터 안의 아무 위치로 해�
 
 ### 상수 간격 probing
 
+상수 간격 $$c$$로 모든 $$m$$개 슬롯을 방문하려면 $$\gcd(c,m)=1$$이어야 한다. 공약수가 있으면 probe sequence가 일부 residue만 돈 뒤 반복된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: cycle length in constant-step probing</summary>
+
 한 칸씩이 아니라 $$c$$칸씩 건너뛰는 방식이다.
 
 $$
@@ -222,6 +227,8 @@ h_i(k)\equiv h_j(k)\pmod m
 $$
 
 $$\gcd(c,m)=1$$이면 $$c$$는 modulo $$m$$에서 역원을 가지므로 양변에 그 역원을 곱해 $$i\equiv j\pmod m$$을 얻는다. 따라서 $$i=0,1,\ldots,m-1$$ 동안 중복 슬롯이 없고 정확히 $$m$$개 슬롯을 모두 방문한다. 반대로 $$d=\gcd(c,m)>1$$이면 방문 가능한 residue는 시작점과 같은 modulo $$d$$ 부류뿐이라 cycle 길이가 $$m/d$$로 줄어든다. $$m=6,c=2$$에서는 $$d=2$$이므로 세 슬롯만 방문한다. 이는 균등 성능 보장이 아니라 **전체 순회 가능성의 필요충분조건**이며, 충돌 횟수 index $$i,j$$와 슬롯 수·간격 $$m,c,d$$는 모두 무차원 정수다.
+
+</details>
 
 ### Pseudo-random probing
 
@@ -306,6 +313,11 @@ $$\alpha$$가 1에 가까워질수록 빈 슬롯을 찾는 비용이 급격히 �
 
 ### 기대 probe 수: 유한 테이블의 정확식에서 기하 근사까지
 
+점유율 $$\alpha$$가 커질수록 첫 빈 슬롯까지 필요한 probe 수가 증가한다. 정확식은 중복 없는 균등 순서를, 기하 근사는 독립·균등 시행을 가정하므로 실제 clustering에는 오차가 생긴다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: exact and approximate expected probe counts</summary>
+
 > **분류:** 먼저 유한 테이블에서의 **정확한 확률**을 구하고, 그다음 큰 테이블에서의 **기하분포 근사**를 얻는다. 전제는 $$m$$개 슬롯 중 $$s<m$$개가 점유되어 있고, probe sequence가 중복 없이 모든 슬롯의 균등한 무작위 순열처럼 동작한다는 것이다.
 >
 > **원문 추적:** Source PDF 31--39쪽의 $$P(1)$$, $$P(2)$$, 일반 $$P(i)$$와 평균 탐색 횟수 전개를 식별 가능하게 다시 쓰고, 유한 테이블의 닫힌형은 작성자 보충 해설로 덧붙였다.
@@ -363,6 +375,8 @@ $$
 $$
 
 probe 횟수 $$X$$의 단위는 `회`이고, $$m,s,e,\alpha$$는 모두 무차원 개수 또는 비율이다. 이 근사는 $$0\le\alpha<1$$이고 테이블이 충분히 크며 probe 순서가 균등·무중복에 가까울 때 유효하다. $$\alpha=1$$이면 빈 슬롯이 없다. Primary clustering이 있는 linear probing, 짧은 cycle을 만드는 quadratic probing 계수, tombstone이 많은 테이블, 비균등 해시 함수에서는 무작위 순열 가정이 깨져 실제 probe 수가 정확식이나 기하 근사보다 커지거나 빈 슬롯이 남아도 탐색이 실패할 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

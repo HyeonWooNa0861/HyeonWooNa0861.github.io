@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Large Language Models"
 course: "AIX"
 topic: "Decoder-Only LLMs and Generation"
@@ -140,6 +140,9 @@ $$
 
 Batch의 token 수를 $$T$$, token $$x$$에 대한 router probability를 $$p_i(x)$$라고 하면 top-1 routing에서는 보통 다음처럼 해석한다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Uniform and collapsed routing penalties</summary>
+
 $$
 f_i=\frac{1}{T}\sum_{x=1}^{T}
 \mathbf{1}\!\left[\operatorname*{arg\,max}_{j}p_j(x)=i\right],
@@ -158,6 +161,8 @@ $$
 반대로 모든 token이 expert $$k$$로 배정되고 각 token에서 $$p_k(x)\to1$$인 완전 붕괴 극한에서는 $$f_k=1$$, $$P_k\to1$$이므로 $$L_{\mathrm{balance}}\to\alpha N$$이다. 유한한 softmax logit에서는 $$P_k=1$$에 정확히 도달하지 않지만 그 극한에 가까워질 수 있다. 즉 이 항은 실제 선택 빈도와 router가 주는 확률이 같은 expert에 함께 집중될수록 더 큰 penalty를 만들어, task loss가 허용하는 범위에서 여러 expert를 사용하도록 gradient를 제공한다.
 
 이 식은 보편적으로 증명되는 최적성 정리가 아니라 **의도적으로 설계한 무차원 auxiliary objective**다. $$f_i$$는 discrete assignment라 직접 미분하기 어렵고, 구현에서는 주로 differentiable한 $$P_i$$ 경로가 router를 움직인다. Batch가 작으면 $$f_i$$ 추정의 분산이 커질 수 있고, top-$$k$$ routing·capacity limit·token dropping을 쓰면 $$f_i$$의 정의와 정규화가 달라진다. 또한 $$\alpha$$가 너무 크면 실제 언어 모델링보다 균등 배분을 과도하게 우선해 유용한 expert specialization을 방해할 수 있다.
+
+</details>
 
 | 문제 | 결과 | 대응 |
 |---|---|---|

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Standard Streams"
 course: "C++"
 topic: "Input and Output Streams"
@@ -141,7 +141,7 @@ std::clog << "로그 메시지\n";
 
 | 스트림 | 특징 |
 |---|---|
-| `std::cerr` | 언버퍼드, 즉시 출력, 에러용 |
+| `std::cerr` | 기본적으로 `unitbuf`가 설정되어 각 출력 연산 뒤 flush, 에러용 |
 | `std::clog` | 버퍼링 있음, 로그용 |
 
 ## 6. `std::cin`
@@ -239,9 +239,9 @@ Windows PowerShell은 리다이렉션 문법이 다를 수 있으므로, 강의 
 |---|---|---|
 | 풀 버퍼링 | 버퍼가 가득 찰 때 | stdout → 파일/파이프 |
 | 라인 버퍼링 | `\n`을 만날 때 | stdout → 터미널 |
-| 언버퍼드 | 즉시 출력 | stderr |
+| 즉시 flush | 각 출력 연산 뒤 buffer를 비움 | 기본 설정의 `std::cerr` |
 
-터미널에 연결된 stdout은 보통 줄 단위로 플러시된다. 파일이나 파이프에 연결되면 풀 버퍼링이 적용될 수 있다.
+터미널에 연결된 C `stdout`은 보통 줄 단위로 플러시된다. 파일이나 파이프에 연결되면 풀 버퍼링이 적용될 수 있다. C++ `std::cerr`는 “buffer가 전혀 없다”기보다 `unitbuf` flag 때문에 출력 연산마다 flush되는 스트림으로 이해해야 한다.
 
 ## 12. 플러시 제어
 
@@ -291,7 +291,7 @@ OS 커널의 실제 입출력 대상
 | `stderr` | 에러 출력, fd 2 |
 | `std::cout` | C++ 표준 출력 |
 | `std::cin` | C++ 표준 입력 |
-| `std::cerr` | 즉시 출력되는 에러 스트림 |
+| `std::cerr` | 기본적으로 각 출력 연산 뒤 flush되는 에러 스트림 |
 | `std::clog` | 버퍼링되는 로그 스트림 |
 | 리다이렉션 | 쉘이 fd 연결 대상을 바꾸는 기능 |
 | 파이프 | 한 프로그램의 stdout을 다른 프로그램의 stdin에 연결 |

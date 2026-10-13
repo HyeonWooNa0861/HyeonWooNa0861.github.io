@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
@@ -60,6 +60,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 
 ## 수식 해설: agreement, text metric, reliability
 
+Evaluation metric은 무엇을 정답으로 볼지 먼저 정의한 뒤 계산해야 한다. Kappa는 우연 일치를 보정하고, BLEU·METEOR는 reference overlap을 측정하며, 반복 성공률은 “한 번이라도 성공”과 “매번 성공”을 서로 다른 확률로 다룬다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Agreement, overlap metrics, and repeated reliability</summary>
+
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
 | Chance agreement와 Cohen's kappa | 00:08:22–00:16:49 | 우연 일치 baseline과 kappa 해석은 강의 원문이며, 정의역·prevalence 한계는 작성자 보충이다. |
@@ -116,6 +121,8 @@ $$
 적어도 한 번 성공할 확률은 $$1-(1-p)^k$$다. 두 지표는 정반대 질문에 답한다. Agent benchmark에서 반복할수록 all-pass reliability가 낮아지는 것은 곱셈 법칙의 결과지만, trial이 독립·동일분포가 아니면 $$p^k$$를 그대로 사용할 수 없다.
 
 Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있다. $$z_i\in\{0,1\}$$, $$w_i\ge0$$, $$\sum_iw_i>0$$이면 $$S\in[0,1]$$인 것은 정확하지만, fact 분해와 weight 자체는 evaluator 설계에 의존한다. 모든 weight가 0이면 분모도 0이라 score가 정의되지 않는다. LLM-as-a-Judge 점수는 경험적 proxy이므로 수학식이 bias 제거를 보장하지 않는다.
+
+</details>
 
 ## 학습 포인트
 

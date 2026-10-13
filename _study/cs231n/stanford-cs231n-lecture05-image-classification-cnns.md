@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 5: Image Classification with CNNs"
 course: "CS231N"
 topic: "CNN-Based Image Classification"
@@ -104,6 +104,11 @@ Backpropagation에서는 같은 kernel이 여러 위치에 쓰였으므로 각 �
 
 ## 핵심 수식 유도
 
+Convolution의 parameter 수는 kernel·channel 연결로 결정되고 spatial 위치 수와는 무관하다. Output shape와 receptive field는 kernel, stride, padding, dilation을 층별로 추적해 계산한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Convolution parameters, receptive field, and output shape</summary>
+
 ### 작성자 보충: convolution parameter 수
 
 Kernel 높이·폭을 $$K_h,K_w$$, 입력·출력 channel 수를 $$C_{in},C_{out}$$이라 하자. 표준 dense convolution의 출력 channel 하나는 모든 입력 channel을 관통하는 $$K_hK_wC_{in}$$개 weight와 bias 하나를 가지므로 전체 학습 parameter 수는
@@ -135,6 +140,8 @@ W_{\mathrm{out}}=1+\frac{W+2P-F}{S}.
 $$
 
 이는 numerator가 $$S$$로 나누어떨어질 때의 **정확한 shape 식**이며 길이들은 pixel, 비율은 무차원이다. 나누어떨어지지 않으면 framework의 floor/ceil 정책을 확인해야 한다. Backward에서는 input gradient가 자신을 덮은 모든 filter contribution의 합이고, weight gradient는 각 receptive-field patch와 upstream gradient의 correlation이다.
+
+</details>
 
 ## 마지막 핵심 정리
 

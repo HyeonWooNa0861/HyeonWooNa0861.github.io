@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 07 Matrix Decomposition 1"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 1"
@@ -184,6 +184,11 @@ $$
 
 ## 8. 핵심 성질의 증명
 
+행렬식이 0이라는 조건은 영공간에 0이 아닌 벡터가 존재한다는 뜻이고, 특성방정식은 이 조건을 $$A-\lambda I$$에 적용한다. Trace와 determinant의 고유값 표현은 고유분해 또는 Schur 분해의 대각 성분에서 확인할 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Invertibility, characteristic equations, and eigenvalue identities</summary>
+
 ### 8.1 $$\det(A)=0$$과 비가역성
 
 정사각행렬 $$A$$에 대해 다음은 **정확한 동치**다.
@@ -215,6 +220,8 @@ $$
 $$
 
 일반 정사각행렬에도 대수적 중복도를 포함하면 같은 결론이 성립하지만, 완전한 증명에는 Schur 분해 또는 특성다항식 계수 이론이 필요하다. 행렬 원소가 물리 단위를 가지면 determinant는 열 단위의 곱을 가지며, trace는 대각 원소들의 단위가 같을 때만 물리적으로 해석할 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 02 Linear Algebra 1"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 1"
@@ -274,6 +274,11 @@ $$
 
 ## 8. 핵심 식의 유도와 성립 조건
 
+본문의 핵심은 일관된 선형계의 해 집합이 하나의 특수해를 영공간 방향으로 이동한 아핀 집합이고, 가역인 기본 행 연산은 해 집합을 보존한다는 점이다. 증명과 단위 검사는 아래에서 이어진다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Solution sets, elementary row operations, and unit checks</summary>
+
 ### 8.1 전체 해가 `특수해 + 영공간`이 되는 이유
 
 이 명제는 **정확한 등식**이다. $$A\in\mathbb{R}^{m\times n}$$, $$b\in\mathbb{R}^m$$이고 $$Ax=b$$가 적어도 하나의 해 $$x_p$$를 가진다고 가정한다.
@@ -305,6 +310,8 @@ $$
 | $$E$$ | 기본 행 연산 행렬 | $$m\times m$$; 무차원 |
 
 행렬식의 단위는 열에 담긴 물리량의 곱이므로 실제 물리 모델에서는 무조건 무차원이라고 가정하면 안 된다. 이 강의의 추상 선형대수 계산에서는 수치와 형상만 추적한다.
+
+</details>
 
 ## 마지막 핵심 정리
 

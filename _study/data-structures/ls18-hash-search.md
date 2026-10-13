@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:35:19 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS18 Hash Search"
 course: "Data Structures"
 topic: "Hash Search"
@@ -132,6 +132,11 @@ $$
 
 ### 문자열 변환식이 순서를 보존하는 이유
 
+문자열을 진법 수처럼 누적하면 앞 문자의 위치 정보가 다음 문자와 섞이지 않고 정수 key에 반영된다. 실제 table index는 이 정수에 다시 modulo를 적용해 얻는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: positional string-to-integer encoding</summary>
+
 > **분류:** 위치 기수법의 **정의식**이다. 문자 코드 $$c_0,\ldots,c_{L-1}$$가 $$0\le c_i<b$$이고 기수 $$b$$를 고정한다고 가정한다.
 >
 > **원문 추적:** Source PDF 17--20쪽의 `CLRS` ASCII 변환과 modular hash 예제를 보충 해설한다.
@@ -151,7 +156,14 @@ $$
 
 로 한 글자씩 계산하면 같은 값을 $$O(L)$$에 얻는다. 최종 슬롯은 $$h=K\bmod m$$이다. 고정 폭 정수에서는 $$K$$가 overflow할 수 있으므로 각 단계에 $$\bmod m$$을 적용해도 $$(a+b)\bmod m$$, $$(ab)\bmod m$$의 합동 성질 때문에 최종 나머지는 같다.
 
+</details>
+
 ## 8. `m`을 소수로 잡는 이유
+
+Table size를 소수로 잡는 목적은 key 패턴과 modulus가 큰 공약수를 공유해 일부 슬롯만 반복하는 현상을 줄이는 것이다. 소수라는 사실만으로 균등 분포가 자동 보장되지는 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: residue coverage and common factors</summary>
 
 $$h(k)=k\bmod 8$$처럼 테이블 크기 $$m$$이 2의 거듭제곱이면 문제가 생길 수 있다.
 
@@ -177,6 +189,8 @@ $$
 이므로 $$m\mid c(i-j)$$이다. $$m$$은 소수이고 $$m\nmid c$$이므로 Euclid's lemma에 의해 $$m\mid(i-j)$$다. 그런데 $$i,j$$가 모두 $$0$$부터 $$m-1$$ 사이이므로 이는 $$i=j$$일 때만 가능하다. 따라서 이 제한된 key 집합에서는 서로 다른 $$i$$가 서로 다른 슬롯에 매핑된다.
 
 하지만 모든 key가 $$m$$의 배수이면 $$m$$이 소수여도 전부 0번 슬롯으로 간다. 또한 서로 다른 key가 $$m$$개 슬롯에 매핑될 때 key가 $$m$$개보다 많으면 pigeonhole principle에 의해 적어도 한 충돌은 반드시 생긴다. 소수 크기는 규칙적 key와 공약수로 생기는 일부 편향을 줄일 뿐 충돌 해결 전략을 대신하지 않는다. 여기서 $$k,c,i,j,q,r,m,p$$는 모두 정수 또는 개수를 나타내므로 무차원이다.
+
+</details>
 
 ## 9. 다른 해시 함수 아이디어
 

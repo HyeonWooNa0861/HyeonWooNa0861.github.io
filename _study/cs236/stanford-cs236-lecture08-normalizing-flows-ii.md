@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 8: Normalizing Flows II"
 course: "CS236"
 topic: "Flow Architectures and Tradeoffs"
@@ -76,7 +76,8 @@ Parallel WaveNet은 이 tradeoff를 실용적으로 결합한 사례다. 먼저 
 
 후반부의 MintNet은 masked convolution으로 invertible convolutional layer를 만드는 방향을 소개한다. 일반 CNN은 강력하지만 invertible하지 않고 determinant가 비싸다. Mask를 통해 PixelCNN처럼 ordering을 강제하면 Jacobian이 triangular가 되어 determinant가 tractable해진다. Gaussianization flow는 또 다른 관점을 제공한다. Maximum likelihood로 flow를 학습한다는 것은 forward direction에서 Gaussian prior를 data처럼 보이게 하는 것과 같고, inverse direction에서는 data를 Gaussian처럼 보이게 하는 것과 같다. 1차원에서는 data CDF와 Gaussian inverse CDF를 합성하면 Gaussianization이 가능하고, 다차원에서는 dimension-wise Gaussianization과 rotation을 반복해 더 깊은 flow를 만든다.
 
-### 핵심 수식 유도: affine coupling의 Jacobian
+<details markdown="block">
+<summary markdown="span">Derivation: The Jacobian of affine coupling</summary>
 
 > **근거 위치:** 공식 Lecture 8 PDF p. 14의 RealNVP affine coupling과 triangular Jacobian.
 
@@ -95,7 +96,10 @@ $$
 
 별표 항의 복잡한 derivative는 determinant에 영향을 주지 않는다. $$d,n,j$$는 무차원 index, $$\alpha$$는 log-scale라 무차원이며 $$\mu$$와 $$z_b$$는 같은 좌표 단위다. $$e^\alpha$$가 0은 아니어도 극단값이면 ill-conditioning이 발생한다. 한 layer에서 $$z_a$$는 변하지 않으므로 permutation이나 여러 coupling layer가 없으면 표현력도 제한된다.
 
-### MAF/IAF 방향과 Parallel WaveNet
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: MAF and IAF directions in Parallel WaveNet</summary>
 
 > **근거 위치:** 공식 Lecture 8 PDF pp. 18–19(MAF), p. 20(IAF), pp. 23–25(Parallel WaveNet). Hardware-dependent speed와 teacher-limited accuracy 설명은 작성자 보충이다.
 
@@ -146,6 +150,8 @@ $$
 이는 normalized $$s,t$$에 대한 **정확한 divergence 정의**이며 무차원이다. 유한한 값으로 다루려면 $$s\ll t$$, 즉 $$t$$가 확률 0을 주는 영역에는 $$s$$도 확률 0을 주어야 하며, 추가로 $$\mathbb{E}_{s}[\lvert\log(s(x)/t(x))\rvert]<\infty$$라고 가정한다. 어떤 집합 $$A$$에 대해 $$s(A)>0$$인데 $$t(A)=0$$이면 reverse KL은 $$+\infty$$이고, $$s\ll t$$여도 tail의 expected log-ratio가 발산하면 역시 $$+\infty$$일 수 있다. Natural logarithm을 쓰면 유한한 값의 표현 단위는 nats다. 실제 학습에서는 student sample의 유한 평균으로 이 기댓값을 **Monte Carlo 근사**한다. IAF student는 sample과 cached noise로 $$\log s(x)$$를, MAF teacher는 주어진 $$x$$로 $$\log t(x)$$를 빠르게 계산한다.
 
 > **작성자 보충:** 슬라이드의 “원래 WaveNet보다 1000배 빠른 sampling”은 그 Parallel WaveNet 설정에서 보고된 speed-up이지, 모든 hardware, batch size, audio length의 보장값이 아니다. Student의 accuracy는 teacher 분포를 초과해 정답 data distribution을 복원한다고 보장되지 않으며, teacher error, finite student capacity, reverse-KL의 mode-seeking, finite-sample variance, optimization error를 물려받는다. 즉 generation latency를 줄이는 대신 teacher와 정확히 같은 density를 얻는다는 보장은 없다.
+
+</details>
 
 ## 핵심 개념
 

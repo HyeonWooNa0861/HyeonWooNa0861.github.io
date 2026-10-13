@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 12: Energy-Based Models II"
 course: "CS236"
 topic: "Score Matching, Noise Contrastive Estimation, and Sampling-Free EBM Training"
@@ -115,7 +115,8 @@ $$
 
 형태의 game을 만든다. $$q_\phi$$는 EBM이 높게 평가하는 negative sample을 제공하고, entropy term은 $$q_\phi$$가 한 점에 collapse하지 않도록 한다. 이 관점은 GAN과 닮았지만, 목적은 deterministic generator를 학습하는 것이 아니라 EBM의 likelihood 학습을 근사하는 데 있다.
 
-### 핵심 수식 유도: score와 Langevin update
+<details markdown="block">
+<summary markdown="span">Derivation: The score identity and Langevin updates</summary>
 
 > **Source mapping:** Official Lecture 12 PDF p. 4의 unadjusted Langevin update와 p. 6의 EBM score 정의에 대응한다. SDE에서 Euler--Maruyama로 가는 설명은 작성자 보충이다.
 
@@ -129,7 +130,10 @@ $$
 
 은 **정확한 항등식**이다. 이를 overdamped Langevin SDE $$dX_t=\nabla_x\log p(X_t)dt+\sqrt2\,dW_t$$에 넣고 시간 간격 $$\epsilon$$으로 Euler-Maruyama 이산화하면 강의의 update 식이 나온다. $$x$$가 물리 단위를 가지면 score는 그 역단위이고 $$\epsilon$$은 좌표 단위의 제곱이며, 표준화 feature에서는 관례상 무차원이다. 유한-step update는 **수치 근사**라 큰 $$\epsilon$$에서는 stationary distribution에서 벗어나고, non-smooth energy나 mode 장벽이 큰 분포에서는 mixing이 실패할 수 있다.
 
-### 핵심 수식 유도: integration by parts로 data score 제거
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Eliminating the data score by integration by parts</summary>
 
 > **Source mapping:** Official Lecture 12 PDF pp. 8--9의 univariate integration-by-parts 전개와 multivariate score-matching loss에 대응한다. Boundary·regularity 조건과 단위 해설은 작성자 보충이다.
 
@@ -169,7 +173,10 @@ EBM에서 $$s_\theta=\nabla_x f_\theta$$이므로 $$\nabla_x\!\cdot s_\theta=\op
 
 표준화된 $$x$$에서는 모든 항을 무차원으로 볼 수 있다. 물리 단위가 있는 좌표에서는 $$s_{\theta,i}$$가 $$x_i$$의 역단위이고, 서로 다른 단위의 좌표별 제곱을 그대로 더하려면 먼저 공통 scaling 또는 dimensionless coordinate를 정해야 한다. Hessian diagonal도 각 좌표 단위의 제곱에 대한 역단위를 가지므로 같은 주의가 필요하다.
 
-### NCE cross-entropy와 안정적 estimator (작성자 보충; 강의 슬라이드 12--16의 식 전개)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Stable noise-contrastive estimation</summary>
 
 > **Source mapping:** Official Lecture 12 PDF pp. 12--14의 NCE density-ratio/normalizer 논리와 pp. 15--16의 `logsumexp` 및 minibatch estimator에 대응한다.
 
@@ -219,6 +226,8 @@ $$
 $$
 
 양변을 공통 reference measure에 대해 적분하면 $$e^c=\int e^{f_\theta(x)}dx=Z(\theta)$$다. 이는 infinite-data, global optimum, correct specification, finite partition function 아래의 **정확한 population argument**다. 제한된 network, optimization error, support를 덮지 못하는 noise, 너무 쉬운 classification에서는 $$c$$가 true $$\log Z$$에 가까울 이유가 없다. Density는 좌표 부피의 역단위를 가질 수 있지만 density ratio와 classifier probability는 무차원이며, log-density는 반드시 같은 reference measure와 단위 convention 아래에서 비교해야 한다.
+
+</details>
 
 ## 핵심 개념
 

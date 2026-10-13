@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-01 12:25:13 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"
@@ -362,6 +362,11 @@ $$
 
 ### BFS/DFS 복잡도의 합산 증명
 
+Adjacency list에서는 각 정점을 한 번 처리하고 모든 adjacency entry를 한 번씩 확인하므로 BFS와 DFS 모두 $$\Theta(\lvert V\rvert+\lvert E\rvert)$$이다. Matrix에서는 각 정점마다 한 행 전체를 보아 $$\Theta(\lvert V\rvert^2)$$가 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: summing vertex and edge work</summary>
+
 > **분류:** 방문 상태 불변식과 degree 합을 이용한 **증명 개요**다. 인접 리스트를 사용하고, 정점을 발견할 때 즉시 WHITE가 아닌 상태로 바꾼다고 가정한다.
 
 > **원문 추적:** `LS21_graph_traversal.pdf` pp.17–18은 BFS, p.38은 DFS의 $$O(\lvert V\rvert+\lvert E\rvert)$$ 분석을 제시한다. 도달 가능한 부분집합과 방문 표시 시점까지 포함한 아래 $$\Theta$$ 증명은 작성자 보충이다.
@@ -374,6 +379,8 @@ T(|V|,|E|)=\Theta(|V|)+\Theta(|E|)
 $$
 
 발견 시점이 아니라 queue에서 꺼낼 때 방문 표시를 하면 같은 정점이 여러 번 들어갈 수 있어 이 단순 증명이 깨진다. 인접 행렬에서는 각 정점마다 행 $$\lvert V\rvert$$칸을 검사하므로 $$\Theta(\lvert V\rvert^2)$$이다. 시작점 하나에서만 실행하면 도달 가능한 부분만 방문하므로 정확한 비용은 $$\Theta(\lvert V_R\rvert+\lvert E_R\rvert)$$이고, 전체 그래프 순회는 모든 미방문 정점에서 다시 시작해야 한다.
+
+</details>
 
 ## 12. BFS와 DFS 비교
 

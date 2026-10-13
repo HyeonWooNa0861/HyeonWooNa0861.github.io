@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
 topic: "Regularization and Optimization"
@@ -111,6 +111,11 @@ AdamW는 L2 항을 gradient에 섞기보다 weight decay를 파라미터 갱신�
 
 ## 핵심 수식 유도
 
+Adam은 gradient의 1차·2차 moment를 추적하고 초기값 0에서 생기는 bias를 보정한다. L2 penalty는 weight 크기에 비례하는 gradient를 더하며, Newton step은 gradient뿐 아니라 Hessian curvature를 이용한다. 세 방법은 서로 다른 문제를 해결한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Adam correction, L2 decay, and Newton step</summary>
+
 ### 작성자 보충: Adam의 bias correction과 parameter update
 
 Adam은 $$m_0=v_0=0$$에서 시작해 현재 gradient $$g_t=\nabla_WL(W_t)$$의 elementwise 1차·2차 moment를
@@ -180,6 +185,8 @@ w_{t+1}=w_t-H^{-1}g
 $$
 
 를 얻는다. 이는 **2차 Taylor 근사의 stationary-point 해**이며, 원래 비선형 loss의 전역 최솟값을 보장하는 식은 아니다. $$H\succ0$$이면 surrogate가 strictly convex라서 이 stationary point가 유일한 local minimizer지만, Hessian이 singular하거나 indefinite이면 inverse가 없거나 descent direction이 아닐 수 있어 damping·trust region 같은 보완이 필요하다. Parameter $$w$$의 단위를 `weight`, loss 단위를 `loss`라 하면 $$g$$는 `loss/weight`, $$H$$는 `loss/weight²`, $$H^{-1}g$$는 `weight` 단위이므로 update와 차원이 맞는다. Deep network에서는 Hessian 저장·역산 비용이 parameter 수에 대해 매우 커 실제 대규모 학습에서 그대로 쓰기 어렵다는 것이 강의의 실무적 결론이다.
+
+</details>
 
 ## 마지막 핵심 정리
 

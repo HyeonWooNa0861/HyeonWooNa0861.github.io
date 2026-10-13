@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
@@ -60,6 +60,11 @@ Self-attention은 모든 토큰을 직접 연결하지만 RNN처럼 순서를 �
 | Masked Language Model (MLM) | BERT pre-training objective다. 선택된 token을 80%는 [MASK], 10%는 그대로, 10%는 random word로 처리하고 원래 token을 예측하게 한다. |
 
 ## 수식 해설: position, normalization, attention cost
+
+위치 기법은 attention score에 상대 거리 정보를 넣고, RMSNorm은 vector의 RMS로 scale을 정규화한다. 계산 측면에서는 full attention이 token 수 $$n$$에 대해 $$\Theta(n^2)$$이고, KV cache는 대략 $$2Lnh_{kv}d_hb$$ byte를 사용하므로 windowing과 KV head 공유가 서로 다른 병목을 줄인다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Relative position, RMSNorm, and attention memory</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
@@ -137,6 +142,8 @@ M_{KV}=2Lnh_{kv}d_hb
 $$
 
 byte다. 2는 key와 value를 뜻한다. Batch·beam 수와 allocator overhead는 별도로 반영해야 한다.
+
+</details>
 
 ## 학습 포인트
 

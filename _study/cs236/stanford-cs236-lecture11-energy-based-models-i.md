@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 11: Energy-Based Models I"
 course: "CS236"
 topic: "Partition Functions, Product of Experts, RBMs, and Contrastive Divergence"
@@ -88,7 +88,8 @@ $$
 
 Contrastive divergence는 model expectation을 sample $$x_{\mathrm{sample}}\sim p_\theta$$로 Monte Carlo 근사해 $$\nabla_\theta f_\theta(x_{\mathrm{train}})-\nabla_\theta f_\theta(x_{\mathrm{sample}})$$ 방향으로 학습한다. 남는 문제는 model에서 어떻게 sample을 얻는가다. 강의는 Metropolis-Hastings MCMC와 Langevin MCMC를 소개한다. MCMC는 현재 sample을 조금 perturb하고 더 likely하면 받아들이며, 덜 likely해도 일정 확률로 받아들여 탐색성을 유지한다. Langevin 방식은 $$\nabla_x\log p_\theta(x)=\nabla_x f_\theta(x)$$를 이용해 더 informed proposal을 만들지만, high-dimensional space에서는 여전히 많은 step이 필요하다.
 
-### 핵심 수식 유도: partition function gradient
+<details markdown="block">
+<summary markdown="span">Derivation: The gradient of the partition function</summary>
 
 > **Source mapping:** Official Lecture 11 PDF p. 23의 log-likelihood gradient 및 contrastive-divergence 근사에 대응한다.
 
@@ -106,7 +107,10 @@ $$
 
 Positive phase는 data의 score를 올리고 negative phase는 model이 높게 평가한 영역을 내린다. 표준화 좌표와 고정 reference measure를 쓰는 ML 표기에서는 $$f_\theta$$와 log-density 차이를 무차원으로 취급한다. Continuous density 자체는 좌표 부피의 역단위를 가질 수 있다. Contrastive divergence는 마지막 expectation을 짧은 MCMC chain으로 바꾸는 **편향된 근사**이므로 chain이 mixing하지 않으면 MLE gradient가 아니다.
 
-### MH acceptance와 Langevin 정상성 (작성자 보충; 강의 sampling 식의 조건 명시)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Metropolis-Hastings acceptance and Langevin stationarity</summary>
 
 > **Source mapping:** Official Lecture 11 PDF p. 24의 symmetric random-walk MCMC acceptance와 p. 25의 unadjusted Langevin update에 대응한다. 일반 proposal ratio, Fokker--Planck 정상성, MALA 설명은 작성자 보충이다.
 
@@ -147,6 +151,8 @@ $$
 는 unadjusted Langevin algorithm이라는 **수치 근사**이며, 고정된 유한 $$\epsilon$$에서는 일반적으로 정확한 $$p_\theta$$를 stationary distribution으로 갖지 않는다. MH correction을 붙인 MALA는 이 이산화 bias를 교정할 수 있지만 mixing 자체를 보장하지는 않는다.
 
 $$x$$의 단위가 $$U$$이면 score는 $$U^{-1}$$이고 이 SDE convention에서 $$t$$와 $$\epsilon$$은 $$U^2$$, Brownian increment는 $$U$$다. 실제 ML에서는 좌표를 표준화해 모두 무차원으로 취급한다. Step size가 크면 discretization bias나 발산이 생기고, 너무 작으면 이동이 느리며, ill-conditioned density와 분리된 mode에서는 매우 긴 chain도 mixing하지 못할 수 있다.
+
+</details>
 
 ## 핵심 개념
 

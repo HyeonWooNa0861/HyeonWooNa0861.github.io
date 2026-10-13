@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:35:19 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
@@ -243,6 +243,11 @@ $$
 
 ### 원형 큐 인덱스 식이 성립하는 이유
 
+핵심은 인덱스를 한 칸 늘린 뒤 $$C$$로 나눈 나머지를 취하면 항상 $$0$$부터 $$C-1$$ 사이로 돌아온다는 것이다. 다만 인덱스 순환과 empty/full 판정은 별개이므로 `size`, 빈 슬롯, 또는 별도 flag가 필요하다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: circular indices and queue invariants</summary>
+
 > **분류:** $$\bmod$$ 연산의 정의에서 나오는 **구현 불변식**이다. $$C>0$$은 배열 용량, `front`는 다음 제거 위치, `rear`는 다음 삽입 위치라고 가정한다.
 >
 > **원문 추적:** Source PDF 43--46쪽의 원형 배열 구조와 `ArrayQueue` 갱신 코드를 보충 해설한다.
@@ -267,7 +272,14 @@ $$
 
 가 empty/full 판정 불변식이다. `size` 없이 `front == rear`만 사용하면 빈 큐와 가득 찬 큐가 같은 상태로 보인다. 이 경우 한 칸을 항상 비워 두거나 별도 flag를 둬야 한다. 그렇지 않으면 식은 인덱스 순환만 보장할 뿐 큐 상태를 올바르게 판정하지 못한다.
 
+</details>
+
 ### 상수 시간과 재할당 비용의 조건
+
+고정 용량에서는 각 연산이 상수 개의 인덱스·포인터만 바꾸므로 $$\Theta(1)$$이다. 동적 배열을 기하급수적으로 확장할 때도 여러 삽입에 복사 비용을 나누면 삽입당 상환 비용은 $$O(1)$$이지만, 한 번의 확장 자체는 $$\Theta(n)$$일 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: constant operations and amortized resizing</summary>
 
 > **분류:** Source PDF 31--32쪽과 49--50쪽의 복잡도 표를 연산 수로 확인한 **작성자 보충 증명**이다. $$n$$은 저장 원소 수, $$C$$는 배열 용량으로 모두 무차원 개수다.
 
@@ -280,6 +292,8 @@ C+2C+4C+\cdots < 2N
 $$
 
 이므로 전체 복사 비용은 $$O(N)$$, 삽입 1회당 상환 비용은 $$O(1)$$이다. 이 상환 결론은 **기하급수적 확장 정책을 쓸 때만** 성립한다. 원문의 구현처럼 고정 배열에서 overflow를 예외로 처리하면 재할당 자체가 연산 계약에 포함되지 않는다.
+
+</details>
 
 | 구조 | 확인할 상태 |
 |---|---|

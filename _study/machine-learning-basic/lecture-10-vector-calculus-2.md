@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 10 Vector Calculus 2"
 course: "Machine Learning Basic"
 topic: "Vector Calculus 2"
@@ -112,6 +112,11 @@ Hessian은 점 근처에서 함수가 얼마나 휘어 있는지 나타낸다. �
 
 ## 7. Backpropagation과 2차 근사의 유도
 
+Backpropagation은 계산 그래프의 local derivative를 출력에서 입력 방향으로 곱해 gradient를 재사용한다. 2차 Taylor 근사는 gradient에 Hessian이 만드는 곡률 보정을 추가하며, 단계별 계산은 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Reverse-mode gradients and the second-order Taylor approximation</summary>
+
 ### 7.1 작은 계산 그래프의 역전파
 
 $$z=Ax+b$$, $$h=\phi(z)$$, $$L=\ell(h)$$라 하자. 모두 미분 가능하다는 가정 아래 chain rule은 **정확한 항등식**으로
@@ -219,6 +224,8 @@ $$
 | $$L$$ | scalar loss | loss가 정한 단위, 흔히 무차원 |
 | $$\delta$$ | $$\partial L/\partial z$$ | loss 단위/$$z$$ 단위 |
 | $$(\nabla^2f)_{ij}$$ | Hessian의 $$(i,j)$$ 성분 | 함수값 단위/$$(x_i\text{ 단위}\times x_j\text{ 단위})$$. 모든 입력 단위가 같을 때만 이를 `함수값 단위/입력 단위²`로 줄여 쓸 수 있다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
@@ -532,6 +532,11 @@ $$
 
 ## 13. Gaussian 핵심식의 증명 개요와 한계
 
+선형변환된 Gaussian의 평균·공분산은 기대값 선형성으로 얻고, 조건부 Gaussian은 joint quadratic form을 완전제곱해 얻는다. 변수변환의 Jacobian은 확률질량을 보존하기 위한 부피 보정이며, 상세 계산과 적용 한계는 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Gaussian transformations, conditioning, and Jacobian correction</summary>
+
 ### 13.1 선형변환의 평균과 공분산
 
 $$x\sim\mathcal{N}(\mu,\Sigma)$$, $$y=Ax+b$$라 하자. 기대값 선형성으로
@@ -575,6 +580,8 @@ $$
 이다. 이는 **정확한 밀도 변환식**이다. 변환이 일대일이 아니면 모든 역상 branch의 기여를 합해야 하며, Jacobian determinant가 0인 점에서는 이 단순식을 그대로 사용할 수 없다.
 
 Gaussian mixture가 Gaussian이라는 보장은 없다. 합 $$X+Y$$의 Gaussian 폐쇄성은 joint Gaussian 또는 독립 Gaussian 같은 조건에 따른 정리이고, 여러 density의 가중합은 서로 다른 모드를 만들 수 있는 mixture 정의다. 평균 $$\mu$$는 $$x$$와 같은 단위, 공분산 $$\Sigma$$는 단위의 제곱, density는 입력 단위의 역수 거듭제곱을 가진다.
+
+</details>
 
 ## 마지막 핵심 정리
 

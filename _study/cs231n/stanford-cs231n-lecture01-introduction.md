@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-15 22:57:10 +0900
-last_modified_at: 2026-09-03 19:36:09 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
@@ -71,6 +71,11 @@ CNN은 이미지의 공간 구조를 활용한다. 작은 filter를 이미지 �
 | Hierarchy | 낮은 수준 특징에서 높은 수준 의미로 표현 확장 |
 | Backpropagation | feature와 classifier를 함께 학습 |
 
+역전파의 핵심은 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱하는 chain rule이다. 여러 계산 경로가 같은 변수에 모이면 각 경로의 gradient를 더한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Backpropagation chain rule</summary>
+
 ### 작성자 보충: Backpropagation 식의 chain rule
 
 공식 slide Part 1 p.39와 영상 28:35–29:39는 역전파의 핵심을 다음 chain rule로 제시한다.
@@ -93,6 +98,8 @@ do_{pj}
 $$
 
 이므로 두 식을 대입하고 $$dw_{ji}$$의 계수를 비교하면 slide의 식이 나온다. 직관적으로는 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱해 gradient를 뒤로 전달한다. 여러 계산 경로가 같은 변수로 합쳐지면 각 경로의 항을 더해야 하며, 비미분점에서는 선택한 subgradient 규칙까지 명시해야 한다. 이는 slide의 역사적 소개를 풀어 쓴 작성자 보충이며, 전체 network의 역전파 알고리즘 증명은 아니다. Gradient의 단위는 `error / weight`이고, 우변의 `error / output`과 `output / weight`가 곱해져 같은 단위가 된다.
+
+</details>
 
 ## 5. ImageNet과 AlexNet
 

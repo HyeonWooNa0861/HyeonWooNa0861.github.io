@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"
@@ -218,6 +218,11 @@ Max Heap에서 삽입은 보통 새 원소를 배열 끝에 붙인 뒤 위로 �
 
 ### Bottom-up `buildHeap`의 level sum
 
+Bottom-up buildHeap은 많은 노드가 리프 가까이에 있어 거의 내려가지 않는다. 높이별 노드 수와 내려갈 수 있는 거리를 곱해 합하면 전체 비용은 $$\Theta(n)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: level sum for bottom-up buildHeap</summary>
+
 > **작성자 보충 · 분류:** Floyd의 bottom-up `buildHeap`에 대한 **상한 유도와 점근적 정확한 결론**이다. $$n$$은 원소 수, $$k$$는 leaf에서 센 높이, $$T(n)$$은 비교·교환 같은 기본 연산 수이며 모두 무차원 개수다. 완전 이진 트리를 배열에 빈칸 없이 저장하고, 각 내부 노드에서 한 번씩 `siftDown`한다고 가정한다.
 
 > **원문 추적:** `LS16_priority_queue_and_heap.pdf` pp.24–42는 bottom-up `buildHeap` 절차를 제시하지만 선형 합은 전개하지 않는다. 이 합의 강의 원형은 다음 자료인 `LS17_heap_sort.pdf` pp.21–29이며, 무한급수와 $$\Theta(n)$$ 하한 확인은 작성자 보충이다.
@@ -250,7 +255,14 @@ $$
 
 이며 최악에는 $$\Theta(n\log n)$$이다. 즉 $$\Theta(n)$$은 bottom-up 방식의 결론이지 모든 heap 구성법의 결론이 아니다. 직관은 비싼 긴 이동을 할 수 있는 노드가 root 근처의 소수뿐이라는 것이다. 배열이 완전 이진 트리 모양을 유지하지 않거나 각 노드에서 subtree 전체를 다시 탐색하는 구현에는 이 level-sum 분석을 그대로 적용할 수 없다.
 
+</details>
+
 ## 배열 인덱스와 $$O(\log n)$$ 연산의 근거
+
+완전 이진 트리의 높이는 $$\Theta(\log n)$$이고 배열 인덱스 공식은 부모와 자식을 상수 시간에 찾는다. 따라서 한 경로만 오르내리는 `siftUp`·`siftDown`은 $$O(\log n)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: heap indices and logarithmic path length</summary>
 
 > **분류:** 완전 이진 트리의 레벨 순서 배치에서 따르는 **인덱스 정리**와 높이 기반 **복잡도 증명 개요**다.
 
@@ -265,6 +277,8 @@ $$
 가 된다. 완전 이진 트리의 높이를 $$h$$라 하면 최대 노드 수가 $$2^{h+1}-1$$이므로 $$h=\Theta(\log n)$$이다. `siftUp`과 `siftDown`은 한 단계마다 부모 또는 자식 레벨로 정확히 한 칸 이동하므로 최대 이동 횟수는 높이와 같아 $$O(\log n)$$이다.
 
 이 증명은 배열이 완전 이진 트리의 레벨 순서를 유지할 때만 성립한다. 중간 슬롯을 비우거나 임의 트리 모양을 같은 식으로 저장하면 자식 인덱스와 로그 높이 보장이 깨진다. 힙은 부모-자식 순서만 보장하므로 특정 key 탐색에는 어느 자식으로 가야 할지 결정할 수 없어 최악 $$O(n)$$이다.
+
+</details>
 
 ## PDF
 

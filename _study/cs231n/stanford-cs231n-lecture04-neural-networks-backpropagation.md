@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
 topic: "Neural Networks and Backpropagation"
@@ -125,6 +125,11 @@ Backpropagation은 별개의 학습 규칙이라기보다 계산 그래프에 ch
 
 ## 핵심 수식 유도
 
+Backpropagation은 local derivative와 upstream gradient를 chain rule로 연결한다. Sigmoid의 derivative는 $$\sigma(x)(1-\sigma(x))$$이고, matrix multiplication $$Y=XW$$에서는 $$\nabla_XL=GW^\top$$, $$\nabla_WL=X^\top G$$가 되어 원래 입력과 weight의 shape로 gradient가 돌아간다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sigmoid and matrix backpropagation</summary>
+
 ### 작성자 보충: sigmoid derivative
 
 Sigmoid를 $$\sigma(x)=(1+e^{-x})^{-1}$$로 쓰고 바깥의 역수, 덧셈, 지수함수 순서로 chain rule을 적용하면
@@ -185,6 +190,8 @@ $$
 $$
 
 라는 **정확한 chain-rule 항등식**과 올바른 shape $$N\times D$$, $$D\times M$$을 동시에 얻는다. Bias가 있으면 broadcast된 각 행의 기여를 합쳐 $$\nabla_bL=\sum_nG_{n:}$$가 된다. 모든 항의 단위는 “loss 단위/해당 변수 단위”다. In-place mutation, 잘못된 broadcasting, non-differentiable branch에서는 계산 graph와 이 유도가 어긋날 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

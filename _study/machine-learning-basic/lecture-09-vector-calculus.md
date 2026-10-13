@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 09 Vector Calculus"
 course: "Machine Learning Basic"
 topic: "Vector Calculus"
@@ -120,6 +120,11 @@ Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담
 
 ## 7. 핵심 미분식의 유도
 
+Gradient는 작은 입력 변화에 대한 함수값의 1차 변화를 나타내고, Jacobian과 chain rule은 여러 변환을 합성할 때 이 변화를 연결한다. 행렬 미분식은 차원과 invertibility 조건을 함께 확인해야 하며, 상세 전개는 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Taylor expansion, chain rule, and matrix derivatives</summary>
+
 ### 7.1 미분의 극한 정의와 일반 Taylor 전개
 
 원문에서 1변수 미분은 평균 변화율의 극한이라는 **정의**로 시작한다. 유한한 $$h$$에 대한 차분몫은 평균 변화율이고, 극한이 존재할 때만 미분값이 된다.
@@ -224,6 +229,8 @@ $$
 $$
 
 이 식도 $$X$$가 가역인 열린 영역에서만 성립한다. singular 또는 매우 ill-conditioned한 행렬 근처에서는 inverse가 정의되지 않거나 작은 입력 변화가 큰 derivative를 만들어 수치 해석이 불안정하다. $$X$$의 원소가 단위 $$U$$를 가지면 $$X^{-1}$$은 $$U^{-1}$$, determinant는 $$U^n$$인 동종 단위 행렬에서 위 식들의 단위도 각각 호환된다.
+
+</details>
 
 ## 마지막 핵심 정리
 

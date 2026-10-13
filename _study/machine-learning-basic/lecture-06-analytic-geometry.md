@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 06 Analytic Geometry"
 course: "Machine Learning Basic"
 topic: "Analytic Geometry"
@@ -220,6 +220,11 @@ $$
 
 ## 8. 핵심 기하식의 유도
 
+각도식은 내적의 정의와 코사인 법칙을 연결한 결과이고, 직교투영은 오차가 부분공간에 수직이라는 조건에서 나온다. 직교행렬은 이 내적을 보존하므로 길이와 각도도 보존하며, 세부 계산은 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Angles, orthogonal projections, and length preservation</summary>
+
 ### 8.1 내적에서 각도식이 나오는 이유
 
 실수 내적공간에서 $$x,y\ne0$$라 하자. Cauchy-Schwarz 부등식 $$\lvert x^Ty\rvert\le\lVert x\rVert_2\lVert y\rVert_2$$ 때문에 다음 비율은 $$[-1,1]$$ 안에 있다.
@@ -311,6 +316,8 @@ $$
 | $$A$$ | SPD metric matrix | $$x^TAy$$가 원하는 단위를 갖도록 결정 |
 | $$Q$$ | 직교 변환 | 같은 단위 공간에서는 무차원 |
 | $$\alpha$$ | 투영 계수 | $$x$$ 단위/$$u$$ 단위 |
+
+</details>
 
 ## 마지막 핵심 정리
 

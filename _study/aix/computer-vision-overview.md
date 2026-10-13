@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Computer Vision Overview"
 course: "AIX"
 topic: "Visual Intelligence and Deep Learning Vision"
@@ -87,6 +88,11 @@ CNN의 아이디어는 갑자기 등장한 것이 아니다.
 
 Neocognitron과 AlexNet은 계층적 구조라는 점에서 닮아 있다. 차이는 대규모 데이터, GPU compute, backpropagation을 통한 end-to-end training이 가능해졌다는 점이다.
 
+Backpropagation은 뒤에서 전달된 error sensitivity, 현재 activation의 local slope, 앞 layer의 activation을 곱해 각 weight의 gradient를 계산한다. 여러 layer에서는 이 local derivative가 연쇄적으로 곱해지므로 vanishing·exploding gradient 조건도 함께 드러난다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Backpropagation chain rule and gradient units</summary>
+
 ### Backpropagation의 chain rule
 
 > **원문 대응:** `03_Computer_Vision.pdf` p.10은 pattern $$p$$의 error를 connection weight로 미분할 때 chain rule로 gradient를 뒤쪽 layer에서 앞쪽 layer로 전달한다는 핵심 식을 제시한다. 아래의 preactivation 전개와 경계 조건은 그 식을 학습용으로 풀어 쓴 **작성자 보충 해설**이다.
@@ -143,6 +149,8 @@ $$
 $$
 
 Neural network에서는 정규화된 activation, weight, preactivation, loss를 대개 무차원으로 취급하므로 gradient 역시 수치적으로 무차원이다. 물리 단위를 가진 입력을 그대로 쓴다면 먼저 scale을 정하거나, 위 관계에 맞게 weight와 gradient의 단위를 해석해야 한다.
+
+</details>
 
 ## 5. CNN의 핵심 직관
 

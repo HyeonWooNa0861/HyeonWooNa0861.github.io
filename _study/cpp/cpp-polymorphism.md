@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -273,10 +273,10 @@ public:
 };
 
 Base* p = new Derived();
-delete p; // Base 소멸자만 호출될 수 있음
+delete p; // undefined behavior: Base 소멸자가 virtual이 아님
 ```
 
-이 경우 `Derived::~Derived()`가 호출되지 않으면 `data`가 해제되지 않아 메모리 누수가 발생한다.
+기본 클래스 소멸자가 가상이 아닌데 기본 클래스 포인터로 파생 객체를 삭제하면 동작 자체가 정의되지 않는다. 단순히 “기본 소멸자만 호출된다”고 예측할 수 없으며, 자원 누수나 더 심각한 오류가 생길 수 있다.
 
 올바른 방식:
 
@@ -373,7 +373,7 @@ class ImmutablePoint final {
 
 | 개념 | 키워드 / 문법 | 핵심 |
 |---|---|---|
-| 정적 다형성 | 오버로딩, 템플릿 | 컴파일 타임 결정, 오버헤드 없음 |
+| 정적 다형성 | 오버로딩, 템플릿 | 컴파일 타임 결정, 가상 dispatch 비용 없음 |
 | 동적 다형성 | `virtual` + 포인터/참조 | 런타임 결정, 확장에 열려 있음 |
 | 가상 함수 | `virtual void f()` | 파생 클래스 버전이 런타임에 호출됨 |
 | vtable | 컴파일러 자동 생성 | 함수 포인터 배열을 통한 런타임 디스패치 |
@@ -404,7 +404,7 @@ class ImmutablePoint final {
 <details markdown="block">
 <summary>2. 기본 클래스 포인터로 파생 클래스 객체를 삭제할 때 기본 클래스 소멸자가 `virtual`이어야 하는 이유는 무엇인가?</summary>
 
-답변: 기본 클래스 소멸자가 virtual이 아니면 기본 클래스 포인터로 `delete`할 때 파생 클래스 소멸자가 호출되지 않을 수 있다. 그러면 파생 클래스가 가진 자원이 해제되지 않아 누수나 정리 누락이 발생할 수 있다.
+답변: 기본 클래스 소멸자가 virtual이 아닌데 기본 클래스 포인터로 파생 객체를 `delete`하면 동작이 정의되지 않는다. 소멸자를 virtual로 두면 실제 객체 타입의 파생 소멸자부터 기본 소멸자까지 올바른 순서로 호출된다.
 
 </details>
 

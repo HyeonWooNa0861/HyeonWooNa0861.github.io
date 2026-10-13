@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-28 12:20:48 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
@@ -251,6 +251,11 @@ $$
 
 ## 6. 최적해 구하기
 
+Squared error의 gradient를 0으로 두면 normal equation $$X^TX\theta=X^Ty$$가 나온다. $$X$$가 full column rank이면 inverse 해가 유일하고, 그렇지 않으면 pseudoinverse나 regularization이 필요하다. 전개 과정은 아래에서 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: From squared error to the normal equation</summary>
+
 NLL에서 상수와 양의 배율을 제외하고 squared error만 생각하면 다음 objective를 최소화하면 된다. 여기서는 column vector convention을 사용한다.
 
 $$
@@ -337,6 +342,8 @@ $$
 $$
 
 이 rank 문제가 뒤에서 MAP 또는 ridge regression을 쓰는 이유와도 연결된다. $$\Phi^T\Phi+\lambda I$$처럼 양의 항을 더하면 matrix가 더 안정적으로 invertible해진다.
+
+</details>
 
 ## 7. 선형 회귀를 넘어서: Basis Function
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS13 Basic Sorting Algorithms"
 course: "Data Structures"
 topic: "Basic Sorting Algorithms"
@@ -220,6 +220,11 @@ void insertionSort(int[] list) {
 
 ## 비교 횟수로 $$\Theta(n^2)$$를 보이는 과정
 
+Bubble·selection sort는 길이가 하나씩 줄어드는 구간을 반복해서 훑으므로 비교 횟수가 삼각합이 되고 $$\Theta(n^2)$$이 된다. Insertion sort도 역순 입력에서는 같은 규모의 이동이 필요하다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: triangular comparison counts</summary>
+
 > **분류:** 슬라이드의 복잡도를 반복 횟수로 확인하는 **증명 개요**다. 비교와 대입이 상수 시간인 배열 모델을 가정한다.
 
 > **원문 추적:** `LS13_sorting.pdf` pp.8–15, 17–25, 27–35는 각각 bubble·selection·insertion sort의 실행과 연산 횟수를, p.36은 세 알고리즘의 $$O(n^2)$$ 결론을 제시한다. 아래 합의 닫힌형 전개는 작성자 보충이다.
@@ -235,6 +240,8 @@ $$
 선택 정렬의 swap은 pass당 최대 한 번이므로 최대 $$n-1$$번이지만, 비교 횟수는 여전히 이차다. 삽입 정렬의 최악 입력인 역순에서는 $$i$$번째 원소를 정렬 구간 맨 앞으로 옮기기 위해 최대 $$i$$개를 이동하므로 같은 합에서 $$\Theta(n^2)$$가 된다.
 
 이미 정렬된 입력에서는 삽입 위치를 첫 비교로 확인해 총 $$\Theta(n)$$이고, swap 발생 여부를 기록해 조기 종료하는 버블 정렬도 $$\Theta(n)$$이 될 수 있다. 조기 종료 검사가 없는 버블 정렬은 정렬된 입력에서도 $$\Theta(n^2)$$이므로 구현 조건을 생략해 “최선 $$O(n)$$”이라고 단정하면 안 된다.
+
+</details>
 
 ## PDF
 

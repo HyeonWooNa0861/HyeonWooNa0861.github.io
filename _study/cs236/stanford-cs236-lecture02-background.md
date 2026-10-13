@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 2: Background"
 course: "CS236"
 topic: "Probability, Graphical Models, and Neural Parameterizations"
@@ -73,7 +73,8 @@ Discriminative model은 $$p(X)$$를 모델링하지 않기 때문에 prediction�
 
 Continuous variable도 같은 원리가 적용된다. Table은 불가능하므로 Gaussian, uniform, mixture density 같은 함수형 density를 쓴다. 예를 들어 latent variable $$Z$$를 먼저 뽑고 $$X \mid Z$$를 Gaussian으로 두면 mixture of Gaussians가 된다. VAE도 큰 틀에서는 $$Z \rightarrow X$$ 형태의 Bayesian network로 볼 수 있고, $$X \mid Z=z$$의 Gaussian mean과 variance를 neural network가 출력한다.
 
-### 핵심 수식 유도: 확률 chain rule
+<details markdown="block">
+<summary markdown="span">Derivation: The probability chain rule</summary>
 
 > **근거 위치:** 공식 Lecture 2 PDF p. 8의 chain rule.
 
@@ -89,7 +90,10 @@ $$
 
 을 얻는다. 여기서 $$x_{1:n}$$은 전체 변수열, $$x_{1:i-1}$$은 현재 변수보다 앞선 값들이며 모두 무차원 확률변수 표기다. 이 항등식에는 독립 가정이 없다. $$p(x_i\mid x_{1:i-1})\approx p(x_i\mid x_{i-1})$$처럼 history를 줄이는 순간부터는 **Markov 근사**가 된다. 실제 데이터에 긴 의존성이 있으면 이 근사는 실패하며, chain rule 자체가 parameter 수를 줄여 주지도 않는다.
 
-### Bayes rule, Bayesian network, Naive Bayes
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Bayes rule, Bayesian networks, and Naive Bayes</summary>
 
 > **근거 위치:** 공식 Lecture 2 PDF p. 8(Bayes rule), pp. 10–11(BN factorization과 DAG 정의), pp. 16–17(Naive Bayes 독립 가정·posterior). 조건부 독립의 실패와 smoothing 설명은 작성자 보충이다.
 
@@ -127,7 +131,10 @@ $$n$$과 $$i$$는 무차원 feature 수와 index이고, 모든 확률은 무차�
 
 > **작성자 보충:** 조건부 독립은 일반적 독립 $$X_i\perp X_j$$를 뜻하지 않는다. $$Y$$를 고정한 뒤에만 feature joint가 각 조건부의 곱으로 나뉘다는 가정이다. `bank`와 `account`처럼 같은 label 안에서 강하게 연동된 feature는 evidence를 중복 계산하게 해 posterior calibration을 깨뜨릴 수 있다. 또한 어떤 조건부 항이 0으로 추정되면 전체 곱이 0이 되므로 smoothing이 필요할 수 있다.
 
-### 핵심 수식 유도: sigmoid, 선형 결정경계와 neural parameterization
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sigmoid probabilities, linear boundaries, and neural parameterization</summary>
 
 > **Source mapping:** Official Lecture 2 PDF pp. 21--22의 logistic function과 linear decision boundary, pp. 25--26의 nonlinear feature transformation에 대응한다. Log-odds 전개, 단위 조건과 failure 사례는 작성자 보충이다.
 
@@ -191,6 +198,8 @@ $$
 | $$\sigma,p,c$$ | Sigmoid, probability, threshold | 무차원, $$p,c\in(0,1)$$ |
 
 입력 feature의 단위가 서로 다른데 scaling 없이 coefficient를 비교하면 해석이 왜곡될 수 있다. 완전분리 데이터에서는 unregularized logistic maximum-likelihood coefficient가 발산할 수 있고, 강한 sigmoid saturation에서는 gradient가 작아진다. Neural parameterization은 nonlinear boundary를 표현할 수 있지만 finite network가 임의의 true conditional을 정확히 재현한다는 뜻은 아니며, architecture·optimization·data coverage에 따라 underfitting 또는 overfitting할 수 있다.
+
+</details>
 
 ## 핵심 개념 표
 

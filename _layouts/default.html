@@ -3603,9 +3603,9 @@
                   {% assign item_is_current = true %}
                 {% elsif item.title == "Research" and page.collection == "research" %}
                   {% assign item_is_current = true %}
-                {% elsif item.title == "Assignment" and page.url contains "/assignment/" %}
+                {% elsif item.title == "Study" and page.url contains "/assignment/" %}
                   {% assign item_is_current = true %}
-                {% elsif item.title == "Assignment" and page.collection == "assignment" %}
+                {% elsif item.title == "Study" and page.collection == "assignment" %}
                   {% assign item_is_current = true %}
                 {% elsif item.title == "Study" and page.url contains "/study/" %}
                   {% assign item_is_current = true %}
@@ -3621,7 +3621,12 @@
                     <ul class="side-index-list reader-index__list">
                       {% for child in item.children %}
                         {% assign child_active = false %}
+                        {% assign assignment_course_url = child.url | replace_first: '/study/', '/assignment/' %}
                         {% if page.url == child.url %}
+                          {% assign child_active = true %}
+                        {% elsif item.title == "Study" and page.collection == "assignment" and page.course == child.title %}
+                          {% assign child_active = true %}
+                        {% elsif item.title == "Study" and page.url == assignment_course_url %}
                           {% assign child_active = true %}
                         {% elsif child.match %}
                           {% if page.url contains child.match %}
@@ -3664,7 +3669,7 @@
             {% elsif page.collection == "assignment" %}
               {% assign entry_search_enabled = true %}
               <div class="collection-entry-tools" data-collection-entry-tools>
-                {% include branch-search.html collection="assignment" course=page.course %}
+                {% include branch-search.html collection="study" course=page.course %}
               </div>
             {% elsif page.collection == "posts" %}
               {% assign entry_search_enabled = true %}

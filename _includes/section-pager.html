@@ -15,10 +15,10 @@
     {% endif %}
   {% endfor %}
 {% elsif page.collection == "assignment" and page.course %}
-  {% assign pager_items = site.assignment | where: "course", page.course | sort: "title" %}
+  {% assign pager_items = site.assignment | where: "course", page.course | sort: "order" %}
   {% assign pager_parent_title = page.course %}
   {% for nav_item in site.data.navigation %}
-    {% if nav_item.title == "Assignment" %}
+    {% if nav_item.title == "Study" %}
       {% for nav_child in nav_item.children %}
         {% if nav_child.title == page.course %}
           {% assign pager_parent_url = nav_child.url %}

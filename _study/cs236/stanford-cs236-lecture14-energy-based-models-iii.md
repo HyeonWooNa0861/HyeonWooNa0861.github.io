@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 14: Energy-Based Models III"
 course: "CS236"
 topic: "Noise Conditional Score Networks, Annealed Langevin Dynamics, and Reverse-Time SDEs"
@@ -75,7 +75,8 @@ $$
 
 처럼 쓸 수 있으므로, unconditional score model에 관측 모델이나 guidance term을 더해 inverse problem, stroke-to-image, language-guided generation 같은 작업으로 확장할 수 있다.
 
-### 핵심 수식 유도: conditional score decomposition
+<details markdown="block">
+<summary markdown="span">Derivation: Conditional-score decomposition from Bayes' rule</summary>
 
 > **강의 자료:** Lecture 14 PPTX slide 38의 Bayes score decomposition.
 
@@ -91,7 +92,10 @@ $$
 
 이는 density가 양수이고 미분 가능한 영역에서의 **정확한 항등식**이다. 첫 항은 unconditional prior score, 둘째 항은 observation 또는 classifier guidance다. $$x$$가 물리 단위를 가지면 세 gradient 모두 역단위다. 실제 guidance scale $$w$$를 곱한 $$s(x)+w\nabla_x\log p(y\mid x)$$는 $$w=1$$일 때만 위 posterior와 정확히 대응하며, $$w\ne1$$은 fidelity와 diversity를 바꾸는 **휴리스틱**이다. Likelihood model이 miscalibrated하거나 gradient가 adversarial direction을 가리키면 conditioning이 실패한다.
 
-### NCSN, SDE, ODE, likelihood 식 (작성자 보충; 강의의 continuous-time 전개)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: NCSN, reverse-time SDEs, probability-flow ODEs, and likelihood</summary>
 
 > **강의 자료:** Lecture 14 PPTX slides 17--22의 NCSN/weighted loss, slides 29--30의 forward·reverse SDE, slides 34--35의 probability-flow ODE와 likelihood.
 
@@ -146,6 +150,8 @@ $$
 $$
 
 이는 exact score와 exact ODE/divergence 계산 아래의 **정확한 change-of-variables 식**이다. 고차원에서는 divergence를 Hutchinson trace estimator로 근사하고 adaptive ODE solver로 적분하므로 trace variance와 tolerance error가 likelihood에 누적된다. $$t$$의 단위를 $$T_0$$라 하면 $$f$$는 $$U/T_0$$, $$g$$는 $$U/\sqrt{T_0}$$, score는 $$U^{-1}$$, drift와 $$g^2s$$는 $$U/T_0$$, divergence는 $$T_0^{-1}$$다. 따라서 적분한 log-density 변화는 무차원이다. Score가 noisy tail에서 틀리거나 solver가 stiff한 schedule을 충분히 해상하지 못하면 sampling과 likelihood가 동시에 나빠질 수 있다.
+
+</details>
 
 ## 핵심 개념
 

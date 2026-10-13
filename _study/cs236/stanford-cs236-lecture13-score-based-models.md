@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 13: Score-Based Models"
 course: "CS236"
 topic: "Score Functions, Denoising Score Matching, Sliced Score Matching, and Langevin Sampling"
@@ -85,7 +85,8 @@ $$
 
 첫 항은 score 방향으로 log probability가 높은 곳을 향하게 하고, noise 항은 distribution 전체를 탐색하게 한다. 이론적으로 step size를 작게 하고 충분히 오래 돌리면 target distribution으로 수렴할 수 있다. 하지만 강의는 이 단순한 조합이 실제 image generation에서는 바로 성공하지 않는 이유도 강조한다. Real data는 저차원 manifold 위에 놓일 수 있어 clean density score가 잘 정의되지 않거나 폭주할 수 있다. Training sample은 high-density region에 몰려 있으므로 low-density region의 score는 부정확하다. 또한 분리된 mode 사이를 Langevin chain이 잘 이동하지 못하면 mixture weight가 제대로 반영되지 않는다. 이 세 문제는 다음 강의에서 multi-scale noise와 annealing으로 해결된다.
 
-### Vanilla Fisher score matching에서 implicit objective까지 (작성자 보충)
+<details markdown="block">
+<summary markdown="span">Derivation: From Fisher divergence to implicit score matching</summary>
 
 > **강의 자료:** Lecture 13 PPTX slides 15--17의 score field 비교, Fisher divergence, score-matching 계산식.
 
@@ -159,7 +160,10 @@ $$
 
 모든 좌표가 공통 단위 $$U$$를 갖도록 정규화했다고 보면 $$p$$의 단위는 $$U^{-d}$$, $$s_p$$와 $$s_\theta$$의 단위는 $$U^{-1}$$, divergence와 objective의 단위는 $$U^{-2}$$다. 서로 다른 물리 단위의 좌표를 그대로 Euclidean norm에 더하려면 별도의 무차원화 또는 metric이 필요하다. 위 변형은 population density와 매끄러운 field에 대한 **정확한 항등식**이지만, 유한 표본·제한된 network·수치 최적화로 얻은 $$s_\theta\approx s_p$$는 **학습된 근사**다. 또한 임의의 $$s_\theta$$가 반드시 어떤 scalar energy의 gradient일 필요는 없다.
 
-### 핵심 수식 유도: denoising target이 perturbed score를 주는 이유
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why the denoising target recovers the perturbed score</summary>
 
 > **강의 자료:** Lecture 13 PPTX slides 18--23의 denoising score-matching 식.
 
@@ -179,7 +183,10 @@ $$
 
 따라서 conditional target을 squared-error로 회귀한 population optimum은 noisy marginal의 score다. $$x,\tilde x,\sigma$$는 같은 좌표 단위이고 score는 역단위다. 유한 데이터·제한된 network에서는 근사일 뿐이며, $$\sigma$$가 너무 작으면 manifold 근처 score가 불안정하고 너무 크면 원분포의 세부 구조가 사라진다.
 
-### Tweedie 공식과 sliced objective (작성자 보충; 강의의 denoising/sliced 식 전개)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Tweedie's formula and sliced score matching</summary>
 
 > **강의 자료:** Lecture 13 PPTX slides 26--27의 Tweedie 공식과 slides 28--31의 sliced score-matching objective.
 
@@ -223,7 +230,10 @@ $$
 
 첫 항은 Jacobian-vector product 한 번으로 계산할 수 있어 full Jacobian trace를 만들지 않는다. Monte Carlo로 적은 $$v$$만 쓰는 것은 unbiased stochastic estimate지만 variance가 있고, boundary decay가 깨지거나 vector field가 미분 불가능하면 implicit 등가성이 실패한다. $$v$$는 무차원으로 두며 objective의 단위는 $$U^{-2}$$다. Direction covariance가 identity가 아니면 원래 Fisher geometry가 아니라 그 covariance로 가중된 metric을 학습한다.
 
-### Disjoint-support mixture에서 mode weight가 score에서 사라지는 이유 (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why local scores lose disjoint mixture weights</summary>
 
 > **강의 자료:** Lecture 13 PPTX slides 42--43의 two-mode disjoint-support mixture와 Langevin slow-mixing 식.
 
@@ -276,6 +286,8 @@ $$
 가 되므로 score가 일반적으로 $$\pi$$에 의존한다. 따라서 mixture weight가 사라진다는 주장은 **서로 분리된 support의 내부**로 한정해야 한다.
 
 Score는 각 연결 성분 안의 density 모양만 알려 주는 local derivative다. 서로 떨어진 성분마다 더한 상수 $$\log\pi$$와 $$\log(1-\pi)$$의 상대 차이를 미분만으로 복원할 수 없으므로, score alone은 mode mass $$\pi:(1-\pi)$$를 식별하지 못한다. 더구나 두 support 사이가 zero-density gap이면 local Langevin chain은 그 구간의 유효한 score 정보를 얻지 못하고 mode를 건너기 어렵다. 결국 초기화와 유한 시간 mixing에 따라 표본 비율이 결정되어 true mixture mass를 재현하지 못할 수 있다. 좌표 단위가 $$U$$이면 $$p,p_1,p_2$$는 $$U^{-d}$$, score는 $$U^{-1}$$이고 $$\pi,r_1,r_2$$는 무차원이다. 실제 neural score와 유한-step Langevin 결과는 이 population 분석에 대한 **학습·수치 근사**다.
+
+</details>
 
 ## 핵심 개념
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 9: Generative Adversarial Networks I"
 course: "CS236"
 topic: "Likelihood-Free Generative Learning"
@@ -86,7 +86,8 @@ $$
 
 실전에서는 장점과 문제가 함께 나타난다. 장점은 likelihood evaluation이 필요 없어서 generator architecture가 자유롭고, sampling이 보통 single forward pass라 빠르다는 점이다. 단점은 minimax optimization이 매우 어렵다는 점이다. Discriminator와 generator가 서로 움직이기 때문에 loss가 안정적으로 수렴하지 않고, MLE처럼 명확한 stopping criterion을 잡기 어렵다. 또한 mode collapse가 자주 발생한다. Generator가 data distribution의 모든 mode를 덮지 못하고 한두 mode에 집중해 discriminator를 일시적으로 속이는 현상이다. 강의는 이러한 불안정성 때문에 GAN 학습에는 architecture, loss, regularization, heuristic이 많이 필요하며, 이후 diffusion model이 널리 쓰이게 된 중요한 이유도 더 안정적인 학습 objective에 있다고 설명한다.
 
-### 핵심 수식 유도: optimal discriminator와 JS divergence
+<details markdown="block">
+<summary markdown="span">Derivation: The optimal discriminator and Jensen-Shannon divergence</summary>
 
 > **근거 위치:** 공식 Lecture 9 PDF p. 13의 optimal discriminator, p. 15의 GAN objective와 Jensen–Shannon divergence 유도, p. 16의 Jensen–Shannon divergence 성질.
 
@@ -106,7 +107,10 @@ $$
 
 확률과 divergence는 무차원이다. Finite-capacity discriminator가 optimum에 도달하지 않으면 이 JS 해석은 정확하지 않고, 두 support가 분리되면 JS가 포화되어 generator gradient가 약해질 수 있다.
 
-### Likelihood 반례, two-sample statistic, minibatch update
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Likelihood counterexamples, two-sample statistics, and minibatch updates</summary>
 
 > **근거 위치:** 공식 Lecture 9 PDF p. 5의 data/noise 또는 discrete noise-mixture likelihood bounds, p. 9의 two-sample statistic, p. 18의 minibatch gradient updates. Vector-valued calibration과 alternating-update 한계는 작성자 보충이다.
 
@@ -170,6 +174,8 @@ $$
 로 generator를 **gradient descent**한 뒤 반복한다. $$m,i$$는 무차원 batch 크기와 index, log probability는 무차원이며 natural log로 표현한 loss 단위는 nats다. Gradient는 loss를 각 parameter 단위로 나눈 단위를 가진다. Opponent parameter를 fixed로 두고 IID sample, finite expectation, 미분-기댓값 교환을 가정하면 각 batch gradient는 해당 population gradient의 **unbiased Monte Carlo 추정치**이지만, 유한 $$m$$에서는 분산이 있어 update는 근사적이다.
 
 > **작성자 보충:** Alternating optimization에서는 한 쪽을 update할 때마다 다른 쪽의 objective surface가 바뀐다. 따라서 각 fixed-opponent gradient의 unbiasedness는 전체 minimax 수렴을 보장하지 않는다. 또한 원문의 saturating generator loss에서 discriminator가 너무 강하면 $$D_\phi(G_\theta(z))$$가 0 근처로 가며 generator gradient가 약해질 수 있다.
+
+</details>
 
 ## 핵심 개념
 

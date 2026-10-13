@@ -6,6 +6,8 @@ permalink: /assignment/cpp/
 
 <h1 class="branch-logo page-branch-logo" data-label="C++">C++</h1>
 
+<p>This legacy assignment directory remains available for existing links. <a href="/study/cpp/">Open the unified C++ Study catalog</a> for lecture notes and assignments.</p>
+
 <ul class="post-list">
   {% assign assignments = site.assignment | where: "course", "C++" | sort: "title" %}
   {% for assignment in assignments %}

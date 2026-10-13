@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 10: Generative Adversarial Networks II"
 course: "CS236"
 topic: "f-GANs, Wasserstein GANs, BiGANs, and Cycle-Consistent Translation"
@@ -79,7 +79,8 @@ $$
 
 CycleGAN은 paired example 없이 domain $$X$$와 $$Y$$ 사이를 번역하기 위해 $$G:X\to Y$$, $$F:Y\to X$$ 두 mapping과 두 discriminator를 둔다. adversarial loss만 쓰면 입력의 의미를 보존하지 못할 수 있으므로 $$F(G(X))\approx X$$, $$G(F(Y))\approx Y$$라는 cycle consistency를 추가한다. AlignFlow는 $$G$$를 flow model로 두어 $$F=G^{-1}$$를 얻고 exact cycle consistency를 만족시키는 관점이며, StarGAN은 여러 domain을 하나의 조건부 generator로 다루는 확장이다.
 
-### 핵심 수식 유도: f-divergence의 variational lower bound
+<details markdown="block">
+<summary markdown="span">Derivation: The variational lower bound for f-divergences</summary>
 
 > **Source mapping:** Official Lecture 10 PDF pp. 7, 9--10의 f-divergence variational objective에 대응한다. 아래 Fenchel 부등식 전개는 작성자가 보충한 유도다.
 
@@ -95,7 +96,10 @@ $$
 
 을 얻는다. 이는 **하한**이다. $$f$$가 $$p/q$$에서 미분 가능하고 함수족이 $$T^*(x)=f'(p/q)$$를 표현하면 tight해진다. 일반적인 비미분 convex $$f$$에서는 $$T^*(x)\in\partial f(p/q)$$인 subgradient를 선택할 수 있어야 한다. Continuous 공간의 $$p,q$$는 좌표 부피의 역단위를 갖는 density일 수 있지만 비율 $$p/q$$, $$T$$, divergence는 무차원이다. Neural discriminator가 제한되거나 support가 어긋나면 bound가 느슨해져 실제 학습을 원래 f-divergence의 정확한 최소화로 해석할 수 없다.
 
-### Wasserstein-1의 primal과 dual (작성자 보충; 강의 슬라이드 13--14의 식 전개)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Primal and dual forms of the Wasserstein-1 distance</summary>
 
 > **Source mapping:** Official Lecture 10 PDF p. 13의 primal Earth-Mover 정의와 p. 14의 Kantorovich--Rubinstein dual/WGAN objective에 대응한다.
 
@@ -128,6 +132,8 @@ $$
 로 이어진다. 이 등식 자체는 Polish metric space와 유한 first moment 같은 표준 조건 아래 exact하지만, 위 문단은 functional-analytic 세부를 생략한 **증명 개요**다.
 
 좌표 $$x$$와 metric $$d$$의 단위가 $$U$$이면 $$W_1$$과 critic $$\varphi$$의 출력도 $$U$$이고 Lipschitz 비율은 무차원이다. 좌표별 단위가 다르면 정규화 없이 $$\ell_1$$ 비용을 더하는 것부터 의미가 불분명하다. Neural critic, weight clipping, sampled-line gradient penalty는 1-Lipschitz 함수 전체의 supremum을 푸는 **근사**일 뿐이다. Ground cost가 metric이 아니거나 first moment가 무한하면 metric 해석이 깨지고, 유한 표본의 empirical Wasserstein 값은 고차원에서 sample complexity가 나쁘며, support 사이 경로에서만 검사한 gradient penalty는 전역 Lipschitz 조건을 보장하지 않는다.
+
+</details>
 
 ## 핵심 개념
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:22:09 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"
@@ -108,6 +108,11 @@ $$
 
 ### 빈 슬롯 탐색 확률의 정확한 유도
 
+직관적으로 load factor $$\alpha$$가 커질수록 빈 슬롯을 만날 확률이 작아져 probe 수가 늘어난다. 아래 계산은 **중복 없이 균등한 순서로 슬롯을 방문한다는 모형**에서 정확하며, 실제 probing의 clustering에는 그대로 적용되지 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: expected probes before the first empty slot</summary>
+
 > **전제와 분류:** $$m$$개 슬롯 중 $$s<m$$개가 점유되어 있고, probing이 슬롯을 중복 없이 균등한 무작위 순서로 방문한다고 가정한다. 다음 식은 이 유한 테이블 모형에서 정확하며, 독립 시행을 가정한 기하분포 식은 큰 $$m$$에서의 근사다.
 
 빈 슬롯 수를 $$e=m-s$$, 처음 빈 슬롯을 만날 때까지의 probe 수를 $$X$$라 두면
@@ -144,6 +149,8 @@ P(X=i)\approx\alpha^{i-1}(1-\alpha),
 $$
 
 $$X$$의 단위는 `회`이며 나머지 기호는 슬롯 개수 또는 무차원 비율이다. Linear probing의 primary clustering, 반복되는 quadratic probe sequence, tombstone, 비균등 hashing에서는 균등·무중복 가정이 깨지므로 이 근사를 그대로 적용할 수 없다.
+
+</details>
 
 ### Graph 핵심 판별표
 
@@ -224,6 +231,11 @@ Max heap 기준 heap sort는 다음 순서로 진행한다.
 
 ### buildHeap이 선형 시간인 이유
 
+결론은 대부분의 노드가 리프 가까이에 있어 `siftDown` 거리가 짧기 때문에 전체 비용이 $$\Theta(n)$$이라는 것이다. 모든 노드가 높이 $$\log n$$만큼 내려간다고 가정하면 비용을 과대평가한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: level-weighted cost of bottom-up buildHeap</summary>
+
 > **전제와 분류:** 완전 이진 heap에 원소가 $$n$$개 있고, 높이 $$h$$인 노드의 `siftDown` 비용이 최대 $$ch$$라고 하자. $$c>0$$은 비교·교환 한 레벨의 상수 비용이므로 단위는 `연산/레벨`이다.
 
 높이가 $$h$$인 노드 수는 완전 이진 트리의 마지막 레벨에서 위로 올라갈수록 절반씩 줄어들므로 다음 상계가 성립한다.
@@ -250,6 +262,8 @@ T(n)
 $$
 
 여기서 $$\sum_{h=1}^{\infty}h/2^h=2$$이고, $$(\log n)^2=O(n)$$이므로 $$T(n)=O(n)$$이다. 반대로 표준 bottom-up buildHeap은 $$\lfloor n/2\rfloor$$개의 내부 노드 각각에 대해 `siftDown` 호출의 상수 오버헤드를 수행하므로 일반적인 RAM 모형에서 $$\Omega(n)$$이다. 따라서 $$T(n)=\Theta(n)$$이다. 핵심은 모든 노드가 $$\log n$$만큼 내려가는 것이 아니라, 많은 노드가 높이 0 또는 1 근처에 있어 전체 비용이 수렴하는 가중합이 된다는 점이다.
+
+</details>
 
 ## 3. Graph Representation 및 Traversal 대비
 
@@ -411,6 +425,11 @@ target -> prev[target] -> ... -> source
 
 ### Sorting의 합과 점화식
 
+눈에 남겨야 할 결론은 quadratic sort가 $$\Theta(n^2)$$, 균형 잡힌 divide-and-conquer 정렬과 heap sort가 $$\Theta(n\log n)$$이라는 점이다. 아래 전개는 그 차이가 어느 합과 점화식에서 나오는지 보여 준다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: comparison sums and sorting recurrences</summary>
+
 > **작성자 보충 · 분류:** 다음은 입력 크기를 정확히 반으로 나누거나, 한 단계의 비교 비용이 입력 크기에 비례한다는 명시된 조건 아래의 **정확한 합·점화식과 점근적 결론**이다.
 
 Bubble·selection sort가 길이 $$n-1,n-2,\ldots,1$$ 구간을 차례로 확인하는 최악 경우의 비교 합은 정확히
@@ -439,7 +458,14 @@ $$
 
 이고 bottom-up `buildHeap`의 $$\Theta(n)$$을 더해도 전체는 $$\Theta(n\log n)$$이다. 직관적으로 quadratic sort는 줄어드는 선형 구간을 모두 훑고, divide-and-conquer sort는 선형 작업을 로그 개 level에서 반복한다. 조기 종료, pivot 규칙, 보조 배열 재사용 같은 구현 조건이 달라지면 best case와 공간 비용은 별도로 다시 계산해야 한다.
 
+</details>
+
 ### Hash probing과 load factor
+
+Constant-step probing이 모든 슬롯을 방문하려면 $$\gcd(c,m)=1$$이어야 한다. Load factor가 1에 가까워질수록 probe 수가 급증한다는 근사는 유용하지만, 독립·균등 probing 가정을 벗어나면 정확한 보장이 아니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: probe-cycle length and load-factor estimate</summary>
 
 > **작성자 보충 · 분류:** probe 식과 $$\alpha$$는 **정의**, 방문 슬롯 수 결론은 **정확한 정수 성질**, 평균 probe 수는 아래 확률 모형 안에서만 성립하는 **모형 기반 근사**다.
 
@@ -465,6 +491,8 @@ E[X]\approx\frac{1}{1-\alpha}.
 $$
 
 그래서 $$\alpha\to1$$이면 예상 probe 수가 급증한다는 직관을 얻는다. 그러나 linear probing의 primary clustering은 probe들을 독립으로 만들지 않으므로 이 기하분포 식을 정확한 성능 보장으로 쓰면 안 된다. 삭제 marker, table fullness, $$c$$와 $$m$$의 공약수, hash 분포가 나쁘면 빈 슬롯이 있어도 탐색이 길어지거나 일부 슬롯에 도달하지 못한다.
+
+</details>
 
 ### Graph representation의 저장량
 
@@ -503,7 +531,14 @@ $$
 
 ### Dijkstra 확정 규칙은 언제 맞는가
 
+Dijkstra가 정점을 확정할 수 있는 조건은 모든 간선 weight가 음이 아니라는 것이다. 이 조건에서는 아직 지나지 않은 경로가 거리를 더 줄일 수 없지만, 음수 간선이 있으면 그 논리가 깨진다.
+
+<details markdown="block">
+<summary markdown="span">Proof: why the smallest tentative distance is final</summary>
+
 모든 간선이 음이 아니라고 하자. 최소 추정 거리의 미확정 정점 $$u$$까지 가는 **실제 최단경로**를 고르고, 그 경로가 확정 집합을 처음 벗어나는 간선을 $$(x,y)$$라 둔다. 최단경로의 prefix도 최단이므로 $$\delta(s,y)=\delta(s,x)+w(x,y)$$이고, $$x$$를 확정할 때의 relaxation과 $$D[x]=\delta(s,x)$$로부터 $$D[y]\le\delta(s,y)$$다. 거리 label은 실제로 발견된 경로 길이이므로 반대 부등식도 성립해 $$D[y]=\delta(s,y)$$다. 남은 suffix의 간선이 음이 아니어서 $$D[y]\le\delta(s,u)$$이고, 최소 $$D$$ 선택과 $$\delta(s,u)\le D[u]$$를 합치면 $$D[u]=\delta(s,u)$$가 된다. 음수 간선에서는 suffix 부등식이 깨지므로 사용할 수 없다.
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS04 Asymptotic Analysis"
 course: "Data Structures"
 topic: "Asymptotic Analysis"
@@ -96,6 +96,11 @@ for i = 0 to n-1:
 
 ### 두 구현의 합으로 보는 증명
 
+매번 prefix를 다시 더하면 삼각합이 생겨 $$\Theta(n^2)$$이고, 누적합을 한 번씩만 갱신하면 $$\Theta(n)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: repeated summation versus a running total</summary>
+
 > **분류:** 반복 횟수를 합산해 성장률을 보이는 **증명 개요**다. 배열 접근과 덧셈을 상수 시간으로 가정한다.
 
 > **원문 추적:** `LS04_asymptotic_analysis.pdf` pp.27–35는 두 prefix-average 구현과 각각의 $$O(n^2)$$·$$O(n)$$ 결론을 제시한다. 아래의 정확한 합 전개와 $$\Theta$$ 하한 확인은 작성자 보충이다.
@@ -111,6 +116,8 @@ $$
 상수 시간의 나눗셈 $$n$$회까지 더해도 최고차항은 $$n^2/2$$이므로 $$T_1(n)\in\Theta(n^2)$$이다. 누적합 구현은 매 위치마다 새 원소를 한 번 더하고 한 번 나누므로 $$T_2(n)=an+b$$ 꼴이고 $$T_2(n)\in\Theta(n)$$이다. 임의 정밀도 수의 자릿수가 $$n$$과 함께 커지거나 외부 저장장치를 읽는다면 한 연산의 비용이 상수가 아니어서 이 분석을 그대로 적용할 수 없다.
 
 이 예제의 핵심은 같은 문제라도 **이전 계산 결과를 재사용하면 차수가 달라질 수 있다**는 점이다.
+
+</details>
 
 ## 5. Big-Ω
 
@@ -220,6 +227,11 @@ Prefix Average 예제는 이 강의의 핵심이다. 첫 번째 구현은 매 �
 
 ## Proof Pattern
 
+점근 표기 증명은 비교할 함수, 상수, 충분히 큰 입력의 시작점을 정한 뒤 부등식이 유지되는지 확인하는 과정이다.
+
+<details markdown="block">
+<summary markdown="span">Proof pattern: choosing constants and a threshold</summary>
+
 Big-O 증명은 보통 다음 모양을 가진다.
 
 $$
@@ -235,6 +247,8 @@ $$
 $$
 
 따라서 $$T(n)\in\Theta(n)$$이다. $$O(n)$$만 증명하고 $$\Theta(n)$$이라고 결론 내리면 하한 증명이 빠진다.
+
+</details>
 
 ## Common Pitfalls
 

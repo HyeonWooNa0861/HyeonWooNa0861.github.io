@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
@@ -60,6 +60,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 ## 수식 해설: generation, MoE, cache
 
+Autoregressive generation은 이전 token을 조건으로 다음 token 확률을 곱하고, temperature는 그 분포의 집중도를 조절한다. MoE routing은 선택된 expert만 계산하고, KV cache와 speculative decoding은 이미 계산한 정보를 재사용해 target model의 분포를 유지하면서 추론 비용을 줄인다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sequence probability, routing, cache, and speculative acceptance</summary>
+
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
 | Dense/sparse MoE와 routing | 00:10:59–00:14:16, 00:20:38–00:24:02, 00:26:20–00:27:18 | Weighted expert 합, auxiliary loss, gate probability는 강의 원문이다. Auxiliary-loss의 보장 한계는 작성자 보충이다. |
@@ -110,6 +115,8 @@ r(x)=\frac{[p(x)-q(x)]_+}{\sum_z[p(z)-q(z)]_+},
 $$
 
 에서 다시 뽑는다. Draft에서 accept되어 $$x$$가 나올 질량은 $$q(x)a(x)=\min(p(x),q(x))$$다. 전체 reject 확률은 $$1-\sum_z\min(p(z),q(z))=\sum_z[p(z)-q(z)]_+$$이므로 residual 경로의 질량을 더하면 $$\min(p,q)+[p-q]_+=p$$가 되어 target marginal을 복원한다. 이는 이상적인 categorical distribution과 정확한 확률 계산을 가정한 **작성자 보충 유도**다. $$p=q$$이면 reject 확률이 0이라 residual 분모도 0이지만 그 branch 자체를 실행하지 않는다. $$q(x)=0$$인 token은 draft에서 제안되지 않으며 residual에서 처리되고, 여러 token block에서는 첫 rejection 이후의 token을 버리고 그 위치부터 target-consistent generation을 이어야 한다. 모든 draft token을 accept한 뒤 target에서 한 token을 더 sampling하는 단계까지 포함해야 표준 speculative decoding 절차가 완성된다.
+
+</details>
 
 ## 학습 포인트
 

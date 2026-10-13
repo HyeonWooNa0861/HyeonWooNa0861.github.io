@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Linear and Logistic Regression"
 course: "AIX"
 topic: "Linear and Logistic Regression"
@@ -114,6 +114,9 @@ $$
 
 이 식은 항상 쓸 수 있는 정의가 아니라, squared loss의 **정확한 정상방정식 해**다. 유도 편의를 위해 $$1/2$$를 붙인 목적함수를 두면 다음과 같다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Normal equation and gradient-descent direction</summary>
+
 $$
 L(w)=\frac{1}{2}\lVert Xw-y\rVert_2^2
 $$
@@ -138,6 +141,8 @@ L(w+\Delta w)\approx L(w)+\nabla L(w)^T\Delta w
 $$
 
 작은 양수 $$\eta$$에 대해 $$\Delta w=-\eta\nabla L(w)$$로 두면 1차 변화량은 $$-\eta\lVert\nabla L(w)\rVert_2^2\le 0$$가 된다. 따라서 충분히 작은 step에서는 loss가 감소한다. 이는 **국소 근사**이므로 $$\eta$$가 너무 크거나 함수가 매끄럽지 않은 지점에서는 실제 loss가 증가할 수 있다. 여기서 $$\eta$$는 learning rate이며 parameter와 같은 단위를 만들도록 gradient의 역단위를 보정한다.
+
+</details>
 
 | 방식 | 장점 | 한계 |
 |---|---|---|
@@ -209,6 +214,9 @@ $$
 
 이 식은 Bernoulli negative log-likelihood에서 정확히 나온다. $$y\in\{0,1\}$$, $$0<p<1$$이라고 두면 한 sample의 likelihood는
 
+<details markdown="block">
+<summary markdown="span">Derivation: Binary cross-entropy and its logit gradient</summary>
+
 $$
 P(y\mid x)=p^y(1-p)^{1-y}
 $$
@@ -228,6 +236,8 @@ $$
 $$
 
 로 단순해진다. 따라서 잘못된 확률과 정답의 차이가 linear score로 바로 역전파된다. $$p=0$$ 또는 $$1$$에서는 로그가 발산하므로 구현은 보통 logit 기반의 수치적으로 안정한 BCE를 사용한다.
+
+</details>
 
 ## 8. Softmax와 Perceptron으로의 연결
 

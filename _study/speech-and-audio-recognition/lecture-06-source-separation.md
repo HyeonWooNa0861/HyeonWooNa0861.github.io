@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:17:00 +0900
-last_modified_at: 2026-10-13 15:25:00 +0900
+last_modified_at: 2026-10-13 17:00:00 +0900
 title: "Speech and Audio Recognition Lecture 6: Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Audio Reconstruction, Masking, Loss Functions, and Phase"
@@ -771,6 +771,90 @@ Source별로 학습한 model이나 stream의 결과를 mixer에서 결합하는 
 <a href="https://arxiv.org/abs/2203.12188" target="_blank" rel="noopener">FullSubNet+</a>는 magnitude, real, imaginary representation과 channel attention, full-band 및 sub-band 처리를 결합한다. Real/imaginary는 **위상각 자체를 두 값으로 나눈 것이 아니다**. 두 값으로부터 $$\operatorname{atan2}(X_i,X_r)$$를 이용해 phase를 구할 수 있으며, 크기 정보도 함께 포함한다.
 
 비교표를 읽을 때는 with/without reverb 조건, WB/NB-PESQ 구분, STOI의 표시 척도를 맞추어야 한다. FullSubNet과 FullSubNet+의 모델명·버전을 구분하고, 표의 연도만으로 같은 모델이라고 판단해서는 안 된다.
+
+**문제의식은 복소 mask를 예측하면서 입력에서는 위상 관련 좌표를 버린다는 불일치다.** 기존 FullSubNet은 magnitude를 입력받아 complex ideal ratio mask(cIRM)를 추정한다. FullSubNet+는 real·imaginary 입력을 추가하고, 주파수별 중요도를 조절하는 MulCA와 full-band TCN을 결합한다. 따라서 새로움은 단순히 “mask를 사용한다”가 아니라, **mask를 결정할 때 어떤 정보를 함께 보고 얼마나 효율적으로 처리하는가**에 있다. 다음 설명은 <a href="https://arxiv.org/html/2203.12188v2" target="_blank" rel="noopener">ICASSP 2022 논문 v2</a>의 구조와 실험을 기준으로 한다.
+
+#### 그림의 세 입력에서 두 출력까지
+
+슬라이드 p. 31의 위쪽 세 입력은 서로 다른 녹음이 아니다. **같은 noisy STFT의 magnitude, real, imaginary 표현**이다. 세 입력을 왼쪽에서 오른쪽으로 따라가면 다음 순서가 된다.
+
+| 그림의 위치 | 들어오는 값과 나오는 값 | 이 단계가 필요한 이유 |
+| --- | --- | --- |
+| 세 개의 MulCA | 각 표현에서 주파수별 가중치를 계산하고 원래 표현에 곱함 | 주파수마다 같은 비중을 주지 않고 서로 다른 시간 범위의 패턴을 반영 |
+| 세 개의 full-band extractor | 전체 주파수 정보를 처리해 각각의 spectral embedding을 생성 | 한 bin만으로는 구별하기 어려운 harmonic과 넓은 대역의 관계를 전달 |
+| magnitude 쪽 Unfold | 중심 bin 주변의 이웃 bin들을 하나의 묶음으로 만듦 | 좁은 주파수 구간의 시간 변화를 직접 추적할 정보 제공 |
+| Concat | local magnitude 묶음과 세 full-band 특징을 결합 | 국소 변화와 전역 문맥을 같은 sub-band 모델에 전달 |
+| 두 LSTM과 Linear | 시간 흐름을 처리해 mask의 real·imaginary 두 성분을 출력 | 목표 성분을 복원할 크기 조정과 회전을 함께 추정 |
+
+MulCA의 가중치와 최종 복소 mask는 역할이 다르다. **MulCA는 내부 특징의 중요도를 조절하며, 최종 mask는 입력 STFT에 적용해 소리를 복원한다.** 그림의 모든 곱셈을 noise 제거용 mask로 읽으면 두 단계가 섞인다. Full-band의 LSTM을 TCN으로 바꿨더라도 sub-band에는 LSTM이 남아 있으므로 전체 모델을 convolution-only 구조라고 부를 수 없다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Full-Band and Sub-Band Tensor Flow</summary>
+
+한 발화의 입력을 주파수 bin 수 $$F$$, frame 수 $$T$$인 행렬로 생각하면 magnitude·real·imaginary는 모두 $$F\times T$$다. 각 full-band branch의 출력도 주파수와 frame 위치에 대응한다. 중심 bin $$f$$에서는 세 branch에서 그 위치의 특징을 하나씩 가져온다.
+
+별도의 local magnitude 경로는 중심 양옆 $$n$$개씩, 총 $$2n+1$$개 bin을 묶는다. 여기에 세 full-band 특징을 붙이면 각 frame의 특징 수는 $$2n+4$$개다. 논문의 $$n=15$$ 설정에서는 31개의 local magnitude 값과 3개의 full-band 값이 합쳐져 34개가 된다. 주파수 경계의 이웃은 논문에서 circular 처리한다.
+
+MulCA는 시간 방향의 서로 다른 kernel 크기를 사용하는 depthwise convolution과 pooling으로 주파수별 가중치를 만든다. 같은 frequency channel의 가중치는 시간축에 걸쳐 적용된다. 여기서 channel은 입체음향의 좌·우 채널이 아니라 **주파수 bin에 대응하는 특징 축**이다.
+
+TCN의 dilated convolution은 간격을 둔 시간 위치를 참조해 문맥 범위를 넓힌다. 그림의 residual 경로는 입력 특징을 변환 결과에 더한다. Sub-band의 LSTM은 결합된 특징의 시간 순서를 처리한다. 논문의 실험은 16 ms hop에서 2 frame, 즉 32 ms look-ahead를 사용하므로 “미래 frame을 전혀 보지 않는 지연 0 모델”로 해석하면 안 된다.
+
+</details>
+
+#### 왜 mask가 두 성분이어야 하는가
+
+Noisy STFT를 $$Y$$, 목표 STFT를 $$S$$라고 쓰자. 이상적인 복소 mask는 $$M=S/Y$$이며, 예측 mask를 곱한 $$\hat S=\hat M Y$$를 iSTFT에 넣는다. 실수 mask 하나는 주로 혼합 신호의 크기를 조정하지만, 복소 mask는 **크기와 방향을 함께 바꿀 수 있다**. 예를 들어 $$Y=1+j$$에서 목표가 $$S=1$$이면 $$M=0.5-0.5j$$를 곱해야 한다. 크기를 줄이는 동시에 위상을 $$-\pi/4$$만큼 돌려 허수 성분을 없애는 것이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Complex Ratio Mask and Stable Compression</summary>
+
+$$Y=Y_r+jY_i$$, $$S=S_r+jS_i$$로 놓고 분모의 켤레복소수를 곱한다. $$Y\ne0$$일 때 다음과 같다.
+
+$$
+M=\frac{S}{Y}=\frac{(S_r+jS_i)(Y_r-jY_i)}{Y_r^2+Y_i^2}.
+$$
+
+따라서 두 정답 좌표는
+
+$$
+M_r=\frac{Y_rS_r+Y_iS_i}{Y_r^2+Y_i^2},\qquad
+M_i=\frac{Y_rS_i-Y_iS_r}{Y_r^2+Y_i^2}.
+$$
+
+복원에서는 두 mask 성분이 두 STFT 좌표에 함께 작용한다.
+
+$$
+\hat S_r=\hat M_rY_r-\hat M_iY_i,\qquad
+\hat S_i=\hat M_rY_i+\hat M_iY_r.
+$$
+
+즉 $$M_r$$를 magnitude, $$M_i$$를 phase 자체라고 해석할 수 없다. 예시에서는 $$\hat S_r=0.5\cdot1-(-0.5)\cdot1=1$$, $$\hat S_i=(-0.5)\cdot1+0.5\cdot1=0$$이다.
+
+실제 구현은 분모에 작은 양수 $$\varepsilon$$를 더해 0 근처의 나눗셈을 안정화한다. 원래 mask 값은 음수이거나 1보다 클 수 있다. 따라서 이것은 각 bin이 speech일 확률을 예측하는 0–1 분류 출력이 아니다.
+
+<a href="https://github.com/RookieJunChen/FullSubNet-plus/blob/b115416d6e2a983c3724fc77d0cdc3d8896a2855/speech_enhance/audio_zen/acoustics/mask.py" target="_blank" rel="noopener">공식 구현의 mask 함수</a>는 각 성분을 기본값 $$K=10$$, $$C=0.1$$로 압축한다.
+
+$$
+q=K\frac{1-e^{-Cm}}{1+e^{-Cm}}=10\tanh(0.05m).
+$$
+
+모델이 학습하는 압축 좌표와 실제 STFT에 곱할 mask를 구분해야 한다. 역변환은 기본값에서
+
+$$
+m=10\log\frac{10+q}{10-q}
+$$
+
+이며, 구현은 역변환 전에 $$q$$를 $$[-9.9,9.9]$$로 제한한다. 정답 계산의 $$\varepsilon$$, 압축 전 clipping, 역변환 전 clipping 때문에 극단적인 값까지 이상적 나눗셈과 정확히 같다고 볼 수는 없다.
+
+</details>
+
+<a href="https://github.com/RookieJunChen/FullSubNet-plus/blob/b115416d6e2a983c3724fc77d0cdc3d8896a2855/speech_enhance/fullsubnet_plus/inferencer.py" target="_blank" rel="noopener">공식 추론 코드</a>에서도 network의 두 출력을 역압축한 다음 **보존한 noisy STFT**에 복소 곱셈하고 iSTFT로 돌아온다. Full-band 특징에 mask를 곱하는 것이 아니다. 학습 때만 clean target으로 정답 cIRM를 만들며, 추론 때 clean target은 입력되지 않는다. 이 설명은 코드 경로를 대조한 것이며 모델 학습이나 논문 benchmark를 재실행한 결과는 아니다.
+
+#### 표가 뒷받침하는 범위
+
+슬라이드 p. 32와 논문 Table 1의 DNS synthetic test에서는 with/without reverb 조건을 나눠 읽어야 한다. Without reverb의 WB-PESQ는 FullSubNet 2.813, FullSubNet+ 2.982다. 두 모델의 look-ahead는 모두 32 ms다. 이 비교는 해당 데이터와 평가 조건에서의 결과이지 모든 잡음에서의 우월성을 증명하지 않는다. With reverb의 목표는 마이크에서 관측한 reverberant speech를 복원하는 것이므로 이 결과만으로 dereverberation 성능을 주장할 수도 없다.
+
+논문 Table 3은 phase-related 입력과 MulCA를 제거한 ablation을 제시한다. Without reverb의 WB-PESQ는 전체 모델 2.982, phase-related 입력 제거 2.955, MulCA 제거 2.960이다. 각 구성의 기여를 살펴볼 근거는 되지만 두 효과가 독립적으로 단순 합산된다는 의미는 아니다. 슬라이드 표의 연도와 제목이 다르게 보이더라도 모델명과 인용한 논문 버전을 기준으로 구분한다.
 
 ## 10. Waveform 및 hybrid 모델
 

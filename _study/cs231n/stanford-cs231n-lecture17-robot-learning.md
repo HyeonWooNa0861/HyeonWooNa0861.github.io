@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
 topic: "Robot Learning"
@@ -87,6 +87,11 @@ Generalization은 새로운 object뿐 아니라 새로운 task, scene, robot bod
 
 ## 핵심 수식 유도
 
+Policy gradient는 trajectory probability의 log derivative를 이용해 expected return의 gradient를 policy log-probability gradient로 바꾼다. Environment dynamics가 policy parameter와 무관할 때 그 항은 미분에서 사라지지만, sampled return 때문에 estimator variance는 클 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Trajectory policy-gradient identity</summary>
+
 ### 작성자 보충: trajectory policy-gradient identity
 
 강의 원문은 reinforcement learning의 세부 유도를 생략한다고 밝히므로, 아래 전개는 강의의 robot-learning 흐름을 이해하기 위한 작성자 보충이다. 유한 horizon trajectory를 $$\tau=(s_0,a_0,\ldots,s_T)$$, 초기 state distribution을 $$\rho_0$$, environment transition을 $$P(s_{t+1}\mid s_t,a_t)$$라 하면 trajectory density 또는 probability mass는
@@ -165,6 +170,8 @@ $$
 Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $$r_t$$와 return $$R$$ 및 $$J$$는 task가 정한 같은 단위를 가지며, $$\theta$$가 무차원 parameter라면 gradient도 reward 단위를 갖는다. Parameter에 물리 단위가 있다면 gradient의 단위는 `reward 단위 / parameter 단위`다.
 
 실패 조건도 분명하다. Deterministic·불연속 policy나 $$\theta$$에 따라 support가 변하는 policy에서는 log-derivative를 그대로 쓸 수 없다. Environment dynamics, 초기 분포, reward가 $$\theta$$에 직접 의존하면 위에서 0으로 둔 항 또는 $$\nabla_\theta R$$ 항을 추가해야 한다. Off-policy data에는 importance weighting 같은 correction이 필요하고, behavior policy가 target policy의 중요한 action을 전혀 방문하지 않으면 coverage가 없어 correction만으로 복구할 수 없다. Long horizon과 sparse reward는 variance와 credit-assignment 문제를 키우며, partial observability에서는 state 대신 observation history나 belief를 조건으로 삼아야 한다. Reward misspecification은 gradient 계산이 정확해도 의도하지 않은 행동을 최적화하게 만든다.
+
+</details>
 
 ## 마지막 핵심 정리
 

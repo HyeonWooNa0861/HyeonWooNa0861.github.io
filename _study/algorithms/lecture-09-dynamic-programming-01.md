@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-06 17:18:32 +0900
+last_modified_at: 2026-10-13 16:49:01 +0900
 title: "Lecture 9: Dynamic Programming I"
 course: "Algorithms"
 topic: "Memoization, Matrix Paths, and Matrix-Chain Order"
@@ -206,6 +206,9 @@ $$(i,j)$$까지의 최적 경로가 위 칸에서 왔다고 하자. 그 경로�
 
 행 우선으로 위에서 아래, 왼쪽에서 오른쪽으로 채우면 현재 칸의 두 선행 상태가 이미 계산되어 있다. 최댓값뿐 아니라 어느 선행 칸을 골랐는지도 저장하면 경로를 복원할 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Maximum matrix path and parent reconstruction</summary>
+
 ```python
 def matrix_path(mat):
     rows, cols = len(mat), len(mat[0])
@@ -237,11 +240,20 @@ def matrix_path(mat):
     return dp[-1][-1], path
 ```
 
+- 입력 `mat`의 shape는 `(rows, cols)`다. 같은 shape의 `dp`는 각 칸까지의 최대 합, `parent`는 그 값을 만든 선행 좌표를 저장한다.
+- 행 우선 순회에서는 위와 왼쪽 상태가 먼저 계산된다. 존재하는 후보만 모으므로 음수 입력에서도 행렬 밖의 가짜 0점 경로가 생기지 않는다.
+- 출력은 오른쪽 아래의 최대 합과 좌표 경로다. `parent`를 끝에서 시작점까지 따라간 뒤 뒤집어 진행 순서를 복원한다.
+
+</details>
+
 동점에서는 Python의 tuple 비교 규칙에 따라 한 선행 칸이 결정된다. 최댓값만 필요하면 어느 쪽을 택해도 맞지만, 재현 가능한 경로가 필요하면 “동점 시 위 우선”처럼 정책을 명시적으로 정하는 편이 좋다. 테이블 계산은 $$RC$$개 상태를 한 번씩 처리하므로 시간과 `dp` 공간은 $$\Theta(RC)$$이다. `parent`도 $$\Theta(RC)$$이고 복원은 경로 길이 $$R+C-1$$에 비례한다.
 
 ### 4.5 Top-down evaluation
 
 Top-down 구현도 상태와 점화식은 같지만, `None`으로 계산 여부를 구분한다. 값 `0`을 미계산 표시로 사용하면 실제 최적합이 0인 상태를 반복 계산하게 된다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Memoized maximum matrix path</summary>
 
 ```python
 def matrix_path_top_down(mat):
@@ -264,6 +276,12 @@ def matrix_path_top_down(mat):
 
     return solve(rows - 1, cols - 1)
 ```
+
+- `solve(i, j)`의 출력은 시작점부터 좌표 `(i, j)`까지의 최대 합이다. 시작점이 기저 사례이며, `memo`의 `None`은 계산하지 않은 상태만 뜻한다.
+- 현재 칸은 존재하는 위·왼쪽 상태만 재귀 호출한다. 두 후보의 큰 값에 현재 칸을 더하고 같은 좌표의 메모 칸에 저장한다.
+- 최종 출력은 최대 합이다. 경로가 필요하면 선택한 선행 좌표를 별도로 저장해야 한다.
+
+</details>
 
 최악의 경우 모든 칸을 계산하므로 시간과 메모 공간은 $$\Theta(RC)$$이고, 호출 스택 깊이는 $$O(R+C)$$이다. 경로까지 필요하면 각 상태에서 선택한 선행 좌표를 저장하거나, 계산된 값에서 두 선행 후보를 다시 비교하며 역추적할 수 있다.
 
@@ -324,6 +342,9 @@ $$
 
 길이 1 구간을 먼저 0으로 두고, 구간 너비 2부터 증가시키면 $$S(s,e)$$가 참조하는 두 짧은 구간이 이미 계산되어 있다. 최소 비용을 만든 분할점도 `split[s][e]`에 저장한다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Bottom-up matrix-chain cost and reconstruction</summary>
+
 ```python
 def matrix_chain_order(p):
     n = len(p)
@@ -365,11 +386,20 @@ def matrix_chain_order(p):
     return cost[0][n - 1], parenthesize(0, n - 1)
 ```
 
+- 입력 `p`는 길이 `m + 1`의 차원 벡터다. `cost[s][e]`는 반열린 행렬 구간 `[s, e)`의 최소 곱셈 수, `split[s][e]`는 그 값을 만든 마지막 분할점이다.
+- 구간 너비가 작은 순서로 채우므로 후보 `cost[s][k]`와 `cost[k][e]`는 이미 계산되어 있다. 모든 `k` 중 최소 후보만 저장한다.
+- 출력은 전체 최소 비용과 괄호 문자열이다. 복원 함수는 `split`의 이진 분할을 따라 토큰을 모은 뒤 한 번에 결합한다.
+
+</details>
+
 행렬 수를 $$m=n-1$$이라 하면 구간 상태는 $$\Theta(m^2)$$개이고 각 상태에서 최대 $$m-1$$개 분할점을 확인한다. 차원 곱과 비용의 덧셈·비교를 단위 비용으로 세면 시간은 $$\Theta(m^3)$$, `cost`와 `split` 공간은 $$\Theta(m^2)$$다. 큰 차원에서 비용 정수의 비트 수까지 세면 산술 비용을 별도로 곱해야 한다. 복원은 이진 분할 트리의 $$\Theta(m)$$개 노드를 방문하며, 위 구현은 토큰을 모아 한 번만 `join`하므로 문자열 작성 시간은 최종 출력 길이에 비례한다. 행렬 인덱스를 십진수로 쓰면 출력 길이는 $$O(m\log m)$$일 수 있다.
 
 ### 5.5 Top-down memoization
 
 27쪽의 구현처럼 목표 구간에서 재귀를 시작할 수도 있다. 차원이 양의 정수이면 모든 실제 비용은 0 이상이므로 `-1`도 미계산 표시로 사용할 수 있지만, 값과 상태를 명확히 분리하기 위해 `None`을 쓰는 편이 안전하다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Memoized matrix-chain cost</summary>
 
 ```python
 def matrix_chain_top_down(p):
@@ -390,6 +420,12 @@ def matrix_chain_top_down(p):
 
     return solve(0, n - 1)
 ```
+
+- `solve(s, e)`는 `[s, e)`의 최소 스칼라 곱셈 수를 반환한다. 행렬 하나인 길이 1 구간은 비용 0이다.
+- 모든 분할점 `k`에서 왼쪽 비용, 오른쪽 비용, 마지막 곱셈 비용을 더하고 최솟값을 메모한다.
+- 이 버전의 출력은 비용뿐이다. 괄호 구조까지 보존하려면 최솟값을 만든 `k`를 함께 저장한다.
+
+</details>
 
 최악의 경우 가능한 모든 구간과 분할점을 확인하므로 bottom-up과 같은 $$\Theta(m^3)$$ 시간과 $$\Theta(m^2)$$ 메모 공간을 사용한다. 최종 최소 비용 숫자만 남기면 일반적으로 괄호 묶기를 알 수 없다. 전체 비용 테이블을 보존했다면 각 구간의 후보 $$k$$를 다시 비교해 복원할 수 있고, 계산 중 선택한 $$k$$를 별도 테이블에 저장하면 그 재비교를 피하고 동점 처리 결과도 보존할 수 있다.
 

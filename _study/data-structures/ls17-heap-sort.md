@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"
@@ -180,6 +180,11 @@ swap root and last
 
 ## Why Build Heap Is O(n)
 
+각 노드가 모두 $$\log n$$만큼 내려가는 것이 아니다. 대부분은 리프 가까이에 있어 이동 거리가 짧고, 높이별 비용을 합하면 bottom-up buildHeap은 $$\Theta(n)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: weighted heights in buildHeap</summary>
+
 > **원문 추적:** `LS17_heap_sort.pdf` pp.21–29는 level별 노드 수와 최대 `siftDown` 횟수를 합해 $$T(n)\in O(n)$$을 전개한다. 아래 등비급수 미분과 $$\Omega(n)$$ 하한은 그 상한을 $$\Theta(n)$$으로 엄밀화한 작성자 보충이다.
 
 모든 노드에 `siftDown`을 하면 $$n\log n$$처럼 보이지만, 실제로는 $$O(n)$$이다. 대부분의 노드가 아래쪽에 있기 때문이다.
@@ -202,6 +207,8 @@ $$
 등비급수 $$\sum_{k=0}^{\infty}x^k=1/(1-x)$$를 미분하고 $$x=1/2$$를 대입하면 $$\sum_{k=1}^{\infty}k/2^k=2$$이므로 마지막 합은 1이다. 따라서 $$T_{\mathrm{build}}(n)\le cn$$, 즉 $$O(n)$$이다. 반면 힙 배열을 한 번은 읽어야 하므로 $$\Omega(n)$$이고, 결론은 $$\Theta(n)$$이다.
 
 > **적용 조건:** 이 증명은 모든 내부 노드에 bottom-up `siftDown`을 하는 Floyd buildHeap에 대한 것이다. 빈 힙에 원소를 하나씩 `siftUp`하여 구성하면 $$n$$번의 $$O(\log n)$$ 삽입으로 상한이 $$O(n\log n)$$이다.
+
+</details>
 
 ## Properties
 

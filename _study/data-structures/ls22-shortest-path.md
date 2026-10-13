@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 13:25:48 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"
@@ -275,6 +275,11 @@ Dijkstra는 greedy 알고리즘이다. 매 순간 가장 좋아 보이는 선택
 
 ### Greedy 선택의 증명
 
+모든 edge weight가 음이 아니면, 가장 작은 tentative distance를 가진 미확정 정점은 나중 경로를 통해 더 작아질 수 없다. 음수 간선에서는 이 조건이 깨진다.
+
+<details markdown="block">
+<summary markdown="span">Proof: finalizing the minimum tentative distance</summary>
+
 > **분류:** Dijkstra 정확성의 **귀납적 증명 개요**다. 모든 간선 가중치가 $$w(e)\ge0$$이고, $$D[v]$$는 지금까지 발견한 경로 중 최소 비용이라고 가정한다.
 
 > **원문 추적:** `LS22_shortest_path.pdf` p.11은 최소 거리 정점 선택과 relaxation을, p.24는 전체 pseudocode를 제시한다. 아래 greedy 정확성의 귀납 논증은 원문 절차를 엄밀화한 작성자 보충이다.
@@ -292,6 +297,8 @@ D[u]\le D[y]=\delta(s,y)\le\delta(s,u)\le D[u],
 $$
 
 모든 부등식이 등식이므로 $$D[u]=\delta(s,u)$$다. 도달 가능한 미확정 정점이 없다면 남은 정점은 모두 $$D=\delta=\infty$$이므로 알고리즘을 종료해도 된다. 음수 간선이 있으면 최단경로 suffix의 비용이 음수가 될 수 있어 $$\delta(s,y)\le\delta(s,u)$$ 단계가 깨지고, 이미 확정한 거리가 나중에 줄 수 있다. 음수 cycle이 있으면 유한한 최단 거리 자체가 정의되지 않을 수 있다.
+
+</details>
 
 ## 9. 강의 예제의 거리 배열 흐름
 

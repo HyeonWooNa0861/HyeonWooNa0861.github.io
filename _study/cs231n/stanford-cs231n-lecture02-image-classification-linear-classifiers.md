@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
 topic: "Image Classification and Linear Classifiers"
@@ -133,6 +133,11 @@ $$
 
 ## 핵심 수식 유도
 
+Softmax cross-entropy의 gradient는 $$p_j-\mathbf{1}[j=y]$$다. 따라서 gradient descent는 정답 logit은 높이고 오답 logit은 각 예측 확률에 비례해 낮춘다. 이 해석은 finite logit과 one-hot categorical target을 가정한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Softmax cross-entropy gradient</summary>
+
 ### 작성자 보충: softmax cross-entropy gradient
 
 강의의 loss 정의를 미분 과정까지 확장한다. 클래스 수가 유한한 $$C$$이고, logit $$s=(s_1,\ldots,s_C)\in\mathbb{R}^C$$가 모두 유한하며, 정답 index가 $$y\in\{1,\ldots,C\}$$라고 하자. Softmax probability와 한 샘플의 cross-entropy loss는
@@ -178,6 +183,8 @@ $$
 지수와 logarithm의 입력은 무차원이어야 하므로 logit $$s_j$$, probability $$p_j$$, loss $$L$$, class index와 indicator는 모두 무차원이며, $$\partial L/\partial s_j$$도 무차원이다. $$p_y\to1$$이면 $$L\to0$$이고 모든 gradient가 0에 가까워진다. 반대로 $$p_y\to0^+$$이면 $$L\to\infty$$이며 정답 logit의 gradient는 $$-1$$에 가까워진다. 수학적으로 유한한 logit에서는 $$0<p_j<1$$이지만, 구현에서는 overflow·underflow를 피하려고 모든 logit에서 $$\max_k s_k$$를 빼는 log-sum-exp 안정화를 사용해야 한다.
 
 이 유도는 one-hot 정답을 갖는 categorical likelihood와 미분 가능한 유한 logit을 가정한다. Label noise, 심한 class imbalance, multi-label target, 불완전한 class 정의에서는 이 loss가 실제 task utility를 그대로 나타내지 못하며, hard label이 틀렸을 때 큰 gradient가 오히려 잘못된 방향의 학습 신호가 될 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

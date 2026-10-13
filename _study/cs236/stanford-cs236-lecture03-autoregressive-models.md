@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 3: Autoregressive Models"
 course: "CS236"
 topic: "Autoregressive Factorization and Neural Density Models"
@@ -81,7 +81,8 @@ Attention과 transformer는 이 병목을 줄이기 위해 등장한다. Attenti
 
 이미지와 음성 응용도 같은 틀이다. PixelRNN은 image pixel을 raster order로 예측하고, RGB channel도 red, green, blue 순서로 factorize한다. PixelCNN은 masked convolution을 사용해 같은 autoregressive order를 유지하면서 training을 더 병렬화한다. PixelDefend는 clean image distribution을 PixelCNN으로 학습한 뒤 adversarial input의 likelihood가 낮은지 확인하는 응용이다. WaveNet은 dilated convolution으로 receptive field를 넓혀 speech signal을 autoregressive하게 생성한다.
 
-### FVSBN과 NADE의 parameter 수
+<details markdown="block">
+<summary markdown="span">Derivation: Parameter counts for FVSBN and NADE</summary>
 
 > **근거 위치:** 공식 Lecture 3 PDF p. 7의 FVSBN parameter count와 pp. 9–10의 NADE weight sharing. 아래 합 계산은 원문 주장을 풀어 쓴 정확한 산술 전개다.
 
@@ -93,7 +94,10 @@ $$
 
 이다. 본문의 “대략 $$n^2/2$$”는 leading term을 말한다. 반면 hidden width $$d$$인 NADE는 prefix마다 별도 input matrix를 만들지 않고 $$W\in\mathbb R^{d\times n}$$을 공유하므로 주요 shared matrix가 $$nd$$개 parameter를 갖는다. Output vector와 bias까지 포함해도 fixed $$d$$에서 전체는 $$O(nd)$$다. 이 계산은 저장 parameter 수에 관한 것이며, 모든 conditional을 순진하게 다시 계산하는 실행 시간까지 자동으로 선형이라는 뜻은 아니다.
 
-### 핵심 수식 유도: joint likelihood가 token loss의 합이 되는 이유
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why joint log-likelihood becomes a sum of token losses</summary>
 
 > **근거 위치:** 공식 Lecture 3 PDF pp. 6–7의 autoregressive chain factorization과 FVSBN likelihood evaluation. Log를 취한 합 형태는 원문 식에서 도출한 **작성자 보충**이다.
 
@@ -109,7 +113,10 @@ $$
 
 따라서 negative log-likelihood는 위치별 cross-entropy의 합이다. $$n$$은 sequence 길이, $$i$$는 무차원 index, $$x_{<i}$$는 prefix다. Training에서는 모든 정답 prefix가 주어져 항들을 병렬 계산할 수 있지만, generation에서는 아직 생성하지 않은 $$x_i$$를 조건으로 쓸 수 없어 순차성이 남는다. Mask가 미래 token을 한 번이라도 보게 하면 factorization과 실제 sampling procedure가 어긋나므로 valid autoregressive likelihood라는 해석이 깨진다.
 
-### NADE/RNADE, categorical, RNN, PixelRNN
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Conditional distributions in NADE, RNADE, RNN, and PixelRNN</summary>
 
 > **근거 위치:** 공식 Lecture 3 PDF pp. 9–10(NADE), p. 12(categorical softmax), pp. 13–14(RNADE), pp. 18–20(RNN conditional과 제약), p. 28(PixelRNN RGB factorization). Numerical-failure와 exact-model/true-distribution 구분은 작성자 보충이다.
 
@@ -169,6 +176,8 @@ $$
 로 factorize한다. 각 channel conditional은 0부터 255까지 256개 값의 categorical distribution이다. $$T,t$$는 무차원 pixel 수와 index, 8-bit channel value는 digital count로 다루므로 무차원이다. 이 factorization은 선택한 ordering에 대해 **정확한 chain rule**이지만, RNN으로 각 조건부를 표현하는 것은 근사다. 직관적으로 현재 pixel의 green은 red를, blue는 red와 green을 본다. 대신 likelihood 평가와 sampling이 pixel/channel 순서에 묶여 느려진다.
 
 > **작성자 보충:** 위 네 구간에서 chain rule과 distribution normalization은 정확하고, neural network가 true conditional을 표현한다는 부분만 근사다. 따라서 exact likelihood를 계산한다는 말은 “학습된 모델 density를 정확히 계산한다”는 뜻이지, 그 density가 data distribution과 정확히 같다는 뜻은 아니다.
+
+</details>
 
 ## 핵심 개념 표
 

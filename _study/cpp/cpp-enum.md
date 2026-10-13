@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Enumerations"
 course: "C++"
 topic: "Enums and enum class"
@@ -199,6 +199,11 @@ EXECUTE = 100
 
 > **작성자 보충:** 아래 관계는 부호 없는 기반 타입에서 $$0\le k<W$$라는 명시된 정의역 안에 있을 때 성립하는 정확한 등식이다.
 
+왼쪽 shift는 1로 설정된 bit를 $$k$$번째 자리로 옮긴다. 따라서 각 권한이 서로 다른 단일 bit를 사용하고, OR 연산으로 여러 권한을 겹치지 않게 조합할 수 있다. 단, shift 횟수는 기반 타입의 bit 폭보다 작아야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why a single-bit mask equals a power of two</summary>
+
 원문 6쪽에서 부호 없는 정수 `1u`의 이진 표현은 최하위 bit 하나만 1이다. 이를 왼쪽으로 $$k$$칸 이동하면 그 1의 자리값이 $$2^0$$에서 $$2^k$$로 바뀌므로
 
 $$
@@ -210,6 +215,8 @@ $$
 기반 타입의 값 bit 수를 $$W$$라 두고 코드에서 `std::numeric_limits<unsigned int>::digits`로 얻으면, 이 식의 정의역은 $$0\le k<W$$다. 음수 shift나 $$k\ge W$$인 shift는 정의되지 않는다. 또한 `1 << k`의 `1`은 signed `int`이므로 상위 bit 이동에서 표현 범위 문제가 생길 수 있다. 기반 타입이 `unsigned int`인 이 예제에서는 `1u << k`처럼 부호 없는 값을 사용하고, 더 넓은 기반 타입이면 `std::uint64_t{1} << k`처럼 왼쪽 피연산자의 폭도 맞춰야 한다.
 
 단, `enum class`는 타입 안전성을 위해 비트 연산자가 자동으로 제공되지 않으므로, 필요하면 `operator|`, `operator&` 등을 직접 정의한다.
+
+</details>
 
 ## 마지막 핵심 정리
 

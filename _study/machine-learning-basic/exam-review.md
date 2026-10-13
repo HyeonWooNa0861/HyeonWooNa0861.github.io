@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-02 13:12:04 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Machine Learning Basic Exam Review"
 course: "Machine Learning Basic"
 topic: "Exam Review"
@@ -671,6 +671,11 @@ $$
 
 #### 완전제곱으로 조건부 Gaussian을 얻는 증명 개요
 
+조건부 Gaussian 공식은 joint density의 quadratic form에서 관측한 변수와 무관한 항을 상수로 두고, 남은 항을 완전제곱해 얻는다. 행렬 전개는 아래에서 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Conditional Gaussian by completing the square</summary>
+
 > **작성자 보충:** 아래는 공식을 암기하는 데서 그치지 않고 왜 Schur complement가 나타나는지 보여 주는 계산 개요다.
 
 Joint Gaussian density의 지수는 precision matrix $$\Lambda=\Sigma^{-1}$$를 블록으로 나누면, 상수항을 제외하고
@@ -723,6 +728,8 @@ $$
 이므로 위의 익숙한 조건부 Gaussian 공식과 정확히 일치한다. 이 유도는 joint covariance가 positive definite이고 $$\Sigma_{yy}$$가 가역인 비퇴화 Gaussian을 가정한다. Singular covariance에서는 Lebesgue density와 통상적인 inverse 기반 완전제곱을 그대로 쓸 수 없다. 각 평균·관측값은 해당 변수와 같은 단위이고, $$\Sigma_{xy}\Sigma_{yy}^{-1}$$는 `x 단위/y 단위`이므로 평균 보정항의 단위도 $$x$$와 같다.
 
 시험에서 이 식 전체를 외우라는 형태보다는 "주변분포와 조건부분포가 무엇이고, Gaussian에서는 둘 다 다시 Gaussian이다"를 묻는 문제가 더 가능성이 높다.
+
+</details>
 
 ### 1.13 확률변수의 합과 분포의 합은 다르다
 

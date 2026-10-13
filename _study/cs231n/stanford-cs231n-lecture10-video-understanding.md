@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:36:09 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
 topic: "Video Understanding"
@@ -59,6 +59,9 @@ RGB 이미지를 $$3\times H\times W$$ 텐서로 본다면 비디오는 $$3\time
 
 I3D는 2D kernel을 시간축으로 $$K_t$$번 복사하고 $$K_t$$로 나눠 초기화한다. 그러면 같은 frame이 반복된 video를 넣었을 때 원래 2D network와 같은 출력을 유지하면서 image-pretrained weight를 재사용할 수 있다. 여기에 **non-local block**을 독립 모듈로 삽입하면 query-key attention으로 멀리 떨어진 시공간 위치의 value를 한 번에 집계한다. Local 3D convolution의 수용영역을 층층이 넓히는 방식과 달리, block 하나가 전체 space-time feature 사이의 관계를 연결한다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Why I3D inflation preserves repeated-frame responses</summary>
+
 ### 작성자 보충: I3D inflation이 반복 frame의 출력을 보존하는 이유
 
 공식 slide pp.72–76, 특히 p.75와 영상 54:20–58:13이 이 초기화 방법을 제시한다. 2D convolution kernel을 $$W$$, inflation한 3D kernel의 시간 slice를 $$W'_{\tau}=W/K_t$$, $$\tau=1,\ldots,K_t$$라 하자. 시간 window의 모든 frame이 같은 image $$X$$라면 3D convolution의 한 pre-activation은 선형성에 의해
@@ -72,6 +75,8 @@ Y_{3D}
 $$
 
 따라서 kernel을 복사만 하면 출력이 $$K_t$$배가 되지만, 각 slice를 $$K_t$$로 나누면 합이 원래 2D response와 정확히 같아진다. 이 등식은 convolution bias를 그대로 두고, 동일 frame·동일 spatial padding을 사용하며, 비교 지점이 activation 전이라는 조건의 **초기화 항등식**이다. 실제 video처럼 frame이 달라지거나 temporal boundary padding, BatchNorm 통계, stride가 달라지면 전체 network 출력까지 같다는 보장은 없다. $$K_t$$는 무차원 정수이고 $$W'_{\tau}$$는 $$W$$와 같은 단위를 가진다.
+
+</details>
 
 ## 4. 공간과 시간을 분리하거나 순차적으로 모델링하기
 
@@ -89,6 +94,9 @@ $$
 
 첫 식은 pixel $$(x,y)$$가 다음 frame에서 이동할 변위의 **정의**이고, 둘째 식은 이동한 물체점의 밝기가 유지된다는 **모델 가정**이지 모든 영상에서 성립하는 항등식은 아니다. $$dx,dy$$의 단위는 `pixel / frame`이다. 조명 변화, 반사·가림, motion blur 또는 큰 변위가 있으면 brightness constancy가 깨질 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: First-order optical-flow constraint</summary>
+
 ### 작성자 보충: Optical flow constraint의 1차 유도
 
 연속적인 밝기장 $$I(x,y,t)$$가 미분 가능하고 한 frame 동안 변위가 작다고 가정해 Taylor 전개를 1차에서 자르면
@@ -105,6 +113,8 @@ I_xu+I_yv+I_t=0
 $$
 
 을 얻는다. 이는 Taylor remainder를 버린 **1차 근사식**이다. $$I_xu$$, $$I_yv$$, $$I_t$$의 단위는 모두 `intensity / time`이다. 한 pixel에서 식 하나로 $$u,v$$ 두 값을 정할 수 없는 aperture problem이 있으므로, 실제 추정에는 주변에서 flow가 일정하거나 매끄럽다는 추가 제약이 필요하다.
+
+</details>
 
 ### 원문 수식: Recurrent convolutional state
 
@@ -144,6 +154,9 @@ $$
 
 를 계산한다. 이는 scaled dot-product attention의 **정의**다. Video feature $$C\times T\times H\times W$$의 공간·시간 위치를 $$N=THW$$개 token으로 펼치면 같은 연산이 모든 위치를 직접 연결하며, slide pp.65–70의 non-local block은 이 출력을 channel projection과 residual connection으로 원래 3D feature에 합친다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Spatiotemporal attention scaling</summary>
+
 $$1/\sqrt{D}$$ scaling의 작성자 보충 근거는 다음과 같다. Query와 key의 각 성분이 서로 독립이고 평균 0, 분산 1이라고 단순화하면
 
 $$
@@ -153,6 +166,8 @@ $$
 $$
 
 따라서 $$\sqrt{D}$$로 나눈 score의 분산은 1이 되어 dimension이 커질 때 softmax가 지나치게 포화되는 현상을 완화한다. 이 계산은 독립·단위분산 가정 아래의 **분산 해석**이며 실제 학습 feature에 대한 보장은 아니다. Attention weight는 dimensionless이고 각 query $$j$$에 대해 $$\sum_i a_{i,j}=1$$이지만, value와 output은 같은 feature 단위를 가진다.
+
+</details>
 
 ## 5. 데이터 규모와 비디오가 주는 추가 감각
 

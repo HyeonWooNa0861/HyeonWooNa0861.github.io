@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-09-03 19:42:41 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C Structs and C++ Classes"
 course: "C++"
 topic: "Structs and Classes"
@@ -325,6 +325,11 @@ printf("%s\n", s.c_str());
 
 > **작성자 보충:** `C에서 C++로 넘어가기.pdf` 6쪽은 C 문자열의 `strlen`을 $$O(n)$$, `std::string::size()`를 $$O(1)$$로 비교한다. 아래는 그 표기에 필요한 표현 가정과 유도다.
 
+핵심 차이는 길이를 찾는 방식이다. `strlen`은 종료 문자를 만날 때까지 최대 $$n$$바이트를 읽지만, `std::string::size()`는 표준이 상수 시간 복잡도를 보장한다. 두 결과 모두 화면 글자 수가 아니라 `char` 원소 수를 센다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why string length queries have different complexity</summary>
+
 여기서 $$n$$은 **널 종료 문자 앞에 있는 바이트 수**다. 문자열 내용이 UTF-8이라면 바이트 수와 사람이 세는 글자 수는 다를 수 있다. $$n$$과 아래의 배열 인덱스는 모두 개수이므로 단위는 `바이트 개수` 또는 `무차원 정수`이며, 실행시간의 초 단위가 아니다.
 
 C 문자열은 별도 길이 정보 없이 `char` 배열의 끝을 `\0`으로 표시한다고 가정한다. `strlen`은 처음부터 종료 문자를 찾을 때까지 조사하므로, 바이트 하나를 확인하는 비용을 상수 $$c$$라고 하면
@@ -349,6 +354,8 @@ $$
 - `strlen`에 널 종료되지 않은 배열이나 `nullptr`를 넘기면 배열 밖을 읽을 수 있으며 동작이 정의되지 않는다. 이 경우 $$O(n)$$ 분석 자체의 전제가 깨진다.
 - `size()`가 $$O(1)$$이어도 `const char*`에서 `std::string`을 처음 만드는 과정은 종료 문자를 찾아 복사해야 하므로 일반적으로 $$O(n)$$이다.
 - 두 함수가 주는 값은 문자소나 화면 글자 수가 아니라 문자열 표현의 `char` 원소 수다. 멀티바이트 인코딩의 글자 수 계산에는 이 식을 그대로 사용할 수 없다.
+
+</details>
 
 ## 14. `std::string_view`
 

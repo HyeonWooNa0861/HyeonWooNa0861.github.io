@@ -43,6 +43,7 @@ jobs:
       - name: Validate public Markdown and navigation
         run: |
           ruby scripts/test_validate_blog.rb
+          ruby scripts/test_study_assignment_navigation.rb
           ruby scripts/validate_blog.rb
           node scripts/test_resource_reader.cjs
           ruby scripts/test_kramdown_math_render.rb

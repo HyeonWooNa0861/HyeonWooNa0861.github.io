@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 16: Score-Based Diffusion Models"
 course: "CS236"
 topic: "Score-Based Diffusion Models"
@@ -72,7 +72,8 @@ Hierarchical VAE 관점에서는 $$x_1,\ldots,x_T$$가 latent variables이고, f
 
 마지막 실용화 축은 latent diffusion과 controllable generation이다. Latent diffusion은 pixel space 대신 pretrained autoencoder의 latent space에서 diffusion을 수행한다. 차원이 낮아져 sampling이 빨라지고, image뿐 아니라 다른 modality에도 적용하기 쉬워진다. Conditional generation에서는 text caption, class label, stroke, layout 같은 조건을 score model에 넣는다. Classifier guidance는 별도 classifier의 gradient를 generation 방향에 더하고, classifier-free guidance는 conditional model과 unconditional model을 함께 학습한 뒤 두 예측을 조합해 조건을 더 강하게 반영한다.
 
-### Score matching: Fisher divergence에서 implicit objective까지 (작성자 보충)
+<details markdown="block">
+<summary markdown="span">Derivation: From Fisher divergence to implicit score matching</summary>
 
 > **강의 자료:** Lecture 16 slide 3의 explicit/implicit score-matching 식. 아래 유도는 [Hyvärinen (2005)](https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf){:target="_blank" rel="noopener"}의 표준 score matching objective를 따른다.
 
@@ -127,7 +128,10 @@ $$
 
 **Slide 표기 주의:** slide 3의 implicit 식에는 표준 Hyvärinen 식 바깥에 추가 $$\frac12$$가 표시되어 있다. 이는 원래 Fisher divergence와의 위 등식을 그대로 나타낸 표준식과 맞지 않아 **source typo 가능성이 높다**. 전체 objective에 곱해진 양의 상수라면 minimizer는 바뀌지 않지만, 등식의 normalization은 달라지므로 이 글에서는 Hyvärinen의 표준 convention을 따른다.
 
-### Denoising score matching: marginal과 conditional target의 동치 (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Equivalence of marginal and conditional denoising targets</summary>
 
 > **강의 자료:** Lecture 16 slide 4의 denoising score-matching 식.
 
@@ -185,7 +189,10 @@ $$
 
 **Slide 표기 주의:** slide 4의 marginal expectation label이 $$p_{\mathrm{data}}$$로 읽히는 부분은 perturbed sample에 대한 기대값이라면 $$q_\sigma$$가 정확하다. 깨끗한 data expectation과 corrupted conditional expectation을 함께 쓴 두 번째 식과 혼동하지 않아야 한다.
 
-### NCSN multiscale objective와 noise 표기의 경계 (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: The multiscale NCSN objective and noise conventions</summary>
 
 > **강의 자료:** Lecture 16의 NCSN/annealed Langevin 복습 구간. 표기는 [NCSN](https://arxiv.org/pdf/1907.05600){:target="_blank" rel="noopener"}의 multiscale denoising objective를 따른다.
 
@@ -227,7 +234,10 @@ $$
 | $$\lambda(\sigma)=\sigma^2$$ | scale-balancing weight | $$U^2$$ |
 | weighted loss term | weight times squared score error | 무차원 |
 
-### DDPM joint, hierarchical-VAE ELBO, Gaussian KL (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: DDPM factorization, hierarchical-VAE ELBO, and Gaussian KL</summary>
 
 > **강의 자료:** Lecture 16 slides 11, 14, 18--20의 forward marginal, reverse Gaussian, hierarchical-VAE ELBO, noise prediction과 ancestral update. 유도는 [DDPM](https://arxiv.org/pdf/2006.11239){:target="_blank" rel="noopener"}의 notation을 따른다.
 
@@ -366,7 +376,10 @@ $$
 
 $$t,T,\alpha_t,\beta_t,\bar\alpha_t$$는 무차원이고, 표준화된 image와 $$\epsilon$$도 무차원이다. 원자료의 physical scale을 유지한다면 $$x_t$$와 $$\epsilon_\theta$$의 scale convention을 맞춰야 한다. Non-Gaussian corruption, learned forward process, 서로 다른 reverse covariance를 쓰면 위 KL-to-MSE 단순화가 그대로 성립하지 않는다.
 
-### Continuous DSM과 backward Euler--Maruyama 부호 (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Continuous denoising score matching and backward Euler-Maruyama signs</summary>
 
 > **강의 자료:** Lecture 16 slides 24--25의 continuous-time SDE와 reverse process. 이론적 기준은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}다.
 
@@ -434,7 +447,10 @@ $$
 
 $$x$$의 단위가 $$U$$이고 time 단위가 $$T_0$$이면 $$f$$는 $$U/T_0$$, $$g$$는 $$U/\sqrt{T_0}$$, score는 $$U^{-1}$$, $$v(t)$$는 $$U^2$$다.
 
-### Probability-flow ODE: same marginal과 invertibility (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Probability-flow ODE marginals and invertibility</summary>
 
 > **강의 자료:** Lecture 16 slides 29--31의 probability-flow ODE와 likelihood. Same-marginal 구성은 [Score-SDE](https://arxiv.org/pdf/2011.13456){:target="_blank" rel="noopener"}, ODE flow와 instantaneous change of variables는 [Neural ODE](https://arxiv.org/pdf/1806.07366){:target="_blank" rel="noopener"}를 따른다.
 
@@ -486,7 +502,10 @@ $$
 
 이 등식은 exact numerical integration과 regular ODE flow를 가정한 **현재 learned flow density에 대한 항등식**이다. Score error는 change-of-variables 자체가 아니라 learned density와 data density의 mismatch를 만든다.
 
-### Hutchinson trace estimator와 bits/dim (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Hutchinson trace estimation and bits per dimension</summary>
 
 Divergence $$\nabla_x\!\cdot v=\operatorname{tr}(J_v)$$를 full Jacobian 없이 구하기 위해 mean zero와 identity covariance를 만족하는 random vector $$\xi$$를 쓴다.
 
@@ -519,7 +538,10 @@ $$
 
 로 정의한다. 이는 dimension 하나를 encode하는 평균 bit 수이므로 **낮을수록 더 높은 likelihood**다. Continuous density $$p(y)$$를 평가할 때는 discrete pixel에 uniform dequantization 등을 적용해 probability mass와 density를 연결해야 한다. $$[0,255]$$와 $$[0,1]$$ 사이 rescaling은 Jacobian constant를 바꾸므로, dequantization·색상 channel·scale convention이 다른 bpd는 직접 비교할 수 없다. Continuous density 값을 보정 없이 discrete $$P(x)$$로 해석하면 bpd 결론이 틀어진다.
 
-### Sampling speed claim의 성격
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: What diffusion sampling speed claims establish</summary>
 
 > **강의 자료:** Lecture 16 slide 34의 ParaDDPM iteration/error display와 slide 37의 latent VAE diagram·KL relation.
 
@@ -558,7 +580,10 @@ Lecture 16이 소개하는 DDIM의 **10--50배 sampling speedup**은 선택한 m
 
 Progressive distillation의 **두 step을 한 step으로 합치는 2-to-1 절차**도 teacher의 두 update를 student의 한 update가 모사하도록 학습하는 algorithmic rule이다. 한 round가 nominal step count를 절반으로 줄인다는 것은 절차상 맞지만, quality 보존이나 wall-clock 정확히 2배 향상은 증명된 항등식이 아니다. Distillation error는 round마다 누적될 수 있고 실제 속도는 network evaluation, solver overhead와 batch size에 좌우된다.
 
-### Classifier-free guidance의 Bayes 전개와 convention (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Classifier-free guidance conventions from Bayes' rule</summary>
 
 > **강의 자료:** Lecture 16 slides 40, 45--46의 conditional denoising과 CFG 식. Slide 41의 단계별 애니메이션은 완성 상태의 slide 45와 연결된다. CFG convention의 원 출처는 [Classifier-Free Diffusion Guidance](https://arxiv.org/pdf/2207.12598){:target="_blank" rel="noopener"}다.
 
@@ -635,6 +660,8 @@ s_{\mathrm{CFG}}=s_u+\gamma(s_c-s_u)
 $$
 
 에서는 $$\gamma=0$$이 unconditional, $$\gamma=1$$이 conditional이며 두 convention은 $$\gamma=1+w$$로 대응한다. 이 **parameterization boundary**를 밝히지 않고 숫자만 비교하면 guidance strength를 잘못 해석한다. 위 Bayes 등식은 exact score에 대한 항등식이지만 neural predictions의 선형 조합은 근사다. 큰 guidance는 condition fidelity를 높일 수 있으나 diversity 감소, saturation, off-manifold artifact와 numerical stiffness를 유발할 수 있다.
+
+</details>
 
 ## 핵심 개념
 

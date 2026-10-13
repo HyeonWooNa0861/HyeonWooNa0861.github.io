@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 17:14:00 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 01 Models and Data"
 course: "Machine Learning Basic"
 topic: "Models and Data"
@@ -74,6 +74,11 @@ $$
 
 #### 평균 0과 분산 1이 되는 이유
 
+본문에서 필요한 결론은 학습 집합에서 계산한 같은 평균·표준편차와 같은 분산 정의를 쓸 때 표준화된 값의 평균이 0, 분산이 1이 된다는 점이다. 검산 과정은 아래에서 확인할 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Standardized training features have mean zero and variance one</summary>
+
 위에서 정의한 **같은 학습 집합**과 population-style 분모를 사용하면 다음은 근사가 아니라 정확한 항등식이다. 먼저 표준화된 feature의 학습 집합 평균은
 
 $$
@@ -105,6 +110,8 @@ $$
 $$
 
 이 증명은 $$\sigma_j>0$$, 동일한 학습 표본, 동일한 분모 정의를 전제로 한다. Training에서 계산한 $$\mu_j,\sigma_j$$를 validation/test에 적용하면 그 split의 평균 0과 분산 1은 보장되지 않는다. 또한 표본 표준편차처럼 분모 $$N_{\mathrm{train}}-1$$을 사용한다면 분산 검산도 같은 분모로 해야 정확히 1이 된다.
+
+</details>
 
 ## 2. 데이터 처리의 세 방향
 

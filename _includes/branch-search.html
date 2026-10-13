@@ -8,19 +8,19 @@
   {% assign branch_search_label = "Search research" %}
   {% assign branch_search_placeholder = "Search titles, major topics, or keywords" %}
 {% elsif branch_search_collection == "study" %}
-  {% assign branch_search_items = site.study | sort: "title" %}
+  {% assign branch_search_items = site.study | concat: site.assignment | sort: "title" %}
   {% if branch_search_course != "" %}
     {% assign branch_search_items = branch_search_items | where: "course", branch_search_course %}
   {% endif %}
-  {% assign branch_search_label = "Search study notes" %}
-  {% assign branch_search_placeholder = "Search courses, topics, or keywords" %}
+  {% assign branch_search_label = "Search course materials" %}
+  {% assign branch_search_placeholder = "Search lectures, assignments, topics, or keywords" %}
 {% elsif branch_search_collection == "assignment" %}
-  {% assign branch_search_items = site.assignment | sort: "title" %}
+  {% assign branch_search_items = site.study | concat: site.assignment | sort: "title" %}
   {% if branch_search_course != "" %}
     {% assign branch_search_items = branch_search_items | where: "course", branch_search_course %}
   {% endif %}
-  {% assign branch_search_label = "Search assignments" %}
-  {% assign branch_search_placeholder = "Search assignment titles or topics" %}
+  {% assign branch_search_label = "Search course materials" %}
+  {% assign branch_search_placeholder = "Search lectures, assignments, topics, or keywords" %}
 {% elsif branch_search_collection == "posts" %}
   {% assign branch_search_items = site.posts | sort: "date" | reverse %}
   {% if branch_search_section != "" %}
@@ -56,8 +56,12 @@
               <small>
                 {% if branch_search_collection == "posts" %}
                   {% if item.section == "projects" %}Project{% else %}Post{% endif %}{% if item.section %} · {{ item.section | replace: '-', ' ' | escape }}{% endif %}
+                {% elsif branch_search_collection == "research" %}
+                  Research note{% if item.major_topic or item.topic %} · {{ item.major_topic | default: item.topic | escape }}{% endif %}
+                {% elsif item.url contains "/assignment/" %}
+                  Assignment{% if item.course %} · {{ item.course | escape }}{% endif %}{% if item.topic %} · {{ item.topic | escape }}{% endif %}
                 {% else %}
-                  {% if item.course %}{{ item.course | escape }} · {% endif %}{{ item.major_topic | default: item.topic | escape }}
+                  Lecture note{% if item.course %} · {{ item.course | escape }}{% endif %}{% if item.major_topic or item.topic %} · {{ item.major_topic | default: item.topic | escape }}{% endif %}
                 {% endif %}
               </small>
               {% if item.keywords %}

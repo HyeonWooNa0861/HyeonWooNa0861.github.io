@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
@@ -117,6 +117,11 @@ int* arr = (int*)calloc(n, sizeof(int));
 
 > **작성자 보충:** 아래 식은 원소 수와 원소 크기에서 요청 바이트 수를 구하는 정확한 단위 항등식이며, 이어지는 문장은 overflow와 할당 실패 조건을 명시한다.
 
+`calloc(n, sizeof(T))`의 입력은 원소 수와 원소당 바이트 수이고, 출력은 0 bit로 채워진 연속 메모리 블록의 시작 주소다. 요청 바이트 수는 두 입력의 곱이며, 계산 전에 곱셈 overflow를 검사해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Allocation size and overflow conditions for calloc</summary>
+
 원문 `C_동적할당.pdf` 8쪽에서 원소 수를 $$n$$, 원소 한 개의 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라고 하면 `calloc(n, s)`가 요청하는 전체 크기는
 
 $$
@@ -126,6 +131,8 @@ $$
 이다. `calloc(n, sizeof(int))`라면 $$B=n\operatorname{sizeof}(\texttt{int})$$ 바이트다. $$n$$의 단위는 원소 개수, $$s$$는 바이트/원소이므로 곱의 단위가 바이트가 된다. 모든 비트가 0인 상태로 초기화되지만, 이것이 모든 C 타입에서 의미상 숫자 0이나 null pointer와 같다고 일반화해서는 안 된다.
 
 할당 전에는 `n > SIZE_MAX / s`인지 검사해 곱셈 overflow를 막아야 하며, $$n>0$$인데 반환값이 `NULL`이면 할당 실패로 처리해야 한다. `calloc(0, s)`의 반환값은 구현에 따라 `NULL`일 수도, 해제 가능한 고유 포인터일 수도 있으므로 역참조해서는 안 된다.
+
+</details>
 
 ## 5. `free`와 메모리 오류
 
@@ -160,6 +167,11 @@ old = bigger;
 
 > **작성자 보충:** 아래 식은 capacity를 정확히 두 배로 늘리는 정책에서 새 할당량과 기존 원소 복사량을 세는 정확한 accounting이다.
 
+재할당의 입력은 현재 원소 수 $$n$$, 기존 capacity $$c$$, 원소 크기 $$s$$다. 새 저장소는 $$2c$$개 원소를 담고, 복사는 실제로 존재하는 $$n$$개 원소에만 필요하다. 새 할당이 성공한 뒤에만 기존 저장소를 해제해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Allocation and copy cost when capacity doubles</summary>
+
 원문 `C_동적할당.pdf` 11쪽의 재할당 pattern에서 현재 원소 수를 $$n$$, capacity를 $$c$$, 원소 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라 하자. 배열이 가득 찬 상태 $$n=c$$에서 capacity를 두 배로 늘리면
 
 $$
@@ -170,6 +182,8 @@ $$
 가 된다. 새 저장소는 $$2c$$개 원소를 담도록 $$2cs$$바이트를 요청하고, 실제로 존재하는 기존 $$n=c$$개 원소만 $$cs$$바이트 복사하는 것이다. 일반적으로 가득 차기 전에 늘린다면 복사량은 $$ns$$바이트이며 $$n\le c$$다.
 
 이 계산은 연속 저장, 원소별 padding이 아닌 `sizeof(T)` 간격, byte-wise 복사가 허용되는 C 객체를 가정한다. 먼저 `c <= SIZE_MAX / 2`와 `2c <= SIZE_MAX / s`를 확인해야 한다. 새 할당이 실패하면 기존 포인터를 그대로 보존해야 하므로, 성공을 확인하기 전에 `old`를 덮어쓰거나 해제하면 안 된다. C++에서 생성자·소멸자나 비자명 복사가 필요한 객체에는 `memcpy`를 사용하지 말고 `std::vector` 같은 컨테이너나 적절한 객체 이동/복사를 사용한다.
+
+</details>
 
 ## 7. C++의 `nullptr`
 

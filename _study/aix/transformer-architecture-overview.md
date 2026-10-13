@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
@@ -69,6 +69,9 @@ $$
 
 위치 정보가 없을 때 순서를 구분하기 어려운 이유는 permutation으로 확인할 수 있다. Token 행을 바꾸는 permutation matrix를 $$P$$라 하고 $$X'=PX$$라 두면 $$Q'=PQ$$, $$K'=PK$$, $$V'=PV$$다. 따라서
 
+<details markdown="block">
+<summary markdown="span">Derivation: Permutation equivariance without position signals</summary>
+
 $$
 Q'K'^T=P(QK^T)P^T,
 \qquad
@@ -76,6 +79,8 @@ Q'K'^T=P(QK^T)P^T,
 $$
 
 가 되어 입력 순서를 바꾸면 출력도 같은 방식으로 재배열될 뿐, 절대 위치 자체는 생기지 않는다. 이는 positional signal과 위치 의존 mask가 없는 self-attention의 **정확한 equivariance 성질**이다. Causal mask나 relative position bias가 들어가면 이 단순 관계는 더 이상 그대로 성립하지 않는다.
+
+</details>
 
 | 방식 | 설명 |
 |---|---|
@@ -128,12 +133,17 @@ $$
 
 $$\sqrt{d_k}$$ scaling은 다음 통계적 근사로 설명할 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Scaled dot-product variance</summary>
+
 1. $$q_{ir}$$, $$k_{jr}$$의 각 성분이 서로 독립이고 평균 0, 분산 1이라고 가정한다.
 2. Dot product는 $$q_i^Tk_j=\sum_{r=1}^{d_k}q_{ir}k_{jr}$$다.
 3. 각 곱의 분산을 약 1로 보면 합의 분산은 약 $$d_k$$, 표준편차는 $$\sqrt{d_k}$$다.
 4. $$\sqrt{d_k}$$로 나누면 score 분산이 약 1로 유지되어 softmax가 차원 증가만으로 포화되는 현상을 줄인다.
 
 이 설명은 learned query와 key가 실제로 독립·단위분산이라는 증명이 아니라 초기화 규모를 이해하기 위한 **근사적 분산 분석**이다. 성분 상관이나 scale이 크면 정규화 후에도 score가 과도하게 커질 수 있고, 매우 날카로운 softmax에서는 작은 score 차이에도 gradient가 작아질 수 있다.
+
+</details>
 
 | 단계 | 설명 |
 |---|---|

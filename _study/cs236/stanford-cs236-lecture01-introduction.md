@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 1: Introduction"
 course: "CS236"
 topic: "Deep Generative Models Overview"
@@ -63,7 +63,8 @@ keywords:
 
 마지막으로 강의는 기술의 양면성을 짚는다. 생성 모델이 실제와 구분하기 어려운 얼굴, 음성, 영상, 문서를 만들 수 있다는 것은 창작과 과학에는 큰 가능성이지만, deepfake와 misinformation 같은 위험도 함께 만든다. 따라서 이 수업의 목표는 최신 시스템을 표면적으로 사용하는 법보다, 어떤 모델링 가정이 결과를 만들고 어떤 실패 가능성을 남기는지 이해하는 데 있다.
 
-### Joint·conditional distribution과 missing data
+<details markdown="block">
+<summary markdown="span">Derivation: Joint and conditional distributions with missing data</summary>
 
 > **근거 위치:** 공식 Lecture 1 PPTX slides 16–17. PPTX XML에서 conditional/joint notation과 Bayes-rule fraction을 대조했다. Animation 단계에 따라 fraction 일부가 외부 viewer에서 달리 보일 수 있다. 아래 marginalization은 slide 17의 missing-data 주장을 풀어 쓴 작성자 보충이다.
 
@@ -88,7 +89,10 @@ $$
 
 Continuous missing variable이면 합을 적분으로 바꾼다. 이는 분모가 0이 아니고 joint model이 정규화되어 있다는 가정 아래 **정확한 marginalization**이다. 반면 완전한 $$x$$만 받도록 학습한 $$p(y\mid x)$$만으로는 이 합의 항들을 계산할 수 없다. 별도 imputation, missingness mask 학습, 또는 partial-input conditional model을 두면 예외적으로 처리할 수 있지만, joint model의 자동적 능력은 아니다. Joint 가정이 틀리거나 missingness 기제가 학습 분포와 다르면 이 추론도 실패한다.
 
-### Data distribution에서 model distribution을 학습하는 목적 (작성자 보충)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: From the data distribution to a learnable model objective</summary>
 
 > **Source mapping:** Official Lecture 1 PPTX slide 45의 representation·learning·inference roadmap에 대응한다. 아래 $$P_{\mathrm{data}}$$, model family, discrepancy 최적화 표기는 그 roadmap의 “분포를 비교해 학습한다”는 목적을 수학적으로 명확히 쓴 **작성자 보충**이며, slide 45에 동일한 완성 식이 인쇄되어 있다는 뜻은 아니다. 추상적인 $$d$$에 대해 존재하지 않는 보편 증명을 주장하지 않는다.
 
@@ -144,6 +148,8 @@ $$
 $$P$$와 사건의 probability는 무차원이다. Continuous density는 $$x$$의 좌표 volume에 대한 역단위를 가지지만, KL·Jensen–Shannon·total variation은 무차원이다. Wasserstein distance는 ground metric을 따르면 $$x$$와 같은 단위를 가지며, 일반 IPM의 단위는 critic output $$f(X)$$의 단위다. 따라서 slide의 추상적인 $$d$$에는 하나의 고정 단위를 부여할 수 없다. $$x\in\mathbb R^d$$와 $$\theta\in\mathbb R^q$$의 차원은 각각 data dimension과 parameter dimension이고, $$\theta$$의 물리 단위는 parameterization에 따라 달라진다.
 
 이 그림은 수업의 세 축을 한 줄로 연결한다. **Representation**은 $$\mathcal M$$과 $$P_\theta$$의 factorization·density·sampler 형태를 정한다. **Learning**은 sample로부터 $$\widehat d_n$$을 최적화해 $$\widehat\theta_n$$을 고른다. **Inference**는 학습된 $$P_{\widehat\theta_n}$$에서 sampling하거나 likelihood, conditional distribution, latent variable을 계산한다. Representation이 실제 구조를 담지 못하면 learning의 최적해도 부족하고, inference가 부정확하면 잘 학습된 distribution도 원하는 출력으로 변환되지 않는다.
+
+</details>
 
 ## 핵심 개념 표
 

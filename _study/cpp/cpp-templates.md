@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 10:51:57 +0900
-last_modified_at: 2026-09-03 19:42:41 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"
@@ -554,9 +554,14 @@ Mat2x3i transform;
 
 `cpp_template.cpp`는 이 장에서 시험에 나오기 좋은 핵심 요소를 한 번에 담고 있는 예제다. 이 코드는 `Vector<T, N>` 클래스 템플릿을 만들고, `int`, `float`, `std::string` 벡터를 같은 코드 구조로 사용하는 흐름을 보여 준다.
 
+입력은 원소 타입 `T`와 compile-time 크기 `N`이고, 각 구체 타입은 고정 크기 배열을 가진다. `operator()`는 인덱스를 실제 원소로 연결하고, `operator<<`는 모든 원소를 출력 스트림에 쓴다. 아래 토글은 원문 코드 전체와 인스턴스화·출력 흐름을 추적한다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Fixed-size vector templates and stream output</summary>
+
 ### 10.1 코드 전문
 
-```cpp
+~~~cpp
 #include <iostream>
 #include <string>
 
@@ -604,7 +609,9 @@ int main()
 
     return 0;
 }
-```
+~~~
+
+</details>
 
 ### 10.2 `template<typename T, int N>`
 
@@ -757,7 +764,7 @@ s(2) = "C++ Programming";
 
 `Vec3s`는 `Vector<std::string, 3>`이므로 문자열 3개를 저장한다.
 
-실행 결과는 다음과 같은 형태다.
+원자료의 `cpp_template.cpp`를 Clang C++17로 다시 컴파일해 실행한 결과는 다음과 같았다. 이 출력은 설명용 추정이 아니라 원자료 코드의 재실행 결과다.
 
 ```text
 v = ( 3    -1    2    )
@@ -1000,6 +1007,11 @@ render(c); // 가능
 
 > **작성자 보충:** 슬라이드 11의 `Matrix * Vector` 코드를 선형대수의 성분식과 차원 조건으로 풀어 쓴 해설이다. 아래 식과 실패 조건은 슬라이드에 그대로 제시된 증명이 아니라 코드의 의미를 명시하기 위해 추가했다.
 
+행렬–벡터 곱의 입력 차원은 내부 축에서 같아야 한다. $$R\times C$$ 행렬과 길이 $$C$$ 열벡터의 출력은 길이 $$R$$이고, 반대쪽에서 길이 $$R$$ 행벡터를 곱하면 출력 길이는 $$C$$다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Matrix-vector dimensions and component sums</summary>
+
 슬라이드 11의 `Matrix * Vector`는 단순 연산자 문법이 아니라 선형대수의 **정의**를 타입으로 보존한 예다. $$A\in T^{R\times C}$$, $$v\in T^C$$이면 결과 $$y\in T^R$$의 각 성분은
 
 $$
@@ -1007,6 +1019,8 @@ y_i=\sum_{j=0}^{C-1}A_{ij}v_j,\qquad 0\le i<R.
 $$
 
 반대로 row vector $$u\in T^R$$와 $$A$$의 곱은 $$z_j=\sum_{i=0}^{R-1}u_iA_{ij}$$이고 결과 차원은 $$C$$다. 내부 합의 길이가 같아야 하므로 template signature가 잘못된 차원의 곱을 compile time에 거부할 수 있다. $$R,C,i,j$$는 무차원 크기/index다. 이 유도는 $$T$$가 덧셈과 곱셈을 지원한다는 가정이 필요하며, 정수 $$T$$에서는 overflow, floating-point $$T$$에서는 누적 반올림 오차가 생길 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

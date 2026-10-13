@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
@@ -144,6 +144,11 @@ Fine-tuning에서는 새 head를 더 큰 학습률로, pretrained backbone을 �
 
 ## 핵심 수식 유도
 
+He initialization은 ReLU를 지난 activation scale이 급격히 변하지 않도록 weight variance를 $$2/\mathrm{fan\text{-}in}$$으로 맞춘다. BatchNorm은 batch 통계로 feature를 정규화한 뒤 학습 가능한 scale과 shift를 복원하고, residual block은 identity gradient path를 추가한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Initialization, BatchNorm, and residual gradients</summary>
+
 ### 작성자 보충: He initialization의 scale
 
 한 neuron의 pre-activation을 $$z=\sum_{i=1}^{n}W_ix_i$$, fan-in을 $$n$$이라 하자. 입력과 weight가 서로 독립이고 0 평균이며 각 항이 같은 분산을 갖는다는 mean-field 가정 아래
@@ -198,6 +203,8 @@ $$
 $$
 
 가 된다. $$J_F$$가 작아도 identity 경로가 gradient를 직접 전달하므로 plain deep stack보다 optimization이 쉬워진다. 이는 vanishing gradient가 절대 생기지 않는다는 증명이 아니라 경로 하나가 보존된다는 설명이다. $$x$$와 $$F(x)$$는 shape와 단위가 같아야 하며, downsampling 때는 projection shortcut이 필요하다.
+
+</details>
 
 ## 마지막 핵심 정리
 

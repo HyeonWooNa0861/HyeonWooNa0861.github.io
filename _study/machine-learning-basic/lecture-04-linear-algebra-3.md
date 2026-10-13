@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 04 Linear Algebra 3"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 3"
@@ -269,6 +269,11 @@ $$
 
 ## 7. 랭크 관련 식의 증명 개요
 
+Rank-nullity는 입력 차원을 출력에 남는 방향과 영공간으로 사라지는 방향으로 나눈다. 해 존재 여부는 목표 벡터가 column space에 포함되는지로 결정되며, 증명 개요는 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Rank-nullity and the consistency condition</summary>
+
 ### 7.1 Rank-Nullity 정리
 
 $$A:\mathbb{R}^n\to\mathbb{R}^m$$에 대해
@@ -296,6 +301,8 @@ $$
 이다. 이는 **정확한 동치**이며 수치 계산에서 rank를 tolerance로 판정하면 거의 종속인 열 때문에 결론이 달라질 수 있다.
 
 여기서 $$n,m,k$$는 차원 수로 무차원 정수이고, rank와 nullity도 단위가 없는 개수다.
+
+</details>
 
 ## 마지막 핵심 정리
 

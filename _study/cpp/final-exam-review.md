@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:16:19 +0900
-last_modified_at: 2026-09-03 19:42:41 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"
@@ -467,6 +467,11 @@ std::ostream& operator<<(std::ostream& os, const Complex& c) {
 
 ### `Rational` 사칙연산과 정규화
 
+핵심은 분모가 0이 아닌 두 분수에 보통의 분수 사칙연산을 적용한 뒤, 최대공약수로 약분하고 분모를 양수로 통일하는 것이다. 나눗셈은 오른쪽 피연산자가 0인지 먼저 확인해야 하며, 고정 폭 정수에서는 교차 곱의 overflow도 별도로 막아야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Rational arithmetic and canonical normalization</summary>
+
 > **작성자 보충:** `Operator Overloading.pdf` 12–13쪽의 `Fraction` 실행 결과와 gcd 정규화를 일반화한다. 아래 사칙연산 식은 분모가 0이 아닌 정의역에서의 정확한 유리수 항등식이고, gcd 약분과 양의 분모 처리는 같은 값을 하나의 표현으로 만드는 정규화 convention이다.
 
 `Operator Overloading` 자료의 유리수 예제를 일반화하자. 두 유리수를
@@ -499,6 +504,8 @@ $$
 
 로 약분한다. 이어서 $$q<0$$이면 $$(p,q)\leftarrow(-p,-q)$$로 바꾸어 **분모는 항상 양수**라는 정규형을 유지한다. 입력이나 연산 결과의 분모가 0이면 유리수가 아니므로 생성 또는 연산을 거부해야 하며, 특히 나눗셈에서는 $$y=0$$, 즉 $$c=0$$인지 먼저 검사해야 한다. 고정 폭 정수 구현에서는 `ad`, `bc`, `bd`, `ac`가 overflow할 수 있으므로 곱셈 전 범위 검사, 더 넓은 중간 타입, 또는 임의 정밀도 정수가 필요하다.
 
+</details>
+
 ## 11. 함수 포인터, 콜백, 람다
 
 함수 포인터는 함수의 주소를 저장한다.
@@ -522,9 +529,13 @@ int apply(int a, int b, int (*op)(int, int)) {
 
 ```cpp
 int cmp_asc(const void* a, const void* b) {
-    return *(const int*)a - *(const int*)b;
+    const int lhs = *(const int*)a;
+    const int rhs = *(const int*)b;
+    return (lhs > rhs) - (lhs < rhs);
 }
 ```
+
+정수 차이를 바로 반환하면 signed overflow가 생길 수 있으므로, 대소 비교 결과를 `-1`, `0`, `1`로 변환한다. C++ 객체 정렬에는 raw byte를 재배치하는 `qsort`보다 타입 안전한 `std::sort`를 우선한다.
 
 현대 C++에서는 `std::sort`와 람다가 더 자연스럽다.
 
@@ -761,6 +772,11 @@ auto max_it = std::max_element(freq.begin(), freq.end(),
 
 ### 보충 해설: 이 종합 복습의 수식 범위
 
+행렬-벡터 곱은 행마다 열 수만큼 항을 합하므로 $$\Theta(mn)$$이고, 이진 검색과 균형 트리의 단일 키 연산은 탐색 범위 또는 트리 높이가 로그 크기여서 $$O(\log n)$$이다. `strlen`은 종료 문자를 찾을 때까지 읽어 $$\Theta(n)$$이지만 저장된 길이를 반환하는 `string::size()`는 $$\Theta(1)$$이다. 다음 토글은 이 결론의 식과 적용 조건을 모아 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Matrix products and core complexity bounds</summary>
+
 > **작성자 보충:** 이 글은 시험 직전의 통합 지도이므로 모든 유도를 반복하지 않고 핵심 식과 결론만 둔다. 행렬 저장식의 단계별 유도와 실패 조건은 [C++ Classes and Operator Overloading]({{ "/study/cpp/cpp-overloading/" | relative_url }}), 문자열과 컨테이너 복잡도의 전체 유도는 [C Structs and C++ Classes]({{ "/study/cpp/c-struct-to-cpp-class/" | relative_url }})와 [C++ STL]({{ "/study/cpp/cpp-stl/" | relative_url }})에서 확인한다.
 
 $$m \times n$$ 행렬 $$A$$와 길이 $$n$$의 열벡터 $$x$$의 곱 $$y=Ax$$는 성분별로
@@ -794,6 +810,8 @@ T_{\texttt{set/map}}(n)=O(\log n)
 $$
 
 `vector::push_back`은 여러 호출을 합친 amortized $$O(1)$$이고 재할당이 일어난 한 호출의 worst case는 $$O(n)$$이다. `unordered_map`과 `unordered_set`의 탐색은 average $$O(1)$$이지만 충돌이 집중되는 worst case는 $$O(n)$$이다. 위 결과는 실행시간의 초 단위가 아니라 원소 수에 따른 연산 횟수의 점근적 크기이며, 정렬 전제·유효 인덱스·상수 비교/해시 비용이 깨지면 그대로 적용할 수 없다.
+
+</details>
 
 ## 17. 과제 연결 포인트
 
@@ -928,7 +946,7 @@ C++은 어느 함수가 어떤 피연산자를 받는지와 반환 타입을 직
 <details markdown="block">
 <summary>10. 기본 클래스 소멸자를 `virtual`로 두어야 하는 경우는 언제인가?</summary>
 
-답변: 기본 클래스 포인터로 파생 클래스 객체를 삭제할 가능성이 있을 때다. 소멸자가 가상 함수가 아니면 파생 클래스 소멸자가 호출되지 않을 수 있다.
+답변: 기본 클래스 포인터로 파생 클래스 객체를 삭제할 가능성이 있을 때다. 소멸자가 가상 함수가 아니면 해당 `delete`의 동작이 정의되지 않는다. 가상 소멸자는 실제 객체의 파생 소멸자부터 기본 소멸자까지 올바르게 호출되게 한다.
 
 </details>
 

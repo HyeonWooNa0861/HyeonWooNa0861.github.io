@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
@@ -59,6 +59,11 @@ SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호�
 | DPO | Direct Preference Optimization. Reward model 없이 preference pair와 reference model을 사용해 policy를 직접 supervised objective로 preference tune하는 방법. |
 
 ## 수식 해설: preference probability, KL, PPO와 DPO
+
+Preference tuning은 winner와 loser의 reward 차이를 선호 확률로 바꾸고, reference policy에서 과도하게 멀어지지 않도록 update를 제한한다. PPO는 sampling policy 대비 ratio를 clip하고, DPO는 reward-policy 관계를 직접 pairwise classification loss로 바꾼다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Bradley-Terry, KL, PPO clipping, and DPO</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
@@ -139,6 +144,8 @@ $$
 $$
 
 이는 01:34:47–01:38:21의 optimal-policy 재배열과 Bradley-Terry substitution을 식으로 적은 **작성자 보충 유도**다. Log-ratio가 유한하려면 관측 response에 대해 policy와 reference probability가 양수여야 한다. $$\beta$$가 KL 제약과 loss의 선호 강도를 연결하는 convention은 논문 표기마다 역수 형태로 나타날 수 있으므로 식을 섞지 않아야 한다. 이 유도는 reward-policy relation과 pairwise logistic preference model을 가정하며, arbitrary distribution shift에서 PPO와 동등하다는 보장은 아니다.
+
+</details>
 
 ## 학습 포인트
 

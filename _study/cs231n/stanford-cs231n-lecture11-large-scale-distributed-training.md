@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
@@ -80,6 +80,11 @@ Tensor parallelism은 단일 layer조차 한 GPU에 들어가지 않을 때 유�
 
 ## 핵심 수식 유도
 
+같은 크기의 local batch를 쓰는 synchronous data parallelism에서 worker gradient의 평균은 전체 global batch의 평균 gradient와 같다. Batch 크기가 다르면 단순 worker 평균이 아니라 sample 수로 가중해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Global-batch gradient from worker averages</summary>
+
 ### 작성자 보충: data-parallel gradient 평균
 
 Global batch $$B$$를 $$N$$개 worker의 disjoint batch $$B_n$$로 나누고 크기가 같다면
@@ -89,6 +94,8 @@ $$
 $$
 
 All-reduce 평균이 single-device global-batch gradient와 같은 이유를 보이는 **항등식**이다. Worker batch 크기가 다르면 sample-count weighted average가 필요하다. Gradient와 loss의 단위는 parameterization을 따르고 $$N$$은 무차원이다. 통신 지연, stale gradient, BatchNorm local statistics, floating-point reduction order 때문에 실제 trajectory는 완전히 같지 않을 수 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
@@ -76,6 +76,11 @@ Point output은 다른 model의 prompt가 될 수 있다. 강의의 구체적 ch
 
 ## 핵심 수식 유도
 
+CLIP은 paired image-text similarity는 높이고 batch의 다른 조합은 낮추는 대칭 contrastive objective를 사용한다. Image-to-text와 text-to-image loss를 함께 계산해 두 embedding 공간을 양방향으로 정렬한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Symmetric CLIP contrastive loss</summary>
+
 ### 작성자 보충: CLIP의 대칭 contrastive loss와 gradient
 
 Batch 크기를 $$N$$, L2-normalized image/text embedding을 $$u_i,v_j$$, temperature를 $$\tau>0$$라 두면 logit은
@@ -109,6 +114,8 @@ $$
 $$
 
 따라서 positive pair에서는 derivative가 $$p_{ii}-1\le0$$라 gradient descent가 $$s_{ii}$$를 높이고, negative pair에서는 $$p_{ij}\ge0$$라 $$s_{ij}$$를 낮춘다. Text-to-image 방향도 열을 기준으로 같은 유도가 성립한다. Embedding, cosine similarity, logit, $$\tau$$는 무차원이고 $$\tau$$가 작을수록 similarity에 대한 gradient scale은 $$1/\tau$$만큼 커진다. 이 방향성은 loss 정의에서 나오는 정확한 결과지만 caption ambiguity, false negative, biased web pairs가 있으면 alignment가 semantic truth나 grounded reasoning을 보장하지 않는다.
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 7: Normalizing Flows I"
 course: "CS236"
 topic: "Normalizing Flow Foundations"
@@ -75,7 +75,8 @@ Flow라는 이름은 invertible transformation을 여러 개 합성할 수 있�
 
 마지막으로 planar flow는 $$x=z+u h(w^\top z+b)$$ 형태의 간단한 invertible transformation 예시로 소개된다. Matrix determinant lemma를 쓰면 determinant가 $$1+h'(w^\top z+b)u^\top w$$처럼 작게 계산된다. 다만 이 변환이 항상 invertible한 것은 아니므로, activation과 parameter에 제약을 둬야 한다. 이 예시는 이후 강의에서 다룰 coupling layer, autoregressive flow, invertible convolution처럼 "표현력과 Jacobian tractability를 동시에 설계한다"는 흐름의 출발점이다.
 
-### 핵심 수식 유도: change of variables와 log-determinant
+<details markdown="block">
+<summary markdown="span">Derivation: Change of variables and the log-determinant term</summary>
 
 > **근거 위치:** 공식 Lecture 7 PDF pp. 7–8의 1D change of variables, p. 11의 다변량 일반화, p. 14의 flow composition, pp. 17–18의 일반 determinant $$O(n^3)$$ 및 triangular Jacobian $$O(n)$$ 비교.
 
@@ -89,7 +90,10 @@ $$
 
 로그를 취하면 $$\log p_X(x)=\log p_Z(z)-\log\lvert\det J_f(z)\rvert$$다. 합성 $$f=f_M\circ\cdots\circ f_1$$에서는 chain rule과 determinant의 곱셈성 때문에 log-determinant가 layer별 합이 된다. $$x,z$$는 같은 차원의 continuous vector, $$J_f$$는 좌표 단위의 비율을 담는 Jacobian이다. 차원이 다르거나 mapping이 many-to-one이면 이 식을 쓸 수 없고, determinant가 0에 가까우면 density와 수치 오차가 폭주한다.
 
-### Planar flow determinant와 invertibility
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Planar-flow determinants and invertibility</summary>
 
 > **근거 위치:** 공식 Lecture 7 PDF p. 19의 planar-flow 식, determinant, tanh sufficient condition. 아래 strict-condition 유도와 sufficient/not-necessary 분류는 작성자 보충이다.
 
@@ -124,6 +128,8 @@ q'(a)=1+c\operatorname{sech}^{2}(a).
 $$
 
 $$0<\operatorname{sech}^{2}(a)\le 1$$이므로 $$c>-1$$이면 $$q'(a)>0$$이다. 따라서 $$q$$가 strictly increasing이어서 output $$x=f(z)$$로부터 $$a$$를 유일하게 복원하고, 다음에 $$z=x-u\tanh(a)$$로 역변환한다. 동시에 $$\det J_f>0$$이므로 local singularity도 없다. 슬라이드의 $$h'(a)u^{\top}w\ge-1$$ 표현은 determinant가 음수로 넘지 않게 하는 직관을 주지만, 경계 $$u^{\top}w=-1,a=0$$에서 determinant가 0이 될 수 있으므로 differentiable inverse를 보장하려면 엄격한 부등식이 안전하다. 조건을 어기면 folding이나 singular Jacobian이 생겨 change-of-variables density가 깨진다.
+
+</details>
 
 ## 핵심 개념
 

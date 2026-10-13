@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 11:31:26 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"
@@ -408,6 +408,11 @@ $$
 
 ## 18. 표현 복잡도의 합으로 보는 증명
 
+Adjacency matrix는 가능한 모든 정점 쌍을 저장해 $$\Theta(\lvert V\rvert^2)$$이고, adjacency list는 정점 header와 실제 간선 항목만 저장해 $$\Theta(\lvert V\rvert+\lvert E\rvert)$$이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: counting matrix cells and adjacency entries</summary>
+
 > **분류:** 저장 칸과 인접 리스트 길이를 세는 **증명 개요**다. $$n=\lvert V\rvert$$, $$m=\lvert E\rvert$$라 하자.
 
 > **원문 추적:** `LS20_graph.pdf` pp.38–43은 adjacency matrix, pp.44–49는 adjacency list와 두 표현의 복잡도를 제시한다. degree 합으로 정확한 저장 항목 수를 세는 과정은 작성자 보충이다.
@@ -438,6 +443,8 @@ $$
 | 가능한 간선 대부분이 실제로 존재한다. | 인접 행렬 |
 | 정점 수가 크고 간선이 상대적으로 적다. | 인접 리스트 |
 | BFS, DFS처럼 이웃을 순회하는 연산이 많다. | 인접 리스트 |
+
+</details>
 
 ## 마지막 핵심 정리
 

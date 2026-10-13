@@ -403,26 +403,6 @@
       description: Recurrent latent computation, complete-state gradients, and policy replay
       match: /research/rlt-recurrent-looped-transformer/
 
-- title: Assignment
-  url: /assignment/
-  children:
-    - title: Algorithms
-      url: /assignment/algorithms/
-      description: Algorithm complexity proofs and worked assignment solutions
-      match: /assignment/algorithms/
-    - title: C++
-      url: /assignment/cpp/
-      description: C++ assignment summaries
-      match: /assignment/cpp/
-    - title: Machine Learning Basic
-      url: /assignment/machine-learning-basic/
-      description: Machine Learning Basic assignments
-      match: /assignment/machine-learning-basic/
-    - title: AIX
-      url: /assignment/aix/
-      description: AIX quiz review and solution notes
-      match: /assignment/aix/
-
 - title: Study
   url: /study/
   children:

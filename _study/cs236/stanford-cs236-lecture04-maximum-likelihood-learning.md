@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:52:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 4: Maximum Likelihood Learning"
 course: "CS236"
 topic: "Maximum Likelihood Learning"
@@ -81,7 +81,8 @@ $$
 
 마지막으로 강의는 likelihood가 전부는 아니라고 강조한다. $$P_{\theta}(x)\approx 0$$인 실제 데이터가 있으면 log-loss가 크게 증가하므로 forward KL은 data support를 넓게 덮으려는 성질을 가진다. 반대로 reverse KL은 model이 만든 샘플 쪽을 더 보게 되어 mode-seeking 성향이 강해질 수 있다. 또 높은 log-likelihood가 항상 더 그럴듯한 sample을 의미하지는 않는다. 모델 family가 너무 약하면 bias가 크고, 너무 강하면 variance와 overfitting이 커진다. 따라서 hypothesis space 제한, weight sharing, regularization, held-out validation이 함께 필요하다.
 
-### KL divergence가 음수가 아닌 이유
+<details markdown="block">
+<summary markdown="span">Derivation: Why KL divergence is nonnegative</summary>
 
 > **근거 위치:** 공식 Lecture 4 PDF p. 7의 Jensen 부등식을 이용한 KL non-negativity proof.
 
@@ -98,7 +99,10 @@ $$
 
 따라서 KL은 비음수다. Strict convexity의 equality condition에 의해 $$q(x)/p(x)$$가 $$P$$-거의 모든 곳에서 상수일 때만 등호가 성립하고, 두 분포가 정규화되어 있으므로 그 상수는 1이다. 즉 $$P=Q$$ almost everywhere다. Support가 맞지 않아 $$P$$가 질량을 두는 곳에서 $$Q=0$$이면 KL은 $$+\infty$$로 본다.
 
-### 핵심 수식 유도: forward KL에서 MLE까지
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: From forward KL divergence to maximum likelihood</summary>
 
 > **근거 위치:** 공식 Lecture 4 PDF pp. 9–11의 forward KL, expected log-likelihood, empirical MLE 전개.
 
@@ -122,7 +126,10 @@ $$
 
 로 근사한다. $$N$$과 $$j$$는 무차원 표본 수와 index다. 유한 데이터, 비-IID 표본, train/test shift에서는 이 empirical objective가 population KL을 잘 대표하지 않을 수 있다. 또한 data support에서 $$P_\theta(x)=0$$이면 KL이 무한대가 되므로 support 조건이 핵심이다.
 
-### Monte Carlo gradient estimator
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Monte Carlo gradient estimators and their limits</summary>
 
 > **근거 위치:** 공식 Lecture 4 PDF pp. 12–13의 Monte Carlo estimator·unbiasedness·variance 조건과 p. 19의 stochastic-gradient 적용. 미분과 기댓값 교환 조건 및 failure 사례는 작성자 보충이다.
 
@@ -159,6 +166,8 @@ $$
 $$
 
 는 fixed $$\theta$$에서 $$\nabla L(\theta)$$의 **unbiased Monte Carlo estimator**다. $$B,b$$는 무차원 minibatch 크기와 index이고 gradient는 objective를 parameter 단위로 나눈 단위를 가진다. 실제 update는 이 임의 추정치를 쓰므로 **근사적**이며, data-dependent sampling, correlated sequence, gradient clipping, adaptive reweighting을 쓰면 단순 unbiasedness가 깨질 수 있다. Unbiased는 한 번의 minibatch gradient가 정확하다는 뜻도, SGD가 유한 step에 global optimum으로 간다는 뜻도 아니다.
+
+</details>
 
 ## 핵심 개념 표
 

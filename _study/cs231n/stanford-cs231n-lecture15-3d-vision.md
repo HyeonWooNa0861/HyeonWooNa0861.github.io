@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
 topic: "3D Vision"
@@ -64,6 +64,11 @@ Implicit field는 고품질 novel-view synthesis를 제공하지만 ray마다 �
 
 ## 핵심 수식 유도
 
+Point-set distance는 대응 규칙에 따라 다른 오차를 측정한다. Chamfer distance는 각 점의 nearest neighbor를 독립적으로 고르고, EMD는 전역 일대일 대응을 찾는다. NeRF rendering은 ray를 따라 누적한 transmittance와 구간별 absorption으로 각 sample color의 가중치를 정한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Point-set losses, projection, and volume rendering</summary>
+
 ### 작성자 보충: Chamfer distance와 Earth Mover distance
 
 두 point set을 $$X=\{x_i\}_{i=1}^{n}$$, $$Y=\{y_j\}_{j=1}^{m}$$라 하자. Squared Euclidean distance와 합을 사용하는 symmetric Chamfer distance convention은
@@ -115,6 +120,8 @@ $$
 $$
 
 Sample 간격이 작아지는 극한에서는 $$T(t)=\exp(-\int_{t_n}^{t}\sigma(s)ds)$$와 $$\int T(t)\sigma(t)\mathbf{c}(t)dt$$인 continuous volume-rendering equation으로 이어진다. $$\sigma$$의 단위는 길이의 역수, $$\Delta_i$$는 길이이므로 exponent, $$T_i$$, $$\alpha_i$$, $$w_i$$는 무차원이고 합성 color는 $$\mathbf{c}_i$$와 같은 단위를 가진다. 이 식은 구간별 독립 흡수·방출과 선택한 sampling quadrature에 의존하는 **수치 근사**이므로 step이 너무 크면 얇은 geometry나 급격한 density 변화를 놓친다.
+
+</details>
 
 ## 마지막 핵심 정리
 

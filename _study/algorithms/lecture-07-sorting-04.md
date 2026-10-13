@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
+last_modified_at: 2026-10-13 16:49:01 +0900
 title: "Lecture 7: Counting Sort and Radix Sort"
 course: "Algorithms"
 topic: "Comparison Lower Bounds, Stable Counting Sort, and LSD Radix Sort"
@@ -116,6 +117,9 @@ $$
 
 강의 코드의 의미를 유지하면서 매개변수의 범위를 명시하면 다음과 같다(12–14쪽).
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Stable counting sort from counts to positions</summary>
+
 ```python
 def counting_sort(arr, r):
     """Sort integer keys x satisfying 0 <= x < r."""
@@ -135,6 +139,12 @@ def counting_sort(arr, r):
 
     arr[:] = output
 ```
+
+- 입력은 $$0\le x<r$$인 정수 배열이다. `counts`는 처음에 값별 빈도, 누적 뒤에는 해당 값 이하 원소의 개수를 뜻한다.
+- 역방향 순회에서 `counts[x]`를 먼저 줄이면 키 `x`의 아직 비어 있는 가장 오른쪽 출력 위치가 된다. 같은 키의 입력 순서가 보존되는 이유다.
+- 출력은 `arr[:]`에 다시 기록된다. 카운트 배열과 출력 배열의 shape는 각각 `(r,)`, `(n,)`이다.
+
+</details>
 
 세 반복문의 의미는 각각 **빈도 계산**, **누적 위치 계산**, **안정적 배치**다. `arr[:] = output`은 새 리스트 객체로 반환하는 대신 기존 리스트의 내용을 정렬 결과로 바꾼다.
 
@@ -211,6 +221,9 @@ LSD Radix Sort는 $$j=0,1,\ldots,k-1$$ 순서로 각 자릿수에 대해 안정 
 
 각 자릿수 $$d_j(x)$$는 범위가 정확히 $$0$$부터 $$r-1$$이므로 Stable Counting Sort를 적용하기 적합하다. 레코드 전체를 자릿수별 버킷 위치로 옮기고, 입력을 역방향으로 읽어 같은 자릿수의 상대 순서를 보존한다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Stable least-significant-digit radix passes</summary>
+
 ```python
 def radix_sort(arr, r=10):
     if not arr:
@@ -238,6 +251,12 @@ def radix_sort(arr, r=10):
         arr[:] = output
         place *= r
 ```
+
+- 입력은 음이 아닌 정수 배열과 $$r\ge2$$인 기수다. `place`는 현재 자릿수의 자리값이며 `1, r, r^2, \ldots`로 증가한다.
+- 각 패스는 현재 자릿수의 빈도와 누적 위치를 만든 뒤 원소 전체를 안정적으로 재배치한다. 출력 배열을 `arr[:]`에 복사한 결과가 다음 높은 자리 패스의 입력이다.
+- 마지막 패스 뒤에는 최대값의 모든 자릿수가 처리된다. 음수에는 이 자릿수 정의를 그대로 사용할 수 없다.
+
+</details>
 
 이 구현은 음이 아닌 정수와 $$r\ge2$$를 전제로 한다. 모든 값이 0이면 반복을 수행하지 않아도 이미 정렬되어 있다. 음수를 포함하려면 부호를 분리하는 등 별도 규칙이 필요하며, 위 코드에 그대로 넣으면 올바른 자릿수 순서를 얻을 수 없다.
 

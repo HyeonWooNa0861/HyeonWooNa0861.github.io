@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-09-03 19:42:25 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
@@ -473,6 +473,11 @@ $$
 
 ## 12. 핵심 확률식의 유도와 성립 조건
 
+Bayes 정리는 joint probability를 두 방향의 조건부 확률로 분해해 얻고, 기대값 선형성은 독립성 없이도 성립한다. 전체 분산과 상관계수 범위는 조건부 기댓값과 Cauchy--Schwarz 조건에서 나오며, 상세 증명은 아래에 둔다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Bayes' theorem, expectation identities, and correlation bounds</summary>
+
 ### 12.1 Bayes 정리
 
 $$P(Y=y)>0$$, $$P(X=x)>0$$라 하자. 조건부 확률의 **정의**를 같은 joint probability에 두 번 적용하면
@@ -558,6 +563,8 @@ $$
 을 얻는다. 이는 표본 추정이 아니라 population correlation에 대한 **정확한 부등식**이다. 어느 한 변수가 거의 확실하게 상수여서 분산이 0이면 covariance도 0이지만 상관계수는 $$0/0$$이 되어 정의되지 않는다. 등호 $$\lvert\operatorname{corr}\rvert=1$$은 중심화된 변수들이 거의 확실하게 $$V=cU$$인 선형 종속 관계일 때 성립하며, $$c>0$$이면 $$+1$$, $$c<0$$이면 $$-1$$이다. Correlation은 covariance의 단위를 두 표준편차의 단위로 나누므로 무차원이다.
 
 확률, PMF, CDF, correlation은 무차원이다. $$X$$가 meter, $$Y$$가 second 단위라면 $$\mathbb{E}[X]$$는 meter, $$\operatorname{Var}(X)$$는 $$\mathrm{m}^2$$, $$\operatorname{Cov}(X,Y)$$는 $$\mathrm{m\,s}$$다.
+
+</details>
 
 ## 마지막 핵심 정리
 

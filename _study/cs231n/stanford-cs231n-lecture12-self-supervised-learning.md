@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
@@ -67,6 +67,11 @@ SimCLR은 한 batch 안에서 각 이미지의 두 augmented view를 만들고, 
 MoCo는 batch 밖 과거 key 표현을 queue에 저장해 많은 negative를 유지한다. Key encoder는 query encoder의 exponential moving average로 천천히 갱신되어 queue의 표현이 갑자기 바뀌지 않게 한다. 강의 말미는 DINO처럼 teacher-student와 momentum encoder를 사용하면서 명시적 negative에 덜 의존하는 흐름도 연결한다.
 
 ## 핵심 수식 유도
+
+InfoNCE는 한 positive를 여러 candidate 중에서 찾는 classification loss다. Positive가 joint distribution에서, negatives가 marginal에서 독립적으로 뽑힌다는 조건에서 $$\log N-\mathcal L_{\mathrm{InfoNCE}}$$는 mutual information의 lower bound가 된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: InfoNCE mutual-information lower bound</summary>
 
 ### 작성자 보충: InfoNCE mutual-information lower bound
 
@@ -138,6 +143,8 @@ $$
 을 얻는다. Positive를 항상 첫 candidate로 두는 일반적인 표기는 candidate 순서를 무작위로 섞은 위 표현과 expectation이 같다. 이는 positive가 joint, negative가 i.i.d. marginal이라는 sampling 가정과 필요한 절대연속성 아래의 **정확한 정보이론적 하한**이며, 실제 neural critic과 finite batch로 계산하는 값은 그 하한의 Monte Carlo 추정이다. Density ratio $$p(x^+\mid x)/p_+(x^+)$$에 비례하는 critic이 Bayes-optimal positive-index classifier를 이루지만, bound 자체는 임의의 양의 critic에 성립한다.
 
 Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다. Similarity, $$\tau>0$$, probability, loss와 mutual information은 모두 무차원이다. 하한은 최대 $$\log N$$까지만 표현하므로 작은 $$N$$에서는 true mutual information이 커도 느슨하다. Critic 용량 부족, correlated negative, finite-sample variance는 추정을 악화시키고, semantic class가 같은 false negative는 통계적으로 marginal sample일 수 있어도 원하는 표현을 서로 밀어낸다. 지나치게 작은 $$\tau$$는 일부 pair에 gradient를 집중시키며, augmentation이 semantic content를 파괴하면 joint positive라는 학습 가정 자체가 downstream 의미와 어긋난다.
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Classes and Operator Overloading"
 course: "C++"
 topic: "Function and Operator Overloading"
@@ -86,6 +86,11 @@ return *this;
 
 > **작성자 보충:** 아래 식은 연속된 `double` 원소 $$N$$개의 저장 크기를 바이트로 나타낸 정확한 할당 크기 항등식이다.
 
+입력은 원소 수 $$N$$이고 출력은 필요한 byte 수다. 핵심 결과는 $$N\operatorname{sizeof}(\texttt{double})$$이며, 곱셈 overflow와 할당 실패를 확인한 뒤 같은 방식의 해제 함수를 사용해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Storage required for a dynamic double array</summary>
+
 원문 7쪽의 `size * sizeof(double)` 형태에서 `size`를 원소 수 $$N$$이라 하면 필요한 저장 공간은
 
 $$
@@ -95,6 +100,8 @@ $$
 다. $$N$$의 단위가 원소 개수이고 `sizeof(double)`의 단위가 바이트/원소이므로 결과는 바이트다. `malloc(size * sizeof(double))`은 이 바이트 수를 직접 받는 반면, `new double[size]`는 원소 수를 받아 같은 크기의 `double` 배열을 구성한다.
 
 이 식은 $$N$$개의 `double`을 연속 저장한다는 조건에서 성립한다. C 방식으로 할당할 때는 `size <= SIZE_MAX / sizeof(double)`을 먼저 확인해 곱셈 overflow를 막고, 반환값이 null인지 확인해야 한다. C++의 `new double[size]`도 크기 계산이 표현 범위를 넘거나 메모리를 확보하지 못하면 정상 배열을 만들지 못한다. 기본 `new[]`는 메모리 확보 실패 시 `std::bad_alloc`을, 유효하지 않은 배열 길이에는 `std::bad_array_new_length`를 던질 수 있다. 확보한 배열은 할당 방식에 맞춰 각각 `free` 또는 `delete[]`로 해제해야 하며 둘을 섞으면 안 된다.
+
+</details>
 
 ## 3. static과 const
 
@@ -208,6 +215,11 @@ m(0, 0) = 1; // 쓰기
 
 > **작성자 보충:** 원문 22쪽의 2x2 예제를 $$R$$행 $$C$$열의 연속 저장 행렬로 일반화한다. 원문 추가 코드의 `i + 2*j`는 아래 열 우선 공식에서 $$R=2$$인 특수한 경우다.
 
+행 우선 저장은 “앞선 행 수 × 한 행의 열 수 + 현재 열”, 열 우선 저장은 “앞선 열 수 × 한 열의 행 수 + 현재 행”으로 offset을 계산한다. 저장 방식과 offset 공식을 섞으면 다른 원소를 읽으므로 둘을 함께 정해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Flattening row-major and column-major matrices</summary>
+
 행 인덱스를 $$i$$, 열 인덱스를 $$j$$라고 하고 0부터 센다고 하자.
 
 | 기호 | 정의 | 영역 | 단위 |
@@ -240,6 +252,8 @@ $$
 이며, 여기서 $$k$$는 원소 단위 offset이고 주소 식의 결과는 바이트 단위다.
 
 두 offset 식은 **0 기반 인덱스, 고정된 행·열 크기, 원소 사이에 별도 padding이 없는 연속 1차원 저장**에서 정확한 등식이다. 인덱스가 범위를 벗어나거나, 행 우선 데이터에 열 우선 식을 쓰거나, 행마다 길이가 다르거나, 실제 stride가 $$R$$ 또는 $$C$$와 다른 padded 배열이면 사용할 수 없다. 이때는 실제 leading dimension을 $$L$$이라 두고 행 우선은 $$iL+j$$, 열 우선은 $$i+jL$$처럼 저장소의 stride를 써야 한다. 또한 큰 크기에서는 $$RC$$와 offset 계산이 인덱스 타입의 범위를 넘지 않는지도 확인해야 한다.
+
+</details>
 
 ## 9. 클래스 파일 분리
 
@@ -298,9 +312,14 @@ Student::Student(int age, const char* name) {
 | 읽기/쓰기 구분 | `double&` 반환이면 대입 가능, `const` 버전은 읽기 전용 |
 | 행렬-벡터 곱 | `A * v`, `v * A`를 전역 `operator*`로 구현 |
 
+코드의 입력은 2차원 벡터와 2×2 열 우선 행렬이고, 출력은 피연산자 순서에 맞는 새 `Vector2D`다. `operator()`가 참조를 반환하면 원소 쓰기가 가능해지고, `const` 버전은 읽기 경로를 제공한다. 아래 토글에서 원문 전문과 각 상태 변화를 추적한다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Vector and matrix operator overloads</summary>
+
 ### 코드 전문
 
-```cpp
+~~~cpp
 #include <iostream>
 #include <cstdio>
 
@@ -391,7 +410,9 @@ int main()
 	w = A*v;
 	w = v*A;
 }
-```
+~~~
+
+</details>
 
 ### 1. `Vector2D` 클래스 해석
 

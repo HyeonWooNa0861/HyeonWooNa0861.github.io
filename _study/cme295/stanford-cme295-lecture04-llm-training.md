@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
@@ -60,6 +60,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 ## 수식 해설: pre-training loss와 LoRA
 
+Pre-training은 실제 다음 token에 부여한 확률의 negative log-likelihood를 줄인다. LoRA는 frozen weight에 낮은 rank의 update $$BA$$를 더해 학습 파라미터를 줄이고, FlashAttention은 softmax를 block별로 합쳐 전체 score matrix의 메모리 이동을 줄인다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Next-token loss, LoRA count, and online softmax</summary>
+
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
 | Next-token pre-training과 SFT masking | 00:10:36–00:10:55, 01:07:00–01:08:31 | Next-token objective와 response 구간 loss는 강의 원문이며, NLL·chain-rule 표기는 작성자 보충 유도다. |
@@ -112,6 +117,8 @@ u'=e^{m-m'}u+\sum_{j\in B}e^{s_j-m'}v_j.
 $$
 
 마지막 output은 $$u'/\ell'$$다. 이전 항에 $$e^{m-m'}$$를 곱하면 모든 항이 새 maximum $$m'$$ 기준으로 다시 scale되므로, block을 모두 처리한 뒤 $$u/\ell=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 된다. 따라서 real arithmetic에서는 vanilla softmax attention과 같은 결과를 내면서 전체 score matrix를 HBM에 materialize하지 않을 수 있다. 이는 00:46:33–00:48:53에서 강의가 “slide에 식을 넣지 않았다”고 명시한 부분의 **작성자 보충 유도**다. 한 행에 unmasked finite score가 하나 이상 있어 $$\ell>0$$이어야 한다. 실제 floating-point에서는 reduction 순서와 rounding이 달라 bitwise equality는 보장되지 않으며, dropout·mask·causal block 경계도 kernel에서 같은 의미로 적용해야 한다.
+
+</details>
 
 ## 학습 포인트
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-06 17:23:40 +0900
+last_modified_at: 2026-10-13 16:49:01 +0900
 title: "Lecture 10: Dynamic Programming II"
 course: "Algorithms"
 topic: "Longest Common Subsequences, Tiling, and Path Reconstruction"
@@ -133,6 +133,9 @@ def lcs_length(x, y):
 
 Top-down 방식은 “마지막 인덱스가 $$i,j$$인 두 접두사”를 재귀 상태로 사용한다(13쪽). 인덱스가 음수가 되면 한 문자열이 비었다는 뜻이므로 0을 반환한다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Memoized LCS over two prefix endpoints</summary>
+
 ```python
 def lcs_length_top_down(x, y):
     m, n = len(x), len(y)
@@ -152,6 +155,12 @@ def lcs_length_top_down(x, y):
 
     return solve(m - 1, n - 1)
 ```
+
+- 입력은 두 문자열이다. `solve(i, j)`는 각각 인덱스 `i`, `j`까지의 접두사가 갖는 LCS 길이를 반환한다.
+- 끝 문자가 같으면 대각선 상태에 1을 더한다. 다르면 한쪽 끝을 제외한 두 상태 중 큰 값을 선택한다.
+- `memo`의 shape는 `(m, n)`이며 `-1`은 아직 계산하지 않은 상태다. 출력은 길이만이므로 실제 LCS를 복원하려면 선택 경로가 추가로 필요하다.
+
+</details>
 
 Memoization이 없고 모든 비교가 불일치라면 한 호출이 두 호출로 갈라진다. 슬라이드 11쪽 표의 값은 전체 호출 수가 아니라 재귀 트리 안에서 `LCS(1, 1)`이 나타나는 횟수다. `LCS(m, n)`에서 `LCS(1, 1)`까지 가려면 첫 인덱스를 $$m-1$$번, 둘째 인덱스를 $$n-1$$번 줄여야 하므로 그 경로 수는 다음 이항계수다.
 
@@ -284,6 +293,9 @@ $$i$$에서 시작하는 최적 경로의 첫 연산이 상태 $$k$$로 이동�
 
 `D[N]`이라는 숫자 하나만으로는 실제 경로가 보이지 않는다. 값 테이블 전체가 있다면 각 상태에서 허용된 다음 수 $$k$$ 중 $$D[k]=D[i]-1$$인 것을 다시 골라 경로를 찾을 수도 있다. 슬라이드 22–27쪽처럼 부모 테이블 $$P[i]$$에 선택한 다음 수를 함께 저장하면 이 재탐색 없이, 동점에서 고른 경로까지 그대로 따라갈 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Minimum operation counts and parent reconstruction</summary>
+
 ```python
 def make_one_with_path(n):
     dp = [0] * (n + 1)
@@ -309,6 +321,12 @@ def make_one_with_path(n):
 
     return dp[n], path
 ```
+
+- 입력은 양의 정수 `n`이다. `dp[i]`는 `i`를 1로 만드는 최소 연산 수이고, `parent[i]`는 선택한 다음 정수다.
+- 증가 순서로 `i`를 처리하면 `i - 1`, `i // 2`, `i // 3` 후보의 `dp`가 모두 먼저 계산되어 있다. 최소 후보에서 1을 더해 현재 값을 만든다.
+- 출력은 최소 횟수와 실제 경로 한 개다. `parent[1] = 0`을 종료 sentinel로 사용하며, 동점에서는 후보 목록에서 먼저 나온 최적 경로를 보존한다.
+
+</details>
 
 후보의 `dp` 값이 같은 경우 Python의 `min`은 먼저 나온 후보를 유지한다. 위 순서는 슬라이드의 최종 부모 표와 같은 선택을 만들지만, 동점에서 다른 최적 부모를 골라도 최소 횟수는 같다. `parent[1] = 0`은 경로가 끝났음을 나타내는 sentinel이다.
 

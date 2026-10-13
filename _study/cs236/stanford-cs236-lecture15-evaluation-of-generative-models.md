@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-09-03 19:55:00 +0900
+last_modified_at: 2026-10-13 16:49:41 +0900
 title: "Stanford CS236 Lecture 15: Evaluation of Generative Models"
 course: "CS236"
 topic: "Likelihood, Compression, Sample Quality, Representation Metrics, and Prompt-Based Evaluation"
@@ -86,7 +86,8 @@ KID는 더 principled한 two-sample test로 볼 수 있고 unbiased estimator를
 
 Text-to-image model은 image quality만 보아서는 부족하다. Caption과 image의 alignment, aesthetic quality, robustness, originality, toxicity, bias, spatial reasoning까지 함께 평가해야 한다. HEIM은 이런 다면 평가를 한 benchmark로 묶으려는 시도로 소개된다. Latent representation learning에서는 downstream task가 중요하다. Clustering이면 homogeneity, completeness, V-measure나 normalized mutual information을 볼 수 있고, reconstruction/compression이면 MSE, PSNR, SSIM을 볼 수 있다. Disentanglement는 independent하고 interpretable한 latent factor를 원하는 목표지만, 순수 unsupervised setting에서는 어떤 inductive bias나 supervision 없이 식별하기 어렵다는 점을 기억해야 한다. 마지막으로 LLM은 next-token generative model이지만 자연어 prompt로 task를 지정할 수 있으므로, HELM이나 BigBench처럼 task suite와 metric suite를 함께 설계하는 평가가 필요하다.
 
-### 핵심 수식 해설: FID와 MMD가 실제로 측정하는 것
+<details markdown="block">
+<summary markdown="span">Derivation: What FID and MMD measure</summary>
 
 > **Source mapping:** Official Lecture 15 PDF p. 17의 FID와 p. 18의 MMD/KID 정의에 대응한다.
 
@@ -101,7 +102,10 @@ $$
 
 Characteristic kernel이면 population MMD가 0일 때 $$p=q$$다. 다만 finite sample에서는 estimator variance가 있고 kernel·bandwidth 선택에 민감하다. 그러므로 FID·KID는 perceptual quality, memorization, fairness를 증명하는 단일 점수가 아니라 제한된 feature geometry에서의 비교 지표다.
 
-### Inception Score의 두 인자 (작성자 보충; 강의 슬라이드 15--16의 정의)
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sharpness and diversity in the Inception Score</summary>
 
 > **Source mapping:** Official Lecture 15 PDF p. 15의 sharpness와 p. 16의 diversity 및 $$\mathrm{IS}=D\times S$$ 정의에 대응한다.
 
@@ -138,6 +142,8 @@ $$
 이는 entropy와 KL 정의를 대입한 **정확한 항등식**이다. $$K$$개 class라면 $$1/K\le S\le1$$, $$1\le D\le K$$, $$1\le\mathrm{IS}\le K$$이고 모든 probability, entropy의 nat, IS는 무차원이다. Sharp sample은 classifier entropy가 낮고, diverse set은 marginal label entropy가 높다는 직관을 곱으로 결합한다.
 
 그러나 이 해석은 classifier의 label space가 평가 domain을 잘 나타내고 posterior가 calibrated되어 있다는 가정에 의존한다. IS는 real-data distribution을 직접 비교하지 않으며, class 안의 다양성·왜곡·중복과 training-set memorization을 놓칠 수 있다. Classifier가 자신 있게 틀리거나 adversarial artifact에 과신하면 sharpness가 부풀고, class prior가 본래 불균형한 domain에서는 uniform marginal을 선호하는 diversity 항이 부적절할 수 있다. 또한 finite-sample plug-in estimate와 split 수에 따라 값이 달라지므로 sample 수, preprocessing, classifier checkpoint, split protocol이 다른 IS는 직접 비교하면 안 된다.
+
+</details>
 
 ## 핵심 개념
 

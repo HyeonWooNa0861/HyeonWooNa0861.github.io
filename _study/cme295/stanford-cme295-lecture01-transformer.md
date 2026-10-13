@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:51:11 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
@@ -60,6 +60,11 @@ LLM을 이해하려면 먼저 NLP 작업의 입력과 출력을 구분해야 한
 
 ## 수식 해설: scaled dot-product attention
 
+Attention은 각 query가 key와 얼마나 관련 있는지 점수화하고, 그 점수를 확률 가중치로 바꿔 value를 합친다. 핵심 정의는 $$\operatorname{softmax}(QK^\top/\sqrt{d_k})V$$이며, $$\sqrt{d_k}$$는 차원이 커질 때 dot-product score가 지나치게 커지는 현상을 완화한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Attention scaling, label smoothing, and perplexity</summary>
+
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
 | Perplexity의 확률 기반 의미 | 00:20:43–00:21:06 | 강의 원문은 metric의 의미와 방향을 설명하며, 아래 NLL 등가식은 작성자 보충 유도다. |
@@ -100,6 +105,8 @@ PPL=e^{\overline{\mathcal L}}
 $$
 
 다. 두 번째 등식은 $$\exp(\sum\log a_t/T)=(\prod a_t)^{1/T}$$에서 나온다. 이는 동일 tokenizer와 evaluation tokenization에서의 정확한 metric 정의다. Tokenizer와 data distribution이 다르면 perplexity를 직접 비교하기 어렵고, 낮은 perplexity가 factuality나 usefulness를 보장하지 않는다.
+
+</details>
 
 ## 학습 포인트
 

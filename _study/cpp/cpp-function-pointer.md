@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-13 16:48:42 +0900
 title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"
@@ -30,7 +30,7 @@ Source PDF: `C++ 함수포인터.pdf`
 
 14쪽 전체를 페이지 이미지로 대조했다. 이 자료의 괄호, 반환형, 매개변수 목록은 함수 타입을 나타내는 **C++ 선언 문법**이고, comparator의 음수·0·양수 반환은 API 계약이다. 강의의 결론이나 알고리즘이 의존하는 수학 공식은 없으므로 유도·증명을 추가하지 않고 코드 호출 흐름을 추적했다.
 
-> **핵심:** **함수 포인터** 함수 주소를 저장하고 나중에 호출할 수 있다. **콜백 함수** 동작을 함수 인자로 전달해 호출 시점과 동작 내용을 분리한다.
+> **핵심:** **함수 포인터**는 함수 주소를 저장하고 나중에 호출할 수 있다. **콜백 함수**는 동작을 함수 인자로 전달해 호출 시점과 동작 내용을 분리한다.
 
 ## 전체 흐름
 
@@ -163,18 +163,22 @@ void qsort(
 | 반환값 | 의미 | 결과 |
 |---|---|---|
 | 음수 | `a < b` | `a`를 앞에 둠 |
-| 0 | `a == b` | 순서 유지 |
+| 0 | 두 원소를 동등하게 취급 | 상대 순서는 보장되지 않음 |
 | 양수 | `a > b` | `b`를 앞에 둠 |
 
 예시:
 
 ```cpp
 int cmp_asc(const void* a, const void* b) {
-    return *(int*)a - *(int*)b;
+    const int lhs = *(const int*)a;
+    const int rhs = *(const int*)b;
+    return (lhs > rhs) - (lhs < rhs);
 }
 
 int cmp_desc(const void* a, const void* b) {
-    return *(int*)b - *(int*)a;
+    const int lhs = *(const int*)a;
+    const int rhs = *(const int*)b;
+    return (lhs < rhs) - (lhs > rhs);
 }
 
 int arr[] = { 5, 2, 8, 1, 9 };
@@ -184,6 +188,8 @@ qsort(arr, 5, sizeof(int), cmp_desc); // 9 8 5 2 1
 ```
 
 `qsort` 내부 로직은 그대로이고, 비교 콜백만 바꾸면 정렬 기준이 달라진다.
+
+두 정수를 빼서 반환하는 간단한 비교 함수는 차이가 `int` 범위를 넘으면 signed overflow가 발생할 수 있다. 위 예제처럼 대소 비교 결과를 `-1`, `0`, `1`로 변환하면 그 위험을 피한다. 또한 `qsort`는 안정 정렬이 아니므로 비교 결과가 0인 두 원소의 기존 상대 순서를 보존한다고 가정하면 안 된다.
 
 ## 6. `typedef`로 함수 포인터 읽기 쉽게 만들기
 
@@ -240,7 +246,8 @@ public:
 
     Student(const char* _name, int _score)
         : score(_score) {
-        strncpy(name, _name, 20);
+        strncpy(name, _name, sizeof(name) - 1);
+        name[sizeof(name) - 1] = '\0';
     }
 };
 ```
@@ -281,6 +288,8 @@ qsort(arr, 3, sizeof(Student), cmp_by_name);
 ```
 
 정렬 함수는 그대로 두고 콜백만 바꾸면 점수순, 이름순처럼 정렬 기준을 교체할 수 있다.
+
+`qsort`는 원소를 raw byte 단위로 재배치하므로 C++ 객체 일반에 쓰는 기본 선택지가 아니다. 이 예제처럼 원소 타입이 trivially copyable인지 확인해야 하며, 소유 자원·가상 함수·비자명 복사/이동을 가진 객체에는 `std::sort`를 사용해야 한다.
 
 ## 9. `std::sort`와 `operator<`
 

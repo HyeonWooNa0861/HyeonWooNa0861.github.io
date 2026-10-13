@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-10-13 15:47:15 +0900
+last_modified_at: 2026-10-13 17:00:20 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -788,7 +788,12 @@ Voiced speech를 짧은 구간에서 거의 주기적이라고 근사하면 voca
 
 예를 들어 $$f_0=100\ \mathrm{Hz}$$이고 한 formant가 550 Hz 부근에 있다면, 공명은 500 Hz·600 Hz 등의 인접 harmonic을 대역폭에 따라 강조한다. 이상적인 선형·시간불변 filter 모델에서는 이것만으로 새로운 550 Hz harmonic을 만들어 내지 않는다. 입 모양을 바꾸면 주로 formant pattern이, vocal-fold 반복률을 바꾸면 주로 harmonic 간격이 바뀐다는 것이 source-filter 모델의 유용한 출발점이다. 실제 발성의 상호작용까지 완전히 독립이라는 뜻은 아니다.
 
-**왜 filter는 harmonic 위치보다 크기·phase를 바꾸는가?** 이를 도출하기 위해 짧은 voiced 구간의 excitation을 유한한 Fourier 합 $$s(t)=\sum_{n=-K}^{K}s_ne^{jn\omega_0t}$$로 모델링하고, vocal tract를 impulse response $$h_{\mathrm{VT}}(\tau)$$인 linear time-invariant(LTI) filter로 근사하자. $$K$$는 무차원 정수 cutoff, $$\tau$$는 seconds다. 이 예에서는 입력·출력을 무차원으로 정규화하여 $$h_{\mathrm{VT}}$$의 단위는 $$\mathrm{s}^{-1}$$, frequency response $$H_{\mathrm{VT}}$$는 무차원 gain이 된다. 실제 측정계에서는 입출력 물리량에 맞는 단위를 별도로 적용해야 한다.
+**왜 filter는 harmonic 위치보다 크기·phase를 바꾸는가?** 짧은 voiced 구간을 harmonic excitation과 LTI vocal-tract filter로 근사하면, 출력의 $$n$$번째 Fourier coefficient는 $$y_n=H_{\mathrm{VT}}(nf_0)s_n$$이다. 즉 filter는 이미 존재하는 $$nf_0$$ basis의 complex coefficient를 바꾸며, 이 근사 안에서는 새로운 중간 frequency를 만들지 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Harmonic Excitation Through an LTI Vocal-Tract Filter</summary>
+
+이를 도출하기 위해 짧은 voiced 구간의 excitation을 유한한 Fourier 합 $$s(t)=\sum_{n=-K}^{K}s_ne^{jn\omega_0t}$$로 모델링하고, vocal tract를 impulse response $$h_{\mathrm{VT}}(\tau)$$인 linear time-invariant(LTI) filter로 근사하자. $$K$$는 무차원 정수 cutoff, $$\tau$$는 seconds다. 이 예에서는 입력·출력을 무차원으로 정규화하여 $$h_{\mathrm{VT}}$$의 단위는 $$\mathrm{s}^{-1}$$, frequency response $$H_{\mathrm{VT}}$$는 무차원 gain이 된다. 실제 측정계에서는 입출력 물리량에 맞는 단위를 별도로 적용해야 한다.
 
 $$h_{\mathrm{VT}}$$가 절대적분 가능하다고 가정하면 convolution에 유한 합을 대입해
 
@@ -807,6 +812,8 @@ $$
 $$
 y_n=H_{\mathrm{VT}}(nf_0)s_n.
 $$
+
+</details>
 
 즉 **기존 harmonic의 complex coefficient에 filter response가 곱해지고, basis의 frequency $$nf_0$$는 그대로다.** 550 Hz 부근 공명은 $$H_{\mathrm{VT}}(500)$$와 $$H_{\mathrm{VT}}(600)$$의 크기·phase에 반영된다. 입력에 없는 550 Hz 성분을 선형·시간불변 filter가 새로 만들어 내는 것은 아니다. 이 유도는 짧은 구간을 정상적인 LTI 응답으로 근사한 결과이며, 급격한 발성 변화·초기 transient·비선형 효과까지 정확히 설명하는 모델은 아니다.
 
@@ -1200,7 +1207,12 @@ B,&\lvert t\rvert<\tau/2,\\
 \end{cases}
 $$
 
-경계점 값은 transform에 영향을 주지 않는다. 정의에 직접 대입하면 $$\omega\ne0$$에서
+경계점 값은 transform에 영향을 주지 않는다. 이 pulse의 transform은 $$X_\omega(\omega)=B\tau\operatorname{sinc}(\omega\tau/2)$$이고, zero-frequency 값 $$X_\omega(0)=B\tau$$는 pulse의 면적이다. 여기서는 $$\operatorname{sinc}(z)=\sin z/z$$, $$\operatorname{sinc}(0)=1$$을 사용한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Continuous-Time Rectangular-Pulse Spectrum</summary>
+
+정의에 직접 대입하면 $$\omega\ne0$$에서
 
 $$
 \begin{aligned}
@@ -1213,7 +1225,7 @@ X_\omega(\omega)
 \end{aligned}
 $$
 
-이 예에서는 $$\operatorname{sinc}(z)=\sin z/z$$이고 $$\operatorname{sinc}(0)=1$$로 정의한다. Library가 쓰는 normalized sinc $$\sin(\pi z)/(\pi z)$$와 섞지 않는다. $$\omega=0$$의 값은 극한 또는 원래 적분으로
+Library가 쓰는 normalized sinc $$\sin(\pi z)/(\pi z)$$와 섞지 않는다. $$\omega=0$$의 값은 극한 또는 원래 적분으로
 
 $$
 X_\omega(0)=\int x(t)\,dt=B\tau
@@ -1225,6 +1237,8 @@ $$
 X_f(f)=B\tau\,\operatorname{sinc}(\pi f\tau).
 $$
 
+</details>
+
 $$B=1\ \mathrm{V}$$, $$\tau=2\ \mathrm{ms}$$라면 다음과 같이 검산한다.
 
 | Check | 결과 | 해석 |
@@ -1235,7 +1249,10 @@ $$B=1\ \mathrm{V}$$, $$\tau=2\ \mathrm{ms}$$라면 다음과 같이 검산한다
 | angular-frequency zero | $$\omega=2\pi/\tau=1000\pi\ \mathrm{rad/s}$$ | Hz zero와 같은 위치를 다른 좌표로 표시 |
 | inverse의 $$t=\pm\tau/2$$ | $$B/2=0.5\ \mathrm{V}$$ | jump에서의 평균값 복원 |
 
-시간 중심에서도 inverse 정규화를 독립적으로 확인할 수 있다.
+시간 중심의 inverse 계산으로 정규화도 독립적으로 확인할 수 있다. 올바른 $$1/(2\pi)$$ 계수를 쓰면 $$x(0)=B$$가 복원된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Inverse-Transform Normalization at the Pulse Center</summary>
 
 $$
 \begin{aligned}
@@ -1249,6 +1266,8 @@ x(0)
 $$
 
 마지막 치환은 $$z=\omega\tau/2$$다. $$1/(2\pi)$$를 빠뜨리면 1 V 대신 $$2\pi$$ V로 복원되므로 정규화 오류를 바로 잡을 수 있다.
+
+</details>
 
 이 pulse는 시간에 제한되어 있지만 spectrum은 무한 frequency까지 퍼진다. 따라서 **시간 제한과 대역 제한은 같은 조건이 아니다.** 실제 speech frame의 DFT가 유한 개의 coefficient를 내는 이유는 continuous Fourier transform의 정의가 유한해서가 아니라, Section 11에서 다루는 sampling과 유한 sample 수 때문이다.
 
@@ -1313,6 +1332,11 @@ $$
 
 두 번째 왕복도 확인해야 한다. 이번 계산은 **매끄럽고 함수와 모든 도함수가 다항식의 역수보다 빠르게 감소하는 spectrum**을 가정한다. 이런 함수의 모임을 Schwartz class라고 하며 Gaussian이 대표적인 예다. 이 충분조건에서는 forward/inverse를 모두 통상적인 적분으로 다룰 수 있다. Rectangular pulse의 느리게 감소하는 spectrum은 이 추가 가정에 포함되지 않으며, 그 예에는 앞 절의 cutoff 해석을 사용한다.
 
+이 조건에서는 $$\mathcal{F}(\mathcal{F}^{-1}X_\omega)=X_\omega$$가 성립한다. 아래 계산은 시간 적분을 유한 구간으로 제한한 뒤 sinc형 kernel의 극한으로 이를 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Spectrum Recovery After Inverse Fourier Synthesis</summary>
+
 합성한 신호를 다시 분석하되, 먼저 시간 적분을 $$[-R,R]$$로 제한하자. $$R>0$$은 관측 반구간 길이 [s], $$\nu$$는 다시 확인하려는 angular frequency [rad/s], $$Y_R(\nu)$$는 이 유한 시간 분석 결과 [입력 단위 × s]다.
 
 $$
@@ -1345,7 +1369,9 @@ $$
 }
 $$
 
-도 성립한다. 정리하면 **S → F → S에서는 시간축 kernel이 신호를 되찾고, F → S → F에서는 frequency 축 kernel이 spectrum을 되찾는다.** 시간과 frequency가 맡는 역할이 서로 바뀌지만 정규화와 conjugate 부호는 일관된다. Schwartz class에서의 역변환 조건은 <a href="https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/d95e4644254e96ffe92a970c5ed65b0e_MIT18_103F13_fourierint1.pdf" target="_blank" rel="noopener">MIT 18.103: Fourier Integrals, Theorem 1</a>과도 대조할 수 있다.
+</details>
+
+정리하면 **S → F → S에서는 시간축 kernel이 신호를 되찾고, F → S → F에서는 frequency 축 kernel이 spectrum을 되찾는다.** 시간과 frequency가 맡는 역할이 서로 바뀌지만 정규화와 conjugate 부호는 일관된다. Schwartz class에서의 역변환 조건은 <a href="https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/d95e4644254e96ffe92a970c5ed65b0e_MIT18_103F13_fourierint1.pdf" target="_blank" rel="noopener">MIT 18.103: Fourier Integrals, Theorem 1</a>과도 대조할 수 있다.
 
 #### 왕복 과정에서 보존해야 하는 정보
 

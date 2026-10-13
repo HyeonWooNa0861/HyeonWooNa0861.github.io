@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-09-03 19:58:44 +0900
+last_modified_at: 2026-10-13 16:47:48 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
@@ -60,6 +60,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 | Distillation for reasoning | R1 같은 teacher model이 reasoning tokens를 포함한 sample responses를 offline으로 만들고, smaller student model이 그 full sequence를 SFT로 맞추는 방식. |
 
 ## 수식 해설: pass@k와 group-relative advantage
+
+$$\operatorname{pass@k}$$는 여러 후보 중 하나 이상이 맞는지를 측정하고, GRPO는 같은 prompt에서 얻은 여러 completion의 reward를 서로 비교해 advantage를 만든다. 두 값 모두 sampling 조건에 의존하므로 독립 시행과 중복 없는 finite sample을 구분해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Pass-at-k, group advantage, and clipped objectives</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
@@ -123,6 +128,8 @@ $$
 이다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 온다. 이 세부식은 01:11:49–01:20:35의 ratio·clipping·explicit KL 설명을 완전한 표기로 옮긴 **작성자 보충**이며, 구현마다 KL estimator와 normalization 위치가 다를 수 있다. Importance ratio 분모와 log-ratio가 유한하려면 sampled token에서 관련 probability가 양수여야 한다.
 
 기본식의 $$T_i^{-1}$$는 각 completion을 먼저 평균내므로 동일한 negative advantage에서도 긴 오답의 token당 penalty가 더 작아질 수 있다. 강의 01:21:14–01:25:50의 비교처럼 DAPO식 token-level normalization은 batch/group의 전체 유효 token에 공통 denominator를 사용해 token 기여를 맞추고, Dr.GRPO식 수정은 response별 $$T_i^{-1}$$ factor를 고정 상수 denominator로 대체하거나 제거하는 방향이다. 어느 방식도 길이 bias 제거와 성능 향상을 보편적으로 보장하지 않는다. Reasoning token을 늘리면 항상 정확도가 오른다는 주장도 empirical trend이지 증명이 아니다.
+
+</details>
 
 ## 학습 포인트
 

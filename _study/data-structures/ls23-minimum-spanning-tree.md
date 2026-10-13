@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-05 01:51:19 +0900
-last_modified_at: 2026-09-03 19:42:12 +0900
+last_modified_at: 2026-10-13 16:49:42 +0900
 title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"
@@ -168,6 +168,11 @@ $$
 
 ### Prim의 선택이 안전한 이유
 
+현재 tree와 바깥 정점을 가르는 cut에서 가장 가벼운 edge는 어떤 MST에도 안전하게 포함할 수 있다. 더 무거운 crossing edge가 있으면 이를 교환해도 연결은 유지되고 비용은 늘지 않는다.
+
+<details markdown="block">
+<summary markdown="span">Proof: Prim's cut-property exchange argument</summary>
+
 > **분류:** MST의 cut property를 이용한 **교환 논증 증명 개요**다. 그래프가 연결된 무향 가중 그래프라고 가정한다.
 
 > **원문 추적:** `LS23_minimum_spanning_tree.pdf` pp.16–27은 Prim의 선택·갱신 절차와 실행 예를 제시한다. 아래 cut-property 교환 논증은 greedy 선택의 안전성을 설명하는 작성자 보충이다.
@@ -187,6 +192,8 @@ w(T')=w(T)-w(f)+w(e)\le w(T).
 $$
 
 $$T$$가 최소였으므로 $$T'$$도 MST다. 즉 Prim이 고른 $$e$$를 포함하는 MST가 항상 존재해 greedy 선택은 안전하다. 가중치가 같으면 MST가 여러 개일 수 있지만 알고리즘은 그중 하나를 만든다. 그래프가 연결되지 않으면 하나의 spanning tree가 존재하지 않아 각 component의 minimum spanning forest만 얻는다. 방향 그래프에는 이 cut-property 기반 MST 정의를 그대로 적용할 수 없다.
+
+</details>
 
 ## 7. Prim Setup
 
