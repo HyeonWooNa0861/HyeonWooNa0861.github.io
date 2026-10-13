@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-09-28 16:29:58 +0900
+last_modified_at: 2026-10-13 15:47:15 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -71,7 +71,12 @@ Bin 간격은 $$\Delta f=f_s/N$$ Hz다. $$0\le k\le N/2$$에서는 $$f_k=kf_s/N$
 
 ### 1.2 짝수·홀수 분해로 butterfly가 나온다 — 작성자 보충 유도
 
-PDF p.3은 FFT가 대략 $$O(N\log N)$$이라고만 밝힌다. 왜 그런지 보기 위해 우선 $$N$$이 2의 거듭제곱이라고 가정하고 **무정규화** 합 $$F_N[k]=\sum_{n=0}^{N-1}x[n]W_N^{kn}$$, $$W_N=e^{-j2\pi/N}$$를 계산한다. 최종 $$X[k]=F_N[k]/N$$이므로 p.2의 정의와 일치한다.
+PDF p.3은 FFT가 대략 $$O(N\log N)$$이라고만 밝힌다. FFT의 입력과 출력은 DFT와 같고, 목적은 같은 부분합을 재사용해 곱셈·덧셈 수를 줄이는 것이다. Radix-2 FFT는 짝수 위치 표본과 홀수 위치 표본의 길이 $$N/2$$ DFT를 한 번씩 계산한 뒤 각 쌍으로 두 output bin을 만든다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Radix-2 FFT Butterfly</summary>
+
+왜 그런지 보기 위해 우선 $$N$$이 2의 거듭제곱이라고 가정하고 **무정규화** 합 $$F_N[k]=\sum_{n=0}^{N-1}x[n]W_N^{kn}$$, $$W_N=e^{-j2\pi/N}$$를 계산한다. 최종 $$X[k]=F_N[k]/N$$이므로 p.2의 정의와 일치한다.
 
 $$n=2r$$과 $$n=2r+1$$을 분리하면, 길이 $$N/2$$인 두 DFT $$E[k]$$와 $$O[k]$$를 재사용할 수 있다.
 
@@ -85,7 +90,18 @@ F_N[k+N/2]&=E[k]-W_N^kO[k]\qquad (0\le k<N/2).
 \end{aligned}
 $$
 
-마지막 줄은 $$W_N^{k+N/2}=-W_N^k$$에서 나온다. 같은 $$E,O$$로 두 출력을 만드는 결합이 butterfly다. 한 단계의 결합 비용은 $$O(N)$$이고 길이가 절반인 문제 두 개를 푸므로 $$T(N)=2T(N/2)+O(N)=O(N\log_2N)$$이다. 직접 DFT의 $$N$$개 출력마다 $$N$$항을 더하는 $$O(N^2)$$와 비교하자. 이것은 radix-2 설명이며 임의 길이 FFT의 모든 구현이 꼭 이 모양이라는 뜻은 아니다.
+마지막 줄은 $$W_N^{k+N/2}=-W_N^k$$에서 나온다. 같은 $$E,O$$로 두 출력을 만드는 결합이 butterfly다. 한 단계의 결합 비용은 $$O(N)$$이고 길이가 절반인 문제 두 개를 푼다. 따라서 계산량은 다음 점화식으로 정해진다.
+
+$$
+\begin{aligned}
+T(N)&=2T(N/2)+O(N)\\
+&=O(N\log_2N).
+\end{aligned}
+$$
+
+직접 DFT의 $$N$$개 출력마다 $$N$$항을 더하는 $$O(N^2)$$와 비교하자. 이것은 radix-2 설명이며 임의 길이 FFT의 모든 구현이 꼭 이 모양이라는 뜻은 아니다.
+
+</details>
 
 예를 들어 $$N=8$$이면 길이 4 DFT 두 개를 결합해 8개 bin을 얻는다. p.2 convention을 유지하려면 마지막에 8로 나누거나 각 재귀 단계에서 일관되게 정규화해야 한다. 무정규화 FFT 출력의 높이를 정규화 DFT 그림의 높이와 직접 비교하면 8배 차이가 난다.
 
@@ -137,6 +153,26 @@ $$
 
 PDF pp.11–12의 STFT는 **복소수 행렬**이다. $$\lvert S[m,k]\rvert$$는 magnitude, $$\arg S[m,k]$$는 phase다. 밝기 표시를 위해 log scale을 쓰면 작은 값도 보이기 쉬워지지만, 0의 로그는 정의되지 않으므로 양수 기준값 $$A_{\mathrm{ref}}$$와 floor $$\epsilon>0$$를 둬야 한다.
 
+**Real part와 imaginary part는 magnitude와 phase가 아니다.** 한 bin을 $$S[m,k]=a+jb$$라고 하면 real part $$a$$와 imaginary part $$b$$는 직교좌표이고, magnitude와 phase는 두 좌표를 함께 변환한 값이다.
+
+$$
+\lvert S[m,k]\rvert=\sqrt{a^2+b^2},\qquad
+\arg S[m,k]=\operatorname{atan2}(b,a).
+$$
+
+예를 들어 $$S=3+4j$$이면 입력 좌표는 $$(3,4)$$, 출력은 magnitude 5와 phase 약 0.9273 rad다. $$S=0$$에서는 magnitude가 0이고 phase는 정의되지 않는다. 따라서 거의 0인 magnitude 영역의 phase 색상은 작은 noise에도 크게 바뀔 수 있으며, PDF pp.11–12의 phase map은 magnitude map과 함께 읽어야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Complex STFT Coordinates and Phase Maps</summary>
+
+Polar form $$S=re^{j\theta}=r\cos\theta+jr\sin\theta$$에서 $$a=r\cos\theta$$, $$b=r\sin\theta$$다. 따라서 $$r=\sqrt{a^2+b^2}$$이고, 사분면과 $$a=0$$인 경우를 보존하려면 $$\theta=\operatorname{atan2}(b,a)$$를 사용한다. 단순한 $$\arctan(b/a)$$는 $$3+4j$$와 $$-3-4j$$처럼 비율이 같은 반대 사분면을 구별하지 못한다.
+
+Phase plot의 각 pixel은 해당 frame·frequency bin의 복소 방향을 색으로 나타낸다. Magnitude가 충분히 큰 연속 성분에서는 시간에 따른 phase 진행을 해석할 수 있다. 그러나 $$a\approx0$$이고 $$b\approx0$$이면 점이 원점 부근에 있으므로 방향이 불안정하다. 이때 인접 pixel의 색이 급변해도 강한 물리적 phase jump라고 단정할 수 없다. 먼저 magnitude floor, window, hop과 phase wrapping 범위(보통 $$-\pi$$부터 $$\pi$$)를 확인해야 한다.
+
+Real-valued frame에서는 two-sided DFT가 $$S[m,N_{\mathrm{FFT}}-k]=S[m,k]^*$$를 만족한다. 두 bin은 magnitude가 같고 phase 부호가 반대다. `rfft`가 음의 frequency 절반을 생략할 수 있는 이유는 이 중복 관계이며, 복소 입력에는 일반적으로 적용되지 않는다.
+
+</details>
+
 $$
 D_{\mathrm{amp}}[m,k]=20\log_{10}\frac{\max(\lvert S[m,k]\rvert,\epsilon)}{A_{\mathrm{ref}}}\ \mathrm{dB}.
 $$
@@ -149,7 +185,12 @@ PDF p.13의 iSTFT 설명은 조건이 생략된 단순화다. 원래 복소 STFT
 
 **STFT 자체가 값을 항상 작게 만드는 것은 아니다.** 디지털 입력의 진폭, 프레임 길이, 창 이득, FFT 정규화와 색상 범위가 계수의 크기를 결정한다. 짧은 프레임은 전체 녹음 FFT보다 합하는 표본 수가 적고 Hann 창은 표본에 1 이하 가중치를 준다. 반면 무정규화 합은 입력이 −1~1이어도 1보다 클 수 있다. 선형 그림의 많은 bin이 어두운 이유와 dB 값이 음수인 이유도 다르다. 전자는 큰 값이 색상 범위를 지배하기 때문일 수 있고, 후자는 선택한 기준보다 작다는 뜻이다. 음수 dB는 음의 에너지가 아니다.
 
-복원 조건을 식으로 확인하자. 창을 곱한 프레임의 복소 DFT를 올바른 정규화로 역변환하면 $$v_m[r]=x[mH+r]w[r]$$가 된다. 같은 창을 한 번 더 곱해 겹치는 구간을 더하면
+복원 조건을 식으로 확인하면, 각 inverse frame을 다시 겹쳐 더한 뒤 같은 위치에 누적된 창 가중치로 나누어야 한다. 입력은 complex STFT와 분석 조건이고, 출력은 프레임이 덮은 구간의 시간 표본이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Weighted Overlap-Add Reconstruction</summary>
+
+창을 곱한 프레임의 복소 DFT를 올바른 정규화로 역변환하면 $$v_m[r]=x[mH+r]w[r]$$가 된다. 같은 창을 한 번 더 곱해 겹치는 구간을 더하면
 
 $$
 \sum_m v_m[n-mH]w[n-mH]
@@ -163,6 +204,8 @@ x[n]=\frac{\sum_m v_m[n-mH]w[n-mH]}{\sum_m w^2[n-mH]}.
 $$
 
 이것이 같은 분석·합성 창을 사용하는 overlap-add 정규화의 도출이다. 끝부분을 버린 프레임, 위상이 사라진 magnitude, 분모가 0인 경계에서는 이 증명을 그대로 적용할 수 없다. Zero-padding 부분과 원 신호 길이도 구분해야 한다.
+
+</details>
 
 
 ## 3. Mel spectrogram: 주파수 축을 다시 모으기
@@ -291,7 +334,7 @@ $$
 
 **Cell 3**은 `!pip install librosa`와 `!pip install pysoundfile`을 실행한다. 저장된 로그에는 당시 `librosa 0.11.0`과 `soundfile 0.13.1`이 이미 설치되어 있었는데, 별도로 오래된 이름의 `pysoundfile 0.9.0.post1`을 추가 설치한 사실이 보인다. 재현 가능한 실습에는 호환되는 패키지 버전을 명시하고, 이미 충족된 의존성을 중복 설치할 필요가 있는지 검토해야 한다. 이 셀은 실행 환경을 변경하고 네트워크를 사용하므로 노트북을 검토할 때 무심코 실행해서는 안 된다.
 
-**Cell 4**는 `IPython.display.Audio('harvard.wav')`로 파일을 재생하려 한다. 셀 2가 선행되어야 하고 파일 경로가 달라지면 실패한다. 원본 노트북의 **저장 출력**은 Colab에서 다시 열라는 안내문뿐이며, 실제 오디오 데이터가 MIME 출력으로 삽입된 것은 아니다. 따라서 저장된 노트북만 읽어서는 청취 결과를 재현할 수 없다.
+**Cell 4**는 `IPython.display.Audio`에 파일명 `'harvard.wav'`를 전달해 재생하려 한다. 셀 2가 선행되어야 하고 파일 경로가 달라지면 실패한다. 원본 노트북의 **저장 출력**은 Colab에서 다시 열라는 안내문뿐이며, 실제 오디오 데이터가 MIME 출력으로 삽입된 것은 아니다. 따라서 저장된 노트북만 읽어서는 청취 결과를 재현할 수 없다.
 
 ### Cells 5–7: Waveform, Power, and Whole-Recording FFT
 
@@ -359,11 +402,11 @@ $$
 
 마지막 셀은 직접 만든 STFT와 다른 설정을 사용한다. `n_fft=2048`, `win_length=1024`, `hop_length=512`, `n_mels=128`, `n_mfcc=13`이다. 22050 Hz에서 창의 실제 길이는 **약 46.44 ms**, hop은 **약 23.22 ms**, FFT 눈금은 **약 10.77 Hz**다. `center=True`이므로 신호 양끝에 기본적으로 0을 채워 `t`번째 프레임을 `y[t·512]` 주위에 정렬한다. 1024표본 Hann 창은 2048표본 FFT 프레임의 가운데에 0으로 채워진다. 따라서 이 셀과 셀 8은 `n_fft`만 다른 실험이 아니라 **창 길이·hop·center 처리·창 정의가 모두 다른 계산**이다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.stft.html" target="_blank" rel="noopener">librosa 0.11.0 <code>stft</code> API</a>에서 이 정렬 및 zero-padding을 확인할 수 있다.
 
-`S_complex`와 `S_mag=abs(S_complex)`의 shape는 `(1025, 1+floor(L/512))`이다. `S_db=librosa.amplitude_to_db(S_mag, ref=np.max)`는 각 amplitude를 **이 스펙트로그램의 최대 amplitude**와 비교해 `20 log10` 변환한다. 기본 `top_db=80`이 적용되어 최고가 0 dB, 가장 낮은 표시값은 −80 dB가 된다. 이는 교정된 dB SPL 또는 절대 음량이 아니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.amplitude_to_db.html" target="_blank" rel="noopener">librosa <code>amplitude_to_db</code> 문서</a>가 기준값과 절단 범위를 명시한다.
+`S_complex`와 `S_mag=abs(S_complex)`의 shape는 `(1025, 1+floor(L/512))`이다. `librosa.amplitude_to_db`에 `S_mag`와 `ref=np.max`를 전달한 결과를 `S_db`에 저장한다. 각 amplitude를 **이 스펙트로그램의 최대 amplitude**와 비교해 `20 log10` 변환하는 연산이다. 기본 `top_db=80`이 적용되어 최고가 0 dB, 가장 낮은 표시값은 −80 dB가 된다. 이는 교정된 dB SPL 또는 절대 음량이 아니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.amplitude_to_db.html" target="_blank" rel="noopener">librosa <code>amplitude_to_db</code> 문서</a>가 기준값과 절단 범위를 명시한다.
 
-`M=librosa.feature.melspectrogram(y=y, sr=sr, ..., power=2.0)`은 같은 STFT 설정에서 magnitude를 **제곱한 power**를 128개 mel 필터로 합친다. shape는 `(128, 1+floor(L/512))`이다. 당시 기본은 `fmin=0`, `fmax=sr/2`, `htk=False`, `norm='slaney'`이며, mel bin은 Hz bin과 1:1 대응하지 않는다. `M_db=librosa.power_to_db(M, ref=np.max)`는 power에 `10 log10`을 적용하고 0~-80 dB로 자른다. 여기서 `S_db`와 `M_db`는 각각 **자기 배열의 서로 다른 최댓값**을 기준으로 삼으므로 동일한 0 dB가 동일한 물리 에너지를 뜻하지 않는다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa <code>melspectrogram</code> 문서</a>와 <a href="https://librosa.org/doc/0.11.0/generated/librosa.power_to_db.html" target="_blank" rel="noopener">librosa <code>power_to_db</code> 문서</a>가 변환 순서와 기본값을 보여준다.
+`librosa.feature.melspectrogram`에 `y=y`, `sr=sr`, `power=2.0`과 같은 STFT 설정을 전달한 결과를 `M`에 저장한다. Magnitude를 **제곱한 power**를 128개 mel 필터로 합치는 연산이며, shape는 `(128, 1+floor(L/512))`이다. 당시 기본은 `fmin=0`, `fmax=sr/2`, `htk=False`, `norm='slaney'`이며, mel bin은 Hz bin과 1:1 대응하지 않는다. `M_db=librosa.power_to_db(M, ref=np.max)`는 power에 `10 log10`을 적용하고 0~-80 dB로 자른다. 여기서 `S_db`와 `M_db`는 각각 **자기 배열의 서로 다른 최댓값**을 기준으로 삼으므로 동일한 0 dB가 동일한 물리 에너지를 뜻하지 않는다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa <code>melspectrogram</code> 문서</a>와 <a href="https://librosa.org/doc/0.11.0/generated/librosa.power_to_db.html" target="_blank" rel="noopener">librosa <code>power_to_db</code> 문서</a>가 변환 순서와 기본값을 보여준다.
 
-`mfcc=librosa.feature.mfcc(S=M_db, n_mfcc=13)`의 `S`는 **이미 log-power mel spectrogram**이다. 이 전달 방식은 API와 맞다. 기본 DCT-II·직교 정규화가 mel 축 정보를 13개 계수로 모으므로 shape는 `(13, 1+floor(L/512))`이다. MFCC는 새로운 Hz 주파수축이 아니라 **계수 번호 × 시간**의 행렬이며, 정확한 음소 라벨이나 pitch 값 자체가 아니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.mfcc.html" target="_blank" rel="noopener">librosa <code>mfcc</code> 문서</a>는 `S`의 입력 의미와 DCT 기본값을 명시한다.
+`librosa.feature.mfcc`에 `S=M_db`, `n_mfcc=13`을 전달해 `mfcc`에 저장한다. 여기서 `S`는 **이미 log-power mel spectrogram**이므로 이 전달 방식은 API와 맞다. 기본 DCT-II·직교 정규화가 mel 축 정보를 13개 계수로 모으므로 shape는 `(13, 1+floor(L/512))`이다. MFCC는 새로운 Hz 주파수축이 아니라 **계수 번호 × 시간**의 행렬이며, 정확한 음소 라벨이나 pitch 값 자체가 아니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.mfcc.html" target="_blank" rel="noopener">librosa <code>mfcc</code> 문서</a>는 `S`의 입력 의미와 DCT 기본값을 명시한다.
 
 별도의 **real cepstrum** 계산은 전체 파일 `N=L`에 `np.hanning(N)`을 곱하고, `scipy.fft.rfft` → `ln(max(abs(Y),10⁻¹²))` → `scipy.fft.irfft`를 적용한다. 이는 MFCC와 달리 멜 필터·프레임별 DCT를 쓰지 않는다. 독립변수 **quefrency**는 `q/sr` 초이며, 스펙트럼의 주기적인 harmonic 간격이 있으면 역로그스펙트럼에서 관련 지연에 봉우리가 나타날 수 있다. 원본은 `fmin=50`, `fmax=400 Hz`에 대응하는 정수 지연 범위에서 가장 큰 양의 cepstral 값을 골라 `sr/q_peak`를 제목에 넣는다. 저장 제목의 **약 373.7 Hz는 전체 약 18초 음성에서 한 번 고른 피치 *후보***다. 무성 구간·침묵·서로 다른 발화자를 구분하지 않았고, 프레임별 F0 추정이나 진실값 검증도 없으므로 '음성의 피치가 373.7 Hz'라고 말하면 과장이다. `qmin=int(sr/fmax)`는 올림이 아니고 `qmax`는 슬라이스 끝에서 빠지므로 50~400 Hz의 **정확한 포함 범위**도 아니다. 또한 `N`이 홀수면 `irfft`의 기본 출력 길이는 `N−1`이다. 정확한 길이를 보존하려면 `irfft(log_mag, n=N)`을 명시한다. <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.irfft.html" target="_blank" rel="noopener">SciPy <code>irfft</code> 문서</a>가 기본 길이 `2(m−1)`과 홀수 길이 주의를 설명한다.
 
@@ -414,7 +457,10 @@ $$
 
 다음 코드는 **원본을 실행한 결과가 아닌 안전한 재작성 예시**다. 음원 파일과 `librosa`, `numpy`, `scipy`가 준비되어 있고 `y`가 1차원 실수 배열이라는 전제가 필요하다. `sliding_window_view`는 프레임을 뽑는 view를 만들며, 이후 `window` 곱셈과 FFT에서 배열이 생성된다. 출력은 원본 `as_strided` 함수처럼 `(frequency, frame)`으로 맞추지만, 잘못된 길이·hop을 먼저 거부한다.
 
-```python
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Validated STFT and Cepstrum Example</summary>
+
+<pre><code class="language-python">
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 from scipy.fft import rfft, irfft
@@ -425,13 +471,13 @@ def checked_stft(y, sr, frame_size=512, hop_size=256, n_fft=1024, window=None):
         raise ValueError("y must be a one-dimensional real signal")
     if not np.isfinite(y).all():
         raise ValueError("y must contain only finite samples")
-    if not isinstance(frame_size, (int, np.integer)) or frame_size <= 0:
+    if not isinstance(frame_size, (int, np.integer)) or frame_size &lt;= 0:
         raise ValueError("frame_size must be a positive integer")
-    if not isinstance(hop_size, (int, np.integer)) or hop_size <= 0:
+    if not isinstance(hop_size, (int, np.integer)) or hop_size &lt;= 0:
         raise ValueError("hop_size must be a positive integer")
-    if not isinstance(n_fft, (int, np.integer)) or n_fft < frame_size:
+    if not isinstance(n_fft, (int, np.integer)) or n_fft &lt; frame_size:
         raise ValueError("n_fft must be an integer >= frame_size")
-    if not np.isscalar(sr) or not np.isfinite(sr) or sr <= 0:
+    if not np.isscalar(sr) or not np.isfinite(sr) or sr &lt;= 0:
         raise ValueError("sr must be positive and finite")
     if len(y) < frame_size:
         raise ValueError("signal must contain at least one full frame")
@@ -466,11 +512,13 @@ cepstrum = irfft(log_mag, n=N)
 fmin_hz, fmax_hz = 50.0, 400.0
 qmin = max(1, int(np.ceil(sr / fmax_hz)))
 qmax = min(N - 1, int(np.floor(sr / fmin_hz)))
-if qmin > qmax:
+if qmin &gt; qmax:
     raise ValueError("no quefrency sample falls in the requested pitch range")
 q_peak = qmin + int(np.argmax(cepstrum[qmin:qmax + 1]))
 pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가 아님
-```
+</code></pre>
+
+</details>
 
 이 코드는 API 기본값과 관측 단위를 드러내기 위한 **설명용 코드**이며, 여기서 새 `relative_db`·`pitch_candidate_hz`의 숫자를 구해 원본 저장 그림을 대체했다고 주장하지 않는다. 특히 상대 dB 비교를 실제로 하려면 직사각/Hann 창의 에너지 또는 coherent gain, 프레임 정렬, 공통 색상 범위를 한 번 더 맞춰야 한다. 분석 목적이 시간별 음높이라면 긴 파일 전체가 아닌 **유성 프레임별** 후보와 무성 판정을 함께 다뤄야 한다.
 
@@ -506,7 +554,7 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 | PDF p.2 vs p.3 | 수식 불일치 | p.2는 forward DFT에 $$1/N$$을 두지만 p.3의 $$X=Mx$$ 행렬 원소에는 그 계수가 없다. p.2 convention이라면 $$M_{a,b}=N^{-1}e^{-j2\pi(a-1)(b-1)/N}$$로 써야 한다. 행렬이 무정규화 convention이면 p.2와 다른 정의임을 밝혀야 한다. |
 | PDF pp.4–8 | 관례 차이 | p.4의 5/1.5와 p.8의 5000/1500은 정규화 차이로 읽고, 오른쪽 높은 주파수 봉우리는 실수 DFT의 음수 bin으로 해석한다. Aliasing이라고 부르지 않는다. |
 | PDF p.7 | 전제 생략 | $$X[N-k]=X[k]^{*}$$에는 실수 입력이 필요하다. |
-| PDF pp.9–14 | 조건 생략 | STFT의 frame 수는 padding·center 선택에, iSTFT 복원은 복소 phase와 overlap/window 조건에 의존한다. Rectangular와 Hann 모두 leakage·분해능 절충이 있다. |
+| PDF pp.9–14 | 조건·좌표 해석 생략 | STFT의 frame 수는 padding·center 선택에, iSTFT 복원은 복소 phase와 overlap/window 조건에 의존한다. Real/imaginary 좌표에서 magnitude/phase를 계산하는 식과 zero-magnitude phase의 미정의 조건을 보완했다. Rectangular와 Hann 모두 leakage·분해능 절충이 있다. |
 | PDF p.16 | 단순화·상수 근사 | 'log-scale 지각'은 mel의 동기 설명이다. $$2595\log_{10}$$과 $$1127\ln$$은 반올림으로 거의 같으며 HTK와 Slaney 척도는 다르다. |
 | PDF pp.21–22 | 표기·구현 조건 생략 | Real cepstrum은 $$\log\lvert X\rvert$$의 inverse DFT다. MFCC에는 magnitude/power, mel filter 합산, log floor, DCT convention을 지정해야 한다. |
 | N=8 HTML 설명 | **확인된 범위 오류** | $$-N/2<k<N/2$$는 $$N=8$$에서 정수 $$-3,\ldots,3$$의 **7개**만 포함하므로 8개 bin의 유일 대표 범위가 아니다. 한 convention은 $$-4\le k<4$$이고, Nyquist 경계 bin은 $$+4$$와 $$-4$$가 같은 나머지류다. 반면 원 신호에 $$\lvert f\rvert<f_s/2$$를 요구하는 strict bandlimit는 별개의 복원 조건이다. |

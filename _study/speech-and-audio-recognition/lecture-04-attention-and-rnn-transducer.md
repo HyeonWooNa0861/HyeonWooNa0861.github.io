@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-01 16:01:38 +0900
+last_modified_at: 2026-10-13 15:21:46 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -96,6 +96,9 @@ $$
 
 Score는 현재 출력에 대한 입력 state의 관련성을 나타내는 학습된 값이다. Softmax는 이 값을 **같은 출력 단계의 모든 입력 위치**에 걸쳐 정규화한다. 지수값은 양수이고 분모가 그 합이므로 $$a_{u,t}>0$$, $$\sum_t a_{u,t}=1$$이 성립한다. Context $$c_u$$는 그 분포로 입력 state를 가중합한 벡터다. 이것은 softmax와 가중합의 정의에 따른 정확한 관계이며, attention weight가 별도의 단어 출력 확률인 것은 아니다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Attention softmax and context-vector calculation</summary>
+
 **작성자 계산 예시.** 세 입력의 score가 $$(\log 1,\log 2,\log 1)$$이면 지수값은 $$(1,2,1)$$이고 attention weight는 $$(0.25,0.5,0.25)$$다. Encoder state가 $$h_1=(1,0)$$, $$h_2=(0,2)$$, $$h_3=(1,1)$$이면 다음 context를 얻는다.
 
 $$
@@ -103,6 +106,8 @@ c_u=0.25(1,0)+0.5(0,2)+0.25(1,1)=(0.5,1.25)
 $$
 
 다음 token을 만들 때 decoder state가 달라지면 score와 가중치도 다시 계산된다. 따라서 입력을 항상 동일한 비율로 평균하는 연산과 다르다. 실제 구현에서는 큰 score의 지수값이 overflow하지 않도록 모든 score에서 최대값을 빼고 softmax를 계산한다. 공통 상수를 빼도 분자·분모에 같은 배수가 생겨 비율은 유지된다.
+
+</details>
 
 ### 2.3 Score 함수의 세 형태
 
@@ -118,7 +123,12 @@ $$
 
 슬라이드 p. 11의 heatmap은 가로축이 source token, 세로축이 target token이다. 밝은 칸은 해당 출력 단계에서 그 입력 위치의 가중치가 높다는 뜻이다. 대각선 근처의 밝은 부분은 대체로 순서가 맞는 정렬을, 대각선에서 벗어난 부분은 어순 변화에 따라 다른 source 위치를 참고하는 모습을 보여 준다.
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Attention heatmap axes and alignment limits</summary>
+
 음성에서는 가로축이 encoder의 음향 프레임이 된다. 문자는 소리가 지속되는 여러 프레임을 참고할 수 있다. 다만 attention weight는 학습된 정보 결합 계수이며, **밝은 칸 하나가 모델 판단의 유일한 원인임을 증명하지는 않는다**. 일반 full attention도 시간 순서를 반드시 단조롭게 강제하지 않는다.
+
+</details>
 
 ## 3. Autoregressive generation과 cross-entropy 학습
 
@@ -135,6 +145,11 @@ $$
 $$X$$는 기계번역에서는 원문 token열, LAS에서는 음향 feature열이다. **Target prefix만 과거로 제한한다는 것과 encoder가 미래 음향을 보지 않는다는 것은 서로 다른 조건**이다. 입력 문장을 전부 읽은 offline 번역이나 전체 음성을 읽는 LAS도 출력은 autoregressive하게 생성할 수 있다.
 
 ### 3.2 문장 확률의 곱은 어디에서 나오는가
+
+문장 확률은 각 단계의 다음-token 조건부 확률을 곱한 값이다. 이는 출력 token의 독립성 가정이 아니라 조건부 확률의 chain rule에서 나온다. 각 항은 같은 입력 $$X$$와 지금까지의 출력 prefix를 조건으로 사용한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Autoregressive chain rule with EOS</summary>
 
 조건부 확률의 정의에서 시작하면 이전 출력에 조건화하는 이유가 드러난다. 나눗셈으로 조건부 확률을 정의하는 각 단계에서 $$P(y_{<u}\mid X)>0$$을 가정한다. 아래 두 번째 token 식에는 $$P(y_1\mid X)>0$$, 세 번째 token 식에는 $$P(y_1,y_2\mid X)>0$$이 필요하다. 확률이 0인 prefix의 완성 경로도 확률이 0이며, 그 prefix에는 아래 나눗셈 유도를 그대로 적용하지 않는다.
 
@@ -160,6 +175,8 @@ $$
 
 Chain rule 자체는 독립성 가정 없이 성립하는 확률 항등식이다. 신경망은 각 조건부 분포를 학습된 $$P_{\theta}$$로 근사한다. 이전 출력을 조건에서 제거한 $$\prod_u P(y_u\mid X)$$는 다른 모델링 가정이며, 출력끼리 독립으로 처리한다. 또한 autoregressive가 바로 앞 token 하나만 보는 1차 Markov 모델이라는 뜻도 아니다. 원칙적으로 전체 prefix를 조건으로 두되 실제로 보존하는 정보는 decoder 구조와 context 길이에 달려 있다.
 
+</details>
+
 ### 3.3 기계번역 예시를 단계별로 읽기
 
 다음은 **작성자가 구성한 예시**다. 원문 `I am a student`를 번역하고, 설명을 위해 출력 token을 단어 단위 `나는`, `학생이다`로 정했다고 하자. 실제 모델에서는 tokenizer에 따라 더 작은 subword로 나뉠 수 있다.
@@ -182,10 +199,15 @@ $$
 
 기본적인 teacher forcing은 정답 prefix로 다음 정답 token을 예측하도록 학습한다. 위 번역의 decoder 입력과 정답을 한 칸 어긋나게 배치하면 다음과 같다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Shifted teacher-forcing inputs and targets</summary>
+
 ```text
 Decoder input: BOS    나는      학생이다
 Target:        나는   학생이다  EOS
 ```
+
+</details>
 
 두 번째 위치의 decoder 입력에 있는 `나는`은 첫 위치의 정답이다. **현재 예측해야 하는 `학생이다`나 그 뒤의 EOS를 현재 출력의 조건으로 보여 주는 방식은 아니다.** Transformer decoder에서 여러 위치를 한 번에 계산할 때는 causal mask로 이후 target 위치를 가려 이 조건을 유지한다. 따라서 학습 계산을 병렬화할 수 있다는 사실과 확률 분해가 autoregressive하다는 사실은 충돌하지 않는다. RNN decoder는 hidden state의 시간 의존성 때문에 teacher forcing을 해도 recurrent 계산이 순차적이다.
 
@@ -211,6 +233,9 @@ $$
 \mathcal L_{\mathrm{CE}}=-\sum_{u=1}^{U+1}\log P(y_u^*\mid y_{<u}^*,X)
 $$
 
+<details markdown="block">
+<summary markdown="span">Derivation: One-hot cross-entropy and the lecture probability table</summary>
+
 슬라이드 p. 13은 vocabulary를 `cat, dog, bird`, 첫 분포를 $$(0.1,0.7,0.2)$$로 제시한다. 정답은 표와 one-hot $$(0,1,0)$$에 따라 **dog**이며, 본문의 `dot`는 오기다. 자연로그를 사용한 손실은 다음과 같다.
 
 $$
@@ -219,7 +244,14 @@ $$
 
 세 출력 단계의 정답을 `dog, cat, bird`로 두면, 슬라이드의 각 정답 확률은 $$0.7,0.9,0.8$$이다. 이는 **슬라이드 숫자를 이용해 작성자가 구성한 목표열 예시**다. 그 문장 prefix의 조건부 확률 곱은 $$0.504$$이고, EOS를 제외한 해당 세 단계 손실 합은 $$-\log 0.504\approx0.685179$$다. 이 세 값만으로 종료까지 포함한 전체 문장 확률을 계산했다고 보아서는 안 된다.
 
+</details>
+
 ### 3.7 어떤 확률을 높이도록 학습하는가
+
+One-hot cross-entropy의 logit gradient는 예측 확률에서 정답 one-hot을 뺀 값이다. 따라서 gradient descent는 정답 logit은 높이고 나머지는 낮추는 방향의 신호를 만든다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Softmax cross-entropy gradient</summary>
 
 Logit을 $$z_k$$, $$q(k)=\exp(z_k)/\sum_j\exp(z_j)$$로 놓으면 one-hot 손실을 다음처럼 변형할 수 있다. 아래는 **작성자 유도**다.
 
@@ -233,9 +265,14 @@ $$
 
 첫 분포의 gradient는 $$(0.1,-0.3,0.2)$$다. Gradient descent는 정답 `dog`의 logit을 높이고 다른 logit을 낮추는 방향으로 움직인다. 이 gradient가 출력층과 decoder, attention을 거쳐 encoder까지 전달되므로 어떤 음향 표현과 정렬이 정답 예측에 유용한지도 학습된다. 실제 파라미터 변화는 learning rate와 각 층의 Jacobian에도 의존한다.
 
+</details>
+
 ### 3.8 “분포가 다를수록 커진다”의 정확한 의미
 
 Cross-entropy는 일반적인 대칭 거리도 아니고, 임의의 분포 사이 거리 순서를 그대로 따르는 값도 아니다. 정의를 전개하면 다음 정확한 관계를 얻는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Cross-entropy decomposition into entropy and KL divergence</summary>
 
 $$
 H(p,q)=H(p)+D_{\mathrm{KL}}(p\lVert q),\qquad
@@ -249,6 +286,8 @@ D_{\mathrm{KL}}(p\lVert q)=-\sum_kp(k)\log\frac{q(k)}{p(k)}\ge-\log\sum_kq(k)=0
 $$
 
 0인 확률은 해당 항의 극한으로 처리한다.
+
+</details>
 
 One-hot 정답에서는 정답 위치의 확률만 손실을 결정한다. 예측 $$(0.1,0.7,0.2)$$와 $$(0.2,0.7,0.1)$$는 서로 다른 분포지만 `dog`에 대한 cross-entropy가 같다. 따라서 원문의 표현은 **정답에 주는 확률이 작아질수록 음의 로그 손실이 커진다**로 읽는 것이 정확하다.
 
@@ -268,12 +307,17 @@ Listener가 음성을 한 번 표현하고, Speller는 출력을 하나씩 만�
 
 원래 LAS의 Listener는 아래쪽 BLSTM 위에 세 pyramidal BLSTM 층을 둔다. 각 pyramidal 층은 아래층의 인접한 두 시간 state를 이어 붙여 하나의 입력으로 받는다. 짝수 길이일 때의 구조를 단순화하면 다음과 같다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: LAS pyramidal BLSTM subsampling</summary>
+
 $$
 z_i^{(\ell)}=\left[h_{2i-1}^{(\ell-1)};h_{2i}^{(\ell-1)}\right],\qquad
 h_i^{(\ell)}=\operatorname{BLSTM}_{\ell}\left(z_{1:L_{\ell}}^{(\ell)}\right)_i
 $$
 
 이는 구조의 **정의**이지 임의 신호를 손실 없이 복구하는 항등식이 아니다. 연결한 벡터를 recurrent layer가 새 표현으로 변환한다. 시간 길이는 층마다 절반이므로 세 층 뒤에는 $$T/2^3=T/8$$이다. 예를 들어 800프레임은 $$800\to400\to200\to100$$으로 줄어든다. 홀수 길이는 구현의 padding·길이 처리에 따라 정해야 한다.
+
+</details>
 
 슬라이드 p. 16의 그림은 두 번 줄여 4배 축소를 보여 주지만, 원 논문의 세 pyramidal 층은 8배 축소한다. 프레임 수를 줄이면 반복 계산과 attention이 보는 위치 수가 함께 줄어든다. 다만 너무 강한 축소는 짧은 소리의 구분을 어렵게 할 수 있으므로 속도만 보고 결정하지 않는다. “RNN은 긴 입력을 처리할 수 없다”는 절대적인 제한보다, **길수록 계산과 최적화 부담이 커진다**는 설명이 적절하다.
 
@@ -323,9 +367,16 @@ CTC는 프레임마다 기호 하나를 낸 뒤 연속 반복을 병합한다. R
 
 ### 5.3 원문의 `cat` 추론 그림
 
+원문 그림의 핵심은 **가로 이동은 blank로 시간을 진행하고, 세로 이동은 token으로 prefix를 늘린다**는 구분이다. 같은 frame에서 여러 token을 낼 수 있고, token을 냈다고 시간이 자동으로 진행하지 않는다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: RNN-T cat decoding path across time and token axes</summary>
+
 슬라이드 pp. 22–32는 같은 전이를 한 단계씩 추가한다. p. 24의 blank는 첫 프레임에서 다음 프레임으로 이동한다. p. 25에서 `c`를 내면 prefix가 `c`가 되고, p. 27의 blank는 음향 시간을 다시 진행시킨다. 이어 `a`, `t`가 출력되면서 prediction state가 각각 `ca`, `cat`을 반영한다. p. 32의 남은 blank들은 출력열을 유지한 채 마지막 음향 프레임까지 진행한다.
 
 그림에서 가로로 움직이는 화살표는 시간 진행, 세로로 움직이는 화살표는 출력 증가다. 두 축을 한 개의 “다음 단계”로 합치면 blank가 prediction state를 바꾼다거나 token이 항상 시간을 넘긴다는 오해가 생긴다.
+
+</details>
 
 ### 5.4 Streaming의 실제 조건
 
@@ -369,13 +420,23 @@ $$
 
 이 식은 경험식이 아니라 **경로의 마지막 전이를 두 종류로 분할한 정확한 DP**다. Blank 뒤에는 prefix가 같고, token 뒤에는 정답 prefix가 한 칸 늘어난다. 같은 $$(t,u)$$에 도달한 모든 경로는 동일한 음향 state와 목표 prefix state를 사용하므로 앞으로의 선택지도 같다. 개별 경로를 저장하는 대신 확률 합 하나를 재사용할 수 있다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: RNN-T forward recurrence and terminal convention</summary>
+
 두 전이는 $$t$$ 또는 $$u$$를 증가시키므로 이 lattice에는 역방향 순환이 없다. 같은 frame의 token 전이를 반영하려면 $$u$$도 작은 값부터 큰 값으로 계산한다. $$t=T$$에서는 더 이상 encoder state가 없으므로 새 token을 내지 않으며, 목표가 미완성인 $$u<U$$의 종료 경로는 버린다. 완성된 확률은 $$P(y\mid X)=\alpha(T,U)$$다.
 
 DP가 방문하는 상태 수는 $$O(T(U+1))$$이다. 이 수치는 **필요한 joint 확률이 이미 계산되어 있을 때의 forward 합산 비용**이다. Vocabulary softmax와 joint hidden 계산까지 공짜라는 뜻은 아니다. 실제 학습은 아주 작은 확률을 반복해서 곱하므로 log-domain의 log-sum-exp, scaling 또는 안정적인 전용 loss kernel을 사용한다.
 
+</details>
+
 ### 6.3 숫자와 그림으로 계산하기
 
 다음은 **작성자가 구성한 검산 예시**다. Encoder frame은 두 개($$T=2$$), 목표는 `a` 한 개($$U=1$$)이며 vocabulary는 `a`와 blank다.
+
+두 유효 경로는 `a ε ε`과 `ε a ε`이다. 경로 합과 forward DP는 모두 $$P(a\mid X)=0.52$$, $$\mathcal L\approx0.653926$$을 준다. 중간값 0.65는 마지막 blank를 내기 전의 상태 합이므로 최종 전사 확률이 아니다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Two-frame RNN-T lattice and path probabilities</summary>
 
 | 상태 | $$p(a)$$ | $$p(\epsilon)$$ |
 |---|---:|---:|
@@ -405,11 +466,16 @@ $$
 
 DP에서도 $$\alpha(0,1)=0.5$$, $$\alpha(1,0)=0.5$$다. 두 길이 만나는 $$(1,1)$$의 합은 $$0.5\times0.6+0.5\times0.7=0.65$$이고 마지막 blank를 곱하면 $$\alpha(2,1)=0.65\times0.8=0.52$$다. 중간의 0.65는 아직 마지막 프레임을 진행하지 않은 상태의 합이지 완성된 전사 확률은 아니다.
 
+</details>
+
 ### 6.4 계산 코드의 각 단계
 
 다음 코드는 위 예시만 계산하는 설명용 Python이며 학습 가능한 RNN-T 구현은 아니다.
 
-```python
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: RNN-T forward dynamic programming in Python</summary>
+
+~~~python
 import math
 
 T, U = 2, 1
@@ -429,9 +495,11 @@ loss = -math.log(probability)
 assert math.isclose(probability, 0.52)
 print(f"P={probability:.6f}, loss={loss:.6f}")
 # P=0.520000, loss=0.653926
-```
+~~~
 
 `alpha`는 경로 목록이 아니라 상태별 합을 저장한다. 첫 갱신은 blank에 의한 가로 전이, 두 번째 갱신은 token에 의한 세로 전이다. 마지막 줄이 $$u=U$$인 상태만 읽기 때문에 blank 두 번만 내고 목표 `a`를 내지 못한 경로는 결과에서 제외된다. 긴 실제 음성에는 이 단순 확률 공간 코드를 그대로 사용하면 underflow가 생길 수 있다.
+
+</details>
 
 ### 6.5 추론과 학습의 차이
 
@@ -454,6 +522,9 @@ $$d$$는 값 하나의 byte 수이며 fp32에서는 4 bytes다. 이 식은 해�
 
 원문은 개략 계산에서 $$U+1$$ 대신 $$U$$를, blank 포함 어휘 수 대신 제시한 $$V$$를 사용한다. 아래는 **그 원문 곱셈을 그대로 검산한 값**이며 정확한 전체 학습 메모리라는 뜻은 아니다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: RNN-T joint-grid memory estimates</summary>
+
 | 설정 | 원문의 곱셈 | Decimal GB | GiB |
 |---|---|---:|---:|
 | 문자, hidden | $$32\times800\times450\times640\times4$$ | 29.4912 | 27.466 |
@@ -466,6 +537,8 @@ $$1\,\mathrm{GB}=10^9$$ bytes, $$1\,\mathrm{GiB}=2^{30}$$ bytes다. 원문의 `G
 Subsampling은 $$T$$를, subword는 보통 $$U$$를 줄일 수 있다. 하지만 subword vocabulary가 커지면 $$V$$가 늘어 logits의 메모리는 증가할 수도 있다. 위 예시가 바로 그 경우다. Hidden tensor는 크게 줄지만 logits는 약 1.29 GB에서 3.93 GB로 늘어난다. 두 효과를 함께 봐야 tokenizer·stride가 실제 자원을 얼마나 줄이는지 알 수 있다.
 
 “Gradient를 저장하므로 두 배”라는 슬라이드 설명은 대략적인 부담을 보여 준다. 실제 학습 peak에는 저장된 activation, backward kernel, 파라미터·optimizer state, padding, dtype, recomputation 등이 관여한다. 따라서 추정값에 2를 곱해 GPU 요구량을 확정하지 말고 구현에서 측정해야 한다.
+
+</details>
 
 ## 8. CTC, LAS, RNN-T를 비교하는 기준
 

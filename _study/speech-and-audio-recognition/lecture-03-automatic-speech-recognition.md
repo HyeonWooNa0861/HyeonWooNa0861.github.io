@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-10-02 12:36:56 +0900
+last_modified_at: 2026-10-13 15:21:46 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -59,6 +59,9 @@ $$
 | $$N$$ | 정답 단어 수 | words |
 | $$\mathrm{WER}$$ | 단어별 정규화된 편집 거리 | 무차원 |
 
+<details markdown="block">
+<summary markdown="span">Derivation: WER edit-distance dynamic programming</summary>
+
 **작성자 보충 — 편집 거리를 구하는 이유와 유도.** 문장 길이가 다르면 위치별 1:1 비교가 성립하지 않는다. 정답의 앞 $$i$$개 단어를 예측의 앞 $$j$$개 단어로 바꾸는 최소 비용을 $$D_{i,j}$$라고 두면, 마지막 연산은 삭제·삽입·일치/치환 중 하나뿐이다. 따라서 다음 정확한 동적 계획법 관계가 나온다.
 
 $$
@@ -66,6 +69,8 @@ D_{i,j}=\min\left\{D_{i-1,j}+1,\;D_{i,j-1}+1,\;D_{i-1,j-1}+\mathbf{1}[r_i\ne h_j
 $$
 
 초기값은 $$D_{i,0}=i$$, $$D_{0,j}=j$$다. 최종 경로를 역추적해 $$S,D,I$$를 얻고 $$D_{N,M}/N$$을 계산한다. 강의 예시(pp. 3–6)에서 `brown → brow`는 치환, `an`은 삽입, `a`는 삭제로 맞출 수 있다. 정답은 9단어이므로 $$\mathrm{WER}=3/9=1/3$$이다. 같은 편집 원리를 문자 단위에 적용하면 **CER**이지만, 분모도 정답 문자 수로 바뀐다.
+
+</details>
 
 WER은 비율이지만 상한이 1은 아니다. 삽입 단어가 많으면 $$S+D+I>N$$이 가능하다. 반면 $$N=0$$이면 분모가 0이므로 WER은 정의되지 않는다. 빈 정답의 처리 방식은 평가 프로토콜에서 별도로 정해야 한다. 슬라이드 p. 6의 `D > S > I`는 의미 손실에 관한 직관적 예시이지 WER 공식의 가중치가 아니다. 실제 세 오류의 영향은 발화와 용도에 따라 달라진다.
 
@@ -141,7 +146,12 @@ $$
 
 $$z_s$$는 확장열의 $$s$$번째 기호다. $$\alpha_{t,s}$$를 **시각 $$t$$까지의 허용된 부분 경로 중 $$s$$번째 상태로 끝나는 경로들의 확률 합**으로 정의한다. $$p_t(z_s\mid X)$$가 현재 프레임 하나의 출력 확률이라면, $$\alpha_{t,s}$$는 그곳에 도달하기까지의 프레임들을 모두 반영한다. 아직 정답을 완성하지 않은 중간 상태도 이 합에 포함되며, 최종 두 상태에서만 완성된 전사의 확률을 읽는다.
 
-상태는 token 종류만 나타내는 것이 아니라 **정답의 어디까지 진행했는지**도 나타낸다. 목표가 `AB`일 때 세 blank 상태의 차이는 다음과 같다.
+상태는 token 종류뿐 아니라 **정답의 어디까지 진행했는지**도 나타낸다. 각 칸은 같은 상태에 머문 경로, 한 상태 전진한 경로, 조건을 만족해 두 상태 건너뛴 경로의 확률 합에 현재 frame의 모델 확률을 곱한다. 두 칸 건너뛰기는 반복 label을 blank 없이 합치는 잘못된 경로를 막기 위해 제한하며, 마지막 label과 마지막 blank의 두 상태를 더해 완성된 전사 확률을 얻는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: CTC forward recurrence, initialization, and termination</summary>
+
+목표가 `AB`일 때 세 blank 상태의 차이는 다음과 같다.
 
 | 상태 | 지금까지의 collapse 결과 | 현재 출력 |
 |---|---|---|
@@ -165,6 +175,10 @@ $$
 
 이 유도는 유효 경로가 마지막 시각에 두 상태 중 하나에서만 종료되고, 각 종료 상태의 바로 전 전이가 위 세 경우로 완전히 분할된다는 사실에 기초한다. 같은 상태로 끝나는 이전 경로들은 이후에 동일한 전이 선택지를 가지므로, 이전 경로의 개별 목록 대신 그 **확률 합 하나**만 다음 프레임에 전달해도 된다. 상태 $$S=2U+1$$개와 시각 $$T$$개를 한 번씩 계산하므로 시간 복잡도는 $$O(TU)$$다. 실제 구현은 매우 작은 확률의 곱에서 수치 underflow가 생기지 않게 log-domain 또는 scaling을 쓴다.
 
+</details>
+
+Forward DP는 값을 여러 번 갱신해 어떤 극한에 가까워지는 **수렴 알고리즘이 아니다**. 정해진 $$T\times S$$ 격자를 한 번 진행하면서, 같은 상태에 도달한 유효 경로의 확률을 빠짐없이 묶어 더하는 유한한 정확 계산이다. 모델 학습이 여러 step에 걸쳐 loss를 줄이는 과정과 한 확률표에서 DP 합을 계산하는 과정을 구분해야 한다.
+
 ### 3.3 경로별 계산과 forward DP가 만나는 예
 
 다음은 계산 과정을 한눈에 보기 위한 **작성자 예제**다. 세 프레임에서 token 분포를 아래처럼 정하고 정답을 `AB`로 둔다. 각 열의 합은 1이다. 확률은 모델이 각 시각에 내놓은 값이라는 가정이지, 문장을 미리 나눈 확률이 아니다.
@@ -174,6 +188,11 @@ $$
 | $$\epsilon$$ | 0.2 | 0.3 | 0.2 |
 | $$A$$ | 0.6 | 0.3 | 0.2 |
 | $$B$$ | 0.2 | 0.4 | 0.6 |
+
+이 입력에서 목표 `AB`의 전사 확률은 **0.444**, CTC loss는 약 **0.81193**이다. 같은 값이 다섯 경로의 직접 합과 forward DP의 두 종료 상태 합에서 나온다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: CTC path enumeration and forward aggregation for AB</summary>
 
 총 $$3^3=27$$개 경로 가운데 `AB`로 접히는 것은 다음 다섯 개뿐이다. `AAB`와 `ABB`는 각각 붙어 있는 중복을 하나로 합치고, blank가 든 경로는 중복 처리 후 blank를 지운다.
 
@@ -282,9 +301,16 @@ $$
 
 정답 확률을 높이는 **학습**은 별개의 반복이다. 한 번의 학습 단계는 `모델 출력 → 고정된 확률표의 DP → 음의 로그 손실 → 역전파 → 가중치 갱신`으로 진행된다. 갱신된 모델이 다음 단계에서 새 확률표를 만들면 정답 경로들의 합도 달라진다. 학습은 그 합을 높이는 방향을 찾지만, 매 단계의 손실 감소나 정답 확률이 1에 도달하는 것을 보장하지 않는다. DP 칸의 값 역시 시간이 흐를수록 증가해야 하는 값이 아니다. 예제에서 `A` 칸은 0.6 → 0.24 → 0.060으로 줄어들어도 계산은 올바르다.
 
+</details>
+
 ### 3.4 슬라이드 예제의 수치 검산
 
 pp. 33–35는 목표 `ab`, 확장열 $$(\epsilon,a,\epsilon,b,\epsilon)$$, 네 프레임을 사용한다. 각 열의 세 확률은 1로 합해진다.
+
+원문 결과는 $$0.2835+0.1308=0.4143$$이다. 앞 항은 마지막 `b`에서 끝나는 경로 합, 뒤 항은 마지막 blank에서 끝나는 경로 합이다. 이 덧셈도 반복값의 수렴이 아니라 서로 겹치지 않는 두 종료 경로 집합의 정확한 합이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Lecture-slide CTC forward table and loss</summary>
 
 | Token | $$t=1$$ | $$t=2$$ | $$t=3$$ | $$t=4$$ |
 |---|---:|---:|---:|---:|
@@ -319,11 +345,18 @@ $$
 
 두 종료 상태를 더하면 **$$P_{\mathrm{CTC}}(ab\mid X)=0.4143$$**으로 슬라이드 p. 35의 결과와 일치하고, 이 예제의 손실은 $$-\ln(0.4143)\approx0.88116$$이다. 확률표 → 유효 경로 합 → 음의 로그 손실이라는 순서를 뒤집지 않아야 한다. 이 검산은 원문 표의 전이가 수식과 같은지 확인하는 것이며 일반 데이터에서의 모델 성능을 뜻하지 않는다.
 
+</details>
+
 ## 4. CTC decoding: 프레임 경로와 문장 확률은 다르다
 
 Greedy decoding은 매 프레임 가장 큰 확률의 token 하나씩을 택한 뒤 $$\mathcal B$$를 적용한다. 빠르지만 $$\mathcal B(\arg\max_\pi P(\pi\mid X))$$가 반드시 $$\arg\max_y P_{\mathrm{CTC}}(y\mid X)$$는 아니다(pp. 36–38). 서로 다른 경로 여럿이 같은 문장에 확률을 보탤 수 있기 때문이다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Greedy CTC path versus most probable transcript</summary>
+
 **작성자 보충 — 정규화된 반례.** 두 프레임 모두 $$(p(\epsilon),p(a),p(b))=(0.5,0.4,0.1)$$이라고 하자. 가장 높은 개별 경로는 $$(\epsilon,\epsilon)$$이고 그 확률은 0.25라서 greedy 결과는 빈 문자열이다. 그러나 `a`를 만드는 경로 $$(a,a),(a,\epsilon),(\epsilon,a)$$의 합은 $$0.16+0.20+0.20=0.56$$이다. 경로 최빈값과 문장 최빈값이 실제로 다르다. 슬라이드 p. 37의 수치는 개념도용 부분 예시여서 완전한 정규화 분포로 읽지 않았다.
+
+</details>
 
 Beam search는 시각마다 후보 전사 prefix를 확장하고, **같은 전사로 접히는 경로의 확률을 합친 다음** 상위 후보만 남긴다(pp. 38–41). 단순 경로 beam이라면 `AAB`와 `ABB`를 별개 경로로 보유하지만, CTC prefix beam은 두 경로가 같은 `AB`에 기여한다는 사실을 반영한다. 같은 prefix 안에서도 마지막 프레임이 blank인 확률 $$p_b$$와 non-blank인 확률 $$p_{nb}$$를 따로 저장한다. 마지막 글자가 `A`일 때 `AA`가 이어지면 출력은 여전히 `A`지만, `AεA`는 새 `A`가 추가되어 `AA`가 되기 때문이다.
 
@@ -373,25 +406,28 @@ Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에
 
 슬라이드 p. 47의 Byte Pair Encoding(BPE)은 문자 vocabulary에서 시작해 **학습 말뭉치에서 가장 빈번한 인접 symbol 쌍**을 새 symbol로 합치는 과정을 정해진 병합 횟수 또는 목표 vocabulary 크기까지 반복한다. 여기서 빈도는 서로 다른 단어 종류를 한 번씩 세는 값이 아니다. 같은 단어가 말뭉치에 여러 번 나오면 그 횟수만큼 그 단어 내부의 인접 쌍 빈도에 가중치를 준다. 또한 Sennrich 등의 word-segmentation 방식은 먼저 공백·구두점 규칙으로 pretokenization한 뒤, **단어 경계를 가로지르는 쌍은 세지 않고** 단어 끝 표지를 사용해 원래 경계를 복원한다. 각 병합의 순서가 곧 merge rank이며, 먼저 학습된 쌍일수록 높은 우선순위를 갖는다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Frequency-weighted BPE merges and inference reuse</summary>
+
 **작성자 보충 — 빈도 가중 병합 예제.** 계산을 재현할 수 있도록 초기 base alphabet에는 `l, o, w, e, r, s, t`와 경계 symbol `</w>`가 미리 등록되어 있고, pretokenization한 병합 학습 말뭉치에는 `low`가 5회, `lower`가 2회 있다고 가정한다. 각 단어 뒤에는 `</w>`를 별도 token으로 붙이고, 단어 사이 쌍은 만들지 않는다. 첫 단계에서 `(l, o)`와 `(o, w)`는 모두 7회로 동률이다. 이 예제에서는 동률이면 왼쪽에서 더 먼저 나타나는 쌍을 고른다고 명시적으로 정한다. 실제 구현은 자체적인 결정적 tie-breaking 규칙을 사용해야 같은 merge table을 재현할 수 있다.
 
-```text
-학습 vocabulary(빈도 포함)
-5 × l o w </w>
-2 × l o w e r </w>
+    학습 vocabulary(빈도 포함)
+    5 × l o w </w>
+    2 × l o w e r </w>
 
-1순위: (l, o), 빈도 7  →  lo
-5 × lo w </w>
-2 × lo w e r </w>
+    1순위: (l, o), 빈도 7  →  lo
+    5 × lo w </w>
+    2 × lo w e r </w>
 
-2순위: (lo, w), 빈도 7  →  low
-5 × low </w>
-2 × low e r </w>
-```
+    2순위: (lo, w), 빈도 7  →  low
+    5 × low </w>
+    2 × low e r </w>
 
 두 번 병합한 뒤 symbol vocabulary에는 기존 문자와 함께 `lo`, `low`가 추가된다. 슬라이드의 `aaabdaaabac`도 같은 원리로 `aa → Z`, `ab → Y`, `ZY → X`를 순서대로 적용하여 `ZabdZabac → ZYdZYac → XdXac`로 압축한다. 다만 슬라이드의 단일 문자열 예제와 달리, 실제 말뭉치 학습에서는 위처럼 **단어별 출현 빈도를 반영한 전체 쌍 통계**가 병합 순서를 정한다.
 
 추론할 때는 새 입력만 보고 BPE를 다시 학습하지 않는다. 학습 때 저장한 merge rank를 그대로 적용한다. 예를 들어 위 두 병합만 배운 tokenizer에 처음 보는 `lowest`가 들어오면 `l o w e s t </w>`에서 `(l, o)`를 먼저 합치고 `(lo, w)`를 합쳐 `low e s t </w>`를 얻는다. `lowest` 전체가 학습 vocabulary에 없더라도 이미 배운 `low`와 남은 기본 symbol로 표현하는 것이다. 입력마다 병합 통계를 다시 계산하면 같은 문자열의 분할이 주변 입력에 따라 달라지고, 학습 때 사용한 ASR 출력 label 집합과도 일치하지 않는다.
+
+</details>
 
 ### 6.2 어휘 크기와 ASR decoding의 절충
 

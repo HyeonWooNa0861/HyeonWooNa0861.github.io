@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:55:22 +0900
+last_modified_at: 2026-10-13 15:20:57 +0900
 title: "Speech and Audio Recognition: Tokenization and Decoding Lab"
 course: "Speech and Audio Recognition"
 topic: "BPE, CTC Decoding, and RNN-T Inference"
@@ -60,15 +61,25 @@ Source Notebooks:
 
 Notebook 01은 각 단어를 `['▁'] + list(word)`로 초기화한다. `▁`를 별도 token으로 두면 `low`의 끝과 다음 단어 `new`의 시작이 합쳐지는 일을 막고, 단어 시작에서 자주 나타나는 조합도 `▁ne`, `▁wide`처럼 학습할 수 있다.
 
-Corpus는 단어 종류의 목록이 아니라 출현 횟수를 가진 빈도표다. 단어 $$w$$의 현재 token열을 $$s_w$$, 빈도를 $$c(w)$$라 하면 인접 pair $$q$$의 count는 다음과 같다.
+Corpus는 단어 종류의 목록이 아니라 출현 횟수를 가진 빈도표다. 따라서 많이 나온 단어 안의 pair가 merge 후보에 더 크게 기여한다. 예를 들어 `newer`가 6회 등장하면 내부 pair도 6회 관측된 것으로 세어야 실제 corpus 사용량을 반영한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Weighted BPE pair counts</summary>
+
+단어 $$w$$의 현재 token열을 $$s_w$$, 빈도를 $$c(w)$$라 하면 인접 pair $$q$$의 count는 다음과 같다.
 
 $$
 C(q)=\sum_w c(w)\sum_{i=1}^{\lvert s_w\rvert-1}\mathbf 1[(s_{w,i},s_{w,i+1})=q].
 $$
 
-이 식은 이 notebook이 사용하는 **pair-frequency 정의**다. 예를 들어 `newer`가 6회 등장하면 그 안의 각 인접 pair는 1이 아니라 6을 기여한다. 빈도를 무시하면 드물게 등장한 단어와 많이 등장한 단어가 같은 영향력을 갖게 되어 많이 쓰이는 pair의 통계가 왜곡된다. 이 Greedy 선택이 전체 merge 예산에서 token 수를 전역 최적화한다는 뜻은 아니다. 또한 `aaa`의 `(a,a)`처럼 후보 pair가 겹치면 count는 2여도 왼쪽부터 겹치지 않게 적용한 실제 감소량은 1일 수 있다.
+빈도를 무시하면 드물게 등장한 단어와 많이 등장한 단어가 같은 영향력을 갖게 된다. 이 Greedy 선택이 전체 merge 예산에서 token 수를 전역 최적화한다는 뜻은 아니다. 또한 `aaa`의 `(a,a)`처럼 후보 pair가 겹치면 count는 2여도 왼쪽부터 겹치지 않게 적용한 실제 감소량은 1일 수 있다.
 
-코드는 최대 count만 고른 뒤, 동률이면 pair tuple의 사전순으로 결정한다.
+</details>
+
+코드는 최대 count만 고른 뒤, 동률이면 pair tuple의 사전순으로 결정한다. 이 tie-break는 실행마다 merge 순서가 달라지는 일을 막는다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Deterministic BPE merge selection</summary>
 
 ```python
 pair = min(counts, key=lambda p: (-counts[p], p))
@@ -76,9 +87,16 @@ pair = min(counts, key=lambda p: (-counts[p], p))
 
 `Counter.most_common(1)`의 내부 순서에 기대지 않고 count의 내림차순과 pair의 오름차순을 명시했기 때문에 같은 입력에서 merge 순서가 결정적이다. 새 합성 검산에서 `{'ab': 2, 'ac': 2}`는 `('▁', 'a')`를 첫 규칙으로 골랐다. `aaa`에 `(a,a)`를 적용할 때는 왼쪽부터 겹치지 않게 병합해 `aa | a`가 되며, 한 번의 단계에서 겹치는 두 `aa`를 동시에 만들지 않는다.
 
+</details>
+
 ### 1.2 저장된 merge 이력 읽기
 
-초기 어휘는 `▁`와 corpus에 등장한 문자 10개를 합친 $$V=11$$이다. 모든 단어의 `▁`까지 빈도로 가중한 초기 token 수는 149개다. 저장 출력의 첫 12회 merge는 다음 흐름을 보인다.
+초기 어휘는 `▁`와 corpus에 등장한 문자 10개를 합친 $$V=11$$이다. 모든 단어의 `▁`까지 빈도로 가중한 초기 token 수는 149개다. Merge가 진행될수록 자주 쓰는 묶음이 새 token이 되고 corpus token 수가 줄어든다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Twelve saved BPE merge steps</summary>
+
+저장 출력의 첫 12회 merge는 다음 흐름을 보인다.
 
 | 단계 | 선택 pair | 가중 count | 새 token | $$V$$ | 가중 corpus token 수 |
 |---:|---|---:|---|---:|---:|
@@ -94,9 +112,20 @@ pair = min(counts, key=lambda p: (-counts[p], p))
 
 첫 단계의 `we`는 corpus 전체에서 가중 12회 등장하고 서로 겹치지 않으므로 token 수를 149에서 137로 정확히 12 줄인다. 이 corpus의 표시된 merge들은 count만큼 실제 감소했지만, 자기 자신과 겹칠 수 있는 일반 pair에서는 count와 한 단계의 감소량이 다를 수 있다.
 
+</details>
+
 ![Merge 횟수가 늘수록 어휘 크기 V는 증가하고 예제 문장의 token 수 U는 감소하는 두 선 그래프]({{ "/assets/images/study/speech-asr-lab/bpe-vocabulary-and-token-count.png" | relative_url }})
 
 저장된 그래프에서 merge 예산이 0, 4, 8, 12, 20으로 늘 때 $$V$$는 11, 15, 19, 23, 31로 증가하고, 문장 `newer lower widest`의 $$U$$는 19, 14, 9, 5, 3으로 감소한다. 이 감소는 **이 예제 문장과 이 corpus에 대한 결과**다. Merge를 늘리면 어휘 table과 embedding/output layer는 커질 수 있고, 다른 문장의 길이가 같은 비율로 줄어든다는 보장은 없다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: BPE vocabulary size and token count</summary>
+
+왼쪽 그래프의 x축은 merge operations, y축은 vocabulary size $$V$$다. 초기 문자 어휘에 새 merged token을 하나씩 추가하므로 이 실습에서는 $$V$$가 11에서 31까지 단조 증가한다. 오른쪽 그래프의 x축은 같고 y축은 예제 문장의 token 수 $$U$$다. 초기에 빠르게 줄고 뒤에서 완만해지는 모양은 뒤쪽 merge가 이 특정 문장에 덜 자주 적용되기 때문이다.
+
+두 선을 합쳐 읽으면 계산 trade-off가 보인다. 더 큰 $$V$$는 embedding과 output table을 키우지만, 더 짧은 $$U$$는 decoder가 처리할 출력 step을 줄일 수 있다. 이 그림만으로 최적 merge 수나 다른 corpus의 추세를 결정할 수는 없다.
+
+</details>
 
 ### 1.3 추론에서는 merge를 다시 세지 않는다
 
@@ -118,6 +147,11 @@ Token ID는 이 `vocab` list 안의 위치일 뿐이다. 다른 tokenizer가 우
 ### 2.1 Collapse 순서는 왜 반복 병합 다음 blank 제거인가
 
 CTC 경로 $$\pi=(\pi_1,\ldots,\pi_T)$$를 문자열로 바꾸는 함수 $$\mathcal B$$는 먼저 **인접한 동일 class를 하나로 병합**하고, 그 다음 blank를 제거한다. 순서를 바꾸면 `a blank a`가 `aa`가 아니라 `a`로 잘못 접힌다.
+
+짧은 예로 `a, a, blank, a, b, b`를 접으면 먼저 반복이 줄어 `a, blank, a, b`가 되고, blank를 지우면 `aab`가 된다. Blank가 같은 문자의 반복을 분리하므로 순서가 중요하다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: CTC collapse and path probability</summary>
 
 Notebook의 합성 확률표에서 frame별 argmax는 다음과 같다.
 
@@ -142,11 +176,20 @@ $$
 
 이 식은 CTC 모델이 정의하는 정확한 marginal이다. Beam pruning을 적용한 구현에서는 일부 prefix가 중간에 제거되므로 계산된 값이 근사가 된다.
 
+</details>
+
 ### 2.2 같은 sample의 실제 저장 출력
 
 Notebook은 SRI International과 Lab41이 공개한 VOiCES corpus의 `Lab41-SRI-VOiCES-src-sp0307-ch127535-sg0042.wav` 16 kHz 영어 sample을 사용한다. 이 파일은 PyTorch의 tutorial-assets에서 배포되며, VOiCES 공식 README가 밝힌 라이선스는 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>이다. 저장 출력의 선택 구간은 약 3.40초다. 파형은 먼저 stereo channel 평균으로 mono화하고, 선택한 시작점부터 최대 12초를 자른 뒤 16 kHz가 아니면 resample한다.
 
 ![CTC notebook에서 사용한 3.40초 음성의 시간축 파형]({{ "/assets/images/study/speech-asr-lab/ctc-input-waveform.png" | relative_url }})
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: CTC input waveform</summary>
+
+x축은 선택한 clip 안의 시간(s), y축은 정규화된 amplitude다. 약 0.6초 전까지는 진폭이 작고, 이후 여러 발화 구간이 3.2초 부근까지 이어진다. 파형의 봉우리만으로 phoneme이나 문자를 판정할 수는 없다. 이 그림의 목적은 model input의 길이와 active speech 구간을 확인하는 것이다.
+
+</details>
 
 이 전처리의 이유는 다음과 같다.
 
@@ -173,11 +216,25 @@ I HAD THAT CURIOSITY BESIDE ME AT THIS MOMENT
 
 이 결과는 notebook에 저장된 TorchAudio 2.8 CPU 실행 결과다. 이번 글 작성 과정에서 360 MB checkpoint를 다시 내려받거나 전체 음성을 재추론하지 않았다.
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: CTC frame-probability heatmap</summary>
+
+x축은 0–168의 Encoder output frame, y축은 29개 output class, 색은 0–1 probability다. 맨 아래 blank 행의 넓고 밝은 구간은 대부분 frame이 문자를 새로 출력하지 않음을 뜻한다. 문자 행의 좁은 밝은 spike는 특정 frame에서 해당 class의 확률이 커진 지점이다.
+
+가로축은 3.40초 waveform을 169개의 Encoder frame으로 줄인 index다. 따라서 frame 80을 80 ms로 읽으면 안 된다. 세로축도 일반 alphabet 순서가 아니라 bundle의 고정 label mapping이다. Heatmap은 frame별 분포를 보여 주지만, 최종 문자열 확률은 collapse가 같은 여러 경로를 합쳐야 얻는다.
+
+</details>
+
 ### 2.3 Greedy best path와 best 문자열은 다를 수 있다
 
 Greedy는 각 frame의 최대 class를 이어 가장 확률이 큰 **단일 경로**를 고른다. 하지만 문자열 확률은 같은 문자열로 접히는 경로의 합이므로 best path의 문자열이 가장 큰 marginal을 가질 필요는 없다.
 
-새로 실행한 2-frame 합성 반례에서 각 frame의 확률을 `blank=0.6`, `a=0.4`로 두었다.
+두 frame 모두 `blank=0.6`, `a=0.4`이면 각 frame의 argmax는 blank다. 그러나 `a`로 접히는 세 경로의 합은 blank-only 경로보다 크다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Greedy path versus CTC string marginal</summary>
+
+새로 실행한 2-frame 합성 반례의 모든 경로는 다음과 같다.
 
 | 경로 | 경로 확률 | Collapse 결과 |
 |---|---:|---|
@@ -188,9 +245,16 @@ Greedy는 각 frame의 최대 class를 이어 가장 확률이 큰 **단일 경�
 
 Greedy best path는 `blank, blank`이고 결과는 빈 문자열이지만, 문자열 `a`의 합산 확률은 $$0.24+0.24+0.16=0.64$$다. 이것이 path가 아니라 prefix별 확률 질량을 모아야 하는 직접적인 이유다.
 
+</details>
+
 ## 3. Prefix Beam Search의 확률 장부
 
 ### 3.1 `pb`와 `pnb`를 분리하는 이유
+
+Prefix beam search는 같은 문자열로 접히는 경로를 prefix별로 모은다. 단, 마지막 frame이 blank인지 일반 token인지에 따라 다음의 반복 token이 다른 결과를 만들므로 질량을 둘로 나눈다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: CTC prefix-beam recurrence</summary>
 
 Prefix $$\ell$$에 대해 두 질량을 둔다.
 
@@ -222,6 +286,10 @@ $$
 
 Notebook은 underflow를 피하려고 이 계산을 log domain에서 수행하며, 합에는 `np.logaddexp`를 사용한다. 새 합성 검산에서는 $$T=3,V=3$$ 확률표의 27개 경로를 전부 열거해 얻은 9개 문자열 질량과 notebook 점화식을 비교했고, 오차 $$10^{-12}$$ 이내에서 모두 일치했다. 이 검산은 pruning이 없는 작은 경우의 알고리즘 확인이며 실제 169-frame 추론을 재실행한 것이 아니다.
 
+</details>
+
+핵심 해석은 `a → a`와 `a → blank → a`의 차이다. 전자는 같은 prefix `a`에 머물고, 후자는 새 `a`를 붙여 `aa`가 된다.
+
 ### 3.2 Beam은 어디에서 근사가 되는가
 
 각 frame에서 만들 수 있는 prefix를 전부 보존하면 위 점화식은 정확하지만 후보 수가 빠르게 증가한다. Notebook은 점수 상위 `beam_size`개만 남긴다. 한 번 제거된 prefix의 후속 경로는 다시 나타나지 않으므로 저장되는 `ctc_logp`는 일반적으로 근사값이다.
@@ -248,7 +316,12 @@ $$
 
 이다. 이는 확률론적 posterior 그 자체라기보다 decoder의 **순위 점수**다. $$\alpha$$와 $$\beta$$는 validation data에서 조정하는 hyperparameter이며, 큰 $$\alpha$$가 항상 더 정확하지 않다.
 
-합성 `CAT`/`COT` 예제에서 음향 분포만 보면 `COT`가 0.55로 `CAT`의 0.45보다 높다. 저장 출력은 다음을 보여 준다.
+합성 `CAT`/`COT` 예제에서 음향 분포만 보면 `COT`가 0.55로 `CAT`의 0.45보다 높다. 그러나 학습 corpus가 `CAT`를 훨씬 자주 보았다면 LM term이 순위를 바꿀 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Language-model score changes candidate ranking</summary>
+
+저장 출력은 다음을 보여 준다.
 
 | $$\alpha$$ | 1위 | CTC logp | LM logp | 결합 점수 |
 |---:|---|---:|---:|---:|
@@ -256,6 +329,8 @@ $$
 | 1 | `CAT` | -0.798508 | -0.407561 | -1.206069 |
 
 `CAT`를 20회, `COT`를 1회 본 작은 LM 때문에 $$\alpha=1$$에서는 `CAT`가 올라온다. 이것은 LM이 음향 증거를 “수정했다”기보다 두 score의 상대 scale을 바꾼 결과다. Corpus가 test domain과 다르면 같은 작용이 오히려 오류를 만들 수 있다.
+
+</details>
 
 ### 4.2 Shallow Fusion과 Rescoring의 탐색 범위
 
@@ -287,9 +362,25 @@ Greedy는 한 격자점에서 가장 높은 class를 고른다.
 
 ![blank에서는 오른쪽으로, c a t token에서는 위로 이동하는 합성 RNN-T 경로]({{ "/assets/images/study/speech-asr-lab/rnnt-synthetic-path.png" | relative_url }})
 
-합성 `cat` 경로는 $$(0,0)$$에서 blank, $$(1,0)$$에서 `c`, $$(1,1)$$에서 blank, $$(2,1)$$에서 `a`, $$(2,2)$$에서 `t`를 낸다. 같은 $$t=2$$에서 `a`, `t` 두 token을 연속 출력할 수 있는 이유는 첫 token 뒤에 $$g_u$$가 바뀌어 같은 $$f_t$$와 결합한 다음 분포가 달라지기 때문이다.
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Synthetic RNN-T lattice path</summary>
+
+x축은 Encoder index $$t$$, y축은 emitted-token count $$u$$다. 오른쪽 수평 이동은 blank를 골라 음향 시간만 진행한 step이다. 위쪽 수직 이동은 token을 골라 같은 음향 위치에서 출력 이력만 늘린 step이다. `a`와 `t`가 같은 $$t=2$$에서 연속으로 나오는 수직선은 RNN-T가 한 Encoder 위치에서 여러 token을 낼 수 있음을 보여 준다.
+
+이 그림은 확률 전체를 나타내는 lattice가 아니라 Greedy로 선택한 경로 하나다. 선의 길이나 기울기를 음성 속도 또는 confidence로 해석하면 안 된다.
+
+</details>
+
+같은 $$t=2$$에서 `a`, `t` 두 token을 연속 출력할 수 있는 이유는 첫 token 뒤에 $$g_u$$가 바뀌어 같은 $$f_t$$와 결합한 다음 분포가 달라지기 때문이다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Synthetic RNN-T greedy trace</summary>
+
+합성 `cat` 경로는 $$(0,0)$$에서 blank, $$(1,0)$$에서 `c`, $$(1,1)$$에서 blank, $$(2,1)$$에서 `a`, $$(2,2)$$에서 `t`를 낸다. 마지막 blank들은 남은 Encoder 위치를 소비한다.
 
 새 합성 검산에서도 한 음향 위치에서 `a`, `a`, blank를 차례로 선택하면 이동은 $$(0,0)\to(0,1)\to(0,2)\to(1,2)$$가 되고 출력은 `aa`였다. CTC의 반복 collapse를 적용하면 실제 출력 하나를 지우게 된다.
+
+</details>
 
 ### 5.2 전용 tokenizer와 blank 4096
 
@@ -309,6 +400,13 @@ RNN-T notebook도 같은 3.40초 sample을 독립적으로 준비한다.
 
 ![RNN-T notebook에 저장된 입력 음성 파형]({{ "/assets/images/study/speech-asr-lab/rnnt-input-waveform.png" | relative_url }})
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: RNN-T input waveform</summary>
+
+x축은 선택 구간의 시간(s), y축은 정규화된 amplitude다. 이 파형은 CTC notebook과 같은 audio crop을 독립적으로 전처리한 결과다. 두 그림이 같아 보여도 각 notebook이 동일한 sample rate와 구간을 입력으로 사용했는지 확인하는 역할이 있다. 파형 자체는 RNN-T의 85-step Encoder 축이나 token 경계를 직접 표시하지 않는다.
+
+</details>
+
 공식 bundle의 feature extractor는 16 kHz 파형에 400-sample FFT window, 160-sample hop, 80 Mel band를 적용하고, piecewise log, 학습 시의 global mean·inverse standard deviation, 오른쪽 context padding을 함께 적용한다. 이 순서를 checkpoint와 맞추지 않으면 입력 분포와 시간축 길이가 달라진다.
 
 저장 shape는 다음과 같다.
@@ -322,7 +420,21 @@ Encoder output f_t : [1, 85, 1024]
 
 ![85개 Encoder 위치에서 9개 BPE token을 출력한 pretrained RNN-T Greedy 경로]({{ "/assets/images/study/speech-asr-lab/rnnt-saved-inference-path.png" | relative_url }})
 
-저장 결과는 85개 Encoder 위치에서 blank 결정 85회와 일반 token 결정 9회를 내려 총 94개 decision을 기록한다. 출력은 다음 9개 piece다.
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Saved pretrained RNN-T path</summary>
+
+x축은 85개 Encoder position, y축은 누적 emitted BPE token 수다. 긴 수평 구간은 blank가 이어져 음향 시간만 진행한 부분이고, 아홉 번의 수직 상승은 각 BPE piece가 나온 시점이다. 마지막 높이 9는 출력 piece 수와 일치한다.
+
+모든 수직선이 한 칸인 것은 이 저장 sample의 결과다. 합성 경로처럼 같은 $$t$$에서 여러 칸 오를 수 있다. 또한 점 사이의 수평 거리를 음소 지속시간으로 직접 해석할 수 없다. Piece boundary는 학습된 RNN-T decision이며 강제 정렬 label이 아니다.
+
+</details>
+
+저장 결과는 85개 Encoder 위치에서 blank 결정 85회와 일반 token 결정 9회를 내려 총 94개 decision을 기록한다. 아래 trace는 저장 출력이며 새 full-model inference 결과가 아니다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Saved RNN-T shapes, decisions, and predictor calls</summary>
+
+출력은 다음 9개 piece다.
 
 ```text
 ▁i | ▁have | ▁that | ▁curiosity | ▁beside | ▁me | ▁at | ▁this | ▁moment
@@ -331,6 +443,8 @@ Encoder output f_t : [1, 85, 1024]
 최종 transcript는 `i have that curiosity beside me at this moment`다. 일반 token은 $$t=23,27,33,48,60,67,73,77,81$$에서 하나씩 나왔고, 저장 실행에서는 같은 $$t$$의 다중 방출이 없었다. 그래프의 수직 이동이 모두 한 칸인 것은 이 sample의 관찰 결과일 뿐, RNN-T가 한 frame에 하나만 출력한다는 제약이 아니다. 합성 `cat` 예제가 그 반례다.
 
 Predictor 호출 수도 control flow를 검산한다. 시작 blank seed에 1회, 일반 token 9개에 각각 1회 호출해 총 10회다. Blank 85회에는 Predictor를 호출하지 않는다. 대신 Joiner는 각 decision마다 현재 $$f_t,g_u$$를 사용하며, token이 나올 때만 새 $$g_{u+1}$$를 계산한다.
+
+</details>
 
 ### 5.4 무한 방출을 막는 한도
 

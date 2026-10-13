@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Real and imaginary coordinates of a complex STFT coefficient</title>
+  <desc id="desc">A point with real coordinate 0.5 and imaginary coordinate square root of three over two has magnitude one and phase sixty degrees. Removing the imaginary coordinate changes both magnitude and phase.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#376da8"/></marker>
+  </defs>
+  <rect width="720" height="420" rx="14" fill="#f5f8fc"/>
+  <g font-family="system-ui, sans-serif" fill="#24384d">
+    <text x="28" y="36" font-size="22" font-weight="600">One STFT bin: coordinates, length, and angle</text>
+    <path d="M 65 302 H 420 M 100 340 V 72" stroke="#6b7e91" stroke-width="2"/>
+    <text x="338" y="330" font-size="16">Real part</text>
+    <text x="28" y="66" font-size="16">Imaginary part</text>
+    <text x="82" y="324" font-size="16">0</text>
+    <path d="M 100 302 L 220 94" stroke="#376da8" stroke-width="4" marker-end="url(#arrow)"/>
+    <path d="M 220 94 V 302 M 100 94 H 220" stroke="#90a7bd" stroke-width="2" stroke-dasharray="5 5"/>
+    <path d="M 158 302 A 58 58 0 0 0 129 252" fill="none" stroke="#376da8" stroke-width="2"/>
+    <circle cx="220" cy="94" r="5" fill="#376da8"/>
+    <circle cx="220" cy="302" r="5" fill="#24384d"/>
+    <text x="158" y="277" font-size="17">60°</text>
+    <text x="118" y="179" font-size="17" transform="rotate(-60 118 179)">Magnitude = 1</text>
+    <text x="197" y="326" font-size="16">0.5</text>
+    <text x="35" y="101" font-size="15">√3 / 2</text>
+    <text x="238" y="92" font-size="16">Y = 0.5 + j√3 / 2</text>
+    <text x="238" y="295" font-size="16">Imaginary part removed</text>
+    <text x="452" y="143" font-size="18" font-weight="600">Both coordinates matter</text>
+    <text x="452" y="181" font-size="17">Original: magnitude 1</text>
+    <text x="452" y="208" font-size="17">Original: phase 60°</text>
+    <text x="452" y="254" font-size="17">After removal: magnitude 0.5</text>
+    <text x="452" y="281" font-size="17">After removal: phase 0°</text>
+    <text x="28" y="382" font-size="16">Both coordinates determine magnitude and phase.</text>
+    <text x="28" y="405" font-size="14" fill="#52677c">Illustrative coefficient; not a measured audio recording.</text>
+  </g>
+</svg>

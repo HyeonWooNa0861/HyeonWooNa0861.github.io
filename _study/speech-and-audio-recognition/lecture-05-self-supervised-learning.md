@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
+last_modified_at: 2026-10-13 15:20:57 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -150,7 +151,12 @@ $$
 z_1,\ldots,z_T=f(x)
 $$
 
-원 논문의 일곱 convolution stride는 $$(5,2,2,2,2,2,2)$$이므로 총 stride는 다음과 같다.
+원 논문의 일곱 convolution stride를 모두 곱하면 320 samples다. 16 kHz 입력에서는 약 20 ms마다 latent가 하나 생긴다. 이 downsampling은 sample 단위의 긴 입력을 Transformer가 처리할 수 있는 길이로 줄이기 위해 필요하다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: CNN stride and receptive field</summary>
+
+Stride $$(5,2,2,2,2,2,2)$$의 누적값은 다음과 같다.
 
 $$
 5\times2^6=320\ \mathrm{samples}
@@ -165,6 +171,10 @@ r_i=r_{i-1}+(k_i-1)j_{i-1},\qquad j_i=j_{i-1}s_i
 $$
 
 를 적용하면 마지막에 $$r=400,j=320$$이다. 16 kHz에서 receptive field는 25 ms, step은 20 ms라 인접 latent의 입력 구간이 겹친다.
+
+</details>
+
+해석할 때는 **한 latent가 보는 구간**과 **latent 사이 간격**을 구분해야 한다. Receptive field 25 ms가 step 20 ms보다 크므로 이웃 latent는 일부 waveform을 공유한다.
 
 ### 3.2 Masking은 CNN 뒤, Transformer 앞에서 한다
 
@@ -204,11 +214,16 @@ $$
 
 ### 4.1 여러 codebook에서 하나씩 선택한다
 
-Quantization module은 $$z_t$$를 $$G$$개 codebook에 대한 logits로 바꾸고 각 codebook의 $$V$$개 entry 중 하나를 선택한다(pp. 25–28). 선택한 vector를 이어 붙인 뒤 projection하여 $$q_t$$를 얻는다.
+Quantization module은 $$z_t$$를 $$G$$개 codebook에 대한 logits로 바꾸고 각 codebook의 $$V$$개 entry 중 하나를 선택한다(pp. 25–28). 목적은 연속 latent를 제한된 선택지로 바꿔 contrastive target을 만드는 것이다. 선택한 vector를 이어 붙인 뒤 projection하여 $$q_t$$를 얻는다.
 
 $$
 q_t=W_q[e_{1,v_1};e_{2,v_2};\ldots;e_{G,v_G}]
 $$
+
+짧은 예로 두 codebook에서 각각 `A/B`와 `1/2/3` 중 하나를 고르면 `A1`, `A2`, `A3`, `B1`, `B2`, `B3`의 6개 조합이 가능하다. 선택지 수는 codebook별 경우의 수를 더하지 않고 곱한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Product-code capacity</summary>
 
 가능한 조합의 이론적 최대 수는 $$G\times V$$가 아니라
 
@@ -216,9 +231,18 @@ $$
 V^G
 $$
 
-이다. 원 설정의 $$G=2,V=320$$이면 $$320^2=102{,}400$$개 조합이다. 이는 가능한 조합 수이며 실제 학습에서 모두 같은 빈도로 등장하거나 서로 다른 음소 하나씩에 대응한다는 뜻은 아니다.
+이다. 원 설정의 $$G=2,V=320$$이면 $$320^2=102{,}400$$개 조합이다.
+
+</details>
+
+이 값은 표현 공간의 상한이다. 실제 학습에서 모든 조합이 등장하거나 서로 다른 음소 하나씩에 대응한다는 뜻은 아니다.
 
 ### 4.2 Gumbel-softmax로 discrete 선택을 학습한다
+
+Discrete argmax는 선택된 entry가 바뀌는 지점에서 미분할 수 없다. Gumbel-softmax는 학습 중에는 부드러운 확률로 gradient를 전달하고, forward 결과는 hard entry처럼 쓰기 위한 장치다. Temperature $$\tau$$가 높으면 여러 entry가 비슷한 확률을 받고, 낮으면 한 entry에 집중한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Gumbel-softmax selection</summary>
 
 Codebook $$g$$의 entry $$v$$에 대한 logit을 $$l_{g,v}$$라 하자. Uniform sample $$u_{g,v}\sim\mathcal U(0,1)$$에서 Gumbel noise를 만든다.
 
@@ -230,7 +254,9 @@ $$
 p_{g,v}=\frac{\exp((l_{g,v}+n_{g,v})/\tau)}{\sum_{j=1}^{V}\exp((l_{g,j}+n_{g,j})/\tau)}
 $$
 
-Forward에서는 argmax entry를 고르는 hard choice를 사용하고 backward에서는 soft probability의 gradient를 사용하는 straight-through estimator를 쓴다. $$\tau$$가 크면 분포가 부드럽고, 작아지면 선택이 날카로워진다. $$\tau\to0$$은 수치적으로 민감하므로 원 설정도 양의 최솟값까지만 annealing한다.
+Forward에서는 argmax entry를 고르는 hard choice를 사용하고 backward에서는 soft probability의 gradient를 사용하는 straight-through estimator를 쓴다. $$\tau\to0$$은 수치적으로 민감하므로 원 설정도 양의 최솟값까지만 annealing한다.
+
+</details>
 
 ## 5. Contrastive objective를 단계별로 계산하기
 
@@ -256,6 +282,11 @@ $$\kappa$$가 작으면 similarity 차이를 더 크게 확대한다. Negative�
 
 ### 5.2 작성자 수치 예시
 
+Positive가 distractor보다 훨씬 비슷하면 정답 후보의 softmax 확률이 커지고 loss는 작아진다. 아래 계산은 그 관계를 확인하는 설명용 예시이며 슬라이드의 실험 수치가 아니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Contrastive-loss toy calculation</summary>
+
 Positive similarity가 0.8, 두 distractor similarity가 0.3과 0.1, $$\kappa=0.1$$이라고 하자. 분자·분모에서 $$\exp(8)$$을 나누면 overflow 없이 계산할 수 있다.
 
 $$
@@ -265,11 +296,18 @@ $$
 \approx0.0076207
 $$
 
-Positive가 가장 크고 temperature가 작아 정답 확률이 1에 가깝기 때문에 loss가 작다. 이 값은 설명용이며 슬라이드의 실험 수치가 아니다.
+Positive가 가장 크고 temperature가 작아 정답 확률이 1에 가깝기 때문에 loss가 작다.
+
+</details>
 
 ### 5.3 Diversity loss와 부호
 
-Contrastive loss만 최적화하면 일부 codebook entry만 쓰는 collapse가 생길 수 있다. Batch에서 Gumbel noise와 temperature를 제외한 softmax probability를 평균해 $$\bar p_{g,v}$$라 하면,
+Contrastive loss만 최적화하면 일부 codebook entry만 쓰는 collapse가 생길 수 있다. Diversity term은 batch 전체에서 각 entry가 얼마나 쓰였는지 보고, 지나치게 한쪽으로 몰린 선택보다 고른 선택을 선호한다. 이름에 `loss`가 있어도 이 논문의 식은 음의 entropy이므로 값이 음수가 될 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Diversity-loss sign and entropy</summary>
+
+Batch에서 Gumbel noise와 temperature를 제외한 softmax probability를 평균해 $$\bar p_{g,v}$$라 하면,
 
 $$
 \mathcal L_d=\frac{1}{GV}\sum_{g=1}^{G}\sum_{v=1}^{V}\bar p_{g,v}\log\bar p_{g,v}
@@ -285,6 +323,8 @@ $$
 
 이므로 균등 사용 쪽이 더 작은 값이다. `diversity loss`가 양수여야 한다고 생각해 앞의 음수를 임의로 없애면 optimization 방향이 뒤집힌다.
 
+</details>
+
 전체 objective는 masked positions에 대해 합·평균한 contrastive term과 diversity term을 결합한다.
 
 $$
@@ -292,6 +332,21 @@ $$
 $$
 
 원 논문의 $$\alpha=0.1$$은 특정 실험 설정이다. 너무 큰 가중치는 task discrimination보다 균등 사용을 과도하게 강제할 수 있고, 너무 작으면 collapse 방지가 약해질 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: wav2vec 2.0 objective pipeline on slides 25–32</summary>
+
+슬라이드 그림은 같은 CNN latent에서 두 branch가 갈라지는 구조를 단계별로 겹쳐 보여 준다.
+
+1. 아래 waveform은 CNN feature encoder를 지나 연속 latent $$z_t$$가 된다.
+2. 오른쪽 branch는 일부 $$z_t$$를 mask embedding으로 바꾸고 Transformer를 거쳐 context vector $$c_t$$를 만든다.
+3. 왼쪽 branch는 가리지 않은 $$z_t$$를 online product quantizer에 넣어 target $$q_t$$를 만든다.
+4. Contrastive loss는 masked 위치의 $$c_t$$가 같은 위치의 $$q_t$$를 distractor보다 높게 고르게 한다.
+5. Diversity loss는 특정 codebook entry만 반복 선택되는 collapse를 억제한다.
+
+그림의 빨간 code가 곧 문자나 음소 label이라는 뜻은 아니다. 빨간색은 해당 위치에서 선택된 discrete target을 시각화한 것이며, ASR 문자 vocabulary는 fine-tuning 때 별도 CTC head로 정의된다.
+
+</details>
 
 ## 6. Pre-training에서 ASR fine-tuning으로
 
@@ -378,6 +433,15 @@ MFCC -> 100-cluster labels -> HuBERT Base iteration 1
 
 원 논문의 Base 두 번째 iteration은 첫 model의 6th layer를 사용하고, Large/X-Large target은 두 번째 Base model의 9th layer를 사용한다. 슬라이드의 `6-th / 9-th layer`는 임의의 두 layer를 동시에 섞는다는 뜻이 아니라 **model·iteration에 따라 선택한 teacher layer가 다르다**는 뜻이다.
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: HuBERT target refinement on slides 46–47</summary>
+
+p. 46의 위쪽 feature strip은 spectrogram·MFCC·Mel spectrogram 같은 acoustic feature 후보를 뜻한다. K-means가 frame들을 cluster ID로 바꾸고, 아래 Transformer는 가린 위치에서 그 ID를 예측한다. 되돌아가는 화살표는 target이 같은 utterance에서 만들어진다는 뜻이며 gradient가 k-means까지 online으로 흐른다는 뜻은 아니다.
+
+p. 47에서는 이전 iteration HuBERT의 intermediate layer feature가 새 clustering input이 된다. 따라서 `MFCC cluster → HuBERT feature cluster` 순서로 target을 갱신한다. 목적은 첫 acoustic cluster보다 문맥 정보를 더 담은 hidden unit을 다음 학습 target으로 쓰는 것이다.
+
+</details>
+
 ### 7.4 “No codebook collapse”의 정확한 범위
 
 HuBERT는 wav2vec 2.0처럼 student와 함께 online Gumbel codebook을 학습하지 않는다. Target을 offline k-means로 미리 고정하므로, contrastive training 중 codebook entry가 한두 개로 몰리는 **online codebook collapse mechanism**과 diversity loss가 필요하지 않다(p. 49).
@@ -387,6 +451,15 @@ HuBERT는 wav2vec 2.0처럼 student와 함께 online Gumbel codebook을 학습�
 ### 7.5 Labeled-data curve는 같은 조건 안에서 읽는다
 
 p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-other·test-other WER가 내려가는 곡선을 보여 준다. 이 그림에서 안전하게 읽을 수 있는 핵심은 **self-supervised pre-training 뒤에도 downstream label의 양이 성능에 영향을 준다**는 점이다. HuBERT와 wav2vec 2.0의 선 높이를 objective만의 순위로 해석해서는 안 된다. Pre-training corpus가 LibriSpeech 960 hours인지 Libri-Light 60k hours인지, model scale과 fine-tuning·decoding 조건이 무엇인지도 함께 고정해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Labeled-data scaling curves on slide 48</summary>
+
+두 그래프의 x축은 labeled data 양이며 10 minutes부터 960 hours까지 배치되어 있다. y축은 각각 dev-other와 test-other WER이므로 낮을수록 좋다. 세 곡선 모두 label이 늘수록 내려가며, 저자원 구간에서 모델 간 간격이 더 크게 보인다.
+
+이 곡선은 label이 늘면 SSL의 가치가 사라진다는 뜻이 아니다. 반대로 한 점의 낮은 WER만으로 objective의 우열을 증명하지도 않는다. 각 선의 pre-training data, model size, fine-tuning recipe, decoder 조건을 함께 확인해야 한다.
+
+</details>
 
 ## 8. wav2vec 2.0과 HuBERT를 나란히 보기
 

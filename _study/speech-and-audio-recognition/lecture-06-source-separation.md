@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:17:00 +0900
+last_modified_at: 2026-10-13 15:25:00 +0900
 title: "Speech and Audio Recognition Lecture 6: Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Audio Reconstruction, Masking, Loss Functions, and Phase"
@@ -83,6 +84,19 @@ Diarization은 개별 source waveform을 반드시 복원하지 않는다. 반�
 
 ### 2.1 STFT는 크기와 위상을 함께 만든다
 
+실제 마이크가 측정한 waveform은 실수값이다. STFT의 허수부는 마이크가 별도의 “허수 소리”를 측정했다는 뜻이 아니다. **같은 소리 구간을 cosine과 sine의 두 기준에 맞춰 읽은 결과**를 실수부와 허수부로 기록한다. 두 값이 있어야 해당 주파수 성분의 크기뿐 아니라 분석 구간 안에서 파동이 어디까지 진행했는지도 구분할 수 있다.
+
+한 칸을 $$Y=a+jb$$라고 쓰면, 실수부 $$a$$와 허수부 $$b$$는 복소평면의 두 좌표다. 크기는 $$\sqrt{a^2+b^2}$$, 위상은 $$\operatorname{atan2}(b,a)$$로 **두 좌표를 함께 사용해** 구한다. 따라서 “실수부는 크기, 허수부는 위상”으로 각각 배정하면 안 된다. 허수부를 버리면 위상뿐 아니라 크기 계산에 필요한 정보도 달라진다.
+
+![복소 STFT 값의 실수 좌표와 허수 좌표, 원점으로부터의 크기와 실수축으로부터의 위상각](/assets/images/study/speech-source-separation/complex-stft-coordinates.svg)
+
+그림의 가로축은 실수부, 세로축은 허수부다. 파란 선의 **길이**가 크기이고, 가로축과 이루는 **각도**가 위상이다. $$Y=0.5+j\sqrt{3}/2$$는 크기 1, 위상 60도다. 허수부를 0으로 바꾸면 $$Y=0.5$$가 되어 크기는 0.5, 위상은 0도로 동시에 바뀐다. 반대로 $$Y=1$$과 $$Y=j$$는 크기가 모두 1이지만 위상은 각각 0도와 90도다. 허수부가 0이어도 음의 실수는 위상 180도를 가진다. 크기가 0인 칸에는 물리적으로 결정된 위상각이 없다.
+
+위상은 **선택한 주파수와 분석 frame의 기준 시각에 대한 각도**다. 모든 위상값을 곧바로 소리의 도착 시간으로 읽을 수는 없다. 시간 지연은 여러 주파수의 위상을 일관된 방식으로 바꿀 때 해석할 수 있으며, 한 bin의 위상만으로 임의의 신호 지연이 유일하게 결정되지는 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: STFT coordinates, magnitude, and phase</summary>
+
 STFT encoder의 한 정의는 다음과 같다. FFT 정규화는 구현별로 다를 수 있으며, 분석과 합성에서 같은 관례를 사용해야 한다.
 
 $$
@@ -94,6 +108,21 @@ Y_{t,k}=\lvert Y_{t,k}\rvert e^{j\phi_{Y,t,k}}
 $$
 
 한 칸 $$Y_{t,k}$$는 복소수다. $$\lvert Y_{t,k}\rvert$$는 해당 성분의 크기, $$\phi_{Y,t,k}$$는 해당 분석 frame 안에서의 위상이다. 색으로 표시한 magnitude spectrogram에는 보통 크기만 보이지만, STFT 계산 결과에는 두 정보가 모두 있다(pp. 21–22).
+
+Euler 항등식 $$e^{-j\theta}=\cos\theta-j\sin\theta$$를 위의 STFT 정의에 대입하면
+
+$$
+\begin{aligned}
+a&=\sum_{r=0}^{L-1}y[tH+r]w[r]\cos(2\pi kr/N),\\
+b&=-\sum_{r=0}^{L-1}y[tH+r]w[r]\sin(2\pi kr/N)
+\end{aligned}
+$$
+
+가 된다. 여기서 허수부의 부호는 분석 지수를 음수로 정한 관례에 따른다. 극좌표로 쓰면 $$a=R\cos\phi$$, $$b=R\sin\phi$$이므로 $$a^2+b^2=R^2(\cos^2\phi+\sin^2\phi)=R^2$$이다. 이것이 크기를 두 좌표의 제곱합으로 계산하는 이유다. $$\operatorname{atan2}(b,a)$$는 두 좌표의 부호를 함께 사용해 사분면을 구분한다. $$\arctan(b/a)$$만 쓰면 $$a=0$$에서 나눌 수 없고 반대 사분면도 구분하지 못한다.
+
+원 신호를 $$x(t-\tau)$$만큼 늦추는 연속시간 Fourier 관례에서는 주파수 $$f$$의 계수에 $$e^{-j2\pi f\tau}$$가 곱해진다. 따라서 지연에 의한 위상 변화는 $$-2\pi f\tau$$다. 이 관계는 전체 신호의 Fourier 변환에 대한 정확한 등식이다. 유한 STFT에서는 frame 위치·window·경계도 함께 달라질 수 있으므로 모든 bin의 변화를 단순한 고정 회전으로만 다뤄서는 안 된다.
+
+</details>
 
 | 기호 | 의미 | 단위·범위 |
 |---|---|---|
@@ -166,6 +195,11 @@ $$b$$는 Mel-band index, $$W_{b,k}$$는 무차원 filter weight다. $$q_{\mathrm
 
 ### 3.2 서로 다른 입력이 같은 출력이 되는 작은 증명
 
+Mel band 안의 합계가 같아도, 그 합계를 만든 세부 주파수의 배치는 다를 수 있다. **합계만 저장하면 원래 배치를 선택할 정보가 부족하다.** 다음 계산은 모델 성능이 아니라 표현 자체의 비유일성을 확인한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: why Mel aggregation is not uniquely invertible</summary>
+
 주파수 세 칸을 두 band로 합치는 설명용 행렬을 만들자. 실제 Mel filter의 정확한 모양을 재현한 것이 아니라, 차원 축소의 비유일성을 보여 주는 예다.
 
 $$
@@ -188,6 +222,8 @@ $$
 
 비음수 power 조건을 만족하는 서로 다른 입력이 남을 수 있어, Mel 값만으로 원래 power를 항상 유일하게 복구할 수는 없다. librosa의 `mel_to_stft` 함수도 이를 <a href="https://librosa.org/doc/0.10.2/generated/librosa.feature.inverse.mel_to_stft.html" target="_blank" rel="noopener">근사적인 STFT magnitude 복원</a>으로 정의한다.
 
+</details>
+
 ### 3.3 인식에 유용한 표현이 복원에는 부족할 수 있다
 
 ASR은 특정 waveform을 재현하기보다 어떤 phoneme·word인지 알아내는 것이 목적이다. 주파수의 세부 차이를 줄인 log-Mel 특징이 그 목적에는 유용할 수 있다. 반면 denoising과 separation은 목표 파형의 주파수별 크기와 시간 구조를 다시 만들어야 한다.
@@ -201,6 +237,8 @@ ASR은 특정 waveform을 재현하기보다 어떤 phoneme·word인지 알아�
 원문 p. 23의 번호 ①②③은 **loss를 계산할 수 있는 위치**다. MA를 먼저 학습하고, 그다음 SA, 마지막으로 waveform을 반드시 순차 수행하라는 뜻이 아니다. 모델은 하나를 선택하거나 여러 loss를 가중합해 한 번에 학습할 수 있다.
 
 ![혼합 신호에서 mask, masked magnitude, reconstructed waveform으로 이어지는 경로와 MA·SA·Waveform의 비교 위치](/assets/images/study/speech-source-separation/loss-comparison-pipeline.svg)
+
+그림을 왼쪽에서 오른쪽으로 읽으면 **입력과 출력의 처리 순서**이고, 각 비교 지점에서 정답으로 이어지는 선은 **학습 오차를 재는 위치**다. MA는 network가 낸 비율을 검사하고, SA는 그 비율을 곱한 결과를 검사한다. Waveform loss는 iSTFT 뒤 실제 sample을 검사한다. 정답 쪽 선은 학습할 때만 필요하며, 추론 때 모델이 정답을 입력으로 받는다는 뜻이 아니다.
 
 ### 4.1 MA — 예측 mask와 정답 mask를 비교한다
 
@@ -234,6 +272,11 @@ $$
 
 둘째 칸이 더 큰 벌점을 받는다. 두 loss의 숫자 크기를 직접 비교해 “1.04이므로 나쁘다”라고 말할 수는 없다. **서로 다른 단위와 스케일의 objective**이기 때문이다. 봐야 할 것은 각 칸을 학습시키는 가중치가 어떻게 달라지는지다.
 
+큰 혼합 성분에서는 같은 비율 오차도 큰 크기 오차가 된다. SA가 큰 성분을 더 강하게 반영하는 이유는 별도의 규칙을 덧붙였기 때문이 아니라, **mask를 혼합 크기에 곱한 뒤 오차를 계산하기 때문**이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: weighted MA identity and loss gradients</summary>
+
 $$\lvert Y\rvert>0$$에서 ideal amplitude mask를 $$M^\ast=\lvert S\rvert/\lvert Y\rvert$$로 두면 한 칸에서 다음 정확한 등식이 성립한다.
 
 $$
@@ -256,6 +299,8 @@ $$
 
 두 칸의 MA gradient는 각각 0.2이고, SA gradient는 각각 0.8과 20이다. 정답 스펙트럼 크기 오차를 더 직접 반영하지만, 큰 성분이 학습을 지배하거나 약한 음성 성분이 덜 반영될 수 있다. SA가 모든 데이터·모델·metric에서 MA보다 낫다는 보장은 없다. MA와 SA의 정의 및 비교는 <a href="https://www.jonathanleroux.org/pdf/Weninger2014GlobalSIP12.pdf" target="_blank" rel="noopener">Weninger et al.의 signal approximation 연구</a>에서 자세히 다룬다.
 
+</details>
+
 ### 4.3 Waveform loss — 소리로 복원한 다음 비교한다
 
 복원된 $$\hat s$$와 clean waveform $$s$$를 sample 단위로 비교한다.
@@ -272,7 +317,12 @@ $$
 
 정답 $$(1,-1)$$에 대해 예측 $$(0.8,-0.8)$$은 L1 오차 0.4, squared L2 오차 0.08이다. 이 비교에는 원칙적으로 같은 길이, sample rate, 시간 정렬이 필요하다. 출력이 지연된 경우 정렬하지 않은 loss는 실제 소리와 별개로 큰 오차를 낼 수 있다.
 
-학습 중 iSTFT가 미분 가능하면 파형 오차를 mask network까지 전달한다. 합성 연산을 $$D$$, mask 적용을 $$G$$라고 두면 chain rule은 다음과 같다.
+학습 중 iSTFT가 미분 가능하면 파형 오차를 mask network까지 전달한다. Mask를 조금 바꿨을 때 최종 sample이 얼마나 바뀌는지 추적하기 때문에, **어느 mask 값을 바꾸면 파형 오차가 줄어드는지**도 계산할 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: waveform loss backpropagation through iSTFT</summary>
+
+합성 연산을 $$D$$, mask 적용을 $$G$$라고 두면 chain rule은 다음과 같다.
 
 $$
 \hat s=D(G(\hat M,Y))
@@ -286,6 +336,8 @@ $$
 $$
 
 여기서 복소수는 실수부·허수부를 쌓은 실수 vector로 생각하면 일반적인 Jacobian chain rule로 읽을 수 있다. Network parameter에는 $$\partial\hat M/\partial\theta$$를 한 번 더 곱한다. Loss가 커졌다는 정보만 전달되는 것이 아니라 **어느 mask 값을 바꾸면 어느 sample의 오차가 줄어드는지**가 전달된다.
+
+</details>
 
 다만 waveform loss를 쓰는 것만으로 위상을 독립적으로 예측할 수 있게 되지는 않는다. **Real nonnegative mask와 고정된 혼합 위상을 사용하는 모델은 위상 예측 자유도가 없다.** 위상 오차의 영향이 waveform loss에 나타나고 mask가 이를 고려해 바뀔 수는 있지만, 임의의 clean phase로 회전하려면 complex mask, phase predictor, 또는 waveform decoder가 필요하다.
 
@@ -324,6 +376,11 @@ $$
 ### 5.2 SI-SNR은 gain을 제거한 뒤 나머지 왜곡을 잰다
 
 흔히 DC offset을 제거한 $$s$$와 $$\hat s$$를 사용한다. Gain이 달라도 같은 파형 모양이면 좋은 점수를 주기 위해 먼저 가장 가까운 scaled target $$\alpha s$$를 찾는다.
+
+예측이 정답의 0.8배라면 음량은 작지만 파형 모양은 같다. SI-SNR은 정답도 0.8배로 맞춰 비교하여 **음량 차이와 나머지 왜곡을 분리**한다. 이때 예측에 이미 들어 있는 정답 방향 성분을 target으로, 그 방향으로 설명되지 않는 부분을 residual로 나눈다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: least-squares projection and SI-SNR scale invariance</summary>
 
 $$
 \alpha^\ast=\arg\min_{\alpha}\lVert\hat s-\alpha s\rVert_2^2
@@ -369,6 +426,8 @@ $$\hat s'=g\hat s$$, $$g\ne0$$이라고 하면 $$\alpha'=g\alpha$$가 되고, �
 
 이 성질은 gain 차이를 무시하고 분리 정확도를 비교할 때 유용하지만, 출력 음량이 정확하다는 뜻은 아니다. 임의의 실수 gain을 허용하는 투영은 극성 반전도 구분하지 않는다. 무음, 완전한 직교, 유한 정밀도에서는 별도 처리가 필요하며, 정규화 방식과 $$\varepsilon$$도 구현 조건으로 기록해야 한다.
 
+</details>
+
 <a href="https://arxiv.org/abs/1811.02508" target="_blank" rel="noopener">Le Roux et al.의 SI-SDR 논문</a>은 scale-invariant 투영과 기존 SDR의 차이를 다룬다. 위와 같은 단순 투영에서는 SI-SNR과 SI-SDR이 같은 형태가 되지만, 이름만 보고 구현의 demeaning이나 alignment 조건까지 같다고 판단해서는 안 된다.
 
 ### 5.3 Metric을 loss로 사용할 때는 부호를 반대로 둔다
@@ -389,6 +448,11 @@ PESQ는 지각적 음질을, STOI는 음성 명료도를 평가한다(pp. 18–2
 
 가산 혼합과 STFT의 선형성에 따라 $$Y=S+V$$이다. 그러나 일반적으로 $$\lvert Y\rvert\ne\lvert S\rvert+\lvert V\rvert$$이다.
 
+두 소리가 같은 주파수에 있어도 파동이 맞물리는 위치에 따라 더 커지거나 작아진다. 크기만 합하면 이 강화·상쇄를 설명할 수 없다. **혼합 크기는 각 source의 크기와 두 source의 위상 차이에 함께 의존한다.**
+
+<details markdown="block">
+<summary markdown="span">Derivation: the phase cross term in an additive mixture</summary>
+
 $$
 \begin{aligned}
 \lvert Y\rvert^2
@@ -401,13 +465,20 @@ $$
 
 여기서 $$S^\ast$$와 $$V^\ast$$는 복소켤레이며, 목표 mask $$M^\ast$$의 별표와는 뜻이 다르다.
 
+</details>
+
 크기가 같은 두 성분도 위상이 같으면 서로 강화하고, 반대 위상이면 서로 상쇄한다. 예를 들어 $$S=1$$, $$V=-0.8$$이면 $$Y=0.2$$가 되므로 정답 크기 1을 복원하는 amplitude mask는 5가 된다. 0–1 범위의 mask로는 이 bin의 크기를 정확히 복원할 수 없다.
 
 따라서 혼합 신호의 크기에서 목표 크기를 추정할 때도 위상이 관여한다. **Phase는 파형 복원의 마지막 단계에서 덧붙이기만 하는 정보가 아니다.**
 
 ### 6.2 정답 크기를 맞혀도 위상이 다르면 오차가 남는다
 
-한 bin에서 정답을 $$S=Ae^{j\phi_S}$$, 예측을 $$\hat S=ae^{j\hat\phi}$$라고 하고 $$A,a\ge0$$으로 둔다. $$\Delta=\phi_S-\hat\phi$$라고 하면 복소수 차이의 제곱은
+한 bin에서 정답을 $$S=Ae^{j\phi_S}$$, 예측을 $$\hat S=ae^{j\hat\phi}$$라고 하고 $$A,a\ge0$$으로 둔다. $$\Delta=\phi_S-\hat\phi$$는 두 위상의 차이다.
+
+크기가 같다는 것은 복소평면에서 원점까지의 거리가 같다는 뜻이지, 같은 위치에 있다는 뜻은 아니다. **위상이 다르면 두 점 사이의 거리가 남고, 합성되는 파동도 달라진다.** 정답과 예측의 크기가 모두 1이어도 위상 차이가 60도면 complex squared error는 1이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: separating magnitude error and phase error</summary>
 
 $$
 \begin{aligned}
@@ -417,7 +488,7 @@ $$
 \end{aligned}
 $$
 
-이다. 첫 번째 항은 magnitude mismatch, 두 번째 항은 phase mismatch의 기여분이다. 위상 오차의 크기는 $$Aa$$에도 의존하므로, phase 오차만 독립적인 수치로 보아서는 파형에 미치는 영향을 결정할 수 없다.
+첫 번째 항은 magnitude mismatch, 두 번째 항은 phase mismatch의 기여분이다. 위상 오차의 크기는 $$Aa$$에도 의존하므로, phase 오차만 독립적인 수치로 보아서는 파형에 미치는 영향을 결정할 수 없다.
 
 크기가 정확한 $$a=A$$인 경우에도
 
@@ -427,9 +498,16 @@ $$
 
 가 남는다. $$\Delta=0$$이면 0, $$60^\circ$$이면 $$A^2$$, $$180^\circ$$이면 $$4A^2$$이다. 이것이 **같은 magnitude spectrogram이 같은 waveform을 뜻하지 않는** 이유다. 이 식은 한 bin에서 성립하는 정확한 관계이며, overlap된 STFT 전체의 waveform loss와 단순히 동치라는 뜻은 아니다.
 
+</details>
+
 ### 6.3 혼합 위상이 고정되면 정답 크기를 출력하는 것이 최적이 아닐 수 있다
 
-예측 위상을 $$\hat\phi=\phi_Y$$로 고정하고, 모델이 예측할 수 있는 값을 크기 $$a$$로만 제한한다. 복소 오차를 전개하면
+예측 위상을 $$\hat\phi=\phi_Y$$로 고정하고, 모델이 예측할 수 있는 값을 크기 $$a$$로만 제한한다.
+
+위상을 고정한 모델은 정답 점을 향해 자유롭게 움직이지 못하고, **고정된 방향에서 크기만 바꿀 수 있다.** 그 방향 위에서 정답에 가장 가까운 위치를 선택하면 정답 크기보다 작은 값이 최적일 수 있다. 작아진 출력이 반드시 나쁜 예측은 아니며, 모델이 허용한 방향의 제약을 먼저 봐야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: optimal magnitude under a fixed phase</summary>
 
 $$
 \begin{aligned}
@@ -447,7 +525,11 @@ $$
 
 가 최솟값을 준다. Mask를 0–1로 제한하면 $$a\le\lvert Y\rvert$$이므로 그 상한에서도 clip해야 한다. 음수 mask를 허용하면 계수의 부호가 위상을 $$\pi$$만큼 반전하므로, 0 이상인 magnitude를 다루는 경우와 구분해야 한다.
 
+</details>
+
 ![정답 spectrum의 방향과 고정된 예측 위상. 정답 크기 1을 그대로 사용하는 것보다 투영한 크기 0.5가 복소 오차를 줄이는 60도 예시](/assets/images/study/speech-source-separation/magnitude-phase-geometry.svg)
+
+그림에서 정답은 가로축 밖에 있지만, 위상이 0도로 고정된 예측은 가로축 위에만 놓인다. 정답에서 가로축으로 내린 투영점은 크기 0.5다. **가로축 위에서의 최적 예측도 세로 방향 오차를 없애지는 못한다.** 위상까지 바꿀 수 있는 모델은 정답 점 자체에 접근할 수 있다.
 
 예를 들어 $$A=1$$, $$\phi_S=60^\circ$$, $$\phi_Y=0$$인 경우를 생각해 보자. 정답은 $$S=0.5+j\sqrt{3}/2$$이다.
 
@@ -499,7 +581,14 @@ $$
 
 $$c\approx0.3$$은 원자료에서 다룬 실험 설정이며, 이론으로부터 유일하게 결정되는 상수가 아니다. 크기를 기준값으로 정규화하면 단위에 의존하지 않는 비교가 가능하다.
 
-작은 성분의 상대적 중요도가 커지는 이유를 살펴보자. 정답 magnitude $$A>0$$ 부근에서 $$a=A+\delta$$라고 하면 Taylor 1차 근사는
+작은 성분의 상대적 중요도가 커지는 이유는 압축 함수의 변화율로 확인할 수 있다.
+
+큰 성분은 이미 큰 절대 오차를 만들기 쉽다. Power-law 압축은 큰 수의 증가 폭을 줄여, 작은 성분의 차이도 학습에서 상대적으로 더 반영되도록 한다. 예를 들어 1과 100을 각각 0.3제곱하면 약 1과 3.98이 된다. 이것은 **loss에서의 가중 효과**이지 원래 spectrum을 Mel band로 합치는 연산이 아니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: local error weighting in a compressed loss</summary>
+
+정답 magnitude $$A>0$$ 부근에서 $$a=A+\delta$$라고 하면 Taylor 1차 근사는 다음과 같다.
 
 $$
 a^c-A^c\approx cA^{c-1}\delta
@@ -512,6 +601,8 @@ $$
 $$
 
 가 된다. $$2c-2<0$$이므로 작은 absolute error가 같다면 $$A$$가 작을수록 상대적으로 더 큰 가중치가 적용된다. 다만 이는 $$\delta$$가 충분히 작을 때 성립하는 국소 근사다. 0 부근에서는 미분이 불안정해질 수 있으므로 floor 등의 처리가 필요하다.
+
+</details>
 
 예를 들어 $$1^c=1$$이고 $$100^{0.3}\approx3.98$$이므로, 100배의 차이가 압축 후에는 약 4배로 줄어든다. **Loss 내부의 압축은 오차를 평가하는 방식을 바꾸는 연산**이며, 여러 주파수 bin을 Mel band로 합쳐 복원 정보를 잃는 연산과는 다르다.
 
@@ -548,6 +639,11 @@ $$
 
 대표적인 multi-resolution STFT objective의 한 예에서는 resolution $$r$$마다 magnitude $$A_r$$와 $$\hat A_r$$를 계산한다.
 
+같은 예측 파형을 여러 window 길이로 분석하면, 짧은 구간에서 잘 맞는지와 세밀한 주파수 구조까지 맞는지를 함께 확인할 수 있다. **서로 다른 소리를 순차 생성하는 것이 아니라 같은 출력에 여러 검사를 적용한다.**
+
+<details markdown="block">
+<summary markdown="span">Derivation: waveform and multi-resolution spectral objectives</summary>
+
 $$
 L_{\mathrm{sc},r}
 =\frac{\lVert A_r-\hat A_r\rVert_F}{\lVert A_r\rVert_F+\varepsilon}
@@ -567,6 +663,8 @@ L_{\mathrm{total}}=L_{\mathrm{wave},1}
 $$
 
 $$\lVert\cdot\rVert_F$$는 matrix의 모든 원소를 제곱해 더한 뒤 제곱근을 취하는 Frobenius norm이고, $$T_r,F_r$$는 frame과 bin의 수이며, $$\lambda$$는 가중치다. 이는 사용할 수 있는 objective의 한 예일 뿐이며, 구현에 따라 sum과 mean, log 처리 방식이 달라진다.
+
+</details>
 
 Spectral convergence는 전체적인 relative magnitude error를 측정하고, log term은 dynamic range를 압축한 차이를 측정한다. 이 magnitude 항들은 phase를 직접 비교하지 않지만, 별도의 waveform 항은 시간 파형을 비교한다. 각 항이 phase를 어떤 방식으로 반영하는지 구분해서 보아야 한다.
 
@@ -597,25 +695,66 @@ Utterance-level PIT는 발화 전체에 하나의 대응을 적용해 frame마�
 
 ### 9.1 DCCRN — 복소 연산을 network에 포함한다
 
+Magnitude만 처리하는 모델은 spectrum의 각 점이 원점에서 얼마나 떨어져 있는지 주로 다룬다. DCCRN은 **그 점의 실수 좌표와 허수 좌표를 함께 보존하고, 두 좌표가 섞이는 방식도 복소수 곱에 맞춘다.** 위상각을 별도의 정답 숫자로 입력하지 않아도 두 좌표로부터 위상을 계산할 수 있다.
+
+입력 STFT의 실수부와 허수부는 실제 신호 분석값이지만, network 내부의 중간 feature는 **학습된 복소 특징**이다. 중간 feature의 허수부 하나가 특정 소리의 도착 시간이나 실제 음압을 직접 의미한다고 단정할 수는 없다. 마지막 복소 mask나 spectrum을 어떻게 만들고 waveform으로 합성하는지까지 연결해야 물리적 출력이 정해진다.
+
+슬라이드 p. 29의 두 코드 줄에서 `out_real`은 실수 입력만으로, `out_imag`는 허수 입력만으로 만들어지지 않는다. **두 출력 모두 두 입력을 사용한다.** 실수 출력에서 허수 입력의 결과를 빼고, 허수 출력에서는 두 교차 결과를 더한다. 이 결합을 통해 한쪽 좌표를 바꿀 때 다른 쪽 좌표와의 관계도 학습에 반영된다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: complex convolution and shared real-valued kernels</summary>
+
 STFT를 $$X=X_r+jX_i$$, convolution kernel을 $$W=W_r+jW_i$$라고 두자. 복소수의 곱을 전개하면
 
 $$
 \begin{aligned}
-W\ast X
+W\ast X&=W_r\ast X_r+jW_r\ast X_i+jW_i\ast X_r+j^2W_i\ast X_i\\
 &=(W_r\ast X_r-W_i\ast X_i)\\
 &\quad+j(W_r\ast X_i+W_i\ast X_r)
 \end{aligned}
 $$
 
-가 된다. 여기서 $$\ast$$는 convolution 기호이며 복소켤레가 아니다. p. 29의 코드는 이 연산을 두 개의 실수 tensor로 구현한 형태다.
+가 된다. Convolution의 선형성과 $$j^2=-1$$을 사용한 정확한 항등식이다. 여기서 $$\ast$$는 convolution 기호이며 복소켤레가 아니다. p. 29의 코드는 이 연산을 두 개의 실수 tensor로 구현한 형태다.
 
-```python
+~~~python
 # Bias-free convolution operators illustrate the complex product.
 out_real = conv_real(x_real) - conv_imag(x_imag)
 out_imag = conv_real(x_imag) + conv_imag(x_real)
-```
+~~~
 
 각 `conv_real`과 `conv_imag` 연산은 같은 kernel을 반복해서 사용한다. 따라서 서로 다른 네 개의 임의 kernel을 사용하는 일반적인 2-channel convolution과는 weight의 결합 방식이 다르다. Bias를 사용할 때도 단순히 두 번 더하지 말고 복소 bias의 정의에 맞추어야 한다.
+
+</details>
+
+한 위치만 보는 설명용 kernel을 $$W=j$$로 두면 $$WX=-X_i+jX_r$$이다. $$X=1$$은 $$j$$가 된다. **길이는 1로 유지되고 방향만 90도 회전**한다. 실제 DCCRN의 여러 위치를 합치는 convolution은 이 한 점 회전보다 복잡하지만, 허수 kernel이 크기와 위상의 결합을 처리할 수 있는 이유를 이 계산에서 볼 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: a one-point complex convolution check</summary>
+
+다음 코드는 학습된 DCCRN이 아니라 kernel 크기 1, bias 0인 복소 선형 연산의 검산이다. 각 scalar를 한 원소 tensor로 생각하면 슬라이드의 두 convolution 결과와 같은 곱셈 규칙을 확인할 수 있다.
+
+~~~python
+import math
+
+x_real, x_imag = 1.0, 0.0
+w_real, w_imag = 0.0, 1.0
+
+out_real = w_real * x_real - w_imag * x_imag
+out_imag = w_real * x_imag + w_imag * x_real
+magnitude = math.hypot(out_real, out_imag)
+phase_degrees = math.degrees(math.atan2(out_imag, out_real))
+
+print(out_real, out_imag, magnitude, phase_degrees)
+# 0.0 1.0 1.0 90.0
+~~~
+
+`out_real`과 `out_imag`는 출력 좌표다. `hypot`는 두 좌표의 제곱합에 제곱근을 취하므로 크기 1을 반환한다. `atan2`는 좌표의 방향을 rad로 계산하며, `degrees`가 이를 90도로 바꾼다. 허수 출력 1을 “위상 1 rad”로 읽어서는 안 된다. **좌표를 먼저 얻고, 그 좌표 쌍에서 각도를 계산한다.**
+
+일반적인 batch 입력을 `[batch, channel, frequency, frame]`으로 저장한다면 실수 tensor와 허수 tensor의 shape는 서로 같아야 한다. Kernel, stride, padding은 출력 shape를 결정하므로 같은 곱셈 규칙을 써도 원본 STFT와 shape가 그대로 같다는 보장은 없다. 실제 모델에서는 decoder가 mask의 bin/frame 크기를 복원하고, 그 mask를 보존된 입력 STFT에 적용한다.
+
+</details>
+
+슬라이드 p. 29의 왼쪽 그림은 두 좌표가 convolution·normalization·activation을 거쳐 복소 feature로 바뀌는 **block 내부**를 보여 준다. 오른쪽은 noisy waveform에서 STFT, encoder, LSTM, decoder, mask 적용, iSTFT로 이어지는 **전체 경로**다. Encoder는 인접 시간·주파수 구조를, recurrent block은 시간 문맥을 처리한다. Skip connection은 encoder의 세부 특징을 decoder에 전달한다. 마지막에 입력 spectrum을 다시 사용하는 선은 원래 정보를 보존한 채 추정 mask를 적용한다는 뜻이다. 이것을 마지막 kernel의 단순 역연산으로 읽으면 안 된다.
 
 <a href="https://www.isca-archive.org/interspeech_2020/hu20g_interspeech.pdf" target="_blank" rel="noopener">DCCRN</a>은 encoder–decoder와 recurrent 처리에 complex representation을 도입하고 complex mask 등을 사용해 위상을 다룬다. Real/imag 값을 입력했다는 사실만으로 phase가 정확히 복원되는 것은 아니므로, output 정의와 loss도 함께 확인해야 한다.
 
@@ -692,7 +831,12 @@ Supervised training은 paired mixture/source를 사용한다. Semi-supervised fi
 
 다음 코드는 음성 model을 학습하지 않고 한 bin과 두 bin의 예시를 다시 계산한다. `cmath.rect`는 크기와 각도로 복소수를 만들고, `abs`는 복소수의 크기를 반환한다. 각도는 rad 단위로 전달한다.
 
-```python
+계산에서 확인할 질문은 두 가지다. 첫째, 같은 mask 오차가 다른 크기 오차를 만드는가? 둘째, 위상을 고정했을 때 정답 magnitude를 그대로 쓰는 것이 항상 최적인가? 아래 예제의 결과는 각각 **MA 0.02 대 SA 1.04**, **complex error 1 대 0.75**다. 앞의 두 값은 loss 정의가 다르므로 품질 순위로 비교하지 않고, 뒤의 두 값은 같은 기준에서 비교한다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: mask losses and fixed-phase reconstruction</summary>
+
+~~~python
 import cmath
 import math
 
@@ -717,7 +861,11 @@ print(round(abs(projected_magnitude - clean_bin) ** 2, 2))
 # 0.02 1.04
 # 1.0
 # 0.75
-```
+~~~
+
+`zip`은 같은 bin의 예측과 정답을 짝짓는다. MA의 항은 비율 차이를 제곱하고, SA의 항은 `m * noisy`로 실제 크기 추정치를 만든 뒤 정답 크기와 비교한다. `cmath.rect(1.0, math.pi / 3)`은 크기 1, 위상 60도인 정답 점이다. 뒤의 두 예측은 위상이 0도라는 같은 제약 아래 크기만 다르게 선택한다. 복소수 차이에 `abs`를 적용하면 두 좌표의 거리이며, 이를 제곱한 값이 complex squared error다.
+
+</details>
 
 처음 두 숫자는 서로 다른 loss의 값이므로 직접적인 품질 순위가 아니다. 뒤의 두 숫자는 같은 complex squared error로 비교한 결과다. 고정된 0도 위상에서는 크기를 0.5로 투영했을 때 오차가 더 작다는 것을 확인할 수 있다.
 
