@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
+last_modified_at: 2026-10-15 00:40:00 +0900
 title: "Algorithms Midterm Review: Analysis through Greedy Algorithms"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
@@ -8,6 +9,7 @@ order: 12
 major_topic: "Data Structures & Algorithms"
 keywords:
   - "Algorithm Analysis"
+  - "Practice"
   - "Asymptotic Notation"
   - "Master Theorem"
   - "Sorting"
@@ -35,7 +37,19 @@ Source PDFs:
 
 > **핵심:** 알고리즘 분석은 코드가 실제로 수행하는 기본 연산을 세는 데서 시작한다. 점화식은 재귀 호출 수와 호출 밖 작업을 분리하고, 정렬·선택·동적 계획법·그리디에서는 각 단계가 보존하는 불변식과 최적성 조건을 확인한다. 결론만 외우지 말고 **입력·출력, 상태 또는 활성 구간, 적용 조건, 반례**를 한 묶음으로 설명할 수 있어야 한다.
 
-Lecture 11의 4쪽은 문서상 범위를 첫 내용부터 Greedy Algorithm까지로 적는다. 이 글은 현재 제공된 Lecture 2–11과 Assignment 1·2의 연결 개념을 복습용으로 재구성한다. Lecture 1은 별도 자료를 확보하지 못했으므로 자료에 없는 세부 내용은 추정하지 않았다. 아래의 새 배열·수치 예시는 원문 문제가 아니라 **작성자가 구성하고 직접 계산한 연습 예제**다. 실제 출제 형식이나 문항을 예측하지 않는다.
+Lecture 11의 4쪽은 문서상 범위를 첫 내용부터 Greedy Algorithm까지로 적는다. 이 글은 현재 제공된 Lecture 2–11과 Assignment 1·2의 연결 개념을 복습용으로 재구성한다. Lecture 1은 별도 자료를 확보하지 못했으므로 자료에 없는 세부 내용은 추정하지 않았다. 아래 Original Practice는 Lecture 2 원문 문제이며, 그 밖의 새 배열·수치 예시는 **작성자가 구성하고 직접 계산한 연습 예제**다. 실제 출제 형식이나 문항을 예측하지 않는다.
+
+## Original Practice
+
+먼저 [Lecture 2의 Practice 원문 28쪽](/assets/pdfs/study/algorithms/02-algorithm-analysis.pdf#page=28)을 풀고, 아래 해설에서 **계산한 값과 계산에 쓴 연산 수**를 따로 확인한다. 세 문항 모두 제공된 정답 페이지는 없으며, 해설은 강의 9쪽의 비용 모형에 따라 도출하고 검산한 작성자 풀이다.
+
+| Source | Question | Review |
+|---|---|---|
+| Lecture 2, p. 28, Ex1 | 한 번의 대입은 무엇에 비례하는가? | [Assignment](#practice-assignment) |
+| Lecture 2, p. 28, Ex2 | 누적 결과와 반복 횟수는 어떻게 다른가? | [Accumulation](#practice-accumulation) |
+| Lecture 2, p. 28, Ex3 | 길이가 늘어나는 안쪽 반복과 뒤의 독립 반복을 어떻게 세는가? | [Triangular Loop](#practice-triangular-loop) |
+
+확인한 Lecture 3–11에는 `Practice` 제목 페이지가 없다. 그 강의들의 Example·질문과 Assignment 1·2는 별도의 적용 연습으로 연결한다. 세 문항을 푼 뒤 점화식, 정렬의 단계별 입출력, DP 상태·점화식 설계로 범위를 넓히면 된다.
 
 ## 전체 흐름
 
@@ -115,6 +129,123 @@ $$
 1\prec\log n\prec n\prec n\log n\prec n^2\prec n^3\prec c^n\prec n!
 \qquad(c>1).
 $$
+
+### 1.3 Practice: Code, Result, and Cost
+
+공통 조건은 $$n\ge0$$인 정수와 단위 비용 산술이다. **산술과 대입은 각각 1회**, 반복문의 제어 변수 초기화·조건 검사·증감은 제외한다. 따라서 본문의 `sum++`은 덧셈과 대입 2회지만, 반복 제어인 `i++`는 여기서 세지 않는다. 이는 선택한 계수 규칙이지 실제 컴퓨터에서 반복 제어가 무료라는 뜻은 아니다. 정수 overflow와 메모리 접근 실패는 없다고 가정한다.
+
+#### Ex1: Assignment
+{: #practice-assignment}
+
+```c
+a = b;
+```
+
+입력 `b`를 `a`에 복사한다. 대입 뒤의 값과 실행한 연산 수를 각각 말해 보자.
+
+<details markdown="block">
+<summary markdown="span">Answer: Assignment</summary>
+
+종료 후 `a == b`다. 대입은 한 번이므로 $$T(n)=1\in\Theta(1)$$이다. 이 코드에는 입력 크기에 따라 늘어나는 반복이 없다.
+
+</details>
+
+#### Ex2: Accumulation
+{: #practice-accumulation}
+
+```c
+sum = 0;
+for (i = 0; i < n; i++)
+    sum += n;
+```
+
+`n`을 한 번 더하는 것과 본문을 `n`번 실행하는 것을 구분한다. 종료값이 크다는 이유만으로 연산 수도 그만큼 크다고 판단하면 안 된다.
+
+<details markdown="block">
+<summary markdown="span">Answer: Accumulation</summary>
+
+종료 후 $$\texttt{sum}=n^2$$이지만, $$T(n)=2n+1\in\Theta(n)$$이다. **계산 결과는 이차식이고 실행시간은 선형**이다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Value versus operation count</summary>
+
+초기 대입 `sum = 0`이 1회다. 본문은 $$n$$번 실행되며 `sum += n`은 `sum = sum + n`이므로 매번 덧셈과 대입을 한 번씩 수행한다.
+
+$$
+T(n)=1+\sum_{i=0}^{n-1}2=1+2n.
+$$
+
+반면 `sum`에는 $$n$$이 $$n$$번 더해진다. $$n=3$$이면 `sum`은 `0, 3, 6, 9`로 변하고 연산 수는 $$1+2\times3=7$$이다. $$n=0$$에서는 본문이 실행되지 않아 종료값은 0, 비용은 초기 대입 1회다.
+
+정식 tight bound도 짧게 확인할 수 있다. $$n\ge1$$이면 $$2n\le2n+1\le3n$$이므로 $$c_1=2,c_2=3,n_0=1$$을 택하면 된다.
+
+</details>
+
+#### Ex3: Triangular Loop
+{: #practice-triangular-loop}
+
+```c
+for (j = 1; j <= n; j++)
+    for (i = 1; i <= j; i++)
+        sum++;
+
+for (k = 0; k < n; k++)
+    A[k] = k;
+```
+
+원문에는 `sum` 초기화가 없다. 아래에서는 **이미 초기화된 값이 $$s_0$$**이고, `A`에 적어도 $$n$$칸이 있다고 가정한다. 초기화 코드를 새로 삽입해 원문의 연산 수에 더하지 않는다. C의 초기화하지 않은 자동 지역 변수라면 `sum++`을 실행하는 경우 정상적인 결과를 보장할 수 없다.
+
+<details markdown="block">
+<summary markdown="span">Answer: Triangular Loop</summary>
+
+강의 비용 모형에서 $$T(n)=n^2+2n\in\Theta(n^2)$$이다. 종료 상태는
+
+$$
+\texttt{sum}=s_0+\frac{n(n+1)}{2}.
+$$
+
+$$
+A[k]=k\quad(0\le k<n).
+$$
+
+두 번째 반복은 첫 중첩 반복 **뒤에** 실행된다. 두 비용을 곱하지 않고 더한다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">Derivation: Count iterations before counting operations</summary>
+
+`j`가 1, 2, …, $$n$$일 때 `sum++`은 각각 1, 2, …, $$n$$번 실행된다. 이 합을 정순·역순으로 더하면 $$n$$쌍이 모두 $$n+1$$이므로
+
+$$
+S=\sum_{j=1}^{n}j=\frac{n(n+1)}{2}.
+$$
+
+여기서 $$S$$는 본문 실행 횟수다. 본문당 덧셈·대입 2회와 뒤의 배열 대입 $$n$$회를 따로 적용하면
+
+$$
+T(n)=2S+n=n(n+1)+n=n^2+2n.
+$$
+
+$$n=3,s_0=0$$일 때는 다음과 같다. 표의 비용은 해당 단계만의 비용이다.
+
+| Stage | Body executions | Result | Operations |
+|---|---:|---|---:|
+| `j = 1` | 1 | `sum = 1` | 2 |
+| `j = 2` | 2 | `sum = 3` | 4 |
+| `j = 3` | 3 | `sum = 6` | 6 |
+| Array loop | 3 | `A = [0, 1, 2]` | 3 |
+| Total | 9 | `sum = 6` | 15 |
+
+$$n\ge1$$이면 $$n^2\le n^2+2n\le3n^2$$이므로 $$c_1=1,c_2=3,n_0=1$$로 $$\Theta(n^2)$$를 증명한다. $$n=0$$에서는 두 반복 모두 실행되지 않아 비용은 0이다.
+
+`sum++` 전체를 하나의 갱신으로 세는 **다른** 비용 모형에서는 $$S+n$$이다. 정확식은 달라지지만 점근 차수는 같다. Ex2에서 산술·대입을 나눠 세었다면 Ex3에서도 같은 기준을 유지해야 한다.
+
+</details>
+
+상세 개념은 [Lecture 2의 Practice 해설](/study/algorithms/lecture-02-algorithm-analysis/#original-practice)에서 이어 읽을 수 있다. 같은 연산 계수 기준은 [Assignment 1의 행렬 연산 분석](/assignment/algorithms/assignment-01-complexity-analysis/)에도 적용된다.
 
 ## 2. Recurrence: 호출 수와 호출 밖 작업을 분리한다
 
@@ -643,7 +774,7 @@ Lecture 2–10의 상세 노트에 기록된 식과 trace를 원문 PDF의 관�
 
 ## Study Guide
 
-1. Lecture 2–3에서 한 코드의 비용 모형과 재귀식을 직접 쓴다.
+1. [Original Practice](#original-practice)의 세 코드를 답을 닫고 다시 푼다. 종료값·본문 실행 횟수·연산 수를 나눠 적고, Lecture 2–3의 비용 모형과 재귀식으로 연결한다.
 2. 정렬 8개를 같은 입력에 손으로 실행하고, 각 줄의 확정 구간을 표시한다.
 3. Selection은 pivot 선택 방식마다 worst와 expected 보장이 어떻게 달라지는지 말한다.
 4. DP 문제마다 일곱 항목 체크리스트를 빈 종이에 작성한다.
