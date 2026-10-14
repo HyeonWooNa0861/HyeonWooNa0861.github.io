@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-15 00:00:00 +0900
+last_modified_at: 2026-10-14 13:18:00 +0900
 title: "Algorithms Assignment 1: Complexity Analysis and Recurrences"
 course: "Algorithms"
 topic: "Asymptotic Analysis and Recurrences"
@@ -13,16 +14,18 @@ keywords: [operation-counting, asymptotic-analysis, recurrence-relations, master
 
 ## Key Takeaways
 
-**행렬 곱셈의 연산 횟수, 점근 표기법의 정의, 재귀 실행시간, Master Theorem을 연결하는 과제 해설이다.** 원문의 4개 문제와 15개 소문항을 순서대로 다룬다. 아래 내용은 원문 문제에 대한 독립 풀이이며, 교수자 제공 공식 해답은 아니다.
+**행렬 곱셈의 연산 횟수, 점근 표기법의 정의, 재귀 실행시간, Master Theorem을 연결하는 과제 해설이다.** 원문의 4개 문제와 15개 소문항을 순서대로 다룬다. 기존 문제지의 독립 풀이에 제공된 2026년 해답의 설명을 대조했다. 특히 3번은 의도한 재귀 구조와 기존 코드의 실제 호출 구조를 구분해야 한다.
 
 - 행렬 곱셈은 곱셈을 정확히 $$n^3$$번 수행하며 실행시간은 $$\Theta(n^3)$$이다.
 - 정의를 이용한 증명에서는 최고차항만 지목하지 않고 **양의 상수와 시작점**을 실제로 제시해야 한다.
-- `3 * fn(n / 3)`은 재귀 호출 **한 번**의 결과에 3을 곱한다. 실행시간은 $$\Theta(\log n)$$이며 반환값의 증가율과 다르다.
+- 재귀 호출 3회와 선형 작업을 수행하면 $$\Theta(n\log n)$$이다. 반면 `3 * fn(n / 3) + n`은 호출 **한 번**과 상수 작업이므로 $$\Theta(\log n)$$이다. 제공된 해답은 두 코드 해석을 구분해 인정한다.
 - Master Theorem에서는 $$f(n)$$과 $$n^{\log_b a}$$를 비교한다. Case 3은 정규성 조건까지 확인한다.
 
 ## Original Material
 
 [Original Assignment PDF]({{ '/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf' | relative_url }})
+
+Source PDFs: [Assignment 1 instructions]({{ '/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf' | relative_url }}) · [Assignment 1 provided solutions]({{ '/assets/pdfs/assignment/algorithms/assignment-01-2026-solutions.pdf' | relative_url }})
 
 원문: *2026 Fall Algorithms Assignment #1*, 2쪽. 1쪽의 문제 1–3과 2쪽의 문제 4를 다룬다. 수치 연산을 상수 시간으로 세는 표준 단위 비용 모형을 사용한다. 별도 표시가 없는 한 $$n$$은 양의 정수이며, 재귀식의 기저 비용은 양의 상수이다.
 
@@ -239,7 +242,43 @@ $$
 
 ## 3. A Single Recursive Call
 
-원문 1쪽은 $$n=3^k$$인 양의 정수를 가정한다. 따라서 $$k$$는 0 이상의 정수이다.
+기존 문제지 1쪽은 $$n=3^k$$인 양의 정수를 가정한다. 따라서 $$k$$는 0 이상의 정수이다. **제공된 해답 2–3쪽은 재귀 3회와 선형 작업이 출제 의도였으며, 아래 기존 코드의 단일 호출 해석도 인정한다고 설명한다.** 해답에는 문제지의 코드 구조를 명확하게 수정했다는 안내가 있지만, 아래에 연결한 기존 문제지 PDF의 코드를 임의로 바꾸지는 않는다.
+
+### Intended Recurrence: Three Calls and Linear Work
+
+입력 크기 $$n/3$$인 하위 문제 세 개를 각각 계산하고, 현재 호출에서 $$n$$만큼의 작업을 하면 실행시간은 다음과 같다. 여기서는 제공된 해답과 같이 기저 비용과 선형 작업의 계수를 1로 정규화한다.
+
+$$
+T(1)=1,\qquad T(n)=3T(n/3)+n.
+$$
+
+**결과는 $$T(n)=n+n\log_3n=\Theta(n\log n)$$이다.** 같은 레벨에 있는 하위 문제의 크기를 모두 더하면 매번 $$n$$이므로, 선형 작업을 재귀 깊이만큼 더한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Three calls, recursion levels, and induction</summary>
+
+풀이과정: 깊이 $$j$$에는 $$3^j$$개의 호출이 있고 각각 $$n/3^j$$만큼 작업한다. 따라서 한 레벨의 비용은 $$3^j(n/3^j)=n$$이다. 비기저 레벨은 $$\log_3n$$개이고, 마지막에는 기저 호출이 $$n$$개 있다.
+
+$$
+T(n)=n\log_3n+n.
+$$
+
+반복 대입으로도 $$T(n)=3^jT(n/3^j)+jn$$을 얻는다. $$j=\log_3n$$을 대입하면 같은 결과다. $$n=9$$일 때 기저 비용 9와 두 비기저 레벨의 비용 18을 더해 27이다.
+
+상한 $$T(n)\le2n\log_3n$$을 귀납법으로 확인할 때는 $$n=3$$에서 시작한다. $$T(3)=6$$으로 기저가 성립하고, $$n\ge9$$에서 귀납 가정을 대입하면
+
+$$
+T(n)\le3\left(2\frac n3\log_3\frac n3\right)+n
+=2n\log_3n-n\le2n\log_3n.
+$$
+
+$$n=1$$에서는 오른쪽이 0이므로 이 상한을 기저로 사용할 수 없다. 하한은 위의 정확한 전개에서 $$n\log_3n$$만 남겨 확인한다.
+
+</details>
+
+### Literal Code: One Call and Constant Work
+
+아래 코드는 세 번 호출하지 않는다. 호출 결과에 3을 곱하는 연산과, 같은 함수를 세 번 실행하는 연산은 다르다. 이어지는 3(a)–3(c)는 이 기존 코드의 실행시간 풀이이다.
 
 ```python
 def fn(n):
@@ -548,4 +587,4 @@ $$c=1/5<1$$로 정규성 조건도 충족한다. 그러므로 **$$T(n)=\Theta(n^
 
 ## Source
 
-[Original Assignment PDF]({{ '/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf' | relative_url }}) · [Algorithms Study Notes]({{ '/study/algorithms/' | relative_url }})
+[Original Assignment PDF]({{ '/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf' | relative_url }}) · [Provided Solutions PDF]({{ '/assets/pdfs/assignment/algorithms/assignment-01-2026-solutions.pdf' | relative_url }}) · [Algorithms Study Notes]({{ '/study/algorithms/' | relative_url }})

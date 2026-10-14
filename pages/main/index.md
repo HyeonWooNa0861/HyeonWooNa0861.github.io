@@ -1,53 +1,34 @@
 ---
 layout: default
-title: GitBlog
+title: HyeonWoo Na — Developer & AI Notes
 permalink: /
 ---
 
 {% assign recent_posts = site.posts | sort: "date" | reverse %}
-{% assign accession_entries = recent_posts | concat: site.research | concat: site.study | concat: site.assignment | sort: "date" | reverse %}
-{% assign study_groups = site.study | group_by: "course" | sort: "name" %}
-{% assign research_count = site.research | size %}
-{% assign study_count = site.study | size %}
-{% assign assignment_count = site.assignment | size %}
-{% assign post_count = site.posts | size %}
+{% assign accession_entries = recent_posts | concat: site.research | sort: "date" | reverse %}
 
 <section class="index-board" data-index-board aria-labelledby="index-title">
   <header class="index-masthead index-rule" data-index-rule>
     <div class="index-masthead__identity">
+      <p class="developer-eyebrow">HyeonWoo Na <span aria-hidden="true">/</span> AI &amp; Development</p>
       <h1 id="index-title" class="index-title">
-        <span class="index-title__mark">NaHW</span>
-        <span class="index-title__name">Working Index</span>
+        Building things.<br>Making sense of AI.
       </h1>
+      <p class="developer-intro">An AI student's space for web projects, research notes, and things learned along the way.</p>
+      <div class="developer-links">
+        <a class="developer-primary-link" href="#selected-projects">Explore projects <span aria-hidden="true">↗</span></a>
+        <a href="{{ '/about/' | relative_url }}">More about me <span aria-hidden="true">→</span></a>
+      </div>
     </div>
 
-    <dl class="index-stats">
-      <div>
-        <dt>Posts</dt>
-        <dd>{{ post_count | escape }}</dd>
-      </div>
-      <div>
-        <dt>Research</dt>
-        <dd>{{ research_count | escape }}</dd>
-      </div>
-      <div>
-        <dt>Study</dt>
-        <dd>{{ study_count | escape }}</dd>
-      </div>
-      <div>
-        <dt>Assignments</dt>
-        <dd>{{ assignment_count | escape }}</dd>
-      </div>
-    </dl>
-
     <form class="library-search" role="search" data-library-search>
-      <label class="library-search__label" for="library-search-input">Find a note or project</label>
+      <label class="library-search__label" for="library-search-input">Search the archive</label>
       <div class="library-search__control">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <circle cx="11" cy="11" r="6.5"></circle>
           <path d="m16 16 4 4"></path>
         </svg>
-        <input id="library-search-input" type="search" role="combobox" autocomplete="off" placeholder="Press / to search titles, lectures, and research topics" data-library-search-input aria-autocomplete="list" aria-haspopup="listbox" aria-controls="library-search-results" aria-describedby="library-search-status" aria-expanded="false" aria-keyshortcuts="/ ArrowUp ArrowDown Enter Escape">
+        <input id="library-search-input" type="search" role="combobox" autocomplete="off" placeholder="Search notes, topics, projects…" data-library-search-input aria-autocomplete="list" aria-haspopup="listbox" aria-controls="library-search-results" aria-describedby="library-search-status" aria-expanded="false" aria-keyshortcuts="/ ArrowUp ArrowDown Enter Escape">
         <button class="library-search__submit" type="submit">Open</button>
       </div>
       <p class="library-search__status" id="library-search-status" data-library-search-status aria-live="polite">Search projects and the public archive.</p>
@@ -103,16 +84,36 @@ permalink: /
     </form>
   </header>
 
+  <section class="selected-projects index-rule" id="selected-projects" data-index-rule aria-labelledby="selected-projects-title">
+    <header class="index-section-heading">
+      <h2 id="selected-projects-title">Selected projects</h2>
+      <a href="{{ '/project/' | relative_url }}">All projects <span aria-hidden="true">↗</span></a>
+    </header>
+    <div class="project-selection">
+      {% for item in site.data.navigation %}
+        {% if item.title == "Project" %}
+          {% for child in item.children limit: 3 %}
+            <article class="project-selection__item">
+              <span class="project-selection__number" aria-hidden="true">0{{ forloop.index | escape }}</span>
+              <h3><a href="{{ child.url | escape }}" target="_blank" rel="noopener noreferrer">{{ child.title | escape }} <span aria-hidden="true">↗</span><span class="developer-sr-only"> (opens in a new tab)</span></a></h3>
+              <p>{{ child.description | escape }}</p>
+            </article>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
   <section class="recent-work index-rule" data-index-rule aria-labelledby="recent-work-title">
     <header class="index-section-heading">
-      <h2 id="recent-work-title">Latest accessions</h2>
-      <a href="{{ '/log/' | relative_url }}">View accession log</a>
+      <h2 id="recent-work-title">Recent writing</h2>
+      <a href="{{ '/log/' | relative_url }}">All updates <span aria-hidden="true">↗</span></a>
     </header>
     <ol class="recent-work__list">
-      {% for entry in accession_entries limit: 6 %}
+      {% for entry in accession_entries limit: 4 %}
         {% assign accession_label = entry.collection | capitalize %}
         {% if entry.collection == "posts" %}
-          {% assign accession_label = entry.section | default: "Post" | replace: "-", " " %}
+          {% assign accession_label = "Post" %}
         {% endif %}
         <li class="recent-work__item">
           <a href="{{ entry.url | relative_url | escape }}">
@@ -128,71 +129,33 @@ permalink: /
     </ol>
   </section>
 
-  <section class="workstreams index-rule" data-index-rule aria-labelledby="workstreams-title">
+  <section class="archive-overview index-rule" data-index-rule aria-labelledby="archive-title">
     <header class="index-section-heading">
-      <h2 id="workstreams-title">Browse the library</h2>
-      <p>Start with representative entry points from each branch.</p>
+      <h2 id="archive-title">A place for everything I learn.</h2>
+      <p>Explore the full archive.</p>
     </header>
-    <div class="workstreams__grid">
+    <div class="archive-overview__list">
       {% for item in site.data.navigation %}
-        {% assign child_count = item.children | size %}
-        <article class="workstream-card workstream-card--{{ item.title | downcase | escape }}">
-          <header class="workstream-card__header">
-            <h3 class="workstream-card__heading"><a class="workstream-card__title" href="{{ item.url | relative_url | escape }}">{{ item.title | escape }}</a></h3>
-            <span class="workstream-card__count">{{ child_count | escape }}</span>
-          </header>
-          <ul class="workstream-card__links">
-            {% for child in item.children limit: 4 %}
-              <li>
-                {% if child.url contains "://" %}
-                <a href="{{ child.url | escape }}" target="_blank" rel="noopener">
-                {% else %}
-                <a href="{{ child.url | relative_url | escape }}">
-                {% endif %}
-                  <span>{{ child.title | escape }}</span>
-                  {% if child.description %}<small>{{ child.description | escape }}</small>{% endif %}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-          {% if child_count > 4 %}
-            <a class="workstream-card__more" href="{{ item.url | relative_url | escape }}">Open {{ child_count | minus: 4 | escape }} more</a>
-          {% else %}
-            <a class="workstream-card__more" href="{{ item.url | relative_url | escape }}">Open full index</a>
-          {% endif %}
-        </article>
+        {% unless item.title == "Project" %}
+          <a class="archive-overview__link" href="{{ item.url | relative_url | escape }}">
+            <span class="archive-overview__title">{{ item.title | escape }}</span>
+            <span class="archive-overview__description">
+              {% case item.title %}
+                {% when "Post" %}Projects, experiences, and technical notes
+                {% when "Research" %}Paper readings and ideas in AI
+                {% when "Study" %}Course notes and lecture reviews <small>Passcode required</small>
+                {% when "Assignment" %}Worked problems and coursework <small>Passcode required</small>
+              {% endcase %}
+            </span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        {% endunless %}
       {% endfor %}
     </div>
   </section>
 
-  <section class="compact-archive index-rule" data-index-rule aria-labelledby="compact-archive-title">
-    <header class="index-section-heading">
-      <h2 id="compact-archive-title">Course shelves</h2>
-      <a href="{{ '/study/' | relative_url }}">View study index</a>
-    </header>
-    <div class="archive-ledger">
-      {% for group in study_groups %}
-        {% assign course_items = group.items | sort: "order" %}
-        {% assign course_latest = course_items | last %}
-        {% assign course_url = '/study/' %}
-        {% for nav_item in site.data.navigation %}
-          {% if nav_item.title == "Study" %}
-            {% for nav_child in nav_item.children %}
-              {% if nav_child.title == group.name %}
-                {% assign course_url = nav_child.url %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
-        <div class="archive-ledger__row">
-          <a class="archive-ledger__course" href="{{ course_url | relative_url | escape }}">{{ group.name | escape }}</a>
-          <span class="archive-ledger__count">{{ group.items | size | escape }} notes</span>
-          <a class="archive-ledger__latest" href="{{ course_latest.url | relative_url | escape }}">
-            <span>Latest in sequence</span>
-            <strong>{{ course_latest.title | escape }}</strong>
-          </a>
-        </div>
-      {% endfor %}
-    </div>
-  </section>
+  <footer class="developer-footer">
+    <span>NaHW <span aria-hidden="true">/</span> Build. Learn. Share.</span>
+    <a href="https://github.com/HyeonWooNa0861" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </footer>
 </section>
