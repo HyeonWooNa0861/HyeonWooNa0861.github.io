@@ -8,6 +8,10 @@ permalink: /post/26-2-paper-research-seminar/
 
 <ul class="post-list">
   <li class="post-card">
+    <a class="branch-card-link" data-label="From SEDD to LLaDA" href="{{ '/posts/discrete-diffusion-language-models/' | relative_url }}">From SEDD to LLaDA</a>
+    <p>Discrete scores, masked-token objectives, and large language diffusion models</p>
+  </li>
+  <li class="post-card">
     <a class="branch-card-link" data-label="Loss Landscape Analysis" href="{{ '/posts/loss-landscape-analysis/' | relative_url }}">Loss Landscape Analysis</a>
     <p>Bayesian ensembles, mode connectivity, and model merging</p>
   </li>
