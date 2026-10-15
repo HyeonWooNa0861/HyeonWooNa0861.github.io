@@ -1,0 +1,670 @@
+---
+layout: default
+date: 2026-10-15 15:18:00 +0900
+title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
+course: "Speech and Audio Recognition"
+topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
+order: 9
+major_topic: "Speech and Audio Processing"
+keywords:
+  - "Blind Source Separation"
+  - "Deep Clustering"
+  - "Permutation Invariant Training"
+  - "TasNet"
+  - "Conv-TasNet"
+  - "DPRNN"
+  - "SepFormer"
+  - "TF-GridNet"
+  - "MixIT"
+  - "Dynamic Mixing"
+  - "Speech Separation"
+  - "Unknown Speaker Count"
+---
+
+# Speech and Audio Recognition Lecture 7: Blind Source Separation
+
+Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture7_v2.pdf</a> — Inkyu An, Kookmin University (26 slides).
+
+한 사람이 말하는 구간에서 잡음을 줄이는 문제와 달리, blind source separation(BSS)은 **누가 섞였는지 미리 모르는 혼합음에서 각 source를 복원**한다. 가장 먼저 부딪히는 문제는 출력 순서다. 정답 화자 A·B와 모델 출력 1·2가 있을 때, 출력 1이 항상 A여야 할 이유는 없다. Deep Clustering(DPCL)은 시간–주파수 칸을 화자별로 묶어 이 순서 문제를 피하고, Permutation-Invariant Training(PIT)은 가능한 대응 중 손실이 가장 작은 대응을 선택한다.
+
+> **핵심:** 분리 모델은 `표현 만들기 → source별로 나누기 → 파형으로 복원하기`를 수행한다. DPCL과 PIT는 정답의 이름표 순서가 임의라는 문제를 서로 다른 방식으로 해결한다. TasNet 이후의 모델은 STFT magnitude가 아니라 학습된 waveform 표현에서도 mask를 추정한다. 최근 모델은 장거리 문맥, 계산 효율, 알 수 없는 source 수, 실제 녹음과의 차이를 함께 다룬다.
+
+페이지 번호는 원본 PDF의 물리적 쪽 번호다. 아래 수식·작은 수치 예제·그림 해설은 이해를 위한 보충 설명이다. 슬라이드의 범위를 벗어나거나 조건이 빠진 표현은 마지막 `Source Check`에서 구분한다.
+
+## 전체 흐름
+
+| 원문 | 주제 | 먼저 이해할 질문 |
+|---|---|---|
+| pp. 2–6 | Task taxonomy와 ESD | 무엇을 분리하며, 어떤 정보를 출력해야 하는가? |
+| pp. 7–12 | 출력 순열, DPCL, PIT | 정답 화자와 출력 번호가 바뀌어도 같은 답인 이유는 무엇인가? |
+| pp. 13–19 | TasNet, Conv-TasNet, DPRNN, SepFormer | 파형 표현에서 mask와 긴 문맥을 어떻게 학습하는가? |
+| pp. 20–21 | TF-GridNet과 효율화 | 복소 STFT와 시간–주파수 문맥을 어떻게 함께 읽는가? |
+| pp. 22–23 | 알 수 없는 source 수 | 출력 개수를 미리 고정할 수 없을 때 무엇을 바꾸어야 하는가? |
+| pp. 24–25 | 실제 녹음, DM, MixIT | 깨끗한 단일 source 정답이 없을 때 어떻게 학습하는가? |
+| p. 26 | 생성 모델 | 하나의 점 추정 대신 가능한 분리 결과의 분포를 모델링하면 무엇이 달라지는가? |
+
+## 1. Blind source separation의 문제 설정
+
+### 1.1 Denoising, separation, diarization은 출력이 다르다
+
+| Task | Input | Output | 알려진 조건 |
+|---|---|---|---|
+| Denoising | 목표 음성 + 잡음 | 잡음이 줄어든 목표 음성 | 보존할 종류가 정해짐 |
+| Blind source separation | 여러 source의 혼합 | source별 파형 | source의 정체·혼합 과정 정보가 거의 없음 |
+| Guided separation | 혼합 | 지정된 종류별 stem | vocals·bass 같은 class가 정해짐 |
+| Target separation | 혼합 + reference | reference와 같은 target의 파형 | target을 나타내는 enrollment 정보가 있음 |
+| Diarization | 녹음 | 누가 언제 활동했는지 | 파형 복원이 필수는 아님 |
+
+혼합 파형을 다음처럼 쓸 수 있다.
+
+$$
+x[n]=\sum_{k=1}^{K}s_k[n]
+$$
+
+여기서 $$K$$는 source 수다. Single-channel BSS는 한 개의 관측 $$x$$에서 여러 $$s_k$$를 추정하므로, 관측만으로 해가 항상 유일한 것은 아니다. 모델은 음성의 시간적 지속성, harmonic 구조, 학습 데이터의 통계적 규칙을 이용해 가능한 해를 선택한다.
+
+### 1.2 ESD는 모델 이름이 아니라 공통 계산 구조다
+
+원문 p. 6의 Encoder–Separation–Decoder(ESD)는 특정 architecture 하나가 아니라 분리 모델을 읽는 공통 틀이다.
+
+1. **Encoder:** waveform을 분리에 편리한 표현으로 바꾼다. STFT일 수도 있고, 학습된 1-D convolution 표현일 수도 있다.
+2. **Separator:** 각 source에 속할 성분을 추정한다. Mask, complex spectrum 또는 waveform residual을 낼 수 있다.
+3. **Decoder:** 분리된 표현을 waveform으로 복원한다. iSTFT나 학습된 transposed convolution이 쓰인다.
+
+원문 p. 7의 여러 decoder 그림은 첫 아이디어를 보여준다. 그러나 source A와 B의 위치가 매번 바뀌면 `output 1 = A`라는 고정 규칙으로 손실을 계산할 수 없다.
+
+## 2. 출력 순서가 학습을 망가뜨리는 이유
+
+두 화자의 정답을 $$s_A,s_B$$, 두 출력을 $$\hat s_1,\hat s_2$$라고 하자. 물리적으로는 다음 두 대응이 모두 같은 분리 결과가 될 수 있다.
+
+$$
+(\hat s_1,\hat s_2)\leftrightarrow(s_A,s_B)
+$$
+
+$$
+(\hat s_1,\hat s_2)\leftrightarrow(s_B,s_A)
+$$
+
+학습 데이터마다 임의로 첫 번째 정답 화자가 달라지면, 고정된 output index로 계산한 gradient는 같은 음성을 어떤 때는 1번으로, 어떤 때는 2번으로 보내라고 요구한다. 이 충돌이 **label permutation problem**이다. 해결의 핵심은 화자의 실제 이름을 알아내는 것이 아니라, **출력 순서에 영향을 받지 않는 목적함수**를 만드는 데 있다.
+
+## 3. DPCL: 출력 칸 대신 같은 화자인지를 배운다
+
+![DPCL이 시간–주파수 칸을 embedding으로 바꾸고 k-means cluster로 source mask를 만드는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-09.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>의 왼쪽은 세 화자 혼합, ideal mask, DPCL mask를 비교한다. 오른쪽 계산 흐름은 다음과 같다.
+
+1. 각 시간–주파수(T–F) 칸을 $$D$$차원 embedding $$v_i$$로 바꾼다.
+2. 같은 화자에 속한 두 칸의 embedding은 가깝게, 다른 화자의 칸은 멀게 만든다.
+3. 추론 시 embedding을 $$K$$개 cluster로 묶는다.
+4. Cluster별 binary mask를 mixture magnitude에 적용하고 mixture phase와 iSTFT로 waveform을 만든다.
+
+여기서 중요한 target은 화자 번호 자체가 아니다. 두 칸이 **같은 화자 소속인지**다. 화자 label 1과 2를 서로 바꾸어도 이 관계는 바뀌지 않는다.
+
+### 3.1 Training의 V와 Y는 무엇인가
+
+그림의 Training은 **모델이 예측한 소속 관계와 정답 소속 관계를 비교하는 단계**다. 입력은 혼합음의 spectrogram이고, 학습용 정답은 섞기 전 각 source에서 만든다.
+
+| 기호 | 무엇을 담는가 | 어디서 얻는가 |
+| --- | --- | --- |
+| $$N=TF$$ | 시간 frame $$T$$와 주파수 bin $$F$$를 펼친 전체 칸 수 | 입력 spectrogram |
+| $$V\in\mathbb R^{N\times D}$$ | 각 칸을 나타내는 길이 $$D$$의 embedding. 한 행 $$v_i$$가 한 T–F 칸에 해당한다. | 신경망 출력. 학습 중 network parameter에 따라 바뀐다. |
+| $$Y\in\{0,1\}^{N\times K}$$ | 각 칸에서 어느 source가 우세한지 나타내는 one-hot 정답. 한 행에서 해당 source 열만 1이다. | 분리된 정답 source의 크기를 비교해 만든 label |
+| $$VV^{\mathsf T}$$ | 모든 두 칸의 embedding 내적. 모델이 표현한 소속 유사도 | $$V$$에서 계산 |
+| $$YY^{\mathsf T}$$ | 두 칸의 정답 source가 같으면 1, 다르면 0인 관계표 | $$Y$$에서 계산 |
+
+**$$V$$는 음성 파형도, source별 확률표도 아니다. $$Y$$도 화자의 실제 신원을 알려주는 표가 아니다.** $$Y$$의 A·B는 해당 혼합 안에서 구별하는 임시 source label이며, embedding 차원 $$D$$는 source 수 $$K$$와 같을 필요가 없다. 두 source가 같은 칸에 함께 존재해도 one-hot label은 우세한 하나만 지정한다. 완전한 source spectrum 자체를 정답으로 담는 것은 아니다.
+
+세 칸의 정답이 순서대로 A, B, A라면 다음과 같다.
+
+$$
+Y=\begin{bmatrix}1&0\\0&1\\1&0\end{bmatrix},\qquad
+YY^{\mathsf T}=\begin{bmatrix}1&0&1\\0&1&0\\1&0&1\end{bmatrix}.
+$$
+
+첫째와 셋째 칸은 같은 A이므로 정답 관계값이 1이다. 첫째와 둘째 칸은 서로 다른 source이므로 0이다. 학습은 $$v_1^{\mathsf T}v_3$$를 1에, $$v_1^{\mathsf T}v_2$$를 0에 가깝게 만든다. **$$V$$를 $$Y$$와 원소별로 같게 만드는 것이 아니라, 두 행렬이 나타내는 칸 사이의 관계를 맞춘다.** 단위길이 embedding의 내적은 확률이 아니며 음수가 될 수도 있다.
+
+학습 중에는 $$Y$$를 고정한 채 loss를 embedding과 network까지 역전파한다. 추론 때에는 정답 source가 없으므로 $$Y$$를 만들지 않는다. 혼합음에서 $$V$$를 얻고, k-means가 비슷한 embedding을 묶어 mask를 만든다. 따라서 그림의 Training과 Inference는 같은 계산을 반복하는 두 이름이 아니라 **정답 관계를 배우는 단계와 배운 표현을 분리에 사용하는 단계**다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: DPCL affinity loss and its efficient form</summary>
+
+T–F 칸 수를 $$N=TF$$라 하자. $$V\in\mathbb{R}^{N\times D}$$의 $$i$$번째 행은 단위길이 embedding $$v_i$$다. $$Y\in\{0,1\}^{N\times K}$$의 한 행은 그 칸의 dominant source를 나타내는 one-hot label이다.
+
+$$
+(YY^\mathsf{T})_{ij}=\begin{cases}
+1,& i,j\text{가 같은 source}\;,\\
+0,& i,j\text{가 다른 source}\;.
+\end{cases}
+$$
+
+Embedding affinity는 $$(VV^\mathsf{T})_{ij}=v_i^\mathsf{T}v_j$$다. 따라서 deep clustering loss는
+
+$$
+\mathcal{L}_{\mathrm{DC}}=\left\|VV^\mathsf{T}-YY^\mathsf{T}\right\|_F^2
+$$
+
+로 쓸 수 있다. 같은 source의 embedding 내적은 1에, 다른 source의 내적은 0에 가까워지도록 학습한다.
+
+$$YY^\mathsf{T}$$는 source label의 열 순열에 불변이다. Permutation matrix $$P$$에 대해 $$Y'=YP$$라고 두면
+
+$$
+Y'Y'^\mathsf{T}=YPP^\mathsf{T}Y^\mathsf{T}=YY^\mathsf{T}
+$$
+
+이므로 화자 1·2의 label을 바꾸어도 target affinity는 같다.
+
+$$N\times N$$ 행렬을 직접 만들면 메모리가 크다. $$A=VV^\mathsf{T}$$, $$B=YY^\mathsf{T}$$라 두고 Frobenius norm을 trace로 전개하면
+
+$$
+\begin{aligned}
+\|A-B\|_F^2
+&=\operatorname{tr}\!\left((A-B)^\mathsf{T}(A-B)\right)\\
+&=\operatorname{tr}(A^\mathsf{T}A)-2\operatorname{tr}(A^\mathsf{T}B)+\operatorname{tr}(B^\mathsf{T}B).
+\end{aligned}
+$$
+
+Trace의 순환 성질 $$\operatorname{tr}(PQ)=\operatorname{tr}(QP)$$를 각 항에 적용한다. 예를 들어
+
+$$
+\operatorname{tr}(VV^\mathsf{T}VV^\mathsf{T})
+=\operatorname{tr}(V^\mathsf{T}VV^\mathsf{T}V)
+=\|V^\mathsf{T}V\|_F^2
+$$
+
+이다. 같은 방식으로 교차항과 label항을 정리하면
+
+$$
+\mathcal{L}_{\mathrm{DC}}
+=\left\|V^\mathsf{T}V\right\|_F^2
+-2\left\|V^\mathsf{T}Y\right\|_F^2
++\left\|Y^\mathsf{T}Y\right\|_F^2
+$$
+
+가 되어 더 작은 행렬로 계산할 수 있다. 이 등식은 affinity loss의 의미를 바꾸지 않는다.
+
+</details>
+
+### 3.2 그림의 Cons는 무엇을 제한하는가
+
+DPCL의 장점은 출력 slot을 미리 화자와 연결하지 않는다는 점이다. 원 논문은 두 화자로 학습한 모델을 세 화자 분리에 적용할 수 있음을 보였다. 다만 추론의 k-means에는 $$K$$가 필요하므로, **source 수를 저절로 안다**는 뜻은 아니다. $$K$$를 외부에서 주거나 별도로 추정해야 한다.
+
+9쪽의 Cons는 다음 두 제약을 직접 지적한다. 둘 다 이 그림의 **원형 DPCL pipeline**에 대한 설명이지, 이후 모든 clustering 기반 모델의 불가능성을 뜻하지 않는다.
+
+| 슬라이드의 한계 | 왜 분리 결과에 영향을 주는가 | 개선 방향과 남는 조건 |
+| --- | --- | --- |
+| k-means not trained end-to-end | Training에서는 embedding affinity를 맞추지만, 추론의 k-means와 최종 복원 파형의 오차까지 하나의 목적함수로 함께 최적화하지 않는다. 좋은 affinity가 곧 가장 좋은 waveform을 보장하지 않는다. | PIT를 이용해 source별 예측을 정답과 직접 대응시키고 복원 loss로 학습할 수 있다. Clustering과 reconstruction을 결합하는 확장도 가능하다. |
+| Binary magnitude mask, mixture phase | 한 칸을 0 또는 1로 선택하므로 여러 source가 겹친 칸의 기여를 연속적으로 나누기 어렵다. 크기를 잘 골라도 혼합음 위상은 개별 source의 위상과 다를 수 있다. | Soft mask는 연속적인 비중을 표현하고, complex-spectrum 추정이나 waveform 학습은 위상까지 다룰 수 있다. 단순 soft magnitude mask만으로 위상 문제가 해결되지는 않는다. |
+
+예를 들어 같은 칸의 두 source가 $$S_1=1$$, $$S_2=j$$라면 혼합값은 $$X=1+j$$다. 첫 source를 복원하려고 binary mask 1을 적용해도 $$1+j$$가 남고, 0이면 첫 source까지 사라진다. 더 나아가 실수 soft mask $$m$$도 $$m(1+j)=1$$을 만족할 수 없다. 허수부를 없애려면 $$m=0$$이어야 하지만 그러면 실수부도 0이 되기 때문이다. 반면 complex mask $$M=(1-j)/2$$는 $$MX=1$$을 만족한다. 이 예는 복소 마스크가 항상 정확히 추정된다는 보장이 아니라, **크기만 조절하는 표현과 위상도 바꾸는 표현의 차이**를 보여준다.
+
+그림의 `Cons → PIT`는 직접 분리 학습으로 넘어가는 동기다. **PIT 자체는 출력–정답의 순서 문제를 푸는 loss 계산 방식이지, phase estimator나 source-count estimator가 아니다.** PIT를 적용하더라도 magnitude mask와 mixture phase를 그대로 쓰면 그 복원 제약은 남는다.
+
+## 4. PIT: 가능한 대응 중 가장 잘 맞는 것을 고른다
+
+![PIT가 여러 source 출력과 정답의 가능한 순열을 비교해 최소 손실 대응을 고르는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-10.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=10" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 10</a>에서 separator의 출력 수는 그대로 유지된다. 달라지는 것은 loss 계산이다. 각 출력과 각 정답의 pairwise cost를 구한 뒤, 한 정답과 한 출력이 한 번씩만 연결되는 대응 중 총비용이 가장 작은 것을 선택한다.
+
+### 4.1 두 화자 수치 예제
+
+행을 정답 A·B, 열을 출력 1·2라고 하자. 작은 cost일수록 잘 맞는다.
+
+$$
+C=\begin{bmatrix}
+9&1\\
+2&8
+\end{bmatrix}
+$$
+
+- A→1, B→2이면 합은 $$9+8=17$$, 평균은 $$8.5$$다.
+- A→2, B→1이면 합은 $$1+2=3$$, 평균은 $$1.5$$다.
+
+PIT는 두 번째 대응을 고르고, 그 대응으로 계산한 loss만 back-propagation한다. 출력 1이 B를, 출력 2가 A를 복원했다면 잘못된 순서가 아니라 **다른 순서의 정답**이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: PIT objective, assignment, and complexity</summary>
+
+정답 source를 $$s_1,\ldots,s_K$$, 출력 source를 $$\hat s_1,\ldots,\hat s_K$$라 하자. Pairwise cost는
+
+$$
+C_{ij}=\ell(s_i,\hat s_j)
+$$
+
+다. $$S_K$$를 $$K$$개 항목의 모든 permutation 집합이라 하면 PIT objective는
+
+$$
+\mathcal{L}_{\mathrm{PIT}}
+=\min_{\pi\in S_K}\frac{1}{K}\sum_{i=1}^{K}C_{i,\pi(i)}
+$$
+
+다. $$\pi$$는 각 정답을 서로 다른 출력 하나에 연결한다. 행마다 독립적으로 최소값만 고르면 같은 출력을 여러 정답이 함께 선택할 수 있으므로 올바른 one-to-one assignment가 아니다.
+
+모든 순열을 그대로 열거하면 후보가 $$K!$$개다. 그러나 pairwise cost matrix가 만들어진 뒤의 선형 할당 문제는 Hungarian(Kuhn–Munkres) algorithm으로 일반적으로 $$O(K^3)$$에 풀 수 있다. Cost matrix 생성 자체는 각 waveform 비교 길이를 $$L$$이라 할 때 대략 $$O(K^2L)$$의 계산을 요구할 수 있다. 원문 p. 22의 `Hungarian algorithm: K²` 표기는 일반적인 assignment 단계의 시간복잡도가 아니다.
+
+Minimum은 두 permutation의 비용이 같은 지점에서 미분 가능하지 않을 수 있다. 실제 학습에서는 선택된 최소-cost 대응을 고정해 그 branch의 gradient를 사용한다. PIT는 **학습 중 source 순서**를 해결하지만, source 수 $$K$$를 추정하거나 발화 사이에서 동일 인물의 ID를 유지하는 기능은 별도 문제다.
+
+</details>
+
+원문 pp. 11–12의 uPIT는 frame마다 대응을 바꾸지 않고 utterance 전체에서 하나의 permutation을 선택한다. 그래야 한 출력 channel 안에서 화자가 중간에 서로 바뀌는 문제를 줄일 수 있다. 표의 oracle mask·DPCL·PIT 수치는 같은 dataset, metric, reconstruction 조건에서만 비교해야 한다.
+
+## 5. TasNet 계열: STFT 밖에서도 mask를 만들 수 있다
+
+### 5.1 공통 뼈대
+
+TasNet 계열은 waveform 조각을 학습된 basis의 coefficient로 바꾸고, 그 latent representation에서 source별 mask를 만든다.
+
+$$
+W=\operatorname{Encoder}(x),\qquad
+D_k=M_k\odot W,\qquad
+\hat s_k=\operatorname{Decoder}(D_k)
+$$
+
+여기서 $$M_k$$는 source $$k$$의 mask다. **Time-domain model도 masking을 버린 것이 아니다.** Mask를 적용하는 대상이 STFT magnitude에서 학습된 waveform basis coefficient로 이동했다.
+
+Mask activation과 학습 target은 model version별로 다르다. 다음 표는 원 논문에서 사용한 대표 configuration을 구분한다.
+
+| Model | Mask가 적용되는 대상 | 대표 mask 출력 | 무엇을 직접 최적화하는가? |
+|---|---|---|---|
+| TasNet | Nonnegative learned mixture weights | Source축 softmax, source masks의 합이 1 | Mask 정답을 직접 맞추지 않고, decoder 뒤 waveform의 SI-SNR을 PIT로 최대화 |
+| Conv-TasNet | Learned encoder feature | 논문의 최종 실험은 sigmoid, 각 값 $$[0,1]$$; softmax도 비교 | Decoder 뒤 waveform SI-SNR + utterance PIT |
+| DPRNN-TasNet | Conv-TasNet 계열 learned feature | $$C$$개 masking matrices; 논문은 separator 교체에 초점을 두며 하나의 보편 범위를 새로 정의하지 않음 | Decoder 뒤 waveform SI-SNR + uPIT |
+| SepFormer | ReLU encoder feature | 마지막 ReLU의 nonnegative mask, 상한 1은 강제하지 않음 | Decoder 뒤 waveform SI-SNR + uPIT, 논문 설정은 30 dB clipping |
+
+따라서 `mask는 항상 확률이고 source별 합이 1`이라고 일반화하면 안 된다. 또한 mask를 사용한다고 해서 ideal mask label로 mask 자체를 직접 감독하는 것도 아니다. 위 모델들은 mask를 거쳐 복원한 waveform이 정답과 잘 맞도록 end-to-end로 학습한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: learned basis separation as an analysis–mask–synthesis system</summary>
+
+Encoder의 filter를 $$u_m[r]$$, frame 위치를 $$t$$라 하면 한 구현의 coefficient는
+
+$$
+W_{m,t}=g\!\left(\sum_{r=0}^{L-1}x[tH+r]u_m[r]\right)
+$$
+
+처럼 쓸 수 있다. $$g$$는 ReLU 같은 비선형 함수다. Separator가 $$M_{k,m,t}$$를 예측하면
+
+$$
+D_{k,m,t}=M_{k,m,t}W_{m,t}
+$$
+
+이고 decoder basis $$b_m[r]$$로 overlap-add한다.
+
+$$
+\hat s_k[tH+r]\mathrel{+}=\sum_m D_{k,m,t}b_m[r]
+$$
+
+STFT도 고정된 sine·cosine analysis basis와 inverse transform을 사용한다. TasNet의 차이는 analysis·synthesis basis를 task loss로 학습한다는 점이다. 이 표현이 복소수가 아니라는 이유만으로 위상이 사라졌다고 단정할 수는 없다. Decoder가 waveform의 sample 위치까지 복원하도록 학습되므로 시간 구조는 latent coefficient와 basis에 함께 담긴다.
+
+</details>
+
+### 5.2 TasNet과 Conv-TasNet
+
+원문 p. 13의 TasNet은 learned encoder와 mask, decoder라는 방향을 제시하지만 separator에 recurrent network를 사용해 긴 waveform의 계산이 무거웠다. Conv-TasNet은 separator를 dilated temporal convolutional network(TCN)로 바꾸었다.
+
+![Conv-TasNet의 waveform encoder, dilated TCN separator, source별 mask와 decoder 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-14.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 14</a>를 왼쪽에서 오른쪽으로 읽으면 다음과 같다.
+
+1. 짧은 waveform segment를 1-D convolution encoder가 latent feature로 바꾼다.
+2. Bottleneck과 반복된 dilated convolution block이 여러 시간 범위의 문맥을 읽는다.
+3. Source별 mask를 latent mixture에 곱한다.
+4. Linear decoder가 각 masked representation을 waveform으로 합성한다.
+
+Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아도 더 먼 frame을 연결한다. 깊은 TCN은 local pattern과 넓은 receptive field를 동시에 갖는다. 다만 실제 receptive field, causal 여부, latency는 kernel·dilation·반복 수·padding 설정에 달려 있다.
+
+원문 pp. 14–15의 성능 표가 보여주는 요점은 learned time-domain representation이 당시 fixed STFT magnitude-mask baseline을 넘어설 수 있었다는 것이다. 이것은 **STFT라는 표현 전체가 원리적으로 열등하다는 증명**이 아니다. 비교한 oracle은 fixed magnitude mask와 mixture phase라는 제약을 가진다. 이후 TF-GridNet처럼 complex spectrum을 직접 추정하는 모델은 STFT domain에서도 높은 성능을 보인다.
+
+## 6. 긴 문맥을 다루는 DPRNN과 SepFormer
+
+### 6.1 DPRNN: 긴 sequence를 두 개의 짧은 축으로 나눈다
+
+![DPRNN이 encoded sequence를 겹치는 chunk로 나누고 intra-chunk와 inter-chunk RNN을 교대로 적용하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-16.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=16" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 16</a>의 `Split`은 긴 feature sequence를 겹치는 chunk로 바꾸는 단계다. 길이 $$N$$을 대략 $$C\approx\sqrt{N}$$인 chunk로 나누면 chunk 내부 길이와 chunk 개수 모두 대략 $$\sqrt{N}$$ 규모가 된다.
+
+- **Intra-chunk RNN:** 한 chunk 안의 인접 frame 관계를 읽는다.
+- **Inter-chunk RNN:** 같은 chunk 위치가 시간에 따라 어떻게 이어지는지 읽는다.
+- **Overlap-add:** 겹친 chunk의 출력을 다시 원래 순서로 합친다.
+
+이렇게 하면 하나의 RNN이 길이 $$N$$ 전체를 순차 처리하는 대신 두 축에서 더 짧은 sequence를 처리한다. Local structure와 utterance-level context가 교대로 섞인다.
+
+> **정정:** 원 논문의 표준 DPRNN은 bidirectional RNN을 포함하므로 기본형을 곧바로 streaming-ready 또는 causal이라고 부를 수 없다. 실시간 처리를 하려면 causal inter-chunk path, 제한된 look-ahead, state 관리 등 별도 설계가 필요하다.
+
+또한 원문 p. 16의 `2 ms chunks`는 encoder window와 DPRNN chunk를 섞은 표현이다. 16 kHz noisy-reverberant 실험에서 2 ms는 32-sample encoder window이고 DPRNN chunk는 100 encoded frames다. WSJ0-2mix의 18.8 dB SI-SNR improvement 설정은 2-sample encoder window와 250-frame chunk를 사용한다. Sample/window 길이와 encoded-frame chunk 길이는 서로 다른 단위다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: why dual-path shortens the recurrent path</summary>
+
+원래 frame 수를 $$N$$, chunk 길이를 $$C$$, hop을 대략 $$C/2$$라 하면 chunk 수는 $$S\approx 2N/C$$다. 두 recurrent path가 처리하는 sequence 길이는 각각 $$C$$와 $$S$$다.
+
+둘 중 큰 값을 줄이려면 $$C$$와 $$S$$의 규모를 비슷하게 두는 것이 유리하다.
+
+$$
+C\approx\frac{2N}{C}
+\quad\Longrightarrow\quad
+C\approx\sqrt{2N}
+$$
+
+따라서 각 path의 길이는 $$O(\sqrt{N})$$ 규모가 된다. 이것이 긴 sequence를 두 축으로 재배열하는 이유다. 정확한 chunk 수는 padding·hop·boundary 처리에 따라 달라진다.
+
+</details>
+
+### 6.2 SepFormer: dual-path 틀에서 RNN을 self-attention으로 바꾼다
+
+![SepFormer가 intra-transformer와 inter-transformer를 반복하여 짧은 구간과 전체 발화 문맥을 결합하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-17.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=17" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 17</a>에서 encoder와 decoder의 뼈대는 Conv-TasNet 계열과 비슷하다. Separator 안에서 RNN 대신 두 종류의 Transformer block을 사용한다.
+
+- Intra-Transformer는 chunk 내부 frame의 관계를 읽는다.
+- Inter-Transformer는 여러 chunk에 걸친 관계를 읽는다.
+- 반복 block 뒤에서 source별 mask를 만들고 decoder로 waveform을 복원한다.
+
+Self-attention은 두 위치가 멀어도 한 attention layer에서 직접 연결할 수 있다. 반면 계산량과 memory가 sequence 길이에 민감하고, 표준 bidirectional attention은 미래 frame도 본다. 따라서 SepFormer도 별도의 causal mask·chunk schedule 없이 기본적으로 실시간 streaming model이라고 볼 수 없다.
+
+원문 p. 18의 22.3 dB SI-SNR improvement는 dynamic mixing을 사용한 특정 WSJ0-2mix 조건의 보고값이다. 다른 dataset, sample rate, speaker 수, data augmentation 또는 metric의 절대값과 직접 순위를 만들지 않는다.
+
+## 7. TF-GridNet: 복소 STFT를 시간과 주파수 양쪽에서 읽는다
+
+![TF-GridNet이 complex STFT 입력을 intra-frame full-band, sub-band temporal, cross-frame attention으로 처리하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-20.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>의 TF-GridNet은 waveform latent mask가 아니라 complex STFT의 real·imaginary channel을 입력으로 받고, source의 complex spectrum을 직접 추정하는 **complex spectral mapping** 계열이다.
+
+한 TF-GridNet block은 다음 세 방향을 결합한다.
+
+1. **Intra-frame full-band:** 같은 frame 안에서 여러 frequency bin의 관계를 읽는다. Harmonic과 formant처럼 주파수축 구조를 연결한다.
+2. **Sub-band temporal:** 한 주파수 부근이 시간에 따라 이어지는 모양을 읽는다. 발음의 지속성과 modulation을 포착한다.
+3. **Cross-frame attention:** 멀리 떨어진 frame 사이의 문맥을 직접 결합한다.
+
+출력은 source $$k$$의 real·imaginary spectrum $$\hat S_k^{(r)},\hat S_k^{(i)}$$로 조립되고 iSTFT를 거친다.
+
+$$
+\hat S_k(t,f)=\hat S_k^{(r)}(t,f)+j\hat S_k^{(i)}(t,f)
+$$
+
+따라서 magnitude만 고친 뒤 mixture phase를 재사용하는 방식보다 phase를 수정할 자유도가 크다. 원문에 제시된 23.5 dB SI-SDR improvement도 해당 논문의 특정 WSJ0-2mix 설정에서 DM 없이 보고된 값이다. Conv-TasNet·SepFormer의 다른 표와 비교하려면 dataset split과 metric 구현을 먼저 맞춰야 한다.
+
+## 8. 정확도만큼 중요한 효율
+
+원문 p. 21은 SepReformer, TIGER, SepMamba처럼 계산량과 긴 sequence 처리를 개선하려는 흐름을 묶는다. 모델 비교에서 parameter 수 하나만 보면 부족하다.
+
+| 기준 | 묻는 질문 |
+|---|---|
+| Parameters | 저장·전송해야 할 weight가 얼마나 큰가? |
+| MACs / FLOPs | 한 길이의 입력에 연산이 얼마나 필요한가? |
+| Peak memory | 긴 입력과 intermediate activation을 처리할 수 있는가? |
+| Real-time factor | 1초 audio를 1초보다 빨리 처리하는가? |
+| Algorithmic latency | 출력 전에 미래 입력을 얼마나 기다리는가? |
+| Quality | 같은 dataset·speaker 수·metric에서 분리가 얼마나 정확한가? |
+
+TIGER 논문의 비교 설정에서 TIGER-large는 0.82M parameters와 15.27 GMAC/s, 재구현한 TF-GridNet은 14.43M과 323.75 GMAC/s로 보고된다. 이 두 행에서 계산한 감소율은 각각 94.3%, 95.3%다. 이 비율을 모든 TF-GridNet variant, 입력 길이, 장치, implementation의 속도 향상으로 그대로 읽을 수는 없다.
+
+SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아니다. Raw-waveform U-Net의 multi-scale stage에 주로 bidirectional Mamba layer를 배치해 Transformer attention 없이 긴 문맥을 모델링한다. 기본 bidirectional configuration은 미래 문맥을 사용하며 causal variant는 별도 구성이다. SepReformer-L+DM의 25.4 dB SI-SNR improvement도 synthetic WSJ0-2mix 조건의 보고값이다. 이를 benchmark의 수학적 포화로 단정하기보다, 정확도와 함께 효율·real-world generalization을 평가할 필요가 커졌다는 신호로 읽는다.
+
+## 9. Source 수를 모를 때
+
+원문 p. 22의 문제의식은 현실의 $$K$$가 고정되지 않는다는 점이다. 여기서는 범위를 정확히 구분해야 한다.
+
+- PIT, TasNet, Conv-TasNet, DPRNN, SepFormer의 대표적인 benchmark 구성은 **정해진 출력 수**를 사용한다.
+- DPCL은 clustering 수를 추론 때 바꿀 수 있어 고정 output slot의 예외다. 하지만 k-means에 사용할 $$K$$는 여전히 주거나 추정해야 한다.
+- “모든 분리 모델이 fixed output”이라고 일반화할 수 없다. Recursive, attractor, query-based, generative formulation도 존재한다.
+
+![최대 출력 수, recursive one-and-rest, source-count prediction으로 알 수 없는 source 수를 다루는 세 접근](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-23.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=23" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 23</a>의 세 접근을 비교하면 다음과 같다.
+
+| 접근 | 동작 | 장점 | 주의점 |
+|---|---|---|---|
+| Maximum outputs + silence | 최대 $$K_{\max}$$개를 내고 남는 출력을 silence로 학습 | 한 번의 forward pass | 최대값 고정, silence 판정 필요 |
+| Recursive one-and-rest | source 하나와 residual을 반복 분리 | 출력 수를 유동적으로 늘릴 수 있음 | 이전 오차가 residual에 누적, 정지 조건 필요 |
+| Count then separate | Source-count head가 $$K$$를 예측하고 해당 decoder를 선택 | 여러 $$K$$에 최적화된 head 사용 가능 | Count가 틀리면 separation 단계도 틀림 |
+
+그림 오른쪽의 count-and-select 구조는 Zhu, Yeh, Hasegawa-Johnson의 Multi-Decoder DPRNN이다. MulCat backbone에 count head와 source 수별 decoder head를 둔다. Source 수마다 별도 model을 고르는 Nachmani 등의 접근과는 구분한다.
+
+PIT의 모든 순열 열거는 $$K!$$이지만, pairwise cost 이후 Hungarian assignment의 일반적 계산량은 $$O(K^3)$$이다. Source 수가 커질수록 cost matrix 생성, assignment, separator 자체가 모두 커질 수 있으므로 이 세 부분을 구분한다.
+
+## 10. Synthetic mixture에서 실제 녹음으로
+
+### 10.1 왜 benchmark 점수가 실제 환경을 보장하지 않는가
+
+WSJ0-2mix 같은 dataset은 깨끗한 single-speaker utterance를 정해진 규칙으로 섞어 mixture와 exact source target을 만든다. 실제 회의·통화·거리 녹음에는 다음 차이가 있다.
+
+- Room impulse response와 reverberation
+- 마이크 주파수 응답·비선형 distortion·clipping
+- 화자 위치와 음량의 시간 변화
+- 겹침 비율과 source 수 변화
+- Clean source를 따로 녹음할 수 없다는 supervision 문제
+
+따라서 synthetic test의 SI-SDR improvement만으로 real-world robustness를 결론내리지 않는다. 원문 p. 24의 WHAM!, WHAMR!, LibriMix, LRS2-2Mix, REAL-M 같은 dataset은 noise, reverberation, audiovisual cue 또는 실제 녹음 조건을 단계적으로 추가한다.
+
+### 10.2 Dynamic Mixing은 조합을 늘리지만 clean source가 필요하다
+
+![Dynamic Mixing이 clean utterance를 학습 중 선택하고 gain과 구간을 바꾸어 새 mixture를 만드는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-25.png)
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=25" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 25</a>의 왼쪽 Dynamic Mixing(DM)은 미리 저장한 제한된 mixture만 반복하지 않는다. 학습 중 서로 다른 clean utterance를 뽑고, 구간·gain·상대 위치를 바꾸어 새 mixture를 만든다.
+
+$$
+x=a_1s_1+a_2s_2
+$$
+
+조합 수가 매우 커지고 overfitting을 줄일 수 있지만, $$s_1,s_2$$를 clean하게 가지고 있어야 한다. “Infinite mixtures”는 수학적으로 무한한 dataset이라는 뜻보다, 학습 중 on-the-fly로 매우 많은 조합을 생성한다는 의미로 읽는 편이 정확하다.
+
+### 10.3 MixIT는 clean component 대신 mixture 두 개를 target으로 쓴다
+
+MixIT(Mixture Invariant Training)는 clean single source가 없는 두 mixture $$x_1,x_2$$를 다시 더한다.
+
+$$
+\bar x=x_1+x_2
+$$
+
+Model이 $$M$$개 latent output $$\hat s_1,\ldots,\hat s_M$$을 만들면, 이 출력들을 두 그룹으로 나누어 각각 $$x_1,x_2$$를 가장 잘 재구성하는 assignment를 찾는다. 예를 들어 출력이 $$[1,2,4]$$이고 target mixture가 $$[3,4]$$인 scalar toy example에서는 첫 두 출력을 합쳐 3을, 마지막 출력을 4에 배정하면 reconstruction error가 0이다. 각 latent output의 clean 정답은 필요하지 않다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: MixIT assignment objective</summary>
+
+Binary assignment matrix를 $$A\in\{0,1\}^{2\times M}$$라 하자. 각 model output은 두 target mixture 중 하나에 한 번 배정되므로
+
+$$
+\sum_{i=1}^{2}A_{im}=1
+$$
+
+이다. Grouped reconstruction은
+
+$$
+\hat x_i=\sum_{m=1}^{M}A_{im}\hat s_m
+$$
+
+이고 loss는
+
+$$
+\mathcal{L}_{\mathrm{MixIT}}
+=\min_A\sum_{i=1}^{2}\ell(x_i,\hat x_i)
+$$
+
+다. Supervision target은 clean component가 아니라 원래의 두 mixture다. Model이 한 실제 source를 여러 출력으로 과도하게 쪼개도 다시 그룹화해 mixture를 맞출 수 있으므로 **over-separation**이 발생할 수 있다. 가능한 assignment 수가 출력 수와 함께 빠르게 늘어나는 계산 문제도 있다.
+
+</details>
+
+## 11. Generative separation은 무엇을 바꾸는가
+
+일반적인 discriminative separator는 mixture $$x$$에 대해 하나의 예측 $$\hat s_{1:K}$$를 낸다. 생성 모델은 가능한 clean source 조합의 conditional distribution을 근사하려 한다.
+
+$$
+p(s_1,\ldots,s_K\mid x)
+$$
+
+DiffSep과 EDSep은 diffusion/score-based 과정을 이용해 noisy state에서 source estimate를 반복적으로 정제한다. 원문 p. 26의 왼쪽 pipeline은 EDSep만의 novelty 그림이 아니라 EDSep이 DiffSep에서 이어받아 background로 설명하는 SDE 기반 분리 흐름이다. EDSep의 고유 기여는 denoiser·training objective와 stochastic sampler이며, 논문은 30 prediction steps를 사용한다. 저자들도 당시 최고 discriminative separator와의 성능 차이가 남는다고 구분한다.
+
+원문 p. 26의 Geneses는 2026년 preprint로 소개된 흐름이며, latent flow matching으로 enhancement와 separation을 결합한다. 실험 범위는 simulated two-speaker LibriTTS-R의 noise-only와 complex-degradation 조건이다. Complex degradation에서는 비교 mask baseline보다 강한 결과를 보였지만, noise-only의 일부 WER·spectral/cepstral metric에서는 열세였고 content change 또는 drop 위험도 보고한다. 하나의 표로 모든 환경의 우월성을 일반화하지 않는다.
+
+생성 모델의 장점은 심한 degradation에서 한 개의 점 추정에 묶이지 않고, 학습한 speech prior를 이용해 지각적으로 자연스러운 후보를 만들 가능성이 있다는 점이다. 동시에 생성된 세부가 실제 source에 존재했다는 보장은 없다. Identity drift, content change·drop, 반복 sampling 비용을 확인해야 하며, perceptual quality와 source fidelity를 따로 평가한다. 이 trade-off는 model·objective·dataset에 따라 달라진다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: point estimate and conditional distribution</summary>
+
+Squared waveform loss로 하나의 출력만 학습한다고 가정하자. $$\mu(x)=\mathbb{E}[S\mid X=x]$$라 두면 조건부 squared error는 다음처럼 분해된다.
+
+$$
+\begin{aligned}
+\mathbb{E}[\|S-f(x)\|_2^2\mid x]
+&=\mathbb{E}[\|S-\mu(x)+\mu(x)-f(x)\|_2^2\mid x]\\
+&=\mathbb{E}[\|S-\mu(x)\|_2^2\mid x]+\|\mu(x)-f(x)\|_2^2.
+\end{aligned}
+$$
+
+교차항은 $$\mathbb{E}[S-\mu(x)\mid x]=0$$이므로 사라진다. 첫 항은 $$f$$와 무관하고, 두 번째 항은 $$f(x)=\mu(x)$$일 때 최소다. 따라서 이상적인 무한용량 조건에서
+
+$$
+f^\ast(x)=\arg\min_f\mathbb{E}\!\left[\left\|S-f(X)\right\|_2^2\mid X=x\right]
+=\mathbb{E}[S\mid X=x]
+$$
+
+가능한 source 조합이 여러 개인 상황에서 평균은 어느 실제 해와도 다를 수 있다. Generative model은 $$p(S\mid X=x)$$ 자체를 근사해 여러 plausible sample을 표현하려 한다. 그러나 “그럴듯함”은 “실제 녹음의 정확한 원인”과 같지 않다. Mixture consistency, speaker identity, ASR 성능 같은 조건을 추가로 검증해야 한다.
+
+</details>
+
+## 모델 흐름을 한 표로 정리하기
+
+| Method | Representation | Separation mechanism | Permutation handling | 핵심 한계 |
+|---|---|---|---|---|
+| DPCL | STFT T–F embedding | k-means → binary masks | Affinity target 자체가 순서 불변 | $$K$$ 필요, clustering 분리, mixture phase |
+| PIT / uPIT | Model에 따라 다름 | 여러 output | 최소-cost assignment | 보통 출력 수 고정, ID 지속성 별도 |
+| TasNet | Learned waveform basis | Latent masks + recurrent separator | PIT | 긴 sequence 계산 |
+| Conv-TasNet | Learned waveform basis | Dilated TCN masks | PIT | Receptive field·causality 설정 의존 |
+| DPRNN | Learned waveform basis | Intra/inter chunk RNN masks | PIT | 표준형 bidirectional, chunk 계산 |
+| SepFormer | Learned waveform basis | Intra/inter Transformer masks | PIT | Attention memory, 표준형 offline |
+| TF-GridNet | Complex STFT | Complex spectral mapping | PIT 계열 assignment | 계산량·memory, 구현 복잡성 |
+| MixIT | Waveform 또는 learned representation | 여러 latent outputs의 regrouping | Mixture-level assignment | Over-separation, assignment 비용 |
+
+## 마지막 핵심 정리
+
+- **BSS의 첫 난점은 출력 순서다.** 같은 source set도 output index가 바뀔 수 있다.
+- **DPCL은 화자 번호가 아니라 T–F 칸 사이의 같은-source 관계를 배운다.** 추론 때 clustering 수를 바꿀 수 있지만 $$K$$는 여전히 필요하다.
+- **PIT는 one-to-one 대응 중 최소 손실을 선택한다.** 모든 순열 열거는 $$K!$$, 일반 Hungarian assignment는 $$O(K^3)$$이다.
+- **Time-domain separation도 mask를 쓴다.** 적용 대상이 STFT magnitude에서 학습된 waveform basis로 이동한다.
+- **DPRNN과 SepFormer는 기본형이 자동으로 streaming-ready인 것은 아니다.** Bidirectional recurrence나 full attention의 미래 참조를 확인해야 한다.
+- **TF-GridNet은 complex STFT를 직접 추정한다.** Time-domain model의 성공은 STFT 자체의 원리적 한계를 뜻하지 않는다.
+- **실제 환경에서는 source 수, reverberation, clean target 부재가 함께 문제다.** DM과 MixIT는 같은 해결책이 아니다.
+- **생성 모델은 가능한 해의 분포를 다루지만 실제 source 충실도를 자동으로 보장하지 않는다.**
+
+## Study Guide
+
+먼저 2절의 permutation problem을 이해한 뒤 3절의 DPCL affinity와 4절의 PIT 수치 예제를 비교한다. DPCL은 output slot을 없애고 embedding cluster를 만들며, PIT는 output slot을 유지한 채 정답 대응을 바꾼다.
+
+그다음 5–7절에서 `representation → context model → separation output → decoder` 순서로 각 그림을 읽는다. Architecture 이름보다 mask가 적용되는 대상, phase 수정 가능 여부, 미래 frame 참조 여부를 먼저 확인하면 모델 차이가 선명해진다. 마지막으로 9–11절에서 고정된 $$K$$와 synthetic supervision이라는 benchmark 가정이 현실에서 어떻게 깨지는지 살펴본다.
+
+## 복습 질문
+
+<details markdown="block">
+<summary>1. 두 화자의 출력 순서가 바뀌면 분리 결과가 틀린 것인가?</summary>
+
+답변: 아니다. 두 출력에 같은 source set이 복원되었다면 순서는 임의일 수 있다. 문제는 고정 label 순서로 loss를 계산할 때 올바른 예측에도 큰 오차를 주는 것이다. DPCL은 affinity로, PIT는 최소-cost assignment로 이를 해결한다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">2. DPCL에서 화자 label을 바꾸어도 loss가 같은 이유는 무엇인가?</summary>
+
+답변: Target이 label 자체가 아니라 $$YY^\mathsf{T}$$이기 때문이다. Label의 열을 permutation matrix $$P$$로 바꾸어도 $$YPP^\mathsf{T}Y^\mathsf{T}=YY^\mathsf{T}$$다.
+
+</details>
+
+<details markdown="block">
+<summary>3. DPCL은 source 수를 자동으로 찾는가?</summary>
+
+답변: 원형 DPCL은 추론 때 cluster 수를 바꿀 수 있지만 k-means에 사용할 $$K$$가 필요하다. 두 화자로 학습한 embedding이 세 화자로 일반화될 수 있다는 것과 source 수를 자동 추정한다는 것은 다르다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">4. PIT cost가 $$[[9,1],[2,8]]$$이면 어떤 대응을 고르는가?</summary>
+
+답변: A→2, B→1을 고른다. 합은 $$1+2=3$$이고 평균은 $$1.5$$다. 반대 대응의 합 17, 평균 8.5보다 작다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">5. PIT의 복잡도를 무조건 $$K!$$이라고 해야 하는가?</summary>
+
+답변: 모든 permutation을 직접 열거하면 $$K!$$이다. Pairwise cost로 선형 assignment를 구성할 수 있으면 Hungarian algorithm의 일반 시간복잡도는 $$O(K^3)$$이다. Cost matrix 생성 비용과 separator 계산도 별도로 센다.
+
+</details>
+
+<details markdown="block">
+<summary>6. Conv-TasNet은 STFT를 쓰지 않으므로 masking도 하지 않는가?</summary>
+
+답변: 아니다. Learned waveform encoder가 만든 latent coefficient에 source별 mask를 곱한다. Masking의 대상 표현이 바뀐 것이다.
+
+</details>
+
+<details markdown="block">
+<summary>7. DPRNN과 SepFormer가 자동으로 실시간 모델이 아닌 이유는 무엇인가?</summary>
+
+답변: 표준 DPRNN은 bidirectional RNN을, 표준 SepFormer는 양방향 self-attention을 사용해 미래 frame을 참조할 수 있다. Streaming에는 causal path, 제한된 look-ahead, state와 chunk boundary 처리가 추가로 필요하다.
+
+</details>
+
+<details markdown="block">
+<summary>8. Time-domain model이 oracle magnitude mask를 넘으면 STFT가 열등하다는 뜻인가?</summary>
+
+답변: 아니다. 그 oracle은 보통 mixture phase를 고정하고 magnitude mask만 바꾸는 제한된 조건이다. Complex spectral mapping은 STFT domain에서도 real·imaginary 값을 직접 추정해 phase를 수정할 수 있다.
+
+</details>
+
+<details markdown="block">
+<summary>9. Dynamic Mixing과 MixIT의 supervision 차이는 무엇인가?</summary>
+
+답변: DM은 clean source를 알고 이를 여러 방식으로 다시 섞는다. MixIT는 clean component 대신 두 mixture를 알고, model의 latent outputs을 두 그룹으로 묶어 원래 mixture를 복원하도록 학습한다.
+
+</details>
+
+<details markdown="block">
+<summary>10. 생성 분리 모델의 결과가 더 자연스러우면 실제 source에도 더 충실한가?</summary>
+
+답변: 반드시 그렇지 않다. Speech prior가 plausible detail을 만들 수 있지만 실제 mixture의 원인과 다른 detail일 수 있다. Perceptual quality와 mixture consistency, identity, intelligibility를 함께 평가해야 한다.
+
+</details>
+
+## PDF
+
+<ul>
+  <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture7_v2.pdf — Source Separation 2</a></li>
+</ul>
+
+## References
+
+<ul>
+  <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a> — source course linked by the lecture.</li>
+  <li><a href="https://github.com/markovka17/dla" target="_blank" rel="noopener">Deep Learning for Audio</a> — source course linked by the lecture.</li>
+  <li><a href="https://arxiv.org/abs/1508.04306" target="_blank" rel="noopener">Hershey et al.: Deep Clustering</a> — affinity-based embeddings and clustering.</li>
+  <li><a href="https://arxiv.org/abs/1607.00325" target="_blank" rel="noopener">Yu et al.: Permutation Invariant Training</a> — minimum-permutation training objective.</li>
+  <li><a href="https://arxiv.org/abs/1703.06284" target="_blank" rel="noopener">Kolbæk et al.: Utterance-Level Permutation Invariant Training</a> — utterance-level assignment.</li>
+  <li><a href="https://arxiv.org/abs/1711.00541" target="_blank" rel="noopener">Luo and Mesgarani: TasNet</a> — learned time-domain audio representation.</li>
+  <li><a href="https://arxiv.org/abs/1809.07454" target="_blank" rel="noopener">Luo and Mesgarani: Conv-TasNet</a> — convolutional time-domain separation network.</li>
+  <li><a href="https://arxiv.org/abs/1910.06379" target="_blank" rel="noopener">Luo, Chen, and Yoshioka: Dual-Path RNN</a> — intra/inter-chunk sequence modeling.</li>
+  <li><a href="https://arxiv.org/abs/2010.13154" target="_blank" rel="noopener">Subakan et al.: SepFormer</a> — dual-path Transformer separation.</li>
+  <li><a href="https://arxiv.org/abs/2211.12433" target="_blank" rel="noopener">Wang et al.: TF-GridNet</a> — integrated full-band, sub-band, and attention modeling.</li>
+  <li><a href="https://arxiv.org/abs/2410.01469" target="_blank" rel="noopener">Xu et al.: TIGER</a> — efficient time-frequency speech separation.</li>
+  <li><a href="https://proceedings.neurips.cc/paper_files/paper/2024/file/5d7c739c8e0383d02bb0addf8f29cd19-Paper-Conference.pdf" target="_blank" rel="noopener">Shin et al.: Separate and Reconstruct</a> — SepReformer and its WSJ0-2mix evaluation.</li>
+  <li><a href="https://arxiv.org/abs/2410.20997" target="_blank" rel="noopener">Avenstrup et al.: SepMamba</a> — U-Net-based bidirectional state-space separation and causal variants.</li>
+  <li><a href="https://arxiv.org/abs/2011.12022" target="_blank" rel="noopener">Zhu, Yeh, and Hasegawa-Johnson: Multi-Decoder DPRNN — High Accuracy Source Counting and Separation</a> — source-count head and multiple decoder heads.</li>
+  <li><a href="https://proceedings.mlr.press/v119/nachmani20a.html" target="_blank" rel="noopener">Nachmani et al.: Voice Separation with an Unknown Number of Multiple Speakers</a> — selecting among source-count-specific separation models.</li>
+  <li><a href="https://arxiv.org/abs/2006.12701" target="_blank" rel="noopener">Wisdom et al.: Unsupervised Sound Separation Using Mixture Invariant Training</a> — MixIT objective.</li>
+  <li><a href="https://arxiv.org/abs/2106.00847" target="_blank" rel="noopener">Wisdom et al.: Sparse Mixture Invariant Training</a> — over-separation and assignment complexity.</li>
+  <li><a href="https://arxiv.org/abs/2210.17327" target="_blank" rel="noopener">Scheibler et al.: Diffusion-Based Generative Speech Source Separation</a> — DiffSep.</li>
+  <li><a href="https://arxiv.org/abs/2501.15965" target="_blank" rel="noopener">EDSep: Efficient Diffusion-Based Speech Separation</a> — efficient diffusion separation.</li>
+  <li><a href="https://arxiv.org/abs/2601.18456" target="_blank" rel="noopener">Geneses preprint</a> — generative separation trend cited by the lecture; treated as a 2026 preprint rather than an established benchmark.</li>
+</ul>
+
+## Source Check
+
+- 원본 PDF 26쪽을 모두 시각 확인하고, 추출 텍스트는 페이지 탐색 보조로만 사용했다.
+- 원문 p. 9의 DPCL 설명은 affinity loss의 label-permutation 불변성과 효율적 전개를 원 논문에 맞춰 보충했다.
+- 원문 p. 22의 Hungarian `K²` 표기는 일반적인 linear assignment의 시간복잡도 $$O(K^3)$$으로 정정했다. Pairwise cost 생성과 모든 순열 열거 비용은 별도로 구분했다.
+- “모든 모델은 고정 출력 수”라는 해석은 대표적인 PIT/time-domain benchmark 구성으로 범위를 제한했다. DPCL은 추론 cluster 수를 바꿀 수 있지만 $$K$$를 주거나 추정해야 한다.
+- DPRNN 기본형을 streaming-ready로 일반화하지 않았다. 원 논문의 bidirectional path와 causal variant의 조건을 구분했다.
+- Time-domain model과 oracle magnitude mask의 비교는 fixed magnitude-mask와 mixture-phase 제약에 대한 결과로 해석했다. STFT 표현 자체의 원리적 한계로 확대하지 않았다.
+- 원문 p. 19의 수치 표는 causal/noncausal configuration과 SI-SNRi/SDRi가 섞여 있어 그대로 재작성하지 않았다. Representation, objective, decoder, separator가 세대별로 함께 달라졌음을 구분했다.
+- 원문 p. 21의 TIGER 감소율, SepMamba의 bidirectional 기본형, SepReformer 25.4 dB는 각각의 비교 configuration과 dataset 범위 안에서만 해석했다.
+- 원문 p. 26의 diffusion pipeline은 EDSep 고유 novelty로 오인하지 않도록 DiffSep 계열 background와 EDSep의 denoiser·sampler 기여를 분리했다.
+- 모델 성능 수치는 dataset, speaker 수, augmentation, metric 조건이 같은 경우에만 직접 비교하도록 구분했다.
+- 공개 글은 원문 PDF와 논문을 설명·검증한 독립 해설이며, 원본 슬라이드의 표·문장을 장문 전재하지 않았다.
