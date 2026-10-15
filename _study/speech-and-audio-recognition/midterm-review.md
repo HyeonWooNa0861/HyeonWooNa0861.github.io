@@ -1,9 +1,10 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
+last_modified_at: 2026-10-15 18:17:06 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
-topic: "Digital Signals, ASR, Self-Supervised Learning, and Source Separation"
+topic: "Digital Signals, ASR, and Self-Supervised Learning"
 order: 10
 major_topic: "Speech and Audio Processing"
 keywords:
@@ -12,11 +13,11 @@ keywords:
   - "Mel Spectrogram"
   - "CTC"
   - "RNN-Transducer"
+  - "BPE"
+  - "Conformer"
   - "Self-Supervised Learning"
-  - "Source Separation"
-  - "Permutation Invariant Training"
-  - "TasNet"
-  - "MixIT"
+  - "wav2vec 2.0"
+  - "HuBERT"
 ---
 
 # Speech and Audio Recognition: Midterm Review
@@ -28,8 +29,6 @@ Source PDFs:
 - [Lecture 3: Automatic Speech Recognition I]({{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf" | relative_url }})
 - [Lecture 4: Automatic Speech Recognition II]({{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf" | relative_url }})
 - [Lecture 5: Self-Supervised Learning]({{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf" | relative_url }})
-- [Lecture 6: Source Separation I]({{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf" | relative_url }})
-- [Lecture 7: Source Separation II]({{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf" | relative_url }})
 
 Source Notebooks:
 
@@ -38,9 +37,9 @@ Source Notebooks:
 - [CTC inference notebook]({{ "/assets/materials/study/speech-asr-lab/02-ctc-inference.ipynb" | relative_url }}): CTC greedy and prefix-beam decoding
 - [RNN-T inference notebook]({{ "/assets/materials/study/speech-asr-lab/03-rnnt-inference.ipynb" | relative_url }}): RNN-T inference
 
-> **핵심:** 이 범위는 소리를 숫자로 바꾸는 단계에서 시작해, 주파수 특징을 만들고, 음성을 문자로 정렬하며, label이 없는 음성에서 표현을 학습하고, 마지막에는 섞인 소리를 다시 분리하는 과정으로 이어진다. 각 단계의 질문은 다르지만 공통 원리는 같다. **입력에서 어떤 정보를 보존할지, 어떤 확률 또는 loss를 계산할지, 출력이 실제로 무엇을 뜻하는지**를 분리해서 확인해야 한다.
+> **핵심:** 소리를 sample로 바꾸고, 주파수 특징을 만든 뒤, 길이가 다른 음향 frame열과 문자·subword열을 정렬한다. 이어서 정답 전사 없이 음성 표현을 학습하는 방법까지 살펴본다. **어떤 정보를 보존하는지, 확률과 loss를 어떻게 계산하는지, 학습 target을 어디에서 얻는지**를 연결하면 신호 처리·ASR·자기지도 학습의 역할을 구분할 수 있다.
 
-이 글은 현재 확보된 Lecture 2–7 원문과 spectral-analysis·ASR 실습을 종합한다. 별도의 Lecture 1 PDF는 현재 과목 폴더에 없으므로, Lecture 1의 독립 범위를 추정해서 채우지 않는다. 각 강의의 전체 유도·그림·코드 해설은 연결된 개별 노트에서 확인할 수 있다.
+**중간고사 범위는 Source Separation 직전인 Self-Supervised Learning까지다.** Lecture 2–5와 spectral-analysis·BPE/CTC/RNN-T 실습을 종합한다. Lecture 5의 wav2vec 2.0·HuBERT는 포함하고, Lecture 6–7의 Source Separation(DPCL·PIT/uPIT 포함)은 제외한다. 범위 밖 강의의 개별 노트와 원문 PDF는 그대로 보존한다. 별도의 Lecture 1 PDF는 현재 과목 폴더에 없으므로 독립 범위를 추정해서 채우지 않는다. 각 강의의 전체 유도·그림·코드 해설은 연결된 개별 노트에서 확인할 수 있다.
 
 ## 전체 흐름
 
@@ -51,16 +50,15 @@ Source Notebooks:
 | 지각 특징 | power spectrum | Mel filterbank, log, DCT | log-Mel, MFCC | 인식에 유용한 축약과 복원 정보 손실을 어떻게 구분하는가? |
 | ASR 정렬 | 음향 frame열 | CTC, attention, RNN-T | token sequence | 길이가 다른 두 sequence를 어떻게 정렬하고 점수화하는가? |
 | 표현 사전학습 | transcript 없는 음성 | masking, quantization, pseudo-label prediction | speech representation | 정답 text 없이 어떤 target을 만들 수 있는가? |
-| Source separation | 혼합 음원 | mask/estimate, PIT, decoder | source별 waveform | 출력 순서가 없는 여러 source를 어떻게 복원하는가? |
 
-이 흐름을 한 줄로 연결하면 다음과 같다.
+신호 처리와 ASR의 흐름은 다음과 같다. 자기지도 학습은 이 과정에서 사용할 음성 표현을 전사 없는 데이터로 먼저 학습하는 방법이다.
 
 ```text
 air pressure
   -> sampled waveform
   -> complex time-frequency representation
   -> acoustic representation
-  -> aligned token sequence or separated waveforms
+  -> aligned token sequence
 ```
 
 ## 1. Sound에서 digital signal로
@@ -408,7 +406,7 @@ Conformer의 subsampling은 입력 frame 수를 줄여 이후 attention의 시�
 
 ### 5.1 Self-supervision은 입력에서 target을 만든다
 
-Supervised ASR은 waveform과 transcript 쌍이 필요하다. Self-supervised learning은 transcript가 없는 음성에서도 입력 일부를 가리고 나머지 문맥으로 target을 예측하게 만든다. 이때 source-separation mask와 masked prediction을 같은 연산으로 이해하면 안 된다. 전자는 신호를 복원하기 위한 곱셈 mask일 수 있고, 후자는 representation의 일부를 학습 입력에서 감추는 훈련 절차다.
+Supervised ASR은 waveform과 transcript 쌍이 필요하다. Self-supervised learning은 transcript가 없는 음성에서도 입력 일부를 가리고 나머지 문맥으로 target을 예측하게 만든다. 여기서 masking은 입력 표현의 일부를 감추어 문맥으로 target을 예측하게 하는 훈련 절차다.
 
 ### 5.2 wav2vec 2.0
 
@@ -433,251 +431,23 @@ HuBERT는 MFCC 같은 기존 feature를 offline clustering해 pseudo-label $$y_t
 | Collapse 관리 | codebook diversity가 중요 | target cluster 품질·분포가 중요 |
 | Downstream | labeled data로 CTC 등 fine-tuning | labeled data로 ASR 등 fine-tuning |
 
-## 6. Source Separation I: representation, loss, and phase
+## 6. 혼동하기 쉬운 기호와 표현
 
-### 6.1 Encoder–separator–decoder
+### 6.1 Masked prediction과 attention mask
 
-혼합 파형이 $$y[n]=\sum_{i=1}^{K}s_i[n]$$라고 하자. Encoder는 raw waveform 또는 STFT를 feature로 바꾸고, separator는 source별 mask나 직접 추정값을 만들며, decoder는 waveform으로 복원한다. 모든 separator가 mask를 출력하지는 않는다. Waveform model은 latent feature를 변환해 직접 waveform을 만들 수도 있다.
+Masked prediction은 입력 표현의 일부를 감추고 그 위치의 target을 예측하도록 학습한다. Attention mask는 padding이나 미래 위치를 보지 못하도록 attention score를 제한한다. 전자는 학습 문제를 만드는 방법이고, 후자는 정보 접근 범위를 정하는 방법이다.
 
-### 6.2 MA, SA, waveform loss는 비교 위치가 다르다
-
-| Objective | 비교하는 값 | 의미 |
-|---|---|---|
-| Mask approximation | 예측 mask와 target mask | 비율 추정 자체를 맞춘다. |
-| Signal approximation | mask를 mixture magnitude에 적용한 값과 clean magnitude | 실제 spectrum 크기 오차를 반영한다. |
-| Waveform loss | iSTFT 또는 decoder 뒤 파형과 clean waveform | phase·overlap-add까지 포함한 최종 출력을 비교한다. |
-
-같은 mask 오차라도 mixture magnitude가 큰 bin에서는 SA 오차가 더 커진다. 이는 큰 성분에 집중할 수 있다는 장점과 약한 성분이 덜 반영될 수 있다는 절충을 함께 만든다. 강의의 MA, SA, waveform 소개 순서가 세 loss를 반드시 순차로 적용하는 pipeline이라는 뜻은 아니다.
-
-### 6.3 Magnitude가 맞아도 waveform은 틀릴 수 있다
-
-한 complex bin의 정답이 $$S=Ae^{j\phi_S}$$이고 mixture phase를 고정한 추정이 $$\hat S=\hat A e^{j\phi_Y}$$라면 complex squared error는
-
-$$
-\lvert S-\hat S\rvert^2
-=A^2+\hat A^2-2A\hat A\cos(\phi_S-\phi_Y)
-$$
-
-이다. $$\hat A=A$$여도 phase 차이가 0이 아니면 오차가 남는다. 고정 phase에서 error를 최소화하는 magnitude는 제약을 무시하면 $$A\cos(\phi_S-\phi_Y)$$다. 이 결과가 phase-sensitive target의 cosine 항을 설명한다.
-
-![복소 STFT 한 bin에서 real 좌표와 imaginary 좌표가 함께 magnitude와 phase를 정하는 기하](/assets/images/study/speech-source-separation/complex-stft-coordinates.svg)
-
-그림은 원점에서 점까지의 길이가 magnitude, 양의 real axis에서 잰 각도가 phase라는 뜻이다. Imaginary coordinate만 0으로 만들면 점을 실수축에 투영하므로 phase만 잃는 것이 아니라 이 예에서는 magnitude도 1에서 0.5로 바뀐다. 따라서 `real=magnitude`, `imaginary=phase`로 일대일 대응시키면 안 된다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Magnitude target under a fixed phase</summary>
-
-$$\Delta\phi=\phi_S-\phi_Y$$로 놓고 $$\hat A$$에 대해 미분한다.
-
-$$
-E(\hat A)=A^2+\hat A^2-2A\hat A\cos\Delta\phi
-$$
-
-$$
-\frac{dE}{d\hat A}=2\hat A-2A\cos\Delta\phi.
-$$
-
-따라서 unconstrained optimum은 $$\hat A^*=A\cos\Delta\phi$$다. Nonnegative magnitude만 허용하면 $$\max(0,A\cos\Delta\phi)$$ 같은 제약이 추가된다. 이는 mixture phase를 고정한 조건의 projection 결과다. Phase까지 예측할 수 있는 모델의 최적해와 같지 않다.
-
-</details>
-
-### 6.4 DCCRN과 FullSubNet+
-
-DCCRN은 complex STFT의 real·imaginary 경로가 convolution과 recurrent processing에서 서로 결합되게 한다. Complex representation을 사용한다는 사실만으로 phase가 정확히 복원되는 것은 아니다. Network output, mask 적용과 loss를 함께 확인해야 한다.
-
-FullSubNet+은 같은 noisy STFT에서 magnitude, real, imaginary 표현을 받아 full-band 문맥과 중심 주파수 주변의 sub-band 문맥을 결합한다. Full-band는 harmonic과 넓은 spectral pattern을 전달하고, sub-band는 특정 bin 주변의 시간 변화를 추적한다. Network의 최종 두 좌표는 압축된 complex mask 표현이다. 추론에서는 이를 안정화 범위 안에서 역압축한 뒤 보존된 noisy STFT에 complex multiplication하고 iSTFT로 복원한다.
-
-<details markdown="block">
-<summary markdown="span">Figure Analysis: FullSubNet+ from three input views to a complex mask</summary>
-
-Lecture 6의 구조도는 왼쪽에서 오른쪽으로 읽는다.
-
-1. Magnitude, real, imaginary는 서로 다른 녹음이 아니라 같은 noisy STFT의 세 표현이다.
-2. 각 MulCA block은 내부 feature에서 주파수별 중요도를 조절한다. 이것은 최종 noise-removal mask가 아니다.
-3. Full-band extractor는 모든 frequency의 문맥을 각 중심 bin에 전달한다.
-4. Magnitude의 local unfold는 중심 bin과 주변 bin을 묶는다.
-5. Concat 뒤 sub-band sequence model이 시간 변화를 처리한다.
-6. 두 output은 complex mask의 real·imaginary 좌표다.
-7. 역압축한 mask를 noisy STFT에 complex multiplication하고 iSTFT를 수행한다.
-
-그림은 정보 경로를 보여 주지만 특정 metric 향상의 원인까지 단독으로 증명하지 않는다. Ablation과 동일 평가 조건을 함께 확인해야 한다.
-
-</details>
-
-### 6.5 SI-SNR은 전체 gain을 분리한 뒤 남은 왜곡을 잰다
-
-Target $$s$$와 estimate $$\hat s$$의 평균 제거본을 $$\tilde s=s-\bar s$$, $$\tilde{\hat s}=\hat s-\overline{\hat s}$$로 두자. Estimate를 target 방향으로 projection한 성분과 orthogonal error로 나눈다.
-
-$$
-s_{\mathrm{target}}
-=\frac{\langle\tilde{\hat s},\tilde s\rangle}{\lVert\tilde s\rVert_2^2}\tilde s,
-\qquad
-e_{\mathrm{noise}}=\tilde{\hat s}-s_{\mathrm{target}}
-$$
-
-$$
-\mathrm{SI\text{-}SNR}
-=10\log_{10}
-\frac{\lVert s_{\mathrm{target}}\rVert_2^2}
-{\lVert e_{\mathrm{noise}}\rVert_2^2}.
-$$
-
-작성자 검산으로 영평균 target $$s=[1,-1,1,-1]$$과 영평균 estimate $$\hat s=[2.5,-1.5,1.5,-2.5]$$를 두자. Projection coefficient는 2, target 성분은 `[2, -2, 2, -2]`, error는 `[0.5, 0.5, -0.5, -0.5]`다. Energy ratio는 $$16/1=16$$이므로 SI-SNR은 약 12.041 dB다. $$\hat s$$ 전체를 3배 해도 target과 error energy가 모두 9배가 되어 ratio 16은 유지된다. 이 scale invariance는 출력 gain 차이를 평가에서 제거한다는 뜻이며, 실제 음량 보존이 중요하지 않다는 뜻은 아니다.
-
-평균 제거를 metric 안에서 수행하는지, 입력 전처리에서 수행하는지는 구현마다 다를 수 있다. 수치를 비교할 때는 demeaning 여부, epsilon 처리, segment 길이와 permutation 선택 조건을 함께 기록한다.
-
-## 7. Source Separation II: output permutation and model lineage
-
-### 7.1 Blind source separation의 두 난점
-
-Blind source separation은 mixing process와 source identity를 거의 모르는 상태에서 여러 source를 추정한다. 첫째, network output slot 1이 어느 화자여야 하는지 고정할 수 없다. 둘째, 실제 환경에서는 source 수 $$K$$가 알려지지 않거나 시간에 따라 바뀔 수 있다.
-
-Lecture 7의 첫 ESD 그림은 encoder 하나와 여러 mask·decoder를 놓는다. 다음 그림의 “Are these the same answer?”가 핵심이다. 정답 source의 집합은 같아도 output 순서가 다르면 slot별 loss는 큰 오차로 계산될 수 있다.
-
-### 7.2 DPCL은 output slot 대신 affinity를 학습한다
-
-Deep Clustering(DPCL)은 각 time-frequency bin $$i$$를 embedding $$v_i$$로 바꾸고, 두 bin이 같은 source인지 나타내는 affinity를 맞춘다. One-hot source assignment를 $$Y$$, embedding matrix를 $$V$$라 하면 대표 loss는
-
-$$
-\mathcal L_{\mathrm{DPCL}}
-=\left\lVert VV^{\top}-YY^{\top}\right\rVert_F^2.
-$$
-
-$$V$$의 한 행은 **모델이 한 T–F bin에서 예측한 embedding**, $$Y$$의 한 행은 **분리된 정답 source에서 얻은 우세 source의 one-hot label**이다. $$V$$는 source 확률이나 waveform이 아니며, embedding 차원과 source 수가 같을 필요도 없다. 학습은 $$V=Y$$를 요구하지 않는다. $$VV^{\top}$$와 $$YY^{\top}$$라는 bin 사이의 관계를 맞춘다.
-
-$$YY^{\top}$$는 두 bin이 같은 source면 1, 다르면 0이다. 예를 들어 세 bin의 정답이 A, B, A이면 첫째–셋째 관계는 1, 첫째–둘째 관계는 0이다. Source label의 열 순서를 바꿔도 이 affinity matrix는 같으므로 permutation 문제를 피한다. 학습 때는 고정된 $$Y$$로 network를 감독하지만, inference에는 $$Y$$가 없다. 예측 embedding을 k-means로 묶고 cluster별 binary mask를 만든다. 이때 cluster 수 $$K$$는 외부에서 주거나 별도로 추정해야 하므로 DPCL만으로 unknown speaker count 문제가 자동 해결되지는 않는다.
-
-7강 9쪽의 한계는 두 가지다. **별도의 k-means 단계** 때문에 affinity 학습과 최종 waveform 복원이 하나의 end-to-end 목적함수로 연결되지 않는다. **Binary magnitude mask와 mixture phase**는 겹친 source의 연속적 기여와 source별 위상을 충분히 표현하지 못한다. 직접 reconstruction loss, soft/complex mask, waveform 모델은 서로 다른 부분을 개선하는 방향이다. PIT는 출력 순서 문제를 처리할 뿐이므로, PIT를 쓴다는 사실만으로 위상이나 source 수 문제까지 해결되지는 않는다. 행렬 예제와 complex-mask 반례는 [Lecture 7의 DPCL 해설](/study/speech-and-audio-recognition/lecture-07-source-separation-2/#3-dpcl-출력-칸-대신-같은-화자인지를-배운다)에서 확인할 수 있다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Why the DPCL affinity target ignores speaker order</summary>
-
-Source 순서를 바꾸는 permutation matrix를 $$P$$라고 하자. One-hot label을 $$Y'=YP$$로 다시 쓰면
-
-$$
-Y'Y'^{\top}=YPP^{\top}Y^{\top}=YY^{\top}
-$$
-
-이다. $$PP^{\top}=I$$이므로 speaker A와 B의 열 이름을 바꿔도 두 bin의 same-source 관계는 변하지 않는다. 따라서 affinity target은 output label 순서에 불변이다.
-
-반면 embedding의 회전도 pairwise inner product를 유지할 수 있다. $$V'=VQ$$이고 $$QQ^{\top}=I$$이면 $$V'V'^{\top}=VV^{\top}$$다. DPCL이 요구하는 것은 embedding coordinate의 절대 방향이 아니라 같은 source bin이 가까운 affinity 구조를 갖는 것이다.
-
-</details>
-
-### 7.3 PIT는 가장 잘 맞는 permutation으로 loss를 계산한다
-
-Permutation-Invariant Training(PIT)은 $$K$$개 예측과 $$K$$개 정답의 모든 대응 중 loss가 가장 작은 것을 선택한다.
-
-$$
-\mathcal L_{\mathrm{PIT}}
-=\min_{\pi\in S_K}\sum_{i=1}^{K}\ell(\hat s_i,s_{\pi(i)}).
-$$
-
-두 화자 예에서 pairwise loss가 다음과 같다고 하자.
-
-| Prediction | Source A | Source B |
-|---|---:|---:|
-| $$\hat s_1$$ | 9 | 1 |
-| $$\hat s_2$$ | 2 | 8 |
-
-고정 순서 A/B의 loss는 $$9+8=17$$이지만, 순서를 바꾸면 $$1+2=3$$이다. PIT는 3을 선택해 backpropagation한다. Output 1이 항상 특정 speaker identity를 뜻하지 않아도 separation을 학습할 수 있다.
-
-![PIT가 source별 출력 순서의 가능한 대응을 비교하고 가장 작은 loss의 permutation을 선택하는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-10.png)
-
-그림은 아래에서 위로 `mixture -> encoder -> source별 mask -> decoder -> 여러 출력`을 먼저 읽고, 오른쪽 후보 순열을 그다음 읽는다. 오른쪽의 여러 줄은 network를 여러 번 실행한다는 뜻이 아니라 **한 번 얻은 출력과 정답의 대응을 바꿔 loss를 비교한다는 뜻**이다. 선택된 대응에서만 gradient가 계산되므로 출력 slot의 이름을 미리 고정할 필요가 없다.
-
-모든 permutation 열거는 $$K!$$개이지만, pairwise assignment cost가 분리 가능한 경우 Hungarian algorithm 등으로 최소 matching을 다항 시간에 구할 수 있다. 일반적인 Hungarian algorithm의 표준 복잡도는 $$O(K^3)$$다. Network forward 비용과 waveform loss 계산 비용은 별도다.
-
-### 7.4 TasNet에서 dual-path Transformer까지
-
-| Model | Representation | Separator의 핵심 | 확인할 조건 |
-|---|---|---|---|
-| TasNet | learned 1-D encoder | deep recurrent separator | 짧은 learned basis와 고정 source 수 |
-| Conv-TasNet | learned 1-D encoder | dilated temporal convolution network | receptive field, normalization, causal variant |
-| DPRNN | learned 1-D encoder | chunk 내부와 chunk 사이의 dual-path RNN | 표준 논문 모델의 양방향 처리와 streaming variant 구분 |
-| SepFormer | learned 1-D encoder | dual-path Transformer | 긴 문맥, PIT, compute·latency |
-| TF-GridNet | complex STFT | frequency·time·attention 축을 교차 처리 | complex estimate와 phase 처리 |
-
-Time-domain 계열의 성과가 STFT 자체의 표현 한계를 증명한 것은 아니다. 당시 비교 대상에는 **고정 mixture phase와 magnitude mask**라는 제약이 있었다. TF-GridNet처럼 complex STFT를 직접 추정하는 후속 방법은 STFT domain에서도 phase를 함께 다룬다.
-
-Dual-path의 핵심은 긴 sequence를 겹치는 chunk로 나누는 것이다. Intra-chunk module은 짧은 구간 내부를 처리하고, inter-chunk module은 같은 chunk 위치를 여러 구간에 걸쳐 연결한다. 이 구조는 문맥 경로를 짧게 만들지만, 표준 DPRNN 논문의 bidirectional block을 그대로 사용하면 미래 chunk가 필요하다. 별도 causal design 없이 `streaming-ready`라고 단정하지 않는다.
-
-<details markdown="block">
-<summary markdown="span">Figure Analysis: Reading the Lecture 7 model lineage</summary>
-
-Lecture 7의 계보 표는 왼쪽의 domain과 오른쪽의 separator를 분리해 읽는다.
-
-- TasNet 계열은 STFT를 없앤 것이 아니라 학습 가능한 1-D analysis/synthesis basis를 사용한다.
-- Conv-TasNet은 separator를 RNN에서 dilated TCN으로 바꾼다.
-- DPRNN은 긴 latent sequence를 chunk로 나누고 두 방향의 recurrence를 교대로 적용한다.
-- SepFormer는 같은 dual-path 틀에서 recurrent block을 Transformer block으로 바꾼다.
-- TF-GridNet은 complex STFT domain으로 돌아와 frequency 내부, 시간 방향, cross-frame 문맥을 함께 처리한다.
-
-표의 SI-SNRi·SDRi 수치는 metric, dataset, sampling rate, dynamic mixing 여부가 섞여 있다. 세대 순서를 이해하는 데는 사용할 수 있지만, 숫자만으로 절대 순위를 만들면 안 된다.
-
-</details>
-
-### 7.5 Unknown speaker count와 real-world gap
-
-고정 출력 $$N$$인 separator는 실제 source 수 $$K$$가 다를 때 빈 output, source 복제 또는 여러 source의 합을 만들 수 있다. 대응 방향은 다음과 같다.
-
-1. 최대 output 수를 두고 쓰지 않는 output을 silence로 학습한다.
-2. 한 source와 나머지를 반복 분리한다.
-3. Source-count head가 decoder 또는 attractor 수를 고른다.
-
-Lecture 7의 “every model has fixed outputs”는 앞에서 비교한 고정-output 계열의 범위로 읽어야 한다. Recursive extraction과 attractor 기반 방법까지 포함한 모든 separation model의 보편 명제가 아니다.
-
-Clean anechoic mixture에서 높은 점수를 얻어도 reverberation, ambient noise, microphone response가 달라지면 성능이 크게 떨어질 수 있다. Dynamic mixing은 clean source의 pair, gain, shift를 학습 중 다시 조합해 mixture 다양성을 늘린다. 이는 data augmentation이며 model 구조와 구분한다.
-
-### 7.6 MixIT는 clean source 없이 mixture를 target으로 쓴다
-
-Mixture Invariant Training(MixIT)은 두 실제 mixture $$x_1,x_2$$를 더한 mixture-of-mixtures $$\bar x=x_1+x_2$$를 network에 넣는다. Network가 $$M$$개 신호 $$\hat s_m$$을 출력하면, 각 출력을 두 그룹으로 나누어 원래 mixture 두 개를 가장 잘 재구성하는 assignment를 고른다.
-
-$$
-\mathcal L_{\mathrm{MixIT}}
-=\min_{A\in\mathcal A}\sum_{i=1}^{2}
-\ell\left(x_i,\sum_{m=1}^{M}A_{im}\hat s_m\right).
-$$
-
-각 output은 한 mixture group에 배정된다. Clean source가 없어도 $$x_1,x_2$$는 관측 가능한 target이다. 그러나 한 실제 source를 여러 output으로 쪼개도 두 mixture 재구성이 가능할 수 있어 over-separation 위험이 있다.
-
-![Dynamic Mixing과 MixIT가 각각 clean source 또는 원래 mixture를 target으로 사용해 separation 출력을 대응시키는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-25.png)
-
-위쪽 PIT/DM 경로에서는 개별 clean source가 정답이므로 출력 순열만 바꾼다. 아래쪽 MixIT 경로에서는 개별 clean source를 모르므로 여러 출력을 파란 점선 그룹처럼 다시 더해 $$x_1$$과 $$x_2$$를 복원한다. `permutation`은 일대일 대응이고 `remix assignment`는 여러 출력을 한 관측 mixture에 묶을 수 있다는 차이가 핵심이다.
-
-### 7.7 Efficiency와 generative separation은 서로 다른 질문이다
-
-WSJ0-2mix 같은 정형 benchmark의 점수가 높아진 뒤에는 최고 점수만이 아니라 parameter 수, MACs, 긴 발화의 memory, noise·reverberation에서의 일반화가 중요해진다. Lecture 7은 TIGER를 band-split과 multi-scale attention으로 계산량을 줄이는 방향, SepMamba를 self-attention 대신 state-space block으로 긴 sequence를 선형 시간에 처리하려는 방향으로 소개한다. 강의 슬라이드의 절감률은 해당 논문의 비교 설정에 묶인 수치이므로 다른 sampling rate·dataset·metric에 그대로 옮기지 않는다.
-
-Generative separation은 mixture $$x$$에서 하나의 point estimate만 회귀하는 대신 조건부 분포
-
-$$
-p(s_1,\ldots,s_K\mid x)
-$$
-
-를 학습하고 diffusion, score-based model 또는 flow matching으로 sample을 생성하려 한다. 여러 plausible source가 가능한 ill-posed 문제에서 자연스러운 세부를 복원할 여지가 있지만, 생성된 세부가 실제 mixture에 존재했다는 보장은 없다. 따라서 청감상의 자연스러움과 **mixture에 대한 충실성**을 분리해 평가해야 하며, sampling step에 따른 latency도 확인해야 한다. 이 계열의 상세 구조와 개별 연구는 [Lecture 7: Blind Source Separation](/study/speech-and-audio-recognition/lecture-07-source-separation-2/)에서 이어서 확인한다.
-
-## 8. 같은 단어가 다른 연산을 뜻하는 경우
-
-### 8.1 Masking 세 종류
-
-| 맥락 | 가리는 대상 | 목적 | 최종 출력에 적용하는가? |
-|---|---|---|---|
-| wav2vec 2.0 / HuBERT | latent time span | 문맥 예측 학습 | 입력 corruption이며 waveform mask가 아님 |
-| Magnitude/complex separation | STFT 또는 latent feature | source 성분 추정 | mixture representation에 곱할 수 있음 |
-| Attention mask | 허용하지 않을 위치의 score | future/padding 접근 제한 | probability 계산 전 score 제한 |
-
-### 8.2 Blank 두 종류
+### 6.2 Blank 두 종류
 
 CTC blank는 frame path를 collapse할 때 제거된다. RNN-T blank는 출력 prefix를 유지하며 acoustic time을 진행시킨다. 둘 다 전사에 남지 않지만 상태 전이 규칙은 다르다.
 
-### 8.3 Phase와 imaginary part
+### 6.3 Phase와 imaginary part
 
 Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase는 $$\operatorname{atan2}(b,a)$$다. Real·imaginary 두 좌표는 magnitude와 phase를 함께 결정한다.
 
-## 9. 문제를 푸는 순서
+## 7. 문제를 푸는 순서
 
-### 9.1 Signal과 spectrum 문제
+### 7.1 Signal과 spectrum 문제
 
 1. 시간 단위와 sampling rate를 확인한다.
 2. 연속/이산, 주기/비주기, finite/infinite 중 어떤 모델인지 정한다.
@@ -686,7 +456,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 5. DFT bin은 $$k f_s/N$$과 음의 주파수 wrap을 함께 읽는다.
 6. Magnitude와 phase가 모두 필요한 복원 문제인지 확인한다.
 
-### 9.2 CTC forward 문제
+### 7.2 CTC forward 문제
 
 1. 정답 사이에 blank를 넣어 확장열 $$z$$를 만든다.
 2. 첫 frame에서는 첫 blank와 첫 label만 초기화한다.
@@ -695,16 +465,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 5. 마지막 label과 마지막 blank 상태를 더한다.
 6. 음의 로그를 취해 loss로 바꾼다.
 
-### 9.3 Separation loss 문제
-
-1. Network input이 waveform, magnitude, complex STFT, learned feature 중 무엇인지 정한다.
-2. Output이 mask인지 직접 source estimate인지 확인한다.
-3. Mask라면 범위, 압축, 역압축과 실제 곱셈 위치를 확인한다.
-4. Loss가 mask, spectrum, waveform 중 어디에서 계산되는지 표시한다.
-5. Mixture phase를 고정하는지 phase를 예측하는지 확인한다.
-6. 여러 source라면 assignment를 고정하는지 PIT/MixIT를 쓰는지 확인한다.
-
-## 10. 자주 생기는 오해
+## 8. 자주 생기는 오해
 
 | 오해 | 정확한 해석 |
 |---|---|
@@ -713,11 +474,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 | Mel scale은 log amplitude다. | Mel은 frequency-axis mapping이고 log amplitude는 별도 값 변환이다. |
 | CTC DP 값은 반복 계산하며 수렴한다. | 고정 확률표의 유효 경로 합을 유한 격자에서 정확히 계산한다. |
 | Blank는 silence다. | CTC/RNN-T의 정렬 기호이며 실제 무음과 일대일 대응하지 않는다. |
-| Complex network의 imaginary channel이 phase다. | Phase는 real·imaginary 좌표를 함께 사용해 계산한다. |
-| PIT가 speaker identity를 학습한다. | 현재 example의 output과 reference 사이 최적 permutation을 선택한다. |
-| DPRNN이면 항상 streaming이다. | 표준 bidirectional 구성은 미래 문맥을 사용하며 causal variant가 따로 필요하다. |
-| Time-domain model은 STFT가 열등함을 증명했다. | 비교 당시 mask·phase 제약과 model 조건을 함께 봐야 한다. |
-| MixIT에는 target이 없다. | Clean source 대신 원래 mixture들을 reconstruction target으로 사용한다. |
+| Complex spectrum의 imaginary part가 phase다. | Phase는 real·imaginary 좌표를 함께 사용해 계산한다. |
 
 ## 마지막 핵심 정리
 
@@ -726,9 +483,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 - Mel filterbank의 주파수 집계와 log의 값 압축은 별도 연산이며, ASR feature와 waveform 복원 표현의 목적도 다르다.
 - CTC는 frame 확률을 곱해 path 확률을 만들고, 같은 전사로 collapse되는 path를 더한다. Forward DP는 이 합을 재사용한다.
 - LAS는 이전 token과 attention context로 다음 token을 생성하고, RNN-T는 acoustic time과 output prefix를 두 축으로 분리한다.
-- wav2vec 2.0과 HuBERT는 transcript 없이 target을 만들지만 target 생성 방식이 다르다.
-- Separation에서는 representation, mask/estimate, loss 위치, phase, output permutation을 하나의 경로로 연결해 봐야 한다.
-- DPCL은 same-source affinity를, PIT는 최적 output-reference 대응을, MixIT는 mixture reconstruction assignment를 사용한다.
+- wav2vec 2.0과 HuBERT는 transcript 없이 target을 만들지만, learned quantization과 offline clustering이라는 target 생성 방식이 다르다.
 
 ## Study Guide
 
@@ -739,8 +494,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 3. [Automatic Speech Recognition I](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/)에서 CTC 확률과 forward table을 직접 계산한다.
 4. [Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)에서 LAS와 RNN-T의 상태 전이를 비교한다.
 5. [Self-Supervised Learning](/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/)에서 wav2vec 2.0과 HuBERT target을 구분한다.
-6. [Source Separation I](/study/speech-and-audio-recognition/lecture-06-source-separation/)에서 mask, loss, phase, DCCRN·FullSubNet+를 읽는다.
-7. [Blind Source Separation](/study/speech-and-audio-recognition/lecture-07-source-separation-2/)에서 DPCL, PIT, TasNet 계보, unknown $$K$$, MixIT를 읽는다.
+6. [Tokenization and Decoding Lab](/study/speech-and-audio-recognition/asr-tokenization-and-decoding-lab/)에서 BPE 규칙, CTC decoding, RNN-T의 token·blank 전이를 코드와 연결한다.
 
 ### 2차 회독: 직접 계산
 
@@ -748,12 +502,10 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 - 8-point DFT의 bin frequency와 음의 frequency bin을 표시한다.
 - STFT의 입력 길이, window, hop, padding으로 frame 수와 output shape를 계산한다.
 - CTC `AB` 예제의 다섯 path와 forward table을 모두 계산한다.
-- PIT의 두 permutation loss를 비교한다.
-- 같은 magnitude, 다른 phase인 두 complex bin의 squared error를 계산한다.
 
 ### 3차 회독: 비교표 없이 설명
 
-다음 쌍을 한 문단씩 설명한다: DFT/FFT, spectrum/spectrogram, Mel/log, CTC blank/RNN-T blank, CTC/LAS/RNN-T, wav2vec 2.0/HuBERT, MA/SA/waveform loss, DPCL/PIT/MixIT.
+다음 쌍을 한 문단씩 설명한다: DFT/FFT, spectrum/spectrogram, Mel/log, CTC blank/RNN-T blank, CTC/LAS/RNN-T, Deep Speech 2/Conformer, wav2vec 2.0/HuBERT.
 
 ## 복습 질문
 
@@ -799,34 +551,6 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 
 </details>
 
-<details markdown="block">
-<summary>7. MA, SA, waveform loss는 왜 한 pipeline의 세 단계가 아닌가?</summary>
-
-답변: 세 용어는 주로 loss를 계산하는 비교 지점을 가리킨다. MA는 mask, SA는 mask 적용 뒤 spectrum, waveform loss는 decoder 뒤 파형을 정답과 비교한다. 한 model이 하나 또는 여러 loss를 선택할 수 있으며, 강의의 소개 순서만으로 모두 순차 적용한다고 결론낼 수 없다.
-
-</details>
-
-<details markdown="block">
-<summary>8. DPCL과 PIT는 permutation 문제를 어떻게 다르게 푸는가?</summary>
-
-답변: DPCL은 time-frequency bin 사이의 same-source affinity를 학습해 speaker label 순서 자체를 없애고, inference에서 clustering한다. PIT는 source별 output을 직접 만들되 reference와의 가능한 대응 중 loss가 가장 작은 assignment를 선택한다.
-
-</details>
-
-<details markdown="block">
-<summary>9. MixIT가 clean source 없이 학습할 수 있는 이유와 위험은 무엇인가?</summary>
-
-답변: 두 실제 mixture를 더한 입력을 분리하고, output들을 두 그룹으로 다시 합쳐 원래 mixture 두 개를 복원하도록 학습한다. 원래 mixture가 target 역할을 하므로 clean source가 필요 없다. 그러나 실제 source 하나를 여러 output으로 쪼개도 reconstruction이 가능해 over-separation이 생길 수 있다.
-
-</details>
-
-<details markdown="block">
-<summary>10. Standard DPRNN을 곧바로 streaming model이라고 부를 수 없는 이유는 무엇인가?</summary>
-
-답변: Streaming 여부는 dual-path라는 이름이 아니라 각 block이 미래 chunk를 보는지에 달려 있다. 표준 DPRNN 논문의 bidirectional recurrent 처리에는 미래 문맥이 포함된다. Causal recurrent block, 제한된 chunk context와 latency 조건을 별도로 정해야 streaming 구성이 된다.
-
-</details>
-
 ## PDF
 
 <ul>
@@ -835,8 +559,6 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
   <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 3: Automatic Speech Recognition I</a></li>
   <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 4: Automatic Speech Recognition II</a></li>
   <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 5: Self-Supervised Learning</a></li>
-  <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 6: Source Separation I</a></li>
-  <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 7: Source Separation II</a></li>
 </ul>
 
 ## Detailed Notes
@@ -847,8 +569,6 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 - [Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)
 - [Self-Supervised Learning](/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/)
 - [Tokenization and Decoding Lab](/study/speech-and-audio-recognition/asr-tokenization-and-decoding-lab/)
-- [Source Separation I](/study/speech-and-audio-recognition/lecture-06-source-separation/)
-- [Blind Source Separation](/study/speech-and-audio-recognition/lecture-07-source-separation-2/)
 
 ## Notebooks and Interactive Material
 
@@ -865,9 +585,3 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 - <a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al.: Connectionist Temporal Classification</a>
 - <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">Baevski et al.: wav2vec 2.0</a>
 - <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">Hsu et al.: HuBERT</a>
-- <a href="https://arxiv.org/abs/1508.04306" target="_blank" rel="noopener">Hershey et al.: Deep Clustering</a>
-- <a href="https://arxiv.org/abs/1607.00325" target="_blank" rel="noopener">Yu et al.: Permutation Invariant Training</a>
-- <a href="https://arxiv.org/abs/1809.07454" target="_blank" rel="noopener">Luo and Mesgarani: Conv-TasNet</a>
-- <a href="https://arxiv.org/abs/1910.06379" target="_blank" rel="noopener">Luo et al.: Dual-Path RNN</a>
-- <a href="https://arxiv.org/abs/2010.13154" target="_blank" rel="noopener">Subakan et al.: SepFormer</a>
-- <a href="https://arxiv.org/abs/2006.12701" target="_blank" rel="noopener">Wisdom et al.: MixIT</a>

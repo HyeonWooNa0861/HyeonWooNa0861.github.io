@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
+last_modified_at: 2026-10-15 18:17:06 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -32,6 +33,8 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 페이지 번호는 원본 PDF의 물리적 쪽 번호다. 아래 수식·작은 수치 예제·그림 해설은 이해를 위한 보충 설명이다. 슬라이드의 범위를 벗어나거나 조건이 빠진 표현은 마지막 `Source Check`에서 구분한다.
 
 ## 전체 흐름
+
+**중간고사 범위는 Source Separation 직전인 Self-Supervised Learning까지이며, 이 7강의 음원 분리는 포함되지 않는다.** 이 개별 노트에는 DPCL·PIT를 포함한 강의 전체 해설을 그대로 보존한다. 범위에 맞춘 복습은 [Midterm Review](/study/speech-and-audio-recognition/midterm-review/)를 따른다.
 
 | 원문 | 주제 | 먼저 이해할 질문 |
 |---|---|---|
