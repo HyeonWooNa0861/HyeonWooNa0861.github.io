@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 10:51:57 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"
@@ -1004,6 +1004,12 @@ render(c); // 가능
 템플릿은 편리하지만 컴파일러가 만들어내는 코드가 많아질 수 있고, 오류 메시지가 길어질 수 있다. 따라서 처음에는 단순한 함수 템플릿과 클래스 템플릿부터 익히는 것이 좋다.
 
 ## 행렬·벡터 곱의 차원과 성분식
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-templates-page-11.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-templates-page-11.png" | relative_url }}" alt="원본 강의 슬라이드의 Matrix Vector 양방향 operator template" loading="lazy"></a>
+
+*원본 `C++ 템플릿.pdf` p. 11. 왼쪽 첫 overload는 `R×C Matrix * C Vector`를 `R Vector`로, 둘째는 `R Vector * R×C Matrix`를 `C Vector`로 만든다. 오른쪽 `using` 별칭과 `int`·`float` 예시는 같은 template이 type과 차원에 맞게 instance화됨을 보여준다. <a href="{{ "/assets/pdfs/study/cpp/C++ 템플릿.pdf#page=11" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 11</a>*
+
+두 overload는 인수 순서와 반환 차원이 다르므로 compiler가 호출 형태로 선택한다. loop 범위도 첫 식은 각 행과 vector의 내적, 둘째 식은 vector와 각 열의 내적을 계산하도록 달라진다.
 
 > **작성자 보충:** 슬라이드 11의 `Matrix * Vector` 코드를 선형대수의 성분식과 차원 조건으로 풀어 쓴 해설이다. 아래 식과 실패 조건은 슬라이드에 그대로 제시된 증명이 아니라 코드의 의미를 명시하기 위해 추가했다.
 

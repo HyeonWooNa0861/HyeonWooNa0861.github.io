@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 01 Models and Data"
 course: "Machine Learning Basic"
 topic: "Models and Data"
@@ -34,6 +34,12 @@ Source PDF: `machine-learning-basic-lecture-01.pdf`
 ## 1. 데이터와 feature vector
 
 현대 머신러닝 모델이 작동할 수 있었던 핵심 배경은 많은 데이터다. 이 수업에서는 데이터를 컴퓨터가 읽을 수 있는 테이블 형태의 수치 데이터로 가정한다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-01-page-03.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-01-page-03.png" | relative_url }}" alt="원본 강의 슬라이드의 표 데이터를 feature vector로 바꾸는 예시" loading="lazy"></a>
+
+*원본 강의 PDF p. 3. 위쪽 표는 이름·성별·학위·우편번호·나이·연봉 같은 원자료이고, 아래쪽 표는 이를 수치 feature로 바꾼 결과다. 파란 `Gender ID` 열은 범주형 정보를 수치로 부호화하고, 빨간 첫 행은 한 record가 하나의 feature vector가 됨을 보여준다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-01.pdf#page=3" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 3</a>*
+
+그림의 핵심은 데이터의 의미를 버리고 숫자만 나열하는 것이 아니다. 각 좌표가 어떤 속성인지 고정하고, 범주를 어떻게 부호화했는지 기록하며, 키와 몸무게처럼 단위와 범위가 다른 feature는 학습 전에 스케일을 점검해야 한다.
 
 원본 데이터는 바로 모델에 넣기 어렵다. 전문가나 전처리 과정이 원본 데이터를 여러 특징값으로 바꾸고, 각 데이터는 $$D$$차원의 feature vector가 된다.
 

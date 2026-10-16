@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-13 16:49:01 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 5: Merge Sort and Quick Sort"
 course: "Algorithms"
 topic: "Divide-and-Conquer Sorting"
@@ -23,6 +23,15 @@ Source PDF: [5 Sorting (2).pdf](/assets/pdfs/study/algorithms/05-sorting-02.pdf)
 병합 정렬은 정렬된 두 구간을 합치고, 퀵 정렬은 피벗을 기준으로 구간을 나눈다. 강의 자료의 두 알고리즘을 **구간, 불변식, 재귀식**으로 비교한다. 슬라이드 의사코드에서 생략한 빈 구간의 종료 조건과 동점 원소 처리는 **Source Check**에 원문과 구분해 적었다. 2–4쪽의 과제·시험 일정은 강의 당시의 공지이므로 본문에서 다루지 않는다.
 
 > **핵심:** 병합 정렬은 먼저 양쪽을 정렬한 뒤 선형 시간에 합쳐 어떤 입력에도 $$\Theta(n\log n)$$이다. 퀵 정렬은 선형 시간에 피벗의 최종 위치를 정한 뒤 양쪽을 재귀적으로 정렬한다. 분할이 균형 잡히면 $$\Theta(n\log n)$$이지만, 극단적으로 치우치면 $$\Theta(n^2)$$이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/05-sorting-02.pdf#page=12" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-05-p12-merge-sort.jpg" | relative_url }}" alt="배열을 절반으로 나누고 각 절반을 정렬한 뒤 병합하는 Merge Sort 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 12. 위에서 아래로 분할, 두 재귀 호출, 병합 순서를 보여 준다.</figcaption>
+</figure>
+
+원본에서 `l1`과 `l2`는 원소 하나까지 재귀적으로 분할되는 두 구간이다. 초록색 두 배열은 각각 정렬이 끝난 재귀 결과이며, 마지막 줄은 두 배열의 최솟값을 앞에서부터 비교해 합친 결과다. 이 구조 때문에 한 레벨의 병합량은 `n`, 레벨 수는 `log n`이 된다.
 
 ## 전체 흐름
 
@@ -110,6 +119,11 @@ $$
 ## 3. Quick Sort
 
 ### 3.1 Partition before recursion
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/05-sorting-02.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-05-p20-quick-sort.jpg" | relative_url }}" alt="마지막 원소를 pivot으로 분할하고 두 하위 구간을 재귀 정렬하는 Quick Sort 강의 그림" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 20. 노란 pivot `6`은 partition 뒤 최종 위치에 놓이고, 내부 순서가 아직 확정되지 않은 왼쪽·오른쪽 구간만 재귀 호출한다.</figcaption>
+</figure>
 
 퀵 정렬은 먼저 피벗을 기준으로 구간을 분할한다(18–22쪽). 슬라이드는 마지막 원소 `arr[r-1]`을 피벗으로 잡는다. 분할 결과 피벗 위치를 $$p$$라고 하면, 왼쪽 $$[l,p)$$에는 피벗 이하의 원소, 오른쪽 $$[p+1,r)$$에는 피벗보다 큰 원소가 놓인다. 이때 피벗은 최종 정렬 위치에 있으므로 양쪽만 재귀적으로 정렬하면 된다.
 

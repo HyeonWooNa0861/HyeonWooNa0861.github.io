@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Standard I/O and File Descriptors"
 course: "C++"
 topic: "stdin, stdout, stderr, File Descriptor"
@@ -33,6 +34,12 @@ Windows는 내부적으로 POSIX 파일 디스크립터 대신 HANDLE을 주로 
 이 세 스트림은 프로그램 코드가 직접 열지 않아도 실행 시점에 이미 준비되어 있다. Shell은 프로그램을 실행하기 전에 리다이렉션이나 파이프 명령에 맞추어 0, 1, 2번 디스크립터의 연결 대상을 바꾼다.
 
 ## 3. C++ 입출력과 운영체제의 연결
+
+<a href="{{ "/assets/images/assignment/cpp/source-captures/standard-io-file-descriptor-page-04.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/source-captures/standard-io-file-descriptor-page-04.png" | relative_url }}" alt="원본 과제의 getline 표준입출력과 stdout stderr 코드" loading="lazy"></a>
+
+*원본 `stdin, stdout, stderr, File Descriptor.pdf` p. 4. 첫 코드는 `std::getline(std::cin,line)`으로 표준 입력을 끝까지 읽어 `std::cout`에 내보낸다. 둘째 코드는 같은 process에서 `std::cout`과 `std::cerr`에 서로 다른 메시지를 출력해 redirection 실험을 준비한다. <a href="{{ "/assets/pdfs/assignment/cpp/stdin, stdout, stderr, File Descriptor.pdf#page=4" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 4</a>*
+
+program은 입력이 keyboard·file·pipe 중 무엇인지 직접 분기하지 않는다. shell이 FD 0의 연결 대상을 바꾸면 `std::cin` 코드는 그대로 재사용된다. FD 1과 2도 독립적이어서 정상 출력과 오류 출력을 서로 다른 파일이나 pipe로 보낼 수 있다.
 
 C++의 `std::cin`, `std::cout`, `std::cerr`는 iostream 객체이다. 이 객체들은 내부의 stream buffer와 C/C++ 런타임을 거쳐 최종적으로 운영체제의 입출력 기능에 도달한다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Enumerations"
 course: "C++"
 topic: "Enums and enum class"
@@ -150,6 +150,12 @@ enum class Permission : unsigned int {
 메모리 크기나 비트 플래그 용도를 명확히 하고 싶을 때 기반 타입을 지정한다.
 
 ## 6. 상태 머신 예
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-enum-page-06.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-enum-page-06.png" | relative_url }}" alt="원본 강의 슬라이드의 enum class 상태 머신과 비트 플래그" loading="lazy"></a>
+
+*원본 `열거형 (Enum).pdf` p. 6. 왼쪽 `TrafficLight`는 `RED`, `GREEN`, `YELLOW` 중 한 상태만 갖고 `next()`가 다음 상태를 반환한다. 오른쪽 `Permission`은 `READ=1`, `WRITE=2`, `EXECUTE=4`를 서로 다른 bit에 놓고 OR로 여러 권한을 합친다. <a href="{{ "/assets/pdfs/study/cpp/열거형 (Enum).pdf#page=6" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 6</a>*
+
+상태 머신은 값 하나를 선택하므로 `switch`가 자연스럽다. 비트 플래그는 여러 값을 동시에 보유하므로 OR로 조합하고 AND로 특정 권한이 포함됐는지 검사한다. 같은 `enum class`라도 데이터 의미가 다르다.
 
 신호등 상태처럼 정해진 상태 집합을 표현할 때 enum class가 적합하다.
 

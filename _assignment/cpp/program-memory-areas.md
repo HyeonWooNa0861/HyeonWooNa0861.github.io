@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Program Memory Areas"
 course: "C++"
 topic: "Code/Data/Stack/Heap"
@@ -27,6 +28,12 @@ Stack 영역은 함수 호출과 함께 생성되는 지역 변수, 매개변수
 Heap 영역은 `new`나 `malloc`처럼 실행 중 동적으로 할당되는 메모리를 저장한다. 필요한 만큼 유동적으로 사용할 수 있지만, 프로그래머가 직접 해제해야 하므로 메모리 누수나 잘못된 해제 문제가 발생할 수 있다.
 
 ## 2. Stack과 Heap의 확장 방향
+
+<a href="{{ "/assets/images/assignment/cpp/source-captures/program-memory-areas-page-04.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/source-captures/program-memory-areas-page-04.png" | relative_url }}" alt="원본 과제의 process memory 영역과 stack heap 참조 구조" loading="lazy"></a>
+
+*원본 `Code Data Stack Heap.pdf` p. 4. 위 왼쪽은 낮은 주소의 text·data·BSS, 그 위의 heap, 높은 주소의 stack 배치를 보여준다. 위 오른쪽은 heap이 아래쪽, stack이 위쪽으로 free memory를 향해 자라는 전형적 그림이다. 아래 예시는 stack 변수들이 heap 객체를 reference하는 관계를 나타낸다. <a href="{{ "/assets/pdfs/assignment/cpp/Code Data Stack Heap.pdf#page=4" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 4</a>*
+
+화살표 방향은 특정 process layout을 설명하는 관례이며 C++ 표준이 모든 OS에서 같은 주소 배치를 보장하는 것은 아니다. 핵심은 stack frame의 자동 수명과 heap 객체의 별도 수명, 그리고 stack의 pointer/reference가 heap 객체를 가리킬 수 있다는 구분이다.
 
 Stack과 Heap은 보통 서로 반대 방향으로 확장된다. Stack은 높은 주소에서 낮은 주소 방향으로 커지고, Heap은 낮은 주소에서 높은 주소 방향으로 확장된다. 이렇게 설계하면 두 영역이 같은 메모리 공간을 효율적으로 나누어 사용할 수 있다.
 

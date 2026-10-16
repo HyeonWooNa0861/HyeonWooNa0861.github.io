@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 6: Perception (4) - Faster R-CNN and Feature Pyramid Networks"
 course: "Autonomous Driving"
 topic: "Region Proposal Networks, Anchor Boxes, and Multiscale Features"
@@ -40,6 +41,13 @@ Fast R-CNN은 이미지의 convolution을 proposal마다 되풀이하지 않고 
 원문 8쪽의 해법은 **feature를 재사용하면서 proposal 생성도 학습하는 것**이다. 공유 backbone의 feature map에 Region Proposal Network(RPN)를 올려 “어디가 물체일 가능성이 높은가?”와 “그 상자를 얼마나 움직이고 늘릴까?”를 예측한다. Faster R-CNN은 RPN이 후보를 만든 뒤 Fast R-CNN형 검출 head가 그 후보의 class와 정확한 box를 최종 판단하는 **two-stage detector**다. RPN의 objectness는 class-agnostic한 물체/배경 판정이고, 두 번째 stage의 분류는 예를 들어 car·person·dog를 구분한다.
 
 ## 2. RPN이 anchor를 proposal로 바꾸는 과정
+
+<figure id="adc-06-p16">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-06-p16.png" | relative_url }}" alt="K개 anchor마다 objectness와 네 box 보정값을 출력하는 RPN" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-06-perception-04.pdf#page=16" | relative_url }}">lecture PDF, p. 16</a>.</figcaption>
+</figure>
+
+한 feature 위치마다 K개 anchor가 있고, objectness head와 box-regression head가 같은 feature를 읽는다. 그림의 K=6 예에서는 두 head의 channel 수가 각각 2K와 4K로 다르다. 앞쪽 점수는 물체일 가능성이고 뒤쪽 네 값은 기준 box를 이동·확대할 보정값이다. Proposal 선택에는 이 예측의 decode와 후처리가 필요하다.
 
 원문 9–16쪽은 고양이 영상 한 장에서 RPN을 순서대로 그린다. CNN backbone이 이미지 좌표와 대응되는 feature map을 만들고, 각 feature 위치에 **기준 상자(anchor)**를 놓는다. 한 위치에 크기·종횡비가 다른 $$K$$개 anchor를 두면 서로 다른 형태의 물체 후보를 같은 feature에서 살펴볼 수 있다. 강의 그림은 처음에는 **한 위치에 anchor 1개**를 설명하고, 이후 $$K=6$$인 교육용 예시로 확장한다. 원 Faster R-CNN 논문의 대표 설정 $$k=9$$와 다르므로, $$K=6$$을 원 논문의 고정값으로 일반화하면 안 된다.
 
@@ -113,6 +121,13 @@ $$
 원문 25–26쪽의 대안은 하나의 CNN이 계산한 stage별 feature를 이용하는 것이다. 강의 도식에서 224×224 입력이 stage 2의 56×56, stage 3의 28×28, stage 4의 14×14, stage 5의 7×7 feature로 내려간다. 높은 해상도의 초기 stage는 작은 물체의 위치를 더 세밀하게 보지만, 깊은 stage의 **전체 backbone 의미 정보**를 아직 받지 못한다. 각 stage에 detector만 붙이는 것은 높은 공간 해상도와 강한 semantic feature를 동시에 얻는 답이 아니다. 단계별 크기는 이 그림의 예시이고 네트워크 구조마다 달라진다.
 
 ## 5. FPN: 높은 의미 정보와 높은 해상도를 결합하기
+
+<figure id="adc-06-p31">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-06-p31.png" | relative_url }}" alt="Image pyramid와 단일 feature map 및 FPN의 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-06-perception-04.pdf#page=31" | relative_url }}">lecture PDF, p. 31</a>.</figcaption>
+</figure>
+
+(a)는 입력 이미지를 여러 크기로 다시 처리하고, (c)는 CNN 중간의 서로 다른 해상도에서 예측한다. (d)의 FPN에는 높은 층에서 내려오는 top-down 경로와 같은 해상도의 lateral 연결이 함께 있다. 따라서 단순히 feature map을 여러 장 쓰는 것만이 아니라 높은 층의 의미 정보를 더 촘촘한 공간 격자에 전달하는 점이 핵심이다.
 
 FPN(Feature Pyramid Network)은 bottom-up backbone의 여러 해상도 $$C_2,C_3,C_4,C_5$$를 보존하고, 깊은 층에서 얕은 층으로 정보가 흐르는 **top-down pathway**와 같은 해상도의 **lateral connection**을 만든다(원문 27–31쪽). 핵심 결합은 “깊은 feature를 2배 upsample” + “현재 stage feature를 1×1 convolution으로 channel 정렬” + “원소별 합”이다.
 

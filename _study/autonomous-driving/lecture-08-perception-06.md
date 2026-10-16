@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 8: Semantic and Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Dense Pixel Labels, Transposed Convolution, and Mask R-CNN"
@@ -71,6 +72,13 @@ $$R_L,L$$은 pixel 개수 또는 층 수다. 예를 들어 5개 층이면 폭 11
 
 ### 3.1 1D 예제: 왜 가운데서 더하는가
 
+<figure id="adc-08-p14">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-08-p14.png" | relative_url }}" alt="입력 a b와 필터 x y z의 stride 2 transposed convolution" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-08-perception-06.pdf#page=14" | relative_url }}">lecture PDF, p. 14</a>.</figcaption>
+</figure>
+
+a가 만든 ax, ay, az와 b가 만든 bx, by, bz를 두 칸 간격으로 배치한다. 가운데 위치에 az와 bx가 겹치므로 합이 az+bx가 된다. 출력이 커진다는 것은 원래 입력을 정확히 복원한다는 뜻이 아니라, 학습된 필터의 기여를 더 큰 격자에 누적한다는 뜻이다.
+
 슬라이드 14–15쪽에서 입력은 $$(a,b)$$, 길이 3 filter는 $$(x,y,z)$$, stride는 2다. 첫 입력 $$a$$는 앞쪽 세 위치에 $$(ax,ay,az)$$를, 둘째 $$b$$는 두 칸 뒤 세 위치에 $$(bx,by,bz)$$를 놓는다. 가운데 한 위치가 겹치므로 **작성자 보충 전개**는 다음과 같다.
 
 $$
@@ -107,6 +115,13 @@ $$
 여기서 semantic segmentation도 **cow라는 물체 class의 픽셀**을 표시한다. 슬라이드 26쪽의 “no objects, just pixels”는 개체 **ID가 없다**는 뜻으로 제한해서 읽어야 한다. 반대로 이 강의가 다루는 instance segmentation은 주로 thing 개체의 mask를 예측하므로 sky·road 같은 stuff 전체를 자동으로 완전히 모델링한다는 뜻이 아니다. 두 출력을 함께 다루려면 별도 panoptic segmentation 같은 문제 설정이 필요하다.
 
 ## 5. Mask R-CNN: RoI마다 정렬된 mask 만들기
+
+<figure id="adc-08-p25">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-08-p25.png" | relative_url }}" alt="동일 장면의 각 물체에 box와 서로 다른 색 mask를 부여한 결과" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-08-perception-06.pdf#page=25" | relative_url }}">lecture PDF, p. 25</a>.</figcaption>
+</figure>
+
+각 색은 물체 instance의 영역을 구분하며 box는 그 영역을 둘러싼 위치 정보다. 같은 class라도 서로 다른 개체라면 mask가 분리된다. 색 자체가 공통된 의미 class 번호인 semantic segmentation과 구분해야 한다. 이런 결과를 만들려면 box의 class·좌표뿐 아니라 RoI 안 pixel별 mask도 예측해야 한다.
 
 21–22쪽은 Faster R-CNN의 RPN·RoI 분류·box 경로에 **mask prediction branch**를 더한 Mask R-CNN을 소개한다. 검출 box만으로는 소의 몸통 윤곽과 배경을 구분하지 못한다. Mask branch는 각 RoI의 픽셀 범위를 예측해 같은 클래스의 두 개체에도 별도 색·영역을 줄 수 있다(20, 22, 25쪽).
 

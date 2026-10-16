@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS16_priority_queue_and_heap.pdf`
 
 > **핵심:** 우선순위 큐는 들어온 순서가 아니라 우선순위에 따라 원소를 꺼낸다. 이를 구현하는 힙은 완전 이진 트리의 모양과 heap property를 함께 만족해야 한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS16_priority_queue_and_heap.pdf#page=18" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls16-p18-heap-array.jpg" | relative_url }}" alt="완전 이진 max heap과 같은 값을 저장한 0-based 배열 및 인덱스 식을 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 18. 레벨 순서 배열과 parent·child 인덱스 식을 같은 그림에서 연결한다.</figcaption>
+</figure>
+
+트리를 위에서 아래, 왼쪽에서 오른쪽으로 읽은 순서가 배열 인덱스 0부터 9다. 완전 이진 트리라 빈 중간 위치가 없으므로 포인터 없이도 `2i+1`, `2i+2`로 자식을 찾는다. max heap 조건은 부모가 자식보다 크다는 것이지 배열 전체가 정렬됐다는 뜻은 아니다.
 
 ## 전체 흐름
 

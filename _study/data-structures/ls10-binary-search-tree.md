@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS10 Binary Search Trees"
 course: "Data Structures"
 topic: "Binary Search Trees"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS10_binary_search_tree.pdf`
 
 > **핵심:** BST에서는 각 노드의 왼쪽에 더 작은 key, 오른쪽에 더 큰 key가 놓이고 모든 서브트리도 같은 조건을 만족한다. `findHelper`는 탐색 위치가 `rt == null`이 되거나 원하는 key를 만나면 종료한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS10_binary_search_tree.pdf#page=31" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls10-p31-bst-check.jpg" | relative_url }}" alt="두 이진 트리가 BST 조건을 만족하는지 비교하는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 31. BST 조건은 부모와 자식만이 아니라 각 노드의 전체 왼쪽·오른쪽 서브트리에 적용된다.</figcaption>
+</figure>
+
+왼쪽 트리는 모든 왼쪽 서브트리 key가 부모보다 작고 오른쪽은 크므로 BST다. 오른쪽 트리의 `55`는 루트 50의 왼쪽 서브트리에 있지만 50보다 크고, `45`는 오른쪽 서브트리에 있지만 50보다 작다. 지역적인 부모-자식 비교만 하면 이 위반을 놓친다.
 
 ## 전체 흐름
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"
@@ -106,6 +106,12 @@ $$
 ## 7. 연속확률변수와 CDF/PDF
 
 연속확률변수는 값이 연속 공간 위에 있는 경우다. 이 경우 특정 점 하나의 확률은 0이다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-11-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-11-page-20.png" | relative_url }}" alt="원본 강의 슬라이드의 연속 균등분포 PDF" loading="lazy"></a>
+
+*원본 강의 PDF p. 20. 오른쪽 그래프는 구간 $$[a,b]$$에서 높이가 $$1/(b-a)$$인 일반 균등분포를, 왼쪽 식은 특수한 구간 $$[0,1]$$의 CDF와 PDF를 보여준다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-11.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
+
+직사각형 전체 넓이는 $$(b-a)\cdot1/(b-a)=1$$이다. 부분 구간의 확률은 그 구간 아래 넓이로 계산하므로, 길이가 같은 두 부분 구간은 같은 확률을 가진다.
 
 따라서 구간 확률을 계산해야 하며 CDF를 사용한다.
 

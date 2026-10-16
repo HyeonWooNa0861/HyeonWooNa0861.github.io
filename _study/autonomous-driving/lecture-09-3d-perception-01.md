@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 9: Image-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "3D Boxes, Camera Geometry, Mono3D, MonoRCNN, and Pseudo-LiDAR"
@@ -138,6 +139,13 @@ $$
 
 ### 2.3 왜 단안 영상에는 scale–distance ambiguity가 생기는가
 
+<figure id="adc-09-p18">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-09-p18.png" | relative_url }}" alt="한 pixel 광선 및 2D box frustum 안의 여러 가능한 3D box" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=18" | relative_url }}">lecture PDF, p. 18</a>.</figcaption>
+</figure>
+
+한 pixel은 카메라에서 뻗는 광선 위의 여러 깊이에 대응한다. 2D box로 넓혀도 그 결과는 하나의 3D box가 아니라 frustum이다. 그림의 서로 다른 거리와 크기의 후보가 영상에서 비슷하게 보일 수 있으므로 pixel 좌표만으로 metric depth가 결정되지 않는다. 아래 식에서 depth를 추가로 추정해야 하는 이유다.
+
 17–18쪽의 토끼 그림은 크기가 큰 먼 물체와 크기가 작은 가까운 물체가 같은 영상 크기를 만들 수 있음을 보여 준다. 위 식에서 camera 좌표를 양수 $$\lambda$$배 해도
 
 $$
@@ -246,6 +254,13 @@ $$
 32쪽은 정적 PDF에서 검은 직사각형으로만 남은 embedded-media 영역이다. 따라서 해당 페이지가 의도한 qualitative video의 장면·성능은 이 글에서 추정하지 않는다.
 
 ## 5. Pseudo-LiDAR: depth map을 3D representation으로 바꾸기
+
+<figure id="adc-09-p36">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-09-p36.png" | relative_url }}" alt="이미지에서 depth map과 point cloud를 거쳐 3D box를 만드는 Pseudo-LiDAR" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=36" | relative_url }}">lecture PDF, p. 36</a>.</figcaption>
+</figure>
+
+이미지로 depth를 예측하고 camera calibration을 이용해 각 pixel을 3D point로 역투영한다. 그 뒤 point-cloud detector를 적용한다. Point cloud 형식이 되었다고 실제 LiDAR 측정값으로 바뀌는 것은 아니다. 앞 단계 depth 오차가 3D 좌표에도 이어지므로 표현 형식의 이점과 측정 정확도를 분리해서 판단한다.
 
 33–35쪽의 pipeline은 `stereo/mono image → depth estimation → depth map → pseudo-LiDAR → LiDAR-based detector → 3D boxes`다. Depth estimation은 각 pixel에 연속적인 depth를 예측하는 pixel-wise regression task이며, 출력 해상도를 복원한다는 점에서 semantic segmentation과 encoder–decoder 구조가 비슷할 수 있다. 그러나 segmentation은 discrete class를, depth estimation은 길이 값을 예측하므로 출력 의미와 loss가 같지는 않다.
 

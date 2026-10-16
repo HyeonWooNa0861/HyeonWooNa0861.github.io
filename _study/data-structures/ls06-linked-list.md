@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS06 Linked Lists"
 course: "Data Structures"
 topic: "Linked Lists"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS06_linked_list.pdf`
 
 > **핵심:** 연결 리스트에서 이전 노드를 이미 알고 있다면 중간 삽입의 연결 변경은 $$O(1)$$이지만, 그 노드를 찾는 탐색까지 포함하면 $$O(n)$$이 걸릴 수 있다. `tail` 포인터가 있으면 맨 뒤 삽입은 $$O(1)$$에 처리할 수 있다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS06_linked_list.pdf#page=25" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls06-p25-add-first.jpg" | relative_url }}" alt="단일 연결 리스트의 맨 앞에 노드를 추가하는 포인터 변화와 코드를 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 25. 새 노드의 next를 기존 head로 연결한 뒤 head를 새 노드로 바꾼다.</figcaption>
+</figure>
+
+아래 그림의 회색 `Head`가 이전 첫 노드 20을 가리키고, 새 노드 7이 그 앞에 연결된다. 코드 두 대입의 순서를 바꾸면 기존 head를 잃을 수 있다. 빈 리스트에서는 새 노드가 동시에 마지막 노드이므로 `tail`도 갱신한다. 이동할 원소가 없어 시간은 `O(1)`이다.
 
 ## 전체 흐름
 

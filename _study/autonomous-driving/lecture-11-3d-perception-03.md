@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 11: Multimodal 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Frustum PointNets, MV3D, and Perception Datasets"
@@ -101,6 +102,13 @@ $$\Delta t$$는 s, $$v$$는 m/s, $$\Delta s$$는 m, $$\omega$$는 rad/s, $$\Delt
 
 ## 2. Frustum PointNets: 2D proposal로 3D 탐색 공간 줄이기
 
+<figure id="adc-11-p14">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-11-p14.png" | relative_url }}" alt="2D proposal frustum에서 점 분할 중심 보정과 box 추정을 수행하는 Frustum PointNet" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=14" | relative_url }}">lecture PDF, p. 14</a>.</figcaption>
+</figure>
+
+RGB에서 얻은 proposal로 depth points를 frustum 안에 모은다. Point segmentation이 대상 점을 고르고 T-Net이 중심을 보정한 뒤 box를 추정한다. Frustum에는 물체뿐 아니라 배경 점도 섞이므로 2D box가 곧 정답 3D box인 것은 아니다. 아래의 세 단계가 각각 이 불확실성을 줄인다.
+
 10–11쪽의 Frustum PointNets는 camera와 depth/LiDAR point cloud를 순차적으로 연결한다. 넓은 3D 공간 전체에서 먼저 proposal을 만들지 않고, 잘 발달한 2D detector가 낸 image box를 camera ray 방향으로 들어 올려 **절두체(frustum)**를 만든다.
 
 1. RGB image에서 2D detector가 object box와 class를 예측한다.
@@ -173,6 +181,13 @@ $$
 이는 논문이 선택한 **hybrid classification-regression parameterization의 정확한 차원 계산**이다. 다른 detector가 anchor-free size나 연속 angle만 회귀하면 같은 출력 차원을 요구하지 않는다. 슬라이드 14쪽의 마지막 box 변수는 `y`처럼 보이지만, 위치 좌표 $$y$$와 중복되므로 이 글은 원 논문에 따라 heading $$\theta$$로 표기한다.
 
 ## 3. MV3D: 같은 proposal을 세 view에서 feature로 읽기
+
+<figure id="adc-11-p21">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-11-p21.png" | relative_url }}" alt="BEV proposal을 front view와 RGB에 투영해 deep fusion하는 MV3D" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=21" | relative_url }}">lecture PDF, p. 21</a>.</figcaption>
+</figure>
+
+BEV에서 만든 하나의 3D proposal을 front view와 RGB에도 투영한다. 각 view의 RoI feature가 보라색 결합 지점에서 교류한 뒤 class와 3D box를 예측한다. 서로 다른 위치의 물체 feature를 무작정 합치는 것이 아니라 같은 3D 후보를 여러 관측에서 읽는 구조다. 그러므로 projection calibration이 어긋나면 fusion의 이점도 줄어든다.
 
 15쪽의 MV3D는 입력을 세 2D representation으로 만든다.
 

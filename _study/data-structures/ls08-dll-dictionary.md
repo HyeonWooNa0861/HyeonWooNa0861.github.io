@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:35:19 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS08 Doubly Linked Lists and Dictionaries"
 course: "Data Structures"
 topic: "Doubly Linked Lists and Dictionaries"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS08_dll_dictionary.pdf`
 
 > **핵심:** 이중 연결 리스트는 `next`뿐 아니라 `prev`도 저장하므로 양방향으로 이동할 수 있다. 노드를 삽입할 때는 새 노드의 `prev`·`next`와 양옆 노드의 `next`·`prev`를 함께 갱신해야 한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS08_dll_dictionary.pdf#page=25" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls08-p25-doubly-linked-list.jpg" | relative_url }}" alt="prev, item, next 필드를 가진 이중 연결 리스트 노드의 강의 도식" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 25. 각 노드는 이전과 다음 노드 양쪽을 가리킨다.</figcaption>
+</figure>
+
+가운데 `item=20`을 기준으로 왼쪽 포인터는 `prev`, 오른쪽 포인터는 `next`다. 양방향 탐색과 주어진 노드의 `O(1)` 삭제가 가능해지는 대신, 삽입·삭제 때 양쪽 연결을 모두 갱신해야 하고 노드당 포인터 하나가 더 필요하다.
 
 ## 전체 흐름
 

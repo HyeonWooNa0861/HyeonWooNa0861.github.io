@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 05 Linear Algebra 4"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 4"
@@ -59,6 +59,12 @@ Source PDF: `machine-learning-basic-lecture-05.pdf`
 ## 2. 기저 변환
 
 기저가 바뀌면 벡터의 좌표도 바뀐다. 기저 변환 행렬은 한 기저에서 표현된 좌표를 다른 기저의 좌표로 옮기는 역할을 한다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-05-page-05.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-05-page-05.png" | relative_url }}" alt="원본 강의 슬라이드의 회전, 늘이기, 일반 선형 변환" loading="lazy"></a>
+
+*원본 강의 PDF p. 5. 정사각형 점 집합에 45도 회전, 가로축 늘이기, 일반 선형 사상을 각각 적용한 결과와 대응 행렬을 나란히 보여준다. 원래 직선 위에 놓인 점들이 변환 뒤에도 직선 위에 남고 원점이 고정되는 모습이 선형성의 기하학적 단서다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-05.pdf#page=5" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 5</a>*
+
+이 그림은 벡터 자체를 실제로 움직이는 active transformation을 보여준다. 기저 변환은 같은 벡터를 다른 축의 좌표로 다시 적는 passive change이므로, 두 상황을 같은 행렬식으로 계산하더라도 무엇이 바뀌었는지 먼저 구분해야 한다.
 
 기저 변환을 이해할 때는 "벡터 자체"와 "좌표 표현"을 구분해야 한다.
 

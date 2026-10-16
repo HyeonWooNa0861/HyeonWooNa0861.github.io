@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 09 Vector Calculus"
 course: "Machine Learning Basic"
 topic: "Vector Calculus"
@@ -57,6 +57,12 @@ $$
 ## 2. 미분과 Taylor series
 
 미분은 한 점 근처에서 함수값이 얼마나 빠르게 변하는지 측정한다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-09-page-05.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-09-page-05.png" | relative_url }}" alt="원본 강의 슬라이드의 미분 차분몫 정의" loading="lazy"></a>
+
+*원본 강의 PDF p. 5. $$h$$만큼 이동했을 때의 함수값 변화 $$f(x+h)-f(x)$$를 입력 변화 $$h$$로 나눈 평균 변화율에서 시작해, $$h\to0$$ 극한으로 순간 변화율을 정의한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-09.pdf#page=5" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 5</a>*
+
+분자는 출력 단위, 분모는 입력 단위를 가지므로 도함수의 단위는 `출력/입력`이다. 극한이 존재하지 않는 모서리점이나 불연속점에서는 이 정의로 하나의 미분값을 정할 수 없다.
 
 Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사하는 방법이다.
 

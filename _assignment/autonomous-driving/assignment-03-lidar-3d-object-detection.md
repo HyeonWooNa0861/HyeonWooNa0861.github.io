@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:01:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Autonomous Driving Computing Assignment 3: LiDAR 3D Object Detection"
 course: "Autonomous Driving"
 topic: "VoxelNet and Point Cloud Detection"
@@ -42,6 +43,13 @@ point cloud (N × 4)
 
 ## 1. Point Cloud를 입력으로 읽기
 
+<figure id="source-kitti-bev">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment3-kitti-bev.png" | relative_url }}" alt="KITTI point cloud의 전방 및 좌측 좌표와 높이 색 및 GT box" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-03-lidar-3d-object-detection.ipynb" | relative_url }}">Assignment 3 notebook, cell 12 (0-based), saved output</a>.</figcaption>
+</figure>
+
+가로축은 LiDAR 전방 x, 세로축은 좌측 y이고 단위는 m다. 색은 높이 z, 빨간 삼각형은 센서 원점, 초록 box는 GT를 나타낸다. 멀리 갈수록 점이 드물고 물체의 일부 표면만 관측된다. 초록 box를 모델의 검출 결과로 읽으면 안 된다. 이 그림은 실제 KITTI 입력을 탐색한 저장 출력이다.
+
 KITTI LiDAR `.bin` sample은 header 없이 이어진 float32 값이다. 네 값씩 묶으면 한 점의 $$(x,y,z,r)$$가 된다. $$x,y,z$$의 단위는 meter이고 $$r$$은 reflectance다.
 
 저장 출력은 275,808 bytes를 17,238점 × 4 values × 4 bytes로 해석했다. Tensor shape는 `(17238, 4)`다. 행 순서를 섞어도 동일한 점 집합이지만 배열 자체는 달라진다. 따라서 point-based network는 입력 순서에 의존하지 않는 aggregation을 사용해야 한다.
@@ -76,6 +84,13 @@ LiDAR의 angular resolution이 고정되어 있으면 같은 크기의 물체도
 PointRCNN 설명에서 GT box 안의 point를 foreground로 표시한 결과는 5,132 / 17,238점, 약 29.8%였다. 이 값도 해당 sample의 label과 field-of-view에 한정된다.
 
 ## 4. Voxelization과 VFE
+
+<figure id="source-voxel-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment3-voxelization.png" | relative_url }}" alt="Voxel별 점 수 histogram과 BEV grid 및 높이 bin 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-03-lidar-3d-object-detection.ipynb" | relative_url }}">Assignment 3 notebook, cell 25 (0-based), saved output</a>.</figcaption>
+</figure>
+
+왼쪽은 비어 있지 않은 voxel의 점 수 분포이며 세로축은 로그 척도다. 빨간 T=32 선은 voxel 하나에서 남길 최대 점 수를 표시한다. 가운데의 0.2 m 격자와 오른쪽의 0.4 m 높이 구간은 공간 분할 크기다. 점 수 제한과 voxel의 물리적 크기를 분리해야 sparse 입력이 고정 tensor로 바뀌는 과정을 이해할 수 있다.
 
 ### 4.1 Voxel partition
 

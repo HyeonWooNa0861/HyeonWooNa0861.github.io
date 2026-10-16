@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-10-13 15:20:57 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -143,6 +143,13 @@ pp. 20의 연대표는 generative, contrastive, predictive 계열이 공존함�
 
 ## 3. wav2vec 2.0의 전체 구조
 
+<figure id="speech-05-p24">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-05-p24.png" | relative_url }}" alt="Raw waveform을 CNN feature encoder와 Transformer encoder로 처리하는 wav2vec 2.0 강의 구조도" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=24" | relative_url }}">lecture PDF, p. 24</a>.</figcaption>
+</figure>
+
+아래의 waveform이 CNN을 지나 latent sequence가 되고, 일부 위치가 `M`으로 가려진 뒤 Transformer가 context를 만든다. 이 페이지에는 quantization 경로가 아직 없다. Mask는 raw waveform을 지우는 것이 아니라 CNN 뒤의 latent 위치를 가린다. 정답을 만드는 별도 경로는 아래의 p.31 전체 학습 구조에서 확인한다.
+
 ### 3.1 Raw waveform → CNN latent sequence
 
 Feature encoder $$f$$는 raw waveform $$x$$를 latent sequence로 바꾼다(pp. 21–22).
@@ -211,6 +218,13 @@ $$
 를 계산한다. Positional signal이 없다면 입력 순서를 같은 permutation으로 바꿀 때 출력도 그 순서를 따라 바뀌는 permutation-equivariant 연산이어서 “첫 번째 음소와 마지막 음소”의 절대·상대 위치를 자체로 알 수 없다. wav2vec 2.0은 fixed absolute position table 대신 convolutional positional embedding을 latent에 더한다. **Attention이 순서를 완전히 무시한다**기보다, 내용 기반 attention만으로는 위치를 식별할 근거가 부족하므로 position mechanism이 필요하다고 표현하는 편이 정확하다.
 
 ## 4. Product quantization은 speech vocabulary를 학습한다
+
+<figure id="speech-05-p31">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-05-p31.png" | relative_url }}" alt="wav2vec 2.0의 quantizer target과 masked context를 잇는 contrastive objective" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=31" | relative_url }}">lecture PDF, p. 31</a>.</figcaption>
+</figure>
+
+아래 CNN feature에서 두 경로가 갈라진다. 오른쪽은 일부 latent를 가리고 Transformer context를 만들며, 왼쪽 quantizer는 가리기 전 feature에서 target을 만든다. 위의 contrastive loss는 context가 같은 위치의 target을 다른 후보와 구별하도록 한다. Codebook 쪽 diversity loss는 일부 항목에 선택이 몰리는 것을 줄이는 별도 목적이다. 두 경로를 구분해야 입력을 가렸는데 정답은 어디에서 얻는지 설명할 수 있다.
 
 ### 4.1 여러 codebook에서 하나씩 선택한다
 
@@ -397,6 +411,13 @@ p. 38의 c-siam과 wav2vec layer graph는 encoder를 freeze한 뒤 layer별 prob
 p. 39의 `Frozen Encoder ⇒ Autoencoder-like behavior`는 contrastive 계열의 상위 layer가 입력 acoustic feature와 다시 유사해지는 관찰을 요약한 표현이다. 실제 waveform reconstruction decoder로 sample-level reconstruction loss를 학습한 autoencoder라는 뜻은 아니다. `autoencoder-like`는 layer trend에 대한 해석으로 한정해야 한다.
 
 ## 7. HuBERT: offline hidden unit을 예측한다
+
+<figure id="speech-05-p46">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-05-p46.png" | relative_url }}" alt="K-means pseudo-label을 masked Transformer가 예측하는 HuBERT" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=46" | relative_url }}">lecture PDF, p. 46</a>.</figcaption>
+</figure>
+
+위쪽 K-means가 만든 7, 20, 5, 13 등의 숫자는 사람이 적은 단어나 음소 이름이 아니라 cluster ID다. 아래쪽 모델은 가려진 입력 위치의 ID를 예측한다. wav2vec 2.0의 contrastive 후보 선택과 달리, 여기서는 미리 만든 이산 label에 대한 분류 문제로 학습한다. 숫자의 대소에 의미를 부여하지 않고 같은 ID의 반복과 시간 정렬을 읽는다.
 
 ### 7.1 첫 target은 MFCC clustering에서 만든다
 

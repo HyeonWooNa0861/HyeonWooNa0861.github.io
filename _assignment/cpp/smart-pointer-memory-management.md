@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Smart Pointers and Memory Management"
 course: "C++"
 topic: "Smart Pointer, RAII, Reference Counting"
@@ -33,6 +34,12 @@ RAII(Resource Acquisition Is Initialization)는 자원의 획득과 해제를 �
 `std::weak_ptr`는 `shared_ptr`가 관리하는 객체를 비소유 방식으로 관찰한다. 객체에 접근할 때는 `lock()`으로 유효한 소유권을 얻고, 반환된 `shared_ptr`가 비어 있지 않은지 확인한다.
 
 ## 3. Reference Counting 동작 원리
+
+<a href="{{ "/assets/images/assignment/cpp/source-captures/smart-pointer-memory-management-page-03.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/source-captures/smart-pointer-memory-management-page-03.png" | relative_url }}" alt="원본 과제의 shared pointer use count 변화 코드" loading="lazy"></a>
+
+*원본 `Smart Pointer, RAII, Reference Counting.pdf` p. 3. `p1`을 `p2`, `p3`로 복사할 때 use count가 1, 2, 3으로 늘고, scope 종료와 `reset()`에서 다시 감소한다. 마지막 strong owner가 사라져 count가 0이 되면 관리 객체를 파괴한다. <a href="{{ "/assets/pdfs/assignment/cpp/Smart Pointer, RAII, Reference Counting.pdf#page=3" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 3</a>*
+
+count는 pointer 변수 수가 아니라 같은 control block을 공유하는 strong ownership 수다. 슬라이드 아래 한계처럼 두 객체가 `shared_ptr`로 서로를 소유하면 count가 0이 되지 않으므로, 소유하지 않는 역방향 연결을 `weak_ptr`로 끊어야 한다.
 
 `std::shared_ptr`의 reference counting은 객체를 가리키는 모든 포인터가 아니라 **소유권을 공유하는 `shared_ptr`의 수**를 센다. 같은 객체의 소유자들은 control block을 공유하며, 이 블록이 소유자 수(use count)와 `weak_ptr`의 존재를 관리한다. 소유자 수가 0이 되면 대상 객체가 파괴된다.
 

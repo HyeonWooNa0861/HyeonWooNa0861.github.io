@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Classes and Operator Overloading"
 course: "C++"
 topic: "Function and Operator Overloading"
@@ -201,6 +201,12 @@ m(0, 0) = 1; // 쓰기
 `operator()`는 매개변수 개수와 타입을 다르게 해서 여러 형태로 오버로딩할 수 있다.
 
 ## 8. 1차원 배열로 2차원 행렬 표현
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-overloading-page-22.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-overloading-page-22.png" | relative_url }}" alt="원본 강의 슬라이드의 row-major와 column-major operator 호출" loading="lazy"></a>
+
+*원본 `C++ 오버로딩.pdf` p. 22. 왼쪽 row-major는 $$(i,j)$$를 `i * 2 + j`로, 오른쪽 column-major는 `i + j * 2`로 1차원 index에 바꾼다. 같은 `operator()(i,j)` 인터페이스라도 내부 배열의 순서가 다르다. <a href="{{ "/assets/pdfs/study/cpp/C++ 오버로딩.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 22</a>*
+
+2×2 예시에서 row-major 배열은 `[a,b,c,d]`, column-major 배열은 `[a,c,b,d]`다. `operator()`가 좌표를 올바른 index로 변환하므로 호출자는 저장 순서를 직접 계산하지 않는다.
 
 2차원 행렬을 내부적으로 1차원 배열에 저장할 수 있다.
 

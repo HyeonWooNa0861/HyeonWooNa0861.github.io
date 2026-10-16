@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 16:59:26 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Autonomous Driving Computing Assignment 1: Average Precision"
 course: "Autonomous Driving"
 topic: "Object Detection Metrics"
@@ -81,6 +82,13 @@ $$
 
 ## 2. Car Detection
 
+<figure id="source-car-problem">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment1-p02.png" | relative_url }}" alt="원문 Car 문제의 네 GT와 다섯 prediction 및 좌표 표" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment1-p02.png" | relative_url }}">assignment handout, PDF p. 2 (printed p. 2), original page capture</a>.</figcaption>
+</figure>
+
+초록 실선은 GT, 빨간 점선은 prediction이며 prediction 옆 숫자는 confidence다. 축 단위는 pixel이고 y는 아래로 커진다. D4는 G3에 걸쳐 있지만 겹침이 작고, D1은 더 낮은 confidence여도 G3와 더 잘 겹친다. 따라서 먼저 confidence 순서를 정하고 각 예측의 IoU와 이미 사용된 GT를 함께 확인해야 한다.
+
 ### 재구성한 입력
 
 | GT | Box |
@@ -139,6 +147,13 @@ Raw precision은 $$1,1,2/3,3/4,4/5$$다. 오른쪽에서 왼쪽으로 최대값�
 이 예제에서는 0.5가 precision과 recall을 모두 높인다. 하지만 이 한 장면만으로 일반적인 detector threshold를 정할 수는 없다. 실제 차량에서는 검증 데이터 전체의 PR curve, false alarm 비용, missed detection 비용, 처리 지연을 함께 본다.
 
 ## 3. Pedestrian Detection
+
+<figure id="source-pedestrian-problem">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment1-p04.png" | relative_url }}" alt="원문 Pedestrian 문제의 GT 네 개와 prediction 다섯 개" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment1-p04.png" | relative_url }}">assignment handout, PDF p. 4 (printed p. 3), original page capture</a>.</figcaption>
+</figure>
+
+오른쪽 D2는 confidence 0.92로 가장 높지만 어떤 GT와도 겹치지 않는다. G4는 예측 box가 덮지 않은 미탐이고, G2 위 D3는 위치는 가깝지만 정답의 일부만 덮는다. 이 그림의 세 오류 유형이 아래 풀이에서 배경 오탐, 위치 오차, 미탐으로 분리된다. 계산은 캡처의 대략적인 모양이 아니라 원문의 좌표 표를 기준으로 한다.
 
 ### 재구성한 입력과 매칭
 

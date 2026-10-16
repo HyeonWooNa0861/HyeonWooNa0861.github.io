@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:22:09 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"
@@ -37,6 +37,15 @@ Source PDFs:
 이번 범위의 중심은 sorting, hashing, graph이며, 서술형은 heap sort, 그래프 표현 및 순회, 최단 경로를 직접 추적하고 설명하는 능력이 중요하다.
 
 > **핵심:** 정렬 알고리즘은 시간복잡도뿐 아니라 stable·in-place 여부와 그 조건을 함께 비교해야 한다. Heap sort는 먼저 max heap을 만들고, root를 마지막 원소와 교환하며 오른쪽의 정렬 완료 영역을 넓힌다.
+
+## 원본 그림으로 복습하기
+
+<figure class="study-source-figure">
+  <img src="{{ "/assets/images/study/data-structures/source-figures/ls20-p49-representation-comparison.jpg" | relative_url }}" alt="인접 행렬과 인접 리스트의 시간·공간 복잡도를 비교한 강의 원본 표" loading="lazy">
+  <figcaption>대표 원본: LS20 PDF p. 49. 연산별 비용을 기준으로 표현법을 선택한다.</figcaption>
+</figure>
+
+총정리는 원본 그림을 새 도식으로 대체하지 않는다. [정렬 단계]({{ "/study/data-structures/ls13-sorting/" | relative_url }}), [heap과 배열]({{ "/study/data-structures/ls16-priority-queue-heap/" | relative_url }}), [linear probing]({{ "/study/data-structures/ls19-hash-search-2/" | relative_url }}), [BFS]({{ "/study/data-structures/ls21-graph-traversal/" | relative_url }}), [Dijkstra]({{ "/study/data-structures/ls22-shortest-path/" | relative_url }}), [Prim]({{ "/study/data-structures/ls23-minimum-spanning-tree/" | relative_url }})의 원본 캡처와 인접 해설을 먼저 확인한다. 이 글의 표와 유도는 과목 전체를 비교하기 위한 보충 정리다.
 
 ## 전체 흐름
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-21 12:29:52 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
@@ -314,6 +314,12 @@ $$\lambda$$는 regularization strength다. 너무 작으면 overfitting을 충�
 ## 13. Cross Validation
 
 Validation set 하나만 사용하면 데이터 분할에 따라 성능 추정이 흔들릴 수 있다. Cross validation은 데이터를 여러 fold로 나누어 검증을 반복하는 방법이다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-15-page-18.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-15-page-18.png" | relative_url }}" alt="원본 강의 슬라이드의 5-fold cross validation 배치" loading="lazy"></a>
+
+*원본 강의 PDF p. 18. 각 세로 묶음이 한 번의 fold 실행이며, 보라색 네 블록은 training, 주황색 한 블록은 validation이다. 실행을 바꿀 때마다 주황 블록의 위치가 이동해 모든 데이터가 한 번씩 validation 역할을 한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-15.pdf#page=18" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 18</a>*
+
+한 분할의 우연에 덜 의존하도록 다섯 validation score를 평균한다. hyperparameter를 고른 뒤 최종 test set은 이 과정에 넣지 않아야 평가 누수를 피할 수 있다.
 
 K-fold cross validation은 다음 절차로 진행된다.
 

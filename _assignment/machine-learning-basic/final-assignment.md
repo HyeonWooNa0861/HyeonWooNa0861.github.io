@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-03 19:46:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Machine Learning Basic Final Assignment"
 course: "Machine Learning Basic"
 topic: "Final Assignment"
@@ -24,6 +25,12 @@ Source PDF: `machine-learning-basic-final-assignment.pdf`
 | 2 | Gradient descent | Gradient를 구하고 step size를 적용해 parameter를 한 번 update |
 | 3 | Convex function | 정의로 convex를 증명하거나 반례로 non-convex를 판단 |
 | 4 | Polynomial regression, MLE, predictive distribution | Feature matrix를 만들고 MLE 해와 예측분포를 계산 |
+
+<a href="{{ "/assets/images/assignment/machine-learning-basic/source-captures/final-assignment-page-01.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/machine-learning-basic/source-captures/final-assignment-page-01.png" | relative_url }}" alt="원본 과제 PDF의 네 문항 전체" loading="lazy"></a>
+
+*원본 과제 PDF p. 1. 한 페이지에 Bayes 검사 문제, gradient descent 1회 update, convex 판정, 2차 다항회귀 MLE와 예측분포 문제가 순서대로 배치되어 있다. <a href="{{ "/assets/pdfs/assignment/machine-learning-basic/machine-learning-basic-final-assignment.pdf#page=1" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 1</a>*
+
+원문에서 주어진 수치와 식을 먼저 고정한다. 1번은 불량 prior 0.08과 두 검사 확률, 2번은 step size $$1/5$$와 두 초기점, 3번은 $$\lvert x\rvert$$와 $$\sin x$$, 4번은 세 학습점과 feature $$[1,x,x^2]^T$$가 출발점이다. 아래 해설은 이 네 입력을 바꾸지 않고 계산 과정을 분리해 전개한다.
 
 네 문항을 풀기 전에 확인할 기준은 다음과 같다.
 

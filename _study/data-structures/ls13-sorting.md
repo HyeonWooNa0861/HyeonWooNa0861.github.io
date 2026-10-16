@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS13 Basic Sorting Algorithms"
 course: "Data Structures"
 topic: "Basic Sorting Algorithms"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS13_sorting.pdf`
 
 > **핵심:** 버블 정렬은 한 회전마다 현재 구간의 최댓값을 끝에 확정한다. 선택 정렬은 한 회전에 최대 한 번만 교환하므로 swap 횟수가 상대적으로 적다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS13_sorting.pdf#page=9" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls13-p09-bubble-sort.jpg" | relative_url }}" alt="버블 정렬 첫 회전에서 값 7이 오른쪽 끝까지 이동하는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 9. 파란 숫자 7이 인접 교환을 반복해 첫 회전의 확정 위치로 이동한다.</figcaption>
+</figure>
+
+각 줄은 한 번의 인접 비교·교환 뒤 배열이다. 7보다 작은 오른쪽 이웃을 만날 때마다 교환하므로 7이 한 칸씩 오른쪽으로 이동한다. 첫 회전이 끝나면 가장 큰 값이 맨 끝에 확정되고, 다음 회전은 그 칸을 제외한다.
 
 ## 전체 흐름
 

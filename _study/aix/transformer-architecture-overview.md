@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
@@ -58,6 +58,13 @@ Embedding matrix는 각 token id에 대응하는 dense vector를 저장한다. �
 
 ## 2. Positional Encoding
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/transformer-slide-07.png" | relative_url }}" alt="AIX Transformer 강의 7쪽. BOS부터 EOS까지의 token sequence에 position-aware embedding이 결합되는 예시." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=7" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.7</a> — token identity에 순서 정보를 더한 position-aware embedding 원본 예시.</figcaption>
+</figure>
+
+그림의 token 상자는 문장 내용이고, 별도의 position-aware embedding은 같은 token이라도 놓인 위치가 다르면 다른 입력 표현이 되게 한다. Self-attention 자체는 순서를 내장하지 않으므로 이 위치 정보가 없으면 token 배열을 구분할 근거가 사라진다.
+
 Self-attention 자체는 token 집합을 순서 없이 보는 연산에 가깝다. 따라서 Transformer는 token의 위치 정보를 따로 넣어야 한다.
 
 $$
@@ -110,6 +117,13 @@ $$X\in\mathbb{R}^{n\times d_{\mathrm{model}}}$$에서 $$n$$은 token 수, $$Q,K\
 
 ## 4. Scaled Dot-Product Attention
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/transformer-slide-13.png" | relative_url }}" alt="AIX Transformer Architecture 강의 슬라이드 13쪽. 위치 정보가 더해진 token embedding에서 Wq, Wk, Wv를 거쳐 Q, K, V와 attention 출력으로 이어지는 예시." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.13</a> — position-aware embedding에서 Q, K, V를 만들고 attention을 계산하는 원본 예시.</figcaption>
+</figure>
+
+그림은 아래에서 위로 읽는다. 문장 token과 특수 token `[BOS]`, `[EOS]`가 position-aware embedding matrix를 이루고, 같은 입력이 서로 다른 projection $$W_Q,W_K,W_V$$를 거쳐 $$Q,K,V$$가 된다. $$QK^T$$는 token 쌍의 score 행렬을 만들며, softmax 후의 각 행은 한 query가 모든 value를 어떤 비율로 합칠지 나타낸다. 원본의 빈 사각형은 수치가 채워진 계산 결과가 아니므로 임의의 attention weight로 해석하지 않는다.
+
 Attention score는 query와 key의 dot product로 계산한다.
 
 $$
@@ -153,6 +167,13 @@ $$\sqrt{d_k}$$ scaling은 다음 통계적 근사로 설명할 수 있다.
 | Weighted sum | value를 attention weight로 합친다. |
 
 ## 5. Multi-Head Attention
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/transformer-slide-19.png" | relative_url }}" alt="AIX Transformer 강의 19쪽. position-aware embedding 행렬에서 Wq, Wk, Wv로 Q K V를 만들고 scaled dot-product attention을 계산한다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.19</a> — embedding에서 Q·K·V projection을 거쳐 attention output을 만드는 원본 계산 흐름.</figcaption>
+</figure>
+
+아래 token 행렬이 세 projection $$W_Q,W_K,W_V$$를 지나 서로 다른 Q, K, V가 된다. 여러 head는 이 projection 묶음을 독립적으로 두어, 같은 문장에서 서로 다른 관계를 동시에 탐색한다.
 
 하나의 attention head만 있으면 token 관계를 한 가지 관점으로만 본다. Multi-head attention은 여러 head가 서로 다른 projection을 통해 다양한 관계를 학습하게 한다.
 
@@ -199,6 +220,13 @@ $$
 이 구성은 layer가 많아져도 학습이 무너지지 않도록 돕는다.
 
 ## 8. Encoder와 Decoder
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/transformer-slide-27.png" | relative_url }}" alt="AIX Transformer 강의 27쪽. encoder의 encoded embedding과 BOS token을 받아 decoder self-attention이 시작되는 구조." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=27" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.27</a> — encoder 표현과 생성 시작 token이 decoder로 들어가는 원본 구조도.</figcaption>
+</figure>
+
+왼쪽 encoder는 입력 문장을 encoded embedding으로 만들고, 오른쪽 decoder는 `[BOS]`에서 출력을 시작한다. Decoder의 self-attention은 이미 생성된 위치만 보고, encoder 정보는 cross-attention을 통해 참조한다.
 
 Transformer encoder는 입력 전체를 양방향으로 보며 representation을 만든다. Decoder는 autoregressive generation을 위해 미래 token을 보지 못하도록 mask를 사용한다.
 

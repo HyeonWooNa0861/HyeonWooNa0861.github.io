@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-13 16:49:01 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 10: Dynamic Programming II"
 course: "Algorithms"
 topic: "Longest Common Subsequences, Tiling, and Path Reconstruction"
@@ -23,6 +23,15 @@ Source PDF: [10 Dynamic Programming (2).pdf](/assets/pdfs/study/algorithms/lectu
 이 강의는 동적 계획법의 판단 기준을 세 문제에 적용한다. 최장 공통 부분 수열에서는 두 문자열의 접두사를 상태로 두고, 2×n 타일링에서는 첫 배치를 두 경우로 분리하며, 1로 만들기에서는 최솟값뿐 아니라 실제 최적 경로까지 복원한다. 슬라이드의 핵심 질문인 **재귀적 부분 구조가 있는가**, **같은 부분 문제가 반복되는가**를 상태·점화식·기저 사례로 구체화하는 것이 목표다.
 
 > **핵심:** 동적 계획법은 답을 저장하는 기법에 그치지 않는다. 먼저 상태가 원문제의 필요한 정보를 빠짐없이 표현하는지 확인하고, 가능한 첫 선택 또는 마지막 선택을 모두 찾는다. 경우의 수는 겹치지 않는 경우를 더하고, 최댓값·최솟값은 각 선택의 값을 비교한다. 기저 사례와 계산 순서까지 정해야 식을 실제로 쓸 수 있다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-10-dynamic-programming-02.pdf#page=10" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-10-p10-lcs-recurrence.jpg" | relative_url }}" alt="LCS 점화식을 마지막 문자 일치 여부로 나눈 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 10. 두 문자열의 마지막 문자가 같은지에 따라 하위 문제가 달라진다.</figcaption>
+</figure>
+
+마지막 문자가 같으면 그 문자를 공통 부분 수열에 포함하고 두 접두사를 함께 한 칸 줄인다. 다르면 어느 마지막 문자를 버릴지 모르므로 `X`만 줄인 경우와 `Y`만 줄인 경우의 최댓값을 택한다. 이 두 경우가 점화식을 빠짐없이 구성한다.
 
 ## 전체 흐름
 
@@ -201,6 +210,11 @@ $$X=\texttt{ABCBDAB}$$, $$Y=\texttt{BDCABA}$$의 표를 채우면 다음과 같�
 
 ### 3.1 상태와 점화식
 
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-10-dynamic-programming-02.pdf#page=17" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-10-p17-tiling-recurrence.jpg" | relative_url }}" alt="2 곱하기 n 직사각형의 왼쪽 첫 칸을 채우는 두 경우에서 점화식을 찾는 강의 그림" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 17. 왼쪽 첫 칸을 세로 타일 하나로 채우면 폭 `n-1`, 가로 타일 두 개로 채우면 폭 `n-2` 문제가 남는다.</figcaption>
+</figure>
+
 2×n 직사각형을 1×2와 2×1 도미노로 빈틈없이 채우는 경우의 수를 구한다(15쪽). 상태를 다음과 같이 둔다.
 
 $$
@@ -290,6 +304,11 @@ $$i$$에서 시작하는 최적 경로의 첫 연산이 상태 $$k$$로 이동�
 모든 후보 $$k$$가 $$i$$보다 작으므로 `2, 3, ..., N` 순서로 표를 채우면 참조하는 값이 이미 계산되어 있다.
 
 ### 4.3 값을 계산하면서 부모 저장하기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-10-dynamic-programming-02.pdf#page=27" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-10-p27-making-it-one-trace.jpg" | relative_url }}" alt="1부터 8까지 최소 연산 수와 선택한 이전 상태를 함께 채운 Making It 1 강의 표" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 27. 위 표는 최소 연산 수, 아래 표는 그 값을 만든 이전 상태다. 예를 들어 `8 → 4 → 2 → 1`은 아래 표를 거꾸로 따라 복원한다.</figcaption>
+</figure>
 
 `D[N]`이라는 숫자 하나만으로는 실제 경로가 보이지 않는다. 값 테이블 전체가 있다면 각 상태에서 허용된 다음 수 $$k$$ 중 $$D[k]=D[i]-1$$인 것을 다시 골라 경로를 찾을 수도 있다. 슬라이드 22–27쪽처럼 부모 테이블 $$P[i]$$에 선택한 다음 수를 함께 저장하면 이 재탐색 없이, 동점에서 고른 경로까지 그대로 따라갈 수 있다.
 

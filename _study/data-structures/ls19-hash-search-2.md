@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:13:13 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS19_hash_search_2.pdf`
 
 > **핵심:** Open Hashing은 충돌 원소를 외부 리스트에 연결하고, Closed Hashing은 테이블 내부에서 빈 위치를 탐색한다. Chaining은 삭제가 쉽고 load factor가 높아져도 비교적 안정적으로 동작한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS19_hash_search_2.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls19-p20-linear-probing.jpg" | relative_url }}" alt="linear probing에서 충돌한 key 1059가 다음 빈 슬롯 9에 저장되는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 20. 1059의 시작 슬롯 9가 비어 있어 첫 probe에서 저장되는 예다.</figcaption>
+</figure>
+
+linear probing은 `h(k)+i`를 테이블 크기로 나눈 위치를 `i=0,1,2,...` 순서로 확인한다. 그림의 1059는 `1059 mod 10=9`라서 슬롯 9에 바로 들어간다. 시작 슬롯이 차 있으면 오른쪽으로 한 칸씩 이동하고 끝을 넘으면 0으로 돌아온다.
 
 ## 전체 흐름
 

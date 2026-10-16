@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS18 Hash Search"
 course: "Data Structures"
 topic: "Hash Search"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS18_hash_search.pdf`
 
 > **핵심:** 해싱은 key를 해시 함수로 배열 인덱스에 대응시킨다. 충돌이 적고 테이블의 부하율을 적절히 유지하면 평균 탐색 시간은 $$O(1)$$이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS18_hash_search.pdf#page=21" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls18-p21-modular-hash.jpg" | relative_url }}" alt="짝수 key와 h(k)=k mod 8 조합에서 절반 슬롯만 사용되는 문제를 설명한 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 21. 테이블 크기 8과 짝수 key의 규칙성이 충돌 분포를 편향시킨다.</figcaption>
+</figure>
+
+짝수 `k`를 8로 나눈 나머지는 `0,2,4,6` 중 하나뿐이므로 홀수 슬롯은 사용되지 않는다. 테이블에 빈 칸이 많아도 네 슬롯에 key가 몰린다. hash 함수는 계산이 빠른 것뿐 아니라 예상 입력의 규칙을 흩뜨리는지도 확인해야 한다.
 
 ## 전체 흐름
 

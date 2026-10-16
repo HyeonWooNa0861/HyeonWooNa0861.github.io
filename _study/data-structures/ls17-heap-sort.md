@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS17_heap_sort.pdf`
 
 > **핵심:** 힙 정렬은 먼저 배열을 max heap으로 만든다. 이후 root를 마지막 원소와 교환할 때마다 배열 오른쪽 끝에서부터 정렬 완료 영역이 넓어진다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS17_heap_sort.pdf#page=32" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls17-p32-heap-sort.jpg" | relative_url }}" alt="max heap의 루트 88을 배열 끝으로 옮긴 뒤 sift down을 진행하는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 32. 파란 88은 정렬 영역으로 확정되고, 남은 heap에서 60을 sift down한다.</figcaption>
+</figure>
+
+최댓값 88을 마지막 원소와 교환하면 맨 끝 한 칸은 다시 건드리지 않는 정렬 영역이 된다. 루트로 올라온 값은 heap 조건을 깨므로 더 큰 자식과 교환하며 내려간다. heap 크기를 하나씩 줄여 이 과정을 반복하면 오름차순 배열이 된다.
 
 ## 전체 흐름
 

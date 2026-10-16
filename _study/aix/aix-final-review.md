@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 18:13:14 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"
@@ -90,6 +90,13 @@ Source Materials:
 **원문 대응:** after-midterm quiz 5개 PDF는 각 p.1-3에 LLM·autonomous driving·imitation learning·robotics scaling 문항을 제시하지만 별도의 수식 증명은 싣지 않는다. 위 표의 계산 근거는 `1st_Regression.pdf` p.10-25, `02_MLP.pdf` p.11-24, `2_Overview_TF.pdf` p.10-20, `3_Large_Language_Models.pdf` p.17-48, `Robotics_1.pdf` p.9-15에 대응한다. 즉 퀴즈 정답 범위를 넘어선 전개는 각 상세 강의 글에서 원문 직접 제시식과 저자 보충을 구분해 검산한다.
 
 ## 1. Linear Regression과 Optimization
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/linear-regression-slide-08.png" | relative_url }}" alt="AIX Regression 원본 슬라이드 8쪽. residual 합과 squared residual sum 비교." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/1st_Regression.pdf#page=8" | relative_url }}" target="_blank" rel="noopener"><code>1st_Regression.pdf</code> p.8</a> — 오차 부호 상쇄를 피하려 squared loss를 쓰는 출발점.</figcaption>
+</figure>
+
+원본의 첫 식은 양·음 residual이 상쇄될 수 있고, 둘째 식은 제곱으로 모든 항을 0 이상으로 만든다. 이 차이를 먼저 확인하면 gradient descent가 최소화하는 대상이 무엇인지 분명해진다.
 
 Linear Regression은 feature $$x$$로 target $$y$$를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
 
@@ -266,6 +273,13 @@ Attention은 token 사이의 관계를 직접 계산한다. 긴 문장이나 긴
 
 ## 7. Transformer와 Self-Attention
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/transformer-slide-13.png" | relative_url }}" alt="AIX Transformer 원본 슬라이드 13쪽. position-aware embedding에서 Q K V를 만들고 attention을 계산하는 예시." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.13</a> — token 표현이 Q·K·V로 나뉘어 관계 점수와 value 조합을 만드는 과정.</figcaption>
+</figure>
+
+아래 token representation에서 Q, K, V가 만들어지고, $$QK^T/\sqrt{d_k}$$가 어떤 value를 얼마나 섞을지 결정한다. 시험에서는 세 vector의 이름보다 검색 기준(Q), 비교 표지(K), 가져올 내용(V)의 역할을 구분한다.
+
 Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합한다.
 
 Self-attention의 핵심 식은 다음과 같다.
@@ -331,6 +345,13 @@ Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식이다
 | 장점 | 모델 capacity는 키우면서 계산 비용을 상대적으로 줄임 |
 
 ## 9. Autonomous Driving
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-2-slide-26.png" | relative_url }}" alt="AIX Autonomous Driving 2 원본 슬라이드 26쪽. 공유 world representation에서 여러 queryable task output이 갈라지는 구조." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.26</a> — multi-camera와 temporal feature를 공유 world representation으로 통합하는 중심 구조.</figcaption>
+</figure>
+
+그림은 perception task마다 별도 pipeline을 두는 대신, camera와 시간 정보를 하나의 world representation으로 모은 뒤 필요한 output을 query하는 구조다. Representation-level end-to-end의 의미는 이 공유 표현까지 함께 학습한다는 데 있다.
 
 자율주행은 단순 제어 문제가 아니라 perception과 uncertainty가 큰 AI 문제다. 도로에는 차량, 보행자, 차선, 신호, 날씨, 가려짐, corner case가 섞여 있다.
 
@@ -412,6 +433,13 @@ Robotics 1은 이 파트를 가장 직접적으로 보강한다. 특히 behavior
 | Remaining bottleneck | task-specific imitation의 한계가 foundation model, world model, VLA로 이어짐 |
 
 ## 11. Robotics Scaling과 VLA
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-33.png" | relative_url }}" alt="AIX Robotics 2 원본 슬라이드 33쪽. robot pretraining data 규모별 validation loss 곡선과 최적 loss 추세." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=33" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.33</a> — 사전학습 데이터 시간이 커질수록 validation loss가 낮아지는 scaling 근거.</figcaption>
+</figure>
+
+왼쪽 곡선은 더 큰 dataset이 같은 training step에서 낮은 loss를 보이는지 비교하고, 오른쪽은 각 규모의 최적점을 요약한다. Robotics scaling은 모델 크기만 키우는 주장이 아니라 다양한 행동 데이터의 시간과 범위를 함께 늘리는 전략이다.
 
 로보틱스는 AI scaling의 다음 frontier로 설명된다. LLM에서 대규모 데이터와 foundation model이 성능 향상을 만들었듯이, 로봇도 대규모 비디오, world model, action data, physical RL을 결합하는 방향으로 이동한다.
 

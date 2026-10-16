@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 6: Heaps and Heap Sort"
 course: "Algorithms"
 topic: "Max-Heaps, Bottom-Up Construction, and In-Place Sorting"
@@ -22,6 +23,15 @@ Source PDF: [6 Sorting (3).pdf](/assets/pdfs/study/algorithms/06-sorting-03.pdf)
 이 강의는 최대 힙의 배열 표현, `siftdown`, 바닥에서 위로 힙을 만드는 방법, 그리고 그 힙으로 제자리 정렬하는 과정을 다룬다. 핵심은 **힙 내부가 완전히 정렬된 것은 아니지만 루트에는 최대값이 있다**는 성질을 반복 활용하는 것이다. 아래의 인덱스 공식·불변식·복잡도 증명은 강의의 그림과 코드를 연결하기 위한 작성자 보충이다.
 
 > **핵심:** 최대 힙을 $$\Theta(n)$$ 시간에 만들고, 루트의 최대값을 뒤쪽 정렬 구간으로 $$n-1$$번 옮긴다. 각 이동 후 높이만큼 `siftdown`하므로 최악 시간은 $$\Theta(n\log n)$$, 배열 이외의 보조 공간은 $$\Theta(1)$$이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/06-sorting-03.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-06-p13-build-heap.jpg" | relative_url }}" alt="마지막 내부 노드부터 sift down을 적용하는 Build Heap 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 13. 파란 삼각형은 이미 heap 조건을 만족하는 하위 구조, 노란 노드는 현재 처리할 내부 노드다.</figcaption>
+</figure>
+
+리프는 자식이 없어 이미 heap이므로 처리할 필요가 없다. 그림의 노란 노드부터 인덱스를 거꾸로 이동하며 `siftDown`하면, 호출 시점마다 두 자식 서브트리가 이미 heap이라는 조건이 성립한다. 이 bottom-up 순서가 전체 배열을 heap으로 만드는 불변식이다.
 
 ## 전체 흐름
 
@@ -98,6 +108,11 @@ $$
 ## 3. Heap Sort
 
 ### 3.1 Repeated maximum extraction
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/06-sorting-03.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-06-p19-heap-sort.jpg" | relative_url }}" alt="최대 힙의 루트를 뒤로 보내며 정렬 구간을 확장하는 Heap Sort 강의 단계" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 19. 오른쪽 초록 구간은 확정된 오름차순 접미부이며, 루트 최댓값을 그 앞에 옮긴 뒤 남은 힙에 sift down을 적용한다.</figcaption>
+</figure>
 
 최대 힙의 루트가 최대값이라는 사실을 이용한다(18–24쪽). 먼저 힙을 만든다. 현재 힙 범위를 `arr[0:i+1]`로 볼 때 `arr[0]`과 `arr[i]`를 교환하면 최대값이 정렬될 최종 위치 `i`로 이동한다. 힙 범위를 `arr[0:i]`로 줄이고, 새 루트를 `sift_down`하여 힙을 복구한다.
 

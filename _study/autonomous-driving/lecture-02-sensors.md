@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 10:45:36 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 2: Sensors for Autonomous Driving"
 course: "Autonomous Driving"
 topic: "Camera, LiDAR, RADAR, and Sensor-Stack Trade-offs"
@@ -150,6 +150,13 @@ $$
 > **작성자 보충:** 실제 stereo depth 계산에는 camera calibration, lens distortion 보정, 좌우 영상 정렬과 같은 점을 찾는 correspondence 과정이 필요하다. 질감이 거의 없는 표면, 반복 무늬, 가려짐, 먼 거리에서는 correspondence가 어려워져 depth 오차가 커질 수 있다. NVIDIA의 [Stereo Disparity Workflow](https://docs.nvidia.com/drive/driveworks-3.5/stereo_usecase1.html){:target="_blank" rel="noopener"}는 좌·우 camera의 intrinsic/extrinsic parameter, rectification, occlusion과 invalid disparity 처리를 구현 조건으로 설명한다. 이 문서는 특정 DriveWorks 버전의 개발 문서이므로 일반적인 원리를 보강하는 범위에서만 참고한다.
 
 ## 4. LiDAR: 레이저로 3D geometry 측정하기
+
+<figure id="adc-02-p17">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-02-p17.png" | relative_url }}" alt="LiDAR로 측정한 도로 장면의 3D point cloud" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/02-sensors.pdf#page=17" | relative_url }}">lecture PDF, p. 17</a>.</figcaption>
+</figure>
+
+그림의 점은 표면 전체를 채운 mesh가 아니라 레이저 반사가 돌아온 위치다. 가까운 표면과 먼 표면의 점 간격이 다르고 가려진 면에는 측정이 없다. 따라서 점이 적거나 비어 있다고 그 공간에 물체가 없다고 결론내릴 수는 없다. 아래 거리 식은 각 점의 range가 어떻게 측정되는지를 설명한다.
 
 LiDAR는 *Light Detection and Ranging*의 약자다. 레이저 pulse를 내보내고 물체에서 반사되어 돌아오기까지 걸린 시간을 분석해 거리를 측정한다. 왕복 시간 $$\Delta t$$를 이용하는 단순한 time-of-flight 모델은 다음과 같다.
 

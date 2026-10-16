@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-28 12:20:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
@@ -469,6 +469,12 @@ MSE는 squared error의 평균이고, RMSE는 그 제곱근이다. RMSE는 단�
 ## 10. 과적합
 
 다항식 차수가 커지면 모델은 training data를 매우 유연하게 맞출 수 있다. 그러나 너무 높은 차수는 training data의 noise까지 따라가면서 test error를 크게 만들 수 있다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" alt="원본 강의 슬라이드의 다항식 차수별 적합과 train-test RMSE" loading="lazy"></a>
+
+*원본 강의 PDF p. 13. 위 여섯 그래프는 차수 $$M=0,1,3,4,6,9$$의 적합 곡선을 비교한다. 아래 그래프에서 파란 training RMSE는 차수가 커질수록 낮아지지만, 주황 test RMSE는 차수 6 이후 급격히 증가한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=13" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 13</a>*
+
+$$M=9$$ 곡선의 큰 진동은 학습점 사이에서 모델이 불안정해졌음을 보여준다. training error만 최소화하면 이 변화를 발견하지 못하므로, 보지 않은 validation/test data로 일반화 오차를 따로 확인해야 한다.
 
 강의 슬라이드의 그림은 다항식 차수 $$M$$이 커질수록 training error는 계속 낮아질 수 있지만, test error는 어느 순간부터 급격히 증가할 수 있음을 보여준다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-10-13 17:00:20 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -105,6 +105,13 @@ Air-pressure variation
 Microphone은 acoustic pressure를 전기 신호로 바꾸는 transducer다. diaphragm이 압력 변화에 따라 움직이고, 이 운동이 voltage 또는 current 변화로 변환된다. 이 단계의 출력은 시간과 진폭이 연속적인 analog signal이다.
 
 ### 1.2 ADC가 하는 두 가지 일
+
+<figure id="speech-02-p05">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-p05.png" | relative_url }}" alt="시간 연속 음압이 sampling quantization PCM으로 바뀌는 과정" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf#page=05" | relative_url }}">lecture PDF, p. 05</a>.</figcaption>
+</figure>
+
+왼쪽 센서가 소리의 압력 변화를 전기 신호로 바꾼다. 가운데 sampling은 관측 시점을, quantization은 각 시점의 값을 이산화하며, 오른쪽 PCM은 그 값을 bit로 기록한다. 시간 간격과 값의 해상도는 서로 다른 선택이므로 sampling rate와 bit depth를 같은 ‘정확도’로 묶지 않는다.
 
 Analog-to-digital converter는 두 축을 이산화한다.
 
@@ -831,6 +838,13 @@ $$f_s=16{,}000\ \mathrm{sample/s}$$, $$N=400\ \mathrm{sample}$$이면 $$T_{\math
 
 ## 7. Orthogonal basis와 Fourier coefficient
 
+<figure id="speech-02-p26">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-p26.png" | relative_url }}" alt="복소 지수 Fourier basis와 한 주기 inner product" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf#page=26" | relative_url }}">lecture PDF, p. 26</a>.</figcaption>
+</figure>
+
+오른쪽 basis 그림의 서로 다른 방향과 아래의 한 주기 적분은 원하는 성분만 분리하는 원리를 연결한다. 다만 원문 빨간 경우식은 n=m과 n≠m의 결과가 뒤집혀 있다. 올바른 값은 같은 주파수일 때 P, 다를 때 0이며, 내적에는 한쪽 basis의 complex conjugate가 필요하다. 아래 유도는 이 정정된 정의에서 출발한다.
+
 Fourier coefficient는 임의로 선택하는 숫자가 아니라 신호를 특정 frequency basis에 projection한 값이다. Basis를 다음처럼 두자.
 
 $$
@@ -895,6 +909,13 @@ $$
 원본의 orthogonality slide는 $$n=m$$과 $$n\ne m$$에 해당하는 결과가 서로 뒤바뀌어 있다. 올바른 관계는 **같은 basis의 inner product가 $$P$$, 서로 다른 basis의 inner product가 0**이다. 또한 두 번째 basis에는 complex conjugate가 적용되므로 exponent의 부호가 음수가 되어야 한다.
 
 ## 8. Fourier series에서 Fourier transform으로
+
+<figure id="speech-02-p29">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-p29.png" | relative_url }}" alt="주기 P를 늘리며 주파수 간격을 좁혀 Fourier series를 integral로 바꾸는 과정" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf#page=29" | relative_url }}">lecture PDF, p. 29</a>.</figcaption>
+</figure>
+
+왼쪽 coefficient 적분과 가운데 합성식에서 주기 P가 커지면 기본 각주파수와 간격 Δω가 작아진다. 이산 주파수 합을 연속 주파수 적분으로 옮기는 과정이 아래쪽 Fourier transform 쌍으로 이어진다. 단순히 합 기호를 적분으로 바꾸는 것이 아니라 coefficient에 포함된 간격과 정규화까지 함께 옮겨야 한다.
 
 > **핵심:** Fourier transform은 비주기 신호를 연속적인 frequency의 complex exponential로 분석하는 표현이다. 강의는 **주기 $$P$$를 늘려 주파수 간격을 줄이고, Fourier series의 합을 적분으로 바꾸는 방법**으로 정의와 역변환을 연결한다. 이때 $$c_n$$을 그대로 $$X(\omega)$$로 바꾸면 안 된다. 계수에 들어 있던 $$1/P$$가 frequency 간격과 결합하는 과정이 핵심이다.
 
@@ -1396,6 +1417,13 @@ Section 8.7의 예에 적용하면 **1 V·2 ms pulse → 0 Hz 값이 0.002 V·s�
 
 ## 9. Discrete-Time Fourier Series
 
+<figure id="speech-02-p32">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-p32.png" | relative_url }}" alt="주기 신호의 Fourier 표현과 N개 시간 sample의 대응" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf#page=32" | relative_url }}">lecture PDF, p. 32</a>.</figcaption>
+</figure>
+
+위쪽은 시간 파형과 주파수 계수의 대응, 아래쪽은 길이 NT의 구간을 N개 sample로 읽는 모습을 보여 준다. 유한 sample을 받았다는 사실만으로 원래 신호가 주기적이라는 뜻은 아니다. DTFS는 N-periodic sequence를 가정하고, DFT에서는 관측 block의 주기적 연장을 이용해 같은 계산 형식을 적용한다.
+
 > **CTFS → DTFS가 가능한 이유:** 주기 신호를 한 주기당 정수 개의 간격으로 sampling하면 표본열도 주기적이다. 이 표본 위치에서는 harmonic index가 $$N$$만큼 다른 exponential들이 같은 값을 가지므로, 무한한 CTFS 항을 **서로 다른 $$N$$개 basis와 그 계수**로 묶을 수 있다. DTFS가 표본을 정확히 표현한다는 사실과, 그 표본으로 원래 연속 신호를 복원할 수 있다는 사실은 별개다.
 
 원본 PDF pp.32–36 (footer 36–40)은 CTFS의 sampling, basis 반복, 계수의 aliasing 합과 Riemann-sum 비교를 차례로 보여 준다. PDF p.39 (footer 43)는 Nyquist 조건과 유한 녹음의 주기 확장을 연결한다. 아래는 이 흐름에서 생략된 조건·증명과 작성자의 검산을 보강한 설명이다.
@@ -1635,6 +1663,13 @@ $$
 ## 10. Nyquist sampling과 aliasing
 
 > **“is not satisfied”의 의미:** DTFS 계산에 실패했다는 말이 아니라, **표본만으로 원래 연속시간의 frequency를 구별할 조건이 충족되지 않았다**는 뜻이다. 강의의 7 kHz 신호를 8 kHz로 sampling한 경우에는 $$8<2\times7=14$$이므로 조건을 위반한다. 그 결과 7 kHz와 1 kHz cosine이 같은 표본을 만든다.
+
+<figure id="speech-02-p37">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-p37.png" | relative_url }}" alt="Nyquist 조건을 만족하지 않을 때 연속 spectrum의 반복 복사본이 겹치는 강의 슬라이드" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf#page=37" | relative_url }}">lecture PDF, p. 37</a>.</figcaption>
+</figure>
+
+그림은 위의 연속시간 신호 $$x(t)$$와 아래의 주파수 표현을 세로로 대응시킨다. 아래 축에서 spectrum 복사본은 $$-f_s$$, 0, $$+f_s$$를 중심으로 반복된다. 복사본이 겹치면 같은 discrete-time sample을 만드는 원래 주파수가 둘 이상 생기므로, 문제는 DTFS 계산 가능성이 아니라 원래 연속 주파수의 식별 가능성이다.
 
 원본 PDF p.36 (footer 40)은 Nyquist 부등식을 제시하고, pp.37–38 (footers 41–42)은 **“What if the Nyquist sampling condition is not satisfied?”**라고 묻는다. p.37은 0과 $$\pm f_s$$를 중심으로 반복되는 spectrum을, p.38은 1 kHz·7 kHz cosine의 8 kHz sampling과 이미지 moire를 보여 준다. 아래의 중간 계산·경계 반례·해결 방법은 이 화면을 이해하기 위한 작성자 보강이다. p.37 그림만으로 최고 frequency의 수치를 추정하지 않고, 수치 검산에는 p.38에 명시된 값을 사용한다.
 

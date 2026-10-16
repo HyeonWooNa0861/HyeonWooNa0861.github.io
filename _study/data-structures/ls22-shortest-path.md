@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 13:25:48 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS22_shortest_path.pdf`
 
 > **핵심:** Shortest path는 두 정점 사이에서 간선 weight의 합이 가장 작은 경로다. Shortest distance는 그 경로의 총비용을 뜻한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS22_shortest_path.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls22-p20-dijkstra.jpg" | relative_url }}" alt="Dijkstra 알고리즘의 가중 그래프와 단계별 거리 배열을 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 20. 파란 칸은 최단 거리가 확정된 정점, 초록 값은 relaxation으로 갱신된 후보 거리다.</figcaption>
+</figure>
+
+각 행은 아직 확정되지 않은 값 중 가장 작은 정점을 집합 `S`에 넣은 뒤 그 정점의 outgoing edge를 완화한 결과다. 예를 들어 `b`는 처음 18이었다가 `c`가 확정된 뒤 `9+1=10`으로 줄어든다. 음수 간선이 없을 때만 선택한 최소 후보를 다시 바꿀 필요가 없다.
 
 ## 전체 흐름
 

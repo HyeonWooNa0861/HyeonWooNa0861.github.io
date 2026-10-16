@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-13 16:49:01 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 7: Counting Sort and Radix Sort"
 course: "Algorithms"
 topic: "Comparison Lower Bounds, Stable Counting Sort, and LSD Radix Sort"
@@ -23,6 +23,15 @@ Source PDF: [7 Sorting (4).pdf](/assets/pdfs/study/algorithms/lecture-07-sorting
 이 강의는 원소끼리 대소를 비교하는 정렬의 한계를 먼저 확인한 뒤, 정수 키의 범위와 자릿수라는 추가 정보를 사용하는 Counting Sort와 LSD Radix Sort를 다룬다. 핵심은 이 알고리즘들이 비교 정렬의 하한을 깨는 것이 아니라, **비교만 허용하는 모델을 벗어나 제한된 키 영역에 직접 접근한다**는 데 있다. Counting Sort의 누적 개수와 역방향 배치는 안정성을 만들고, 그 안정성이 Radix Sort의 자리별 정렬 결과를 다음 단계까지 보존한다.
 
 > **핵심:** 비교 정렬에는 최악의 경우 $$\Omega(n\log n)$$번의 비교가 필요하다. 키가 $$0$$ 이상 $$r-1$$ 이하인 정수라는 조건에서는 Counting Sort가 $$\Theta(n+r)$$ 시간에 안정 정렬할 수 있다. 이를 $$k$$개 자릿수에 반복하는 LSD Radix Sort의 시간은 $$\Theta(k(n+r))$$이며, 각 자리 정렬이 반드시 안정적이어야 한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-07-sorting-04.pdf#page=12" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-07-p12-counting-sort.jpg" | relative_url }}" alt="Counting Sort의 count, 누적합, 안정 배치 과정을 배열로 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 12. 위에서 아래로 빈도 계산, 누적합, 출력 위치 결정 순서다.</figcaption>
+</figure>
+
+첫 `cnts`는 값별 개수다. 누적합 뒤 `cnts[x]`는 값 `x` 이하 원소가 끝나는 위치의 다음 칸을 가리킨다. 입력을 뒤에서 읽고 먼저 `cnts[x]`를 줄인 다음 그 인덱스에 배치하므로 같은 값의 상대 순서가 보존된다. 이것이 Radix Sort의 각 자리 정렬에서 안정성이 필요한 이유다.
 
 ## 전체 흐름
 
@@ -189,6 +198,11 @@ $$
 ## 3. LSD Radix Sort
 
 ### 3.1 자리별 정렬의 전제
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-07-sorting-04.pdf#page=21" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-07-p21-radix-sort.jpg" | relative_url }}" alt="모든 키의 일의 자리를 표시해 첫 안정 정렬 대상을 보여 주는 LSD Radix Sort 강의 그림" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 21. 빨간 열은 첫 패스의 일의 자리다. 이후 패스가 이전 자리의 순서를 보존해야 하므로 각 자릿수 정렬은 안정적이어야 한다.</figcaption>
+</figure>
 
 Radix Sort는 큰 키 범위 전체에 카운트 배열 하나를 만들지 않고, 각 키를 기수 $$r$$의 자릿수로 나눈다(16–18쪽). 입력 키가 음이 아닌 정수이고 모두 $$k$$자리 이하라고 하자. 그러면
 

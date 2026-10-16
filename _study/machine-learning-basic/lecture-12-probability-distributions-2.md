@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
@@ -151,6 +151,12 @@ $$
 ## 4. Bayes' Theorem
 
 Bayes' theorem은 조건부 확률을 뒤집어 계산하는 규칙이다. 이산확률변수에서는 다음과 같다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-12-page-17.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-12-page-17.png" | relative_url }}" alt="원본 강의 슬라이드의 췌장암 Bayes 정리 빈도표" loading="lazy"></a>
+
+*원본 강의 PDF p. 17. 100,000명 중 암 환자는 1명이고 증상이 있지만 암이 아닌 사람은 10명이다. 증상 집단 11명 안에서 실제 암 환자는 1명이므로 $$P(\mathrm{Cancer}\mid\mathrm{Symptom})=1/11$$이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-12.pdf#page=17" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 17</a>*
+
+이 빈도표는 likelihood가 높아도 base rate가 매우 낮으면 posterior가 낮을 수 있음을 직접 보여준다. 분모는 증상이 나타나는 두 경로, 즉 암 환자의 true positive와 비암 환자의 false positive를 모두 합친 값이다.
 
 $$
 P(Y=y\mid X=x)

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Operator Overloading"
 course: "C++"
 topic: "Operator Overloading"
@@ -37,6 +38,12 @@ C++에서 `operator+=`는 보통 현재 객체를 직접 수정한 뒤 `*this`�
 Python에서는 `a += b`가 먼저 `a.__iadd__(b)`를 호출한다. `__iadd__`가 없거나 `NotImplemented`를 반환하면 `__add__` 또는 `__radd__`를 사용한 뒤 이름을 새 객체에 다시 바인딩한다. 따라서 Python의 `+=`는 객체가 mutable인지 immutable인지에 따라 실제 동작이 달라진다.
 
 ## 3. 비교, 단항, 첨자 연산자
+
+<a href="{{ "/assets/images/assignment/cpp/source-captures/operator-overloading-page-07.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/source-captures/operator-overloading-page-07.png" | relative_url }}" alt="원본 과제의 const 비const operator 대조 코드" loading="lazy"></a>
+
+*원본 `Operator Overloading.pdf` p. 7. 비const `operator[]`는 `double&`를 반환해 `v[0]=3.14`처럼 대입할 수 있고, const overload는 `const double&`를 반환해 읽기만 허용한다. 아래 예시는 `cv[0]=2.71`이 막히는 이유를 보여준다. <a href="{{ "/assets/pdfs/assignment/cpp/Operator Overloading.pdf#page=7" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 7</a>*
+
+함수 이름과 인수는 같아도 객체의 const 여부가 overload 선택에 포함된다. 반환 reference의 const도 결과를 lvalue로 수정할 수 있는지 결정하므로, 읽기 전용 객체의 내부 배열이 외부에서 바뀌지 않는다.
 
 C++20 이전에는 `operator==`를 정의해도 `operator!=`가 자동으로 생기지 않았다. C++20부터는 비교 연산자 재작성 규칙과 `<=>` 연산자가 도입되어 비교 연산을 더 일관적으로 만들 수 있다. Python에서는 `__eq__`만 정의해도 일반적으로 `!=`가 그 결과를 부정하는 방식으로 동작한다.
 

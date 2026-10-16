@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 04 Linear Algebra 3"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 3"
@@ -136,6 +136,12 @@ $$
 ## 6. 좌표와 변환 행렬
 
 기저가 주어지면 벡터는 기저 벡터들의 선형 조합 계수로 표현된다. 이 계수 벡터가 좌표 벡터다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-04-page-26.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-04-page-26.png" | relative_url }}" alt="원본 강의 슬라이드의 선형 사상 행렬 계산 예시" loading="lazy"></a>
+
+*원본 강의 PDF p. 26. 변환 행렬의 세 열은 기저벡터 $$b_1,b_2,b_3$$의 상 $$\Phi(b_1),\Phi(b_2),\Phi(b_3)$$를 출력 기저 좌표로 적은 것이다. 입력 좌표 $$(3,2,4)^T$$를 곱하면 출력 좌표 $$(7,11,27,17)^T$$를 얻는다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-04.pdf#page=26" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 26</a>*
+
+행렬곱은 임의의 숫자 조작이 아니다. 선형성 때문에 $$\Phi(3b_1+2b_2+4b_3)=3\Phi(b_1)+2\Phi(b_2)+4\Phi(b_3)$$이고, 이 선형 결합을 한 번에 계산한 표현이 변환 행렬이다.
 
 선형 변환도 기저를 고르면 행렬로 표현된다. 즉 행렬은 추상적인 선형 사상을 좌표계 위에서 계산 가능하게 만든 표현이다.
 

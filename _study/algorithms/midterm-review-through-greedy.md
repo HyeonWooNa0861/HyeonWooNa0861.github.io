@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
-last_modified_at: 2026-10-15 00:40:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Algorithms Midterm Review: Analysis through Greedy Algorithms"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
@@ -38,6 +38,17 @@ Source PDFs:
 > **핵심:** 알고리즘 분석은 코드가 실제로 수행하는 기본 연산을 세는 데서 시작한다. 점화식은 재귀 호출 수와 호출 밖 작업을 분리하고, 정렬·선택·동적 계획법·그리디에서는 각 단계가 보존하는 불변식과 최적성 조건을 확인한다. 결론만 외우지 말고 **입력·출력, 상태 또는 활성 구간, 적용 조건, 반례**를 한 묶음으로 설명할 수 있어야 한다.
 
 Lecture 11의 4쪽은 문서상 범위를 첫 내용부터 Greedy Algorithm까지로 적는다. 이 글은 현재 제공된 Lecture 2–11과 Assignment 1·2의 연결 개념을 복습용으로 재구성한다. Lecture 1은 별도 자료를 확보하지 못했으므로 자료에 없는 세부 내용은 추정하지 않았다. 아래 Original Practice는 Lecture 2 원문 문제이며, 그 밖의 새 배열·수치 예시는 **작성자가 구성하고 직접 계산한 연습 예제**다. 실제 출제 형식이나 문항을 예측하지 않는다.
+
+## 원본 그림으로 복습하기
+
+핵심 그림은 각 상세 강의의 원본 캡처를 그대로 재사용한다. [점근 표기 비교]({{ "/study/algorithms/lecture-02-algorithm-analysis/" | relative_url }})에서는 정확한 수행 시간과 상·하한을, [Build Heap]({{ "/study/algorithms/lecture-06-sorting-03/" | relative_url }})에서는 bottom-up 처리 순서를, [Matrix Path]({{ "/study/algorithms/lecture-09-dynamic-programming-01/" | relative_url }})에서는 상태와 점화식을, [회의실 배정]({{ "/study/algorithms/lecture-11-greedy-algorithm/" | relative_url }})에서는 greedy 선택의 교환 논증을 먼저 확인한다.
+
+<figure class="study-source-figure">
+  <img src="{{ "/assets/images/study/algorithms/source-figures/lecture-09-p19-matrix-path.jpg" | relative_url }}" alt="Matrix Path의 경로와 bottom-up 점화식을 함께 보여 주는 강의 원본 슬라이드" loading="lazy">
+  <figcaption>대표 원본: Lecture 9 PDF p. 19. 상태 정의, 이전 상태, 계산 순서를 한 장에서 대조한다.</figcaption>
+</figure>
+
+그림의 경로를 따라 현재 칸으로 들어오는 마지막 선택을 먼저 나누면 점화식을 외우지 않고 다시 만들 수 있다. 총정리에서는 이 원본을 기준으로 상태·기저 사례·계산 순서를 점검하고, 상세 유도는 연결된 개별 강의에서 확인한다.
 
 ## Original Practice
 

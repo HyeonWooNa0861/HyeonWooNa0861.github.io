@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS14 Merge Sort"
 course: "Data Structures"
 topic: "Merge Sort"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS14_merge_sort.pdf`
 
 > **핵심:** 병합 정렬은 리스트 길이가 0 또는 1이면 분할을 멈춘다. 병합 단계에서는 각 원소를 한 번씩 결과에 넣으므로 합친 길이가 $$n$$인 두 구간의 병합 비용은 $$O(n)$$이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS14_merge_sort.pdf#page=49" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls14-p49-merge-stage.jpg" | relative_url }}" alt="정렬된 두 부분 배열 3 4 8 9와 2 5 6 7을 병합하기 직전의 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 49. 두 하위 배열은 이미 정렬되어 있고 위 출력 배열은 아직 비어 있다.</figcaption>
+</figure>
+
+두 배열의 맨 앞 `3`과 `2`를 비교해 작은 `2`를 출력의 첫 칸에 넣는다. 선택된 쪽 포인터만 한 칸 이동해 같은 비교를 반복하면 각 원소를 한 번만 복사해 `[2,3,4,5,6,7,8,9]`를 만든다. merge가 선형 시간인 이유다.
 
 ## 전체 흐름
 

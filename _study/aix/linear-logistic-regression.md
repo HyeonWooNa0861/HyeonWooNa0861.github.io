@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Linear and Logistic Regression"
 course: "AIX"
 topic: "Linear and Logistic Regression"
@@ -83,6 +83,13 @@ $$w$$는 각 feature가 예측에 얼마나 영향을 주는지를 나타내고,
 아래 유도에서는 $$X\in\mathbb{R}^{n\times d}$$, $$w\in\mathbb{R}^{d}$$, $$y\in\mathbb{R}^{n}$$이고 각 행이 한 sample이라고 둔다. Bias는 $$X$$에 값이 1인 열을 추가해 $$w$$에 포함할 수 있다. Feature가 정규화된 수치라면 기호는 무차원으로 취급할 수 있지만, 물리량을 그대로 쓰면 $$w_j$$의 단위는 `target 단위 / feature j 단위`, $$b$$와 예측값의 단위는 target과 같다.
 
 ## 3. Residual과 손실 함수
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/linear-regression-slide-08.png" | relative_url }}" alt="AIX Linear and Logistic Regression 강의 슬라이드 8쪽. residual 합과 residual 제곱합을 나란히 비교한다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/1st_Regression.pdf#page=8" | relative_url }}" target="_blank" rel="noopener"><code>1st_Regression.pdf</code> p.8</a> — objective function 후보로 residual 합과 squared sum of residual을 비교한 원본 슬라이드.</figcaption>
+</figure>
+
+그림은 위에서 아래로 두 후보를 비교한다. 첫 번째 식은 부호가 있는 $$y-\hat{y}$$를 그대로 더하므로 양의 오차와 음의 오차가 상쇄될 수 있다. 두 번째 식은 각 residual을 제곱한 뒤 더해 모든 항을 0 이상으로 만들며, 큰 오차를 더 강하게 반영한다. 따라서 이어지는 loss 설명은 두 번째 식을 기준으로 읽는다.
 
 선형 회귀에서 residual은 실제값과 예측값의 차이다.
 
@@ -174,6 +181,13 @@ $$
 다만 feature를 너무 많이 만들면 훈련 데이터에는 잘 맞지만 새 데이터에는 약한 overfitting이 생긴다.
 
 ## 6. Logistic Regression
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/linear-regression-slide-20.png" | relative_url }}" alt="AIX Regression 강의 20쪽. 입력 x가 선형 score z, sigmoid, 확률 p 순서로 변환되는 logistic regression 흐름." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/1st_Regression.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><code>1st_Regression.pdf</code> p.20</a> — linear score에 sigmoid를 붙여 class probability를 만드는 원본 흐름도.</figcaption>
+</figure>
+
+그림은 `input x → score z → σ(z) → p`를 왼쪽에서 오른쪽으로 읽는다. 선형 모델이 곧바로 class를 내는 것이 아니라, 먼저 실수 score를 만들고 sigmoid가 이를 $$0$$과 $$1$$ 사이의 확률로 바꾼다는 점이 핵심이다.
 
 분류에서는 예측값을 class probability로 해석하고 싶다. 하지만 선형 score는 음수나 1보다 큰 값이 될 수 있어 확률로 바로 쓸 수 없다.
 

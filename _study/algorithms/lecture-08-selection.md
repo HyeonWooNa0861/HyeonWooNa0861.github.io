@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-13 16:49:01 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 8: Selection Algorithms"
 course: "Algorithms"
 topic: "Order Statistics, Randomized Quickselect, and Median of Medians"
@@ -23,6 +23,15 @@ Source PDF: [8 Selection.pdf](/assets/pdfs/study/algorithms/lecture-08-selection
 정렬되지 않은 배열에서 필요한 순위의 값 하나만 찾는 **selection problem**을 다룬다. 강의의 `i`는 0부터 세므로, `i=0`은 최솟값이고 `i=n-1`은 최댓값이다. 전체 정렬에는 $$\Theta(n\log n)$$ 시간이 들지만, Quickselect는 무작위 pivot 아래에서 기대 $$\Theta(n)$$, median of medians는 결정론적으로 최악 $$\Theta(n)$$에 순위 통계량을 찾는다.
 
 > **핵심:** partition 한 번은 pivot을 최종 순위 구간에 놓고, selection은 목표 순위가 있는 한쪽만 계속 처리한다. 무작위 pivot은 기대 시간을 선형으로 만들지만 최악의 이차 시간은 남는다. Median of medians는 pivot 양쪽에서 상수 비율의 원소를 제거하도록 보장해 최악 시간까지 선형으로 낮춘다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-08-selection.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-08-p13-quickselect.jpg" | relative_url }}" alt="partition 결과에 따라 Quickselect 탐색 구간을 좁히는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 13. 노란색은 각 partition의 pivot, 회색은 더 보지 않는 구간, 파란색은 찾은 값이다.</figcaption>
+</figure>
+
+각 줄에서 pivot은 partition이 끝난 순간 최종 rank를 얻는다. 목표 인덱스 `i=3`이 pivot보다 작거나 큰지만 확인해 한쪽 구간을 버린다. 전체 정렬과 달리 양쪽을 모두 재귀 호출하지 않는 점이 Quickselect의 핵심이며, 마지막 파란 `6`이 0-based rank 3의 값이다.
 
 ## 전체 흐름
 
@@ -224,6 +233,11 @@ $$
 ## 4. Median of Medians
 
 ### 4.1 Deterministic pivot construction
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-08-selection.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-08-p26-median-of-medians.jpg" | relative_url }}" alt="5개 그룹의 중앙값에서 pivot 15를 고르고 양쪽에 확보되는 원소를 표시한 Median of Medians 강의 그림" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 26. 그룹 중앙값의 중앙값 `15`를 pivot으로 잡으면 최소한 빨간 영역은 작고 파란 영역은 커서 한쪽 재귀가 입력 대부분을 그대로 남기지 못한다.</figcaption>
+</figure>
 
 Median of medians는 입력값이나 난수 운에 관계없이 충분히 중앙에 가까운 pivot을 만든다(25–27쪽).
 

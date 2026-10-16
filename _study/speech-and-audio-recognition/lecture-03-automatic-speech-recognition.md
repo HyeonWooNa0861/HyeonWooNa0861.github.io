@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-10-13 15:21:46 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -181,6 +181,20 @@ Forward DP는 값을 여러 번 갱신해 어떤 극한에 가까워지는 **수
 
 ### 3.3 경로별 계산과 forward DP가 만나는 예
 
+<figure id="speech-03-p33">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p33.png" | relative_url }}" alt="네 프레임의 blank, a, b 확률과 AB 경로를 표시한 CTC forward DP 강의 예제" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=33" | relative_url }}">lecture PDF, p. 33</a>.</figcaption>
+</figure>
+
+오른쪽 위 표가 모델이 네 frame에서 출력한 $$\epsilon,a,b$$ 확률이다. 아래 lattice는 가로로 시간이 진행하고, 각 행이 확장 정답 $$[\epsilon,a,\epsilon,b,\epsilon]$$의 상태를 나타낸다. 같은 상태 유지, 한 칸 진행, 허용되는 두 칸 진행만 따라가며 도착 상태별 경로 확률을 더한다.
+
+<figure id="speech-03-p35">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p35.png" | relative_url }}" alt="CTC forward DP의 각 상태 확률을 계산해 마지막 두 상태 합 0.4143을 얻은 강의 슬라이드" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=35" | relative_url }}">lecture PDF, p. 35</a>.</figcaption>
+</figure>
+
+각 원의 빨간 값은 그 상태에 도달하는 모든 유효 경로의 누적 확률이다. 마지막 frame에서 `b` 상태의 0.2835와 뒤 blank 상태의 0.1308을 더한 0.4143이 목표 `ab`의 전체 확률이다. 아래 작성자 3-frame 예제는 이 원본 계산에서 생략된 경로 열거를 더 작은 수로 보충한다.
+
 다음은 계산 과정을 한눈에 보기 위한 **작성자 예제**다. 세 프레임에서 token 분포를 아래처럼 정하고 정답을 `AB`로 둔다. 각 열의 합은 1이다. 확률은 모델이 각 시각에 내놓은 값이라는 가정이지, 문장을 미리 나눈 확률이 아니다.
 
 | Token | $$t=1$$ | $$t=2$$ | $$t=3$$ |
@@ -349,6 +363,13 @@ $$
 
 ## 4. CTC decoding: 프레임 경로와 문장 확률은 다르다
 
+<figure id="speech-03-p40">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p40.png" | relative_url }}" alt="세 후보를 유지하며 blank와 a b로 확장하는 CTC prefix beam search" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=40" | relative_url }}">lecture PDF, p. 40</a>.</figcaption>
+</figure>
+
+시간이 오른쪽으로 진행하면서 현재 prefix에서 blank, a, b의 가지가 뻗는다. 점선처럼 서로 다른 경로가 같은 출력 prefix로 합쳐지면 확률을 더한 뒤 후보를 정리해야 한다. 그림의 빈 문자열 λ와 프레임 출력 blank ε는 역할이 다르다. Beam width 3은 각 단계에 유지할 후보 수이지 최종 문장이 세 글자라는 뜻이 아니다.
+
 Greedy decoding은 매 프레임 가장 큰 확률의 token 하나씩을 택한 뒤 $$\mathcal B$$를 적용한다. 빠르지만 $$\mathcal B(\arg\max_\pi P(\pi\mid X))$$가 반드시 $$\arg\max_y P_{\mathrm{CTC}}(y\mid X)$$는 아니다(pp. 36–38). 서로 다른 경로 여럿이 같은 문장에 확률을 보탤 수 있기 때문이다.
 
 <details markdown="block">
@@ -391,6 +412,13 @@ Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에
 
 ### 핵심 구조 비교
 
+<figure id="speech-03-p44">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p44.png" | relative_url }}" alt="Conformer convolution module의 정규화 GLU depthwise convolution 및 residual 경로" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=44" | relative_url }}">lecture PDF, p. 44</a>.</figcaption>
+</figure>
+
+왼쪽에서 오른쪽으로 pointwise convolution과 GLU가 채널을 조절하고, 1D depthwise convolution이 인접 시간의 패턴을 처리한다. 위의 우회선은 모듈 입력을 출력에 더하는 residual 경로다. Attention이 멀리 떨어진 frame의 관계를 읽는 동안 이 모듈은 가까운 음향 변화에 유리한 국소 구조를 제공한다. 아래 비교표의 ‘local modeling’이 구체적으로 어느 연산인지 이 경로로 확인할 수 있다.
+
 | 모델 | Encoder의 중심 | 원 논문의 전사 방식 |
 |---|---|---|
 | Deep Speech 2 | Convolution 뒤에 recurrent/GRU 층을 쌓아 시간 문맥을 누적 | **CTC 학습**, 언어 모델을 결합한 beam decoding |
@@ -403,6 +431,13 @@ Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에
 글자 단위로 길고 반복된 정답을 내면 CTC의 유효 경로가 적어지거나, encoder 시간축이 지나치게 짧을 때 경로가 아예 없어질 수 있다. 반대로 단어 하나를 token 하나로 두면 출력열은 짧지만, 단어 종류가 매우 많아지고 학습에서 보지 못한 단어를 그대로 나타내기 어렵다. **Subword는 글자보다 긴 빈출 조각을 학습하되 필요하면 더 작은 단위로 분해하여, 글자열의 긴 출력과 단어 어휘의 희소성 사이를 조절한다.** 그래서 목표 token 수를 줄이고 반복되는 철자 문맥을 공유할 수 있지만, 언제나 정확도가 오른다는 뜻은 아니다. 적절한 어휘 크기와 분할은 언어, 학습 말뭉치, ASR 구조와 decoder에 따라 달라진다(p. 46).
 
 ### 6.1 BPE는 무엇을 학습하고 어떻게 적용하는가
+
+<figure id="speech-03-p47">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p47.png" | relative_url }}" alt="빈도가 높은 인접 쌍을 Z Y X로 순차 병합하는 BPE 예제" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=47" | relative_url }}">lecture PDF, p. 47</a>.</figcaption>
+</figure>
+
+오른쪽 문자열에서 `aa`를 `Z`, 다음 단계의 `ab`를 `Y`, 이어 `ZY`를 `X`로 병합한다. 핵심은 원문 문자에서 모든 쌍을 한꺼번에 바꾸는 것이 아니라 현재 token sequence를 다시 세고 병합을 누적한다는 점이다. 여기서 Z·Y·X는 새 token을 표시한 이름이지 ASR의 음향 frame이나 확률이 아니다.
 
 슬라이드 p. 47의 Byte Pair Encoding(BPE)은 문자 vocabulary에서 시작해 **학습 말뭉치에서 가장 빈번한 인접 symbol 쌍**을 새 symbol로 합치는 과정을 정해진 병합 횟수 또는 목표 vocabulary 크기까지 반복한다. 여기서 빈도는 서로 다른 단어 종류를 한 번씩 세는 값이 아니다. 같은 단어가 말뭉치에 여러 번 나오면 그 횟수만큼 그 단어 내부의 인접 쌍 빈도에 가중치를 준다. 또한 Sennrich 등의 word-segmentation 방식은 먼저 공백·구두점 규칙으로 pretokenization한 뒤, **단어 경계를 가로지르는 쌍은 세지 않고** 단어 끝 표지를 사용해 원래 경계를 복원한다. 각 병합의 순서가 곧 merge rank이며, 먼저 학습된 쌍일수록 높은 우선순위를 갖는다.
 

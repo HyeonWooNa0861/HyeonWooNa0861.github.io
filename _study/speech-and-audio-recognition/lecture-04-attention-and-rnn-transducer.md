@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-13 15:21:46 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -293,6 +293,13 @@ One-hot 정답에서는 정답 위치의 확률만 손실을 결정한다. 예�
 
 ## 4. LAS: Listen, Attend and Spell
 
+<figure id="speech-04-p15">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-04-p15.png" | relative_url }}" alt="Pyramidal listener와 attention context를 받는 autoregressive speller" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf#page=15" | relative_url }}">lecture PDF, p. 15</a>.</figcaption>
+</figure>
+
+아래 listener는 여러 음향 frame을 더 짧은 hidden-state 열로 바꾼다. Attention의 여러 연결선은 출력 문자 하나를 만들 때 이 열의 여러 위치를 가중합한다는 뜻이다. Speller는 그 context와 이전 출력 이력을 함께 사용하므로 CTC처럼 각 frame에서 독립적으로 문자를 고르는 구조가 아니다. 위쪽 EOS는 음향 frame 끝이 아니라 출력열 종료를 나타낸다.
+
 ### 4.1 세 모듈의 연결
 
 LAS는 음성을 바로 문자열로 만드는 attention 기반 encoder–decoder다(pp. 14–17).
@@ -383,6 +390,13 @@ CTC는 프레임마다 기호 하나를 낸 뒤 연속 반복을 병합한다. R
 RNN-T의 출력 이력은 이미 생성한 prefix만 쓰므로 미래 token이 필요 없다. 하지만 encoder가 양방향이고 발화 전체를 읽어야 한다면 현재 $$h_t$$에도 미래 음향이 필요하다. 따라서 streaming RNN-T에는 **causal encoder 또는 지연이 제한된 chunk encoder**가 필요하다. Graves의 원래 transducer 논문은 양방향 transcription network도 사용하므로, RNN-T라는 이름만으로 streaming을 보장할 수 없다.
 
 ## 6. RNN-T 학습: 모든 정렬 경로의 확률 합
+
+<figure id="speech-04-p37">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-04-p37.png" | relative_url }}" alt="시간과 출력 인덱스로 구성한 RNN-T lattice의 두 정렬 경로" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf#page=37" | relative_url }}">lecture PDF, p. 37</a>.</figcaption>
+</figure>
+
+가로축의 이동은 blank를 내고 음향 시간을 넘기는 것이고, 세로축의 이동은 같은 시간에서 다음 정답 token을 내는 것이다. 주황 경로와 초록 경로는 이동 순서는 달라도 같은 상태에 합류한다. 따라서 해당 상태의 확률은 한 경로를 선택한 값이 아니라 가능한 유입 경로의 합이다. 아래의 작은 수치 예제와 보강 lattice는 이 원문 경로 합을 계산으로 풀어 쓴 것이다.
 
 ### 6.1 목표열을 고정하면 lattice가 생긴다
 
@@ -541,6 +555,13 @@ Subsampling은 $$T$$를, subword는 보통 $$U$$를 줄일 수 있다. 하지만
 </details>
 
 ## 8. CTC, LAS, RNN-T를 비교하는 기준
+
+<figure id="speech-04-p44">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-04-p44.png" | relative_url }}" alt="CTC, LAS, RNN-T의 streaming, context, argmax 복잡도와 beam search 복잡도를 비교한 강의 표" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf#page=44" | relative_url }}">lecture PDF, p. 44</a>.</figcaption>
+</figure>
+
+행을 위에서 아래로 읽으면 streaming 가능성, 출력 이력 context, greedy 계산량, beam-search 계산량을 비교한다. 표의 `yes/no`는 기본 구조를 간단히 요약한 값이다. 실제 streaming은 encoder의 causal 또는 chunk 설정까지 확인해야 하며, 아래 본문은 그 조건을 보충한다.
 
 ### 8.1 CTC와 LAS가 정렬을 처리하는 방식
 

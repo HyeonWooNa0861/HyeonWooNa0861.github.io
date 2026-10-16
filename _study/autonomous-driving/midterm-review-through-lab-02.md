@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Autonomous Driving Computing Midterm Review through Lab 2"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -350,6 +351,15 @@ Fusion 전에는 공간 calibration, timestamp synchronization, 같은 object re
 
 ## 7. Lab 1: Two-stage와 one-stage를 tensor 흐름으로 읽기
 
+<figure id="source-rpn-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment2-rpn-proposals.png" | relative_url }}" alt="Init와 COCO 모델의 top 50 RPN proposal과 정답 box" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}">Assignment 2 notebook, cell 27 (0-based), saved output</a>.</figcaption>
+</figure>
+
+청록 box는 상위 50개 proposal, 흰 점선은 GT다. 오른쪽 COCO 모델에서 물체 주변으로 후보가 모이는지 왼쪽 초기화 모델과 비교한다. 이 단계는 class를 확정한 최종 detection이 아니므로 proposal 수가 많다고 recall이나 precision이 높다고 단정하지 않는다. 원본에 저장된 출력이며 학습을 새로 실행한 결과는 아니다.
+
+[원본 FPN 출력과 코드 해설](/assignment/autonomous-driving/assignment-02-two-stage-vs-one-stage-detection/#source-fpn-output)에서 입력 feature를 먼저 확인하고, 위 proposal이 [R-CNN 구조](/study/autonomous-driving/lecture-04-perception-02/#adc-04-p32)의 영역 후보와 어떤 역할을 공유하는지 비교한다.
+
 ### 7.1 입력에서 FPN까지
 
 Penn–Fudan dataset의 instance mask에서 instance별 foreground pixel의 최소·최대 좌표를 구해 2D box를 만든다. 이미지 transform은 resize, normalization, batch padding을 수행한다. 이 셋을 혼동하면 box coordinate와 feature coordinate를 잘못 비교하게 된다.
@@ -462,6 +472,15 @@ Lab 1의 plot은 다음처럼 읽는다.
 Lab 1 base notebook은 실행 output이 없다. 공개 base notebook을 새로 실행하지 않았다. Assignment 2 답변본에는 저장 output이 있지만, 그 값은 해당 저장 실행 환경과 dataset 상태의 기록이지 이번 글에서 재현한 새 실험이 아니다.
 
 ## 8. Lab 2: KITTI point에서 VoxelNet detection까지
+
+<figure id="source-voxel-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment3-voxelization.png" | relative_url }}" alt="Voxel별 점 수 histogram과 BEV grid 및 높이 bin 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-03-lidar-3d-object-detection.ipynb" | relative_url }}">Assignment 3 notebook, cell 25 (0-based), saved output</a>.</figcaption>
+</figure>
+
+왼쪽은 비어 있지 않은 voxel의 점 수 분포이며 세로축은 로그 척도다. 빨간 T=32 선은 voxel 하나에서 남길 최대 점 수를 표시한다. 가운데의 0.2 m 격자와 오른쪽의 0.4 m 높이 구간은 공간 분할 크기다. 점 수 제한과 voxel의 물리적 크기를 분리해야 sparse 입력이 고정 tensor로 바뀌는 과정을 이해할 수 있다.
+
+[원본 KITTI 좌표 그림](/assignment/autonomous-driving/assignment-03-lidar-3d-object-detection/#source-kitti-bev)에서 좌표와 GT를 확인한 뒤 위 voxelization 출력으로 이동한다. [강의 VoxelNet 도식](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p29)은 이 격자 안 점들이 VFE와 sparse tensor로 연결되는 다음 단계를 보여 준다.
 
 ### 8.1 Lab 2는 Part A와 Part B의 evidence가 다르다
 

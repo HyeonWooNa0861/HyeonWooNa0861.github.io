@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -69,6 +69,12 @@ void render(Shape* s) {
 핵심은 기본 클래스 포인터나 참조를 통해 파생 클래스 객체를 다룰 때, `virtual` 함수 호출이 실제 객체 타입 기준으로 결정된다는 점이다.
 
 ## 2. 가상 함수와 동적 바인딩
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-polymorphism-page-03.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-polymorphism-page-03.png" | relative_url }}" alt="원본 강의 슬라이드의 virtual 유무에 따른 호출 비교" loading="lazy"></a>
+
+*원본 `C++ 다형성.pdf` p. 3. 두 코드 모두 `Animal* p = new Dog()`지만, 왼쪽은 `virtual`이 없어 포인터 type `Animal`의 `speak()`를 호출한다. 오른쪽은 `virtual`과 `override`가 있어 실제 객체 type `Dog`의 `speak()`가 선택된다. <a href="{{ "/assets/pdfs/study/cpp/C++ 다형성.pdf#page=3" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 3</a>*
+
+정적 binding은 compile time의 표현식 type으로 목적 함수를 정한다. 동적 binding은 runtime의 실제 객체에 연결된 vtable을 조회하므로, 같은 `Animal*` 호출도 객체가 `Dog`인지 `Cat`인지에 따라 결과가 바뀐다.
 
 `virtual`이 없으면 기본 클래스 포인터로 호출할 때 포인터 타입 기준으로 함수가 결정된다.
 

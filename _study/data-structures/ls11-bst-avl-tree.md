@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS11_BST_AVL_tree.pdf`
 
 > **핵심:** BST에서 자식이 둘인 노드를 삭제할 때는 오른쪽 서브트리의 최소 노드로 대체할 수 있다. 트리가 한쪽으로 편향되면 높이가 $$n$$까지 커지므로 탐색·삽입·삭제의 최악 시간복잡도는 $$O(n)$$이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS11_BST_AVL_tree.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls11-p13-bst-delete.jpg" | relative_url }}" alt="BST에서 리프 노드 28을 삭제하기 전후를 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 13. 자식이 없는 리프 삭제는 부모의 해당 포인터를 null로 바꾸면 끝난다.</figcaption>
+</figure>
+
+빨간 원의 28은 자식이 없으므로 구조를 이어 줄 노드가 없다. 부모 30의 왼쪽 포인터만 끊으면 중위 순서와 BST 조건이 유지된다. 한 자식·두 자식 삭제는 이 단순 사례와 달리 서브트리 연결이나 successor 교체가 필요하다.
 
 ## 전체 흐름
 

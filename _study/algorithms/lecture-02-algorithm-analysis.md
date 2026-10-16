@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 13:34:33 +0900
-last_modified_at: 2026-10-15 00:40:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 2: Algorithm Analysis"
 course: "Algorithms"
 topic: "Efficiency, Case Analysis, and Asymptotic Notation"
@@ -26,6 +26,15 @@ Source PDF: `02-algorithm-analysis.pdf`
 알고리즘의 효율을 비교하려면 먼저 입력 크기에 따라 어떤 연산을 몇 번 수행하는지 세어야 한다. 국민대학교 Youngwook Kim 교수의 *Algorithms* 2강을 바탕으로 이 연산 수를 점근 표기법에 연결한다. 슬라이드의 빈칸형 예제는 연산 계수 규칙과 가정을 밝힌 뒤 풀이하고, 강의 밖의 증명과 흔한 오해는 **작성자 보충**으로 구분한다.
 
 > **핵심:** 알고리즘 분석은 실제 실행 시간을 초 단위로 맞히는 작업이 아니라, **입력 크기 $$n$$이 커질 때 문제 해결에 필요한 기본 연산 수 $$T(n)$$이 어떤 속도로 증가하는지 설명하는 작업**이다. 같은 문제도 알고리즘에 따라 $$\Theta(1)$$, $$\Theta(n)$$, $$\Theta(n^2)$$처럼 성장률이 달라지며, Big-O·Big-$$\Omega$$·Big-$$\Theta$$는 각각 상한·하한·tight bound를 표현한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/02-algorithm-analysis.pdf#page=27" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-02-p27-asymptotic-notations.jpg" | relative_url }}" alt="세 알고리즘의 정확한 수행 시간과 Big-O, Big-Omega, Big-Theta 표기를 비교한 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 27. 정확한 수행 시간과 세 점근 표기의 관계를 한 표에서 비교한다.</figcaption>
+</figure>
+
+표는 각 열을 위에서 아래로 읽는다. `T(n)`에서 낮은 차수와 상수를 제거하면 대표 성장률이 남고, Big-O와 Big-Omega에는 느슨한 상·하한도 여러 개 들어갈 수 있다. 두 경계를 가장 촘촘하게 맞춘 값이 Big-Theta다. 따라서 Algorithm 1의 핵심 결론은 단순히 `O(n)`이 아니라 `Θ(n)`이다.
 
 ## 전체 흐름
 

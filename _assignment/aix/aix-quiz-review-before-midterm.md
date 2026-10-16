@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:19:57 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "AIX Quiz Review Before Midterm"
 course: "AIX"
 topic: "Before Midterm Quiz Review"
@@ -41,6 +42,13 @@ Source Images:
 5. Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합한다.
 
 ## 1. Linear Regression
+
+<figure>
+  <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-001.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-001.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 1. Linear regression의 feature와 target 관계를 묻는 문항." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-001.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-001.png</code></a> — 선형 회귀에서 입력 feature와 예측 target을 구분하게 하는 원본 Quiz.</figcaption>
+</figure>
+
+문항을 볼 때는 모델 이름보다 먼저 어떤 값이 입력이고 어떤 값을 예측하는지 표시한다. 이 구분이 잡혀야 $$w^Tx+b$$, residual, loss의 역할을 순서대로 연결할 수 있다.
 
 ### 핵심 정답 키워드
 
@@ -292,6 +300,13 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 
 ## 5. NLP, Tokenizer, Word2Vec
 
+<figure>
+  <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-006.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-006.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 6. Word2Vec과 Skip-Gram의 학습 관계를 묻는 문항." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-006.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-006.png</code></a> — 중심 단어와 주변 단어의 예측 방향을 확인하는 Word2Vec 원본 Quiz.</figcaption>
+</figure>
+
+그림에서는 중심 token과 context token의 방향을 먼저 확인한다. Skip-Gram은 중심 단어로 주변 단어를 예측하고, CBOW는 주변 단어들로 중심 단어를 예측하므로 화살표 방향이 정답 판단 기준이다.
+
 ### 핵심 정답 키워드
 
 | 문항 | 문제 유형 | 정답 키워드 |
@@ -425,6 +440,13 @@ Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 �
 
 ## 7. Transformer와 Self-Attention
 
+<figure>
+  <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-013.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-013.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 13. self-attention과 multi-head attention의 역할을 묻는 문항." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-013.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-013.png</code></a> — self-attention의 token 관계와 multi-head의 병렬 projection을 구분하는 원본 Quiz.</figcaption>
+</figure>
+
+문항은 attention을 단순한 중요도 표시로 보지 않고, Q–K score로 V를 다시 조합하는 계산으로 읽어야 풀린다. Multi-head는 동일 계산을 서로 다른 projection 공간에서 병렬 수행한다.
+
 ### 핵심 정답 키워드
 
 | 문항 | 문제 유형 | 정답 키워드 |
@@ -497,6 +519,20 @@ $$
 </details>
 
 ## 8. Self-Supervised Learning과 Modern Vision
+
+<figure>
+  <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-019.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-019.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 19. computer vision task와 deep learning의 역할을 묻는 문항." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-019.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-019.png</code></a> — vision task의 입력·출력 형태를 확인하는 원본 Quiz.</figcaption>
+</figure>
+
+Vision 문항은 classification, detection, segmentation이 같은 이미지를 받아도 출력 형식이 다르다는 기준으로 읽는다. 하나의 label인지, box 집합인지, pixel-wise mask인지가 우선 판단점이다.
+
+<figure>
+  <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 24. tokenizer와 subword 단위의 필요성을 묻는 문항." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-024.png</code></a> — vocabulary 크기와 unknown token 문제를 함께 보는 tokenizer 원본 Quiz.</figcaption>
+</figure>
+
+Tokenizer 문항은 단어 전체를 그대로 vocabulary에 넣을 때 생기는 희소성과 OOV 문제를 먼저 본다. Subword는 자주 쓰이는 조각을 재사용해 vocabulary 크기와 표현 범위 사이를 절충한다.
 
 ### 핵심 정답 키워드
 

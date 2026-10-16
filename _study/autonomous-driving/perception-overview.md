@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Perception Review: From Image Classification to Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Integrated Review of Visual Representations, Detection, and Segmentation"
@@ -141,6 +142,13 @@ $$
 
 ## 4. R-CNN 계열은 어떤 병목을 차례로 해결했는가
 
+<figure id="source-rcnn-overview">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-04-p32.png" | relative_url }}" alt="영역별 ConvNet을 반복하는 원본 R-CNN 구조" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-04-perception-02.pdf#page=32" | relative_url }}">lecture PDF, p. 32</a>.</figcaption>
+</figure>
+
+각 proposal마다 ConvNet을 적용하는 원본 경로에서 중복 계산이 어디서 생기는지 먼저 찾는다. 이후 Fast R-CNN은 convolution을 공유하고 Faster R-CNN은 proposal도 학습한다. [R-CNN 원본 해설](/study/autonomous-driving/lecture-04-perception-02/#adc-04-p32), [RPN](/study/autonomous-driving/lecture-06-perception-04/#adc-06-p16), [FPN](/study/autonomous-driving/lecture-06-perception-04/#adc-06-p31)을 순서대로 비교하면 바뀐 블록과 유지된 역할이 드러난다.
+
 | 구조 | 바뀐 핵심 | 남은 과제와 다음 연결 |
 |---|---|---|
 | R-CNN | 후보 영역마다 CNN 특징 계산 | 겹치는 영역에서 연산 반복; 특징을 공유하는 Fast R-CNN으로 연결 |
@@ -235,6 +243,8 @@ $$
 이는 PR 점들의 precision을 단순 평균한 것이 아니라 recall이 늘어난 구간의 넓이다. **외부 보강:** <a href="https://github.com/cocodataset/cocoapi/blob/master/PythonAPI/pycocotools/cocoeval.py" target="_blank" rel="noopener">COCO 공식 평가 구현</a>은 기본적으로 101개 recall 지점과 IoU 0.50–0.95의 0.05 간격을 사용하며 maxDets·area·ignore 설정도 포함한다. 위 교육용 all-points 값과 COCO AP를 동일한 수치라고 부르면 안 된다. Box AP와 mask AP도 겹침을 계산하는 대상이 다르다.
 
 ## 7. Box에서 pixel과 instance로 확장하기
+
+[원문 transposed-convolution 계산](/study/autonomous-driving/lecture-08-perception-06/#adc-08-p14)은 겹친 필터 기여가 왜 더해지는지 보여 주고, [Mask R-CNN 출력](/study/autonomous-driving/lecture-08-perception-06/#adc-08-p25)은 box에서 instance pixel로 출력이 확장되는 차이를 보여 준다. 아래의 보충 식은 이 두 원본 예제를 연결한다.
 
 ### 7.1 Semantic segmentation과 공간 해상도
 

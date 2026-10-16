@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS12 AVL Trees"
 course: "Data Structures"
 topic: "AVL Trees"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS12_AVL_tree.pdf`
 
 > **핵심:** AVL 트리는 회전으로 높이를 $$O(\log n)$$에 유지해 편향된 BST의 최악 성능을 피한다. 삽입 후에는 새 노드에서 조상으로 올라가며 처음 불균형이 생긴 노드 `z`를 기준으로 회전한다.
+
+## 원본 그림과 정정으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS12_AVL_tree.pdf#page=30" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls12-p30-rl-rotation-source-error.jpg" | relative_url }}" alt="RL 불균형을 y의 오른쪽 회전과 z의 왼쪽 회전으로 복구하는 강의 원본 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 30. RL 이중 회전의 전체 과정이며, 오른쪽 영문 캡션에는 아래 정정이 필요하다.</figcaption>
+</figure>
+
+첫 회전은 `y`를 오른쪽으로 돌려 `x`가 `y`의 부모가 되게 한다. 둘째 회전은 `z`를 왼쪽으로 돌려 `x`가 최종 서브트리 루트가 되게 한다. 따라서 그림의 최종 구조는 맞지만, 원문 캡션의 “`y` is the new root”는 “`x` is the new root”가 맞다. 원본 오류를 그대로 외우지 말고 회전 뒤 포인터 관계로 검산한다.
 
 ## 전체 흐름
 
@@ -109,6 +118,11 @@ z                  y
 빈 서브트리의 높이를 `-1`, leaf의 높이를 `0`으로 세면 삽입 직후 `BF(30)=2`이고, 마지막에는 세 노드 모두 `BF=0`이다.
 
 ### RL
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS12_AVL_tree.pdf#page=29" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls12-p29-rl-rotation-source.jpg" | relative_url }}" alt="RL 불균형에서 y를 오른쪽 회전한 뒤 z를 왼쪽 회전하는 첫 강의 단계" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 29. 첫 회전은 `y`의 왼쪽 자식 `x`를 위로 올려 RL 모양을 RR 형태로 바꾸고, 다음 왼쪽 회전이 `x`를 부분 트리의 새 루트로 만든다.</figcaption>
+</figure>
 
 `z`의 오른쪽 자식 `y`의 왼쪽에 삽입된다. 먼저 `y`에서 오른쪽 회전해 `x`를 `y` 위로 올리고, `x`의 기존 오른쪽 서브트리를 `y`의 왼쪽으로 옮긴다. 그다음 `z`에서 왼쪽 회전해 `x`를 부분 트리의 루트로 만들고, `x`의 기존 왼쪽 서브트리를 `z`의 오른쪽으로 옮긴다.
 

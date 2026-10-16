@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"
@@ -69,6 +69,13 @@ text -> tokens -> vectors -> model -> output
 
 ## 3. Word Embedding
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/nlp-transformer-slide-15.png" | relative_url }}" alt="AIX NLP 강의 15쪽. 서로 직교하는 one-hot token vector와 의미 관계를 거리와 방향으로 담는 learned embedding 비교." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/4_NLP_Transformer.pdf#page=15" | relative_url }}" target="_blank" rel="noopener"><code>4_NLP_Transformer.pdf</code> p.15</a> — one-hot representation과 learned embedding의 기하학적 차이를 보여주는 원본 그림.</figcaption>
+</figure>
+
+왼쪽 one-hot 공간에서는 서로 다른 token이 모두 직교해 `teddy bear–book`과 `teddy bear–soft`의 관계를 똑같이 0으로 취급한다. 오른쪽 learned embedding은 학습된 방향과 거리에 차이를 만들어, 문맥상 가까운 token의 관계를 연속값으로 표현한다.
+
 Word embedding은 단어를 dense vector로 표현한다. 비슷한 문맥에서 등장하는 단어는 비슷한 vector를 갖도록 학습된다.
 
 ```text
@@ -93,6 +100,13 @@ One-hot vector끼리는 서로 다른 token이면 직교하므로 내적이 0이
 
 ## 4. RNN과 LSTM
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/nlp-transformer-slide-30.png" | relative_url }}" alt="AIX NLP 강의 30쪽. 이전 단어가 흐리게 남고 현재 입력 is로 다음 단어 reading을 예측하는 recurrent cell." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/4_NLP_Transformer.pdf#page=30" | relative_url }}" target="_blank" rel="noopener"><code>4_NLP_Transformer.pdf</code> p.30</a> — 이전 문맥과 현재 token을 hidden state에서 결합해 다음 token을 내는 RNN 원본 장면.</figcaption>
+</figure>
+
+그림의 흐린 앞 token들은 이전 step을 통해 hidden state에 축적된 문맥이고, 아래의 `is`는 현재 입력, 위의 `reading`은 현재 step의 출력이다. 동일한 cell을 시간 순서대로 반복하므로 문맥을 전달할 수 있지만, step 사이 의존성 때문에 병렬 처리가 어렵다.
+
 RNN은 sequence를 왼쪽에서 오른쪽으로 읽으며 hidden state를 갱신한다.
 
 $$
@@ -104,6 +118,13 @@ $$
 LSTM과 GRU는 gate 구조를 사용해 어떤 정보를 기억하고 버릴지 조절한다. 덕분에 단순 RNN보다 긴 의존성을 더 잘 다룰 수 있지만, 순차 처리 특성 때문에 병렬화가 어렵다.
 
 ## 5. Seq2Seq와 Attention
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/nlp-transformer-slide-38.png" | relative_url }}" alt="AIX NLP and Transformer 강의 슬라이드 38쪽. scaled dot-product attention 식과 Q, K, V에서 시작하는 attention 및 multi-head attention 블록을 나란히 보여준다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/4_NLP_Transformer.pdf#page=38" | relative_url }}" target="_blank" rel="noopener"><code>4_NLP_Transformer.pdf</code> p.38</a> — scaled dot-product attention과 multi-head attention을 연결한 원본 슬라이드.</figcaption>
+</figure>
+
+왼쪽 식은 $$QK^T$$로 query와 key의 관련도를 구하고, $$\sqrt{d_k}$$로 scale한 뒤 softmax weight를 value $$V$$에 적용한다. 가운데 구조도는 아래에서 위로 `MatMul`, `Scale`, 선택적 `Mask`, `SoftMax`, `MatMul` 순서다. 오른쪽에서는 같은 계산을 여러 head가 서로 다른 projection에서 수행하고, 결과를 `Concat`한 뒤 `Linear` layer로 합친다. 따라서 attention은 token을 없애는 연산이 아니라, token 사이 관련도에 따라 value 정보를 다시 조합하는 연산이다.
 
 Seq2Seq 모델은 encoder가 입력 문장을 읽어 하나의 context vector로 압축하고, decoder가 그 vector를 바탕으로 출력 문장을 생성한다.
 

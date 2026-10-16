@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:10:42 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "AIX Quiz Review After Midterm"
 course: "AIX"
 topic: "After Midterm Quiz Review"
@@ -42,6 +43,13 @@ Source PDFs:
 5. 로봇 학습에서는 행동이 다음 상태 분포를 바꾸기 때문에 ordinary supervised learning보다 distribution shift 문제가 크다.
 
 ## 1. 20260521: LLM 생성과 Decoding
+
+<figure>
+  <img src="{{ "/assets/images/assignment/aix/after-midterm/aix-quiz-20260521-page-02.png" | relative_url }}" alt="AIX 2026년 5월 21일 Quiz 2쪽. Mixture of Experts와 beam search 관련 문항." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/assignment/aix/aix-quiz-20260521.pdf#page=2" | relative_url }}" target="_blank" rel="noopener"><code>aix-quiz-20260521.pdf</code> p.2</a> — expert routing과 decoding 후보 관리의 차이를 묻는 원본 Quiz.</figcaption>
+</figure>
+
+MoE는 한 forward pass에서 어떤 expert를 활성화할지 정하고, beam search는 생성 중 어떤 token sequence 후보를 유지할지 정한다. 둘 다 선택을 포함하지만 선택 대상과 시점이 다르다.
 
 ### 핵심 정답 키워드
 
@@ -123,6 +131,13 @@ encoder-only는 BERT처럼 입력 이해에 강한 구조를 설명할 때 더 �
 </details>
 
 ## 2. 20260602: 자율주행 기본 구조와 Modular Stack
+
+<figure>
+  <img src="{{ "/assets/images/assignment/aix/after-midterm/aix-quiz-20260602-page-02.png" | relative_url }}" alt="AIX 2026년 6월 2일 Quiz 2쪽. 자율주행 AI와 perception 및 modular stack 관련 문항." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/assignment/aix/aix-quiz-20260602.pdf#page=2" | relative_url }}" target="_blank" rel="noopener"><code>aix-quiz-20260602.pdf</code> p.2</a> — perception에서 planning·control로 이어지는 modular 역할을 확인하는 원본 Quiz.</figcaption>
+</figure>
+
+이 문항군은 센서 입력을 곧바로 steering으로 연결하는지, perception·prediction·planning의 명시적 중간 출력을 거치는지를 구분해 읽는다.
 
 ### 핵심 정답 키워드
 
@@ -207,6 +222,13 @@ modular stack은 각 단계가 분명해 해석하기 쉽지만, 앞단 모듈�
 
 ## 3. 20260604: Tesla End-to-End와 World Representation
 
+<figure>
+  <img src="{{ "/assets/images/assignment/aix/after-midterm/aix-quiz-20260604-page-02.png" | relative_url }}" alt="AIX 2026년 6월 4일 Quiz 2쪽. learned 3D representation과 representation-level end-to-end 관련 문항." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/assignment/aix/aix-quiz-20260604.pdf#page=2" | relative_url }}" target="_blank" rel="noopener"><code>aix-quiz-20260604.pdf</code> p.2</a> — 여러 camera 정보를 공유 3D world representation으로 통합하는 이유를 묻는 원본 Quiz.</figcaption>
+</figure>
+
+핵심은 모든 단계를 없애는 것이 아니라, 여러 downstream task가 공유하는 중간 world representation까지 공동 학습한다는 점이다. Camera별 2D 결과를 따로 유지하는 접근과 대비한다.
+
 ### 핵심 정답 키워드
 
 | 문항 | 문제 유형 | 정답 키워드 |
@@ -282,6 +304,13 @@ shared world representation은 여러 task가 같은 장면 표현을 공유하�
 
 ## 4. 20260605 (1): Imitation Learning과 DAggER
 
+<figure>
+  <img src="{{ "/assets/images/assignment/aix/after-midterm/aix-quiz-20260605-1-page-02.png" | relative_url }}" alt="AIX 2026년 6월 5일 첫 번째 Quiz 2쪽. behavioral cloning과 현재 action이 미래 state distribution에 미치는 영향 관련 문항." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/assignment/aix/aix-quiz-20260605-1.pdf#page=2" | relative_url }}" target="_blank" rel="noopener"><code>aix-quiz-20260605-1.pdf</code> p.2</a> — sequential decision에서 action error가 다음 입력 분포를 바꾸는 원본 Quiz.</figcaption>
+</figure>
+
+일반 supervised learning과 달리 robot policy의 현재 예측은 다음 state를 만든다. 따라서 작은 오차도 이후 입력을 expert dataset 밖으로 밀어낼 수 있고, DAggER는 learner가 실제 방문한 state를 다시 수집한다.
+
 ### 핵심 정답 키워드
 
 | 문항 | 문제 유형 | 정답 키워드 |
@@ -348,6 +377,13 @@ DAggER는 Dataset Aggregation의 약자다. 단순히 expert demonstration만 �
 </details>
 
 ## 5. 20260605 (2): Robotics Scaling, VLA, Embodied AI
+
+<figure>
+  <img src="{{ "/assets/images/assignment/aix/after-midterm/aix-quiz-20260605-2-page-02.png" | relative_url }}" alt="AIX 2026년 6월 5일 두 번째 Quiz 2쪽. VLA와 ego-video 및 embodied learning 관련 문항." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/assignment/aix/aix-quiz-20260605-2.pdf#page=2" | relative_url }}" target="_blank" rel="noopener"><code>aix-quiz-20260605-2.pdf</code> p.2</a> — vision-language representation을 action으로 확장하고 ego-video를 사전학습에 쓰는 이유를 묻는 원본 Quiz.</figcaption>
+</figure>
+
+VLA는 장면과 지시를 이해하는 VLM 표현을 motor action까지 연결한다. Ego-video는 행위자 관점의 시간 변화와 손–물체 상호작용을 담아, 정적 이미지보다 행동 학습에 가까운 관측을 제공한다.
 
 ### 핵심 정답 키워드
 

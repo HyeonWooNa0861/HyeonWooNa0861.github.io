@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Inheritance"
 course: "C++"
 topic: "Inheritance and Class Hierarchies"
@@ -239,6 +239,12 @@ ProtDerived td;
 일반적인 is-a 관계를 표현할 때는 대부분 public 상속을 사용한다. protected/private 상속은 구현 재사용 목적의 “구현 상속”에 가깝고 드물게 사용된다.
 
 ## 6. 생성자와 소멸자 호출 순서
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-inheritance-page-07.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-inheritance-page-07.png" | relative_url }}" alt="원본 강의 슬라이드의 기본·파생 생성자와 소멸자 호출 순서" loading="lazy"></a>
+
+*원본 `C++ 상속.pdf` p. 7. `Derived d;` 하나를 만들면 출력은 `Base 생성`, `Derived 생성`, `Derived 소멸`, `Base 소멸` 순서다. 오른쪽 요약은 생성이 Base에서 Derived로, 소멸이 역순으로 진행됨을 보여준다. <a href="{{ "/assets/pdfs/study/cpp/C++ 상속.pdf#page=7" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 7</a>*
+
+파생 객체 안에는 기본 class 부분이 먼저 존재해야 파생 생성자가 그 부분을 사용할 수 있다. 파괴할 때는 파생 class가 가진 자원을 먼저 정리한 뒤, 마지막에 기본 class 부분을 정리해야 이미 파괴된 기반 상태를 참조하지 않는다.
 
 상속 관계에서 객체가 생성될 때는 기본 클래스가 먼저 생성되고, 그 다음 파생 클래스가 생성된다.
 

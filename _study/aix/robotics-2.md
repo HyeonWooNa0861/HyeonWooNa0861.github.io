@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-09-03 20:25:28 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Robotics 2"
 course: "AIX"
 topic: "VLA, World Models, Physical RL"
@@ -54,6 +54,13 @@ Robotics 2는 LLM scaling의 성공 공식이 로보틱스로 확장될 수 있�
 
 ## 1. Physical AI와 New Robotics Thesis
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-09.png" | relative_url }}" alt="AIX Robotics 2 강의 슬라이드 9쪽. LLM의 pre-training, supervised fine-tuning, reasoning RL을 robotics의 world modeling, action fine-tuning, physical RL에 대응한 두 줄 pipeline." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=9" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.9</a> — LLM 학습 단계와 robotics scaling 단계를 대응시킨 원본 중심 도식.</figcaption>
+</figure>
+
+위쪽 초록 pipeline은 `Pre-Training`, `Supervised Fine-Tuning`, `Reasoning RL`을 각각 simulation, alignment, surpassing 단계로 읽는다. 아래쪽 보라 pipeline은 앞의 두 단계를 `World Modeling`, `Action Fine-Tuning`에 대응하며, 강의의 후반부에서 physical RL을 세 번째 단계로 연결한다. 이 도식은 두 분야가 수학적으로 동일하다는 증명이 아니라, robotics data와 training strategy를 조직하는 강의의 중심 가설이다.
+
 강의는 로보틱스를 LLM race 이후의 next frontier로 본다. LLM에서 대규모 model, data, compute가 성능을 밀어 올렸듯이, robotics도 scale 가능한 architecture와 data engine이 결합될 때 크게 발전할 수 있다는 주장이다.
 
 | LLM scaling | Robotics scaling |
@@ -92,6 +99,13 @@ Robot foundation model에는 두 가지가 함께 필요하다.
 좋은 model도 약한 data 위에서는 실패하고, 많은 data도 model이 활용할 수 없으면 낭비된다. 그래서 model strategy와 data strategy는 함께 진화해야 한다.
 
 ## 4. VLA as Robotics Backbone
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-11.png" | relative_url }}" alt="AIX Robotics 2 강의 11쪽. 장면 이미지와 언어 지시가 VLM 및 action head를 거쳐 motor action으로 변환되는 VLA 구조." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=11" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.11</a> — vision과 language 조건을 motor action으로 연결하는 VLA 원본 구조도.</figcaption>
+</figure>
+
+왼쪽의 scene image와 language instruction이 함께 VLM representation으로 들어가고, action head가 이를 robot action sequence로 바꾼다. VLA의 핵심은 언어 설명을 출력하는 데서 끝나지 않고, 같은 multimodal representation을 물리적 제어 출력까지 연결하는 데 있다.
 
 VLA는 Vision-Language-Action이다. 이미지를 보고, 언어 지시를 이해하고, robot action을 출력하는 구조다.
 
@@ -132,6 +146,13 @@ DreamZero와 Franka demos는 action fine-tuning이 unseen tasks에 대한 zero-s
 
 ## 7. World Models와 WAM
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-19.png" | relative_url }}" alt="AIX Robotics 2 강의 19쪽. 다양한 가정 작업을 수행하는 humanoid robot rollout 장면을 3x3로 배열한 world model 사례." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.19</a> — 여러 작업 rollout으로 world model의 내부 simulation 관점을 보여주는 원본 장면.</figcaption>
+</figure>
+
+아홉 장면은 하나의 정적 action 분류가 아니라, 서로 다른 환경에서 시간이 진행되는 rollout을 묶어 보여준다. World model은 현재 관측과 action을 조건으로 이후 state 변화를 예측해, 실제 실행 전에 후보 행동의 결과를 비교할 내부 simulation을 제공한다.
+
 강의는 단순한 VLA보다 World Action Model, 즉 WAM 관점을 강조한다.
 
 | 모델 관점 | 핵심 |
@@ -152,6 +173,13 @@ current observation
 따라서 "VLA is dead, long live WAM"이라는 표현은 action output만으로 충분하지 않고, world modeling을 first-class로 둬야 한다는 주장으로 이해하면 된다.
 
 ## 8. Data Engines
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-33.png" | relative_url }}" alt="AIX Robotics 2 강의 33쪽. 1k부터 20k 시간까지의 pretraining dataset size가 커질수록 human validation loss가 낮아지는 두 그래프." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=33" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.33</a> — robot pre-training data 규모와 validation loss의 관계를 제시한 원본 scaling chart.</figcaption>
+</figure>
+
+왼쪽은 같은 training step에서 더 큰 사전학습 데이터 곡선이 더 낮은 validation loss에 도달함을 보여준다. 오른쪽은 각 데이터 규모에서 얻은 최적 loss를 모아, 데이터 시간이 로그 축에서 증가할수록 loss가 내려가는 추세를 요약한다. 이는 단일 demo가 아니라 데이터 규모 효과를 비교한 근거다.
 
 Robot foundation model에서 data engine은 병목이다. Teleoperation은 오랫동안 default data engine이었다.
 
@@ -182,6 +210,13 @@ Ego-video는 internet-scale substrate로 중요하다. First-person human video�
 EgoVerse는 raw ego-video를 dense language annotation과 temporal grounding으로 더 structured하게 만드는 방향으로 이해할 수 있다.
 
 ## 10. Physical RL과 Simulation
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-2-slide-39.png" | relative_url }}" alt="AIX Robotics 2 강의 39쪽. massive parallel RL training에 real world, world scan, world model 세 종류 환경이 공급되는 도식." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=39" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.39</a> — real data, scanned worlds, model-generated worlds를 병렬 RL에 결합하는 원본 ecosystem 도식.</figcaption>
+</figure>
+
+오른쪽 세 묶음은 동일한 simulator의 복제본이 아니다. 실제 환경은 현실 접촉을, world scan은 graphics engine 기반 다양성을, world model은 inference compute로 생성한 상황을 공급한다. Massive parallel RL은 이 서로 다른 분포를 함께 사용해 경험량과 상황 범위를 늘린다.
 
 Physical RL은 robotics pipeline의 surpassing phase다. LLM에서 reasoning RL이 human response imitation을 넘어서는 단계로 설명되듯, robotics에서는 physical RL이 teleoperated trajectories를 넘어서는 단계로 제시된다.
 

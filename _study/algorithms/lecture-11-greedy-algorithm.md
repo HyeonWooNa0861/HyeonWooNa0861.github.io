@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:38:33 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 11: Greedy Algorithms"
 course: "Algorithms"
 topic: "Greedy Choice, Change Making, and Activity Selection"
@@ -22,6 +23,15 @@ Source PDF: [11 Greedy Algorithm.pdf](/assets/pdfs/study/algorithms/lecture-11-g
 그리디 알고리즘은 매 단계에서 현재 기준으로 가장 좋은 선택 하나를 확정한다. 선택을 되돌리지 않으므로 빠르고 단순할 수 있지만, **지역 최선이 전역 최선으로 이어진다는 증명**이 없으면 정답을 보장하지 않는다. 이 강의는 동전 교환과 회의 배정을 통해 안전한 선택을 찾고, 교환 논증과 최적 부분 구조로 그 선택을 증명하는 방법을 다룬다.
 
 > **핵심:** 그리디 풀이에는 선택 규칙만이 아니라 두 근거가 필요하다. 어떤 최적해가 그리디 선택을 포함하도록 바꿀 수 있어야 하고, 그 선택 뒤의 남은 문제도 같은 형태의 최적 문제여야 한다. 동전 액면의 배수 관계는 동전 교환 그리디의 충분조건이며, 회의 최대 선택 문제에서는 가장 빨리 끝나는 회의를 고른다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-11-greedy-algorithm.pdf#page=25" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-11-p25-meeting-room.jpg" | relative_url }}" alt="종료 시간이 가장 빠른 회의를 선택하는 greedy-choice property와 optimal substructure를 설명한 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 25. 가장 빨리 끝나는 회의를 포함하는 최적해가 존재함을 교환 논증으로 설명한다.</figcaption>
+</figure>
+
+원문은 임의의 최적해 `T`가 첫 회의를 포함하지 않아도, `T`에서 가장 빨리 끝나는 회의를 빼고 첫 회의를 넣으면 겹침 없이 같은 개수를 유지할 수 있다고 설명한다. 첫 선택 뒤에는 종료 시각 이후 회의만 남는 같은 형태의 하위 문제가 생긴다. 두 성질이 함께 있어야 지역 선택을 반복해도 전체 최적해가 된다.
 
 ## 전체 흐름
 
@@ -193,6 +203,11 @@ assert minimum_change(1)[0] == 15
 </details>
 
 ### 3.3 배수 사슬은 왜 충분한가
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-11-greedy-algorithm.pdf#page=18" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-11-p18-change-condition.jpg" | relative_url }}" alt="동전 액면의 배수 사슬이 greedy change의 충분조건임을 대조하는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 18. 위 한국 동전 집합은 각 큰 액면이 바로 아래 액면의 배수라 교환 논증이 가능하다. 아래 반례 집합처럼 이 구조가 없으면 큰 동전 우선이 항상 최적이라고 보장할 수 없다.</figcaption>
+</figure>
 
 강의의 액면은 인접한 큰 동전이 바로 아래 작은 동전의 정수배다.
 

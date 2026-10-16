@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-05 01:51:19 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS23_minimum_spanning_tree.pdf`
 
 > **핵심:** Spanning tree는 그래프의 모든 정점을 포함하면서 cycle이 없는 부분 그래프다. MST는 가능한 spanning tree 중 간선 weight의 총합이 가장 작은 트리다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS23_minimum_spanning_tree.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls23-p26-prim.jpg" | relative_url }}" alt="Prim 알고리즘이 완성한 MST와 단계별 key 배열을 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 26. 파란 간선은 MST에 채택된 간선, 표의 값은 현재 트리에 연결하는 최소 비용이다.</figcaption>
+</figure>
+
+Prim은 트리 밖 정점 중 key가 가장 작은 정점을 추가하고, 새 정점과 연결된 간선으로 이웃 key를 갱신한다. 표의 마지막 값 합 `0+10+3+5+3+2=23`이 선택된 다섯 간선의 총비용이다. Dijkstra와 표 모양은 비슷하지만 누적 경로 길이가 아니라 현재 트리에 붙는 간선 하나의 비용을 저장한다.
 
 ## 전체 흐름
 

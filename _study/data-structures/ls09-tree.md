@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 19:35:19 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS09 Trees"
 course: "Data Structures"
 topic: "Trees"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS09_tree.pdf`
 
 > **핵심:** 트리는 계층 관계가 있는 데이터를 표현하는 데 적합하다. 이진 트리의 full·complete·perfect는 각각 자식 수, 마지막 레벨의 채움 방식, 모든 레벨의 포화 여부로 구분한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS09_tree.pdf#page=18" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls09-p18-expression-tree.jpg" | relative_url }}" alt="산술식과 대응하는 이진 표현식 트리를 색으로 연결한 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 18. 내부 노드는 연산자, 리프는 피연산자이며 색 테두리가 식의 하위 표현식과 서브트리를 연결한다.</figcaption>
+</figure>
+
+루트 `+`의 왼쪽 서브트리는 `(2×(a-1))`, 오른쪽은 `(3×b)`를 나타낸다. 후위 순회는 자식 값을 먼저 계산한 뒤 부모 연산자를 적용하므로 괄호 구조를 그대로 평가한다. 트리의 계층 관계가 연산 우선순위를 저장하는 셈이다.
 
 ## 전체 흐름
 

@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:04:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Algorithms Assignment 2: Sorting Traces and Dynamic Programming"
 course: "Algorithms"
 topic: "Sorting Traces and Dynamic Programming"
@@ -12,6 +13,15 @@ keywords: [insertion-sort, bubble-sort, quick-sort, merge-sort, dynamic-programm
 # Algorithms Assignment 2: Sorting Traces and Dynamic Programming
 
 Source Materials: JUNGOL Problems 1158, 1157, 3518, 3519, 1848, and 1077 with the provided algorithm implementations
+
+## 강의 원본에서 과제 흐름 확인하기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/04-sorting-01.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-04-p19-bubble-sort.jpg" | relative_url }}" alt="정렬 회전마다 확정 구간이 늘어나는 강의 원본 슬라이드" loading="lazy"></a>
+  <figcaption>정렬 추적의 원본 기준: Lecture 4 PDF p. 19. 비교·교환 뒤 확정 구간이 어떻게 늘어나는지 읽는다.</figcaption>
+</figure>
+
+정렬 문제는 각 단계의 전체 배열, 현재 비교 위치, 더 이상 바뀌지 않는 구간을 함께 기록해야 한다. DP 문제는 [Lecture 9의 Matrix Path 원본]({{ "/study/algorithms/lecture-09-dynamic-programming-01/" | relative_url }})처럼 현재 상태로 들어오는 마지막 선택을 먼저 나누고, 기저 사례와 표 채우기 순서를 붙인다. 아래 풀이의 보충 표는 이 원본 흐름을 계산 단위로 확장한 것이다.
 
 ## 과제 개요
 

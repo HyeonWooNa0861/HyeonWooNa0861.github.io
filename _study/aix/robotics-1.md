@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
@@ -87,6 +87,13 @@ $$
 
 ## 3. Behavioral Cloning
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-1-slide-06.png" | relative_url }}" alt="AIX Robotics 1 강의 6쪽. expert trajectory를 state-action dataset으로 만들고 supervised learning으로 policy를 학습하는 과정." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_1.pdf#page=6" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_1.pdf</code> p.6</a> — expert trajectory에서 imitation policy를 학습하는 behavioral cloning 원본 흐름도.</figcaption>
+</figure>
+
+위에서 아래로 expert가 방문한 trajectory를 기록하고, 관측과 조작 action을 dataset으로 만든 뒤 supervised learning으로 policy $$\pi$$를 얻는다. 이 방식은 dataset에 있는 state에서는 직접적인 정답 action을 제공하지만, expert가 방문하지 않은 state에서 복구하는 방법까지 가르치지는 않는다.
+
 Behavioral Cloning은 expert trajectory를 모아서 supervised learning으로 policy를 학습하는 방법이다.
 
 ```text
@@ -125,6 +132,13 @@ $$D_E$$는 expert가 방문한 observation-action 분포, $$\pi_\theta(a^*\mid o
 Behavioral cloning은 expert state distribution 위에서는 잘 작동할 수 있다. 하지만 expert가 거의 방문하지 않은 state에서는 recovery behavior를 배우지 못한다.
 
 ## 4. Behavioral Cloning의 실패 원인
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-1-slide-09.png" | relative_url }}" alt="AIX Robotics 1 강의 9쪽. 작은 조향 오차가 expert trajectory에서 벗어나며 이후 오차 확률이 커지는 cascading error 그림." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_1.pdf#page=9" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_1.pdf</code> p.9</a> — 작은 action error가 미학습 state로 이동시켜 연속 오차를 만드는 원본 사례.</figcaption>
+</figure>
+
+검은 expert trajectory에서 작은 steering error로 벗어나면, 다음 관측은 training distribution 바깥에 놓인다. 그 state에서 예측이 더 부정확해지고 다시 더 먼 state로 이동하면서 오차가 시간에 따라 누적된다. 독립적인 한 번의 분류 오차와 달리 action이 다음 입력 분포를 바꾼다는 점이 핵심이다.
 
 강의는 failure post-mortem을 단순히 “모델이 약했다” 또는 “같은 expert distribution의 data가 부족했다”로 보지 않는다. 진짜 문제는 missing data distribution이다.
 
@@ -180,6 +194,13 @@ $$T\epsilon$$은 같은 기준 분포에서 발생하는 step 오류를 단순�
 </details>
 
 ## 6. DAggER의 핵심 아이디어
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/robotics-1-slide-12.png" | relative_url }}" alt="AIX Robotics 1 강의 슬라이드 12쪽. learner와 expert를 섞은 policy로 trajectory를 수집하고 expert label을 dataset에 합쳐 다시 학습하는 DAggER algorithm." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_1.pdf#page=12" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_1.pdf</code> p.12</a> — learner가 방문한 상태를 다시 수집하는 DAggER 원본 algorithm.</figcaption>
+</figure>
+
+알고리즘은 위에서 아래로 반복한다. 먼저 expert policy $$\pi^*$$와 현재 learner $$\hat{\pi}_i$$를 $$\beta_i$$로 섞은 policy $$\pi_i$$를 만든다. 그 policy로 $$T$$ step을 실행해 실제 방문 state를 얻고, expert가 각 state의 action을 label한다. 새 dataset $$D_i$$를 누적 dataset $$D$$에 합친 뒤 다음 learner $$\hat{\pi}_{i+1}$$를 학습한다. 핵심 변화는 network 구조가 아니라 learner가 만든 state distribution을 training data에 포함하는 것이다.
 
 DAggER는 Dataset Aggregation의 약자다. 핵심은 data collection process를 바꾸는 것이다.
 

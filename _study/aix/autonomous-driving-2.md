@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Autonomous Driving 2"
 course: "AIX"
 topic: "Tesla Occupancy and Driving Foundation Models"
@@ -84,6 +84,13 @@ multi-camera images
 
 ## 4. Transformer-Style Attention
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-2-slide-08.png" | relative_url }}" alt="AIX Autonomous Driving 2 강의 8쪽. occupancy network의 volumetric, multi-camera, video context 특성과 차량 주변 3D occupancy 예시." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=8" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.8</a> — 여러 camera와 시간 문맥을 3D occupancy로 통합하는 원본 사례.</figcaption>
+</figure>
+
+오른쪽 3D 장면은 camera별 detection 결과를 나열한 것이 아니라, 차량 주변 공간에서 무엇이 차지되어 있는지를 하나의 volumetric representation으로 합친 결과다. Fixed query와 positional encoding은 attention이 이 공간의 특정 위치를 일관되게 조회하도록 좌표 기준을 제공한다.
+
 2022 구조에는 Q, K, V와 softmax attention이 명시적으로 등장한다. 즉 pure ViT는 아니지만 transformer-style attention이 2D image feature를 3D occupancy query와 연결하는 역할을 한다.
 
 | 요소 | 역할 |
@@ -132,6 +139,13 @@ camera/video -> learned unified world representation -> downstream driving modul
 
 ## 7. 2023 Foundation Model 방향
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-2-slide-26.png" | relative_url }}" alt="AIX Autonomous Driving 2 강의 슬라이드 26쪽. 여러 카메라 입력이 image featurizer, spatial attention, temporal alignment, deconvolution을 지나 surface, volume, queryable output으로 분기되는 Tesla 2023 구조." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.26</a> — 여러 task가 공유하는 world representation과 queryable output을 보여주는 원본 슬라이드.</figcaption>
+</figure>
+
+왼쪽의 여러 카메라 입력은 공통 image featurizer를 지나 spatial attention에서 공간적으로 합쳐진다. 가운데 temporal alignment는 이전 frame의 정보를 현재 representation에 정렬한다. 오른쪽에서는 같은 내부 상태가 deconvolution을 거쳐 surface와 volume output으로 분기되고, 별도 query head도 이 상태를 재사용한다. 여기서 `shared`는 모든 task의 최종 출력이 같다는 뜻이 아니라, 서로 다른 head가 공통 latent world state를 질의한다는 뜻이다.
+
 2023 발표는 occupancy를 넘어 shared world representation을 여러 task가 재사용하는 foundation model 관점으로 확장된다.
 
 | 2022 | 2023 |
@@ -173,6 +187,13 @@ fleet data -> mining -> auto-labeling -> training -> deployment -> fleet data
 이 폐루프가 빠르게 돌수록 representation은 실제 도로 분포에 더 잘 맞춰진다.
 
 ## 10. 역사적 종합
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-2-slide-40.png" | relative_url }}" alt="AIX Autonomous Driving 2 강의 40쪽. modular ADS와 end-to-end 흐름을 출발점으로 occupancy 및 foundation model 방향을 종합한 슬라이드." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=40" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.40</a> — modular output에서 dense world state와 reusable foundation representation으로 이동한 역사를 요약한 원본 슬라이드.</figcaption>
+</figure>
+
+그림 중앙의 modular/end-to-end 비교는 출발점이다. 강의의 뒤쪽 흐름은 개별 task output을 바로 만드는 데서 멈추지 않고, occupancy처럼 더 조밀한 world state를 학습한 뒤 여러 task가 그 표현을 공유하는 방향으로 이동한다.
 
 자율주행 표현은 다음 흐름으로 볼 수 있다.
 

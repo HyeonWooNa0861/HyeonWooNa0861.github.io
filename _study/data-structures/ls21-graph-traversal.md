@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-01 12:25:13 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS21_graph_traversal.pdf`
 
 > **핵심:** Graph traversal은 정점을 차례로 방문해 그래프의 연결 구조를 파악하는 절차다. BFS는 queue를 사용해 시작 정점에서 간선 수가 적은 정점부터 방문한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS21_graph_traversal.pdf#page=16" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls21-p16-bfs.jpg" | relative_url }}" alt="BFS pseudocode와 방문 색, 거리, queue 변화의 마지막 단계를 함께 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 16. 오른쪽 숫자는 시작점으로부터 거리, 색은 발견·처리 상태, Q는 다음 처리 순서를 뜻한다.</figcaption>
+</figure>
+
+WHITE 정점은 처음 발견할 때 GRAY로 바꾸고 queue에 한 번 넣는다. dequeue해 이웃 검사를 끝내면 BLACK이 된다. FIFO queue 때문에 거리 0, 1, 2, 3 순으로 처리되어 무가중 그래프의 최단 간선 수가 보장된다.
 
 ## 전체 흐름
 
@@ -178,6 +187,11 @@ $$
 이 복잡도는 인접 리스트 표현을 기준으로 한다. 인접 행렬을 쓰면 한 정점의 이웃을 찾기 위해 행 전체를 보아야 하므로 비용 해석이 달라진다.
 
 ## 7. DFS의 핵심 아이디어
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS21_graph_traversal.pdf#page=27" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls21-p27-dfs.jpg" | relative_url }}" alt="DFS pseudocode와 discovery finish time, back edge가 표시된 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 27. 발견 시각 `d`는 GRAY가 될 때, 완료 시각 `f`는 모든 이웃을 처리해 BLACK이 될 때 기록한다. 점선 `B`는 현재 조상으로 돌아가는 back edge다.</figcaption>
+</figure>
 
 DFS(Depth-First Search)는 현재 정점에서 갈 수 있는 정점이 있으면 가능한 한 깊게 내려간다. 더 이상 갈 WHITE 이웃이 없으면 이전 정점으로 되돌아온다.
 

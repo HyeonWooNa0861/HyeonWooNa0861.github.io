@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 10 Vector Calculus 2"
 course: "Machine Learning Basic"
 topic: "Vector Calculus 2"
@@ -64,6 +64,12 @@ loss에 대한 parameter gradient는 합성 함수의 chain rule을 통해 계�
 ## 3. Automatic Differentiation
 
 Automatic differentiation은 계산 그래프의 각 연산에 대해 미분값을 저장하고 chain rule로 전체 미분을 계산하는 방법이다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-10-page-11.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-10-page-11.png" | relative_url }}" alt="원본 강의 슬라이드의 순전파와 역전파 계산 그래프" loading="lazy"></a>
+
+*원본 강의 PDF p. 11. 계산 그래프는 $$x\to a\to b\to y$$ 순서다. 파란 화살표는 안쪽 미분부터 묶는 순전파, 보라 화살표는 출력 쪽 미분부터 누적하는 역전파를 나타내며, 둘 다 같은 chain rule 곱 $$\frac{dy}{db}\frac{db}{da}\frac{da}{dx}$$를 계산한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-10.pdf#page=11" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 11</a>*
+
+입력 하나의 미분만 필요하면 순전파가 자연스럽고, scalar loss에서 많은 parameter의 gradient를 구할 때는 출력에서 한 번 역방향으로 누적하는 역전파가 효율적이다.
 
 | 단계 | 의미 |
 |---|---|

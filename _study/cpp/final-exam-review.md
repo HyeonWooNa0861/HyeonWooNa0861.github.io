@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:16:19 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"
@@ -107,6 +107,34 @@ Source Pages:
 | 9 | 상속과 다형성 | 생성 순서, 접근 지정자, overriding, virtual, vtable |
 | 10 | 템플릿 | 함수/클래스 템플릿, 비타입 템플릿, 특수화, 헤더 정의 |
 | 11 | STL | 컨테이너, iterator, algorithm, erase-remove, `map`/`set` |
+
+### 원본 그림으로 다시 잡는 실행 구조
+
+#### 주소와 역참조
+
+<a href="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" alt="변수 x의 주소를 저장하는 포인터 p의 원본 강의 그림" loading="lazy"></a>
+
+`p`에는 `x`의 주소가, `*p`에는 그 주소의 값이 보인다. `*p=100`은 `x`를 바꾼다. [포인터 기초]({{ "/study/cpp/c-programming-basics/" | relative_url }}#11-포인터-기초)와 <a href="{{ "/assets/pdfs/study/cpp/C 프로그래밍 소개.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 p. 22</a>에서 이어서 확인한다.
+
+#### Ownership
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" alt="ownership 조건에 따른 스마트 포인터 선택 가이드" loading="lazy"></a>
+
+단독 소유, 공동 소유, 순환 참조, C 자원 순으로 선택이 갈린다. [스마트 포인터 선택]({{ "/study/cpp/cpp-pointer-memory/" | relative_url }}#19-선택-가이드)과 <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 p. 20</a>에서 이어서 확인한다.
+
+#### 동적 dispatch
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" alt="수동 함수 포인터 table과 compiler 생성 vtable 비교" loading="lazy"></a>
+
+수동 table과 vtable 모두 함수 주소를 간접 호출하지만, vtable은 type과 상속 관계에 통합된다. [함수 포인터와 vtable]({{ "/study/cpp/cpp-function-pointer/" | relative_url }}#14-함수-포인터와-vtable)과 <a href="{{ "/assets/pdfs/study/cpp/C++ 함수포인터.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 p. 14</a>에서 이어서 확인한다.
+
+#### 연속 저장소
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" alt="vector의 size capacity reserve resize 원본 강의 예시" loading="lazy"></a>
+
+`size`는 원소 수, `capacity`는 확보 공간이다. capacity 초과 재할당은 기존 pointer와 iterator를 무효화할 수 있다. [vector 공간 관리]({{ "/study/cpp/cpp-stl/" | relative_url }}#5-size-capacity-reserve-resize)와 <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 p. 12</a>에서 이어서 확인한다.
+
+총정리는 개별 글에서 판독한 같은 원본 그림을 재사용한다. 코드를 외우기 전에 그림에서 주소, 소유권, 호출 table, 저장소 재할당 관계를 먼저 추적하고, 상세 코드는 연결된 단원에서 확인한다.
 
 ## 1. 시험 직전 큰 지도
 

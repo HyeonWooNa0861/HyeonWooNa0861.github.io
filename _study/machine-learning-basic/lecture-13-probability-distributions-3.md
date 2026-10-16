@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
@@ -104,6 +104,12 @@ $$
 ## 3. Conditional and Marginal Gaussian
 
 다변수 가우시안의 중요한 장점은 조건부분포와 주변분포가 다시 가우시안이라는 점이다. 두 확률변수 블록 $$x$$, $$y$$가 함께 가우시안이라고 하자.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-13-page-09.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-13-page-09.png" | relative_url }}" alt="원본 강의 슬라이드의 이변량 Gaussian 조건부분포와 주변분포" loading="lazy"></a>
+
+*원본 강의 PDF p. 9. 오른쪽 위 등고선에서 보라색 수평선은 $$x_2=-1$$로 고정한 단면이다. 아래 왼쪽은 주변분포 $$p(x_1)=\mathcal N(0,0.3)$$, 아래 오른쪽은 그 단면을 정규화한 조건부분포로 평균 0.6, 분산 0.1이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-13.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>*
+
+주변분포는 $$x_2$$의 모든 값을 적분해 없애므로 평균 0에 더 넓게 남는다. 조건부분포는 $$x_2=-1$$이라는 정보를 사용해 가능한 $$x_1$$ 범위를 좁히고, 음의 공분산 때문에 평균을 양의 방향으로 이동시킨다.
 
 $$
 \begin{bmatrix}

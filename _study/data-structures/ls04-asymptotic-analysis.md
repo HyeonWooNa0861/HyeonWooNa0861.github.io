@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS04 Asymptotic Analysis"
 course: "Data Structures"
 topic: "Asymptotic Analysis"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS04_asymptotic_analysis.pdf`
 
 > **핵심:** $$T(n)=10n^2+3n+7$$은 입력 크기가 커질수록 $$n^2$$ 항이 성장을 지배한다. Big-O는 점근적 상한을, Big-Θ는 상한과 하한이 일치하는 점근적 범위를 나타낸다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS04_asymptotic_analysis.pdf#page=29" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls04-p29-prefix-average.jpg" | relative_url }}" alt="배열의 각 위치까지 평균을 계산하는 Prefix Average 예제를 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 29. 위치 i의 답이 접두사 A[0..i] 전체에 의존하는 문제를 정의한다.</figcaption>
+</figure>
+
+그림의 `PreAve=[5,4]`는 첫 값의 평균 5와 첫 두 값의 평균 4를 뜻한다. 매 위치마다 접두사를 처음부터 다시 합하면 같은 원소를 여러 번 읽어 `Θ(n²)`이 된다. 이전 누적합을 보존하면 새 원소 한 개만 더해 같은 출력을 `Θ(n)`에 만든다.
 
 ## 전체 흐름
 

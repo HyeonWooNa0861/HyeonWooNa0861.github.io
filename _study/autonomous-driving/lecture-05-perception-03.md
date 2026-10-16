@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 5: Perception (3) - R-CNN Inference and Fast R-CNN"
 course: "Autonomous Driving"
 topic: "Non-Maximum Suppression, Average Precision, Fast R-CNN, and RoI Pooling"
@@ -74,6 +75,13 @@ $$
 
 ### 2.1 원문 5개 예측으로 계산하기
 
+<figure id="adc-05-p12">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-05-p12.png" | relative_url }}" alt="Confidence 0.99인 첫 detection으로 precision 1 recall 0.33을 계산한 원문" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-05-perception-03.pdf#page=12" | relative_url }}">lecture PDF, p. 12</a>.</figcaption>
+</figure>
+
+첫 예측이 정답 물체 하나와 매칭되므로 TP는 1, FP는 0이다. 정답 물체는 총 3개이므로 precision은 1이고 recall은 1/3이다. 가로축 recall과 세로축 precision의 점 하나가 이렇게 생긴다. 다음 예측을 confidence 순서로 추가할 때마다 누적 TP·FP를 갱신한다.
+
 confidence threshold를 높은 값에서 낮은 값으로 이동시키면 예측이 한 개씩 추가된다. 원문 12–16쪽 도식의 숫자를 직접 계산하면 다음과 같다.
 
 | 포함한 예측 수 | 마지막 confidence | TP | FP | FN | Precision | Recall |
@@ -122,6 +130,13 @@ Fast R-CNN: image → CNN 한 번 → 공유 feature map
 공유되는 것은 무거운 **convolutional backbone feature**다. 각 RoI의 pooling, per-region head, class prediction, box regression까지 한 번만 실행한다는 뜻은 아니다. 원문 20–23쪽은 backbone 예시로 AlexNet·VGG·ResNet을 그리고, proposal을 공유 feature map 위에 투영한 뒤 각 영역에서 class와 box transform을 예측한다. Fast R-CNN 논문은 전체 이미지와 RoI 목록을 입력받아 공유 feature map을 만들고, RoI pooling·fully connected layers 뒤 class 확률과 box offset 두 출력을 학습한다고 설명한다.
 
 ## 4. RoI pooling: 가변 크기 상자를 고정 크기 특징으로
+
+<figure id="adc-05-p28">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-05-p28.png" | relative_url }}" alt="Feature map에 투영한 proposal을 2×2 bin으로 나눠 max pooling하는 예" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-05-perception-03.pdf#page=28" | relative_url }}">lecture PDF, p. 28</a>.</figcaption>
+</figure>
+
+원본 이미지의 proposal을 축소된 feature map 위치로 옮긴 뒤 구역별 최대값을 뽑는다. 예시 출력의 공간 크기는 2×2지만 channel은 512개로 유지된다. 같은 크기의 물체를 찾는 연산이 아니라 크기가 다른 proposal도 같은 크기의 head 입력으로 만드는 연산이다. 좌표를 격자에 맞추는 과정이 이후 RoIAlign과의 차이를 만든다.
 
 서로 다른 proposal을 그대로 per-region head에 넣으면 입력 tensor의 공간 크기가 제각각이다. **고정 크기 특징**이 필요한 분류·회귀 head와 연결하기 위해 RoI pooling을 쓴다(원문 24–28쪽).
 

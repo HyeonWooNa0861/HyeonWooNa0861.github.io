@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Large Language Models"
 course: "AIX"
 topic: "Decoder-Only LLMs and Generation"
@@ -94,6 +94,13 @@ Scaling은 단순히 모델을 크게 만드는 것이 아니다. 모델 크기,
 
 ## 4. Mixture of Experts
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/large-language-models-slide-17.png" | relative_url }}" alt="AIX Large Language Models 강의 슬라이드 17쪽. 입력 x를 router G가 top-k expert 중 일부에 보내고 선택된 expert 출력을 가중합하는 Mixture of Experts 구조." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/3_Large_Language_Models.pdf#page=17" | relative_url }}" target="_blank" rel="noopener"><code>3_Large_Language_Models.pdf</code> p.17</a> — sparse top-k Mixture of Experts의 원본 구조도와 weighted-output 식.</figcaption>
+</figure>
+
+왼쪽에서 입력 $$x$$는 router $$G$$로 들어가고, router는 expert마다 routing weight를 계산한다. 빨간 표시는 선택되지 않은 expert, 초록 표시는 선택된 expert를 뜻한다. 선택된 expert 출력만 계산한 뒤 오른쪽 식처럼 routing weight로 합쳐 $$\hat{y}$$를 만든다. 그림은 한 expert만 선택한 예시처럼 보이지만, 일반적인 top-$$k$$에서는 여러 expert가 동시에 선택될 수 있다.
+
 Dense model에서는 모든 token이 모든 feed-forward parameter를 사용한다. Mixture of Experts는 여러 expert 중 일부만 선택해 token을 처리하게 하여 전체 capacity와 token당 compute를 분리한다.
 
 ```text
@@ -118,6 +125,13 @@ $$
 $$N$$은 expert 수, $$r_i$$는 router logit, $$g_i$$는 합이 1인 무차원 routing weight, $$E_i(x)$$는 expert output이다. Sparse top-$$k$$에서는 선택 집합 $$S_k(x)$$ 밖의 weight를 0으로 만들고 선택된 weight를 다시 정규화한다. 이 식은 **MoE 출력의 정의**이며, 특정 expert가 의미 영역 하나와 정확히 대응한다는 보장은 없다. Router가 한 expert에 몰리면 계산 병목과 미학습 expert가 생기므로 별도의 load-balancing objective가 필요하다.
 
 ## 5. Routing과 Load Balancing
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/large-language-models-slide-19.png" | relative_url }}" alt="AIX LLM 강의 19쪽. expert별 token fraction fi와 평균 routing probability Pi를 곱해 합산하는 load balancing auxiliary loss." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/3_Large_Language_Models.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><code>3_Large_Language_Models.pdf</code> p.19</a> — 일부 expert로 routing이 몰리는 현상을 완화하는 auxiliary loss 원본 식.</figcaption>
+</figure>
+
+식의 $$f_i$$는 실제로 expert $$i$$에 배정된 token 비율이고, $$P_i$$는 그 expert에 대한 평균 routing 확률이다. 두 값이 함께 큰 expert가 많으면 loss가 커지므로, 학습은 token과 routing probability가 소수 expert에 동시에 집중되는 상태를 피하도록 압력을 받는다.
 
 MoE에서 router는 token마다 어떤 expert를 쓸지 정한다. 문제는 router가 특정 expert만 계속 고르면 다른 expert가 학습되지 않고, 인기 expert는 병목이 된다는 점이다.
 
@@ -196,6 +210,13 @@ target: A,     cute, teddy, bear, is, reading
 | Top-p | 누적 확률 `p`까지의 최소 token 집합에서 sampling | 문맥별 후보 수 조절 | `p` 설정에 민감 |
 
 ## 8. Temperature
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/large-language-models-slide-46.png" | relative_url }}" alt="AIX LLM 강의 46쪽. 낮은 temperature의 뾰족한 token 확률분포와 높은 temperature의 평평한 분포 비교." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/3_Large_Language_Models.pdf#page=46" | relative_url }}" target="_blank" rel="noopener"><code>3_Large_Language_Models.pdf</code> p.46</a> — temperature가 다음-token 확률분포의 집중도를 바꾸는 원본 비교.</figcaption>
+</figure>
+
+위 그래프의 작은 $$T$$에서는 한 token의 확률이 거의 전부를 차지한다. 아래의 큰 $$T$$에서는 후보들의 차이가 줄어 더 다양한 token이 선택될 수 있다. Temperature는 후보를 새로 만드는 값이 아니라 기존 logits의 상대적 간격을 조절한다.
 
 Temperature는 softmax 전에 logit을 조절해 분포의 날카로움을 바꾼다.
 

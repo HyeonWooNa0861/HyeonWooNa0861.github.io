@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 10: LiDAR-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Point Clouds, PointNet++, PointRCNN, VoxelNet, and PIXOR"
@@ -61,6 +62,13 @@ $$
 이 식은 **정의에 가까운 요구 조건**이다. 점의 좌표를 회전시켜도 출력이 같다는 회전 불변성과는 별개다. 행 순서를 바꾸는 순열은 공간의 형상을 바꾸지 않지만, 좌표를 회전하면 각 점의 수치 자체가 달라진다.
 
 ## 2. PointNet: shared MLP와 대칭 집계
+
+<figure id="adc-10-p12">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-10-p12.png" | relative_url }}" alt="Point-wise MLP와 max pool을 공유하는 PointNet 분류 및 segmentation" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=12" | relative_url }}">lecture PDF, p. 12</a>.</figcaption>
+</figure>
+
+각 점에 같은 MLP를 적용한 뒤 max pooling으로 점 순서에 무관한 global feature를 만든다. 아래 segmentation 경로는 이 global feature를 각 점의 local feature와 이어 붙여 점별 class를 예측한다. n×64와 1024-dimensional global feature를 결합하면 점마다 1088차원이 된다. T-Net은 정렬을 학습하는 장치이지 모든 회전에 대한 불변성을 자동 보장하는 증명은 아니다.
 
 슬라이드 11–12쪽의 PointNet은 모든 점에 같은 함수 $$h$$를 적용하고, 점 순서와 무관한 max pooling으로 전역 feature를 만든다. 분류용 핵심 구조는 다음처럼 요약할 수 있다.
 
@@ -145,6 +153,13 @@ $$
 
 ## 5. PointRCNN: point에서 proposal을 위로 쌓기
 
+<figure id="adc-10-p22">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-10-p22.png" | relative_url }}" alt="PointRCNN의 foreground 기반 proposal과 canonical refinement" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=22" | relative_url }}">lecture PDF, p. 22</a>.</figcaption>
+</figure>
+
+위 경로에서 foreground 점을 구분하고 bin-based box proposal을 만든다. 아래 경로는 proposal 주변의 점과 특징을 모아 canonical 좌표로 변환한 뒤 box와 confidence를 정제한다. 2D 이미지에서 자른 crop을 분류하는 방식과 달리 3D 점의 위치를 직접 이용하는 two-stage 구조다.
+
 슬라이드 16–23쪽의 PointRCNN은 “Faster R-CNN의 point cloud 버전”이라는 직관으로 소개되지만, proposal 생성 방식은 2D anchor 기반 RPN과 다르다. [PointRCNN 원 논문](https://arxiv.org/abs/1812.04244){:target="_blank" rel="noopener"}은 raw point cloud 전체에서 foreground point를 분할하고, 그 점을 중심으로 bottom-up proposal을 만든 뒤 canonical coordinate에서 정제한다.
 
 ### 5.1 Stage 1: foreground segmentation이 검색 공간을 줄인다
@@ -222,6 +237,13 @@ PointRCNN의 장점은 raw point의 정밀한 기하를 유지하며 proposal을
 
 ## 6. VoxelNet: 불규칙한 점을 학습 가능한 voxel feature로 바꾸기
 
+<figure id="adc-10-p29">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-10-p29.png" | relative_url }}" alt="Voxel partition grouping sampling과 VFE를 통한 sparse tensor 생성" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=29" | relative_url }}">lecture PDF, p. 29</a>.</figcaption>
+</figure>
+
+왼쪽 점들을 voxel에 묶고, 각 voxel에서 점 수를 제한해 같은 VFE로 처리한다. Point-wise feature와 voxel 안의 집계 정보를 결합한 뒤 voxel feature 하나를 만든다. 마지막 tensor의 공간 위치는 원래 voxel 좌표를 유지한다. Voxel 크기를 정하는 일과 한 voxel에서 몇 점을 남길지는 서로 다른 선택이다.
+
 슬라이드 24쪽의 voxel은 3D 공간의 규칙적인 cell이다. VoxelNet의 핵심은 각 cell에 단순 occupancy 또는 수작업 통계를 넣는 데 그치지 않고, cell 안의 point feature를 VFE로 학습한다는 점이다. [VoxelNet 원 논문](https://arxiv.org/abs/1711.06396){:target="_blank" rel="noopener"}은 feature learning network, convolutional middle layers, region proposal network의 세 블록으로 구성된다.
 
 ### 6.1 Voxelization과 grid 크기
@@ -286,6 +308,13 @@ $$C$$는 feature channel 수, $$D',H',W'$$는 voxel 개수로 모두 무차원�
 슬라이드 32쪽의 trade-off도 표현 선택에서 나온다. 3D convolution은 kernel을 세 공간축으로 이동시키므로 2D convolution보다 계산 영역이 크고, sparse point를 dense grid로 펼치면 빈 cell이 많다. 다만 “3D convolution이므로 항상 느리다”는 보편 법칙은 아니다. Sparse convolution 구현, grid resolution, 범위, hardware에 따라 비용이 달라진다. 이 강의에서는 **VoxelNet 원 설계의 비용 원인**으로 이해한다.
 
 ## 7. PIXOR: 높이를 channel로 바꾼 BEV dense detection
+
+<figure id="adc-10-p37">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-10-p37.png" | relative_url }}" alt="Point cloud를 BEV input으로 변환해 oriented box를 예측하는 PIXOR" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=37" | relative_url }}">lecture PDF, p. 37</a>.</figcaption>
+</figure>
+
+왼쪽 3D 점을 높이 구간 등의 channel을 가진 BEV 격자로 바꾼 뒤 detector가 위에서 본 oriented box를 출력한다. 그림의 실시간 속도는 해당 실험 설정의 측정치이며 모든 장비에서 보장되는 값은 아니다. 아래의 tensor 설명에서는 공간 축 두 개와 높이 channel을 구분해서 읽는다.
 
 슬라이드 33쪽의 PIXOR는 “PIXel-wise neural network predictions”에서 “ORiented” box를 얻는 proposal-free detector다. [PIXOR 원 논문](https://openaccess.thecvf.com/content_cvpr_2018/html/Yang_PIXOR_Real-Time_3D_CVPR_2018_paper.html){:target="_blank" rel="noopener"}은 3D voxel grid 전체에 3D convolution을 적용하는 대신 BEV에서 2D convolution을 사용한다.
 

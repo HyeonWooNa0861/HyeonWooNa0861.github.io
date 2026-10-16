@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-09-03 20:25:45 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS02 Data Structures and Algorithms"
 course: "Data Structures"
 topic: "Data Structures and Algorithms"
@@ -19,6 +19,15 @@ keywords:
 Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
 
 > **핵심:** ADT는 값과 연산의 명세이고, 자료구조는 그 명세를 구현하는 방법이다. Exact query에는 해시 테이블이, range query에는 정렬 순서를 유지하는 트리가 유리하다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS02_data_structures_and_algorithms_R1.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls02-p20-query-example.jpg" | relative_url }}" alt="GPA 데이터에서 exact query와 range query에 맞는 자료구조를 비교한 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 20. 같은 데이터라도 질의 형태에 따라 적절한 자료구조가 달라지는 예다.</figcaption>
+</figure>
+
+첫 과제는 특정 학기와 등급이 정확히 일치하는 학생을 찾으므로 exact query이고, key를 바로 찾는 hash table이 적합하다. 둘째 과제는 GPA 구간을 찾는 range query이므로 순서를 유지하는 tree 계열이 적합하다. 자료구조 선택은 데이터 이름보다 지원해야 할 연산에서 출발한다.
 
 ## 전체 흐름
 

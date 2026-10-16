@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 06 Analytic Geometry"
 course: "Machine Learning Basic"
 topic: "Analytic Geometry"
@@ -116,6 +116,12 @@ $$
 ## 6. Projection
 
 내적이 주어진 유한차원 공간에서 부분공간으로의 **orthogonal projection**은 벡터를 그 부분공간 위의 유일한 가장 가까운 벡터로 보낸다. 일반적인 projection은 직교가 아닐 수 있으므로 이 nearest-point 성질을 보장하지 않는다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-06-page-27.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-06-page-27.png" | relative_url }}" alt="원본 강의 슬라이드의 벡터 정사영 기하" loading="lazy"></a>
+
+*원본 강의 PDF p. 27. $$x$$를 $$b$$가 만드는 직선 위로 내린 점이 $$\lambda b$$이고, 남은 벡터 $$x-\lambda b$$는 $$b$$와 수직이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-06.pdf#page=27" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 27</a>*
+
+수직 조건 $$b^T(x-\lambda b)=0$$을 풀면 $$\lambda=\frac{b^Tx}{b^Tb}$$가 나온다. 따라서 $$\lambda b$$는 직선 위 후보 중 $$x$$와의 거리를 가장 작게 만드는 점이며, 이 조건이 이후 최소제곱법의 normal equation으로 확장된다.
 
 1차원 부분공간에서는 벡터 $$x$$를 방향 벡터 $$u$$ 위로 내린 그림자로 이해할 수 있다.
 

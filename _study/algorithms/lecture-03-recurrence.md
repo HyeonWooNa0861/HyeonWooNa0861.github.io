@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 3: Recurrence"
 course: "Algorithms"
 topic: "Recursive Algorithm Analysis and the Master Theorem"
@@ -23,6 +24,15 @@ Source PDF: [3 Recurrence.pdf](/assets/pdfs/study/algorithms/03-recurrence.pdf)
 재귀 호출의 전체 비용은 하위 문제의 크기와 개수, 각 호출에서 드는 추가 비용에 따라 달라진다. 국민대학교 Youngwook Kim 교수의 *Algorithms* 3강 PDF(30쪽)에 나온 점화식과 빈칸형 예제를 풀이·검산하고, 원문에서 생략하거나 단순화한 가정은 **작성자 보충** 또는 **Source Check**로 구분한다. 점근 표기법이 낯설다면 [2강 Algorithm Analysis](/study/algorithms/lecture-02-algorithm-analysis/)가 출발점이다.
 
 > **핵심:** 재귀 알고리즘의 실행량은 작은 입력에서의 실행량을 이용한 **점화식**으로 나타난다. 점화식을 푸는 대표 경로는 전개하여 합을 계산하기, 답을 추측한 뒤 귀납적으로 검증하기, 조건을 확인하고 마스터 정리를 적용하기다. 셋 모두 **기저 조건과 정의역**을 확인해야 한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/03-recurrence.pdf#page=15" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-03-p15-iterative-substitution.jpg" | relative_url }}" alt="T(n)=T(n-1)+n과 기저 조건 T(1)=1을 제시한 반복 대입 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 15. 반복 대입을 시작할 점화식과 기저 조건을 함께 제시한다.</figcaption>
+</figure>
+
+그림에서 먼저 확인할 것은 재귀항 `T(n-1)`과 이번 호출 비용 `n`이다. `T(n-1)`에 같은 식을 반복 대입하면 `n+(n-1)+...+2+T(1)`이 되고, 마지막의 `T(1)=1`이 전개를 닫는다. 원문은 문제식을 출발점으로 제시하고, 아래 본문은 이 합이 `Θ(n²)`으로 정리되는 중간 단계를 보충한다.
 
 ## 전체 흐름
 

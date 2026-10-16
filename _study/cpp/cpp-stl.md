@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 16:37:00 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"
@@ -224,6 +224,12 @@ for (auto& x : v) {
 ```
 
 ## 5. `size`, `capacity`, `reserve`, `resize`
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" alt="원본 강의 슬라이드의 vector size capacity reserve resize" loading="lazy"></a>
+
+*원본 `C++ STL.pdf` p. 12. 왼쪽은 원소 3개에서 `size=3`, `capacity=4`처럼 사용량과 확보 공간이 다름을 보여준다. 오른쪽 위는 `reserve(1000)`으로 반복 `push_back` 중 재할당을 막고, 아래는 `resize`가 실제 원소 수를 바꾸는 예다. <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 12</a>*
+
+capacity를 넘으면 더 큰 연속 배열을 할당하고 기존 원소를 이동한 뒤 옛 배열을 해제한다. 이때 기존 원소를 가리키던 pointer와 iterator가 무효화될 수 있다. `reserve`는 공간만 확보하고 `size`를 늘리지 않는다.
 
 `vector`를 이해할 때 `size`와 `capacity`를 구분해야 한다.
 

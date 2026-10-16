@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Standard Streams"
 course: "C++"
 topic: "Input and Output Streams"
@@ -261,6 +261,12 @@ std::cout << "결과: " << 42 << std::endl;
 `std::endl`은 `'\n'` 출력과 flush를 함께 수행한다. 단, 불필요한 flush는 성능을 낮출 수 있으므로 줄바꿈만 필요하면 `"\n"`이 더 적합하다.
 
 ## 13. `FILE*`와 파일 디스크립터
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-standard-stream-page-21.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-standard-stream-page-21.png" | relative_url }}" alt="원본 강의 슬라이드의 FILE 포인터와 파일 디스크립터 두 계층" loading="lazy"></a>
+
+*원본 `C++ 표준 스트림 (updated).pdf` p. 21. 위 사용자 공간에는 `FILE* stdin`, `stdout`, `stderr`와 라이브러리 버퍼가 있고, 아래 kernel 공간에는 정수 FD 0, 1, 2가 있다. `fread`, `fwrite`, `fprintf` 등은 필요할 때 system call을 거쳐 OS 계층으로 내려간다. <a href="{{ "/assets/pdfs/study/cpp/C++ 표준 스트림 (updated).pdf#page=21" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 21</a>*
+
+`FILE*`는 정수 FD를 감싸면서 사용자 공간 버퍼와 상태를 관리한다. 그래서 `fflush`는 라이브러리 버퍼를 비우는 동작이고, FD는 kernel이 열린 파일·terminal·pipe를 식별하는 번호다.
 
 C의 `FILE*`는 유저 공간의 스트림 객체이고, 내부적으로 파일 디스크립터 번호와 버퍼 정보를 가진다.
 

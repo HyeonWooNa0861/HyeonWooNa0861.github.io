@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS05 Lists"
 course: "Data Structures"
 topic: "Lists"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS05_lists_full.pdf`
 
 > **핵심:** 배열 기반 리스트는 연속 메모리에서 인덱스로 원소 위치를 계산하므로 빠르게 접근할 수 있다. 반면 삽입·삭제에는 원소를 밀거나 당기는 작업이 필요해 최악의 경우 $$O(n)$$이 걸린다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS05_lists_full.pdf#page=23" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls05-p23-list-adt.jpg" | relative_url }}" alt="List ADT의 insert, remove, update, length, clear 동작 전후를 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 23. List ADT의 연산 계약을 구체적인 순서열 변화로 보여 준다.</figcaption>
+</figure>
+
+각 식의 왼쪽은 호출, 오른쪽은 호출 뒤 논리적 리스트다. 이 단계에서는 배열이나 연결 리스트 같은 저장 방식이 보이지 않는다. ADT는 사용자가 관찰할 동작을 정의하고, 자료구조는 그 동작을 메모리에 구현한다는 구분이 핵심이다.
 
 ## 전체 흐름
 

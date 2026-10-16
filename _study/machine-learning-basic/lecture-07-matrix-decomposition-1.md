@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 07 Matrix Decomposition 1"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 1"
@@ -62,6 +62,12 @@ Source PDF: `machine-learning-basic-lecture-07.pdf`
 반대로 $$\det(A)=0$$이면 어떤 방향이 사라져 변환이 정보를 잃는다.
 
 ## 3. 행렬식의 주요 성질
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-07-page-08.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-07-page-08.png" | relative_url }}" alt="원본 강의 슬라이드의 행렬식과 평행사변형 넓이" loading="lazy"></a>
+
+*원본 강의 PDF p. 8. 열벡터 $$b,g$$가 만드는 평행사변형의 넓이가 $$\lvert\det([b\ g])\rvert$$이며, 그림의 파란 $$b$$와 초록 $$g$$가 두 변을 이룬다. 점선은 같은 평행사변형의 나머지 두 변이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-07.pdf#page=8" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 8</a>*
+
+원문 첫 문장은 $$\det(A)$$를 넓이라고 표현하지만, 기하학적 넓이는 정확히 $$\lvert\det(A)\rvert$$다. 두 열벡터가 선형 종속이면 평행사변형이 선분으로 눌려 넓이가 0이므로 determinant도 0이다. determinant의 절댓값은 면적 배율이고, 부호는 $$(e_1,e_2)$$와 비교한 두 벡터의 방향 순서를 구분한다.
 
 | 성질 | 설명 |
 |---|---|

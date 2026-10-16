@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:17:00 +0900
-last_modified_at: 2026-10-13 17:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 6: Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Audio Reconstruction, Masking, Loss Functions, and Phase"
@@ -81,6 +81,13 @@ Diarization은 개별 source waveform을 반드시 복원하지 않는다. 반�
 응용은 통화 잡음 제거, 다화자 회의록의 전처리, 보컬 추출, 영화의 대사·음악·효과음 분리, 로봇의 음성 인터페이스 등이다(p. 11). ASR 전처리에서는 듣기 좋은 소리가 반드시 낮은 WER로 이어지지 않으므로 downstream 인식 성능도 별도로 확인한다. <a href="https://arxiv.org/abs/1811.11517" target="_blank" rel="noopener">음성 향상과 ASR 성능의 관계를 분석한 연구</a>에서도 enhancement 지표의 개선과 인식 오류율을 별개로 평가한다.
 
 ## 2. Encoder–mask–decoder를 한 칸씩 따라가기
+
+<figure id="speech-06-p17">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p17.png" | relative_url }}" alt="Encoder 출력과 mask가 곱해진 뒤 decoder로 전달되는 source separation 구조" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=17" | relative_url }}">lecture PDF, p. 17</a>.</figcaption>
+</figure>
+
+아래 파이프라인의 긴 우회선은 encoder 표현을 곱셈 지점까지 직접 전달한다. Masking network가 낸 값은 그 표현과 곱해지고 decoder가 파형으로 복원한다. 오른쪽 spectrogram은 처리 전후 표현을 보여 주지만, mask를 곱할 대상이 magnitude인지 복소 STFT인지 학습된 feature인지는 모델 정의를 함께 확인해야 한다. 아래 좌표 그림은 이 원본에서 생략한 복소 STFT의 의미를 보충한다.
 
 ### 2.1 STFT는 크기와 위상을 함께 만든다
 
@@ -233,6 +240,13 @@ ASR은 특정 waveform을 재현하기보다 어떤 phoneme·word인지 알아�
 다만 Mel 사용 자체가 금지되는 것은 아니다. Mel을 mask network의 입력 특징으로 쓰면서 원래 $$Y$$를 복원 경로에 보존할 수 있고, generative decoder가 Mel을 조건으로 waveform을 합성할 수도 있다. 전자는 원래 스펙트럼을 유지하고, 후자는 학습한 prior로 빠진 정보를 추정한다. Mel만으로 원래 파형이 수학적으로 유일하게 결정된다는 뜻은 아니다.
 
 ## 4. MA·SA·Waveform: 같은 출력의 어디를 비교하는가
+
+<figure id="speech-06-p23">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p23.png" | relative_url }}" alt="하나의 마스킹 경로에서 MA SA waveform loss의 세 비교 위치" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=23" | relative_url }}">lecture PDF, p. 23</a>.</figcaption>
+</figure>
+
+빨간 1은 예측 mask와 정답 mask, 2는 mask를 적용한 spectrum과 정답 spectrum, 3은 iSTFT로 복원한 파형과 정답 파형의 비교다. 세 번호는 학습을 반드시 1, 2, 3 순서로 끝내야 한다는 뜻이 아니다. 같은 모델 출력에 어느 공간의 오차를 주느냐가 다르다. 아래 보강 그림은 이 세 위치를 분리해 확대했으며 원문의 처리 순서를 대체하지 않는다.
 
 원문 p. 23의 번호 ①②③은 **loss를 계산할 수 있는 위치**다. MA를 먼저 학습하고, 그다음 SA, 마지막으로 waveform을 반드시 순차 수행하라는 뜻이 아니다. 모델은 하나를 선택하거나 여러 loss를 가중합해 한 번에 학습할 수 있다.
 
@@ -443,6 +457,13 @@ $$
 PESQ는 지각적 음질을, STOI는 음성 명료도를 평가한다(pp. 18–20). PESQ의 raw score와 MOS-LQO, narrowband와 wideband는 척도가 서로 다르다. p. 20에 제시된 범위를 모든 variant에 공통인 고정 상한으로 해석해서는 안 된다. STOI도 백분율 표기와 0–1 표기를 구분해야 한다. 두 지표 모두 SNR을 단순히 다른 말로 표현한 것이 아니며, 범용 미분 가능 training loss로 그대로 사용할 수 있는 것도 아니다.
 
 ## 6. 정답의 크기와 위상을 따로 결정할 수 있는가
+
+<figure id="speech-06-p27">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p27.png" | relative_url }}" alt="입력 SNR에 따른 magnitude phase 조합의 PESQ 곡선과 세 문장 oracle 결과표" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=27" | relative_url }}">lecture PDF, p. 27</a>.</figcaption>
+</figure>
+
+왼쪽의 clean 기준선과 ‘정답 magnitude + noisy phase’ 곡선 사이 간격은 크기만 맞혀도 파형이 완전히 복원되지는 않음을 보여 준다. 가로축은 입력 SNR, 세로축은 해당 실험의 PESQ다. 오른쪽 표는 제한된 문장과 설정의 oracle 비교이므로 전체 데이터셋 성능으로 일반화하지 않는다. 아래 벡터 예제는 이 관찰을 복소 오차의 수식으로 설명하기 위한 보강이다.
 
 ### 6.1 위상은 파동이 합쳐지는 결과를 바꾼다
 
@@ -695,6 +716,13 @@ Utterance-level PIT는 발화 전체에 하나의 대응을 적용해 frame마�
 
 ### 9.1 DCCRN — 복소 연산을 network에 포함한다
 
+<figure id="speech-06-p29">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p29.png" | relative_url }}" alt="DCCRN의 복소 convolution 블록과 STFT encoder LSTM decoder mask iSTFT 전체 경로를 보여 주는 강의 슬라이드" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=29" | relative_url }}">lecture PDF, p. 29</a>.</figcaption>
+</figure>
+
+왼쪽 복소 convolution은 실수·허수 입력을 교차 결합한다. 가운데 모델은 빨간 입력 파형을 Conv-STFT, complex encoder, LSTM, decoder, complex mask, Conv-iSTFT 순으로 처리해 파란 출력 파형을 만든다. 오른쪽의 빨강·파랑 곡선은 spectrogram이 아니라 시간 파형이고, 아래 표는 PESQ 비교다. 파형이 매끈해 보인다는 이유만으로 품질 향상을 판정하지 않는다.
+
 Magnitude만 처리하는 모델은 spectrum의 각 점이 원점에서 얼마나 떨어져 있는지 주로 다룬다. DCCRN은 **그 점의 실수 좌표와 허수 좌표를 함께 보존하고, 두 좌표가 섞이는 방식도 복소수 곱에 맞춘다.** 위상각을 별도의 정답 숫자로 입력하지 않아도 두 좌표로부터 위상을 계산할 수 있다.
 
 입력 STFT의 실수부와 허수부는 실제 신호 분석값이지만, network 내부의 중간 feature는 **학습된 복소 특징**이다. 중간 feature의 허수부 하나가 특정 소리의 도착 시간이나 실제 음압을 직접 의미한다고 단정할 수는 없다. 마지막 복소 mask나 spectrum을 어떻게 만들고 waveform으로 합성하는지까지 연결해야 물리적 출력이 정해진다.
@@ -765,6 +793,20 @@ p. 30의 TFC는 time-frequency convolution으로 인접한 구조를 처리하�
 Source별로 학습한 model이나 stream의 결과를 mixer에서 결합하는 <a href="https://mdx-workshop.github.io/proceedings/mkim.pdf" target="_blank" rel="noopener">MDX-Net</a> 계열 구조에서는 vocals, drums 등에 특화된 추정과 여러 추정의 통합을 구분해 생각할 수 있다. TFC-TDF와 MDX-Net은 같은 이름의 단일 모델이 아니라 별도의 모델 계열이다. 슬라이드의 구조는 소개된 MDX 계열 모델에 해당하며, 모든 music separator가 source별 독립 network를 사용하는 것은 아니다.
 
 ### 9.3 FullSubNet+ — 전체 대역과 좁은 대역의 문맥을 함께 사용한다
+
+<figure id="speech-06-p31">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p31.png" | relative_url }}" alt="Magnitude real imaginary 입력이 MulCA와 full-band extractor 및 sub-band model을 거쳐 복소 mask 두 성분을 출력하는 FullSubNet+ 구조" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=31" | relative_url }}">lecture PDF, p. 31</a>.</figcaption>
+</figure>
+
+왼쪽의 magnitude, real, imaginary 세 입력은 각각 MulCA와 full-band extractor를 지난다. 중심 bin 주변 magnitude는 `Unfold`로 모으고, 세 full-band 특징과 이어 붙여 sub-band LSTM에 보낸다. 오른쪽의 두 출력은 complex mask의 real·imaginary 성분이다.
+
+<figure id="speech-06-p32">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p32.png" | relative_url }}" alt="FullSubNet+ 제목과 아이디어 문장 아래에 with reverb와 without reverb 성능을 나눈 비교표" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=32" | relative_url }}">lecture PDF, p. 32</a>.</figcaption>
+</figure>
+
+표는 with reverb와 without reverb를 나누고 WB-PESQ, NB-PESQ, STOI, SI-SDR를 비교한다. FullSubNet과 FullSubNet+의 행을 비교할 때는 같은 reverberation 조건과 같은 지표의 열을 맞춘다. 한 열의 개선이 모든 조건에서 같은 정도의 개선을 뜻하지는 않는다. 상단의 ‘2-component phase’는 아래에서 구분하는 real·imaginary 표현과 연결해 읽고, 실제 모델의 연결은 p.31 구조도를 기준으로 확인한다.
 
 모든 frequency를 함께 보는 full-band branch는 발화 전체의 harmonic과 넓은 spectral pattern을 처리할 수 있다. Sub-band branch는 특정 주파수 주변의 변화를 시간 방향으로 추적한다. 두 branch를 함께 사용해 넓은 구조와 국소적인 noise pattern을 나누어 처리한다(pp. 31–32).
 
@@ -872,6 +914,13 @@ Skip connection은 세밀한 시간 정보를 encoder에서 decoder로 전달한
 
 ### 10.2 Hybrid Transformer Demucs — 두 표현 사이에서 정보를 교환한다
 
+<figure id="speech-06-p43">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p43.png" | relative_url }}" alt="STFT와 waveform 두 branch 사이의 self attention 및 cross attention" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=43" | relative_url }}">lecture PDF, p. 43</a>.</figcaption>
+</figure>
+
+왼쪽의 STFT branch와 waveform branch는 각각 encoder와 decoder를 가지며 중앙에서 정보를 주고받는다. 오른쪽은 각 branch 안의 self-attention과 서로 다른 branch를 연결하는 cross-attention을 구분해 펼친 것이다. Spectrogram의 시간·주파수 격자를 sequence로 바꾸는 단계도 보인다. 두 입력 표현의 장점을 결합하는 구조이지 ‘위상은 waveform branch에만 있다’는 뜻은 아니다.
+
 Spectrogram branch는 harmonic, 주파수 대역, 음색 구조를 파악하기 쉽다. Waveform branch는 sample열의 시간 구조를 보존한다. Hybrid Transformer Demucs는 두 branch를 Transformer로 연결해 서로 다른 표현의 정보를 결합하고 source를 추정한다(pp. 42–43). 이 dual-domain 구조의 이전 단계인 <a href="https://arxiv.org/abs/2111.03600" target="_blank" rel="noopener">Hybrid Demucs</a>도 waveform과 spectrogram branch를 함께 사용한다.
 
 Waveform에 phase 각도가 명시적으로 저장되는 것은 아니지만, waveform이 정해지면 STFT의 phase도 계산할 수 있다. 이런 의미에서 시간 영역 branch도 phase를 포함한 복원 정보를 다룬다. Spectrogram branch가 complex representation을 사용한다면 그쪽에도 phase 정보가 있다. 따라서 "주파수 영역에는 phase가 없고 시간 영역에만 phase가 있다"고 단순하게 이분해서는 안 된다.
@@ -888,6 +937,13 @@ $$
 p. 44의 표는 2021년 Hybrid Demucs v3 결과이고, 주석의 HT Demucs는 2022년 v4를 가리킨다. 같은 표제 아래에 있어도 version을 구분하고 training data, 추가 data, SDR 계산 방식을 맞추어 평가해야 한다.
 
 ### 10.3 Band-Split RNN — 넓은 주파수 관계를 처리하기 전에 대역을 구조화한다
+
+<figure id="speech-06-p46">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p46.png" | relative_url }}" alt="Band split sequence band modeling 및 복소 mask 출력을 연결한 BSRNN" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=46" | relative_url }}">lecture PDF, p. 46</a>.</figcaption>
+</figure>
+
+왼쪽은 전체 흐름이고 오른쪽은 각 블록의 내부다. 주파수 대역을 나눈 특징을 시간 방향 RNN과 대역 방향 RNN으로 처리한 뒤 대역별 MLP가 mask를 만든다. 마지막 merge는 대역들을 원래 주파수 축 순서로 붙여 복소 mask를 구성한다. 대역 분할은 여러 주파수를 영구적으로 한 값으로 압축하는 Mel 집계와 목적이 다르다.
 
 pp. 45–48의 <a href="https://arxiv.org/abs/2209.15174" target="_blank" rel="noopener">Band-Split RNN</a>은 complex spectrogram을 주파수 band로 나누고 band별 특징을 만든 뒤, dual-path RNN으로 시간 방향과 band 방향을 번갈아 처리한다.
 

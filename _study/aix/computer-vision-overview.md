@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Computer Vision Overview"
 course: "AIX"
 topic: "Visual Intelligence and Deep Learning Vision"
@@ -76,6 +76,13 @@ Computer vision이 빠르게 발전한 중요한 이유는 공통 dataset과 ben
 Benchmark는 연구자들이 같은 문제를 같은 metric으로 비교하게 해준다. 특히 ImageNet은 데이터 규모와 평가 체계를 통해 high-capacity model을 학습하고 비교할 수 있는 장을 만들었다.
 
 ## 4. CNN으로 이어지는 역사
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/computer-vision-slide-16.png" | relative_url }}" alt="AIX Computer Vision 강의 슬라이드 16쪽. AlexNet의 입력 이미지부터 convolution, pooling, fully connected layer와 1000 class 출력까지 이어지는 구조도." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/03_Computer_Vision.pdf#page=16" | relative_url }}" target="_blank" rel="noopener"><code>03_Computer_Vision.pdf</code> p.16</a> — AlexNet의 계층형 CNN 구조를 보여주는 원본 슬라이드.</figcaption>
+</figure>
+
+구조도는 왼쪽의 $$224\times224\times3$$ 입력에서 시작해 convolution과 max pooling을 반복하고, 오른쪽의 fully connected layer와 1000-class 출력으로 진행한다. 앞쪽의 작은 kernel은 local pattern을 찾고, 뒤쪽으로 갈수록 feature map의 공간 크기는 줄면서 channel은 늘어난다. 이 그림이 보여주는 직접적인 사실은 계층적 feature extraction 구조이며, 성능 향상의 원인은 이 구조만이 아니라 ImageNet 규모의 데이터와 GPU 학습 조건까지 함께 봐야 한다.
 
 CNN의 아이디어는 갑자기 등장한 것이 아니다.
 
@@ -167,6 +174,13 @@ Neural network에서는 정규화된 activation, weight, preactivation, loss를 
 
 ## 6. Classification 이후의 Vision Task
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/computer-vision-slide-20.png" | relative_url }}" alt="AIX Computer Vision 강의 20쪽. 물체별 bounding box를 찾는 detection과 픽셀 영역을 구분하는 segmentation 사례." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/03_Computer_Vision.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><code>03_Computer_Vision.pdf</code> p.20</a> — detection의 box 출력과 segmentation의 pixel-wise 출력을 대비한 원본 사례.</figcaption>
+</figure>
+
+왼쪽 detection 결과는 각 물체를 사각형과 class로 표시한다. 오른쪽 segmentation 결과는 같은 장면의 각 픽셀을 road, building, person 같은 영역으로 나눈다. 두 문제 모두 위치를 다루지만 출력의 해상도와 표현 형식이 다르다.
+
 Image classification은 이미지 전체에 하나의 label을 붙이는 문제다. 하지만 실제 vision은 더 구조적인 출력을 요구한다.
 
 | Task | 출력 |
@@ -181,6 +195,13 @@ Image classification은 이미지 전체에 하나의 label을 붙이는 문제�
 Detection과 segmentation은 "무엇인가"뿐 아니라 "어디에 있는가"를 묻는다. Video는 여기에 시간적 변화와 motion을 추가한다.
 
 ## 7. Generative Vision
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/computer-vision-slide-48.png" | relative_url }}" alt="AIX Computer Vision 강의 48쪽. noise에서 시작해 diffusion model을 반복 적용하여 emoji 이미지를 복원하는 진행 예시." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/03_Computer_Vision.pdf#page=48" | relative_url }}" target="_blank" rel="noopener"><code>03_Computer_Vision.pdf</code> p.48</a> — 반복적인 denoising으로 sample을 생성하는 diffusion 원본 예시.</figcaption>
+</figure>
+
+오른쪽 열은 무작위 noise가 한 번에 그림으로 바뀌는 것이 아니라, 여러 timestep을 거치며 구조가 점차 드러나는 과정을 보여준다. 학습 목표는 이 역방향 denoising 단계에 필요한 정보를 예측하는 것이다.
 
 딥러닝은 인식뿐 아니라 이미지 생성과 편집에서도 큰 변화를 만들었다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-15 18:17:06 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -282,6 +282,13 @@ Notebook 그림을 읽을 때는 `sampling rate`, `n_fft`, `win_length`, `hop_le
 </details>
 
 ## 3. ASR의 정렬 문제와 CTC
+
+<figure id="source-ctc-review">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p35.png" | relative_url }}" alt="네 frame의 forward probability를 합산한 원본 CTC lattice" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=35" | relative_url }}">lecture PDF, p. 35</a>.</figcaption>
+</figure>
+
+가로축은 네 frame, 세로축은 blank를 끼운 정답 상태다. 마지막 `b`와 마지막 blank에 도착한 확률 0.2835와 0.1308을 합하면 정답 `ab`의 확률 0.4143이다. 중간 상태의 값은 그 상태로 끝나는 여러 경로의 누적 합이다. [원문 입력 분포와 계산](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/#speech-03-p33)을 먼저 읽은 뒤 아래의 더 작은 보강 예제로 검산한다.
 
 ### 3.1 음향 frame과 문자 수는 같지 않다
 

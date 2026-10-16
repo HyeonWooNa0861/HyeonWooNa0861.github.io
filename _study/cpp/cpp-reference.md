@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-09-03 19:35:52 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ References"
 course: "C++"
 topic: "References and Value Passing"
@@ -83,6 +83,12 @@ int* p = nullptr; // 가능
 참조는 항상 유효한 대상을 가리키도록 강제되는 문법이다.
 
 ## 3. 참조와 포인터 비교
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-reference-page-04.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-reference-page-04.png" | relative_url }}" alt="원본 강의 슬라이드의 포인터와 참조 코드 비교" loading="lazy"></a>
+
+*원본 `참조 (Reference).pdf` p. 4. 왼쪽 포인터는 `&x`를 저장하고 `*p`로 역참조하며, `p=&y`처럼 다른 대상을 다시 가리키거나 `nullptr`가 될 수 있다. 오른쪽 참조 `r`은 `x`의 별명으로 초기화되고 `r=100`이 곧 `x=100`이다. <a href="{{ "/assets/pdfs/study/cpp/참조 (Reference).pdf#page=4" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 4</a>*
+
+`r=y`는 참조가 `y`를 새로 가리키게 만드는 연산이 아니다. `y`의 값을 이미 연결된 `x`에 대입한다. 이 재결합 불가성과 초기화 요구가 포인터와 참조의 핵심 차이다.
 
 | 항목 | 포인터 `int* p` | 참조 `int& r` |
 |---|---|---|

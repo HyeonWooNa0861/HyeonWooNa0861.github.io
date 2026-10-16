@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 14 Optimization Theory"
 course: "Machine Learning Basic"
 topic: "Optimization Theory"
@@ -118,6 +118,12 @@ Step size는 gradient descent의 성패를 좌우한다.
 ## 5. Gradient Descent 예시와 Zigzag
 
 강의 예시의 목적 함수는 타원형 contour를 가진다. 이런 함수에서는 gradient 방향이 매번 valley의 양쪽 벽을 향할 수 있어 경로가 zigzag 모양이 된다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-14-page-06.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-14-page-06.png" | relative_url }}" alt="원본 강의 슬라이드의 타원형 등고선과 경사하강 경로" loading="lazy"></a>
+
+*원본 강의 PDF p. 6. 오른쪽 등고선은 $$x_2$$ 방향 곡률이 큰 이차함수이고, 주황 경로는 초기점에서 최소점 부근으로 이동하는 gradient descent 반복이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-14.pdf#page=6" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 6</a>*
+
+등고선의 짧은 축 방향에서는 gradient 성분이 커서 한 번의 update가 계곡 반대편까지 넘어간다. 긴 축 방향 이동은 상대적으로 작아서 좌우 진동은 빠르지만 최소점으로 향하는 진행은 느려진다.
 
 Zigzag가 생기는 이유는 방향마다 곡률이 다르기 때문이다. 어떤 방향은 가파르고, 어떤 방향은 완만하면 gradient는 가파른 방향 성분에 크게 반응한다. 그래서 실제 minimum이 있는 긴 valley 방향으로 바로 내려가기보다 좌우로 흔들리며 천천히 이동할 수 있다.
 

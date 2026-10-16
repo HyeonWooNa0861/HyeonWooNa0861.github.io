@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS03 Algorithm Analysis"
 course: "Data Structures"
 topic: "Algorithm Analysis"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS03_algorithm_analysis.pdf`
 
 > **핵심:** 실험적 분석은 프로그램을 실행해 시간을 측정하고, 이론적 분석은 기본 연산의 수행 횟수를 계산한다. 기본 연산은 수행 시간이 일정하다고 가정하는 핵심 연산이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS03_algorithm_analysis.pdf#page=21" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls03-p21-fibonacci-count.jpg" | relative_url }}" alt="피보나치 반복 알고리즘의 입력 경우별 기본 연산 실행 횟수를 센 강의 표" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 21. 행은 코드 줄, 열은 입력 경우이며 맨 아래가 합산한 수행 시간이다.</figcaption>
+</figure>
+
+표는 한 줄의 비용을 임의로 모두 1로 두고 실제 실행 횟수를 센다. `n>1` 열에서 반복문 본문 네 줄이 각각 `n-1`번 실행되므로 합은 `4n+1`이 된다. 이 정확식에서 최고차항만 남기면 선형 성장률이지만, 먼저 무엇을 기본 연산으로 셌는지 고정해야 한다.
 
 ## 전체 흐름
 

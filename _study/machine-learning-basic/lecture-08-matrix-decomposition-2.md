@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 08 Matrix Decomposition 2"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 2"
@@ -106,6 +106,12 @@ SVD는 $$A^TA$$와 $$AA^T$$의 고유값/고유벡터와 연결된다.
 $$A^TA$$와 $$AA^T$$는 같은 non-zero eigenvalue를 공유한다.
 
 ## 6. SVD의 활용
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-08-page-15.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-08-page-15.png" | relative_url }}" alt="원본 강의 슬라이드의 SVD rank-k 근사식" loading="lazy"></a>
+
+*원본 강의 PDF p. 15. 원행렬 $$A$$를 $$r$$개의 rank-1 행렬 $$\sigma_i u_i v_i^T$$의 합으로 쓴 뒤, 앞의 $$k$$개만 남겨 $$\hat A(k)$$를 만드는 식이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-08.pdf#page=15" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 15</a>*
+
+singular value를 큰 순서로 정렬하면 앞쪽 항이 행렬의 큰 변화 방향을 담는다. $$k<r$$로 절단하면 저장량과 계산량을 줄이는 대신 뒤쪽 성분을 버리므로 근사 오차가 생긴다.
 
 | 활용 | 설명 |
 |---|---|

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"
@@ -526,6 +526,12 @@ public:
 `virtual`을 사용하면 함수 포인터를 직접 멤버로 넣지 않아도 실제 객체 타입에 맞는 함수가 호출된다.
 
 ## 14. 함수 포인터와 vtable
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" alt="원본 강의 슬라이드의 수동 함수 포인터와 자동 vtable 비교" loading="lazy"></a>
+
+*원본 `C++ 함수포인터.pdf` p. 14. 왼쪽은 객체 안의 `speak` 함수 포인터를 개발자가 직접 `dog_speak`에 연결한다. 오른쪽은 `Dog` 객체의 `vptr`가 컴파일러가 만든 `Dog vtable`을 가리키고, 그 table의 `Dog::speak` entry를 통해 호출한다. <a href="{{ "/assets/pdfs/study/cpp/C++ 함수포인터.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 14</a>*
+
+두 방식 모두 실행 시 함수 주소를 한 번 역참조한다. `virtual` 방식은 table 구성과 파생 type 연결을 type system과 compiler가 관리하므로, 수동 `void*` 기반 table보다 type safety와 상속 연동이 좋다.
 
 가상 함수가 있는 클래스에서 컴파일러는 내부적으로 vtable을 만든다. vtable은 가상 함수 주소를 담은 테이블이라고 이해할 수 있다.
 

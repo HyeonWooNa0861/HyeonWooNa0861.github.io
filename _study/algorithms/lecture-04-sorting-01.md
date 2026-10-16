@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-09-29 17:17:49 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 4: Sorting (1)"
 course: "Algorithms"
 topic: "Sorting Overview, Bubble Sort, Selection Sort, and Insertion Sort"
@@ -24,6 +24,15 @@ Source PDF: [4 Sorting (1).pdf]({{ '/assets/pdfs/study/algorithms/04-sorting-01.
 버블 정렬, 선택 정렬, 삽입 정렬은 모두 단순한 제자리 정렬이지만, 이미 정렬된 구간을 확장하는 방식은 서로 다르다. 국민대학교 *Algorithms* 강의의 38쪽 슬라이드를 따라 세 방식을 비교한다. 정확한 비교 횟수, 루프 불변식에 따른 정당성, 중복 키와 안정성은 **작성자 보충**이며, 원문 표기에 빠진 전제는 쪽수와 함께 *Source Check*에서 설명한다.
 
 > **핵심:** 세 알고리즘은 모두 추가 배열 없이 정렬하지만 작업을 확정하는 위치가 다르다. 버블 정렬은 큰 값의 **정렬된 접미부**, 선택 정렬은 작은 값의 **정렬된 접두부**, 삽입 정렬은 매 단계 **정렬된 접두부 전체**를 만든다. 강의 의사코드에서 버블·선택 정렬의 비교 횟수는 입력 순서와 무관하게 $$n(n-1)/2$$회이고, 삽입 정렬은 이미 정렬된 입력에서 $$n-1$$회만 비교한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/04-sorting-01.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-04-p19-bubble-sort.jpg" | relative_url }}" alt="버블 정렬의 각 회전 뒤 오른쪽 확정 구간이 늘어나는 과정을 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 19. 초록색은 각 회전이 끝난 뒤 더 비교하지 않아도 되는 확정 접미부다.</figcaption>
+</figure>
+
+왼쪽 열을 아래로 읽으면 한 회전마다 현재 미정렬 구간의 최댓값이 오른쪽 끝으로 이동한다. 초록 영역이 한 칸씩 왼쪽으로 확장되므로 다음 회전의 비교 범위는 하나 줄어든다. 이 그림이 본문의 접미부 불변식과 `n-1, n-2, ...` 비교 횟수 합의 근거다.
 
 ## 전체 흐름
 
@@ -87,6 +96,11 @@ $$
 
 ## 3. 선택 정렬: 남은 값 가운데 최소를 고르기
 
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/04-sorting-01.pdf#page=25" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-04-p25-selection-sort.jpg" | relative_url }}" alt="남은 구간의 최솟값을 찾아 정렬된 접두부 뒤에 두는 선택 정렬 강의 단계" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 25. 초록색은 이미 확정된 접두부이며, 화살표는 남은 구간에서 찾은 최솟값을 다음 확정 위치와 교환하는 단계다.</figcaption>
+</figure>
+
 선택 정렬은 먼저 `arr[0:n]`에서 최소의 위치를 찾아 `arr[0]`과 교환한다. 다음에는 `arr[1:n]`에서 최소를 찾아 `arr[1]`과 교환한다. 이렇게 정렬된 앞부분을 한 칸씩 늘린다(24–26쪽). `3,4,6,2,7,1,5,8`의 첫 단계에서는 `1`을 골라 `3`과 교환해 `1,4,6,2,7,3,5,8`이 되고, 둘째 단계에는 남은 최소 `2`를 골라 `1,2,6,4,7,3,5,8`이 된다.
 
 27쪽 의사코드는 아래와 같다. 슬라이드에는 `min_idx = i;`처럼 세미콜론이 있지만 Python에서는 생략해도 같다. 마지막 대입은 `min_idx == i`여도 실행된다는 점이 중요하다.
@@ -115,6 +129,11 @@ def selection_sort(arr):
 > **정확한 계수 주의:** 위 코드의 마지막 **튜플 대입 문장은 $$n$$회 실행**된다. `min_idx == i`인 반복도 자기 자신과 값을 바꾸는 대입을 수행한다. 28쪽의 최선 `# swap = 0`은 이 자기 교환을 제외한 **유효 교환**의 수, 또는 `if min_idx != i:`를 추가한 구현으로 해석해야 한다. 유효 교환을 0으로 셀 수 있어도 대입문 실행이 0인 것은 아니다.
 
 ## 4. 삽입 정렬: 이미 정렬된 접두부에 끼워 넣기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/04-sorting-01.pdf#page=31" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-04-p31-insertion-sort.jpg" | relative_url }}" alt="정렬된 접두부에 다음 원소를 이동해 끼워 넣는 삽입 정렬 강의 단계" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 31. 초록색 접두부는 매 단계 정렬되어 있고, 다음 흰색 원소를 왼쪽으로 이동시켜 접두부를 한 칸 확장한다.</figcaption>
+</figure>
 
 삽입 정렬은 첫 원소 하나를 정렬된 배열로 간주하고, 그다음 원소를 앞쪽의 알맞은 위치로 이동시킨다(30–31쪽). `3,4,6,2,7,1,5,8`이라면 `3,4,6`까지는 이미 정렬되어 있다. 다음 키 `2`를 `6`, `4`, `3`과 차례로 비교·교환해 `2,3,4,6,7,1,5,8`로 만든다. 이후 `7`은 그 자리에 두고 `1`, `5`를 각각 왼쪽으로 옮겨 완성한다. 33쪽 구현은 *원소를 빼서 한 번에 대입하는 방식*이 아니라 **인접 교환을 반복하는 방식**이다.
 

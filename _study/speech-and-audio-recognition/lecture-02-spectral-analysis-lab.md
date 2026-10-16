@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-13 17:00:20 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -113,6 +113,13 @@ PDF pp.4–8의 신호는 $$x(t)=10\sin(2\pi10t)+3\sin(2\pi100t)$$다. Sampling 
 
 ## 2. STFT: 신호가 변하는 때를 보려면
 
+<figure id="speech-02-2-p09">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-2-p09.png" | relative_url }}" alt="1024-sample 창과 256-sample 이동 간격을 표시한 시간 파형" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02-2.pdf#page=09" | relative_url }}">lecture PDF, p. 09</a>.</figcaption>
+</figure>
+
+가로축은 시간, 세로축은 파형 값이다. 색칠한 1024-sample 구간 하나가 한 번의 FFT 입력이고, 다음 구간은 256 samples만 이동한다. 창 길이는 한 분석에 포함할 시간 범위를, hop은 분석을 얼마나 촘촘하게 반복할지를 정한다. 서로 겹치는 창을 별도 시간 frame으로 계산하므로 전체 FFT에 없던 시간 위치를 얻는다.
+
 ### 2.1 프레임·hop·주파수 bin의 좌표
 
 전체 녹음의 DFT는 성분의 존재를 알려 주지만 그 소리가 **언제** 났는지는 잃는다. PDF pp.9–10은 길이 1024표본의 창을 256표본씩 옮기는 그림으로 STFT를 도입한다. 아래는 창 길이 $$L$$, hop $$H$$, FFT 길이 $$N_{\mathrm{FFT}}\ge L$$, 창 $$w[r]$$에 대한 작성자 표기다.
@@ -126,6 +133,13 @@ $$m,k,r$$는 무차원 index이고 $$H,L,N_{\mathrm{FFT}}$$는 samples로 센 �
 창을 길게 하면 가까운 주파수 성분을 가를 시간이 늘지만 급격한 변화의 시각을 넓은 구간에 섞는다. 짧은 창은 반대로 시간 위치는 좁히되 주파수 peak는 넓어진다. $$\Delta f=f_s/N_{\mathrm{FFT}}$$는 **그려지는 bin 간격**이고, zero-padding으로 $$N_{\mathrm{FFT}}$$만 키워 간격을 촘촘히 해도 관측 창 $$L/f_s$$가 제공한 물리적 분해능을 새로 만들지는 않는다. 1024/256 예에서 프레임 중첩률은 $$1-256/1024=75\%$$다. 이것이 모든 신호에 최적인 값이라는 뜻은 아니다.
 
 ### 2.2 Rectangular와 Hann: 경계가 만드는 leakage
+
+<figure id="speech-02-2-p14">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-2-p14.png" | relative_url }}" alt="Rectangular와 Hann 창의 phase 및 dB spectrogram 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02-2.pdf#page=14" | relative_url }}">lecture PDF, p. 14</a>.</figcaption>
+</figure>
+
+위 행은 위상각, 아래 행은 dB 크기다. 왼쪽 rectangular 창은 구간 끝에서 급하게 끊고, 오른쪽 Hann 창은 끝의 가중치를 낮춘다. 아래 그림에서 에너지가 주변 주파수로 퍼지는 모양을 비교하되 두 colorbar의 범위가 다르므로 같은 색을 같은 절대 크기로 읽으면 안 된다. 위상 지도도 크기가 거의 0인 bin에서는 안정적인 음향 특징으로 해석하기 어렵다.
 
 PDF p.14는 rectangular와 Hann 창의 spectrogram/phase 그림을 비교한다. 유한 프레임을 그대로 잘라내는 것은 $$w[r]=1$$인 rectangular window를 곱하는 것이다. 프레임 양끝 값이 주기적으로 이어지지 않으면 DFT가 가정하는 반복 경계에 점프가 생겨 에너지가 주변 bin으로 퍼진다. 이것이 **spectral leakage**다. Hann 창 $$w[r]=\tfrac12[1-\cos(2\pi r/(L-1))]$$ ($$0\le r<L$$, 대칭형 convention)은 양 끝을 0으로 낮춰 먼 sidelobe를 줄일 수 있지만, main lobe가 넓어지는 절충이 있다. 라이브러리의 periodic Hann은 분모가 $$L$$이므로 끝점과 복원 조건이 달라질 수 있다. 창을 쓴다고 모든 leakage가 사라지지는 않는다.
 
@@ -216,6 +230,13 @@ $$
 
 
 ## 3. Mel spectrogram: 주파수 축을 다시 모으기
+
+<figure id="speech-02-2-p17">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-2-p17.png" | relative_url }}" alt="삼각형 Mel filter bank와 선형 주파수 및 Mel spectrogram" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02-2.pdf#page=17" | relative_url }}">lecture PDF, p. 17</a>.</figcaption>
+</figure>
+
+왼쪽 삼각형 하나는 여러 FFT bin의 power에 서로 다른 가중치를 주어 한 Mel band로 합치는 필터다. 높은 주파수로 갈수록 넓어지는 필터가 원래 주파수 구간을 더 크게 묶는다. 오른쪽 위·아래의 차이는 색에 로그를 취한 것만이 아니라 세로축의 집계 단위도 바꾼 결과다. 여러 bin을 하나로 합쳤으므로 원래 세부 주파수 값을 유일하게 복원할 수 없다.
 
 PDF p.16의 곡선은 Hz의 같은 차이가 모든 주파수에서 같은 지각 차이로 들리지 않는다는 동기를 준다. 여기서 '사람이 소리를 log-scale로 듣는다'는 말은 **지각적 pitch 척도를 설명하는 근사**이지 loudness까지 같은 공식으로 설명하거나 개인·음량·실험 조건과 무관한 보편 법칙은 아니다. 슬라이드가 제시한 HTK 계열의 한 mel 정의는
 

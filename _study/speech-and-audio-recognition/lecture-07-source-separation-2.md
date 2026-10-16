@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
-last_modified_at: 2026-10-15 18:17:06 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -92,7 +92,7 @@ $$
 
 ## 3. DPCL: 출력 칸 대신 같은 화자인지를 배운다
 
-![DPCL이 시간–주파수 칸을 embedding으로 바꾸고 k-means cluster로 source mask를 만드는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-09.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-09.png" alt="DPCL이 시간–주파수 칸을 embedding으로 바꾸고 k-means cluster로 source mask를 만드는 과정" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>의 왼쪽은 세 화자 혼합, ideal mask, DPCL mask를 비교한다. 오른쪽 계산 흐름은 다음과 같다.
 
@@ -204,7 +204,7 @@ DPCL의 장점은 출력 slot을 미리 화자와 연결하지 않는다는 점�
 
 ## 4. PIT: 가능한 대응 중 가장 잘 맞는 것을 고른다
 
-![PIT가 여러 source 출력과 정답의 가능한 순열을 비교해 최소 손실 대응을 고르는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-10.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-10.png" alt="PIT가 여러 source 출력과 정답의 가능한 순열을 비교해 최소 손실 대응을 고르는 과정" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=10" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 10</a>에서 separator의 출력 수는 그대로 유지된다. 달라지는 것은 loss 계산이다. 각 출력과 각 정답의 pairwise cost를 구한 뒤, 한 정답과 한 출력이 한 번씩만 연결되는 대응 중 총비용이 가장 작은 것을 선택한다.
 
@@ -304,7 +304,7 @@ STFT도 고정된 sine·cosine analysis basis와 inverse transform을 사용한�
 
 원문 p. 13의 TasNet은 learned encoder와 mask, decoder라는 방향을 제시하지만 separator에 recurrent network를 사용해 긴 waveform의 계산이 무거웠다. Conv-TasNet은 separator를 dilated temporal convolutional network(TCN)로 바꾸었다.
 
-![Conv-TasNet의 waveform encoder, dilated TCN separator, source별 mask와 decoder 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-14.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-14.png" alt="Conv-TasNet의 waveform encoder, dilated TCN separator, source별 mask와 decoder 구조" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 14</a>를 왼쪽에서 오른쪽으로 읽으면 다음과 같다.
 
@@ -321,7 +321,7 @@ Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아�
 
 ### 6.1 DPRNN: 긴 sequence를 두 개의 짧은 축으로 나눈다
 
-![DPRNN이 encoded sequence를 겹치는 chunk로 나누고 intra-chunk와 inter-chunk RNN을 교대로 적용하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-16.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-16.png" alt="DPRNN이 encoded sequence를 겹치는 chunk로 나누고 intra-chunk와 inter-chunk RNN을 교대로 적용하는 구조" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=16" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 16</a>의 `Split`은 긴 feature sequence를 겹치는 chunk로 바꾸는 단계다. 길이 $$N$$을 대략 $$C\approx\sqrt{N}$$인 chunk로 나누면 chunk 내부 길이와 chunk 개수 모두 대략 $$\sqrt{N}$$ 규모가 된다.
 
@@ -354,7 +354,7 @@ $$
 
 ### 6.2 SepFormer: dual-path 틀에서 RNN을 self-attention으로 바꾼다
 
-![SepFormer가 intra-transformer와 inter-transformer를 반복하여 짧은 구간과 전체 발화 문맥을 결합하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-17.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-17.png" alt="SepFormer가 intra-transformer와 inter-transformer를 반복하여 짧은 구간과 전체 발화 문맥을 결합하는 구조" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=17" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 17</a>에서 encoder와 decoder의 뼈대는 Conv-TasNet 계열과 비슷하다. Separator 안에서 RNN 대신 두 종류의 Transformer block을 사용한다.
 
@@ -368,7 +368,7 @@ Self-attention은 두 위치가 멀어도 한 attention layer에서 직접 연�
 
 ## 7. TF-GridNet: 복소 STFT를 시간과 주파수 양쪽에서 읽는다
 
-![TF-GridNet이 complex STFT 입력을 intra-frame full-band, sub-band temporal, cross-frame attention으로 처리하는 구조](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-20.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-20.png" alt="TF-GridNet이 complex STFT 입력을 intra-frame full-band, sub-band temporal, cross-frame attention으로 처리하는 구조" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>의 TF-GridNet은 waveform latent mask가 아니라 complex STFT의 real·imaginary channel을 입력으로 받고, source의 complex spectrum을 직접 추정하는 **complex spectral mapping** 계열이다.
 
@@ -411,7 +411,7 @@ SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아니다. R
 - DPCL은 clustering 수를 추론 때 바꿀 수 있어 고정 output slot의 예외다. 하지만 k-means에 사용할 $$K$$는 여전히 주거나 추정해야 한다.
 - “모든 분리 모델이 fixed output”이라고 일반화할 수 없다. Recursive, attractor, query-based, generative formulation도 존재한다.
 
-![최대 출력 수, recursive one-and-rest, source-count prediction으로 알 수 없는 source 수를 다루는 세 접근](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-23.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-23.png" alt="최대 출력 수, recursive one-and-rest, source-count prediction으로 알 수 없는 source 수를 다루는 세 접근" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=23" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 23</a>의 세 접근을 비교하면 다음과 같다.
 
@@ -441,7 +441,7 @@ WSJ0-2mix 같은 dataset은 깨끗한 single-speaker utterance를 정해진 규�
 
 ### 10.2 Dynamic Mixing은 조합을 늘리지만 clean source가 필요하다
 
-![Dynamic Mixing이 clean utterance를 학습 중 선택하고 gain과 구간을 바꾸어 새 mixture를 만드는 과정](/assets/images/study/speech-and-audio-recognition/lecture-07/slide-25.png)
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-25.png" alt="왼쪽 Dynamic Mixing와 MixIT 설명 및 오른쪽 PIT permutation과 MixIT remix의 비교도" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=25" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 25</a>의 왼쪽 Dynamic Mixing(DM)은 미리 저장한 제한된 mixture만 반복하지 않는다. 학습 중 서로 다른 clean utterance를 뽑고, 구간·gain·상대 위치를 바꾸어 새 mixture를 만든다.
 

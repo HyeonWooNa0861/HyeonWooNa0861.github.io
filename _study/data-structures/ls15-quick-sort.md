@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS15 Quick Sort"
 course: "Data Structures"
 topic: "Quick Sort"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS15_quick_sort_R1.pdf`
 
 > **핵심:** Partition은 피벗을 최종 위치에 놓고 그 위치를 반환한다. 이 강의의 Lomuto 방식에서는 배열의 마지막 원소 `A[r]`을 피벗으로 사용한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS15_quick_sort_R1.pdf#page=33" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls15-p33-partition.jpg" | relative_url }}" alt="pivot 15를 기준으로 p, q, i, j 경계를 표시한 Lomuto partition 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 33. 초록 구간은 pivot 이하, 주황 구간은 pivot 초과이며 q는 pivot의 최종 위치다.</figcaption>
+</figure>
+
+`j`가 스캔한 범위 안에서 `i`까지는 pivot 이하라는 불변식을 유지한다. 스캔 뒤 pivot을 `i+1`로 옮기면 왼쪽은 모두 `≤15`, 오른쪽은 모두 `>15`가 된다. q에 놓인 pivot만 최종 위치가 확정되며, 두 하위 구간은 다시 같은 절차로 정렬한다.
 
 ## 전체 흐름
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-09-29 17:16:12 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 7: Single-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "RetinaNet, Focal Loss, YOLO, and FCOS"
@@ -41,6 +41,13 @@ Faster R-CNN은 후보 영역을 만든 뒤 각 후보를 다시 판정하지만
 
 ## 2. RetinaNet: anchor마다 직접 예측하기
 
+<figure id="adc-07-p09">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-07-p09.png" | relative_url }}" alt="Anchor 기반 dense classification과 box regression의 두 head" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-07-perception-05.pdf#page=09" | relative_url }}">lecture PDF, p. 09</a>.</figcaption>
+</figure>
+
+여러 위치의 anchor에서 class와 box를 바로 예측한다. R-CNN 계열처럼 먼저 proposal을 소수로 골라 별도 RoI head에 보내는 단계가 없다. 다만 슬라이드의 classification channel 표기는 일반적인 sigmoid RetinaNet의 K×C와 일치하지 않으므로 그 숫자를 그대로 구현 규칙으로 사용하지 않는다. 아래 Source Check의 출력 정의를 함께 따른다.
+
 8–10쪽의 도식은 입력 영상이 backbone feature map으로 바뀌고, 각 위치에서 여러 모양·크기의 anchor에 대한 분류와 box 변환을 출력하는 구조를 보여준다. 그림의 `5 × 6`은 **설명용 feature-grid 예시**이지 RetinaNet의 고정 입력 크기가 아니다. 위치 수가 많고 위치당 anchor가 여럿이므로 양성 물체보다 쉬운 배경 anchor가 훨씬 많이 생긴다(9쪽).
 
 11쪽처럼 실제 RetinaNet은 ResNet 계열 backbone 위에 Feature Pyramid Network(FPN)를 둔다. 거친 해상도의 의미 정보와 상대적으로 세밀한 해상도를 결합하여 서로 다른 물체 크기에 대응한다. 각 pyramid level에 **분류 subnet**과 **box subnet**을 적용하며, 원 논문의 분류 출력은 위치당 $$A K$$개 sigmoid 점수, box 출력은 $$4A$$개다. 여기서 $$A$$는 한 위치의 anchor 수, $$K$$는 전경 클래스 수다. 슬라이드 8–10쪽의 `2K*(C+1)` 표기는 원 논문의 실제 RetinaNet head 차원과 다르므로 그대로 계산에 쓰지 않는다. [RetinaNet 원 논문](https://openaccess.thecvf.com/content_ICCV_2017/papers/Lin_Focal_Loss_for_ICCV_2017_paper.pdf){:target="_blank" rel="noopener"}의 class subnet 설명을 기준으로 한 정정이다.
@@ -74,6 +81,13 @@ $$
 슬라이드의 **45 fps**는 [원형 YOLO 논문](https://arxiv.org/abs/1506.02640){:target="_blank" rel="noopener"} 초록에 제시된 *base YOLO*의 실험 결과다. 단위 fps는 초당 처리 프레임 수이며 $$45\,\mathrm{fps}$$의 프레임당 단순 역수는 약 $$22.2\,\mathrm{ms}$$다. 이 계산은 처리량의 역수일 뿐 센서 취득·전처리·전송·후처리·planning까지 합친 지연 시간을 뜻하지 않는다. 원 논문은 별도 Fast YOLO 모델에 대해 다른 수치도 보고하므로 45 fps를 **YOLO family 전체의 고정 성능**처럼 적용하지 않는다. 원 논문은 속도와 함께 localization error라는 한계도 설명한다.
 
 ## 4. FCOS: anchor-free 위치에서 네 변까지 거리 예측
+
+<figure id="adc-07-p18">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-07-p18.png" | relative_url }}" alt="위치별 class와 네 거리 및 centerness를 예측하는 FCOS" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-07-perception-05.pdf#page=18" | relative_url }}">lecture PDF, p. 18</a>.</figcaption>
+</figure>
+
+이미지 안의 한 점에서 box의 왼쪽·위·오른쪽·아래 변까지 거리 l,t,r,b를 예측한다. 오른쪽 세 head의 역할은 class, 네 거리, centerness로 나뉜다. Centerness는 물체 중심에서 멀리 떨어진 위치의 낮은 품질 예측을 억제하는 보조 점수이며 class 자체를 바꾸는 값이 아니다.
 
 14–17쪽의 FCOS는 anchor 후보를 미리 정하지 않는다. Feature map의 한 위치가 원본 이미지의 위치 $$(x,y)$$에 대응한다고 할 때, 그 위치가 ground-truth box 내부이면 해당 클래스를 양성으로 지정하고 box의 왼쪽·위·오른쪽·아래 변까지 거리 $$l,t,r,b$$를 회귀한다. 훈련 목표 box를 $$(x_0,y_0,x_1,y_1)$$로 쓰면 **작성자 보충 유도**는 다음과 같다.
 

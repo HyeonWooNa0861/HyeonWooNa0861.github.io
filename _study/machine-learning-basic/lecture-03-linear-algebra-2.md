@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 03 Linear Algebra 2"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 2"
@@ -104,6 +104,12 @@ $$
 ## 3. 벡터 부분공간
 
 부분집합 $$U$$가 벡터공간 $$V$$의 부분공간이 되려면 $$U$$ 자체가 같은 연산에 대해 벡터공간이어야 한다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-03-page-14.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-03-page-14.png" | relative_url }}" alt="원본 강의 슬라이드의 Ax=0과 Ax=b 해 집합 질문" loading="lazy"></a>
+
+*원본 강의 PDF p. 14. 슬라이드는 $$Ax=0$$과 $$Ax=b$$의 해 집합이 부분공간인지 묻는다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-03.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 14</a>*
+
+$$Ax=0$$에서는 두 해의 합과 모든 스칼라배가 다시 해이고 0도 포함된다. 반면 $$b\ne0$$인 $$Ax=b$$는 원점을 포함하지 않으므로 일반적으로 부분공간이 아니다. 해가 존재한다면 영공간을 평행 이동한 affine space다.
 
 실제로는 다음만 확인하면 된다.
 

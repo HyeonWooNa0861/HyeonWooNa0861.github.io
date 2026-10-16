@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-15 00:00:00 +0900
-last_modified_at: 2026-10-14 13:18:00 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Algorithms Assignment 1: Complexity Analysis and Recurrences"
 course: "Algorithms"
 topic: "Asymptotic Analysis and Recurrences"
@@ -11,6 +11,15 @@ keywords: [operation-counting, asymptotic-analysis, recurrence-relations, master
 ---
 
 # Algorithms Assignment 1: Complexity Analysis and Recurrences
+
+## 원문 문제 먼저 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf#page=1" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/algorithms/source-figures/assignment-01-p1-problems.jpg" | relative_url }}" alt="행렬 곱셈 연산 수, 점근 표기 증명, 재귀식 분석 문제를 제시한 과제 원문 첫 페이지" loading="lazy"></a>
+  <figcaption>과제 원문 PDF p. 1. 문제 1의 코드, 문제 2의 증명 대상, 문제 3의 재귀 함수가 한 페이지에 제시된다.</figcaption>
+</figure>
+
+원문은 행렬 곱셈에서 기본 연산별 횟수를 따로 세고, 점근 표기는 정의로 증명하며, 재귀 함수는 정확식과 두 분석법을 모두 요구한다. 아래 해설은 이 요구 순서를 유지한다. 그림의 문제 문구를 먼저 확인한 뒤 각 풀이에서 비용 모형과 가정을 대조한다.
 
 ## Key Takeaways
 

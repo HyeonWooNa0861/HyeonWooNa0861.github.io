@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:55:22 +0900
-last_modified_at: 2026-10-13 15:20:57 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Speech and Audio Recognition: Tokenization and Decoding Lab"
 course: "Speech and Audio Recognition"
 topic: "BPE, CTC Decoding, and RNN-T Inference"
@@ -114,7 +114,9 @@ pair = min(counts, key=lambda p: (-counts[p], p))
 
 </details>
 
-![Merge 횟수가 늘수록 어휘 크기 V는 증가하고 예제 문장의 token 수 U는 감소하는 두 선 그래프]({{ "/assets/images/study/speech-asr-lab/bpe-vocabulary-and-token-count.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/bpe-vocabulary-and-token-count.png" | relative_url }}" alt="Merge 횟수가 늘수록 어휘 크기 V는 증가하고 예제 문장의 token 수 U는 감소하는 두 선 그래프" loading="lazy">
+
+Source: [01_bpe_basics.ipynb, cell 8 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/01-bpe-basics.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 저장된 그래프에서 merge 예산이 0, 4, 8, 12, 20으로 늘 때 $$V$$는 11, 15, 19, 23, 31로 증가하고, 문장 `newer lower widest`의 $$U$$는 19, 14, 9, 5, 3으로 감소한다. 이 감소는 **이 예제 문장과 이 corpus에 대한 결과**다. Merge를 늘리면 어휘 table과 embedding/output layer는 커질 수 있고, 다른 문장의 길이가 같은 비율로 줄어든다는 보장은 없다.
 
@@ -182,7 +184,9 @@ $$
 
 Notebook은 SRI International과 Lab41이 공개한 VOiCES corpus의 `Lab41-SRI-VOiCES-src-sp0307-ch127535-sg0042.wav` 16 kHz 영어 sample을 사용한다. 이 파일은 PyTorch의 tutorial-assets에서 배포되며, VOiCES 공식 README가 밝힌 라이선스는 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>이다. 저장 출력의 선택 구간은 약 3.40초다. 파형은 먼저 stereo channel 평균으로 mono화하고, 선택한 시작점부터 최대 12초를 자른 뒤 16 kHz가 아니면 resample한다.
 
-![CTC notebook에서 사용한 3.40초 음성의 시간축 파형]({{ "/assets/images/study/speech-asr-lab/ctc-input-waveform.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/ctc-input-waveform.png" | relative_url }}" alt="CTC notebook에서 사용한 3.40초 음성의 시간축 파형" loading="lazy">
+
+Source: [02_ctc_inference.ipynb, cell 7 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/02-ctc-inference.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: CTC input waveform</summary>
@@ -206,7 +210,9 @@ logits: [B, T, V] = [1, 169, 29]
 
 여기서 $$B=1$$, $$T=169$$는 Encoder 출력 frame 수, $$V=29$$는 blank `-`, 단어 경계 `|`, 영문 대문자와 apostrophe로 이루어진 class 수다. 원 파형은 약 54,400 samples지만 출력은 169 frame이므로, heatmap의 가로 index를 raw sample 또는 millisecond로 직접 읽으면 안 된다.
 
-![169개 Encoder frame과 29개 CTC class의 확률 heatmap. 대부분의 frame에서 blank가 높고 문자 위치에 좁은 밝은 열이 나타난다]({{ "/assets/images/study/speech-asr-lab/ctc-frame-probabilities.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/ctc-frame-probabilities.png" | relative_url }}" alt="169개 Encoder frame과 29개 CTC class의 확률 heatmap. 대부분의 frame에서 blank가 높고 문자 위치에 좁은 밝은 열이 나타난다" loading="lazy">
+
+Source: [02_ctc_inference.ipynb, cell 10 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/02-ctc-inference.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 Heatmap의 맨 아래 blank 행은 긴 구간에서 거의 1에 가깝다. 문자 행의 밝은 spike가 발화 구간에 드물게 나타나며, 같은 문자나 `|`가 연속 argmax가 되어도 collapse 뒤에는 하나만 남는다. 저장된 blank argmax 비율은 0.592였고 Greedy transcript는 다음과 같다.
 
@@ -360,7 +366,9 @@ Greedy는 한 격자점에서 가장 높은 class를 고른다.
 - blank이면 $$(t,u)\to(t+1,u)$$: 다음 음향 위치로 가되 Predictor 상태는 유지한다.
 - 일반 token이면 $$(t,u)\to(t,u+1)$$: 같은 음향 위치에서 token을 출력하고 Predictor 상태를 갱신한다.
 
-![blank에서는 오른쪽으로, c a t token에서는 위로 이동하는 합성 RNN-T 경로]({{ "/assets/images/study/speech-asr-lab/rnnt-synthetic-path.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/rnnt-synthetic-path.png" | relative_url }}" alt="blank에서는 오른쪽으로, c a t token에서는 위로 이동하는 합성 RNN-T 경로" loading="lazy">
+
+Source: [03_rnnt_inference.ipynb, cell 6 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/03-rnnt-inference.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: Synthetic RNN-T lattice path</summary>
@@ -398,7 +406,9 @@ we are learning speech recognition
 
 RNN-T notebook도 같은 3.40초 sample을 독립적으로 준비한다.
 
-![RNN-T notebook에 저장된 입력 음성 파형]({{ "/assets/images/study/speech-asr-lab/rnnt-input-waveform.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/rnnt-input-waveform.png" | relative_url }}" alt="RNN-T notebook에 저장된 입력 음성 파형" loading="lazy">
+
+Source: [03_rnnt_inference.ipynb, cell 8 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/03-rnnt-inference.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: RNN-T input waveform</summary>
@@ -418,7 +428,9 @@ Encoder output f_t : [1, 85, 1024]
 
 345는 오른쪽 padding이 포함된 Mel frame 축이고, 85는 Emformer transcriber 뒤의 실제 탐색 축이다. Notebook과 TorchAudio 2.8의 공식 non-streaming decoder 모두 transcribe 결과의 `enc_out.shape[1]`을 탐색한다. 이 실행은 전체 crop을 한 번에 처리한 **offline full-context inference**이며 streaming demo가 아니다.
 
-![85개 Encoder 위치에서 9개 BPE token을 출력한 pretrained RNN-T Greedy 경로]({{ "/assets/images/study/speech-asr-lab/rnnt-saved-inference-path.png" | relative_url }})
+<img src="{{ "/assets/images/study/speech-asr-lab/rnnt-saved-inference-path.png" | relative_url }}" alt="85개 Encoder 위치에서 9개 BPE token을 출력한 pretrained RNN-T Greedy 경로" loading="lazy">
+
+Source: [03_rnnt_inference.ipynb, cell 16 (0-based), saved output]({{ "/assets/materials/study/speech-asr-lab/03-rnnt-inference.ipynb" | relative_url }}). 원본 notebook에 저장된 그림이며 이번 검토의 새 모델 실행 결과가 아니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: Saved pretrained RNN-T path</summary>

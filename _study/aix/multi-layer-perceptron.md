@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Multi-Layer Perceptron"
 course: "AIX"
 topic: "MLPs and Generalization"
@@ -129,6 +129,13 @@ XOR 문제는 단일 직선으로 두 class를 분리할 수 없는 대표적인
 
 ## 5. Multi-Layer Perceptron
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/mlp-slide-10.png" | relative_url }}" alt="AIX Multi-Layer Perceptron 강의 슬라이드 10쪽. 세 입력, 다섯 hidden unit, 세 출력이 완전 연결된 MLP 구조를 보여준다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/02_MLP.pdf#page=10" | relative_url }}" target="_blank" rel="noopener"><code>02_MLP.pdf</code> p.10</a> — single perceptron에 hidden layer와 비선형성을 추가한 MLP 원본 구조도.</figcaption>
+</figure>
+
+왼쪽의 세 원은 입력 feature, 가운데 다섯 원은 hidden unit, 오른쪽 세 원은 출력이다. 파란 연결선은 앞 layer의 모든 activation이 다음 layer의 각 unit 계산에 참여하는 fully connected 관계를 나타낸다. 그림의 핵심은 연결선 수 자체가 아니라, 가운데 hidden layer에서 affine 변환 뒤 activation을 적용해 하나의 선형 경계로 표현할 수 없는 함수를 구성한다는 점이다.
+
 MLP는 perceptron 구조를 여러 층으로 확장한 모델이다.
 
 ```text
@@ -144,6 +151,13 @@ Hidden layer가 들어가면 모델은 입력 공간을 여러 단계로 변환�
 | MLP | 비선형 경계와 복잡한 함수 |
 
 ## 6. Backpropagation
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/mlp-slide-12.png" | relative_url }}" alt="AIX MLP 강의 12쪽. forward 계산 그래프와 loss에서 입력 방향으로 흐르는 gradient 화살표." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/02_MLP.pdf#page=12" | relative_url }}" target="_blank" rel="noopener"><code>02_MLP.pdf</code> p.12</a> — forward graph를 역방향으로 따라 gradient를 계산하는 backpropagation 원본 도식.</figcaption>
+</figure>
+
+위쪽은 $$x\to z\to a\to\hat y$$의 forward 계산이고, 아래쪽 빨간 화살표는 loss에서 출발해 같은 연결을 거꾸로 따라가는 gradient다. Backpropagation은 새 경로를 만드는 방법이 아니라, forward에서 저장한 중간값과 각 연산의 local derivative를 역순으로 조합하는 절차다.
 
 Backpropagation은 chain rule을 이용해 신경망의 모든 parameter에 대한 gradient를 효율적으로 계산하는 방법이다.
 
@@ -203,6 +217,13 @@ K-fold cross validation은 데이터를 `K`개의 fold로 나누고, 각 fold를
 데이터가 많지 않을 때 성능 추정의 안정성을 높이는 데 유용하다.
 
 ## 8. Expressivity와 Generalization
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/mlp-slide-20.png" | relative_url }}" alt="AIX MLP 강의 20쪽. underfitting, 적절한 fitting, overfitting의 표적 비유와 회귀 곡선, train-validation loss를 비교한다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/02_MLP.pdf#page=20" | relative_url }}" target="_blank" rel="noopener"><code>02_MLP.pdf</code> p.20</a> — bias와 variance를 데이터 적합 모양 및 loss 곡선으로 비교한 원본 슬라이드.</figcaption>
+</figure>
+
+왼쪽 세 열은 모델이 패턴을 덜 학습한 상태, 적절히 학습한 상태, 잡음까지 따라간 상태를 비교한다. 오른쪽에서는 overfitting일 때 training loss는 계속 내려가지만 validation loss가 다시 올라간다. 따라서 모델 선택은 training loss의 최솟값이 아니라 validation 추세를 함께 봐야 한다.
 
 표현력이 높은 모델은 더 복잡한 패턴을 학습할 수 있다. 하지만 표현력이 너무 크고 regularization이 부족하면 훈련 데이터의 noise까지 외워 overfitting이 생긴다.
 

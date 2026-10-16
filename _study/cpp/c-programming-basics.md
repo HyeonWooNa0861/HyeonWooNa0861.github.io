@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C Programming Fundamentals"
 course: "C++"
 topic: "C Syntax Fundamentals"
@@ -316,6 +316,12 @@ void swap(int* a, int* b) {
 ```
 
 ## 11. 포인터 기초
+
+<a href="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" alt="원본 강의 슬라이드의 포인터 코드와 메모리 배치" loading="lazy"></a>
+
+*원본 `C 프로그래밍 소개.pdf` p. 22. 변수 `x`는 주소 `0x7fff`에 값 42를 저장하고, 포인터 변수 `p`는 별도 주소 `0x8000`에 `0x7fff`를 저장한다. 위쪽 화살표는 `p`가 `x`를 가리킨다는 뜻이다. <a href="{{ "/assets/pdfs/study/cpp/C 프로그래밍 소개.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 22</a>*
+
+`p` 자체의 값은 주소이고 `*p`는 그 주소에 있는 값이다. 따라서 슬라이드의 `*p = 100`은 `p`의 주소를 바꾸지 않고 `x`가 저장된 메모리를 100으로 갱신한다.
 
 포인터는 어떤 변수의 주소를 저장하는 변수다.
 

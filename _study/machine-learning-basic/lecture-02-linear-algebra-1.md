@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 02 Linear Algebra 1"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 1"
@@ -65,6 +65,12 @@ $$x,y,z\in\mathbb{R}^n$$과 $$a,b\in\mathbb{R}$$에 대해 좌표별 덧셈과 �
 ## 2. 선형연립방정식
 
 많은 문제는 선형연립방정식으로 표현할 수 있다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-02-page-09.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-02-page-09.png" | relative_url }}" alt="원본 강의 슬라이드의 두 직선과 교점" loading="lazy"></a>
+
+*원본 강의 PDF p. 9. 빨간 직선과 파란 직선은 연립방정식의 각 식이 허용하는 점의 집합이고, 검은 점은 두 조건을 동시에 만족하는 유일한 해다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-02.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>*
+
+두 직선이 평행하면 공통점이 없어 해가 없고, 완전히 겹치면 모든 점이 공통점이어서 해가 무한히 많다. 따라서 대수식의 해 개수와 기하학적 교점의 개수가 같은 문제를 서로 다른 표현으로 설명한다.
 
 $$
 Ax = b

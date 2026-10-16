@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:58:59 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lab 1: Two-Stage vs One-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "Tracing Faster R-CNN and RetinaNet"
@@ -118,6 +119,15 @@ $$
 ## 3. Backbone, FPN, anchor는 어떤 역할인가
 
 ### 3.1 FPN은 서로 다른 크기의 물체를 위한 feature 계층이다
+
+Lab 1 원본의 이 부분은 코드와 설명을 제공하지만 저장된 그림 출력은 없다. 아래는 같은 주제의 Assignment 2에서 저장된 FPN 출력으로 비교를 보충한다. 원본 코드의 `backbone` 호출과 feature-map 시각화 흐름을 먼저 확인하고, 학습 상태 차이는 아래 그림에서 읽는다.
+
+<figure id="source-fpn-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment2-fpn-feature-maps.png" | relative_url }}" alt="P2부터 P6의 init 및 COCO FPN 평균 절대 활성값 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}">Assignment 2 notebook, cell 13 (0-based), saved output</a>.</figcaption>
+</figure>
+
+위 행은 ImageNet backbone에 초기화된 FPN/head, 아래 행은 COCO 학습 모델이다. P2부터 P6으로 갈수록 feature 격자가 작아진다. 색은 channel별 절대 활성값의 평균이며 box나 segmentation mask가 아니다. 두 행의 차이는 같은 입력에 학습 상태가 다른 모델이 만든 표현의 차이로 읽는다. 이 이미지는 원본 과제 notebook의 저장 출력이며 이번에 모델을 재실행한 결과가 아니다.
 
 Backbone은 pixel을 feature로 바꾼다. FPN은 서로 다른 해상도의 feature를 연결해 높은 해상도에서도 상위 계층의 의미 정보를 이용하도록 한다. 이 notebook의 Faster R-CNN은 P2–P6, RetinaNet은 P3–P7을 사용한다.
 

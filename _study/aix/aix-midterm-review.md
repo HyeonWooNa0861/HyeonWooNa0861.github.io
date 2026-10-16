@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:26:36 +0900
-last_modified_at: 2026-09-03 15:50:43 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "AIX Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
@@ -49,6 +49,23 @@ Source Images:
 | 추가 개념 | 정답을 이해하기 위해 필요한 배경 개념을 짧게 보강한다. |
 
 ## 원문 대조 결과
+
+<details markdown="block">
+<summary markdown="span">원본 정답지 보기: Q1–Q50</summary>
+
+<figure>
+  <a href="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-1.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-1.png" | relative_url }}" alt="AIX 중간고사 원본 정답지 첫 장. 1번부터 25번까지의 답 표시." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-1.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-midterm-answer-sheet-1.png</code></a> — Q1–Q25 원본 정답지.</figcaption>
+</figure>
+
+<figure>
+  <a href="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-2.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-2.png" | relative_url }}" alt="AIX 중간고사 원본 정답지 둘째 장. 26번부터 50번까지의 답 표시." loading="lazy"></a>
+  <figcaption><a href="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-2.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-midterm-answer-sheet-2.png</code></a> — Q26–Q50 원본 정답지.</figcaption>
+</figure>
+
+두 장의 번호 구간을 먼저 맞춘 뒤 아래 개념별 해설과 대조한다. 정답을 보지 않고 먼저 풀 수 있도록 원본 정답지는 기본적으로 닫아 두었다.
+
+</details>
 
 중간고사 정답지 이미지는 1번부터 50번까지 답과 짧은 해설이 붙어 있는 형태다. 현재 문서는 정답지의 문항 순서를 그대로 복사하지 않고, 같은 개념을 묻는 문제들을 묶어 다시 공부할 수 있게 재구성했다.
 

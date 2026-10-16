@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS07_stack_queue_R1.pdf`
 
 > **핵심:** 스택은 나중에 넣은 원소를 먼저 꺼내는 LIFO 구조이고, 큐는 먼저 넣은 원소를 먼저 꺼내는 FIFO 구조다. 이 강의의 ArrayStack에서 `top`은 다음 삽입 위치를 가리키므로 실제 맨 위 원소의 인덱스는 `top - 1`이다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS07_stack_queue_R1.pdf#page=44" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls07-p44-circular-queue.jpg" | relative_url }}" alt="고정 배열 큐에서 front와 rear가 이동하며 앞쪽 빈 공간을 재사용하지 못하는 문제를 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 44. 선형 이동만 하면 앞쪽 빈 칸이 있어도 rear 뒤 공간이 먼저 소진된다.</figcaption>
+</figure>
+
+위 배열은 `front`가 20, `rear`가 17을 가리킨다. 아래 배열에서는 dequeue가 진행되어 앞쪽 두 칸이 비었지만 rear가 오른쪽으로만 이동한다. 인덱스를 용량으로 나눈 나머지로 갱신하면 rear가 앞쪽 빈 칸으로 돌아와 고정 배열 전체를 재사용할 수 있다.
 
 ## 전체 흐름
 

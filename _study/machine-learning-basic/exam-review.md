@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-02 13:12:04 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Machine Learning Basic Exam Review"
 course: "Machine Learning Basic"
 topic: "Exam Review"
@@ -53,6 +53,34 @@ Source PDFs:
 | Lecture 17 | 2–17 | Gaussian 회귀 모델, MLE/MAP 정규방정식, RMSE | 4.1–4.4 |
 
 페이지는 각 PDF의 물리 페이지 기준이다. 시험 정리에서 새로 제시한 증명·조건부 Gaussian 유도는 원문 슬라이드의 표기를 복제한 것이 아니라, 해당 결론이 성립하는 조건을 보충한 해설이다.
+
+### 원본 그림으로 다시 잡는 네 축
+
+#### 확률
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-12-page-17.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-12-page-17.png" | relative_url }}" alt="췌장암 Bayes 빈도표" loading="lazy"></a>
+
+증상 양성 11명 중 암 환자는 1명이다. likelihood만 보지 말고 100,000명 중 1명이라는 prior를 함께 읽는다. [Lecture 12 Bayes 정리]({{ "/study/machine-learning-basic/lecture-12-probability-distributions-2/" | relative_url }}#4-bayes-theorem)와 <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-12.pdf#page=17" | relative_url }}" target="_blank" rel="noopener">원문 p. 17</a>에서 이어서 확인한다.
+
+#### 최적화
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-14-page-06.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-14-page-06.png" | relative_url }}" alt="타원형 등고선의 경사하강 경로" loading="lazy"></a>
+
+타원형 등고선의 짧은 축에서 주황 경로가 크게 왕복한다. 방향별 곡률 차이가 zigzag와 느린 수렴을 만든다. [Lecture 14 Gradient Descent]({{ "/study/machine-learning-basic/lecture-14-optimization-theory/" | relative_url }}#5-gradient-descent-예시와-zigzag)와 <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-14.pdf#page=6" | relative_url }}" target="_blank" rel="noopener">원문 p. 6</a>에서 이어서 확인한다.
+
+#### Model and Data
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-15-page-18.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-15-page-18.png" | relative_url }}" alt="5-fold cross validation" loading="lazy"></a>
+
+다섯 실행마다 주황 validation fold가 한 칸씩 이동한다. test set은 이 반복에 넣지 않는다. [Lecture 15 Cross Validation]({{ "/study/machine-learning-basic/lecture-15-model-meets-data/" | relative_url }}#13-cross-validation)과 <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-15.pdf#page=18" | relative_url }}" target="_blank" rel="noopener">원문 p. 18</a>에서 이어서 확인한다.
+
+#### 선형회귀
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" alt="다항식 차수별 적합과 train-test RMSE" loading="lazy"></a>
+
+차수가 커질 때 training RMSE는 낮아지지만 test RMSE는 상승한다. $$M=9$$의 큰 진동이 과적합을 시각화한다. [Lecture 17 과적합]({{ "/study/machine-learning-basic/lecture-17-linear-regression/" | relative_url }}#10-과적합)과 <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=13" | relative_url }}" target="_blank" rel="noopener">원문 p. 13</a>에서 이어서 확인한다.
+
+이 표의 이미지는 각 개별 강의 글에서 먼저 판독한 원본 슬라이드를 재사용한다. 총정리에서는 원본을 새 도식으로 바꾸지 않고, 자세한 수식과 조건은 연결된 강의 글에서 이어서 확인한다.
 
 시험 대비의 큰 흐름은 다음과 같다.
 

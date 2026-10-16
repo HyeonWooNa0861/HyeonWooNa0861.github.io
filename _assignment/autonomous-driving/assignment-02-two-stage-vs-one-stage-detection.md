@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Autonomous Driving Computing Assignment 2: Two-Stage vs One-Stage Detection"
 course: "Autonomous Driving"
 topic: "Faster R-CNN and RetinaNet"
@@ -44,6 +45,13 @@ image → transform → ResNet-50 + FPN
 두 모델 모두 backbone, FPN, anchor, classification, box regression을 사용한다. 차이는 **proposal을 명시적으로 선별해 두 번째 head로 보내는가**에 있다.
 
 ## 1. 입력과 FPN
+
+<figure id="source-fpn-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment2-fpn-feature-maps.png" | relative_url }}" alt="P2부터 P6의 init 및 COCO FPN 평균 절대 활성값 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}">Assignment 2 notebook, cell 13 (0-based), saved output</a>.</figcaption>
+</figure>
+
+위 행은 ImageNet backbone에 초기화된 FPN/head, 아래 행은 COCO 학습 모델이다. P2부터 P6으로 갈수록 feature 격자가 작아진다. 색은 channel별 절대 활성값의 평균이며 box나 segmentation mask가 아니다. 두 행의 차이는 같은 입력에 학습 상태가 다른 모델이 만든 표현의 차이로 읽는다. 이 이미지는 원본 과제 notebook의 저장 출력이며 이번에 모델을 재실행한 결과가 아니다.
 
 Penn-Fudan dataset의 instance mask에서 각 사람의 pixel 범위를 찾아 box $$(x_1,y_1,x_2,y_2)$$를 만든다. 입력 image는 normalization, aspect-ratio preserving resize, batch padding을 거친다.
 
@@ -98,6 +106,13 @@ $$
 </details>
 
 ### 2.2 Proposal과 두 번째 단계
+
+<figure id="source-rpn-output">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-assignment2-rpn-proposals.png" | relative_url }}" alt="Init와 COCO 모델의 top 50 RPN proposal과 정답 box" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}">Assignment 2 notebook, cell 27 (0-based), saved output</a>.</figcaption>
+</figure>
+
+청록 box는 상위 50개 proposal, 흰 점선은 GT다. 오른쪽 COCO 모델에서 물체 주변으로 후보가 모이는지 왼쪽 초기화 모델과 비교한다. 이 단계는 class를 확정한 최종 detection이 아니므로 proposal 수가 많다고 recall이나 precision이 높다고 단정하지 않는다. 원본에 저장된 출력이며 학습을 새로 실행한 결과는 아니다.
 
 RPN은 offset을 decode하고 level별 top-K, clipping, 작은 box 제거, NMS를 거쳐 proposal을 만든다. 저장 출력에서 COCO-trained RPN은 네 GT에 대해 top-10 proposal만으로 best IoU 0.80–0.92를 만들었다. 초기 RPN은 top-1000을 사용해도 best IoU가 0.22–0.36에 머물렀다.
 

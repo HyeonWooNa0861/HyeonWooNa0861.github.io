@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 11:31:26 +0900
-last_modified_at: 2026-10-13 16:49:42 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"
@@ -20,6 +20,15 @@ keywords:
 Source PDF: `LS20_graph.pdf`
 
 > **핵심:** 그래프 $$G=(V,E)$$는 정점 집합 $$V$$와 간선 집합 $$E$$로 정의된다. 무향 그래프에서는 간선에 방향이 없고, 유향 그래프에서는 시작점과 끝점의 순서가 중요하다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/data-structures/LS20_graph.pdf#page=49" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/source-figures/ls20-p49-representation-comparison.jpg" | relative_url }}" alt="인접 행렬과 인접 리스트의 시간·공간 복잡도를 비교한 강의 표" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 49. 간선 존재 확인, 이웃 탐색, 전체 간선 탐색, 저장 공간을 함께 비교한다.</figcaption>
+</figure>
+
+인접 행렬은 두 정점 인덱스로 즉시 접근해 간선 존재를 `O(1)`에 확인하지만 항상 `|V|²`칸을 쓴다. 인접 리스트는 실제 이웃만 저장해 희소 그래프에 유리하고 전체 순회가 `O(|V|+|E|)`지만, 특정 간선 확인은 해당 정점의 degree만큼 탐색할 수 있다.
 
 ## 전체 흐름
 

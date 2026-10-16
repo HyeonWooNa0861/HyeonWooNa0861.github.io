@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 3: Perception I — Image Classification and Vision Backbones"
 course: "Autonomous Driving"
 topic: "Image Classification, CNNs, and Vision Transformers"
@@ -78,6 +79,13 @@ $$
 
 ## 3. CNN: 공간 구조를 살리는 시각 표현
 
+<figure id="adc-03-p27">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-03-p27.png" | relative_url }}" alt="자동차 입력을 convolution pooling 완전연결층과 softmax로 분류하는 CNN" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-03-perception-01.pdf#page=27" | relative_url }}">lecture PDF, p. 27</a>.</figcaption>
+</figure>
+
+왼쪽 이미지를 여러 convolution과 pooling이 공간 feature로 바꾼 뒤 flatten과 fully connected layer가 class 점수로 바꾼다. 맨 오른쪽 car·truck·van·bicycle은 이미지 전체의 분류 결과다. 아직 물체별 box를 출력하지 않으므로 이 그림을 detection 구조로 읽지 않는다.
+
 ### 3.1 왜 모든 pixel을 처음부터 완전 연결하지 않는가?
 
 24–25쪽의 32×32×3 영상을 flatten하면 길이 3,072의 벡터다. 이를 출력 10개와 바로 연결하면 편향을 제외하고 $$3072\times10=30{,}720$$개 가중치가 필요하다. 이미지의 가로·세로 길이를 각각 두 배로 늘리고 출력 폭을 유지하면 입력 가중치 수는 네 배가 된다. 슬라이드의 “quadratic increase”는 **가로·세로 길이 모두가 같은 비율로 증가할 때**의 설명이다. Flatten 자체가 픽셀 값을 없애는 것은 아니지만, 보통의 완전 연결층은 인접 pixel이 가깝다는 구조를 모델에 명시하지 않는다.
@@ -103,6 +111,13 @@ $$
 다. 원하는 변환이 항등 변환에 가깝다면 $$F(x)\approx0$$을 학습하면 된다. 또한 출력 gradient는 **chain rule로** $$\partial H/\partial x=\partial F/\partial x+I$$라는 직접 경로를 갖는다. 이것이 깊은 네트워크 최적화에 도움이 되는 이유 중 하나지만, gradient 소실을 모든 경우에 없애는 보증은 아니다. 채널 수나 해상도가 달라지는 block에는 projection shortcut 등이 필요하다. [ResNet 원 논문](https://arxiv.org/abs/1512.03385){:target="_blank" rel="noopener"}은 residual learning의 동기와 실험 근거를 제공한다.
 
 ## 4. ViT: 이미지를 패치 시퀀스로 보기
+
+<figure id="adc-03-p53">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-03-p53.png" | relative_url }}" alt="Patch embedding과 위치 정보를 Transformer encoder에 넣는 ViT" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-03-perception-01.pdf#page=53" | relative_url }}">lecture PDF, p. 53</a>.</figcaption>
+</figure>
+
+아래 이미지의 각 patch를 벡터로 바꾸고 위치 정보를 더한다. 별도의 class token 0을 함께 처리한 결과가 위의 MLP head로 들어간다. 오른쪽 확대도에서는 normalization, attention, MLP 각각에 residual 연결이 있다. CNN의 공간 격자를 그대로 옮긴 것이 아니라 patch 사이 관계를 sequence로 계산하는 구조다.
 
 35–38쪽에서 ViT는 이미지를 작은 패치로 자른 뒤 각 패치를 한 token처럼 취급한다. $$H\times W\times C$$ 영상에 $$P\times P$$ 크기 패치를 비중첩으로 자르고 $$H,W$$가 $$P$$로 나누어떨어진다고 가정하면 token 수의 **정의**는 $$N=HW/P^2$$다. 예를 들어 224×224 영상을 16×16 패치로 나누면 $$14\times14=196$$개다. 각 패치를 길이 $$P^2C$$로 펼쳐 trainable linear projection을 거쳐 $$D$$차원 embedding으로 만든다. $$H,W,P,N,D,C$$는 모두 pixel 수 또는 채널·차원 개수이므로 무차원 count다.
 

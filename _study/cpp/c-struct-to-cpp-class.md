@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C Structs and C++ Classes"
 course: "C++"
 topic: "Structs and Classes"
@@ -170,6 +170,12 @@ free(students);
 구조체 동적 할당은 `malloc`과 `free` 쌍이 맞아야 하며, 해제 후 포인터 사용에 주의해야 한다.
 
 ## 7. 구조체에서 클래스로
+
+<a href="{{ "/assets/images/study/cpp/source-captures/c-struct-to-cpp-class-page-02.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/c-struct-to-cpp-class-page-02.png" | relative_url }}" alt="원본 강의 슬라이드의 C 구조체와 C++ 클래스 비교" loading="lazy"></a>
+
+*원본 `클래스 (Class) 입문.pdf` p. 2. 왼쪽 C 코드는 `Point` 데이터와 `print_point` 함수를 따로 두고, 오른쪽 C++ 코드는 좌표 데이터와 `print()` 동작을 하나의 `Point` class 안에 둔다. <a href="{{ "/assets/pdfs/study/cpp/클래스 (Class) 입문.pdf#page=2" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 2</a>*
+
+차이는 단순히 `struct`를 `class`로 바꾸는 문법이 아니다. 관련 상태와 그 상태를 다루는 동작을 같은 타입의 책임으로 묶고, `public`·`private`으로 외부 접근 범위를 제어할 수 있게 된다.
 
 C 구조체는 주로 데이터를 묶는 데 사용한다. C++ 클래스는 데이터와 함수를 함께 묶어 하나의 타입을 만든다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-13 16:49:01 +0900
+last_modified_at: 2026-10-16 18:59:51 +0900
 title: "Lecture 9: Dynamic Programming I"
 course: "Algorithms"
 topic: "Memoization, Matrix Paths, and Matrix-Chain Order"
@@ -23,6 +23,15 @@ Source PDF: [9 Dynamic Programming (1).pdf](/assets/pdfs/study/algorithms/lectur
 이 강의는 재귀식에 같은 부분 문제가 반복해서 나타날 때, 그 답을 한 번만 계산해 저장하는 동적 계획법을 소개한다. 피보나치 수로 top-down과 bottom-up의 차이를 확인한 뒤, 격자 최대 경로와 행렬 연쇄 곱셈 순서 문제에서 상태·점화식·계산 순서를 설계한다. 아래의 최적 부분 구조 증명, 경계 조건 교정, 경로와 괄호 복원은 슬라이드의 전개를 정확히 연결하기 위한 보충 설명이다.
 
 > **핵심:** 동적 계획법은 점화식만 세우는 기법이 아니다. **상태가 무엇을 뜻하는지**, **기저 사례가 무엇인지**, **의존 상태가 먼저 계산되는 순서가 무엇인지**, **최적값을 만든 선택을 어떻게 복원할지**까지 함께 설계해야 한다.
+
+## 원본 그림으로 읽기
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-09-dynamic-programming-01.pdf#page=19" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-09-p19-matrix-path.jpg" | relative_url }}" alt="Matrix Path의 선택 경로와 bottom-up 점화식을 함께 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 19. 노란 경로는 왼쪽 또는 위쪽 상태 중 더 큰 값을 골라 현재 칸을 더하는 과정을 보여 준다.</figcaption>
+</figure>
+
+현재 칸 `(i,j)`로 들어오는 마지막 이동은 왼쪽 `(i,j-1)` 또는 위 `(i-1,j)`뿐이다. 따라서 두 이전 상태의 최댓값에 `mat[i][j]`를 더하면 된다. 그림의 행 우선 계산은 참조하는 두 상태가 먼저 채워지도록 보장한다. 다만 그림 속 `[[0] * n+1 ...]`은 괄호가 잘못되어 그대로 실행되지 않고, 음수 인덱스를 경계처럼 쓰는 방식도 일반 입력에는 안전하지 않다. 아래 4절은 이 두 점을 고친 구현이다.
 
 ## 전체 흐름
 
@@ -310,6 +319,11 @@ $$
 ## 5. Matrix Multiplication Order Problem
 
 ### 5.1 Problem and dimension vector
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/pdfs/study/algorithms/lecture-09-dynamic-programming-01.pdf#page=24" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/source-figures/lecture-09-p24-matrix-chain-recurrence.jpg" | relative_url }}" alt="행렬 연쇄의 마지막 분할점을 모두 열거해 최소 비용을 고르는 점화식을 보여 주는 강의 슬라이드" loading="lazy"></a>
+  <figcaption>원문 강의 PDF p. 24. `A1…A7`을 마지막에 어디서 둘로 나눌지 모두 후보로 만들고, 두 부분 비용과 마지막 행렬 곱 비용의 합이 가장 작은 분할을 고른다.</figcaption>
+</figure>
 
 $$m\ge1$$개의 행렬 $$A_0,A_1,\ldots,A_{m-1}$$을 곱한다. 행렬 곱은 결합법칙을 만족하므로 괄호 위치를 바꿔도 결과 행렬은 같지만, 스칼라 곱셈 횟수는 달라질 수 있다(22쪽). 인접 행렬의 안쪽 차원이 일치하고 모든 차원이 양의 정수라고 가정하며, 차원 벡터를
 

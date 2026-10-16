@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-09-03 20:25:28 +0900
+last_modified_at: 2026-10-16 18:47:16 +0900
 title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"
@@ -73,6 +73,13 @@ Urban Challenge 이후 자율주행은 단순 경로 추종이 아니라 situati
 
 ## 3. Modular ADS 구조
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-1-slide-07.png" | relative_url }}" alt="AIX Autonomous Driving 1 강의 7쪽. 센서에서 localization, tracking, prediction, planning, control로 이어지는 modular 흐름과 end-to-end 흐름 비교." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=7" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.7</a> — modular pipeline과 end-to-end driving의 정보 흐름을 대비한 원본 도식.</figcaption>
+</figure>
+
+위 modular 구조는 perception과 planning 사이에 사람이 정의한 중간 출력을 둔다. 아래 end-to-end 구조는 sensor 입력에서 driving output까지 더 큰 학습 블록으로 연결한다. 차이는 모듈 수 자체보다 중간 표현을 누가 정의하고 어디서 공동 최적화하는지에 있다.
+
 초기 산업용 autonomous driving system은 대부분 modular architecture를 따랐다.
 
 ```text
@@ -117,6 +124,13 @@ Perception은 대량의 sensor data와 label을 활용해 supervised learning을
 
 ## 6. RSS와 Rule-Based Safety
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-1-slide-14.png" | relative_url }}" alt="AIX Autonomous Driving 1 강의 14쪽. Responsibility-Sensitive Safety를 검증 가능한 안전 정의로 소개하는 Mobileye 자료." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=14" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.14</a> — 주행 안전을 투명한 규칙과 proper response로 형식화하려는 RSS 원본 자료.</figcaption>
+</figure>
+
+그림은 RSS를 perception model이 아니라 안전 판단의 규칙 층으로 제시한다. 학습된 policy가 행동을 제안하더라도, 안전거리·우선권·회피 반응 같은 조건을 별도로 점검해 설명 가능하고 검증 가능한 경계를 두려는 접근이다.
+
 Mobileye의 RSS(Responsibility-Sensitive Safety)는 안전을 learned policy의 감각에만 맡기지 않고, 명시적 규칙과 safe distance로 정의하려는 접근이다.
 
 핵심 아이디어는 다음과 같다.
@@ -148,6 +162,13 @@ Modular system은 해석과 검증이 쉽지만, module 사이의 interface가 �
 
 ## 8. Occupancy로의 이동
 
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-1-slide-28.png" | relative_url }}" alt="AIX Autonomous Driving 1 강의 슬라이드 28쪽. 동일한 voxel 공간을 점유 여부만 표시한 회색 volume과 class별 색을 더한 semantic occupancy volume으로 비교한다." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=28" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.28</a> — occupancy와 semantic occupancy를 비교한 원본 슬라이드.</figcaption>
+</figure>
+
+왼쪽 volume은 각 voxel을 빈 공간 `0`과 점유 공간 `1`로만 나눈다. 오른쪽 volume은 같은 3D 위치에 class 색을 추가해 geometry와 semantics를 함께 표현한다. 따라서 occupancy는 알려진 object box 목록만 만드는 방식과 달리, 이름을 붙이기 어려운 장애물도 점유된 공간으로 먼저 나타낼 수 있다. 색 자체가 거리나 위험도를 뜻하는 것은 아니며, 원본 범례에서는 class 구분만 나타낸다.
+
 Occupancy representation은 물체 list만 예측하는 대신 3D space의 cell이 비어 있는지, 차 있는지, 어떤 의미를 갖는지 예측한다.
 
 ```text
@@ -157,6 +178,13 @@ Occupancy representation은 물체 list만 예측하는 대신 3D space의 cell�
 이 방식은 알 수 없는 장애물이나 불규칙한 geometry도 표현할 수 있어 safety와 planning에 더 직접적으로 도움이 된다.
 
 ## 9. Data Engine과 Software 2.0
+
+<figure>
+  <img src="{{ "/assets/images/study/aix/source-figures/autonomous-driving-1-slide-35.png" | relative_url }}" alt="AIX Autonomous Driving 1 강의 35쪽. Tesla가 end-to-end neural networks와 real-world data 확장을 핵심 기술로 설명한 자료." loading="lazy">
+  <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=35" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.35</a> — 규칙 추가보다 데이터와 학습 인프라의 반복 개선을 강조한 원본 인용 화면.</figcaption>
+</figure>
+
+인용문은 vision-only end-to-end network와 방대한 실제 주행 데이터를 함께 언급한다. 즉 Software 2.0의 경쟁력은 단일 모델 구조가 아니라, 실패 사례를 모으고 재학습해 다시 배포하는 data-engine 순환에 있다.
 
 End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다. Fleet data를 수집하고, 실패 사례를 mining하고, labeling과 retraining을 반복하는 data engine이 필요하다.
 

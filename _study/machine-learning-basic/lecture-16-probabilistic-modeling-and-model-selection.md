@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -358,6 +358,12 @@ Evidence는 가능한 parameter 전체에 대해 likelihood를 prior로 가중 �
 ## 12. Directed Graphical Models
 
 Directed Graphical Model(DGM)은 확률변수들 사이의 조건부 의존 관계를 방향성이 있는 그래프로 표현한 확률 모델이다. 그래프의 node는 확률변수이고, arrow는 조건부 의존 관계를 나타낸다.
+
+<a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-16-page-14.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-16-page-14.png" | relative_url }}" alt="원본 강의 슬라이드의 fully connected와 sparse DGM" loading="lazy"></a>
+
+*원본 강의 PDF p. 14. 위 그래프에서는 $$a\to b$$, $$a\to c$$, $$b\to c$$이므로 $$p(a,b,c)=p(a)p(b\mid a)p(c\mid a,b)$$다. 아래 그래프에서는 각 node가 실제 parent만 조건으로 가져 더 짧은 곱으로 분해된다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-16.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 14</a>*
+
+화살표가 없다는 사실은 아무 관계도 없다는 뜻이 아니라, 그래프가 정한 조건 아래에서 불필요한 직접 조건을 생략할 수 있다는 뜻이다. 각 node의 local conditional을 곱하면 전체 joint distribution이 된다.
 
 세 변수 $$a,b,c$$가 fully connected 형태로 의존한다고 하면 joint distribution은 chain rule로 다음처럼 분해할 수 있다.
 

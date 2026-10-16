@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-13 16:48:42 +0900
+last_modified_at: 2026-10-16 19:00:05 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
@@ -383,6 +383,12 @@ auto sp = std::make_shared<T>(args...);
 `make_shared`는 객체와 control block을 한 번에 할당할 수 있어 메모리 효율이 좋다. 또한 함수 인자 평가 순서 문제로 인한 잠재적 누수를 줄인다.
 
 ## 19. 선택 가이드
+
+<a href="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" alt="원본 강의 슬라이드의 스마트 포인터 선택 가이드" loading="lazy"></a>
+
+*원본 `(심화) C++ 포인터.pdf` p. 20. 위 결정 트리는 단독 소유면 `unique_ptr`, 여러 곳의 공동 소유면 `shared_ptr`, 공동 소유에서 순환 참조가 생기면 한쪽을 `weak_ptr`로 바꾸라고 안내한다. 이미 존재하는 `FILE*` 같은 C 자원은 custom deleter와 함께 감싼다. <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
+
+선택 기준은 "편한 포인터"가 아니라 ownership이다. 소유자가 하나면 `unique_ptr`가 가장 명확하고, 실제 수명을 공동 책임질 때만 reference counting 비용을 감수해 `shared_ptr`를 사용한다.
 
 | 상황 | 권장 |
 |---|---|

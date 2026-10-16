@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
+last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lecture 4: Perception II — Localization, Detection, and R-CNN"
 course: "Autonomous Driving"
 topic: "Object Localization, Object Detection, and Region-Based CNNs"
@@ -77,6 +78,13 @@ $$
 
 ## 3. IoU: 같은 물체를 얼마나 잘 둘렀는가?
 
+<figure id="adc-04-p20">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-04-p20.png" | relative_url }}" alt="예측 box와 정답 box의 겹침이 커지는 세 IoU 예" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-04-perception-02.pdf#page=20" | relative_url }}">lecture PDF, p. 20</a>.</figcaption>
+</figure>
+
+세 곰 사진의 파란 예측 box와 초록 정답 box를 비교하면 잘 맞을수록 표시된 IoU가 0.51, 0.72, 0.91로 커진다. 이 값은 class 확률이 아니라 두 영역의 겹침 비율이다. 그림에는 정확한 pixel 좌표가 없으므로 아래 식의 면적을 사진에서 임의로 역산하지 않는다.
+
 18–20쪽에서 prediction box와 ground-truth box의 겹침을 **Intersection over Union**으로 평가한다. 면적이 유한하고 두 box의 합집합 면적이 양수일 때의 **정의**는
 
 $$
@@ -93,6 +101,13 @@ $$
 22–25쪽은 실제 영상이 여러 물체를 포함할 때의 세 난점을 분리한다. 첫째, 영상마다 물체 수가 달라 class·box 출력도 가변 길이여야 한다. 둘째, pixel array만 입력받는 컴퓨터는 물체 수를 미리 알지 못한다. 셋째, 가능한 위치와 크기 조합이 많아 모든 사각형을 무작정 평가하기 어렵다. 강의의 책상 사진에서는 여러 크기·위치의 후보 사각형 가운데 물체를 잘 둘러싼 것을 찾아야 한다. 검출은 “한 이미지를 한 class로 분류”하는 단계를 반복하는 것만으로 충분하지 않다. **어떤 부분 영상을 분류할지**와 겹친 예측을 **어떻게 중복 제거할지**도 결정해야 한다.
 
 ## 5. R-CNN: 먼저 물체가 있을 법한 영역을 고른다
+
+<figure id="adc-04-p32">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-04-p32.png" | relative_url }}" alt="약 2000개 proposal 각각을 warp하고 ConvNet에 넣는 완성된 R-CNN 경로" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-04-perception-02.pdf#page=32" | relative_url }}">lecture PDF, p. 32</a>.</figcaption>
+</figure>
+
+이미지에서 약 2,000개 proposal을 뽑고 각 영역을 224×224로 맞춘 뒤 ConvNet을 개별 적용한다. 마지막에는 class와 bounding-box 보정을 예측한다. 여러 proposal이 거의 같은 pixel을 포함해도 convolution을 반복한다는 점이 이후 Fast R-CNN의 공유 feature를 이해하는 출발점이다.
 
 ### 5.1 Region proposal과 계산 흐름
 
