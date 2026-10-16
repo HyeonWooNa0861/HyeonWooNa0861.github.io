@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 6: LLM Reasoning
 
 Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=k5Fh-UgTuCo){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [01:02:40의 GRPO advantage 계산](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s){:target="_blank" rel="noopener"}에서 같은 prompt의 응답들을 한 group으로 묶고 각 reward를 group 평균과 비교하는 핵심 연산을 먼저 확인한다. 아래 GRPO 절은 이를 표준편차 정규화까지 확장해 value model 없이 advantage를 만드는 과정과 퇴화 조건을 다룬다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-06-grpo-advantage-01h02m40s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-06-grpo-advantage-01h02m40s.jpg' | relative_url }}" alt="GRPO 목적을 advantage 최대화와 기준 모델 이탈 억제로 나누고 group 평균 reward로 advantage를 계산하는 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s" target="_blank" rel="noopener">공식 영상 01:02:40</a> — GRPO의 advantage 최대화와 정책 이탈 억제 개요. Advantage는 개별 reward와 group 평균 reward의 차이로 근사한다. 구체적인 목적함수에서는 old-policy ratio clipping과 reference-policy KL penalty를 구분한다.</figcaption>
+</figure>
+
+한 prompt에서 여러 completion을 생성하고 각각 reward $$r_i$$를 얻으면, 슬라이드의 기본 형태는 $$r_i-\operatorname{mean}(r_1,\ldots,r_G)$$다. 평균보다 좋은 응답은 양의 advantage, 나쁜 응답은 음의 advantage를 얻어 policy update 방향이 정해진다. 실제 GRPO에서는 이 차이를 group 표준편차로 나눠 reward scale을 맞춘다. 실제 목적함수에서는 old policy 대비 급격한 확률비 변화는 clipping으로, reference policy와의 이탈은 KL penalty로 제한한다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
@@ -42,7 +53,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 이후에는 reasoning 평가와 학습 방법을 정리한다. Coding benchmark로 HumanEval, CodeForces, SWE-bench가, math benchmark로 AIME와 GSM 8K가 언급된다. pass@k는 k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric이며, n개 sample 중 c개가 성공했을 때 1 - C(n-c, k) / C(n, k)로 유도된다. Temperature는 낮으면 diverse하지 않고 높으면 token quality가 흔들릴 수 있어 benchmark마다 명시되어야 하며, consensus@k와 self-consistency도 관련 metric으로 소개된다.
 
-강의의 핵심 학습 알고리즘은 GRPO이다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명한다. GRPO는 PPO처럼 advantage를 maximize하고 old/reference model에서 너무 멀어지지 않게 하지만, value function을 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만든다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명된다.
+강의의 핵심 학습 알고리즘은 GRPO이다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명한다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둔다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만든다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명된다.
 
 ## 핵심 개념
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 6](https://www.youtube.com/watch?v=aVJy4O5TOk8){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.edu/slides/2025/lecture_6.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF p.23의 sigmoid와 gradient 문제](https://cs231n.stanford.edu/slides/2025/lecture_6.pdf#page=23){:target="_blank" rel="noopener"}에서 양끝 포화 구간과 여러 sigmoid 층을 지날수록 gradient가 작아지는 경고를 먼저 본다. 아래 architecture 해설은 이 학습 문제를 activation 선택, normalization, ResNet identity shortcut이 깊은 network의 gradient 경로를 보존하는 이유와 연결한다.
+
+<figure id="cs231n-lecture06-source-p23">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture06-p23.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture06-p23.jpg" | relative_url }}" alt="sigmoid 함수의 포화 구간과 여러 sigmoid layer에서 gradient가 작아진다는 핵심 문제를 표시한 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_6.pdf#page=23" target="_blank" rel="noopener">CS231N Lecture 6, PDF viewer p. 23</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** CNN architecture의 발전은 단순한 층 증가가 아니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 $$3\times3$$ filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습된다.
 
@@ -89,6 +96,13 @@ GoogLeNet/Inception이 남긴 핵심은 **layer를 단순히 더 깊게 만드�
 ## 7. Residual connections
 
 깊은 plain network는 표현력이 더 커도 optimization이 어려워 성능이 나빠질 수 있다. Residual block은 원하는 mapping $$H(x)$$ 대신 잔차 $$F(x)=H(x)-x$$를 학습한다.
+
+<figure id="cs231n-lecture06-source-p51">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture06-p51.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture06-p51.jpg" | relative_url }}" alt="plain convolution block과 입력 x를 출력에 직접 더하는 residual block을 나란히 비교한 ResNet 도식" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_6.pdf#page=51" target="_blank" rel="noopener">CS231N Lecture 6, PDF p. 51 (printed slide 51)</a>. Click the image to enlarge.</figcaption>
+</figure>
+
+원본 p.51의 왼쪽 plain block은 두 convolution이 $$H(x)$$ 전체를 직접 맞춘다. 오른쪽 residual block은 같은 계산 branch를 $$F(x)$$로 두고 입력 $$x$$를 addition node로 우회시켜 $$H(x)=F(x)+x$$를 만든다. 따라서 새 층이 보존해야 할 표현은 shortcut으로 그대로 흐르고, 바꿀 부분만 residual branch가 학습한다. 파란 문구의 $$F(x)=0$$이면 $$H(x)=x$$가 된다는 조건이 깊은 모델의 identity 해를 쉽게 만드는 핵심이다.
 
 $$
 y=F(x;W)+x

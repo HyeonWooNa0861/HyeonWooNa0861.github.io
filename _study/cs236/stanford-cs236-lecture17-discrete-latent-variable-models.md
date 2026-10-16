@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 17: Discrete Latent Variable Models"
 course: "CS236"
 topic: "Discrete Latent Variable Optimization"
@@ -45,6 +45,26 @@ keywords:
 | pp. 14--17 | General control variate와 optimal coefficient | `일반 control variate와 최적 계수`에서 variance identity와 유한표본 위험을 설명한다. |
 | pp. 18--19 | NVIL gradient와 learned baselines | `핵심 내용`에서 원문 algorithm과 baseline 의존성을 설명한다. |
 | pp. 20--26 | Gumbel CDF, Gumbel-Max, Gumbel-Softmax, temperature | `핵심 내용`과 `핵심 개념`에서 exact sampling identity와 biased relaxation을 구분한다. |
+
+## 원본 그림 해설
+
+### Gumbel-Softmax의 막대와 simplex
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-24-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-24-excerpt.png" | relative_url }}" alt="CS236 Lecture 17, p. 24: 온도별 Gumbel-Softmax 기대값과 개별 sample 막대. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=24" target="_blank" rel="noopener">Original p. 24</a> — 온도별 Gumbel-Softmax 기대값과 개별 sample 막대. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 17 PDF p. 24](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=24){:target="_blank" rel="noopener"}
+
+원본 위쪽 행은 평균적인 분포, 아래쪽 행은 한 번 뽑은 sample을 보여 준다. 작은 $$\tau$$에서는 sample의 한 성분이 1에 가까워지고, 큰 $$\tau$$에서는 여러 성분에 값이 퍼진다. 이때 sample은 여전히 합이 1인 벡터다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-25-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-25-excerpt.png" | relative_url }}" alt="CS236 Lecture 17, p. 25: 온도별 simplex 내부의 Gumbel-Softmax 분포. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=25" target="_blank" rel="noopener">Original p. 25</a> — 온도별 simplex 내부의 Gumbel-Softmax 분포. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+**Source Check:** p.24 마지막 문장의 고온 한계를 uniform categorical sample로 읽으면 잘못이다. $$\tau\to\infty$$이면 각 softmax logit이 0으로 가므로 sample 벡터가 $$(1/k,\ldots,1/k)$$로 수렴한다. $$k$$개 one-hot 중 하나를 균등하게 뽑는 것과 다르다. [PDF p.25](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=25){:target="_blank" rel="noopener"}의 아래쪽 삼각형들을 발췌했다. 삼각형의 꼭짓점은 one-hot이고 내부는 soft sample이다. 큰 온도에서 내부 중심으로 모이는 그림을 이 극한과 연결하면 구분하기 쉽다.
 
 ## 핵심 내용
 
@@ -110,6 +130,24 @@ $$
 $$
 
 Temperature $$\tau$$가 작으면 one-hot categorical에 가까워져 bias가 줄지만 gradient variance가 커진다. $$\tau$$가 크면 distribution은 더 smooth하고 uniform에 가까워져 gradient는 안정되지만 discrete sample과 멀어진다. Straight-through estimator는 forward pass에서는 hard discrete sample을 쓰고 backward pass에서는 soft relaxation의 gradient를 흘려보내는 practical compromise다.
+
+### Sampling is not the same as differentiating
+
+**Supplementary table —** [원문 pp. 22–26](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=22){:target="_blank" rel="noopener"}의 categorical sampling과 relaxation을, 앞에서 설명한 score-function estimator와 대조했다. 각 행에서 실제로 $$f$$에 넣는 값과 gradient를 얻는 경로를 구분한다. $$\pi$$는 category probability, $$\tau>0$$는 relaxation temperature이며 둘 다 무차원이다.
+
+<div markdown="block" role="region" aria-label="Discrete sampling and gradient comparison" tabindex="0" style="overflow-x: auto;">
+
+| 방법 | Forward에서 평가하는 값 | Gradient를 얻는 경로 | 정확성의 경계 |
+|---|---|---|---|
+| Score-function estimator | 실제 discrete sample $$z\sim q_\phi$$ | $$f(z)\nabla_\phi\log q_\phi(z)$$를 평균한다. Sample 선택 자체를 미분하지 않는다. | 미분·기댓값 교환 등의 조건에서 원래 목적함수의 unbiased gradient다. 다만 variance가 클 수 있다. |
+| Gumbel-Max 단독 | Perturbed logits의 argmax로 고른 one-hot $$z$$ | Argmax를 통한 일반적인 pathwise gradient는 얻지 못한다. | Categorical sample은 정확하지만 이것만으로 미분 문제가 해결되지는 않는다. |
+| Gumbel-Softmax | Simplex 내부의 연속 값 $$\hat z$$ | Softmax를 거쳐 $$f(\hat z)$$를 미분한다. | 고정된 양의 $$\tau$$에서는 원래 discrete 목적함수가 아니라 완화한 목적함수를 학습한다. $$f$$가 연속 입력을 처리하고 미분 가능해야 한다. |
+| Straight-through | Hard one-hot $$z$$ | Backward에서는 soft $$\hat z$$의 미분을 대신 사용한다. | Forward와 backward가 다르므로 일반적으로 biased estimator다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+이 표의 첫 행은 $$f$$가 $$\phi$$에 직접 의존하지 않는 경우다. 의존한다면 앞의 ELBO 설명처럼 직접 미분 항도 포함한다. 또 $$\tau\to0$$에서 sample이 one-hot에 가까워진다는 사실만으로, gradient estimator가 안정적이거나 원래 목적함수의 unbiased gradient로 수렴한다고 결론 내릴 수는 없다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Score-function estimators and baselines</summary>

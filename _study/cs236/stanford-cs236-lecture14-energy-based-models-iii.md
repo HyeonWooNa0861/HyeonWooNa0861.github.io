@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 14: Energy-Based Models III"
 course: "CS236"
 topic: "Noise Conditional Score Networks, Annealed Langevin Dynamics, and Reverse-Time SDEs"
@@ -48,6 +48,26 @@ keywords:
 | slides 28--30 | Forward and reverse-time SDE | 같은 절에서 exact-score 결과와 learned-score/solver 근사를 구분한다. |
 | slides 34--35 | Probability-flow ODE와 likelihood | 같은 절에서 change-of-variables identity, trace estimator와 numerical error를 설명한다. |
 | slide 38 | Bayes score decomposition | `conditional score decomposition`에서 정확한 항등식과 scaled guidance 휴리스틱을 구분한다. |
+
+## 원본 그림 해설
+
+### 여러 noise level의 역할
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-14-source-13-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-14-source-13-excerpt.png" | relative_url }}" alt="CS236 Lecture 14, slide 13: 데이터 영역과 여러 noise scale의 관계. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture_14_comp.pptx" target="_blank" rel="noopener">Original slide 13</a> — 데이터 영역과 여러 noise scale의 관계. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 14 slides 13](https://deepgenerativemodels.github.io/assets/slides/lecture_14_comp.pptx){:target="_blank" rel="noopener"}
+
+원본 slide 13에서 검은 곡선은 데이터가 집중된 영역을 나타내고, 주변 화살표와 물음표는 그 영역에서 멀어질수록 score 추정이 불확실해지는 문제를 보여 준다. 오른쪽의 빨강·초록·파랑 점선은 서로 다른 noise scale을 표시한다. 큰 noise는 넓은 범위를 연결하고, 작은 noise는 데이터 근처의 세부 구조를 보존한다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-14-source-14-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-14-source-14-excerpt.png" | relative_url }}" alt="CS236 Lecture 14, slide 14: annealed Langevin dynamics의 noise scale별 정적 sample 상태. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture_14_comp.pptx" target="_blank" rel="noopener">Original slide 14</a> — annealed Langevin dynamics의 noise scale별 정적 sample 상태. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+**Slide 14**는 이 여러 score를 sampling에서 연결하는 annealed Langevin dynamics다. 한 noise level에서 얻은 sample을 다음 단계의 초기값으로 넘기고 noise level을 점차 낮춘다. 각 단계를 독립적으로 처음부터 sampling하는 것이 아니다. 정적 화면의 점 구름은 애니메이션의 한 상태이므로, 그 배치만으로 수렴 속도나 최종 품질을 정량 비교해서는 안 된다.
 
 ## 핵심 내용
 

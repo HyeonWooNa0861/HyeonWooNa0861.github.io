@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 2: Transformer-Based Models & Tricks
 
 Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=yT84Y5zCnaA){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:37:26의 RoPE 설명](https://www.youtube.com/watch?v=yT84Y5zCnaA&t=2246s){:target="_blank" rel="noopener"}에서 query와 key를 위치별 각도로 회전시키고 두 위치의 차이가 attention score에 남는다는 설명을 먼저 듣는다. 아래 위치 표현 절은 이 관계를 회전 행렬과 상대 위치 항등식으로 보강한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-02-rope-00h37m26s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-02-rope-00h37m26s.jpg' | relative_url }}" alt="query와 key 벡터를 위치별 각도로 회전시키는 RoPE 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&t=2246s" target="_blank" rel="noopener">공식 영상 00:37:26</a> — 위치 m의 query와 위치 n의 key에 각각 mθ, nθ 회전을 적용하는 RoPE의 기하적 표현과 2차원 회전 행렬이다.</figcaption>
+</figure>
+
+왼쪽과 오른쪽 벡터는 절대 위치만큼 따로 회전하지만, 두 벡터의 내적에서는 회전각의 차이인 $$(m-n)\theta$$가 남는다. 이 때문에 별도 위치 벡터를 더하지 않아도 attention score가 상대 거리를 반영한다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
@@ -58,6 +69,22 @@ Self-attention은 모든 토큰을 직접 연결하지만 RNN처럼 순서를 �
 | Grouped Query Attention (GQA) | Query projection은 head별로 유지하되 key/value projection을 group 단위로 공유하는 방식이다. KV cache memory 절약과 관련해 설명됐다. |
 | Span corruption | T5의 training objective다. 입력 문장의 일부 span을 sentinel token으로 대체하고 decoder가 빠진 span들을 순서대로 복원한다. |
 | Masked Language Model (MLM) | BERT pre-training objective다. 선택된 token을 80%는 [MASK], 10%는 그대로, 10%는 random word로 처리하고 원래 token을 예측하게 한다. |
+
+**Supplementary table — attention score에 위치를 넣는 방식**
+
+<div markdown="block" role="region" aria-label="Transformer positional encoding comparison" tabindex="0" style="overflow-x: auto;">
+
+| 방법 | 위치 정보가 들어가는 곳 | Learned parameter | 상대 거리 표현의 핵심 |
+|---|---|---|---|
+| Sinusoidal | Token embedding에 절대 위치 vector를 더함 | 없음 | Sine/cosine의 내적과 선형 관계로 위치 차이를 해석할 수 있다. |
+| T5 relative bias | Attention logit에 거리 bucket별 bias를 더함 | Bucket별 bias | 정확한 거리 대신 범위별 상대 거리를 학습한다. |
+| ALiBi | Attention logit에 head별 선형 거리 penalty를 더함 | 보통 위치 embedding 자체는 없음 | 멀수록 더 큰 deterministic penalty를 준다. |
+| RoPE | Query와 key를 위치별 회전한 뒤 내적 | 회전 주파수 설정은 구현에 따름 | $$R(m)^\top R(n)=R(n-m)$$으로 상대 위치가 score에 남는다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 원본 강의의 네 방법을 `입력에 더하는가, logit을 바꾸는가, Q/K를 회전하는가`로 구분한 작성자 보충이다. 각 방법의 long-context 성능은 이 구조만으로 보장되지 않고 학습 길이와 extrapolation 설정에 의존한다.
 
 ## 수식 해설: position, normalization, attention cost
 

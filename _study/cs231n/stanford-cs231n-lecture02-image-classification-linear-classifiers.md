@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
 topic: "Image Classification and Linear Classifiers"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 2](https://www.youtube.com/watch?v=pdqofxJeBN8){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 2 PDF](https://cs231n.stanford.edu/slides/2025/lecture_2.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF p.53부터의 linear-classifier 그림](https://cs231n.stanford.edu/slides/2025/lecture_2.pdf#page=53){:target="_blank" rel="noopener"}에서 먼저 이미지가 하나의 벡터가 되고 $$W$$의 각 행이 class별 template처럼 점수를 만든다는 흐름을 확인한다. 아래 5–8절은 이 점수 $$s=Wx+b$$가 SVM·softmax loss로 연결되는 이유를 설명한다.
+
+<figure id="cs231n-lecture02-source-p53">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture02-p53.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture02-p53.jpg" | relative_url }}" alt="32×32×3 이미지를 3072차원 벡터로 보고 W와 b를 적용해 10개 class score를 만드는 linear classifier" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_2.pdf#page=53" target="_blank" rel="noopener">CS231N Lecture 2, PDF p. 53 (printed slide 55)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 이미지 분류는 사람이 규칙을 직접 쓰는 문제가 아니라, 데이터로부터 점수 함수를 학습하는 문제다. k-NN은 데이터와 거리의 의미를, 선형 분류기는 점수·손실·최적화로 이어지는 학습의 기본 틀을 보여준다.
 

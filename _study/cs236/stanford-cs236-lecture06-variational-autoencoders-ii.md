@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 6: Variational Autoencoders II"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -61,6 +61,26 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 | p. 20 | reconstruction-minus-KL objective | `핵심 내용`, `핵심 수식 유도` | joint factorization에서 나오는 정확한 등식 |
 
 추정량의 유한 표본 성질, total-derivative 전개, 적용 실패 조건은 강의 자료의 모델 정의와 목적함수에서 출발한 **작성자 보충**이다. 원문에 직접 제시된 결과와 구분해 읽어야 한다.
+
+## 원본 그림 해설
+
+### ELBO 곡선과 amortized inference
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-06-source-09-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-06-source-09-excerpt.png" | relative_url }}" alt="CS236 Lecture 6, p. 9: marginal likelihood와 두 variational lower bound. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=9" target="_blank" rel="noopener">Original p. 9</a> — marginal likelihood와 두 variational lower bound. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 6 PDF p. 9](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=9){:target="_blank" rel="noopener"}
+
+검은 곡선은 marginal likelihood를, 붉은 곡선과 주황 곡선은 서로 다른 variational parameter에서의 lower bound를 나타낸다. 가로축 $$\theta$$를 따라 움직이는 것은 생성 모델을 바꾸는 일이고, bound를 바꾸는 $$\phi$$의 갱신은 posterior 근사를 바꾸는 일이다. 같은 $$\theta$$에서 bound가 낮으면 그 값을 올릴 여지가 있지만, 근사 family가 제한되면 검은 곡선에 정확히 닿지 못할 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-06-source-18-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-06-source-18-excerpt.png" | relative_url }}" alt="CS236 Lecture 6, p. 18: 서로 다른 posterior가 필요한 손글씨 관측 세 개. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=18" target="_blank" rel="noopener">Original p. 18</a> — 서로 다른 posterior가 필요한 손글씨 관측 세 개. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.18](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=18){:target="_blank" rel="noopener"}의 손글씨 세 이미지는 입력 $$x^i$$마다 다른 posterior가 필요함을 보여 준다. 매 이미지마다 $$\phi^i$$를 새로 최적화하는 대신, 공유 함수 $$f_\lambda(x^i)$$가 posterior parameter를 출력한다. 그림 위 숫자는 latent label을 지도학습으로 제공한다는 뜻이 아니라, 서로 다른 관측 입력의 예다.
 
 ## 핵심 내용
 
@@ -129,6 +149,24 @@ D_{\mathrm{KL}}(q_{\phi}(z\mid x)\Vert p(z)).
 $$
 
 첫 항은 encoder가 만든 $$z$$로 decoder가 $$x$$를 잘 복원하도록 만드는 reconstruction term이다. 두 번째 항은 encoder가 만든 latent distribution이 prior $$p(z)$$와 너무 멀어지지 않게 하는 regularization이다. 이 regularization 덕분에 generation 단계에서 encoder 없이 $$z\sim p(z)$$를 뽑아도 decoder가 plausible한 $$x$$를 만들 수 있다.
+
+### Training and generation paths
+
+**Supplementary table —** [원문 pp. 17–21](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=17){:target="_blank" rel="noopener"}의 encoder·decoder 설명을 단계별로 재구성했다. 각 열을 위에서 아래로 읽으면, 같은 decoder를 사용해도 latent sample을 얻는 출발점이 다르다는 것을 볼 수 있다. 여기서는 고정 Gaussian prior를 사용하는 기본 VAE를 비교한다.
+
+<div markdown="block" role="region" aria-label="VAE training and generation comparison" tabindex="0" style="overflow-x: auto;">
+
+| 단계 | 학습: 관측 입력을 설명하기 | 생성: 새로운 입력 만들기 |
+|---|---|---|
+| 1. 시작점 | 데이터에서 관측한 $$x$$를 받는다. | 복원할 관측 $$x$$ 없이 시작한다. |
+| 2. Latent 선택 | Encoder가 $$q_\phi(z\mid x)$$를 만들고 여기서 $$z$$를 뽑는다. Gaussian encoder라면 encoder parameter와 독립적으로 뽑은 noise를 이용한 reparameterization으로 미분 경로를 유지한다. | Prior $$p(z)=\mathcal N(0,I)$$에서 $$z$$를 뽑는다. Encoder는 사용하지 않는다. |
+| 3. Decoder 사용 | $$p_\theta(x\mid z)$$에서 원래 관측 $$x$$의 log-likelihood를 평가한다. | $$p_\theta(x\mid z)$$에서 새 sample을 뽑는다. Decoder mean만 표시하는 것은 이 분포에서 sample을 뽑는 것과 다르다. |
+| 4. Parameter 갱신 | Reconstruction term과 prior KL을 함께 사용해 encoder $$\phi$$와 decoder $$\theta$$를 갱신한다. | 학습한 $$\theta$$를 고정한다. 이 생성 단계에서는 ELBO를 최적화하지 않는다. |
+{: .reference-candidate-table style="min-width: 40rem;" }
+
+</div>
+
+$$x$$는 관측 공간의 값, $$z$$는 latent vector, $$\phi$$와 $$\theta$$는 각각 encoder와 decoder parameter다. Noise는 학습 중 새로 뽑되, 한 sample의 gradient를 계산할 때에는 그 noise 값을 고정한다. $$p(z)$$와 $$q_\phi(z\mid x)$$를 구분하는 것이 핵심이다. KL 항은 둘의 차이를 줄이지만, 학습이 끝났다고 모든 입력의 posterior가 prior와 정확히 같아지거나 모든 생성 sample의 품질이 보장되는 것은 아니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: ELBO decomposition and reparameterization</summary>

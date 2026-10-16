@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 16](https://www.youtube.com/watch?v=mQOK0Mfyrkk){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lecture_16.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.56–83의 multimodal foundation model 전개](https://cs231n.stanford.edu/slides/2025/lecture_16.pdf#page=56){:target="_blank" rel="noopener"}를 먼저 본다. p.56은 language, classification, LM+Vision 모델군에서 LLaVA·Flamingo의 위치를 보여주고, 이어지는 슬라이드는 image input을 language model에 연결하는 문제를 연다. 아래 3절은 projector와 cross-attention의 결합 위치가 학습 대상과 계산 비용을 어떻게 바꾸는지 설명한다.
+
+<figure id="cs231n-lecture16-source-p56">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture16-p56.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture16-p56.jpg" | relative_url }}" alt="language, classification, language model plus vision, chaining 범주에 foundation model 예시를 배치한 분류표" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_16.pdf#page=56" target="_blank" rel="noopener">CS231N Lecture 16, PDF viewer p. 56</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** Vision-language foundation model의 능력은 단순히 모델을 크게 만든 결과가 아니다. **어떤 image-text supervision을 수집하고, global alignment를 넘어 region·point grounding을 어떻게 가르치며, 다른 도구와 어떻게 연결하는가**가 실제 유용성과 신뢰성을 결정한다.
 
@@ -58,7 +65,22 @@ Multimodal language model은 pretrained vision encoder의 patch feature를 proje
 
 이 구조는 language model의 지식과 in-context 능력을 활용하지만 시각 encoder에 없는 정보는 connector가 복원할 수 없다. Image-level caption만으로 학습하면 정교한 localization이 약하고, 그럴듯한 language prior가 실제 image evidence보다 앞서 hallucination을 만들 수 있다.
 
-**Flamingo**는 LLaVA처럼 projected visual token을 입력 앞에 한 번 붙이는 대신, vision encoder의 feature를 LLM의 각 layer에 gated cross-attention으로 주입한다. Perceiver sampler가 image feature를 고정된 수의 token으로 줄이고, frozen vision encoder와 frozen LLM 사이에서 sampler와 cross-attention module만 학습한다. 각 language layer가 필요한 시점에 image feature를 선택할 수 있고, 여러 image-text interleaved sequence로 학습해 multi-turn dialogue와 visual in-context learning을 지원한다.
+**Flamingo**는 LLaVA처럼 projected visual token을 입력 앞에 한 번 붙이는 대신, vision encoder의 feature를 LLM의 각 layer에 gated cross-attention으로 주입한다. Perceiver Resampler가 image feature를 고정된 수의 token으로 줄이고, frozen vision encoder와 frozen LLM 사이에서 resampler와 cross-attention module만 학습한다. 각 language layer가 필요한 시점에 image feature를 선택할 수 있고, 여러 image-text interleaved sequence로 학습해 multi-turn dialogue와 visual in-context learning을 지원한다.
+
+**Supplementary table — visual feature를 language model에 연결하는 위치**
+
+<div markdown="block" role="region" aria-label="Vision and language feature connection comparison" tabindex="0" style="overflow-x: auto;">
+
+| 구조 | Visual feature가 들어가는 위치 | 학습되는 연결부 | 직접적인 장점과 경계 |
+|---|---|---|---|
+| CLIP | Image encoder와 text encoder의 최종 embedding 공간 | 두 encoder의 contrastive alignment | Retrieval·zero-shot 분류에 유용하지만 token-level 생성 interface는 아니다. |
+| LLaVA 계열 | Projector를 거친 visual token을 LLM input sequence에 삽입 | Projector와 instruction tuning 대상 | 기존 LLM 입력 형식을 재사용하지만 vision encoder가 놓친 정보는 복원하지 못한다. |
+| Flamingo | 여러 LLM layer의 gated cross-attention으로 주입 | Perceiver Resampler와 cross-attention module | 여러 image-text 입력을 layer별로 선택해 읽지만 별도 fusion module 비용이 든다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 강의의 연결 위치를 비교한 작성자 보충이다. 위에서 아래로 갈수록 성능 순위가 높아진다는 뜻이 아니라, image와 language representation이 만나는 지점이 다르다는 뜻이다.
 
 ## 4. Molmo: 답변뿐 아니라 위치를 가리키기
 

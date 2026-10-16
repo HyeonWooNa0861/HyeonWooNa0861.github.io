@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 12: Energy-Based Models II"
 course: "CS236"
 topic: "Score Matching, Noise Contrastive Estimation, and Sampling-Free EBM Training"
@@ -44,6 +44,26 @@ keywords:
 | pp. 12--16 | NCE classifier, trainable normalizer, stable loss | `NCE cross-entropy와 안정적 estimator`에서 population optimum과 수치 안정화를 구분한다. |
 | pp. 18--19 | Flow contrastive estimation | `핵심 내용`에서 tractable noise model을 학습하는 원문 확장으로 설명한다. |
 | p. 20 | Variational upper bound와 adversarial EBM game | `핵심 내용`에서 원문 objective를 model-sampling 대안으로 설명한다. |
+
+## 원본 그림 해설
+
+### 색으로 구분된 score matching 전개
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-12-source-09-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-12-source-09-excerpt.png" | relative_url }}" alt="CS236 Lecture 12, p. 9: 색으로 구분한 score matching 제곱 전개와 부분적분. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf#page=9" target="_blank" rel="noopener">Original p. 9</a> — 색으로 구분한 score matching 제곱 전개와 부분적분. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 12 PDF p. 9](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf#page=9){:target="_blank" rel="noopener"}
+
+원본의 파란 항은 데이터 분포만 포함하므로 $$\theta$$에 대해 상수다. 초록 항은 모델 score의 제곱이고, 빨간 교차항은 부분적분 후 갈색의 두 번째 미분 항으로 바뀐다. 이 변형 덕분에 모르는 data score를 직접 입력하지 않고 모델의 미분으로 목적함수를 계산한다. 단, 경계항이 사라지는 조건이 필요하며 아래 유도에서 그 조건을 확인한다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-12-source-13-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-12-source-13-excerpt.png" | relative_url }}" alt="CS236 Lecture 12, p. 13: model density와 noise density로 구성한 NCE 판별 확률. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf#page=13" target="_blank" rel="noopener">Original p. 13</a> — model density와 noise density로 구성한 NCE 판별 확률. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.13](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf#page=13){:target="_blank" rel="noopener"}의 NCE 분수는 model density와 알려진 noise density의 상대 크기를 판별 확률로 바꾼다. 원문의 마지막 줄은 판별기의 odds를 noise density에 곱해 data density를 복원하는 관계다. 그림의 분모에 혼합 비율이 따로 없는 식은 data/noise의 class prior가 같은 설정으로 읽어야 한다.
 
 ## 핵심 내용
 
@@ -106,6 +126,23 @@ $$
 로 parameterize하고 cross-entropy를 최적화하면, $$f_\theta$$와 함께 $$Z$$도 trainable scalar로 학습된다. 이론적으로 optimal solution에서는 $$p_{\theta,Z}(x)=p_{\mathrm{data}}(x)$$가 되고, 학습된 $$Z$$가 true partition function이 된다. NCE는 GAN과 비슷하게 classifier를 쓰지만, generator를 adversarial하게 업데이트하지 않는다. noise distribution은 고정되어 있으며, EBM에서 sample을 뽑지 않아도 된다. 실제 성능은 $$p_n$$이 data distribution과 충분히 가깝고도 구분 가능해야 한다는 선택 문제에 크게 의존한다.
 
 Flow contrastive estimation은 이 noise distribution 자체를 normalizing flow $$p_{n,\phi}$$로 parameterize해 더 좋은 contrast를 만들려는 확장이다. noise가 data와 너무 멀면 classification이 쉬워져 EBM이 세밀한 구조를 배우기 어렵고, 너무 같으면 구분할 신호가 사라진다. flow를 이용하면 sampling과 likelihood evaluation이 모두 가능하면서 data에 가까운 noise를 학습할 수 있다.
+
+### What each training method needs
+
+**Supplementary table —** 아래 비교는 앞의 gradient 식과 [원문 pp. 14–17](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf#page=14){:target="_blank" rel="noopener"}의 NCE 학습 절차를 같은 기준으로 정리한 것이다. 왼쪽에서 오른쪽으로 학습 입력, 정규화 상수 처리, 남는 계산 부담을 읽는다. 수치 성능 비교가 아니라 각 목적함수의 계산 의존성을 비교한다.
+
+<div markdown="block" role="region" aria-label="Energy-based model training comparison" tabindex="0" style="overflow-x: auto;">
+
+| 학습법 | 관측 데이터 외에 필요한 것 | 정규화 상수 처리 | 남는 부담 |
+|---|---|---|---|
+| MLE의 model-expectation 추정 | 현재 EBM 분포를 대표하는 sample이 필요하다. 실제로는 MCMC 등으로 근사한다. | $$\nabla_\theta\log Z(\theta)$$를 model expectation으로 바꾼다. | Chain이 충분히 섞이지 않으면 expectation 근사가 부정확해진다. |
+| 기본 score matching | 연속 입력에 대한 score와 그 미분을 관측 데이터 위치에서 계산한다. EBM sample은 필요하지 않다. | $$x$$에 대한 미분에서 $$\log Z(\theta)$$가 사라진다. | Hessian trace 계산과 적분 부분적분의 경계 조건이 필요하다. |
+| 고정 noise 분포를 사용하는 NCE | $$p_n$$에서 noise sample을 뽑고, 데이터와 noise 양쪽에서 $$p_n(x)$$를 평가한다. EBM sample은 필요하지 않다. | $$Z$$를 별도 양의 parameter로 추정한다. 실전에서는 $$\log Z$$를 parameter로 둘 수 있다. | Noise 분포의 선택과 density 평가가 필요하다. 유한 학습에서 정확한 정규화를 자동 보장하지 않는다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+따라서 “sampling-free”는 세 방법 모두에서 난수를 전혀 쓰지 않는다는 뜻이 아니다. NCE에는 **noise sampling이 남고 EBM sampling이 빠진다**. 또한 score matching의 미분은 입력 $$x$$에 대한 미분인 반면, MLE의 정규화 항은 parameter $$\theta$$에 대한 미분이다. 이 차이 때문에 두 방법에서 $$Z$$를 처리하는 방식이 달라진다.
 
 마지막으로 adversarial training for EBMs는 log-likelihood를 variational distribution $$q_\phi(x)$$로 upper bound하여
 

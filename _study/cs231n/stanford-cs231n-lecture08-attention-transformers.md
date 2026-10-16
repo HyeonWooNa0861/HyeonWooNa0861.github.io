@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
 topic: "Attention and Transformers"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 8](https://www.youtube.com/watch?v=RQowiOF_FvQ){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 8 PDF](https://cs231n.stanford.edu/slides/2025/lecture_8.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.47–61의 scaled dot-product attention과 mask](https://cs231n.stanford.edu/slides/2025/lecture_8.pdf#page=47){:target="_blank" rel="noopener"}를 먼저 읽는다. $$QK^{\top}$$의 각 행은 한 query가 모든 key에 주는 점수이고, softmax 뒤 같은 행의 weight가 value를 합친다. Mask는 허용하지 않는 위치를 softmax 전에 제거한다. 아래 3–5절은 이 행렬 흐름을 식으로 해설한다.
+
+<figure id="cs231n-lecture08-source-p47">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture08-p47.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture08-p47.jpg" | relative_url }}" alt="입력 X에서 Q K V를 만들고 similarity matrix와 row-wise softmax를 거쳐 value를 합산하는 self-attention 행렬 도식" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_8.pdf#page=47" target="_blank" rel="noopener">CS231N Lecture 8, PDF p. 47 (printed slide 47)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** Attention은 query와 key의 유사도로 value를 가중합하는 연산이다. Self-attention은 모든 token이 서로 직접 정보를 교환하게 해 RNN의 긴 경로와 순차 계산을 줄이고, Transformer는 이 연산에 residual connection, normalization, MLP를 결합한 범용 구조다.
 

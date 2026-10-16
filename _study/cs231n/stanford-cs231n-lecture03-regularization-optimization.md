@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
 topic: "Regularization and Optimization"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 3](https://www.youtube.com/watch?v=dyNGd06MWn4){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 3 PDF](https://cs231n.stanford.edu/slides/2025/lecture_3.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.56–87의 noisy gradient와 optimizer 비교](https://cs231n.stanford.edu/slides/2025/lecture_3.pdf#page=56){:target="_blank" rel="noopener"}를 먼저 본다. p.56은 minibatch gradient가 흔들리는 문제와 SGD+Momentum의 누적 방향을 대비하고, 뒤 슬라이드는 RMSProp·Adam의 좌표별 scale과 이동 궤적을 잇는다. 아래 3–6절은 이 차이를 각 update 식으로 설명한다.
+
+<figure id="cs231n-lecture03-source-p56">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture03-p56.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture03-p56.jpg" | relative_url }}" alt="전체 데이터 평균 loss와 gradient 식 옆에 minibatch gradient의 noise 문제를 제시한 SGD 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_3.pdf#page=56" target="_blank" rel="noopener">CS231N Lecture 3, PDF p. 56 (printed slide 60)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 정규화는 훈련 오차가 아니라 보지 못한 데이터의 오차를 줄이기 위한 설계이고, 최적화는 그 목적함수의 지형을 기울기로 탐색하는 과정이다. 좋은 결과는 optimizer 이름 하나보다 학습률, 스케줄, 초기화, 데이터 표현의 조합에서 나온다.
 

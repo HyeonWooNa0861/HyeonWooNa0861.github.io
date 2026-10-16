@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 10: Generative Adversarial Networks II"
 course: "CS236"
 topic: "f-GANs, Wasserstein GANs, BiGANs, and Cycle-Consistent Translation"
@@ -44,6 +44,26 @@ keywords:
 | pp. 12--14 | Support mismatch, Wasserstein primal·dual, WGAN objective | `Wasserstein-1의 primal과 dual`에서 정의, duality 증명 개요, neural critic 근사를 구분한다. |
 | pp. 16--19 | BiGAN의 encoder·generator joint two-sample objective | `핵심 내용`과 `핵심 개념`에서 원문 모델 정의로 설명한다. |
 | pp. 20--24 | CycleGAN adversarial/cycle loss와 AlignFlow의 exact cycle consistency | `핵심 내용`에서 원문 제약식과 architecture 결과를 설명한다. |
+
+## 원본 그림 해설
+
+### BiGAN의 쌍 판별과 CycleGAN의 복원 경로
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-10-source-19-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-10-source-19-excerpt.png" | relative_url }}" alt="CS236 Lecture 10, p. 19: BiGAN의 generator·encoder와 쌍을 비교하는 discriminator. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf#page=19" target="_blank" rel="noopener">Original p. 19</a> — BiGAN의 generator·encoder와 쌍을 비교하는 discriminator. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 10 PDF p. 19](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf#page=19){:target="_blank" rel="noopener"}
+
+상단 경로에서는 latent $$z$$를 $$G$$에 넣어 $$G(z)$$를 만든 뒤 두 값을 쌍으로 묶는다. 하단 경로에서는 실제 $$x$$를 $$E$$에 넣어 $$E(x)$$를 얻고 다시 쌍으로 묶는다. 오른쪽 $$D$$는 이미지 하나가 아니라 이 두 종류의 쌍을 구분한다. 이 때문에 생성과 함께 입력을 latent로 보내는 encoder도 학습할 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-10-source-22-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-10-source-22-excerpt.png" | relative_url }}" alt="CS236 Lecture 10, p. 22: CycleGAN의 양방향 변환과 cycle-consistency 경로. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf#page=22" target="_blank" rel="noopener">Original p. 22</a> — CycleGAN의 양방향 변환과 cycle-consistency 경로. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.22](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf#page=22){:target="_blank" rel="noopener"}의 왼쪽은 $$x$$를 $$G$$로 바꾼 뒤 $$F$$로 복원하는 경로, 오른쪽은 반대 방향이다. $$D_X,D_Y$$는 각 domain의 그럴듯함을 검사하고, 원문 아래의 cycle-consistency 항은 출발점이 보존되는지를 검사한다. 그럴듯한 변환 결과와 원래 입력의 내용 보존은 서로 다른 요구이므로 두 항이 함께 필요하다.
 
 ## 핵심 내용
 

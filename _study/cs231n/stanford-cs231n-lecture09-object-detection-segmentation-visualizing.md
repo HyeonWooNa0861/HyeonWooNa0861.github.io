@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 9](https://www.youtube.com/watch?v=PTypu6GqEd4){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 9 PDF](https://cs231n.stanford.edu/slides/2025/lecture_9.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF p.66부터의 dense vision task 비교](https://cs231n.stanford.edu/slides/2025/lecture_9.pdf#page=66){:target="_blank" rel="noopener"}에서 classification, semantic segmentation, object detection, instance segmentation이 각각 어떤 공간 출력과 객체 구분을 요구하는지 먼저 비교한다. 이어지는 detection 계보와 아래 3–5절은 R-CNN의 proposal 기반 흐름에서 YOLO·DETR의 직접 예측으로 무엇이 바뀌는지 설명한다.
+
+<figure id="cs231n-lecture09-source-p66">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture09-p66.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture09-p66.jpg" | relative_url }}" alt="classification과 semantic segmentation, object detection, instance segmentation의 출력 차이를 같은 고양이 장면으로 비교한 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_9.pdf#page=66" target="_blank" rel="noopener">CS231N Lecture 9, PDF p. 66 (printed slide 66)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 분류가 이미지 전체의 한 레이블을 예측한다면 segmentation은 픽셀마다, detection은 객체마다 구조화된 출력을 예측한다. 현대 방법은 CNN/ViT backbone의 feature를 공유하고 task-specific head를 붙이며, Grad-CAM 같은 도구는 예측을 지지한 공간적 근거를 점검하게 한다.
 
@@ -97,6 +104,21 @@ DETR은 CNN 또는 vision backbone feature를 Transformer에 넣고, 고정 수�
 정답 객체와 query 예측의 순서는 정해져 있지 않으므로 Hungarian matching으로 one-to-one assignment를 찾고 matched pair의 class/box loss를 계산한다. 이 set prediction 관점은 duplicate prediction을 학습 안에서 직접 다뤄 전통적 anchor와 NMS 의존을 줄인다.
 
 Object query는 특정 클래스나 위치가 미리 지정된 box가 아니라, 학습을 통해 서로 다른 객체 슬롯 역할을 나누는 벡터다.
+
+**Supplementary table — detector 계열의 후보 생성과 중복 처리**
+
+<div markdown="block" role="region" aria-label="Object detector candidate and duplicate handling comparison" tabindex="0" style="overflow-x: auto;">
+
+| 계열 | 후보를 만드는 위치 | 후보를 판별하는 방식 | 중복을 다루는 대표 방식 |
+|---|---|---|---|
+| Faster R-CNN | RPN이 feature map에서 region proposal 생성 | RoI별 class와 box offset 예측 | 보통 proposal·최종 box 단계의 NMS |
+| YOLO 계열 | Dense grid 또는 feature 위치에서 직접 예측 | 한 번의 forward pass에서 class·objectness·box 예측 | Confidence threshold와 NMS가 일반적 |
+| DETR | 고정 수의 learned object query 사용 | Query가 image token을 cross-attention으로 읽음 | Hungarian one-to-one matching으로 중복을 학습 과정에서 억제 |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 세 계열의 모든 구현 세부가 아니라, 이 강의에서 비교하는 `후보 생성 → 판별 → 중복 처리` 축만 정리한 작성자 보충이다. 특히 DETR의 고정 query 수는 실제 객체 수가 고정이라는 뜻이 아니며 남는 query는 `no object`를 출력한다.
 
 ## 7. Instance segmentation과 Mask R-CNN
 

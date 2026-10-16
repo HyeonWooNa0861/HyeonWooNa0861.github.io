@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
 topic: "Generative Models 1"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 13](https://www.youtube.com/watch?v=zbHXQRUNlH0){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 13 PDF](https://cs231n.stanford.edu/slides/2025/lecture_13.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.63–91의 autoencoder에서 VAE로 가는 전개](https://cs231n.stanford.edu/slides/2025/lecture_13.pdf#page=63){:target="_blank" rel="noopener"}에서 p.63의 deterministic encoder $$x\mapsto z$$를 기준선으로 먼저 본다. 뒤 슬라이드는 latent distribution을 예측하고 sampled $$z$$를 decoder로 보내는 VAE 구조로 바뀐다. 아래 4–5절은 posterior 근사, reparameterization, ELBO가 왜 필요한지 이 차이에 연결한다.
+
+<figure id="cs231n-lecture13-source-p63">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture13-p63.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture13-p63.jpg" | relative_url }}" alt="입력 x를 encoder가 하나의 latent feature z로 바꾸는 deterministic non-variational autoencoder 기준선" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_13.pdf#page=63" target="_blank" rel="noopener">CS231N Lecture 13, PDF p. 63 (printed slide 63)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 생성 모델의 여러 이름은 결국 데이터 분포 $$p(x)$$를 **직접 계산할 수 있는가**, **근사하는가**, 아니면 **표본만 생성하는가**의 차이다. 1부는 tractable likelihood의 autoregressive model과 latent variable likelihood를 lower bound로 학습하는 VAE를 연결한다.
 
@@ -73,6 +80,13 @@ $$
 이다. $$z$$는 pose, style, object identity 같은 변동 요인을 압축할 잠재 공간을 제공한다. 문제는 가능한 모든 $$z$$를 적분하는 marginal likelihood가 일반적인 neural decoder에서 계산 불가능하다는 점이다.
 
 VAE는 decoder $$p_\theta(x\mid z)$$에 더해 encoder $$q_\phi(z\mid x)$$를 두어 진짜 posterior를 근사한다. Encoder는 보통 diagonal Gaussian의 mean과 variance를 출력한다.
+
+<figure id="cs231n-lecture13-source-p89">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture13-p89.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture13-p89.jpg" | relative_url }}" alt="latent z에서 data distribution을 출력하는 VAE decoder와 입력 x에서 latent mean과 covariance를 출력하는 encoder를 비교한 도식" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_13.pdf#page=89" target="_blank" rel="noopener">CS231N Lecture 13, PDF p. 89 (printed slide 89)</a>. Click the image to enlarge.</figcaption>
+</figure>
+
+원본 p.89에서 decoder는 $$z$$를 받아 관측 분포의 평균 $$\mu_{x\mid z}$$를 내고, encoder는 반대 방향으로 $$x$$를 받아 latent Gaussian의 $$\mu_{z\mid x}$$와 $$\Sigma_{z\mid x}$$를 낸다. 두 network를 함께 학습하는 이유는 직접 계산하기 어려운 true posterior $$p_\theta(z\mid x)$$를 $$q_\phi(z\mid x)$$로 근사해, decoder 학습에 필요한 latent를 각 입력에서 얻기 위해서다. 즉 deterministic autoencoder의 하나의 코드 점이 **분포의 parameter**로 바뀌는 지점이 VAE의 구조적 차이다.
 
 ## 5. ELBO와 reparameterization trick
 

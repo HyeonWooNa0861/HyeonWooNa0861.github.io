@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 3: Transformers & Large Language Models
 
 Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=Q5baLehv5So){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:18:50의 token별 MoE routing 구조](https://www.youtube.com/watch?v=Q5baLehv5So&t=1130s){:target="_blank" rel="noopener"}에서 gate가 입력 token을 일부 FFN expert에만 보내는 구조를 먼저 확인한다. 아래 MoE 절은 이 sparse routing이 한 expert로 쏠릴 때 생기는 routing collapse와 load-balancing auxiliary loss를 처리 순서대로 연결한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-03-moe-routing-00h18m50s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-03-moe-routing-00h18m50s.jpg' | relative_url }}" alt="입력 token x를 gate G가 여러 FFN expert 중 하나로 보내는 MoE routing 구조" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=Q5baLehv5So&t=1130s" target="_blank" rel="noopener">공식 영상 00:18:50</a> — 각 token의 입력 x를 gate G가 평가하고, 선택된 FFN₂만 통과시켜 출력 ŷ에 반영하는 sparse MoE routing 구조다.</figcaption>
+</figure>
+
+실선은 gate가 만든 routing score의 흐름이고, 점선은 입력이 각 expert 후보와 연결될 수 있음을 나타낸다. 초록 체크가 선택된 경로이며 빨간 표시는 계산에서 제외된 expert다. 이 선택이 token마다 달라져야 모델 용량을 나눠 쓸 수 있다. gate가 계속 같은 expert만 고르면 그 경로에 계산과 학습 신호가 몰리는 routing collapse가 생기므로, 아래 auxiliary loss가 expert별 선택 빈도와 평균 routing probability를 함께 균형화한다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 

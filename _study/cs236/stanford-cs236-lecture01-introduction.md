@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 1: Introduction"
 course: "CS236"
 topic: "Deep Generative Models Overview"
@@ -46,6 +46,17 @@ keywords:
 | slides 45–50 | course roadmap, prerequisite, logistics, project | slide 45의 학습 목표를 아래 작성자 보충으로 명시; 나머지는 운영 정보 |
 
 > **원문 확인 범위:** 공식 PPTX 50장의 텍스트와 순서는 확인했지만, 애니메이션에 따라 달라지는 수식의 표시 상태까지 독립적으로 확인하지는 못했다. 아래 해설은 slides 16–17의 수식과 slide 45의 로드맵을 기준으로 하며, 원문에 없는 전개는 작성자 보충으로 표시한다.
+
+## 원본 그림 해설
+
+[Lecture 1 original slides](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture1_2023.pptx){:target="_blank" rel="noopener"}의 **slide 4**는 high-level description에서 raw sensory output을 만드는 generation과, 관측에서 그 설명을 찾는 inference를 대비한다. 색·위치·크기를 지정해 영상을 만드는 방향과 영상에서 그 요인을 추론하는 방향을 구분하면, 이후 latent-variable model의 생성과 posterior 추론을 연결할 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-01-slide-05-bedroom.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-01-slide-05-bedroom.png" | relative_url }}" alt="CS236 Lecture 1 slide 5에 삽입된 침실 사진. 침대, 거울, 식물, 조명과 서로 다른 질감이 함께 나타난다." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture1_2023.pptx" target="_blank" rel="noopener">Original slide 5</a> — PPTX의 원본 삽입 사진을 발췌했다. 슬라이드 전체 배치를 재현한 그림은 아니다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+**Slide 5**의 비교 기준은 prior knowledge와 data의 역할이다. 물리·재질 등 사람이 넣은 지식을 주로 사용하는 graphics와 데이터로 분포를 학습하는 statistical generative model을 비교한다. 데이터 기반 모델에도 구조·학습 목표 같은 가정은 남으므로, 이 비교를 “사전지식이 전혀 없는 모델”이라는 뜻으로 읽지는 않는다. 침대와 벽의 큰 구조뿐 아니라 이불의 무늬, 거울의 반사, 식물과 조명의 배치가 함께 관측된다. 데이터 기반 모델은 이런 요소가 함께 나타나는 통계적 규칙을 여러 사진에서 학습한다. 이 사진 한 장은 학습 데이터의 예시이지, 모델의 생성 결과나 품질 평가가 아니다. Slide 4의 도형 배치와 전체 애니메이션은 원본 PPTX에서 확인한다.
 
 ## 핵심 내용
 

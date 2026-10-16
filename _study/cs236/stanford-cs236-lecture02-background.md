@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 2: Background"
 course: "CS236"
 topic: "Probability, Graphical Models, and Neural Parameterizations"
@@ -46,6 +46,26 @@ keywords:
 | pp. 25–29 | neural parameterization, continuous density, VAE preview | pp. 25–26의 비선형 경계는 아래에서 유도; 나머지는 정의·예시 중심 |
 
 > 강의 PDF의 모델 식에는 해당 페이지를 표시했다. Smoothing·단위·적용 실패 조건은 원문 설명과 구분한 보충 해설이다.
+
+## 원본 그림 해설
+
+### Bayesian network의 화살표와 조건부 확률표
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-02-source-13-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-02-source-13-excerpt.png" | relative_url }}" alt="CS236 Lecture 2, p. 13: Bayesian network의 변수, 화살표와 조건부 확률표. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf#page=13" target="_blank" rel="noopener">Original p. 13</a> — Bayesian network의 변수, 화살표와 조건부 확률표. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 2 PDF p. 13](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf#page=13){:target="_blank" rel="noopener"}
+
+원본의 Difficulty와 Intelligence에서 Grade로 들어오는 두 화살표를 먼저 본다. Grade의 확률표는 두 부모의 값이 정해졌을 때 세 성적의 확률을 제공한다. SAT는 Intelligence만, Letter는 Grade만 부모로 갖는다. 따라서 전체 확률은 $$p(d)p(i)p(g\mid i,d)p(s\mid i)p(l\mid g)$$로 분해된다. 화살표는 이 모델의 조건부 의존 구조이며, 그림만으로 현실의 인과관계가 입증되는 것은 아니다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-02-source-17-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-02-source-17-excerpt.png" | relative_url }}" alt="CS236 Lecture 2, p. 17: Naive Bayes의 joint factorization과 정규화된 posterior 식. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf#page=17" target="_blank" rel="noopener">Original p. 17</a> — Naive Bayes의 joint factorization과 정규화된 posterior 식. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.17](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf#page=17){:target="_blank" rel="noopener"}에서는 이 구조를 스팸 분류로 옮긴다. 단어별 $$X_i$$를 독립이라고 보는 것이 아니라, 스팸 여부 $$Y$$를 알고 난 뒤 조건부 독립이라고 둔다. 분모의 두 항은 스팸과 정상 메일의 가능성을 합해 posterior가 0과 1 사이의 확률이 되도록 정규화한다.
 
 ## 핵심 내용
 

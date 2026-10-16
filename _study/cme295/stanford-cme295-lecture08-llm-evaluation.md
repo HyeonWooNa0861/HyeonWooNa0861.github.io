@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 8: LLM Evaluation
 
 Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:08:40의 inter-rater agreement 한계 슬라이드](https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s){:target="_blank" rel="noopener"}에서 관측 일치율을 $$p_o$$로 두는 출발점과 평가의 주관성을 먼저 확인한다. 이어지는 Cohen's kappa 설명과 아래 평가 절은 우연 일치 baseline을 빼고 정규화하는 식, prevalence 한계를 연결한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-08-inter-rater-agreement-00h08m40s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-08-inter-rater-agreement-00h08m40s.jpg' | relative_url }}" alt="평가의 주관성과 관측 일치율 p_o를 제시한 LLM 평가 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s" target="_blank" rel="noopener">공식 영상 00:08:40</a> — 평가가 주관적일 수 있음을 전제로, 두 평가자가 실제로 같은 판단을 내린 비율을 pₒ로 둔다.</figcaption>
+</figure>
+
+$$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라벨을 고를 가능성을 분리하지 못한다. Cohen's kappa가 기대 일치율 $$p_e$$를 추가하는 이유는 이 우연 일치분을 빼고 남은 일치를 가능한 개선 폭으로 정규화하기 위해서다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 

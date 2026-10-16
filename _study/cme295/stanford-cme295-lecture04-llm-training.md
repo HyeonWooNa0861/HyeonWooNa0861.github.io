@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 4: LLM Training
 
 Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=VlA_jt_3Qc4){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:39:05의 FlashAttention GPU 구조 슬라이드](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=2345s){:target="_blank" rel="noopener"}에서 HBM, SRAM, compute unit의 배치를 먼저 확인한다. 이어지는 원본 설명과 아래 학습 최적화 절은 HBM–SRAM 이동, tiling, exact attention, backward recomputation을 연결해 핵심 병목이 메모리 I/O임을 보여준다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-04-flashattention-00h39m05s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-04-flashattention-00h39m05s.jpg' | relative_url }}" alt="GPU 내부의 HBM, SRAM, compute unit을 구분한 FlashAttention 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=2345s" target="_blank" rel="noopener">공식 영상 00:39:05</a> — 큰 HBM과 연산 장치 가까이에 있는 작은 SRAM을 구분해 FlashAttention이 줄이려는 데이터 이동을 보여 준다.</figcaption>
+</figure>
+
+그림의 크기는 저장 용량을, 배치는 연산 장치와의 접근 관계를 직관화한다. FlashAttention의 핵심은 attention 식을 근사하는 것이 아니라, 작은 block을 SRAM에서 처리해 큰 중간 행렬을 HBM에 반복 저장하고 다시 읽는 횟수를 줄이는 데 있다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 

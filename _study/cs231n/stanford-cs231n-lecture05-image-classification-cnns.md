@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CS231N Lecture 5: Image Classification with CNNs"
 course: "CS231N"
 topic: "CNN-Based Image Classification"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 5](https://www.youtube.com/watch?v=f3g1zGdxptI){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 5 PDF](https://cs231n.stanford.edu/slides/2025/lecture_5.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.29–79의 CNN 처리 흐름](https://cs231n.stanford.edu/slides/2025/lecture_5.pdf#page=29){:target="_blank" rel="noopener"}을 먼저 따라간다. p.29는 input, convolutional image maps, subsampling, fully connected output의 큰 흐름을 보여준다. 뒤 슬라이드에서는 작은 filter가 같은 weight로 local patch를 훑어 activation map을 만든다. 아래 1–4절은 channel, stride, padding, 출력 크기를 이 흐름에 대응시킨다.
+
+<figure id="cs231n-lecture05-source-p29">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture05-p29.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture05-p29.jpg" | relative_url }}" alt="입력 문자 이미지가 convolutional image maps와 subsampling을 거쳐 fully connected output으로 이어지는 CNN 처리 흐름" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_5.pdf#page=29" target="_blank" rel="noopener">CS231N Lecture 5, PDF p. 29 (printed slide 29)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** CNN은 이미지를 평평한 벡터로만 보지 않고, 지역 연결과 가중치 공유로 공간 구조를 모델에 넣는다. 필터 하나는 모든 위치에서 같은 패턴을 찾고, 여러 층은 작은 지역 관측을 넓은 receptive field와 계층적 표현으로 확장한다.
 
@@ -65,6 +72,22 @@ $$
 이다. $$K=3,S=1,P=1$$은 크기를 유지하는 대표적인 설정이다. 나눗셈이 정수가 되지 않으면 일부 경계 위치가 버려지므로 구조 설계 전에 shape을 확인해야 한다.
 
 Padding은 경계 정보가 빠르게 사라지는 것을 막고 출력 크기를 조절한다. Stride는 필터 이동 간격을 늘려 공간 해상도와 연산량을 함께 줄인다.
+
+**Supplementary table — convolution 설정을 바꿀 때의 영향**
+
+<div markdown="block" role="region" aria-label="Convolution setting effects comparison" tabindex="0" style="overflow-x: auto;">
+
+| 바꾸는 값 | 출력 공간 크기 | 관측 범위와 정보에 미치는 영향 |
+|---|---|---|
+| Kernel $$K$$ 증가 | 다른 값이 같으면 감소하거나 유지 | 한 층이 더 넓은 영역을 보고 parameter 수와 출력 위치당 연산량이 증가한다. 출력 위치 수도 함께 줄 수 있으므로 층 전체 연산량이 항상 증가한다고 단정할 수는 없다. |
+| Stride $$S$$ 증가 | 감소하거나 유지 | 위치를 더 크게 건너뛰며 downsampling한다. 출력 위치가 줄면 계산량도 줄지만, floor 때문에 작은 변경에서는 출력 크기가 유지될 수 있고 세밀한 위치 정보와 고주파 성분을 잃을 수 있다. |
+| Padding $$P$$ 증가 | 증가하거나 유지 | 경계 주변의 출력 위치를 보존하지만 추가된 값은 실제 image 정보가 아니다. |
+| 출력 channel $$C_{out}$$ 증가 | 높이·폭은 불변 | 서로 다른 pattern detector 수가 늘며 parameter·activation memory가 증가한다. |
+{: .reference-candidate-table style="min-width: 40rem;" }
+
+</div>
+
+표는 output-size 식을 읽는 순서를 정리한 작성자 보충이다. 먼저 $$K,S,P$$가 공간축을 바꾸는지 확인하고, 그다음 $$C_{out}$$이 feature 종류 수만 바꾼다는 점을 구분한다.
 
 ## 4. Receptive field
 

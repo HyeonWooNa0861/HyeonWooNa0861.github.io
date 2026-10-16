@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 16: Score-Based Diffusion Models"
 course: "CS236"
 topic: "Score-Based Diffusion Models"
@@ -49,6 +49,26 @@ keywords:
 | slides 23--31 | Forward/reverse SDE, probability-flow ODE, likelihood | SDE/ODE 절에서 exact-score 결과와 learned-score·numerical-solver 근사를 구분한다. |
 | slides 34--37 | Parallel ODE, distillation, latent diffusion | 실용화 절에서 algorithmic approximation과 latent-space modeling의 범위를 설명한다. |
 | slides 40--46 | Conditional score, classifier guidance, classifier-free guidance | guidance 절에서 Bayes identity, slide 41 animation 상태, CFG extrapolation을 구분한다. |
+
+## 원본 그림 해설
+
+### 분포의 noising과 latent diffusion 경로
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-12-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-12-excerpt.png" | relative_url }}" alt="CS236 Lecture 16, slide 12: diffusion 전후 q0와 qT 분포의 정적 비교. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx" target="_blank" rel="noopener">Original slide 12</a> — diffusion 전후 q0와 qT 분포의 정적 비교. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 16 slides 12](https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx){:target="_blank" rel="noopener"}
+
+원본 slide 12의 왼쪽 $$q_0$$는 data distribution이고 오른쪽 $$q_T$$는 단순한 기준 분포에 가까워진 상태다. 발췌한 분포 그림은 개별 이미지의 픽셀 변화가 아니라 sample 집합 전체의 확률분포 변화를 보여 준다. 정적 변환에서는 중간 애니메이션이 빠질 수 있으므로, 단계별 Gaussian 전이는 slides 10–11의 식과 함께 읽는다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-37-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-37-excerpt.png" | relative_url }}" alt="CS236 Lecture 16, slide 37: VAE encoder·decoder와 latent-space diffusion 경로. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx" target="_blank" rel="noopener">Original slide 37</a> — VAE encoder·decoder와 latent-space diffusion 경로. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+**Slide 37**에서는 왼쪽 encoder가 이미지 $$x$$를 낮은 차원의 latent $$z_0$$로 보낸다. 오른쪽 위 화살표는 latent에 noise를 넣는 forward diffusion이고, 아래 역방향 화살표는 latent를 복원하는 generative denoising이다. 완성된 latent는 왼쪽 decoder를 통해 이미지가 된다. 매 denoising step마다 원본 pixel 전체를 처리하는 구성과 구분해야 하며, decoder의 복원 오차는 diffusion과 별개로 남을 수 있다.
 
 ## 핵심 내용
 

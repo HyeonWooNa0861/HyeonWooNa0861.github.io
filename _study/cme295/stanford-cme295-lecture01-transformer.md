@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 1: Transformer
 
 Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=Ub3GoFaUcds){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [01:32:40의 scaled dot-product attention 설명](https://www.youtube.com/watch?v=Ub3GoFaUcds&t=5560s){:target="_blank" rel="noopener"}에서 query–key 점수, $$\sqrt{d_k}$$ scaling, value 가중합 순서를 먼저 듣는다. 아래 핵심 개념과 수식 해설은 이 발화의 연산 순서를 행렬 shape와 분산 계산으로 연결한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-01-attention-01h32m40s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-01-attention-01h32m40s.jpg' | relative_url }}" alt="입력 토큰에서 Q, K, V를 만들고 scaled dot-product attention을 계산하는 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=Ub3GoFaUcds&t=5560s" target="_blank" rel="noopener">공식 영상 01:32:40</a> — 같은 입력 표현을 서로 다른 가중치 행렬에 통과시켜 Q·K·V를 만들고, 위쪽에서 softmax(QKᵀ/√dₖ)V를 계산하는 흐름이다.</figcaption>
+</figure>
+
+아래 토큰 행은 attention의 입력이고, 가운데 세 열은 동일한 입력에서 역할이 다른 Q·K·V를 분기하는 단계다. 위 식은 Q와 K로 관계 점수를 만든 뒤 V를 가중합한다는 뜻이므로, 세 벡터를 각각 독립된 정보처럼 읽으면 안 된다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 

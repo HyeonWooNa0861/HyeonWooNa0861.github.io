@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
 topic: "Neural Networks and Backpropagation"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 4](https://www.youtube.com/watch?v=25zD5qJHYsk){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 4 PDF](https://cs231n.stanford.edu/slides/2025/lecture_4.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF p.52부터의 computational graph](https://cs231n.stanford.edu/slides/2025/lecture_4.pdf#page=52){:target="_blank" rel="noopener"}에서 forward 값이 왼쪽에서 오른쪽으로 계산되고, upstream gradient가 오른쪽에서 왼쪽으로 각 gate의 local derivative와 결합하는 순서를 확인한다. 아래 3–5절은 이 원본 그래프를 scalar gate 단위로 읽는다.
+
+<figure id="cs231n-lecture04-source-p52">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture04-p52.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture04-p52.jpg" | relative_url }}" alt="입력 x와 가중치 W가 score와 hinge loss 및 regularization을 거쳐 최종 loss L로 합쳐지는 계산 그래프" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_4.pdf#page=52" target="_blank" rel="noopener">CS231N Lecture 4, PDF p. 52 (printed slide 54)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 신경망의 표현력은 affine transform 사이에 비선형성을 넣는 데서 나오고, 학습 가능성은 계산 그래프의 chain rule을 역순으로 재사용하는 backpropagation에서 나온다.
 

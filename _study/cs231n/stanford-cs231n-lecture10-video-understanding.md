@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
 topic: "Video Understanding"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 10](https://www.youtube.com/watch?v=wElqklprhPE){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 10 PDF](https://cs231n.stanford.edu/slides/2025/lecture_10.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.45–46의 optical-flow 그림과 brightness-constancy 식](https://cs231n.stanford.edu/slides/2025/lecture_10.pdf#page=45){:target="_blank" rel="noopener"}을 먼저 본다. 같은 물체 점의 밝기가 짧은 시간 동안 유지된다고 두고, 공간 이동 $$(u,v)$$가 시간 변화와 어떤 관계를 만드는지 확인한다. 아래 optical-flow 해설은 이 가정과 실패 조건을 풀어 쓴다.
+
+<figure id="cs231n-lecture10-source-p45">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture10-p45.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture10-p45.jpg" | relative_url }}" alt="연속 두 frame의 팔 움직임과 pixel별 displacement vector field 및 brightness constancy 식을 함께 나타낸 optical flow 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_10.pdf#page=45" target="_blank" rel="noopener">CS231N Lecture 10, PDF viewer p. 45</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 비디오는 단순히 이미지가 여러 장 모인 입력이 아니다. 정적 장면 단서가 강할 때는 프레임별 CNN도 훌륭한 기준선이지만, 행동의 방향과 순서를 구분하려면 특징을 **언제, 어느 깊이에서 시간축으로 결합할지** 설계해야 한다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
 topic: "3D Vision"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 15](https://www.youtube.com/watch?v=7lxrKDKtykM){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 15 PDF](https://cs231n.stanford.edu/slides/2025/lecture_15.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.54–76의 multi-view·PointNet 처리 구조](https://cs231n.stanford.edu/slides/2025/lecture_15.pdf#page=54){:target="_blank" rel="noopener"}를 먼저 비교한다. p.54는 한 3D object 주변의 여러 camera가 View 1부터 View N까지의 2D image를 만드는 출발점을 보여주며, 뒤에서는 각 view의 feature를 합치는 방법과 PointNet의 point별 shared network·대칭 집계를 제시한다. 아래 3절은 입력 표현이 network와 loss를 제한하는 이유를 설명한다.
+
+<figure id="cs231n-lecture15-source-p54">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture15-p54.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture15-p54.jpg" | relative_url }}" alt="의자 주위를 둘러싼 여러 camera 위치가 View 1부터 View N까지의 2D rendering을 만드는 Multi-View CNN 입력 도식" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_15.pdf#page=54" target="_blank" rel="noopener">CS231N Lecture 15, PDF viewer p. 54</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 3D vision에는 pixel처럼 유일한 표준 표현이 없다. Point cloud, mesh, voxel, implicit field는 각각 저장, topology, differentiability, rendering 비용이 다르며, **표현 선택이 곧 가능한 network와 loss를 결정한다.**
 
@@ -47,6 +54,13 @@ Voxel grid는 3D 공간을 규칙적인 격자로 나누고 occupancy나 feature
 ## 3. Point set을 직접 처리하고 비교하기
 
 **PointNet**은 각 점에 같은 함수(shared MLP)를 적용하고 symmetric max pooling으로 global feature를 만든다. Max 같은 symmetric 연산은 입력 순서가 바뀌어도 결과가 같아 permutation invariance를 제공한다. 강의는 이 단순한 구조가 강력한 출발점이었다고 강조한다. **PointNet++**는 local neighborhood를 계층적으로 묶어 가까운 점의 기하 관계와 여러 공간 scale을 포착하고, graph neural network는 점을 node, 근접 관계를 edge로 바꾸는 후속 방향이다.
+
+<figure id="cs231n-lecture15-source-p74">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture15-p74.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture15-p74.jpg" | relative_url }}" alt="각 point에 같은 함수 h를 적용한 뒤 symmetric aggregation g와 후처리 gamma를 거치는 vanilla PointNet 구조" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_15.pdf#page=74" target="_blank" rel="noopener">CS231N Lecture 15, PDF p. 74 (printed slide 74)</a>. Click the image to enlarge.</figcaption>
+</figure>
+
+원본 p.74는 PointNet을 $$f(x_1,\ldots,x_n)=\gamma\circ g(h(x_1),\ldots,h(x_n))$$로 분해한다. 파란 블록 $$h$$는 모든 점에 weight를 공유해 point별 feature를 만들고, 초록 aggregation $$g$$는 max처럼 입력 순서에 무관한 symmetric function으로 하나의 global feature를 만든다. 마지막 $$\gamma$$가 이 feature를 task 출력으로 바꾼다. Point 순서를 바꾸면 $$h(x_i)$$의 나열만 바뀌고 $$g$$의 결과는 같으므로 전체 출력도 유지된다.
 
 생성된 point cloud와 정답은 점 순서가 대응하지 않는다. 따라서 index별 $$L_2$$ loss 대신 set distance가 필요하다. **Chamfer distance**는 각 점에서 상대 집합의 nearest neighbor까지 거리를 양방향 합산한다. **Earth Mover distance**는 두 집합 사이의 one-to-one bipartite matching을 찾아 모든 matched pair의 이동 거리를 최소화한다. Earth Mover는 전역 대응을 강제해 더 구조적인 비교가 가능하지만 matching 계산이 더 비싸다. 이는 representation이 loss 설계까지 바꾼다는 예다.
 

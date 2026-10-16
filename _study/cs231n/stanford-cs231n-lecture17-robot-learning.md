@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
 topic: "Robot Learning"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 17](https://www.youtube.com/watch?v=XSfmOH_xVSU){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lecture_17.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.54–67의 model learning·model-based planning 절](https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54){:target="_blank" rel="noopener"}에서 p.54의 agent–physical world loop와 state, action, reward 방향을 먼저 읽는다. 뒤 슬라이드는 learned dynamics로 다음 state를 예측하고 후보 action sequence를 평가하는 planning으로 확장한다. 아래 3절은 model error와 receding-horizon control의 관계를 이 흐름에 맞춰 설명한다.
+
+<figure id="cs231n-lecture17-source-p54">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture17-p54.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture17-p54.jpg" | relative_url }}" alt="human goal이 agent로 들어가고 agent action이 physical world를 바꾸며 state와 reward가 다시 agent로 돌아오는 closed-loop 도식" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54" target="_blank" rel="noopener">CS231N Lecture 17, PDF p. 54 (printed slide 54)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없다.
 

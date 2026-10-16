@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 5: LLM tuning
 
 Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=PmW_TMQ3l0I){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:29:55의 Bradley–Terry와 reward-model 설명](https://www.youtube.com/watch?v=PmW_TMQ3l0I&t=1795s){:target="_blank" rel="noopener"}에서 선호·비선호 응답의 reward 차이를 pairwise probability로 바꾸는 과정을 먼저 듣는다. 아래 RLHF 절은 preference pair→reward model→policy optimization 흐름과 식의 가정을 연결한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-05-bradley-terry-00h29m55s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-05-bradley-terry-00h29m55s.jpg' | relative_url }}" alt="두 응답의 reward 차이를 선호 확률로 바꾸는 Bradley-Terry 공식 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=PmW_TMQ3l0I&t=1795s" target="_blank" rel="noopener">공식 영상 00:29:55</a> — 응답 yᵢ가 yⱼ보다 선호될 확률을 두 reward의 지수 비율 또는 reward 차이의 sigmoid로 표현한다.</figcaption>
+</figure>
+
+분모는 두 응답의 상대적인 경쟁을 정규화하고, 마지막 표현은 절대 reward가 아니라 차이 $$r_i-r_j$$만 중요하다는 사실을 드러낸다. 차이가 0이면 선호 확률은 0.5이고, 선호 응답의 reward가 더 커질수록 확률은 1에 가까워진다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
@@ -41,7 +52,22 @@ SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호�
 
 강의의 중심은 RLHF이다. 전통적인 RL의 agent, state, action, policy, reward를 LLM에 대응시키면 agent는 LLM, state는 지금까지의 input, action은 next token, policy는 next-token probability distribution, reward는 completion에 대한 preference signal이다. RLHF는 먼저 preference pair로 reward model을 학습하고, 그 frozen reward model을 사용해 SFT model의 policy를 더 높은 reward 쪽으로 조정한다. Reward model 학습에는 Bradley-Terry formulation이 쓰이며, P(yi > yj) = exp(ri) / (exp(ri) + exp(rj)) = sigma(ri - rj), loss는 -E log sigma(r_w - r_l) 형태로 설명된다.
 
-후반부는 PPO, Best-of-N, DPO의 trade-off를 비교한다. PPO는 advantage를 maximize하면서 base/reference model과 너무 멀어지지 않도록 KL divergence나 clipping을 사용하지만, policy, value function, reward model, base model 등 많은 model component와 hyperparameter가 필요하고 reward hacking, instability, exploration 문제가 있다. Best-of-N은 RL training을 건너뛰고 inference에서 여러 completion을 reward model로 score해 최고를 고르지만 latency와 cost가 커진다. DPO는 Direct Preference Optimization으로, reward model 없이 preference pair에 대한 supervised loss를 직접 최적화해 policy와 reference model 두 개만 쓰지만, 강의에서는 PPO가 보통 더 높은 성능을 줄 수 있고 DPO에는 distribution shift 문제가 있다고 정리한다.
+후반부는 PPO, Best-of-N, DPO의 trade-off를 비교한다. PPO clipping은 sampling에 사용한 old policy 대비 확률비를 기준으로 큰 update의 목적함수상 이득을 제한한다. RLHF에서 별도로 사용하는 KL penalty는 고정 reference/SFT policy에서의 과도한 이탈을 억제한다. 두 기준은 서로 다르며, clipping만으로 reference policy와의 거리가 제한된다고 볼 수 없다. Policy, value function, reward model, reference model 등 많은 model component와 hyperparameter가 필요하고 reward hacking, instability, exploration 문제가 남는다. Best-of-N은 RL training을 건너뛰고 inference에서 여러 completion을 reward model로 score해 최고를 고르지만 latency와 cost가 커진다. DPO는 Direct Preference Optimization으로, reward model 없이 preference pair에 대한 supervised loss를 직접 최적화해 policy와 reference model 두 개만 쓰지만, 강의에서는 PPO가 보통 더 높은 성능을 줄 수 있고 DPO에는 distribution shift 문제가 있다고 정리한다.
+
+**Supplementary table — 선호 신호가 policy에 도달하는 경로**
+
+<div markdown="block" role="region" aria-label="Preference tuning signal path comparison" tabindex="0" style="overflow-x: auto;">
+
+| 방법 | 선호 데이터의 사용 경로 | 별도 reward model | Policy를 바꾸는 시점 |
+|---|---|---|---|
+| RLHF with PPO | Preference pair → reward model → sampled completion reward → PPO update | 필요 | Training 중 online sampling과 policy update |
+| Best-of-N | Preference pair → reward model → $$N$$개 completion scoring | 필요 | Policy weight는 바꾸지 않고 inference 결과만 선택 |
+| DPO | Preference pair → policy/reference log-probability 차이의 supervised loss | 불필요 | Offline preference training에서 직접 update |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 강의의 계산 경로를 비교한 작성자 보충이다. `reward model 불필요`는 DPO가 선호 데이터나 reference policy 없이 동작한다는 뜻이 아니다. 이 표의 Best-of-N은 강의에서 다룬 **학습된 preference scorer를 쓰는 설정**이라 reward model을 `필요`로 표시했다. 일반적인 Best-of-N은 과제에 따라 규칙 기반 점수나 verifier로 후보를 고를 수도 있으며, 어떤 scorer를 쓰든 생성 횟수만큼 inference 비용이 늘어난다.
 
 ## 핵심 개념
 
@@ -154,7 +180,7 @@ $$
 - RLHF에서 Human Feedback은 reward model을 학습시키는 preference labels가 human ratings에서 온다는 뜻이다.
 - Reward model은 pairwise loss로 학습되지만 inference에서는 prompt와 하나의 response를 입력받아 pointwise score를 출력한다.
 - Bradley-Terry formulation은 P(yi > yj)를 sigma(ri - rj)로 표현하고, winning score가 losing score보다 높아지도록 학습한다.
-- PPO는 advantage를 maximize하면서 clipping 또는 KL penalty로 policy update가 너무 커지지 않도록 한다.
+- PPO clipping의 기준은 sampling에 사용한 old policy다. RLHF의 별도 KL penalty는 고정 reference/SFT policy와 비교한다. 두 장치가 안정성을 돕지만 큰 update나 reward hacking을 완전히 막는 보장은 아니다.
 - Reward hacking은 imperfect reward를 과도하게 optimize해서 실제 objective를 놓치는 현상으로 설명된다.
 - DPO는 preference pairs를 직접 supervised loss로 학습하므로 단순하지만, PPO와 비교해 성능과 distribution shift trade-off가 있다.
 
@@ -196,7 +222,7 @@ $$
 <details markdown="block">
 <summary>4. PPO에서 KL divergence 또는 clipping을 쓰는 이유는 무엇인가?</summary>
 
-답변: Reward를 높이는 방향으로 update하되, SFT/base model이나 직전 policy에서 너무 멀어져 지식 손실, reward hacking, instability가 생기지 않도록 제한하기 위해서다.
+답변: Clipping은 current policy와 sampling에 사용한 old policy의 확률비를 기준으로 큰 변화의 목적함수상 이득을 제한한다. 별도의 KL penalty는 current policy가 고정 reference/SFT policy에서 멀어지는 데 비용을 부과한다. 비교 대상이 다르므로 둘은 대체 가능한 같은 장치가 아니며, 어느 쪽도 지식 손실이나 reward hacking을 완전히 막는 보장은 아니다.
 
 </details>
 

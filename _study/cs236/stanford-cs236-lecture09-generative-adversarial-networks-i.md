@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 9: Generative Adversarial Networks I"
 course: "CS236"
 topic: "Likelihood-Free Generative Learning"
@@ -47,6 +47,26 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 | pp. 18–26 | minibatch algorithm, implicit generator, optimization, mode collapse | p. 18의 update를 아래에서 대조; p. 22는 informal convergence statement이므로 보편 수렴 증명으로 취급하지 않음 |
 
 > 이상적 optimal-discriminator 정리와 finite-capacity·alternating-optimization 한계에 관한 보충 해설을 구분한다.
+
+## 원본 그림 해설
+
+### Mode collapse에서 이동하는 생성 분포
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-09-source-24-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-09-source-24-excerpt.png" | relative_url }}" alt="CS236 Lecture 9, p. 24: Target의 여러 mode와 학습 단계별 mode collapse. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf#page=24" target="_blank" rel="noopener">Original p. 24</a> — Target의 여러 mode와 학습 단계별 mode collapse. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 9 PDF p. 24](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf#page=24){:target="_blank" rel="noopener"}
+
+위쪽 Target에는 여러 Gaussian mode가 원형으로 놓여 있다. 아래 Step 0, 5k, 10k, 15k, 20k는 학습 시점별 생성 분포다. 생성된 덩어리가 위치를 바꾸어도, 한 시점에 목표의 여러 mode를 함께 덮지 못한다면 다양성 문제는 해결되지 않은 것이다. 이는 단순히 개별 샘플이 흐릿한 문제와 다르다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-09-source-12-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-09-source-12-excerpt.png" | relative_url }}" alt="CS236 Lecture 9, p. 12: discriminator가 관측 x에서 이진 label y를 예측하는 그래프. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf#page=12" target="_blank" rel="noopener">Original p. 12</a> — discriminator가 관측 x에서 이진 label y를 예측하는 그래프. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.12](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf#page=12){:target="_blank" rel="noopener"}의 $$x$$에서 $$y$$로 향하는 작은 그래프는 discriminator의 이진 분류를 뜻한다. 여기서 $$y=1$$은 실제 데이터, $$y=0$$은 생성 데이터다. 이 판별이 쉬울수록 두 샘플 집합을 구분할 단서가 남아 있다. Generator는 그 단서를 줄이도록 학습되지만, 제한된 판별기와 실제 최적화가 모든 mode의 복원을 보장하지는 않는다.
 
 ## 핵심 내용
 

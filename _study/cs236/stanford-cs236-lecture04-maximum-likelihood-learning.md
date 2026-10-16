@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 4: Maximum Likelihood Learning"
 course: "CS236"
 topic: "Maximum Likelihood Learning"
@@ -45,6 +45,26 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 20–25 | inductive bias, generalization, conditional likelihood | 원리·모델 선택 설명이며 p. 24의 conditional loss는 joint와 같은 log-rule 적용 |
 
 > 강의 자료의 정리·항등식과 finite-sample·optimization 한계에 관한 보충 해설을 구분한다.
+
+## 원본 그림 해설
+
+### 동전 데이터의 likelihood와 과적합 곡선
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-04-source-15-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-04-source-15-excerpt.png" | relative_url }}" alt="CS236 Lecture 4, p. 15: 동전 관측의 likelihood와 θ=0.6에서의 최댓값. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf#page=15" target="_blank" rel="noopener">Original p. 15</a> — 동전 관측의 likelihood와 θ=0.6에서의 최댓값. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 4 PDF p. 15](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf#page=15){:target="_blank" rel="noopener"}
+
+원본 데이터는 $$D=\{H,H,T,H,T\}$$이며 가로축은 앞면 확률 $$\theta$$, 세로축은 이 데이터의 likelihood다. 세 번의 앞면과 두 번의 뒷면 때문에 곡선은 $$\theta^3(1-\theta)^2$$가 된다. 꼭대기가 $$0.6$$인 것은 실제 관측 비율 $$3/5$$와 일치한다. 이 그래프는 $$\theta$$의 posterior가 아니라, 데이터를 고정한 뒤 후보 $$\theta$$를 비교하는 함수다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-04-source-22-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-04-source-22-excerpt.png" | relative_url }}" alt="CS236 Lecture 4, p. 22: 직선, 고차 다항식, 저차 다항식의 적합 결과. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf#page=22" target="_blank" rel="noopener">Original p. 22</a> — 직선, 고차 다항식, 저차 다항식의 적합 결과. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.22](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf#page=22){:target="_blank" rel="noopener"}의 세 그래프는 같은 점들을 직선, 고차 다항식, 저차 다항식으로 맞춘 경우다. 맨 위 직선은 휘어진 경향을 놓치고, 가운데 곡선은 점 사이에서 크게 흔들리며, 아래 곡선은 전체 경향을 따른다. 훈련점에 가까워지는 것과 새로운 데이터의 오차가 줄어드는 것을 구분해야 한다.
 
 ## 핵심 내용
 

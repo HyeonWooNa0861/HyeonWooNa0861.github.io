@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 11: Energy-Based Models I"
 course: "CS236"
 topic: "Partition Functions, Product of Experts, RBMs, and Contrastive Divergence"
@@ -44,6 +44,26 @@ keywords:
 | p. 20 | RBM partition function의 지수적 상태 합 | `핵심 내용`의 curse-of-dimensionality 설명에 대응한다. |
 | p. 23 | Log-likelihood gradient와 contrastive-divergence 근사 | `partition function gradient`에서 정확한 등식과 짧은-chain 근사를 구분한다. |
 | pp. 24--25 | Symmetric Metropolis--Hastings와 Langevin MCMC | `MH detailed balance`와 `Langevin stationary distribution`에서 각각 정확 조건과 이산화 근사를 구분한다. |
+
+## 원본 그림 해설
+
+### Energy 학습 그림의 세로축 부호
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-11-source-21-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-11-source-21-excerpt.png" | relative_url }}" alt="CS236 Lecture 11, p. 21: 비정규화 log-probability를 올리고 내리는 학습 전후 곡선. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf#page=21" target="_blank" rel="noopener">Original p. 21</a> — 비정규화 log-probability를 올리고 내리는 학습 전후 곡선. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 11 PDF p. 21](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf#page=21){:target="_blank" rel="noopener"}
+
+원본의 세로축은 energy $$E$$가 아니라 비정규화 log-probability $$f_\theta$$다. 따라서 왼쪽 그림에서 정답 위치의 값을 올리고 오답 위치의 값을 내리는 것이 맞다. $$E=-f_\theta$$로 표현하면 위아래 방향이 뒤집힌다. 오른쪽 결과는 한 관측점만 높이는 대신 다른 위치와의 상대적인 높이도 바꾸어야 한다는 뜻이다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-11-source-12-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-11-source-12-excerpt.png" | relative_url }}" alt="CS236 Lecture 11, p. 12: 에너지 함수로 비교하는 이미지·라벨, 단어·품사, 복원 후보. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf#page=12" target="_blank" rel="noopener">Original p. 12</a> — 에너지 함수로 비교하는 이미지·라벨, 단어·품사, 복원 후보. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.12](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf#page=12){:target="_blank" rel="noopener"}의 세 블록은 이미지·라벨, 단어·품사, 손상·복원 이미지의 짝을 $$E(Y,X)$$에 넣는다. 입력 $$X$$를 고정한 채 후보 $$Y$$를 비교할 때에는 공통 정규화 상수가 순위에 영향을 주지 않는다. 그러나 likelihood로 학습할 때까지 그 상수를 무시해도 된다는 결론은 아니다.
 
 ## 핵심 내용
 

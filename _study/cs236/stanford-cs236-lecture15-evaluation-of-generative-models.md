@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 15: Evaluation of Generative Models"
 course: "CS236"
 topic: "Likelihood, Compression, Sample Quality, Representation Metrics, and Prompt-Based Evaluation"
@@ -47,6 +47,26 @@ keywords:
 | p. 11 | Likelihood weighting와 annealed importance sampling | `핵심 내용`에서 variance와 biased log-likelihood estimate를 포함해 설명한다. |
 | pp. 15--16 | Inception Score의 sharpness·diversity | `Inception Score의 두 인자`에서 entropy/KL 항등식과 classifier 가정을 설명한다. |
 | pp. 17--18 | FID와 MMD/KID | `FID와 MMD`에서 Gaussian 근사, RKHS identity, finite-sample 한계를 구분한다. |
+
+## 원본 그림 해설
+
+### 샘플 격자와 FID가 비교하는 대상
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-12-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-12-excerpt.png" | relative_url }}" alt="CS236 Lecture 15, p. 12: 서로 다른 두 분포에서 추출한 sample 이미지 격자. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=12" target="_blank" rel="noopener">Original p. 12</a> — 서로 다른 두 분포에서 추출한 sample 이미지 격자. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 15 PDF p. 12](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=12){:target="_blank" rel="noopener"}
+
+왼쪽과 오른쪽 이미지 격자는 두 분포에서 뽑은 sample 집합이다. 원문은 각각 $$S_1$$, $$S_2$$로 표시한다. 한 장의 선명함과 전체 집합의 다양성을 따로 살펴야 한다. 사람이 보기에 좋은 집합이라는 판단만으로 likelihood나 모든 downstream task의 성능까지 결론낼 수는 없다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-17-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-17-excerpt.png" | relative_url }}" alt="CS236 Lecture 15, p. 17: feature 평균과 공분산을 비교하는 FID 식. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17" target="_blank" rel="noopener">Original p. 17</a> — feature 평균과 공분산을 비교하는 FID 식. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.17](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17){:target="_blank" rel="noopener"}의 FID 식은 픽셀을 직접 비교하지 않는다. 생성 집합과 실제 집합을 같은 feature extractor에 넣고 각각의 평균과 공분산을 비교한다. 첫 항은 평균 차이, trace 항은 퍼짐과 상관 구조의 차이를 반영한다. 같은 특징 추출기·전처리·표본 조건에서 해석해야 하며 낮은 FID 하나로 각 이미지의 정확성을 보장할 수 없다.
 
 ## 핵심 내용
 

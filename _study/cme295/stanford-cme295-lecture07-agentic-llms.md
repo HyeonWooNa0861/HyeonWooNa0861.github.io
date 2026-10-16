@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 7: Agentic LLMs
 
 Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=h-7S6HNq0Vg){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:28:25의 embedding retrieval 설명](https://www.youtube.com/watch?v=h-7S6HNq0Vg&t=1705s){:target="_blank" rel="noopener"}에서 query와 chunk embedding을 비교해 후보를 고르는 흐름을 먼저 듣는다. 아래 RAG 절은 chunking→candidate retrieval→reranking→generation 순서와 cosine similarity가 쓰이는 위치를 연결한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-07-retrieval-00h28m25s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-07-retrieval-00h28m25s.jpg' | relative_url }}" alt="query와 chunk를 embedding 기반 유사도로 비교하는 candidate retrieval 강의 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=h-7S6HNq0Vg&t=1705s" target="_blank" rel="noopener">공식 영상 00:28:25</a> — 지식 베이스에서 잠재적으로 관련된 후보를 고르는 첫 단계와 query·chunk 입력을 보여 준다.</figcaption>
+</figure>
+
+Query와 Chunk는 원문 문자열 그대로 비교되는 것이 아니라 각각 embedding 벡터로 바뀐다. candidate retrieval은 이 벡터의 유사도로 넓게 후보를 모으는 단계이며, 정밀한 순위 조정은 다음 reranking 단계가 담당한다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 
@@ -42,6 +53,23 @@ Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=
 RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 나누고 임베딩을 만든 뒤, candidate retrieval에서는 bi-encoder와 cosine similarity, approximate nearest neighbor, BM25 또는 하이브리드 검색으로 후보를 줄인다. 이어 reranking에서는 query와 chunk를 함께 넣는 cross-encoder로 더 정밀한 relevance score를 만들며, NDCG, reciprocal rank, precision@k, recall@k, MTEB 같은 기준으로 retriever를 평가한다. 강의는 chunk size, overlap, embedding size, context를 붙이는 방법, prompt caching 같은 실무적 선택도 다룬다.
 
 후반부는 구조화된 데이터와 외부 행동을 다루는 tool calling으로 이동한다. LLM은 함수의 API와 설명을 보고 적절한 도구와 인자를 예측하고, 실제 함수 실행 결과를 다시 받아 자연어 응답을 만든다. 이 능력은 SFT 예제나 프롬프트 설명 반복으로 유도할 수 있고, 도구가 많아지면 tool selector/router가 필요한 후보 도구만 고른다. MCP는 도구 노출 방식을 표준화하는 프로토콜로 소개되고, ReAct 계열 에이전트는 observe, plan, act 같은 반복 루프를 통해 목표를 하위 행동으로 나누며, Agent2Agent와 안전성 문제가 이어서 논의된다.
+
+**Supplementary table — 검색과 도구 실행의 단계별 실패 지점**
+
+<div markdown="block" role="region" aria-label="Retrieval and tool execution failure comparison" tabindex="0" style="overflow-x: auto;">
+
+| 단계 | 입력 → 출력 | 이 단계가 필요한 이유 | 대표 실패 |
+|---|---|---|---|
+| Candidate retrieval | Query → 넓은 후보 chunk 집합 | 낮은 비용으로 recall을 확보한다. | 관련 문서가 후보에 들지 않으면 이후 단계가 복구하기 어렵다. |
+| Reranking | Query + 후보 → 정렬된 소수 chunk | 더 비싼 상호작용 점수를 작은 집합에만 쓴다. | Relevant 후보를 낮게 배치하거나 중복 chunk가 context를 차지한다. |
+| Augment and generate | Query + 선택 chunk → 근거가 포함된 답 | 외부 정보를 generation context에 연결한다. | 검색 근거를 무시하거나 근거보다 강한 주장을 만든다. |
+| Tool prediction | Goal + tool schema → tool 이름과 arguments | 자연어 의도를 실행 가능한 호출로 바꾼다. | 잘못된 tool·argument를 선택하거나 권한 경계를 넘는다. |
+| Execution and synthesis | Tool result → 상태 확인 또는 최종 답 | 실제 결과를 다음 판단에 반영한다. | 실행 실패를 성공으로 오인하거나 오래된 결과로 답한다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 원본 강의에서 각각 설명한 RAG 흐름과 tool-calling 흐름의 역할·실패 지점을 나란히 비교한 작성자 보충이다. 두 흐름이 반드시 직렬로 이어지는 것은 아니며, 검색 결과를 tool 호출의 근거로 쓰거나 agent loop에 RAG를 넣는 것은 시스템 설계 선택이다. RAG의 generation은 한 번으로 끝날 수 있지만 agent는 결과를 관찰한 뒤 계획과 실행을 반복할 수 있다.
 
 ## 핵심 개념
 

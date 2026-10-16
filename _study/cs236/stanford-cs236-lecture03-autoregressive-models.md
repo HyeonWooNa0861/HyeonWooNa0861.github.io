@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 3: Autoregressive Models"
 course: "CS236"
 topic: "Autoregressive Factorization and Neural Density Models"
@@ -46,6 +46,26 @@ keywords:
 | pp. 28–36 | PixelRNN/CNN, PixelDefend, WaveNet, summary | p. 28의 RGB factorization을 아래에서 대조; 성능 그림·응용은 결과/사례로 분류 |
 
 > 아래에서는 강의 자료의 모델 정의와 실제 data distribution에 대한 근사를 구분한다.
+
+## 원본 그림 해설
+
+### MADE의 연결 제한과 PixelCNN의 문맥
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-03-source-17-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-03-source-17-excerpt.png" | relative_url }}" alt="CS236 Lecture 3, p. 17: 일반 autoencoder, 이진 mask와 MADE의 연결 구조. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf#page=17" target="_blank" rel="noopener">Original p. 17</a> — 일반 autoencoder, 이진 mask와 MADE의 연결 구조. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 3 PDF p. 17](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf#page=17){:target="_blank" rel="noopener"}
+
+왼쪽의 일반 autoencoder, 가운데 이진 mask, 오른쪽 MADE를 순서대로 읽는다. 원본이 선택한 변수 순서는 $$x_2,x_3,x_1$$이다. 따라서 첫 출력 $$p(x_2)$$에는 입력 경로가 없어야 하고, $$p(x_3\mid x_2)$$는 $$x_2$$만 볼 수 있다. 노드 안의 숫자는 입력 값이 아니라 의존 가능한 순서를 제한하는 표지다. 마지막 층에 엄격한 부등식을 쓰는 이유도 현재 예측할 변수 자체가 입력으로 새어 들어가지 않게 하기 위해서다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-03-source-31-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-03-source-31-excerpt.png" | relative_url }}" alt="CS236 Lecture 3, p. 31: PixelCNN의 masked convolution, 1/0 mask와 blind spot. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf#page=31" target="_blank" rel="noopener">Original p. 31</a> — PixelCNN의 masked convolution, 1/0 mask와 blind spot. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.31](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf#page=31){:target="_blank" rel="noopener"}의 PixelCNN mask는 같은 제한을 픽셀 격자에 적용한다. 발췌의 1/0 격자는 읽어도 되는 위치와 차단할 위치다. 오른쪽 blind spot은 문맥을 제한하는 방식 때문에 일부 과거 픽셀 정보까지 전달되지 않을 수 있음을 보여 준다.
 
 ## 핵심 내용
 

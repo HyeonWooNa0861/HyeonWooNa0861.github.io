@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-09-03 19:49:35 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"
@@ -18,6 +18,13 @@ keywords:
 # Stanford CS231N Lecture 18: Human-Centered AI
 
 Source: [Stanford CS231N Spring 2025 Lecture 18](https://www.youtube.com/watch?v=g8UaBfj6Sh8){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [영상 00:24:53의 fine-grained categorization 사례](https://www.youtube.com/watch?v=g8UaBfj6Sh8&t=1493s){:target="_blank" rel="noopener"}에서 수천 종을 구분하는 vision dataset과 지역별 vehicle 자료가 인간 능력을 넘는 좁은 task 성능을 어떻게 만드는지 먼저 본다. 아래 2–4절은 이런 capability가 dataset bias, privacy, healthcare workflow에서는 어떤 검증과 sensor·representation 선택을 요구하는지 정리한다.
+
+<figure id="cs231n-lecture18-source-t1493">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture18-t1493.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture18-t1493.jpg" | relative_url }}" alt="4224개 이상의 조류 종 분류 사례와 미국 지역별 차량 image dataset 사례를 나란히 보여주는 fine-grained object categorization 강의 frame" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://www.youtube.com/watch?v=g8UaBfj6Sh8&t=1493s" target="_blank" rel="noopener">Stanford CS231N Lecture 18 video, 00:24:53</a>. Captions and player controls are omitted from the excerpt; click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** Human-centered AI는 정확도 뒤에 윤리 점검표를 붙이는 일이 아니다. 인간의 지각 한계를 보완하고 실제 필요를 해결하도록 **문제 선택, sensor, privacy representation, workflow, robot task, 평가 기준을 처음부터 사람 중심으로 설계**하는 접근이다.
 

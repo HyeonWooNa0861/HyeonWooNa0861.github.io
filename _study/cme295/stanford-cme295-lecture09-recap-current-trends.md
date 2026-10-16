@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
@@ -18,6 +18,17 @@ keywords:
 # Stanford CME295 Lecture 9: Recap & Current Trends
 
 Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
+
+**원본 영상 먼저 보기:** [00:05:05의 scaled attention·RoPE 복습](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s){:target="_blank" rel="noopener"}에서 Transformer 핵심 연산과 상대 위치 정보가 다시 연결되는 순서를 먼저 듣는다. 아래 총정리는 이 구조를 학습·추론·선호 조정·도구 사용·평가로 확장하고, 뒤의 trend 주장을 검증된 강의 범위와 구분한다.
+
+<figure>
+  <a href="{{ '/assets/images/study/cme295/source-captures/lecture-09-attention-recap-00h05m05s.jpg' | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ '/assets/images/study/cme295/source-captures/lecture-09-attention-recap-00h05m05s.jpg' | relative_url }}" alt="teddy bear 토큰의 query가 문장 토큰의 key와 연결되는 attention 복습 슬라이드" loading="lazy">
+  </a>
+  <figcaption><a href="https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s" target="_blank" rel="noopener">공식 영상 00:05:05</a> — “teddy bear”의 query와 문장 각 토큰의 key를 연결해 어떤 value를 모을지 결정하는 attention 복습 장면이다.</figcaption>
+</figure>
+
+가운데 “teddy bear” query에서 여러 key로 뻗는 선은 한 토큰이 문장 전체를 참조할 수 있음을 뜻한다. 각 연결의 점수는 softmax 뒤 가중치가 되고, 그 가중치로 value를 합쳐 문맥이 반영된 새 표현을 만든다.
 
 > **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
 

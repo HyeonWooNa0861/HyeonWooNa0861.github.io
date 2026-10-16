@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CS231N Lecture 14: Generative Models 2"
 course: "CS231N"
 topic: "Generative Models 2"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 14](https://www.youtube.com/watch?v=Edr4uZFh4EE){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 14 PDF](https://cs231n.stanford.edu/slides/2025/lecture_14.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.42–61의 rectified-flow 보간과 sampling](https://cs231n.stanford.edu/slides/2025/lecture_14.pdf#page=42){:target="_blank" rel="noopener"}을 먼저 본다. p.42는 분리된 $$p_{noise}$$와 $$p_{data}$$ sample을 놓고, 다음 슬라이드부터 noise $$z$$, data $$x$$, 시간 $$t$$를 뽑아 직선 경로와 velocity를 만든다. 아래 3절과 보충 유도는 이 기하를 $$x_t$$와 velocity target 식으로 연결한다.
+
+<figure id="cs231n-lecture14-source-p42">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture14-p42.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture14-p42.jpg" | relative_url }}" alt="서로 떨어진 noise distribution과 data distribution의 sample 집합을 두 색 타원으로 나타낸 rectified flow 출발점" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_14.pdf#page=42" target="_blank" rel="noopener">CS231N Lecture 14, PDF p. 42 (printed slide 42)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** GAN은 확률값 대신 discriminator의 학습 신호로 generator를 훈련하고, diffusion은 데이터에 노이즈를 넣은 뒤 그 과정을 되감는 denoiser를 학습한다. 현대 생성 시스템은 VAE, adversarial loss, diffusion/Transformer를 **경쟁 모델이 아니라 조합 가능한 부품**으로 사용한다.
 
@@ -81,6 +88,21 @@ $$
 Pixel 공간의 고해상도 diffusion은 비싸다. Latent diffusion은 VAE encoder로 이미지를 더 작은 spatial latent로 압축하고 그 공간에서 noise를 넣고 제거한 뒤, VAE decoder로 pixel을 복원한다. 이때 VAE reconstruction에 adversarial discriminator loss를 보태면 압축 과정의 시각적 선명도를 개선할 수 있다.
 
 따라서 현대 pipeline은 `VAE encoder/decoder + adversarial perceptual training + diffusion transformer`처럼 여러 계열을 결합한다. 비디오 생성에서는 latent에 시간축이 추가되며, text condition과 spatiotemporal denoising을 함께 처리한다. 강의 말미는 diffusion을 latent variable model/variational bound 관점에서 다시 보고, discrete latent 위 autoregressive model까지 같은 family tree에 재연결한다.
+
+**Supplementary table — 생성 경로와 학습 신호 비교**
+
+<div markdown="block" role="region" aria-label="Generative model path and training signal comparison" tabindex="0" style="overflow-x: auto;">
+
+| 방법 | 생성 시작점과 경로 | 핵심 학습 신호 | 이 강의에서 강조한 trade-off |
+|---|---|---|---|
+| GAN | Noise $$z$$를 generator 한 번으로 sample $$G(z)$$에 매핑 | Discriminator가 제공하는 adversarial gradient | 빠르고 선명할 수 있지만 학습 불안정과 mode collapse가 생길 수 있다. |
+| Rectified flow | Noise에서 시작해 예측 velocity의 반대 방향을 여러 step 적분 | 중간점 $$x_t$$에서 target velocity $$z-x$$를 회귀 | Regression loss는 관찰하기 쉽지만 반복 sampling이 필요하다. |
+| Latent diffusion | VAE가 압축한 latent에서 denoising한 뒤 decoder로 pixel 복원 | Latent-space denoising loss와 VAE reconstruction 계열 loss | Pixel diffusion보다 저렴하지만 압축이 버린 정보는 denoiser가 복원할 수 없다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표는 서로 배타적인 제품 분류가 아니라 생성 경로를 비교하는 작성자 보충이다. 현대 latent-diffusion pipeline은 VAE와 adversarial loss, diffusion model을 결합할 수 있으므로 마지막 행을 GAN과 완전히 분리된 구조로 읽으면 안 된다.
 
 ## 핵심 수식 유도
 

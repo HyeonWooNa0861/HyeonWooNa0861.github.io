@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 18: Diffusion Models for Discrete Data"
 course: "CS236"
 topic: "Diffusion Models for Discrete Data"
@@ -45,6 +45,26 @@ keywords:
 | pp. 29--35 | CTMC generator, transition expansion, matrix exponential, factorized corruption | `CTMC generator` 및 reverse-process 절에서 exact continuous-time 정의와 discretization을 구분한다. |
 | pp. 36--40 | Reverse CTMC rate와 accelerated sampling | `Reverse CTMC`에서 source-index convention, corrected direction, learned-score approximation을 명시한다. |
 | pp. 46--47 | Perplexity와 likelihood bound | `Reverse CTMC와 likelihood bound`에서 source sign/index 문제를 공개하고 algebraically consistent한 해석을 제시한다. |
+
+## 원본 그림 해설
+
+### Concrete score 출력과 reverse transition
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-18-source-20-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-18-source-20-excerpt.png" | relative_url }}" alt="CS236 Lecture 18, p. 20: sequence 위치와 대체 token별 concrete score 확률비 출력. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf#page=20" target="_blank" rel="noopener">Original p. 20</a> — sequence 위치와 대체 token별 concrete score 확률비 출력. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 18 PDF p. 20](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf#page=20){:target="_blank" rel="noopener"}
+
+원본의 위쪽 $$x^1,\ldots,x^d$$는 sequence의 각 위치다. 아래 출력은 전체 sequence마다 하나의 확률을 붙이는 표가 아니라, 한 위치의 token을 바꾼 이웃 sequence와 현재 sequence의 확률비다. 각 열은 바꿀 위치, 각 행은 대체할 token에 대응한다. 이웃으로 향하는 비율을 학습하면 전체 상태공간의 정규화 합을 직접 계산하지 않고도 역방향 전이에 필요한 정보를 얻을 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-18-source-38-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-18-source-38-excerpt.png" | relative_url }}" alt="CS236 Lecture 18, p. 38: forward와 reverse rate matrix의 확률 변화율 계산. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf#page=38" target="_blank" rel="noopener">Original p. 38</a> — forward와 reverse rate matrix의 확률 변화율 계산. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.38](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf#page=38){:target="_blank" rel="noopener"}의 위쪽 행렬을 $$(0.5,0.3,0.2)^{\top}$$에 곱하면 변화율은 $$(-0.5,0.1,0.4)^{\top}$$다. 아래 역방향 행렬의 결과는 $$(0.5,-0.1,-0.4)^{\top}$$로 방향이 뒤집힌다. 두 결과는 새로운 확률벡터가 아니라 순간 변화율이며, 성분 합이 0인 것은 전체 확률질량이 보존되기 때문이다.
 
 ## 핵심 내용
 

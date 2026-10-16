@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 13: Score-Based Models"
 course: "CS236"
 topic: "Score Functions, Denoising Score Matching, Sliced Score Matching, and Langevin Sampling"
@@ -48,6 +48,26 @@ keywords:
 | slides 28--31 | Sliced Fisher divergence와 Jacobian-vector product | 같은 절에서 random-projection identity와 Monte Carlo 근사를 구분한다. |
 | slides 34--35 | Langevin update | `핵심 내용`에서 sampling 식과 step-size/mixing 실패 조건을 설명한다. |
 | slides 39--43 | Manifold, low-density, disjoint-mode 실패 사례 | `핵심 내용`과 마지막 정리에서 수식이 적용되기 어려운 영역을 설명한다. |
+
+## 원본 그림 해설
+
+### 샘플 점에서 score 벡터장을 읽기
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-14-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-14-excerpt.png" | relative_url }}" alt="CS236 Lecture 13, slide 14: 확률밀도, i.i.d. sample과 학습할 score vector field. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx" target="_blank" rel="noopener">Original slide 14</a> — 확률밀도, i.i.d. sample과 학습할 score vector field. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 13 slides 14](https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx){:target="_blank" rel="noopener"}
+
+원본 slide 14는 왼쪽 density, 가운데 i.i.d. sample, 오른쪽 score field를 나란히 둔다. 모델이 학습할 때 받는 것은 가운데 점들이며, 왼쪽 density의 정답 식을 직접 받는 것이 아니다. 오른쪽 화살표는 각 위치에서 log-density가 증가하는 방향을 나타낸다. 화살표가 하나의 전역 중심을 향해야 하는 것은 아니며, 여러 mode 주변에서 서로 다른 방향을 가질 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-42-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-42-excerpt.png" | relative_url }}" alt="CS236 Lecture 13, slide 42: 서로 분리된 mode에서 혼합 가중치가 score 미분으로 사라지는 식. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx" target="_blank" rel="noopener">Original slide 42</a> — 서로 분리된 mode에서 혼합 가중치가 score 미분으로 사라지는 식. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+같은 원문 **slide 42**의 분리된 두 mode 사례에서는 각 영역의 score를 계산하면 혼합 가중치의 로그 상수가 미분으로 사라진다. 따라서 각 mode 안에서 올바른 방향을 알아도 두 mode를 얼마나 자주 방문해야 하는지까지 그 local score가 알려 주지는 않는다. 이 차이가 Langevin dynamics의 느린 mixing 설명으로 이어진다.
 
 ## 핵심 내용
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 8: Normalizing Flows II"
 course: "CS236"
 topic: "Flow Architectures and Tradeoffs"
@@ -47,6 +47,26 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 | pp. 26–35 | MintNet, Gaussianization, rotation, summary | p. 26의 triangular structure와 pp. 29–33의 CDF 변환을 본문에 설명; 결과·요약은 별도 증명 대상 없음 |
 
 > Hardware speed-up과 teacher/student 오차에 관한 해석은 강의 자료와 구분한 보충 해설이다.
+
+## 원본 그림 해설
+
+### MAF와 IAF의 화살표 방향
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-08-source-21-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-08-source-21-excerpt.png" | relative_url }}" alt="CS236 Lecture 8, p. 21: MAF inverse pass와 IAF forward pass의 의존 방향. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf#page=21" target="_blank" rel="noopener">Original p. 21</a> — MAF inverse pass와 IAF forward pass의 의존 방향. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 8 PDF p. 21](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf#page=21){:target="_blank" rel="noopener"}
+
+왼쪽은 관측 $$x$$에서 base variable $$z$$를 구하는 MAF의 inverse pass, 오른쪽은 $$z$$에서 $$x$$를 만드는 IAF의 forward pass다. 붉은 $$\alpha_i$$는 scale, 초록 $$\mu_i$$는 shift를 정한다. 색칠된 이전 변수들이 이미 주어진 방향에서는 모든 위치의 parameter를 병렬로 계산할 수 있다. 반대 방향에서는 아직 만들어지지 않은 이전 값에 의존하므로 순차 계산이 필요하다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-08-source-10-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-08-source-10-excerpt.png" | relative_url }}" alt="CS236 Lecture 8, p. 10: NICE의 블록 삼각 Jacobian과 determinant 1. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf#page=10" target="_blank" rel="noopener">Original p. 10</a> — NICE의 블록 삼각 Jacobian과 determinant 1. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.10](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf#page=10){:target="_blank" rel="noopener"}의 NICE 식은 첫 블록을 그대로 두고 두 번째 블록에 $$m_\theta$$의 출력을 더한다. 복원 시에는 같은 값을 빼면 된다. Jacobian의 두 대각 블록이 항등행렬이므로 determinant는 1이다. 가역성은 임의의 신경망 전체를 뒤집어서 얻는 것이 아니라, 이 블록 구조로 확보한다.
 
 ## 핵심 내용
 

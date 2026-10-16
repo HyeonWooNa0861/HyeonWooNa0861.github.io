@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 7: Normalizing Flows I"
 course: "CS236"
 topic: "Normalizing Flow Foundations"
@@ -46,6 +46,26 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 | pp. 17–19 | determinant complexity, triangular Jacobian, planar flow | pp. 17–18의 $$O(n^3)\to O(n)$$ 근거와 p. 19의 determinant·충분조건을 아래에서 대조 |
 
 > Planar-flow의 strict sufficient condition은 강의 자료의 조건을 더 명확히 풀어 쓴 보충 해설이다.
+
+## 원본 그림 해설
+
+### 면적 변화가 density 보정이 되는 이유
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-07-source-10-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-07-source-10-excerpt.png" | relative_url }}" alt="CS236 Lecture 7, p. 10: 평행사변형의 면적과 determinant를 연결하는 원본 도형. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf#page=10" target="_blank" rel="noopener">Original p. 10</a> — 평행사변형의 면적과 determinant를 연결하는 원본 도형. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 7 PDF p. 10](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf#page=10){:target="_blank" rel="noopener"}
+
+중앙 도형에서 분홍 평행사변형과 바깥 직사각형을 구분한다. 주변 삼각형의 넓이를 빼면 선형변환의 면적 배율 $$\lvert ad-bc\rvert=\lvert\det A\rvert$$가 나온다. 확률질량은 유지되므로 면적이 커진 만큼 단위 면적당 density는 작아진다. 그래서 원본의 $$p_X(x)=p_Z(A^{-1}x)/\lvert\det A\rvert$$에서 determinant로 나눈다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-07-source-14-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-07-source-14-excerpt.png" | relative_url }}" alt="CS236 Lecture 7, p. 14: 가역변환을 합성했을 때의 change-of-variables 식. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf#page=14" target="_blank" rel="noopener">Original p. 14</a> — 가역변환을 합성했을 때의 change-of-variables 식. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.14](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf#page=14){:target="_blank" rel="noopener"}는 이 보정을 여러 가역변환에 적용한다. 생성할 때는 $$z_0$$에 변환을 차례로 적용하고, 관측 $$x$$의 density를 구할 때는 역변환으로 초기 위치를 찾는다. 각 단계의 부피 배율을 곱하는 식이 log-density에서는 log-determinant의 합으로 바뀐다.
 
 ## 핵심 내용
 

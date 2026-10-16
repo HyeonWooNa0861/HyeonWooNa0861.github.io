@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 11](https://www.youtube.com/watch?v=9MvD-XsowsE){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lecture_11.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.30–70의 parallelism·FSDP 구조](https://cs231n.stanford.edu/slides/2025/lecture_11.pdf#page=30){:target="_blank" rel="noopener"}에서 p.30의 tensor shape $$(Batch, Sequence, Dim)$$와 DP·CP·PP·TP가 나누는 축을 먼저 구분한다. 뒤의 FSDP 그림과 아래 3–4절은 batch 분할, all-reduce, parameter·gradient·optimizer-state sharding을 이 분할 관점에서 설명한다.
+
+<figure id="cs231n-lecture11-source-p30">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture11-p30.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture11-p30.jpg" | relative_url }}" alt="Batch Sequence Dim tensor 축을 기준으로 DP CP PP TP가 어느 축을 나누는지 구분한 GPU parallelism 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_11.pdf#page=30" target="_blank" rel="noopener">CS231N Lecture 11, PDF p. 30 (printed slide 30)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 대규모 학습은 GPU 수를 늘리는 문제가 아니라 **연산, 메모리, 통신을 서로 다른 병렬화 축으로 분해하는 시스템 설계 문제**다. 가장 느린 데이터 이동 경로가 전체 처리량을 결정한다.
 

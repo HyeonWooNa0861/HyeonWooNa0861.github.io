@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
@@ -19,6 +19,13 @@ keywords:
 
 Source: [Stanford CS231N Spring 2025 Lecture 12](https://www.youtube.com/watch?v=4howBU7THbM){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.edu/slides/2025/lecture_12.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.52–64의 masked autoencoder pipeline](https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52){:target="_blank" rel="noopener"}에서 image patch의 대부분을 가린 뒤 visible token만 encoder에 넣고 decoder가 전체 patch를 복원하는 순서를 확인한다. 아래 3절은 mask가 단순 손상이 아니라 자동 학습 목표가 되는 이유를 설명한다.
+
+<figure id="cs231n-lecture12-source-p52">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture12-p52.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture12-p52.jpg" | relative_url }}" alt="50퍼센트와 75퍼센트 masking에서 masked input, reconstruction, visible patch 결합, original image를 나란히 비교한 MAE 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52" target="_blank" rel="noopener">CS231N Lecture 12, PDF p. 52 (printed slide 52)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 한다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-15 22:57:10 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 18:48:08 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture 1](https://youtu.be/2fq9wYslV0A?si=YXCKanCTWpZFstJ2){:target="_blank" rel="noopener"}
 
 Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf){:target="_blank" rel="noopener"} · [Part 2](https://cs231n.stanford.edu/slides/2025/lecture_1_part_2.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [Part 1 p.39의 backpropagation 도식과 chain-rule 식](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39){:target="_blank" rel="noopener"}을 먼저 연다. 도식은 출력 오차에서 입력 방향으로 연결을 거슬러 올라가며 각 edge의 local derivative를 곱하는 흐름을 보여준다. 아래 4절과 작성자 보충은 이 원본 관계를 식으로 풀어 쓴다.
+
+<figure id="cs231n-lecture01-source-p39">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture01-p39.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture01-p39.jpg" | relative_url }}" alt="다층 신경망의 출력 오차에서 가중치 w_ji로 이어지는 chain rule 경로를 표시한 backpropagation 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39" target="_blank" rel="noopener">CS231N Lecture 1 Part 1, PDF p. 39 (printed slide 39)</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
 

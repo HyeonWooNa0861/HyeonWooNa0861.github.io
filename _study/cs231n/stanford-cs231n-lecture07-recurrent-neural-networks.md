@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-13 16:47:48 +0900
+last_modified_at: 2026-10-16 19:34:48 +0900
 title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
 topic: "Recurrent Neural Networks"
@@ -20,6 +20,13 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 7](https://www.youtube.com/watch?v=kG2lAPBF7zA){:target="_blank" rel="noopener"}
 
 Official slides: [Lecture 7 PDF](https://cs231n.stanford.edu/slides/2025/lecture_7.pdf){:target="_blank" rel="noopener"}
+
+**원본 자료 먼저 보기:** [PDF pp.23–49의 unrolled RNN](https://cs231n.stanford.edu/slides/2025/lecture_7.pdf#page=23){:target="_blank" rel="noopener"}에서 동일한 transition이 시간마다 반복되고 hidden state가 다음 시점으로 전달되는 방향을 확인한다. 아래 1–5절은 many-to-one·many-to-many 출력과 BPTT의 긴 gradient 경로를 이 원본 도식에 연결한다.
+
+<figure id="cs231n-lecture07-source-p23">
+  <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture07-p23.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture07-p23.jpg" | relative_url }}" alt="hidden state h_t를 parameter W_hy를 가진 출력 함수에 넣어 y_t를 만드는 RNN output generation 슬라이드" loading="lazy"></a>
+  <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_7.pdf#page=23" target="_blank" rel="noopener">CS231N Lecture 7, PDF viewer p. 23</a>. Click the image to enlarge.</figcaption>
+</figure>
 
 > **핵심:** RNN은 같은 transition function을 시간축에 반복 적용해 가변 길이 시퀀스를 처리한다. 이 공유 구조는 강력하지만 긴 경로에서 같은 Jacobian을 반복 곱하므로 vanishing/exploding gradient가 생기며, LSTM은 additive cell-state path와 gate로 장기 정보 흐름을 개선한다.
 
@@ -113,6 +120,22 @@ $$
 - forget gate $$f_t$$: 이전 기억을 얼마나 유지할지 결정한다.
 - input gate $$i_t$$: 새 candidate를 얼마나 기록할지 결정한다.
 - output gate $$o_t$$: cell 정보를 hidden output에 얼마나 노출할지 결정한다.
+
+**Supplementary table — LSTM cell state가 만들어지는 순서**
+
+<div markdown="block" role="region" aria-label="LSTM cell state update sequence" tabindex="0" style="overflow-x: auto;">
+
+| 단계 | 계산 | 다음 단계로 전달되는 의미 |
+|---|---|---|
+| 이전 기억 선택 | $$f_t\odot c_{t-1}$$ | 과거 cell state 중 유지할 성분 |
+| 새 기억 선택 | $$i_t\odot g_t$$ | 현재 입력에서 기록할 candidate 성분 |
+| cell 갱신 | $$c_t=f_t\odot c_{t-1}+i_t\odot g_t$$ | 두 경로를 더한 새 장기 상태 |
+| 외부 출력 | $$h_t=o_t\odot\tanh(c_t)$$ | 새 cell state 중 다음 layer와 시점에 노출할 성분 |
+{: .reference-candidate-table style="min-width: 40rem;" }
+
+</div>
+
+표는 원본의 gate 식을 상태 흐름으로 다시 배열한 작성자 보충이다. 위에서 아래로 읽으면 `보존 경로`와 `기록 경로`가 $$c_t$$에서 합쳐지고, output gate는 그 뒤에 $$h_t$$로 노출할 양만 조절한다. 세 gate 값은 모두 $$[0,1]$$ 범위지만 기억의 정확성이나 장기 보존을 보장하지 않는다.
 
 Cell update가 곱셈만이 아니라 덧셈 경로를 포함해 gradient가 더 직접 흐를 수 있다. 그러나 LSTM도 긴 시퀀스 계산을 순차적으로 해야 하고 모든 장기 의존성을 완벽히 해결하지는 않는다.
 

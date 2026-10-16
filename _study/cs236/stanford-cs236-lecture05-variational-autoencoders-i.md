@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-13 16:49:41 +0900
+last_modified_at: 2026-10-16 19:12:45 +0900
 title: "Stanford CS236 Lecture 5: Variational Autoencoders I"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -45,6 +45,26 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 21–29 | Jensen, ELBO, KL gap, posterior approximation | pp. 21–25의 bound와 equality condition을 아래에서 유도; pp. 26–29는 해석·요약 |
 
 > Delta-method 오차와 finite-variance 조건은 강의 자료의 식이 성립하는 범위를 설명하는 보충 해설이다.
+
+## 원본 그림 해설
+
+### 잠재변수 그래프와 혼합 성분의 posterior
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-05-source-05-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-05-source-05-excerpt.png" | relative_url }}" alt="CS236 Lecture 5, p. 5: 관측 이미지와 관측되지 않은 잠재요인의 그래프. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf#page=5" target="_blank" rel="noopener">Original p. 5</a> — 관측 이미지와 관측되지 않은 잠재요인의 그래프. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[Lecture 5 PDF p. 5](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf#page=5){:target="_blank" rel="noopener"}
+
+원본에서 채워진 원 $$x$$는 관측한 이미지이고 빈 원 $$z$$는 관측되지 않은 요인이다. 오른쪽의 pose·eye color 같은 변수는 잠재요인이 관측 이미지에 영향을 주는 개념적 모델을 보여 준다. 실제 학습에서 각 latent 좌표가 이런 의미와 자동으로 일대일 대응한다는 보장은 없다. 생성은 $$p(x\mid z)$$, 이미지를 보고 요인을 추론하는 방향은 $$p(z\mid x)$$로 구분한다.
+
+<figure>
+  <a href="{{ "/assets/images/study/cs236/source-captures/lecture-05-source-10-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-05-source-10-excerpt.png" | relative_url }}" alt="CS236 Lecture 5, p. 10: 세 Gaussian mixture 성분과 관측점의 분포. 원본 발췌." loading="lazy"></a>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf#page=10" target="_blank" rel="noopener">Original p. 10</a> — 세 Gaussian mixture 성분과 관측점의 분포. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+[PDF p.10](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf#page=10){:target="_blank" rel="noopener"}의 주황·초록·붉은 점 무리는 Gaussian mixture의 성분과 연결된다. 타원은 성분의 위치와 퍼짐을 읽는 단서이고, 성분이 겹치는 곳에서는 한 점의 소속을 확정하기보다 $$P(z=i\mid x)$$로 비교한다. 이 posterior를 계산하는 문제가 뒤의 variational inference로 이어진다.
 
 ## 핵심 내용
 
