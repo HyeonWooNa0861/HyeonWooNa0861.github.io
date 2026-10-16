@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-16 19:32:34 +0900
 title: "Lecture 3: Recurrence"
 course: "Algorithms"
 topic: "Recursive Algorithm Analysis and the Master Theorem"
@@ -100,6 +100,13 @@ T(n)=\underbrace{n+\cdots+n}_{\log_2n\text{개 내부 층}}+nT(1)
 $$
 
 검산: $$n=1$$이면 1이고 $$n=2$$이면 $$2T(1)+2=4$$, 닫힌식도 $$2(1+\log_22)=4$$다. 로그의 밑은 $$\Theta$$에서는 상수배 차이지만, 이 정확식에서는 2가 명시되어야 한다.
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/images/study/algorithms/supplementary/recurrence-level-cost.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/supplementary/recurrence-level-cost.svg" | relative_url }}" alt="T(n)=2T(n/2)+n의 재귀 트리에서 각 깊이의 노드 수와 노드당 비용을 곱하면 모든 내부 층 비용이 n이 되는 과정" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> 원문 p. 16의 점화식을 층별 비용으로 다시 그린 도식이다. 강의 원본 그림이 아니라 위 식의 호출 수·문제 크기·층 합 관계를 보충한다.</figcaption>
+</figure>
+
+위에서 아래로 읽으면 깊이 $$i$$에서 노드 수는 $$2^i$$로 늘고, 각 노드의 크기는 $$n/2^i$$로 줄어든다. 두 값을 곱한 내부 층 비용은 항상 $$n$$이다. 이 층이 $$\log_2n$$개 있고 마지막에 단위 비용 잎 $$n$$개가 있으므로, 그림의 마지막 줄은 앞의 정확식 $$n\log_2n+n$$과 일치한다.
 
 ### 예제 3: $$T(n)=3T(n/4)+n$$ (p. 17)
 

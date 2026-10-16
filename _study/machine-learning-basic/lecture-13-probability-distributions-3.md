@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-10-16 19:32:41 +0900
 title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
@@ -213,6 +213,23 @@ p_2(x)=\mathcal{N}(x\mid\mu_2,\sigma_2^2)
 $$
 
 이면 $$p(x)$$는 일반적으로 하나의 가우시안이 아니다. 두 봉우리를 가진 bimodal distribution이 될 수도 있다. 이 아이디어가 Gaussian mixture model의 기본이다.
+
+**Supplementary table — 확률변수의 합과 분포의 혼합 비교**
+
+<div markdown="block" role="region" aria-label="Gaussian sum and Gaussian mixture comparison" tabindex="0" style="overflow-x: auto;">
+
+| 비교 기준 | Gaussian random variables의 합 | Gaussian mixture |
+|---|---|---|
+| 무엇을 계산하는가 | 같은 시행에서 얻은 값들을 $$z=x+y$$처럼 더한다. | 먼저 component를 고른 뒤 그 component에서 값을 하나 뽑는다. |
+| 결과 밀도 | joint Gaussian이고 선형결합이면 다시 Gaussian이다. 독립이면 공분산의 cross term이 0이 된다. | $$a p_1(x)+(1-a)p_2(x)$$이며 일반적으로 단일 Gaussian이 아니다. |
+| 평균 | $$\mu_z=\mu_x+\mu_y$$ | $$\mu=a\mu_1+(1-a)\mu_2$$ |
+| 분산 | 독립이면 $$\Sigma_z=\Sigma_x+\Sigma_y$$ | component 내부 분산뿐 아니라 component 평균 사이의 차이도 포함한다. |
+| 모양 | Gaussian 가정이 유지되면 하나의 봉우리와 타원형 등고선 구조를 유지한다. | component가 떨어져 있으면 여러 봉우리가 나타날 수 있다. |
+{: .reference-candidate-table style="min-width: 44rem;" }
+
+</div>
+
+표의 왼쪽은 **값을 더하는 연산**, 오른쪽은 **분포를 선택해 섞는 생성 절차**다. 두 식에 모두 `+`가 보이지만 더하는 대상이 다르다. 혼합분포 분산은 $$\sum_k\pi_k\bigl(\Sigma_k+(\mu_k-\mu)(\mu_k-\mu)^T\bigr)$$이므로 단순한 component 분산의 가중평균만으로 계산하지 않는다.
 
 ## 6. Linear Transformation
 

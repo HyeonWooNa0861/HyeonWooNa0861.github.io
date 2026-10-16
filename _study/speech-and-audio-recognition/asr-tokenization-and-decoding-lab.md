@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:55:22 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Speech and Audio Recognition: Tokenization and Decoding Lab"
 course: "Speech and Audio Recognition"
 topic: "BPE, CTC Decoding, and RNN-T Inference"
@@ -151,6 +151,17 @@ Token ID는 이 `vocab` list 안의 위치일 뿐이다. 다른 tokenizer가 우
 CTC 경로 $$\pi=(\pi_1,\ldots,\pi_T)$$를 문자열로 바꾸는 함수 $$\mathcal B$$는 먼저 **인접한 동일 class를 하나로 병합**하고, 그 다음 blank를 제거한다. 순서를 바꾸면 `a blank a`가 `aa`가 아니라 `a`로 잘못 접힌다.
 
 짧은 예로 `a, a, blank, a, b, b`를 접으면 먼저 반복이 줄어 `a, blank, a, b`가 되고, blank를 지우면 `aab`가 된다. Blank가 같은 문자의 반복을 분리하므로 순서가 중요하다.
+
+**Supplementary table — Collapse order.** 같은 입력 경로를 두 순서로 처리한 상태 비교다. 아래로 읽으면 blank가 남아 있는 동안 두 `a`가 서로 인접하지 않는다는 점이 보인다.
+
+| State | Correct order | Reversed order |
+|---|---|---|
+| Input path | `a, a, blank, a, b, b` | `a, a, blank, a, b, b` |
+| First operation | 반복 병합: `a, blank, a, b` | blank 제거: `a, a, a, b, b` |
+| Second operation | blank 제거: `a, a, b` | 반복 병합: `a, b` |
+| Output | `aab` | `ab` — 원래 구별되던 반복 문자 소실 |
+
+Blank는 최종 문자열에는 남지 않지만, 반복을 구별하는 동안에는 필요한 경계다. 오른쪽 결과는 다른 decoding 기법이 아니라 CTC collapse 순서를 잘못 적용한 결과다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: CTC collapse and path probability</summary>

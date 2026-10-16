@@ -173,9 +173,14 @@ Foundation model for driving의 핵심은 하나의 큰 representation이 여러
 
 Foundation model은 모델 구조만으로 완성되지 않는다. 실제 fleet에서 수집한 data를 바탕으로 실패 사례를 찾고, auto-labeling과 retraining을 반복해야 한다.
 
-```text
-fleet data -> mining -> auto-labeling -> training -> deployment -> fleet data
-```
+<figure>
+  <a href="{{ "/assets/images/study/aix/supplementary/fleet-learning-closed-loop.svg" | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ "/assets/images/study/aix/supplementary/fleet-learning-closed-loop.svg" | relative_url }}" alt="Fleet data, failure mining, auto-labeling, training과 validation, deployment가 다시 fleet data로 이어지는 폐루프." loading="lazy">
+  </a>
+  <figcaption><strong>Supplementary diagram.</strong> Fleet learning의 deployment–data feedback loop를 정리한 보강 도식. 이미지를 누르면 확대해서 볼 수 있다.</figcaption>
+</figure>
+
+1번부터 5번까지 시계 방향으로 읽는다. 실제 차량에서 모은 data 전체를 그대로 재학습에 넣는 것이 아니라, failure mining으로 어려운 사례를 고르고 auto-labeling으로 supervision을 만든다. 새 모델은 training과 validation을 통과한 뒤에만 deployment되며, 그 결과가 다음 cycle의 fleet data가 된다. 이는 과정 관계를 설명하는 작성자 보충 도식이며, 각 단계의 처리량이나 성능 향상 폭을 측정한 원문 결과가 아니다.
 
 | 요소 | 의미 |
 |---|---|

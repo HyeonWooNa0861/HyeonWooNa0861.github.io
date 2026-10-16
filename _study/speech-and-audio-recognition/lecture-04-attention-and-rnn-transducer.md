@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -213,6 +213,8 @@ Target:        나는   학생이다  EOS
 
 추론에는 정답 prefix가 없으므로 실제로 생성한 token을 다시 입력한다. 앞에서 잘못 선택한 token은 이후 조건을 바꾸며 오류가 이어질 수 있다. 이 학습·추론 입력의 차이를 exposure bias라고 부른다. 원래 LAS는 이 차이를 줄이는 방법으로 정답 대신 모델에서 뽑은 이전 token을 일부 사용하는 학습도 실험한다. 학습 예시를 먼저 이해한 뒤 이 보완 기법을 읽으면 무엇을 바꾸려는지 분명해진다.
 
+두 경로에서 다음 입력이 달라지는 지점은 아래 [LAS feedback 비교 그림](#supplementary-prefix-feedback)에서 확인할 수 있다.
+
 ### 3.5 Autoregressive와 attention은 같은 개념인가
 
 두 연산은 담당하는 질문이 다르다. **Autoregressive 조건은 “어떤 출력을 이미 만들었는가”, cross-attention은 “그 prefix에서 다음 출력을 만들 때 원문의 어디를 참고할 것인가”**를 처리한다. Decoder는 이전 출력으로 상태를 갱신하고 그 상태에 맞춰 원문 state의 attention weight를 다시 계산한다.
@@ -309,6 +311,15 @@ LAS는 음성을 바로 문자열로 만드는 attention 기반 encoder–decode
 3. **Speller:** 이전 문자와 decoder state, context를 사용해 다음 문자 분포를 만든다.
 
 Listener가 음성을 한 번 표현하고, Speller는 출력을 하나씩 만든다. Attend는 매 출력 단계에 다시 계산된다. EOS는 출력 종료를 나타내며 CTC/RNN-T의 blank와 역할이 다르다.
+
+원본의 Speller가 사용하는 출력 이력을 학습과 추론으로 나누면 다음과 같다. Encoder와 attention 내부는 생략하고, 다음 token을 만드는 조건만 표시했다.
+
+<figure id="supplementary-prefix-feedback">
+  <a href="{{ '/assets/images/study/speech-and-audio-recognition/autoregressive-prefix-feedback.svg' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/images/study/speech-and-audio-recognition/autoregressive-prefix-feedback.svg' | relative_url }}" alt="Teacher forcing은 첫 예측과 무관하게 정답 A를 두 번째 단계에 입력하고, 추론은 선택한 B를 다음 단계의 prefix에 넣는 두 경로" loading="lazy"></a>
+  <figcaption>Supplementary diagram — Teacher-forcing and inference feedback. A and B are illustrative tokens, not lecture measurements.</figcaption>
+</figure>
+
+위 경로는 정답 첫 token이 A인데 첫 분포에서 B를 고른 경우를 가정한다. 파란 연결선은 다음 단계로 실제 전달되는 prefix이고, 점선은 학습 손실의 정답 비교만 표시한다. Teacher forcing에서는 B를 골랐더라도 다음 조건이 정답 A다. 추론에서는 B가 다음 조건으로 들어가므로 두 번째 분포 자체가 달라질 수 있다. 양쪽 모두 같은 입력 $$X$$를 참고하며, 그림의 단계 번호는 음향 frame이 아니라 **출력 token 순서**다.
 
 ### 4.2 Pyramidal BLSTM이 길이를 줄이는 과정
 

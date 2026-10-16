@@ -156,6 +156,15 @@ $$
 | Closed-form | 해석적으로 명확하고 반복 학습이 필요 없다. | 큰 행렬 계산이 부담스럽다. |
 | Gradient descent | 대규모 모델과 딥러닝에 자연스럽게 확장된다. | learning rate와 반복 횟수 설정이 필요하다. |
 
+<figure>
+  <a href="{{ "/assets/images/study/aix/supplementary/gradient-descent-feedback-loop.svg" | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ "/assets/images/study/aix/supplementary/gradient-descent-feedback-loop.svg" | relative_url }}" alt="현재 parameter로 prediction을 만들고 target과 비교해 loss와 gradient를 계산한 뒤 parameter를 갱신하여 반복하는 gradient descent feedback loop." loading="lazy">
+  </a>
+  <figcaption><strong>Supplementary diagram.</strong> Gradient descent의 prediction–loss–update 반복 관계를 정리한 보강 도식. 이미지를 누르면 확대해서 볼 수 있다.</figcaption>
+</figure>
+
+도식은 왼쪽에서 오른쪽으로 한 번의 학습 step을 읽고, 아래의 점선 화살표를 따라 갱신된 parameter가 다음 step의 출발점으로 돌아간다고 읽는다. Loss는 예측 $$\hat y$$와 target $$y$$를 비교한 scalar이고, gradient는 parameter 공간에서 loss가 증가하는 방향을 가리킨다. 따라서 $$-\eta\nabla L$$로 이동하며, 종료 조건을 만족할 때까지 같은 계산을 반복한다. 이는 반복 구조를 설명하는 작성자 보충이며 특정 dataset의 수렴 결과를 뜻하지 않는다.
+
 딥러닝에서 말하는 training은 대부분 gradient 기반 최적화로 이해할 수 있다.
 
 ## 5. Feature Engineering과 표현력

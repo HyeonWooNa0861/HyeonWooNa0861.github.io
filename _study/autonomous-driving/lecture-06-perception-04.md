@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Lecture 6: Perception (4) - Faster R-CNN and Feature Pyramid Networks"
 course: "Autonomous Driving"
 topic: "Region Proposal Networks, Anchor Boxes, and Multiscale Features"
@@ -90,6 +90,16 @@ $$
 - **Neutral:** 그 사이에 있으면서 positive도 아닌 anchor. 해당 예시 규칙에서는 학습 손실 계산에서 제외한다.
 
 여기서 0.7·0.3은 **RPN 학습 label 기준**이고, 5강의 NMS 0.7 또는 AP 매칭 0.5와 역할이 다르다. 같은 box 좌표계에서 면적 양수인 상자끼리 IoU를 계산한다. Positive anchor만 목표 box offset을 갖고 box regression 손실에 참여한다. Negative anchor에 임의의 GT transform을 강제로 학습시키면 안 된다. 원 Faster R-CNN 논문에서도 regression loss는 positive anchor에서만 활성화된다.
+
+**Supplementary table — Which anchors train which head?** 위 label 규칙으로 분류한 뒤 minibatch에 선택된 anchor가 어느 손실에 참여하는지 대응시킨 표다. Head가 값을 출력하는 것과 그 값에 학습 손실을 부여하는 것은 다르다.
+
+| Anchor state | Objectness target | Box-regression target |
+|---|---|---|
+| Positive | 물체 1로 학습 | 매칭된 GT의 상대 offset으로 학습 |
+| Negative | 배경 0으로 학습 | 제외; 배경에는 맞출 객체 box가 없음 |
+| Neutral | 제외 | 제외 |
+
+Negative도 objectness를 낮추는 데 필요한 학습 예다. 반면 neutral은 애매한 위치를 강제로 배경이나 물체로 학습시키지 않도록 두 손실에서 빠진다. 이 표는 RPN의 감독 신호이며, 추론 단계에서 GT label을 계산한다는 뜻은 아니다.
 
 ### 2.3 추론에서 proposal을 고르는 순서
 

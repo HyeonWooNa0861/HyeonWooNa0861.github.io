@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-10-16 19:32:41 +0900
 title: "Smart Pointers and Memory Management"
 course: "C++"
 topic: "Smart Pointer, RAII, Reference Counting"
@@ -65,6 +65,13 @@ int main() {
 Reference counting에는 비용과 구조적 한계가 있다. `shared_ptr`를 복사하거나 해제할 때마다 카운트를 증가·감소해야 하며, 멀티스레드 환경에서는 원자적 연산이 필요해 성능 오버헤드가 발생한다.
 
 순환 참조에서는 소유자가 남아 있어 객체가 파괴되지 않는다. `A→B`와 `B→A`가 모두 `shared_ptr`이고 외부 변수 `a`, `b`도 각각 `A`, `B`를 소유하면, 연결 직후 소유자 수는 `A=2(a, B→A)`, `B=2(b, A→B)`이다. 외부의 `a`, `b`가 사라진 뒤에도 내부 소유권이 남아 `A=1`, `B=1`이다. 반대로 `B→A`를 `weak_ptr<A>`로 바꾸면 `A=1`, `B=2`에서 시작해 `b` 해제 후 `B=1`, `a` 해제 후 `A=0`이 된다. 이때 `A`의 소멸자가 `A→B`를 해제하므로 `B=0`이 된다. 이는 두 외부 변수 이외에 다른 소유자가 없을 때의 흐름이다.
+
+<figure>
+  <a href="{{ "/assets/images/assignment/cpp/supplementary-diagrams/smart-pointer-cycle-break.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/supplementary-diagrams/smart-pointer-cycle-break.svg" | relative_url }}" alt="shared pointer 양방향 소유에서는 count가 1씩 남지만 한 방향을 weak pointer로 바꾸면 A와 B가 차례로 파괴되는 상태 변화" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> 실선은 strong ownership, 점선은 use count를 늘리지 않는 weak observation이다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+왼쪽은 외부 변수 `a`, `b`가 사라진 뒤에도 `A→B`, `B→A`가 서로를 마지막 strong owner로 붙잡는 상태다. 오른쪽은 `B⇢A`를 `weak_ptr`로 바꾼 상태다. `a`가 사라지면 `A`가 파괴되고, 그 소멸 과정에서 `A→B` strong ownership도 사라져 `B`의 count가 0이 된다. 실제 프로그램에 다른 `shared_ptr`가 있으면 count와 파괴 순서는 달라지므로, 그림은 본문에 둔 두 외부 소유자 조건에 한정된다.
 
 원문 PDF 3쪽의 "control block이 별도 메모리 공간에 존재한다"는 설명은 모든 생성 방식에 적용되지 않는다. `std::make_shared`는 객체와 control block을 한 번에 할당할 수 있다(<a href="https://learn.microsoft.com/en-us/cpp/standard-library/memory-functions?view=msvc-170#make_shared" target="_blank" rel="noopener">Microsoft Learn: make_shared</a>). 따라서 모든 포인터를 무조건 `shared_ptr`로 바꾸기보다, 소유권 구조와 카운트 관리 비용에 맞게 `unique_ptr`, `shared_ptr`, `weak_ptr`를 구분해야 한다.
 

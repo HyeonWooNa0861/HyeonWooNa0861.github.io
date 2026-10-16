@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-10-16 19:32:41 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -436,6 +436,13 @@ Nested cross validation의 핵심은 model selection을 위한 validation 절차
 3. Inner validation 성능으로 모델 종류나 hyperparameter를 선택한다.
 4. 선택된 모델을 outer training data로 다시 학습한다.
 5. Outer test data에서 최종 성능을 평가한다.
+
+<figure>
+  <a href="{{ "/assets/images/study/machine-learning-basic/supplementary-diagrams/nested-cross-validation-flow.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/supplementary-diagrams/nested-cross-validation-flow.svg" | relative_url }}" alt="Outer train 안에서 inner cross validation으로 모델을 선택하고 outer test는 마지막 평가에만 쓰는 nested cross validation 흐름" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> 파란 경로는 선택과 재학습에 사용하는 outer train 흐름이고, 주황 점선 경로는 끝까지 잠가 두는 outer test 흐름이다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+왼쪽에서 오른쪽으로 읽는다. Inner CV가 반환하는 것은 test score가 아니라 **선택된 모델 종류와 hyperparameter**다. 그 설정으로 outer train 전체를 다시 학습한 뒤에만 outer test를 한 번 평가한다. 그림에서 outer test에서 inner CV로 되돌아가는 화살표가 없는 것이 leakage 방지 조건이다. 이 절차는 outer fold마다 반복할 수 있으며, 최종 성능 추정은 각 outer test score를 모아 요약한다.
 
 이 구조를 쓰면 test data를 보고 모델을 고르는 test leakage를 줄일 수 있다. 특히 모델 후보와 hyperparameter 후보가 많을수록 validation set에 우연히 잘 맞는 선택이 생기기 쉬우므로, 최종 test set을 엄격하게 분리하는 것이 중요하다.
 

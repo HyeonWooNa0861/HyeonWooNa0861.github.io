@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -463,6 +463,15 @@ $$
 즉 plus-phase 기준의 변화량은 $$\Delta\delta=-\omega\tau=-2\pi f\tau$$ radians다. Minus-phase form에서는 같은 지연이 $$\phi\mapsto\phi+\omega\tau$$로 나타난다. **기호 앞의 부호가 다를 뿐, 두 표현은 같은 지연을 뜻한다.**
 
 구체적인 수치와 Fourier-transform 적분 유도는 아래에 두었다. 핵심 출력은 지연 뒤에도 magnitude는 같고 phase만 frequency에 비례해 변한다는 것이다.
+
+**Supplementary table — One delay, different phase changes.** Plus-phase convention에서 0.25 ms 지연을 두 harmonic에 적용한 설명용 계산이다. Phase는 아래에 적힌 unwrapped 변화량으로 비교한다.
+
+| Frequency | 같은 0.25 ms 지연의 phase 변화 | 모든 성분에 같은 $$-\pi/2$$를 주었을 때의 지연 |
+|---|---|---|
+| 1000 Hz | $$-\pi/2$$ rad | 0.25 ms |
+| 2000 Hz | $$-\pi$$ rad | 0.125 ms |
+
+가운데 열은 두 성분을 같은 시간만큼 이동한다. 오른쪽 열은 angle만 같게 바꿨기 때문에 성분마다 이동 시간이 달라진다. 따라서 여러 성분을 합친 waveform의 모양도 달라질 수 있다. Phase를 modulo $$2\pi$$로만 관찰하면 주기 정수배의 지연은 구분되지 않는다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Time Delay as Frequency-Dependent Phase</summary>

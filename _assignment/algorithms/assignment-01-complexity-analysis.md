@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-15 00:00:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-16 19:32:34 +0900
 title: "Algorithms Assignment 1: Complexity Analysis and Recurrences"
 course: "Algorithms"
 topic: "Asymptotic Analysis and Recurrences"
@@ -296,6 +296,21 @@ def fn(n):
     else:
         return 3 * fn(n / 3) + n
 ```
+
+<details markdown="block">
+<summary markdown="span">Answer map: intended recurrence, literal runtime, and return value</summary>
+
+**Supplementary table.** 같은 `3`과 `n`이 보여도 반환값 식과 실행시간 식은 세는 대상이 다르다. 다음 표는 제공된 해답의 의도와 문제지의 literal code를 한 위치에서 구분한다. 반환값 행은 문제지처럼 $$F(1)=1$$을 가정한다.
+
+| 해석 | 크기 $$n/3$$ 재귀 호출 수 | 현재 호출의 실행 작업 | 점화식 | $$n=3^k$$ 결과 |
+|---|---:|---|---|---|
+| Intended algorithm의 시간 | 3 | 선형 작업 $$n$$ | $$T(n)=3T(n/3)+n$$ | 시간 $$\Theta(n\log n)$$ |
+| Literal code의 시간 | 1 | 조건·나눗셈·곱셈·덧셈의 상수 개 | $$T(n)=T(n/3)+\Theta(1)$$ | 시간 $$\Theta(\log n)$$ |
+| Literal code의 반환값 | 실행시간 대상 아님 | 재귀 결과에 3을 곱하고 $$n$$을 더함 | $$F(n)=3F(n/3)+n$$ | 값 $$F(n)=n(1+\log_3n)$$ |
+
+표의 첫 열을 먼저 고른 뒤 아래 풀이를 읽어야 한다. `3 * fn(...)`은 함수를 한 번 실행해 얻은 **값**을 세 배로 만들 뿐, 호출을 세 번 생성하지 않는다. 반대로 intended algorithm은 실제로 세 하위 호출을 수행한다고 가정한다.
+
+</details>
 
 ### 3(a). Build the Runtime Recurrence
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-16 19:32:34 +0900
 title: "LS06 Linked Lists"
 course: "Data Structures"
 topic: "Linked Lists"
@@ -133,6 +133,13 @@ prev.next = new Node<>(item, prev.next);
 1. 새 노드의 `next`는 원래 `prev.next`였던 노드를 가리킨다.
 2. `prev.next`는 새 노드를 가리킨다.
 3. 결과적으로 `prev -> newNode -> oldNext`가 된다.
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/images/study/data-structures/supplementary/singly-linked-list-insertion.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/data-structures/supplementary/singly-linked-list-insertion.svg" | relative_url }}" alt="단일 연결 리스트 지정 위치 삽입에서 newNode.next를 기존 다음 노드로 먼저 연결하고 prev.next를 새 노드로 바꾸는 두 단계" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> 지정 위치 삽입의 두 포인터 대입 순서를 보충한다. 원본 p. 25의 맨 앞 삽입 그림을 대체하지 않으며, 중간 삽입에서 나머지 리스트를 잃지 않는 연결 순서를 보여 준다.</figcaption>
+</figure>
+
+점선은 첫 대입 동안 유지되는 기존 `prev.next`다. 먼저 `newNode.next`가 `oldNext`를 기억한 뒤에만 `prev.next`를 새 노드로 바꾼다. `prev.next`를 먼저 덮어쓰면서 기존 다음 노드를 따로 저장하지 않으면 이후 노드들로 가는 참조를 잃을 수 있다. 앞 노드를 찾는 탐색은 여전히 $$O(n)$$이고, 그림의 두 연결 변경만 $$O(1)$$이다.
 
 ## 6. 삭제 연산
 

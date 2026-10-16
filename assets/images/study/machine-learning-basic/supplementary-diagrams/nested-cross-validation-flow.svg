@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Nested cross validation data flow</title>
+  <desc id="desc">전체 데이터에서 outer train과 outer test를 나눈 뒤, outer train 안의 inner cross validation으로 설정을 고르고, outer train 전체로 다시 학습한 뒤 outer test는 마지막 한 번만 평가하는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker>
+    <marker id="testArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/></marker>
+    <style>
+      .box { fill:#f8fafc; stroke:#2563eb; stroke-width:3; rx:18; }
+      .hold { fill:#eff6ff; stroke:#1d4ed8; stroke-width:3; rx:18; }
+      .test { fill:#fff7ed; stroke:#ea580c; stroke-width:3; rx:18; }
+      .label { font:700 25px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#0f172a; text-anchor:middle; }
+      .small { font:19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#334155; text-anchor:middle; }
+      .arrow { stroke:#2563eb; stroke-width:4; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#ea580c; stroke-width:3; stroke-dasharray:9 7; fill:none; marker-end:url(#testArrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="500" fill="#ffffff"/>
+  <rect class="box" x="35" y="190" width="175" height="105"/>
+  <text class="label" x="122" y="235">Labeled data</text><text class="small" x="122" y="270">전체 표본</text>
+  <path class="arrow" d="M210 220 L300 160"/><path class="dash" d="M210 265 L300 340"/>
+  <rect class="hold" x="300" y="90" width="190" height="105"/>
+  <text class="label" x="395" y="135">Outer train</text><text class="small" x="395" y="170">선택·학습에 사용</text>
+  <rect class="test" x="300" y="305" width="190" height="105"/>
+  <text class="label" x="395" y="350">Outer test</text><text class="small" x="395" y="385">끝까지 잠금</text>
+  <path class="arrow" d="M490 142 H575"/>
+  <rect class="box" x="575" y="70" width="235" height="145"/>
+  <text class="label" x="692" y="115">Inner CV</text>
+  <text class="small" x="692" y="150">inner train ↔ validation</text>
+  <text class="small" x="692" y="180">후보·hyperparameter 선택</text>
+  <path class="arrow" d="M810 142 H890"/>
+  <rect class="hold" x="890" y="90" width="270" height="105"/>
+  <text class="label" x="1025" y="132">Retrain selected model</text><text class="small" x="1025" y="168">outer train 전체</text>
+  <path class="arrow" d="M1025 195 V305"/>
+  <path class="dash" d="M490 357 H890"/>
+  <rect class="test" x="890" y="305" width="270" height="105"/>
+  <text class="label" x="1025" y="347">Final evaluation</text><text class="small" x="1025" y="382">outer test에서 한 번</text>
+  <text class="small" x="675" y="455">Outer test는 모델·hyperparameter 선택 화살표로 되돌아가지 않는다.</text>
+</svg>

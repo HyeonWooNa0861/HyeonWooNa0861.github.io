@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Lecture 9: Image-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "3D Boxes, Camera Geometry, Mono3D, MonoRCNN, and Pseudo-LiDAR"
@@ -145,6 +145,18 @@ $$
 </figure>
 
 한 pixel은 카메라에서 뻗는 광선 위의 여러 깊이에 대응한다. 2D box로 넓혀도 그 결과는 하나의 3D box가 아니라 frustum이다. 그림의 서로 다른 거리와 크기의 후보가 영상에서 비슷하게 보일 수 있으므로 pixel 좌표만으로 metric depth가 결정되지 않는다. 아래 식에서 depth를 추가로 추정해야 하는 이유다.
+
+**Supplementary table — Projection and back-projection states.** 원본의 광선 관계를 좌표 계산으로 풀어 쓴 예다. $$R=I$$, $$t=(0,0,2)\,\mathrm m$$, $$f_x=f_y=500$$ pixel, $$(c_x,c_y)=(320,240)$$ pixel이며 왜곡은 없다고 가정한다.
+
+| Stage | Example state | What changed |
+|---|---|---|
+| World point | $$(2,2,8)\,\mathrm m$$ | world 기준 3D 위치 |
+| Camera point | $$(2,2,10)\,\mathrm m$$ | $$R,t$$로 기준 좌표계 변경 |
+| Normalized image | $$(0.2,0.2)$$, 무차원 | $$Z_c=10$$으로 나눔; 깊이 scale 제거 |
+| Image pixel | $$(420,340)$$ pixel | 초점거리 배율·principal point 적용 |
+| Back-projection | $$(0.2Z_c,0.2Z_c,Z_c)$$ | pixel만으로는 $$Z_c>0$$인 광선만 결정 |
+
+첫 두 행의 변환은 calibration을 알면 역으로 계산할 수 있다. 깊이 정보가 사라지는 곳은 세 번째 행의 나눗셈이다. 마지막 행에 $$Z_c=10\,\mathrm m$$를 추가로 알 때 camera 점 $$(2,2,10)\,\mathrm m$$와 world 점 $$(2,2,8)\,\mathrm m$$를 복원할 수 있다. Pixel만 주어지면 같은 광선의 $$(4,4,20)\,\mathrm m$$도 후보로 남는다.
 
 17–18쪽의 토끼 그림은 크기가 큰 먼 물체와 크기가 작은 가까운 물체가 같은 영상 크기를 만들 수 있음을 보여 준다. 위 식에서 camera 좌표를 양수 $$\lambda$$배 해도
 

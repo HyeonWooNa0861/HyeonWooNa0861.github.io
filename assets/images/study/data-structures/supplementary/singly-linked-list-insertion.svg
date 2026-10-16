@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="title desc">
+  <title id="title">Safe pointer update order for singly linked list insertion</title>
+  <desc id="desc">Before insertion, prev points to oldNext. First newNode.next is set to oldNext. Second prev.next is set to newNode. The result is prev, newNode, oldNext without losing the remainder of the list.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#3578c8"/>
+    </marker>
+    <style>
+      .title{font:700 25px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#16324f}
+      .label{font:600 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#16324f}
+      .small{font:500 16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#526b82}
+      .node{fill:#eef6ff;stroke:#3578c8;stroke-width:2}
+      .new{fill:#e6f4ea;stroke:#2f855a;stroke-width:2}
+      .edge{stroke:#3578c8;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .old{stroke:#9aaaba;stroke-width:2;stroke-dasharray:7 5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="960" height="440" rx="18" fill="#fbfdff"/>
+  <text x="480" y="42" text-anchor="middle" class="title">Insert between prev and oldNext</text>
+
+  <text x="52" y="95" class="label">Before</text>
+  <rect x="250" y="65" width="150" height="60" rx="10" class="node"/>
+  <rect x="610" y="65" width="150" height="60" rx="10" class="node"/>
+  <text x="325" y="102" text-anchor="middle" class="label">prev</text>
+  <text x="685" y="102" text-anchor="middle" class="label">oldNext</text>
+  <line x1="400" y1="95" x2="610" y2="95" class="old"/>
+
+  <text x="52" y="214" class="label">1. Save link</text>
+  <rect x="250" y="175" width="150" height="60" rx="10" class="node"/>
+  <rect x="430" y="175" width="150" height="60" rx="10" class="new"/>
+  <rect x="610" y="175" width="150" height="60" rx="10" class="node"/>
+  <text x="325" y="212" text-anchor="middle" class="label">prev</text>
+  <text x="505" y="212" text-anchor="middle" class="label">newNode</text>
+  <text x="685" y="212" text-anchor="middle" class="label">oldNext</text>
+  <path d="M400 190 C440 148 570 148 610 190" class="old"/>
+  <rect x="394" y="130" width="222" height="28" rx="6" fill="#fbfdff"/>
+  <text x="505" y="150" text-anchor="middle" class="small">prev.next remains oldNext</text>
+  <line x1="580" y1="205" x2="610" y2="205" class="edge"/>
+  <text x="505" y="264" text-anchor="middle" class="small">newNode.next = oldNext</text>
+
+  <text x="52" y="344" class="label">2. Splice</text>
+  <rect x="250" y="305" width="150" height="60" rx="10" class="node"/>
+  <rect x="430" y="305" width="150" height="60" rx="10" class="new"/>
+  <rect x="610" y="305" width="150" height="60" rx="10" class="node"/>
+  <text x="325" y="342" text-anchor="middle" class="label">prev</text>
+  <text x="505" y="342" text-anchor="middle" class="label">newNode</text>
+  <text x="685" y="342" text-anchor="middle" class="label">oldNext</text>
+  <line x1="400" y1="335" x2="430" y2="335" class="edge"/>
+  <line x1="580" y1="335" x2="610" y2="335" class="edge"/>
+  <text x="505" y="405" text-anchor="middle" class="small">prev.next = newNode</text>
+</svg>

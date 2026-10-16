@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-10-16 19:32:41 +0900
 title: "Standard I/O and File Descriptors"
 course: "C++"
 topic: "stdin, stdout, stderr, File Descriptor"
@@ -44,6 +44,13 @@ program은 입력이 keyboard·file·pipe 중 무엇인지 직접 분기하지 �
 C++의 `std::cin`, `std::cout`, `std::cerr`는 iostream 객체이다. 이 객체들은 내부의 stream buffer와 C/C++ 런타임을 거쳐 최종적으로 운영체제의 입출력 기능에 도달한다.
 
 `std::cout`에 출력하는 코드는 표면적으로는 C++ 스트림에 데이터를 보내는 것처럼 보인다. 하지만 최종적으로는 파일 디스크립터 1번 또는 그에 해당하는 운영체제 핸들로 바이트가 전달된다. `std::cerr`는 파일 디스크립터 2번과 연결되므로 `stdout`과 독립적으로 리다이렉션할 수 있다.
+
+<figure>
+  <a href="{{ "/assets/images/assignment/cpp/supplementary-diagrams/standard-stream-routing.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/supplementary-diagrams/standard-stream-routing.svg" | relative_url }}" alt="Shell이 FD 0 1 2의 연결 대상을 바꾸고 C++ 프로그램은 같은 cin cout cerr 코드를 유지하는 표준 스트림 라우팅" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> Shell이 실행 전에 FD 연결을 정하고, process의 `cin`, `cout`, `cerr`는 번호가 가리키는 source와 sink를 사용한다. 이미지를 누르면 확대된다.</figcaption>
+</figure>
+
+입력은 왼쪽에서 `source → FD 0 → std::cin → process` 순서로 읽는다. 출력은 `process → std::cout/err → FD 1/2 → sink` 순서다. `>`는 FD 1의 sink만 바꾸고 `2>`는 FD 2의 sink만 바꾼다. `2>&1`은 파일 이름을 복사하는 명령이 아니라, **그 시점에 FD 1이 가리키는 대상**을 FD 2에도 연결하므로 명령 순서가 결과에 영향을 준다.
 
 ## 4. stdout과 stderr 리다이렉션
 

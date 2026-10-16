@@ -197,6 +197,15 @@ target: A,     cute, teddy, bear, is, reading
 
 한 문장은 여러 위치의 training target을 동시에 만든다. 학습 시에는 모든 위치의 다음 token을 병렬로 예측할 수 있지만, inference 시에는 생성된 token을 다시 입력에 붙여 한 step씩 진행한다.
 
+<figure>
+  <a href="{{ "/assets/images/study/aix/supplementary/next-token-training-inference.svg" | relative_url }}" target="_blank" rel="noopener">
+    <img src="{{ "/assets/images/study/aix/supplementary/next-token-training-inference.svg" | relative_url }}" alt="Next-token 모델의 training과 inference 실행 순서 비교. Training은 고정 sequence의 여러 위치를 병렬 예측하고, inference는 token 하나를 선택해 context에 붙인 뒤 반복한다." loading="lazy">
+  </a>
+  <figcaption><strong>Supplementary diagram.</strong> 같은 next-token objective가 training에서는 병렬 loss 계산, inference에서는 순차 생성으로 실행되는 차이를 정리한 보강 도식. 이미지를 누르면 확대해서 볼 수 있다.</figcaption>
+</figure>
+
+위 행은 정답 sequence가 주어진 training schedule이다. Causal mask로 미래 token을 가린 상태에서 각 위치의 shifted target loss를 함께 계산한다. 아래 행은 inference schedule이다. 현재 context에서 분포 하나를 만들고, decoding 규칙으로 token을 고른 뒤 context에 붙여 다음 step으로 돌아간다. 따라서 “Transformer 계산이 병렬화된다”는 말은 학습 위치를 동시에 계산할 수 있다는 뜻이지, 생성된 미래 token을 알기 전에 여러 inference step을 확정할 수 있다는 뜻은 아니다.
+
 ## 7. Decoding 방법
 
 모델은 각 step마다 vocabulary 전체에 대한 probability distribution을 만든다. Decoding은 이 분포에서 실제 다음 token을 고르는 방법이다.

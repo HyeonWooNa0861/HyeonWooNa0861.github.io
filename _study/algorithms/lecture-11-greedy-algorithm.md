@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:38:33 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-16 19:32:34 +0900
 title: "Lecture 11: Greedy Algorithms"
 course: "Algorithms"
 topic: "Greedy Choice, Change Making, and Activity Selection"
@@ -326,6 +326,13 @@ optimal: 400 + 400 = 800               2개
 | 6 | `F=(5,7)` | 6 | `5 < 6`, 제외 | 6 |
 
 결과는 `B, C, D, E`, 총 4개다. `D`는 시작과 종료가 같은 zero-duration 회의이며, 이전 회의가 4에 끝나고 다음 회의가 4에 시작하는 사이에 선택할 수 있다.
+
+<figure class="study-source-figure">
+  <a href="{{ "/assets/images/study/algorithms/supplementary/activity-selection-timeline.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/algorithms/supplementary/activity-selection-timeline.svg" | relative_url }}" alt="시간축 위에 여섯 회의를 배치하고 종료 시각 순회에서 B, C, D, E가 선택되고 A와 F가 제외되는 과정" loading="lazy"></a>
+  <figcaption><strong>Supplementary diagram.</strong> 바로 위 작성자 구성 입력의 scan을 시간축에 놓은 도식이다. 강의 원본 결과가 아니라 `(finish, start)` 정렬과 호환성 경계를 보충한다.</figcaption>
+</figure>
+
+도식은 위에서 아래로 정렬된 처리 순서를 나타낸다. 파란 막대의 시작점이 직전 파란 막대의 끝점 이상이면 선택한다. 회색 `A`는 `B` 선택 뒤 시작점 0이 경계 2보다 작고, `F`는 `E` 선택 뒤 시작점 5가 경계 6보다 작아 제외된다. 점으로 표시한 `D=[4,4]`는 길이가 0이지만 `C`의 종료와 `E`의 시작이 모두 4이므로 두 회의 사이에 들어간다.
 
 시각 비교와 대입을 $$O(1)$$로 세면 정렬은 $$O(n\log n)$$, 한 번의 scan은 $$O(n)$$이므로 전체 시간은 $$O(n\log n)$$이다. 이미 같은 순서로 정렬된 입력이면 scan만 수행해 $$O(n)$$이다. 선택 목록을 제외한 scan의 추가 공간은 $$O(1)$$이며, 실제 정렬의 추가 공간은 사용한 정렬 구현에 따른다.
 

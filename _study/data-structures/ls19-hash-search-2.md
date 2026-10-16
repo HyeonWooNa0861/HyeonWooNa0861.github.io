@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:13:13 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-16 19:32:34 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
@@ -283,6 +283,17 @@ h_i(k) = (h(k)+i h_2(k))\bmod m
 $$
 
 같은 $$h(k)$$를 가진 key라도 $$h_2(k)$$가 다르면 probe sequence가 달라진다. 그래서 secondary clustering을 줄이는 데 효과적이다.
+
+**Supplementary table.** 다음 표는 같은 시작 슬롯에서 offset 규칙만 바꿨을 때 경로가 어떻게 달라지는지 보여 주는 작성자 계산 예다. 테이블 크기 $$m=7$$, 시작값 $$h(k)=1$$이며 double hashing은 $$h_2(k)=3$$으로 둔다. 실제 강의 실험 결과가 아니라 위 합동식의 작은 검산이다.
+
+| 방식 | 처음 7개 probe 슬롯 | 읽을 점 |
+|---|---|---|
+| Linear, $$i$$ | `1, 2, 3, 4, 5, 6, 0` | 모든 슬롯을 방문하지만 인접 점유 구간을 키운다. |
+| Constant step, $$2i$$ | `1, 3, 5, 0, 2, 4, 6` | $$\gcd(2,7)=1$$이라 7개 슬롯을 모두 방문한다. |
+| Quadratic, $$i^2$$ | `1, 2, 5, 3, 3, 5, 2` | 제곱 residue가 반복되어 모든 슬롯을 방문하지 않는다. |
+| Double hash, $$3i$$ | `1, 4, 0, 3, 6, 2, 5` | $$\gcd(3,7)=1$$이라 모두 방문하고 key별 간격도 바꿀 수 있다. |
+
+각 항은 $$(1+\text{offset})\bmod7$$로 계산한다. 예를 들어 quadratic의 네 번째와 다섯 번째 항은 각각 $$(1+3^2)\bmod7=3$$, $$(1+4^2)\bmod7=3$$이라 같은 슬롯을 다시 본다. 따라서 `quadratic`이라는 이름만으로 전체 순회를 보장할 수 없고, 계수와 $$m$$을 함께 확인해야 한다.
 
 ## 12. Primary vs Secondary Clustering
 

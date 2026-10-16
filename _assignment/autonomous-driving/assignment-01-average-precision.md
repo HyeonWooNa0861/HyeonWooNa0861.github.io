@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 16:59:26 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Autonomous Driving Computing Assignment 1: Average Precision"
 course: "Autonomous Driving"
 topic: "Object Detection Metrics"
@@ -188,6 +188,18 @@ $$
 ### D2 confidence를 0.10으로 낮추면
 
 Box와 TP/FP 개수는 그대로지만 순서는 D5 → D3 → D1 → D4 → D2로 바뀐다. 첫 prediction이 TP가 되고, 두 번째 TP도 더 앞에 나타난다.
+
+**Supplementary table — Ranking after the confidence change.** 원문의 box와 GT 4개를 그대로 두고 D2 점수만 바꾼 경우다. 각 행은 해당 rank까지 누적한 상태이며, recall이 증가한 행만 AP 면적을 더한다.
+
+| Rank | Prediction | Cumulative TP / FP | Precision | Recall |
+|---|---|---|---|---|
+| 1 | D5: TP | 1 / 0 | 1 | 0.25 |
+| 2 | D3: FP | 1 / 1 | 0.5 | 0.25 |
+| 3 | D1: TP | 2 / 1 | $$2/3$$ | 0.50 |
+| 4 | D4: FP | 2 / 2 | 0.5 | 0.50 |
+| 5 | D2: FP | 2 / 3 | 0.4 | 0.50 |
+
+첫 번째·세 번째 행의 recall 증가폭은 각각 0.25다. 마지막 precision과 recall은 이전 순서와 같지만, 두 recall 증가 시점의 precision이 높아져 이 과제의 AP가 증가한다.
 
 $$
 AP'_{ped}=\frac14\times1+\frac14\times\frac23=\frac{5}{12}\approx0.4167

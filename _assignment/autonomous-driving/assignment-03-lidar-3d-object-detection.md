@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:01:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-16 19:37:33 +0900
 title: "Autonomous Driving Computing Assignment 3: LiDAR 3D Object Detection"
 course: "Autonomous Driving"
 topic: "VoxelNet and Point Cloud Detection"
@@ -119,6 +119,16 @@ $$
 의 7차원이다. 앞의 네 값은 절대 위치와 reflectance, 뒤의 세 값은 voxel centroid에 대한 상대 위치다. Point가 32개보다 적으면 zero padding을 넣고 mask로 실제 point와 구분한다.
 
 VFE는 각 point에 FCN을 적용한 local feature와 voxel 전체의 channel-wise max feature를 이어 붙인다. Max aggregation은 point 순서가 바뀌어도 같은 결과를 만든다. 다만 max 하나만으로 모든 분포 통계를 보존하는 것은 아니다.
+
+**Supplementary table — Local and pooled features in one VFE layer.** 유효 point 두 개와 feature channel 두 개만 둔 설명용 예다. 아래 숫자는 학습된 모델의 출력이 아니다. FCN 결과를 $$h_1=(1,4),h_2=(3,2)$$로 가정하면 channel별 max는 $$g=(3,4)$$다.
+
+| Operation | Point 1 | Point 2 |
+|---|---|---|
+| Point-wise FCN output | $$(1,4)$$ | $$(3,2)$$ |
+| Voxel max broadcast | $$(3,4)$$ | $$(3,4)$$ |
+| Concatenate local and voxel context | $$(1,4,3,4)$$ | $$(3,2,3,4)$$ |
+
+두 번째 행은 point를 하나로 지우는 단계가 아니다. 동일한 voxel 요약을 각 point에 복사한 뒤, 세 번째 행에서 서로 다른 local feature와 함께 전달한다. 이 때문에 다음 VFE 층은 “이 점의 특징”과 “같은 voxel에서 가장 강한 특징”을 함께 사용할 수 있다. 마지막 voxel 집계에서 point 축을 줄이며, 실제 구현에서는 padding point가 max나 평균 계산에 영향을 주지 않도록 mask를 적용한다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Why max aggregation is permutation invariant</summary>
