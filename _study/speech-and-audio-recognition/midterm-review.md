@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 23:07:10 +0900
+last_modified_at: 2026-10-18 23:46:41 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -407,9 +407,11 @@ $$
 
 ### 3.5 Greedy와 beam search의 차이
 
-Greedy decoding은 각 frame에서 가장 큰 token을 선택한 경로 하나를 collapse한다. 그러나 가장 확률이 큰 경로가 가장 확률이 큰 문자열일 필요는 없다. 한 문자열은 여러 경로의 확률을 합치기 때문이다.
+**Greedy는 현재 후보 하나에서 최선의 token을 고르고, beam search는 여러 후보를 누적 점수로 비교한다.** 둘 다 학습 이후의 디코딩 방식이다. 작성자 두-token 예제에서 첫 선택 `A` 0.6, `B` 0.4에 대해 다음 최선의 확률이 각각 0.51과 0.9라면, greedy의 `AC`는 **0.306**, 두 후보를 유지한 beam의 `BC`는 **0.36**이다. 이 예제는 두 token 뒤 EOS 확률 1, 외부 LM·길이 보정 없음으로 고정한다. [전체 조건부 분포와 선택 과정]({{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#autoregressive-greedy-beam" | relative_url }})에서 비교할 수 있다.
 
-Prefix beam search는 문자열 prefix마다 blank로 끝난 확률과 non-blank로 끝난 확률을 분리해 누적한다. Beam 폭이 유한하면 낮은 후보를 버리므로 근사 탐색이다. 외부 language model을 결합하면 음향 점수와 문장 점수의 scale, length bonus를 함께 확인해야 한다.
+**CTC에서는 가장 좋은 경로 하나와 경로 확률의 합이 가장 큰 문자열도 다르다.** 두 frame 모두 `(blank, a, b) = (0.5, 0.4, 0.1)`이면 greedy는 `blank,blank` 0.25를 골라 빈 문자열을 낸다. 하지만 `a`의 확률은 `a,a` 0.16, `a,blank` 0.20, `blank,a` 0.20의 합인 **0.56**이다. 한 경로 안에서는 곱하고, 같은 출력으로 접히는 경로끼리는 더한다. 이 합산은 일반적인 후보 유지와 별개의 연산이다.
+
+CTC prefix beam search는 문자열 prefix마다 blank/non-blank 종료 확률을 분리해 합산한 뒤 상위 후보를 남긴다. 유한 beam은 근사이며, prefix beam의 폭 1도 프레임별 greedy와 일반적으로 같지 않다. 외부 LM을 결합하면 음향 점수와 문장 점수의 scale, length bonus를 함께 확인한다. [강의 p.40의 경로 병합 그림과 계산 표]({{ "/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/#speech-03-p40" | relative_url }})는 이 차이를 보여 준다.
 
 ## 4. Tokenization, LAS, RNN-T, and Conformer
 

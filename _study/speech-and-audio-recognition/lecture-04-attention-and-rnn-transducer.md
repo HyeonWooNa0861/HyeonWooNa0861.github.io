@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-18 19:26:18 +0900
+last_modified_at: 2026-10-18 23:46:41 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -340,12 +340,51 @@ $$
 슬라이드 p. 16의 그림은 두 번 줄여 4배 축소를 보여 주지만, 원 논문의 세 pyramidal 층은 8배 축소한다. 프레임 수를 줄이면 반복 계산과 attention이 보는 위치 수가 함께 줄어든다. 다만 너무 강한 축소는 짧은 소리의 구분을 어렵게 할 수 있으므로 속도만 보고 결정하지 않는다. “RNN은 긴 입력을 처리할 수 없다”는 절대적인 제한보다, **길수록 계산과 최적화 부담이 커진다**는 설명이 적절하다.
 
 ### 4.3 Greedy와 beam decoding
+{: #autoregressive-greedy-beam}
 
-Greedy는 현재 prefix에서 가장 큰 확률을 가진 token을 하나 선택하고 EOS까지 반복한다. 그러나 현재 최선이 전체 문장 최선이라는 보장은 없다.
+**디코딩은 모델을 새로 학습시키는 것이 아니라, 이미 계산한 확률로 출력 문장을 선택하는 과정이다.** Greedy는 현재 prefix, 즉 지금까지 선택한 token열에서 다음 확률이 가장 큰 token 하나를 고르고 EOS까지 반복한다. Beam search는 여러 prefix를 유지하며 이후 선택까지 비교한다. 지금 확률이 가장 높은 token이 전체 문장에서도 가장 유리하다는 보장은 없기 때문이다.
 
-**작성자 예시.** 첫 선택에서 `a`가 0.6, `b`가 0.4이고, 이후 가장 좋은 종료 확률이 각각 0.2와 0.9라고 하자. `a`로 시작하는 완성 경로는 $$0.6\times0.2=0.12$$, `b`로 시작하는 경로는 $$0.4\times0.9=0.36$$이다. Greedy는 첫 단계에서 `b` 경로를 잃는다. 여기의 숫자는 두 경로의 비교를 위한 조건부 확률이며 전체 가능한 문장을 열거한 분포가 아니다.
+**Supplementary table.** 작성자 예제에서는 첫 token이 `A` 또는 `B`, 둘째 token이 `C` 또는 `D`이며 그 뒤 EOS가 확률 1로 나온다고 가정한다. 실제 LAS의 가변 길이를 두 token으로 단순화한 예제다. 외부 언어 모델·길이 보정은 사용하지 않고, 각 조건부 분포의 합을 1로 둔다.
+
+| 현재 prefix | 다음 token과 확률 | 누적 확률 |
+|---|---|---|
+| 빈 문자열 | `A`: 0.6, `B`: 0.4 | `A`: 0.6, `B`: 0.4 |
+| `A` | `C`: 0.51, `D`: 0.49 | `AC`: **0.306**, `AD`: 0.294 |
+| `B` | `C`: 0.9, `D`: 0.1 | `BC`: **0.36**, `BD`: 0.04 |
+
+표는 위에서 아래로 읽되, 둘째 token의 분포는 첫 token에 따라 달라진다는 점을 확인한다. `B` 뒤의 0.9를 `A` 뒤의 확률로 재사용할 수 없다. 네 완성 문장 확률의 합은 0.306+0.294+0.36+0.04=1이다.
+
+- **Greedy:** 첫 단계에서 0.6인 `A`를 택하고 `B`를 버린다. 다음에는 0.51인 `C`를 택하므로 최종 결과는 `AC`, 확률은 **0.306**이다.
+- **Beam width 2:** 첫 단계에서 `A`와 `B`를 모두 남긴다. 다음 단계에서 네 후보를 확장한 뒤 누적 확률 상위 `BC` 0.36과 `AC` 0.306을 유지한다. 모두 종료되면 **`BC` 0.36**을 선택한다.
+
+Beam width 2는 각 단계에 남길 후보가 두 개라는 뜻이지, 문장을 두 token으로 제한한다는 뜻이 아니다. 이 예제의 출력 길이 2는 별도로 정한 조건이다.
 
 Beam search는 각 prefix를 확장하고 누적 log probability가 높은 $$K$$개를 남긴다. EOS가 나온 후보와 진행 중 후보의 처리, 길이 보정, 외부 LM 사용 여부도 결과에 영향을 준다. Beam 폭이 유한하면 가지를 버리므로 전역 최대 문장을 정확히 찾는 알고리즘은 아니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Sequence Probability and Beam Scores</summary>
+
+입력 음성 $$X$$를 고정하고 출력 token열을 $$y_1,\ldots,y_U$$로 두면, autoregressive 모델의 문장 확률은 조건부 확률의 연쇄법칙으로 계산한다. 실제 완성 문장의 점수에는 EOS 확률도 포함한다. 모든 확률과 로그 점수는 무차원이다.
+
+$$
+P(y_1,\ldots,y_U,\mathrm{EOS}\mid X)
+=\left[\prod_{u=1}^{U}P(y_u\mid y_{<u},X)\right]
+P(\mathrm{EOS}\mid y_{1:U},X).
+$$
+
+본문의 두-token 예제에서는 마지막 인자가 1이므로 $$P(AC\mid X)=0.6\times0.51=0.306$$이고 $$P(BC\mid X)=0.4\times0.9=0.36$$이다. 첫 token의 확률만 최대화하면 그 선택에 따라 바뀌는 다음 인자를 비교하지 못한다.
+
+양수 확률의 로그는 순서를 보존하므로 곱 대신 로그의 합을 사용해 같은 순위를 계산할 수 있다. Prefix $$y_{1:u-1}$$의 누적 점수를 $$s_{u-1}$$라 하면 새 token을 붙인 점수는
+
+$$
+s_u=s_{u-1}+\log P(y_u\mid y_{<u},X)
+$$
+
+이다. 이는 작은 확률의 연속 곱에서 생기는 underflow를 줄이기 위한 표현 변경이다. 길이 보정이나 외부 LM 점수를 더하면 순수 문장 확률과는 다른 목적 점수가 되므로 설정을 함께 밝혀야 한다.
+
+</details>
+
+**CTC와의 차이는 후보 점수의 의미다.** 여기서는 고정된 token열의 조건부 확률을 곱했으며, CTC의 blank·collapse 연산은 없다. 반면 [CTC prefix beam]({{ "/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/#ctc-greedy-beam" | relative_url }})은 `a,a`, `a,blank`, `blank,a`가 모두 `a`가 되므로 그 경로 확률을 합한다. 여러 후보를 보관한다고 자동으로 이 합산이 되는 것은 아니다.
 
 ### 4.4 기본 LAS가 streaming에 불리한 이유
 

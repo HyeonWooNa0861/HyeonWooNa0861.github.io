@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-10-18 19:26:18 +0900
+last_modified_at: 2026-10-18 23:46:41 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -362,6 +362,9 @@ $$
 </details>
 
 ## 4. CTC decoding: 프레임 경로와 문장 확률은 다르다
+{: #ctc-greedy-beam}
+
+**Greedy와 beam search는 학습된 모델의 확률로 최종 전사를 선택하는 디코딩 방법이다.** Greedy는 후보 하나를 선택하며 진행하고, beam search는 여러 후보를 확장한 뒤 누적 점수가 높은 일부를 남긴다. CTC에서는 여기에 **서로 다른 프레임 경로가 같은 문자열을 만들 수 있다**는 조건이 더해진다. 따라서 후보를 여러 개 남기는 일과 같은 문자열의 경로 확률을 합치는 일을 구분해야 한다.
 
 <figure id="speech-03-p40">
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p40.png" | relative_url }}" alt="세 후보를 유지하며 blank와 a b로 확장하는 CTC prefix beam search" loading="lazy">
@@ -370,20 +373,58 @@ $$
 
 시간이 오른쪽으로 진행하면서 현재 prefix에서 blank, a, b의 가지가 뻗는다. 점선처럼 서로 다른 경로가 같은 출력 prefix로 합쳐지면 확률을 더한 뒤 후보를 정리해야 한다. 그림의 빈 문자열 λ와 프레임 출력 blank ε는 역할이 다르다. Beam width 3은 각 단계에 유지할 후보 수이지 최종 문장이 세 글자라는 뜻이 아니다.
 
-Greedy decoding은 매 프레임 가장 큰 확률의 token 하나씩을 택한 뒤 $$\mathcal B$$를 적용한다. 빠르지만 $$\mathcal B(\arg\max_\pi P(\pi\mid X))$$가 반드시 $$\arg\max_y P_{\mathrm{CTC}}(y\mid X)$$는 아니다(pp. 36–38). 서로 다른 경로 여럿이 같은 문장에 확률을 보탤 수 있기 때문이다.
+### 4.1 가장 좋은 경로 하나와 가장 좋은 문자열
+
+CTC greedy decoding은 매 프레임 가장 큰 확률의 token 하나씩을 택한 뒤, 연속 중복을 합치고 blank를 제거하는 $$\mathcal B$$를 적용한다. 기본 CTC에서 입력 음성 $$X$$가 고정되면 이 선택은 **확률이 가장 큰 프레임 경로 하나**를 정확히 찾는다. 다만 그 경로의 출력이 **확률 합이 가장 큰 문자열**이라는 보장은 없다(pp. 36–38). 같은 문자열을 만드는 다른 경로의 기여를 비교하지 않기 때문이다.
+
+**Supplementary table.** 아래는 슬라이드 그림의 수치를 옮긴 것이 아니라, 경로와 문자열의 차이를 계산하기 위한 작성자 예제다. 두 프레임 모두 blank $$\epsilon$$, `a`, `b`의 확률을 각각 **0.5, 0.4, 0.1**로 둔다. 각 프레임의 합은 1이며, 외부 언어 모델이나 길이 보정은 사용하지 않는다.
+
+| 출력 문자열 | 해당 프레임 경로 | 경로 확률의 합 |
+|---|---|---|
+| 빈 문자열 | $$(\epsilon,\epsilon)$$ | 0.5×0.5 = **0.25** |
+| `a` | $$(a,a),\;(a,\epsilon),\;(\epsilon,a)$$ | 0.4×0.4 + 0.4×0.5 + 0.5×0.4 = **0.56** |
+| `b` | $$(b,b),\;(b,\epsilon),\;(\epsilon,b)$$ | 0.1×0.1 + 0.1×0.5 + 0.5×0.1 = **0.11** |
+| `ab` | $$(a,b)$$ | 0.4×0.1 = **0.04** |
+| `ba` | $$(b,a)$$ | 0.1×0.4 = **0.04** |
+
+Greedy는 두 프레임에서 blank를 선택하므로 빈 문자열을 낸다. 이 경로의 0.25는 개별 경로 중 최대지만, `a`를 만드는 세 경로의 합은 **0.56**이다. 전체 문자열 확률은 0.25+0.56+0.11+0.04+0.04=1로 정규화된다. `a,a`는 연속 중복이 합쳐져 `a`가 되며, 두 글자 `aa`를 만들려면 최소 세 프레임의 `a,blank,a`가 필요하다.
+
+**한 경로를 따라갈 때는 확률을 곱하고, 같은 출력으로 도착하는 서로 다른 경로끼리는 더한다.** 여기서 0.16+0.20+0.20은 평균도, 가장 큰 값의 선택도 아니다. 서로 배타적인 세 경로 중 어느 것으로든 `a`가 나올 수 있다는 확률을 모은 것이다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Greedy CTC path versus most probable transcript</summary>
 
-**작성자 보충 — 정규화된 반례.** 두 프레임 모두 $$(p(\epsilon),p(a),p(b))=(0.5,0.4,0.1)$$이라고 하자. 가장 높은 개별 경로는 $$(\epsilon,\epsilon)$$이고 그 확률은 0.25라서 greedy 결과는 빈 문자열이다. 그러나 `a`를 만드는 경로 $$(a,a),(a,\epsilon),(\epsilon,a)$$의 합은 $$0.16+0.20+0.20=0.56$$이다. 경로 최빈값과 문장 최빈값이 실제로 다르다. 슬라이드 p. 37의 수치는 개념도용 부분 예시여서 완전한 정규화 분포로 읽지 않았다.
+$$p_t(c\mid X)$$는 프레임 $$t$$의 token $$c$$ 확률이고, $$\pi=(\pi_1,\ldots,\pi_T)$$는 길이 $$T$$의 경로다. 모두 무차원 확률이며, 외부 언어 모델이나 경로 제약을 추가하지 않은 기본 CTC의 조건부 분해를 사용한다.
+
+$$
+P(\pi\mid X)=\prod_{t=1}^{T}p_t(\pi_t\mid X),\qquad
+P_{\mathrm{CTC}}(y\mid X)=\sum_{\pi:\mathcal B(\pi)=y}P(\pi\mid X).
+$$
+
+각 인자가 다른 프레임의 token 선택에 의존하지 않으므로, 각 $$p_t$$의 최대값을 따로 고르면 곱도 최대다. 그러나 $$\mathcal B$$는 여러 경로를 하나의 문자열로 보내는 다대일 함수다. 따라서 경로 하나에 대한 최대화와 문자열별 합에 대한 최대화는 서로 바꿀 수 없다. 본문의 0.25와 0.56이 그 반례다. 이 구분은 <a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf#page=3" target="_blank" rel="noopener">CTC 원 논문 §3.2의 best-path decoding</a>에서도 명시한다. 슬라이드 p. 37의 수치는 개념도용 부분 예시여서 완전한 정규화 분포로 읽지 않았다.
+
+구현에서 경로 확률을 로그로 저장하면 경로 확장은 덧셈이 된다. 하지만 **경로 병합은 로그값의 단순 덧셈이 아니다.** 경로들의 로그 확률을 $$\ell_i$$라 하면 합산 결과는 다음과 같다.
+
+$$
+\log\sum_i e^{\ell_i}
+=m+\log\sum_i e^{\ell_i-m},\qquad m=\max_i\ell_i.
+$$
+
+하나 이상 유한한 $$\ell_i$$가 있을 때의 log-sum-exp 항등식이다. 전부 확률 0이면 결과는 $$-\infty$$로 처리한다. 본문의 `a` 점수는 $$\log(0.16+0.20+0.20)=\log0.56$$이지 $$\log0.16+\log0.20+\log0.20$$이 아니다.
 
 </details>
 
-Beam search는 시각마다 후보 전사 prefix를 확장하고, **같은 전사로 접히는 경로의 확률을 합친 다음** 상위 후보만 남긴다(pp. 38–41). 단순 경로 beam이라면 `AAB`와 `ABB`를 별개 경로로 보유하지만, CTC prefix beam은 두 경로가 같은 `AB`에 기여한다는 사실을 반영한다. 같은 prefix 안에서도 마지막 프레임이 blank인 확률 $$p_b$$와 non-blank인 확률 $$p_{nb}$$를 따로 저장한다. 마지막 글자가 `A`일 때 `AA`가 이어지면 출력은 여전히 `A`지만, `AεA`는 새 `A`가 추가되어 `AA`가 되기 때문이다.
+### 4.2 CTC prefix beam: 확장, 합산, 가지치기
+
+CTC prefix beam search는 시각마다 후보 전사 prefix를 확장하고, **같은 전사로 접히는 경로의 확률을 합친 다음** 상위 후보만 남긴다(pp. 38–41). 단순 경로 beam이라면 `AAB`와 `ABB`를 별개 경로로 보유하지만, CTC prefix beam은 두 경로가 같은 `AB`에 기여한다는 사실을 반영한다. 같은 prefix 안에서도 마지막 프레임이 blank인 확률 $$p_b$$와 non-blank인 확률 $$p_{nb}$$를 따로 저장한다. 마지막 글자가 `A`일 때 `AA`가 이어지면 출력은 여전히 `A`지만, `AεA`는 새 `A`가 추가되어 `AA`가 되기 때문이다.
+
+본문 예제에서 첫 프레임의 빈 문자열·`a`·`b`를 모두 남기는 beam width 3을 사용하면, 두 번째 프레임에서 `a`의 blank 종료 확률은 `a,blank`의 **0.20**, non-blank 종료 확률은 `a,a`와 `blank,a`의 **0.16+0.20=0.36**이다. 두 값을 합친 **0.56**으로 `a`의 순위를 정한다. 이 예제에서는 최종 가지치기 전에 모든 9개 경로의 기여를 계산하므로 가장 높은 문자열을 찾지만, 긴 입력에서 유한 beam이 언제나 같은 정확성을 보장하지는 않는다.
 
 한 프레임을 갱신할 때 blank는 기존 $$p_b+p_{nb}$$에 새 blank 확률을 곱해 **같은 prefix의 $$p_b$$**로 보낸다. 다른 글자 $$c$$를 붙이면 같은 합에 $$p_t(c)$$를 곱해 **확장 prefix의 $$p_{nb}$$**로 보낸다. 다만 $$c$$가 현재 prefix의 마지막 글자와 같다면, 직전 non-blank에서 이어지는 경로는 **기존 prefix에 머무르고**, 직전 blank에서 오는 경로만 반복 글자가 추가된 prefix로 간다. 이 분기 덕분에 반복 글자를 잃지 않고 같은 전사의 경로 확률을 모을 수 있다. 각 프레임에서 $$p_b+p_{nb}$$가 큰 상위 $$K$$개 prefix만 유지하는 것이 beam의 절단 단계다.
 
 $$K$$가 작으면 이른 시점에 버린 prefix를 나중에 회복하지 못하고, $$K$$가 커지면 후보별 갱신과 선택 비용이 증가한다. **유한 beam은 근사**이며 $$K=1$$인 prefix beam도 경로 단위의 프레임별 greedy와 일반적으로 같은 알고리즘은 아니다. 언어 모델을 결합할 수 있지만 점수 가중치와 어휘 제약에 따라 결과가 바뀐다. 탐색을 정확히 하더라도 음향 모델의 확률이 잘못되었다면 전사 자체의 정답을 보장하지 않는다.
+
+LAS처럼 이전 출력에 따라 다음 분포가 바뀌는 모델에서는 다른 이유로도 greedy가 전체 최적 결과를 놓친다. 처음 선택이 이후 조건부 확률까지 바꾸기 때문이다. [두 단계 autoregressive 예제]({{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#autoregressive-greedy-beam" | relative_url }})와 구분하면, **일반 beam의 후보 유지**와 **CTC prefix beam의 경로 합산**을 혼동하지 않을 수 있다.
 
 CTC의 장점은 **프레임-문자 정렬을 주석으로 주지 않아도 학습**할 수 있고, forward DP로 유효 정렬의 확률을 효율적으로 합산한다는 점이다. 반면 기본 CTC의 경로 확률은 $$X$$를 조건으로 프레임별 출력을 곱하므로 출력 token 사이의 언어적 의존성을 직접 표현하지 않는다. 반복 token에는 blank 프레임이 필요하고, 시간축을 너무 줄이면 유효 경로 자체가 사라진다. 외부 언어 모델이나 더 풍부한 decoder가 추론을 보완할 수 있지만 계산량과 지연 비용도 늘어난다.
 
