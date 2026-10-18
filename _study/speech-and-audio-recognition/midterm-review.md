@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 16:43:36 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -39,7 +39,7 @@ Source Notebooks:
 
 > **핵심:** 소리를 sample로 바꾸고, 주파수 특징을 만든 뒤, 길이가 다른 음향 frame열과 문자·subword열을 정렬한다. 이어서 정답 전사 없이 음성 표현을 학습하는 방법까지 살펴본다. **어떤 정보를 보존하는지, 확률과 loss를 어떻게 계산하는지, 학습 target을 어디에서 얻는지**를 연결하면 신호 처리·ASR·자기지도 학습의 역할을 구분할 수 있다.
 
-**중간고사 범위는 Source Separation 직전인 Self-Supervised Learning까지다.** Lecture 2–5와 spectral-analysis·BPE/CTC/RNN-T 실습을 종합한다. Lecture 5의 wav2vec 2.0·HuBERT는 포함하고, Lecture 6–7의 Source Separation(DPCL·PIT/uPIT 포함)은 제외한다. 범위 밖 강의의 개별 노트와 원문 PDF는 그대로 보존한다. 별도의 Lecture 1 PDF는 현재 과목 폴더에 없으므로 독립 범위를 추정해서 채우지 않는다. 각 강의의 전체 유도·그림·코드 해설은 연결된 개별 노트에서 확인할 수 있다.
+**중간고사 범위는 Source Separation 직전인 Self-Supervised Learning까지다.** Lecture 2–5와 spectral-analysis·BPE/CTC/RNN-T 실습을 포함한다. Lecture 5의 wav2vec 2.0·HuBERT는 범위 안이고, Lecture 6–7의 Source Separation과 DPCL·PIT/uPIT는 범위 밖이다. 별도의 Lecture 1 PDF는 현재 과목 폴더에 없으므로 내용을 추정해 추가하지 않는다.
 
 ## 전체 흐름
 
@@ -137,7 +137,14 @@ $$
 
 ### 2.1 Fourier coefficient는 basis와의 정렬 정도다
 
-주기 신호는 harmonic basis의 합으로 표현할 수 있다. 이 글처럼 $$a_n\cos(n\omega_0t)+b_n\sin(n\omega_0t)=A_n\cos(n\omega_0t-\phi_n)$$ convention을 쓰면
+주기 신호는 harmonic basis의 합으로 표현할 수 있다. 다음 convention을 사용하자.
+
+$$
+a_n\cos(n\omega_0t)+b_n\sin(n\omega_0t)
+=A_n\cos(n\omega_0t-\phi_n).
+$$
+
+이때 진폭과 위상은 다음과 같다.
 
 $$
 A_n=\sqrt{a_n^2+b_n^2},\qquad
@@ -281,16 +288,19 @@ Notebook 그림을 읽을 때는 `sampling rate`, `n_fft`, `win_length`, `hop_le
 
 </details>
 
-## 3. ASR의 정렬 문제와 CTC
+## 3. ASR 평가와 CTC 정렬
 
-<figure id="source-ctc-review">
-  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p35.png" | relative_url }}" alt="네 frame의 forward probability를 합산한 원본 CTC lattice" loading="lazy">
-  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=35" | relative_url }}">lecture PDF, p. 35</a>.</figcaption>
-</figure>
+### 3.1 WER는 정답 길이로 정규화한 편집 거리다
 
-가로축은 네 frame, 세로축은 blank를 끼운 정답 상태다. 마지막 `b`와 마지막 blank에 도착한 확률 0.2835와 0.1308을 합하면 정답 `ab`의 확률 0.4143이다. 중간 상태의 값은 그 상태로 끝나는 여러 경로의 누적 합이다. [원문 입력 분포와 계산](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/#speech-03-p33)을 먼저 읽은 뒤 아래의 더 작은 보강 예제로 검산한다.
+Word error rate(WER)는 정답 단어열을 예측 단어열로 바꾸는 최소 치환·삭제·삽입 횟수를 정답 단어 수로 나눈 값이다.
 
-### 3.1 음향 frame과 문자 수는 같지 않다
+$$
+\mathrm{WER}=\frac{S+D+I}{N}
+$$
+
+여기서 $$S$$는 substitution, $$D$$는 deletion, $$I$$는 insertion, $$N$$은 정답 단어 수다. 네 값은 모두 단어 수이며 WER는 무차원이다. 삽입이 많으면 $$S+D+I>N$$이 될 수 있으므로 WER는 1을 넘을 수 있다. $$N=0$$인 빈 정답에서는 식이 정의되지 않으므로 평가 규칙을 따로 정해야 한다.
+
+### 3.2 음향 frame과 문자 수는 같지 않다
 
 음성 feature는 $$T$$개의 frame을 만들고 정답은 $$U$$개의 token을 가진다. 보통 $$T>U$$이며 어느 frame이 어느 token에 대응하는지 정답에 없다. CTC는 blank $$\epsilon$$을 추가하고, 경로에서 **연속 중복을 먼저 합친 뒤 blank를 제거**한다.
 
@@ -301,7 +311,7 @@ l l    -> l
 
 따라서 정답에 연속된 같은 token이 있으면 두 token 사이를 분리할 blank frame이 필요하다.
 
-### 3.2 Frame 확률, path 확률, sequence 확률, loss를 구분한다
+### 3.3 Frame 확률, path 확률, sequence 확률, loss를 구분한다
 
 Encoder logit은 softmax를 거쳐 frame별 token 분포가 된다.
 
@@ -320,7 +330,14 @@ $$
 
 정답 확률이 커질수록 loss는 작아진다. 경로 확률의 합 자체를 최소화하는 것이 아니다.
 
-### 3.3 Forward DP는 확률이 생기는 과정을 숨기지 않는다
+### 3.4 Forward DP는 확률이 생기는 과정을 숨기지 않는다
+
+<figure id="source-ctc-review">
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-03-p35.png" | relative_url }}" alt="네 frame의 forward probability를 합산한 원본 CTC lattice" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-03.pdf#page=35" | relative_url }}">lecture PDF, p. 35</a>.</figcaption>
+</figure>
+
+가로축은 네 frame, 세로축은 blank를 끼운 정답 상태다. 마지막 `b`와 마지막 blank에 도착한 확률 0.2835와 0.1308을 합하면 정답 `ab`의 확률 0.4143이다. 중간 상태의 값은 그 상태로 끝나는 여러 경로의 누적 합이다. 아래의 더 작은 보강 예제도 같은 규칙으로 계산된다.
 
 정답 `AB`를 $$z=(\epsilon,A,\epsilon,B,\epsilon)$$으로 확장한다. $$\alpha_{t,s}$$는 frame $$t$$까지 처리하고 상태 $$s$$에서 끝나는 **유효 부분 경로 확률의 합**이다. 각 칸은 이전의 stay, 한 칸 전진, 조건부 두 칸 건너뛰기에서 들어온 합에 현재 frame 확률을 곱한다.
 
@@ -370,7 +387,7 @@ $$
 
 </details>
 
-### 3.4 Greedy와 beam search의 차이
+### 3.5 Greedy와 beam search의 차이
 
 Greedy decoding은 각 frame에서 가장 큰 token을 선택한 경로 하나를 collapse한다. 그러나 가장 확률이 큰 경로가 가장 확률이 큰 문자열일 필요는 없다. 한 문자열은 여러 경로의 확률을 합치기 때문이다.
 
@@ -384,7 +401,22 @@ BPE는 corpus에서 자주 인접한 token pair를 반복해서 합친다. Train
 
 Character보다 긴 subword는 출력 길이 $$U$$를 줄일 수 있다. 그러나 vocabulary $$V$$가 커져 output softmax와 joint logit 비용이 늘 수 있다. 따라서 subword는 항상 계산량을 줄인다는 단일 결론보다 $$T$$, $$U$$, $$V$$를 함께 봐야 한다.
 
-### 4.2 CTC, LAS, RNN-T는 정렬과 출력 이력을 다르게 처리한다
+### 4.2 Attention은 출력 단계마다 필요한 입력 위치를 다시 고른다
+
+LAS의 attention은 encoder state $$h_1,\ldots,h_T$$를 한 벡터로 고정하지 않는다. 출력 단계 $$u$$마다 이전 decoder state $$s_{u-1}$$와 각 입력 state의 관련도를 계산한다.
+
+$$
+e_{u,t}=\operatorname{score}(s_{u-1},h_t),\qquad
+a_{u,t}=\frac{\exp(e_{u,t})}{\sum_{j=1}^{T}\exp(e_{u,j})}
+$$
+
+$$
+c_u=\sum_{t=1}^{T}a_{u,t}h_t
+$$
+
+같은 출력 단계에서 $$\sum_t a_{u,t}=1$$이며, $$c_u$$는 입력 state의 가중합이다. Attention weight는 입력 위치를 결합하는 계수이지 다음 단어의 출력 확률이 아니다. LAS decoder는 이 context와 출력 prefix를 사용해 다음 token을 예측한다.
+
+### 4.3 CTC, LAS, RNN-T는 정렬과 출력 이력을 다르게 처리한다
 
 | 기준 | CTC | LAS | RNN-T |
 |---|---|---|---|
@@ -403,7 +435,7 @@ $$
 
 RNN-T의 상태 $$(t,u)$$에서 blank를 선택하면 $$(t+1,u)$$로 가고, 다음 token을 선택하면 $$(t,u+1)$$로 간다. 같은 acoustic frame에서 여러 token을 낼 수 있다. RNN-T의 blank는 CTC처럼 collapse할 기호가 아니라 **시간축을 진행시키는 전이**다.
 
-### 4.3 Deep Speech 2와 Conformer를 구조 역할로 비교한다
+### 4.4 Deep Speech 2와 Conformer를 구조 역할로 비교한다
 
 Deep Speech 2는 convolution으로 local acoustic pattern과 시간 길이를 처리하고 recurrent layer로 긴 문맥을 모델링한 뒤 CTC로 정렬한다. Conformer는 self-attention의 넓은 문맥과 convolution module의 local pattern 처리를 한 block 안에서 결합한다.
 
@@ -426,6 +458,21 @@ wav2vec 2.0의 흐름은 다음과 같다.
 5. Codebook 사용이 한쪽으로 무너지는 것을 줄이기 위해 diversity objective를 함께 둔다.
 
 Contrastive target은 waveform sample이나 text token이 아니라 **가린 위치에 대응하는 quantized latent vector**다. Fine-tuning에서는 CTC output을 붙여 labeled ASR에 적응시킬 수 있다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: wav2vec 2.0 contrastive objective</summary>
+
+가린 위치 $$t$$의 context $$c_t$$, 같은 위치의 positive target $$q_t$$, distractor를 포함한 후보 집합 $$Q_t$$를 둔다. Cosine similarity와 temperature $$\kappa$$를 사용한 masked-position loss는 다음과 같다.
+
+$$
+\mathcal L_m(t)=-\log
+\frac{\exp(\left(\operatorname{sim}(c_t,q_t)/\kappa\right))}
+{\sum_{\tilde q\in Q_t}\exp(\left(\operatorname{sim}(c_t,\tilde q)/\kappa\right))}
+$$
+
+Positive similarity가 distractor보다 커질수록 분수의 값이 1에 가까워지고 loss가 작아진다. Product quantizer가 $$G$$개 codebook에서 각각 $$V$$개 entry 중 하나를 고르면 가능한 조합의 상한은 $$V^G$$다. Diversity term은 일부 entry만 계속 선택되는 collapse를 줄이지만, 모든 조합의 사용이나 음소와의 일대일 대응을 보장하지 않는다.
+
+</details>
 
 ### 5.3 HuBERT
 
@@ -494,25 +541,10 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 
 ## Study Guide
 
-### 1차 회독: 전체 연결
-
-1. [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)에서 sampling, Fourier, Nyquist를 확인한다.
-2. [Spectral Analysis Lab](/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/)에서 FFT, STFT, Mel, notebook 그림을 연결한다.
-3. [Automatic Speech Recognition I](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/)에서 CTC 확률과 forward table을 직접 계산한다.
-4. [Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)에서 LAS와 RNN-T의 상태 전이를 비교한다.
-5. [Self-Supervised Learning](/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/)에서 wav2vec 2.0과 HuBERT target을 구분한다.
-6. [Tokenization and Decoding Lab](/study/speech-and-audio-recognition/asr-tokenization-and-decoding-lab/)에서 BPE 규칙, CTC decoding, RNN-T의 token·blank 전이를 코드와 연결한다.
-
-### 2차 회독: 직접 계산
-
-- 7 kHz와 1 kHz가 8 kHz sampling에서 같은 표본을 만드는지 다섯 sample로 계산한다.
-- 8-point DFT의 bin frequency와 음의 frequency bin을 표시한다.
-- STFT의 입력 길이, window, hop, padding으로 frame 수와 output shape를 계산한다.
-- CTC `AB` 예제의 다섯 path와 forward table을 모두 계산한다.
-
-### 3차 회독: 비교표 없이 설명
-
-다음 쌍을 한 문단씩 설명한다: DFT/FFT, spectrum/spectrogram, Mel/log, CTC blank/RNN-T blank, CTC/LAS/RNN-T, Deep Speech 2/Conformer, wav2vec 2.0/HuBERT.
+- **신호 처리:** Sampling과 quantization의 축을 구분하고, Nyquist 위반 예제·DFT bin·STFT shape를 직접 계산한다.
+- **ASR:** WER의 $$S,D,I,N$$을 세고, CTC `AB` 경로 합과 forward table을 계산한다. Attention context, LAS의 autoregression, RNN-T의 blank/token 전이를 말로 설명한다.
+- **표현 학습:** wav2vec 2.0의 masked context·quantized target·contrastive loss와 HuBERT의 offline cluster target을 구분한다.
+- **비교 연습:** DFT/FFT, spectrum/spectrogram, Mel/log, CTC blank/RNN-T blank, CTC/LAS/RNN-T, Deep Speech 2/Conformer를 각각 한 문단으로 설명한다.
 
 ## 복습 질문
 
@@ -567,15 +599,6 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
   <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-04.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 4: Automatic Speech Recognition II</a></li>
   <li><a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture 5: Self-Supervised Learning</a></li>
 </ul>
-
-## Detailed Notes
-
-- [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)
-- [Spectral Analysis Lab](/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/)
-- [Automatic Speech Recognition I](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/)
-- [Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)
-- [Self-Supervised Learning](/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/)
-- [Tokenization and Decoding Lab](/study/speech-and-audio-recognition/asr-tokenization-and-decoding-lab/)
 
 ## Notebooks and Interactive Material
 

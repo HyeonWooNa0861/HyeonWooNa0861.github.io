@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-10-18 16:43:00 +0900
 title: "Algorithms Midterm Review: Analysis through Greedy Algorithms"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
@@ -37,18 +37,18 @@ Source PDFs:
 
 > **핵심:** 알고리즘 분석은 코드가 실제로 수행하는 기본 연산을 세는 데서 시작한다. 점화식은 재귀 호출 수와 호출 밖 작업을 분리하고, 정렬·선택·동적 계획법·그리디에서는 각 단계가 보존하는 불변식과 최적성 조건을 확인한다. 결론만 외우지 말고 **입력·출력, 상태 또는 활성 구간, 적용 조건, 반례**를 한 묶음으로 설명할 수 있어야 한다.
 
-Lecture 11의 4쪽은 문서상 범위를 첫 내용부터 Greedy Algorithm까지로 적는다. 이 글은 현재 제공된 Lecture 2–11과 Assignment 1·2의 연결 개념을 복습용으로 재구성한다. Lecture 1은 별도 자료를 확보하지 못했으므로 자료에 없는 세부 내용은 추정하지 않았다. 아래 Original Practice는 Lecture 2 원문 문제이며, 그 밖의 새 배열·수치 예시는 **작성자가 구성하고 직접 계산한 연습 예제**다. 실제 출제 형식이나 문항을 예측하지 않는다.
+Lecture 11의 4쪽은 시험 범위를 첫 내용부터 Greedy Algorithm까지로 명시한다. 현재 확보된 강의 자료는 Lecture 2–11이며, Lecture 1의 세부 내용은 자료 없이 추정하지 않는다. Assignment 1·2는 범위 개념을 적용하는 연습으로 포함했다. 아래 Original Practice는 Lecture 2 원문 문제이고, 그 밖의 새 배열·수치 예시는 **작성자가 구성하고 직접 계산한 연습 예제**다.
 
-## 원본 그림으로 복습하기
+## 대표 원본 그림
 
-핵심 그림은 각 상세 강의의 원본 캡처를 그대로 재사용한다. [점근 표기 비교]({{ "/study/algorithms/lecture-02-algorithm-analysis/" | relative_url }})에서는 정확한 수행 시간과 상·하한을, [Build Heap]({{ "/study/algorithms/lecture-06-sorting-03/" | relative_url }})에서는 bottom-up 처리 순서를, [Matrix Path]({{ "/study/algorithms/lecture-09-dynamic-programming-01/" | relative_url }})에서는 상태와 점화식을, [회의실 배정]({{ "/study/algorithms/lecture-11-greedy-algorithm/" | relative_url }})에서는 greedy 선택의 교환 논증을 먼저 확인한다.
+Lecture 9의 Matrix Path 그림은 DP에서 상태, 이전 상태, 계산 순서를 한 번에 보여 준다.
 
 <figure class="study-source-figure">
   <img src="{{ "/assets/images/study/algorithms/source-figures/lecture-09-p19-matrix-path.jpg" | relative_url }}" alt="Matrix Path의 경로와 bottom-up 점화식을 함께 보여 주는 강의 원본 슬라이드" loading="lazy">
   <figcaption>대표 원본: Lecture 9 PDF p. 19. 상태 정의, 이전 상태, 계산 순서를 한 장에서 대조한다.</figcaption>
 </figure>
 
-그림의 경로를 따라 현재 칸으로 들어오는 마지막 선택을 먼저 나누면 점화식을 외우지 않고 다시 만들 수 있다. 총정리에서는 이 원본을 기준으로 상태·기저 사례·계산 순서를 점검하고, 상세 유도는 연결된 개별 강의에서 확인한다.
+그림의 경로를 따라 현재 칸으로 들어오는 마지막 선택을 먼저 나누면 점화식을 외우지 않고 다시 만들 수 있다. §5에서는 이 원리를 상태·기저 사례·계산 순서로 나눠 적용한다.
 
 ## Original Practice
 
@@ -60,7 +60,7 @@ Lecture 11의 4쪽은 문서상 범위를 첫 내용부터 Greedy Algorithm까�
 | Lecture 2, p. 28, Ex2 | 누적 결과와 반복 횟수는 어떻게 다른가? | [Accumulation](#practice-accumulation) |
 | Lecture 2, p. 28, Ex3 | 길이가 늘어나는 안쪽 반복과 뒤의 독립 반복을 어떻게 세는가? | [Triangular Loop](#practice-triangular-loop) |
 
-확인한 Lecture 3–11에는 `Practice` 제목 페이지가 없다. 그 강의들의 Example·질문과 Assignment 1·2는 별도의 적용 연습으로 연결한다. 세 문항을 푼 뒤 점화식, 정렬의 단계별 입출력, DP 상태·점화식 설계로 범위를 넓히면 된다.
+세 문항을 푼 뒤 점화식, 정렬의 단계별 입출력, DP 상태·점화식 설계로 범위를 넓힌다.
 
 ## 전체 흐름
 
@@ -255,8 +255,6 @@ $$n\ge1$$이면 $$n^2\le n^2+2n\le3n^2$$이므로 $$c_1=1,c_2=3,n_0=1$$로 $$\Th
 `sum++` 전체를 하나의 갱신으로 세는 **다른** 비용 모형에서는 $$S+n$$이다. 정확식은 달라지지만 점근 차수는 같다. Ex2에서 산술·대입을 나눠 세었다면 Ex3에서도 같은 기준을 유지해야 한다.
 
 </details>
-
-상세 개념은 [Lecture 2의 Practice 해설](/study/algorithms/lecture-02-algorithm-analysis/#original-practice)에서 이어 읽을 수 있다. 같은 연산 계수 기준은 [Assignment 1의 행렬 연산 분석](/assignment/algorithms/assignment-01-complexity-analysis/)에도 적용된다.
 
 ## 2. Recurrence: 호출 수와 호출 밖 작업을 분리한다
 
@@ -517,6 +515,8 @@ $$
 
 첫 행과 첫 열은 한 방향에서만 올 수 있으므로 별도 초기화하거나, 격자 밖을 $$-\infty$$로 두고 시작점만 직접 초기화한다. 경로가 필요하면 더 큰 값을 준 이전 칸을 `parent[i][j]`에 저장한다.
 
+그림에 강조된 경로의 합은 66이지만, 그림의 행렬 전체에 같은 점화식을 적용한 최댓값은 68이다. 강조선은 점화식의 이동 방향을 보여 주는 예시로 읽고, 최적값 자체와 구분한다.
+
 2×n Tiling은 첫 열을 세로 도미노 하나로 덮거나, 가로 도미노 두 개로 덮는 두 배타적 경우를 나눈다.
 
 $$
@@ -641,6 +641,8 @@ Lecture 11의 13쪽은 Lecture 10의 Making It 1을 그리디로 풀어도 되�
 
 강의의 동전은 `500, 100, 50, 10, 5, 1`원이며 각 동전은 무제한이다. 남은 금액 이하의 가장 큰 동전을 최대한 선택한다. 380원 자체를 바꾸면 `100×3 + 50 + 10×3 = 380`, 총 7개다. 강의 15쪽의 예제 출력 4는 **1000원을 냈을 때 물건값 380원이라 잔돈이 620원**인 문맥이다. 이 경우 `500+100+10+10`, 4개다.
 
+강의 17쪽의 `x > 500`은 경계 오기이며, 500원도 선택할 수 있도록 `x >= 500`이 맞다.
+
 최적성은 인접 동전의 배수 관계로 증명할 수 있다. 큰 동전 $$d_i$$가 다음 동전 $$d_{i+1}$$의 $$q_i$$배라면, 최적해에 $$d_{i+1}$$가 $$q_i$$개 이상 있을 수 없다. 그 묶음을 $$d_i$$ 하나로 바꾸면 같은 금액을 더 적은 동전으로 만들기 때문이다. 이 교환을 큰 단위부터 반복하면 각 작은 동전 개수가 그리디가 남기는 나머지와 같아진다.
 
 이 배수 조건은 **충분조건이지 필요조건은 아니다.** 작성자 구성 동전 `{3,2,1}`은 3이 2의 배수가 아니지만, 그리디가 모든 금액 $$x=3q+r$$에 대해 $$q+\mathbf1[r>0]=\lceil x/3\rceil$$개를 사용하여 최적이다. 반대로 `{4,3,1}`에서 금액 6은 그리디 `4+1+1`의 3개보다 `3+3`의 2개가 낫다.
@@ -677,7 +679,7 @@ $$A\setminus\{a_1\}$$를 명시하지 않으면 $$s_1=f_1$$인 zero-duration 회
 - **가장 짧은 회의 우선 실패:** `[0,4)`, `[3,5)`, `[4,8)`에서 가장 짧은 `[3,5)`를 고르면 1개지만, `[0,4)`와 `[4,8)`은 2개다.
 - **가장 이른 시작 우선 실패:** `[0,10)`, `[1,2)`, `[2,3)`, `[3,4)`에서 `[0,10)`을 고르면 1개지만 나머지 세 개를 모두 고를 수 있다.
 
-## 7. Assignment 1 연결: 제공된 해답 기준
+## 7. Assignment 1: 제공된 해답 기준
 
 ### 7.1 행렬 곱셈과 점근 정의
 
@@ -723,7 +725,7 @@ $$
 | (f) | $$8T(n/2)+n^3$$ | 2 | $$\Theta(n^3\log n)$$ |
 | (g) | $$5T(n/5)+n^2$$ | 3 | $$\Theta(n^2)$$ |
 
-## 8. Assignment 2 연결과 구성 연습
+## 8. Assignment 2: 정렬 출력과 DP 연습
 
 Assignment 2는 정렬 결과만이 아니라 **출력 시점**을 묻는다. Insertion은 삽입 뒤, Bubble은 pass 뒤, Quick은 partition 뒤, Merge는 merge 뒤에 전체 배열을 출력한다. 각 출력에서 prefix, suffix, pivot, merged interval 가운데 무엇이 확정됐는지 표시하면 trace 오류를 줄일 수 있다.
 
@@ -732,7 +734,7 @@ DP 문제는 다음 두 구조를 추가로 연습한다.
 - **Theater Seating:** VIP 좌석이 일반 좌석을 독립 구간으로 나눈다. 길이 $$k$$ 구간의 경우의 수 $$W(k)=W(k-1)+W(k-2)$$, $$W(0)=W(1)=1$$을 구하고 각 구간 값을 곱한다.
 - **Knapsack Filling 1:** 같은 보석을 반복 사용할 수 있는 unbounded knapsack이다. 용량 증가 순서와 `dp[c-w_i]` 참조가 재사용을 허용한다.
 
-유용한 원문 연습 링크:
+연습 문제:
 
 - <a href="https://jungol.co.kr/problem/1158" target="_blank" rel="noopener">JUNGOL 1158: Insertion Sort</a>
 - <a href="https://jungol.co.kr/problem/1157" target="_blank" rel="noopener">JUNGOL 1157: Bubble Sort</a>
@@ -740,38 +742,6 @@ DP 문제는 다음 두 구조를 추가로 연습한다.
 - <a href="https://jungol.co.kr/problem/3519" target="_blank" rel="noopener">JUNGOL 3519: Merge Sort</a>
 - <a href="https://jungol.co.kr/problem/1848" target="_blank" rel="noopener">JUNGOL 1848: Theater Seating</a>
 - <a href="https://jungol.co.kr/problem/1077" target="_blank" rel="noopener">JUNGOL 1077: Knapsack Filling 1</a>
-
-## Source Map
-
-| 수업 자료 | 이 글에서 확인할 범위 | 더 자세한 글 |
-|---|---|---|
-| Lecture 2, Algorithm Analysis | §1 비용 모형, case 구분, 점근 표기의 정의 | [Lecture 2](/study/algorithms/lecture-02-algorithm-analysis/) |
-| Lecture 3, Recurrence | §2 반복 대입, Master Theorem의 세 경우와 적용 조건 | [Lecture 3](/study/algorithms/lecture-03-recurrence/) |
-| Lecture 4, Sorting (1) | §3 Bubble·Selection·Insertion Sort와 정확한 배열 trace | [Lecture 4](/study/algorithms/lecture-04-sorting-01/) |
-| Lecture 5, Sorting (2) | §3 Merge·Quick Sort의 분할, 병합, pivot 확정 trace | [Lecture 5](/study/algorithms/lecture-05-sorting-02/) |
-| Lecture 6, Sorting (3) | §3 heap 구성·삭제 trace와 Heap Sort | [Lecture 6](/study/algorithms/lecture-06-sorting-03/) |
-| Lecture 7, Sorting (4) | §3 Counting Sort·LSD Radix Sort와 안정성 조건 | [Lecture 7](/study/algorithms/lecture-07-sorting-04/) |
-| Lecture 8, Selection | §4 Quickselect의 기대/최악 시간, Median of Medians | [Lecture 8](/study/algorithms/lecture-08-selection/) |
-| Lecture 9, Dynamic Programming (1) | §5 DP 설계 절차, Matrix Path, Matrix-Chain Order | [Lecture 9](/study/algorithms/lecture-09-dynamic-programming-01/) |
-| Lecture 10, Dynamic Programming (2) | §5 LCS, 2×n Tiling, Making It 1과 복원 | [Lecture 10](/study/algorithms/lecture-10-dynamic-programming-02/) |
-| Lecture 11, Greedy Algorithm | §6 DP 대비, Change Problem, Meeting Room Allocation와 증명 | [Lecture 11](/study/algorithms/lecture-11-greedy-algorithm/) |
-| Assignment 1 문제·제공된 해답 | §7 연산 횟수, 점근 정의, Q3 두 해석, Master Theorem 7문항 | [Assignment 1](/assignment/algorithms/assignment-01-complexity-analysis/) |
-| Assignment 2 설명·연습 링크 | §8 정렬 trace, Theater Seating, Knapsack 연결 연습 | [Assignment 2](/assignment/algorithms/assignment-02-sorting-and-dynamic-programming/) |
-
-Lecture 2–11과 Assignment 1의 원문 PDF는 글 끝에 각각 연결했다. Assignment 2는 별도 제공 해답 PDF가 아니라 기존 과제 설명과 연결된 JUNGOL 문제를 기준으로 구성했다.
-
-## 9. Source Check: 원문과 독립 검산
-
-| 위치 | 원문 표현 | 이 글의 처리 |
-|---|---|---|
-| Lecture 9, Matrix Path | 슬라이드 표시 경로 합 66 | 전체 20개 경로를 대조한 기존 상세 노트의 최댓값 68을 사용 |
-| Lecture 11, p. 17 | `x > 500`일 때 500원 동전 포함 | 동전이 사용 가능한 경계는 $$x\ge500$$로 정정 |
-| Lecture 11, p. 18 | 배수 관계를 최적성 이유로 제시 | 배수 사슬은 충분조건이며 필요조건은 아님을 `{3,2,1}`로 구분 |
-| Lecture 11, p. 25 | 선택 뒤 compatible 집합 점화식 | 선택한 $$a_1$$을 제외하고, zero-duration 입력에는 `(finish, start)` tie-break까지 명시 |
-| Lecture 8 | 최악 pivot이 아니면 선형이라는 요약 | 매 단계 고정 비율 제거가 보장되어야 한다는 조건을 명시 |
-| Assignment 1 Q3 | 문제 의도와 기존 코드 불일치 | 제공된 해답대로 두 해석을 모두 분리하고 문제지 개정 안내를 반영 |
-
-Lecture 2–10의 상세 노트에 기록된 식과 trace를 원문 PDF의 관련 슬라이드 화면과 다시 대조했다. Lecture 11은 29쪽 전체, Assignment 1 제공 해답은 4쪽 전체를 렌더링해 확인했다. 외부 웹 검색이나 일반적인 syllabus 추정으로 Greedy 범위를 늘리지 않았다.
 
 ## 마지막 핵심 정리
 
@@ -887,16 +857,7 @@ Lecture 2–10의 상세 노트에 기록된 식과 trace를 원문 PDF의 관�
 
 ## Related Notes
 
-- [Lecture 2: Algorithm Analysis]({{ "/study/algorithms/lecture-02-algorithm-analysis/" | relative_url }})
-- [Lecture 3: Recurrence]({{ "/study/algorithms/lecture-03-recurrence/" | relative_url }})
-- [Lecture 4: Sorting I]({{ "/study/algorithms/lecture-04-sorting-01/" | relative_url }})
-- [Lecture 5: Merge Sort and Quick Sort]({{ "/study/algorithms/lecture-05-sorting-02/" | relative_url }})
-- [Lecture 6: Heaps and Heap Sort]({{ "/study/algorithms/lecture-06-sorting-03/" | relative_url }})
-- [Lecture 7: Counting Sort and Radix Sort]({{ "/study/algorithms/lecture-07-sorting-04/" | relative_url }})
-- [Lecture 8: Selection Algorithms]({{ "/study/algorithms/lecture-08-selection/" | relative_url }})
-- [Lecture 9: Dynamic Programming I]({{ "/study/algorithms/lecture-09-dynamic-programming-01/" | relative_url }})
-- [Lecture 10: Dynamic Programming II]({{ "/study/algorithms/lecture-10-dynamic-programming-02/" | relative_url }})
-- [Lecture 11: Greedy Algorithm]({{ "/study/algorithms/lecture-11-greedy-algorithm/" | relative_url }})
+- [Lecture notes and course materials]({{ "/study/algorithms/" | relative_url }})
 - [Assignment 1: Complexity Analysis and Recurrences]({{ "/assignment/algorithms/assignment-01-complexity-analysis/" | relative_url }})
 - [Assignment 2: Sorting Traces and Dynamic Programming]({{ "/assignment/algorithms/assignment-02-sorting-and-dynamic-programming/" | relative_url }})
 
