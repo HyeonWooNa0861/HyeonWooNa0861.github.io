@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-18 18:03:25 +0900
+last_modified_at: 2026-10-18 18:30:39 +0900
 title: "Lecture 10: LiDAR-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Point Clouds, PointNet++, PointRCNN, VoxelNet, and PIXOR"
@@ -381,6 +381,70 @@ $$C$$는 feature channel 수, $$D',H',W'$$는 voxel 개수로 모두 무차원�
 슬라이드 31쪽은 이 head를 `RPN`이라 부르면서도 전체 파이프라인은 one-stage라고 강조한다. 이름만으로 two-stage라고 판단해서는 안 된다. VoxelNet의 RPN은 별도의 proposal을 다른 network가 다시 정제하는 PointRCNN식 두 번째 단계가 아니라 최종 score와 regression을 내는 detection head다.
 
 슬라이드 32쪽의 trade-off도 표현 선택에서 나온다. 3D convolution은 kernel을 세 공간축으로 이동시키므로 2D convolution보다 계산 영역이 크고, sparse point를 dense grid로 펼치면 빈 cell이 많다. 다만 “3D convolution이므로 항상 느리다”는 보편 법칙은 아니다. Sparse convolution 구현, grid resolution, 범위, hardware에 따라 비용이 달라진다. 이 강의에서는 **VoxelNet 원 설계의 비용 원인**으로 이해한다.
+
+### 6.5 3D anchor는 voxel과 무엇이 다른가
+
+[원문 31쪽]({{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=31" | relative_url }})의 classification·regression 출력에서, regression의 기준이 되는 상자가 **3D anchor**다. Voxel이 입력 점을 묶는 공간 cell이라면, anchor는 검출 head의 출력 격자에 미리 놓는 객체 box의 기준이다. **Voxel 크기와 anchor 크기는 서로 다른 설정**이다. 하나의 차량이 여러 voxel에 걸쳐 있고, detection head는 주변 feature를 종합해 차량 box를 예측할 수 있다.
+
+6강의 2D anchor에 깊이와 방향을 더하면 중심 위치 $$x,y,z$$, 길이·폭·높이 $$l,w,h$$, yaw $$\theta$$를 가진 3D box가 된다. 여기서는 원 VoxelNet 논문처럼 $$z$$를 **상자 중심의 수직 좌표**, yaw를 수직 Z축 주위의 회전각으로 정의한다. 아래 보정식과 수치 예제는 슬라이드에 없는 부분을 [VoxelNet §2.2, 식 (1)](https://arxiv.org/abs/1711.06396){:target="_blank" rel="noopener"}에 근거해 보충한 것이다.
+
+- **Anchor:** 미리 정한 3D 중심·크기·방향으로, 회귀의 출발점이다.
+- **GT:** 데이터에 주어진 정답 3D box로, anchor 매칭과 목표 보정값을 만드는 데 쓴다.
+- **Prediction:** 네트워크가 예측한 일곱 보정값을 anchor에 적용한 box다. GT와 일치할 수도, 오차가 남을 수도 있다.
+
+추론에서는 GT 없이 feature로부터 score와 보정값을 예측한다. VoxelNet의 decode 결과는 score filtering·NMS를 거쳐 검출 결과가 되며, Faster R-CNN처럼 별도의 두 번째 RoI head가 반드시 이어지는 구조는 아니다. 이 anchor 기반 설명을 다른 3D detector 전체에 그대로 적용해서는 안 된다.
+
+**수치로 읽기.** 다음은 meter 단위의 작성자 설명용 예시이며 KITTI의 실제 anchor 설정이나 모델 실행 결과가 아니다. 세 box의 크기는 모두 $$(l,w,h)=(4,3,2)$$ m, yaw는 모두 $$0$$ rad으로 두고 중심만 비교한다.
+
+- **Anchor 중심:** (10, 5, 1) m. 보정의 기준이다.
+- **GT 중심:** (11.5, 5, 1) m. 학습 데이터의 정답이다.
+- **Prediction 중심:** (11, 5, 1) m. 예측 offset을 decode한 결과다.
+
+Anchor 밑면의 대각선 길이는 $$d_a=\sqrt{4^2+3^2}=5$$ m다. GT까지 x축으로 1.5 m 이동해야 하므로 목표 수평 offset은 $$1.5/5=0.30$$이다. 네트워크가 $$0.20$$을 예측했다면 실제 이동은 $$5\times0.20=1$$ m이므로 예측 중심 x는 11 m이다. **GT보다 0.5 m 부족하게 이동한 것**이다. 나머지 여섯 offset을 0으로 두었으므로 y·z·크기·yaw는 anchor와 같다.
+
+이처럼 네트워크는 매번 절대 좌표를 처음부터 만들기보다 **기준 box에서의 변화량**을 예측한다. VoxelNet은 수평 두 축에 같은 밑면 대각선 길이를 쓰고, 수직 이동에는 anchor 높이를 쓴다. 크기 비율에는 자연로그를 쓴다. 위치·크기 offset은 무차원이며 각도 offset은 rad이다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Seven 3D anchor targets and their inverse transform</summary>
+
+Anchor를 $$b_a=(x_a,y_a,z_a,l_a,w_a,h_a,\theta_a)$$, 매칭된 GT를 $$b_g=(x_g,y_g,z_g,l_g,w_g,h_g,\theta_g)$$라 하자. 중심·길이의 단위는 m이며 모든 길이는 양수다. 각도는 같은 기준축에서 rad으로 측정한다. 원 논문의 회귀 target 정의를 별표로 표시하면
+
+$$
+d_a=\sqrt{l_a^2+w_a^2},\qquad
+t_x^*=\frac{x_g-x_a}{d_a},\quad
+t_y^*=\frac{y_g-y_a}{d_a},\quad
+t_z^*=\frac{z_g-z_a}{h_a},
+$$
+
+$$
+t_l^*=\ln\frac{l_g}{l_a},\quad
+t_w^*=\ln\frac{w_g}{w_a},\quad
+t_h^*=\ln\frac{h_g}{h_a},\quad
+t_\theta^*=\theta_g-\theta_a.
+$$
+
+이는 box를 표현하기 위해 선택한 **정의**이지 학습 성능이 좋아진다는 수학적 증명은 아니다. 양수인 $$d_a,h_a$$로 나누므로 위치 offset은 무차원이다. 두 수평 offset은 모두 같은 $$d_a$$로 나누므로 동일한 길이 척도를 사용한다. 또한 $$l_a,w_a$$를 서로 바꿔도 $$d_a$$는 변하지 않는다. 이 성질 자체가 임의 회전에 대한 전체 detector의 불변성을 보장하지는 않는다.
+
+Decode는 위 정의의 **정확한 역변환**이다. 예를 들어 $$t_x=(x-x_a)/d_a$$에서 양변에 $$d_a$$를 곱하고 $$x_a$$를 더하면 $$x=x_a+d_at_x$$다. $$t_l=\ln(l/l_a)$$는 $$e^{t_l}=l/l_a$$를 거쳐 $$l=l_ae^{t_l}$$가 된다. 각도는 $$t_\theta=\theta-\theta_a$$에서 $$\theta=\theta_a+t_\theta$$로 푼다. 네트워크 예측 $$\hat{t}$$에 적용하면
+
+$$
+\hat{x}=x_a+d_a\hat{t}_x,\quad
+\hat{y}=y_a+d_a\hat{t}_y,\quad
+\hat{z}=z_a+h_a\hat{t}_z,
+$$
+
+$$
+\hat{l}=l_ae^{\hat{t}_l},\quad
+\hat{w}=w_ae^{\hat{t}_w},\quad
+\hat{h}=h_ae^{\hat{t}_h},\quad
+\hat{\theta}=\theta_a+\hat{t}_\theta.
+$$
+
+본문 예시의 목표는 순서 $$(x,y,z,l,w,h,\theta)$$에 대해 $$t^*=(0.30,0,0,0,0,0,0)$$이고, 예측은 $$\hat{t}=(0.20,0,0,0,0,0,0)$$이다. 목표를 decode하면 $$10+5(0.30)=11.5$$ m로 GT를 복원하지만, 예측을 decode하면 $$10+5(0.20)=11$$ m다. 크기 offset 0은 $$e^0=1$$이므로 원래 길이·폭·높이를 그대로 유지한다. Anchor의 길이가 0이면 정규화나 로그 비율을 사용할 수 없다.
+
+원 논문의 식 (1)은 yaw target을 단순한 각도 차이로 정의한다. Lab 2 notebook은 이 차이를 **$$\pi$$ 주기로 정규화**한다. 이는 해당 lab의 방향 동치 처리이며 원 논문 식에 있는 연산으로 소급해서 설명하지 않는다. 또한 z를 바닥 중심으로 쓰는 구현이나 다른 tuple 순서의 값을 위 중심 좌표식에 그대로 대입하면 안 된다.
+
+</details>
 
 ## 7. PIXOR: 높이를 channel로 바꾼 BEV dense detection
 

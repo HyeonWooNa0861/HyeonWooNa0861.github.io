@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-18 18:03:25 +0900
+last_modified_at: 2026-10-18 18:30:39 +0900
 title: "Autonomous Driving Computing Midterm Review through Lab 2"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -385,7 +385,7 @@ $$
 
 ### 7.2 Anchor label과 sampling
 
-Anchor는 학습되는 box가 아니라 center, scale, aspect ratio를 가진 기준 box다. RPN의 전형적인 label은 다음과 같다.
+**Anchor는 미리 정한 기준 box, GT는 데이터의 정답 box, prediction은 네트워크가 예측한 offset을 anchor에 적용한 box**다. GT는 학습 label과 목표 offset을 만드는 데 쓰이며 추론 입력이 아니다. RPN prediction은 proposal 후보이고, 최종 class·box는 다음 detection head에서 정제한다. RPN의 전형적인 label은 다음과 같다.
 
 - Positive: GT와 높은 IoU를 갖거나 각 GT의 최고-IoU anchor다.
 - Negative: 모든 GT와 낮은 IoU를 갖는다.
@@ -404,16 +404,16 @@ t_w=\log\frac{w_g}{w_a},\quad
 t_h=\log\frac{h_g}{h_a}.
 $$
 
-Decode는 이를 반대로 적용한다.
+위 $$t$$는 GT를 encode한 **목표값**이다. 실제 추론에서는 네트워크의 예측 offset $$\hat{t}$$를 decode한다.
 
 $$
-\hat{x}=t_xw_a+x_a,\quad
-\hat{y}=t_yh_a+y_a,\quad
-\hat{w}=e^{t_w}w_a,\quad
-\hat{h}=e^{t_h}h_a.
+\hat{x}=\hat{t}_xw_a+x_a,\quad
+\hat{y}=\hat{t}_yh_a+y_a,\quad
+\hat{w}=e^{\hat{t}_w}w_a,\quad
+\hat{h}=e^{\hat{t}_h}h_a.
 $$
 
-Offset은 absolute coordinate보다 다양한 image size와 object scale을 anchor-relative 변화량으로 정규화한다.
+위치 offset은 이동을 anchor 크기로 나누고, 크기 offset은 양수인 비율에 자연로그를 취한다. 따라서 모두 무차원이다. 예측 offset이 목표값과 다르면 decode한 box도 GT와 다르다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: A small box encode and decode trace</summary>
@@ -430,7 +430,7 @@ t_w=\log(1.5)\approx0.4055,\qquad
 t_h=\log(0.5)\approx-0.6931.
 $$
 
-Decode하면 $$0.2(20)+50=54$$, $$-0.2(10)+40=38$$, $$e^{0.4055}(20)\approx30$$, $$e^{-0.6931}(10)\approx5$$로 GT가 복원된다. Width와 height는 양수여야 하며 anchor size가 0이면 정의되지 않는다.
+이 **목표 offset**을 decode하면 $$0.2(20)+50=54$$, $$-0.2(10)+40=38$$, $$e^{0.4055}(20)\approx30$$, $$e^{-0.6931}(10)\approx5$$로 GT가 복원된다. Encode/decode의 역연산 검산이지 실제 네트워크 예측이 정답과 같다는 뜻은 아니다. Width와 height는 양수여야 하며 anchor size가 0이면 정의되지 않는다.
 
 </details>
 
@@ -615,6 +615,8 @@ BEV reshape에서 $$32\times3=96$$이므로 channel 수가 96이 된다. 그 뒤
 ### 8.7 3D anchor label과 box target
 
 128×128 output grid의 각 location에 Car 0°·90°, Pedestrian 0°·90° anchor 네 개가 있어 총 65,536개다.
+
+여기서 **voxel은 입력 점을 묶는 공간 cell이고, anchor는 출력 box 회귀의 기준**이다. 3D anchor는 중심·길이·폭·높이·yaw를 가지며, 네트워크가 예측한 일곱 보정값으로 최종 3D box를 만든다. GT는 이 보정의 목표를 정한다. Lab 2의 개수·class·각도 설정은 해당 notebook의 설정이지 모든 VoxelNet의 고정값이 아니다.
 
 Anchor와 GT의 BEV IoU threshold는 notebook 설정에서 다음과 같다.
 

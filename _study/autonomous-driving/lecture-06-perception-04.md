@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-10-18 18:30:39 +0900
 title: "Lecture 6: Perception (4) - Faster R-CNN and Feature Pyramid Networks"
 course: "Autonomous Driving"
 topic: "Region Proposal Networks, Anchor Boxes, and Multiscale Features"
@@ -51,6 +51,18 @@ Fast R-CNN은 이미지의 convolution을 proposal마다 되풀이하지 않고 
 
 원문 9–16쪽은 고양이 영상 한 장에서 RPN을 순서대로 그린다. CNN backbone이 이미지 좌표와 대응되는 feature map을 만들고, 각 feature 위치에 **기준 상자(anchor)**를 놓는다. 한 위치에 크기·종횡비가 다른 $$K$$개 anchor를 두면 서로 다른 형태의 물체 후보를 같은 feature에서 살펴볼 수 있다. 강의 그림은 처음에는 **한 위치에 anchor 1개**를 설명하고, 이후 $$K=6$$인 교육용 예시로 확장한다. 원 Faster R-CNN 논문의 대표 설정 $$k=9$$와 다르므로, $$K=6$$을 원 논문의 고정값으로 일반화하면 안 된다.
 
+**Anchor는 정답도, 검출 결과도 아니다.** 미리 정한 위치·크기의 기준 box이고, 네트워크는 이미지 feature를 보고 이 기준을 얼마나 보정할지 학습한다. 같은 anchor라도 입력 이미지가 달라지면 예측 점수와 보정값이 달라진다.
+
+**Supplementary table — Anchor, ground truth, and prediction.** 위 그림의 기준 상자, 학습 때 대조하는 정답, 네트워크 출력으로 만든 상자의 역할을 구분한다.
+
+| 구분 | 어디서 오는가? | 무엇에 쓰이는가? |
+|---|---|---|
+| Anchor | Feature 위치와 미리 정한 크기·종횡비 | 예측할 이동·크기 변화의 기준 |
+| GT (ground truth) | 학습 데이터에 주어진 객체의 정답 box | Anchor의 label과 목표 보정값을 계산 |
+| Prediction | 네트워크가 낸 보정값을 anchor에 적용한 box | RPN 후처리를 거쳐 proposal 후보가 됨 |
+
+GT는 학습의 감독 신호이며 **추론 때는 필요하지 않다**. RPN에서 decode한 box는 아직 최종 검출 결과가 아니라 proposal 후보다. 다음 detection head가 class를 판단하고 box를 다시 보정한다. Objectness 점수도 box 좌표 자체가 아니며 GT와의 IoU를 정확히 예측한 값이라는 보장은 없다.
+
 원문에서 feature map의 예시 공간 크기는 $$5\times6$$, channel 수는 512다. 위치마다 $$K$$개 anchor라면 총 후보 수는 $$5\cdot6\cdot K$$개다. RPN 출력은
 
 $$
@@ -63,23 +75,51 @@ $$
 
 ### 2.1 Box offset의 정의와 역변환
 
-왜 box의 절대 pixel 좌표 대신 anchor에 대한 상대 offset을 예측할까? 위치 이동을 anchor 폭·높이로 나누면 크기가 다른 anchor 사이에서 값의 척도가 비슷해지고, 크기 비율의 로그를 쓰면 배율 변화가 더 자연스럽게 표현된다. 원 Faster R-CNN 논문의 **box parameterization 정의**는 다음과 같다. 이는 강의 14쪽의 “anchor를 GT box로 변환하는 transform”에 대한 작성자 보충이다.
+왜 box의 절대 pixel 좌표 대신 anchor에 대한 상대 offset을 예측할까? 같은 10 pixel 이동도 폭 20 pixel인 상자에는 큰 변화이고 폭 200 pixel인 상자에는 작은 변화다. 이동을 anchor 폭·높이로 나누면 **기준 크기에 비해 얼마나 움직이는지** 표현할 수 있다. 크기는 양수여야 하므로 폭·높이의 비율을 로그로 표현하고, decode할 때 지수함수로 되돌린다.
+
+다음은 강의 14쪽의 anchor-to-GT transform을 풀어 쓴 **작성자 설명용 예시**다. 좌표는 box의 중심이며 모든 좌표·크기의 단위는 pixel이다. 실제 모델의 실행 결과가 아니다.
+
+- **Anchor:** 중심 (100, 100), 폭 40, 높이 20.
+- **GT:** 중심 (112, 98), 폭 60, 높이 20.
+- **Prediction:** 중심 (110, 100), 폭 60, 높이 20.
+
+GT에 맞추려면 anchor를 오른쪽 12 pixel, 위쪽 2 pixel 옮기고 폭을 1.5배로 늘려야 한다. 따라서 목표 offset은 $$(0.30,-0.10,\ln 1.5,0)$$이다. 반면 네트워크가 $$(0.25,0,\ln 1.5,0)$$을 예측했다면 오른쪽으로 $$40\times0.25=10$$ pixel만 이동한다. 결과는 중심 $$(110,100)$$, 크기 $$(60,20)$$이다. **폭은 맞았지만 중심은 GT보다 왼쪽 2 pixel, 아래쪽 2 pixel에 남는다.** 학습은 이런 오차를 줄이는 과정이지 anchor 자체를 정답으로 사용하는 과정이 아니다.
+
+네 offset은 모두 무차원이다. 좌표계는 위쪽으로 갈수록 y가 작아지는 이미지 좌표계를 사용했다. Anchor가 정답과 너무 동떨어져 있으면 큰 보정이 필요하므로, 여러 크기·종횡비의 anchor를 두고 적절한 positive anchor를 학습에 사용한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Encoding a target and decoding a predicted box</summary>
+
+원 Faster R-CNN 논문의 box parameterization은 **회귀 대상을 정하는 정의**다. Anchor를 $$(x_a,y_a,w_a,h_a)$$, 매칭된 GT를 $$(x_g,y_g,w_g,h_g)$$라 하고 모든 폭·높이가 양수라고 가정한다. 목표 offset에는 별표를 붙여 네트워크 예측값 $$\hat{t}$$와 구분한다.
 
 $$
-t_x=\frac{x-x_a}{w_a},\qquad
-t_y=\frac{y-y_a}{h_a},\qquad
-t_w=\log\frac{w}{w_a},\qquad
-t_h=\log\frac{h}{h_a}.
+t_x^*=\frac{x_g-x_a}{w_a},\qquad
+t_y^*=\frac{y_g-y_a}{h_a},\qquad
+t_w^*=\ln\frac{w_g}{w_a},\qquad
+t_h^*=\ln\frac{h_g}{h_a}.
 $$
 
-$$x,y,w,h$$는 제안 상자의 중심 좌표와 폭·높이, 첨자 $$a$$는 anchor, $$t_\bullet$$는 예측 offset이다. 좌표·크기는 모두 동일한 pixel 좌표계에서 정의하고 $$w_a,h_a>0$$을 가정한다. 분자·분모의 단위가 상쇄되고 로그의 입력도 비율이므로 모든 $$t_\bullet$$은 무차원이다. 학습할 때는 상자의 자리에 정답 $$x^*,y^*,w^*,h^*$$를 넣은 목표 offset $$t_\bullet^*$$와 예측값을 비교한다. 추론 시 정의를 역으로 풀면 **정확한 역변환**
+이동량의 분자·분모는 모두 pixel이므로 단위가 상쇄된다. 로그의 입력도 양수인 크기 비율이다. $$\ln$$은 자연로그다. 본문 예시의 목표값을 계산하면
 
 $$
-x=x_a+w_at_x,\qquad y=y_a+h_at_y,\qquad
-w=w_a e^{t_w},\qquad h=h_a e^{t_h}
+t^*=
+\left(\frac{112-100}{40},\frac{98-100}{20},
+\ln\frac{60}{40},\ln\frac{20}{20}\right)
+=(0.30,-0.10,\ln1.5,0).
 $$
 
-을 얻는다. 예를 들어 anchor 중심 $$x_a=100$$ pixel, 폭 $$w_a=40$$ pixel에서 $$t_x=0.25$$이면 예측 중심은 $$110$$ pixel이다. $$t_w=\log 2$$이면 폭은 $$80$$ pixel이다. 이는 **offset 정의의 검산**일 뿐 학습된 모델이 언제나 정답을 맞힌다는 뜻은 아니다. anchor가 물체와 너무 동떨어져 있으면 큰 보정이 필요하고 회귀가 어려워진다.
+역변환은 이 정의를 좌표에 대해 푼 **정확한 등식**이다. 예를 들어 $$t_x=(x-x_a)/w_a$$의 양변에 $$w_a$$를 곱하고 $$x_a$$를 더하면 $$x=x_a+w_at_x$$가 된다. 크기는 $$t_w=\ln(w/w_a)$$에서 양변에 지수함수를 적용해 $$e^{t_w}=w/w_a$$를 얻고, $$w_a$$를 곱한다. 따라서 예측 offset을 decode하면
+
+$$
+\hat{x}=x_a+w_a\hat{t}_x,\qquad
+\hat{y}=y_a+h_a\hat{t}_y,\qquad
+\hat{w}=w_a e^{\hat{t}_w},\qquad
+\hat{h}=h_a e^{\hat{t}_h}.
+$$
+
+본문 예측값의 검산은 $$\hat{x}=100+40(0.25)=110$$, $$\hat{y}=100+20(0)=100$$, $$\hat{w}=40e^{\ln1.5}=60$$, $$\hat{h}=20e^0=20$$이다. 목표값 $$t^*$$를 대신 decode하면 GT $$(112,98,60,20)$$를 복원한다. 이는 encode/decode가 서로 역연산이라는 뜻이며, 실제 예측 $$\hat{t}$$가 목표 $$t^*$$와 같다는 보장은 아니다. 실제 구현에서는 이후 이미지 경계 clipping 등의 처리가 이어질 수 있다.
+
+</details>
 
 ### 2.2 Positive·negative·neutral anchor
 
