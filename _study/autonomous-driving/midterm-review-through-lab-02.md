@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 16:22:58 +0900
 title: "Autonomous Driving Computing Midterm Review through Lab 2"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -21,11 +21,11 @@ keywords:
 
 # Autonomous Driving Computing Midterm Review through Lab 2
 
-Source Materials: Lectures 2–11, the Lab 1 base notebook, the locally stored Assignment 2 answer notebook for the same Lab 1 lesson, the answer-bearing Assignment 3 notebook whose internal title identifies it as Lab 2, and the non-identifying reconstruction of the Assignment 1 AP calculation.
+Source Materials: Lectures 2–11, Labs 1–2, and Assignment 1 (Average Precision).
 
 > **핵심:** 자율주행 perception은 센서가 만든 측정값을 좌표계가 있는 표현으로 바꾸고, 그 표현에서 객체의 종류·위치·형상을 추정한 뒤, 정답과 같은 규칙으로 평가하는 과정이다. 2D 검출에서는 feature, anchor, IoU, NMS와 AP가 이 흐름을 연결한다. 3D 검출에서는 camera ray의 깊이 모호성, LiDAR의 희소성, voxel·point·BEV 표현, calibration과 fusion이 추가된다. Lab 1은 Faster R-CNN과 RetinaNet의 2D 검출 흐름을, Lab 2는 실제 KITTI point cloud의 표현과 합성 데이터에서 학습한 VoxelNet 흐름을 코드 수준에서 추적한다.
 
-이 글의 범위는 **현재 확보된 Lecture 2–11, Lab 1, Lab 2 자료를 통합한 복습 범위**다. 공식 시험 범위라고 단정하지 않는다. 강의자의 별도 공지·수업 중 강조·평가 안내가 있으면 그 정보가 우선한다.
+**이 총정리의 복습 범위는 Lecture 2–11과 Lab 1–2다.** Lab 1의 풀이·출력은 Assignment 2 notebook에, Lab 2의 풀이·출력은 Assignment 3 notebook에 담겨 있다. 시험 범위에 관한 별도 공지가 있으면 그 공지를 우선한다.
 
 ## 전체 흐름
 
@@ -38,20 +38,6 @@ Source Materials: Lectures 2–11, the Lab 1 base notebook, the locally stored A
 | 5 | 3D perception | Camera, LiDAR, fusion 방식은 깊이와 3D box를 어떻게 얻는가? |
 | 6 | Lab 1 | Tensor, anchor label, box target, focal loss와 plot을 어떻게 읽는가? |
 | 7 | Lab 2 | KITTI 좌표 변환, voxelization, VFE, 3D convolution, BEV head와 loss가 어떻게 이어지는가? |
-| 8 | 평가 경계 | 저장된 출력, 설명용 계산, 합성 검증과 실제 KITTI 적용을 어떻게 구분하는가? |
-
-## 0. 자료 범위와 Lab 번호를 먼저 고정하기
-
-Lab 번호와 파일의 Assignment 번호는 같은 축이 아니다. 같은 실습을 중복해서 두 번 공부하거나 Assignment 3을 Lab 3으로 부르면 학습 흐름이 어긋난다.
-
-| 공개 학습 관계 | 로컬 자료의 역할 | 확인된 관계 | 이 글에서의 이름 |
-|---|---|---|---|
-| **Lab 1 base** | `ADC_Lab1_TwoStage_vs_OneStage.ipynb` | 74 cells: Markdown 35, code 39. 실행 count와 output이 비어 있는 원본 실습 | Lab 1 |
-| **Lab 1 answers stored as Assignment 2** | `ADC_Assignment2_...ipynb` | Lab 1과 74-cell 구조가 같고 39개 code cell이 동일하다. 6개 질문 Markdown에 답이 추가되고 저장 output이 있다 | Lab 1 답변본 |
-| **Lab 2 answers stored as Assignment 3** | `ADC_Assignment3_...ipynb` | 내부 제목이 `자율주행컴퓨팅 실습 2 — LiDAR 3D Object Detection 해부하기 (VoxelNet 중심)`이다. 46 cells: Markdown 22, code 24이며 질문 뒤 답변이 들어 있다 | Lab 2 |
-| AP 계산 자료 | Assignment 1의 비식별 공개 재구성 | IoU, confidence 정렬, TP/FP, precision–recall, AP 계산을 제공한다 | AP worked example |
-
-Assignment 2가 Lab 1과 같은 code를 가진다는 사실은 **동일 lesson의 답변·실행 기록 관계**를 뜻한다. 별도 Lab 2로 세지 않는다. Assignment 3의 저장된 내부 제목과 내용은 Lab 2를 가리킨다. 다만 비교할 answerless Lab 2 원본이 없으므로 Assignment 3에서 원래 prompt와 나중에 추가한 답변을 cell 단위로 분리했다고 주장하지 않는다. 이 파일 관계만으로 공식 제출 상태, 채점 완료 또는 공식 시험 포함 여부를 추론하지 않는다.
 
 ## 1. Sensor: 모델보다 먼저 측정값을 이해한다
 
@@ -301,7 +287,7 @@ Semantic segmentation은 같은 class의 두 차량을 같은 `car` pixel class�
 
 FCN은 fully connected layer 대신 convolutional prediction을 사용해 spatial score map을 만든다. Downsampling은 큰 receptive field와 semantic context를 얻지만 경계를 흐릴 수 있다. Transposed convolution이나 interpolation과 skip connection은 resolution을 복원한다.
 
-1D에서 input `[a,b]`, kernel `[k_0,k_1,k_2]`, stride 2인 transposed convolution은 각 input이 kernel 모양을 output 위치에 더한다. 겹치는 위치는 합산된다. 이는 input 사이에 0을 넣고 보통 convolution한다는 계산 관점과 연결되지만, output size는 padding·output padding까지 확인해야 한다.
+1D에서 input `[a,b]`, kernel `[k_0,k_1,k_2]`, stride 2인 transposed convolution은 각 input이 kernel 모양을 output 위치에 더한다. 겹치는 위치는 합산된다. Input 사이에 0을 넣고 적절한 kernel 방향과 padding을 적용하는 계산으로도 볼 수 있다. Output size는 padding·output padding까지 확인해야 한다.
 
 Mask R-CNN은 Faster R-CNN의 proposal·classification·box 경로에 RoI별 mask branch를 추가한다. RoIAlign은 quantization을 줄여 pixel mask와 feature의 정렬을 돕는다. Class별 binary mask loss와 semantic segmentation의 pixel softmax를 같은 것으로 보면 안 된다.
 
@@ -323,8 +309,27 @@ Lab 2가 쓰는 LiDAR box는 $$(x,y,z,l,w,h,\theta)$$다. $$(x,y,z)$$는 box cen
 | Method | 핵심 입력·가정 | 처리 | 한계 |
 |---|---|---|---|
 | Mono3D | RGB, road·class prior | 3D candidate를 만들고 image에 projection해 semantic·shape·context·location feature로 scoring | Candidate와 prior 품질에 의존 |
-| MonoRCNN | RGB, 2D geometry, object height·pose 관련 예측 | 거리 성분을 해석 가능한 geometry로 분해하고 uncertainty를 함께 학습 | 단안 scale ambiguity가 사라지는 것이 아니라 learned prior로 줄어듦 |
+| MonoRCNN | RGB, 물리 높이와 투영 높이에 관한 예측 | 높이와 PCL의 역수로 depth를 복원하고 각 성분의 uncertainty를 학습 | 단안 scale ambiguity가 사라지는 것이 아니라 learned prior로 줄어듦 |
 | Pseudo-LiDAR | Stereo 또는 monocular depth map | Pixel depth를 camera-frame 3D point로 역투영한 뒤 point-cloud detector 사용 | Depth error가 3D 위치 error로 변환됨 |
+
+**Mono3D의 class semantic은 ‘어떤 종류인가’, instance semantic은 ‘같은 종류 중 어느 개체인가’를 구분한다.** [Lecture 9 p. 24](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=24)의 class map에서는 차량들이 같은 색이고, instance map에서는 차량마다 색이 다르다. 따라서 후보가 차량 영역을 덮는지만 보는 것과 한 차량의 영역에 맞는지 보는 것은 다르다. 이 정보는 projection된 3D 후보의 점수를 매기는 데 쓰이며, instance 색은 실제 차체 색이나 시간에 걸친 tracking ID가 아니다.
+
+MonoRCNN은 [Lecture 9 p. 27](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=27)의 물리 높이 $$H$$와 영상에 투영된 중심 수직선의 길이 $$h$$를 이용한다. 보정된 pinhole camera에서 그 선의 두 끝점이 같은 depth를 갖는 수직선 모델이면
+
+$$
+Z=\frac{f_yH}{h}=f_yHh_{\mathrm{rec}},\qquad h_{\mathrm{rec}}=\frac{1}{h}
+$$
+
+다. $$Z,H$$는 m, 세로 초점거리 $$f_y$$와 $$h$$는 pixel, $$h_{\mathrm{rec}}$$은 pixel의 역수다. **$$h$$는 2D detection box 전체 높이가 아니라 PCL(projected central line) 길이**다. Network는 $$H$$와 $$h_{\mathrm{rec}}$$ 및 각 uncertainty를 예측하고 이 관계로 depth를 복원한다. 같은 높이의 물체라면 PCL이 짧을수록 멀리 있다는 뜻이다. <a href="https://arxiv.org/html/2104.03775" target="_blank" rel="noopener">MonoRCNN 원 논문, Figure 1–2</a>도 이 분해와 예측 대상을 구분한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Depth from physical and projected height</summary>
+
+중심 수직선의 위·아래 끝점이 camera 좌표에서 같은 $$X,Z$$를 갖고 $$Y$$만 $$H$$만큼 다르면, pinhole 식 $$v=f_yY/Z+c_y$$에서 두 끝점의 pixel 차이는 $$h=f_yH/Z$$다. 양수인 $$h$$로 나누면 $$Z=f_yH/h$$를 얻는다. Camera roll·pitch나 왜곡을 무시할 수 없는 장면에는 이 단순화의 적용 여부를 먼저 확인해야 한다.
+
+작성자 계산 예시로 $$f_y=800\ \mathrm{px}$$, $$H=1.5\ \mathrm{m}$$, $$h=120\ \mathrm{px}$$이면 $$Z=10\ \mathrm{m}$$다. 다른 조건이 같고 $$h=60\ \mathrm{px}$$이면 $$Z=20\ \mathrm{m}$$다. 두 계산 모두 길이 단위는 m이며, 예측 높이가 틀리면 복원한 depth도 틀릴 수 있다.
+
+</details>
 
 3D IoU는 oriented box의 교집합 volume을 합집합 volume으로 나눈다. BEV IoU만 같아도 height overlap이 다르면 3D IoU는 다르다.
 
@@ -349,6 +354,8 @@ PointNet의 permutation invariance는 input point 순서를 바꿔도 shared poi
 
 Fusion 전에는 공간 calibration, timestamp synchronization, 같은 object region의 대응이 필요하다. Camera와 LiDAR feature를 단순 concatenate해도 좌표와 시간이 어긋나면 같은 물체의 정보가 아니다.
 
+[Lecture 11 p. 20](/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=20)의 fusion 비교는 **언제, 몇 번 결합하는가**로 읽는다. Early fusion은 입력 또는 초기 feature에서, late fusion은 각 stream이 고수준 feature를 만든 뒤 결합한다. Deep fusion은 중간 layer마다 정보를 반복 교환한다. MV3D 그림의 `C`는 concatenation, `M`은 element-wise mean이다. Deep fusion에서는 한 번 합친 hidden state를 다음 단계의 각 view branch가 함께 받아 처리한다.
+
 ## 7. Lab 1: Two-stage와 one-stage를 tensor 흐름으로 읽기
 
 <figure id="source-rpn-output">
@@ -356,9 +363,7 @@ Fusion 전에는 공간 calibration, timestamp synchronization, 같은 object re
   <figcaption>Source: <a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}">Assignment 2 notebook, cell 27 (0-based), saved output</a>.</figcaption>
 </figure>
 
-청록 box는 상위 50개 proposal, 흰 점선은 GT다. 오른쪽 COCO 모델에서 물체 주변으로 후보가 모이는지 왼쪽 초기화 모델과 비교한다. 이 단계는 class를 확정한 최종 detection이 아니므로 proposal 수가 많다고 recall이나 precision이 높다고 단정하지 않는다. 원본에 저장된 출력이며 학습을 새로 실행한 결과는 아니다.
-
-[원본 FPN 출력과 코드 해설](/assignment/autonomous-driving/assignment-02-two-stage-vs-one-stage-detection/#source-fpn-output)에서 입력 feature를 먼저 확인하고, 위 proposal이 [R-CNN 구조](/study/autonomous-driving/lecture-04-perception-02/#adc-04-p32)의 영역 후보와 어떤 역할을 공유하는지 비교한다.
+청록 box는 상위 50개 proposal, 흰 점선은 GT다. 오른쪽 COCO 모델에서 물체 주변으로 후보가 모이는지 왼쪽 초기화 모델과 비교한다. 이 단계는 class를 확정한 최종 detection이 아니므로 proposal 수가 많다고 recall이나 precision이 높다고 단정하지 않는다.
 
 ### 7.1 입력에서 FPN까지
 
@@ -469,8 +474,6 @@ Lab 1의 plot은 다음처럼 읽는다.
 | Epoch snapshots | 같은 trace image에서 score·box가 변하는 흐름 | 한 이미지로 일반 성능·속도 우열을 결론내림 |
 | Proposal recall vs detection P/R | 1단계 coverage와 최종 판정의 차이 | Fixed threshold P/R을 AP나 COCO mAP로 부름 |
 
-Lab 1 base notebook은 실행 output이 없다. 공개 base notebook을 새로 실행하지 않았다. Assignment 2 답변본에는 저장 output이 있지만, 그 값은 해당 저장 실행 환경과 dataset 상태의 기록이지 이번 글에서 재현한 새 실험이 아니다.
-
 ## 8. Lab 2: KITTI point에서 VoxelNet detection까지
 
 <figure id="source-voxel-output">
@@ -480,9 +483,7 @@ Lab 1 base notebook은 실행 output이 없다. 공개 base notebook을 새로 �
 
 왼쪽은 비어 있지 않은 voxel의 점 수 분포이며 세로축은 로그 척도다. 빨간 T=32 선은 voxel 하나에서 남길 최대 점 수를 표시한다. 가운데의 0.2 m 격자와 오른쪽의 0.4 m 높이 구간은 공간 분할 크기다. 점 수 제한과 voxel의 물리적 크기를 분리해야 sparse 입력이 고정 tensor로 바뀌는 과정을 이해할 수 있다.
 
-[원본 KITTI 좌표 그림](/assignment/autonomous-driving/assignment-03-lidar-3d-object-detection/#source-kitti-bev)에서 좌표와 GT를 확인한 뒤 위 voxelization 출력으로 이동한다. [강의 VoxelNet 도식](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p29)은 이 격자 안 점들이 VFE와 sparse tensor로 연결되는 다음 단계를 보여 준다.
-
-### 8.1 Lab 2는 Part A와 Part B의 evidence가 다르다
+### 8.1 실제 KITTI 관찰과 synthetic 학습의 구분
 
 | 구간 | Data | 목적 | 결과 해석 |
 |---|---|---|---|
@@ -491,11 +492,11 @@ Lab 1 base notebook은 실행 output이 없다. 공개 base notebook을 새로 �
 | Part B validation | Synthetic validation 60 scenes | Center-distance AP, P@0.5, R@0.5 계산 | 실습용 합성 metric |
 | B8 transfer | 실제 KITTI sample frame | Synthetic-trained model의 domain gap 시각화 | 정성 비교. KITTI 공식 성능 아님 |
 
-이 네 구간을 섞으면 `실제 KITTI로 VoxelNet을 학습했다`, `KITTI AP를 얻었다`는 잘못된 결론이 나온다.
+**실제 KITTI 관찰, 합성 데이터 학습, 실제 장면으로의 적용은 서로 다른 단계다.** 합성 validation AP를 KITTI 공식 성능으로 해석할 수 없다.
 
 ### 8.2 KITTI coordinate를 LiDAR box로 바꾸기
 
-실제 sample `.bin`은 header 없는 float32 배열이며 4개씩 읽어 $$(x,y,z,\mathrm{reflectance})$$ point를 만든다. 저장 output에서 sample은 275,808 bytes, 17,238 points, shape $$(17238,4)$$다.
+실제 sample `.bin`은 header 없는 float32 배열이며 4개씩 읽어 $$(x,y,z,\mathrm{reflectance})$$ point를 만든다. 저장 sample의 shape는 $$(17238,4)$$로, 각 행이 한 point다.
 
 KITTI label의 camera box location은 bottom center이고 camera의 $$y$$는 아래 방향이다. Notebook helper는 먼저 camera location의 $$y$$에서 height의 절반을 빼 box center로 만든다. 이후 inverse `lidar2cam` transform으로 LiDAR coordinate로 옮기고 dimension을 $$(l,w,h)$$로 재배열한다. Yaw는 notebook convention에서
 
@@ -516,7 +517,7 @@ Point cloud는 frame마다 point 수가 달라지는 순서 없는 집합이다.
 | Range image | elevation × azimuth, 값은 range | LiDAR scan topology | Cartesian object shape가 왜곡될 수 있음 |
 | Camera projection | Pixel에 point depth·feature | RGB와 point의 correspondence | Occlusion과 sparse projection, calibration error |
 
-Lab 2의 실제 KITTI frame에서 GT box 내부 point 수는 가까운 차량은 1,429 또는 1,933개, 약 34.3 m 차량은 54개였다. 한 frame의 사례이므로 거리만으로 point 수를 일반화할 수 없지만 원거리 희소성을 구체적으로 보여 준다.
+같은 각도 간격으로 조사하는 LiDAR에서는 원거리의 작은 물체가 적은 point로 관측되기 쉽다. 거리뿐 아니라 물체 크기·가림·반사 특성도 point 수에 영향을 준다.
 
 ### 8.4 Voxelization
 
@@ -542,10 +543,10 @@ $$
 
 범위 밖 point를 제거하고 같은 index의 point를 묶는다. 계산 설명은 $$(i_x,i_y,i_z)$$ 순서지만 `voxelize`가 반환하는 `coords` 열 순서는 **`(iz, iy, ix)`**다. Dense tensor에 scatter한 뒤 shape 순서는 **`(B,C,N_z,N_y,N_x)`**다. Voxel당 최대 point 수는 32다. 32개가 넘으면 shuffle 뒤 처음 32개를 남긴다. 장면당 non-empty voxel도 최대 20,000개로 제한한다.
 
-저장된 synthetic validation scene trace는 41,819 input points 중 40,950개가 범위 안에 있었고, 7,236개 non-empty voxel을 만들었다. 전체 grid의 1.10%다. 103개 voxel이 32-point limit을 넘어 sampling됐다. 이 숫자는 해당 저장 scene의 trace이지 모든 frame의 상수는 아니다.
-
 <details markdown="block">
 <summary markdown="span">Code Walkthrough: From point coordinates to grouped voxels</summary>
+
+저장된 synthetic validation scene에서는 41,819 input points 중 40,950개가 범위 안에 있었고, 7,236개 non-empty voxel을 만들었다. 전체 grid의 약 1.10%다. 103개 voxel이 32-point limit을 넘어 sampling됐다. 이는 한 scene의 실행 기록이며 frame마다 달라진다.
 
 `voxelize`의 상태 변화는 다음과 같다.
 
@@ -577,18 +578,16 @@ $$
 
 VFE layer는 모든 point에 같은 `Linear + BN + ReLU`를 적용해 point-wise feature를 만든다. 같은 voxel의 point 축으로 element-wise max를 취해 locally aggregated feature를 만든다. 이 vector를 모든 point에 복제해 point-wise feature와 concatenate한다.
 
-Shared point function과 symmetric max 때문에 **선택된 point set의 순서**에는 invariant하다. 하지만 다음은 별개다.
-
-- Voxelization 전에 32개 초과 point를 random sampling하면 선택된 set 자체가 달라질 수 있다.
-- Coordinate를 바꾸면 voxel membership과 offset이 달라진다.
-- Rotation invariance를 자동으로 보장하지 않는다.
-- Training mode의 BatchNorm과 stochastic data path는 단순 수학적 set function 이외의 실행 상태를 가진다.
-
-따라서 `permutation invariant`를 `어떤 변환에도 출력이 같다`로 확대하면 안 된다.
+Shared point function과 symmetric max는 **같은 selected point set 안에서의 순서 불변성**을 준다. Sampling으로 선택된 점 자체가 바뀌거나 좌표 변환으로 voxel 소속이 달라지는 것은 별개다. Rotation invariance나 training mode의 stochastic 실행까지 보장하지는 않는다.
 
 ### 8.6 Sparse-to-dense, 3D convolution, BEV RPN
 
-Notebook의 저장 tensor trace는 다음과 같다.
+VFE가 만든 voxel별 vector를 3D grid에 배치하고, 3D convolution으로 주변 voxel과 height 정보를 처리한다. 이후 남은 height axis를 channel에 합쳐 2D BEV RPN에 전달한다. **Height를 처음부터 무시하는 것이 아니라, 처리한 height 정보를 channel 표현에 담는 과정**이다.
+
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Stored VoxelNet tensor shapes</summary>
+
+Notebook에 저장된 한 scene의 tensor trace다. Non-empty voxel 수는 scene마다 달라진다.
 
 | 단계 | Tensor shape | 의미 |
 |---|---|---|
@@ -603,11 +602,13 @@ Notebook의 저장 tensor trace는 다음과 같다.
 | Class output | $$(1,65536)$$ | 3D anchor별 logit |
 | Box output | $$(1,65536,7)$$ | 3D anchor별 7-d offset |
 
-3D convolution이 height 정보를 처리한 뒤 height axis를 channel에 접는다. 이후의 RPN은 2D BEV CNN이다. 이를 `3D 정보를 버린다`고만 표현하면 부정확하다. Height context를 3D convolution으로 섞은 결과를 BEV channel representation으로 바꾼다.
+BEV reshape에서 $$32\times3=96$$이므로 channel 수가 96이 된다. 그 뒤 128×128 위치마다 4개 anchor를 배치해 $$128\times128\times4=65{,}536$$개 prediction을 만든다.
+
+</details>
 
 ### 8.7 3D anchor label과 box target
 
-128×128 output grid의 각 location에 Car 0°·90°, Pedestrian 0°·90° anchor 네 개가 있어 총 65,536개다. 저장 trace의 synthetic scene에는 positive 65, negative 65,374, ignore 97이 있었다.
+128×128 output grid의 각 location에 Car 0°·90°, Pedestrian 0°·90° anchor 네 개가 있어 총 65,536개다.
 
 Anchor와 GT의 BEV IoU threshold는 notebook 설정에서 다음과 같다.
 
@@ -616,7 +617,7 @@ Anchor와 GT의 BEV IoU threshold는 notebook 설정에서 다음과 같다.
 | Car | $$\mathrm{IoU}\ge0.60$$ | $$\mathrm{IoU}<0.45$$ | 그 사이의 non-positive anchor |
 | Pedestrian | $$\mathrm{IoU}\ge0.50$$ | $$\mathrm{IoU}<0.35$$ | 그 사이의 non-positive anchor |
 
-각 GT의 최고-IoU anchor도 overlap이 0보다 크면 positive로 보장한다. Notebook은 rotated overlap을 정확히 계산하지 않고 0°·90°에 가까운 axis-aligned BEV box로 근사한다. 이 label은 KITTI 공식 rotated 3D IoU label assignment 전체를 재현한 것이 아니다.
+각 GT의 최고-IoU anchor도 overlap이 0보다 크면 positive로 보장한다. Notebook의 BEV IoU는 box의 yaw를 0°·90° 방향으로 근사한 axis-aligned overlap이다. 임의 방향 box의 정확한 rotated IoU와 구분한다.
 
 3D target에서 horizontal center는 anchor diagonal $$d_a=\sqrt{l_a^2+w_a^2}$$로 정규화한다.
 
@@ -633,7 +634,7 @@ $$
 \Delta\theta=\theta_g-\theta_a.
 $$
 
-Notebook은 yaw difference를 $$\pi$$ period로 정규화한다. 이 실습 표현은 차량 앞·뒤 방향을 구분하지 않는다는 뜻이다.
+Notebook의 yaw difference는 $$\pi$$ 주기로 정규화되어 앞·뒤가 뒤집힌 box 방향을 같은 것으로 취급한다. 별도 heading 분류기를 쓰는 일반 detector 전체의 성질은 아니다.
 
 ### 8.8 Loss와 class imbalance
 
@@ -645,37 +646,47 @@ L=\frac{\alpha}{N_{pos}}\sum_{i\in pos}L_{cls}(p_i,1)
 +\frac{1}{N_{pos}}\sum_{i\in pos}L_{reg}(u_i,u_i^*).
 $$
 
-Notebook은 $$\alpha=1.5$$, $$\beta=1.0$$을 쓰고 regression은 positive anchor에만 Smooth L1을 적용한다. 저장 trace의 65 positives와 65,374 negatives를 모두 한 번에 평균하면 positive 개수 비율은 약 0.10%다. Positive·negative를 따로 평균하면 $$p=0.5$$인 단순 조건에서 classification 가중치 중 positive 쪽이 $$1.5/(1.5+1)=60\%$$가 된다.
+Notebook은 $$\alpha=1.5$$, $$\beta=1.0$$을 쓰고 regression은 positive anchor에만 Smooth L1을 적용한다. $$N_{pos},N_{neg}$$는 각각 유효 positive·negative 수이며 코드에서는 빈 집합으로 나누지 않도록 각 분모를 최소 1로 제한한다. 별도 평균은 훨씬 많은 negative가 classification loss를 개수만으로 압도하지 않게 한다.
 
-코드는 선택적으로 `CLS_LOSS = "focal"`도 지원하지만 저장 학습 run은 VoxelNet 방식이다. `지원하는 code path`와 `실제로 선택된 run config`를 구분한다.
+<details markdown="block">
+<summary markdown="span">Derivation: Separate positive and negative loss normalization</summary>
+
+저장 trace의 한 scene에는 positive 65개, negative 65,374개, ignore 97개가 있었다. 유효 anchor를 한 번에 평균하면 positive 비율은 $$65/(65+65374)\approx0.10\%$$다.
+
+모든 유효 anchor에서 $$p=0.5$$라고 둔 설명용 조건에서는 BCE가 모두 $$-\log0.5$$로 같다. 별도 평균 후 positive·negative classification 항은 각각 $$1.5(-\log0.5)$$와 $$1.0(-\log0.5)$$다. 따라서 두 classification 항의 합에서 positive 항은 $$1.5/(1.5+1)=60\%$$를 차지한다. 실제 학습에서는 예측값마다 BCE가 달라지므로 60%가 항상 유지되는 것은 아니다.
+
+코드는 `CLS_LOSS = "focal"`도 지원하지만 저장 학습 run의 설정은 `"voxelnet"`이다.
+
+</details>
 
 ### 8.9 Training phase, postprocessing, metric
 
-Training loop은 synthetic train set 600 scenes, batch size 4, 15 epochs, AdamW, left–right flip augmentation과 CUDA에서 mixed precision을 사용한다. Snapshot은 epoch 0, 1, 3, 8, 15에 저장됐다. Score map의 집중과 loss 감소는 optimization 진행의 관찰이지 real-world generalization의 증거가 아니다.
-
-저장 평가의 `postprocess`는 sigmoid score **0.1 초과**, 전체 top 500, 7-d decode, class별 approximate BEV NMS, 장면당 최대 100 detections 순서다. AP와 P/R은 이 후처리에서 남은 prediction set으로 계산한다.
-
-Lab 2 evaluation은 각 scene·class 안에서 prediction을 confidence 순으로 처리하고, 아직 사용하지 않은 같은 class GT 중 BEV center가 가장 가까운 것을 one-to-one match한다. 이후 validation scenes의 prediction을 class별 confidence 순으로 다시 모아 PR curve를 만든다.
+후처리는 class score filtering, 상위 후보 선택, box decode, class별 NMS 순서로 최종 prediction set을 만든다. 평가는 각 scene·class 안에서 prediction을 confidence 순으로 처리하고, 아직 사용하지 않은 같은 class GT 중 BEV center가 가장 가까운 것을 one-to-one match한다. 이후 validation scenes의 prediction을 class별 confidence 순으로 모아 PR curve를 만든다.
 
 - Car: center distance $$<2\ \mathrm{m}$$
 - Pedestrian: center distance $$<1\ \mathrm{m}$$
 - AP: center-distance match의 precision–recall area
 - P@0.5, R@0.5: 위 후처리로 남은 set에서 score threshold 0.5를 적용한 fixed operating point
 
-저장 synthetic validation output의 epoch 15 AP는 Car 0.948, Pedestrian 0.912다. 이는 60개 synthetic validation scenes와 위 후처리·center-distance 규칙에서 얻은 실습 지표다. 이번 가이드 작성 중 notebook을 재실행하지 않았으며 shape, loss, AP 수치는 notebook의 저장 output과 source code를 추적한 값이다. KITTI 공식 rotated 3D IoU AP가 아니며 실제 KITTI test 성능도 아니다.
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Saved training and validation results</summary>
+
+저장 run은 synthetic train 600 scenes, batch size 4, 15 epochs, AdamW와 left–right flip augmentation을 사용했다. CUDA에서는 mixed precision을 쓴다. Snapshot은 epoch 0, 1, 3, 8, 15에 저장됐다.
+
+`postprocess` 설정은 sigmoid score **0.1 초과**, 전체 top 500, 7-d decode, class별 approximate BEV NMS, 장면당 최대 100 detections다. Epoch 15의 AP는 60개 synthetic validation scenes에서 Car 0.948, Pedestrian 0.912였다. 위 center-distance 규칙과 후처리 조건에서 얻은 값이다.
+
+Score map의 집중과 loss 감소는 optimization 진행을 보여 준다. 실제 환경에서의 일반화 성능을 입증하지는 않는다.
+
+</details>
 
 ### 8.10 Synthetic-to-real 경계
 
-Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height, 2 cm range noise와 5% random point loss를 쓴다. Ground, labeled car·pedestrian과 unlabeled building·pole·bush·truck box에 ray를 쏜다. Point가 5개 미만인 labeled object는 training label에서 제외한다.
-
-실제 KITTI에는 simulator가 충분히 재현하지 못한 실제 shape, curved surface, glass transmission, vegetation, road slope, material reflectance, sensor artifact와 scene distribution이 있다. B8은 synthetic-trained snapshot을 real KITTI sample에 적용해 box를 시각화하지만 정량 KITTI metric을 계산하지 않는다. 결과가 보이더라도 `real KITTI에서 검증 완료`로 표현할 수 없다.
+Simulator는 단순화한 물체에 ray를 쏘고 range noise와 point dropout을 추가한다. 실제 환경의 곡면·유리·식생·경사·반사 특성과 장면 분포를 모두 재현하지는 못한다. 이 **domain gap** 때문에 합성 장면에서 잘 학습한 box가 실제 KITTI sample에서는 어긋날 수 있다. B8은 이를 관찰하는 정성 비교다. 실제 데이터로 fine-tuning하고 같은 평가 규칙으로 검증하는 것이 이후 보완 방향이다.
 
 ## 9. 자주 섞이는 개념
 
 | 혼동 | 올바른 구분 |
 |---|---|
-| Assignment 2 = Lab 2 | Assignment 2는 Lab 1의 답변·저장-output notebook이다 |
-| Assignment 3 = Lab 3 | 내부 제목과 내용은 Lab 2 LiDAR 3D detection이다 |
 | Anchor = prediction | Anchor는 기준 box, prediction은 anchor offset을 decode한 box다 |
 | Objectness = class score | RPN objectness는 object proposal 가능성, RoI class score는 class 판정이다 |
 | NMS = evaluation matching | NMS는 prediction끼리 중복 억제, evaluation은 prediction과 GT의 one-to-one matching이다 |
@@ -683,8 +694,6 @@ Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height
 | BEV IoU = 3D IoU | BEV overlap은 height overlap을 직접 포함하지 않는다 |
 | PointNet 순서 불변 = 회전 불변 | Symmetric aggregation은 point order에 대한 invariance다 |
 | VoxelNet = 3D convolution만 | Voxel grouping, VFE, 3D middle layers, BEV RPN, anchor head와 후처리의 전체 흐름이다 |
-| Lab 2 AP = KITTI AP | 저장 AP는 synthetic validation의 center-distance AP다 |
-| KITTI sample 사용 = KITTI training | Part A와 B8만 실제 sample을 사용하고 training은 synthetic이다 |
 
 ## 10. 마지막 핵심 정리
 
@@ -696,39 +705,14 @@ Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height
 6. 3D detector는 raw point, voxel, BEV 또는 image-depth representation 중 계산 중심을 선택한다.
 7. Lab 1은 Faster R-CNN의 proposal–refinement와 RetinaNet의 dense prediction을 같은 image에서 추적한다.
 8. Lab 2는 실제 KITTI 표현 관찰과 synthetic VoxelNet training을 분리한다. 저장 AP는 synthetic center-distance AP다.
-9. Lab 번호와 Assignment 번호를 혼동하지 않는다. Lab 1 base와 Assignment 2 답변본은 같은 lesson이고 Assignment 3은 Lab 2다.
 
 ## Study Guide
 
-### 1회차: 개념 연결
-
-1. Sensor 표와 projection을 읽고 `직접 측정값`, `좌표계`, `실패 조건`을 말한다.
-2. Perception task 표에서 출력 단위를 비교한다.
-3. IoU, NMS, P/R, AP를 `학습`, `후처리`, `평가` 단계에 배치한다.
-4. 2D detector와 3D detector 비교표에서 candidate와 representation을 찾는다.
-
-### 2회차: 수식과 작은 trace
-
-1. Pinhole projection과 stereo $$Z=fB/d$$를 계산한다.
-2. IoU 1개와 AP 1개를 손으로 계산한다.
-3. 2D box encode·decode를 양방향 계산한다.
-4. Voxel index, VFE 7-d input, 3D target의 각 기호를 설명한다.
-
-### 3회차: Lab code path
-
-1. Lab 1을 `image → FPN → anchor → label → prediction → NMS → metric` 순서로 그린다.
-2. Lab 2를 `point → voxel → VFE → dense 3D → 3D conv → BEV → RPN → anchor → NMS` 순서로 그린다.
-3. 각 plot이 보여 주는 관찰과 보여 주지 못하는 결론을 나눈다.
-4. Synthetic train, synthetic validation, real KITTI qualitative transfer를 서로 다른 색으로 표시한다.
-
-### 마지막 점검
-
-- Coordinate 축, box center 기준과 dimension 순서를 말하지 않고 수식만 쓰지 않았는가?
-- IoU가 어떤 두 집합 사이의 값인지 썼는가?
-- AP의 IoU 또는 distance criterion과 dataset split을 썼는가?
-- Two-stage를 backbone 두 번 실행으로 설명하지 않았는가?
-- Lab 2 synthetic AP를 KITTI 공식 성능으로 쓰지 않았는가?
-- Assignment 번호를 Lab 번호로 바꾸지 않았는가?
+- **계산:** projection·stereo depth, IoU·AP, box encode·decode, voxel index를 숫자를 바꿔 직접 계산한다.
+- **비교:** two-stage와 one-stage, semantic과 instance segmentation, image·point·voxel·BEV 표현의 차이를 설명한다.
+- **Lab 1:** image, FPN, anchor, RPN proposal, RoI refinement의 입력·출력을 추적하고 RetinaNet의 dense head와 비교한다.
+- **Lab 2:** point, voxel, VFE, 3D convolution, BEV RPN 순서로 tensor의 축이 어떻게 바뀌는지 설명한다.
+- **평가:** IoU의 비교 대상, AP의 matching 규칙, 사용한 데이터 분포를 명시한다.
 
 ## 복습 질문
 
@@ -796,16 +780,16 @@ Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height
 </details>
 
 <details markdown="block">
-<summary markdown="span">10. Lab 2의 epoch 15 Car AP 0.948을 KITTI 성능으로 인용할 수 없는 이유는?</summary>
+<summary markdown="span">10. 합성 validation AP와 실제 KITTI 적용 결과는 무엇을 각각 보여 주는가?</summary>
 
-답변: 600 synthetic scenes로 학습하고 60 synthetic scenes에서 2 m center-distance matching으로 계산한 실습 AP다. KITTI 공식 rotated 3D IoU AP, 공식 split 또는 test server 결과가 아니다.
+답변: 합성 validation AP는 같은 simulator 분포의 별도 장면에서 center-distance 규칙으로 평가한 성능이다. 실제 KITTI sample에 그린 box는 분포가 달라질 때의 동작을 관찰하는 정성 결과다. KITTI 공식 rotated 3D IoU AP는 별도 데이터와 평가 절차가 필요하다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">11. Lab 1, Assignment 2, Assignment 3의 관계는?</summary>
+<summary markdown="span">11. Mono3D의 class semantic과 instance semantic은 무엇이 다른가?</summary>
 
-답변: Lab 1 base와 Assignment 2는 같은 Two-stage vs One-stage lesson이다. Assignment 2에는 질문 답과 저장 output이 추가됐다. Assignment 3의 내부 제목과 내용이 VoxelNet 중심 Lab 2다.
+답변: Class semantic은 각 pixel의 종류를 구분하고, instance semantic은 같은 종류 안에서도 개체를 나눈다. 차량 두 대가 붙어 있을 때 class 정보만으로는 모두 car지만, instance 정보는 한 후보가 어느 차량 영역에 대응하는지 구분하는 단서가 된다. 둘은 다른 image feature들과 함께 3D 후보의 점수를 매기는 데 쓰인다.
 
 </details>
 
@@ -815,19 +799,6 @@ Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height
 답변: Intrinsic·extrinsic calibration으로 공간 좌표를 맞추고, timestamp·ego motion으로 시간을 맞추며, 같은 proposal 또는 object region을 각 view에서 대응시켜야 한다.
 
 </details>
-
-## Source Scope Map
-
-| 자료 | 이 글의 대응 구간 | 더 자세한 기존 노트 |
-|---|---|---|
-| Lecture 2: Sensors | 1절 | [Sensors for Autonomous Driving](/study/autonomous-driving/lecture-02-sensors/) |
-| Lecture 3: Classification and backbones | 2절 | [Perception I](/study/autonomous-driving/lecture-03-perception-01/) |
-| Lectures 4–7: Detection | 3–4절 | [Perception II](/study/autonomous-driving/lecture-04-perception-02/), [R-CNN and Fast R-CNN](/study/autonomous-driving/lecture-05-perception-03/), [Faster R-CNN and FPN](/study/autonomous-driving/lecture-06-perception-04/), [Single-Stage Detection](/study/autonomous-driving/lecture-07-perception-05/) |
-| Lecture 8: Segmentation | 5절 | [Semantic and Instance Segmentation](/study/autonomous-driving/lecture-08-perception-06/) |
-| Lectures 9–11: 3D perception | 6절 | [Image-Based 3D Detection](/study/autonomous-driving/lecture-09-3d-perception-01/), [LiDAR-Based 3D Detection](/study/autonomous-driving/lecture-10-3d-perception-02/), [Multimodal 3D Detection](/study/autonomous-driving/lecture-11-3d-perception-03/) |
-| Lab 1 base + Assignment 2 answer notebook | 7절 | [Lab 1 study note](/study/autonomous-driving/adc-lab-01-two-stage-vs-one-stage/), [Assignment 2 note](/assignment/autonomous-driving/assignment-02-two-stage-vs-one-stage-detection/) |
-| Assignment 1 AP reconstruction | 3.4절 | [Assignment 1: Average Precision](/assignment/autonomous-driving/assignment-01-average-precision/) |
-| Answer-bearing Assignment 3 notebook whose internal title identifies Lab 2 | 8절 | [Assignment 3: LiDAR 3D Object Detection](/assignment/autonomous-driving/assignment-03-lidar-3d-object-detection/) |
 
 ## Source Materials
 
@@ -850,8 +821,15 @@ Simulator는 64 elevation channels, 0.25° azimuth spacing, 1.73 m sensor height
 
 <ul>
   <li><a href="{{ "/assets/materials/study/autonomous-driving/adc-lab-01-two-stage-vs-one-stage.ipynb" | relative_url }}" download data-no-resource-reader>Lab 1 base notebook — Two-Stage vs One-Stage Object Detection</a></li>
-  <li><a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}" target="_blank" rel="noopener">Lab 1 answers stored as Assignment 2</a></li>
-  <li><a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-03-lidar-3d-object-detection.ipynb" | relative_url }}" target="_blank" rel="noopener">Answer-bearing Assignment 3 notebook whose internal title identifies Lab 2</a></li>
+  <li><a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-02-two-stage-vs-one-stage.ipynb" | relative_url }}" target="_blank" rel="noopener">Lab 1 — Solutions and Outputs</a></li>
+  <li><a href="{{ "/assets/notebooks/study/autonomous-driving/assignment-03-lidar-3d-object-detection.ipynb" | relative_url }}" target="_blank" rel="noopener">Lab 2 — LiDAR 3D Object Detection</a></li>
 </ul>
 
-AP 계산은 비식별화한 기존 Assignment 1 학습 노트와 이 글의 독립 계산으로 제공한다.
+### Detailed Notes
+
+- [Lecture notes and course materials](/study/autonomous-driving/)
+- [Assignment 1: Average Precision](/assignment/autonomous-driving/assignment-01-average-precision/)
+- [Lab 1: Two-Stage vs One-Stage Detection](/assignment/autonomous-driving/assignment-02-two-stage-vs-one-stage-detection/)
+- [Lab 2: LiDAR 3D Object Detection](/assignment/autonomous-driving/assignment-03-lidar-3d-object-detection/)
+
+Notebook의 그림·tensor shape·학습 수치는 저장된 출력과 코드에 근거하며, 이 총정리를 위해 새로 실행한 결과가 아니다. AP 손계산과 작은 수치 예시는 본문 조건으로 별도 계산한 것이다.
