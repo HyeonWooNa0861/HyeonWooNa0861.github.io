@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 18:03:25 +0900
 title: "Lecture 10: LiDAR-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Point Clouds, PointNet++, PointRCNN, VoxelNet, and PIXOR"
@@ -49,7 +49,7 @@ $$
 $$N$$은 점의 개수로 무차원이고, $$(x_i,y_i,z_i)$$는 센서 좌표계에서의 위치로 보통 meter 단위를 쓴다. 행렬로 저장하더라도 본질은 **집합**이다. 같은 점들을 다른 행 순서로 저장해도 같은 장면이어야 한다. 슬라이드 10쪽이 제시한 세 가지 난점은 여기에서 나온다.
 
 1. **가변 크기:** 프레임마다 유효한 점의 수 $$N$$이 달라진다.
-2. **순열 불변성:** 입력 행의 순서를 바꿔도 출력이 같아야 한다.
+2. **순열 불변성:** 같은 점들의 저장 순서만 바꾸면 전역 표현과 물체 분류 결과가 같아야 한다.
 3. **기하 변환 처리:** 센서 또는 물체 자세가 바뀌어도 의미를 안정적으로 추출해야 한다.
 
 두 번째 조건은 임의의 순열 $$\pi$$에 대해 다음처럼 쓸 수 있다.
@@ -68,7 +68,11 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=12" | relative_url }}">lecture PDF, p. 12</a>.</figcaption>
 </figure>
 
-각 점에 같은 MLP를 적용한 뒤 max pooling으로 점 순서에 무관한 global feature를 만든다. 아래 segmentation 경로는 이 global feature를 각 점의 local feature와 이어 붙여 점별 class를 예측한다. n×64와 1024-dimensional global feature를 결합하면 점마다 1088차원이 된다. T-Net은 정렬을 학습하는 장치이지 모든 회전에 대한 불변성을 자동 보장하는 증명은 아니다.
+그림의 위쪽 classification 경로를 왼쪽부터 읽으면 **점별 특징 추출 → 점 전체의 집계 → 물체 분류**로 이어진다. 입력의 $$n\times3$$에서 $$n$$은 점 수이고 3은 좌표 성분 수다. Shared MLP는 모든 점에 같은 가중치를 적용한다. $$n\times1024$$까지는 점마다 1024개 특징이 있지만, max pool이 점 축을 따라 각 특징의 최댓값을 고르면 점 수와 무관한 길이 1024의 global feature가 된다. 그림의 소문자 $$n$$과 본문의 $$N$$은 같은 점 수를 뜻한다.
+
+아래 segmentation 경로에서는 global feature를 각 점의 local feature와 이어 붙여 점별 class를 예측한다. $$n\times64$$ local feature의 각 행에 길이 1024의 global feature를 붙이므로 $$n\times1088$$이 된다. 위쪽은 물체 전체에 하나의 class score vector를, 아래쪽은 각 점에 하나씩 score vector를 만든다는 차이가 있다.
+
+이 구조는 10쪽의 세 조건에 서로 다르게 대응한다. **가변 점 수는 점 축을 줄이는 pooling으로, 순열 불변성은 shared MLP와 대칭 집계로 처리한다. 회전에는 T-Net의 학습된 정렬로 대응하지만, 엄밀한 회전 불변성을 보장하지는 않는다.** 실제 학습 구현에서 batch를 만들기 위해 일정 개수의 점을 sampling하는 것은 구조가 가변 점 수를 처리할 수 있다는 성질과 별개다.
 
 슬라이드 11–12쪽의 PointNet은 모든 점에 같은 함수 $$h$$를 적용하고, 점 순서와 무관한 max pooling으로 전역 feature를 만든다. 분류용 핵심 구조는 다음처럼 요약할 수 있다.
 
@@ -78,25 +82,89 @@ $$
 \hat{\mathbf{y}}=\gamma(\mathbf{g})
 $$
 
-여기서 $$h:\mathbb{R}^{d}\rightarrow\mathbb{R}^{K}$$는 점별 shared MLP, $$\operatorname{MAX}$$는 $$K$$개 feature 차원마다 모든 점의 최댓값을 취하는 연산, $$\gamma$$는 전역 feature를 class score로 바꾸는 MLP다. $$d,K,N$$은 차원 또는 개수로 무차원이다. 같은 $$h$$를 모든 점에 적용하고 max의 입력 순서는 결과에 영향을 주지 않으므로 이 구조는 행 순열에 불변이다. 이는 [PointNet 원 논문](https://arxiv.org/abs/1612.00593){:target="_blank" rel="noopener"}의 대칭 함수 구성과 일치한다.
+여기서 $$h:\mathbb{R}^{d}\rightarrow\mathbb{R}^{K}$$는 점별 shared MLP, $$\operatorname{MAX}$$는 $$K$$개 feature 차원마다 모든 점의 최댓값을 취하는 연산, $$\gamma$$는 전역 feature를 class score로 바꾸는 MLP다. $$d,K,N$$은 차원 또는 개수로 무차원이며 학습된 feature도 무차원 값이다. 이 식은 정렬 이후의 분류 경로를 요약한 것이다. 비어 있지 않은 입력에서 $$N\times d\rightarrow N\times K\rightarrow K$$로 점 축을 제거하므로 $$N$$이 달라도 분류기에 들어가는 feature 길이는 같다. **길이가 같다는 뜻이지, 점을 추가·제거해도 feature 값이나 예측이 같다는 뜻은 아니다.** 이는 [PointNet 원 논문](https://arxiv.org/abs/1612.00593){:target="_blank" rel="noopener"}의 대칭 함수 구성과 일치한다.
 
 ### 2.1 작은 수치 예제
 
-작성자 보충으로 세 점의 point-wise feature가 아래와 같다고 하자.
+Shared MLP와 max pooling의 역할을 분리해 보기 위한 작성자 예제다. 세 점의 학습된 point-wise feature가 아래와 같다고 하자. 좌표 자체가 아니라 MLP를 통과한 2차원 특징 값이다.
 
 $$
-h(\mathbf{p}_1)=(1,4),\qquad
-h(\mathbf{p}_2)=(3,2),\qquad
-h(\mathbf{p}_3)=(2,5)
+\begin{aligned}
+h(\mathbf{p}_1)&=(1,4)\\
+h(\mathbf{p}_2)&=(3,2)\\
+h(\mathbf{p}_3)&=(2,5)
+\end{aligned}
 $$
 
-차원별 max pooling은 $$\mathbf{g}=(3,5)$$다. 입력 순서를 $$\mathbf{p}_3,\mathbf{p}_1,\mathbf{p}_2$$로 바꾸어도 결과는 같다. 반면 두 번째 feature 차원의 최댓값 5를 만드는 점 $$\mathbf{p}_3$$가 사라지면 결과가 바뀐다. Max pooling은 순서를 제거하지만 모든 점의 세부 관계를 보존하는 연산은 아니다.
+첫 번째 특징에서는 세 값 1, 3, 2를, 두 번째 특징에서는 4, 2, 5를 비교한다.
 
-분할에서는 전역 feature만으로 각 점의 label을 낼 수 없다. 슬라이드 11쪽 아래 경로처럼 전역 feature를 각 점의 local feature와 이어 붙이고, 다시 shared MLP를 적용해 point-wise score를 만든다. 그래서 PointNet 한 구조가 object classification, part segmentation, scene semantic segmentation에 쓰일 수 있다(10–11쪽).
+$$
+\mathbf{g}=(\max(1,3,2),\max(4,2,5))=(3,5)
+$$
+
+첫 번째 최댓값 3은 $$\mathbf{p}_2$$에서, 두 번째 최댓값 5는 $$\mathbf{p}_3$$에서 가져온다. **가장 큰 점 하나를 고르는 연산이 아니라 특징 차원마다 따로 최댓값을 고르는 연산**이다.
+
+입력 순서를 $$\mathbf{p}_3,\mathbf{p}_1,\mathbf{p}_2$$로 바꾸면 shared MLP는 각 점에 전과 같은 함수를 적용한다. 따라서 특징 값은 바뀌지 않고 나열 순서만 달라진다.
+
+$$
+\mathbf{g}'=(\max(2,1,3),\max(5,4,2))=(3,5)
+$$
+
+두 경우 모두 분류기는 같은 $$(3,5)$$를 받는다. 반면 $$\mathbf{p}_3$$를 제거하면 global feature는 $$(3,4)$$로 바뀐다. 점이 두 개여도 출력은 여전히 2차원이지만, 두 번째 특징의 최댓값은 달라진다. 이 계산은 정렬 이후 특징을 고정해 pooling만 비교한 예다. 전체 모델에서는 점의 추가·제거가 T-Net의 정렬에도 영향을 줄 수 있다.
+
+Shared MLP도 필요한 조건이다. 첫 번째 행과 두 번째 행에 서로 다른 함수를 적용한다면 점을 재배열할 때 특징 값 자체가 달라질 수 있으므로, 마지막에 max를 쓰는 것만으로는 순열 불변성을 보장할 수 없다.
+
+분할에서는 global feature를 각 점의 local feature와 이어 붙이고 shared MLP로 point-wise score를 만든다. 입력을 재배열하면 **같은 점에 붙는 예측은 유지되지만 출력 행도 함께 재배열된다.** 이를 순열 등변성(permutation equivariance)이라 한다. 물체 전체의 분류 결과가 그대로인 순열 불변성과 구분해야 한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Permutation-invariant pooling and equivariant segmentation</summary>
+
+다음은 shared point function과 coordinate-wise max의 성질을 보이는 작성자 보충 증명이다. 학습된 함수를 고정한 추론에서 같은 비어 있지 않은 점 집합의 순서만 바꾼다고 가정한다. $$\pi$$는 $$1,\ldots,N$$을 한 번씩 재배열하는 순열이고, $$h_k$$는 $$K$$차원 특징 중 $$k$$번째 성분이다. Index와 특징 값은 모두 무차원이다.
+
+원래 순서의 $$k$$번째 global feature는 다음과 같다.
+
+$$
+g_k=\max_{1\le i\le N}h_k(\mathbf{p}_i)
+$$
+
+순서를 바꾸어도 같은 $$h$$를 적용하므로 바뀌는 것은 index뿐이다. $$\pi$$가 모든 index를 정확히 한 번씩 방문하므로 최댓값의 후보 집합도 같다.
+
+$$
+\begin{aligned}
+g'_k
+&=\max_{1\le i\le N}h_k(\mathbf{p}_{\pi(i)})\\
+&=\max_{1\le j\le N}h_k(\mathbf{p}_j)=g_k
+\end{aligned}
+$$
+
+모든 $$k$$에서 같으므로 $$\mathbf{g}'=\mathbf{g}$$이고, 같은 분류 함수에 넣으면 $$\gamma(\mathbf{g}')=\gamma(\mathbf{g})$$다. 최댓값을 만드는 점이 여러 개여도 최댓값 자체는 같으므로 결론은 유지된다.
+
+T-Net도 내부에서 shared point function과 대칭 max로 전체 입력을 요약해 하나의 변환 행렬을 예측한다. 따라서 같은 점들의 순서만 바꾸면 같은 변환을 예측하고, 변환 후 각 점의 특징도 순서만 달라진다. 위 논리는 T-Net을 포함한 경로에도 적용된다.
+
+Segmentation에서 $$\boldsymbol{\ell}_i$$를 점 $$i$$의 local feature, $$\psi$$를 모든 점에 공유하는 예측 함수라 하면 점별 score는 다음과 같다. $$[\,\cdot\,;\,\cdot\,]$$는 벡터 이어 붙이기다.
+
+$$
+\mathbf{q}_i=\psi([\boldsymbol{\ell}_i;\mathbf{g}])
+$$
+
+재배열 뒤에는 local feature가 $$\boldsymbol{\ell}_{\pi(i)}$$가 되고 global feature는 그대로다. 따라서
+
+$$
+\mathbf{q}'_i=\psi([\boldsymbol{\ell}_{\pi(i)};\mathbf{g}])
+=\mathbf{q}_{\pi(i)}
+$$
+
+가 된다. 예제의 순서가 3, 1, 2로 바뀌면 score의 순서도 $$\mathbf{q}_3,\mathbf{q}_1,\mathbf{q}_2$$로 바뀐다. 이 증명은 같은 점 집합의 순열에 관한 것이다. 점의 추가·제거, 좌표 회전, 서로 다른 sampling 결과가 같은 예측을 낸다는 증명은 아니다.
+
+</details>
 
 ### 2.2 T-Net의 역할과 회전 불변성의 한계
 
-PointNet의 input transform과 feature transform은 작은 PointNet인 T-Net이 affine transformation matrix를 예측해 입력 또는 중간 feature를 정렬하는 장치다(11쪽). Feature transform $$A$$에는 원 논문이 다음 정규화를 더한다.
+그림 왼쪽 아래 T-Net은 입력 좌표용 $$3\times3$$ 행렬을, 그 옆 T-Net은 중간 특징용 $$64\times64$$ 행렬을 예측한다. 각 행렬을 모든 점에 공통으로 곱해 좌표 또는 특징을 정렬한다. 점을 열벡터로 쓰면 입력 정렬은 $$\mathbf{p}'_i=A_{\mathrm{in}}\mathbf{p}_i$$다. $$A_{\mathrm{in}}$$은 무차원이며 회전 각도를 미리 알아서 넣는 역회전 행렬이 아니라, 입력 점 집합을 보고 T-Net이 학습해 예측하는 행렬이다.
+
+**순열은 같은 좌표를 다른 순서로 놓지만, 회전은 좌표 값 자체를 바꾼다.** 따라서 순열에 불변인 max pooling만으로 회전까지 제거할 수는 없다. T-Net은 서로 다른 자세의 입력을 비슷한 기준으로 정렬하도록 학습하고, 원 논문은 회전 data augmentation도 사용한다. 이런 학습은 자세 변화에 대한 강건성을 높이려는 방법이지, 모든 회전에 대해 정확히 같은 출력이 나온다는 수학적 보장은 아니다.
+
+Feature transform $$A$$에는 원 논문이 다음 정규화를 더한다.
 
 $$
 \mathcal{L}_{\mathrm{reg}}=\left\lVert I-AA^{\top}\right\rVert_{F}^{2}
@@ -104,14 +172,21 @@ $$
 
 $$I$$는 identity matrix, $$A$$는 학습한 feature transform, $$\lVert\cdot\rVert_F$$는 Frobenius norm이며 모두 모델 내부의 무차원 값이다. 이 항은 $$A$$가 지나친 왜곡보다 orthogonal transform에 가까워지도록 유도한다. 그러나 이는 모든 3D 회전에 대해 출력이 같다는 **엄밀한 회전 불변성 보장**이 아니다. 슬라이드 10쪽의 “rotation invariant”는 학습 목표 또는 바람직한 성질로 읽어야 하며, T-Net은 정렬을 학습해 민감도를 낮추는 방법이다.
 
-Frobenius norm을 원소별로 풀면 이 목적의 의미가 더 분명해진다.
+<details markdown="block">
+<summary markdown="span">Derivation: What the orthogonality regularizer enforces</summary>
+
+다음은 정규화 항의 의미를 확인하는 작성자 보충 유도다. $$A$$는 학습된 실수 정방행렬이며, $$\mathbf{a}_i$$는 $$i$$번째 행의 성분을 열벡터로 모은 것이다. Frobenius norm의 정의에 따라 각 원소의 제곱을 더하면 다음 정확한 등식을 얻는다.
 
 $$
 \left\lVert I-AA^{\top}\right\rVert_F^{2}
 =\sum_{i}\sum_{j}\left(I_{ij}-\mathbf{a}_i^{\top}\mathbf{a}_j\right)^2
 $$
 
-$$\mathbf{a}_i$$는 $$A$$의 $$i$$번째 행이다. 손실이 0이 되려면 $$AA^{\top}=I$$여야 하므로 같은 행의 내적은 1, 서로 다른 행의 내적은 0이다. 즉 행들이 unit length이고 서로 orthogonal한 square matrix를 선호한다. 이 정규화는 변환이 길이·각도를 심하게 찌그러뜨리지 않도록 하는 **설계 목적함수**다. 입력의 임의 회전 $$R$$에 대해 모델 출력이 항상 $$f(R\mathcal{P})=f(\mathcal{P})$$임을 증명하는 식은 아니다.
+각 제곱 항은 음수가 아니므로 합이 0인 것과 $$AA^{\top}=I$$인 것은 동치다. 이때 같은 행의 내적은 1, 서로 다른 행의 내적은 0이므로 행들이 unit length이고 서로 orthogonal하다. 단위행렬을 넣으면 손실은 0이다. 검산으로 $$A=2I$$를 넣으면 $$AA^{\top}=4I$$여서, 행렬 크기가 $$r\times r$$일 때 손실은 $$9r$$이다. $$r$$도 무차원이다.
+
+실제 학습에서는 이 항과 주어진 task의 손실을 함께 줄이므로 정규화 손실이 정확히 0이 된다는 보장도 없다. 이 항은 특징 공간에서 길이·각도의 지나친 왜곡을 억제하는 **설계 목적함수**이며, 입력의 임의 회전 $$R$$에 대해 $$f(R\mathcal{P})=f(\mathcal{P})$$임을 증명하는 식은 아니다.
+
+</details>
 
 ### 2.3 왜 local structure가 약한가
 

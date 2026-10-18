@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-18 16:22:58 +0900
+last_modified_at: 2026-10-18 18:03:25 +0900
 title: "Autonomous Driving Computing Midterm Review through Lab 2"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -343,7 +343,13 @@ $$
 | VoxelNet | 3D voxel | VFE, sparse-to-dense, 3D convolution, BEV RPN | Learned voxel feature. Dense 3D 계산 비용 |
 | PIXOR | BEV height-slice grid | 2D CNN dense oriented box detection | 빠른 BEV 처리. Vertical detail을 channel로 요약 |
 
-PointNet의 permutation invariance는 input point 순서를 바꿔도 shared point function과 symmetric max 결과가 같다는 뜻이다. 모든 rotation·translation에 자동으로 invariant하다는 뜻은 아니다. PointNet++는 local neighborhood를 계층적으로 모아 PointNet의 local structure 약점을 보완한다.
+PointNet이 point cloud의 세 조건을 처리하는 방식은 구분해야 한다.
+
+- **가변 점 수:** 각 점에 shared MLP를 적용하고 점 축으로 max pooling하면, 점 수 $$N$$이 달라도 global feature 길이 $$K$$는 같다. 점을 추가·제거해도 특징 값이나 예측이 같다는 뜻은 아니다.
+- **순열 불변성:** 같은 점들을 재배열하면 shared MLP의 특징도 순서만 바뀐다. 각 특징 차원에서 max의 후보 값은 같으므로 global feature와 물체 분류 결과는 그대로다. 점별 segmentation 결과는 입력과 함께 재배열되는 순열 등변성을 갖는다.
+- **회전 대응:** T-Net이 입력·특징의 정렬을 학습하지만 모든 회전에 대한 엄밀한 불변성을 보장하지는 않는다. 점 순서의 변경과 좌표 값의 회전은 다른 연산이다.
+
+PointNet++는 local neighborhood를 계층적으로 모아 PointNet의 local structure 약점을 보완한다.
 
 ### 6.4 Camera–LiDAR fusion
 
