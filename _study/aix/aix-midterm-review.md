@@ -2,7 +2,7 @@
 layout: default
 date: 2026-06-07 19:26:36 +0900
 last_modified_at: 2026-10-16 18:47:16 +0900
-title: "AIX Midterm Review"
+title: "AIX: Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
 order: 11
@@ -15,7 +15,7 @@ keywords:
   - "NLP"
 ---
 
-# AIX Midterm Review
+# AIX: Midterm Review
 
 Source Images:
 

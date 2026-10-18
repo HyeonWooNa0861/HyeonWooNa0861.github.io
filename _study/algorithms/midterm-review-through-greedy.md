@@ -1,8 +1,8 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
-last_modified_at: 2026-10-18 16:43:00 +0900
-title: "Algorithms Midterm Review: Analysis through Greedy Algorithms"
+last_modified_at: 2026-10-18 19:51:32 +0900
+title: "Algorithms: Midterm Review"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
 order: 12
@@ -18,7 +18,13 @@ keywords:
   - "Greedy Algorithms"
 ---
 
-# Algorithms Midterm Review: Analysis through Greedy Algorithms
+# Algorithms: Midterm Review
+
+## Presentation
+
+[View slides (PDF)]({{ "/assets/pdfs/study/algorithms/algorithms-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/algorithms/algorithms-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
+
+25장으로 분석·정렬·선택·DP·Greedy와 Practice·Assignment의 핵심 계산을 정리했다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 증명과 풀이 과정은 아래 본문에서 이어진다.
 
 Source PDFs:
 

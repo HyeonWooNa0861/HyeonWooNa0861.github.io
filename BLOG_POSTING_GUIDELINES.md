@@ -386,6 +386,7 @@ Source PDF: `원문 파일명.pdf`
 Study 구조 규칙:
 
 - 제목은 영어로 작성하고, 파일명은 영문 kebab-case를 사용한다.
+- 과목별 중간고사 총정리의 front matter `title`과 본문 H1은 `<Course Name>: Midterm Review`로 통일한다. 과목명은 기존 영문 명칭을 유지하고, 시험 범위는 제목의 접미사 대신 `topic`과 본문에 명시한다. 제목을 직접 적은 내부 링크도 함께 갱신하되 기존 파일명·URL·최초 등록 시각은 보존한다. 개별 퀴즈·과제·정답지는 총정리로 이름을 바꾸지 않는다.
 - 제목과 파일명에서 `요약`, `정리본` 같은 표현은 가능하면 빼고 주제명만 남긴다.
 - 원문이 PDF이면 상단에 `Source PDF:` 형식으로 파일명을 명시하고, 사용자가 제공해 게시를 요청한 원문은 하단 `## PDF`에서 같은 공개 자산을 링크한다. 외부에서 별도로 수집해 재배포 근거가 확인되지 않은 PDF는 파일명과 공식 원문 URL을 `## Source Materials`에 연결하며, 획일적인 `locally supplied; not redistributed` 문구는 넣지 않는다.
 - 원문이 영상·웹 문서·이미지이면 `Source:`, `Source Materials:`, `Source Images:` 중 자료 유형에 맞는 표기를 사용하고, 하단에는 `## References` 또는 `## Source Materials`로 원문 링크를 제공한다. PDF가 없는 자료에 `Source PDF`나 `## PDF`를 만들지 않는다.

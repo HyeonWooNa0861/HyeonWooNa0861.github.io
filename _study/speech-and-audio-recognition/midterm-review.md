@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 19:27:29 +0900
+last_modified_at: 2026-10-18 19:51:32 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -21,6 +21,12 @@ keywords:
 ---
 
 # Speech and Audio Recognition: Midterm Review
+
+## Presentation
+
+[View slides (PDF)]({{ "/assets/pdfs/study/speech-and-audio-recognition/sar-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/speech-and-audio-recognition/sar-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
+
+25장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source PDFs:
 
@@ -338,6 +344,8 @@ $$
 </figure>
 
 가로축은 네 frame, 세로축은 blank를 끼운 정답 상태다. 마지막 `b`와 마지막 blank에 도착한 확률 0.2835와 0.1308을 합하면 정답 `ab`의 확률 0.4143이다. 중간 상태의 값은 그 상태로 끝나는 여러 경로의 누적 합이다. 아래의 더 작은 보강 예제도 같은 규칙으로 계산된다.
+
+원본 그림 오른쪽의 합산식에 적힌 `0.1038`은 `0.1308`의 오기다. Trellis의 마지막 blank 값과 일치하는 계산은 `0.2835 + 0.1308 = 0.4143`이다.
 
 정답 `AB`를 $$z=(\epsilon,A,\epsilon,B,\epsilon)$$으로 확장한다. $$\alpha_{t,s}$$는 frame $$t$$까지 처리하고 상태 $$s$$에서 끝나는 **유효 부분 경로 확률의 합**이다. 각 칸은 이전의 stay, 한 칸 전진, 조건부 두 칸 건너뛰기에서 들어온 합에 현재 frame 확률을 곱한다.
 

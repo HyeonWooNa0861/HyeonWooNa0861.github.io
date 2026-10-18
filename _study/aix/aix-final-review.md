@@ -21,13 +21,13 @@ Source Materials:
 
 <ul>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-before-midterm/" | relative_url }}">AIX Quiz Review Before Midterm</a></li>
-  <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX Midterm Review</a></li>
+  <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX: Midterm Review</a></li>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-after-midterm/" | relative_url }}">AIX Quiz Review After Midterm</a></li>
   <li><a href="{{ "/study/aix/robotics-1/" | relative_url }}">Robotics 1</a></li>
   <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
 
-기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행한다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룬다.
+기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX: Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행한다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룬다.
 
 중간고사 전 범위에서는 기본 개념과 오답을 가르는 기준을 확인한다. 중간고사 이후 범위에서는 LLM, 자율주행, imitation learning, robotics scaling의 연결을 더 깊게 살펴본다.
 
@@ -682,7 +682,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 <ul>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-before-midterm/" | relative_url }}">AIX Quiz Review Before Midterm</a></li>
-  <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX Midterm Review</a></li>
+  <li><a href="{{ "/study/aix/aix-midterm-review/" | relative_url }}">AIX: Midterm Review</a></li>
   <li><a href="{{ "/assignment/aix/aix-quiz-review-after-midterm/" | relative_url }}">AIX Quiz Review After Midterm</a></li>
   <li><a href="{{ "/study/aix/robotics-1/" | relative_url }}">Robotics 1</a></li>
   <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>

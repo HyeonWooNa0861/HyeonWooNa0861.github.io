@@ -1,8 +1,8 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-18 19:13:20 +0900
-title: "Autonomous Driving Computing Midterm Review through Lab 2"
+last_modified_at: 2026-10-18 19:51:32 +0900
+title: "Autonomous Driving Computing: Midterm Review"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
 order: 14
@@ -19,7 +19,13 @@ keywords:
   - "Sensor Fusion"
 ---
 
-# Autonomous Driving Computing Midterm Review through Lab 2
+# Autonomous Driving Computing: Midterm Review
+
+## Presentation
+
+[View slides (PDF)]({{ "/assets/pdfs/study/autonomous-driving/adc-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/autonomous-driving/adc-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
+
+26장으로 센서·2D/3D perception·Lab 1–2의 핵심 그림과 계산 예제를 정리했다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source Materials: Lectures 2–11, Labs 1–2, and Assignment 1 (Average Precision).
 

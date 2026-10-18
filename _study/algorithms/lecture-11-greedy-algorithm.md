@@ -549,7 +549,7 @@ assert select_max_meetings([(1, 1), (0, 1)]) == [(0, 1), (1, 1)]
 ## Related Notes
 
 - [Lecture 10: Dynamic Programming II]({{ "/study/algorithms/lecture-10-dynamic-programming-02/" | relative_url }})
-- [Algorithms Midterm Review: Analysis through Greedy Algorithms]({{ "/study/algorithms/midterm-review-through-greedy/" | relative_url }})
+- [Algorithms: Midterm Review]({{ "/study/algorithms/midterm-review-through-greedy/" | relative_url }})
 
 ## PDF
 
