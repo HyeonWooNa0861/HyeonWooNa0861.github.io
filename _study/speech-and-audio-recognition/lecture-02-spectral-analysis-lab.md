@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-18 22:46:16 +0900
+last_modified_at: 2026-10-18 23:07:10 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -122,7 +122,7 @@ PDF pp.4–8의 신호는 $$x(t)=10\sin(2\pi10t)+3\sin(2\pi100t)$$다. Sampling 
 
 ### 2.1 프레임·hop·주파수 bin의 좌표
 
-전체 녹음의 DFT는 성분의 존재를 알려 주지만 그 소리가 **언제** 났는지는 잃는다. PDF pp.9–10은 길이 1024표본의 창을 256표본씩 옮기는 그림으로 STFT를 도입한다. 아래는 창 길이 $$L$$, hop $$H$$, FFT 길이 $$N_{\mathrm{FFT}}\ge L$$, 창 $$w[r]$$에 대한 작성자 표기다.
+전체 녹음의 magnitude spectrum만으로는 각 성분이 **언제** 나타났는지 직접 읽기 어렵다. 복소 DFT 전체는 원 표본을 복원할 수 있지만, 시간에 따른 주파수 변화를 한눈에 보여 주는 표현은 아니다. PDF pp.9–10은 길이 1024표본의 창을 256표본씩 옮기는 그림으로 STFT를 도입한다. 아래는 창 길이 $$L$$, hop $$H$$, FFT 길이 $$N_{\mathrm{FFT}}\ge L$$, 창 $$w[r]$$에 대한 작성자 표기다.
 
 $$
 S[m,k]=\sum_{r=0}^{L-1}x[mH+r]w[r]e^{-j2\pi kr/N_{\mathrm{FFT}}}.
@@ -169,6 +169,20 @@ $$
 가 되며, 분모가 0인 점은 연속 극한으로 정의한다. $$\omega$$는 rad/sample로 무차원이고 이 응답은 $$2\pi$$-주기인 Dirichlet-kernel 형태다. 연속 sinc의 직관은 도움이 되지만 이산 식의 주기성과 정확한 영점은 이 식으로 확인한다. MIT의 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">Fourier Transform Lecture 4, pp.2–4</a>는 연속 rectangular pulse 적분을 전개한다.
 
 </details>
+
+### Window를 곱하는 목적: 짧은 구간의 주파수 성분을 분석하기
+{: #window-purpose}
+
+**Window는 파형의 짧은 구간을 선택하고, 그 안의 표본에 시간 위치별 가중치를 주는 함수다.** 음성은 발음에 따라 성질이 바뀐다. 짧은 구간마다 분석하면 서로 다른 발음의 주파수 패턴을 한 번의 계산에 모두 섞지 않을 수 있다. 이때 **구간의 길이**는 얼마 동안 관측할지, **창의 모양**은 구간 중심과 가장자리를 얼마나 반영할지 정한다.
+
+아무 창도 쓰지 않고 길이 $$L$$만 잘랐다고 해도 rectangular window를 적용한 셈이다. 문제가 되는 것은 원래 소리의 시작·끝이 아니라 **분석을 위해 임의로 자른 경계**다. 앞의 경계·leakage 설명처럼, Hann은 가장자리의 기여를 낮춰 먼 주파수로 퍼지는 영향을 줄이는 선택이며 가까운 peak를 구별하는 능력과는 절충 관계에 있다.
+
+작성자 계산 예제로 5개 표본에 대칭 Hann을 적용해 보자. 무차원 표본 값이 모두 2이면 입력은 **[2, 2, 2, 2, 2]**, 창 가중치는 **[0, 0.5, 1, 0.5, 0]**, 곱한 결과는 **[0, 1, 2, 1, 0]**이다. 중심은 그대로 두고 가장자리로 갈수록 기여를 낮춘다. 이것은 창의 곱셈을 보여 주는 예이지 잡음을 제거한 실험이 아니다. 이득 보정 없이 peak가 작아진 것만 보고 소리가 약해졌거나 잡음이 제거됐다고 해석해서는 안 된다. 대칭형 정의와 FFT용 주기형의 구분은 <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.hann.html" target="_blank" rel="noopener">SciPy Hann 문서</a>에서도 확인할 수 있다.
+
+실제 설정의 역할도 나누어 읽는다. 작성자 예시로 16 kHz 신호에서 400표본 창·160표본 hop·512-point FFT를 사용하면, **25 ms를 관측하고 10 ms마다 결과를 계산하며, 31.25 Hz 간격으로 spectrum을 표시한다.** Hop을 줄이면 출력 시점이 촘촘해질 뿐 25 ms 안의 정보가 더 짧은 관측으로 바뀌지는 않는다. FFT 길이만 늘리는 zero-padding도 새로운 관측 정보를 만들지 않는다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.stft.html" target="_blank" rel="noopener">librosa STFT의 창 길이·hop·FFT 길이 정의</a>는 이 세 설정을 별도로 다룬다.
+
+**Window는 anti-alias filter도, 음성과 잡음을 판별하는 mask도 아니다.** Sampling 전에 생길 주파수 겹침은 대역 제한과 sampling rate로 관리한다. Hann은 이미 얻은 표본의 분석 경계를 다룬다. 겹치는 여러 프레임과 복소 계수를 보존하면 아래 iSTFT 조건에 따라 파형을 복원할 수 있으므로, 한 프레임의 가장자리 가중치가 0이라는 사실만으로 전체 STFT가 반드시 정보를 잃는다고 단정하지 않는다.
+
 
 ### 2.3 Magnitude·phase·dB와 iSTFT의 경계
 
@@ -236,7 +250,7 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02-2.pdf#page=17" | relative_url }}">lecture PDF, p. 17</a>.</figcaption>
 </figure>
 
-왼쪽 삼각형 하나는 여러 FFT bin의 power에 서로 다른 가중치를 주어 한 Mel band로 합치는 필터다. 높은 주파수로 갈수록 넓어지는 필터가 원래 주파수 구간을 더 크게 묶는다. 오른쪽 위·아래의 차이는 색에 로그를 취한 것만이 아니라 세로축의 집계 단위도 바꾼 결과다. 여러 bin을 하나로 합쳤으므로 원래 세부 주파수 값을 유일하게 복원할 수 없다.
+왼쪽 삼각형 하나는 여러 FFT bin의 power에 서로 다른 가중치를 주어 한 Mel band로 합치는 필터다. 높은 주파수로 갈수록 넓어지는 필터가 원래 주파수 구간을 더 크게 묶는다. 오른쪽 위·아래의 차이는 색에 로그를 취한 것만이 아니라 세로축의 집계 단위도 바꾼 결과다. 일반적으로 band 수를 bin 수보다 적게 설정하면, 집계된 값만으로 원래 세부 주파수 값을 유일하게 복원할 수 없다.
 
 PDF p.16의 곡선은 Hz의 같은 차이가 모든 주파수에서 같은 지각 차이로 들리지 않는다는 동기를 준다. 여기서 '사람이 소리를 log-scale로 듣는다'는 말은 **지각적 pitch 척도를 설명하는 근사**이지 loudness까지 같은 공식으로 설명하거나 개인·음량·실험 조건과 무관한 보편 법칙은 아니다. 슬라이드가 제시한 HTK 계열의 한 mel 정의는
 
@@ -255,6 +269,53 @@ L[m,b]=\log\bigl(\max(M[m,b],\epsilon)\bigr)
 $$
 
 이다. $$b$$는 band index이고 $$M$$은 power에 filter weight를 곱해 더한 값이다. `log`의 정의역을 위한 $$\epsilon>0$$가 필요하다. Power 대신 magnitude를 쓰거나 triangle을 peak 1로 둘지 면적 정규화할지에 따라 수치가 달라진다. <a href="https://librosa.org/doc/main/api/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa mel-spectrogram 문서</a>의 `power`와 `norm='slaney'`는 서로 다른 선택 축이다. p.18의 원본 Hz spectrogram과 mel 그림은 이런 축·band 변경의 시각적 예이지 정보가 늘었다는 실험 증거는 아니다.
+
+### Mel을 사용하는 목적: 세부 bin보다 대역별 음향 패턴을 표현하기
+{: #mel-purpose}
+
+**Mel scale은 주파수 간격을 정하는 척도이고, Mel filterbank는 그 척도에 따라 여러 주파수 bin을 가중 합하는 연산이다.** Hz 눈금에 새 이름을 붙이는 것만으로는 filterbank 계산이 되지 않는다. 위 p.17의 왼쪽 삼각형을 먼저 읽으면, 같은 시간 frame의 여러 주파수 값이 아래 Mel 그림의 한 대역 값으로 모이는 이유를 이해할 수 있다.
+
+음성인식에서는 원래 waveform을 표본마다 재현하는 대신 어떤 음소·단어가 발화됐는지 판단한다. 이때 주파수별 세밀한 요동을 모두 독립적인 입력으로 두기보다, **어느 대역에 에너지가 모이고 그 분포가 시간에 따라 어떻게 바뀌는지**를 표현하려는 목적이 있다. Mel 간격으로 겹치는 대역을 만들면 낮은 주파수는 비교적 좁게, 높은 주파수는 넓게 집계한다. 대역 수를 FFT bin 수보다 적게 선택하면 입력 차원도 줄어든다. 그 결과가 항상 인식에 유리한 것은 아니며, 중요한 미세 구조까지 지워질 수 있다.
+
+한 프레임의 가중 합을 계산하는 **작성자 예제**를 보자. 인접 세 bin의 power가 **[1, 4, 9]**, 특정 삼각 필터의 가중치가 **[0.5, 1, 0.5]**라면 해당 band 값은 **0.5×1 + 1×4 + 0.5×9 = 9**다. 가장 가까운 중심 bin에는 큰 가중치를, 이웃에는 작은 가중치를 준다. 이 숫자는 한 필터의 연산을 단순화한 것으로, p.17의 실제 축이나 면적 정규화 가중치를 복제한 값이 아니다. 실제 filterbank에서는 이웃 필터도 같은 bin을 일부 사용한다.
+
+입력이 **[3, 4, 7]**이어도 이 필터의 출력은 9다. 한 band 값만으로는 두 입력을 구별할 수 없다. 다만 **이 한 필터의 일치가 전체 Mel 벡터의 일치를 뜻하지는 않는다.** 다른 필터는 둘을 구별할 수 있다. 전체 filterbank의 일반적인 비유일성은 band 수가 bin 수보다 작은 행렬의 차원으로 따로 설명한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Mel Aggregation and the Loss of Frequency Detail</summary>
+
+한 frame의 power를 $$\mathbf p\in\mathbb R_{\ge0}^{K}$$, Mel filterbank를 $$\mathbf H\in\mathbb R_{\ge0}^{B\times K}$$, 출력을 $$\mathbf z=\mathbf H\mathbf p\in\mathbb R_{\ge0}^{B}$$로 정의한다. $$K$$는 bin 수, $$B$$는 band 수로 모두 무차원 정수다. 예제는 무차원 power와 peak-normalized 가중치를 사용한다. 실제 Hz 면적 정규화는 별도의 scale을 포함한다.
+
+$$B<K$$이면 $$\operatorname{rank}(\mathbf H)\le B<K$$이므로 0이 아닌 벡터 $$\mathbf v$$ 중 $$\mathbf H\mathbf v=0$$인 것이 존재한다. 모든 성분이 양수인 $$\mathbf p$$를 택하고 충분히 작은 실수 $$\alpha\ne0$$를 고르면 $$\mathbf p+\alpha\mathbf v$$도 비음수이며 서로 다른 두 입력에 대해
+
+$$
+\mathbf H(\mathbf p+\alpha\mathbf v)
+=\mathbf H\mathbf p+\alpha\mathbf H\mathbf v
+=\mathbf H\mathbf p
+$$
+
+가 된다. 따라서 전체 filterbank도 모든 power spectrum을 유일하게 복원하는 역변환을 가질 수 없다. 이는 임의의 비음수 power 벡터에 대한 선형대수 결과이며, 모든 경계 입력에서 똑같은 수의 대안이 있다는 주장이나 음성 모델의 성능 증명은 아니다.
+
+본문의 한 필터 예제는 $$\mathbf H=[0.5,\;1,\;0.5]$$와 $$\mathbf v=[2,\;0,\;-2]^{\top}$$에 해당한다. $$\mathbf H\mathbf v=1-1=0$$이므로 두 입력의 band 값은 모두 9다.
+
+</details>
+
+### Window·Mel·log는 서로 다른 단계다
+
+**Supplementary table.** 아래 표는 원본 p.14와 p.17에서 떨어져 소개한 연산을 적용 위치별로 비교한다. 일반적인 power log-Mel 경로이며, 모든 음성 모델이 이 경로를 반드시 쓰는 것은 아니다.
+
+| 단계 | 바꾸는 대상 | 목적과 주의점 |
+|---|---|---|
+| Window | FFT 전 시간 표본에 가중치 적용 | 짧은 구간을 분석하고 경계에 따른 leakage 특성을 조절한다. 주파수 대역을 합치지는 않는다. |
+| Mel filterbank | magnitude 또는 power의 주파수 bin을 대역별 집계 | 지각적 주파수 간격을 반영한 compact feature를 만든다. 세부 주파수 정보가 줄 수 있다. |
+| Log 또는 dB | 각 대역 값의 수치 scale | 큰 값과 작은 값을 함께 다루기 쉽게 한다. 대역 수·시간 frame 수는 바뀌지 않는다. |
+
+예를 들어 한 frame의 257개 power bin을 80개 Mel band로 바꾸면 출력은 80개다. 그 뒤 log를 취해도 여전히 80개다. Power 값 **[1, 10, 100]**을 기준 1의 dB로 바꾸면 **[0, 10, 20] dB**가 된다. 이 두 번째 변화는 주파수 집계가 아니라 값의 dynamic range를 줄인 것이다. 기준값을 알고 floor·clipping 없이 양수에 적용한 log는 역변환할 수 있지만, 이미 Mel 집계로 합쳐진 세부 bin이나 magnitude/power 단계에서 버린 phase를 되살리지는 않는다.
+
+구현에서는 **복소 STFT, power, Mel power, log-Mel**을 구분해 저장한다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa 0.11.0의 melspectrogram</a>은 파형 입력에 기본적으로 magnitude 제곱을 계산한 뒤 filterbank를 적용하며, 반환값 자체가 dB는 아니다. 이미 power spectrogram을 입력하는 경우에는 그 배열에 filterbank를 직접 적용한다.
+
+**인식과 복원의 목표 차이가 표현 선택을 결정한다.** 음소·단어 판단에는 log-Mel의 대역별 패턴이 유용할 수 있다. 반면 정확한 파형을 만들려는 단순 mask–iSTFT 경로에는 주파수별 복소 계수가 필요하다. Mel 기반 복원도 별도의 주파수 복원·phase 추정 또는 학습된 합성 모델을 두면 가능하지만, 그것을 원 입력의 유일한 역변환이라고 부르지는 않는다. “Mel은 잡음을 지운다”, “Mel을 쓰면 분류가 가능해진다”, “복원 모델은 Mel을 쓸 수 없다”는 설명은 모두 지나친 일반화다.
+
 
 ## 4. Cepstrum과 MFCC: 주기와 envelope의 서로 다른 질문
 
@@ -346,7 +407,7 @@ $$
 
 이 원고는 `SAR_Lec01.ipynb`의 **0부터 10까지 모든 코드 셀**을 읽고, 노트북에 이미 저장된 그림 15장을 확인하여 작성한 해설이다. 여기 적은 수치와 그림은 **원본 노트북의 저장 결과**이며, 이 검토를 위해 코드를 다시 실행하거나 음원을 새로 분석하지 않았다. 아래의 개선 코드는 별도의 제안으로, 원본 출력이나 재실행 결과로 취급하지 않는다.
 
-> **핵심:** 전체 신호의 FFT는 어떤 주파수 성분이 있는지 보여주지만 *언제* 나타나는지는 잃는다. STFT는 짧은 구간마다 FFT를 수행해 시간–주파수 지도를 만든다. 이후 로그 dB 표현은 큰 값과 작은 값을 함께 보이게 하고, mel 필터뱅크와 MFCC는 주파수 정보를 음성 처리에 쓰기 좋은 특징으로 바꾼다. 이때 **FFT 정규화, 창 길이, dB 기준값, 시간축 정렬**이 다르면 그림의 숫자를 직접 비교할 수 없다.
+> **핵심:** 전체 신호의 magnitude spectrum은 주파수 성분의 크기를 보여주지만 시간별 변화를 직접 표시하지 않는다. STFT는 짧은 구간마다 FFT를 수행해 시간–주파수 지도를 만든다. 이후 로그 dB 표현은 큰 값과 작은 값을 함께 보이게 하고, mel 필터뱅크와 MFCC는 주파수 정보를 음성 처리에 쓰기 좋은 특징으로 바꾼다. 이때 **FFT 정규화, 창 길이, dB 기준값, 시간축 정렬**이 다르면 그림의 숫자를 직접 비교할 수 없다.
 
 ### Notebook Map
 

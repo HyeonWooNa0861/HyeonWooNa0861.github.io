@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 22:46:16 +0900
+last_modified_at: 2026-10-18 23:07:10 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -244,7 +244,7 @@ $$
 
 이고, real input의 one-sided spectrum은 frame마다 $$512/2+1=257$$개 frequency bin을 갖는다. 따라서 구현의 배열 배치에 따라 shape는 `[257, 98]` 또는 `[98, 257]`이다. Center padding을 켜면 frame 수가 달라지므로 그림의 축과 코드 tensor shape를 함께 확인해야 한다.
 
-Rectangular window는 경계 discontinuity 때문에 큰 sidelobe를 만든다. Hann window는 먼 sidelobe를 낮추지만 main lobe를 넓힌다. 따라서 window는 leakage를 없애는 버튼이 아니라 **어떤 오차를 줄이고 어떤 분해능을 희생할지 정하는 선택**이다.
+**Window는 FFT 전에 시간 표본의 기여도를 정한다.** Rectangular window로 임의 구간을 자르면 반복 경계가 매끄럽지 않을 수 있다. Hann window는 가장자리 기여를 낮춰 먼 sidelobe를 줄이지만 main lobe를 넓힌다. 따라서 window는 leakage를 없애는 버튼이 아니라 **어떤 오차를 줄이고 어떤 분해능을 희생할지 정하는 선택**이다. 작성자 예제로 입력 [2, 2, 2, 2, 2]에 대칭 Hann [0, 0.5, 1, 0.5, 0]을 곱하면 [0, 1, 2, 1, 0]이다. 잡음을 식별한 것이 아니라 시간 가중치를 바꾼 결과다. [원본 창 비교와 상세 해설]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#window-purpose" | relative_url }})에서 길이·hop·FFT 길이의 역할을 구분한다.
 
 <details markdown="block">
 <summary markdown="span">Code Walkthrough: How the STFT notebook builds tensor shapes and plot axes</summary>
@@ -287,13 +287,15 @@ $$
 
 첫 식은 여러 Hz bin을 Mel band로 가중 합해 주파수축을 줄인다. 둘째 식은 값의 dynamic range를 줄인다. **주파수 집계와 log 압축은 같은 연산이 아니다.** Mel feature는 ASR에서 유용할 수 있지만, 여러 spectrum이 같은 band sum을 만들 수 있으므로 원래 complex STFT를 일반적으로 유일하게 복원할 수 없다.
 
+**Window는 시간 가중치, Mel은 주파수 집계, log는 값의 scale 변환이다.** Mel을 쓰는 목적은 세부 Hz bin을 모두 따로 다루기보다 지각적 주파수 간격에 따른 대역별 패턴을 특징으로 표현하는 데 있다. 예제의 257 power bins를 80 bands로 줄인 뒤 log를 취해도 80개 값이다. 단일 필터의 가중치 [0.5, 1, 0.5]와 power [1, 4, 9]의 내적은 9이며, log는 이 집계값에 나중에 적용한다. Phase는 이미 magnitude/power를 취할 때 사라지고, Mel은 주파수 세부 구조를 추가로 줄일 수 있다. [Mel 원본 그림·계산·정보 손실의 증명]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#mel-purpose" | relative_url }})에서 확인할 수 있다.
+
 MFCC는 log-Mel 값에 DCT를 적용해 spectral envelope를 낮은 차수에 모은다. Harmonic 간격과 vocal-tract envelope를 분리해 읽는 데 유용하지만, phase와 세밀한 bin 정보를 복원하는 표현은 아니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: Reading waveform, spectrum, spectrogram, and Mel panels</summary>
 
 1. Waveform은 가로축이 시간, 세로축이 sample amplitude다. 큰 진폭만으로 특정 주파수를 확정하지 않는다.
-2. Spectrum은 분석 구간 전체의 주파수 성분을 보여 준다. 시간 위치는 읽을 수 없다.
+2. Magnitude spectrum은 분석 구간 전체의 주파수 성분 크기를 보여 주지만, 시간별 발생 위치를 직접 표시하지 않는다. 복소 계수 전체의 가역성과는 다른 문제다.
 3. Spectrogram은 가로축 시간, 세로축 frequency, 색으로 magnitude·power·dB 중 하나를 나타낸다. Colorbar의 기준과 log 여부를 먼저 확인한다.
 4. Mel spectrogram은 세로축을 Mel band로 바꾼다. 고주파에서 여러 Hz bin이 넓은 band로 합쳐질 수 있다.
 5. Phase map은 magnitude가 거의 0인 곳에서 불안정하다. 강한 magnitude가 있는 영역과 함께 해석한다.
