@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 19:51:32 +0900
+last_modified_at: 2026-10-18 22:46:16 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -108,26 +108,34 @@ $$
 f_s>2f_{\max}
 $$
 
-8 kHz로 7 kHz cosine을 sampling하면 $$8<14$$이므로 조건을 만족하지 않는다. Sample 시각 $$t_n=n/8000$$에서 zero-phase 7 kHz cosine은 1 kHz cosine과 같은 값을 만든다.
-
-$$
-\cos(2\pi\cdot7000n/8000)
-=\cos(2\pi n-2\pi\cdot1000n/8000)
-=\cos(2\pi\cdot1000n/8000)
-$$
+강의 p.38의 예처럼 8 kHz로 7 kHz cosine을 sampling하면 $$8<14$$이므로 조건을 만족하지 않는다. Sample 시각 $$t_n=n/8000$$에서 진폭 1·zero-phase의 7 kHz와 1 kHz cosine은 같은 값을 만든다.
 
 DFT 계산 자체는 실패하지 않는다. DFT는 주어진 sample열을 정확히 변환하지만, 이미 같은 sample이 된 1 kHz와 7 kHz 원신호를 구별할 정보는 없다. 이 문제가 aliasing이다. Bit depth 증가나 FFT 길이 증가는 잃은 구분을 복원하지 못한다.
+
+**Fourier basis는 표본을 주파수 계수로 분석하는 기준이며, aliasing을 막는 필터가 아니다.** 서로 다른 discrete basis의 직교성은 계수 계산을 가능하게 하지만, sampling 후 같은 basis가 된 원래 주파수까지 분리해 주지는 않는다.
+
+작성자 예제로 8 kHz에서 진폭 1·zero-phase인 5 kHz와 3 kHz cosine을 비교하면 첫 다섯 표본은 둘 다 **1, −0.7071, 0, 0.7071, −1**이다. 반면 표본 사이인 0.0625 ms에서는 각각 약 −0.3827과 0.3827로 다르다. **예방은 sampling 전 anti-alias low-pass filter와 보존 대역에 충분한 sampling rate로 한다.** 8 kHz를 유지하면 4 kHz 이상을 충분히 감쇠해야 하며, 5 kHz를 보존하려면 $$f_s>10$$ kHz와 필터 전이 대역을 고려해야 한다. [원본 그림과 8개 표본 DFT 해설]({{ "/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/#fourier-basis-and-aliasing" | relative_url }})에서 계수까지 확인할 수 있다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Nyquist condition from repeated discrete frequencies</summary>
 
-Discrete-time complex exponential은 sampling rate의 정수배만큼 주파수가 달라도 같다.
+$$n,r$$은 정수, $$f,f_s$$는 Hz다. Discrete-time complex exponential은 sampling rate의 정수배만큼 주파수가 달라도 같다.
 
 $$
 e^{j2\pi(f+r f_s)n/f_s}
 =e^{j2\pi fn/f_s}e^{j2\pi rn}
 =e^{j2\pi fn/f_s}.
 $$
+
+실수 cosine에서는 주기성과 짝대칭성에 의해 다음 등식이 성립한다.
+
+$$
+\cos(2\pi\cdot7000n/8000)
+=\cos(2\pi n-2\pi\cdot1000n/8000)
+=\cos(2\pi\cdot1000n/8000).
+$$
+
+같은 계산에서 7000·1000을 5000·3000으로 바꾸면 본문의 추가 예제가 된다. Complex exponential의 +5 kHz는 −3 kHz와 같으며, 실수 cosine을 +3 kHz로 표현할 때 일반 phase $$\phi$$는 $$-\phi$$로 바뀐다. 따라서 본문의 같은-phase 비교에는 zero-phase 조건을 두었다.
 
 원래 spectrum이 $$[-f_{\max},f_{\max}]$$에 있고, 다음 복사본이 $$[f_s-f_{\max},f_s+f_{\max}]$$에 생긴다고 하자. 두 구간이 겹치지 않으려면
 

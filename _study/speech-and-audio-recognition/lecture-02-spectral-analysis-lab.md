@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 22:46:16 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -337,6 +337,8 @@ $$
 
 
 ### N=8 시각화: 같은 sample과 서로 다른 중간 궤적
+
+**이 시각화에서 Fourier basis는 aliasing을 제거하는 장치가 아니라, 서로 다른 회전이 같은 표본이 되는 이유를 설명하는 표현이다.** $$k=1$$과 $$k=9$$는 modulo 8로 같아 독립적인 두 discrete basis가 아니다. 직교성은 서로 다른 나머지를 대표하는 $$k=0,\ldots,7$$ 사이에서 성립한다. 예방에는 sampling 전 대역 제한과 충분한 sampling rate가 필요하며, FFT나 window 변경만으로 이미 잃은 구분을 복원할 수 없다. [5 kHz·3 kHz 수치 예제와 직교성 증명]({{ "/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/#fourier-basis-and-aliasing" | relative_url }})에서 같은 표본과 다른 원파형을 비교한다.
 
 <a href="{{ "/assets/materials/study/speech-spectral-analysis/aliasing-dtfs-n8.html" | relative_url }}" target="_blank" rel="noopener">N=8 회전 시각화 열기</a>. 이 HTML의 파라미터는 $$F_0=1$$ Hz, $$f_s=8$$ Hz, $$T_s=0.125$$ s, $$N=8$$이며 $$k=1$$과 $$k=9=1+N$$을 비교한다. Script의 각도는 $$a_1=2\pi\cdot1\cdot t$$, $$a_9=2\pi\cdot9\cdot t$$다. 실제 **표본 순간** $$t_n=n/8$$ s, $$n=0,\ldots,7$$에서는 차이가 $$a_9-a_1=2\pi n$$이므로 8개 표본의 복소 위치가 모두 같다. 반대로 HTML의 초기 화면 $$t=0.0625$$ s는 **표본 사이**다. 이때 차이는 $$2\pi\cdot8\cdot0.0625=\pi$$ rad, 즉 180°라 두 위치는 다르다. 화면의 spiral·trail은 지나간 회전을 표시하는 시각적 흔적이지 진폭 감쇠를 뜻하지 않는다. 두 벡터의 반지름은 시간에 따라 줄어드는 모델이 아니다.
 

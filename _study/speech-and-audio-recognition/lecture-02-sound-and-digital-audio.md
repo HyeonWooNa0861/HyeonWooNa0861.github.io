@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-10-18 22:46:16 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -1867,6 +1867,82 @@ $$\nu$$와 $$\nu+r\nu_s$$는 동일한 표본 basis를 만든다. 시간축의 $
 4. **이미지도 낮은 해상도로 줄이기 전에 filter를 적용한다.** 시간축 downsampling과 같은 원리다. 촬영 단계에서 이미 발생한 moire와 후속 resize 과정에서 새로 생기는 aliasing은 구분해야 한다.
 
 이것은 amplitude 단계 수를 늘리는 **quantization**이나 유한 분석 구간의 **spectral leakage**와 다른 문제다. Aliasing은 sampling에서 frequency 구분이 사라지는 것이므로, bit depth를 늘리거나 window만 바꾸는 방법으로 해결하지 않는다.
+
+### 10.5 Fourier basis의 직교성이 aliasing을 막아 주는가?
+{: #fourier-basis-and-aliasing}
+
+**Fourier basis는 주어진 신호를 주파수 성분으로 표현하는 기준이고, aliasing은 sampling 때문에 서로 다른 원신호가 같은 표본이 되는 현상이다.** 두 개념은 분석 방법과 정보 손실이라는 서로 다른 문제를 다룬다. Fourier coefficient를 정확히 계산해도, 측정 단계에서 사라진 주파수의 구분까지 되찾는 것은 아니다.
+
+앞의 p.37 그림에서 spectrum 복사본이 겹치는 이유를 설명할 때 Fourier 표현을 쓴다. 이를 “Fourier basis를 쓰면 겹침을 없앨 수 있다”는 뜻으로 읽으면 안 된다. **직교성은 서로 다른 discrete basis의 계수를 분리해 계산하는 성질**이다. Sampling 후 이미 같은 basis가 된 주파수는 직교하는 두 방향으로 남아 있지 않다.
+
+#### 8 kHz sampling에서 5 kHz와 3 kHz를 비교하기
+
+다음은 p.38의 7 kHz·1 kHz 비교와 같은 원리를 다른 숫자로 확인하는 **작성자 예제**다. 두 실수 cosine은 모두 진폭 1, 초기 phase 0이며 진폭은 무차원으로 정규화했다. Sampling rate는 $$f_s=8000$$ Hz, 간격은 $$T_s=0.125$$ ms다.
+
+**Supplementary table.** 같은 시각에서 두 파형을 읽으면 다음 표본을 얻는다. 소수는 넷째 자리까지 반올림했다.
+
+| $$n$$ | $$t_n$$ (ms) | 3 kHz cosine | 5 kHz cosine |
+|---|---|---|---|
+| 0 | 0 | 1 | 1 |
+| 1 | 0.125 | −0.7071 | −0.7071 |
+| 2 | 0.250 | 0 | 0 |
+| 3 | 0.375 | 0.7071 | 0.7071 |
+| 4 | 0.500 | −1 | −1 |
+
+일치는 이 다섯 점에만 국한되지 않고 **모든 정수 표본에서 성립한다.** 그러나 첫 두 표본 사이인 $$t=0.0625$$ ms에서는 3 kHz 파형이 약 0.3827, 5 kHz 파형이 약 −0.3827이다. 표본 사이의 원래 파형은 다르다.
+
+이 표본 중 연속된 8개에 강의의 $$1/N$$ 정규화 DFT를 적용하면, 두 입력 모두 $$X[3]=X[5]=0.5$$이고 다른 bin은 0이다. 8 kHz sampling에서 bin 5는 signed frequency로 −3 kHz를 나타낸다. 실수 3 kHz cosine의 양·음 주파수 쌍이므로, 이 두 peak만으로 원래 analog 신호에 3 kHz와 5 kHz가 각각 있었다고 판단할 수 없다.
+
+여기서 **복소 exponential의 +5 kHz는 −3 kHz와 같고, 실수 zero-phase cosine의 5 kHz는 3 kHz와 같다.** +3 kHz와 +5 kHz 복소 basis 자체가 같다는 뜻은 아니다. 일반 phase를 가진 실수 cosine을 양의 alias frequency로 표현할 때는 phase의 부호도 바뀐다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Aliased Frequencies and Orthogonal Fourier Bases</summary>
+
+$$f,f_s$$는 Hz, $$t$$는 s이고, $$n,r,k,m$$은 무차원 정수다. $$N$$은 분석 표본 수, $$j^2=-1$$이며 별표는 complex conjugate를 뜻한다. 균일 sampling 시각 $$t_n=n/f_s$$를 가정한다.
+
+먼저 주파수가 $$f_s$$의 정수배만큼 다른 두 complex exponential을 비교한다.
+
+$$
+\begin{aligned}
+e^{j2\pi(f+rf_s)t_n}
+&=e^{j2\pi(f+rf_s)n/f_s}\\
+&=e^{j2\pi fn/f_s}e^{j2\pi rn}\\
+&=e^{j2\pi fn/f_s}.
+\end{aligned}
+$$
+
+정수 $$rn$$에 대해 마지막 인자는 1이다. 이 등식은 basis가 원신호를 구분하지 못하는 sampling 조건을 드러낸다. $$5000=-3000+8000$$이므로 예제의 +5 kHz는 −3 kHz와 같은 표본을 만든다. 실수부를 취하고 cosine의 짝대칭성을 쓰면
+
+$$
+\begin{aligned}
+\cos(2\pi5000n/8000+\phi)
+&=\cos(2\pi n-2\pi3000n/8000+\phi)\\
+&=\cos(2\pi3000n/8000-\phi).
+\end{aligned}
+$$
+
+따라서 표의 같은-phase 비교는 $$\phi=0$$이라는 조건에서 성립한다.
+
+다음으로 $$\phi_k[n]=e^{j2\pi kn/N}$$의 내적을 계산한다.
+
+$$
+\sum_{n=0}^{N-1}\phi_k[n]\phi_m[n]^*
+=\sum_{n=0}^{N-1}e^{j2\pi(k-m)n/N}
+=\begin{cases}
+N,& k\equiv m\pmod N,\\
+0,& k\not\equiv m\pmod N.
+\end{cases}
+$$
+
+같은 나머지이면 모든 항이 1이다. 다른 나머지이면 $$q=e^{j2\pi(k-m)/N}\ne1$$이고 $$q^N=1$$이므로 등비수열 합 $$(1-q^N)/(1-q)$$가 0이다. **직교성은 modulo $$N$$으로 서로 다른 index 사이에서 성립한다.** $$k$$와 $$k+N$$은 같은 벡터이므로 서로 직교하지 않는다.
+
+$$N=8$$에서 두 실수 cosine의 표본은 모두 $$\tfrac12\phi_3[n]+\tfrac12\phi_5[n]$$다. 이때 $$\phi_3$$과 $$\phi_5$$는 직교하지만, 두 analog 입력이 이미 동일한 벡터로 바뀌었으므로 같은 두 계수 0.5를 얻는다. DFT/IDFT의 가역성은 이 **표본 벡터**를 복원한다는 성질이며, sampling 이전의 두 파형을 구별한다는 보장이 아니다.
+
+</details>
+
+예방은 Fourier 분석 이전의 취득 조건에서 시작한다. 8 kHz를 유지하면 analog anti-alias low-pass filter로 4 kHz 이상의 성분을 sampling 전에 충분히 감쇠하고, 필요한 통과대역과 4 kHz 사이에 전이 대역을 확보한다. 이 경우 5 kHz를 제거한 것이지 보존한 것이 아니다. 5 kHz까지 보존하려면 low-pass band-limited 신호라는 가정 아래 $$f_s>10$$ kHz로 취득하고 실제 필터의 전이 대역까지 고려한다. 예를 들어 16 kHz 취득은 5 kHz를 Nyquist frequency 8 kHz 안에 둔다.
+
+이미 저장된 같은 표본에 FFT, zero-padding, window 변경을 적용해도 두 원신호의 구분은 되살아나지 않는다. 사후 필터는 원래 3 kHz 성분과 그 위치로 접힌 성분을 일반적으로 분리할 수 없다. 더 높은 rate의 디지털 신호를 낮추는 경우에는 **다운샘플링 전에** digital low-pass filter를 적용한다.
 
 ## 11. Finite signal과 DFT
 
