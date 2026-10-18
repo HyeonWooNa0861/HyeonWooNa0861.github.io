@@ -36,6 +36,31 @@ assert.match(readerStyles, /@media \(max-width: 980px\), \(hover: none\), \(poin
 // Study uses .page-content directly; a .post-only selector misses its equations.
 assert.match(readerStyles, /\.page-content mjx-container\[display="true"\]\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
 
+// Anchor and native button text must stay centered in the same 44px mobile row.
+const readerActionStyles = between(
+  ".pdf-reader-open,\n      .pdf-reader-close {",
+  "\n      .pdf-reader-close {\n        background:"
+);
+for (const declaration of ["display: inline-flex;", "align-items: center;", "justify-content: center;"]) {
+  assert.ok(readerActionStyles.includes(declaration), `reader actions must share ${declaration}`);
+}
+assert.ok(/\.pdf-reader-open,\s*\.pdf-reader-close\s*\{\s*min-height:\s*44px;/.test(layout), "mobile reader actions must retain 44px touch targets");
+
+// Keep the shared desktop canvas fluid; nested prose caps must not narrow it again.
+const developerStyles = fs.readFileSync("assets/css/minimal-developer.css", "utf8");
+assert.ok(/--content-width:\s*1680px;/.test(layout), "desktop canvas must allow 1680px");
+assert.ok(/--layout-gutter:\s*clamp\(20px, 2\.5vw, 48px\);/.test(layout), "desktop gutters must scale with viewport width");
+assert.ok(/\.wrap\s*\{\s*width:\s*min\(calc\(100% - 2 \* var\(--layout-gutter\)\), var\(--content-width\)\);/.test(layout), "wrappers must share the fluid canvas");
+assert.ok(/\.posted-page \.page-content\s*\{\s*max-width:\s*none;/.test(layout), "posted cards must fill their grid track");
+assert.ok(/\.posted-page \.post,\s*\.posted-page \.section-pager\s*\{\s*width:\s*100%;/.test(readerStyles), "posts and pagers must use the available card width");
+assert.ok(!/(?:width|max-width):\s*(?:min\(100%,\s*)?(?:68|72)ch/.test(readerStyles), "nested prose caps must not narrow posts again");
+assert.ok(!/width:\s*min\(100% - 48px, (?:960|1080)px\)/.test(developerStyles), "home and header must not reintroduce smaller desktop canvases");
+assert.ok(/minimal-developer\.css' \| relative_url \}\}\?v=\{\{ site\.time/.test(layout), "deployed stylesheet updates must invalidate stale cached width rules");
+// Narrow/coarse layouts, split reader, and embedded documents keep their own rules.
+assert.ok(/@media \(max-width: 980px\), \(hover: none\), \(pointer: coarse\)\s*\{\s*\.wrap\s*\{\s*width:\s*min\(calc\(100% - 28px\), var\(--content-width\)\);/.test(layout), "narrow and coarse layouts must retain compact gutters and the shared canvas limit");
+assert.ok(/body\.pdf-reader-active \.main-wrap\s*\{\s*width:\s*calc\(100% - 32px\);\s*max-width:\s*none;/.test(layout), "split reader must retain its independent full-width layout");
+assert.ok(/html\[data-reader-embed="true"\] \.page-content\s*\{\s*width:\s*100%;\s*max-width:\s*none;/.test(layout), "embedded documents must retain their full-width layout");
+
 const initialization = between("function ensureResourceReader()", "function supportsInert()");
 assert.match(initialization, /readerPanel\.setAttribute\("aria-hidden", "true"\);/);
 assert.match(initialization, /readerPanel\.hidden = true;/);
@@ -130,4 +155,4 @@ assert.equal(
   true
 );
 
-console.log("PASS: resource reader lifecycle and 25 URL-classification cases");
+console.log("PASS: responsive layout guards, resource reader lifecycle, and 25 URL-classification cases");

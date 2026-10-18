@@ -36,7 +36,6 @@
 }
 
 html { scroll-padding-top: 100px; }
-.site-header .wrap { width: min(100% - 48px, 1080px); }
 .brand { font-family: var(--reader-mono); font-size: 19px; letter-spacing: -1px; }
 .brand > span { color: var(--accent); }
 .site-nav { gap: clamp(12px, 2vw, 24px); }
@@ -53,8 +52,6 @@ html { scroll-padding-top: 100px; }
 .posted-page .post > p { line-height: 1.9; }
 .content-page .page-content { box-shadow: none; }
 
-.home-page .wrap { width: min(100% - 48px, 960px); }
-.home-page .site-header .wrap { width: min(100% - 48px, 1080px); }
 .home-page main { padding-top: 0; }
 .home-page .index-board {
   gap: 64px;

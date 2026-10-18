@@ -85,7 +85,8 @@
         --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
         --apple-text-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
         --apple-mono-font: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-        --content-width: 980px;
+        --content-width: 1680px;
+        --layout-gutter: clamp(20px, 2.5vw, 48px);
         --article-paragraph-indent: clamp(0.85rem, 1.5vw, 1.1rem);
         --header-height: 52px;
         --viewport-height: 100vh;
@@ -252,7 +253,7 @@
       }
 
       .wrap {
-        width: min(100% - 40px, 1180px);
+        width: min(calc(100% - 2 * var(--layout-gutter)), var(--content-width));
         margin: 0 auto;
       }
 
@@ -636,7 +637,7 @@
       }
 
       .posted-page .page-content {
-        max-width: 980px;
+        max-width: none;
       }
 
       .page-content > :first-child {
@@ -854,10 +855,6 @@
       .home-page main {
         min-height: calc(var(--viewport-height) - var(--header-height));
         padding-top: clamp(38px, 6vw, 72px);
-      }
-
-      .home-page .wrap {
-        width: min(100% - 28px, 1320px);
       }
 
       .home-page .page-content {
@@ -1935,6 +1932,9 @@
 
       .pdf-reader-open,
       .pdf-reader-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 7px 10px;
         font-size: 12px;
         white-space: nowrap;
@@ -2018,7 +2018,7 @@
 
       @media (max-width: 980px), (hover: none), (pointer: coarse) {
         .wrap {
-          width: min(100% - 28px, 1180px);
+          width: min(calc(100% - 28px), var(--content-width));
         }
 
         .site-header,
@@ -2277,7 +2277,7 @@
         --reader-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
         --reader-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
         --reader-mono: "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
-        --content-width: 1120px;
+        --content-width: 1680px;
       }
 
       :root[data-theme="dark"] {
@@ -2346,10 +2346,6 @@
         -webkit-backdrop-filter: none;
       }
 
-      .site-header .wrap {
-        width: min(100% - 32px, 1320px);
-      }
-
       .brand {
         font-family: var(--reader-serif);
         font-size: 16px;
@@ -2385,10 +2381,6 @@
 
       .home-page main {
         padding-top: clamp(24px, 4vw, 48px);
-      }
-
-      .home-page .wrap {
-        width: min(100% - 28px, 1320px);
       }
 
       .index-board {
@@ -3146,7 +3138,7 @@
 
       .page-shell.has-sidebar {
         grid-template-columns: 210px minmax(0, 1fr);
-        gap: clamp(22px, 3vw, 42px);
+        gap: clamp(22px, 2vw, 32px);
       }
 
       .side-index:not(.reader-index) {
@@ -3257,7 +3249,7 @@
       }
 
       .content-page .page-content {
-        padding: clamp(28px, 5vw, 64px);
+        padding: clamp(28px, 3vw, 40px);
         border-color: var(--line);
         border-radius: 2px;
         background: var(--bg-elevated);
@@ -3274,7 +3266,7 @@
 
       .posted-page .post,
       .posted-page .section-pager {
-        width: min(100%, 72ch);
+        width: 100%;
         margin-right: auto;
         margin-left: auto;
       }
@@ -3295,14 +3287,6 @@
         font-family: var(--reader-serif);
         font-weight: 650;
         text-wrap: balance;
-      }
-
-      .posted-page .post > p,
-      .posted-page .post > ul,
-      .posted-page .post > ol,
-      .posted-page .post > blockquote,
-      .posted-page .post > details {
-        max-width: 68ch;
       }
 
       .posted-page .post > p {
@@ -3512,7 +3496,7 @@
       }
 
     </style>
-    <link rel="stylesheet" href="{{ '/assets/css/minimal-developer.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/minimal-developer.css' | relative_url }}?v={{ site.time | date: '%s' }}">
     <script>
       function restoreKramdownMathScripts() {
         document.querySelectorAll('script[type^="math/tex"]').forEach(function (node) {
