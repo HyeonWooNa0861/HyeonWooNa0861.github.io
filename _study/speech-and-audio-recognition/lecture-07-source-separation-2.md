@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 19:26:41 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -250,6 +250,19 @@ Minimum은 두 permutation의 비용이 같은 지점에서 미분 가능하지 
 
 원문 pp. 11–12의 uPIT는 frame마다 대응을 바꾸지 않고 utterance 전체에서 하나의 permutation을 선택한다. 그래야 한 출력 channel 안에서 화자가 중간에 서로 바뀌는 문제를 줄일 수 있다. 표의 oracle mask·DPCL·PIT 수치는 같은 dataset, metric, reconstruction 조건에서만 비교해야 한다.
 
+### 4.2 DPCL, PIT, uPIT는 같은 종류의 구성요소가 아니다
+
+강의는 DPCL의 한계 다음에 PIT를 소개하지만, 이를 하나의 network가 차례로 block을 추가한 계보로 읽으면 안 된다. DPCL은 **무엇을 예측할지**를 embedding으로 바꾸고, PIT와 uPIT는 **여러 출력과 정답을 어떻게 비교할지**를 바꾼다.
+
+| 방법 | 예측 target | 추론과 복원 | 학습에서 바꾸는 부분 | 관계 |
+|---|---|---|---|---|
+| [Deep Clustering](https://arxiv.org/abs/1508.04306){:target="_blank" rel="noopener"} | 각 T–F 칸의 embedding과 같은-source affinity | Embedding을 k-means로 묶어 binary magnitude mask를 만들고, mixture phase와 iSTFT로 복원 | Affinity loss가 source label 열의 순열에 불변 | Fixed output slot 대신 clustering을 택한 대안이다. PIT의 초기 architecture가 아니다. |
+| [PIT](https://arxiv.org/abs/1607.00325){:target="_blank" rel="noopener"} | 정답 source 집합은 고정되어 있다. Model은 source별 spectrum·mask·waveform을 예측하며, output index와 target source의 대응만 순열로 선택한다 | 적용한 separator와 decoder의 출력 경로를 유지 | 가능한 output–target 대응 중 선택한 reconstruction loss가 가장 작은 순열로 역전파 | Architecture와 독립적으로 붙일 수 있는 training criterion이다. |
+| [uPIT](https://arxiv.org/abs/1703.06284){:target="_blank" rel="noopener"} | PIT와 같은 source별 출력 | 발화 전체에서 한 output channel의 source가 유지되도록 복원 | Frame마다 다른 대응을 고르지 않고 utterance 전체 loss로 하나의 순열 선택 | PIT의 직접적인 utterance-level 확장이다. Source count 추정이나 speaker ID tracking은 추가하지 않는다. |
+{: .reference-candidate-table}
+
+따라서 `DPCL → PIT`는 강의의 문제 해결 비교 순서이며 직접 상속 관계가 아니다. 반면 PIT에서 uPIT로의 변화는 순열을 고르는 범위를 frame에서 utterance로 넓힌 직접 확장이다. 어떤 spectrum·waveform loss를 최소화할지는 PIT와 별도로 정해야 한다.
+
 ## 5. TasNet 계열: STFT 밖에서도 mask를 만들 수 있다
 
 ### 5.1 공통 뼈대
@@ -272,6 +285,7 @@ Mask activation과 학습 target은 model version별로 다르다. 다음 표는
 | Conv-TasNet | Learned encoder feature | 논문의 최종 실험은 sigmoid, 각 값 $$[0,1]$$; softmax도 비교 | Decoder 뒤 waveform SI-SNR + utterance PIT |
 | DPRNN-TasNet | Conv-TasNet 계열 learned feature | $$C$$개 masking matrices; 논문은 separator 교체에 초점을 두며 하나의 보편 범위를 새로 정의하지 않음 | Decoder 뒤 waveform SI-SNR + uPIT |
 | SepFormer | ReLU encoder feature | 마지막 ReLU의 nonnegative mask, 상한 1은 강제하지 않음 | Decoder 뒤 waveform SI-SNR + uPIT, 논문 설정은 30 dB clipping |
+{: .reference-candidate-table}
 
 따라서 `mask는 항상 확률이고 source별 합이 1`이라고 일반화하면 안 된다. 또한 mask를 사용한다고 해서 ideal mask label로 mask 자체를 직접 감독하는 것도 아니다. 위 모델들은 mask를 거쳐 복원한 waveform이 정답과 잘 맞도록 end-to-end로 학습한다.
 
@@ -312,6 +326,8 @@ STFT도 고정된 sine·cosine analysis basis와 inverse transform을 사용한�
 2. Bottleneck과 반복된 dilated convolution block이 여러 시간 범위의 문맥을 읽는다.
 3. Source별 mask를 latent mixture에 곱한다.
 4. Linear decoder가 각 masked representation을 waveform으로 합성한다.
+
+TasNet과 Conv-TasNet의 관계는 직접적이다. Conv-TasNet은 TasNet의 learned analysis–mask–synthesis 틀을 유지하면서 recurrent separator를 convolutional TCN으로 바꾸고 긴 입력을 효율적으로 처리한다. 반면 PIT는 두 architecture가 함께 사용할 수 있는 **순열 불변 학습 규칙**이다. `PIT → TasNet → Conv-TasNet`을 세 architecture의 직렬 발전으로 읽지 않는다. Architecture는 latent 표현과 separator를 정하고, PIT는 복원된 source와 정답의 대응을 정하며, SI-SNR은 선택된 대응의 waveform 품질을 측정한다.
 
 Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아도 더 먼 frame을 연결한다. 깊은 TCN은 local pattern과 넓은 receptive field를 동시에 갖는다. 다만 실제 receptive field, causal 여부, latency는 kernel·dilation·반복 수·padding 설정에 달려 있다.
 
@@ -527,7 +543,9 @@ $$
 
 ## 모델 흐름을 한 표로 정리하기
 
-| Method | Representation | Separation mechanism | Permutation handling | 핵심 한계 |
+아래 표에는 architecture와 training rule이 함께 나오므로 첫 열의 역할부터 구분한다. PIT·uPIT는 독립 network가 아니며, 다른 separator의 출력과 정답을 연결하는 규칙이다.
+
+| Method 또는 rule | Representation | Separation mechanism | Permutation handling | 핵심 한계 |
 |---|---|---|---|---|
 | DPCL | STFT T–F embedding | k-means → binary masks | Affinity target 자체가 순서 불변 | $$K$$ 필요, clustering 분리, mixture phase |
 | PIT / uPIT | Model에 따라 다름 | 여러 output | 최소-cost assignment | 보통 출력 수 고정, ID 지속성 별도 |
@@ -537,13 +555,16 @@ $$
 | SepFormer | Learned waveform basis | Intra/inter Transformer masks | PIT | Attention memory, 표준형 offline |
 | TF-GridNet | Complex STFT | Complex spectral mapping | PIT 계열 assignment | 계산량·memory, 구현 복잡성 |
 | MixIT | Waveform 또는 learned representation | 여러 latent outputs의 regrouping | Mixture-level assignment | Over-separation, assignment 비용 |
+{: .reference-candidate-table}
 
 ## 마지막 핵심 정리
 
 - **BSS의 첫 난점은 출력 순서다.** 같은 source set도 output index가 바뀔 수 있다.
 - **DPCL은 화자 번호가 아니라 T–F 칸 사이의 같은-source 관계를 배운다.** 추론 때 clustering 수를 바꿀 수 있지만 $$K$$는 여전히 필요하다.
 - **PIT는 one-to-one 대응 중 최소 손실을 선택한다.** 모든 순열 열거는 $$K!$$, 일반 Hungarian assignment는 $$O(K^3)$$이다.
+- **DPCL과 PIT는 대안이고, uPIT는 PIT의 utterance-level 확장이다.** PIT·uPIT는 architecture가 아니라 output–target 대응을 정하는 training criterion이다.
 - **Time-domain separation도 mask를 쓴다.** 적용 대상이 STFT magnitude에서 학습된 waveform basis로 이동한다.
+- **Conv-TasNet은 TasNet의 직접 확장이다.** Learned analysis–mask–synthesis 틀을 유지하면서 recurrent separator를 TCN으로 바꾼다.
 - **DPRNN과 SepFormer는 기본형이 자동으로 streaming-ready인 것은 아니다.** Bidirectional recurrence나 full attention의 미래 참조를 확인해야 한다.
 - **TF-GridNet은 complex STFT를 직접 추정한다.** Time-domain model의 성공은 STFT 자체의 원리적 한계를 뜻하지 않는다.
 - **실제 환경에서는 source 수, reverberation, clean target 부재가 함께 문제다.** DM과 MixIT는 같은 해결책이 아니다.

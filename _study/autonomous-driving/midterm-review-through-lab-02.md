@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-18 18:30:39 +0900
+last_modified_at: 2026-10-18 19:13:20 +0900
 title: "Autonomous Driving Computing Midterm Review through Lab 2"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -172,9 +172,22 @@ $$
 | Semantic segmentation | 이미지 하나 | pixel마다 semantic class | 각 pixel은 어느 종류인가? |
 | Instance segmentation | 이미지 하나 | object instance마다 class·box·mask | 같은 class의 개체를 어떻게 분리하는가? |
 
-CNN은 spatial neighborhood에 같은 filter를 공유해 local feature를 추출한다. ResNet은 residual path로 깊은 network의 optimization을 돕는다. Vision Transformer는 image patch를 token으로 바꾸고 positional embedding을 더한 뒤 self-attention으로 token 사이의 context를 계산한다. CNN과 ViT의 feature는 detector나 segmentation head가 사용할 backbone representation이 된다.
+CNN은 spatial neighborhood에 같은 filter를 공유해 local feature를 추출한다. 이 특징을 만드는 **backbone**과, 특징에서 class·box·mask를 예측하는 **head**는 역할이 다르다. VGG·ResNet·ViT는 먼저 표현을 만드는 방식의 차이로 읽어야 뒤의 detector와 혼동하지 않는다.
 
 Task가 바뀌면 label과 loss도 바뀐다. Classification의 single class label만으로 detection의 box regression을 학습할 수 없다. Detection box만으로 semantic segmentation의 모든 pixel label을 직접 감독할 수도 없다.
+
+### 2.1 VGG, ResNet, ViT: 깊이와 정보 결합을 바꾸는 방법
+
+Supplementary table — [Lecture 3 pp. 32–38](/assets/pdfs/study/autonomous-driving/lecture-03-perception-01.pdf#page=32)의 핵심을 문제와 설계 변경으로 비교한 표다.
+
+| 논문 | 해결하려는 문제 | 핵심 방법과 의미 |
+|---|---|---|
+| [VGG](https://arxiv.org/abs/1409.1556){:target="_blank" rel="noopener"} | 더 풍부한 시각 특징을 얻으려면 network를 어떻게 깊게 만들 것인가? | 작은 3×3 convolution을 반복해 깊이를 늘린다. 큰 filter 하나로 끝내기보다 여러 층에서 비선형 변환을 누적한다. |
+| [ResNet](https://arxiv.org/abs/1512.03385){:target="_blank" rel="noopener"} | 층을 늘렸는데도 학습이 어려워져 성능이 나빠지는 문제 | 입력을 shortcut으로 더하고 block은 잔차를 학습한다. 깊은 표현을 실제로 최적화하기 쉽게 만드는 것이 핵심이며, 깊이 증가만으로 성능을 보장하지는 않는다. |
+| [ViT](https://arxiv.org/abs/2010.11929){:target="_blank" rel="noopener"} | 영상 표현을 convolution 중심 구조 외의 방식으로 만들 수 있는가? | Patch를 token으로 바꾸고 위치 정보를 더해 self-attention으로 patch 사이의 관계를 계산한다. 큰 규모의 사전학습과 전이 조건이 중요한 방법이다. |
+{: .reference-candidate-table}
+
+**VGG와 ResNet은 ‘깊은 표현’과 ‘그 표현을 학습하는 어려움’으로 연결된다.** ViT는 그 다음 깊이를 더 늘린 CNN이 아니라, 공간 정보를 결합하는 연산을 바꾸는 선택이다. [Lecture 3의 ViT 원본 그림](/study/autonomous-driving/lecture-03-perception-01/#adc-03-p53)에서는 patch embedding → Transformer → class token 순서로 읽으면 된다. 이 backbone 선택 위에 다음 절의 detection·segmentation head가 올라간다.
 
 ## 3. Detection의 공통 문법: IoU, NMS, precision, recall, AP
 
@@ -252,24 +265,42 @@ $$
 
 ### 4.1 R-CNN에서 Faster R-CNN까지
 
-| Model | Proposal | Feature 계산 | Head | 핵심 병목·개선 |
-|---|---|---|---|---|
-| R-CNN | Selective Search | proposal마다 CNN 반복 | class + box regression | 약 2,000개 region의 반복 계산과 분리된 학습 |
-| Fast R-CNN | Selective Search | 이미지 전체 feature map 1회 | RoI pooling 뒤 class + box | feature 공유. Proposal 생성은 여전히 외부 CPU 과정 |
-| Faster R-CNN | 학습되는 RPN | backbone feature 공유 | RPN 뒤 RoI head | Anchor objectness·box regression으로 proposal도 학습 |
-| Faster R-CNN + FPN | RPN | P2–P6 같은 multi-scale feature | scale에 맞는 level에서 RoI 처리 | 낮은 층의 spatial detail과 높은 층의 semantics 결합 |
+Supplementary table — [Lecture 4 pp. 26–36](/assets/pdfs/study/autonomous-driving/lecture-04-perception-02.pdf#page=26), [Lecture 5 pp. 19–28](/assets/pdfs/study/autonomous-driving/lecture-05-perception-03.pdf#page=19), [Lecture 6 pp. 7–19](/assets/pdfs/study/autonomous-driving/lecture-06-perception-04.pdf#page=7)의 논문별 변경점이다.
+
+| 논문 | 출발한 문제 | 바꾼 부분과 남은 과제 |
+|---|---|---|
+| [R-CNN](https://arxiv.org/abs/1311.2524){:target="_blank" rel="noopener"} | 이미지 분류용 CNN으로 개수와 위치가 다른 여러 객체를 검출해야 함 | Selective Search의 후보 영역을 각각 CNN에 넣어 분류·box 보정한다. 학습된 시각 특징을 검출에 활용하지만, 겹치는 약 2,000개 영역에서 CNN 계산을 반복한다. |
+| [Fast R-CNN](https://arxiv.org/abs/1504.08083){:target="_blank" rel="noopener"} | 같은 영상의 겹치는 후보마다 convolution을 다시 계산함 | 이미지 전체 feature를 한 번 계산하고 RoI pooling으로 후보별 고정 크기 특징을 얻는다. Class·box를 함께 학습하지만 Selective Search는 별도로 남는다. |
+| [Faster R-CNN](https://arxiv.org/abs/1506.01497){:target="_blank" rel="noopener"} | Feature 계산을 공유한 뒤에는 외부 proposal 생성이 병목이 됨 | 같은 backbone feature를 쓰는 RPN이 anchor의 objectness·offset을 예측한다. Proposal 생성까지 학습하고, RoI head가 후보를 다시 분류·보정한다. |
+{: .reference-candidate-table}
+
+[R-CNN 원본 그림](/study/autonomous-driving/lecture-04-perception-02/#adc-04-p32)의 후보마다 따로 놓인 ConvNet이 반복 계산을 보여준다. Fast R-CNN은 그 계산을 공유하고, Faster R-CNN은 공유 뒤에도 남아 있던 후보 생성 비용을 줄인다. **‘영역마다 계산 → 이미지 특징 공유 → 후보 생성도 학습’**이 세 논문을 잇는 핵심이다. 원 R-CNN의 실제 학습은 CNN fine-tuning·SVM·box regressor로 나뉘므로, 강의의 간략한 class/box head 그림을 Fast R-CNN과 같은 공동 학습 구조로 읽지 않는다.
 
 Two-stage는 backbone을 반드시 두 번 실행한다는 뜻이 아니다. 첫 단계가 object proposal을 고르고 두 번째 단계가 proposal을 다시 classifying·refining한다는 뜻이다.
 
-FPN의 핵심은 backbone의 bottom-up feature만 나열하는 것이 아니다. 높은 level을 upsample하고 lateral connection으로 낮은 level feature와 합쳐, 각 pyramid level이 비교적 강한 semantics와 서로 다른 spatial resolution을 함께 갖게 한다.
+### 4.2 FPN: 빠르게 찾는 것과 작은 물체를 잘 보는 것은 다른 문제다
 
-### 4.2 RetinaNet, YOLO, FCOS
+[FPN](https://arxiv.org/abs/1612.03144){:target="_blank" rel="noopener"}은 proposal 생성의 속도보다 **물체 크기가 달라질 때 feature가 충분한 정보를 가지는가**를 다룬다. 깊은 층은 의미 정보가 강하지만 해상도가 낮고, 얕은 층은 위치가 세밀하지만 의미 정보가 상대적으로 약하다.
 
-| Model | Candidate 표현 | Class imbalance 대응 | Box 표현 | 기억할 점 |
-|---|---|---|---|---|
-| RetinaNet | FPN의 dense anchor | Focal loss, low prior probability | Anchor offset | One-stage anchor-based detector |
-| YOLO | Dense grid·feature location | 버전별 objectness·assignment·loss | 버전별 anchor-based 또는 anchor-free | `한 번 본다`는 이름보다 사용 버전의 label assignment와 head 확인 |
-| FCOS | FPN location point | Focal loss와 center sampling 계열 | Point에서 left·top·right·bottom 거리 | Anchor-free. Centerness가 경계 위치의 낮은 품질 box를 억제 |
+<figure id="source-fpn-comparison">
+  <img src="{{ "/assets/images/study/autonomous-driving/source-captures/adc-06-p31.png" | relative_url }}" alt="Image pyramid, single feature map, feature hierarchy와 top-down lateral connection을 가진 FPN의 비교" loading="lazy">
+  <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-06-perception-04.pdf#page=31" | relative_url }}">Lecture 6, p. 31</a>.</figcaption>
+</figure>
+
+그림 (a)는 크기를 바꾼 입력마다 feature를 다시 만들고, (b)는 마지막 map 하나에서만 예측한다. (c)는 여러 해상도를 쓰지만 얕은 층의 의미 정보가 부족할 수 있다. (d)의 FPN은 높은 층의 feature를 **위에서 아래로 확대하고 lateral connection으로 같은 해상도의 특징과 결합**한다. 이로써 각 level에서 위치 정보와 의미 정보를 함께 쓴다. FPN은 독립적인 최종 detector가 아니라 특징을 만드는 구조이므로 Faster R-CNN의 RPN·RoI head에도, RetinaNet의 dense head에도 결합할 수 있다.
+
+### 4.3 RetinaNet, YOLO, FCOS: 한 단계 안에서도 해결하는 문제가 다르다
+
+Supplementary table — [Lecture 7 pp. 8–20](/assets/pdfs/study/autonomous-driving/lecture-07-perception-05.pdf#page=8)의 비교다. 강의는 RetinaNet 다음 YOLO를 소개하지만, 원형 YOLO가 더 먼저 발표되었으므로 이 배치를 그대로 발전 연표로 읽지 않는다.
+
+| 논문 | 문제의식 | 핵심 방법과 해석 |
+|---|---|---|
+| [RetinaNet](https://arxiv.org/abs/1708.02002){:target="_blank" rel="noopener"} | Dense prediction에서 쉬운 배경 anchor가 너무 많아 학습을 지배함 | FPN feature의 anchor마다 class·box를 예측하고 focal loss로 쉬운 예제의 기여를 줄인다. FPN은 크기 문제, focal loss는 학습 불균형을 담당한다. |
+| [YOLO 원형](https://arxiv.org/abs/1506.02640){:target="_blank" rel="noopener"} | 후보를 따로 생성·분류하는 검출 과정을 하나의 예측 문제로 묶고 싶음 | 전체 영상을 한 network로 평가해 grid별 box와 class 정보를 직접 낸다. 논문 초록의 핵심은 검출을 통합된 회귀 문제로 다룬다는 것이며, 이후 YOLO 버전의 anchor·loss 설계와 구분한다. |
+| [FCOS](https://arxiv.org/abs/1904.01355){:target="_blank" rel="noopener"} | Anchor 크기·비율·개수 설계와 anchor–GT matching에 의존함 | FPN의 위치마다 class, 네 변까지의 거리, centerness를 예측한다. 미리 정한 box template을 없애되 multi-scale 표현과 dense prediction은 유지한다. |
+{: .reference-candidate-table}
+
+**RetinaNet과 FCOS는 같은 one-stage 접근에서 box의 기준을 anchor와 point로 달리한다.** [RetinaNet 그림](/study/autonomous-driving/lecture-07-perception-05/#adc-07-p09)은 한 위치에 여러 기준 box가 있고, [FCOS 그림](/study/autonomous-driving/lecture-07-perception-05/#adc-07-p18)은 한 위치에서 네 변까지 거리를 낸다. FCOS도 class에는 focal loss를 사용하므로 anchor-free가 앞선 설계를 전부 버린다는 뜻은 아니다. 그림의 RetinaNet class 출력 표기는 원 논문과 달라, 계산에는 위치당 `A × K` sigmoid 점수와 `4A` box 값을 사용한다(`A`: anchor 수, `K`: 전경 class 수).
 
 RetinaNet의 binary focal loss는
 
@@ -281,15 +312,19 @@ $$
 
 FCOS는 feature location이 GT box 안에 있으면 그 위치에서 box 네 변까지 거리 $$(l,t,r,b)$$를 예측한다. Box 경계 가까운 위치는 한쪽 거리가 작고 localization quality가 낮기 쉬워 centerness로 score를 조절한다. Anchor가 없다고 candidate나 assignment가 사라지는 것은 아니다.
 
+강의 p. 12의 속도–AP 곡선은 당시 모델·입력·장치 조건에서의 비교다. p. 13의 45 fps도 원형 base YOLO의 결과이며, 모든 one-stage detector가 모든 two-stage detector보다 빠르거나 정확하다는 결론으로 확장하지 않는다.
+
 ## 5. Segmentation: box보다 더 촘촘한 출력
 
 Semantic segmentation은 같은 class의 두 차량을 같은 `car` pixel class로 표시할 수 있다. Instance segmentation은 차량마다 별도 mask를 낸다. Road·sky처럼 셀 수 없는 영역은 보통 stuff, car·person처럼 개체 단위가 중요한 대상은 thing으로 구분한다.
 
-FCN은 fully connected layer 대신 convolutional prediction을 사용해 spatial score map을 만든다. Downsampling은 큰 receptive field와 semantic context를 얻지만 경계를 흐릴 수 있다. Transposed convolution이나 interpolation과 skip connection은 resolution을 복원한다.
+[FCN](https://arxiv.org/abs/1411.4038){:target="_blank" rel="noopener"}은 이미지 전체에 class 하나를 내는 분류 network를 **위치마다 class를 내는 dense predictor**로 바꾼다. Fully connected layer를 convolution으로 바꾸어 spatial score map을 유지하고 upsampling해 pixel 단위 출력으로 복원한다. Downsampling으로 얻은 넓은 문맥과 세밀한 경계를 함께 쓰기 위해 깊은 coarse feature와 얕은 fine feature를 skip으로 결합한다. [Lecture 8 pp. 8–11](/assets/pdfs/study/autonomous-driving/lecture-08-perception-06.pdf#page=8)의 해상도 변화는 이 필요성을 보여준다.
 
 1D에서 input `[a,b]`, kernel `[k_0,k_1,k_2]`, stride 2인 transposed convolution은 각 input이 kernel 모양을 output 위치에 더한다. 겹치는 위치는 합산된다. Input 사이에 0을 넣고 적절한 kernel 방향과 padding을 적용하는 계산으로도 볼 수 있다. Output size는 padding·output padding까지 확인해야 한다.
 
-Mask R-CNN은 Faster R-CNN의 proposal·classification·box 경로에 RoI별 mask branch를 추가한다. RoIAlign은 quantization을 줄여 pixel mask와 feature의 정렬을 돕는다. Class별 binary mask loss와 semantic segmentation의 pixel softmax를 같은 것으로 보면 안 된다.
+[Mask R-CNN](https://arxiv.org/abs/1703.06870){:target="_blank" rel="noopener"}은 **Faster R-CNN으로 찾은 각 객체의 box 안에서 어느 pixel이 그 객체인지**까지 예측한다. [Lecture 8 p. 23](/assets/pdfs/study/autonomous-driving/lecture-08-perception-06.pdf#page=23)의 CNN+RPN → RoIAlign 뒤에서 class·box 경로와 mask 경로가 갈라진다. RoI pooling의 좌표 반올림은 mask 경계를 어긋나게 할 수 있으므로 RoIAlign은 분수 좌표를 보간해 공간 정렬을 보존한다. p. 24의 서로 다른 RoI target은 같은 영상에서도 객체마다 별도의 이진 mask를 학습한다는 뜻이다.
+
+여기에는 두 연결이 있다. **Faster R-CNN → Mask R-CNN은 검출 결과에 개체별 mask를 추가하는 직접적인 확장**이다. FCN과 Mask R-CNN은 convolution으로 촘촘한 출력을 만든다는 공통점이 있지만, FCN은 영상 전체의 pixel class를, Mask R-CNN의 mask branch는 RoI 안 특정 객체의 포함 여부를 다룬다. 또 FCN의 skip과 FPN의 lateral connection은 세밀한 위치·깊은 의미 정보를 결합한다는 공통 원리를 갖지만, 전자는 segmentation map 복원, 후자는 여러 detection scale의 특징 생성에 쓰인다.
 
 ## 6. 3D perception: 깊이와 방향이 추가된다
 
@@ -306,11 +341,20 @@ Lab 2가 쓰는 LiDAR box는 $$(x,y,z,l,w,h,\theta)$$다. $$(x,y,z)$$는 box cen
 
 ### 6.2 Image-based 3D detection
 
-| Method | 핵심 입력·가정 | 처리 | 한계 |
-|---|---|---|---|
-| Mono3D | RGB, road·class prior | 3D candidate를 만들고 image에 projection해 semantic·shape·context·location feature로 scoring | Candidate와 prior 품질에 의존 |
-| MonoRCNN | RGB, 물리 높이와 투영 높이에 관한 예측 | 높이와 PCL의 역수로 depth를 복원하고 각 성분의 uncertainty를 학습 | 단안 scale ambiguity가 사라지는 것이 아니라 learned prior로 줄어듦 |
-| Pseudo-LiDAR | Stereo 또는 monocular depth map | Pixel depth를 camera-frame 3D point로 역투영한 뒤 point-cloud detector 사용 | Depth error가 3D 위치 error로 변환됨 |
+**Camera 기반 방법들의 공통 질문은 ‘직접 측정하지 않은 depth를 무엇으로 보충할 것인가’다.** Mono3D는 3D 후보와 장면의 prior, MonoRCNN은 물체 높이와 투영 geometry, Pseudo-LiDAR는 depth의 표현 방식에 초점을 둔다.
+
+Supplementary table — Lecture 9의 [Mono3D, pp. 20–26](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=20), [MonoRCNN, pp. 27–31](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=27), [Pseudo-LiDAR, pp. 33–36](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=33)를 비교했다.
+
+| 논문 | 문제의식 | 핵심 방법과 기여 |
+|---|---|---|
+| [Mono3D](https://openaccess.thecvf.com/content_cvpr_2016/html/Chen_Monocular_3D_Object_CVPR_2016_paper.html){:target="_blank" rel="noopener"} | 단안 영상의 많은 3D 해석 중 실제 객체일 가능성이 높은 후보를 어떻게 고를까? | Ground plane·class별 크기 prior로 3D 후보를 만들고 영상에 투영한다. Semantic·instance·shape·context 등의 단서로 점수를 매겨 후보를 좁히고 정제한다. |
+| [MonoRCNN](https://openaccess.thecvf.com/content/ICCV2021/html/Shi_Geometry-Based_Distance_Decomposition_for_Monocular_3D_Object_Detection_ICCV_2021_paper.html){:target="_blank" rel="noopener"} | RGB에서 거리 하나를 직접 회귀하면 오차 원인을 구분하기 어려움 | 물리 높이와 영상에 투영된 중심선 길이의 역수를 따로 예측하고 camera geometry로 depth를 복원한다. 성분별 uncertainty를 학습해 거리 추정을 분해한다. |
+| [Pseudo-LiDAR](https://openaccess.thecvf.com/content_CVPR_2019/html/Wang_Pseudo-LiDAR_From_Visual_Depth_Estimation_Bridging_the_Gap_in_3D_CVPR_2019_paper.html){:target="_blank" rel="noopener"} | 추정 depth가 있어도 image grid에서 처리하면 metric 3D 이웃 관계를 활용하기 어려움 | Stereo 또는 monocular depth를 3D point cloud로 역투영하고 LiDAR용 detector에 넣는다. Depth 추정뿐 아니라 **그 정보를 어떤 좌표 표현으로 처리하는가**도 중요하다는 기여다. |
+{: .reference-candidate-table}
+
+Mono3D와 MonoRCNN은 단안 모호성에 대응하는 서로 다른 해법이다. Pseudo-LiDAR는 완성된 depth map을 point-cloud 표현으로 바꾸는 방향이라 다음 LiDAR 기반 detector들과 연결된다. 예를 들어 영상에서 이웃한 두 pixel도 하나가 가까운 차량, 다른 하나가 먼 배경이면 3D에서는 멀리 떨어진다. 역투영은 이 차이를 meter 단위 좌표로 드러내지만, 잘못 추정한 depth 자체를 고쳐 주지는 않는다. Camera frame에서 복원한 점을 LiDAR-frame detector에 넣는 경우에는 extrinsic으로 좌표 convention도 맞춰야 한다.
+
+강의의 MonoRCNN → Pseudo-LiDAR 순서는 개념 설명 순서다. Pseudo-LiDAR는 2019년, MonoRCNN은 2021년 논문이므로 앞 방법을 뒤 방법이 역사적으로 계승했다고 읽지 않는다.
 
 **Mono3D의 class semantic은 ‘어떤 종류인가’, instance semantic은 ‘같은 종류 중 어느 개체인가’를 구분한다.** [Lecture 9 p. 24](/assets/pdfs/study/autonomous-driving/lecture-09-3d-perception-01.pdf#page=24)의 class map에서는 차량들이 같은 색이고, instance map에서는 차량마다 색이 다르다. 따라서 후보가 차량 영역을 덮는지만 보는 것과 한 차량의 영역에 맞는지 보는 것은 다르다. 이 정보는 projection된 3D 후보의 점수를 매기는 데 쓰이며, instance 색은 실제 차체 색이나 시간에 걸친 tracking ID가 아니다.
 
@@ -335,13 +379,17 @@ $$
 
 ### 6.3 LiDAR-based 3D detection
 
-| Method | 중심 표현 | 핵심 연산 | 장점·제약 |
-|---|---|---|---|
-| PointNet | Raw point set | Shared MLP + symmetric max pooling | 순서 불변. Local neighborhood 표현은 제한적 |
-| PointNet++ | Hierarchical point neighborhoods | Sampling, grouping, local PointNet | Multi-scale local geometry 학습 |
-| PointRCNN | Raw points | Point-wise foreground segmentation, point-generated proposal, canonical refinement | 두 단계. Foreground quality가 proposal recall에 영향 |
-| VoxelNet | 3D voxel | VFE, sparse-to-dense, 3D convolution, BEV RPN | Learned voxel feature. Dense 3D 계산 비용 |
-| PIXOR | BEV height-slice grid | 2D CNN dense oriented box detection | 빠른 BEV 처리. Vertical detail을 channel로 요약 |
+LiDAR는 depth를 직접 측정하지만 점의 개수·순서가 고정되지 않고 공간 밀도도 불균일하다. 여기서는 **point set의 특징을 만드는 방법**과 **그 특징에서 3D box를 찾는 detector**를 구분한다.
+
+Supplementary table — [Lecture 10 pp. 10–13](/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=10)의 point-set 특징 학습.
+
+| 논문 | 해결하려는 문제 | 핵심 방법과 기여 |
+|---|---|---|
+| [PointNet](https://arxiv.org/abs/1612.00593){:target="_blank" rel="noopener"} | 규칙적인 pixel grid 없이 순서 없는 점들을 처리해야 함 | 점마다 같은 MLP를 적용하고 symmetric max pooling으로 모은다. 점 순서에 의존하지 않는 global feature를 만들며, point별 feature와 결합해 segmentation에도 사용한다. |
+| [PointNet++](https://arxiv.org/abs/1706.02413){:target="_blank" rel="noopener"} | 점을 곧바로 global pooling하면 주변 점들의 local geometry를 명시적으로 쌓기 어려움 | 중심점 sampling → 이웃 grouping → local PointNet을 반복한다. 작은 이웃에서 넓은 영역으로 특징을 계층화하는 PointNet의 직접적인 확장이다. |
+{: .reference-candidate-table}
+
+[PointNet 원본 그림](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p12)의 max pooling은 점 축을 하나의 특징으로 모으는 위치다. PointNet++는 그 연산을 여러 local neighborhood 안에서 먼저 수행한다. 두 방법을 그 자체로 완성된 3D box detector라고 부르면 이후 proposal·box head의 역할이 빠진다.
 
 PointNet이 point cloud의 세 조건을 처리하는 방식은 구분해야 한다.
 
@@ -349,14 +397,32 @@ PointNet이 point cloud의 세 조건을 처리하는 방식은 구분해야 한
 - **순열 불변성:** 같은 점들을 재배열하면 shared MLP의 특징도 순서만 바뀐다. 각 특징 차원에서 max의 후보 값은 같으므로 global feature와 물체 분류 결과는 그대로다. 점별 segmentation 결과는 입력과 함께 재배열되는 순열 등변성을 갖는다.
 - **회전 대응:** T-Net이 입력·특징의 정렬을 학습하지만 모든 회전에 대한 엄밀한 불변성을 보장하지는 않는다. 점 순서의 변경과 좌표 값의 회전은 다른 연산이다.
 
-PointNet++는 local neighborhood를 계층적으로 모아 PointNet의 local structure 약점을 보완한다.
+Supplementary table — Lecture 10의 [PointRCNN, pp. 16–23](/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=16), [VoxelNet, pp. 24–32](/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=24), [PIXOR, pp. 33–37](/assets/pdfs/study/autonomous-driving/lecture-10-3d-perception-02.pdf#page=33)의 detector 비교.
+
+| 논문 | 문제의식 | 핵심 방법과 연결 |
+|---|---|---|
+| [PointRCNN](https://openaccess.thecvf.com/content_CVPR_2019/html/Shi_PointRCNN_3D_Object_Proposal_Generation_and_Detection_From_Point_Cloud_CVPR_2019_paper.html){:target="_blank" rel="noopener"} | 넓은 3D 공간에서 실제 객체 주변의 후보를 효율적으로 만들고 정밀하게 보정해야 함 | PointNet++ backbone으로 점별 foreground를 예측하고 그 점에서 3D proposal을 만든다. 후보 주변 점을 canonical coordinate로 옮겨 두 번째 단계에서 box를 정제한다. |
+| [VoxelNet](https://openaccess.thecvf.com/content_cvpr_2018/html/Zhou_VoxelNet_End-to-End_Learning_CVPR_2018_paper.html){:target="_blank" rel="noopener"} | 점군을 grid로 바꿀 때 수작업 요약 특징에 의존함 | Voxel 안의 점과 중심 대비 위치를 VFE로 학습해 voxel feature를 만든다. 3D convolution으로 이웃 정보를 모은 뒤 BEV detection head로 box를 예측한다. |
+| [PIXOR](https://openaccess.thecvf.com/content_cvpr_2018/html/Yang_PIXOR_Real-Time_3D_CVPR_2018_paper.html){:target="_blank" rel="noopener"} | 3D 공간 전체에서 convolution을 수행하는 계산 부담 | 높이별 occupancy 등을 BEV channel로 표현하고 2D CNN으로 oriented box를 밀집 예측한다. Proposal 없이 top-down 검출을 수행하며 수직 표현과 계산량 사이의 선택을 한다. |
+{: .reference-candidate-table}
+
+**PointNet → PointNet++ → PointRCNN은 특징 학습의 확장과 실제 backbone 활용 관계**다. 반면 PointRCNN·VoxelNet·PIXOR는 순서대로 이전 논문을 대체한 계보가 아니다. [PointRCNN 그림](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p22)은 점 기반 후보와 정제, [VoxelNet 그림](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p29)은 voxel 내부 학습 뒤 3D 이웃 처리, [PIXOR 그림](/study/autonomous-driving/lecture-10-3d-perception-02/#adc-10-p37)은 BEV에서의 2D 처리를 보여준다. 같은 점군을 **점 집합으로 유지할지, 3D grid로 묶을지, 높이를 channel에 담은 2D grid로 바꿀지**가 비교의 축이다.
+
+2D 검출과도 연산의 역할을 비교할 수 있다. PointRCNN의 proposal–refinement는 Faster R-CNN처럼 두 단계지만, 후보를 만드는 입력과 방식은 다르다. VoxelNet의 모듈 이름에 `RPN`이 있어도 원 모델에는 별도 RoI 재판정 단계가 없으므로 이름만 보고 two-stage라고 분류하면 안 된다. PIXOR의 BEV box도 겹칠 수 있어 oriented NMS가 필요하다.
 
 ### 6.4 Camera–LiDAR fusion
 
-| Method | Proposal 시작점 | Fusion 위치 | 핵심 흐름 |
-|---|---|---|---|
-| Frustum PointNets | 2D image detector | 2D box가 만든 3D frustum 안의 points | Point segmentation, mask centroid, T-Net translation, amodal 3D box regression |
-| MV3D | LiDAR BEV | BEV·LiDAR front view·RGB RoI feature | BEV 3D proposal을 각 view에 projection하고 deep fusion 후 class·3D box refinement |
+두 센서는 서로 다른 정보를 주지만, 어느 영역이 같은 객체에 속하는지 먼저 맞춰야 한다. **Frustum PointNets는 영상의 2D 후보로 3D 탐색 범위를 좁히고, MV3D는 LiDAR에서 만든 3D 후보를 기준으로 여러 view를 모은다.**
+
+Supplementary table — [Lecture 11 pp. 11–21](/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=11)의 후보 생성과 정보 결합 비교.
+
+| 논문 | 해결하려는 문제 | 핵심 방법과 기여 |
+|---|---|---|
+| [Frustum PointNets](https://openaccess.thecvf.com/content_cvpr_2018/html/Qi_Frustum_PointNets_for_CVPR_2018_paper.html){:target="_blank" rel="noopener"} | 넓은 3D 공간을 처음부터 탐색하기 어려움 | 2D detector의 box를 camera ray 방향의 frustum으로 확장해 점을 고른다. PointNet 계열로 객체 점을 분리하고, 중심 보정 뒤 가려진 부분까지 포함한 amodal 3D box를 추정한다. |
+| [MV3D](https://openaccess.thecvf.com/content_cvpr_2017/html/Chen_Multi-View_3D_Object_CVPR_2017_paper.html){:target="_blank" rel="noopener"} | LiDAR geometry와 RGB appearance를 같은 객체 단위로 결합해야 함 | LiDAR BEV에서 3D proposal을 만들고 BEV·LiDAR front view·RGB에 투영한다. 각 RoI feature를 deep fusion해 class와 3D box를 정제한다. |
+{: .reference-candidate-table}
+
+[Frustum PointNets 원본 그림](/study/autonomous-driving/lecture-11-3d-perception-03/#adc-11-p14)은 PointNet 계열을 segmentation·중심 보정·box 추정에 활용하는 연결을 보여준다. 다만 2D detector가 객체를 놓쳐 frustum 자체가 없으면 뒤의 point 처리도 그 객체를 복구하기 어렵다. [MV3D 원본 그림](/study/autonomous-driving/lecture-11-3d-perception-03/#adc-11-p21)은 BEV proposal을 각 view에 대응시키므로 image detector의 후보에 직접 의존하지 않지만, BEV 후보 누락이나 잘못된 calibration은 뒤의 fusion을 제한한다. 후보 recall 개선과 calibration·시간 정렬 점검이 각각 필요한 이유다. 강의에서는 Frustum PointNets 뒤에 MV3D를 설명하지만 발표는 MV3D(2017), Frustum PointNets(2018) 순이다.
 
 Fusion 전에는 공간 calibration, timestamp synchronization, 같은 object region의 대응이 필요하다. Camera와 LiDAR feature를 단순 concatenate해도 좌표와 시간이 어긋나면 같은 물체의 정보가 아니다.
 
@@ -701,23 +767,27 @@ Simulator는 단순화한 물체에 ray를 쏘고 range noise와 point dropout�
 | Fixed P/R = AP | P/R은 한 threshold, AP는 score sweep의 PR curve 면적이다 |
 | BEV IoU = 3D IoU | BEV overlap은 height overlap을 직접 포함하지 않는다 |
 | PointNet 순서 불변 = 회전 불변 | Symmetric aggregation은 point order에 대한 invariance다 |
+| PointNet = PointRCNN | PointNet 계열은 point feature를 학습하는 기반 구조이고, PointRCNN은 이를 활용해 proposal과 3D box를 만드는 detector다 |
 | VoxelNet = 3D convolution만 | Voxel grouping, VFE, 3D middle layers, BEV RPN, anchor head와 후처리의 전체 흐름이다 |
+| 강의의 소개 순서 = 논문의 발전 순서 | 직접 확장한 방법과 같은 문제에 다른 표현을 선택한 방법을 구분해야 한다 |
 
 ## 10. 마지막 핵심 정리
 
 1. Sensor는 서로 다른 물리량과 실패 조건을 가진다. Camera pixel은 ray를, LiDAR point는 직접 측정한 surface geometry를 나타낸다.
 2. Projection에는 coordinate convention, intrinsic, extrinsic과 positive depth 조건이 필요하다. Stereo depth 오차는 원거리에서 빠르게 커진다.
 3. Detection의 공통 흐름은 feature, candidate, label assignment, class·box prediction, filtering·NMS, GT matching과 AP다.
-4. R-CNN 계열은 region proposal 처리 위치가 발전했고, FPN은 multi-scale semantics와 resolution을 결합한다.
-5. RetinaNet은 dense anchor의 imbalance를 focal loss로, FCOS는 anchor-free distance와 centerness로 다룬다.
-6. 3D detector는 raw point, voxel, BEV 또는 image-depth representation 중 계산 중심을 선택한다.
-7. Lab 1은 Faster R-CNN의 proposal–refinement와 RetinaNet의 dense prediction을 같은 image에서 추적한다.
-8. Lab 2는 실제 KITTI 표현 관찰과 synthetic VoxelNet training을 분리한다. 저장 AP는 synthetic center-distance AP다.
+4. R-CNN → Fast R-CNN은 region별 CNN 반복을 feature 공유로 줄이고, Faster R-CNN은 외부 proposal 생성을 RPN으로 바꾼다. FPN은 별도로 작은 물체의 위치 정보와 강한 semantics를 결합한다.
+5. RetinaNet은 dense prediction의 foreground–background imbalance를 focal loss로 완화한다. FCOS는 anchor box 대신 위치별 거리와 centerness를 예측한다. Mask R-CNN은 Faster R-CNN에 정밀한 RoI 정렬과 instance mask branch를 더한다.
+6. 단안 3D는 모호한 depth를 다루는 방법이 핵심이다. Mono3D는 geometry·semantic prior로 후보를 평가하고, MonoRCNN은 거리 추정을 기하 항으로 분해하며, Pseudo-LiDAR는 추정 depth를 3D point 표현으로 바꾼다.
+7. PointNet++는 PointNet에 지역 구조 학습을 더하고 PointRCNN은 이를 3D 검출에 활용한다. VoxelNet·PIXOR는 각각 voxel·BEV를 계산 중심으로 선택한다. Fusion에서는 Frustum PointNets가 image box에서, MV3D가 LiDAR BEV에서 후보를 시작한다.
+8. Lab 1은 Faster R-CNN의 proposal–refinement와 RetinaNet의 dense prediction을 같은 image에서 추적한다.
+9. Lab 2는 실제 KITTI 표현 관찰과 synthetic VoxelNet training을 분리한다. 저장 AP는 synthetic center-distance AP다.
 
 ## Study Guide
 
 - **계산:** projection·stereo depth, IoU·AP, box encode·decode, voxel index를 숫자를 바꿔 직접 계산한다.
 - **비교:** two-stage와 one-stage, semantic과 instance segmentation, image·point·voxel·BEV 표현의 차이를 설명한다.
+- **논문:** 각 방법이 바꾼 병목·표현·출력을 설명한다. 직접 확장한 구조인지, 같은 문제의 대안인지 구분한다.
 - **Lab 1:** image, FPN, anchor, RPN proposal, RoI refinement의 입력·출력을 추적하고 RetinaNet의 dense head와 비교한다.
 - **Lab 2:** point, voxel, VFE, 3D convolution, BEV RPN 순서로 tensor의 축이 어떻게 바뀌는지 설명한다.
 - **평가:** IoU의 비교 대상, AP의 matching 규칙, 사용한 데이터 분포를 명시한다.
@@ -805,6 +875,27 @@ Simulator는 단순화한 물체에 ray를 쏘고 range noise와 point dropout�
 <summary markdown="span">12. Camera–LiDAR fusion에서 feature concatenation 전에 필요한 조건은?</summary>
 
 답변: Intrinsic·extrinsic calibration으로 공간 좌표를 맞추고, timestamp·ego motion으로 시간을 맞추며, 같은 proposal 또는 object region을 각 view에서 대응시켜야 한다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">13. Fast R-CNN, Faster R-CNN, FPN은 같은 병목을 해결하는가?</summary>
+
+Fast R-CNN은 proposal마다 CNN을 다시 계산하는 비용을 줄인다. Faster R-CNN은 여전히 외부에 남아 있던 proposal 생성을 shared feature 위의 RPN으로 옮긴다. FPN은 proposal 생성 방식 자체보다 feature scale의 문제를 다룬다. 높은 해상도의 위치 정보와 깊은 층의 의미 정보를 결합하므로 Faster R-CNN과 RetinaNet 모두에 사용할 수 있다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">14. PointRCNN, VoxelNet, PIXOR는 무엇을 다르게 선택하는가?</summary>
+
+PointRCNN은 point별 feature와 foreground segmentation으로 3D proposal을 만든 뒤 보정한다. VoxelNet은 voxel 안의 point feature를 학습하고 규칙적인 3D grid에서 이웃 정보를 결합한다. PIXOR는 높이 정보를 channel로 담은 BEV 표현에서 oriented box를 직접 예측한다. 차이는 단순히 더 최신인 모델이 아니라, 불규칙한 점군을 어느 공간에서 계산할지에 있다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">15. Frustum PointNets와 MV3D는 후보가 누락될 때 어떤 차이가 있는가?</summary>
+
+Frustum PointNets는 2D image detection에서 frustum을 만들므로 image에서 놓친 물체는 이후 point 처리로 넘어가기 어렵다. MV3D는 LiDAR BEV에서 만든 proposal을 여러 view에 투영하므로 BEV proposal이 누락되면 해당 물체의 image feature를 결합할 기회도 줄어든다. Fusion이 모든 누락을 자동으로 복구하는 것은 아니다. 후보 단계의 recall을 확보하고 센서 간 정렬을 검증해야 한다.
 
 </details>
 

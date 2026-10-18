@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 19:26:47 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -497,6 +497,29 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 
 둘 중 하나가 모든 조건에서 우월하다는 결론은 슬라이드나 원 논문 비교만으로 낼 수 없다. Model size, pre-training hours, labeled subset, LM decoding, augmentation, fine-tuning recipe가 같아야 objective 차이를 가깝게 비교할 수 있다.
 
+### 8.1 강의에 등장한 논문의 역할과 연결 관계
+
+이 강의에서 `wav2vec`라는 짧은 표기가 보이더라도 pp. 21–39에서 구조와 loss를 전개하는 주 모델은 **wav2vec 2.0**이다. 2019년 wav2vec은 convolutional context network가 미래 latent를 구별하도록 학습한 선행 연구지만, 강의는 그 구조를 별도로 전개하지 않는다. 따라서 두 이름을 같은 architecture로 바꾸어 쓰지 않는다. 아래 표는 실제 강의에 등장한 논문을 “어떤 문제를 다루고, 무엇을 바꾸며, 어느 stage에 기여하는가”로 구분한다.
+
+<details markdown="block">
+<summary markdown="span">Supplementary table: Papers and learning objectives</summary>
+
+| 논문·방법 | 해결하려는 문제 | 핵심 메커니즘·pre-training target | 기여·학습되는 representation | ASR adaptation과 관계 |
+|---|---|---|---|---|
+| **wav2vec 2.0** (pp. 21–33) | Transcript 없이 연속 waveform에서 문맥 표현과 학습 target을 함께 만드는 문제 | 가린 latent의 context $$c_t$$가 원래 latent에서 online quantization한 $$q_t$$를 같은 utterance의 distractor와 구별한다. Diversity loss가 codebook 사용 쏠림을 완화한다. | CNN의 local acoustic latent, Transformer의 contextual representation, discrete target codebook을 하나의 objective로 함께 학습한다. | Pre-training codebook을 문자로 쓰지 않는다. Labeled transcript 단계에서 별도 vocabulary projection과 CTC loss를 붙인다. |
+| **XLS-R** (p. 34) | wav2vec 2.0의 표현을 많은 언어에 공유하고 저자원 언어로 transfer하는 문제 | wav2vec 2.0 계열 objective를 다언어 public speech와 큰 model scale에 적용한다. | 언어별 전용 encoder 대신 여러 언어가 공유할 수 있는 cross-lingual speech representation을 학습하는 방향을 검증한다. | ASR·speech translation·language ID·speaker ID는 같은 zero-shot 출력이 아니다. 과제별 labeled data와 head·fine-tuning 설정이 필요하다. |
+| **Comparative Layer-Wise Analysis** (p. 35, p. 38) | SSL encoder의 어느 layer가 acoustic·phonetic·word 정보를 담는지 모르는 문제 | CCA와 layer별 downstream evaluation으로 이미 학습된 representation을 측정한다. 새 pre-training target을 제안하지 않는다. | “모든 정보는 마지막 layer가 가장 좋다”는 가정을 깨고 objective·task별 layer trend를 비교한다. | Frozen probe의 layer 순위는 전체 encoder를 fine-tune한 최종 ASR 순위와 같은 증거가 아니다. |
+| **Conformer** (p. 36) | Attention의 global interaction만으로는 local acoustic pattern을 효율적으로 모델링하기 어려운 문제 | Feed-forward, multi-head self-attention, convolution module을 Macaron형 residual block에 결합한다. | Local convolution과 global attention을 결합한 **encoder architecture**를 제안한다. SSL target이나 label 생성법 자체는 아니다. | 원 논문은 supervised ASR encoder다. 후속 SSL 연구가 Conformer를 사용해도 pre-training objective와 downstream loss는 별도로 확인해야 한다. |
+| **Wav2Vec-Aug** (p. 36) | Unlabeled speech가 제한된 조건에서 wav2vec 2.0 pre-training의 data efficiency를 높이는 문제 | Data augmentation과 wav2vec 2.0 학습 구성을 결합한다. | 제한된 unlabeled data에서도 더 유용한 representation을 학습하려는 **training strategy**다. Conformer의 다른 이름이 아니다. | Downstream ASR 평가는 labeled fine-tuning을 거치며, augmentation 효과와 encoder·data 조건을 함께 비교해야 한다. |
+| **Pushing the Limits of Semi-Supervised Learning** (p. 37) | 대규모 unlabeled speech와 labeled speech를 한 ASR pipeline에서 활용하는 문제 | 80-D log-mel, 2D subsampling, giant Conformer, masked contrastive pre-training의 linear target, transducer fine-tuning, SpecAugment, iterative noisy student를 결합한다. | wav2vec 2.0의 masked contrastive 아이디어를 유지하면서 입력·target·encoder·후속 학습 recipe를 함께 바꾼다. | CTC가 아니라 transducer를 fine-tune한다. 결과를 `Transformer를 Conformer로 교체한 효과` 하나로 귀속할 수 없다. |
+| **Contrastive Siamese Network** (p. 38) | Unlabeled acoustic data에서 shortcut을 피하면서 high-level linguistic representation을 학습하는 문제 | 같은 구조의 augmented·target Transformer branch 출력을 contrastive loss로 맞춘다. Target branch에는 stop-gradient를 적용하고 augmented branch에는 변환과 temporal augmentation을 둔다. | Online product quantization 없이 두 view의 일관성으로 representation을 학습하는 별도 SSL 방법이다. p. 38의 frozen layer graph는 학습된 representation을 분석하는 문맥이다. | Frozen encoder의 layer별 품질 비교와 전체 model의 supervised ASR adaptation 결과를 구분해야 한다. |
+| **HuBERT** (pp. 44–49) | Speech의 정답 unit을 모르고, 초기 cluster label도 noisy할 수 있는 문제 | Offline k-means ID를 masked position에서 분류하고, 이전 HuBERT intermediate layer를 다시 clustering해 target을 반복 개선한다. | 완벽한 pseudo-label보다 시간적으로 일관된 hidden unit prediction이 representation 학습에 유용할 수 있음을 보인다. Online quantizer와 explicit distractor가 필요 없다. | Pre-training cluster ID는 ASR token이 아니다. Labeled transcript로 별도 head를 학습하고 CTC 등으로 fine-tune한다. |
+{: .reference-candidate-table}
+
+</details>
+
+관계의 핵심은 `wav2vec 2.0 → XLS-R`처럼 **같은 objective의 언어·규모 확장**, `wav2vec 2.0 → Wav2Vec-Aug`처럼 **제한된 data 조건의 학습 전략 확장**, `wav2vec 2.0 ↔ HuBERT`처럼 **공통 encoder 흐름에서 target·loss를 바꾼 비교**, `c-siam`처럼 **별도의 two-view SSL objective**, `Conformer`처럼 **objective와 독립적인 encoder 선택**, layer-wise analysis처럼 **학습된 representation을 측정하는 평가**를 구분하는 것이다. 마지막 CTC·transducer stage는 이 pre-training 관계와 별도의 supervised adaptation 단계다.
+
 ## 9. 실패 조건과 실무 점검
 
 ### 9.1 무엇을 먼저 확인할 것인가
@@ -529,10 +552,13 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 - ASR fine-tuning의 class vocabulary는 pre-training codebook과 다르며 CTC와 labeled transcript가 필요하다.
 - XLS-R, Conformer, Wav2Vec-Aug, noisy student는 data scale·architecture·training recipe를 서로 다르게 확장한 연구다. 이름만으로 성능을 비교하지 않는다.
 - HuBERT는 offline k-means label을 masked context에서 예측하고 이전 model의 intermediate layer로 target을 개선한다. Online codebook collapse는 피하지만 cluster 품질 문제까지 사라지는 것은 아니다.
+- 논문 관계는 `representation을 무엇으로 학습하는가`, `pre-training target·objective가 무엇인가`, `labeled ASR에서 CTC·transducer 중 무엇으로 적응하는가`의 세 축으로 읽는다.
 
 ## Study Guide
 
 먼저 Section 1에서 네 learning paradigm을 **target의 출처**로 설명할 수 있어야 한다. 다음으로 wav2vec 2.0 그림을 `waveform → z → mask → c`와 `z → quantizer → q`의 두 branch로 나누어 그린다. Contrastive loss에서는 positive·distractor·temperature를, diversity loss에서는 부호와 entropy 방향을 직접 계산한다. 마지막으로 HuBERT의 `MFCC cluster → iteration 1 → layer 6 cluster → iteration 2` 흐름을 그린 뒤 두 모델의 target 생성 차이를 표로 복습한다.
+
+논문 이름을 외울 때는 §8.1의 세 질문을 붙인다. **무슨 문제를 푸는가, pre-training target·objective에서 무엇을 바꾸는가, downstream ASR에서 representation을 어떻게 쓰는가?** 이 기준이면 Conformer를 SSL objective로, codebook을 문자 vocabulary로, frozen probe를 end-to-end fine-tuning 결과로 오해하지 않는다.
 
 시험에서는 숫자를 외우기보다 조건을 붙이는 것이 중요하다. `320 samples`는 16 kHz에서 20 ms이고, `K=100`은 후보 전체가 아니라 distractor 수이며, `Base 95M/Large 317M`은 원 논문의 특정 architecture다. WER은 labeled hours, unlabeled data, external LM과 split을 함께 쓰지 않으면 비교 근거가 부족하다.
 
@@ -639,6 +665,7 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 | pp. 35–39 | Spectrogram, Conformer, frozen layer와 summary | CCA의 spectrogram 상관과 실제 log-mel 입력 변경을 구분. Pushing the Limits는 80-D log-mel, Conformer, linear target/no quantization·diversity loss, 30,031-hour segmented pre-training, transducer·SpecAugment·noisy-student recipe를 함께 사용함을 명시. `autoencoder-like`도 보편적 wav2vec 2.0 단계로 해석하지 않음 |
 | pp. 40–43 | Attention is permutation invariant | Position-free self-attention의 permutation equivariance와 positional mechanism의 필요로 정교화 |
 | pp. 44–49 | HuBERT predictive approach, 6th/9th layer, no collapse | MFCC 100-cluster → layer-6 500-cluster → layer-9 target의 iteration별 역할 확인. Online codebook collapse와 offline clustering 품질 문제를 구분 |
+| pp. 21–49 | wav2vec, wav2vec 2.0, XLS-R, Conformer 계열, HuBERT의 관계 | 원 wav2vec은 선행 맥락으로만 구분하고 강의의 상세 구조는 wav2vec 2.0으로 한정. 각 논문을 representation, pre-training target·objective, supervised ASR adaptation의 역할로 분리 |
 
 ## PDF
 
@@ -650,6 +677,7 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 
 <ul>
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a> and <a href="https://github.com/markovka17/dla" target="_blank" rel="noopener">DLA Course Materials</a> — lecture source collections.</li>
+  <li><a href="https://arxiv.org/abs/1904.05862" target="_blank" rel="noopener">wav2vec: Unsupervised Pre-training for Speech Recognition</a> — historical context for the original future-latent contrastive method; its architecture is not the wav2vec 2.0 pipeline taught in detail here.</li>
   <li><a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations</a> — CNN stride, product quantization, contrastive·diversity loss, CTC fine-tuning and experimental conditions.</li>
   <li><a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units</a> — offline clustering, masked prediction and iterative layer targets.</li>
   <li><a href="https://arxiv.org/abs/2111.09296" target="_blank" rel="noopener">XLS-R: Self-supervised Cross-lingual Speech Representation Learning at Scale</a> — multilingual wav2vec 2.0 scaling.</li>

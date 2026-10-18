@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-10-18 19:26:18 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -566,6 +566,19 @@ Subsampling은 $$T$$를, subword는 보통 $$U$$를 줄일 수 있다. 하지만
 </details>
 
 ## 8. CTC, LAS, RNN-T를 비교하는 기준
+
+먼저 논문의 문제의식과 구성 요소의 층위를 분리해야 한다. **CTC와 RNN-T는 정렬 경로의 확률을 합하는 학습 기준까지 포함**하고, **LAS는 attention encoder–decoder 전체 구조**, **Deep Speech 2와 Conformer는 강의 비교에서 주로 encoder와 전체 시스템의 사례**다.
+
+| 논문 | 해결하려는 문제 | 핵심 변경 | 구조상 분류 |
+|---|---|---|---|
+| CTC (2006) | 입력–출력 정렬을 주지 않고 전사를 학습 | Frame별 분포, blank, collapse, 정렬 경로 합 | 학습 기준+출력 규칙 |
+| RNN-T (2012) | 정렬을 모르면서 이전 출력 prefix도 다음 예측에 반영 | 음향 encoder와 prediction network를 joint network에서 결합하고 시간–token lattice의 경로를 합산 | Transducer 기준+encoder/prediction/joint 구조 |
+| LAS (2015) | 고정 벡터 병목과 문자 간 독립 가정을 피하며 음성을 문자열로 직접 변환 | Pyramidal Listener, soft attention, autoregressive Speller를 공동 학습 | Attention encoder–decoder |
+| Deep Speech 2 (2015) | End-to-end ASR을 여러 언어·소음 조건과 대규모 학습·서빙으로 확장 | Convolution·recurrent encoder, CTC, LM beam decoding을 시스템으로 통합 | Encoder+CTC 시스템 |
+| Conformer (2020) | 음성의 국소 패턴과 장거리 의존성을 한 encoder에서 함께 처리 | Self-attention과 convolution module을 결합 | Encoder; 원 논문 평가는 Transducer 사용 |
+{: .reference-candidate-table}
+
+강의가 CTC → LAS → RNN-T 순으로 설명한다고 해서 이것이 발표 연도나 직접적인 계승 순서는 아니다. RNN-T 논문은 LAS보다 먼저 발표되었고 두 방식은 정렬과 출력 이력을 다루는 서로 다른 계열이다. 또한 “Conformer-L Transducer”는 Conformer encoder와 Transducer 학습·decoder를 조합한 특정 시스템이지, Conformer와 RNN-T가 같은 구성 요소라는 뜻이 아니다.
 
 <figure id="speech-04-p44">
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-04-p44.png" | relative_url }}" alt="CTC, LAS, RNN-T의 streaming, context, argmax 복잡도와 beam search 복잡도를 비교한 강의 표" loading="lazy">

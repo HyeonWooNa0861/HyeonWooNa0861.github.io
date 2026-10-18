@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 19:26:18 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -390,6 +390,17 @@ CTC의 장점은 **프레임-문자 정렬을 주석으로 주지 않아도 학�
 슬라이드는 CTC가 streamable하다고 요약한다(p. 36). 다만 **실시간 처리 가능 여부는 encoder와 decoder가 미래 프레임을 요구하는지에 달려 있다.** 양방향 encoder나 긴 look-ahead를 쓰면 CTC loss를 사용하더라도 전체 발화를 기다려야 할 수 있다. CTC trellis의 높은 확률 경로는 학습 중 명시 정렬 없이 얻는 *추정 정렬*이지, 사람이 확정한 음소 경계가 아니다.
 
 ## 5. Encoder: Deep Speech 2와 Conformer
+
+이 절에 등장하는 이름은 같은 종류의 선택지가 아니다. **CTC는 정렬을 모르는 전사 확률을 계산하는 학습 기준**, **Deep Speech 2는 convolution·recurrent encoder와 CTC를 묶은 end-to-end 시스템**, **Conformer는 국소·전역 음향 문맥을 함께 표현하는 encoder**다.
+
+| 논문 | 문제의식 | 바꾼 구성과 기여 | 이 강의에서의 위치 |
+|---|---|---|---|
+| CTC (2006) | 프레임과 label의 정렬을 미리 주기 어렵다 | Blank와 collapse 규칙으로 가능한 단조 정렬을 정의하고, 같은 전사를 만드는 경로 확률을 합산한다 | **학습 기준**. Encoder 종류를 정하지 않는다 |
+| Deep Speech 2 (2015) | 수작업 구성요소가 많은 음성 인식 파이프라인을 여러 언어·음향 조건에서 확장하기 어렵다 | Convolution과 recurrent 층이 만든 프레임 분포를 CTC로 학습하고, 대규모 분산 학습·서빙까지 하나의 시스템으로 다뤘다 | **Encoder+CTC 시스템**. 추론에는 LM beam search를 결합한다 |
+| Conformer (2020) | Self-attention은 전역 상호작용에 강하고 CNN은 국소 특징에 강하지만 한쪽만으로 두 범위를 함께 다루기 어렵다 | 한 encoder block에 self-attention과 depthwise convolution을 결합해 전역·국소 의존성을 함께 모델링한다 | **Encoder 설계**. 원 논문 실험은 Transducer와 결합했다 |
+{: .reference-candidate-table}
+
+강의는 이해를 위해 CTC → Deep Speech 2 → Conformer 순으로 배치하지만, 이를 하나의 decoder가 다음 decoder로 교체된 역사적 계보로 읽으면 안 된다. Encoder와 학습 기준은 서로 다른 축이다. 예를 들어 Conformer encoder는 CTC와 결합할 수도 있고 Transducer와 결합할 수도 있으며, 실제 streaming 가능성은 결합한 loss의 이름이 아니라 encoder가 미래 frame을 얼마나 요구하는지까지 확인해야 한다.
 
 강의 p. 42의 Deep Speech 2 도식은 spectrogram → 1D/2D convolution → recurrent/GRU 층 → fully connected 출력 → CTC라는 흐름을 보여 준다. 입력단의 1D convolution은 **시간축**, 2D convolution은 **시간·주파수축**의 인접 패턴을 먼저 추출하고, recurrent 층은 시점에 걸친 문맥을 누적한다. 원 논문에는 양방향 RNN 구성뿐 아니라 미래 문맥을 제한하는 단방향 RNN과 lookahead convolution 구성도 있으므로, 강의의 양방향 그림 하나를 전체 모델의 유일한 형태로 보아서는 안 된다. 학습에는 CTC로 정렬되지 않은 전사를 사용하고, 추론에는 언어 모델을 결합한 beam search를 사용한다.
 

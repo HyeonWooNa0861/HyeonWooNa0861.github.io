@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 16:43:36 +0900
+last_modified_at: 2026-10-18 19:27:29 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -418,12 +418,17 @@ $$
 
 ### 4.3 CTC, LAS, RNN-T는 정렬과 출력 이력을 다르게 처리한다
 
+세 방법의 공통 문제는 **긴 음향 frame열과 짧은 전사열 사이의 정렬을 시간별 정답 없이 학습하는 것**이다. CTC는 정답 전사가 되는 frame 경로를 합한다. LAS는 이전 출력과 attention context로 다음 token을 만들고, RNN-T는 출력 이력을 조건으로 삼으면서 시간·출력 두 축의 정렬 경로를 합한다. 이는 CTC를 LAS가, LAS를 RNN-T가 차례로 대체했다는 뜻이 아니라 같은 문제를 서로 다른 확률 모델로 푸는 관계다.
+
 | 기준 | CTC | LAS | RNN-T |
 |---|---|---|---|
 | 출력 이력 | 기본 frame 분포에 직접 조건화하지 않음 | 이전 token을 조건으로 생성 | Prediction network가 prefix를 표현 |
 | 정렬 | collapse되는 frame 경로 합 | 출력마다 입력에 attention | 시간·token lattice 경로 합 |
 | 진행 기호 | blank 제거 | EOS로 종료 | blank는 시간 진행, token은 출력 진행 |
 | Streaming | encoder·decoder 지연 조건에 따름 | full attention·bidirectional listener면 offline | causal/chunk encoder일 때 가능 |
+{: .reference-candidate-table}
+
+<a href="{{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#speech-04-p15" | relative_url }}">LAS 원본 그림</a>에서는 Listener가 음향 표현을 만들고, Attend가 현재 출력에 필요한 입력을 모으며, Speller가 이전 token을 받아 다음 token을 낸다. <a href="{{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#speech-04-p37" | relative_url }}">RNN-T lattice</a>에서는 같은 출력 prefix를 유지하며 시간을 넘기는 경로와 새 token을 내는 경로를 구분해 읽는다. 두 그림 모두 출력 이력을 쓰지만, 정렬을 표현하는 방식은 다르다.
 
 LAS의 autoregressive 확률은 다음처럼 이전 정답 또는 생성 prefix에 조건화된다.
 
@@ -437,9 +442,13 @@ RNN-T의 상태 $$(t,u)$$에서 blank를 선택하면 $$(t+1,u)$$로 가고, 다
 
 ### 4.4 Deep Speech 2와 Conformer를 구조 역할로 비교한다
 
-Deep Speech 2는 convolution으로 local acoustic pattern과 시간 길이를 처리하고 recurrent layer로 긴 문맥을 모델링한 뒤 CTC로 정렬한다. Conformer는 self-attention의 넓은 문맥과 convolution module의 local pattern 처리를 한 block 안에서 결합한다.
+Deep Speech 2는 convolution으로 local acoustic pattern과 시간 길이를 처리하고 recurrent layer로 긴 문맥을 모델링한 뒤 CTC로 정렬한다. 핵심은 **음향 표현을 만드는 신경망과 CTC 정렬 학습을 결합해 음성에서 전사로 이어지는 인식기를 학습한다**는 데 있다. CTC가 학습 목표라면 convolution·recurrent layer는 그 목표에 필요한 표현을 만드는 구조다.
+
+Conformer의 문제의식은 넓은 문맥을 연결하는 self-attention과 가까운 시간 구간의 패턴을 처리하는 convolution이 서로 다른 강점을 가진다는 것이다. 두 연산을 한 encoder block에 결합해 장거리 관계와 국소 음향 패턴을 함께 다룬다. <a href="{{ "/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/#speech-03-p44" | relative_url }}">원본 convolution module 그림</a>은 채널을 섞는 pointwise 연산과 시간축 이웃을 처리하는 depthwise convolution을 구분해 읽는다. 이 구조 설명만으로 모든 데이터에서 성능이 높다고 결론내릴 수는 없다.
 
 Conformer의 subsampling은 입력 frame 수를 줄여 이후 attention의 시간축 비용을 낮춘다. 예를 들어 stride 2를 두 번 적용하면 길이는 대략 $$T/4$$가 된다. 실제 출력 길이는 kernel, padding과 홀수 길이 처리에 따라 달라진다. Convolution module은 짧은 음향 패턴과 위치 인접성을 처리하지만, 그것만으로 streaming을 보장하지 않는다. Attention context와 convolution padding이 미래 frame을 보는지 확인해야 한다.
+
+따라서 **Conformer와 CTC는 양자택일 대상이 아니다.** Conformer는 encoder 구조이고 CTC는 정렬·학습 목표다. Conformer 원 논문의 ASR 구성은 encoder를 LSTM decoder 기반 transducer와 결합한다. 다른 학습 목표와의 결합 가능성까지 원 논문의 실험 결과로 간주해서는 안 된다.
 
 ## 5. Self-supervised speech representation learning
 
@@ -458,6 +467,8 @@ wav2vec 2.0의 흐름은 다음과 같다.
 5. Codebook 사용이 한쪽으로 무너지는 것을 줄이기 위해 diversity objective를 함께 둔다.
 
 Contrastive target은 waveform sample이나 text token이 아니라 **가린 위치에 대응하는 quantized latent vector**다. Fine-tuning에서는 CTC output을 붙여 labeled ASR에 적응시킬 수 있다.
+
+<a href="{{ "/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/#speech-05-p31" | relative_url }}">원본 학습 그림</a>의 갈림길이 중요하다. CNN 출력에서 한 경로는 가려진 채 Transformer로 들어가고, 다른 경로는 가리지 않은 특징으로 정답 target을 만든다. 문맥 표현 $$c_t$$가 같은 위치의 $$q_t$$를 다른 후보보다 잘 골라야 하므로, 정답 전사 없이도 주변 음성에서 유용한 정보를 학습할 수 있다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: wav2vec 2.0 contrastive objective</summary>
@@ -478,12 +489,21 @@ Positive similarity가 distractor보다 커질수록 분수의 값이 1에 가�
 
 HuBERT는 MFCC 같은 기존 feature를 offline clustering해 pseudo-label $$y_t$$를 만든다. 가린 구간의 cluster label을 문맥에서 맞히고, 학습한 representation으로 다시 clustering해 target을 개선할 수 있다. wav2vec 2.0의 online learned codebook과 HuBERT의 offline cluster target은 같은 것이 아니다.
 
+<a href="{{ "/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/#speech-05-p46" | relative_url }}">HuBERT 원본 그림</a>에서는 clustering으로 만든 label 경로와 가린 입력을 처리하는 경로를 나누어 읽는다. 가령 정답이 cluster 17이라면 masked classifier가 17에 높은 확률을 주도록 학습한다. 17이 특정 글자나 정확한 음소 이름을 뜻할 필요는 없다. 이런 pseudo-label을 문맥으로 예측하는 동안 음향·언어적 구조를 표현에 담도록 유도하는 것이 핵심이다.
+
 | 기준 | wav2vec 2.0 | HuBERT |
 |---|---|---|
 | Target 생성 | learned product quantization | offline clustering label |
 | 주요 loss | contrastive classification + diversity | masked cluster classification |
 | Collapse 관리 | codebook diversity가 중요 | target cluster 품질·분포가 중요 |
 | Downstream | labeled data로 CTC 등 fine-tuning | labeled data로 ASR 등 fine-tuning |
+{: .reference-candidate-table}
+
+### 5.4 사전학습 논문과 ASR 구조는 어떻게 이어지는가
+
+wav2vec 2.0과 HuBERT는 모두 **전사 라벨 부족**을 다룬다. wav2vec 2.0은 함께 학습하는 quantizer의 target을 후보 사이에서 구별하고, HuBERT는 별도로 만든 cluster label을 예측한다. 공통점은 가린 음성의 문맥을 학습한다는 것이며, 차이는 정답을 만드는 방법과 loss에 있다. HuBERT를 wav2vec 2.0의 모든 구성 요소를 그대로 둔 개선판으로 읽으면 이 차이가 사라진다.
+
+그 뒤 ASR fine-tuning에서는 음향 표현을 실제 전사 token에 연결해야 한다. 이때 CTC 같은 목표를 사용할 수 있다. 반면 Conformer는 표현을 계산하는 encoder의 설계에 관한 선택이다. **사전학습은 무엇으로 먼저 배울지, encoder는 정보를 어떻게 처리할지, ASR 목표는 전사와 어떻게 정렬할지**를 정한다. 서로 관련되지만 같은 축의 경쟁 방법은 아니다.
 
 ## 6. 혼동하기 쉬운 기호와 표현
 
@@ -537,6 +557,7 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 - Mel filterbank의 주파수 집계와 log의 값 압축은 별도 연산이며, ASR feature와 waveform 복원 표현의 목적도 다르다.
 - CTC는 frame 확률을 곱해 path 확률을 만들고, 같은 전사로 collapse되는 path를 더한다. Forward DP는 이 합을 재사용한다.
 - LAS는 이전 token과 attention context로 다음 token을 생성하고, RNN-T는 acoustic time과 output prefix를 두 축으로 분리한다.
+- Deep Speech 2와 Conformer는 음향 표현을 만드는 구조로 비교한다. Conformer의 국소·전역 문맥 결합은 CTC나 RNN-T의 정렬 규칙과 별도 역할이다.
 - wav2vec 2.0과 HuBERT는 transcript 없이 target을 만들지만, learned quantization과 offline clustering이라는 target 생성 방식이 다르다.
 
 ## Study Guide
@@ -613,5 +634,9 @@ Imaginary part는 phase 그 자체가 아니다. Complex value $$a+jb$$의 phase
 ## References
 
 - <a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al.: Connectionist Temporal Classification</a>
+- <a href="https://proceedings.mlr.press/v48/amodei16.html" target="_blank" rel="noopener">Amodei et al.: Deep Speech 2</a>
+- <a href="https://arxiv.org/abs/1508.01211" target="_blank" rel="noopener">Chan et al.: Listen, Attend and Spell</a>
+- <a href="https://arxiv.org/abs/1211.3711" target="_blank" rel="noopener">Graves: Sequence Transduction with Recurrent Neural Networks</a>
+- <a href="https://arxiv.org/abs/2005.08100" target="_blank" rel="noopener">Gulati et al.: Conformer</a>
 - <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">Baevski et al.: wav2vec 2.0</a>
 - <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">Hsu et al.: HuBERT</a>

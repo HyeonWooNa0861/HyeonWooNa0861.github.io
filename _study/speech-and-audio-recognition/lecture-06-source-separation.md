@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:17:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-10-18 19:26:41 +0900
 title: "Speech and Audio Recognition Lecture 6: Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Audio Reconstruction, Masking, Loss Functions, and Phase"
@@ -898,6 +898,19 @@ $$
 
 논문 Table 3은 phase-related 입력과 MulCA를 제거한 ablation을 제시한다. Without reverb의 WB-PESQ는 전체 모델 2.982, phase-related 입력 제거 2.955, MulCA 제거 2.960이다. 각 구성의 기여를 살펴볼 근거는 되지만 두 효과가 독립적으로 단순 합산된다는 의미는 아니다. 슬라이드 표의 연도와 제목이 다르게 보이더라도 모델명과 인용한 논문 버전을 기준으로 구분한다.
 
+### 9.4 DCCRN과 FullSubNet 계열은 같은 문제를 다른 축에서 푼다
+
+원문 p. 29의 DCCRN과 pp. 31–32의 FullSubNet+는 모두 noisy STFT에서 목표 음성을 복원하지만, 강조점이 다르다. 다음 표는 architecture, 예측 target, mask 적용, loss를 한 과정으로 섞지 않기 위한 비교다.
+
+| 방법 | 해결하려는 문제 | Network가 내는 값과 학습 | 적용과 복원 | 관계 |
+|---|---|---|---|---|
+| [DCCRN](https://www.isca-archive.org/interspeech_2020/hu20g_interspeech.pdf){:target="_blank" rel="noopener"} | Magnitude만으로는 위상 관련 좌표를 충분히 다루기 어려움 | Complex encoder–recurrent–decoder가 real·imaginary 특징을 교차 결합한다. 강의 그림의 경로에서는 최종 complex mask를 추정한다. | 예측 mask를 noisy complex STFT에 적용하고 iSTFT로 waveform을 만든다. Architecture가 표현 범위를 정하고, 선택한 spectrum·waveform loss가 학습 비교 위치를 정한다. | Complex 연산을 network 내부까지 일관되게 가져가는 별도 설계다. |
+| [FullSubNet](https://arxiv.org/abs/2010.15508){:target="_blank" rel="noopener"} | 전체 대역의 전역 문맥과 한 frequency 주변의 국소 문맥을 함께 써야 함 | Noisy magnitude에서 full-band 특징과 sub-band 이웃을 결합해 compressed cIRM 두 성분을 감독 학습한다. | Network 출력을 역압축한 뒤 noisy complex STFT에 곱하고 iSTFT한다. | FullSubNet+가 직접 확장하는 기반 모델이다. |
+| [FullSubNet+](https://arxiv.org/abs/2203.12188){:target="_blank" rel="noopener"} | Complex mask를 예측하면서 입력은 magnitude만 쓰는 불일치를 줄이고 full-band 처리를 효율화해야 함 | Magnitude·real·imaginary 입력, MulCA, TCN full-band branch와 LSTM sub-band model로 compressed cIRM을 예측한다. | FullSubNet처럼 역압축한 complex mask를 보존된 noisy STFT에 적용하고 iSTFT한다. | FullSubNet의 직접 확장이다. DCCRN의 직접 후속이라고 볼 근거는 없다. |
+{: .reference-candidate-table}
+
+세 방법의 공통점은 complex STFT 복원 경로지만, **DCCRN은 complex-valued network 연산**, **FullSubNet 계열은 full-band와 sub-band 문맥 결합**에 무게를 둔다. MA·SA·waveform loss는 이 architecture들의 이름이 아니라 어느 값에서 정답과 비교할지 정하는 목적함수다. PIT도 여러 source의 출력 순서를 맞추는 학습 규칙이므로, 단일 target enhancement architecture의 다음 block처럼 연결하지 않는다.
+
 ## 10. Waveform 및 hybrid 모델
 
 ### 10.1 Demucs Denoiser — 학습된 encoder로 파형을 복원한다
@@ -966,6 +979,7 @@ Supervised training은 paired mixture/source를 사용한다. Semi-supervised fi
 | Demucs Denoiser | Learned waveform representation | 시간 영역에서 직접 enhancement 수행 |
 | Hybrid Transformer Demucs | Waveform과 spectrogram | 두 표현 사이에서 정보 교환 |
 | Band-Split RNN | Band별 complex STFT features | 시간 방향과 대역 방향을 나누어 처리 |
+{: .reference-candidate-table}
 
 ## 11. 작은 계산으로 loss와 phase 확인하기
 
@@ -1035,6 +1049,7 @@ print(round(abs(projected_magnitude - clean_bin) ** 2, 2))
 - **PSA의 cosine은 투영에서 나온다.** Clean spectrum을 고정된 mixture phase 방향으로 투영한 값을 target으로 사용한다.
 - **Loss와 model의 표현 범위를 맞추어야 한다.** Waveform loss가 phase의 영향을 측정하더라도 fixed-phase mask에 독립적인 phase 예측 능력이 생기지는 않는다.
 - **음량과 source 순서를 따로 다루어야 한다.** SI-SNR은 gain을 무시한 shape error를, PIT는 source 대응의 순열 문제를 다룬다.
+- **DCCRN과 FullSubNet 계열은 같은 계보가 아니다.** DCCRN은 complex-valued network 연산을, FullSubNet은 full/sub-band 문맥 결합을 강조하며, FullSubNet+가 FullSubNet을 직접 확장한다.
 
 ## Study Guide
 
@@ -1136,6 +1151,7 @@ $$
   <li><a href="https://www.isca-archive.org/interspeech_2020/hu20g_interspeech.pdf" target="_blank" rel="noopener">Hu et al.: DCCRN — Deep Complex Convolution Recurrent Network for Phase-Aware Speech Enhancement</a> — complex-valued speech enhancement.</li>
   <li><a href="https://archives.ismir.net/ismir2020/paper/000046.pdf" target="_blank" rel="noopener">Choi et al.: Investigating U-Nets with Various Intermediate Blocks for Spectrogram-Based Singing Voice Separation</a> — TFC-TDF architecture for music source separation.</li>
   <li><a href="https://mdx-workshop.github.io/proceedings/mkim.pdf" target="_blank" rel="noopener">Kim et al.: KUIELab-MDX-Net — A Two-Stream Neural Network for Music Demixing</a> — MDX-Net source-specific streams and mixing.</li>
+  <li><a href="https://arxiv.org/abs/2010.15508" target="_blank" rel="noopener">Hao et al.: FullSubNet</a> — full-band and sub-band fusion for real-time speech enhancement.</li>
   <li><a href="https://arxiv.org/abs/2203.12188" target="_blank" rel="noopener">Chen et al.: FullSubNet+ — Channel Attention FullSubNet with Complex Spectrograms for Speech Enhancement</a> — full-band and sub-band complex modeling.</li>
   <li><a href="https://arxiv.org/abs/2006.12847" target="_blank" rel="noopener">Défossez et al.: Real-Time Speech Enhancement in the Waveform Domain</a> — Demucs Denoiser.</li>
   <li><a href="https://arxiv.org/abs/2111.03600" target="_blank" rel="noopener">Défossez: Hybrid Spectrogram and Waveform Source Separation</a> — Hybrid Demucs v3.</li>
