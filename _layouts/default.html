@@ -1864,6 +1864,10 @@
         gap: clamp(12px, 2vw, 20px);
       }
 
+      body.pdf-reader-active:not([data-reader-count="1"]) .page-shell {
+        grid-template-columns: minmax(300px, 1fr) minmax(0, 2fr);
+      }
+
       body.pdf-reader-active .page-shell.has-sidebar > .reader-index {
         display: none;
       }
@@ -1909,6 +1913,55 @@
         border-bottom: 1px solid var(--apple-hairline);
       }
 
+      .pdf-reader-toolbar > div:first-child {
+        min-width: 0;
+      }
+
+      .pdf-reader-picker {
+        width: min(100%, 240px);
+        min-width: 0;
+        min-height: 36px;
+        padding: 7px 10px;
+        border: 1px solid var(--apple-hairline);
+        border-radius: 8px;
+        background: var(--bg-elevated);
+        color: var(--text);
+        font: inherit;
+        font-size: 12px;
+      }
+
+      .pdf-reader-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+        grid-auto-rows: minmax(320px, 1fr);
+        gap: 12px;
+        min-height: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
+        padding: 12px;
+      }
+
+      .pdf-reader-item {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        border: 1px solid var(--apple-hairline);
+        border-radius: 10px;
+        background: var(--bg-elevated);
+      }
+
+      .pdf-reader-item .pdf-reader-toolbar {
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .pdf-reader-item .pdf-reader-title {
+        overflow-wrap: anywhere;
+        font-size: 14px;
+      }
+
       .pdf-reader-kicker {
         margin: 0 0 4px;
         color: var(--muted);
@@ -1928,6 +1981,7 @@
         display: flex;
         gap: 8px;
         align-items: center;
+        min-width: 0;
       }
 
       .pdf-reader-open,
@@ -2049,7 +2103,8 @@
       }
 
       @media (max-width: 980px) {
-        body.pdf-reader-active .page-shell {
+        body.pdf-reader-active .page-shell,
+        body.pdf-reader-active:not([data-reader-count="1"]) .page-shell {
           grid-template-columns: 1fr;
         }
 
@@ -2071,6 +2126,19 @@
         .pdf-reader-open,
         .pdf-reader-close {
           min-height: 44px;
+        }
+
+        .pdf-reader-picker {
+          min-height: 44px;
+        }
+
+        .pdf-reader-grid {
+          grid-template-columns: minmax(0, 1fr);
+          grid-auto-rows: minmax(360px, 65vh);
+        }
+
+        body[data-reader-count="1"] .pdf-reader-grid {
+          grid-template-rows: minmax(0, 1fr);
         }
       }
 
@@ -2216,6 +2284,11 @@
 
         .pdf-reader-actions {
           width: 100%;
+        }
+
+        .pdf-reader-picker {
+          width: 100%;
+          flex: 1;
         }
 
         .pdf-reader-open,
@@ -5224,11 +5297,12 @@
 
           var readerBackdrop = null;
           var readerPanel = null;
-          var readerKicker = null;
-          var readerTitle = null;
-          var readerFrame = null;
-          var readerOpen = null;
+          var readerGrid = null;
+          var readerPicker = null;
+          var readerCount = null;
           var readerClose = null;
+          var readerItems = [];
+          var nextReaderId = 0;
           var lastReaderTrigger = null;
           var inertBackground = [];
           var readerModalQuery = window.matchMedia("(max-width: 980px)");
@@ -5317,7 +5391,7 @@
           }
 
           function isReaderExcludedLink(link) {
-            return Boolean(link.closest(".index-board, .post-list, .section-pager, .pdf-reader-panel, [data-no-resource-reader]"));
+            return Boolean(link.closest(".index-board, .post-list, .section-pager, .pdf-reader-panel, [data-library-search-results], [data-no-resource-reader]"));
           }
 
           function isInternalPageUrl(url) {
@@ -5409,25 +5483,42 @@
               '<div class="pdf-reader-inner">',
               '  <div class="pdf-reader-toolbar">',
               '    <div>',
-              '      <p class="pdf-reader-kicker" data-resource-reader-kicker>RESOURCE</p>',
-              '      <h2 class="pdf-reader-title" id="resource-reader-title" data-pdf-reader-title>Resource</h2>',
+              '      <p class="pdf-reader-kicker" data-resource-reader-count role="status">0 open</p>',
+              '      <h2 class="pdf-reader-title" id="resource-reader-title">Resources</h2>',
               '    </div>',
               '    <div class="pdf-reader-actions">',
-              '      <a class="pdf-reader-open" data-pdf-reader-open href="#" target="_blank" rel="noopener">Open</a>',
-              '      <button class="pdf-reader-close" data-pdf-reader-close type="button" aria-label="Hide resource preview">Hide</button>',
+              '      <select class="pdf-reader-picker" data-resource-reader-picker aria-label="Add another resource"><option value="">Add a resource…</option></select>',
+              '      <button class="pdf-reader-close" data-pdf-reader-close-all type="button">Hide all</button>',
               '    </div>',
               '  </div>',
-              '  <div class="pdf-reader-frame-wrap">',
-              '    <iframe class="pdf-reader-frame" data-pdf-reader-frame title="Resource preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>',
-              '  </div>',
+              '  <div class="pdf-reader-grid" data-resource-reader-grid></div>',
               '</div>'
             ].join("");
 
-            readerKicker = readerPanel.querySelector("[data-resource-reader-kicker]");
-            readerTitle = readerPanel.querySelector("[data-pdf-reader-title]");
-            readerFrame = readerPanel.querySelector("[data-pdf-reader-frame]");
-            readerOpen = readerPanel.querySelector("[data-pdf-reader-open]");
-            readerClose = readerPanel.querySelector("[data-pdf-reader-close]");
+            readerGrid = readerPanel.querySelector("[data-resource-reader-grid]");
+            readerPicker = readerPanel.querySelector("[data-resource-reader-picker]");
+            readerCount = readerPanel.querySelector("[data-resource-reader-count]");
+            readerClose = readerPanel.querySelector("[data-pdf-reader-close-all]");
+
+            var listedSources = [];
+            readerLinks.forEach(function (link) {
+              var resource = getReaderResource(link);
+              if (!resource || listedSources.indexOf(resource.sourceUrl) !== -1) return;
+              listedSources.push(resource.sourceUrl);
+              var option = document.createElement("option");
+              option.value = resource.sourceUrl;
+              option.textContent = resource.type + " — " + getResourceLabel(link, resource);
+              readerPicker.appendChild(option);
+            });
+            readerPicker.addEventListener("change", function () {
+              var sourceUrl = readerPicker.value;
+              readerPicker.value = "";
+              var link = readerLinks.find(function (candidate) {
+                var resource = getReaderResource(candidate);
+                return resource && resource.sourceUrl === sourceUrl;
+              });
+              if (link) openResourceReader(link, getReaderResource(link));
+            });
 
             readerBackdrop.addEventListener("click", closeResourceReader);
             readerClose.addEventListener("click", closeResourceReader);
@@ -5515,7 +5606,7 @@
             if (!readerPanel) return [];
 
             return Array.prototype.slice.call(readerPanel.querySelectorAll(
-              'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+              'a[href], button:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
             )).filter(function (element) {
               return element.getAttribute("aria-hidden") !== "true";
             });
@@ -5549,22 +5640,93 @@
             ensureResourceReader();
 
             var label = getResourceLabel(link, resource);
-            if (lastReaderTrigger && lastReaderTrigger !== link) {
-              lastReaderTrigger.setAttribute("aria-expanded", "false");
-            }
             lastReaderTrigger = link;
-            link.setAttribute("aria-expanded", "true");
+            var entry = readerItems.find(function (item) {
+              return item.resource.sourceUrl === resource.sourceUrl;
+            });
 
-            readerKicker.textContent = resource.type;
-            readerTitle.textContent = label;
-            readerOpen.href = resource.sourceUrl;
-            readerFrame.title = label + " preview";
-            readerFrame.src = resource.frameUrl;
+            if (!entry) {
+              var card = document.createElement("section");
+              var titleId = "resource-reader-item-" + (++nextReaderId);
+              card.className = "pdf-reader-item";
+              card.setAttribute("data-resource-reader-item", "");
+              card.setAttribute("aria-labelledby", titleId);
+              card.innerHTML = [
+                '<div class="pdf-reader-toolbar">',
+                '  <div>',
+                '    <p class="pdf-reader-kicker" data-resource-reader-kicker></p>',
+                '    <h3 class="pdf-reader-title" data-pdf-reader-title></h3>',
+                '  </div>',
+                '  <div class="pdf-reader-actions">',
+                '    <a class="pdf-reader-open" data-pdf-reader-open target="_blank" rel="noopener">Open</a>',
+                '    <button class="pdf-reader-close" data-pdf-reader-close type="button">Hide</button>',
+                '  </div>',
+                '</div>',
+                '<div class="pdf-reader-frame-wrap">',
+                '  <iframe class="pdf-reader-frame" data-pdf-reader-frame loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>',
+                '</div>'
+              ].join("");
+              var title = card.querySelector("[data-pdf-reader-title]");
+              title.id = titleId;
+              title.textContent = label;
+              card.querySelector("[data-resource-reader-kicker]").textContent = resource.type;
+              card.querySelector("[data-pdf-reader-open]").href = resource.sourceUrl;
+              entry = {
+                resource: resource,
+                card: card,
+                frame: card.querySelector("[data-pdf-reader-frame]"),
+                close: card.querySelector("[data-pdf-reader-close]"),
+                trigger: link
+              };
+              entry.frame.title = label + " preview";
+              entry.frame.src = resource.frameUrl;
+              entry.close.setAttribute("aria-label", "Hide " + label);
+              entry.close.addEventListener("click", function () { closeResourceItem(entry); });
+              readerItems.push(entry);
+              readerGrid.appendChild(card);
+            }
+
+            syncReaderItems();
             readerPanel.setAttribute("aria-hidden", "false");
             readerPanel.hidden = false;
             document.body.classList.add("pdf-reader-active");
-            readerClose.focus({ preventScroll: true });
+            entry.close.focus({ preventScroll: true });
+            entry.card.scrollIntoView({ block: "nearest", inline: "nearest" });
             syncResourceReaderMode();
+          }
+
+          function syncReaderItems() {
+            document.body.setAttribute("data-reader-count", String(readerItems.length));
+            readerCount.textContent = readerItems.length + " open";
+            readerLinks.forEach(function (link) {
+              var resource = getReaderResource(link);
+              var isOpen = resource && readerItems.some(function (entry) {
+                return entry.resource.sourceUrl === resource.sourceUrl;
+              });
+              link.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            });
+            Array.prototype.forEach.call(readerPicker.options, function (option) {
+              option.disabled = readerItems.some(function (entry) {
+                return entry.resource.sourceUrl === option.value;
+              });
+            });
+          }
+
+          function closeResourceItem(entry) {
+            if (readerItems.length === 1) {
+              closeResourceReader();
+              return;
+            }
+            var index = readerItems.indexOf(entry);
+            if (index === -1) return;
+            var shouldRestoreFocus = entry.card.contains(document.activeElement);
+            entry.frame.removeAttribute("src");
+            entry.card.remove();
+            readerItems.splice(index, 1);
+            syncReaderItems();
+            if (shouldRestoreFocus) {
+              readerItems[Math.min(index, readerItems.length - 1)].close.focus({ preventScroll: true });
+            }
           }
 
           function closeResourceReader() {
@@ -5572,17 +5734,19 @@
 
             var shouldRestoreFocus = !readerPanel.hidden;
 
-            readerFrame.removeAttribute("src");
+            readerItems.forEach(function (entry) {
+              entry.frame.removeAttribute("src");
+              entry.card.remove();
+            });
+            readerItems = [];
+            syncReaderItems();
             readerPanel.setAttribute("aria-hidden", "true");
             readerPanel.hidden = true;
             document.body.classList.remove("pdf-reader-active", "pdf-reader-modal-active");
+            document.body.removeAttribute("data-reader-count");
             readerPanel.removeAttribute("aria-modal");
             readerBackdrop.setAttribute("aria-hidden", "true");
             restoreBackgroundInteraction();
-
-            if (lastReaderTrigger) {
-              lastReaderTrigger.setAttribute("aria-expanded", "false");
-            }
 
             if (shouldRestoreFocus && lastReaderTrigger && document.contains(lastReaderTrigger)) {
               lastReaderTrigger.focus({ preventScroll: true });
