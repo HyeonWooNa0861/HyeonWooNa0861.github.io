@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-18 23:46:41 +0900
+last_modified_at: 2026-10-19 12:28:24 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -26,7 +26,7 @@ keywords:
 
 [View slides (PDF)]({{ "/assets/pdfs/study/speech-and-audio-recognition/sar-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/speech-and-audio-recognition/sar-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
 
-25장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
+62장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. CTC Summary부터 wav2vec 2.0 직전까지는 원본 그림과 요약표를 한국어로 풀어 설명한다. Attention·LAS·RNN-T의 학습과 추론, 언어모델 결합, 자기지도학습의 target 구성을 수치 예제와 함께 다룬다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source PDFs:
 
