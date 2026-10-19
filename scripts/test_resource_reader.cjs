@@ -37,18 +37,20 @@ assert.match(readerStyles, /@media \(max-width: 980px\), \(hover: none\), \(poin
 // Study uses .page-content directly; a .post-only selector misses its equations.
 assert.match(readerStyles, /\.page-content mjx-container\[display="true"\]\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
 
-// Anchor and native button text must stay centered in the same 44px mobile row.
+// Per-tab and global close buttons must stay centered in 44px native targets.
 const readerActionStyles = between(
-  ".pdf-reader-open,\n      .pdf-reader-close {",
-  "\n      .pdf-reader-close {\n        background:"
+  ".pdf-reader-tab-close,\n      .pdf-reader-close {",
+  "\n      .pdf-reader-tab-close:hover,"
 );
-for (const declaration of ["display: inline-flex;", "align-items: center;", "justify-content: center;"]) {
+for (const declaration of ["display: inline-flex;", "align-items: center;", "justify-content: center;", "width: 44px;", "height: 44px;"]) {
   assert.ok(readerActionStyles.includes(declaration), `reader actions must share ${declaration}`);
 }
-assert.ok(/\.pdf-reader-open,\s*\.pdf-reader-close\s*\{\s*min-height:\s*44px;/.test(layout), "mobile reader actions must retain 44px touch targets");
 assert.ok(/(?:\.pdf-reader-tabs|\[data-resource-reader-tabs\])\s*\{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/s.test(layout), "the tab strip must scroll horizontally as resources grow");
+assert.ok(/\.pdf-reader-tab-wrap\s*\{[^}]*display:\s*flex;/s.test(layout), "each tab and its close control must share a non-nested wrapper");
 assert.ok(!/\.pdf-reader-grid\s*\{[^}]*grid-template-columns:\s*repeat\(auto-fit,/s.test(layout), "the reader must not retain the independent multi-column card grid");
 assert.ok(!/body\.pdf-reader-active:not\(\[data-reader-count="1"\]\) \.page-shell/.test(layout), "resource count must not select a separate two-column layout");
+assert.ok(/\.pdf-reader-grid\s*\{[^}]*grid-template-rows:\s*(?:minmax\(0,\s*1fr\)|1fr);[^}]*padding:\s*0;/s.test(layout), "the frame area must use the full single-row canvas without padding");
+assert.ok(/\.pdf-reader-item\s*\{[^}]*grid-template-rows:\s*(?:minmax\(0,\s*1fr\)|1fr);[^}]*border:\s*0;/s.test(layout), "tabpanel cards must reserve the full row for the frame without a border");
 
 // Keep the shared desktop canvas fluid; nested prose caps must not narrow it again.
 const developerStyles = fs.readFileSync("assets/css/minimal-developer.css", "utf8");
@@ -66,16 +68,25 @@ assert.ok(/body\.pdf-reader-active \.main-wrap\s*\{\s*width:\s*calc\(100% - 32px
 assert.ok(/html\[data-reader-embed="true"\] \.page-content\s*\{\s*width:\s*100%;\s*max-width:\s*none;/.test(layout), "embedded documents must retain their full-width layout");
 
 const initialization = between("function ensureResourceReader()", "function supportsInert()");
+assert.match(initialization, /readerPanel\.setAttribute\("aria-label", "Resources"\);/);
+assert.doesNotMatch(initialization, /readerPanel\.setAttribute\("aria-labelledby"/);
 assert.match(initialization, /readerPanel\.setAttribute\("aria-hidden", "true"\);/);
 assert.match(initialization, /readerPanel\.hidden = true;/);
-assert.match(initialization, /data-pdf-reader-close-all[^>]*>Hide all<\/button>/);
+assert.match(initialization, /data-pdf-reader-close-all/);
+assert.match(initialization, /aria-label="Close resource viewer"/);
 assert.match(initialization, /data-resource-reader-picker/);
+assert.doesNotMatch(initialization, /data-pdf-reader-open/);
+assert.doesNotMatch(initialization, /data-pdf-reader-close(?:\s|=)/);
 assert.match(initialization, /data-resource-reader-tabs[^>]*role="tablist"/);
+assert.equal((initialization.match(/class="pdf-reader-toolbar"/g) || []).length, 1, "the reader must render exactly one shared toolbar");
+assert.doesNotMatch(initialization, /resource-reader-title|<h2/);
 assert.doesNotMatch(initialization, /Preview unavailable\?/);
 
 const openReader = between("function openResourceReader(link, resource)", "function closeResourceReader()");
 assert.match(openReader, /readerPanel\.setAttribute\("aria-hidden", "false"\);/);
 assert.match(openReader, /readerPanel\.hidden = false;/);
+assert.match(openReader, /data-resource-reader-tab-close/);
+assert.doesNotMatch(openReader, /data-pdf-reader-title|data-resource-reader-kicker|pdf-reader-toolbar/);
 
 const closeReader = between("function closeResourceReader()", "readerLinks\.forEach");
 assert.match(closeReader, /\.frame\.removeAttribute\("src"\);/);
@@ -177,6 +188,7 @@ class ReaderElement {
     this.disabled = false;
     this._text = "";
     this.srcWrites = 0;
+    this.scrollIntoViewCalls = [];
     this.classList = {
       contains: (name) => this.className.split(/\s+/).includes(name),
       add: (...names) => { this.className = Array.from(new Set([...this.className.split(/\s+/).filter(Boolean), ...names])).join(" "); },
@@ -263,7 +275,7 @@ class ReaderElement {
     return event;
   }
   focus() { this.ownerDocument.activeElement = this; }
-  scrollIntoView() {}
+  scrollIntoView(options) { this.scrollIntoViewCalls.push(options); }
   matches(selector) {
     return selector.split(",").some((part) => {
       let current = part.trim();
@@ -371,7 +383,9 @@ function readerFixture({ modal = false, inert = true, additionalSources = 0 } = 
   return {
     document, content, links, background, searchLink,
     panel: () => document.querySelector("[data-pdf-reader-panel]"),
+    tabWraps: () => shell.querySelectorAll(".pdf-reader-tab-wrap"),
     tabs: () => shell.querySelectorAll("[data-resource-reader-tab]"),
+    tabCloses: () => shell.querySelectorAll("[data-resource-reader-tab-close]"),
     items: () => shell.querySelectorAll("[data-resource-reader-item]"),
     frames: () => shell.querySelectorAll("[data-pdf-reader-frame]"),
     setModal(matches) { media.matches = matches; mediaListeners.forEach((listener) => listener()); }
@@ -387,21 +401,34 @@ function activeItem(fixture) {
 }
 
 function assertTabState(fixture, selectedIndex) {
+  const wraps = fixture.tabWraps();
   const tabs = fixture.tabs();
+  const closes = fixture.tabCloses();
   const items = fixture.items();
+  assert.equal(wraps.length, tabs.length, "every tab must have one non-nested wrapper");
+  assert.equal(closes.length, tabs.length, "every tab must have one sibling close button");
   assert.equal(tabs.length, items.length, "every open resource must have one tab and one panel");
   assert.equal(tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length, 1, "exactly one tab must be selected");
   assert.equal(items.filter((item) => !item.hidden).length, 1, "exactly one tabpanel must be visible");
   tabs.forEach((tab, index) => {
+    assert.equal(tab.parentElement, wraps[index]);
+    assert.equal(closes[index].parentElement, wraps[index]);
+    assert.equal(wraps[index].children[0], tab);
+    assert.equal(wraps[index].children[1], closes[index]);
+    assert.equal(tab.contains(closes[index]), false, "native buttons must not be nested");
     assert.equal(tab.getAttribute("role"), "tab");
     assert.equal(tab.getAttribute("aria-selected"), index === selectedIndex ? "true" : "false");
     assert.equal(tab.tabIndex, index === selectedIndex ? 0 : -1, "tabs must use roving tabindex");
+    assert.equal(wraps[index].classList.contains("is-active"), index === selectedIndex, "the active wrapper must style the tab and close control together");
     assert.ok(tab.id, "tabs need stable IDs");
     assert.equal(items[index].getAttribute("role"), "tabpanel");
     assert.ok(items[index].id, "tabpanels need stable IDs");
     assert.equal(tab.getAttribute("aria-controls"), items[index].id);
     assert.equal(items[index].getAttribute("aria-labelledby"), tab.id);
     assert.equal(items[index].hidden, index !== selectedIndex);
+    assert.equal(closes[index].textContent, "×");
+    assert.equal(closes[index].getAttribute("aria-label"), `Close ${tab.textContent}`);
+    assert.equal(closes[index].tabIndex, index === selectedIndex ? 0 : -1, "only the active tab close control may enter the tab order");
   });
 }
 
@@ -423,9 +450,23 @@ assert.equal(desktop.searchLink.dispatch("click").defaultPrevented, false, "sear
 assert.equal(desktop.searchLink.hasAttribute("data-pdf-reader-link"), false);
 assert.ok(desktop.panel().querySelector("[data-resource-reader-picker]").options.every((option) => !option.value.endsWith("/study/search-result/")), "search-result links must not appear in the resource picker");
 assert.equal(desktop.panel().querySelector("[data-resource-reader-tabs]").getAttribute("role"), "tablist");
+assert.equal(desktop.panel().getAttribute("aria-label"), "Resources");
+assert.equal(desktop.panel().hasAttribute("aria-labelledby"), false);
+const viewerClose = desktop.panel().querySelector("[data-pdf-reader-close-all]");
+assert.ok(viewerClose, "the shared toolbar must expose the global close control");
+assert.equal(viewerClose.getAttribute("aria-label"), "Close resource viewer");
+assert.equal(viewerClose.textContent, "×");
+assert.equal(viewerClose.hidden, false, "the global close control must remain visible with one resource");
 assertTabState(desktop, 0);
 assert.equal(desktop.tabs()[0].textContent, "attention is all you need", "generic link text must use the decoded filename without its extension");
+assert.equal(activeItem(desktop).querySelector(".pdf-reader-toolbar"), null, "tabpanels must not duplicate the shared toolbar");
+assert.equal(activeItem(desktop).querySelector("[data-pdf-reader-title]"), null, "tabpanels must not duplicate the active tab title");
+assert.equal(activeItem(desktop).querySelector("[data-resource-reader-kicker]"), null, "tabpanels must not duplicate resource metadata");
+assert.equal(activeItem(desktop).children.length, 1, "tabpanel markup must contain only the frame wrapper");
+assert.equal(activeItem(desktop).children[0].matches(".pdf-reader-frame-wrap"), true);
 assert.equal(desktop.document.activeElement, desktop.tabs()[0], "opening a resource must focus its active tab");
+assert.equal(desktop.tabs()[0].scrollIntoViewCalls.length, 0, "activation must scroll the whole tab wrapper, not only the label button");
+assert.ok(desktop.tabWraps()[0].scrollIntoViewCalls.length > 0, "activation must keep the tab and its close control visible together");
 const firstFrame = desktop.frames()[0];
 assert.equal(firstFrame.src, "https://hyeonwoona0861.github.io/assets/pdfs/attention-is_all_you-need.pdf");
 assert.equal(desktop.panel().hidden, false);
@@ -434,6 +475,7 @@ assert.equal(desktop.panel().getAttribute("aria-hidden"), "false");
 desktop.links[1].dispatch("click");
 assertTabState(desktop, 1);
 assert.equal(desktop.tabs()[1].textContent, "Named Resource", "explicit resource names must remain unchanged");
+assert.equal(viewerClose.hidden, false, "the global close control must remain visible with multiple resources");
 assert.equal(desktop.frames().length, 2, "opening another source must retain both iframe nodes");
 assert.equal(desktop.frames()[0], firstFrame, "opening another source must retain the first iframe identity");
 const secondFrame = desktop.frames()[1];
@@ -477,43 +519,66 @@ assertTabState(desktop, 3);
 assert.equal(videoFrame.src, videoSrc, "reselecting a VIDEO tab must restore its source");
 assert.equal(videoFrame.srcWrites, 2);
 
-const activeVideoTab = selectedTab(desktop);
-desktop.items()[0].querySelector("[data-pdf-reader-close]").dispatch("click");
-assert.equal(desktop.items().length, 3, "closing an inactive panel must remove only that resource");
-assert.equal(selectedTab(desktop), activeVideoTab, "closing an inactive panel must preserve the active tab");
-assert.equal(videoFrame.srcWrites, 2, "closing an inactive resource must not reload the active VIDEO");
+assert.equal(firstFrame.hasAttribute("src"), true, "inactive PDF frames must stay preloaded");
+assert.equal(firstFrame.isConnected, true);
+const videoWrap = desktop.tabWraps()[3];
+desktop.tabCloses()[3].focus();
+desktop.tabCloses()[3].dispatch("click");
+assert.equal(videoFrame.hasAttribute("src"), false, "the active tab close must unload its VIDEO");
+assert.equal(videoFrame.isConnected, false);
+assert.equal(videoWrap.isConnected, false, "closing a tab must remove its wrapper and sibling close control together");
+assert.equal(desktop.items().length, 3);
+assert.equal(desktop.tabWraps().length, 3);
+assert.equal(desktop.tabCloses().length, 3);
+assert.equal(activeItem(desktop).querySelector("[data-pdf-reader-frame]"), pageFrame, "active close must select the adjacent tab");
+assert.equal(desktop.document.activeElement, selectedTab(desktop), "active close must focus the adjacent active tab");
+
+const activePageTab = selectedTab(desktop);
+const activePageWrites = pageFrame.srcWrites;
+const inactiveFirstWrap = desktop.tabWraps()[0];
+assert.equal(desktop.tabCloses()[0].tabIndex, -1);
+desktop.tabCloses()[0].focus();
+desktop.tabCloses()[0].dispatch("click");
 assert.equal(firstFrame.hasAttribute("src"), false);
-assert.equal(firstFrame.isConnected, false);
+assert.equal(inactiveFirstWrap.isConnected, false, "inactive close must not leave an orphan tab wrapper");
+assert.equal(selectedTab(desktop), activePageTab, "inactive close must preserve the active tab");
+assert.equal(pageFrame.srcWrites, activePageWrites, "inactive close must not reload the active frame");
+assert.equal(desktop.document.activeElement, activePageTab, "inactive close must restore focus to the active tab");
+assert.equal(desktop.items().length, 2);
+assert.equal(desktop.tabWraps().length, 2);
+assert.equal(desktop.tabCloses().length, 2);
 
 selectedTab(desktop).dispatch("keydown", { key: "Delete" });
-assert.equal(videoFrame.hasAttribute("src"), false, "Delete must unload the closed VIDEO");
-assert.equal(videoFrame.isConnected, false);
-assert.equal(desktop.items().length, 2);
-assert.equal(activeItem(desktop).querySelector("[data-pdf-reader-frame]"), pageFrame, "closing the active tab must select an adjacent tab");
-assert.equal(desktop.document.activeElement, selectedTab(desktop), "active-tab removal must focus the adjacent active tab");
-
-activeItem(desktop).querySelector("[data-pdf-reader-close]").dispatch("click");
-assert.equal(pageFrame.hasAttribute("src"), false, "Hide must unload the active panel");
+assert.equal(pageFrame.hasAttribute("src"), false, "Delete must unload the active PAGE");
+assert.equal(pageFrame.isConnected, false);
 assert.equal(desktop.items().length, 1);
-assertTabState(desktop, 0);
-assert.equal(desktop.frames()[0], secondFrame);
-assert.equal(secondFrame.srcWrites, 1, "closing adjacent resources must not reload the remaining PDF");
-assert.equal(desktop.links[0].getAttribute("aria-expanded"), "false");
-assert.equal(desktop.links[1].getAttribute("aria-expanded"), "true");
+assert.equal(desktop.document.activeElement, selectedTab(desktop), "Delete must preserve focus on the adjacent active tab");
+assert.equal(activeItem(desktop).querySelector("[data-pdf-reader-frame]"), secondFrame);
 
-desktop.panel().querySelector("[data-pdf-reader-close-all]").dispatch("click");
+desktop.tabCloses()[0].focus();
+desktop.tabCloses()[0].dispatch("click");
 assert.equal(secondFrame.hasAttribute("src"), false);
 assert.equal(desktop.frames().length, 0);
 assert.equal(desktop.tabs().length, 0);
+assert.equal(desktop.tabWraps().length, 0);
+assert.equal(desktop.tabCloses().length, 0);
 assert.equal(desktop.panel().hidden, true);
 assert.equal(desktop.panel().getAttribute("aria-hidden"), "true");
 assert.equal(desktop.document.body.classList.contains("pdf-reader-active"), false);
 assert.equal(desktop.document.body.hasAttribute("data-reader-count"), false);
 assert.ok(desktop.panel().querySelector("[data-resource-reader-picker]").options.every((option) => !option.disabled));
-assert.equal(desktop.document.activeElement, desktop.links[4], "Hide all must restore the most recent source trigger");
+assert.equal(desktop.document.activeElement, desktop.links[1], "closing the final tab must restore its source trigger");
+
 desktop.links[0].dispatch("click");
-assert.equal(desktop.frames().length, 1, "the reader must reopen cleanly after Hide all");
-assert.notEqual(desktop.frames()[0], firstFrame);
+desktop.links[1].dispatch("click");
+const globallyClosedFrames = desktop.frames();
+viewerClose.dispatch("click");
+globallyClosedFrames.forEach((frame) => assert.equal(frame.hasAttribute("src"), false));
+assert.equal(desktop.frames().length, 0);
+assert.equal(desktop.tabWraps().length, 0);
+assert.equal(desktop.document.activeElement, desktop.links[1], "global close must restore the most recent source trigger");
+desktop.links[0].dispatch("click");
+assert.equal(desktop.frames().length, 1, "the reader must reopen cleanly after global close");
 desktop.document.dispatch("keydown", { key: "Escape" });
 
 const mobile = readerFixture({ modal: true });
@@ -521,6 +586,8 @@ mobile.links[0].dispatch("click");
 assert.equal(mobile.panel().getAttribute("aria-modal"), "true");
 assert.equal(mobile.content.inert, true);
 assert.equal(mobile.background.inert, true);
+mobile.document.dispatch("focusin", { target: mobile.links[0] });
+assert.equal(mobile.document.activeElement, mobile.panel().querySelector("[data-pdf-reader-close-all]"), "focus fallback must use the global viewer close control");
 const picker = mobile.panel().querySelector("[data-resource-reader-picker]");
 assert.ok(picker, "a modal reader needs an internal picker to open additional sources");
 assert.equal(picker.options.length, 5, "picker must deduplicate four unique sources plus its prompt");
@@ -533,7 +600,7 @@ assertTabState(mobile, 1);
 assert.equal(mobile.document.activeElement, mobile.tabs()[1]);
 assert.equal(mobile.panel().getAttribute("aria-modal"), "true");
 mobile.document.dispatch("focusin", { target: mobile.links[0] });
-assert.equal(mobile.document.activeElement, mobile.panel().querySelector("[data-pdf-reader-close-all]"), "focus leaving the modal must return to its controls");
+assert.equal(mobile.document.activeElement, mobile.panel().querySelector("[data-pdf-reader-close-all]"), "focus leaving the modal must return to the global viewer close control");
 const focusable = mobile.panel().querySelectorAll('a[href], button:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])').filter(isEffectivelyFocusable);
 assert.ok(focusable.includes(picker));
 assert.ok(!focusable.includes(mobile.tabs()[0]), "focus trap must exclude roving tabs with tabindex=-1");
@@ -546,12 +613,16 @@ const reverseWrap = mobile.document.dispatch("keydown", { key: "Tab", shiftKey: 
 assert.equal(reverseWrap.defaultPrevented, true, "Shift+Tab at the first visible control must wrap inside the modal");
 assert.equal(mobile.document.activeElement, focusable.at(-1));
 const twoMobileFrames = mobile.frames();
+const mobileActiveWrap = mobile.tabWraps()[1];
+const scrollsBeforeResize = mobileActiveWrap.scrollIntoViewCalls.length;
 mobile.setModal(false);
 assert.equal(mobile.panel().hasAttribute("aria-modal"), false);
 assert.equal(mobile.content.inert, false, "desktop resize must restore background interactivity");
 assert.equal(mobile.background.inert, false);
 assert.deepEqual(mobile.frames(), twoMobileFrames, "resize must preserve iframe identities");
 assertTabState(mobile, 1);
+assert.ok(mobileActiveWrap.scrollIntoViewCalls.length > scrollsBeforeResize, "resize must scroll the active wrapper and its close control back into view");
+assert.equal(mobile.tabs()[1].scrollIntoViewCalls.length, 0, "resize must not scroll only the tab label button");
 mobile.setModal(true);
 assert.equal(mobile.content.inert, true);
 mobile.document.dispatch("keydown", { key: "Escape" });
@@ -564,7 +635,7 @@ const fallback = readerFixture({ modal: true, inert: false });
 fallback.links[0].dispatch("click");
 assert.equal(fallback.content.getAttribute("aria-hidden"), "true");
 assert.equal(fallback.background.getAttribute("aria-hidden"), "true");
-activeItem(fallback).querySelector("[data-pdf-reader-close]").dispatch("click");
+fallback.tabCloses()[0].dispatch("click");
 assert.equal(fallback.panel().hidden, true, "removing the final tab must close the reader");
 assert.equal(fallback.content.hasAttribute("aria-hidden"), false);
 assert.equal(fallback.background.getAttribute("aria-hidden"), "false", "fallback must restore pre-existing ARIA state");
