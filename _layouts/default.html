@@ -1864,10 +1864,6 @@
         gap: clamp(12px, 2vw, 20px);
       }
 
-      body.pdf-reader-active:not([data-reader-count="1"]) .page-shell {
-        grid-template-columns: minmax(300px, 1fr) minmax(0, 2fr);
-      }
-
       body.pdf-reader-active .page-shell.has-sidebar > .reader-index {
         display: none;
       }
@@ -1900,7 +1896,7 @@
 
       .pdf-reader-inner {
         display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr);
         height: 100%;
       }
 
@@ -1930,15 +1926,65 @@
         font-size: 12px;
       }
 
+      .pdf-reader-tabs {
+        display: flex;
+        gap: 4px;
+        min-width: 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 8px 12px 0;
+        border-bottom: 1px solid var(--apple-hairline);
+        background: var(--bg-elevated);
+      }
+
+      .pdf-reader-tab {
+        flex: 0 0 auto;
+        max-width: min(240px, 65vw);
+        min-height: 44px;
+        overflow: hidden;
+        padding: 10px 14px;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 6px 6px 0 0;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .pdf-reader-tab:hover {
+        color: var(--text);
+        background: color-mix(in srgb, var(--accent), transparent 94%);
+      }
+
+      .pdf-reader-tab[aria-selected="true"] {
+        border-bottom-color: var(--accent);
+        color: var(--accent);
+        background: color-mix(in srgb, var(--accent), transparent 92%);
+      }
+
+      .pdf-reader-tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -4px;
+      }
+
       .pdf-reader-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
-        grid-auto-rows: minmax(320px, 1fr);
-        gap: 12px;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+        min-width: 0;
         min-height: 0;
-        overflow: auto;
+        overflow: hidden;
         overscroll-behavior: contain;
         padding: 12px;
+      }
+
+      .pdf-reader-item[hidden] {
+        display: none !important;
       }
 
       .pdf-reader-item {
@@ -2103,8 +2149,7 @@
       }
 
       @media (max-width: 980px) {
-        body.pdf-reader-active .page-shell,
-        body.pdf-reader-active:not([data-reader-count="1"]) .page-shell {
+        body.pdf-reader-active .page-shell {
           grid-template-columns: 1fr;
         }
 
@@ -2130,15 +2175,6 @@
 
         .pdf-reader-picker {
           min-height: 44px;
-        }
-
-        .pdf-reader-grid {
-          grid-template-columns: minmax(0, 1fr);
-          grid-auto-rows: minmax(360px, 65vh);
-        }
-
-        body[data-reader-count="1"] .pdf-reader-grid {
-          grid-template-rows: minmax(0, 1fr);
         }
       }
 
@@ -5298,10 +5334,12 @@
           var readerBackdrop = null;
           var readerPanel = null;
           var readerGrid = null;
+          var readerTabs = null;
           var readerPicker = null;
           var readerCount = null;
           var readerClose = null;
           var readerItems = [];
+          var activeReaderItem = null;
           var nextReaderId = 0;
           var lastReaderTrigger = null;
           var inertBackground = [];
@@ -5451,12 +5489,12 @@
 
           function getResourceLabel(link, resource) {
             var label = link.textContent.trim();
-            if (label) return label;
+            if (label && !/^(view|open|preview|pdf)$/i.test(label)) return label;
 
             try {
               var url = new URL(resource.sourceUrl, window.location.href);
               var fileName = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || resource.type);
-              return fileName.replace(/\.(avif|gif|heic|jpeg|jpg|pdf|png|svg|webp)$/i, "") || resource.type;
+              return fileName.replace(/\.(avif|gif|heic|jpeg|jpg|pdf|png|svg|webp)$/i, "").replace(/[-_]+/g, " ") || label || resource.type;
             } catch (error) {
               return resource.type;
             }
@@ -5491,11 +5529,13 @@
               '      <button class="pdf-reader-close" data-pdf-reader-close-all type="button">Hide all</button>',
               '    </div>',
               '  </div>',
+              '  <div class="pdf-reader-tabs" data-resource-reader-tabs role="tablist" aria-label="Open resources"></div>',
               '  <div class="pdf-reader-grid" data-resource-reader-grid></div>',
               '</div>'
             ].join("");
 
             readerGrid = readerPanel.querySelector("[data-resource-reader-grid]");
+            readerTabs = readerPanel.querySelector("[data-resource-reader-tabs]");
             readerPicker = readerPanel.querySelector("[data-resource-reader-picker]");
             readerCount = readerPanel.querySelector("[data-resource-reader-count]");
             readerClose = readerPanel.querySelector("[data-pdf-reader-close-all]");
@@ -5608,7 +5648,8 @@
             return Array.prototype.slice.call(readerPanel.querySelectorAll(
               'a[href], button:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
             )).filter(function (element) {
-              return element.getAttribute("aria-hidden") !== "true";
+              return element.getAttribute("aria-hidden") !== "true" &&
+                element.getAttribute("tabindex") !== "-1" && !element.closest("[hidden]");
             });
           }
 
@@ -5636,6 +5677,51 @@
             }
           }
 
+          function activateResourceItem(entry, focusTab) {
+            activeReaderItem = entry;
+            readerItems.forEach(function (item) {
+              var isActive = item === entry;
+              item.card.hidden = !isActive;
+              item.card.setAttribute("aria-hidden", isActive ? "false" : "true");
+              item.tab.setAttribute("aria-selected", isActive ? "true" : "false");
+              item.tab.setAttribute("tabindex", isActive ? "0" : "-1");
+              // Unload hidden videos so audio does not continue behind another tab.
+              // Keep document frames mounted to preserve their navigation state.
+              if (item.resource.type === "VIDEO") {
+                if (!isActive) {
+                  item.frame.removeAttribute("src");
+                } else if (!item.frame.hasAttribute("src")) {
+                  item.frame.src = item.resource.frameUrl;
+                }
+              }
+            });
+            if (focusTab) entry.tab.focus({ preventScroll: true });
+            entry.tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+          }
+
+          function navigateResourceTabs(event, entry) {
+            if (event.altKey || event.ctrlKey || event.metaKey) return;
+            var index = readerItems.indexOf(entry);
+            var nextIndex;
+            if (event.key === "ArrowRight") {
+              nextIndex = (index + 1) % readerItems.length;
+            } else if (event.key === "ArrowLeft") {
+              nextIndex = (index - 1 + readerItems.length) % readerItems.length;
+            } else if (event.key === "Home") {
+              nextIndex = 0;
+            } else if (event.key === "End") {
+              nextIndex = readerItems.length - 1;
+            } else if (event.key === "Delete") {
+              event.preventDefault();
+              closeResourceItem(entry);
+              return;
+            } else {
+              return;
+            }
+            event.preventDefault();
+            activateResourceItem(readerItems[nextIndex], true);
+          }
+
           function openResourceReader(link, resource) {
             ensureResourceReader();
 
@@ -5650,7 +5736,19 @@
               var titleId = "resource-reader-item-" + (++nextReaderId);
               card.className = "pdf-reader-item";
               card.setAttribute("data-resource-reader-item", "");
-              card.setAttribute("aria-labelledby", titleId);
+              card.setAttribute("id", titleId);
+              card.setAttribute("role", "tabpanel");
+              card.setAttribute("aria-labelledby", titleId + "-tab");
+              card.hidden = true;
+              var tab = document.createElement("button");
+              tab.className = "pdf-reader-tab";
+              tab.setAttribute("type", "button");
+              tab.setAttribute("data-resource-reader-tab", "");
+              tab.setAttribute("id", titleId + "-tab");
+              tab.setAttribute("role", "tab");
+              tab.setAttribute("aria-controls", titleId);
+              tab.setAttribute("title", resource.type + " — " + label);
+              tab.textContent = label;
               card.innerHTML = [
                 '<div class="pdf-reader-toolbar">',
                 '  <div>',
@@ -5667,13 +5765,14 @@
                 '</div>'
               ].join("");
               var title = card.querySelector("[data-pdf-reader-title]");
-              title.id = titleId;
+              title.id = titleId + "-title";
               title.textContent = label;
               card.querySelector("[data-resource-reader-kicker]").textContent = resource.type;
               card.querySelector("[data-pdf-reader-open]").href = resource.sourceUrl;
               entry = {
                 resource: resource,
                 card: card,
+                tab: tab,
                 frame: card.querySelector("[data-pdf-reader-frame]"),
                 close: card.querySelector("[data-pdf-reader-close]"),
                 trigger: link
@@ -5682,16 +5781,19 @@
               entry.frame.src = resource.frameUrl;
               entry.close.setAttribute("aria-label", "Hide " + label);
               entry.close.addEventListener("click", function () { closeResourceItem(entry); });
+              entry.tab.addEventListener("click", function () { activateResourceItem(entry, true); });
+              entry.tab.addEventListener("keydown", function (event) { navigateResourceTabs(event, entry); });
               readerItems.push(entry);
+              readerTabs.appendChild(tab);
               readerGrid.appendChild(card);
             }
 
+            entry.trigger = link;
             syncReaderItems();
             readerPanel.setAttribute("aria-hidden", "false");
             readerPanel.hidden = false;
             document.body.classList.add("pdf-reader-active");
-            entry.close.focus({ preventScroll: true });
-            entry.card.scrollIntoView({ block: "nearest", inline: "nearest" });
+            activateResourceItem(entry, true);
             syncResourceReaderMode();
           }
 
@@ -5713,19 +5815,23 @@
           }
 
           function closeResourceItem(entry) {
+            var index = readerItems.indexOf(entry);
+            if (index === -1) return;
             if (readerItems.length === 1) {
               closeResourceReader();
               return;
             }
-            var index = readerItems.indexOf(entry);
-            if (index === -1) return;
-            var shouldRestoreFocus = entry.card.contains(document.activeElement);
+            var wasActive = entry === activeReaderItem;
+            var shouldRestoreFocus = entry.card.contains(document.activeElement) || entry.tab === document.activeElement;
             entry.frame.removeAttribute("src");
             entry.card.remove();
+            entry.tab.remove();
             readerItems.splice(index, 1);
             syncReaderItems();
-            if (shouldRestoreFocus) {
-              readerItems[Math.min(index, readerItems.length - 1)].close.focus({ preventScroll: true });
+            if (wasActive) {
+              activateResourceItem(readerItems[Math.min(index, readerItems.length - 1)], shouldRestoreFocus);
+            } else if (shouldRestoreFocus) {
+              activeReaderItem.tab.focus({ preventScroll: true });
             }
           }
 
@@ -5737,8 +5843,10 @@
             readerItems.forEach(function (entry) {
               entry.frame.removeAttribute("src");
               entry.card.remove();
+              entry.tab.remove();
             });
             readerItems = [];
+            activeReaderItem = null;
             syncReaderItems();
             readerPanel.setAttribute("aria-hidden", "true");
             readerPanel.hidden = true;

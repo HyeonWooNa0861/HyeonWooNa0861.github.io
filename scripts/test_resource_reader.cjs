@@ -14,6 +14,7 @@ assert.doesNotMatch(layout, /Preview unavailable\?/);
 assert.doesNotMatch(layout, /pdf-reader-fallback/);
 assert.match(layout, /var readerPanel = null;/);
 assert.match(layout, /\.pdf-reader-panel\[hidden\]\s*\{[^}]*display:\s*none\s*!important;/s);
+assert.match(layout, /\.pdf-reader-item\[hidden\]\s*\{[^}]*display:\s*none\s*!important;/s);
 assert.match(layout, /allowfullscreen/);
 assert.match(layout, /referrerpolicy="strict-origin-when-cross-origin"/);
 assert.match(layout, /allow="encrypted-media; picture-in-picture; web-share"/);
@@ -45,6 +46,9 @@ for (const declaration of ["display: inline-flex;", "align-items: center;", "jus
   assert.ok(readerActionStyles.includes(declaration), `reader actions must share ${declaration}`);
 }
 assert.ok(/\.pdf-reader-open,\s*\.pdf-reader-close\s*\{\s*min-height:\s*44px;/.test(layout), "mobile reader actions must retain 44px touch targets");
+assert.ok(/(?:\.pdf-reader-tabs|\[data-resource-reader-tabs\])\s*\{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/s.test(layout), "the tab strip must scroll horizontally as resources grow");
+assert.ok(!/\.pdf-reader-grid\s*\{[^}]*grid-template-columns:\s*repeat\(auto-fit,/s.test(layout), "the reader must not retain the independent multi-column card grid");
+assert.ok(!/body\.pdf-reader-active:not\(\[data-reader-count="1"\]\) \.page-shell/.test(layout), "resource count must not select a separate two-column layout");
 
 // Keep the shared desktop canvas fluid; nested prose caps must not narrow it again.
 const developerStyles = fs.readFileSync("assets/css/minimal-developer.css", "utf8");
@@ -66,6 +70,7 @@ assert.match(initialization, /readerPanel\.setAttribute\("aria-hidden", "true"\)
 assert.match(initialization, /readerPanel\.hidden = true;/);
 assert.match(initialization, /data-pdf-reader-close-all[^>]*>Hide all<\/button>/);
 assert.match(initialization, /data-resource-reader-picker/);
+assert.match(initialization, /data-resource-reader-tabs[^>]*role="tablist"/);
 assert.doesNotMatch(initialization, /Preview unavailable\?/);
 
 const openReader = between("function openResourceReader(link, resource)", "function closeResourceReader()");
@@ -157,7 +162,7 @@ assert.equal(
 );
 
 // Execute the production initializer against a small DOM surface. Iframes need
-// no renderer for identity, reload, focus, and independent-close assertions.
+// no renderer for identity, reload, focus, tab-switch, and close assertions.
 class ReaderElement {
   constructor(tagName, document) {
     this.tagName = tagName.toUpperCase();
@@ -167,7 +172,8 @@ class ReaderElement {
     this.parentElement = null;
     this.listeners = new Map();
     this.dataset = {};
-    this.hidden = false;
+    this._hidden = false;
+    this._tabIndex = 0;
     this.disabled = false;
     this._text = "";
     this.srcWrites = 0;
@@ -185,6 +191,8 @@ class ReaderElement {
   setAttribute(name, value) {
     this.attributes.set(name, String(value));
     if (name === "src") this.srcWrites += 1;
+    if (name === "hidden") this._hidden = true;
+    if (name === "tabindex") this._tabIndex = Number(value);
     if (name.startsWith("data-")) this.dataset[name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = String(value);
     if (name === "disabled") this.disabled = true;
   }
@@ -192,11 +200,19 @@ class ReaderElement {
   hasAttribute(name) { return this.attributes.has(name); }
   removeAttribute(name) {
     this.attributes.delete(name);
+    if (name === "hidden") this._hidden = false;
+    if (name === "tabindex") this._tabIndex = 0;
     if (name === "disabled") this.disabled = false;
     if (name.startsWith("data-")) delete this.dataset[name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())];
   }
   get className() { return this.getAttribute("class") || ""; }
   set className(value) { this.setAttribute("class", value); }
+  get id() { return this.getAttribute("id") || ""; }
+  set id(value) { this.setAttribute("id", value); }
+  get hidden() { return this._hidden; }
+  set hidden(value) { if (value) this.setAttribute("hidden", ""); else this.removeAttribute("hidden"); }
+  get tabIndex() { return this._tabIndex; }
+  set tabIndex(value) { this.setAttribute("tabindex", value); }
   get src() { return this.getAttribute("src") || ""; }
   set src(value) { this.setAttribute("src", value); }
   get href() { return this.getAttribute("href") || ""; }
@@ -229,9 +245,21 @@ class ReaderElement {
     this.listeners.get(type).push(listener);
   }
   dispatch(type, properties = {}) {
-    const event = { type, target: this, button: 0, defaultPrevented: false,
-      preventDefault() { this.defaultPrevented = true; }, ...properties };
-    (this.listeners.get(type) || []).forEach((listener) => listener(event));
+    const event = { type, target: this, currentTarget: this, button: 0, bubbles: true,
+      defaultPrevented: false, propagationStopped: false,
+      preventDefault() { this.defaultPrevented = true; },
+      stopPropagation() { this.propagationStopped = true; }, ...properties };
+    let current = this;
+    while (current) {
+      event.currentTarget = current;
+      (current.listeners?.get(type) || []).forEach((listener) => listener(event));
+      if (!event.bubbles || event.propagationStopped) break;
+      current = current.parentElement;
+    }
+    if (event.bubbles && !event.propagationStopped && this.ownerDocument && current !== this.ownerDocument) {
+      event.currentTarget = this.ownerDocument;
+      (this.ownerDocument.listeners.get(type) || []).forEach((listener) => listener(event));
+    }
     return event;
   }
   focus() { this.ownerDocument.activeElement = this; }
@@ -282,7 +310,7 @@ class ReaderElement {
   }
 }
 
-function readerFixture({ modal = false, inert = true } = {}) {
+function readerFixture({ modal = false, inert = true, additionalSources = 0 } = {}) {
   const document = {
     activeElement: null,
     listeners: new Map(),
@@ -304,7 +332,17 @@ function readerFixture({ modal = false, inert = true } = {}) {
   const content = document.createElement("article");
   content.className = "page-content";
   shell.appendChild(content);
-  const links = ["/assets/pdfs/first.pdf", "/assets/pdfs/second.pdf", "/assets/pdfs/first.pdf", "/study/another-note/"].map((href, index) => {
+  const sourceUrls = [
+    "/assets/pdfs/attention-is_all_you-need.pdf",
+    "/assets/pdfs/second.pdf",
+    "/assets/pdfs/attention-is_all_you-need.pdf",
+    "/study/another-note/",
+    "https://www.youtube.com/watch?v=Ub3GoFaUcds"
+  ];
+  for (let index = 1; index <= additionalSources; index += 1) {
+    sourceUrls.push(`/assets/pdfs/stress-resource-${String(index).padStart(2, "0")}.pdf`);
+  }
+  const links = sourceUrls.map((href, index) => {
     const link = document.createElement("a");
     link.href = href;
     link.textContent = `Resource ${index + 1}`;
@@ -333,52 +371,146 @@ function readerFixture({ modal = false, inert = true } = {}) {
   return {
     document, content, links, background, searchLink,
     panel: () => document.querySelector("[data-pdf-reader-panel]"),
+    tabs: () => shell.querySelectorAll("[data-resource-reader-tab]"),
+    items: () => shell.querySelectorAll("[data-resource-reader-item]"),
     frames: () => shell.querySelectorAll("[data-pdf-reader-frame]"),
-    closeButtons: () => shell.querySelectorAll("[data-pdf-reader-close]"),
     setModal(matches) { media.matches = matches; mediaListeners.forEach((listener) => listener()); }
   };
 }
 
+function selectedTab(fixture) {
+  return fixture.tabs().find((tab) => tab.getAttribute("aria-selected") === "true");
+}
+
+function activeItem(fixture) {
+  return fixture.items().find((item) => !item.hidden);
+}
+
+function assertTabState(fixture, selectedIndex) {
+  const tabs = fixture.tabs();
+  const items = fixture.items();
+  assert.equal(tabs.length, items.length, "every open resource must have one tab and one panel");
+  assert.equal(tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length, 1, "exactly one tab must be selected");
+  assert.equal(items.filter((item) => !item.hidden).length, 1, "exactly one tabpanel must be visible");
+  tabs.forEach((tab, index) => {
+    assert.equal(tab.getAttribute("role"), "tab");
+    assert.equal(tab.getAttribute("aria-selected"), index === selectedIndex ? "true" : "false");
+    assert.equal(tab.tabIndex, index === selectedIndex ? 0 : -1, "tabs must use roving tabindex");
+    assert.ok(tab.id, "tabs need stable IDs");
+    assert.equal(items[index].getAttribute("role"), "tabpanel");
+    assert.ok(items[index].id, "tabpanels need stable IDs");
+    assert.equal(tab.getAttribute("aria-controls"), items[index].id);
+    assert.equal(items[index].getAttribute("aria-labelledby"), tab.id);
+    assert.equal(items[index].hidden, index !== selectedIndex);
+  });
+}
+
+function isEffectivelyFocusable(element) {
+  if (element.disabled || element.getAttribute("aria-hidden") === "true" || element.tabIndex === -1) return false;
+  for (let current = element.parentElement; current; current = current.parentElement) {
+    if (current.hidden || current.getAttribute("aria-hidden") === "true") return false;
+  }
+  return true;
+}
+
 const desktop = readerFixture();
+desktop.links[0].textContent = "PDF";
+desktop.links[1].textContent = "Named Resource";
 assert.equal(desktop.links[0].dispatch("click", { ctrlKey: true }).defaultPrevented, false, "modified clicks must retain native browser behavior");
 assert.equal(desktop.panel(), null);
 desktop.links[0].dispatch("click");
 assert.equal(desktop.searchLink.dispatch("click").defaultPrevented, false, "search-result links must retain normal navigation");
 assert.equal(desktop.searchLink.hasAttribute("data-pdf-reader-link"), false);
 assert.ok(desktop.panel().querySelector("[data-resource-reader-picker]").options.every((option) => !option.value.endsWith("/study/search-result/")), "search-result links must not appear in the resource picker");
+assert.equal(desktop.panel().querySelector("[data-resource-reader-tabs]").getAttribute("role"), "tablist");
+assertTabState(desktop, 0);
+assert.equal(desktop.tabs()[0].textContent, "attention is all you need", "generic link text must use the decoded filename without its extension");
+assert.equal(desktop.document.activeElement, desktop.tabs()[0], "opening a resource must focus its active tab");
 const firstFrame = desktop.frames()[0];
-assert.equal(firstFrame.src, "https://hyeonwoona0861.github.io/assets/pdfs/first.pdf");
+assert.equal(firstFrame.src, "https://hyeonwoona0861.github.io/assets/pdfs/attention-is_all_you-need.pdf");
 assert.equal(desktop.panel().hidden, false);
 assert.equal(desktop.panel().getAttribute("aria-hidden"), "false");
+
 desktop.links[1].dispatch("click");
+assertTabState(desktop, 1);
+assert.equal(desktop.tabs()[1].textContent, "Named Resource", "explicit resource names must remain unchanged");
 assert.equal(desktop.frames().length, 2, "opening another source must retain both iframe nodes");
 assert.equal(desktop.frames()[0], firstFrame, "opening another source must retain the first iframe identity");
 const secondFrame = desktop.frames()[1];
-assert.equal(firstFrame.srcWrites, 1, "opening another source must not reload the first resource");
+assert.equal(firstFrame.srcWrites, 1, "switching PDF tabs must not reload the first resource");
 assert.equal(desktop.document.body.getAttribute("data-reader-count"), "2");
 assert.equal(desktop.links[0].getAttribute("aria-expanded"), "true");
 assert.equal(desktop.links[2].getAttribute("aria-expanded"), "true", "duplicate source links must reflect the same open resource");
+
 desktop.links[2].dispatch("click");
-assert.equal(desktop.frames().length, 2, "the same source must not produce a duplicate frame");
+assert.equal(desktop.frames().length, 2, "the same source must not produce a duplicate tab or frame");
+assertTabState(desktop, 0);
 assert.equal(firstFrame.srcWrites, 1, "reopening an existing source must preserve its navigation state");
-assert.equal(desktop.document.activeElement, desktop.closeButtons()[0]);
-desktop.closeButtons()[0].dispatch("click");
-assert.equal(firstFrame.hasAttribute("src"), false, "individual removal must unload only the removed iframe");
+assert.equal(secondFrame.srcWrites, 1, "selecting an existing PDF must not reload another PDF");
+assert.equal(desktop.document.activeElement, desktop.tabs()[0], "an existing source must select and focus its tab");
+
+desktop.tabs()[0].dispatch("keydown", { key: "ArrowLeft" });
+assertTabState(desktop, 1);
+assert.equal(desktop.document.activeElement, desktop.tabs()[1], "ArrowLeft must wrap and select automatically");
+desktop.tabs()[1].dispatch("keydown", { key: "Home" });
+assertTabState(desktop, 0);
+desktop.tabs()[0].dispatch("keydown", { key: "End" });
+assertTabState(desktop, 1);
+desktop.tabs()[1].dispatch("keydown", { key: "ArrowRight" });
+assertTabState(desktop, 0);
+
+desktop.links[3].dispatch("click");
+assertTabState(desktop, 2);
+const pageFrame = desktop.frames()[2];
+desktop.links[4].dispatch("click");
+assertTabState(desktop, 3);
+const videoFrame = desktop.frames()[3];
+const videoSrc = "https://www.youtube.com/embed/Ub3GoFaUcds?rel=0";
+assert.equal(videoFrame.src, videoSrc);
+desktop.tabs()[3].dispatch("keydown", { key: "ArrowLeft" });
+assertTabState(desktop, 2);
+assert.equal(videoFrame.hasAttribute("src"), false, "leaving a VIDEO tab must stop background playback");
+assert.equal(firstFrame.srcWrites, 1, "VIDEO switching must preserve PDF iframe state");
+assert.equal(pageFrame.srcWrites, 1, "VIDEO switching must preserve PAGE iframe state");
+desktop.tabs()[2].dispatch("keydown", { key: "End" });
+assertTabState(desktop, 3);
+assert.equal(videoFrame.src, videoSrc, "reselecting a VIDEO tab must restore its source");
+assert.equal(videoFrame.srcWrites, 2);
+
+const activeVideoTab = selectedTab(desktop);
+desktop.items()[0].querySelector("[data-pdf-reader-close]").dispatch("click");
+assert.equal(desktop.items().length, 3, "closing an inactive panel must remove only that resource");
+assert.equal(selectedTab(desktop), activeVideoTab, "closing an inactive panel must preserve the active tab");
+assert.equal(videoFrame.srcWrites, 2, "closing an inactive resource must not reload the active VIDEO");
+assert.equal(firstFrame.hasAttribute("src"), false);
 assert.equal(firstFrame.isConnected, false);
-assert.equal(desktop.frames().length, 1);
+
+selectedTab(desktop).dispatch("keydown", { key: "Delete" });
+assert.equal(videoFrame.hasAttribute("src"), false, "Delete must unload the closed VIDEO");
+assert.equal(videoFrame.isConnected, false);
+assert.equal(desktop.items().length, 2);
+assert.equal(activeItem(desktop).querySelector("[data-pdf-reader-frame]"), pageFrame, "closing the active tab must select an adjacent tab");
+assert.equal(desktop.document.activeElement, selectedTab(desktop), "active-tab removal must focus the adjacent active tab");
+
+activeItem(desktop).querySelector("[data-pdf-reader-close]").dispatch("click");
+assert.equal(pageFrame.hasAttribute("src"), false, "Hide must unload the active panel");
+assert.equal(desktop.items().length, 1);
+assertTabState(desktop, 0);
 assert.equal(desktop.frames()[0], secondFrame);
-assert.equal(secondFrame.srcWrites, 1, "removing one resource must not reload another");
+assert.equal(secondFrame.srcWrites, 1, "closing adjacent resources must not reload the remaining PDF");
 assert.equal(desktop.links[0].getAttribute("aria-expanded"), "false");
 assert.equal(desktop.links[1].getAttribute("aria-expanded"), "true");
+
 desktop.panel().querySelector("[data-pdf-reader-close-all]").dispatch("click");
 assert.equal(secondFrame.hasAttribute("src"), false);
 assert.equal(desktop.frames().length, 0);
+assert.equal(desktop.tabs().length, 0);
 assert.equal(desktop.panel().hidden, true);
 assert.equal(desktop.panel().getAttribute("aria-hidden"), "true");
 assert.equal(desktop.document.body.classList.contains("pdf-reader-active"), false);
 assert.equal(desktop.document.body.hasAttribute("data-reader-count"), false);
 assert.ok(desktop.panel().querySelector("[data-resource-reader-picker]").options.every((option) => !option.disabled));
-assert.equal(desktop.document.activeElement, desktop.links[2], "Hide all must restore the most recent source trigger");
+assert.equal(desktop.document.activeElement, desktop.links[4], "Hide all must restore the most recent source trigger");
 desktop.links[0].dispatch("click");
 assert.equal(desktop.frames().length, 1, "the reader must reopen cleanly after Hide all");
 assert.notEqual(desktop.frames()[0], firstFrame);
@@ -391,28 +523,35 @@ assert.equal(mobile.content.inert, true);
 assert.equal(mobile.background.inert, true);
 const picker = mobile.panel().querySelector("[data-resource-reader-picker]");
 assert.ok(picker, "a modal reader needs an internal picker to open additional sources");
-assert.equal(picker.options.length, 4, "picker must deduplicate three unique sources plus its prompt");
-assert.equal(picker.options.find((option) => option.value.endsWith("first.pdf")).disabled, true);
+assert.equal(picker.options.length, 5, "picker must deduplicate four unique sources plus its prompt");
+assert.equal(picker.options.find((option) => option.value.endsWith("attention-is_all_you-need.pdf")).disabled, true);
 picker.value = "https://hyeonwoona0861.github.io/assets/pdfs/second.pdf";
 picker.dispatch("change");
 assert.equal(mobile.frames().length, 2, "the internal picker must add a resource while background links are inert");
 assert.equal(picker.value, "");
-assert.equal(mobile.document.activeElement, mobile.closeButtons()[1]);
+assertTabState(mobile, 1);
+assert.equal(mobile.document.activeElement, mobile.tabs()[1]);
 assert.equal(mobile.panel().getAttribute("aria-modal"), "true");
 mobile.document.dispatch("focusin", { target: mobile.links[0] });
 assert.equal(mobile.document.activeElement, mobile.panel().querySelector("[data-pdf-reader-close-all]"), "focus leaving the modal must return to its controls");
-const focusable = mobile.panel().querySelectorAll('a[href], button:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])');
+const focusable = mobile.panel().querySelectorAll('a[href], button:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])').filter(isEffectivelyFocusable);
 assert.ok(focusable.includes(picker));
+assert.ok(!focusable.includes(mobile.tabs()[0]), "focus trap must exclude roving tabs with tabindex=-1");
+assert.ok(!focusable.includes(mobile.items()[0].querySelector("[data-pdf-reader-frame]")), "focus trap must exclude hidden panel descendants");
 focusable.at(-1).focus();
 const wrap = mobile.document.dispatch("keydown", { key: "Tab" });
-assert.equal(wrap.defaultPrevented, true, "Tab at the final control must wrap inside the modal");
+assert.equal(wrap.defaultPrevented, true, "Tab at the final visible control must wrap inside the modal");
 assert.equal(mobile.document.activeElement, focusable[0]);
+const reverseWrap = mobile.document.dispatch("keydown", { key: "Tab", shiftKey: true });
+assert.equal(reverseWrap.defaultPrevented, true, "Shift+Tab at the first visible control must wrap inside the modal");
+assert.equal(mobile.document.activeElement, focusable.at(-1));
 const twoMobileFrames = mobile.frames();
 mobile.setModal(false);
 assert.equal(mobile.panel().hasAttribute("aria-modal"), false);
 assert.equal(mobile.content.inert, false, "desktop resize must restore background interactivity");
 assert.equal(mobile.background.inert, false);
 assert.deepEqual(mobile.frames(), twoMobileFrames, "resize must preserve iframe identities");
+assertTabState(mobile, 1);
 mobile.setModal(true);
 assert.equal(mobile.content.inert, true);
 mobile.document.dispatch("keydown", { key: "Escape" });
@@ -425,8 +564,8 @@ const fallback = readerFixture({ modal: true, inert: false });
 fallback.links[0].dispatch("click");
 assert.equal(fallback.content.getAttribute("aria-hidden"), "true");
 assert.equal(fallback.background.getAttribute("aria-hidden"), "true");
-fallback.closeButtons()[0].dispatch("click");
-assert.equal(fallback.panel().hidden, true, "removing the final card must close the reader");
+activeItem(fallback).querySelector("[data-pdf-reader-close]").dispatch("click");
+assert.equal(fallback.panel().hidden, true, "removing the final tab must close the reader");
 assert.equal(fallback.content.hasAttribute("aria-hidden"), false);
 assert.equal(fallback.background.getAttribute("aria-hidden"), "false", "fallback must restore pre-existing ARIA state");
 assert.equal(fallback.document.activeElement, fallback.links[0]);
@@ -439,4 +578,21 @@ assert.equal(previouslyInert.panel().hidden, true, "the backdrop must close ever
 assert.equal(previouslyInert.background.inert, true, "closing the modal must preserve an already-inert background");
 assert.equal(previouslyInert.content.inert, false);
 
-console.log("PASS: independent multi-resource lifecycle, mobile picker/focus/inert/resize, responsive layout guards, and 25 URL-classification cases");
+const manyTabs = readerFixture({ additionalSources: 12 });
+manyTabs.links.forEach((link) => link.dispatch("click"));
+assert.equal(manyTabs.tabs().length, 16, "many resources must remain distinct while the duplicate source reuses its tab");
+assertTabState(manyTabs, 15);
+selectedTab(manyTabs).dispatch("keydown", { key: "Home" });
+assertTabState(manyTabs, 0);
+selectedTab(manyTabs).dispatch("keydown", { key: "ArrowLeft" });
+assertTabState(manyTabs, 15);
+selectedTab(manyTabs).dispatch("keydown", { key: "Delete" });
+assert.equal(manyTabs.tabs().length, 15);
+assertTabState(manyTabs, 14);
+assert.equal(manyTabs.document.activeElement, selectedTab(manyTabs));
+selectedTab(manyTabs).dispatch("keydown", { key: "End" });
+assertTabState(manyTabs, 14);
+selectedTab(manyTabs).dispatch("keydown", { key: "ArrowRight" });
+assertTabState(manyTabs, 0);
+
+console.log("PASS: tabbed resource lifecycle, 16-tab stress navigation, keyboard/focus/modal/resize behavior, responsive layout guards, and 25 URL-classification cases");
