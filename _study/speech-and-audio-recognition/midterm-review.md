@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-19 14:13:07 +0900
+last_modified_at: 2026-10-19 14:37:03 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -26,7 +26,7 @@ keywords:
 
 [View slides (PDF)]({{ "/assets/pdfs/study/speech-and-audio-recognition/sar-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/speech-and-audio-recognition/sar-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
 
-64장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. 같은 신호의 waveform·spectrogram 비교와 phase 보존 조건을 추가하고, CTC Summary부터 wav2vec 2.0 직전까지는 원본 그림과 요약표를 한국어로 풀어 설명한다. Attention·LAS·RNN-T의 학습과 추론, 언어모델 결합, 자기지도학습의 target 구성을 수치 예제와 함께 다룬다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
+65장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. 같은 신호의 waveform·spectrogram 비교와 phase 보존 조건, wav2vec 2.0의 contrastive 학습과 HuBERT의 predictive 학습 차이를 다룬다. CTC Summary부터 wav2vec 2.0 직전까지는 원본 그림과 요약표를 한국어로 풀어 설명한다. Attention·LAS·RNN-T의 학습과 추론, 언어모델 결합, 자기지도학습의 target 구성을 수치 예제와 함께 다룬다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source PDFs:
 
@@ -519,9 +519,14 @@ HuBERT는 MFCC 같은 기존 feature를 offline clustering해 pseudo-label $$y_t
 |---|---|---|
 | Target 생성 | learned product quantization | offline clustering label |
 | 주요 loss | contrastive classification + diversity | masked cluster classification |
+| 후보의 의미 | 정답 quantized vector와 표본 추출한 distractor | 미리 정한 전체 cluster class |
 | Collapse 관리 | codebook diversity가 중요 | target cluster 품질·분포가 중요 |
 | Downstream | labeled data로 CTC 등 fine-tuning | labeled data로 ASR 등 fine-tuning |
 {: .reference-candidate-table}
+
+**Contrastive와 predictive의 차이는 예측 여부가 아니라 정답·후보의 구성이다.** wav2vec 2.0은 “이번 후보 벡터 중 같은 위치의 정답은 무엇인가?”를, HuBERT는 “가린 위치의 군집 번호는 무엇인가?”를 학습한다. HuBERT도 전체 cluster에 대한 softmax에서 class끼리 경쟁하지만, 다른 frame을 negative로 따로 뽑지는 않는다. Predictive를 다음 시점만 예측하는 autoregression이나 waveform 복원으로 해석하면 안 된다.
+
+계산용 예시에서 wav2vec 2.0의 temperature-scaled similarity가 정답부터 $$(2,1,0)$$이면 정답 확률은 0.6652, loss는 0.4076 nats다. HuBERT의 세 cluster 분포가 $$(0.1,0.7,0.2)$$이고 정답이 2번이면 loss는 0.3567 nats다. 둘 다 정답 확률의 음의 로그지만 **벡터 후보와 cluster class라는 선택지의 의미가 다르다.** 예제 loss로 성능 우열을 비교하지 않는다. [Lecture 5의 비교와 유도](/study/speech-and-audio-recognition/lecture-05-self-supervised-learning/#contrastive-vs-predictive)에서 원본 그림의 target 경로와 softmax gradient를 함께 확인할 수 있다.
 
 ### 5.4 사전학습 논문과 ASR 구조는 어떻게 이어지는가
 

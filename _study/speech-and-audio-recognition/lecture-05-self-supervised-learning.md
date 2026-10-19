@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-10-18 19:26:47 +0900
+last_modified_at: 2026-10-19 14:37:03 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -483,12 +483,20 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 </details>
 
 ## 8. wav2vec 2.0과 HuBERT를 나란히 보기
+{: #contrastive-vs-predictive}
+
+**Contrastive는 “정답 벡터를 다른 후보와 구별하기”, predictive는 여기서 “미리 정한 군집 번호를 예측하기”를 강조한다.** 두 모델 모두 가린 음성을 주변 문맥으로 학습한다. 따라서 예측을 하는 모델과 하지 않는 모델의 차이가 아니라, **무엇을 정답으로 만들고 어떤 후보들 사이에서 정답 확률을 높이는가**의 차이다.
+
+강의 p. 31에서는 가려진 세 번째 위치의 문맥 벡터 $$c_3$$와 원래 위치에서 얻은 $$q_3$$가 한 쌍이다. 다른 위치에서 가져온 $$q_{k+1},q_{k+2}$$는 distractor다. 모델은 $$c_3$$가 이 후보들 중 $$q_3$$에 가장 잘 대응하도록 학습한다. 반면 p. 46의 같은 세 번째 위치는 미리 만든 cluster ID **20**이 정답이다. HuBERT는 전체 군집 목록에 대한 확률을 출력하고, 20번의 확률을 높인다. **20은 벡터의 크기도, 스무 번째 글자도 아니라 군집의 이름**이다.
+
+Supplementary table: 원본 두 그림의 정답 경로와 학습 목표 비교.
 
 | 항목 | wav2vec 2.0 | HuBERT |
 |---|---|---|
 | 공통 입력 | Raw waveform → CNN latent → masked Transformer context | Raw waveform → CNN latent → masked Transformer context |
 | Pre-training target | 같은 position의 online quantized $$q_t$$ | Offline k-means cluster ID $$y_t$$ |
 | 핵심 loss | Positive vs same-utterance distractors contrastive loss | Masked cluster classification loss |
+| 확률을 나누는 후보 | 해당 위치의 positive와 표본 추출한 distractor 벡터 | 해당 clustering의 전체 cluster class |
 | Vocabulary 생성 | Product codebook을 model과 jointly learning | MFCC 또는 이전 HuBERT feature에 k-means |
 | Collapse 대응 | Diversity loss와 temperature schedule | Online codebook 없음; cluster quality·balance는 별도 문제 |
 | Negative sampling | 필요; false negative와 sampling 설계 영향 | 기본 hidden-unit CE에는 explicit distractor sampling 없음 |
@@ -496,6 +504,51 @@ p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-
 | ASR adaptation | Labeled data에서 CTC fine-tuning | Labeled data에서 CTC fine-tuning 가능 |
 
 둘 중 하나가 모든 조건에서 우월하다는 결론은 슬라이드나 원 논문 비교만으로 낼 수 없다. Model size, pre-training hours, labeled subset, LM decoding, augmentation, fine-tuning recipe가 같아야 objective 차이를 가깝게 비교할 수 있다.
+
+### 확률 계산으로 확인하는 차이
+
+다음은 원본의 숫자를 옮긴 것이 아니라 계산을 위해 구성한 작은 예제다. wav2vec 2.0에서 정답과 두 distractor의 **temperature로 나눈 similarity**가 순서대로 2, 1, 0이라면, 정답 확률은 $$e^2/(e^2+e^1+e^0)\approx0.6652$$이고 loss는 $$-\log(0.6652)\approx0.4076$$ nats다. 무엇을 맞혔는지는 “2번 음소”가 아니라 **이번 후보 중 정답 벡터**다.
+
+HuBERT를 군집 3개뿐인 설명용 설정으로 줄이고, 정답이 cluster 2라고 하자. 예측 분포가 $$(0.1,0.7,0.2)$$이면 정답 확률은 0.7, loss는 $$-\log(0.7)\approx0.3567$$ nats다. 군집 번호와 정답 assignment는 한 학습 단계 안에서 미리 정해져 있다. 매 minibatch마다 새로운 번호를 임의로 붙이는 것이 아니며, 다음 학습 단계에서 다시 clustering할 때 target을 갱신한다. 두 예제는 후보의 의미를 설명하기 위한 것이므로 loss의 크기로 모델 성능을 비교하지 않는다.
+
+### HuBERT에도 다른 후보와의 경쟁은 있다
+
+HuBERT가 **negative frame을 따로 뽑지 않는다**는 것은 다른 class와 비교하지 않는다는 뜻이 아니다. 전체 cluster에 대한 softmax이므로 정답 class 확률을 높이는 과정에 다른 class도 분모로 참여한다. 원 논문의 HuBERT도 출력과 학습 가능한 class embedding의 cosine similarity를 사용한다. 따라서 “wav2vec 2.0만 similarity를 쓰고 HuBERT는 쓰지 않는다”는 구분 역시 맞지 않는다.
+
+두 모델 모두 masked prediction이고, 양방향 문맥을 사용할 수 있다. 여기서 HuBERT의 predictive는 **다음 시점만 예측하는 autoregressive 모델**, **원래 waveform을 복원하는 모델** 또는 **이미 문자를 읽는 ASR 모델**을 뜻하지 않는다. 두 사전학습 모델의 표현을 실제 transcript에 연결하는 일은 별도의 fine-tuning 단계다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Same softmax form, different targets and candidate sets</summary>
+
+아래는 한 masked position의 loss만 비교한 작성자 유도다. 모든 logit은 무차원이고, temperature는 양수이며, cosine similarity의 두 벡터는 영벡터가 아니라고 가정한다. 자연로그 loss의 단위는 nats다.
+
+wav2vec 2.0은 후보 index $$j=0,\ldots,K$$를 두고 정답 index를 0으로 정한다. $$q^{(0)}=q_t$$이고 나머지는 표본 추출한 distractor다. $$a_j=\operatorname{sim}(c_t,q^{(j)})/\kappa$$라 두면
+
+$$
+p_j=\frac{e^{a_j}}{\sum_{r=0}^{K}e^{a_r}},\qquad
+L=-\log p_0=-a_0+\log\sum_{r=0}^{K}e^{a_r}.
+$$
+
+HuBERT에서는 군집 수를 $$C$$, Transformer 출력을 $$o_t$$, projection을 $$A$$, cluster $$j$$의 학습 가능한 embedding을 $$e_j$$라 둔다. 원 논문 식 (3)의 class logit은 $$a_j=\operatorname{sim}(Ao_t,e_j)/\tau$$다. Offline clustering이 만든 **정답 번호**는 고정되어 있지만, classifier의 $$A,e_j$$까지 고정된다는 뜻은 아니다.
+
+$$
+p_j=\frac{e^{a_j}}{\sum_{r=1}^{C}e^{a_r}},\qquad
+L=-\log p_{y_t}=-a_{y_t}+\log\sum_{r=1}^{C}e^{a_r}.
+$$
+
+두 경우 모두 정답 index를 $$y$$로 쓰면, log-sum-exp를 미분하여
+
+$$
+\frac{\partial L}{\partial a_j}
+=-\mathbf{1}[j=y]+\frac{e^{a_j}}{\sum_r e^{a_r}}
+=p_j-\mathbf{1}[j=y]
+$$
+
+를 얻는다. Gradient descent는 정답 logit을 올리고 다른 logit을 낮추는 방향의 신호를 만든다. HuBERT 예제에서는 $$(0.1,-0.3,0.2)$$가 되어 2번 logit을 높이는 방향이다. 공유 network parameter를 갱신하므로 모든 sample의 확률이 매번 단조롭게 좋아진다는 보장은 아니다.
+
+**식의 모양이 비슷해도 정답과 분모의 의미는 다르다.** wav2vec 2.0은 jointly learned quantizer에서 나온 sample별 후보를 구별하고 diversity loss도 함께 사용한다. HuBERT는 offline cluster assignment를 정답으로 삼아 전체 cluster vocabulary를 분류한다. 이 구분은 <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">wav2vec 2.0 §3.2</a>과 <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">HuBERT §II-B·II-E·III</a>에 대응한다.
+
+</details>
 
 ### 8.1 강의에 등장한 논문의 역할과 연결 관계
 
