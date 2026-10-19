@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-18 19:51:32 +0900
+last_modified_at: 2026-10-19 22:22:22 +0900
 title: "Autonomous Driving Computing: Midterm Review"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -25,7 +25,7 @@ keywords:
 
 [View slides (PDF)]({{ "/assets/pdfs/study/autonomous-driving/adc-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/autonomous-driving/adc-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
 
-26장으로 센서·2D/3D perception·Lab 1–2의 핵심 그림과 계산 예제를 정리했다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
+37장으로 센서·2D/3D perception·Lab 1–2의 핵심 그림과 계산 예제를 정리했다. Lab의 핵심 요약·생각해보기는 anchor 선택과 sampling, NMS, focal loss, 높이별 occupancy, 거리별 희소성, voxel tensor, 학습 결과와 평가 기준으로 풀어 설명한다. 원본 notebook의 저장 그림·수치는 일반 원리와 구분했다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source Materials: Lectures 2–11, Labs 1–2, and Assignment 1 (Average Precision).
 
