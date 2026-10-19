@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-19 12:28:24 +0900
+last_modified_at: 2026-10-19 14:13:07 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -26,7 +26,7 @@ keywords:
 
 [View slides (PDF)]({{ "/assets/pdfs/study/speech-and-audio-recognition/sar-midterm-review-slides.pdf" | relative_url }}) · <a href="{{ "/assets/presentations/study/speech-and-audio-recognition/sar-midterm-review-slides.pptx" | relative_url }}" download>Download PowerPoint (PPTX)</a>
 
-62장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. CTC Summary부터 wav2vec 2.0 직전까지는 원본 그림과 요약표를 한국어로 풀어 설명한다. Attention·LAS·RNN-T의 학습과 추론, 언어모델 결합, 자기지도학습의 target 구성을 수치 예제와 함께 다룬다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
+64장으로 신호 처리·ASR·Self-Supervised Learning의 핵심 그림과 확률 계산을 정리했다. 같은 신호의 waveform·spectrogram 비교와 phase 보존 조건을 추가하고, CTC Summary부터 wav2vec 2.0 직전까지는 원본 그림과 요약표를 한국어로 풀어 설명한다. Attention·LAS·RNN-T의 학습과 추론, 언어모델 결합, 자기지도학습의 target 구성을 수치 예제와 함께 다룬다. Source Separation은 포함하지 않는다. PDF를 선택하면 본문과 나란히 볼 수 있고, 좁은 화면에서는 모달로 열린다. 상세 유도와 코드 해설은 아래 본문에서 이어진다.
 
 Source PDFs:
 
@@ -221,6 +221,10 @@ $$
 ### 2.4 STFT는 시간 위치를 얻는 대신 창의 조건을 갖는다
 
 STFT는 frame마다 window를 곱하고 DFT를 계산한다.
+
+Waveform은 가로축 시간(s)과 세로축 진폭으로 sample 값을 직접 보여 준다. Spectrogram은 가로축 frame 시간(s), 세로축 주파수(Hz), 색으로 magnitude·power·dB 중 선택한 값을 보여 준다. 8 kHz로 표본화한 1초 예제에서 500 Hz tone은 계속 유지되고 1500 Hz tone은 0.4–0.8초에만 켜지므로, 파형에서는 두 진동이 합쳐지지만 spectrogram에서는 500 Hz의 전 구간 띠와 1500 Hz의 제한된 띠로 분리된다. [같은 신호의 전체 파형·확대 파형·power STFT dB 비교]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#waveform-spectrogram-comparison" | relative_url }})에서 축·window 설정과 10 ms linear ramp를 확인할 수 있다.
+
+화면에 그린 magnitude·power spectrogram은 complex STFT의 phase를 보존하지 않는다. $$3+4j$$와 $$3-4j$$는 magnitude 5와 power 25로 같지만 phase는 각각 약 $$+53.13^\circ$$와 $$-53.13^\circ$$다. 파형 $$x[n]$$과 $$-x[n]$$도 magnitude spectrogram은 같고 0이 아닌 coefficient의 phase만 $$\pi$$ rad 다르다. 정확한 iSTFT에는 magnitude 그림이 아니라 complex STFT와 일치하는 window·hop·padding·원 길이, 모든 표본을 덮는 overlap-add 조건이 필요하다.
 
 $$
 S[m,k]=\sum_{r=0}^{L-1}x[mH+r]w[r]e^{-j2\pi kr/N_{\mathrm{FFT}}}.

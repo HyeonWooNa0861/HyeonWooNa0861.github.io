@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-18 23:07:10 +0900
+last_modified_at: 2026-10-19 14:13:07 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -120,7 +120,86 @@ PDF pp.4–8의 신호는 $$x(t)=10\sin(2\pi10t)+3\sin(2\pi100t)$$다. Sampling 
 
 가로축은 시간, 세로축은 파형 값이다. 색칠한 1024-sample 구간 하나가 한 번의 FFT 입력이고, 다음 구간은 256 samples만 이동한다. 창 길이는 한 분석에 포함할 시간 범위를, hop은 분석을 얼마나 촘촘하게 반복할지를 정한다. 서로 겹치는 창을 별도 시간 frame으로 계산하므로 전체 FFT에 없던 시간 위치를 얻는다.
 
-### 2.1 프레임·hop·주파수 bin의 좌표
+### 2.1 Waveform과 spectrogram은 같은 신호의 서로 다른 좌표다
+{: #waveform-spectrogram-comparison}
+
+**Waveform은 각 시각의 진폭을 직접 보여 주고, spectrogram은 짧은 시간 구간마다 주파수 성분을 다시 계산해 배치한다.** Waveform의 가로축은 시간(s) 또는 sample index, 세로축은 진폭이다. 진폭 단위는 입력이 보정된 음압이면 Pa, 전압이면 V가 될 수 있지만, 정규화 PCM에서는 보통 무차원이다. Spectrogram의 가로축은 frame 시간(s), 세로축은 주파수(Hz), 색은 각 시간·주파수 칸의 magnitude, power 또는 그 log/dB 값이다. 따라서 색이 파형의 세로축을 그대로 옮긴 값은 아니다.
+
+아래 작성자 예제는 1초, $$f_s=8000$$ Hz의 같은 신호를 두 표현으로 비교한다. 500 Hz 성분은 전체 1초 동안 지속되고, 1500 Hz 성분은 0.4초부터 0.8초 직전까지만 나타난다. 구간 시작과 끝의 인위적인 클릭을 줄이기 위해 10 ms linear ramp를 둔다.
+
+$$
+x[n]=0.6\sin\!\left(2\pi\frac{500n}{8000}\right)
++0.3g\!\left(\frac{n}{8000}\right)\sin\!\left(2\pi\frac{1500n}{8000}\right),
+\qquad 0\le n<8000.
+$$
+
+$$
+g(t)=
+\begin{cases}
+\dfrac{t-0.40}{0.01}, & 0.40\le t<0.41,\\
+1, & 0.41\le t<0.79,\\
+\dfrac{0.80-t}{0.01}, & 0.79\le t<0.80,\\
+0, & \text{otherwise}.
+\end{cases}
+$$
+
+<figure>
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/waveform-spectrogram-comparison.png" | relative_url }}" alt="같은 1초 합성 신호의 전체 파형, 확대 파형, power STFT dB 스펙트로그램. 500 Hz 성분은 전 구간에 있고 1500 Hz 성분은 0.4초부터 0.8초까지만 나타난다." loading="lazy">
+  <figcaption>Supplementary diagram. A·B는 수식으로 생성한 같은 표본열의 전체 파형과 10 ms 확대 구간이고, C는 같은 신호의 상대 power STFT를 dB로 표시한다.</figcaption>
+</figure>
+
+파형 전체에서는 두 sine이 더해진 진동이 보이지만, 성분별 주파수와 발생 시각을 바로 분리해 읽기 어렵다. 확대 파형은 sample마다 실제로 어떤 값이 저장됐는지 보여 준다. Spectrogram에서는 500 Hz의 가로 띠가 전 구간에 있고 1500 Hz 띠는 0.4–0.8초에만 있다. Ramp와 유한 window 때문에 1500 Hz 띠의 시작·끝이 한 점에서 수직으로 끊기지 않고 주변 시간·주파수 칸으로 조금 퍼진다. 이는 고정된 세 번째 tone을 추가했다는 뜻이 아니다. 진폭이 시간에 따라 변하는 신호 자체의 주파수 확산과 유한 window의 분석 폭이 함께 반영된 결과다. 파형의 세로축 `Amplitude (relative)`와 spectrogram의 0 dB는 이 합성 신호 내부의 상대값이며 Pa, SPL 또는 절대 음량이 아니다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Window, Axes, and Numerical Checks</summary>
+
+확대 파형은 0.600–0.610초를 보여 준다. Spectrogram은 32 ms periodic Hann window(256 samples), 8 ms hop(64 samples), 256-point FFT를 사용한다. 원 신호 양끝에 각각 128개 zero sample을 붙여 frame center가 0–1초를 덮게 했으며, one-sided 결과는 129 frequency bins와 126 frames다. 전체 Nyquist 범위는 0–4000 Hz지만 그림은 두 tone을 읽기 쉽도록 0–2500 Hz만 표시한다. Power는 전체 최댓값을 0 dB로 두고 −60 dB에서 자른다.
+
+Zero padding과 창이 만나는 0초·1초 경계의 세로 띠는 새 주파수 성분이 아니라 신호가 0과 이어지는 경계 효과다. 두 tone이 모두 안정된 내부 frame에서 1500 Hz와 500 Hz의 power 비는 $$(0.3/0.6)^2=0.25$$, 즉 약 −6.02 dB다. 계산에서는 complex STFT의 inverse round-trip 최대 절대 오차가 약 $$1.81\times10^{-14}$$였고, 독립된 5개 frame에서 $$x$$와 $$-x$$의 power 차이는 0이었다. 이는 해당 생성 설정의 수치 검산이며 모든 STFT 설정에 같은 bin 수·오차가 나온다는 뜻은 아니다.
+
+</details>
+
+STFT 자체 $$S[m,k]=a+jb$$는 **복소수 배열**이다. 흔히 화면에 그리는 spectrogram은 여기서 정보를 선택해 만든다.
+
+| 표현 | 각 칸의 값 | 보존하는 정보 |
+|---|---|---|
+| Complex STFT | $$S[m,k]=a+jb$$ | magnitude와 phase를 모두 보존 |
+| Magnitude spectrogram | $$\lvert S[m,k]\rvert=\sqrt{a^2+b^2}$$ | 크기만 보존 |
+| Power spectrogram | $$\lvert S[m,k]\rvert^2$$ | 크기의 제곱만 보존 |
+| Log/dB power spectrogram | $$10\log_{10}(P/P_{\mathrm{ref}})$$ | 기준에 대한 power 비를 압축해 표시 |
+
+Real part와 imaginary part 중 하나가 magnitude 또는 phase인 것은 아니다. 예를 들어 $$3+4j$$와 $$3-4j$$는 magnitude 5, power 25로 같지만 phase는 각각 약 $$+53.13^\circ$$와 $$-53.13^\circ$$다. Magnitude·power 그림에서는 둘을 구별할 수 없지만, 역변환할 때는 서로 다른 시간 파형을 만들 수 있다.
+
+더 강한 반례는 $$x[n]$$과 $$-x[n]$$이다. 두 파형은 모든 표본의 부호가 반대지만 magnitude·power spectrogram은 정확히 같다. 0이 아닌 각 STFT coefficient의 phase만 $$\pi$$ rad만큼 달라진다. 따라서 **보이는 magnitude나 power spectrogram만으로 원 waveform을 유일하게 정할 수 없다.** 정확한 iSTFT 복원은 원래 complex STFT, 같은 창·hop·FFT·padding convention, 원 길이, 그리고 모든 복원 대상 표본을 덮는 nonzero overlap-add 분모를 함께 요구한다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Why Opposite Waveforms Have the Same Magnitude Spectrogram</summary>
+
+STFT는 입력에 대해 선형이다. $$x_{-}[n]=-x[n]$$라 두면 같은 window와 frame 설정에서
+
+$$
+S_{-}[m,k]=\operatorname{STFT}\{-x\}[m,k]=-S[m,k].
+$$
+
+따라서 magnitude와 power는
+
+$$
+\lvert S_{-}[m,k]\rvert=\lvert-S[m,k]\rvert=\lvert S[m,k]\rvert,
+\qquad
+\lvert S_{-}[m,k]\rvert^2=\lvert S[m,k]\rvert^2
+$$
+
+로 완전히 같다. 반면 $$S[m,k]\ne0$$인 칸에서는
+
+$$
+\arg S_{-}[m,k]=\arg S[m,k]+\pi\pmod{2\pi}.
+$$
+
+즉 magnitude나 power를 저장하는 순간 서로 다른 두 waveform이 같은 관측값으로 합쳐진다. 이 mapping은 일대일이 아니므로 magnitude-only spectrogram에는 일반적인 유일 역함수가 없다. Complex STFT를 보존하면 각 inverse frame에서 windowed sample을 되살릴 수 있고, 뒤의 weighted overlap-add 식에서 모든 대상 표본의 분모가 0이 아닐 때 원 파형을 복원한다. 경계 frame 누락, 일치하지 않는 padding·길이, phase 삭제는 이 결론의 조건을 깨뜨린다.
+
+</details>
+
+### 2.2 프레임·hop·주파수 bin의 좌표
 
 전체 녹음의 magnitude spectrum만으로는 각 성분이 **언제** 나타났는지 직접 읽기 어렵다. 복소 DFT 전체는 원 표본을 복원할 수 있지만, 시간에 따른 주파수 변화를 한눈에 보여 주는 표현은 아니다. PDF pp.9–10은 길이 1024표본의 창을 256표본씩 옮기는 그림으로 STFT를 도입한다. 아래는 창 길이 $$L$$, hop $$H$$, FFT 길이 $$N_{\mathrm{FFT}}\ge L$$, 창 $$w[r]$$에 대한 작성자 표기다.
 
@@ -132,7 +211,7 @@ $$m,k,r$$는 무차원 index이고 $$H,L,N_{\mathrm{FFT}}$$는 samples로 센 �
 
 창을 길게 하면 가까운 주파수 성분을 가를 시간이 늘지만 급격한 변화의 시각을 넓은 구간에 섞는다. 짧은 창은 반대로 시간 위치는 좁히되 주파수 peak는 넓어진다. $$\Delta f=f_s/N_{\mathrm{FFT}}$$는 **그려지는 bin 간격**이고, zero-padding으로 $$N_{\mathrm{FFT}}$$만 키워 간격을 촘촘히 해도 관측 창 $$L/f_s$$가 제공한 물리적 분해능을 새로 만들지는 않는다. 1024/256 예에서 프레임 중첩률은 $$1-256/1024=75\%$$다. 이것이 모든 신호에 최적인 값이라는 뜻은 아니다.
 
-### 2.2 Rectangular와 Hann: 경계가 만드는 leakage
+### 2.3 Rectangular와 Hann: 경계가 만드는 leakage
 
 <figure id="speech-02-2-p14">
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-02-2-p14.png" | relative_url }}" alt="Rectangular와 Hann 창의 phase 및 dB spectrogram 비교" loading="lazy">
@@ -184,7 +263,7 @@ $$
 **Window는 anti-alias filter도, 음성과 잡음을 판별하는 mask도 아니다.** Sampling 전에 생길 주파수 겹침은 대역 제한과 sampling rate로 관리한다. Hann은 이미 얻은 표본의 분석 경계를 다룬다. 겹치는 여러 프레임과 복소 계수를 보존하면 아래 iSTFT 조건에 따라 파형을 복원할 수 있으므로, 한 프레임의 가장자리 가중치가 0이라는 사실만으로 전체 STFT가 반드시 정보를 잃는다고 단정하지 않는다.
 
 
-### 2.3 Magnitude·phase·dB와 iSTFT의 경계
+### 2.4 Magnitude·phase·dB와 iSTFT의 경계
 
 PDF pp.11–12의 STFT는 **복소수 행렬**이다. $$\lvert S[m,k]\rvert$$는 magnitude, $$\arg S[m,k]$$는 phase다. 밝기 표시를 위해 log scale을 쓰면 작은 값도 보이기 쉬워지지만, 0의 로그는 정의되지 않으므로 양수 기준값 $$A_{\mathrm{ref}}$$와 floor $$\epsilon>0$$를 둬야 한다.
 
