@@ -5,7 +5,7 @@ last_modified_at: 2026-10-16 19:04:07 +0900
 title: "Lab 1: Two-Stage vs One-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "Tracing Faster R-CNN and RetinaNet"
-order: 13
+order: 14
 major_topic: "Autonomous Systems"
 keywords:
   - "Object Detection"

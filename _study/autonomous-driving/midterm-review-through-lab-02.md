@@ -5,7 +5,7 @@ last_modified_at: 2026-10-19 22:22:22 +0900
 title: "Autonomous Driving Computing: Midterm Review"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
-order: 14
+order: 15
 major_topic: "Autonomous Systems"
 keywords:
   - "Autonomous Driving"
