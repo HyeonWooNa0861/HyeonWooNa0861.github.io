@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
-last_modified_at: 2026-10-18 19:26:41 +0900
+last_modified_at: 2026-10-29 16:57:43 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -292,10 +292,10 @@ Mask activation과 학습 target은 model version별로 다르다. 다음 표는
 <details markdown="block">
 <summary markdown="span">Derivation: learned basis separation as an analysis–mask–synthesis system</summary>
 
-Encoder의 filter를 $$u_m[r]$$, frame 위치를 $$t$$라 하면 한 구현의 coefficient는
+Encoder의 filter를 $$u_m[r]$$, frame index를 $$t$$, window 길이를 $$B$$ samples, hop을 $$H$$ samples라 하면 한 구현의 coefficient는
 
 $$
-W_{m,t}=g\!\left(\sum_{r=0}^{L-1}x[tH+r]u_m[r]\right)
+W_{m,t}=g\!\left(\sum_{r=0}^{B-1}x[tH+r]u_m[r]\right)
 $$
 
 처럼 쓸 수 있다. $$g$$는 ReLU 같은 비선형 함수다. Separator가 $$M_{k,m,t}$$를 예측하면
@@ -316,7 +316,11 @@ STFT도 고정된 sine·cosine analysis basis와 inverse transform을 사용한�
 
 ### 5.2 TasNet과 Conv-TasNet
 
-원문 p. 13의 TasNet은 learned encoder와 mask, decoder라는 방향을 제시하지만 separator에 recurrent network를 사용해 긴 waveform의 계산이 무거웠다. Conv-TasNet은 separator를 dilated temporal convolutional network(TCN)로 바꾸었다.
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-13.png" alt="TasNet 원본 슬라이드의 학습 가능한 basis, latent vector, recurrent separator, source별 mask와 decoder" loading="lazy">
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=13" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 13</a>의 TasNet은 왼쪽 waveform 조각을 오른쪽의 학습 가능한 basis로 표현한다. 그림의 $$N$$은 basis 개수이며, 가운데 recurrent separator는 이 coefficient의 시간 변화를 읽어 source별 mask를 만든다. Masked coefficient를 decoder로 합성하면 각 source의 파형이 나온다. **LSTM-TasNet은 이 separator가 LSTM인 구성**을 뜻하며, BLSTM-TasNet은 양방향 문맥을 쓰는 구성이므로 둘의 수치를 구분해야 한다.
+
+짧은 waveform window는 미세한 시간 구조를 다룰 수 있지만 같은 길이의 발화에서 처리할 frame 수를 늘린다. Recurrent separator는 앞 상태를 계산해야 다음 상태를 계산하므로 긴 sequence의 학습·처리가 부담스럽다. Conv-TasNet은 이 separator를 dilated temporal convolutional network(TCN)로 바꾸었다.
 
 <img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-14.png" alt="Conv-TasNet의 waveform encoder, dilated TCN separator, source별 mask와 decoder 구조" loading="lazy">
 
@@ -333,19 +337,65 @@ Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아�
 
 원문 pp. 14–15의 성능 표가 보여주는 요점은 learned time-domain representation이 당시 fixed STFT magnitude-mask baseline을 넘어설 수 있었다는 것이다. 이것은 **STFT라는 표현 전체가 원리적으로 열등하다는 증명**이 아니다. 비교한 oracle은 fixed magnitude mask와 mixture phase라는 제약을 가진다. 이후 TF-GridNet처럼 complex spectrum을 직접 추정하는 모델은 STFT domain에서도 높은 성능을 보인다.
 
+### 5.3 성능 차이는 같은 causality 설정끼리 읽는다
+
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-19.png" alt="TasNet, Conv-TasNet, DPRNN, SepFormer 성능을 비교하는 원본 표로 일부 행의 causal 설정과 지표는 아래에서 정정" loading="lazy">
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=19" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 19</a>는 왼쪽부터 표현, separator, parameter 수, 개선 점수, causal variant를 나열한다. 그러나 **TasNet-BLSTM의 23.6M과 10.8 dB는 같은 configuration의 값이 아니다.** Causal variant가 존재한다는 오른쪽 표기도 그 행의 점수가 causal 실험이라는 뜻은 아니다. 아래 표는 <a href="https://arxiv.org/pdf/1809.07454" target="_blank" rel="noopener">Conv-TasNet 원 논문 Table IV</a>의 WSJ0-2mix, 8 kHz, 두 화자 결과에서 설정을 분리한 것이다. SI-SNRi는 혼합음 대비 SI-SNR 개선량이며 높을수록 좋다. M은 백만 parameters다.
+
+| Context | Model | Parameters | SI-SNRi (dB) |
+|---|---|---|---|
+| Non-causal | BLSTM-TasNet | 23.6M | 13.2 |
+| Non-causal | Conv-TasNet, gLN | 5.1M | 15.3 |
+| Causal | LSTM-TasNet | 32.0M | 10.8 |
+| Causal | Conv-TasNet, cLN | 5.1M | 10.6 |
+{: .reference-candidate-table}
+
+Non-causal은 미래 입력도 참조하고, causal은 현재·과거 입력만 참조하는 설정이다. gLN(global layer normalization)은 발화의 시간·채널 정보를 함께 사용하고 cLN(cumulative layer normalization)은 현재까지의 통계만 사용한다. Causal convolution만 적용해도 gLN이 미래 통계를 읽으면 전체 모델은 causal이 아니므로 두 조건을 함께 확인해야 한다.
+
+비인과 비교에서 개선량 차이는 $$15.3-13.2=2.1\,\mathrm{dB}$$다. SI-SNR은 에너지 비의 로그이므로 2.1 dB를 정확도 2.1% 상승으로 읽지 않는다. 반면 인과 비교는 $$10.6-10.8=-0.2\,\mathrm{dB}$$다. **Conv-TasNet의 기여는 언제나 더 높은 점수가 아니라, 작은 모델과 효율적인 문맥 처리로 경쟁력 있는 분리를 구현한 데도 있다.**
+
+차이를 만드는 설계는 서로 연결된다. Dilated convolution은 넓은 시간 범위를 읽고, residual·skip connection은 여러 깊이의 정보를 전달한다. 시간 위치별 연산을 병렬화할 수 있어 recurrent 상태를 순서대로 갱신하는 부담도 줄인다. 짧은 encoder window와 normalization도 결과에 영향을 준다. 이 표만으로 2.1 dB 전부를 convolution 하나의 효과라고 분해할 수는 없다. 두 모델 전체 configuration의 비교이지, 다른 요소를 모두 고정한 단일 요인 실험은 아니기 때문이다.
+
 ## 6. 긴 문맥을 다루는 DPRNN과 SepFormer
 
 ### 6.1 DPRNN: 긴 sequence를 두 개의 짧은 축으로 나눈다
 
 <img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-16.png" alt="DPRNN이 encoded sequence를 겹치는 chunk로 나누고 intra-chunk와 inter-chunk RNN을 교대로 적용하는 구조" loading="lazy">
 
-<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=16" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 16</a>의 `Split`은 긴 feature sequence를 겹치는 chunk로 바꾸는 단계다. 길이 $$N$$을 대략 $$C\approx\sqrt{N}$$인 chunk로 나누면 chunk 내부 길이와 chunk 개수 모두 대략 $$\sqrt{N}$$ 규모가 된다.
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=16" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 16</a>의 위쪽 `A. Segmentation`은 왼쪽의 긴 직사각형을 겹치는 조각으로 나눈 뒤 오른쪽의 입체 tensor로 쌓는 과정이다. **위쪽 가로 길이 $$L$$은 시간 frame 수, 세로 길이 $$N$$은 각 frame의 feature 채널 수다.** $$N$$을 전체 시간 길이나 화자 수로 읽으면 아래 RNN 축도 반대로 이해하게 된다.
 
-- **Intra-chunk RNN:** 한 chunk 안의 인접 frame 관계를 읽는다.
-- **Inter-chunk RNN:** 같은 chunk 위치가 시간에 따라 어떻게 이어지는지 읽는다.
-- **Overlap-add:** 겹친 chunk의 출력을 다시 원래 순서로 합친다.
+| 기호 | 원본 그림에서의 의미 | 단위·구별 |
+|---|---|---|
+| $$N$$ | Encoder feature 채널 수 | 채널 개수, 무차원. 이 절에서는 DPCL의 $$N=TF$$와 다른 뜻이다. |
+| $$L$$ | Encoded sequence 전체의 시간 길이 | Frame 개수, 초나 waveform sample 수가 아니다. |
+| $$K$$ | 한 chunk의 시간 길이. 그림 오른쪽 가로 길이 $$2P$$에 해당 | Frame 개수, 이 절에서는 앞 절의 source 수 $$K$$와 구분한다. |
+| $$P$$ | 다음 chunk 시작점까지 이동하는 hop | Frame 개수. 원 논문의 50% overlap은 $$P=K/2$$다. |
+| $$S$$ | 쌓아 놓은 chunk 개수 | 개수, 무차원 |
+| $$C$$ | 이 절에서 별도로 쓰는 출력 source 수 | 화자 개수. $$N$$이나 chunk 길이 $$K$$와 무관하다. |
+{: .reference-candidate-table}
 
-이렇게 하면 하나의 RNN이 길이 $$N$$ 전체를 순차 처리하는 대신 두 축에서 더 짧은 sequence를 처리한다. Local structure와 utterance-level context가 교대로 섞인다.
+Segmentation 전 shape는 $$N\times L$$, 후 shape는 $$N\times K\times S$$다. Frame마다 $$N$$개 값을 가진다는 사실은 그대로이며, 긴 시간축만 `chunk 내부 위치`와 `chunk 번호`로 나누었다. 화자를 chunk별로 나누는 작업도, 주파수 bin을 새로 만드는 변환도 아니다.
+
+Chunking의 목적은 **짧은 구간의 세부 패턴과 먼 구간의 문맥을 둘 다 보면서, 한 recurrent chain의 길이를 줄이는 것**이다. 짧은 음성 조각만 독립적으로 분리하면 다른 구간의 같은 화자 정보를 놓칠 수 있다. 반대로 전체 발화를 하나의 긴 RNN으로 읽으면 순차 의존이 길어진다. DPRNN은 두 축을 번갈아 읽어 이 두 요구를 결합한다. Overlap은 인접 chunk가 경계의 frame을 공유하게 하며, 마지막 overlap-add는 같은 시간 위치의 출력을 다시 결합한다.
+
+### 6.2 RNN 축을 바꾸는 기준: chunk 안과 chunk 사이
+
+아래는 **원본 그림을 읽기 위한 Supplementary table**이다. 설명용으로 $$L=8$$ frames, $$K=4$$ frames, $$P=2$$ frames를 택했다. 숫자는 feature 값이 아니라 원래 frame의 번호다. 실제 논문의 경계 padding을 생략하고 내부의 세 chunk만 표시한다.
+
+| Chunk | 내부 위치 1 | 내부 위치 2 | 내부 위치 3 | 내부 위치 4 |
+|---|---|---|---|---|
+| 1 | Frame 1 | Frame 2 | Frame 3 | Frame 4 |
+| 2 | Frame 3 | Frame 4 | Frame 5 | Frame 6 |
+| 3 | Frame 5 | Frame 6 | Frame 7 | Frame 8 |
+
+1. **Intra-chunk RNN은 표의 한 행을 읽는다.** Chunk 1에서는 1·2·3·4번 frame을 순서대로 처리한다. 다른 chunk에도 같은 RNN을 적용한다. 고정하는 것은 chunk 번호이고, 움직이는 것은 내부 위치인 $$K$$축이다. 각 step의 입력은 scalar가 아니라 $$N$$개 feature를 가진 vector다.
+2. **Inter-chunk RNN은 intra 처리 뒤 표의 한 열을 읽는다.** 내부 위치 1을 고정하면 chunk 1·2·3에 대응하는 원래 1·3·5번 위치를 연결한다. 고정하는 것은 chunk 내부 위치이고, 움직이는 것은 chunk 번호인 $$S$$축이다. 이때 입력은 이미 intra RNN이 주변 문맥을 반영한 feature이므로 원래 frame 1·3·5의 값만 따로 읽는 것과 다르다.
+3. **다음 block에서 두 방향의 정보가 다시 섞인다.** 원본 아래 `B. DPRNN block`의 두 RNN 상자는 서로 다른 주파수를 보는 것이 아니라 같은 tensor를 다른 시간 조직으로 읽는다. FC는 hidden feature를 원래 feature 차원으로 되돌리고, normalization과 residual addition은 shape를 유지하며 block을 연결한다.
+
+따라서 축 전환의 기준은 임의의 회전이 아니라 **고정한 index와 순회할 index의 교환**이다. Intra는 구간 내부의 세부 구조, inter는 구간 사이의 긴 연결을 담당한다. $$N$$ 채널축 자체를 RNN의 시간축으로 바꾸지 않는다.
+
+예를 들어 $$L=32{,}000$$ frames에서 $$K=250$$, $$P=125$$를 쓰면 원 논문의 padding 규칙에서 $$S=257$$ chunks다. 한 RNN이 32,000 steps를 읽는 대신 intra는 250 steps, inter는 257 steps를 읽는다. 이는 길이 비교를 위한 작성자 계산이며 새로운 분리 성능 실험은 아니다. **한 chain이 짧아졌다는 뜻이지, 전체 frame 계산량이나 memory가 제곱근으로 줄었다는 뜻은 아니다.**
 
 > **정정:** 원 논문의 표준 DPRNN은 bidirectional RNN을 포함하므로 기본형을 곧바로 streaming-ready 또는 causal이라고 부를 수 없다. 실시간 처리를 하려면 causal inter-chunk path, 제한된 look-ahead, state 관리 등 별도 설계가 필요하다.
 
@@ -354,21 +404,33 @@ Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아�
 <details markdown="block">
 <summary markdown="span">Derivation: why dual-path shortens the recurrent path</summary>
 
-원래 frame 수를 $$N$$, chunk 길이를 $$C$$, hop을 대략 $$C/2$$라 하면 chunk 수는 $$S\approx 2N/C$$다. 두 recurrent path가 처리하는 sequence 길이는 각각 $$C$$와 $$S$$다.
-
-둘 중 큰 값을 줄이려면 $$C$$와 $$S$$의 규모를 비슷하게 두는 것이 유리하다.
+원 논문 §II의 표기로 feature를 $$W\in\mathbb R^{N\times L}$$라 하자. $$K$$ frames씩 잘라 $$P=K/2$$ frames 이동하면 각 chunk는 $$N\times K$$, 전체 tensor는 $$N\times K\times S$$다. 논문의 앞뒤 padding을 포함한 chunk 수는
 
 $$
-C\approx\frac{2N}{C}
+S=\left\lceil\frac{2L}{K}\right\rceil+1
+$$
+
+이다. 이는 해당 padding 규칙의 등식이다. 경계를 제외한 규모 비교에는 $$S\approx2L/K$$를 쓸 수 있다. Intra는 $$S$$개 chunk 각각에서 길이 $$K$$를, inter는 $$K$$개 내부 위치 각각에서 길이 $$S$$를 처리한다. 각 RNN의 input feature 차원은 $$N$$이다.
+
+긴 쪽 chain을 줄이려면 두 길이를 비슷하게 잡는다. 반올림·padding 상수를 생략한 근사에서
+
+$$
+K\approx S\approx\frac{2L}{K}
 \quad\Longrightarrow\quad
-C\approx\sqrt{2N}
+K^2\approx2L
+\quad\Longrightarrow\quad
+K\approx\sqrt{2L}
 $$
 
-따라서 각 path의 길이는 $$O(\sqrt{N})$$ 규모가 된다. 이것이 긴 sequence를 두 축으로 재배열하는 이유다. 정확한 chunk 수는 padding·hop·boundary 처리에 따라 달라진다.
+이다. 예시에서는 $$2L/K=64{,}000/250=256$$이므로 $$S=257$$이고, 균형점은 $$\sqrt{64{,}000}\approx253$$ frames다. Chunk 250과 chunk 수 257은 비슷한 규모다.
+
+이 근사는 chain 길이에 대한 설명이다. 한 block에는 intra의 $$S$$개 chain과 inter의 $$K$$개 chain이 있으므로 각각 $$KS$$개 step을 처리한다. Hidden 크기를 고정해도 $$KS\approx2L$$이지 $$\sqrt L$$이 아니다. 실제 연산량·메모리·지연에는 overlap, hidden 크기, block 수와 병렬화가 추가된다. 다른 hop·padding을 쓰면 chunk 개수 식도 다시 계산해야 한다.
+
+근거: <a href="https://arxiv.org/pdf/1910.06379" target="_blank" rel="noopener">DPRNN 원 논문 §II-A–B와 Figure 1</a>.
 
 </details>
 
-### 6.2 SepFormer: dual-path 틀에서 RNN을 self-attention으로 바꾼다
+### 6.3 SepFormer: dual-path 틀에서 RNN을 self-attention으로 바꾼다
 
 <img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-17.png" alt="SepFormer가 intra-transformer와 inter-transformer를 반복하여 짧은 구간과 전체 발화 문맥을 결합하는 구조" loading="lazy">
 
@@ -402,6 +464,49 @@ $$
 
 따라서 magnitude만 고친 뒤 mixture phase를 재사용하는 방식보다 phase를 수정할 자유도가 크다. 원문에 제시된 23.5 dB SI-SDR improvement도 해당 논문의 특정 WSJ0-2mix 설정에서 DM 없이 보고된 값이다. Conv-TasNet·SepFormer의 다른 표와 비교하려면 dataset split과 metric 구현을 먼저 맞춰야 한다.
 
+### 7.1 STFT로 돌아왔다는 말의 의미
+
+그림 위 `Before`는 mixture magnitude에 실수 mask를 곱하고 mixture phase를 그대로 사용하는 경로다. `Now`는 source의 real·imaginary 값을 함께 예측하는 경로다. **포기했던 STFT를 다시 쓸 수 있게 만든 것이 아니라, STFT 위에서 허용하는 출력과 문맥 모델을 넓힌 변화**다. 역변환 조건을 갖춘 복소 STFT는 waveform의 시간·위상 구조를 담을 수 있다. Magnitude만 남기는 처리와 복소 STFT 자체를 같은 정보 손실로 취급하지 않는다.
+
+원본 아래 구조도는 가운데 아래에서 위로 읽는다. Intra-frame full-band가 한 frame의 주파수 관계를 연결하고, sub-band temporal이 시간 변화를 읽은 뒤, cross-frame attention이 먼 frame 문맥을 결합한다. 세 연산은 입력 표현만 STFT로 바꾼 것이 아니라 **주파수 구조와 긴 시간 문맥을 함께 학습**하도록 설계되었다. Real·imaginary 출력 모두가 magnitude와 phase에 영향을 주므로 `실수부=크기, 허수부=위상`으로 나누어 해석하지 않는다.
+
+### 7.2 Mask 추정이 병목이 되는 두 가지 이유
+
+첫째는 **어떤 값을 내야 하는지 어려운 추정 문제**다. 한 T–F 칸에 여러 화자가 함께 있으면 mixture 하나만 보고 각 source의 기여를 알아야 한다. 잘못된 mask는 다른 화자를 남기거나 목표 화자까지 지운다. 둘째는 **정확한 mask를 알아도 표현이 허용하지 않는 출력**이다. Mixture phase를 고정한 실수 magnitude mask는 해당 칸의 크기만 조절하며, 다른 방향의 source complex coefficient를 만들 수 없다.
+
+3.2절의 작성자 예제 $$S_A=1$$, $$S_B=j$$, $$X=1+j$$를 다시 보자. 정답 A의 크기는 1이고 혼합의 크기는 $$\sqrt2$$이므로 magnitude를 정확히 맞추는 mask는 $$m=1/\sqrt2$$다. 그래도 출력은 약 $$0.707+0.707j$$이며, 크기는 1이지만 정답 $$1+0j$$와 달리 위상이 45°다. Complex mask $$M=(1-j)/2$$ 또는 직접 mapping은 $$1+0j$$를 표현할 수 있다. 이는 특정 neural network가 반드시 그 값을 맞힌다는 보장이 아니라 **가능한 출력 집합의 차이**다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: fixed-phase masks and complex spectral mapping</summary>
+
+한 T–F 칸을 고정하고 선형 혼합 $$X=S_A+S_B$$를 가정한다. $$j^2=-1$$이며 이 예제의 coefficient는 정규화한 무차원 값이다. $$m\ge0$$인 magnitude mask의 복원식은
+
+$$
+\hat S_A=m\lvert X\rvert e^{j\arg X}=mX
+$$
+
+이다. $$X=1+j$$이면 $$\lvert X\rvert=\sqrt2$$, $$\arg X=\pi/4$$다. 크기를 1로 맞춘 결과는
+
+$$
+m=\frac1{\sqrt2},\qquad
+\hat S_A=\frac{1+j}{\sqrt2}\ne1.
+$$
+
+더 일반적으로 어떤 실수 $$m$$도 $$m(1+j)=1$$을 만족하지 않는다. 실수부에서는 $$m=1$$, 허수부에서는 $$m=0$$이 필요해 모순이다. 반면 $$X\ne0$$일 때 이상적인 complex ratio mask는
+
+$$
+M=\frac{S_A}{X}=\frac1{1+j}=\frac{1-j}{2},\qquad
+MX=\frac{(1-j)(1+j)}2=1
+$$
+
+이다. 출력이 $$\hat S=a+jb$$라면 magnitude와 phase는 각각 $$\sqrt{a^2+b^2}$$, $$\operatorname{atan2}(b,a)$$이며 둘 다 $$a,b$$를 사용한다. $$\hat S=0$$에서는 phase가 정의되지 않는다.
+
+Complex ratio mask도 모든 입력에서 안정적인 것은 아니다. $$S_A=1$$, $$S_B=-0.99$$이면 $$X=0.01$$이고 $$M=100$$이 필요하다. $$X=0$$이면서 $$S_A\ne0$$이면 유한한 곱셈 mask로 복원할 수 없다. Direct mapping은 이 나눗셈을 강제하지 않지만, 다른 칸·frame의 문맥과 학습된 prior로 부족한 정보를 추정해야 한다. 관측 하나만으로 임의의 source가 유일하게 결정되는 것은 아니다.
+
+</details>
+
+따라서 `masking이 병목`이라는 말을 모든 mask의 실패로 확대하면 안 된다. Learned-feature mask, complex mask, magnitude mask는 출력 제약이 서로 다르다. <a href="https://arxiv.org/pdf/2211.12433" target="_blank" rel="noopener">TF-GridNet 원 논문</a>의 결과는 complex mapping과 시간·주파수 문맥 설계의 효과를 해당 실험에서 확인한 것이지, 모든 masking 모델에 대한 불가능성 증명은 아니다.
+
 ## 8. 정확도만큼 중요한 효율
 
 원문 p. 21은 SepReformer, TIGER, SepMamba처럼 계산량과 긴 sequence 처리를 개선하려는 흐름을 묶는다. 모델 비교에서 parameter 수 하나만 보면 부족하다.
@@ -421,11 +526,23 @@ SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아니다. R
 
 ## 9. Source 수를 모를 때
 
-원문 p. 22의 문제의식은 현실의 $$K$$가 고정되지 않는다는 점이다. 여기서는 범위를 정확히 구분해야 한다.
+<img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-22.png" alt="출력이 두 개인 separator에 한 명, 두 명, 세 명 입력이 들어올 때 빈 출력 또는 병합이 생기는 speaker-count 원본 도식" loading="lazy">
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 22</a>는 위에서 아래로 입력 화자를 한 명·두 명·세 명으로 바꾸면서 separator 출력은 둘로 고정한다. 한 명이면 두 번째 출력을 어떻게 처리할지 정해야 하고, 세 명이면 세 개의 개별 파형을 두 slot에 모두 담을 수 없다. 그림의 마지막 `B+C merged`는 이 불일치를 설명하는 예시이며 모델이 반드시 B와 C를 합친다는 법칙은 아니다.
+
+**이 그림의 $$N=2$$는 output 개수로, DPRNN Segmentation 그림의 feature 채널 $$N$$과 뜻이 다르다.** 여기서 source 수를 $$K$$라 할 때, 현실의 $$K$$는 알려져 있지 않고 시간에 따라 바뀔 수 있다. 이 $$K$$는 6절의 chunk length $$K$$와 다른 기호이며, 그 절에서 $$C$$로 구분한 output-source count와 같은 역할이다. 다음 세 가지를 구분해야 한다.
 
 - PIT, TasNet, Conv-TasNet, DPRNN, SepFormer의 대표적인 benchmark 구성은 **정해진 출력 수**를 사용한다.
 - DPCL은 clustering 수를 추론 때 바꿀 수 있어 고정 output slot의 예외다. 하지만 k-means에 사용할 $$K$$는 여전히 주거나 추정해야 한다.
 - “모든 분리 모델이 fixed output”이라고 일반화할 수 없다. Recursive, attractor, query-based, generative formulation도 존재한다.
+
+### 9.1 두 화자는 DPRNN의 구조적 상한이 아니다
+
+16쪽의 `2 speakers tried`는 원 DPRNN 논문이 두 화자 WSJ0-2mix에서 실험했다는 뜻이다. Encoder feature가 $$N$$개라는 사실이나 intra/inter라는 두 경로는 source가 두 명이어야 한다는 조건이 아니다. 출력 mask·decoder를 세 source에 맞추고 세 화자 데이터와 PIT로 학습하면 세 출력 구성을 설계할 수 있다. **이미 학습된 두 출력 모델이 자동으로 세 화자를 분리한다는 뜻은 아니다.**
+
+실제로 <a href="https://arxiv.org/pdf/1809.07454" target="_blank" rel="noopener">Conv-TasNet Table V</a>는 별도의 세 화자 WSJ0-3mix 실험을 보고한다. 이후 <a href="https://arxiv.org/abs/2011.12022" target="_blank" rel="noopener">Multi-Decoder DPRNN</a>은 source-count head와 여러 decoder를 이용해 최대 다섯 화자를 평가했다. 이는 원 DPRNN이 같은 설정에서 다섯 화자를 검증했다는 뜻은 아니다. 화자 수가 늘수록 중첩 모호성과 계산 부담도 커지므로 출력 수 변경만으로 품질이 유지된다고 보장할 수 없다.
+
+### 9.2 출력 수를 정하거나 유동적으로 생성한다
 
 <img src="/assets/images/study/speech-and-audio-recognition/lecture-07/slide-23.png" alt="최대 출력 수, recursive one-and-rest, source-count prediction으로 알 수 없는 source 수를 다루는 세 접근" loading="lazy">
 
@@ -434,12 +551,41 @@ SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아니다. R
 | 접근 | 동작 | 장점 | 주의점 |
 |---|---|---|---|
 | Maximum outputs + silence | 최대 $$K_{\max}$$개를 내고 남는 출력을 silence로 학습 | 한 번의 forward pass | 최대값 고정, silence 판정 필요 |
-| Recursive one-and-rest | source 하나와 residual을 반복 분리 | 출력 수를 유동적으로 늘릴 수 있음 | 이전 오차가 residual에 누적, 정지 조건 필요 |
+| Recursive one-and-rest | source 하나와 나머지 mixture를 예측하고 나머지를 다시 분리 | 출력 수를 유동적으로 늘릴 수 있음 | Residual 오차가 후속 단계로 전파될 수 있음. 정지 조건과 반복 안정성 점검 필요 |
 | Count then separate | Source-count head가 $$K$$를 예측하고 해당 decoder를 선택 | 여러 $$K$$에 최적화된 head 사용 가능 | Count가 틀리면 separation 단계도 틀림 |
 
 그림 오른쪽의 count-and-select 구조는 Zhu, Yeh, Hasegawa-Johnson의 Multi-Decoder DPRNN이다. MulCat backbone에 count head와 source 수별 decoder head를 둔다. Source 수마다 별도 model을 고르는 Nachmani 등의 접근과는 구분한다.
 
+가운데 OR-PIT 그림은 첫 단계에서 한 화자와 `나머지 화자가 섞인 파형`을 함께 예측하고, 다음 단계가 그 **예측 residual**을 입력으로 받는 흐름이다. 단순히 각 source의 개수를 세 번으로 늘리는 fixed-slot 구조와 달리, 이전 단계의 결과가 다음 입력을 바꾼다. <a href="https://arxiv.org/abs/1904.03065" target="_blank" rel="noopener">원 논문</a>은 두·세 화자 학습과 학습에 없던 네 화자 조건의 일반화도 확인한다. 이 결과가 무제한 화자 수나 모든 실제 녹음에서의 정지 정확성을 보장하지는 않는다.
+
+### 9.3 오차 전파와 화자 수 불일치는 다른 문제다
+
+다음은 오차 전파를 보기 위한 **작성자 수치 예제**다. 한 시점의 값이 $$A=2$$, $$B=3$$, $$C=5$$여서 혼합 $$x=10$$이라고 하자. 첫 추정이 A에 B의 10%를 잘못 섞어 $$\hat A=2.3$$이면, 뺄셈형 residual은 $$10-2.3=7.7$$이다. 정답 나머지 $$B+C=8$$보다 0.3 작으며, 다음 단계는 이미 일부 B가 사라진 입력을 받는다. 실제 OR-PIT은 나머지 파형도 신경망으로 직접 예측하므로 이 뺄셈식이 구현 자체는 아니다. 공통점은 **첫 단계 residual의 누락·누출이 다음 입력에 들어간다**는 의존 관계다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: residual error propagation in recursive separation</summary>
+
+선형 혼합 $$x=A+B+C$$에서 첫 source 추정이 $$\hat A=A+e$$라고 하자. 뺄셈형 residual을 정의하면 정확한 항등식으로
+
+$$
+r=x-\hat A=B+C-e
+$$
+
+다. $$e=0.1B$$라면 $$r=0.9B+C$$이며, $$B=3$$인 수치 예제에서는 B의 기여가 3에서 2.7로 줄어든다. 반대로 $$e$$가 A의 누락을 나타내면 residual에 A가 남아 중복 추출될 수 있다.
+
+Residual을 직접 예측하는 모델에서는 $$\hat r=B+C+e_r$$로 오차를 정의한다. 다음 분리기 $$F$$는 정답 $$B+C$$가 아닌 $$\hat r$$를 받는다. 이후 오차의 크기와 부호는 $$F$$와 입력에 따라 달라지므로, 단계마다 같은 양이 더해진다거나 반드시 단조 증가한다고 결론내릴 수 없다. 정지 오판·누출·누락을 단계별로 평가해야 한다.
+
+</details>
+
+세 명 이상에서 겪는 어려움도 나누어 봐야 한다. 두 출력에 세 정답을 담지 못하는 것은 **출력 수 불일치**, 동시에 말하는 신호를 구분하기 어려운 것은 **분리의 모호성**, 반복 residual이 다음 입력을 손상시키는 것은 **재귀 오차 전파**다. Fixed-output DPRNN을 한 번 실행하는 것에 재귀 누적이 자동으로 생기지는 않는다. One-and-rest의 반복 안정성과 종료 기준을 개선하거나, 한 번에 여러 출력을 예측하는 구성을 비교해 어느 실패인지 확인해야 한다.
+
 PIT의 모든 순열 열거는 $$K!$$이지만, pairwise cost 이후 Hungarian assignment의 일반적 계산량은 $$O(K^3)$$이다. Source 수가 커질수록 cost matrix 생성, assignment, separator 자체가 모두 커질 수 있으므로 이 세 부분을 구분한다.
+
+### 9.4 Open Problem은 무엇을 풀도록 문제를 다시 정하는가
+
+목표는 단순히 `두 화자 점수를 더 높인다`에서 **알 수 없는 수의 source를 실제 녹음에서 빠짐없이 복원한다**로 넓어진다. 입력은 noise·reverberation을 포함할 수 있는 mixture다. 출력은 추정 source 수와 그에 대응하는 파형 집합이며, recursive 방식이면 source 수 대신 종료 판정이 이 역할을 맡을 수도 있다.
+
+평가도 함께 바뀐다. Source 수가 맞은 사례의 SI-SDR만 볼 것이 아니라, count가 틀린 경우, 누락·중복·한 화자의 과분할·여러 화자의 병합을 포함해야 한다. 긴 녹음에서는 구간 사이 source identity가 유지되는지도 별도로 확인한다. 실제 clean target을 얻기 어렵다는 supervision 문제는 다음 절의 DM·MixIT로 이어지지만, DM이나 MixIT 자체가 source counting까지 자동 해결하지는 않는다.
 
 ## 10. Synthetic mixture에서 실제 녹음으로
 
@@ -564,9 +710,11 @@ $$
 - **PIT는 one-to-one 대응 중 최소 손실을 선택한다.** 모든 순열 열거는 $$K!$$, 일반 Hungarian assignment는 $$O(K^3)$$이다.
 - **DPCL과 PIT는 대안이고, uPIT는 PIT의 utterance-level 확장이다.** PIT·uPIT는 architecture가 아니라 output–target 대응을 정하는 training criterion이다.
 - **Time-domain separation도 mask를 쓴다.** 적용 대상이 STFT magnitude에서 학습된 waveform basis로 이동한다.
-- **Conv-TasNet은 TasNet의 직접 확장이다.** Learned analysis–mask–synthesis 틀을 유지하면서 recurrent separator를 TCN으로 바꾼다.
+- **Conv-TasNet은 recurrent separator를 TCN으로 바꾼다.** 같은 WSJ0-2mix 표에서 비인과 SI-SNRi는 13.2 대 15.3 dB지만, 인과 비교는 10.8 대 10.6 dB다. 설정과 효율을 함께 읽는다.
+- **DPRNN 그림의 N은 feature, L은 전체 frames다.** Intra는 chunk 내부 K축, inter는 chunk 사이 S축을 읽는다. 두 경로가 화자 두 명을 뜻하지 않는다.
 - **DPRNN과 SepFormer는 기본형이 자동으로 streaming-ready인 것은 아니다.** Bidirectional recurrence나 full attention의 미래 참조를 확인해야 한다.
 - **TF-GridNet은 complex STFT를 직접 추정한다.** Time-domain model의 성공은 STFT 자체의 원리적 한계를 뜻하지 않는다.
+- **두 화자 benchmark는 화자 수의 구조적 상한이 아니다.** Unknown count와 재귀 residual의 오차 전파는 별도로 해결·평가해야 한다.
 - **실제 환경에서는 source 수, reverberation, clean target 부재가 함께 문제다.** DM과 MixIT는 같은 해결책이 아니다.
 - **생성 모델은 가능한 해의 분포를 다루지만 실제 source 충실도를 자동으로 보장하지 않는다.**
 
@@ -671,6 +819,7 @@ $$
   <li><a href="https://proceedings.neurips.cc/paper_files/paper/2024/file/5d7c739c8e0383d02bb0addf8f29cd19-Paper-Conference.pdf" target="_blank" rel="noopener">Shin et al.: Separate and Reconstruct</a> — SepReformer and its WSJ0-2mix evaluation.</li>
   <li><a href="https://arxiv.org/abs/2410.20997" target="_blank" rel="noopener">Avenstrup et al.: SepMamba</a> — U-Net-based bidirectional state-space separation and causal variants.</li>
   <li><a href="https://arxiv.org/abs/2011.12022" target="_blank" rel="noopener">Zhu, Yeh, and Hasegawa-Johnson: Multi-Decoder DPRNN — High Accuracy Source Counting and Separation</a> — source-count head and multiple decoder heads.</li>
+  <li><a href="https://arxiv.org/abs/1904.03065" target="_blank" rel="noopener">Takahashi et al.: Recursive Speech Separation for Unknown Number of Speakers</a> — one-and-rest PIT and recursive residual prediction.</li>
   <li><a href="https://proceedings.mlr.press/v119/nachmani20a.html" target="_blank" rel="noopener">Nachmani et al.: Voice Separation with an Unknown Number of Multiple Speakers</a> — selecting among source-count-specific separation models.</li>
   <li><a href="https://arxiv.org/abs/2006.12701" target="_blank" rel="noopener">Wisdom et al.: Unsupervised Sound Separation Using Mixture Invariant Training</a> — MixIT objective.</li>
   <li><a href="https://arxiv.org/abs/2106.00847" target="_blank" rel="noopener">Wisdom et al.: Sparse Mixture Invariant Training</a> — over-separation and assignment complexity.</li>
@@ -687,7 +836,9 @@ $$
 - “모든 모델은 고정 출력 수”라는 해석은 대표적인 PIT/time-domain benchmark 구성으로 범위를 제한했다. DPCL은 추론 cluster 수를 바꿀 수 있지만 $$K$$를 주거나 추정해야 한다.
 - DPRNN 기본형을 streaming-ready로 일반화하지 않았다. 원 논문의 bidirectional path와 causal variant의 조건을 구분했다.
 - Time-domain model과 oracle magnitude mask의 비교는 fixed magnitude-mask와 mixture-phase 제약에 대한 결과로 해석했다. STFT 표현 자체의 원리적 한계로 확대하지 않았다.
-- 원문 p. 19의 수치 표는 causal/noncausal configuration과 SI-SNRi/SDRi가 섞여 있어 그대로 재작성하지 않았다. Representation, objective, decoder, separator가 세대별로 함께 달라졌음을 구분했다.
+- 원문 p. 19의 수치 표는 causal/noncausal configuration과 SI-SNRi/SDRi가 섞여 있다. 5.3절에서 Conv-TasNet Table IV의 네 행을 설정별로 분리해 재작성하고, TasNet-BLSTM의 23.6M/13.2와 causal LSTM의 32.0M/10.8을 정정했다. Representation, objective, decoder, separator가 세대별로 함께 달라졌음을 구분했다.
+- 16쪽 그림의 $$N$$은 feature 차원, $$L$$은 전체 시간 frames다. 기존 해설에서 시간 길이를 $$N$$으로 적은 혼동을 바로잡고, chunk 길이 $$K$$·hop $$P$$·chunk 수 $$S$$를 원 논문에 맞췄다. 22쪽의 output 수 $$N$$과도 구분했다. 제곱근 규모는 recurrent chain 길이에 관한 근사이지 전체 FLOPs의 주장이 아니다.
+- 원 DPRNN의 두 화자 실험 범위와 구조적 상한을 분리했다. OR-PIT의 learned residual과 설명용 뺄셈 residual을 구분하고, 재귀 오차가 언제나 단조 누적된다고 일반화하지 않았다.
 - 원문 p. 21의 TIGER 감소율, SepMamba의 bidirectional 기본형, SepReformer 25.4 dB는 각각의 비교 configuration과 dataset 범위 안에서만 해석했다.
 - 원문 p. 26의 diffusion pipeline은 EDSep 고유 novelty로 오인하지 않도록 DiffSep 계열 background와 EDSep의 denoiser·sampler 기여를 분리했다.
 - 모델 성능 수치는 dataset, speaker 수, augmentation, metric 조건이 같은 경우에만 직접 비교하도록 구분했다.
