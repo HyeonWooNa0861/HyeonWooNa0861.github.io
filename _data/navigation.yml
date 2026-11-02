@@ -402,6 +402,14 @@
       url: /research/rlt-recurrent-looped-transformer/
       description: Recurrent latent computation, complete-state gradients, and policy replay
       match: /research/rlt-recurrent-looped-transformer/
+    - title: MutCombinator
+      url: /research/mutcombinator/
+      description: Nucleotide graph search for peptides with combinatorial mutations
+      match: /research/mutcombinator/
+    - title: Gastric Cancer Ecotypes
+      url: /research/gastric-cancer-ecotypes/
+      description: Fifteen-layer multi-omics analysis of gastric cancer ecosystems
+      match: /research/gastric-cancer-ecotypes/
 
 - title: Study
   url: /study/
