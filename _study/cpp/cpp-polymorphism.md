@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-03 15:48:05 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -89,12 +89,14 @@ public:
     void speak() const { printf("왈왈!\n"); }
 };
 
-Animal* p = new Dog();
-p->speak(); // "..." 출력
-delete p;
+Dog dog;
+Animal* p = &dog;
+p->speak(); // Animal::speak()가 호출되어 "..."를 출력한다.
 ```
 
 `p`가 실제로는 `Dog` 객체를 가리키더라도, 포인터 타입이 `Animal*`이므로 `Animal::speak()`가 호출된다. 이것을 정적 바인딩이라고 볼 수 있다.
+
+여기서 `p`는 지역 변수 `dog`를 가리키는 비소유 포인터이므로 `delete`하지 않는다. `dog`는 자신의 범위가 끝날 때 `Dog` 객체로 소멸한다. **원문 p. 3 왼쪽 코드의 `delete p`는 비가상 기본 소멸자를 통해 파생 객체를 삭제하므로 undefined behavior다.** 함수 선택을 설명하는 정적 바인딩과 객체 삭제의 안전성은 구분해야 한다. 비가상 소멸자 문제는 5절에서 다룬다.
 
 반대로 기본 클래스 함수에 `virtual`을 붙이면 런타임에 실제 객체 타입을 기준으로 함수가 선택된다.
 

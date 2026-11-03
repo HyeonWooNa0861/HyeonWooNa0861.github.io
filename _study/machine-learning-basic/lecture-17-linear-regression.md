@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-28 12:20:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-03 15:48:05 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
@@ -530,7 +530,7 @@ $$
 
 ## 12. Gaussian Prior와 MAP 해
 
-강의에서는 Gaussian prior를 둔다.
+[원문 PDF p. 16]({{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=16" | relative_url }})은 평균이 0인 Gaussian prior를 사용한다. $$b^2>0$$는 계수가 0 주변에 얼마나 넓게 분포할 수 있는지를 나타내는 prior variance이고, $$I$$는 단위행렬이다.
 
 $$
 p(\theta)
@@ -538,7 +538,44 @@ p(\theta)
 \mathcal{N}(0,b^2I)
 $$
 
-그러면 negative log posterior는 다음 형태가 된다.
+**이 prior는 계수를 반드시 0으로 만드는 규칙이 아니라, 큰 계수에 비용을 부과하는 규칙이다.** 데이터 적합도의 이득이 그 비용보다 크면 큰 계수도 선택될 수 있다. 계수를 원점에 연결한 스프링에 비유하면, 변위는 계수 $$\theta_j$$, 스프링의 세기는 아래의 $$\lambda$$에 대응한다. 계수가 멀어질수록 0으로 돌아오게 하는 벌점의 기울기가 커진다. 다만 실제로 물리적 힘이 작용하거나 계수가 정해진 시간에 0으로 수렴한다는 뜻은 아니다. 실제 계산은 관측 오차와 계수 크기의 두 비용을 함께 최소화한다.
+
+Gaussian observation noise의 variance가 $$\sigma^2>0$$로 고정되어 있을 때, 원문의 negative log posterior에 양수 $$\sigma^2$$를 곱하고 $$\theta$$와 무관한 상수를 제거하면 다음과 **같은 최적해**를 갖는다.
+
+$$
+F_\lambda(\theta)
+=\frac12\lVert y-\Phi\theta\rVert_2^2
++\frac{\lambda}{2}\lVert\theta\rVert_2^2,
+\qquad \lambda=\frac{\sigma^2}{b^2}.
+$$
+
+첫 항은 예측이 관측값에서 벗어난 비용이고, 둘째 항은 큰 계수의 비용이다. $$b^2$$가 작아지면 0 근처를 더 강하게 선호하므로 $$\lambda$$가 커진다. $$b^2$$를 고정하고 $$\sigma^2$$를 키우면 관측 오차를 상대적으로 덜 신뢰하게 되어 prior의 영향이 커진다. 양쪽의 $$1/2$$는 미분할 때 생기는 2를 상쇄하는 표기이며, 한 항의 계수만 바꾸면 같은 $$\lambda$$가 아니다. 여기서는 제곱오차의 **합**을 사용한다. 평균 오차를 쓰는 정의와 비교할 때도 두 항의 상대 비율을 맞춰야 한다.
+
+### 12.1 한 계수로 확인하는 shrinkage
+
+아래는 강의 실험 결과가 아니라 계수 축소를 확인하기 위한 작성자 예제다. 모든 값은 무차원이고, 절편이 없는 모델 $$\hat y=\theta x$$에 관측 하나 $$(x,y)=(1,6)$$을 사용한다. 그러면
+
+$$
+F_\lambda(\theta)=\frac12(6-\theta)^2+\frac{\lambda}{2}\theta^2,
+\qquad \hat\theta=\frac{6}{1+\lambda}.
+$$
+
+| $$\lambda$$ | 계수·예측값 $$\hat\theta=\hat y$$ | 잔차 $$6-\hat y$$ | 의미 |
+|---:|---:|---:|---|
+| 0 | 6 | 0 | MLE 비교 기준. 관측값을 정확히 맞춘다. |
+| 1 | 3 | 3 | 데이터 오차와 계수 비용 사이에서 절충한다. |
+| 3 | 1.5 | 4.5 | 더 강한 penalty 때문에 계수가 0에 가까워진다. |
+
+*Supplementary table — 같은 데이터에서 penalty의 상대 세기만 바꾼 계산이다. $$\lambda=0$$은 유한한 $$b^2$$의 Gaussian prior가 아니라 regularization을 제거한 MLE 기준이다.*
+
+예를 들어 $$\lambda=1$$이면 $$\theta=6$$의 관측 오차는 0이지만 계수 비용이 18이다. $$\theta=3$$에서는 두 비용이 각각 4.5라서 합이 9다. MAP가 관측값을 완벽히 맞추는 6 대신 3을 고르는 이유가 여기에 있다. 이 예제는 축소의 원리를 보여 줄 뿐, 작은 계수가 항상 새 데이터의 예측을 개선한다는 증거는 아니다. Prior가 실제 계수와 맞지 않거나 penalty가 지나치면 과소적합할 수 있다.
+
+아래 유도는 원문의 isotropic prior처럼 **모든 계수에 같은 prior를 적용**한다. 절편을 제외하거나 feature별 단위·scale에 맞춰 다른 prior를 사용하면 penalty 행렬도 달라진다. $$\lambda>0$$이면 $$\Phi$$가 rank deficient여도 ridge 행렬은 양의 정부호가 되지만, 이 성질만으로 모델의 적합성이나 일반화 성능이 보장되지는 않는다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Gaussian prior, ridge normalization, and the MAP solution</summary>
+
+원문 p. 16의 행렬식을 column-vector gradient로 전개하고, 위 한 변수 예제로 확인한다. $$\Phi\in\mathbb R^{N\times D}$$는 design matrix, $$y\in\mathbb R^N$$는 관측 벡터, $$\theta\in\mathbb R^D$$는 계수다. 관측 오차는 서로 독립인 $$\mathcal N(0,\sigma^2)$$이고, $$\sigma^2>0$$와 $$b^2>0$$는 고정한다. Prior는 $$\mathcal N(0,b^2I)$$다. 이 가정에서 negative log posterior는 다음과 같다.
 
 $$
 -\log p(\theta\mid X,Y)
@@ -551,9 +588,17 @@ $$
 +\mathrm{const}
 $$
 
-두 번째 항 $$\frac{1}{2b^2}\theta^T\theta$$가 큰 parameter를 억제하는 L2 penalty다.
+두 번째 항 $$\frac{1}{2b^2}\theta^T\theta$$가 Gaussian prior에서 나온 L2 penalty다. 여기에 $$\sigma^2$$를 곱하면 본문의 $$F_\lambda$$가 된다. 양수의 곱과 상수 제거는 최솟값의 위치를 바꾸지 않는다.
 
-gradient를 0으로 두면
+미분하면 두 quadratic term의 2와 앞의 $$1/2$$가 각각 상쇄된다.
+
+$$
+\nabla_\theta[-\log p(\theta\mid X,Y)]
+=\frac{1}{\sigma^2}\Phi^T(\Phi\theta-y)
++\frac{1}{b^2}\theta.
+$$
+
+Gradient를 0으로 두고 $$\sigma^2$$를 곱해 정리하면 $$(\Phi^T\Phi+\frac{\sigma^2}{b^2}I)\theta=\Phi^Ty$$다. 이를 전치하면 원문의 row-vector 표기와 같다.
 
 $$
 \theta^T
@@ -575,13 +620,7 @@ $$
 \Phi^Ty
 $$
 
-여기서
-
-$$
-\lambda=\frac{\sigma^2}{b^2}
-$$
-
-라고 두면
+$$\lambda=\sigma^2/b^2$$를 대입하면 ridge regression의 해를 얻는다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -589,7 +628,11 @@ $$
 (\Phi^T\Phi+\lambda I)^{-1}\Phi^Ty
 $$
 
-이 식은 ridge regression의 해와 같은 형태다. $$\lambda I$$가 더해지면 $$\Phi^T\Phi$$가 singular하거나 condition이 나쁜 경우에도 더 안정적인 해를 얻을 수 있다.
+$$\lambda>0$$일 때 임의의 $$v\ne0$$에 대해 $$v^T(\Phi^T\Phi+\lambda I)v=\lVert\Phi v\rVert_2^2+\lambda\lVert v\rVert_2^2>0$$이므로 이 stationary point는 유일한 전역 최솟값이다. $$\lambda=0$$이면 같은 inverse 식을 사용하려면 $$\Phi$$의 full column rank가 필요하다.
+
+한 변수 예제에서는 $$F'_\lambda(\theta)=(\theta-6)+\lambda\theta=0$$이므로 $$\hat\theta=6/(1+\lambda)$$다. 행렬식에 $$\Phi=[1]$$, $$y=[6]$$을 대입해도 $$(1+\lambda)^{-1}6$$으로 일치한다. $$\lambda=1$$, $$\sigma^2=b^2=1$$이면 원문의 비정규화 objective도 $$\frac12(6-\theta)^2+\frac12\theta^2+\mathrm{const}$$가 되어 같은 최적해 3을 준다.
+
+</details>
 
 ## 13. MLE와 MAP 차이
 

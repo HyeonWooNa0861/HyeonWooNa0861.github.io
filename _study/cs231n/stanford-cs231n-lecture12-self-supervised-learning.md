@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-03 15:57:55 +0900
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
@@ -43,6 +43,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.e
 
 Self-supervised learning은 사람이 붙인 class label 대신 입력 자체에서 target을 만든다. Encoder $$f_\theta$$를 pretext objective로 학습한 뒤 task-specific head를 붙여 fine-tuning하거나, encoder를 고정하고 linear probe로 표현 품질을 측정한다.
 
+공통 문제는 **사람이 많은 이미지에 정답 label을 붙이지 않고도, 다른 task에서 재사용할 표현을 어떻게 학습할 것인가**다. 회전 예측·복원·대조학습은 이 문제에 서로 다른 자동 target을 제안한다. 회전 예측을 끝내야 복원을 시작하고, 복원을 끝내야 대조학습을 수행하는 필수 순서는 아니다. 뒤의 InfoNCE는 대조학습 목표의 한 형태이고, SimCLR·MoCo는 그 목표에 필요한 view와 비교 후보를 구성하는 방법이다.
+
 Pretext accuracy가 높다고 표현이 반드시 좋은 것은 아니다. 모델이 변환 과정의 경계선이나 고정된 crop 위치 같은 지름길로 답을 맞히면 의미 구조를 배우지 못한다. 평가의 초점은 **downstream transfer**에 있어야 한다.
 
 ## 2. 회전, jigsaw, 상대 위치, colorization
@@ -65,13 +67,35 @@ $$
 \mathcal{L}_i=-\log\frac{\exp(s_{i,+}/\tau)}{\sum_{k}\exp(s_{ik}/\tau)}
 $$
 
-분자는 positive 유사도를 키우고 분모의 다른 표본은 상대적으로 밀어낸다. 강의는 negative 수가 많을수록 mutual-information lower bound가 더 촘촘해지는 해석도 소개하지만, 실제 성공은 어떤 augmentation이 의미를 보존하는지에 크게 달려 있다.
+여기서 $$\tau>0$$이며 분모의 후보 $$k$$에는 positive와 negative가 모두 들어가지만 anchor 자신은 들어가지 않는다. 각 후보의 $$s_{ik}/\tau$$가 softmax에 넣는 logit이다. 이 loss는 **후보 중 어떤 view가 anchor와 같은 원본에서 왔는지 맞히는 분류 문제**로 읽을 수 있다. [강의 01:01:58–01:03:39](https://www.youtube.com/watch?v=4howBU7THbM&t=3718s){:target="_blank" rel="noopener"}도 유사도 점수를 softmax로 바꾸고 multi-class cross-entropy와 연결한다.
 
-## 5. SimCLR, MoCo, DINO로 이어지는 설계
+후보들이 합계 1인 선택 확률의 몫을 나누는 경쟁으로 생각하면 분모의 역할이 보인다. Positive는 맞는 후보, negative는 비교 후보, 각 몫은 softmax 확률에 대응한다. Positive 점수가 그대로여도 negative 점수가 커지면 분모가 커져 positive의 몫은 줄어든다. 다만 이것은 학습용 **후보 식별 확률**이지 이미지의 실제 class를 맞힐 확률이 아니다. Negative가 항상 의미적으로 다른 class라는 보장도 없다.
+
+작은 계산을 위해 한 anchor에 positive 하나와 negative 둘을 두고, 정규화된 표현의 유사도를 각각 $$[0.8,0.4,0.0]$$으로 정하자. 아래 값은 강의의 실험 결과가 아니라 softmax의 변화를 확인하기 위한 설명용 예다. 유사도·temperature·logit·확률은 모두 무차원이다.
+
+| 후보 | 유사도 $$s_{ik}$$ | Logit, $$\tau=0.2$$ | 확률, $$\tau=0.2$$ | 확률, $$\tau=0.1$$ |
+|---|---:|---:|---:|---:|
+| Positive | 0.8 | 4 | 0.8668 | 0.9817 |
+| Negative 1 | 0.4 | 2 | 0.1173 | 0.0180 |
+| Negative 2 | 0.0 | 0 | 0.0159 | 0.0003 |
+
+Supplementary table: 같은 유사도에서 temperature만 바꿨을 때의 후보별 softmax 확률이다. 각 열의 확률 합은 반올림 오차를 제외하면 1이다.
+
+$$\tau=0.2$$이면 positive 확률은 $$e^4/(e^4+e^2+1)\approx0.8668$$이고, 자연로그를 쓰는 loss는 $$-\log(0.8668)\approx0.1429$$다. $$\tau=0.1$$로 낮추면 logits가 $$[8,4,0]$$으로 벌어져 positive 확률은 약 0.9817, loss는 약 0.0185가 된다. **같은 순위를 유지한 채 점수 차이를 강조한 것**이며, temperature를 바꿨다고 encoder가 새로운 의미를 학습한 것은 아니다.
+
+이 예에서 loss가 줄어든 이유는 positive가 이미 가장 높은 점수를 가졌기 때문이다. Negative가 가장 높은 경우에는 temperature를 낮출수록 그 잘못된 후보에 확률이 집중될 수 있다. 따라서 낮은 temperature가 항상 더 좋은 표현이나 높은 downstream 정확도를 보장하지는 않는다. 실제 학습에서는 어떤 pair에 gradient가 집중되는지도 달라진다.
+
+Loss를 최소화하면 positive 유사도를 높이고 negative 유사도는 상대적으로 낮추는 방향으로 학습한다. 강의는 negative 수가 많을수록 mutual-information lower bound가 더 촘촘해지는 해석도 소개하지만, 실제 성공은 어떤 augmentation이 의미를 보존하는지에 크게 달려 있다. 이 하한의 sampling 가정과 유도는 아래 `핵심 수식 유도` 토글에서 구분한다.
+
+## 5. SimCLR, MoCo, DINO의 설계 선택
 
 SimCLR은 한 batch 안에서 각 이미지의 두 augmented view를 만들고, encoder 뒤 projection head에서 contrastive loss를 계산한다. 큰 batch는 많은 negative를 제공한다. Crop과 color distortion 같은 강한 augmentation의 조합이 핵심이며, downstream에는 projection 이전 표현을 사용한다.
 
 MoCo는 batch 밖 과거 key 표현을 queue에 저장해 많은 negative를 유지한다. Key encoder는 query encoder의 exponential moving average로 천천히 갱신되어 queue의 표현이 갑자기 바뀌지 않게 한다. 강의 말미는 DINO처럼 teacher-student와 momentum encoder를 사용하면서 명시적 negative에 덜 의존하는 흐름도 연결한다.
+
+여기서 SimCLR과 MoCo는 반드시 순서대로 실행하는 단계가 아니라 **많은 비교 후보를 확보하는 서로 다른 설계**다. 큰 batch 안에서 후보를 마련하면 batch 크기에 메모리 제약이 따른다. Queue는 후보 수를 현재 batch 크기와 분리하지만, 과거에 저장한 key와 현재 query의 표현이 달라지는 문제도 관리해야 한다. Momentum encoder는 이 차이가 급격히 커지지 않도록 key 표현을 천천히 바꾸는 장치다. [강의 01:10:52–01:13:34](https://www.youtube.com/watch?v=4howBU7THbM&t=4252s){:target="_blank" rel="noopener"}는 이 메모리 제약과 queue·momentum의 역할을 연결하고, MoCo v2에서 SimCLR의 augmentation·projection 설계와 MoCo의 후보 구성을 결합하는 사례도 소개한다. 이는 모든 방법이 한 줄로 교체된다는 뜻이 아니라, 설계 요소를 조합할 수 있다는 관계다.
+
+DINO와의 연결도 같은 수준에서 구분해야 한다. 서로 다른 view에서 유용한 표현을 얻는 문제와 momentum teacher 같은 장치는 공유할 수 있지만, teacher의 출력을 student가 맞추는 자기증류는 positive·negative를 경쟁시키는 InfoNCE와 학습 목표가 다르다. **DINO를 MoCo 뒤에 덧붙이는 필수 단계나 negative가 필요한 대조 loss의 다른 이름으로 보지 않는다.** 강의의 [01:13:55–01:14:24](https://www.youtube.com/watch?v=4howBU7THbM&t=4435s){:target="_blank" rel="noopener"}에서는 세부 학습식보다 teacher-student 구조와 이러한 설계 방향을 짧게 소개한다.
 
 ## 핵심 수식 유도
 

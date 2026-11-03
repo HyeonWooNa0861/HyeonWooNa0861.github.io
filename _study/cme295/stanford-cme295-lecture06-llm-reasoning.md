@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-03 15:57:55 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
@@ -55,6 +55,8 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 강의의 핵심 학습 알고리즘은 GRPO이다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명한다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둔다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만든다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명된다.
 
+이 주제들을 기능별로 구분하면 **CoT는 추론 단계를 전개하는 방식, test-time compute는 추론에 투입하는 연산량, pass@k는 여러 후보의 성공 여부를 재는 평가 지표, GRPO는 모델을 갱신하는 학습 방식**이다. 한 번의 생성으로 복잡한 문제를 놓칠 때 추론 단계를 늘리거나 여러 후보를 만드는 선택을 검토하고, 그 후보들 안에 정답이 있는지는 pass@k로 평가한다. 반면 GRPO는 검증 가능한 reward를 이용해 좋은 응답을 생성하는 방향으로 모델의 parameter를 학습한다. 따라서 이 주제들이 하나의 문제를 둘러싸고 연결되더라도 `평가 후 반드시 GRPO 실행`이라는 직렬 pipeline은 아니다. GRPO로 학습하지 않은 모델에도 CoT와 pass@k를 사용할 수 있고, GRPO로 학습한 모델도 추론할 때마다 reward group을 만들어 policy를 갱신하는 것은 아니다. 강의의 [00:32:17–00:34:44](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=1937s){:target="_blank" rel="noopener"}는 여러 답을 생성할 계산 여유와 pass@k의 관계를 설명하며, 위 구분은 평가·추론·학습의 역할을 나누어 읽기 위한 정리다.
+
 ## 핵심 개념
 
 | 개념 | 설명 |
@@ -73,6 +75,31 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 ## 수식 해설: pass@k와 group-relative advantage
 
 $$\operatorname{pass@k}$$는 여러 후보 중 하나 이상이 맞는지를 측정하고, GRPO는 같은 prompt에서 얻은 여러 completion의 reward를 서로 비교해 advantage를 만든다. 두 값 모두 sampling 조건에 의존하므로 독립 시행과 중복 없는 finite sample을 구분해야 한다.
+
+### pass@k: 후보 묶음에 정답이 들어 있는가?
+
+검사가 끝난 답안들을 섞어 놓고 몇 장을 뽑는 상황으로 생각할 수 있다. 답안 한 장은 생성한 completion 하나, 정답 표시가 있는 답안은 test를 통과한 completion에 대응한다. 다만 이 비유는 **이미 생성한 후보 중에서 중복 없이 고르는 계산**에만 해당한다. 새 답을 계속 생성할 때의 성공확률이나, 정답을 모르는 상태에서 가장 좋은 답을 고르는 방법까지 설명하지는 않는다.
+
+설명용으로 후보 $$n=6$$개 중 정답이 $$c=2$$개이고, $$k=2$$개를 고른다고 하자. 두 개를 고르는 전체 조합은 15개다. 오답 4개에서만 두 개를 고르는 실패 조합은 6개이므로, 하나 이상 맞는 조합은 9개다. 따라서 이 후보 묶음의 $$\widehat{\operatorname{pass@2}}=9/15=0.6$$이다. 같은 묶음의 $$\widehat{\operatorname{pass@1}}=2/6\approx0.333$$과 비교하면 여러 번 시도할 기회의 의미가 보인다. **0.6은 최종 선택한 답의 정확도가 아니라, 두 후보 안에 정답이 하나 이상 포함될 확률의 추정값**이다. 이 숫자는 강의의 실험 결과가 아니라 조합을 확인하기 위해 구성한 예다.
+
+### GRPO: 같은 문제의 답안을 그룹 안에서 상대 채점한다
+
+GRPO의 비교 기준은 다른 prompt 전체가 아니라 **같은 prompt에 대해 생성한 답안들의 평균 reward**다. 같은 문제를 푼 답안을 모아 평균보다 얼마나 높거나 낮은지 상대 채점하는 것에 가깝다. 여기서 답안은 completion, 점수는 reward, 평균에서 벗어난 정도를 그룹의 표준편차로 나눈 값은 advantage에 대응한다. 다만 등수를 매기거나 정해진 수의 답안에 합격을 주는 규칙은 아니다. 실제 policy update에는 아래 토글의 확률비 clipping과 KL penalty도 함께 작용한다.
+
+계산을 위해 정답이면 1, 오답이면 0인 reward를 가정하고, 같은 prompt의 네 completion이 $$[0,0,1,1]$$을 받았다고 하자. 평균은 $$\bar R=0.5$$다. 이 글에서 쓰는 **모분산 방식은 편차 제곱의 합을 그룹 크기 $$G=4$$로 나누므로**, 분산은 0.25, 표준편차는 $$s_R=0.5$$다. 아래는 분산이 0이 아닌 이 예에서 수치 안정화 상수를 생략한 $$A_i=(R_i-\bar R)/s_R$$의 계산이다.
+
+| Completion | Reward $$R_i$$ | 평균과의 차이 | Advantage $$A_i$$ |
+|---|---:|---:|---:|
+| 1 | 0 | −0.5 | −1 |
+| 2 | 0 | −0.5 | −1 |
+| 3 | 1 | +0.5 | +1 |
+| 4 | 1 | +0.5 | +1 |
+
+Supplementary table: 그룹 내부의 상대 점수를 확인하기 위해 구성한 예다. Reward·advantage는 모두 무차원이며 강의의 관측 수치가 아니다.
+
+음의 advantage는 해당 응답의 확률을 낮추는 방향, 양의 advantage는 높이는 방향의 reward 학습 신호가 된다. 토글의 안정화 정의처럼 분모에 $$\varepsilon>0$$를 더하면 정확한 크기는 $$0.5/(0.5+\varepsilon)$$이므로, $$\varepsilon$$이 0.5보다 충분히 작을 때만 위 값이 근사적으로 $$[-1,-1,1,1]$$이 된다. 표준편차를 계산할 때 $$G-1$$로 나누는 표본분산을 사용하면 숫자도 달라진다.
+
+**상대 점수는 절대 정확도가 아니다.** 안정화 상수를 생략한 위 표의 advantage +1은 정답 확률 100%라는 뜻이 아니라, 이 그룹의 평균보다 표준편차 하나만큼 높은 reward라는 뜻이다. 네 reward가 모두 0인 경우와 모두 1인 경우는 실제 정답률이 다르지만, 두 그룹 모두 평균과의 차이가 0이다. $$\varepsilon>0$$인 정의에서는 모든 advantage가 0이 되어 이 reward의 그룹 비교로는 응답 간 우열을 학습할 신호가 없다. $$\varepsilon=0$$이면 분모도 0이므로 계산 자체가 정의되지 않는다. 이것은 상대 reward 항의 한계이며, KL 등 다른 항의 update까지 반드시 0이라는 뜻은 아니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Pass-at-k, group advantage, and clipped objectives</summary>

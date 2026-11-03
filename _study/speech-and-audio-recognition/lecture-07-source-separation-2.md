@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
-last_modified_at: 2026-10-29 16:57:43 +0900
+last_modified_at: 2026-11-03 15:48:30 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -377,7 +377,11 @@ Non-causal은 미래 입력도 참조하고, causal은 현재·과거 입력만 
 
 Segmentation 전 shape는 $$N\times L$$, 후 shape는 $$N\times K\times S$$다. Frame마다 $$N$$개 값을 가진다는 사실은 그대로이며, 긴 시간축만 `chunk 내부 위치`와 `chunk 번호`로 나누었다. 화자를 chunk별로 나누는 작업도, 주파수 bin을 새로 만드는 변환도 아니다.
 
-Chunking의 목적은 **짧은 구간의 세부 패턴과 먼 구간의 문맥을 둘 다 보면서, 한 recurrent chain의 길이를 줄이는 것**이다. 짧은 음성 조각만 독립적으로 분리하면 다른 구간의 같은 화자 정보를 놓칠 수 있다. 반대로 전체 발화를 하나의 긴 RNN으로 읽으면 순차 의존이 길어진다. DPRNN은 두 축을 번갈아 읽어 이 두 요구를 결합한다. Overlap은 인접 chunk가 경계의 frame을 공유하게 하며, 마지막 overlap-add는 같은 시간 위치의 출력을 다시 결합한다.
+여기서 해결할 문제는 **짧은 구간의 음성 패턴과 먼 구간의 같은 화자 정보를 함께 사용하되, 하나의 RNN이 전체 발화를 길게 순회하지 않게 하는 것**이다. 짧은 조각만 독립적으로 처리하면 구간 사이의 연결을 놓치고, 전체 발화를 하나의 긴 RNN으로 읽으면 순차 의존이 길어진다. DPRNN은 chunk 안과 chunk 사이를 번갈아 읽어 이 두 요구를 결합한다. Overlap은 인접 chunk가 경계의 frame을 공유하게 하며, 마지막 overlap-add는 같은 시간 위치의 출력을 다시 결합한다.
+
+앞 절의 TasNet·Conv-TasNet과 비교할 축도 **문맥을 처리하는 separator의 설계**다. Recurrent TasNet은 RNN을, Conv-TasNet은 dilated TCN을 사용하며, DPRNN은 recurrent 처리를 두 시간축으로 조직한다. 이어 나오는 SepFormer는 이 dual-path 틀에서 RNN을 self-attention으로 바꾼다. 이 관계는 DPRNN이 Conv-TasNet의 모든 제약을 해결한다거나 항상 성능이 더 좋다는 뜻이 아니다. Encoder·mask·decoder의 역할과 PIT의 출력–정답 대응 규칙은 이 separator 선택과 구분해서 읽어야 한다.
+
+이를 **긴 띠에 적힌 정보를 겹치는 메모 카드에 복사해 놓고 읽는 방식**으로 생각할 수 있다. 긴 띠는 전체 시간축, 카드 하나는 연속한 frame을 담은 chunk다. 먼저 카드 안의 순서를 따라 읽고, 다음에는 여러 카드의 같은 위치를 따라 읽어 멀리 떨어진 구간의 정보를 연결한다. 이 비유에서 중요한 것은 읽는 방향이 두 개라는 점이다. 실제 모델은 글의 뜻을 읽는 것이 아니라 feature vector를 계산하며, 카드를 나누는 것만으로 화자가 분리되지는 않는다. 인접 카드가 같은 frame을 공유하면 한 chunk의 경계에 있는 frame도 다른 chunk에서는 내부 문맥과 함께 처리된다.
 
 ### 6.2 RNN 축을 바꾸는 기준: chunk 안과 chunk 사이
 
@@ -391,9 +395,29 @@ Chunking의 목적은 **짧은 구간의 세부 패턴과 먼 구간의 문맥�
 
 1. **Intra-chunk RNN은 표의 한 행을 읽는다.** Chunk 1에서는 1·2·3·4번 frame을 순서대로 처리한다. 다른 chunk에도 같은 RNN을 적용한다. 고정하는 것은 chunk 번호이고, 움직이는 것은 내부 위치인 $$K$$축이다. 각 step의 입력은 scalar가 아니라 $$N$$개 feature를 가진 vector다.
 2. **Inter-chunk RNN은 intra 처리 뒤 표의 한 열을 읽는다.** 내부 위치 1을 고정하면 chunk 1·2·3에 대응하는 원래 1·3·5번 위치를 연결한다. 고정하는 것은 chunk 내부 위치이고, 움직이는 것은 chunk 번호인 $$S$$축이다. 이때 입력은 이미 intra RNN이 주변 문맥을 반영한 feature이므로 원래 frame 1·3·5의 값만 따로 읽는 것과 다르다.
-3. **다음 block에서 두 방향의 정보가 다시 섞인다.** 원본 아래 `B. DPRNN block`의 두 RNN 상자는 서로 다른 주파수를 보는 것이 아니라 같은 tensor를 다른 시간 조직으로 읽는다. FC는 hidden feature를 원래 feature 차원으로 되돌리고, normalization과 residual addition은 shape를 유지하며 block을 연결한다.
+3. **다음 block에서 두 방향의 정보가 다시 섞인다.** 원본 아래 `B. DPRNN block`의 두 RNN 상자는 서로 다른 주파수를 보는 것이 아니라 같은 tensor를 다른 시간 조직으로 읽는다. 한 번의 intra·inter 처리 뒤에도 위치별 feature가 남으며, chunk 전체를 하나의 값으로 요약해 버리는 구조가 아니다.
 
 따라서 축 전환의 기준은 임의의 회전이 아니라 **고정한 index와 순회할 index의 교환**이다. Intra는 구간 내부의 세부 구조, inter는 구간 사이의 긴 연결을 담당한다. $$N$$ 채널축 자체를 RNN의 시간축으로 바꾸지 않는다.
+
+예를 들어 feature 채널이 $$N=3$$이면 Frame 1은 $$[0.2,0.4,0.7]$$ 같은 세 값의 묶음일 수 있다. 표의 `Frame 1`은 이 묶음의 위치를 가리키며 숫자 1 자체를 RNN에 넣는다는 뜻이 아니다. Intra가 카드 안의 묶음을 차례로 갱신했다면, inter는 그 갱신된 묶음을 카드 사이에서 연결한다. 위 숫자는 shape를 설명하기 위한 작성자 예시이지, 원본 그림의 실제 feature 값이 아니다.
+
+#### 아래쪽 FC·Layer Norm·더하기 기호는 무엇을 하는가?
+
+원본 `B. DPRNN block`에는 RNN 뒤에 작은 상자들과 우회 연결이 있다. 각 경로는 **기존 정보를 통째로 교체하기보다, 문맥을 보고 계산한 보정값을 기존 feature에 더하는 구조**다.
+
+| 요소 | 실제 연산과 필요한 이유 |
+|---|---|
+| FC | RNN의 hidden vector를 원래 $$N$$ feature 차원으로 투영한다. 양방향 RNN의 두 방향 출력을 사용하더라도 뒤의 덧셈에 필요한 차원을 맞춘다. |
+| Layer Norm | 투영된 feature의 평균·분산을 이용해 정규화하고 학습 가능한 scale·shift를 적용한다. 값의 분포를 조절하는 연산이지 화자를 나누는 연산은 아니다. |
+| 우회선과 ⊕ | 처리 전 feature에 RNN·FC·정규화 경로의 출력을 원소별로 더한다. 이어 붙여 차원을 늘리는 concatenate와 다르다. |
+
+작성자 예시로, 한 위치의 입력이 $$[1,2]$$이고 정규화 경로가 낸 보정값이 $$[0.1,-0.2]$$라면 덧셈 결과는 $$[1.1,1.8]$$이다. 앞의 입력이 두 값이었던 것처럼 결과도 두 값이다. 보정값은 정답과의 오차를 직접 넣은 값이 아니라, 학습된 경로가 계산한 출력이다. 이 구조가 학습을 돕는다는 설계 동기와 실제 분리 성능은 구분해야 한다.
+
+#### Chunk가 다시 파형이 되기까지
+
+DPRNN의 일반 구조에서는 block을 반복한 뒤 **chunk 내부 위치와 chunk 번호를 원래 시간 위치로 되돌려**, 겹치는 위치의 feature 출력을 overlap-add한다. 예제의 Frame 3은 chunk 1의 내부 위치 3이면서 chunk 2의 내부 위치 1이므로 두 출력이 같은 시간 위치에 모인다. 이것은 별개 시점의 음성을 이어 붙이는 작업이 아니다. 겹치는 출력의 합성·스케일 처리는 실제 구현을 따라야 하며, 복사한 값을 무조건 더하면 원래 feature가 그대로 복구된다고 가정하지 않는다.
+
+이렇게 시간 위치로 되돌리는 것만으로 source별 waveform이 나온 것은 아니다. TasNet 분리기에 DPRNN을 넣으면 이러한 **문맥 처리를 이용해 source별 mask를 추정**하고, 각 mask를 encoder의 mixture feature에 곱한 뒤 decoder로 waveform을 만든다. 그림의 기능을 `겹쳐 나누기 → 두 시간축의 문맥 결합 → 시간 위치 재결합`으로 읽고, 전체 분리기는 `문맥 처리 → mask 추정·적용 → decoder`로 연결하면 된다. Mask head의 채널 투영과 overlap-add의 세부 배치는 구현에 따라 확인해야 한다. Chunk 개수 $$S$$와 출력 화자 수 $$C$$는 이 과정 내내 서로 다른 개념이다.
 
 예를 들어 $$L=32{,}000$$ frames에서 $$K=250$$, $$P=125$$를 쓰면 원 논문의 padding 규칙에서 $$S=257$$ chunks다. 한 RNN이 32,000 steps를 읽는 대신 intra는 250 steps, inter는 257 steps를 읽는다. 이는 길이 비교를 위한 작성자 계산이며 새로운 분리 성능 실험은 아니다. **한 chain이 짧아졌다는 뜻이지, 전체 frame 계산량이나 memory가 제곱근으로 줄었다는 뜻은 아니다.**
 
