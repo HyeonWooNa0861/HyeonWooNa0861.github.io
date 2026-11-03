@@ -410,6 +410,18 @@
       url: /research/gastric-cancer-ecotypes/
       description: Fifteen-layer multi-omics analysis of gastric cancer ecosystems
       match: /research/gastric-cancer-ecotypes/
+    - title: SAM Category Descriptors
+      url: /research/sam-category-descriptors/
+      description: Learned prompts and low-level domain alignment for nuclei segmentation
+      match: /research/sam-category-descriptors/
+    - title: Federated Multi-Organ KD
+      url: /research/federated-multi-organ-kd/
+      description: Knowledge distillation across partially labeled organ segmentation datasets
+      match: /research/federated-multi-organ-kd/
+    - title: ResTL
+      url: /research/restl/
+      description: Resting-state EEG calibration for cross-subject motor imagery classification
+      match: /research/restl/
 
 - title: Study
   url: /study/

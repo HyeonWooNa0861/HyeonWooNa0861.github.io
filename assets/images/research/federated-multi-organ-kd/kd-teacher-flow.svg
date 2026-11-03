@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">Global and local knowledge distillation for partially labeled multi-organ segmentation</title>
+  <desc id="desc">A client trains one multi-head segmentation model. Ground-truth labels supervise the labeled head, while either the global model or pretrained organ-specific models supervise unlabeled heads. The server averages client parameters after local training.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .label{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#0f172a}
+      .title{font-size:30px;font-weight:700}
+      .head{font-size:23px;font-weight:700}
+      .body{font-size:19px}
+      .small{font-size:16px;fill:#475569}
+      .box{stroke:#334155;stroke-width:2;rx:18;ry:18}
+      .line{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .dash{stroke-dasharray:10 8}
+    </style>
+  </defs>
+  <rect width="1200" height="650" fill="#f8fafc"/>
+  <text x="600" y="55" text-anchor="middle" class="label title">설명용 재구성: 한 client의 두 KD teacher 경로</text>
+
+  <rect x="55" y="115" width="250" height="125" fill="#dbeafe" class="box"/>
+  <text x="180" y="155" text-anchor="middle" class="label head">Global teacher</text>
+  <text x="180" y="188" text-anchor="middle" class="label body">현재 round의 global model</text>
+  <text x="180" y="217" text-anchor="middle" class="label small">모든 미표기 head의 예측을 보존</text>
+
+  <rect x="55" y="410" width="250" height="140" fill="#dcfce7" class="box"/>
+  <text x="180" y="450" text-anchor="middle" class="label head">Local teachers</text>
+  <text x="180" y="484" text-anchor="middle" class="label body">장기별 사전학습 모델</text>
+  <text x="180" y="515" text-anchor="middle" class="label small">무작위로 한 미표기 장기를 표본화 가능</text>
+
+  <rect x="430" y="205" width="335" height="250" fill="#fff7ed" class="box"/>
+  <text x="598" y="250" text-anchor="middle" class="label head">Client multi-head U-Net</text>
+  <text x="598" y="290" text-anchor="middle" class="label body">공유 encoder-decoder</text>
+  <rect x="470" y="320" width="90" height="72" fill="#fee2e2" class="box"/>
+  <rect x="575" y="320" width="90" height="72" fill="#e0e7ff" class="box"/>
+  <rect x="680" y="320" width="55" height="72" fill="#e0e7ff" class="box"/>
+  <text x="515" y="350" text-anchor="middle" class="label body">표기</text>
+  <text x="515" y="376" text-anchor="middle" class="label small">head</text>
+  <text x="620" y="350" text-anchor="middle" class="label body">미표기</text>
+  <text x="620" y="376" text-anchor="middle" class="label small">head</text>
+  <text x="708" y="362" text-anchor="middle" class="label body">…</text>
+  <text x="598" y="430" text-anchor="middle" class="label small">CE + Dice는 표기 head, KD는 미표기 head</text>
+
+  <rect x="900" y="210" width="245" height="120" fill="#fee2e2" class="box"/>
+  <text x="1022" y="252" text-anchor="middle" class="label head">Ground truth</text>
+  <text x="1022" y="286" text-anchor="middle" class="label body">해당 client가 가진 label</text>
+
+  <rect x="900" y="410" width="245" height="120" fill="#e2e8f0" class="box"/>
+  <text x="1022" y="452" text-anchor="middle" class="label head">Server aggregation</text>
+  <text x="1022" y="486" text-anchor="middle" class="label body">client parameter 평균</text>
+
+  <path d="M305 180 C360 180 370 260 430 285" class="line"/>
+  <path d="M305 480 C360 480 370 405 430 380" class="line dash"/>
+  <path d="M900 270 L770 330" class="line"/>
+  <path d="M765 410 C825 420 835 470 900 470" class="line"/>
+  <text x="347" y="150" class="label small">global KD</text>
+  <text x="347" y="520" class="label small">local KD</text>
+  <text x="820" y="278" class="label small">CE + Dice</text>
+  <text x="815" y="445" class="label small">local update</text>
+  <text x="600" y="610" text-anchor="middle" class="label small">원 논문의 Fig. 1을 복제하지 않고 학습 신호의 역할만 새로 도식화했다.</text>
+</svg>

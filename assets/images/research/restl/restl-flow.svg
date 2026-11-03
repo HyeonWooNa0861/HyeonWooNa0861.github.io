@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">ResTL training, calibration, and adaptation flow</title>
+  <desc id="desc">Source subjects train task and subject encoders. A subject feature from target resting-state EEG conditions class-wise optimization of random inputs, which adapt the model before target task EEG evaluation.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#315b7d"/>
+    </marker>
+    <style>
+      .title { font: 700 30px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #163247; }
+      .stage { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1d3d54; }
+      .label { font: 600 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #173247; }
+      .body { font: 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #365468; }
+      .small { font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #48687c; }
+      .box { stroke: #6f92aa; stroke-width: 2; rx: 18; }
+      .arrow { stroke: #315b7d; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="620" fill="#f7fafc" rx="24"/>
+  <text x="600" y="54" text-anchor="middle" class="title">ResTL: source learning and target-only adaptation</text>
+
+  <text x="210" y="105" text-anchor="middle" class="stage">1. Source training</text>
+  <rect x="55" y="130" width="310" height="110" class="box" fill="#e7f1f8"/>
+  <text x="210" y="168" text-anchor="middle" class="label">Source subjects</text>
+  <text x="210" y="198" text-anchor="middle" class="body">Task-specific EEG + labels</text>
+  <text x="210" y="222" text-anchor="middle" class="body">Resting-state EEG</text>
+  <rect x="55" y="300" width="310" height="150" class="box" fill="#dcecf5"/>
+  <text x="210" y="340" text-anchor="middle" class="label">Disentangled model</text>
+  <text x="210" y="374" text-anchor="middle" class="body">Task encoder + class prototypes</text>
+  <text x="210" y="402" text-anchor="middle" class="body">Subject encoder</text>
+  <text x="210" y="430" text-anchor="middle" class="body">MI classifier</text>
+  <path d="M210 240 L210 298" class="arrow"/>
+
+  <text x="600" y="105" text-anchor="middle" class="stage">2. Target-conditioned optimization</text>
+  <rect x="445" y="130" width="310" height="110" class="box" fill="#eee8f8"/>
+  <text x="600" y="168" text-anchor="middle" class="label">Unseen target subject</text>
+  <text x="600" y="198" text-anchor="middle" class="body">Subject feature from resting EEG</text>
+  <text x="600" y="222" text-anchor="middle" class="small">No target MI label or TS trial</text>
+  <rect x="445" y="300" width="310" height="150" class="box" fill="#e4dcf3"/>
+  <text x="600" y="338" text-anchor="middle" class="label">Optimize random inputs</text>
+  <text x="600" y="370" text-anchor="middle" class="body">Match target MI class</text>
+  <text x="600" y="398" text-anchor="middle" class="body">Approach class prototype</text>
+  <text x="600" y="426" text-anchor="middle" class="body">Preserve subject feature</text>
+  <path d="M600 240 L600 298" class="arrow"/>
+  <path d="M365 375 L443 375" class="arrow"/>
+
+  <text x="990" y="105" text-anchor="middle" class="stage">3. Adapt and evaluate</text>
+  <rect x="835" y="130" width="310" height="110" class="box" fill="#e6f3e9"/>
+  <text x="990" y="168" text-anchor="middle" class="label">Class-conditioned signals</text>
+  <text x="990" y="198" text-anchor="middle" class="body">Class-conditioned pseudo-signals</text>
+  <text x="990" y="222" text-anchor="middle" class="small">Pseudo-signals for fine-tuning</text>
+  <rect x="835" y="300" width="310" height="150" class="box" fill="#dcefe1"/>
+  <text x="990" y="340" text-anchor="middle" class="label">Target-adapted model</text>
+  <text x="990" y="374" text-anchor="middle" class="body">Fine-tune all parameters</text>
+  <text x="990" y="402" text-anchor="middle" class="body">Test on target TS EEG</text>
+  <text x="990" y="430" text-anchor="middle" class="small">Target TS appears only in evaluation</text>
+  <path d="M990 240 L990 298" class="arrow"/>
+  <path d="M755 375 L833 375" class="arrow"/>
+
+  <rect x="135" y="510" width="930" height="70" fill="#fff" stroke="#a6bac8" stroke-width="2" rx="16"/>
+  <text x="600" y="542" text-anchor="middle" class="label">Key boundary</text>
+  <text x="600" y="568" text-anchor="middle" class="body">Source TS + RS train features; target RS-derived features condition random inputs; target TS only measures performance.</text>
+</svg>
