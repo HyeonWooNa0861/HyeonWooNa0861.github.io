@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-02 23:40:00 +0900
+last_modified_at: 2026-11-05 15:34:50 +0900
 title: "Lecture 8: Multi-channel Source Separation I"
 course: "Speech and Audio Recognition"
 topic: "Microphone Arrays, Delay-and-Sum Beamforming, and Spatial Aliasing"
@@ -352,15 +353,41 @@ B(\theta)=\left\lvert\mathbf{w}_{\mathrm{DAS}}^{\mathsf H}
 \mathbf{h}(\theta)\right\rvert^2
 $$
 
-Main-lobe width가 $$\lambda/(Md)$$에 비례한다는 표현은 array의 **electrical aperture**를 보여주는 근사다. 정확한 각도 폭은 microphone 수, 실제 aperture $$(M-1)d$$, steering angle, 폭을 재는 기준에 따라 달라진다. `sidelobe ≈ -13 dB`도 uniformly weighted ULA의 첫 sidelobe에 대한 대표값이다. Tapered weight를 쓰면 sidelobe를 줄일 수 있지만 main lobe가 넓어진다.
+이 그림은 0 dB의 가장 높은 봉우리부터 읽으면 된다.
+
+1. **Main lobe:** 0°를 중심으로 한 봉우리다. 목표 방향 주변을 얼마나 넓게 받아들이는지 나타낸다. 좁을수록 가까운 두 방향을 더 잘 구별한다.
+2. **Null:** 응답이 깊게 꺼지는 각도다. 그 방향에서는 microphone 신호가 서로 상쇄된다.
+3. **Side lobes:** 첫 null 바깥에 남는 작은 봉우리다. 목표 밖 소리가 완전히 사라지지 않고 통과하는 방향을 뜻한다.
+
+P. 28의 $$M=8$$, $$d=0.04\,\mathrm{m}$$ 설정에서 첫 null은 broadside 기준으로
+
+$$
+\sin\theta_{\mathrm{null}}=\frac{\lambda}{Md}
+=\frac{c}{fMd}
+$$
+
+에 생긴다. $$c=343\,\mathrm{m/s}$$를 넣으면 2 kHz에서는 약 $$\pm32.4^\circ$$, 4 kHz에서는 약 $$\pm15.5^\circ$$다. 원문의 초록색 곡선과 파란색 곡선이 꺼지는 위치와 맞는다. 500 Hz와 1 kHz에서는 $$c/(fMd)>1$$이므로 첫 null이 가시 각도 $$[-90^\circ,90^\circ]$$ 안에 들어오지 않는다. 그래서 두 곡선은 훨씬 넓다.
+
+슬라이드의 “Side lobes ≈ −13 dB”는 uniform weight를 쓴 이상적인 ULA의 **대표적인 첫 side-lobe 높이**다. 위치는 주파수에 따라 바뀌어도 main-lobe peak에 대한 상대 높이는 거의 유지된다. $$-13$$ dB는 power ratio로 약 $$10^{-13/10}\approx0.05$$다. 같은 세기의 방해음이 첫 side-lobe 방향에서 오면, 이상적인 좁은 대역 응답만 보면 목표 방향 대비 약 5%의 출력 power가 남는다는 뜻이다. 모든 side lobe가 항상 정확히 $$-13$$ dB라는 뜻은 아니다.
+
+### 8.1 Frequency, spacing, and aperture trade-offs
+
+- **주파수 $$f$$ 증가:** 파장이 짧아져 main lobe가 좁아진다. 같은 spacing도 파장 단위로는 더 멀어지므로 spatial aliasing 위험도 커진다.
+- **Spacing $$d$$ 증가:** microphone 수가 같다면 물리적 aperture가 커져 main lobe가 좁아진다. 그러나 $$d>\lambda/2$$가 되면 p. 29의 grating lobe가 생길 수 있다.
+- **Microphone 수 $$M$$ 증가:** spacing을 유지하면 aperture가 커져 방향 분해능이 좋아진다. 반면 aperture를 고정하고 microphone만 늘리면 spacing이 줄어 spatial aliasing을 막는 데 유리하다.
+- **Weight tapering:** edge microphone의 weight를 줄이면 side lobe를 낮출 수 있지만 main lobe가 넓어진다.
+
+원문의 $$\lambda/(Md)$$는 array의 **electrical aperture**를 보여주는 first-null 관계다. 실제 첫 microphone과 마지막 microphone 사이의 물리적 aperture는 $$(M-1)d=0.28\,\mathrm{m}$$다. 큰 $$M$$에서는 $$Md$$와 $$(M-1)d$$가 비슷하지만, 작은 array에서는 어떤 폭을 말하는지 구분해야 한다.
+
+Side lobe와 grating lobe도 다르다. Side lobe는 유한한 uniform aperture 때문에 생기는 작은 잔여 봉우리다. Grating lobe는 microphone 간격이 너무 커서 서로 다른 방향이 같은 sampled phase pattern을 만들 때 생기는 **main lobe와 같은 높이의 복제 봉우리**다. P. 28의 4 kHz·4 cm 설정은 $$d<\lambda/2\approx4.29$$ cm이므로 통상 조건 안에 있다. P. 29는 spacing을 8 cm로 늘려 이 조건을 깨뜨린 결과를 바로 이어서 보여준다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: ULA array factor and the main-lobe trade-off</summary>
 
-Broadside $$\theta_0=0$$로 steer하고 microphone spacing을 $$d$$라 하자. Wavenumber는 $$k=2\pi/\lambda$$이며, angle $$\theta$$에서 인접 microphone의 phase 차이는
+Steering angle을 $$\theta_0$$, microphone spacing을 $$d$$라 하자. Wavenumber는 $$k=2\pi/\lambda$$이며, steering 보상 후 angle $$\theta$$에 남는 인접 microphone의 phase 차이는
 
 $$
-\psi=kd\sin\theta
+\psi=kd(\sin\theta-\sin\theta_0)
 $$
 
 다. Uniform DAS의 normalized array factor는 geometric series로
@@ -371,14 +398,16 @@ A(\theta)=\frac{1}{M}\sum_{m=0}^{M-1}e^{-jm\psi}
 \frac{\sin(M\psi/2)}{\sin(\psi/2)}
 $$
 
-가 된다. Power pattern은 $$B(\theta)=\lvert A(\theta)\rvert^2$$다. 첫 null은 대략 $$M\psi/2=\pm\pi$$에서 생기므로 작은 각도에서는
+가 된다. Power pattern은 $$B(\theta)=\lvert A(\theta)\rvert^2$$다. 첫 null은 $$M\psi/2=\pm\pi$$에서 생기므로
 
 $$
-\lvert\theta_{\mathrm{null}}\rvert
-\approx\frac{\lambda}{Md}
+\left\lvert\sin\theta_{\mathrm{null}}-\sin\theta_0\right\rvert
+=\frac{\lambda}{Md}
 $$
 
-다. 주파수 $$f$$가 커지면 $$\lambda=c/f$$가 작아져 main lobe가 좁아진다. 동시에 spacing이 파장에 비해 너무 커지면 다른 각도에서도 phase가 다시 맞아 grating lobe가 생긴다.
+다. Broadside이고 angle이 작을 때만 $$\sin\theta\approx\theta$$를 적용하여 $$\lvert\theta_{\mathrm{null}}\rvert\approx\lambda/(Md)$$라고 쓸 수 있다. Null-to-null main-lobe width는 이 값의 약 두 배다.
+
+반면 full-height peak는 $$\psi=2\pi q$$, $$q\in\mathbb Z$$일 때 생긴다. $$q=0$$은 목표 방향이고, $$q\ne0$$인 해가 가시 각도 안에 들어오면 grating lobe다. 따라서 주파수나 spacing을 키우면 main lobe는 좁아지지만, $$d/\lambda$$가 너무 커지는 순간 방향의 유일성을 잃는다. 이것이 p. 28의 resolution 개선과 p. 29의 spatial aliasing을 한 쌍으로 읽어야 하는 이유다.
 
 </details>
 
