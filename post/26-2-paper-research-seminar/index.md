@@ -8,6 +8,10 @@ permalink: /post/26-2-paper-research-seminar/
 
 <ul class="post-list">
   <li class="post-card">
+    <a class="branch-card-link" data-label="AISE Lab Seminar 2026" href="{{ '/posts/aise-lab-seminar-2026/' | relative_url }}">AISE Lab Seminar 2026</a>
+    <p>Six research posters on applied AI, evaluation, and edge deployment</p>
+  </li>
+  <li class="post-card">
     <a class="branch-card-link" data-label="From SEDD to LLaDA" href="{{ '/posts/discrete-diffusion-language-models/' | relative_url }}">From SEDD to LLaDA</a>
     <p>Discrete scores, masked-token objectives, and large language diffusion models</p>
   </li>
