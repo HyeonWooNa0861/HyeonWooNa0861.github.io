@@ -3,6 +3,7 @@ layout: post
 title: "AISE Lab Seminar 2026"
 nav_title: "AISE Lab Seminar 2026"
 date: 2026-11-07 13:40:00 +0900
+last_modified_at: 2026-11-07 14:21:00 +0900
 categories: [Events, Research]
 tags: [AISE Lab, Research Seminar, Graph Learning, RAG, AI Education, Computer Vision, Deepfake Detection, Edge AI]
 major_topic: "Applied AI Research"
@@ -169,7 +170,7 @@ MRR 개선은 맞는 근거를 더 앞에서 찾았다는 의미이지 생성 �
 
 데이터셋 표기에도 확인할 부분이 있다. 포스터에는 ‘MaSTr1478’이 적혀 있으나, [공식 MaSTr1325 자료](https://vicos.si/resources/mastr1325/){:target="_blank" rel="noopener"}는 1,325장 데이터셋을 설명한다. 별도 확장본인지 오기인지 확인되지 않았으므로 데이터 수나 버전을 임의로 맞추지 않는다. 또한 가시광 해상 영상의 수면 물체 탐지와 수중 물체의 광학적 탐지는 구별해야 한다.
 
-**같은 제목의 논문**은 정민욱·윤수연, 『한국통신학회논문지』 50권 4호, 637–646쪽(2025년 4월)에서 확인된다. [공식 학술지 목차](https://journal.kics.or.kr/digital-library/publication?number=4&volume=50){:target="_blank" rel="noopener"}, [DOI: 10.7840/kics.2025.50.4.637](https://doi.org/10.7840/kics.2025.50.4.637){:target="_blank" rel="noopener"}, [KCI 서지·초록](https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003194222){:target="_blank" rel="noopener"}을 대조했다. 논문 전체 본문을 확인한 것은 아니므로, 여기의 구체적 파이프라인 해설은 포스터에 근거한다.
+**같은 제목의 논문**은 정민욱·윤수연, 『한국통신학회논문지』 50권 4호, 637–646쪽(2025년 4월)에서 확인된다. [공식 학술지 목차](https://journal.kics.or.kr/digital-library/publication?number=4&volume=50){:target="_blank" rel="noopener"}, [DOI: 10.7840/kics.2025.50.4.637](https://doi.org/10.7840/kics.2025.50.4.637){:target="_blank" rel="noopener"}, [KCI 서지·초록](https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003194222){:target="_blank" rel="noopener"}을 대조했다. [DBpia 원문 뷰어](https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE12138771&width=960){:target="_blank" rel="noopener"}에서는 10쪽 논문으로 이어진다. 열람에는 소속기관 구독·로그인 등 이용 권한이 필요할 수 있다. 이 절의 파이프라인과 결과 해설은 제공된 포스터를 기준으로 한다.
 
 WaSR 자체의 방법론은 [저자 측 논문 소개](https://prints.vicos.si/publications/392/wasr-a-water-segmentation-and-refinement-maritime-obstacle-detection-network){:target="_blank" rel="noopener"}에서 더 살펴볼 수 있다. WaSR 원 논문의 기능이 이번 포스터 구현에 모두 사용되었다고 가정하지는 않는다.
 
@@ -237,18 +238,23 @@ LLM은 입력 프롬프트를 처리하는 **prefill**과 다음 토큰을 하�
 
 **논문 연결:** [KICS 2026 Summer 공식 프로그램](https://conf.kics.or.kr/2026s/program){:target="_blank" rel="noopener"}에서 같은 제목의 손현호·윤수연 발표를 확인했다(6월 19일, 26B-4). 본문을 확인하지 못했으므로 이 글의 세부 수치와 구현 해설은 포스터 기준이다.
 
-## Publication Cross-Check
+## Paper Sources
 
-| Poster | Publication evidence | What is established |
-|---|---|---|
-| PS-SGAD | 국민대학교 Data Mining Lab 공식 목록, KCC 2026 | 제목·저자·학회 발표 확인. 학위논문과 동일 버전인지는 별도 확인 필요 |
-| XC-RAG | KICS 2026 Summer 26A-1 | 관련 저자의 조건 추출형 RAG 발표 확인. 제목이 달라 동일 논문으로 확정하지 않음 |
-| PBL | KICS 2026 Summer 26B-3 | 같은 제목·저자 기록 확인. 본문 미확인 |
-| Maritime perception | JKICS 50(4), 637–646, DOI·KCI | 같은 제목·저자와 정식 학술지 게재 확인. 서지·초록 대조, 전체 본문 미확인 |
-| Deepfake detection | KICS 2026 Summer 26A-3 | 정합성 기반 관련 발표 확인. 이번 통합 모델과 동일 버전인지는 미확인 |
-| Edge LLM scheduling | KICS 2026 Summer 26B-4 | 같은 제목·저자 기록 확인. 본문 미확인 |
+**네 발표는 같은 제목의 공식 논문·발표 기록으로 연결되고, 두 발표는 제목이 다른 관련 발표로 연결된다.** 아래 제목 링크는 연구실의 공식 논문 목록, 학회 프로그램북 또는 학술지 논문 페이지로 이어진다. 프로그램북에서는 함께 적힌 발표 번호로 해당 항목을 찾을 수 있다.
 
-학회 프로그램에서 제목을 찾았다는 사실과 논문 전체를 읽었다는 사실은 다르다. 같은 제목은 연결 근거가 되지만, 포스터와 논문의 실험 설정이 일치하는지는 본문 대조가 필요하다. 관련 제목만 확인된 경우에는 ‘같은 논문’ 대신 ‘관련 발표’로 구분했다.
+1. **PS-SGAD:** [서브그래프 기반 이상 탐지에서 소수 클래스 표현력 강화를 위한 연구](https://dm.kookmin.ac.kr/publications/){:target="_blank" rel="noopener"} — 강다솔·박하명, KCC 2026, 우수논문상. 같은 제목의 기록이며, 포스터의 학위논문과 동일 버전인지는 미확인이다.
+
+2. **XC-RAG:** [재난대응 매뉴얼 기반 조건 추출형 RAG 모델 설계 및 평가에 관한 연구](https://conf.kics.or.kr/2026s/board/5209/4578){:target="_blank" rel="noopener"} — 황채아·최재민·윤수연, KICS 2026 Summer, 26A-1, 0274-WVLVQ. 제목이 다른 관련 발표이며 포스터와 같은 실험으로 간주하지 않는다.
+
+3. **PBL:** [PBL 기반 생성형 AI 실무교육 모델 개발 및 적용에 관한 연구](https://conf.kics.or.kr/2026s/board/5209/4578){:target="_blank" rel="noopener"} — 오성경·윤수연, KICS 2026 Summer, 26B-3, 0370-VCEXL. 같은 제목·저자의 발표 기록이다.
+
+4. **Maritime perception:** [해안지역의 해무현상으로 인한 저시정 현상 개선 및 미확인 물체 탐지 방안에 대한 정확성 개선 방안](https://doi.org/10.7840/kics.2025.50.4.637){:target="_blank" rel="noopener"} — 정민욱·윤수연, JKICS 50(4), 637–646, April 2025. 같은 제목의 학술지 논문이며 [Full Text](https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE12138771&width=960){:target="_blank" rel="noopener"}에서 원문 뷰어로 이동할 수 있다.
+
+5. **Deepfake detection:** [멀티모달 정합성 기반 딥페이크 검출을 위한 Cross-Modal Synchronization Transformer 연구](https://conf.kics.or.kr/2026s/board/5209/4578){:target="_blank" rel="noopener"} — 최재민·황채아·윤수연, KICS 2026 Summer, 26A-3, 0392-AXJAL. 제목이 다른 관련 발표이며 포스터의 통합 모델과 동일 버전인지는 미확인이다.
+
+6. **Edge LLM scheduling:** [엣지 SoC에서 LLM 추론의 Hetero Scheduling과 Phase별 백엔드 효율 분석](https://conf.kics.or.kr/2026s/board/5209/4578){:target="_blank" rel="noopener"} — 손현호·윤수연, KICS 2026 Summer, 26B-4, 0415-ETZRH. 같은 제목·저자의 발표 기록이다.
+
+해상 인식 논문은 위 원문 뷰어에서, 나머지 다섯 발표는 공식 목록·프로그램에서 출처를 확인할 수 있다. 다섯 발표의 논문 전문 주소는 확보하지 못했다. **본문의 방법·실험 수치 해설은 포스터 기준**이며, 공식 발표 기록만으로 논문 전체를 검토했거나 포스터와 실험 설정이 같다고 판단하지 않는다.
 
 ## Key Takeaways
 
@@ -265,8 +271,8 @@ LLM은 입력 프롬프트를 처리하는 **prefill**과 다음 토큰을 하�
 
 1. <a href="{{ '/assets/pdfs/post/26-2-paper-research-seminar/aise-lab-seminar-2026.pdf' | relative_url }}" target="_blank" rel="noopener">AISE Lab Seminar 2026 — Six Posters</a>, 2026-11-07, pp. 1–6. 사용자 제공 행사 자료의 연락처 비식별 공개용 사본.
 2. [Kookmin University Data Mining Lab — Publications](https://dm.kookmin.ac.kr/publications/){:target="_blank" rel="noopener"}. PS-SGAD의 KCC 2026 제목·저자·수상 기록.
-3. [KICS 2026 Summer — Official Program](https://conf.kics.or.kr/2026s/program){:target="_blank" rel="noopener"} 및 [Program PDF](https://conf.kics.or.kr/2026s/downloadProgram?type=program){:target="_blank" rel="noopener"}. 2026-06-19, sessions 26A·26B의 발표 제목·저자 기록.
-4. 정민욱·윤수연, [해안지역의 해무현상으로 인한 저시정 현상 개선 및 미확인 물체 탐지 방안에 대한 정확성 개선 방안](https://doi.org/10.7840/kics.2025.50.4.637){:target="_blank" rel="noopener"}, JKICS 50(4), 637–646, 2025. 서지·초록 확인.
+3. [KICS 2026 Summer — Official Program](https://conf.kics.or.kr/2026s/program){:target="_blank" rel="noopener"} 및 [Program Book](https://conf.kics.or.kr/2026s/board/5209/4578){:target="_blank" rel="noopener"}. 2026-06-19, sessions 26A·26B의 발표 제목·저자·발표 번호 기록. 프로그램북은 개별 논문 전문이 아니다.
+4. 정민욱·윤수연, [해안지역의 해무현상으로 인한 저시정 현상 개선 및 미확인 물체 탐지 방안에 대한 정확성 개선 방안](https://doi.org/10.7840/kics.2025.50.4.637){:target="_blank" rel="noopener"}, JKICS 50(4), 637–646, 2025. [DBpia 논문 정보](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12138771){:target="_blank" rel="noopener"}, [Full Text](https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE12138771&width=960){:target="_blank" rel="noopener"} (열람 권한에 따라 접근 가능).
 5. [MaSTr1325 — Official Dataset](https://vicos.si/resources/mastr1325/){:target="_blank" rel="noopener"}. 포스터 데이터셋 표기와의 대조 자료.
 6. Bovcon and Kristan, [WaSR: A Water Segmentation and Refinement Maritime Obstacle Detection Network](https://prints.vicos.si/publications/392/wasr-a-water-segmentation-and-refinement-maritime-obstacle-detection-network){:target="_blank" rel="noopener"}, DOI: 10.1109/TCYB.2021.3085856. 구성 방법의 배경 자료.
 7. [Deepfake-Eval-2024, arXiv:2503.02857v1](https://arxiv.org/html/2503.02857v1){:target="_blank" rel="noopener"}. 실유통 평가와 모달리티별 비교 조건, Table S4.
