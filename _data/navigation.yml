@@ -423,6 +423,11 @@
       description: Resting-state EEG calibration for cross-subject motor imagery classification
       match: /research/restl/
 
+    - title: GenQ
+      url: /research/genq/
+      description: Diffusion-generated synthetic data for quantization in low-data regimes
+      match: /research/genq/
+
 - title: Study
   url: /study/
   children:
