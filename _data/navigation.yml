@@ -35,21 +35,16 @@
       description: A three-university overnight hackathon centered on exchange and startup ideas
       match: /posts/kosscchthon-2026/
       section: kosscchthon
-    - title: 26-2 Research Paper Seminar
-      url: /post/26-2-paper-research-seminar/
-      description: Research paper discussions and AISE Lab seminar reports
-      match: /post/26-2-paper-research-seminar/
-      section: 26-2-paper-research-seminar
+    - title: Seminar
+      url: /post/seminar/
+      description: Conference presentations, lab seminars, and research paper discussions
+      match: /post/seminar/
+      section: seminar
     - title: Industry Lectures
       url: /post/industry-lectures/
       description: 2026 industry lecture and exhibition reports
       match: /post/industry-lectures/
       section: industry-lectures
-    - title: 2026 KIIT Summer Conference
-      url: /posts/2026-kiit-summer-conference-qeco-adapt/
-      description: Conference preparation notes and presentation materials
-      match: /posts/2026-kiit-summer-conference-qeco-adapt/
-      section: kiit-summer-conference
     - title: AI Education
       url: /post/ai-education/
       description: AI concepts and paper-based curriculum materials

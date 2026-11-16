@@ -5,7 +5,7 @@ date: 2026-05-19 00:00:00 +0900
 categories: ["KIIT Summer Conference", Research]
 tags: [QECO-Adapt, MEC, offloading, D3QN, LSTM, QoE]
 permalink: /posts/2026-kiit-summer-conference-qeco-adapt/
-section: kiit-summer-conference
+section: seminar
 ---
 
 QECO-ADAPT는 2026 한국정보기술학회 하계 종합학술대회에서 발표한 dense MEC 오프로딩 연구다. 연구 동기와 방법, 실험 결과의 근거는 `26-1_알파_나현우.pdf` 논문형 자료와 `Dense MEC 환경에서 QECO-ADAPT의 부하 적응형 오프로딩 성능 분석.pdf` 발표 자료다.

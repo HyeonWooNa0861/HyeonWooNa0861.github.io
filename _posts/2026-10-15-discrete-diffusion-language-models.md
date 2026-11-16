@@ -6,7 +6,7 @@ date: 2026-10-15 19:05:00 +0900
 categories: [Machine Learning, Language Models]
 tags: [Discrete Diffusion, SEDD, MDLM, MD4, RADD, SMDM, LLaDA, Masked Language Modeling]
 permalink: /posts/discrete-diffusion-language-models/
-section: 26-2-paper-research-seminar
+section: seminar
 ---
 
 Source Slides: <a href="{{ '/assets/pdfs/post/26-2-paper-research-seminar/how-did-discrete-diffusion-become-a-large-language-model.pdf' | relative_url }}" target="_blank" rel="noopener">How Did Discrete Diffusion Become a Large Language Model? — From SEDD to LLaDA</a> · 이혜은, 2026.10.12, 21 slides.

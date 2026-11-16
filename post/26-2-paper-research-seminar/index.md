@@ -1,30 +1,9 @@
 ---
 layout: default
-title: 26-2 Research Paper Seminar
+title: Seminar
 permalink: /post/26-2-paper-research-seminar/
 ---
 
-<h1 class="branch-logo page-branch-logo" data-label="26-2 Research Paper Seminar">26-2 Research Paper Seminar</h1>
+<h1 class="branch-logo page-branch-logo" data-label="Seminar">Seminar</h1>
 
-<ul class="post-list">
-  <li class="post-card">
-    <a class="branch-card-link" data-label="AISE Lab Seminar 2026" href="{{ '/posts/aise-lab-seminar-2026/' | relative_url }}">AISE Lab Seminar 2026</a>
-    <p>Six research posters on applied AI, evaluation, and edge deployment</p>
-  </li>
-  <li class="post-card">
-    <a class="branch-card-link" data-label="From SEDD to LLaDA" href="{{ '/posts/discrete-diffusion-language-models/' | relative_url }}">From SEDD to LLaDA</a>
-    <p>Discrete scores, masked-token objectives, and large language diffusion models</p>
-  </li>
-  <li class="post-card">
-    <a class="branch-card-link" data-label="Loss Landscape Analysis" href="{{ '/posts/loss-landscape-analysis/' | relative_url }}">Loss Landscape Analysis</a>
-    <p>Bayesian ensembles, mode connectivity, and model merging</p>
-  </li>
-  <li class="post-card">
-    <a class="branch-card-link" data-label="Neural Thickets" href="{{ '/posts/neural-thickets/' | relative_url }}">Neural Thickets</a>
-    <p>Dense and diverse experts near pretrained weights</p>
-  </li>
-  <li class="post-card">
-    <a class="branch-card-link" data-label="RLT" href="{{ '/research/rlt-recurrent-looped-transformer/' | relative_url }}">RLT</a>
-    <p>Recurrent latent computation and full-history policy replay</p>
-  </li>
-</ul>
+<p>This legacy directory remains available for existing links. Conference presentations and research seminars now share the <a href="{{ '/post/seminar/' | relative_url }}">Seminar</a> branch.</p>

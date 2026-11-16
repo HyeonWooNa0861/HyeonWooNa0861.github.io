@@ -10,7 +10,7 @@ major_topic: "Applied AI Research"
 keywords: [PS-SGAD, GIN, SupCon, XC-RAG, PBL, WaSR, YOLO, FSFM, WavLM, Deepfake-Eval-2024, Llama, NPU, Prefill, Decode]
 description: "Six research posters on graph anomaly detection, disaster-response RAG, AI education, maritime perception, deepfake detection, and edge LLM scheduling."
 permalink: /posts/aise-lab-seminar-2026/
-section: 26-2-paper-research-seminar
+section: seminar
 ---
 
 > **여섯 발표를 관통하는 질문은 ‘모델을 어디에, 어떤 조건으로 적용할 것인가’다.** 소수 클래스의 표현, 재난 대응 절차, 학습자의 문제 정의, 해상 환경, 실유통 데이터, 엣지 하드웨어처럼 실제 적용 조건을 모델·검색·교육·시스템 설계에 반영한다.

@@ -157,6 +157,7 @@ DYNAMIC_LINK_TARGET_ALLOWLIST = {
   "post/ai-agents/index.md" => Set.new(["{{ post.url | relative_url | escape }}"]),
   "post/ai-education/index.md" => Set.new(["{{ post.url | relative_url | escape }}"]),
   "post/knowledge-productivity/index.md" => Set.new(["{{ post.url | relative_url | escape }}"]),
+  "post/seminar/index.md" => Set.new(["{{ post.url | relative_url | escape }}"]),
   "post/nxtcloud-boot-camp/index.md" => Set.new(["{{ post.url | relative_url | escape }}"])
 }.freeze
 BINARY_EXTENSIONS = %w[
