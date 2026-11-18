@@ -5,7 +5,7 @@ last_modified_at: 2026-10-18 19:51:32 +0900
 title: "Algorithms: Midterm Review"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
-order: 12
+order: 90
 major_topic: "Data Structures & Algorithms"
 keywords:
   - "Algorithm Analysis"
