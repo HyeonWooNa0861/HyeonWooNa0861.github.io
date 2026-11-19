@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-10-19 14:37:03 +0900
+last_modified_at: 2026-11-19 19:42:12 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -33,7 +33,7 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 ## 전체 흐름
 
-| 강의 위치 | 주제 | 이해할 질문 |
+| PDF 위치 | 주제 | 이해할 질문 |
 |---|---|---|
 | pp. 1–2 | 강의 개요 | 왜 labeled ASR 전에 representation learning을 하는가? |
 | pp. 3–11 | Learning paradigms | Supervised, unsupervised, semi-supervised, weakly supervised는 supervision을 어디서 얻는가? |
@@ -44,6 +44,10 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 | pp. 33–39 | Fine-tuning과 확장 | CTC, XLS-R, layer analysis, Conformer 계열 결과를 어떤 조건과 함께 읽어야 하는가? |
 | pp. 40–43 | Attention과 순서 정보 | Self-attention이 순서에 둔감한 이유와 positional information이 필요한 이유는 무엇인가? |
 | pp. 44–49 | HuBERT | Offline cluster target과 반복 refinement가 wav2vec 2.0의 online codebook과 어떻게 다른가? |
+
+**ASR III 1부 듣기:** 녹음의 약 13:59부터는 글자처럼 경계가 정해져 있지 않은 음성에서 무엇을 예측 단위로 삼을지 다룬다(관련 PDF 19쪽). 약 18:07부터는 코드북으로 정답을 만드는 과정(관련 PDF 25–29쪽), 약 21:51부터는 그 정답을 다른 후보와 구별하는 대조 손실(관련 PDF 30쪽)로 이어진다. 22:41경 추가 학습 항이 있다는 말에서 1부가 끝난다. 아래의 diversity loss 계산까지 1부에서 설명한 것은 아니다.
+
+**ASR III 2부 듣기:** 시각은 2부 녹음 시작을 기준으로 한다. 도입에서 코드북과 대조 손실을 다시 설명한 뒤, 약 03:42부터는 **정답을 잘 구별하는 것과 코드북의 여러 항목을 고르게 쓰는 것이 왜 다른 목표인지** 다룬다(관련 PDF 30–32쪽). 약 12:59에는 self-attention으로 돌아가고(관련 PDF 40–43쪽), 17:42–23:00에는 슬라이드 밖에서 같은 음성을 층별 특징과 인식 결과로 읽는 과정을 시연한다. 이어지는 HuBERT 설명에서는 학습 중 함께 바뀌는 코드북 대신, 미리 군집화한 라벨을 가린 위치의 정답으로 쓴다(관련 PDF 44–49쪽).
 
 ### 기호와 단위
 
@@ -217,6 +221,8 @@ $$
 
 를 계산한다. Positional signal이 없다면 입력 순서를 같은 permutation으로 바꿀 때 출력도 그 순서를 따라 바뀌는 permutation-equivariant 연산이어서 “첫 번째 음소와 마지막 음소”의 절대·상대 위치를 자체로 알 수 없다. wav2vec 2.0은 fixed absolute position table 대신 convolutional positional embedding을 latent에 더한다. **Attention이 순서를 완전히 무시한다**기보다, 내용 기반 attention만으로는 위치를 식별할 근거가 부족하므로 position mechanism이 필요하다고 표현하는 편이 정확하다.
 
+한 프레임을 기준으로 식을 읽으면 세 기호의 역할이 구별된다. 그 프레임의 **query**를 각 프레임의 **key**와 비교해 관련성 점수를 낸다. Softmax는 이 점수들을 합이 1인 가중치로 바꾼다. 마지막에 섞이는 것은 key가 아니라 각 프레임의 **value**다. 따라서 한 시점의 출력에도 다른 시점의 음성 정보가 들어간다.
+
 ## 4. Product quantization은 speech vocabulary를 학습한다
 
 <figure id="speech-05-p31">
@@ -224,7 +230,7 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=31" | relative_url }}">lecture PDF, p. 31</a>.</figcaption>
 </figure>
 
-아래 CNN feature에서 두 경로가 갈라진다. 오른쪽은 일부 latent를 가리고 Transformer context를 만들며, 왼쪽 quantizer는 가리기 전 feature에서 target을 만든다. 위의 contrastive loss는 context가 같은 위치의 target을 다른 후보와 구별하도록 한다. Codebook 쪽 diversity loss는 일부 항목에 선택이 몰리는 것을 줄이는 별도 목적이다. 두 경로를 구분해야 입력을 가렸는데 정답은 어디에서 얻는지 설명할 수 있다.
+그림 맨 아래에서 음성 한 구간을 골라 두 갈래의 화살표를 따라가 보자. 오른쪽에서는 그 구간을 가린다. Transformer가 쓸 수 있는 단서는 **주변에 어떤 소리가 있었는지**다. 왼쪽에서는 바로 그 구간을 가리지 않는다. 양자화기(quantizer)가 **그 자리에 실제로 있던 소리의 특징**을 코드북 항목의 조합으로 나타내 정답 후보를 만든다. 두 갈래가 만나는 위쪽에서 묻는 질문은 하나다. **주변 소리만 보고 만든 표현이 여러 후보 중 원래 구간의 표현을 구별하는가?** 이것이 대조 손실의 역할이다. 코드북 쪽의 diversity loss는 소수 항목에만 선택이 몰리는 현상을 줄이는 별도 항이다.
 
 ### 4.1 여러 codebook에서 하나씩 선택한다
 
@@ -234,7 +240,7 @@ $$
 q_t=W_q[e_{1,v_1};e_{2,v_2};\ldots;e_{G,v_G}]
 $$
 
-짧은 예로 두 codebook에서 각각 `A/B`와 `1/2/3` 중 하나를 고르면 `A1`, `A2`, `A3`, `B1`, `B2`, `B3`의 6개 조합이 가능하다. 선택지 수는 codebook별 경우의 수를 더하지 않고 곱한다.
+**보충 예제:** 두 코드북에서 각각 `A/B`와 `1/2/3` 중 하나를 고르면 `A1`, `A2`, `A3`, `B1`, `B2`, `B3`의 6개 조합이 가능하다. 선택지 수는 코드북별 경우의 수를 더하지 않고 곱한다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Product-code capacity</summary>
@@ -377,6 +383,8 @@ $$
 $$
 
 Quantized code가 그대로 문자 vocabulary가 되는 것은 아니다. Pre-training codebook은 latent acoustic target이고, fine-tuning의 output class는 문자·phoneme·subword와 blank 등 downstream vocabulary다.
+
+**강의 시연에서 두 그림을 읽는 법.** 2부의 torchaudio 시연은 입력 음성의 샘플링 주파수를 모델에 맞춘 뒤 같은 파형에서 서로 다른 출력을 꺼낸다. 첫 그림은 Transformer 각 층의 **중간 특징**이다. 같은 시간 구간이 층을 지나며 어떻게 다르게 표현되는지 비교할 수 있지만, 밝은 칸 하나를 특정 글자로 읽을 수는 없다. 두 번째 출력인 **emission**에서는 비교 대상이 특징 성분에서 문자와 blank 같은 출력 후보로 바뀐다. 비로소 각 프레임에서 어느 후보의 점수가 높은지 읽고 CTC로 문자열을 복원할 수 있다. 여기서 blank는 ‘이 프레임에서 새 글자를 내지 않음’이지, 그 순간이 무음이라는 판정은 아니다.
 
 원 논문 Table 1의 model 규모는 Base 약 95M, Large 317M parameters다. 슬라이드의 96M은 반올림 또는 표기 차이로 볼 수 있다. Pre-training data, labeled minutes, decoder LM이 다르면 WER을 단순 비교해서는 안 된다. 특히 10분 labeled 설정의 낮은 WER은 LV-60k pre-training과 Transformer LM decoding 조건을 포함한다.
 

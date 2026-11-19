@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-17 00:05:00 +0900
+last_modified_at: 2026-11-19 21:03:05 +0900
 title: "Lecture 9: Multi-channel Source Separation I"
 course: "Speech and Audio Recognition"
 topic: "Blind Separation, Spatial Covariance, Multichannel Wiener Filtering, and Mask-based MVDR"
@@ -34,9 +35,13 @@ Source PDF: `speech-audio-lecture-09-1.pdf` — *Multi-channel Source Separation
 | 15–20 | MVDR와 MWF | Rank-one 목표 공분산으로 DoA 없이 MVDR를 만들고, MWF와의 gain 차이를 해석한다. |
 | 21–24 | Mask 기반 ESD | Mask를 가중치로 사용해 목표·잡음 공분산을 추정하고 선형 필터를 계산한다. |
 
-11월 10일 녹화에서 공간 공분산은 **06:34**(11쪽), coherence와 rank는 **25:10**(12쪽)부터 볼 수 있다. 이 두 그림이 필터 설계로 이어지는 부분은 **44:01**의 MWF와 **47:40**의 MVDR다. 녹화 마지막(52:15–53:18)에서는 신경망이 목표와 잡음의 통계를 추정하면 같은 공간 필터를 쓸 수 있다는 연결점을 짚는다. 아래 21–24쪽의 마스크 계산은 이날 녹화에서 자세히 다룬 내용이 아니라 PDF를 바탕으로 한 해설이다.
+11월 10일 녹화에서 공간 공분산은 **06:34**(11쪽), coherence와 rank는 **25:10**(12쪽)부터 볼 수 있다. 이 두 그림이 필터 설계로 이어지는 부분은 **44:01**의 MWF와 **47:40**의 MVDR다. 녹화 마지막(52:15–53:18)에서는 신경망이 목표와 잡음의 통계를 추정하면 같은 공간 필터를 쓸 수 있다는 연결점을 짚는다. 21–24쪽의 마스크 계산은 11월 10일에는 개요만 소개하고, 11월 12일 녹화 26:50부터 자세히 다룬다.
 
 아래에서는 frame $$t$$와 주파수 bin $$f$$를 고정했을 때 마이크 수를 $$M$$, 복소 관측 벡터를 $$\mathbf x(t,f)\in\mathbb C^{M}$$로 쓴다. 모든 공분산과 필터는 주파수별로 존재한다. 식을 짧게 만들 때만 $$(t,f)$$를 생략한다.
+
+**11월 12일 녹화 앞부분(00:00–09:27):** 00:31부터는 같은 소리가 두 마이크에 다른 시각에 도착하면 왜 크기뿐 아니라 **위상차**를 봐야 하는지 복습한다(관련 PDF 11–12쪽). 05:36부터는 어느 마이크의 목표 신호를 복원할지 정하고(13쪽), 07:48부터는 그 목표에 가장 가까운 출력을 그림에서 찾는다(14쪽). 시각은 이날 녹음 기준이며, 쪽수는 같은 설명을 찾을 수 있는 자료 위치다.
+
+같은 녹화 **12:12**부터는 도래각(DoA)을 직접 주지 않는 MVDR의 목적과 해를 소개하고(15–16쪽), **15:35**부터는 목표 공분산이 rank one일 때 그 행렬에서 마이크 사이의 상대 전달 관계를 얻을 수 있는 이유를 다룬다(17쪽). **21:53**부터는 같은 방향을 선택한 MWF와 MVDR의 출력이 왜 다른지(18쪽), **30:14**부터는 마스크를 이미 구했는데도 왜 공간 필터가 필요한지 설명한다(23–24쪽).
 
 ## 1. 같은 출력이라도 공간 필터를 얻는 정보가 다르다
 
@@ -275,6 +280,8 @@ Rank one은 자동으로 성립하지 않는다. 여러 독립 목표가 하나�
 
 MWF(Multichannel Wiener Filter)는 출력 $$y=\mathbf w^H\mathbf x$$가 reference microphone $$r$$에서의 목표 $$s_r$$와 평균적으로 가장 가까워지게 한다.
 
+여기서 $$M$$은 **입력으로 쓰는 마이크의 수**, $$r$$은 **복원 기준으로 삼는 마이크의 번호**다. 기준을 하나 골라도 필터는 모든 마이크를 쓴다. 복원하려는 것은 기준 마이크에 녹음된 혼합음 전체가 아니라, 그 위치에 도달한 목표 음성 성분이다.
+
 $$
 J(\mathbf w)=E[|s_r-\mathbf w^H\mathbf x|^2].
 $$
@@ -298,6 +305,13 @@ $$
 $$
 
 MWF는 target distortion과 residual noise를 하나의 MSE 안에서 함께 조절한다. 단일 채널이면 $$H=\Phi_S/(\Phi_S+\Phi_N)$$인 Wiener gain으로 줄어든다. 낮은 SNR에서는 잡음을 더 줄이기 위해 목표 gain도 1보다 작게 만들 수 있다.
+
+<figure>
+  <img src="{{ "/assets/images/study/speech-and-audio-recognition/lecture-09-1/slide-14.png" | relative_url }}" alt="14쪽 오른쪽: 초록색 목표에서 파란 출력 평면에 수선을 내리면, 파란 화살표의 끝이 최적 출력이고 빨간 점선이 남은 오차다." loading="lazy">
+  <figcaption>Source: Lecture 9 I, <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-09-1.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">slide 14</a>.</figcaption>
+</figure>
+
+오른쪽의 파란 평면은 마이크가 놓인 바닥이 아니다. **마이크 신호들을 서로 다른 가중치로 합쳐 만들 수 있는 모든 출력**을 뜻한다. 초록색 목표의 끝에서 평면에 수선을 내리면 파란 화살표의 끝, 즉 목표에 가장 가까운 출력에 닿는다. 빨간 점선은 그래도 남는 오차다. 오차에 평면을 따라가는 성분이 남아 있다면 가중치를 바꿔 그만큼 더 줄일 수 있다. 그래서 최적점에서는 오차가 평면에 수직이다. 여기서 거리는 공간상의 미터가 아니라 신호 사이의 평균제곱오차로 비교한다. 왼쪽의 미분값을 0으로 놓는 계산도 바로 이 출력을 찾는다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: MWF normal equation and orthogonality principle</summary>
@@ -430,6 +444,8 @@ $$
 
 두 필터는 같은 spatial direction을 사용한다. MVDR는 reference target gain을 1로 고정하지만, MWF는 bin별 Wiener post-filter gain $$\lambda/(1+\lambda)$$를 추가한다. 이 gain은 MVDR 출력의 target과 noise를 함께 줄이는 MSE 해다. $$\lambda$$가 작을수록 더 강하게 감쇠하므로 절대 noise power는 줄지만 target distortion은 커지고, 항상 더 좋은 음질을 보장하지 않는다. Rank-one·uncorrelated·정확한 covariance 조건에서 $$\lambda$$는 MVDR 출력 target-to-noise power ratio와 같다.
 
+11월 12일 **24:31**의 음성인식 예에서 중요한 것은 잡음이 가장 작은 출력과 **말을 가장 잘 알아볼 수 있는 출력**이 같지 않을 수 있다는 점이다. 추가 감쇠가 약한 말소리까지 줄이면 잡음이 덜 들려도 단어를 구별할 단서가 약해질 수 있다. 이 설명만으로 어느 필터의 단어 오류율이 더 낮다고 정할 수는 없다.
+
 ### 8.1 두 마이크 수치 예제
 
 예를 들어, 다음 값을 사용해 식의 관계를 확인하자.
@@ -511,6 +527,8 @@ $$
 $$
 
 처럼 계산한다. Mask는 **frame의 바깥곱에 주는 scalar weight**다. 채널별 phase를 없애지 않으므로 $$\mathbf x\mathbf x^H$$의 공간 관계가 남는다. 최종 출력도 여전히 $$y=\mathbf w^H\mathbf x$$인 선형 공간 필터다. 신경망은 필터 자체를 직접 출력하지 않을 수 있다.
+
+마스크가 약한 음절 하나를 놓쳤다고 생각해 보자. 마스크를 최종 출력에 직접 곱하면 그 음절도 함께 약해진다. 반면 **공분산을 구할 때만 마스크를 쓰면**, 놓친 칸이 최종 입력에서 지워지지는 않는다. 같은 주파수의 다른 프레임에서 목표 화자가 충분히 강하고 마이크 사이의 전달 관계가 일정하다면, 남은 관측으로 목표의 공간 패턴을 추정해 원래 혼합음에 필터를 적용할 수 있다. 11월 12일 **31:01–32:35**에 강조한 차이다. 표본이 너무 적거나 다른 화자가 우세하면 이 이점은 보장되지 않는다.
 
 ### 9.1 두 snapshot의 mask 계산
 

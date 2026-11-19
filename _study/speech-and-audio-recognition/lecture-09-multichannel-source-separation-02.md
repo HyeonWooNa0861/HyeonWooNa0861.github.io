@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-17 00:05:01 +0900
+last_modified_at: 2026-11-19 21:03:05 +0900
 title: "Lecture 9: Multi-channel Source Separation II"
 course: "Speech and Audio Recognition"
 topic: "Neural Beamforming and Complex Spectral Mapping"
@@ -35,6 +36,8 @@ Source PDF: `speech-audio-lecture-09-2.pdf` — *Multi-channel Source Separation
 | 20–25 | SpatialNet | narrow-band와 cross-band 블록으로 시간축 공간 단서와 주파수축 관계를 번갈아 학습한다. |
 
 이 글은 각 주파수 bin의 다채널 STFT snapshot을 $$\mathbf x_{t,f}=[X_{1,t,f},\ldots,X_{M,t,f}]^T\in\mathbb C^M$$로 둔다. $$M$$은 마이크 수, $$T$$는 frame 수, $$F$$는 주파수 bin 수, $$C$$ 또는 $$P$$는 분리할 화자 수다. STFT 값과 그 추정치는 원 신호와 STFT 정규화에 따른 amplitude 단위를 가지며, mask와 attention weight는 무차원이다.
+
+**11월 12일 녹화에서 찾아보기:** 34:12부터 9-2강 자료를 다룬다(관련 PDF 2–11쪽). 37:21에는 마이크 간 위상차(IPD)를 입력 특징으로 읽고(3–4쪽), 44:03에는 마스크를 따로 학습하는 방식과 인식 오류를 앞단까지 전달하는 방식을 비교한다(6–8쪽). 47:06에는 MIMO-Speech의 마스크와 분리 출력을 비교한다(9–11쪽). 50:32의 학습 손실과 인식 성능 지표 구분은 같은 내용을 두고 이어진 **질의응답**이다. **52:59의 FaSNet(12쪽)은 다음 수업 예고다.** 아래 5절 이후는 이날 설명의 연속이 아니라 PDF 뒷부분의 해설이다.
 
 ## 1. 다채널 ESD에서 신경망이 맡을 수 있는 위치
 
@@ -191,6 +194,10 @@ $$
 입력은 $$M$$채널 mixture, mask network 출력은 noise와 화자별 mask, beamformer 출력은 $$C$$개의 복소 STFT, ASR 출력은 $$C$$개의 token sequence다. PIT는 beamformer가 아니라 **출력과 정답의 할당 규칙**이다. Mask estimation, spatial filtering, ASR decoding과 같은 종류의 모델 블록으로 혼동하면 안 된다.
 
 슬라이드 11의 spatialized WSJ1-2mix 2화자 표에서 dev WER는 1채널 ASR 34.98%, BeamformIt 26.61%, MIMO-Speech with curriculum learning 12.59%다. Eval은 각각 29.43%, 21.75%, 7.55%다. 이는 같은 표 안의 조건에서 다채널 분리와 joint ASR의 이점을 보여 준다. 다른 데이터셋·후단 recognizer의 WER와 직접 순위를 매길 수는 없다.
+
+<a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-09-2.pdf#page=10" | relative_url }}" target="_blank" rel="noopener">10쪽의 두 화자 그림</a>은 왼쪽의 혼합음, 오른쪽 위의 화자별 마스크, 오른쪽 아래의 분리된 음성 순서로 읽는다. 위 칸의 색은 **공분산 추정에 얼마나 반영할지 정한 가중치**이고, 아래 칸은 **공간 필터를 적용한 뒤 남은 음성**이다. 위쪽 마스크에서 음절 윤곽이 또렷하지 않아도 아래쪽 두 출력의 시간·주파수 패턴은 다를 수 있다. 그림만으로 인식 정확도까지 알 수는 없다.
+
+그 차이를 평가할 때 쓰는 값이 **WER(단어 오류율)**다. 최종 전사에서 틀리거나 빠지거나 추가된 단어 수를 기준 전사의 단어 수와 비교한다. 반면 학습할 때는 완성된 문자열의 WER를 그대로 역전파하지 않는다. 이 모델에서는 CTC가 프레임별 점수로부터 정답 전사에 맞는 정렬들의 확률을 합산하므로, 두 출력에 어느 전사를 대응시킬지 비교하고 인식 오류의 학습 신호를 앞단에 전달할 수 있다.
 
 ## 5. FaSNet은 시간영역의 adaptive filter를 직접 예측한다
 
