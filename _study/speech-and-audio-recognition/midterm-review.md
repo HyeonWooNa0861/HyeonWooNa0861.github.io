@@ -5,7 +5,7 @@ last_modified_at: 2026-10-19 14:37:03 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
-order: 14
+order: 15
 major_topic: "Speech and Audio Processing"
 keywords:
   - "Fourier Analysis"
