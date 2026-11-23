@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="648" height="274" viewBox="0 0 648 274" role="img" aria-labelledby="title desc">
+  <title id="title">일정한 시간차에서 생기는 위상 접힘</title>
+  <desc id="desc">목표 방향 20도에서 마이크 8과 1의 지연 차는 약 279마이크로초이다. 0에서 8 kHz 사이 위상은 내려가다가 약 1.79와 5.37 kHz에서 표시 범위의 위쪽으로 돌아온다.</desc>
+  <rect width="648" height="274" fill="#fff"/>
+  <g font-family="system-ui,sans-serif" fill="#18283d" font-size="16">
+    <text x="80" y="27" font-weight="600">마이크 8의 위상 − 마이크 1의 위상 (rad)</text>
+    <path d="M80 53H608 M80 209H608" stroke="#c1ccd5" fill="none"/>
+    <path d="M80 131H608 M80 53V209" stroke="#798796" fill="none"/>
+    <g text-anchor="end"><text x="71" y="59">+π</text><text x="71" y="137">0</text><text x="71" y="215">−π</text></g>
+    <g text-anchor="middle"><text x="80" y="232">0</text><text x="212" y="232">2</text><text x="344" y="232">4</text><text x="476" y="232">6</text><text x="608" y="232">8</text></g>
+    <text x="344" y="261" text-anchor="middle">주파수 (kHz)</text>
+  </g>
+  <g fill="none" stroke="#1464a0" stroke-width="3" stroke-linecap="round">
+    <path d="M80 131 L197.56 208.58"/>
+    <path d="M198.59 53.26 L433.72 208.43"/>
+    <path d="M434.75 53.11 L608 167.44"/>
+  </g>
+</svg>

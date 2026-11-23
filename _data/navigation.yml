@@ -377,6 +377,10 @@
       url: /research/pte-enumerating-trillion-triangles-distributed-systems/
       description: Pre-partitioned enumeration of trillion-scale graph triangles
       match: /research/pte-enumerating-trillion-triangles-distributed-systems/
+    - title: Why GPU Rankings Do Not Survive the Move
+      url: /research/triangle-counting-explicit-local-memory/
+      description: Why triangle-counting rankings change between GPUs and explicit local memory
+      match: /research/triangle-counting-explicit-local-memory/
     - title: Graph Matching Patent
       url: /research/graph-matching-method-and-apparatus/
       description: Symmetry-breaking node ordering for duplicate-free graph matching
