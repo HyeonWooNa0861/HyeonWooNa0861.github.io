@@ -14,7 +14,7 @@ keywords:
 
 # Dataset Pruning: Reducing Training Data by Examining Generalization Influence
 
-Source PDF: `dataset-pruning-reducing-training-data-by-examining-generalization-influence.pdf`
+**Resources:** <a href="/assets/pdfs/research/dataset-pruning-reducing-training-data-by-examining-generalization-influence/dataset-pruning-reducing-training-data-by-examining-generalization-influence.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/dataset-pruning-reducing-training-data-by-examining-generalization-influence/dataset-pruning-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

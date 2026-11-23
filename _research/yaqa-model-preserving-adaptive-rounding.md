@@ -15,7 +15,7 @@ keywords:
 
 # YAQA
 
-Source PDF: `model-preserving-adaptive-rounding.pdf`
+**Resources:** <a href="/assets/pdfs/research/model-preserving-adaptive-rounding/model-preserving-adaptive-rounding.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/model-preserving-adaptive-rounding/yaqa-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 Source URL: `https://www.together.ai/blog/yaqa`
 

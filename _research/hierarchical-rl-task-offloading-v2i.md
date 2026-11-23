@@ -14,7 +14,7 @@ keywords:
 
 # Hierarchical Reinforcement Learning Empowered Task Offloading in V2I Networks
 
-Source PDF: `hierarchical-rl-task-offloading-v2i.pdf`
+**Resources:** <a href="/assets/pdfs/research/hierarchical-rl-task-offloading-v2i/hierarchical-rl-task-offloading-v2i.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/hierarchical-rl-task-offloading-v2i/dhvo-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

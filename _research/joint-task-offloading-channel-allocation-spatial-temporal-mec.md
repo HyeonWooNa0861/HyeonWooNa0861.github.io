@@ -14,6 +14,8 @@ keywords:
 
 # Joint Task Offloading and Channel Allocation in Spatial-Temporal Dynamic MEC
 
+**Resources:** <a href="/assets/pdfs/research/joint-task-offloading-channel-allocation-spatial-temporal-mec/joint-task-offloading-channel-allocation-spatial-temporal-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/joint-task-offloading-channel-allocation-spatial-temporal-mec/toica-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

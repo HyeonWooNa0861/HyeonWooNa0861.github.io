@@ -15,7 +15,7 @@ keywords:
 
 # A Task Offloading and Resource Allocation Strategy Based on Multi-Agent Reinforcement Learning in Mobile Edge Computing
 
-Source PDF: `tomac-ppo-task-offloading-marl.pdf`
+**Resources:** <a href="/assets/pdfs/research/tomac-ppo-task-offloading-marl/tomac-ppo-task-offloading-marl.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/tomac-ppo-task-offloading-marl/tomac-ppo-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

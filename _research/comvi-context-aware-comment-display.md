@@ -14,6 +14,8 @@ keywords:
 
 # ComVi: Context-Aware Optimized Comment Display in Video Playback
 
+**Resources:** <a href="/assets/pdfs/research/comvi-context-aware-comment-display/comvi-context-aware-comment-display.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/comvi-context-aware-comment-display/comvi-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

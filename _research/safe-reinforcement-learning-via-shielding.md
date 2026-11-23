@@ -14,7 +14,7 @@ keywords:
 
 # Safe Reinforcement Learning via Shielding
 
-Source PDF: `safe-reinforcement-learning-via-shielding.pdf`
+**Resources:** <a href="/assets/pdfs/research/safe-reinforcement-learning-via-shielding/safe-reinforcement-learning-via-shielding.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/safe-reinforcement-learning-via-shielding/shielding-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

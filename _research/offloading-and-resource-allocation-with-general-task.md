@@ -14,7 +14,7 @@ keywords:
 
 # General Task Graph Offloading
 
-Source PDF: `offloading-and-resource-allocation-with-general-task.pdf`
+**Resources:** <a href="/assets/pdfs/research/offloading-and-resource-allocation-with-general-task/offloading-and-resource-allocation-with-general-task.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/offloading-and-resource-allocation-with-general-task/general-task-mec-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

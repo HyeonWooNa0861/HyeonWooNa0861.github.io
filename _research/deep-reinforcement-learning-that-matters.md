@@ -14,7 +14,7 @@ keywords:
 
 # Deep Reinforcement Learning that Matters
 
-Source PDF: `deep-reinforcement-learning-that-matters.pdf`
+**Resources:** <a href="/assets/pdfs/research/deep-reinforcement-learning-that-matters/deep-reinforcement-learning-that-matters.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/deep-reinforcement-learning-that-matters/drl-that-matters-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

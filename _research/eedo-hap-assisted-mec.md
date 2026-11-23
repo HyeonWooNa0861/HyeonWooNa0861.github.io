@@ -14,6 +14,8 @@ keywords:
 
 # Online Dynamic Multi-User Offloading for HAP-Assisted MEC
 
+**Resources:** <a href="/assets/pdfs/research/eedo-hap-assisted-mec/eedo-hap-assisted-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/eedo-hap-assisted-mec/eedo-hap-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

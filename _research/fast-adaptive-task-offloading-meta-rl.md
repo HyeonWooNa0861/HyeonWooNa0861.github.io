@@ -14,7 +14,7 @@ keywords:
 
 # Fast Adaptive Task Offloading in Edge Computing based on Meta Reinforcement Learning
 
-Source PDF: `fast-adaptive-task-offloading-meta-rl.pdf`
+**Resources:** <a href="/assets/pdfs/research/fast-adaptive-task-offloading-meta-rl/fast-adaptive-task-offloading-meta-rl.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/fast-adaptive-task-offloading-meta-rl/mrlco-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

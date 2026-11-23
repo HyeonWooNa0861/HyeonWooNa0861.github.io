@@ -14,7 +14,7 @@ keywords:
 
 # GPTQ: Accurate Post-Training Quantization for Generative Pre-Trained Transformers
 
-Source PDF: `gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers.pdf`
+**Resources:** <a href="/assets/pdfs/research/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/gptq-accurate-post-training-quantization-for-generative-pre-trained-transformers/gptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

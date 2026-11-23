@@ -14,7 +14,7 @@ keywords:
 
 # CHESTNUT: A QoS Dataset for Mobile Edge Environments
 
-Source PDF: `chestnut-qos-dataset-mobile-edge.pdf`
+**Resources:** <a href="/assets/pdfs/research/chestnut-qos-dataset-mobile-edge/chestnut-qos-dataset-mobile-edge.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/chestnut-qos-dataset-mobile-edge/chestnut-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

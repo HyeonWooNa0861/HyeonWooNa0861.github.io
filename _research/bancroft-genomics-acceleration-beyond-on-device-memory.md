@@ -14,6 +14,8 @@ keywords:
 
 # Bancroft: Genomics Acceleration Beyond On-Device Memory
 
+**Resources:** <a href="/assets/pdfs/research/bancroft-genomics-acceleration-beyond-on-device-memory/bancroft-genomics-acceleration-beyond-on-device-memory.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/bancroft-genomics-acceleration-beyond-on-device-memory/bancroft-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

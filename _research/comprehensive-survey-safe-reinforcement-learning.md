@@ -14,7 +14,7 @@ keywords:
 
 # A Comprehensive Survey on Safe Reinforcement Learning
 
-Source PDF: `comprehensive-survey-safe-reinforcement-learning.pdf`
+**Resources:** <a href="/assets/pdfs/research/comprehensive-survey-safe-reinforcement-learning/comprehensive-survey-safe-reinforcement-learning.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/comprehensive-survey-safe-reinforcement-learning/safe-rl-survey-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

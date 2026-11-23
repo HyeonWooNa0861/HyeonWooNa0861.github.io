@@ -14,7 +14,7 @@ keywords:
 
 # Deep Reinforcement Learning at the Edge of the Statistical Precipice
 
-Source PDF: `drl-statistical-precipice.pdf`
+**Resources:** <a href="/assets/pdfs/research/drl-statistical-precipice/drl-statistical-precipice.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/drl-statistical-precipice/statistical-precipice-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

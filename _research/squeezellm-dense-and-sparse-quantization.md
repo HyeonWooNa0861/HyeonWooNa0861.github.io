@@ -14,7 +14,7 @@ keywords:
 
 # SqueezeLLM: Dense-and-Sparse Quantization
 
-Source PDF: `squeezellm-dense-and-sparse-quantization.pdf`
+**Resources:** <a href="/assets/pdfs/research/squeezellm-dense-and-sparse-quantization/squeezellm-dense-and-sparse-quantization.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/squeezellm-dense-and-sparse-quantization/squeezellm-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

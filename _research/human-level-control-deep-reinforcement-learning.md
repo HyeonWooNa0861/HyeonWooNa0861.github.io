@@ -14,6 +14,8 @@ keywords:
 
 # Human-Level Control through Deep Reinforcement Learning
 
+**Resources:** <a href="/assets/pdfs/research/human-level-control-deep-reinforcement-learning/human-level-control-deep-reinforcement-learning.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/human-level-control-deep-reinforcement-learning/dqn-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

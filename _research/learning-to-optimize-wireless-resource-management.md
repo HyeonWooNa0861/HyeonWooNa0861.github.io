@@ -14,6 +14,8 @@ keywords:
 
 # Learning to Optimize for Wireless Resource Management
 
+**Resources:** <a href="/assets/pdfs/research/learning-to-optimize-wireless-resource-management/learning-to-optimize-wireless-resource-management.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/learning-to-optimize-wireless-resource-management/learning-to-optimize-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

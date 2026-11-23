@@ -14,7 +14,7 @@ keywords:
 
 # Coverage-Based Calibration for Post-Training Quantization via Weighted Set Cover over Outlier Channels
 
-Source PDF: `coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels.pdf`
+**Resources:** <a href="/assets/pdfs/research/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/coverage-based-calibration-for-post-training-quantization-via-weighted-set-cover-over-outlier-channels/covercal-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

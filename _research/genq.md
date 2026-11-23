@@ -17,7 +17,7 @@ keywords:
 
 # GenQ: Quantization in Low Data Regimes with Generative Synthetic Data
 
-Source PDF: `genq.pdf`
+**Resources:** <a href="/assets/pdfs/research/genq/genq.pdf" target="_blank" rel="noopener">Paper PDF</a>
 
 ## 논문 정보
 

@@ -14,7 +14,7 @@ keywords:
 
 # User-centric Cell-free Massive MIMO Networks: A Survey of Opportunities, Challenges and Solutions
 
-Source PDF: `user-centric-cell-free-massive-mimo-survey.pdf`
+**Resources:** <a href="/assets/pdfs/research/user-centric-cell-free-massive-mimo-survey/user-centric-cell-free-massive-mimo-survey.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/user-centric-cell-free-massive-mimo-survey/cf-mimo-survey-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

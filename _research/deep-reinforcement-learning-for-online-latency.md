@@ -14,7 +14,7 @@ keywords:
 
 # DECENT
 
-Source PDF: `deep-reinforcement-learning-for-online-latency.pdf`
+**Resources:** <a href="/assets/pdfs/research/deep-reinforcement-learning-for-online-latency/deep-reinforcement-learning-for-online-latency.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/deep-reinforcement-learning-for-online-latency/decent-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

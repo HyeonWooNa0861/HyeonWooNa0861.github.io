@@ -14,6 +14,8 @@ keywords:
 
 # User Performance in Consecutive Temporal Pointing: An Exploratory Study
 
+**Resources:** <a href="/assets/pdfs/research/user-performance-in-consecutive-temporal-pointing/user-performance-in-consecutive-temporal-pointing.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/user-performance-in-consecutive-temporal-pointing/temporal-pointing-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

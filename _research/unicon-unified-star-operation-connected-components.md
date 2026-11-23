@@ -15,7 +15,7 @@ keywords:
 
 # UniCon: A Unified Star-Operation to Efficiently Find Connected Components on a Cluster of Commodity Hardware
 
-Source PDF: [Local source PDF]({{ "/assets/pdfs/research/unicon-unified-star-operation-connected-components/unicon-unified-star-operation-connected-components.pdf" | relative_url }})
+**Resources:** <a href="/assets/pdfs/research/unicon-unified-star-operation-connected-components/unicon-unified-star-operation-connected-components.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/unicon-a-unified-star-operation-to-efficiently-find-connected-components-on-a-cluster-of-commodity-hardware/unicon-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

@@ -14,7 +14,7 @@ keywords:
 
 # Offloading Strategy Based on Graph Neural Reinforcement Learning in Mobile Edge Computing
 
-Source PDF: `graph-neural-rl-offloading-mec.pdf`
+**Resources:** <a href="/assets/pdfs/research/graph-neural-rl-offloading-mec/graph-neural-rl-offloading-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/graph-neural-rl-offloading-mec/gnn-rl-mec-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

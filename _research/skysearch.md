@@ -14,6 +14,8 @@ keywords:
 
 # SkySearch: Satellite Video Search at Scale
 
+**Resources:** <a href="/assets/pdfs/research/skysearch/SkySearch.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/skysearch/skysearch-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

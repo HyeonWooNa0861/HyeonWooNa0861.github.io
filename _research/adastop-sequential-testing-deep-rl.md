@@ -14,7 +14,7 @@ keywords:
 
 # AdaStop: adaptive statistical testing for sound comparisons of Deep RL agents
 
-Source PDF: `adastop-sequential-testing-deep-rl.pdf`
+**Resources:** <a href="/assets/pdfs/research/adastop-sequential-testing-deep-rl/adastop-sequential-testing-deep-rl.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/adastop-sequential-testing-deep-rl/adastop-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

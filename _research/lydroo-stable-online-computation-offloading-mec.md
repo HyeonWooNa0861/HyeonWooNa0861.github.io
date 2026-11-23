@@ -14,6 +14,8 @@ keywords:
 
 # LyDROO: Stable Online Computation Offloading in MEC
 
+**Resources:** <a href="/assets/pdfs/research/lydroo-stable-online-computation-offloading-mec/lydroo-stable-online-computation-offloading-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/lydroo-stable-online-computation-offloading-mec/lydroo-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

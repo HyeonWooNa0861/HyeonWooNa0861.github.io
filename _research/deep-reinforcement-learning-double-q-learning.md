@@ -14,6 +14,8 @@ keywords:
 
 # Deep Reinforcement Learning with Double Q-learning
 
+**Resources:** <a href="/assets/pdfs/research/deep-reinforcement-learning-double-q-learning/deep-reinforcement-learning-double-q-learning.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/deep-reinforcement-learning-double-q-learning/double-dqn-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

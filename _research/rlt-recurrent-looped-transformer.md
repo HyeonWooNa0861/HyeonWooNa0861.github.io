@@ -18,7 +18,7 @@ keywords:
 
 # Recurrent Looped Transformer
 
-Source: [Official project page](https://yifanzhang-pro.github.io/recurrent-looped-tranformer/){:target="_blank" rel="noopener"} · [Technical report PDF]({{ "/assets/pdfs/research/rlt-recurrent-looped-transformer/rlt-recurrent-looped-transformer.pdf" | relative_url }}){:target="_blank" rel="noopener"} · [Official repository](https://github.com/yifanzhang-pro/recurrent-looped-tranformer){:target="_blank" rel="noopener"}
+**Resources:** <a href="https://yifanzhang-pro.github.io/recurrent-looped-tranformer/" target="_blank" rel="noopener">Paper Page</a> · <a href="/assets/pdfs/research/rlt-recurrent-looped-transformer/rlt-recurrent-looped-transformer.pdf" target="_blank" rel="noopener">Technical Report PDF</a> · <a href="https://github.com/yifanzhang-pro/recurrent-looped-tranformer" target="_blank" rel="noopener">Official Repository</a>
 
 ## Paper Information
 

@@ -15,7 +15,7 @@ keywords:
 
 # PTE: Enumerating Trillion Triangles On Distributed Systems
 
-Source PDF: [Official KDD PDF](https://www.kdd.org/kdd2016/papers/files/rfp0276-parkA.pdf){:target="_blank" rel="noopener"}
+**Resources:** <a href="https://www.kdd.org/kdd2016/papers/files/rfp0276-parkA.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/pte-enumerating-trillion-triangles-on-distributed-systems/pte-seminar-ko-v7.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

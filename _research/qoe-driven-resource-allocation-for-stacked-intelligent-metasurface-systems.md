@@ -15,7 +15,7 @@ keywords:
 
 # QoE-Driven Resource Allocation for Stacked Intelligent Metasurface Systems
 
-Source PDF: `qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems.pdf`
+**Resources:** <a href="/assets/pdfs/research/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/qoe-driven-resource-allocation-for-stacked-intelligent-metasurface-systems/qoe-sim-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

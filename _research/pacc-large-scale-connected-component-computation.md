@@ -16,7 +16,7 @@ keywords:
 
 # PACC: Large Scale Connected Component Computation on Hadoop and Spark
 
-Source PDF: [Local source PDF]({{ "/assets/pdfs/research/pacc-large-scale-connected-component-computation/pacc-large-scale-connected-component-computation.pdf" | relative_url }})
+**Resources:** <a href="/assets/pdfs/research/pacc-large-scale-connected-component-computation/pacc-large-scale-connected-component-computation.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/pacc-large-scale-connected-component-computation/pacc-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

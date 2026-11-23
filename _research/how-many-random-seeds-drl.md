@@ -14,7 +14,7 @@ keywords:
 
 # How Many Random Seeds? Statistical Power Analysis in Deep Reinforcement Learning Experiments
 
-Source PDF: `how-many-random-seeds-drl.pdf`
+**Resources:** <a href="/assets/pdfs/research/how-many-random-seeds-drl/how-many-random-seeds-drl.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/how-many-random-seeds-drl/how-many-seeds-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

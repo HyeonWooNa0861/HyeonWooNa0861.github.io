@@ -15,6 +15,8 @@ keywords:
 
 # QECO-Adapt
 
+**Resources:** <a href="/assets/pdfs/research/qeco-adapt/qeco-adapt-research.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/qeco-adapt/qeco-adapt-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 한 줄 요약
 
 QECO-Adapt는 기존 QECO의 D3QN/LSTM 구조와 action space를 유지하면서 effective load 기반 adaptive energy weight와 offloading gating을 더해, 단일 edge의 dense-load 조건에서 초기 수렴 손실과 dropped-task 누적을 줄이는 보완 알고리즘이다.

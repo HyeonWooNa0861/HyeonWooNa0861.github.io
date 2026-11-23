@@ -14,7 +14,7 @@ keywords:
 
 # Cell-Free Massive MIMO versus Small Cells
 
-Source PDF: `cell-free-massive-mimo-versus-small-cells.pdf`
+**Resources:** <a href="/assets/pdfs/research/cell-free-massive-mimo-versus-small-cells/cell-free-massive-mimo-versus-small-cells.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/cell-free-massive-mimo-versus-small-cells/cell-free-small-cells-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

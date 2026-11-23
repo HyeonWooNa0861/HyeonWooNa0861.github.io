@@ -14,7 +14,7 @@ keywords:
 
 # Meta-Reinforcement Learning for Optimized Task Scheduling in Heterogeneous Edge Computing Systems
 
-Source PDF: `meta-reinforcement-learning-optimized-task-scheduling-heterogeneous-edge-computing-systems.pdf`
+**Resources:** <a href="/assets/pdfs/research/meta-reinforcement-learning-optimized-task-scheduling-heterogeneous-edge-computing-systems/meta-reinforcement-learning-optimized-task-scheduling-heterogeneous-edge-computing-systems.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/meta-reinforcement-learning-for-optimized-task/meta-rl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

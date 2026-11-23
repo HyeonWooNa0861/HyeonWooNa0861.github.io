@@ -14,7 +14,7 @@ keywords:
 
 # VPTQ: Extreme Low-bit Vector Post-Training Quantization for Large Language Models
 
-Source PDF: `vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models.pdf`
+**Resources:** <a href="/assets/pdfs/research/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/vptq-extreme-low-bit-vector-post-training-quantization-for-large-language-models/vptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

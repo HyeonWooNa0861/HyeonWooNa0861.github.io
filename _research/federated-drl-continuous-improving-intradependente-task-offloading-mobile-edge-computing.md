@@ -14,7 +14,7 @@ keywords:
 
 # Federated Deep Reinforcement Learning for Continuous Improving Intradependente Task Offloading in Mobile Edge Computing Network
 
-Source PDF: `federated-drl-continuous-improving-intradependente-task-offloading-mobile-edge-computing.pdf`
+**Resources:** <a href="/assets/pdfs/research/federated-drl-continuous-improving-intradependente-task-offloading-mobile-edge-computing/federated-drl-continuous-improving-intradependente-task-offloading-mobile-edge-computing.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/federated-deep-reinforcement-learning-for-continuous/federated-drl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

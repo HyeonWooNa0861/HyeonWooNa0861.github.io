@@ -16,6 +16,8 @@ keywords:
 
 # Federated learning with knowledge distillation for multi-organ segmentation with partially labeled datasets
 
+**Resources:** <a href="https://cnslab.stanford.edu/assets/documents/Federatedlearningwithknowledge.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/federated-multi-organ-kd/federated-multi-organ-kd-seminar-ko-v5.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

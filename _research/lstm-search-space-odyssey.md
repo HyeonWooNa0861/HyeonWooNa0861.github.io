@@ -14,6 +14,8 @@ keywords:
 
 # LSTM: A Search Space Odyssey
 
+**Resources:** <a href="/assets/pdfs/research/lstm-search-space-odyssey/lstm-search-space-odyssey.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/lstm-search-space-odyssey/lstm-odyssey-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

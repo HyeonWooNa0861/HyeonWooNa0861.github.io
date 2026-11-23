@@ -15,6 +15,8 @@ keywords:
 
 # QECO: QoE-Oriented Computation Offloading with DRL
 
+**Resources:** <a href="/assets/pdfs/research/qeco-qoe-oriented-computation-offloading/qeco-qoe-oriented-computation-offloading.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/qeco-qoe-oriented-computation-offloading/qeco-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

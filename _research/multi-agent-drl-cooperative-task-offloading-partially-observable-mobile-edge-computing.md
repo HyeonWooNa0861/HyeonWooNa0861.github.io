@@ -14,7 +14,7 @@ keywords:
 
 # Multi-Agent Deep Reinforcement Learning for Cooperative Task Offloading in Partially Observable Mobile Edge Computing Environment
 
-Source PDF: `multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing.pdf`
+**Resources:** <a href="/assets/pdfs/research/multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing/multi-agent-drl-cooperative-task-offloading-partially-observable-mobile-edge-computing.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-cooperative/cooperative-marl-mec-proposal-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

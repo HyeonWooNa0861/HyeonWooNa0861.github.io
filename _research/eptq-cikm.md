@@ -14,7 +14,7 @@ keywords:
 
 # EPTQ: Fast and Accurate 2-bit Post-Training Quantization via Factored E8 Lattice
 
-Source PDF: `eptq-cikm.pdf`
+**Resources:** <a href="/assets/pdfs/research/eptq-cikm/eptq-cikm.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/eptq-cikm/eptq-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

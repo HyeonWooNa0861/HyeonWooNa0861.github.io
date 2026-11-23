@@ -15,7 +15,7 @@ keywords:
 
 # iDEAS: Intelligent DVFS for Energy-Efficient Task Scheduling in Mobile Devices With big.LITTLE Computing Architecture
 
-Source PDF: `ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little.pdf`
+**Resources:** <a href="/assets/pdfs/research/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/ideas-intelligent-dvfs-energy-efficient-task-scheduling-mobile-devices-big-little/ideas-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

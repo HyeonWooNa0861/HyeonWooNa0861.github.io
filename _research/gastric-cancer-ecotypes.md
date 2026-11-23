@@ -15,7 +15,7 @@ keywords:
 
 # A 15-Layer Multi-Omics Analysis of Gastric Cancer Ecotypes Provides Therapeutic Insights
 
-Official article: <a href="https://doi.org/10.1016/j.xcrm.2026.102756" target="_blank" rel="noopener">Publisher page and DOI</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13198309/" target="_blank" rel="noopener">PubMed Central full text</a>
+**Resources:** <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13198309/" target="_blank" rel="noopener">Paper Page</a> · <a href="https://doi.org/10.1016/j.xcrm.2026.102756" target="_blank" rel="noopener">Publisher Page</a> · <a href="/assets/seminars/gastric-cancer-ecotypes/gastric-cancer-ecotypes-seminar-ko-v4.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

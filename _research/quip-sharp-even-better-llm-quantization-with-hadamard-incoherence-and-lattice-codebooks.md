@@ -14,7 +14,7 @@ keywords:
 
 # QuIP#: Even Better LLM Quantization with Hadamard Incoherence and Lattice Codebooks
 
-Source PDF: `quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks.pdf`
+**Resources:** <a href="/assets/pdfs/research/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/quip-sharp-even-better-llm-quantization-with-hadamard-incoherence-and-lattice-codebooks/quip-sharp-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

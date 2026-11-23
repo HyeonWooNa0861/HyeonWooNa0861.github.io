@@ -14,7 +14,7 @@ keywords:
 
 # Energy-Aware Multi-Server MEC
 
-Source PDF: `energy-aware-multi-server-mobile-edge-computing.pdf`
+**Resources:** <a href="/assets/pdfs/research/energy-aware-multi-server-mobile-edge-computing/energy-aware-multi-server-mobile-edge-computing.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/energy-aware-multi-server-mobile-edge-computing/energy-aware-mec-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

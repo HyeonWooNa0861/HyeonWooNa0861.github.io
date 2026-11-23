@@ -14,6 +14,8 @@ keywords:
 
 # Long Short-Term Memory
 
+**Resources:** <a href="/assets/pdfs/research/long-short-term-memory/long-short-term-memory.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/long-short-term-memory/lstm-1997-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

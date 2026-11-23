@@ -14,7 +14,7 @@ keywords:
 
 # Task Graph offloading via Deep Reinforcement Learning in Mobile Edge Computing
 
-Source PDF: `task-graph-offloading-drl-mec.pdf`
+**Resources:** <a href="/assets/pdfs/research/task-graph-offloading-drl-mec/task-graph-offloading-drl-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/task-graph-offloading-drl-mec/sata-drl-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

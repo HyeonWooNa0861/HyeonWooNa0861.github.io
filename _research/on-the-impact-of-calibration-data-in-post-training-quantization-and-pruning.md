@@ -12,6 +12,8 @@ keywords:
 
 # On the Impact of Calibration Data in Post-training Quantization and Pruning
 
+**Resources:** <a href="https://aclanthology.org/2024.acl-long.544/" target="_blank" rel="noopener">Paper Page</a> · <a href="https://arxiv.org/abs/2311.09755v2" target="_blank" rel="noopener">arXiv</a> · <a href="/assets/seminars/on-the-impact-of-calibration-data-in-post-training-quantization-and-pruning/calibration-impact-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

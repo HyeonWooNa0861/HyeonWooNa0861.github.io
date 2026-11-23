@@ -14,7 +14,7 @@ keywords:
 
 # QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs
 
-Source PDF: `quarot-outlier-free-4-bit-inference-in-rotated-llms.pdf`
+**Resources:** <a href="/assets/pdfs/research/quarot-outlier-free-4-bit-inference-in-rotated-llms/quarot-outlier-free-4-bit-inference-in-rotated-llms.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/quarot-outlier-free-4-bit-inference-in-rotated-llms/quarot-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

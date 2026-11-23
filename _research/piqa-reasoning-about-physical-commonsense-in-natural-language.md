@@ -14,7 +14,7 @@ keywords:
 
 # PIQA
 
-Source PDF: `piqa-reasoning-about-physical-commonsense-in-natural-language.pdf`
+**Resources:** <a href="/assets/pdfs/research/piqa-reasoning-about-physical-commonsense-in-natural-language/piqa-reasoning-about-physical-commonsense-in-natural-language.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/piqa-reasoning-about-physical-commonsense-in-natural-language/piqa-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

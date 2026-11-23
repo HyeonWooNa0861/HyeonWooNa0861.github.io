@@ -14,6 +14,8 @@ keywords:
 
 # Labidus: RISC-V Overlay with Streaming Asynchronous Custom Instructions
 
+**Resources:** <a href="/assets/pdfs/research/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/labidus-risc-v-overlay-with-streaming-asynchronous-custom-instructions/labidus-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

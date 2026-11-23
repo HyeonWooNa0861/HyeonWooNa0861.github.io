@@ -16,6 +16,8 @@ keywords:
 
 # Subject-Adaptive Transfer Learning Using Resting State EEG Signals for Cross-Subject EEG Motor Imagery Classification
 
+**Resources:** <a href="https://papers.miccai.org/miccai-2024/paper/0192_paper.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="https://arxiv.org/abs/2405.19346" target="_blank" rel="noopener">arXiv</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

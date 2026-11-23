@@ -14,7 +14,7 @@ keywords:
 
 # QoE-Driven Multi-Task Offloading for Semantic-Aware Edge Computing Systems
 
-Source PDF: `qoe-driven-multi-task-offloading-semantic.pdf`
+**Resources:** <a href="/assets/pdfs/research/qoe-driven-multi-task-offloading-semantic/qoe-driven-multi-task-offloading-semantic.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/qoe-driven-multi-task-offloading-semantic/qoe-semantic-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

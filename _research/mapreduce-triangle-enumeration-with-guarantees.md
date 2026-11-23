@@ -12,6 +12,8 @@ keywords:
 
 # MapReduce Triangle Enumeration With Guarantees
 
+**Resources:** <a href="https://www.dei.unipd.it/~silvestri/assets/publications/PSKP14.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/mapreduce-triangle-enumeration-with-guarantees/cttp-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

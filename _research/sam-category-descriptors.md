@@ -16,7 +16,7 @@ keywords:
 
 # Enhanced Nuclei Segmentation and Classification via Category Descriptors in the SAM Model
 
-Official article: <a href="{{ '/assets/pdfs/research/sam-category-descriptors/sam-category-descriptors.pdf' | relative_url }}" target="_blank" rel="noopener">Original PDF</a> · <a href="https://doi.org/10.3390/bioengineering11030294" target="_blank" rel="noopener">Publisher page and DOI</a> · <a href="https://www.mdpi.com/2306-5354/11/3/294" target="_blank" rel="noopener">MDPI full text</a>
+**Resources:** <a href="/assets/pdfs/research/sam-category-descriptors/sam-category-descriptors.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="https://doi.org/10.3390/bioengineering11030294" target="_blank" rel="noopener">Publisher Page (DOI)</a> · <a href="https://www.mdpi.com/2306-5354/11/3/294" target="_blank" rel="noopener">MDPI Full Text</a>
 
 ## 논문 정보
 

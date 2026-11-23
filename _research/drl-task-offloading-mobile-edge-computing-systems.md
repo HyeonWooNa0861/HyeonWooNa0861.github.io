@@ -15,6 +15,8 @@ keywords:
 
 # Deep Reinforcement Learning for Task Offloading in MEC Systems
 
+**Resources:** <a href="/assets/pdfs/research/drl-task-offloading-mobile-edge-computing-systems/drl-task-offloading-mobile-edge-computing-systems.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/drl-task-offloading-mobile-edge-computing-systems/drl-mec-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

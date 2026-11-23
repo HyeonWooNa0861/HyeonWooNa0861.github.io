@@ -12,6 +12,8 @@ keywords:
 
 # Multi-Agent Deep Reinforcement Learning for Collaborative Computation Offloading in Mobile Edge-Computing
 
+**Resources:** <a href="https://imanrht.github.io/assets/Multi_AgentDRL4MEC.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/multi-agent-deep-reinforcement-learning-for-collaborative/collaborative-marl-mec-proposal-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

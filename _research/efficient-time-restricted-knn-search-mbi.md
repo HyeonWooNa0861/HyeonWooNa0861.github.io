@@ -14,6 +14,8 @@ keywords:
 
 # Efficient Time-Restricted kNN Search with MBI
 
+**Resources:** <a href="/assets/pdfs/research/efficient-time-restricted-knn-search-mbi/efficient-time-restricted-knn-search-mbi.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/efficient-time-restricted-knn-search-mbi/mbi-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

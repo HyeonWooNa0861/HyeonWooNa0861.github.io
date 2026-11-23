@@ -14,6 +14,8 @@ keywords:
 
 # Attention Is All You Need
 
+**Resources:** <a href="/assets/pdfs/research/attention-is-all-you-need/attention-is-all-you-need-v1.pdf" target="_blank" rel="noopener">Paper PDF (arXiv v1)</a> · <a href="/assets/pdfs/research/attention-is-all-you-need/attention-is-all-you-need-v7.pdf" target="_blank" rel="noopener">Paper PDF (arXiv v7)</a> · <a href="/assets/seminars/attention-is-all-you-need/transformer-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF (arXiv v7)</a> · <a href="/assets/seminars/attention-is-all-you-need-v1/transformer-arxiv-v1-companion-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF (arXiv v1 comparison)</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

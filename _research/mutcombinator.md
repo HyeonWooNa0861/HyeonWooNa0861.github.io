@@ -16,6 +16,8 @@ keywords:
 
 # MutCombinator: identification of mutated peptides allowing combinatorial mutations using nucleotide-based graph search
 
+**Resources:** <a href="/assets/pdfs/research/mutcombinator/mutcombinator.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/mutcombinator/mutcombinator-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

@@ -14,6 +14,8 @@ keywords:
 
 # Decentralized Task Offloading and Resource Allocation in User-Centric MEC
 
+**Resources:** <a href="/assets/pdfs/research/decentralized-task-offloading-resource-allocation-ucmec/decentralized-task-offloading-resource-allocation-ucmec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/decentralized-task-offloading-resource-allocation-ucmec/ucmec-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

@@ -14,7 +14,7 @@ keywords:
 
 # DMRO: A Deep Meta Reinforcement Learning-Based Task Offloading Framework for Edge-Cloud Computing
 
-Source PDF: `dmro-deep-meta-rl-task-offloading.pdf`
+**Resources:** <a href="/assets/pdfs/research/dmro-deep-meta-rl-task-offloading/dmro-deep-meta-rl-task-offloading.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/dmro-deep-meta-rl-task-offloading/dmro-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

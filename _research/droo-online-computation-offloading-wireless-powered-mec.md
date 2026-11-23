@@ -14,6 +14,8 @@ keywords:
 
 # DROO: Online Computation Offloading in Wireless Powered MEC
 
+**Resources:** <a href="/assets/pdfs/research/droo-online-computation-offloading-wireless-powered-mec/droo-online-computation-offloading-wireless-powered-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/droo-online-computation-offloading-wireless-powered-mec/droo-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

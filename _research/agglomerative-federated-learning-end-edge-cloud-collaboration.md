@@ -14,6 +14,8 @@ keywords:
 
 # Agglomerative Federated Learning: End-Edge-Cloud Collaboration
 
+**Resources:** <a href="/assets/pdfs/research/agglomerative-federated-learning-end-edge-cloud-collaboration/agglomerative-federated-learning-end-edge-cloud-collaboration.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/agglomerative-federated-learning-end-edge-cloud-collaboration/fedagg-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

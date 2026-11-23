@@ -14,7 +14,7 @@ keywords:
 
 # Preserving LLM Capabilities through Calibration Data Curation: From Analysis to Optimization
 
-Source PDF: `preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio.pdf`
+**Resources:** <a href="/assets/pdfs/research/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/preserving-llm-capabilities-through-calibration-data-curation-from-analysis-to-optimizatio/cola-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

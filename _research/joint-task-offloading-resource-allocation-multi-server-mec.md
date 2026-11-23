@@ -14,6 +14,8 @@ keywords:
 
 # Joint Task Offloading and Resource Allocation for Multi-Server MEC
 
+**Resources:** <a href="/assets/pdfs/research/joint-task-offloading-resource-allocation-multi-server-mec/joint-task-offloading-resource-allocation-multi-server-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/joint-task-offloading-resource-allocation-multi-server-mec/jtora-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

@@ -14,7 +14,7 @@ keywords:
 
 # Policy Invariance under Reward Transformations: Theory and Application to Reward Shaping
 
-Source PDF: `policy-invariance-reward-transformations-shaping.pdf`
+**Resources:** <a href="/assets/pdfs/research/policy-invariance-reward-transformations-shaping/policy-invariance-reward-transformations-shaping.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/policy-invariance-reward-transformations-shaping/reward-shaping-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

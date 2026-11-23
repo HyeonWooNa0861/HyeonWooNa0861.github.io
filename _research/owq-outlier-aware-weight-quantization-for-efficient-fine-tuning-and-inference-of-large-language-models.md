@@ -15,7 +15,7 @@ keywords:
 
 # OWQ: Outlier-Aware Weight Quantization for Efficient Fine-Tuning and Inference of Large Language Models
 
-Source PDF: `owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models.pdf`
+**Resources:** <a href="/assets/pdfs/research/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/owq-outlier-aware-weight-quantization-for-efficient-fine-tuning-and-inference-of-large-language-models/owq-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

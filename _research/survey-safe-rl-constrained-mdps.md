@@ -14,7 +14,7 @@ keywords:
 
 # A Survey of Safe Reinforcement Learning and Constrained MDPs: A Technical Survey on Single-Agent and Multi-Agent Safety
 
-Source PDF: `survey-safe-rl-constrained-mdps.pdf`
+**Resources:** <a href="/assets/pdfs/research/survey-safe-rl-constrained-mdps/survey-safe-rl-constrained-mdps.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/survey-safe-rl-constrained-mdps/cmdp-survey-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

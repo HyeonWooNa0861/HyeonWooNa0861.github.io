@@ -15,7 +15,7 @@ keywords:
 
 # Efficient Subgraph Matching on Billion Node Graphs
 
-Source PDF: [Official PVLDB PDF](https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf){:target="_blank" rel="noopener"}
+**Resources:** <a href="https://www.vldb.org/pvldb/vol5/p788_zhaosun_vldb2012.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/efficient-subgraph-matching-billion-node-graphs/stwig-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

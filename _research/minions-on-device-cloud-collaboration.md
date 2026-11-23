@@ -14,7 +14,7 @@ keywords:
 
 # Minions
 
-Source PDF: `minions-on-device-cloud-collaboration.pdf`
+**Resources:** <a href="/assets/pdfs/research/minions-on-device-cloud-collaboration/minions-on-device-cloud-collaboration.pdf" target="_blank" rel="noopener">Paper PDF</a>
 
 Source URL: `https://www.together.ai/blog/minions`
 

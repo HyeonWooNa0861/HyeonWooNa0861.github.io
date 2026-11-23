@@ -15,7 +15,7 @@ keywords:
 
 # Graph Matching Method and Apparatus
 
-Source PDF: [Official patent PDF](https://patentimages.storage.googleapis.com/85/ec/97/d3f3e6eda9823c/KR101747854B1.pdf){:target="_blank" rel="noopener"}
+**Resources:** <a href="https://patentimages.storage.googleapis.com/85/ec/97/d3f3e6eda9823c/KR101747854B1.pdf" target="_blank" rel="noopener">Patent PDF</a> · <a href="https://patents.google.com/patent/KR101747854B1/ko" target="_blank" rel="noopener">Patent Page</a> · <a href="/assets/seminars/graph-matching-method-and-apparatus/graph-matching-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 문서 정보
 

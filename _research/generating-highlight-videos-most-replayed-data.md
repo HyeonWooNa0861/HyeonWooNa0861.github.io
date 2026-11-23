@@ -14,6 +14,8 @@ keywords:
 
 # Generating Highlight Videos of a User-Specified Length using Most Replayed Data
 
+**Resources:** <a href="/assets/pdfs/research/generating-highlight-videos-most-replayed-data/generating-highlight-videos-most-replayed-data.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/generating-highlight-videos-most-replayed-data/highlight-videos-seminar-ko-v2.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

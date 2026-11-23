@@ -15,7 +15,7 @@ keywords:
 
 # SEED: Scalable Distributed Subgraph Enumeration
 
-Source PDF: [Local source PDF]({{ "/assets/pdfs/research/seed-scalable-distributed-subgraph-enumeration/seed-scalable-distributed-subgraph-enumeration.pdf" | relative_url }})
+**Resources:** <a href="/assets/pdfs/research/seed-scalable-distributed-subgraph-enumeration/seed-scalable-distributed-subgraph-enumeration.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/seed-scalable-distributed-subgraph-enumeration/seed-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

@@ -14,7 +14,7 @@ keywords:
 
 # A Closer Look at Invalid Action Masking in Policy Gradient Algorithms
 
-Source PDF: `invalid-action-masking-policy-gradient.pdf`
+**Resources:** <a href="/assets/pdfs/research/invalid-action-masking-policy-gradient/invalid-action-masking-policy-gradient.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/invalid-action-masking-policy-gradient/masking-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

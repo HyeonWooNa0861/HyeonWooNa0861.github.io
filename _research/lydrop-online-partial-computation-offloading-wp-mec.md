@@ -14,6 +14,8 @@ keywords:
 
 # LyDROP: Online Partial Computation Offloading in WP-MEC
 
+**Resources:** <a href="/assets/pdfs/research/lydrop-online-partial-computation-offloading-wp-mec/lydrop-online-partial-computation-offloading-wp-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/lydrop-online-partial-computation-offloading-wp-mec/lydrop-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

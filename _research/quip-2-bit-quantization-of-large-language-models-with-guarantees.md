@@ -14,7 +14,7 @@ keywords:
 
 # QuIP
 
-Source PDF: `quip-2-bit-quantization-of-large-language-models-with-guarantees.pdf`
+**Resources:** <a href="/assets/pdfs/research/quip-2-bit-quantization-of-large-language-models-with-guarantees/quip-2-bit-quantization-of-large-language-models-with-guarantees.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/quip-2-bit-quantization-of-large-language-models-with-guarantees/quip-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

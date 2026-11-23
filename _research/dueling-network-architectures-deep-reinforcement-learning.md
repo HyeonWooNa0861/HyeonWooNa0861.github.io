@@ -14,6 +14,8 @@ keywords:
 
 # Dueling Network Architectures for Deep Reinforcement Learning
 
+**Resources:** <a href="/assets/pdfs/research/dueling-network-architectures-deep-reinforcement-learning/dueling-network-architectures-deep-reinforcement-learning.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/dueling-network-architectures-deep-reinforcement-learning/dueling-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |

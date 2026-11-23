@@ -14,7 +14,7 @@ keywords:
 
 # Graph Neural Network-Based Task Offloading and Resource Allocation for Scalable Vehicular Networks
 
-Source PDF: `gnn-task-offloading-scalable-vehicular.pdf`
+**Resources:** <a href="/assets/pdfs/research/gnn-task-offloading-scalable-vehicular/gnn-task-offloading-scalable-vehicular.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/gnn-task-offloading-scalable-vehicular/g-tora-seminar-ko-v3.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

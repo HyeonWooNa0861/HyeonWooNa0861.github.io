@@ -14,7 +14,7 @@ keywords:
 
 # User-Centric 5G Cellular Networks: Resource Allocation and Comparison with the Cell-Free Massive MIMO Approach
 
-Source PDF: `user-centric-5g-vs-cell-free-massive-mimo.pdf`
+**Resources:** <a href="/assets/pdfs/research/user-centric-5g-vs-cell-free-massive-mimo/user-centric-5g-vs-cell-free-massive-mimo.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/user-centric-5g-vs-cell-free-massive-mimo/user-centric-cf-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## Paper Information
 

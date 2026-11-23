@@ -14,7 +14,7 @@ keywords:
 
 # Self-calibration for Language Model Quantization and Pruning
 
-Source PDF: `self-calibration-for-language-model-quantization-and-pruning.pdf`
+**Resources:** <a href="/assets/pdfs/research/self-calibration-for-language-model-quantization-and-pruning/self-calibration-for-language-model-quantization-and-pruning.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/self-calibration-for-language-model-quantization-and-pruning/self-calibration-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
 
 ## 논문 정보
 

@@ -14,6 +14,8 @@ keywords:
 
 # Combinatorial Client-Master MADRL for Task Offloading in MEC
 
+**Resources:** <a href="/assets/pdfs/research/combinatorial-client-master-madrl-task-offloading-mec/combinatorial-client-master-madrl-task-offloading-mec.pdf" target="_blank" rel="noopener">Paper PDF</a> · <a href="/assets/seminars/combinatorial-client-master-madrl-task-offloading-mec/ccm-madrl-seminar-ko-v1.pdf" target="_blank" rel="noopener">Seminar PDF</a>
+
 ## 논문 정보
 
 | 항목 | 내용 |
