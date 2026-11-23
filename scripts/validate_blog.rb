@@ -130,6 +130,7 @@ DYNAMIC_LINK_TARGET_ALLOWLIST = {
     "{{ pager_next.url | relative_url | escape }}"
   ]),
   "_includes/study-catalog.html" => Set.new(["{{ study.url | relative_url | escape }}"]),
+  "_includes/study-note-cards.html" => Set.new(["{{ study.url | relative_url | escape }}"]),
   "pages/assignment/aix.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
   "pages/assignment/algorithms.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),
   "pages/assignment/cpp.md" => Set.new(["{{ assignment.url | relative_url | escape }}"]),

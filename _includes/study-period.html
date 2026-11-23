@@ -1,0 +1,20 @@
+{%- assign study_period = "" -%}
+{%- assign period_rules = site.data.study_periods[include.item.course] -%}
+{%- assign period_slug = include.item.url | split: "/" | last -%}
+{%- if period_rules -%}
+  {%- assign period_prefix = period_slug | slice: 0, 8 -%}
+  {%- if period_prefix == "lecture-" and period_rules.final_from -%}
+    {%- assign lecture_number = period_slug | split: "-" | slice: 1 | first | plus: 0 -%}
+    {%- if lecture_number > 0 -%}
+      {%- if lecture_number >= period_rules.final_from -%}
+        {%- assign study_period = "final" -%}
+      {%- else -%}
+        {%- assign study_period = "midterm" -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- elsif period_rules.midterm_notes contains period_slug or period_rules.midterm_assignments contains period_slug -%}
+    {%- assign study_period = "midterm" -%}
+  {%- elsif period_rules.final_notes contains period_slug or period_rules.final_assignments contains period_slug -%}
+    {%- assign study_period = "final" -%}
+  {%- endif -%}
+{%- endif -%}

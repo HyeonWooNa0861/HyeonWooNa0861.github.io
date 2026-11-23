@@ -35,6 +35,57 @@
   --search-surface-active: #293a2b;
 }
 
+/* Study teaching periods: retain visible labels so color is not the only cue. */
+:root {
+  --study-midterm: #245b9b;
+  --study-midterm-bg: #edf3fc;
+  --study-final: #17675f;
+  --study-final-bg: #edf7f2;
+}
+:root[data-theme="dark"] {
+  --study-midterm: #a2caff;
+  --study-midterm-bg: #202e42;
+  --study-final: #8dd8c9;
+  --study-final-bg: #1c3531;
+}
+[data-study-period="midterm"], .study-period-badge[data-period="midterm"] {
+  --period-color: var(--study-midterm);
+  --period-bg: var(--study-midterm-bg);
+}
+[data-study-period="final"], .study-period-badge[data-period="final"] {
+  --period-color: var(--study-final);
+  --period-bg: var(--study-final-bg);
+}
+.content-catalog-list > .post-card:is([data-study-period="midterm"], [data-study-period="final"]) {
+  border-inline-start: 4px solid color-mix(in srgb, var(--period-color) 40%, var(--period-bg));
+  background: var(--period-bg);
+}
+.content-catalog-list > .post-card:is([data-study-period="midterm"], [data-study-period="final"]):hover {
+  border-color: var(--period-color);
+}
+.study-period-badge {
+  justify-self: start;
+  display: inline-block;
+  color: var(--period-color);
+  background: var(--period-bg);
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.6;
+}
+.study-period-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-block: 0 18px;
+}
+.study-period-legend small { color: var(--text-soft); }
+.study-period-group { margin-block: 24px 36px; }
+.study-period-group > h3 { margin-block: 0 14px; }
+
 html { scroll-padding-top: 100px; }
 .brand { font-family: var(--reader-mono); font-size: 19px; letter-spacing: -1px; }
 .brand > span { color: var(--accent); }

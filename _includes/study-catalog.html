@@ -5,26 +5,47 @@
 
 <h2>Lecture notes</h2>
 
-<ul class="post-list content-catalog-list">
-  {% for study in study_catalog_items %}
-    <li class="post-card content-card">
-      <a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url | escape }}">{{ study.title | escape }}</a>
-      <p>{{ study.topic | escape }}</p>
-      {% include content-taxonomy.html item=study mode="compact" %}
-    </li>
-  {% endfor %}
-</ul>
+{% if site.data.study_periods[include.course] %}
+<div class="study-period-legend" aria-label="Teaching periods">
+<span class="study-period-badge" data-period="midterm">Midterm period</span>
+<span class="study-period-badge" data-period="final">Final period</span>
+<small>Teaching periods, not confirmed exam coverage.</small>
+</div>
+{% endif %}
+
+{% if site.data.study_periods[include.course] %}
+{% assign catalog_periods = "midterm,final,unclassified" | split: "," %}
+{% for catalog_period in catalog_periods %}
+{% assign period_key = catalog_period %}
+{% if catalog_period == "unclassified" %}{% assign period_key = "" %}{% endif %}
+{% assign period_count = 0 %}
+{% for study in study_catalog_items %}
+{% include study-period.html item=study %}
+{% if study_period == period_key %}{% assign period_count = period_count | plus: 1 %}{% endif %}
+{% endfor %}
+{% if period_count > 0 %}
+<section class="study-period-group" aria-labelledby="{{ catalog_period | escape }}-period">
+<h3 id="{{ catalog_period | escape }}-period">{% case catalog_period %}{% when "midterm" %}Midterm period{% when "final" %}Final period{% else %}Other materials{% endcase %}</h3>
+{% include study-note-cards.html period=period_key %}
+</section>
+{% endif %}
+{% endfor %}
+{% else %}
+{% include study-note-cards.html period="all" %}
+{% endif %}
 
 {% if study_assignment_items != empty %}
-  <h2 id="assignments">Assignments</h2>
+<h2 id="assignments">Assignments</h2>
 
-  <ul class="post-list content-catalog-list">
-    {% for study in study_assignment_items %}
-      <li class="post-card content-card">
-        <a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url | escape }}">{{ study.title | escape }}</a>
-        <p>{{ study.topic | escape }}</p>
-        {% include content-taxonomy.html item=study mode="compact" %}
-      </li>
-    {% endfor %}
-  </ul>
+<ul class="post-list content-catalog-list">
+{% for study in study_assignment_items %}
+{% include study-period.html item=study %}
+<li class="post-card content-card" data-study-period="{{ study_period | escape }}">
+{% if study_period != "" %}<span class="study-period-badge" data-period="{{ study_period | escape }}">{% if study_period == "midterm" %}Midterm period{% else %}Final period{% endif %}</span>{% endif %}
+<a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url | escape }}">{{ study.title | escape }}</a>
+<p>{{ study.topic | escape }}</p>
+{% include content-taxonomy.html item=study mode="compact" %}
+</li>
+{% endfor %}
+</ul>
 {% endif %}

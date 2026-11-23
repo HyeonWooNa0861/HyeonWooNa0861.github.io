@@ -1,0 +1,63 @@
+# Periods describe the teaching sequence, not a confirmed final-exam syllabus.
+# Boundaries: current midterm reviews and the post-midterm lecture handoffs.
+Algorithms:
+  final_from: 12
+  midterm_notes:
+    - midterm-review-through-greedy
+  midterm_assignments:
+    - assignment-01-complexity-analysis
+    - assignment-02-sorting-and-dynamic-programming
+Autonomous Driving:
+  final_from: 12
+  midterm_notes:
+    - adc-lab-01-two-stage-vs-one-stage
+    - perception-overview
+    - midterm-review-through-lab-02
+  midterm_assignments:
+    - assignment-01-average-precision
+    - assignment-02-two-stage-vs-one-stage-detection
+    - assignment-03-lidar-3d-object-detection
+Speech and Audio Recognition:
+  final_from: 6
+  midterm_notes:
+    - asr-tokenization-and-decoding-lab
+    - midterm-review
+# AIX before/after-midterm quiz reviews explicitly identify these topics.
+AIX:
+  midterm_notes:
+    - aix-midterm-review
+    - linear-logistic-regression
+    - multi-layer-perceptron
+    - computer-vision-overview
+    - nlp-transformer-overview
+    - transformer-architecture-overview
+  final_notes:
+    - aix-final-review
+    - large-language-models
+    - autonomous-driving-1
+    - autonomous-driving-2
+    - robotics-1
+    - robotics-2
+  midterm_assignments:
+    - aix-quiz-review-before-midterm
+  final_assignments:
+    - aix-quiz-review-after-midterm
+# The final review lists LS13–23. Earlier lectures remain unclassified.
+Data Structures:
+  final_notes:
+    - data-structures-final-review
+    - ls13-sorting
+    - ls14-merge-sort
+    - ls15-quick-sort
+    - ls16-priority-queue-heap
+    - ls17-heap-sort
+    - ls18-hash-search
+    - ls19-hash-search-2
+    - ls20-graph
+    - ls21-graph-traversal
+    - ls22-shortest-path
+    - ls23-minimum-spanning-tree
+# A cumulative final review does not establish the teaching-period boundary.
+C++:
+  final_notes:
+    - final-exam-review

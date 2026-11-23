@@ -1,0 +1,23 @@
+<ul class="post-list content-catalog-list">
+{% assign catalog_passes = "review,lecture" | split: "," %}
+{% for catalog_pass in catalog_passes %}
+{% for study in study_catalog_items %}
+{% include study-period.html item=study %}
+{% assign catalog_slug = study.url | split: "/" | last %}
+{% assign catalog_kind = "lecture" %}
+{% if catalog_slug contains "review" or catalog_slug contains "overview" %}
+{% assign catalog_kind = "review" %}
+{% endif %}
+{% if catalog_kind == catalog_pass %}
+{% if include.period == "all" or study_period == include.period %}
+<li class="post-card content-card" data-study-period="{{ study_period | escape }}" data-note-kind="{{ catalog_kind | escape }}">
+{% if study_period != "" %}<span class="study-period-badge" data-period="{{ study_period | escape }}">{% if study_period == "midterm" %}Midterm period{% else %}Final period{% endif %}</span>{% endif %}
+<a class="branch-card-link" data-label="{{ study.title | escape }}" href="{{ study.url | relative_url | escape }}">{{ study.title | escape }}</a>
+<p>{{ study.topic | escape }}</p>
+{% include content-taxonomy.html item=study mode="compact" %}
+</li>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+</ul>
