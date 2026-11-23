@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 04 Linear Algebra 3"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 3"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 선형 독립 판별 | REF의 pivot column은 무엇을 알려주는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 | 21–25 | 좌표의 유일성과 변환행렬 $$A_{\Phi}(i,j)=\alpha_{ij}$$ | 6, 6.1, 6.2 |
 
 페이지 26–27은 Q&A·마무리로, 새로운 수식 항목은 없다.
+
+</details>
 
 ## 1. REF로 선형 독립 확인
 
@@ -323,7 +328,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 기저 문제는 먼저 span을 확인하고 그다음 linear independence를 검사하며, 기저 벡터 수를 dimension으로 연결한다. rank-nullity 식에 matrix의 column 수와 rank를 대입해 null space dimension을 계산하고 Ax=b의 consistency는 augmented rank로 판단한다. 선형 사상의 injective·surjective 여부를 null space와 image space에 연결해 외우면 용어 혼동이 줄어든다.
+
+</details>
 
 ## 복습 질문
 

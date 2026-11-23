@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-18 18:30:39 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 6: Perception (4) - Faster R-CNN and Feature Pyramid Networks"
 course: "Autonomous Driving"
 topic: "Region Proposal Networks, Anchor Boxes, and Multiscale Features"
@@ -212,11 +212,16 @@ FPN을 Faster R-CNN에 결합할 때 각 pyramid 수준에 RPN head를 두어 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. **먼저 병목 사슬을 외운다:** R-CNN의 proposal별 CNN → Fast R-CNN의 공유 feature → Faster R-CNN의 학습형 RPN → FPN의 다중 크기 feature.
 2. **숫자로 검산한다:** 강의의 $$5\times6$$ feature, $$K=6$$이면 anchor는 180개, objectness logit은 360개, box offset 숫자는 720개다. `300 proposals`가 이 장난감 feature 예시와 다름을 설명한다.
 3. **Anchor label을 구분한다:** positive의 `최고 IoU 또는 >0.7`, negative의 `<0.3`, neutral의 학습 제외를 작은 표로 다시 써 본다.
 4. **FPN 그림을 설명한다:** image pyramid와 feature hierarchy의 계산·의미 한계를 먼저 말하고, stage 5의 7×7을 stage 4의 14×14에 맞춰 합하는 이유를 설명한다.
 5. **실패 조건을 기억한다:** RPN anchor가 맞지 않으면 proposal recall이 떨어지고, FPN도 정보가 처음부터 영상에 없거나 너무 작으면 복구할 수 없다.
+
+</details>
 
 ## 복습 질문
 

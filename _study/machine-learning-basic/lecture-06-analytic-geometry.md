@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 06 Analytic Geometry"
 course: "Machine Learning Basic"
 topic: "Analytic Geometry"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-06.pdf`
 > **핵심:** 모든 내적은 norm을 만들지만, 모든 norm이 내적에서 유도되지는 않는다. Symmetric positive definite(SPD) 행렬은 내적을 나타내는 데 사용할 수 있다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -44,6 +47,8 @@ Source PDF: `machine-learning-basic-lecture-06.pdf`
 | 32–36 | 2차원·3차원·$$n$$차원 rotation matrix와 보존 성질 | 7, 7.1, 8.4 |
 
 페이지 37은 Q&A 마무리이다.
+
+</details>
 
 ## 1. Norm
 
@@ -338,7 +343,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 inner product에서 norm, distance, angle을 차례로 계산해 각 정의가 앞 개념에 의존하는 흐름을 잡는다. SPD 조건 xᵀAx>0과 orthogonal 조건 AᵀA=I를 섞지 말고, 후자가 길이와 각도를 보존함을 직접 계산한다. orthogonal projection은 column space에서 가장 가까운 점을 찾는 절차로 재현해 least squares와의 연결까지 확인한다.
+
+</details>
 
 ## 복습 질문
 

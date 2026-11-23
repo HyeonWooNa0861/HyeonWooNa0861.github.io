@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:02 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 17: Traveling Salesman Problem"
 course: "Algorithms"
 topic: "State-Space Trees, Backtracking, and Branch-and-Bound"
@@ -237,7 +238,12 @@ def tsp_branch_and_bound(weight):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 p. 8에서 방향별 숫자를 따로 읽고 p. 16의 leaf 비용 48과 40을 직접 더한다. 그다음 p. 24의 가지 옆 숫자를 “현재까지 확정된 비용”으로, p. 30의 괄호 숫자를 “완성 비용의 낙관적 하한”으로 구분한다. 마지막으로 incumbent 40과 각 bound를 비교하며 어떤 node가 잘리는지 표시하면 backtracking과 branch-and-bound의 차이가 드러난다.
+
+</details>
 
 ## 복습 질문
 

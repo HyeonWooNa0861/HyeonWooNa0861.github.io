@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"
@@ -32,6 +32,9 @@ Source PDF: `LS16_priority_queue_and_heap.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 우선순위 큐 | FIFO가 아니라 우선순위 기준으로 꺼내려면 어떻게 해야 하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS16_priority_queue_and_heap.pdf`
 | 3 | 힙 정의 | 완전 이진 트리와 heap property는 무엇인가? |
 | 4 | 힙의 배열 표현 | 완전 이진 트리를 배열로 어떻게 저장하는가? |
 | 5 | buildHeap/removeMax | `sift down`으로 힙 속성을 어떻게 복구하는가? |
+
+</details>
 
 ## 1. 우선순위 큐 Priority Queue
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 7](https://www.youtube.com/watch?v=
 
 Query와 Chunk는 원문 문자열 그대로 비교되는 것이 아니라 각각 embedding 벡터로 바뀐다. candidate retrieval은 이 벡터의 유사도로 넓게 후보를 모으는 단계이며, 정밀한 순위 조정은 다음 reranking 단계가 담당한다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** 학습이 끝난 LLM은 이후의 정보를 자동으로 알 수 없고, 긴 프롬프트에 모든 지식을 넣기도 어렵다. RAG는 필요한 문서를 검색해 답변에 연결하고, tool calling은 모델이 외부 기능을 사용하게 하며, 에이전트는 이 두 능력을 여러 단계의 작업으로 조직한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Query와 Chunk는 원문 문자열 그대로 비교되는 것이 아니라 각�
 | 6 | tool calling | LLM은 함수 구현을 직접 보는 대신 어떤 API 정보로 도구와 인자를 선택하는가? |
 | 7 | MCP와 에이전트 | MCP, ReAct, Agent2Agent는 도구와 다중 단계 행동을 어떻게 표준화하거나 확장하는가? |
 
+</details>
 ## 핵심 내용
 
 학습이 끝난 LLM의 가중치에는 이후의 정보가 자동으로 반영되지 않는다. 가중치를 계속 갱신하면 회귀 위험과 유지보수 비용이 생기고, 모든 최신 정보를 긴 프롬프트에 넣으면 컨텍스트 길이와 토큰 비용, 긴 문맥에서의 정보 검색 성능이 문제가 된다. RAG는 질문에 필요한 문서만 찾아 프롬프트에 더한 뒤 답을 만드는 retrieve–augment–generate 절차로 이 문제를 다룬다.
@@ -207,6 +207,8 @@ $$f(t,D)$$는 document term frequency, $$\lvert D\rvert$$와 $$\operatorname{avg
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=h-7S6HNq0Vg){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

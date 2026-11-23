@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-27 11:20:00 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 12: Object Tracking I"
 course: "Autonomous Driving"
 topic: "Data Association and the Hungarian Algorithm"
@@ -336,10 +337,15 @@ Hungarian algorithm은 **주어진 후보와 비용 안에서** 최적 배정을
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 14–17쪽의 두 frame에서 ID, detection, 후보 연결을 각각 짚고 비용행렬로 옮긴다.
 2. 19쪽의 두 행에서 최소값을 골라 충돌을 확인한 뒤, 서로 다른 열을 고르는 총비용 24와 29를 비교한다.
 3. 21–28쪽의 원행렬에서 시작해 행 감소 → 열 감소 → 최소 zero cover → 미덮인 값 조정 → 독립적인 0 선택을 직접 수행한다.
 4. 29쪽에서 dummy가 한 번 선택되는 이유와 실제 비용 31, padding 포함 비용 121의 차이를 설명한다.
+
+</details>
 
 ## 복습 질문
 

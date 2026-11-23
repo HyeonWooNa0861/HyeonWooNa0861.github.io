@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.ed
 
 > **핵심:** CNN architecture의 발전은 단순한 층 증가가 아니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 $$3\times3$$ filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습된다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.ed
 | 6 | Normalization and regularization | activation scale과 일반화를 어떻게 안정화하는가? |
 | 7 | Transfer learning | 데이터가 적을 때 pretrained model을 어떻게 활용하는가? |
 
+</details>
 ## 1. CNN layer의 역전파
 
 Max pooling은 순전파 창에서 최댓값의 위치를 저장하고, 역전파 때 그 위치로만 upstream gradient를 보낸다. 같은 입력이 겹치는 여러 창의 최댓값이었다면 gradient를 합한다. Average pooling은 gradient를 창의 원소 수로 나누어 모든 입력에 전달한다.
@@ -269,6 +271,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **97쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -280,6 +285,7 @@ $$
 
 공식 강의의 normalization 중심 예시는 **LayerNorm**이다. 본문의 BatchNorm·InstanceNorm·GroupNorm 비교와 BatchNorm 수식 유도는 혼동을 막기 위해 강의 범위를 넓힌 **작성자 보충**이며, He scale과 residual gradient 역시 보충 유도다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 6](https://www.youtube.com/watch?v=aVJy4O5TOk8){:target="_blank" rel="noopener"}

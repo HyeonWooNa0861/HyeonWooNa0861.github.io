@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 4: Perception II — Localization, Detection, and R-CNN"
 course: "Autonomous Driving"
 topic: "Object Localization, Object Detection, and Region-Based CNNs"
@@ -180,10 +180,15 @@ Localization은 **하나의 what+where**, detection은 **가변 개수의 what+w
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 - 9–12쪽의 네 작업 비교를 먼저 외우지 말고, 각 작업이 **출력에서 추가하는 정보**를 그림 없이 설명한다.
 - 13–20쪽은 class score·box 좌표·loss·IoU를 한 예에 연결한다. IoU는 점수 평가에 쓰이는 정의이고, 14쪽의 L2는 학습 손실이라는 역할 차이를 기억한다.
 - 27–36쪽을 읽을 때 제안 후보 수, 후보별 CNN 호출 수, positive/negative 기준을 따로 적는다. 33–34쪽 수식은 숫자 예를 다시 decoding해 검산한다.
 - `Source Check`를 통해 강의의 개념적 파이프라인과 2014년 원 R-CNN 구현을 혼동하지 않는다.
+
+</details>
 
 ## 복습 질문
 

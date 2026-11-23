@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 가운데 “teddy bear” query에서 여러 key로 뻗는 선은 한 토큰이 문장 전체를 참조할 수 있음을 뜻한다. 각 연결의 점수는 softmax 뒤 가중치가 되고, 그 가중치로 value를 합쳐 문맥이 반영된 새 표현을 만든다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** 현대 LLM은 토큰 표현과 Transformer 구조 위에 효율적인 학습·추론 기법, 선호 조정, 검색·도구 사용, 평가 체계를 쌓아 발전했다. 마지막 강의는 이 흐름을 복습하고 멀티모달·diffusion 기반 언어 모델 등 이후의 연구 방향과 연결한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 | 6 | 멀티모달과 diffusion LLM | Transformer가 image로 확장되고 diffusion이 text로 들어오는 양방향 흐름은 무엇을 보여 주는가? |
 | 7 | 앞으로의 연구와 사용 | data, architecture, hardware, agent reliability, safety에서 남아 있는 핵심 과제는 무엇인가? |
 
+</details>
 ## 핵심 내용
 
 토큰화와 word2vec은 텍스트를 모델이 처리할 표현으로 바꾸고, RNN의 긴 의존성 문제는 self-attention과 Transformer로 이어진다. 강의는 encoder·decoder 구조에서 RoPE, grouped-query attention, pre-norm, BERT·GPT·T5, MoE와 temperature sampling까지 주요 변형을 다시 연결한다. 학습 규모에서는 파라미터 수와 토큰 수의 균형, 100B 파라미터에 최소 2T 토큰이라는 강의의 경험칙, FlashAttention의 HBM·SRAM 최적화, data/model parallelism을 복습한다.
@@ -239,6 +239,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

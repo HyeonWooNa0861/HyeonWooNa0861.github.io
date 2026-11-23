@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS03 Algorithm Analysis"
 course: "Data Structures"
 topic: "Algorithm Analysis"
@@ -32,6 +32,9 @@ Source PDF: `LS03_algorithm_analysis.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 알고리즘 정의 | 좋은 알고리즘은 어떤 조건을 만족해야 하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS03_algorithm_analysis.pdf`
 | 3 | 성능 분석 | 실제 측정과 이론 분석은 각각 언제 유용한가? |
 | 4 | 수행 시간 함수 | 입력 크기 `n`에 따라 연산 횟수를 어떻게 세는가? |
 | 5 | 점근적 분석 | 정확한 시간보다 증가 추세가 중요한 이유는 무엇인가? |
+
+</details>
 
 ## 1. 알고리즘의 조건
 

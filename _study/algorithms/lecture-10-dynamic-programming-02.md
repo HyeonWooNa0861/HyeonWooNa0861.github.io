@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 10: Dynamic Programming II"
 course: "Algorithms"
 topic: "Longest Common Subsequences, Tiling, and Path Reconstruction"
@@ -388,12 +388,17 @@ def make_one_with_path(n):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. LCS에서 `substring`과 `subsequence`의 차이를 예시로 설명하고, 상태 $$L[i][j]$$가 어떤 접두사를 뜻하는지 먼저 말한다.
 2. LCS 점화식의 두 경우를 외우기 전에 “마지막 문자가 다르면 둘 중 적어도 하나는 버려야 한다”는 증명 논리를 재현한다.
 3. `ABCBDAB`과 `BDCABA`의 표를 직접 채우고 오른쪽 아래에서 역추적한다. 동점 방향에 따라 서로 다른 LCS가 나올 수 있음을 확인한다.
 4. 타일링은 첫 칸을 세로로 덮는 경우와 가로로 덮는 경우가 왜 겹치지 않고 전체를 덮는지 설명한다. 빈 보드의 경우의 수 $$T[0]=1$$이 점화식을 단순하게 만든다는 점도 확인한다.
 5. 1로 만들기에서 `dp`는 최소 횟수, `parent`는 실제 선택이라는 역할 차이를 구분한다. 값만 맞는 구현과 경로까지 출력하는 구현의 요구 정보가 다르다.
 6. 각 알고리즘의 시간·공간 복잡도에서 상태 수, 상태당 연산 수, 복원 비용을 따로 센다.
+
+</details>
 
 ## 복습 질문
 

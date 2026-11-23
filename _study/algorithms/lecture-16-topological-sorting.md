@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:01 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 16: Topological Sorting"
 course: "Algorithms"
 topic: "DAG Ordering with Kahn's Algorithm and DFS Postorder"
@@ -221,7 +222,12 @@ def topological_sort_dfs(graph):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 p. 11의 모든 화살표를 “앞 작업 → 뒤 작업”으로 읽고, 서로 직접 연결되지 않은 작업의 순서를 바꿔 본다. 다음으로 p. 20에서 한 정점을 제거할 때 어느 정점의 indegree가 줄어드는지 표로 적는다. 마지막으로 p. 24의 DFS 그림에서 discovery 순서와 finish 순서를 따로 기록하면 두 알고리즘의 방향 차이가 선명해진다.
+
+</details>
 
 ## 복습 질문
 

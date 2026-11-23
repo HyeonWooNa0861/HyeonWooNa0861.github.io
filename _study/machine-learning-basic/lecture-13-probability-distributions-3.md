@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:32:41 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-13.pdf`
 > **핵심:** Standard normal distribution은 평균이 0이고 분산이 1인 Gaussian이다. Multivariate Gaussian은 평균 벡터 $$\mu$$와 공분산 행렬 $$\Sigma$$로 정의된다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +50,8 @@ Source PDF: `machine-learning-basic-lecture-13.pdf`
 | 20 | 변수변환으로 본 Gaussian 선형변환 | 12, 13.1, 13.3 |
 
 페이지 21은 Q&A 마무리이다.
+
+</details>
 
 ## 1. Gaussian Distribution
 
@@ -624,7 +629,12 @@ Gaussian mixture가 Gaussian이라는 보장은 없다. 합 $$X+Y$$의 Gaussian 
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 standard Gaussian에서 multivariate Gaussian으로 확장하며 mean vector와 covariance block의 shape를 먼저 확인한다. marginal·conditional Gaussian 공식을 block별로 적용하고, y=Ax에서 평균 Aμ와 공분산 AΣAᵀ를 직접 계산한다. sampling은 z에서 y=μ+Lz로 옮기는 과정, density 변환은 Jacobian으로 부피 변화를 보정하는 과정이라는 차이를 분리한다.
+
+</details>
 
 ## 복습 질문
 

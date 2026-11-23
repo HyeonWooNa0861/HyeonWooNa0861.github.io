@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
@@ -30,7 +30,8 @@ Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** Vision-language foundation model의 능력은 단순히 모델을 크게 만든 결과가 아니다. **어떤 image-text supervision을 수집하고, global alignment를 넘어 region·point grounding을 어떻게 가르치며, 다른 도구와 어떻게 연결하는가**가 실제 유용성과 신뢰성을 결정한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 | 5 | SAM/SAM2 and chaining | Promptable image·video segmentation을 다른 model과 어떻게 연결하는가? |
 | 6 | Evaluation | Foundation model의 실제 능력을 어떻게 검증하는가? |
 
+</details>
 ## 1. Foundation model의 범위
 
 전통적 computer vision model은 한 dataset의 고정 label을 예측했다. Foundation model은 훨씬 넓은 data와 objective로 pretrain한 뒤 classification, retrieval, captioning, VQA, segmentation 같은 여러 task에 adapt한다. 강의는 단일 benchmark의 높은 숫자보다 distribution shift와 새로운 개념에 대한 generalization을 평가해야 한다고 강조한다.
@@ -171,6 +173,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **148쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -183,6 +188,7 @@ $$
 
 Architecture와 사례는 강의 원문 요약이다. CLIP의 대칭 loss 및 logit gradient 전개는 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=mQOK0Mfyrkk){:target="_blank" rel="noopener"}

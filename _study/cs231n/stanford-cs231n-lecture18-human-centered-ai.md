@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"
@@ -28,7 +28,8 @@ Source: [Stanford CS231N Spring 2025 Lecture 18](https://www.youtube.com/watch?v
 
 > **핵심:** Human-centered AI는 정확도 뒤에 윤리 점검표를 붙이는 일이 아니다. 인간의 지각 한계를 보완하고 실제 필요를 해결하도록 **문제 선택, sensor, privacy representation, workflow, robot task, 평가 기준을 처음부터 사람 중심으로 설계**하는 접근이다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -38,6 +39,7 @@ Source: [Stanford CS231N Spring 2025 Lecture 18](https://www.youtube.com/watch?v
 | 4 | Ambient intelligence | Hospital과 home workflow에서 어떤 결과를 측정해야 하는가? |
 | 5 | Human-centered robotics | 가능한 task가 아니라 사람들이 원하는 task를 어떻게 찾는가? |
 
+</details>
 ## 1. Recognition에서 spatial intelligence로
 
 강의는 visual intelligence가 image label 하나보다 훨씬 넓다고 돌아본다. 사람은 scene에서 object와 관계, action, intent를 읽고 앞으로 벌어질 일을 예측한다. 이러한 spatial intelligence는 3D world를 이해하고 행동을 계획하는 embodied system으로 이어진다.
@@ -99,6 +101,9 @@ Robotics 연구는 model이 수행하기 쉬운 benchmark task를 택하기 쉽�
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 이 강의에는 게시된 공식 PDF가 없어, 공식 영상의 **전체 transcript**와 타임라인을 끝까지 대조했다. 아래는 본문 판단을 추적할 수 있는 대표 timestamp다.
 
 | 영상 위치 | 확인한 내용 | 노트 대응 |
@@ -110,6 +115,7 @@ Robotics 연구는 model이 수행하기 쉬운 benchmark task를 택하기 쉽�
 
 본문은 강연의 사례와 주장을 요약한다. Privacy-by-design 운영 원칙, outcome 중심 평가 항목, 책임·override 권고는 사례에서 실무적으로 확장한 **작성자 해설**이며 수학적 증명 대상은 없다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=g8UaBfj6Sh8){:target="_blank" rel="noopener"}

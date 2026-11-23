@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 1: Introduction"
 course: "CS236"
 topic: "Deep Generative Models Overview"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 생성 모델의 문제의식 | 복잡한 이미지, 언어, 음성, 행동을 "이해한다"는 말을 생성 관점에서 어떻게 해석할 수 있는가? |
@@ -46,6 +49,8 @@ keywords:
 | slides 45–50 | course roadmap, prerequisite, logistics, project | slide 45의 학습 목표를 아래 작성자 보충으로 명시; 나머지는 운영 정보 |
 
 > **원문 확인 범위:** 공식 PPTX 50장의 텍스트와 순서는 확인했지만, 애니메이션에 따라 달라지는 수식의 표시 상태까지 독립적으로 확인하지는 못했다. 아래 해설은 slides 16–17의 수식과 slide 45의 로드맵을 기준으로 하며, 원문에 없는 전개는 작성자 보충으로 표시한다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -177,6 +182,9 @@ $$P$$와 사건의 probability는 무차원이다. Continuous density는 $$x$$�
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - 생성 모델은 "그럴듯한 결과를 만든다"에서 끝나지 않고, 데이터가 어떤 확률 구조를 가지는지 모델링하는 문제다.
 - $$p(x)$$를 직접 또는 간접적으로 표현하면 generation, density estimation, anomaly detection, representation learning을 같은 틀에서 볼 수 있다.
 - Control signal을 넣으면 생성 모델은 image editing, translation, reconstruction처럼 조건부 문제를 풀 수 있다.
@@ -184,17 +192,24 @@ $$P$$와 사건의 probability는 무차원이다. Continuous density는 $$x$$�
 - 수업 전체는 representation, learning, inference의 세 질문으로 돌아간다. 어떤 분포를 어떻게 표현하는가, 어떤 기준으로 학습하는가, 어떻게 효율적으로 샘플링하거나 역추론하는가가 핵심이다.
 - Autoregressive model, flow, latent variable model, GAN, energy-based model, score-based diffusion model은 이 세 질문에 대한 서로 다른 답이다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 이 강의의 핵심은 deep generative model을 확률분포 $$p(x)$$를 학습하는 data simulator로 보는 것이다. 좋은 생성 모델은 새 데이터를 만들 뿐 아니라, 어떤 입력이 자연스러운지 평가하고, 누락된 정보를 채우고, 조건에 맞는 출력을 만들며, 데이터 내부 표현을 배운다. 이후 강의에서 등장하는 모든 모델군은 "고차원 분포를 compact하게 표현하고, 데이터로 학습하고, 필요한 출력을 추론한다"는 같은 문제를 서로 다른 방식으로 푼다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. 먼저 생성 모델을 이미지 생성 예시로만 보지 말고 $$p(x)$$, $$p(x \mid y)$$, sampling, likelihood라는 네 단어로 다시 정의한다.
 2. Graphics engine과 statistical generative model을 비교한다. 전자는 강한 물리 prior를 직접 넣고, 후자는 데이터와 비교적 약한 구조적 prior로 분포를 학습한다.
 3. Text-to-image, CT reconstruction, machine translation을 모두 conditional generation으로 묶어 본다.
 4. Representation, learning, inference가 각각 어떤 질문인지 외운 뒤, 뒤 강의의 모델군을 이 세 축에 배치한다.
 5. Deepfake 논의는 부가 윤리 주제가 아니라, 모델이 실제 데이터 분포를 얼마나 잘 모사하는지와 직접 연결된 사회적 결과로 이해한다.
+
+</details>
 
 ## 복습 질문
 

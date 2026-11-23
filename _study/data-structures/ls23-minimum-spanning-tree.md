@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-05 01:51:19 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"
@@ -32,6 +32,9 @@ Prim은 트리 밖 정점 중 key가 가장 작은 정점을 추가하고, 새 �
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Spanning Tree | 모든 정점을 포함하는 트리 형태의 부분 그래프란 무엇인가? |
@@ -46,6 +49,8 @@ Prim은 트리 밖 정점 중 key가 가장 작은 정점을 추가하고, 새 �
 | 10 | Dijkstra vs Prim | 두 알고리즘은 비슷해 보이지만 무엇을 최적화하는가? |
 
 23강은 가중치가 있는 무방향 연결 그래프에서 최소 신장 트리(Minimum Spanning Tree, MST)를 찾는 문제를 다룬다. 핵심은 "한 시작점에서의 최단 거리"가 아니라 "모든 정점을 최소 총비용으로 연결하는 트리"를 찾는 것이다. 강의의 중심 알고리즘은 Prim's Algorithm이다.
+
+</details>
 
 ## 1. Spanning Tree
 

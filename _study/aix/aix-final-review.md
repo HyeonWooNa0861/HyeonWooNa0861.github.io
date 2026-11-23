@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 18:13:14 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"
@@ -35,6 +35,9 @@ Source Materials:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 범위 | 기말 대비 핵심 질문 |
 |---:|---|---|
 | 1 | Linear Regression | feature, target, residual, squared loss, gradient update를 구분할 수 있는가? |
@@ -48,6 +51,8 @@ Source Materials:
 | 9 | Autonomous Driving | modular stack, error propagation, occupancy, shared world representation을 구분할 수 있는가? |
 | 10 | Imitation Learning | behavioral cloning과 DAggER가 state distribution shift를 어떻게 다루는가? |
 | 11 | Robotics Scaling | VLA, ego-video, world model, action fine-tuning, physical RL을 하나의 흐름으로 묶을 수 있는가? |
+
+</details>
 
 ## 0. 우선순위
 

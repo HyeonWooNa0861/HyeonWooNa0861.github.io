@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:16:19 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Final Exam Review"
 course: "C++"
 topic: "Study and Assignment Integrated Review"
@@ -63,6 +63,9 @@ Source Pages:
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 원문 | 페이지 | 종합 복습의 대응 | 수식·복잡도 판정 |
 |---|---:|---|---|
 | `C 프로그래밍 소개.pdf` | 1–41 | C/C++ 입문, 자료형·함수·포인터·배열·구조체 | 10–11쪽 경우의 수와 31·40쪽 크기·평균식은 [C Programming Fundamentals](/study/cpp/c-programming-basics/)에서 유도 |
@@ -90,9 +93,14 @@ Source Pages:
 
 강의 PDF 16개 343쪽과 과제 PDF 4개 46쪽, 합계 389쪽을 페이지 이미지로 대조했다. 종합 글에서는 수식을 중복 전개하지 않고 정확한 원문 페이지와 상세 유도가 있는 하위 글을 연결했다. 단, 과제의 유리수 사칙연산과 gcd 정규화는 이 글의 핵심 구현에 직접 쓰이므로 아래에서 완전한 식과 실패 조건을 유지한다.
 
+</details>
+
 > **핵심:** C++ 객체는 데이터와 동작뿐 아니라 생성·소멸 시점도 함께 설계한다. RAII는 자원의 획득과 해제를 객체 수명에 연결해 누락과 중복 해제를 줄인다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 큰 주제 | 시험에서 묻는 핵심 |
 |---|---|---|
@@ -107,6 +115,8 @@ Source Pages:
 | 9 | 상속과 다형성 | 생성 순서, 접근 지정자, overriding, virtual, vtable |
 | 10 | 템플릿 | 함수/클래스 템플릿, 비타입 템플릿, 특수화, 헤더 정의 |
 | 11 | STL | 컨테이너, iterator, algorithm, erase-remove, `map`/`set` |
+
+</details>
 
 ### 원본 그림으로 다시 잡는 실행 구조
 

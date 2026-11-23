@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 6: Variational Autoencoders II"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -24,6 +24,9 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 > **핵심:** Lecture 6은 전 강의에서 만든 ELBO를 실제 VAE 학습 알고리즘으로 바꾸는 강의다. VAE는 $$z\sim N(0,I)$$를 먼저 뽑고, decoder network가 $$p_{\theta}(x\mid z)$$의 mean과 covariance를 만든다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -61,6 +64,8 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 | p. 20 | reconstruction-minus-KL objective | `핵심 내용`, `핵심 수식 유도` | joint factorization에서 나오는 정확한 등식 |
 
 추정량의 유한 표본 성질, total-derivative 전개, 적용 실패 조건은 강의 자료의 모델 정의와 목적함수에서 출발한 **작성자 보충**이다. 원문에 직접 제시된 결과와 구분해 읽어야 한다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -250,6 +255,9 @@ $$K$$와 sample index는 무차원이다. Gradient의 단위는 dimensionless EL
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - ELBO는 likelihood 자체가 아니라 likelihood의 lower bound이므로, bound tightness와 optimization을 함께 봐야 한다.
 - $$\phi_i$$를 데이터마다 따로 최적화하면 유연하지만, 대규모 데이터와 test-time inference에는 비싸다.
 - Reparameterization trick은 "sampling node"를 미분 가능한 deterministic transform으로 바꾸는 기법이다.
@@ -257,17 +265,24 @@ $$K$$와 sample index는 무차원이다. Gradient의 단위는 dimensionless EL
 - Decoder가 너무 강하면 latent code를 무시할 수 있고, tighter ELBO가 항상 더 좋은 sample이나 informative representation을 뜻하지는 않는다.
 - 이후 연구 방향은 더 좋은 encoder posterior family, 더 강한 decoder/prior, KL 이외 objective로 확장된다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 6의 핵심은 VAE가 "ELBO를 최적화하는 encoder-decoder generative model"이라는 점이다. Encoder는 $$x$$에서 $$z$$의 approximate posterior를 만들고, decoder는 $$z$$에서 $$x$$를 생성한다. Reparameterization trick은 이 구조를 end-to-end로 학습 가능하게 만들고, amortized inference는 데이터마다 posterior 최적화를 반복하지 않게 해 VAE를 실용적인 deep generative model로 만든다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. $$\log p_{\theta}(x)=\mathrm{ELBO}+\mathrm{KL}$$ 관계를 먼저 외우지 말고, "posterior approximation gap"으로 이해한다.
 2. $$\theta$$ gradient와 $$\phi$$ gradient가 왜 난이도가 다른지 sample distribution 의존성으로 설명해 본다.
 3. $$z=\mu+\sigma\epsilon$$ 식에서 randomness와 trainable parameter가 분리되는 위치를 표시한다.
 4. Amortized inference의 장점과 손실을 함께 정리한다. 빠르고 일반화 가능하지만, 데이터별 자유로운 $$\phi_i$$보다 bound가 느슨할 수 있다.
 5. Autoencoder objective와 VAE objective를 비교해 reconstruction term과 KL regularization의 역할을 구분한다.
+
+</details>
 
 ## 복습 질문
 

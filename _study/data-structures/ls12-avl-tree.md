@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS12 AVL Trees"
 course: "Data Structures"
 topic: "AVL Trees"
@@ -32,6 +32,9 @@ Source PDF: `LS12_AVL_tree.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | AVL 정의 복습 | 균형 조건은 무엇이고 왜 필요한가? |
@@ -39,6 +42,8 @@ Source PDF: `LS12_AVL_tree.pdf`
 | 3 | AVL 삽입 예제 | 실제 삽입 순서에서 불균형 노드를 어떻게 찾는가? |
 | 4 | AVL 삭제 | 삭제 후 불균형은 어떻게 복구하는가? |
 | 5 | 장단점 | AVL은 어떤 비용을 내고 어떤 성능을 보장하는가? |
+
+</details>
 
 ## 1. AVL 트리 핵심
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 08 Matrix Decomposition 2"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 2"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-08.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Cholesky 분해 | SPD 행렬은 어떻게 삼각행렬 곱으로 나뉘는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-08.pdf`
 | 14–16 | 추천 행렬과 truncated SVD $$A_k=\sum_{i=1}^k\sigma_i u_iv_i^T$$ | 6, 7.4 |
 
 페이지 17은 Q&A 마무리이다.
+
+</details>
 
 ## 1. Cholesky 분해
 
@@ -241,7 +246,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 SPD 여부를 먼저 확인해야 Cholesky를 적용할 수 있고, eigen-decomposition은 충분한 독립 eigenvector가 있을 때 가능하다는 전제부터 점검한다. SVD는 직사각 행렬에도 적용되므로 AᵀA에서 right singular vector, AAᵀ에서 left singular vector를 찾는 계산 연결을 재현한다. singular value를 큰 순서로 남기는 low-rank approximation이 차원 축소·추천·노이즈 제거에 쓰이는 이유를 설명한다.
+
+</details>
 
 ## 복습 질문
 

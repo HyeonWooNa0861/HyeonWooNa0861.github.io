@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ References"
 course: "C++"
 topic: "References and Value Passing"
@@ -21,6 +21,9 @@ Source PDF: `참조 (Reference).pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 |
 |---:|---|---|
 | 1–3 | reference 정의와 초기화 규칙 | 1–2절 |
@@ -30,9 +33,14 @@ Source PDF: `참조 (Reference).pdf`
 
 10쪽 전체를 페이지 이미지로 대조했다. `&`, `*`, `nullptr`는 이 문맥에서 수학 연산자가 아니라 C++ declarator·operator이고, 핵심은 aliasing과 lifetime 규칙이다. 따라서 별도의 수학 유도는 필요하지 않으며 각 코드의 유효·무효 조건을 본문에서 설명했다.
 
+</details>
+
 > **핵심:** 참조는 기존 객체에 붙이는 별명으로, 선언할 때 참조 대상을 지정해야 한다. 포인터와 달리 이후 다른 객체를 가리키도록 참조 자체를 바꿀 수 없다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +49,8 @@ Source PDF: `참조 (Reference).pdf`
 | 3 | 함수 인자 전달 | 포인터 대신 참조를 쓰면 무엇이 좋아지는가? |
 | 4 | const 참조 | 읽기 전용 전달은 왜 `const T&`가 좋은가? |
 | 5 | 참조 반환 | 언제 참조를 반환해도 안전한가? |
+
+</details>
 
 ## 1. 참조란?
 

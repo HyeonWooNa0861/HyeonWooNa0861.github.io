@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-28 23:10:00 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 13: Object Tracking II"
 course: "Autonomous Driving"
 topic: "Kalman Filtering, SORT, DeepSORT, and MOTA"
@@ -373,11 +374,16 @@ MOTA 식에는 box의 위치 오차 크기나 fragmentation 수가 직접 들어
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 9쪽의 prediction과 update를 “검출이 아직 없는 시점”과 “해당 ID에 검출을 연결한 시점”으로 나누어 설명한다.
 2. 예측 110 pixel, 측정 114 pixel 예제에서 측정 분산을 9에서 1로 낮추면 보정값이 어느 쪽으로 이동하는지 먼저 예상한 뒤 계산한다.
 3. 13쪽 파이프라인에서 Detector와 Prediction이 각각 무엇을 출력하며 Assignment 이후 어떤 track이 update되는지 짚는다.
 4. 14쪽의 7.2를 실제 cosine distance로 읽을 수 없는 이유와, appearance만으로 해결되지 않는 경우를 설명한다.
 5. 16쪽 범례를 먼저 읽고 왼쪽·오른쪽의 FN·FP·IDSW를 직접 집계한다. TP hypothesis와 매칭된 GT 점을 중복 계산하지 않는다.
+
+</details>
 
 ## 복습 질문
 

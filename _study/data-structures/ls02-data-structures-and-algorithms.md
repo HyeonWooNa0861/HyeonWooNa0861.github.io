@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS02 Data Structures and Algorithms"
 course: "Data Structures"
 topic: "Data Structures and Algorithms"
@@ -31,6 +31,9 @@ Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 자료구조의 의미 | 데이터를 어떻게 저장하고 처리해야 효율적인가? |
@@ -52,6 +55,8 @@ Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
 이 강의는 자료구조를 선택하는 기본 개념에 초점을 두며, 별도의 유도가 필요한 핵심 수식은 다루지 않는다. 따라서 뒤 강의에서 배우는 $$O(1)$$, $$O(\log n)$$ 같은 복잡도를 이 자료의 결론으로 소급하지 않는다. Hash와 tree의 비교는 p. 20의 질의 유형 예시를 풀어쓴 것으로, 구현·충돌 처리·균형 조건에 따른 정량 성능 분석까지 뜻하지는 않는다.
 
 첨부한 강의 PDF의 p. 1은 이 슬라이드가 Prof. Ha-Myung Park의 자료를 바탕으로 작성되었다고 밝힌다. 아래 해설은 원문의 개념 관계를 중심으로 구성하고, 이후 강의에서 다룰 정량적인 성능 분석과 구분한다.
+
+</details>
 
 ## 1. 자료구조란?
 

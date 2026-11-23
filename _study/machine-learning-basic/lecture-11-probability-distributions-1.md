@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 확률론의 필요성 | 불확실성을 어떻게 수량화하는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 | 21–23 | joint CDF/PDF, conditional density와 piecewise 경계 | 7, 8.5, 8.6 |
 
 페이지 24는 Q&A 마무리이다.
+
+</details>
 
 ## 1. 확률론이 필요한 이유
 
@@ -306,7 +311,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 sample space와 event를 적은 뒤 random variable이 결과를 숫자로 보내는 함수임을 먼저 확인한다. 이산 변수는 PMF 합, 연속 변수는 PDF 적분으로 normalization을 검산하고 joint distribution에서 marginal을 구해 본다. PDF 값 자체는 1보다 클 수 있고 한 점의 확률은 0이라는 두 문장을 가장 우선적으로 점검한다.
+
+</details>
 
 ## 복습 질문
 

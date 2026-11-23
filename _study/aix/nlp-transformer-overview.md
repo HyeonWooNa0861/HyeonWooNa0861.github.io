@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"
@@ -22,6 +22,9 @@ Source PDF: `4_NLP_Transformer.pdf`
 > **핵심:** Bag-of-Words는 단어의 순서와 긴 문맥을 충분히 담지 못한다. RNN은 순차 정보를 처리하지만 장기 의존성에 약할 수 있으며, LSTM은 gate를 사용해 정보를 더 오래 유지하도록 설계되었다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -44,6 +47,8 @@ Source PDF: `4_NLP_Transformer.pdf`
 | p.39-44 | MHA·FFN·position·encoder/decoder parameter | 구조와 차원 설명이며 별도의 증명식은 제시되지 않는다. |
 
 특히 p.15의 유사도 숫자는 설명용 예시이므로, 본문은 이를 항상 성립하는 등식으로 취급하지 않는다.
+
+</details>
 
 ## 1. NLP의 기본 문제
 

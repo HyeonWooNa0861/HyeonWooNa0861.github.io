@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-03 15:57:55 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.e
 
 > **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +40,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.e
 | 4 | Contrastive learning | Positive는 가깝게, negative는 멀게 만드는 법은? |
 | 5 | SimCLR and MoCo | Augmentation, batch, queue가 어떤 역할을 하는가? |
 
+</details>
 ## 1. Pretext task가 표현을 만든다
 
 Self-supervised learning은 사람이 붙인 class label 대신 입력 자체에서 target을 만든다. Encoder $$f_\theta$$를 pretext objective로 학습한 뒤 task-specific head를 붙여 fine-tuning하거나, encoder를 고정하고 linear probe로 표현 품질을 측정한다.
@@ -207,6 +209,9 @@ Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다.
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **115쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -219,6 +224,7 @@ Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다.
 
 Pretext·MAE·contrastive 설계는 강의 원문 요약이다. Positive-index 분류 문제에서 InfoNCE mutual-information lower bound를 도출한 부분은 가정과 한계를 명시한 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=4howBU7THbM){:target="_blank" rel="noopener"}

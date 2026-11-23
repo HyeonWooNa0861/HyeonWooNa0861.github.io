@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
@@ -22,6 +22,9 @@ Source PDF: `2_Overview_TF.pdf`
 > **핵심:** Self-attention만으로는 토큰의 순서가 드러나지 않아 positional encoding이 필요하다. Attention에서는 query가 찾는 정보를 나타내고, key는 관련성을 비교할 기준, value는 그 결과에 따라 모을 내용을 담는다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -45,6 +48,8 @@ Source PDF: `2_Overview_TF.pdf`
 | p.25-38 | decoder self-attention, cross-attention, autoregressive output | 구조 설명에 해당하며 원문은 별도의 닫힌꼴 증명을 제시하지 않는다. |
 
 따라서 attention 식은 원문 직접 제시식이고, equivariance·FFN·residual 계산은 구조를 검산하기 위한 저자 보충이다.
+
+</details>
 
 ## 1. Tokenization과 Embedding
 

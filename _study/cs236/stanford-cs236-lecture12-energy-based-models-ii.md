@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 12: Energy-Based Models II"
 course: "CS236"
 topic: "Score Matching, Noise Contrastive Estimation, and Sampling-Free EBM Training"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | EBM recap | $$Z(\theta)$$ 때문에 likelihood와 sampling은 왜 어렵지만 ratio와 score는 가능한가? |
@@ -44,6 +47,8 @@ keywords:
 | pp. 12--16 | NCE classifier, trainable normalizer, stable loss | `NCE cross-entropy와 안정적 estimator`에서 population optimum과 수치 안정화를 구분한다. |
 | pp. 18--19 | Flow contrastive estimation | `핵심 내용`에서 tractable noise model을 학습하는 원문 확장으로 설명한다. |
 | p. 20 | Variational upper bound와 adversarial EBM game | `핵심 내용`에서 원문 objective를 model-sampling 대안으로 설명한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -280,6 +285,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - $$\nabla_\theta\log p_\theta(x)$$와 $$\nabla_x\log p_\theta(x)$$를 구분해야 한다. 전자는 learning gradient이고 $$Z(\theta)$$가 문제지만, 후자는 score이고 $$Z(\theta)$$가 $$x$$에 대해 상수라 사라진다.
 - Contrastive divergence는 이론적으로 maximum likelihood gradient를 근사하지만, 매번 EBM sample이 필요해 비용이 크다.
 - Score matching은 data score를 직접 알 필요가 없어 보이지 않지만, integration by parts를 통해 data score를 제거한다.
@@ -287,17 +295,24 @@ $$
 - NCE는 GAN처럼 cross-entropy classifier를 쓰지만, minimax가 아니라 EBM parameter와 $$Z$$를 직접 학습한다.
 - 좋은 NCE noise distribution은 data와 너무 멀지 않아야 한다. 쉬운 classifier는 좋은 density model을 강제하지 못한다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 12의 핵심은 EBM 학습에서 partition function과 model sampling을 피하는 세 가지 길이다. Score matching은 score field를 맞춰 $$Z(\theta)$$를 제거하고, NCE는 tractable noise와 classifier로 $$Z$$까지 추정하며, adversarial EBM training은 negative distribution을 학습해 likelihood objective를 근사한다. 이 중 score matching은 다음 강의의 score-based model과 diffusion model을 이해하는 직접적인 기반이다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. MCMC sampling과 contrastive divergence의 관계를 먼저 정리한다. contrastive divergence가 왜 sampling-free가 아닌지 확인한다.
 2. $$Z(\theta)$$가 $$\theta$$에는 의존하지만 $$x$$에는 의존하지 않는다는 점을 이용해 score function 식을 직접 유도한다.
 3. Fisher divergence 식에서 data score가 문제로 보이는 이유와 integration by parts가 이를 제거하는 위치를 구분한다.
 4. Score matching, NCE, adversarial EBM training을 필요한 외부 객체 기준으로 비교한다: Hessian, noise distribution, variational sampler.
 5. Diffusion model을 공부할 때는 denoising score matching이 "score matching의 scalable approximation"이라는 연결고리를 기억한다.
+
+</details>
 
 ## 복습 질문
 

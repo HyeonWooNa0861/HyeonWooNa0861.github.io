@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=
 
 $$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라벨을 고를 가능성을 분리하지 못한다. Cohen's kappa가 기대 일치율 $$p_e$$를 추가하는 이유는 이 우연 일치분을 빼고 남은 일치를 가능한 개선 폭으로 정규화하기 위해서다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** 자연어·코드·수학처럼 형태가 다른 LLM 출력을 하나의 지표로 평가하기는 어렵다. 사람 평가와 규칙 기반 지표, LLM-as-a-Judge는 각각 비용·일관성·편향의 문제가 있어 과제에 맞춰 평가 기준을 정하고 결과를 교차 확인해야 한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ $$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라�
 | 6 | factuality와 agent evaluation | 긴 답변의 사실성을 fact 단위로 쪼개는 이유와 agent loop의 오류를 단계별로 나누는 이유는 무엇인가? |
 | 7 | 벤치마크와 해석 | MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench는 각각 어떤 능력을 보려는가? |
 
+</details>
 ## 핵심 내용
 
 이 강의에서 평가 대상은 응답 속도나 가격보다 출력의 품질이다. 자연어·코드·수학 추론처럼 형태가 다른 LLM 출력을 한 지표로 평가하기는 어렵다. 사람이 직접 평가하면 비용과 시간이 들고 판단도 주관적일 수 있으므로 평가자 간 일치도를 함께 본다. 단순 일치율은 우연히 같은 판정을 내릴 가능성을 반영하지 못한다. Cohen's kappa, Fleiss's kappa, Krippendorff's alpha가 이를 보완하는 지표로 소개된다.
@@ -196,6 +196,8 @@ Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있다. $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

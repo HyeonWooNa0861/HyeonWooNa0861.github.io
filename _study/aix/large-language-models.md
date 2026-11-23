@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Large Language Models"
 course: "AIX"
 topic: "Decoder-Only LLMs and Generation"
@@ -22,6 +22,9 @@ Source PDF: `3_Large_Language_Models.pdf`
 > **핵심:** Decoder-only Transformer는 앞선 토큰으로 다음 토큰을 예측하는 자기회귀 생성과 구조가 맞는다. Mixture of Experts(MoE)는 토큰마다 일부 expert만 활성화해 전체 모델 용량을 늘리면서 토큰당 연산량을 제한한다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -45,6 +48,8 @@ Source PDF: `3_Large_Language_Models.pdf`
 | p.48 | one-step cross-entropy | one-hot categorical likelihood에서 $$-\log p_c$$가 나오는 과정을 보충했다. |
 
 Scaling에 관한 설명은 수학적 보장이 아니라 p.5-7의 경험적 관찰이며, 본문에서도 등식과 구분한다.
+
+</details>
 
 ## 1. LLM이란?
 

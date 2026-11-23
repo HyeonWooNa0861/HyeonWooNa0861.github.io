@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-10-29 00:11:17 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 13: Disjoint Sets"
 course: "Algorithms"
 topic: "Union-Find, Union by Rank, and Path Compression"
@@ -367,7 +368,12 @@ Python으로 위 입력의 `NO, YES, NO, YES`를 확인했다. 같은 원소·�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 12쪽과 14쪽의 `union(4,5)`에서 **어느 배열 칸이 왜 바뀌는지** 비교한다. 다음으로 16쪽의 두 연결 방향에 대해 가장 긴 경로를 직접 센다. 마지막으로 19쪽의 find(10) 경로를 그린 뒤, 방문하지 않은 7과 이미 같은 집합을 다시 합치는 경우까지 추적하면 된다. 긴 코드보다 “parent는 누구를 가리키고, find는 어떤 정수를 반환하는가”를 먼저 확인하는 편이 효과적이다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-18 18:30:39 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 10: LiDAR-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Point Clouds, PointNet++, PointRCNN, VoxelNet, and PIXOR"
@@ -631,11 +631,16 @@ Point cloud detector의 설계는 **불규칙한 점을 언제, 어떻게 규칙
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 9–13쪽에서 데이터 표현만 따라간다. Point cloud를 set으로 쓰고, 순열을 바꿔도 coordinate-wise max가 그대로인지 작은 숫자로 확인한 다음 PointNet++가 centroid와 이웃을 어떻게 추가하는지 그린다.
 
 그 다음 16–23쪽에서 PointRCNN을 두 색으로 나누어 그린다. Stage 1에는 `point-wise feature → foreground mask + bin-based proposal`, stage 2에는 `proposal pooling → canonical transform → refinement + confidence`를 적는다. 이때 슬라이드 19쪽의 축별 회귀 요약은 Source Check의 원 논문 구분과 함께 본다.
 
 마지막으로 24–37쪽에서 같은 point cloud가 VoxelNet과 PIXOR에서 어떤 tensor가 되는지 shape를 적는다. VoxelNet은 $$C\times D'\times H'\times W'$$다. PIXOR는 height occupancy와 reflectance를 channel로 갖는 2D grid이며 CVPR 2018의 36 channel과 2019 확장판의 38 channel을 분리해서 본다. 속도도 CVPR 2018의 CPU 전후 처리 93 ms와 2019 GPU pipeline의 35 ms를 구현 판본과 함께 비교한다.
+
+</details>
 
 ## 복습 질문
 

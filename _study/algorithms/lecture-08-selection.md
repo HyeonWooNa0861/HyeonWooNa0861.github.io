@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 8: Selection Algorithms"
 course: "Algorithms"
 topic: "Order Statistics, Randomized Quickselect, and Median of Medians"
@@ -364,12 +364,17 @@ Randomized Quickselect는 구현이 단순하고 실제 성능이 좋은 반면,
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 먼저 0-based 순위를 고정하고, 작은 배열을 직접 정렬해 원하는 인덱스를 확인한다. 1-based “몇 번째” 표현과 섞지 않는다.
 2. Partition 이후에는 값 자체보다 `lower`, `equal`, `higher`가 차지하는 인덱스 구간을 표시한다. 중복값이 있을 때 특히 중요하다.
 3. Quickselect의 세 시간 주장을 구분한다: 최선 $$\Theta(n)$$, 무작위 기대 $$\Theta(n)$$, 최악 $$\Theta(n^2)$$.
 4. $$T(9n/10)+cn$$과 $$T(n-1)+cn$$을 각각 전개해, 상수 비율 감소와 상수 개수 감소의 차이를 확인한다.
 5. Median of medians에서는 그룹 중앙값을 구하는 재귀 $$T(n/5)$$와 partition 뒤 선택 재귀 $$T(7n/10)$$를 둘 다 써야 한다.
 6. Source Check의 정정 항목을 원문 페이지와 다시 대조한다. 특히 7쪽의 rank 예제와 23쪽의 선형 보장 조건은 그대로 암기하지 않는다.
+
+</details>
 
 ## 복습 질문
 

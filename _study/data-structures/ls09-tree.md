@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS09 Trees"
 course: "Data Structures"
 topic: "Trees"
@@ -32,6 +32,9 @@ Source PDF: `LS09_tree.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 트리 정의 | 계층적 데이터를 어떻게 표현하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS09_tree.pdf`
 | 3 | 이진 트리 | 자식이 최대 두 개인 트리는 어떤 특징이 있는가? |
 | 4 | 이진 트리 종류 | full, complete, perfect는 어떻게 다른가? |
 | 5 | 트리 순회 | 전위, 후위, 중위 순회는 어떤 순서로 방문하는가? |
+
+</details>
 
 ## 1. 트리란?
 

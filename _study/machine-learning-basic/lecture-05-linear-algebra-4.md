@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 05 Linear Algebra 4"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 4"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-05.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 변환 행렬 | 선형 변환은 기저 선택에 따라 어떻게 표현되는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-05.pdf`
 | 19–23 | 아핀 공간 $$x_0+U$$와 아핀 변환 $$\phi(x)=Ax+a$$ | 6, 7 |
 
 페이지 24는 Q&A 마무리이다.
+
+</details>
 
 ## 1. 변환 행렬의 의미
 
@@ -304,7 +309,12 @@ $$A,P$$와 좌표 벡터는 추상 계산에서 무차원이다. 실제 데이�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 같은 vector를 두 basis에서 좌표로 표현해 vector 자체와 coordinate tuple이 다르다는 점부터 확인한다. similar matrices는 같은 linear map의 다른 basis 표현이므로 eigenvalue를 공유하고, image/null space는 Ax가 만들 수 있는 출력과 0으로 보내는 입력으로 대비한다. 마지막에는 linear mapping Ax와 affine mapping Ax+a가 원점 보존 여부에서 갈리는 이유를 예제로 검산한다.
+
+</details>
 
 ## 복습 질문
 

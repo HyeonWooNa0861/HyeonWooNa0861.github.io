@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-02 23:40:00 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 14: Prediction I"
 course: "Autonomous Driving"
 topic: "Actor-Centric Rasterization and Uncertainty-Aware Motion Prediction"
@@ -364,6 +365,9 @@ LSTM이 시간 구조를 명시적으로 갖는다는 사실과, 어떤 데이�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 | 다시 볼 부분 | 확인할 내용 |
 |---|---|
 | pp. 8–12 | Tracking 출력, interaction, road context, future uncertainty의 관계 |
@@ -372,6 +376,8 @@ LSTM이 시간 구조를 명시적으로 갖는다는 사실과, 어떤 데이�
 | pp. 26–27 | State vector, $$2H/3H$$ 출력, FC/LSTM decoder 차이 |
 
 공식을 외우기 전에 **입력 raster → trajectory output → loss** 순서로 연결한다. 그다음 $$d$$와 $$\sigma$$의 단위, 좌표 convention, output dimension을 수치 예제로 확인한다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 10 Vector Calculus 2"
 course: "Machine Learning Basic"
 topic: "Vector Calculus 2"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-10.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Gradient 복습 | 다변수 함수의 미분을 어떻게 정리하는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-10.pdf`
 | 18–23 | 1·2차 다변수 Taylor 근사 | 5, 7.2 |
 
 페이지 24는 Q&A 마무리이다.
+
+</details>
 
 ## 1. Gradient 복습
 
@@ -246,7 +251,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 작은 계산 graph에서 forward value를 저장하고 output에서 input 방향으로 local derivative를 곱해 backpropagation을 재현한다. automatic differentiation은 수치미분이 아니라 연산 graph와 chain rule을 이용한다는 점을 먼저 구분한다. Hessian과 2차 Taylor 항은 curvature를 추가하므로 1차 gradient 정보와 무엇이 달라지는지 식의 shape까지 확인한다.
+
+</details>
 
 ## 복습 질문
 

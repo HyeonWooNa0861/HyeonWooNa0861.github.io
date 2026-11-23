@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 분모는 두 응답의 상대적인 경쟁을 정규화하고, 마지막 표현은 절대 reward가 아니라 차이 $$r_i-r_j$$만 중요하다는 사실을 드러낸다. 차이가 0이면 선호 확률은 0.5이고, 선호 응답의 reward가 더 커질수록 확률은 1에 가까워진다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** SFT만으로는 응답의 어조, 유용성, 안전성에 대한 사람의 선호를 충분히 반영하기 어렵다. 선호 데이터에서 보상 신호를 학습해 정책을 조정하는 RLHF와, 선호 쌍을 직접 최적화하는 DPO는 서로 다른 비용과 한계를 가진다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 | 6 | Best-of-N | RL training을 생략하고 reward model만 inference에 쓰면 어떤 비용 문제가 생기는가? |
 | 7 | DPO | Direct Preference Optimization은 reward model과 RL loop를 어떻게 supervised preference loss로 대체하는가? |
 
+</details>
 ## 핵심 내용
 
 SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호와 어긋날 수 있다. Preference tuning은 같은 prompt에 대한 선호 응답과 비선호 응답을 비교해 이 차이를 학습한다. 강의는 pointwise·pairwise·listwise 중 pairwise data가 비교적 다루기 쉽다고 설명한다. 선호 쌍은 양의 temperature로 여러 completion을 sampling하거나 기존 로그의 나쁜 응답을 다시 쓰는 방식으로 만들 수 있다. 평가는 사람, LLM-as-a-Judge 또는 BLEU/ROUGE 같은 지표를 활용할 수 있다.
@@ -234,6 +234,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=PmW_TMQ3l0I){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

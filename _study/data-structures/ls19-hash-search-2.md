@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:13:13 +0900
-last_modified_at: 2026-10-16 19:32:34 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
@@ -32,6 +32,9 @@ linear probing은 `h(k)+i`를 테이블 크기로 나눈 위치를 `i=0,1,2,...`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 해싱 복습 | key를 table index로 매핑하는 구조는 무엇인가? |
@@ -42,6 +45,8 @@ linear probing은 `h(k)+i`를 테이블 크기로 나눈 위치를 `i=0,1,2,...`
 | 6 | Linear Probing | 순차적으로 빈 칸을 찾으면 왜 clustering이 생기는가? |
 | 7 | 개선된 probing | pseudo-random, quadratic, double hashing은 무엇을 줄이는가? |
 | 8 | Load Factor | 적재율이 closed hashing 성능을 어떻게 바꾸는가? |
+
+</details>
 
 ## 1. 해싱과 충돌 복습
 

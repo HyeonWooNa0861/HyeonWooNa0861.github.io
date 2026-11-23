@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 14: Energy-Based Models III"
 course: "CS236"
 topic: "Noise Conditional Score Networks, Annealed Langevin Dynamics, and Reverse-Time SDEs"
@@ -29,6 +29,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Lecture 13 recap | Score matching, denoising score matching, sliced score matching은 각각 무엇을 해결했는가? |
@@ -48,6 +51,8 @@ keywords:
 | slides 28--30 | Forward and reverse-time SDE | 같은 절에서 exact-score 결과와 learned-score/solver 근사를 구분한다. |
 | slides 34--35 | Probability-flow ODE와 likelihood | 같은 절에서 change-of-variables identity, trace estimator와 numerical error를 설명한다. |
 | slide 38 | Bayes score decomposition | `conditional score decomposition`에서 정확한 항등식과 scaled guidance 휴리스틱을 구분한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -188,6 +193,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Noise는 단순 regularization이 아니라 score를 정의하고 학습하기 쉬운 distribution sequence를 만드는 장치다.
 - 작은 $$\sigma$$는 quality에 유리하고 큰 $$\sigma$$는 global guidance와 mixing에 유리하다. 여러 scale을 쓰는 이유는 이 둘을 순차적으로 결합하기 위해서다.
 - Annealed Langevin dynamics는 처음부터 clean score를 믿지 않는다. 큰 noise score로 coarse structure를 만들고, 작은 noise score로 detail을 복원한다.
@@ -195,11 +203,16 @@ $$
 - Continuous-time SDE 관점은 diffusion model을 "noise schedule + denoising"에서 "stochastic process reversal"로 일반화한다.
 - Probability flow ODE는 score-based model이 likelihood-free sample generator에만 머물지 않고 flow-like likelihood 평가까지 가능하게 만든다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 14의 핵심은 score-based model의 practical failure를 multi-scale noise로 해결하는 것이다. 여러 perturbed data distributions의 score를 NCSN으로 학습하고, annealed Langevin dynamics 또는 reverse-time SDE solver로 큰 noise에서 clean data로 내려오면 안정적인 image generation이 가능해진다. 이 관점은 sampling뿐 아니라 likelihood 계산, predictor-corrector sampling, conditional generation까지 연결한다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. Lecture 13의 세 failure mode를 먼저 쓰고, Gaussian perturbation이 각각에 어떤 도움을 주는지 연결한다.
 2. 단일 noise level의 tradeoff를 quality와 score estimation accuracy라는 두 축으로 정리한다.
@@ -207,6 +220,8 @@ Lecture 14의 핵심은 score-based model의 practical failure를 multi-scale no
 4. NCSN training loop를 clean data, sampled noise index, Gaussian noise, denoising target, weighted loss 순서로 재구성한다.
 5. Discrete noise schedule과 continuous-time SDE를 같은 아이디어의 두 표현으로 비교한다.
 6. Probability flow ODE가 왜 normalizing flow와 닮았는지, 그리고 왜 likelihood 계산과 연결되는지 확인한다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 9: Generative Adversarial Networks I"
 course: "CS236"
 topic: "Likelihood-Free Generative Learning"
@@ -26,6 +26,9 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Likelihood-based model recap | Autoregressive model, VAE, flow는 어떤 방식으로 likelihood를 다루는가? |
@@ -47,6 +50,8 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 | pp. 18–26 | minibatch algorithm, implicit generator, optimization, mode collapse | p. 18의 update를 아래에서 대조; p. 22는 informal convergence statement이므로 보편 수렴 증명으로 취급하지 않음 |
 
 > 이상적 optimal-discriminator 정리와 finite-capacity·alternating-optimization 한계에 관한 보충 해설을 구분한다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -211,6 +216,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Maximum likelihood는 강력한 원리지만, high likelihood와 perceptual sample quality가 항상 같은 방향으로 움직이지는 않는다.
 - GAN은 density evaluation을 포기하는 대신 "sample이 real처럼 보이는가"를 discriminator가 학습한 statistic으로 측정한다.
 - Discriminator의 likelihood는 binary classification likelihood이므로, generator density $$p_G(x)$$를 계산할 필요가 없다.
@@ -218,11 +226,16 @@ $$
 - Optimal discriminator 아래에서는 GAN objective가 Jensen-Shannon divergence로 해석되지만, 실제 neural network와 alternating optimization은 그 이상적 조건을 보장하지 않는다.
 - Mode collapse와 loss oscillation은 GAN을 실험적으로 어렵게 만드는 대표 문제다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 9의 핵심은 GAN을 "likelihood를 모르는 generator를 학습시키기 위한 learned two-sample test"로 이해하는 것이다. Discriminator는 real과 fake의 차이를 찾고, generator는 그 차이를 없애려 한다. 이론적으로는 Jensen-Shannon divergence와 연결되지만, 실제 학습은 불안정성과 mode collapse 때문에 많은 주의가 필요하다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. $$0.01p_{data}+0.99p_{noise}$$ 예시가 왜 high likelihood와 poor sample quality를 동시에 가질 수 있는지 설명한다.
 2. Two-sample test의 hand-crafted statistic이 고차원 데이터에서 부족한 이유를 mean/variance 예시로 정리한다.
@@ -230,6 +243,8 @@ Lecture 9의 핵심은 GAN을 "likelihood를 모르는 generator를 학습시키
 4. GAN minimax objective에서 discriminator update와 generator update가 각각 어떤 term을 바꾸는지 구분한다.
 5. Optimal discriminator 공식을 통해 $$p_G=p_{data}$$일 때 $$D(x)=1/2$$가 되는 이유를 설명한다.
 6. Mode collapse를 KL 기반 MLE의 mode-covering 성향과 대비해 이해한다.
+
+</details>
 
 ## 복습 질문
 

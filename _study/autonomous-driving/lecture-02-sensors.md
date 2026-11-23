@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 10:45:36 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 2: Sensors for Autonomous Driving"
 course: "Autonomous Driving"
 topic: "Camera, LiDAR, RADAR, and Sensor-Stack Trade-offs"
@@ -308,11 +308,16 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 먼저 `Maps + Sensors -> Perception -> Prediction -> Planning -> Control` 흐름을 외운다.
 2. Camera·LiDAR·RADAR를 **관측 신호, 대표 출력, 강점, 실패 조건**의 네 축으로 비교한다.
 3. 두 depth 식 $$Z=fB/d$$와 $$r=c\Delta t/2$$가 각각 stereo geometry와 LiDAR time-of-flight를 설명한다는 점을 구분한다.
 4. Point cloud와 BEV의 관계를 그림 없이 말로 설명해 본다.
 5. Waymo·Zoox·Tesla 사례는 회사별 최신 hardware 사양 암기보다, multi-sensor와 vision-centered 설계의 trade-off를 설명하는 데 사용한다.
+
+</details>
 
 ## 복습 질문
 

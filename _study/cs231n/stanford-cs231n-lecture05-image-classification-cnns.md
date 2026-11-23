@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 5: Image Classification with CNNs"
 course: "CS231N"
 topic: "CNN-Based Image Classification"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 5 PDF](https://cs231n.stanford.ed
 
 > **핵심:** CNN은 이미지를 평평한 벡터로만 보지 않고, 지역 연결과 가중치 공유로 공간 구조를 모델에 넣는다. 필터 하나는 모든 위치에서 같은 패턴을 찾고, 여러 층은 작은 지역 관측을 넓은 receptive field와 계층적 표현으로 확장한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -40,6 +41,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 5 PDF](https://cs231n.stanford.ed
 | 5 | Shape and cost | kernel, padding, stride가 출력 크기와 연산량을 어떻게 바꾸는가? |
 | 6 | Downsampling | pooling과 strided convolution은 무엇을 보존하고 버리는가? |
 
+</details>
 ## 1. Hand-crafted features에서 learned features로
 
 선형 분류기는 펼친 픽셀에 직접 가중치를 곱하므로 위치 변화에 취약하고, 한 클래스의 여러 모양을 단일 템플릿으로 담기 어렵다. 전통적인 방식은 color histogram이나 edge descriptor를 사람이 설계한 뒤 선형 분류기에 넣었다. 신경망은 이 feature transform 자체를 데이터에서 학습한다.
@@ -200,6 +202,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **141쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -211,6 +216,7 @@ $$
 
 Convolution 구조 설명은 강의 원문 요약이고, parameter count·receptive-field recurrence·output-shape 경계 조건은 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 5](https://www.youtube.com/watch?v=f3g1zGdxptI){:target="_blank" rel="noopener"}

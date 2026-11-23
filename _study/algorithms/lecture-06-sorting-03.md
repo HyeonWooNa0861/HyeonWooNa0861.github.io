@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 6: Heaps and Heap Sort"
 course: "Algorithms"
 topic: "Max-Heaps, Bottom-Up Construction, and In-Place Sorting"
@@ -169,11 +169,16 @@ build에 $$\Theta(n)$$, 최대 $$n-1$$번의 추출과 복구에 각각 $$O(\log
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 힙의 **모양 조건**과 **부모-자식 순서 조건**을 분리해 말해 보자. 한쪽만 맞으면 힙이 아니다.
 2. 배열 인덱스 0·1·2의 자식 위치를 직접 계산하고, `n//2`부터 왜 잎인지 확인한다.
 3. `sift_down`을 호출하기 전 자식 부분트리가 힙인지 따진다. 이 전제가 build의 처리 순서와 정렬 중 루트 복구의 이유다.
 4. build의 비용과 정렬의 비용을 따로 더한다. `build_heap`은 $$\Theta(n)$$이고, 추출 반복 전체가 $$\Theta(n\log n)$$의 최악 비용을 만든다.
 5. 반복 중 **힙 접두부**와 **정렬된 접미부**의 경계를 `i`로 표시해 예시를 손으로 추적해 보자.
+
+</details>
 
 ## 복습 질문
 

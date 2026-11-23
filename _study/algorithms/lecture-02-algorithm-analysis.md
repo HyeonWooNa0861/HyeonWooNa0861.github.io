@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 13:34:33 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 2: Algorithm Analysis"
 course: "Algorithms"
 topic: "Efficiency, Case Analysis, and Asymptotic Notation"
@@ -518,6 +518,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 시험 대비 우선순위는 다음 네 가지다.
 
 1. **Operation counting:** 세 제곱 알고리즘의 빈 표를 직접 채워 $$2n+1$$, $$2n^2+1$$, 2를 재현한다.
@@ -530,6 +533,8 @@ $$
 1. $$T(n)\in O(f(n))$$이면 충분히 큰 $$n$$에서 $$T(n)\le cf(n)$$이다.
 2. $$T(n)\in\Omega(f(n))$$이면 충분히 큰 $$n$$에서 $$T(n)\ge cf(n)$$이다.
 3. $$T(n)\in\Theta(f(n))$$이면 충분히 큰 $$n$$에서 $$c_1f(n)\le T(n)\le c_2f(n)$$이다.
+
+</details>
 
 ## 복습 질문
 

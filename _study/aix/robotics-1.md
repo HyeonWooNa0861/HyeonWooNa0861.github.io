@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
@@ -22,6 +22,9 @@ Source PDF: `Robotics_1.pdf`
 > **핵심:** Imitation learning은 전문가의 시연에서 로봇의 행동 정책을 학습한다. 그중 behavioral cloning은 전문가 궤적의 관측과 행동을 짝지어 지도학습하는 가장 직접적인 방법이다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +50,8 @@ Source PDF: `Robotics_1.pdf`
 Behavioral-cloning objective와 DAggER update는 슬라이드에 직접 인쇄된 식이 아니라 강의 절차의 수학적 형식화다. 반면 p.11의 두 error-growth 차수는 원문 직접 제시 내용이며, 정확한 관측 등식이 아니라 단순화된 가정 아래의 기대값·상한이다.
 
 Robotics 1은 imitation learning이 왜 매력적인지에서 시작해, behavioral cloning의 한계와 DAggER의 해결 전략을 정리한다. 핵심은 robot learning을 단순한 supervised learning으로 보면 안 된다는 점이다. 로봇의 action은 다음 state를 바꾸고, 다음 state는 다시 policy의 입력이 된다.
+
+</details>
 
 ## 1. 왜 Imitation Learning인가?
 

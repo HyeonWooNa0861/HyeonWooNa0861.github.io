@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 10: Generative Adversarial Networks II"
 course: "CS236"
 topic: "f-GANs, Wasserstein GANs, BiGANs, and Cycle-Consistent Translation"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | GAN recap | 기존 GAN objective는 왜 likelihood-free이고, 최적 discriminator는 어떤 divergence를 암시하는가? |
@@ -44,6 +47,8 @@ keywords:
 | pp. 12--14 | Support mismatch, Wasserstein primal·dual, WGAN objective | `Wasserstein-1의 primal과 dual`에서 정의, duality 증명 개요, neural critic 근사를 구분한다. |
 | pp. 16--19 | BiGAN의 encoder·generator joint two-sample objective | `핵심 내용`과 `핵심 개념`에서 원문 모델 정의로 설명한다. |
 | pp. 20--24 | CycleGAN adversarial/cycle loss와 AlignFlow의 exact cycle consistency | `핵심 내용`에서 원문 제약식과 architecture 결과를 설명한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -169,6 +174,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - GAN은 likelihood-free two-sample test로 볼 수 있으며, discriminator는 real/fake classification을 통해 density ratio 정보를 간접적으로 학습한다.
 - f-GAN의 핵심은 "원하는 f-divergence를 먼저 고르고, 그에 맞는 GAN-like objective를 만든다"는 방향이다.
 - f-GAN lower bound는 discriminator가 충분히 강하고 최적으로 학습될 때 tight해진다. 실제 학습에서는 bound를 최소화한다는 점 때문에 근사 오차를 항상 염두에 둬야 한다.
@@ -176,17 +184,24 @@ $$
 - BiGAN의 discriminator는 image만 보지 않고 $$(x,z)$$ pair를 본다. 이 때문에 encoder의 latent가 generator prior와 호환되도록 학습된다.
 - CycleGAN의 cycle consistency는 unpaired translation에서 content preservation을 강제하는 핵심 장치다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 10의 핵심은 GAN을 "특정 모델"이 아니라 "sample만으로 분포를 비교하는 학습 원리"로 보는 것이다. f-GAN은 어떤 divergence를 근사할지 선택할 수 있게 하고, WGAN은 support mismatch에서 더 좋은 학습 신호를 주며, BiGAN과 CycleGAN은 같은 adversarial idea를 representation inference와 domain translation으로 확장한다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. 기본 GAN objective가 최적 discriminator 아래에서 Jensen-Shannon divergence와 연결되는 이유를 먼저 복습한다.
 2. $$D_f(p,q)$$ 정의에서 expectation 기준이 $$q$$이고 ratio가 $$p/q$$라는 점을 확인한다. KL과 reverse KL은 $$f$$ 선택과 인자 순서가 함께 바뀐다.
 3. Fenchel conjugate derivation은 모든 세부 증명보다 "density ratio가 expectation 밖으로 선형화되고, sample expectation 두 개로 바뀐다"는 흐름을 잡는 것이 중요하다.
 4. WGAN은 cross-entropy discriminator가 아니라 real sample에는 높은 값, fake sample에는 낮은 값을 주는 critic을 학습한다는 차이를 기억한다.
 5. BiGAN과 CycleGAN은 GAN의 discriminator 입력을 바꾸거나 consistency loss를 추가해 downstream 목적을 확장한 사례로 정리한다.
+
+</details>
 
 ## 복습 질문
 

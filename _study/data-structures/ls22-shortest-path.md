@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 13:25:48 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"
@@ -32,6 +32,9 @@ Source PDF: `LS22_shortest_path.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Weighted Graph 복습 | 간선마다 비용이 붙으면 경로의 길이는 어떻게 계산되는가? |
@@ -46,6 +49,8 @@ Source PDF: `LS22_shortest_path.pdf`
 | 10 | 알고리즘 선택 | Dijkstra, Bellman-Ford, Floyd-Warshall은 어떤 문제와 연결되는가? |
 
 22강은 가중치 그래프에서 최단 경로를 찾는 문제를 다룬다. 핵심은 경로의 길이를 간선 개수가 아니라 weight의 합으로 계산한다는 점이고, 강의의 중심 알고리즘은 단일 시작점 최단 경로를 푸는 Dijkstra 알고리즘이다.
+
+</details>
 
 ## 1. Weighted Graph와 경로 비용
 

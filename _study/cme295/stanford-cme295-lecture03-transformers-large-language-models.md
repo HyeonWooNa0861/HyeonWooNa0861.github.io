@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 실선은 gate가 만든 routing score의 흐름이고, 점선은 입력이 각 expert 후보와 연결될 수 있음을 나타낸다. 초록 체크가 선택된 경로이며 빨간 표시는 계산에서 제외된 expert다. 이 선택이 token마다 달라져야 모델 용량을 나눠 쓸 수 있다. gate가 계속 같은 expert만 고르면 그 경로에 계산과 학습 신호가 몰리는 routing collapse가 생기므로, 아래 auxiliary loss가 expert별 선택 빈도와 평균 routing probability를 함께 균형화한다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** 언어 모델은 토큰 시퀀스의 확률을 학습해 다음 토큰을 예측한다. 큰 모델의 유용성은 파라미터 수뿐 아니라 학습 데이터와 계산 자원, MoE 같은 구조, 디코딩 방식, KV cache를 포함한 추론 설계에 달려 있다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 | 6 | Prompting and context | Context length, prompt 구조, zero-shot/few-shot, chain of thought는 모델 행동을 어떻게 좌우하는가? |
 | 7 | Inference efficiency | KV cache, PagedAttention, multi-latent attention, speculative decoding은 어떤 redundancy나 memory bottleneck을 줄이는가? |
 
+</details>
 ## 핵심 내용
 
 언어 모델은 토큰 시퀀스에 확률을 부여하고 다음 토큰의 분포를 예측한다. 이 강의에서 LLM은 모델 크기, 사전학습 데이터, 계산 자원이 모두 큰 언어 모델을 뜻하며, 보통 최소 수십억 개의 parameter와 수천억~수조 token의 데이터, 많은 GPU 계산 자원을 전제로 한다. 강의는 텍스트를 생성하지 않는 encoder-only BERT를 여기서의 LLM 정의에서 제외하고, text-to-text를 수행하는 decoder-only 구조에 초점을 맞춘다. GPT, LLaMA, Gemma, DeepSeek, Mistral, Qwen이 예로 나오며, 현대 LLM의 90% 이상이 decoder-only라는 강의 설명도 함께 제시된다.
@@ -198,6 +198,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=Q5baLehv5So){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

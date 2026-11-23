@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
 topic: "3D Vision"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 15 PDF](https://cs231n.stanford.e
 
 > **핵심:** 3D vision에는 pixel처럼 유일한 표준 표현이 없다. Point cloud, mesh, voxel, implicit field는 각각 저장, topology, differentiability, rendering 비용이 다르며, **표현 선택이 곧 가능한 network와 loss를 결정한다.**
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +40,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 15 PDF](https://cs231n.stanford.e
 | 4 | Implicit functions | 공간 좌표 query로 표면을 어떻게 표현하는가? |
 | 5 | Neural rendering | NeRF와 Gaussian splatting은 2D supervision을 어떻게 쓰는가? |
 
+</details>
 ## 1. Point cloud와 polygon mesh
 
 Point cloud는 3D 좌표와 선택적으로 color·normal을 가진 점의 집합이다. Scanner에서 직접 얻기 쉽고 단순하지만 점 사이 연결과 표면이 명시되지 않아 매끄러운 rendering과 editing이 어렵다. 순서가 없는 집합이므로 network도 입력 permutation에 대해 같은 결과를 내야 한다.
@@ -169,6 +171,9 @@ Sample 간격이 작아지는 극한에서는 $$T(t)=\exp(-\int_{t_n}^{t}\sigma(
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **105쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -180,6 +185,7 @@ Sample 간격이 작아지는 극한에서는 $$T(t)=\exp(-\int_{t_n}^{t}\sigma(
 
 3D representation과 neural architecture 비교는 강의 원문 요약이다. Chamfer/EMD 정의, pinhole projection, NeRF alpha compositing 유도는 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=7lxrKDKtykM){:target="_blank" rel="noopener"}

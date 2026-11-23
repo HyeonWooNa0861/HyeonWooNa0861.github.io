@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS10 Binary Search Trees"
 course: "Data Structures"
 topic: "Binary Search Trees"
@@ -32,6 +32,9 @@ Source PDF: `LS10_binary_search_tree.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 이진 트리 성질 | 높이와 노드 수 사이에는 어떤 관계가 있는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS10_binary_search_tree.pdf`
 | 3 | BST 정의 | 왼쪽/오른쪽 서브트리는 어떤 키 조건을 만족해야 하는가? |
 | 4 | BST ADT | 탐색, 삽입, 삭제, 최소/최대 삭제는 어떤 연산인가? |
 | 5 | 탐색과 삽입 | 비교 결과에 따라 재귀적으로 어디로 이동하는가? |
+
+</details>
 
 ## 1. 이진 트리의 노드 수 성질
 

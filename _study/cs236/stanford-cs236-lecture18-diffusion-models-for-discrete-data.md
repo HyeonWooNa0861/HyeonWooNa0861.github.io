@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 18: Diffusion Models for Discrete Data"
 course: "CS236"
 topic: "Diffusion Models for Discrete Data"
@@ -27,6 +27,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Discrete data | token sequence처럼 격자형 data는 continuous data와 무엇이 다른가? |
@@ -45,6 +48,8 @@ keywords:
 | pp. 29--35 | CTMC generator, transition expansion, matrix exponential, factorized corruption | `CTMC generator` 및 reverse-process 절에서 exact continuous-time 정의와 discretization을 구분한다. |
 | pp. 36--40 | Reverse CTMC rate와 accelerated sampling | `Reverse CTMC`에서 source-index convention, corrected direction, learned-score approximation을 명시한다. |
 | pp. 46--47 | Perplexity와 likelihood bound | `Reverse CTMC와 likelihood bound`에서 source sign/index 문제를 공개하고 algebraically consistent한 해석을 제시한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -232,6 +237,9 @@ Bound의 증명은 CTMC path-space likelihood를 forward process에 대한 varia
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Discrete diffusion의 어려움은 neural network 입력이 discrete라서가 아니라, 원래 state space에서 미분과 연속 이동이 정의되지 않는다는 점이다.
 - Token embedding을 continuous vector로 바꾼 뒤 일반 diffusion을 적용하는 방식은 빈 공간과 discretization 문제를 만든다. Lecture 18은 discrete space 자체에서 score 개념을 다시 세운다.
 - Autoregressive model은 likelihood와 scaling에서 강하지만, sampling order와 one-token-at-a-time generation이라는 구조적 제약을 가진다.
@@ -240,11 +248,16 @@ Bound의 증명은 CTMC path-space likelihood를 forward process에 대한 varia
 - Denoising Score Entropy와 forward corruption process를 함께 설계해야 학습과 sampling이 맞물린다.
 - Discrete diffusion의 장점은 controllable generation, infilling, potentially faster parallel updates에서 특히 드러난다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 18의 핵심은 diffusion과 score matching을 continuous vector space의 전유물로 보지 않는 것이다. Discrete data에서는 gradient 대신 state 간 local probability ratio인 concrete score를 학습하고, Score Entropy로 이를 최적화한다. Forward process는 CTMC로 token을 corrupt하고, reverse process는 learned concrete score로 plausible한 token jump를 선택한다. 이 접근은 autoregressive modeling의 likelihood 장점을 바로 대체하기보다는, sampling order 제약과 느린 sequential generation을 완화하는 discrete probabilistic modeling의 대안으로 이해하는 것이 좋다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. Continuous score $$\nabla_x\log p(x)$$가 discrete token space에서 왜 정의되지 않는지 예시로 설명한다.
 2. Autoregressive factorization의 장점과 단점을 나누어 적는다. 특히 likelihood 계산과 sampling 속도를 분리해서 본다.
@@ -252,6 +265,8 @@ Lecture 18의 핵심은 diffusion과 score matching을 continuous vector space�
 4. Score Entropy, implicit Score Entropy, denoising Score Entropy가 각각 어떤 계산 문제를 줄이려는지 구분한다.
 5. CTMC generator matrix $$Q_t$$의 off-diagonal nonnegative 조건과 column-sum-zero 조건이 왜 필요한지 확인한다.
 6. Prompt infilling을 예로 들어 reverse discrete diffusion이 조건부 generation을 어떻게 수행하는지 설명해 본다.
+
+</details>
 
 ## 복습 질문
 

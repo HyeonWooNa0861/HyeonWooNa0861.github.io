@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
 topic: "Robot Learning"
@@ -30,7 +30,8 @@ Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -40,6 +41,7 @@ Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 | 4 | Imitation and diffusion policy | Multimodal demonstration을 어떤 action distribution으로 학습하는가? |
 | 5 | VLA foundation models | RT-1, RT-2, RT-X, OpenVLA는 무엇을 generalize하려 하는가? |
 
+</details>
 ## 1. Perception-action loop
 
 Agent는 state 또는 observation $$s_t$$를 받아 action $$a_t$$를 선택하고, environment는 다음 state $$s_{t+1}$$와 reward $$r_t$$를 돌려준다. 목표는 한 번의 정답이 아니라 시간에 걸친 discounted return
@@ -213,6 +215,9 @@ Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **103쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -224,6 +229,7 @@ Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $
 
 공식 강의는 RL의 세부 수학 유도를 생략한다. 따라서 discounted return과 value의 정의를 제외한 trajectory policy-gradient 전개 전체는 출처 사실과 구분한 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=XSfmOH_xVSU){:target="_blank" rel="noopener"}

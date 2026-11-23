@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Linear and Logistic Regression"
 course: "AIX"
 topic: "Linear and Logistic Regression"
@@ -22,6 +22,9 @@ Source PDF: `1st_Regression.pdf`
 > **핵심:** 잔차(residual)는 실제값과 예측값의 차이다. 잔차를 제곱해 손실을 만들면 양수와 음수의 오차가 상쇄되지 않고, 큰 오차에 더 큰 비용을 부과할 수 있다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -44,6 +47,8 @@ Source PDF: `1st_Regression.pdf`
 | p.23-25 | softmax와 cross-entropy | 확률 정규화와 one-hot likelihood 유도를 보충했다. |
 
 페이지에 없는 pseudo-inverse·수치 안정화·gradient 계산은 슬라이드 식의 성립 조건과 구현상 실패 지점을 설명하기 위한 보충이다.
+
+</details>
 
 ## 1. 지도학습과 데이터
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 14 Optimization Theory"
 course: "Machine Learning Basic"
 topic: "Optimization Theory"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-14.pdf`
 > **핵심:** Gradient descent는 $$x_{i+1}=x_i-\gamma_i\nabla f(x_i)$$에 따라 해를 갱신한다. Step size $$\gamma_i$$가 너무 작으면 한 번에 이동하는 거리가 짧아져 수렴이 느려진다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-14.pdf`
 | 15–20 | convex set/function 정의, $$x^2$$·negative entropy 예시, 닫힘 성질 | 11–16, 17.3 |
 
 페이지 21은 convex 함수의 성질을 마무리하며 별도 Q&A 페이지는 없다. SGD·mini-batch는 full gradient의 **근사**이고, Newton 식은 local Taylor quadratic model을 풀어 얻는 update로 17절에서 구분한다.
+
+</details>
 
 ## 1. 최적화와 머신러닝
 
@@ -441,7 +446,12 @@ $$\alpha$$는 parameter 단위/gradient 단위를 가져 update의 차원을 맞
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 간단한 convex function에서 gradient descent를 여러 step size로 실행해 느린 수렴과 overshoot·발산을 비교한다. batch, SGD, mini-batch는 gradient 비용과 noise의 trade-off로, momentum과 Newton method는 누적 방향과 Hessian 사용 여부로 구분한다. convex set의 선분 조건과 convex function의 local minimum=global optimum 성질은 2차 미분 예제와 함께 검산한다.
+
+</details>
 
 ## 복습 질문
 

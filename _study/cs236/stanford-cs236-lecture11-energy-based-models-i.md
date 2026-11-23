@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 11: Energy-Based Models I"
 course: "CS236"
 topic: "Partition Functions, Product of Experts, RBMs, and Contrastive Divergence"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Motivation | autoregressive, flow, VAE, GAN은 각각 어떤 제약과 장단점을 갖는가? |
@@ -44,6 +47,8 @@ keywords:
 | p. 20 | RBM partition function의 지수적 상태 합 | `핵심 내용`의 curse-of-dimensionality 설명에 대응한다. |
 | p. 23 | Log-likelihood gradient와 contrastive-divergence 근사 | `partition function gradient`에서 정확한 등식과 짧은-chain 근사를 구분한다. |
 | pp. 24--25 | Symmetric Metropolis--Hastings와 Langevin MCMC | `MH detailed balance`와 `Langevin stationary distribution`에서 각각 정확 조건과 이산화 근사를 구분한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -188,6 +193,9 @@ $$x$$의 단위가 $$U$$이면 score는 $$U^{-1}$$이고 이 SDE convention에�
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - EBM의 flexibility는 $$f_\theta$$ 선택의 자유에서 오지만, 그 자유는 $$Z(\theta)$$ 계산 불가능성과 맞교환된다.
 - Softmax도 작은 finite label space에서는 EBM처럼 볼 수 있다. 차이는 label 수가 작아 partition function을 정확히 계산할 수 있다는 점이다.
 - Partition function을 모르면 likelihood 값은 알 수 없지만, 두 point의 상대 likelihood와 $$x$$에 대한 score gradient는 계산할 수 있다.
@@ -195,17 +203,24 @@ $$x$$의 단위가 $$U$$이면 score는 $$U^{-1}$$이고 이 SDE convention에�
 - Contrastive divergence는 maximum likelihood gradient의 model expectation을 sample로 대체한다. 따라서 좋은 sampling procedure가 학습 품질을 좌우한다.
 - MCMC는 이론적으로 target distribution으로 수렴할 수 있지만, 고차원에서는 convergence가 느려 학습 inner loop에 넣기 어렵다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 11의 핵심은 EBM이 "임의의 neural network score를 확률분포로 만들 수 있지만, partition function 때문에 likelihood와 sampling이 어려워진다"는 tradeoff를 이해하는 것이다. EBM은 절대 확률 대신 상대 비교, score gradient, contrastive learning을 이용할 때 실용성이 생기며, 다음 강의의 score matching과 diffusion model 논의로 이어진다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. Autoregressive, flow, VAE, GAN, EBM을 likelihood 계산 가능성, sampling 방식, architecture 제약으로 비교한다.
 2. $$Z(\theta)$$가 likelihood에는 필요하지만 ratio에는 cancel되는 이유를 수식으로 직접 확인한다.
 3. Product of Experts와 mixture model을 AND/OR 관점으로 비교해 본다.
 4. RBM에서 $$Z(W,b,c)$$ 계산이 $$2^n\cdot 2^m$$ 규모가 되는 이유를 visible-hidden binary configuration 수로 설명할 수 있어야 한다.
 5. Contrastive divergence가 "positive sample 대 negative sample" 학습처럼 보이지만 실제로는 log partition gradient의 Monte Carlo approximation이라는 점을 연결한다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
 topic: "Neural Networks and Backpropagation"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 4 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 신경망의 표현력은 affine transform 사이에 비선형성을 넣는 데서 나오고, 학습 가능성은 계산 그래프의 chain rule을 역순으로 재사용하는 backpropagation에서 나온다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +40,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 4 PDF](https://cs231n.stanford.ed
 | 4 | Backpropagation | local gradient가 전체 gradient로 어떻게 연결되는가? |
 | 5 | Vector gradients | 행렬 연산에서는 shape을 어떻게 보존하는가? |
 
+</details>
 ## 1. 선형 분류기에서 신경망으로
 
 2-layer network의 점수 함수는 다음처럼 쓸 수 있다.
@@ -233,6 +235,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **147쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -243,6 +248,7 @@ $$
 
 Gate와 backpropagation 규칙은 강의 원문 요약이다. Sigmoid derivative, vector chain rule, $$Y=XW$$의 성분별 gradient 증명은 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 4](https://www.youtube.com/watch?v=25zD5qJHYsk){:target="_blank" rel="noopener"}

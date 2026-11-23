@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 7: Counting Sort and Radix Sort"
 course: "Algorithms"
 topic: "Comparison Lower Bounds, Stable Counting Sort, and LSD Radix Sort"
@@ -331,12 +331,17 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 비교 정렬의 하한은 “모든 정렬”의 하한이 아니라 **비교만 사용하는 정렬 모델**의 하한임을 구분한다.
 2. Counting Sort에서 $$r$$이 최대 키인지 키 개수인지 먼저 확인한다. `counts`의 길이가 $$r$$이면 유효 키는 0부터 $$r-1$$까지다.
 3. 빈도 배열과 누적 배열의 의미를 분리한다. $$c[v]$$는 키 $$v$$의 개수이고, $$C[v]$$는 키가 $$v$$ 이하인 원소의 개수다.
 4. 같은 키에 태그를 붙여 역방향 배치를 추적한다. 정수 값만 보면 안정성이 보이지 않으므로 레코드의 상대 순서를 확인해야 한다.
 5. Radix Sort의 각 패스 뒤에 어떤 하위 자릿수까지 정렬되었는지 적고, 안정성이 깨졌을 때 이전 패스 결과가 왜 사라지는지 설명해 본다.
 6. 복잡도를 쓸 때 $$n$$, $$r$$, $$k$$를 모두 남긴다. 키 범위에 대한 조건 없이 Radix Sort를 단순히 선형 시간이라고 부르면 적용 조건이 빠진다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-21 12:29:52 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-15.pdf`
 > **핵심:** 데이터 벡터화는 원본 데이터를 feature vector나 feature matrix로 표현하는 과정이다. 연속형 feature를 평균 0, 분산 1로 표준화하면 scale 차이가 줄어 gradient 기반 학습이 안정될 수 있다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -50,6 +53,8 @@ Source PDF: `machine-learning-basic-lecture-15.pdf`
 | 21–22 | MAP와 Gaussian prior–L2 연결 | 16, 17, 18.3 |
 
 페이지 23은 Q&A 마무리이다. $$\hat R_N\approx R$$은 유한 표본 근사이며, MLE/MAP의 negative-log 변환은 해당 density가 양수인 영역에서 정확한 동치로 18절에서 구분한다.
+
+</details>
 
 ## 1. 데이터와 머신러닝
 
@@ -590,7 +595,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 원자료를 vectorize·standardize한 뒤 train/validation/test 역할을 분리하고, ERM이 training loss를 낮춰도 generalization을 보장하지 않는 이유를 먼저 확인한다. Gaussian observation error의 likelihood에 negative log를 취해 squared error가 나오는 과정을 재현하고, Gaussian prior가 L2 penalty로 바뀌는 MAP 연결까지 이어 간다. cross validation은 model selection용이며 test set을 반복 선택에 쓰면 leakage가 생긴다는 점을 우선 점검한다.
+
+</details>
 
 ## 복습 질문
 

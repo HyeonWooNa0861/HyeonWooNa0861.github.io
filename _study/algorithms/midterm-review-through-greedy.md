@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
-last_modified_at: 2026-10-18 19:51:32 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Algorithms: Midterm Review"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
@@ -761,12 +761,17 @@ DP 문제는 다음 두 구조를 추가로 연습한다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. [Original Practice](#original-practice)의 세 코드를 답을 닫고 다시 푼다. 종료값·본문 실행 횟수·연산 수를 나눠 적고, Lecture 2–3의 비용 모형과 재귀식으로 연결한다.
 2. 정렬 8개를 같은 입력에 손으로 실행하고, 각 줄의 확정 구간을 표시한다.
 3. Selection은 pivot 선택 방식마다 worst와 expected 보장이 어떻게 달라지는지 말한다.
 4. DP 문제마다 일곱 항목 체크리스트를 빈 종이에 작성한다.
 5. Greedy 규칙에는 성공 증명 또는 가장 작은 반례를 붙인다.
 6. Assignment 1 Q3은 “실행시간”과 “반환값”을 별도 함수로 써서 구분한다.
+
+</details>
 
 ## 복습 질문
 

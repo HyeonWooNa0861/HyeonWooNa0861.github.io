@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 01 Models and Data"
 course: "Machine Learning Basic"
 topic: "Models and Data"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-01.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 데이터 | 머신러닝에서 데이터는 어떤 형태로 다루는가? |
@@ -30,6 +33,8 @@ Source PDF: `machine-learning-basic-lecture-01.pdf`
 | 3 | 데이터 처리 | selection, preprocessing, augmentation은 왜 중요한가? |
 | 4 | 모델 | 모델은 함수인가, 확률분포인가? |
 | 5 | 학습 | training, model selection, inference는 어떻게 구분되는가? |
+
+</details>
 
 ## 1. 데이터와 feature vector
 
@@ -240,7 +245,12 @@ ERM과 parameter estimation을 이해하려면 다음 수학이 필요하다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 raw data를 feature vector로 바꾸고 preprocessing한 뒤 model training, hyperparameter selection, inference로 이어지는 전체 pipeline을 먼저 그린다. 결정론적 모델의 단일 출력과 확률적 모델의 분포 출력은 불확실성 표현 여부로 구분한다. 마지막에는 linear algebra, probability, calculus가 각각 표현·불확실성·최적화에 쓰이는 위치를 pipeline에 표시한다.
+
+</details>
 
 ## 복습 질문
 

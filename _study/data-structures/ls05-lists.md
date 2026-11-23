@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS05 Lists"
 course: "Data Structures"
 topic: "Lists"
@@ -32,6 +32,9 @@ Source PDF: `LS05_lists_full.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 점근 표기 복습 | `O`, `Ω`, `Θ`를 어떻게 구분하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS05_lists_full.pdf`
 | 3 | List ADT | 구현과 무관한 리스트 인터페이스는 무엇인가? |
 | 4 | 배열 기반 리스트 | 배열과 `size`로 리스트를 어떻게 구현하는가? |
 | 5 | 장단점 | 배열 기반 리스트는 언제 유리하고 언제 불리한가? |
+
+</details>
 
 ## 1. 리스트란?
 

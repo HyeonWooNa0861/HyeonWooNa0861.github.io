@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
 topic: "Image Classification and Linear Classifiers"
@@ -30,7 +30,8 @@ Official slides: [Lecture 2 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** 이미지 분류는 사람이 규칙을 직접 쓰는 문제가 아니라, 데이터로부터 점수 함수를 학습하는 문제다. k-NN은 데이터와 거리의 의미를, 선형 분류기는 점수·손실·최적화로 이어지는 학습의 기본 틀을 보여준다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 2 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 | 5 | Linear classifier | 하나의 행렬곱이 어떻게 클래스별 점수를 만드는가? |
 | 6 | Loss function | SVM과 softmax는 좋은 점수를 어떻게 정의하는가? |
 
+</details>
 ## 1. 이미지 분류와 semantic gap
 
 입력은 보통 $$H \times W \times 3$$ 크기의 RGB tensor이고, 출력은 미리 정한 클래스 가운데 하나다. 사람은 고양이의 의미를 즉시 인식하지만 컴퓨터가 보는 것은 0–255 사이의 수치다. 이 **semantic gap** 때문에 픽셀 수준의 작은 변화와 의미 수준의 변화가 일치하지 않는다.
@@ -240,6 +242,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **102쪽 전체**를 페이지 단위로 시각 점검하고 강의 transcript와 대조했다. 아래 쪽수는 PDF viewer 기준이다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -250,6 +255,7 @@ $$
 
 1–8절의 정의와 비교는 강의 원문 요약이고, softmax gradient의 단계별 미분·단위·수치 안정성은 원문 식을 확장한 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 2](https://www.youtube.com/watch?v=pdqofxJeBN8){:target="_blank" rel="noopener"}

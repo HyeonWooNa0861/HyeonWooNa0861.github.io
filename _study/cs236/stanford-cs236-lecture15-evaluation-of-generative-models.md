@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 15: Evaluation of Generative Models"
 course: "CS236"
 topic: "Likelihood, Compression, Sample Quality, Representation Metrics, and Prompt-Based Evaluation"
@@ -28,6 +28,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Mid-quarter recap | 지금까지의 model family와 training objective는 어떤 평가 질문으로 이어지는가? |
@@ -47,6 +50,8 @@ keywords:
 | p. 11 | Likelihood weighting와 annealed importance sampling | `핵심 내용`에서 variance와 biased log-likelihood estimate를 포함해 설명한다. |
 | pp. 15--16 | Inception Score의 sharpness·diversity | `Inception Score의 두 인자`에서 entropy/KL 항등식과 classifier 가정을 설명한다. |
 | pp. 17--18 | FID와 MMD/KID | `FID와 MMD`에서 Gaussian 근사, RKHS identity, finite-sample 한계를 구분한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -181,6 +186,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Generative model 평가에서 "좋은 sample"과 "높은 likelihood"는 같은 말이 아니다. 목적이 다르면 metric도 달라진다.
 - Likelihood는 density estimation과 compression에는 자연스럽지만 perceptual quality나 semantic alignment를 완전히 대변하지 않는다.
 - KDE는 sample-only density estimation의 직관을 주지만, high-dimensional image/text에서는 bandwidth와 curse of dimensionality 문제가 크다.
@@ -189,11 +197,16 @@ $$
 - Text-to-image와 LLM 평가는 단일 숫자보다 scenario와 metric matrix가 더 중요하다.
 - Representation learning 평가는 downstream task, clustering, reconstruction, disentanglement처럼 사용 목적별로 나누어야 한다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 15의 핵심은 generative model evaluation에 보편적인 단일 정답이 없다는 점이다. Density를 원하면 likelihood와 compression이 자연스럽고, sample을 원하면 human evaluation과 FID/KID 같은 feature-space metric이 필요하며, representation이나 prompting을 원하면 downstream task 중심 metric이 필요하다. Model family를 비교할 때는 먼저 "무엇을 잘해야 하는가"를 고정한 뒤 metric을 선택해야 한다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. 지금까지 배운 model family를 likelihood tractable 여부로 분류한다: autoregressive, flow, VAE, EBM, GAN, score-based model.
 2. Evaluation target을 density, compression, sampling, representation, prompting으로 나누고 각 target에 맞는 metric을 하나씩 연결한다.
@@ -201,6 +214,8 @@ Lecture 15의 핵심은 generative model evaluation에 보편적인 단일 정�
 4. Inception Score, FID, KID를 "real data를 비교하는가", "classifier label을 쓰는가", "feature distribution을 어떻게 비교하는가"로 구분한다.
 5. Text-to-image model을 평가할 때 quality와 alignment를 별도 축으로 두는 이유를 예시로 정리한다.
 6. Disentanglement metric을 읽을 때는 어떤 latent factor supervision 또는 inductive bias가 숨어 있는지 확인한다.
+
+</details>
 
 ## 복습 질문
 

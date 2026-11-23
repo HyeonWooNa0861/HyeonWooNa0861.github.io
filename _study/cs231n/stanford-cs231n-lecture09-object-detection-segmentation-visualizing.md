@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 9 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 분류가 이미지 전체의 한 레이블을 예측한다면 segmentation은 픽셀마다, detection은 객체마다 구조화된 출력을 예측한다. 현대 방법은 CNN/ViT backbone의 feature를 공유하고 task-specific head를 붙이며, Grad-CAM 같은 도구는 예측을 지지한 공간적 근거를 점검하게 한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 9 PDF](https://cs231n.stanford.ed
 | 6 | Instance segmentation | 객체별 box와 mask를 어떻게 함께 얻는가? |
 | 7 | Visualization | 모델이 본 영역을 어떻게 진단하는가? |
 
+</details>
 ## 1. Vision Transformer recap
 
 ViT는 이미지를 $$P\times P$$ patch로 나누고 각 patch를 펼쳐 linear projection으로 token을 만든다. $$H\times W$$ 이미지의 patch token 수는 $$N=HW/P^2$$다. Self-attention에는 2D 위치가 내장되어 있지 않으므로 positional embedding을 더한다.
@@ -250,6 +252,9 @@ IoU는 두 box 영역 $$A,B$$에 대한 **정의** $$\operatorname{IoU}=\lvert A
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **178쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -261,6 +266,7 @@ IoU는 두 box 영역 $$A,B$$에 대한 **정의** $$\operatorname{IoU}=\lvert A
 
 Task와 architecture 비교는 강의 원문 요약이다. Grad-CAM의 Taylor 해석과 IoU·detection-loss 경계 조건은 **작성자 보충**이며, Grad-CAM은 인과 증명이 아닌 localization heuristic으로 구분했다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 9](https://www.youtube.com/watch?v=PTypu6GqEd4){:target="_blank" rel="noopener"}

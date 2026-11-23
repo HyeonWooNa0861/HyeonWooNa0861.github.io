@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:00 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 12: Graph Basics"
 course: "Algorithms"
 topic: "Graph Definitions, Representations, DFS, and BFS"
@@ -378,6 +379,9 @@ for start in range(len(graph)):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 | 학습 순서 | 다시 볼 부분 | 확인할 내용 |
 |---:|---|---|
 | 1 | pp. 5–9 | 정점·간선·경로·사이클·연결·완전·방향·가중치 정의 |
@@ -387,6 +391,8 @@ for start in range(len(graph)):
 | 5 | pp. 29–31 | BFS queue 상태와 level별 최단 간선 수 추적 |
 
 먼저 작은 그래프 하나를 직접 그린 뒤 인접 행렬과 인접 리스트를 모두 작성한다. 이어서 같은 이웃 순서로 DFS와 BFS를 손으로 추적하면 저장 방식과 방문 방식의 차이가 분리된다. 마지막에는 그래프를 비연결 상태로 바꾸어 한 번의 탐색이 시작 연결 요소에서 멈추는지 확인한다.
+
+</details>
 
 ## 복습 질문
 

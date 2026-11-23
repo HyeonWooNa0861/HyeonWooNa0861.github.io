@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Autonomous Driving 2"
 course: "AIX"
 topic: "Tesla Occupancy and Driving Foundation Models"
@@ -23,6 +23,9 @@ Source PDF: `Autonomous_Driving_2.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | CVPR 2022 Tesla | object list에서 occupancy 중심 표현으로 왜 이동했는가? |
@@ -37,6 +40,8 @@ Source PDF: `Autonomous_Driving_2.pdf`
 ### 수식 원문 대응
 
 이 자료의 직접적인 핵심 수식은 p.7의 $$Q,K,V$$ 기반 scaled dot-product attention이다. 본문의 mask·행렬 차원·가중합 표기는 그 식을 occupancy query 문맥으로 풀어 쓴 **정의**이고, $$\sqrt{d_k}$$ 설명은 독립·평균 0·단위분산을 둔 **근사적 분산 분석**이다. p.8은 fixed query와 positional encoding을 도식으로 제시하며 별도의 증명식을 주지 않는다. 나머지 p.2-6, p.9-41은 occupancy, geometry, temporal alignment, foundation model 및 fleet-learning 구조를 설명하는 개념·경험 자료이므로 인위적인 수식 증명을 추가하지 않았다.
+
+</details>
 
 ## 1. 2022 Occupancy Pivot
 

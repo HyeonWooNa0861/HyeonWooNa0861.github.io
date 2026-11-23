@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 4: Sorting (1)"
 course: "Algorithms"
 topic: "Sorting Overview, Bubble Sort, Selection Sort, and Insertion Sort"
@@ -208,6 +208,9 @@ def insertion_sort(arr):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 손으로 계산할 때는 다음 네 단계를 따라가면 세 알고리즘의 차이를 놓치지 않는다.
 
 1. **지금 확정된 영역**을 표시한다. 버블은 오른쪽, 선택·삽입은 왼쪽이다.
@@ -216,6 +219,8 @@ def insertion_sort(arr):
 4. 비교와 교환을 **따로** 센다. 교환이 0이어도 탐색 비교는 여러 번 수행할 수 있다.
 
 37쪽은 다음 편을 *Sorting (2): Advanced sorting algorithms*로 예고한다. 5강에서는 병합·퀵 정렬의 분할과 결합을, 6강에서는 힙이라는 자료구조가 정렬 비용에 미치는 영향을 살펴본다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:38:33 +0900
-last_modified_at: 2026-10-16 19:32:34 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 11: Greedy Algorithms"
 course: "Algorithms"
 topic: "Greedy Choice, Change Making, and Activity Selection"
@@ -466,6 +466,9 @@ assert select_max_meetings([(1, 1), (0, 1)]) == [(0, 1), (1, 1)]
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. Greedy-choice property와 optimal substructure를 각각 한 문장으로 설명한다.
 2. Making It 1의 $$N=10$$ 반례에서 greedy 경로와 최적 경로를 손으로 비교한다.
 3. 물건값 380을 잔돈 620으로 바꾼 뒤 동전 선택 trace를 쓴다.
@@ -473,6 +476,8 @@ assert select_max_meetings([(1, 1), (0, 1)]) == [(0, 1), (1, 1)]
 5. 회의 길이·시작 시각 기준의 반례를 그리고, 종료 시각 기준의 교환 과정을 말한다.
 6. Zero-duration 회의 두 개로 종료 시각 동점 규칙이 필요한 이유를 확인한다.
 7. 구현의 정렬 key, 선택 조건, 시간 복잡도를 증명의 기호와 연결한다.
+
+</details>
 
 ## 복습 질문
 

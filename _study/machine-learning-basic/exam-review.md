@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-02 13:12:04 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Machine Learning Basic Exam Review"
 course: "Machine Learning Basic"
 topic: "Exam Review"
@@ -33,6 +33,9 @@ Source PDFs:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 범위 | 예상 문항 수 | 연결 강의 | 공부 우선순위 |
 |---|---:|---|---|
 | 확률과 분포 | 3 | Lecture 11, 12, 13 | 계산 규칙, Bayes, Gaussian을 가장 먼저 정리 |
@@ -53,6 +56,8 @@ Source PDFs:
 | Lecture 17 | 2–17 | Gaussian 회귀 모델, MLE/MAP 정규방정식, RMSE | 4.1–4.4 |
 
 페이지는 각 PDF의 물리 페이지 기준이다. 시험 정리에서 새로 제시한 증명·조건부 Gaussian 유도는 원문 슬라이드의 표기를 복제한 것이 아니라, 해당 결론이 성립하는 조건을 보충한 해설이다.
+
+</details>
 
 ### 원본 그림으로 다시 잡는 네 축
 
@@ -1697,6 +1702,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. 먼저 확률과 분포 파트를 계산 중심으로 공부한다. Joint PMF table 하나를 놓고 marginal, conditional, independence, Bayes를 모두 계산할 수 있으면 3문제 중 상당 부분을 커버할 수 있다.
 2. Bayes 정리는 이름을 외우는 것보다 posterior, likelihood, prior, evidence의 역할을 말로 설명하는 연습이 중요하다. 특히 MAP에서 log를 취하면 prior가 penalty로 추가되는 흐름을 연결한다.
 3. Gaussian은 PDF 공식보다 성질이 중요하다. 주변분포와 조건부분포가 다시 Gaussian이라는 점, 확률변수의 합과 mixture가 다르다는 점, 선형변환에서 평균과 공분산이 어떻게 바뀌는지 정리한다.
@@ -1714,6 +1722,8 @@ $$
 | MLE와 MAP | MLE는 prior 없음, MAP는 prior 있음 |
 | Random variable sum과 mixture | 확률변수를 더하는 것과 density를 가중합하는 것은 다름 |
 | SGD와 mini-batch | SGD는 보통 한 sample 또는 stochastic 근사, mini-batch는 작은 sample 묶음 |
+
+</details>
 
 ## 복습 질문
 

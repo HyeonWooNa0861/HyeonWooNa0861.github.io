@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 11:31:26 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"
@@ -32,6 +32,9 @@ Source PDF: `LS20_graph.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 그래프 정의 | 정점과 간선으로 관계를 표현한다는 말은 무엇인가? |
@@ -46,6 +49,8 @@ Source PDF: `LS20_graph.pdf`
 | 10 | 표현법 비교 | 어떤 상황에서 matrix 또는 list가 더 유리한가? |
 
 20강은 그래프의 기본 용어와 표현 방법을 정리한다. 핵심은 그래프를 $$G=(V,E)$$로 보고, 정점 사이의 관계를 간선으로 표현한 뒤, 이 구조를 실제 프로그램에서 인접 행렬 또는 인접 리스트로 저장하는 것이다.
+
+</details>
 
 ## 1. 그래프의 정의
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 10:51:57 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Templates"
 course: "C++"
 topic: "Templates and Generic Programming"
@@ -21,6 +21,9 @@ Source PDF: `C++ 템플릿.pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
 |---:|---|---|---|
 | 1–6 | 코드 중복, 함수 template, 추론·명시 지정, instantiation, 여러 매개변수 | 1–5절 | compile-time code 생성 규칙 중심 |
@@ -31,9 +34,14 @@ Source PDF: `C++ 템플릿.pdf`
 
 12쪽 전체를 페이지 이미지로 대조했다. 중요 수학 관계는 11쪽의 두 행렬·벡터 곱뿐이며 아래에서 성분식, 결과 차원, 실패 조건을 설명한다. `template<typename T>`, `operator()`, `using`은 C++ 문법과 API 설계이므로 수학적 증명을 덧붙이지 않았다.
 
+</details>
+
 > **핵심:** 템플릿은 타입이나 값을 매개변수로 받아 같은 구조의 코드를 여러 경우에 재사용한다. 함수 템플릿을 사용하면 타입만 다른 함수를 각각 작성할 필요가 줄어든다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +55,8 @@ Source PDF: `C++ 템플릿.pdf`
 | 8 | 템플릿과 헤더 파일 | 왜 템플릿 정의는 보통 헤더에 함께 작성하는가? |
 | 9 | STL과 템플릿 | `vector<int>`와 `vector<double>`은 어떤 원리로 가능한가? |
 | 10 | `cpp_template.cpp` 코드 분석 | 비타입 템플릿, 출력 연산자, 타입 별칭이 실제 코드에서 어떻게 연결되는가? |
+
+</details>
 
 ## 1. 템플릿이 필요한 이유
 

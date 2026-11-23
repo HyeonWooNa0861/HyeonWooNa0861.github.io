@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-11-03 15:48:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -21,6 +21,9 @@ Source PDF: `C++ 다형성.pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 |
 |---:|---|---|
 | 1–3 | 다형성, virtual, static/dynamic binding | 1–2절 |
@@ -29,9 +32,14 @@ Source PDF: `C++ 다형성.pdf`
 
 8쪽 전체를 페이지 이미지로 대조했다. `= 0`은 순수 가상 함수를 선언하는 C++ 문법이고, vtable 그림은 runtime dispatch 구조다. 숫자 모양의 token이 있어도 수학 명제나 정량 모델은 아니므로 증명 대상으로 분류하지 않았다.
 
+</details>
+
 > **핵심:** 오버로딩과 템플릿은 호출 대상을 컴파일 시점에 정하는 정적 다형성을 제공한다. `virtual` 함수를 기본 클래스 포인터나 참조로 호출하면 실제 객체 타입에 따라 동작이 결정되는 동적 다형성이 일어난다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +49,8 @@ Source PDF: `C++ 다형성.pdf`
 | 4 | 추상 클래스 | 반드시 구현해야 하는 인터페이스를 어떻게 강제하는가? |
 | 5 | 가상 소멸자 | 기본 클래스 포인터로 삭제할 때 왜 virtual 소멸자가 필요한가? |
 | 6 | `override`, `final` | 오버라이딩 오류를 어떻게 방지하고 제한하는가? |
+
+</details>
 
 ## 1. 다형성이란?
 

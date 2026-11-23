@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 16: Score-Based Diffusion Models"
 course: "CS236"
 topic: "Score-Based Diffusion Models"
@@ -31,6 +31,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Score-based recap | score function만 학습해도 왜 sample을 만들 수 있는가? |
@@ -49,6 +52,8 @@ keywords:
 | slides 23--31 | Forward/reverse SDE, probability-flow ODE, likelihood | SDE/ODE 절에서 exact-score 결과와 learned-score·numerical-solver 근사를 구분한다. |
 | slides 34--37 | Parallel ODE, distillation, latent diffusion | 실용화 절에서 algorithmic approximation과 latent-space modeling의 범위를 설명한다. |
 | slides 40--46 | Conditional score, classifier guidance, classifier-free guidance | guidance 절에서 Bayes identity, slide 41 animation 상태, CFG extrapolation을 구분한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -697,6 +702,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Diffusion model은 갑자기 등장한 별도 family가 아니라 denoising score matching을 단계적 generative process로 조직한 모델이다.
 - DDPM의 forward process는 학습 대상이 아니다. 미리 정한 noising schedule이 encoder 역할을 하고, neural network는 reverse denoising만 학습한다.
 - ELBO 관점과 score matching 관점은 같은 training signal을 다른 언어로 설명한다. VAE는 variational bound를 강조하고, score-based view는 denoising vector field를 강조한다.
@@ -704,11 +712,16 @@ $$
 - ODE 관점은 diffusion model을 normalizing flow와 연결한다. Sampling이 deterministic해지고 likelihood 계산이 가능하지만, numerical integration 비용과 approximation tradeoff가 남는다.
 - Latent diffusion과 guidance는 diffusion을 실제 application으로 밀어 올린 핵심 장치다. 전자는 비용을 낮추고, 후자는 사용자의 조건을 generation에 반영한다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 16의 중심 메시지는 diffusion model이 score-based generative modeling의 실용적 구현이라는 점이다. Discrete-time DDPM은 fixed Gaussian encoder를 가진 hierarchical VAE로 볼 수 있고, 그 training objective는 denoising score matching과 연결된다. Continuous-time SDE는 score model이 reverse dynamics를 정의하게 만들고, probability flow ODE는 likelihood와 빠른 sampling의 길을 연다. 실전에서는 U-Net denoiser, latent space modeling, distillation, classifier-free guidance가 이 이론을 scalable image generation system으로 만든다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. Score function이 density 자체와 어떻게 다른지 먼저 정리한다. 특히 $$\nabla_x\log p_t(x)$$가 정규화 상수를 제거한다는 점을 확인한다.
 2. DDPM forward process와 reverse process를 분리해서 그린다. Forward는 fixed Gaussian corruption이고, reverse만 learned decoder다.
@@ -716,6 +729,8 @@ Lecture 16의 중심 메시지는 diffusion model이 score-based generative mode
 4. Discrete-time diffusion, SDE, ODE를 같은 score model의 세 가지 사용 방식으로 비교한다.
 5. Sampling speedup을 공부할 때는 DDIM, numerical solver, progressive distillation, latent diffusion이 각각 어느 비용을 줄이는지 구분한다.
 6. Conditional generation에서는 classifier guidance와 classifier-free guidance의 차이를 조건 신호의 출처 기준으로 정리한다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:22:09 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"
@@ -49,6 +49,9 @@ Source PDFs:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 문항 | 예상 유형 | 핵심 범위 | 답안에서 보여야 하는 것 |
 |---:|---|---|---|
 | 1 | OX 및 객관식 | sorting, hashing, graph 전반 | 정의, 시간복잡도, 장단점, 반례를 빠르게 판단 |
@@ -57,6 +60,8 @@ Source PDFs:
 | 4 | 주관식 및 서술형 | shortest path | Dijkstra의 $$D$$, $$S$$, $$\text{prev}$$, relaxation 표 작성 |
 
 중간고사 솔루션에서 배울 점은 단순하다. 정답만 쓰는 것이 아니라, 왜 그 답이 되는지 한 줄 근거를 붙여야 한다. 특히 서술형은 최종 결과보다 중간 상태 표가 채점의 핵심이 될 수 있다.
+
+</details>
 
 ## 1. OX 및 객관식 대비
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Classes and Operator Overloading"
 course: "C++"
 topic: "Function and Operator Overloading"
@@ -24,6 +24,9 @@ Source materials:
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 원문 | 페이지 | 본문 대응 | 수식 판정 |
 |---|---:|---|---|
 | PDF | 1–9 | 함수·생성자·복사 대입, 깊은 복사, `static`, `const` | 7쪽의 동적 배열 크기를 정확한 byte 항등식으로 설명 |
@@ -34,9 +37,14 @@ Source materials:
 
 PDF 24쪽 전체를 페이지 이미지로 대조하고 추가 C++ 파일도 원문과 대조했다. 반환형·시그니처 같은 언어 규칙은 수학식으로 바꾸지 않았고, 저장 위치와 행렬 곱처럼 실제 계산 의미가 있는 관계만 해설했다.
 
+</details>
+
 > **핵심:** 같은 이름의 함수를 오버로딩할 때는 반환형이 아니라 매개변수 목록으로 호출 대상을 구별한다. 복사 생성자는 기존 객체를 바탕으로 새 객체를 만들 때 호출된다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +55,8 @@ PDF 24쪽 전체를 페이지 이미지로 대조하고 추가 C++ 파일도 원
 | 5 | 연산자 오버로딩 | 어떤 연산자는 멤버, 어떤 연산자는 전역인가? |
 | 6 | `operator[]`, `operator()` | 객체를 배열처럼, 함수처럼 쓰는 방법은? |
 | 7 | 파일 분리 | `.h`와 `.cpp`는 어떻게 역할을 나누는가? |
+
+</details>
 
 ## 1. 오버로딩
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:58:59 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lab 1: Two-Stage vs One-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "Tracing Faster R-CNN and RetinaNet"
@@ -475,10 +475,15 @@ Penn-Fudan에서 보행자를 잘 검출해도 먼 거리의 작은 물체, 야�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 - **첫 번째 읽기:** 1–3절에서 입력 좌표·FPN·anchor를 구분한다. Shape의 축을 직접 말할 수 있는지 확인한다.
 - **두 번째 읽기:** 4–6절에서 label 할당, sampling, target encoding, proposal 선별, RoI refinement를 이어 본다. 정답을 만드는 코드와 예측하는 코드를 분리한다.
 - **세 번째 읽기:** 7–9절에서 sigmoid와 softmax, focal loss와 prior, 관찰용 top-K와 실제 후처리를 구분한다.
 - **실행 후 읽기:** 동일한 trace image의 epoch별 세 그림을 대조하고 proposal recall·최종 P/R을 함께 확인한다. 원본에는 저장 출력이 없으므로 실제 숫자는 실행 기록과 함께 읽는다.
+
+</details>
 
 ## 복습 질문
 

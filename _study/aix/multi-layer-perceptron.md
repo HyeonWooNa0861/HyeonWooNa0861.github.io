@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Multi-Layer Perceptron"
 course: "AIX"
 topic: "MLPs and Generalization"
@@ -22,6 +22,9 @@ Source PDF: `02_MLP.pdf`
 > **핵심:** 선형 층 사이에 비선형 활성화 함수가 없으면 여러 층을 쌓아도 하나의 선형 변환과 같다. XOR은 단일 perceptron이 선형 경계만으로는 해결할 수 없는 문제를 보여준다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -44,6 +47,8 @@ Source PDF: `02_MLP.pdf`
 | p.22-24 | bias-variance decomposition | 원문의 5단계 전개를 가정·교차항 소거 조건과 함께 재구성했다. |
 
 원문에 없는 XOR 부등식 증명과 두 층 vector backpropagation은 강의 명제를 검산하기 위한 저자 보충이며, 별도의 강의 식으로 오인하면 안 된다.
+
+</details>
 
 ## 1. Feed-forward Neural Network
 

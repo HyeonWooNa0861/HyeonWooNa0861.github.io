@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 16:37:00 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ STL"
 course: "C++"
 topic: "Standard Template Library"
@@ -21,6 +21,9 @@ Source PDF: `C++ STL.pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
 |---:|---|---|---|
 | 1–5 | STL 개요와 네 구성 요소 | 1–2절 | 구조·인터페이스 개념 중심 |
@@ -34,9 +37,14 @@ Source PDF: `C++ STL.pdf`
 
 53쪽 전체를 페이지 이미지로 대조했다. 원문의 모든 중요 복잡도 표기는 아래 보충 해설에서 입력 크기, 최악·평균·상각 구분, 성립 조건까지 설명한다. Header, iterator 표기, lambda capture는 API와 언어 문법이므로 증명 대상으로 만들지 않았다.
 
+</details>
+
 > **핵심:** STL에서는 컨테이너에 담긴 데이터를 이터레이터로 순회하고, 알고리즘에 함수 객체나 람다를 전달해 처리한다. `vector`는 연속 메모리를 사용하는 동적 배열로, 특별한 요구가 없다면 가장 먼저 고려할 컨테이너다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -50,6 +58,8 @@ Source PDF: `C++ STL.pdf`
 | 8 | 함수 객체와 람다 | 알고리즘에 조건과 동작을 어떻게 전달하는가? |
 | 9 | STL 알고리즘 | 검색, 정렬, 변환, 제거, 집계는 어떤 패턴으로 조합하는가? |
 | 10 | 실전 조합 | 학생 성적 데이터를 STL로 어떻게 처리하는가? |
+
+</details>
 
 ## 1. STL이란?
 

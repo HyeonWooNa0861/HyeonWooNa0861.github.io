@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 03 Linear Algebra 2"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 2"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-03.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 군과 아벨리안 군 | 연산이 잘 정의된 구조란 무엇인가? |
@@ -41,6 +44,8 @@ Source PDF: `machine-learning-basic-lecture-03.pdf`
 | 17–21 | 선형 독립·종속의 정의와 계수 비교 예시 | 5, 5.1, 7.3 |
 
 페이지 22는 Q&A이며 중요 수식을 추가하지 않는다.
+
+</details>
 
 ## 1. 군과 아벨리안 군
 
@@ -223,7 +228,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 후보 집합마다 0 벡터 포함, 덧셈 닫힘, 스칼라곱 닫힘을 순서대로 검사해 부분공간 여부를 판정한다. Ax=0의 해 집합은 부분공간이지만 일반적인 Ax=b는 원점을 지나지 않는 affine space일 수 있다는 대비가 핵심 혼동 지점이다. 벡터 집합의 선형 독립은 계수식을 0에 놓고 자명하지 않은 해가 있는지 손으로 확인한다.
+
+</details>
 
 ## 복습 질문
 

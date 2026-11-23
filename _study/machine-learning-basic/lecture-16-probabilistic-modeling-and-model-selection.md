@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
-last_modified_at: 2026-10-16 19:32:41 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-16.pdf`
 > **핵심:** ERM은 training data의 평균 loss인 empirical risk를 최소화한다. 이 평균을 true risk의 근사로 해석하려면 표본이 같은 분포에서 독립적으로 뽑혔다는 i.i.d. 가정이 중요하다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -49,6 +52,8 @@ Source PDF: `machine-learning-basic-lecture-16.pdf`
 | 16–18 | model selection, nested CV, Bayesian model comparison | 14–17, 18.3 |
 
 페이지 19는 Q&A 마무리이다. Evidence의 복잡도 penalty는 해석이지 “항상 더 단순한 모델이 승리한다”는 정리가 아니며, prior와 model class에 의존한다.
+
+</details>
 
 ## 1. ERM 복습: 데이터를 잘 설명하는 함수 찾기
 
@@ -560,7 +565,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 ERM과 i.i.d. 가정에서 출발해 regularization을 MAP의 negative-log prior와 연결한다. graphical model의 factorization과 latent variable 의미를 작은 joint distribution에 적용한 뒤, MLE가 likelihood만 보고 MAP가 prior까지 본다는 차이를 확인한다. model selection에서는 inner validation과 outer test를 분리하는 nested CV로 leakage를 막고, Occam's razor와 Bayesian evidence가 fit·complexity를 함께 다루는 이유를 정리한다.
+
+</details>
 
 ## 복습 질문
 

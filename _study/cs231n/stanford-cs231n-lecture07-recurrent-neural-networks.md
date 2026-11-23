@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
 topic: "Recurrent Neural Networks"
@@ -30,7 +30,8 @@ Official slides: [Lecture 7 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** RNN은 같은 transition function을 시간축에 반복 적용해 가변 길이 시퀀스를 처리한다. 이 공유 구조는 강력하지만 긴 경로에서 같은 Jacobian을 반복 곱하므로 vanishing/exploding gradient가 생기며, LSTM은 additive cell-state path와 gate로 장기 정보 흐름을 개선한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 7 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 | 5 | BPTT | 시간축에서 gradient를 어떻게 계산하는가? |
 | 6 | LSTM | 장기 의존성의 gradient 문제를 어떻게 완화하는가? |
 
+</details>
 ## 1. 시퀀스 문제의 형태
 
 RNN은 하나의 입력을 하나의 출력으로 바꾸는 분류를 넘어 여러 입출력 길이를 다룬다.
@@ -198,6 +200,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **124쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -209,6 +214,7 @@ $$
 
 RNN/LSTM 식은 강의 원문 요약이고, uniform Jacobian bound와 singular-value 충분조건을 사용한 안정성 논증은 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 7](https://www.youtube.com/watch?v=kG2lAPBF7zA){:target="_blank" rel="noopener"}

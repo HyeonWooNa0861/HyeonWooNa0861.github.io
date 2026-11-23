@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-28 12:20:48 +0900
-last_modified_at: 2026-11-03 15:48:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 > **핵심:** 회귀는 입력 $$x$$에서 연속적인 값 $$y$$를 예측하는 문제다. Gaussian noise를 가정하면 관측값은 $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$로 표현된다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -50,6 +53,8 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 | 17 | MLE·MAP 예측 비교 | 13 |
 
 페이지 18은 Q&A 마무리이다. Normal-equation inverse는 design matrix가 full column rank일 때만 유일해를 주며, rank-deficient·ill-conditioned 경우의 실패 조건은 14절에 구분했다.
+
+</details>
 
 ## 1. 회귀란?
 
@@ -705,6 +710,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 먼저 회귀 문제를 $$y=f(x)+\epsilon$$으로 보는 관점을 잡아야 한다. 그다음 Gaussian noise 가정에서 likelihood를 쓰고, negative log를 취하면 squared error가 나온다는 흐름을 이해한다.
 
 두 번째로 normal equation을 외우기 전에 행렬 모양을 확인해야 한다. $$X$$ 또는 $$\Phi$$는 sample을 행으로 쌓은 matrix이고, $$y$$는 target vector다. 따라서 $$\Phi^T\Phi$$는 parameter 차원 $$K\times K$$ matrix가 된다.
@@ -719,6 +727,8 @@ $$
 | RMSE | MSE와 RMSE의 차이와 해석 |
 | Overfitting | 차수가 커질수록 training error와 test error가 다르게 움직이는 이유 |
 | MAP | prior의 negative log가 regularization penalty가 되는 과정 |
+
+</details>
 
 ## 복습 질문
 

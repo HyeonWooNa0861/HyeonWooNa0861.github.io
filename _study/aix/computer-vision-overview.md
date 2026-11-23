@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Computer Vision Overview"
 course: "AIX"
 topic: "Visual Intelligence and Deep Learning Vision"
@@ -23,6 +23,9 @@ Source PDF: `03_Computer_Vision.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Visual intelligence | 픽셀을 의미로 바꾸는 문제는 왜 어려운가? |
@@ -33,6 +36,8 @@ Source PDF: `03_Computer_Vision.pdf`
 | 6 | Generative vision | DeepDream, style transfer, GAN, diffusion은 무엇을 보여주는가? |
 | 7 | 성공 요인 | data, compute, algorithm은 어떤 역할을 했는가? |
 | 8 | 한계와 책임 | robustness, bias, safety 문제를 왜 함께 보아야 하는가? |
+
+</details>
 
 ## 1. Visual Intelligence
 

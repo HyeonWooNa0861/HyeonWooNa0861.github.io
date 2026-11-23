@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 07 Matrix Decomposition 1"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 1"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-07.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 행렬식 | 선형 변환이 부피를 얼마나 바꾸는가? |
@@ -42,6 +45,8 @@ Source PDF: `machine-learning-basic-lecture-07.pdf`
 | 24–25 | $$\det(A)=\prod_i\lambda_i$$, $$\operatorname{tr}(A)=\sum_i\lambda_i$$ | 7, 8.3 |
 
 페이지 26은 Q&A 마무리이다.
+
+</details>
 
 ## 1. 행렬식 Determinant
 
@@ -242,7 +247,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 행 스케일과 행 교환이 determinant에 미치는 영향을 적용한 뒤 det(A)=0을 non-invertible·rank deficient와 연결한다. eigenvector는 Av=λv를 만족하며 방향이 보존되는 벡터이므로 characteristic equation으로 λ를 구하고 null space에서 v를 찾는 순서를 손으로 반복한다. symmetric matrix의 실수 eigenvalue와 SPD matrix의 양의 eigenvalue 조건을 구분해 암기한다.
+
+</details>
 
 ## 복습 질문
 

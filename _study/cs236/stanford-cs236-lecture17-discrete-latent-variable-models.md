@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 17: Discrete Latent Variable Models"
 course: "CS236"
 topic: "Discrete Latent Variable Optimization"
@@ -27,6 +27,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Diffusion wrap-up | diffusion model은 SDE/ODE/likelihood 관점에서 어떻게 마무리되는가? |
@@ -45,6 +48,8 @@ keywords:
 | pp. 14--17 | General control variate와 optimal coefficient | `일반 control variate와 최적 계수`에서 variance identity와 유한표본 위험을 설명한다. |
 | pp. 18--19 | NVIL gradient와 learned baselines | `핵심 내용`에서 원문 algorithm과 baseline 의존성을 설명한다. |
 | pp. 20--26 | Gumbel CDF, Gumbel-Max, Gumbel-Softmax, temperature | `핵심 내용`과 `핵심 개념`에서 exact sampling identity와 biased relaxation을 구분한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -226,6 +231,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Discrete latent variable의 어려움은 "sample을 뽑을 수 없다"가 아니라 "sample 선택이 parameter에 대해 differentiable path를 주지 않는다"는 점이다.
 - Log derivative trick은 매우 일반적이다. $$f$$가 black-box reward여도, $$q_\phi(z)$$의 log probability를 계산할 수 있으면 gradient estimator를 만들 수 있다.
 - Unbiased estimator가 좋은 estimator라는 뜻은 아니다. Variance가 너무 크면 실제 optimization은 느리거나 불안정해진다.
@@ -233,11 +241,16 @@ $$
 - Gumbel-Softmax는 exact discrete optimization이 아니라 relaxation이다. 낮은 temperature는 discrete에 가깝지만 gradient가 불안정하고, 높은 temperature는 안정적이지만 bias가 커진다.
 - Straight-through estimator는 실용적이지만 엄밀히 unbiased라고 보기 어렵다. forward의 discrete semantics와 backward의 smooth gradient를 의도적으로 섞는다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 17의 핵심은 discrete latent variable이 generative model에서 매우 자연스럽지만, gradient estimation을 어렵게 만든다는 점이다. Reparameterization trick은 continuous differentiable latent variable에서는 강력하지만 discrete selection에는 바로 적용되지 않는다. Log derivative trick은 일반적인 unbiased gradient를 제공하고, control variate와 NVIL은 그 variance를 줄인다. Gumbel-Softmax는 문제를 continuous relaxation으로 바꾸어 pathwise gradient를 회복하지만 bias-variance tradeoff를 감수한다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. 먼저 stochastic objective $$\mathbb{E}_{q_\phi(z)}[f(z)]$$에서 $$\phi$$가 어디에 들어가는지 표시한다. Sample distribution에 들어가는 parameter와 objective 안쪽에 들어가는 parameter를 구분한다.
 2. Reparameterization trick이 성립하는 조건을 적고, categorical variable에서 어떤 조건이 깨지는지 설명한다.
@@ -245,6 +258,8 @@ Lecture 17의 핵심은 discrete latent variable이 generative model에서 매�
 4. Baseline을 빼도 unbiased인 이유를 $$\mathbb{E}[\nabla\log q_\phi(z)]=0$$로 확인한다.
 5. NVIL을 읽을 때는 estimator 자체와 baseline 학습 objective를 분리한다. Baseline은 gradient mean을 바꾸기 위한 것이 아니라 variance를 줄이기 위한 auxiliary model이다.
 6. Gumbel-Max, Gumbel-Softmax, straight-through estimator를 exactness와 differentiability 기준으로 비교한다.
+
+</details>
 
 ## 복습 질문
 

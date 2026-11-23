@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-01 12:25:13 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"
@@ -32,6 +32,9 @@ WHITE 정점은 처음 발견할 때 GRAY로 바꾸고 queue에 한 번 넣는�
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 그래프 순회 | 모든 정점을 정확히 한 번씩 방문한다는 말은 무엇인가? |
@@ -46,6 +49,8 @@ WHITE 정점은 처음 발견할 때 GRAY로 바꾸고 queue에 한 번 넣는�
 | 10 | BFS vs DFS | 두 순회 방식은 목적과 방문 순서가 어떻게 다른가? |
 
 21강은 그래프 위에서 정점을 방문하는 기본 방법인 BFS와 DFS를 다룬다. 핵심은 단순히 "방문한다"가 아니라, 어떤 순서로 방문하고, 방문 상태를 어떻게 관리하며, 그 결과로 거리, predecessor, discovery/finish time 같은 정보를 얻는지다.
+
+</details>
 
 ## 1. 그래프 순회란?
 

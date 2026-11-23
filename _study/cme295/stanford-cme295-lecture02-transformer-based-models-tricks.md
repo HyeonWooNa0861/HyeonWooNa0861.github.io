@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 
 왼쪽과 오른쪽 벡터는 절대 위치만큼 따로 회전하지만, 두 벡터의 내적에서는 회전각의 차이인 $$(m-n)\theta$$가 남는다. 이 때문에 별도 위치 벡터를 더하지 않아도 attention score가 상대 거리를 반영한다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** Self-attention에는 토큰 순서가 자체적으로 들어 있지 않으므로 위치 정보를 별도로 주어야 한다. 위치 표현, normalization, attention 계산·메모리 비용을 바꾸는 방법이 Transformer의 여러 모델 계열을 이해하는 열쇠다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +46,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 | 7 | BERT training | BERT의 MLM, NSP, CLS/SEP/segment embedding은 classification representation을 어떻게 학습시키는가? |
 | 8 | BERT variants | DistilBERT와 RoBERTa는 BERT의 어떤 비용 또는 objective 문제를 바꾸려 했는가? |
 
+</details>
 ## 핵심 내용
 
 Self-attention은 모든 토큰을 직접 연결하지만 RNN처럼 순서를 자연스럽게 전달하지는 않는다. 원래 Transformer는 위치별 embedding을 입력 토큰 embedding에 더했고, 학습형과 sinusoidal 방식을 모두 시험했다. Sinusoidal 방식은 omega_i = 10000^{-2i/d_model} 꼴의 주파수로 sine/cosine 값을 만들어 서로 다른 위치의 내적에 상대 거리가 반영되게 한다. 이후 등장한 T5 relative position bias와 ALiBi는 attention score에 거리 정보를 더한다. 현대 모델에서 널리 쓰이는 RoPE(Rotary Position Embeddings)는 query와 key를 위치별 각도로 회전시켜 QK^T에 상대 거리를 직접 반영한다.
@@ -241,6 +241,8 @@ byte다. 2는 key와 value를 뜻한다. Batch·beam 수와 allocator overhead�
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=yT84Y5zCnaA){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 19:34:48 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 14: Generative Models 2"
 course: "CS231N"
 topic: "Generative Models 2"
@@ -30,7 +30,8 @@ Official slides: [Lecture 14 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** GAN은 확률값 대신 discriminator의 학습 신호로 generator를 훈련하고, diffusion은 데이터에 노이즈를 넣은 뒤 그 과정을 되감는 denoiser를 학습한다. 현대 생성 시스템은 VAE, adversarial loss, diffusion/Transformer를 **경쟁 모델이 아니라 조합 가능한 부품**으로 사용한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -40,6 +41,7 @@ Official slides: [Lecture 14 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 | 4 | Conditioning | Text나 class가 생성 방향을 어떻게 바꾸는가? |
 | 5 | Latent diffusion | VAE, discriminator, diffusion이 왜 한 pipeline에 들어가는가? |
 
+</details>
 ## 1. GAN: density 대신 두 네트워크의 게임
 
 Generator $$G(z)$$는 known prior에서 뽑은 $$z$$를 데이터 모양의 sample로 바꾸고, discriminator $$D(x)$$는 real과 generated sample을 구분한다. 원래 minimax objective는
@@ -205,6 +207,9 @@ GAN과 diffusion을 `학습 신호`, `sampling 단계 수`, `density 평가`, `�
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **123쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -217,6 +222,7 @@ GAN과 diffusion을 `학습 신호`, `sampling 단계 수`, `density 평가`, `�
 
 GAN·rectified flow·diffusion pipeline은 강의 원문 요약이다. Optimal discriminator/JS 식과 rectified-flow velocity·MSE conditional-mean 유도는 **작성자 보충**이고, guidance scale은 보장식이 아닌 heuristic으로 구분했다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=Edr4uZFh4EE){:target="_blank" rel="noopener"}

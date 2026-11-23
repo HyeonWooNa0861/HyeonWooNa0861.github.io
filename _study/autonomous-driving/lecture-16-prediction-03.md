@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-06 15:00:00 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 16: Prediction III"
 course: "Autonomous Driving"
 topic: "Multimodal Motion Prediction with Target-Driven Trajectories"
@@ -392,7 +393,12 @@ TNT 원 논문은 차량 예측을 Argoverse Forecasting·INTERACTION에서, 보
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 복습할 때는 23쪽의 마름모·별·선·점수가 무엇인지 먼저 설명하고, 22쪽에서 각 출력이 어느 모듈에서 생성되는지 확인한다. 이후 21쪽의 $$D$$가 마지막 오차나 평균 오차와 어떻게 다른지 계산하면, 왜 scoring 단계가 따로 필요한지 연결된다.
+
+</details>
 
 ## 복습 질문
 

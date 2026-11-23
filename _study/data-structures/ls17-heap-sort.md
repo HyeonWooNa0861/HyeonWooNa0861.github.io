@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"
@@ -32,6 +32,9 @@ Source PDF: `LS17_heap_sort.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 힙 복습 | Max Heap에서 최댓값은 어디에 있는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS17_heap_sort.pdf`
 | 3 | Build Heap | 배열을 힙으로 만드는 비용은 왜 $$O(n)$$인가? |
 | 4 | 정렬 과정 | 루트와 마지막 원소를 바꾸며 sorted 영역을 어떻게 키우는가? |
 | 5 | 복잡도 | 전체 시간과 추가 메모리는 어떻게 되는가? |
+
+</details>
 
 ## 1. 힙 정렬의 아이디어
 

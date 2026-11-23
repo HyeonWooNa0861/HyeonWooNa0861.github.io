@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"
@@ -32,6 +32,9 @@ Source PDF: `LS11_BST_AVL_tree.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | BST 탐색/삽입 복습 | 비교 결과로 왼쪽/오른쪽 이동을 어떻게 결정하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS11_BST_AVL_tree.pdf`
 | 3 | BST 비용 | 왜 트리 높이가 성능을 결정하는가? |
 | 4 | AVL 트리 | 스스로 균형을 유지하는 BST는 무엇인가? |
 | 5 | AVL 삽입 회전 | LL, RR, LR, RL은 어떤 회전으로 해결하는가? |
+
+</details>
 
 ## 1. BST 삭제의 세 경우
 

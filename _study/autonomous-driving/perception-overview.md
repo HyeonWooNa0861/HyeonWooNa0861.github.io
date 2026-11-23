@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Perception Review: From Image Classification to Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Integrated Review of Visual Representations, Detection, and Segmentation"
@@ -316,10 +316,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 - 먼저 §1과 §4를 읽고 여섯 강의의 큰 흐름을 연결한다.
 - 수식은 §2의 cross-entropy 미분, §3의 box 역변환, §6의 AP 계산, §7의 전치행렬 예제를 직접 계산한다.
 - 구현 전에는 좌표의 단위, positive assignment, loss 적용 대상, NMS 조건, 평가 설정을 한 장에 적는다.
 - 상세 슬라이드 설명은 위 Lecture 3–8 링크로 이동한다. 복습할 때 원문 PDF를 함께 열어 도식과 식의 기호를 대조한다.
+
+</details>
 
 ## 복습 질문
 

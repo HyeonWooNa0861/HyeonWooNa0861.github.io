@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-15 22:57:10 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
@@ -30,7 +30,8 @@ Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part
 
 > **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -43,6 +44,7 @@ Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part
 | 7 | 사회적 함의 | 편향, 안전, 인간 중심 설계를 왜 함께 고려해야 하는가? |
 | 8 | CS231N 수업 구조 | 앞으로 어떤 주제를 순서대로 배우는가? |
 
+</details>
 ## 1. Computer Vision의 위치
 
 CS231N은 인공지능 전체를 다루는 수업이 아니라, 컴퓨터 비전과 딥러닝이 만나는 핵심 영역을 다룬다. 컴퓨터 비전의 목표는 이미지와 비디오의 픽셀을 물체, 장면, 행동, 관계 같은 의미로 바꾸는 것이다.
@@ -85,7 +87,7 @@ CNN은 이미지의 공간 구조를 활용한다. 작은 filter를 이미지 �
 
 ### 작성자 보충: Backpropagation 식의 chain rule
 
-공식 slide Part 1 p.39와 영상 28:35–29:39는 역전파의 핵심을 다음 chain rule로 제시한다.
+공식 slide Part 1 p.39는 역전파의 핵심을 다음 chain rule로 제시한다.
 
 $$
 \frac{\partial E_p}{\partial w_{ji}}
@@ -157,6 +159,9 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 slide 전 페이지(Part 1 69쪽, Part 2 50쪽)를 시각적으로 확인했다. 이 강의는 역사와 course overview가 중심이며, 후속 강의 내용을 예고하는 network diagram·성능 graph를 제외하면 단계별 유도가 필요한 핵심 수식은 Part 1 p.39의 backpropagation chain rule 한 건이다.
 
 | 본문 대응 | 공식 slide | 영상 구간 | 확인 결과 |
@@ -167,6 +172,7 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 | Vision task와 course 구조 | Part 2 pp.4–32, 49 | 45:26–01:02:29 | 분류 이후 task, 생성·언어·3D·embodied 영역과 강의 구성을 반영 |
 | 운영 안내 | Part 2 pp.33–48 | 녹화 강의에서 별도 설명 없음 | 학술 내용이 아닌 수업 logistics이므로 본문 수식 해설 대상에서 제외 |
 
+</details>
 ## Study Guide
 
 | 질문 | 확인할 개념 |

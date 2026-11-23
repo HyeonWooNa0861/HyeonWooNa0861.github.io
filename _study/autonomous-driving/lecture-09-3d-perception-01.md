@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 9: Image-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "3D Boxes, Camera Geometry, Mono3D, MonoRCNN, and Pseudo-LiDAR"
@@ -390,7 +390,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 13–18쪽을 보며 `3D point → pixel`과 `pixel → ray`를 반대 방향으로 구분한다. 그 다음 intrinsic·extrinsic 식을 직접 쓰고, $$\lambda$$ scale이 상쇄되는지 확인한다. 9–10쪽에서는 box parameter와 3D IoU를 계산하고, 20–26쪽의 Mono3D를 `prior → candidate → projection → scoring → NMS → refinement` 순서로 외운다. 마지막으로 27–35쪽에서 같은 pinhole 식이 MonoRCNN의 PCL 기반 거리 분해와 Pseudo-LiDAR의 back-projection에 어떻게 다시 등장하는지 연결한다.
+
+</details>
 
 ## 복습 질문
 

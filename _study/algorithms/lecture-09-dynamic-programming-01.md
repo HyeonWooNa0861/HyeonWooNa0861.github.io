@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 9: Dynamic Programming I"
 course: "Algorithms"
 topic: "Memoization, Matrix Paths, and Matrix-Chain Order"
@@ -512,12 +512,17 @@ Top-down에서는 표의 순서를 반복문으로 직접 쓰지 않는다. 재�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 각 문제에서 상태를 한 문장으로 먼저 정의하고, 인덱스 범위와 값의 단위를 적는다.
 2. 점화식을 쓰기 전에 가능한 마지막 선택을 모두 나열한다. Matrix Path는 위·왼쪽, Matrix Chain은 모든 분할점이다.
 3. 기저 사례와 불가능한 상태를 구분한다. 비용 0과 미계산, 유효한 0점 경로와 행렬 밖 경로는 같은 상태가 아니다.
 4. Bottom-up 반복문의 방향이 의존 관계를 만족하는지 확인한다. 행렬 연쇄에서는 시작점 순서보다 구간 너비가 먼저다.
 5. 작은 입력을 손으로 계산한 뒤 코드의 테이블과 대조한다. 최적값뿐 아니라 복원된 경로나 괄호 묶기도 검산한다.
 6. 복잡도는 상태 수와 상태당 전이 수를 곱해 계산한다. Matrix Path는 $$RC\cdot O(1)$$, Matrix Chain은 $$O(m^2)\cdot O(m)$$이다.
+
+</details>
 
 ## 복습 질문
 

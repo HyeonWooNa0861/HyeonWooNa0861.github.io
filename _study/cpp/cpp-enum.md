@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Enumerations"
 course: "C++"
 topic: "Enums and enum class"
@@ -21,6 +21,9 @@ Source PDF: `열거형 (Enum).pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 | 수식 판정 |
 |---:|---|---|---|
 | 1–5 | enum의 정의, 기본값, scope, `enum class` | 1–5절 | 문법·타입 규칙 중심 |
@@ -29,9 +32,14 @@ Source PDF: `열거형 (Enum).pdf`
 
 7쪽 전체를 페이지 이미지로 대조했다. 수학적으로 설명할 핵심 관계는 6쪽 bit flag의 자리값뿐이며, 열거자의 기본값 증가와 `static_cast`는 언어가 정한 규칙이므로 별도의 수학 증명을 만들지 않았다.
 
+</details>
+
 > **핵심:** `enum`은 서로 관련된 상수에 의미 있는 이름을 붙인다. 코드 곳곳에 의미를 알기 어려운 숫자, 즉 매직 넘버를 직접 쓰는 것보다 상태와 선택지를 읽고 관리하기 쉽다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +47,8 @@ Source PDF: `열거형 (Enum).pdf`
 | 2 | C 스타일 enum | 전통적인 enum은 어떻게 동작하는가? |
 | 3 | enum class | C++에서는 왜 scoped enum을 권장하는가? |
 | 4 | 활용 예 | 상태 머신과 비트 플래그에 어떻게 쓰는가? |
+
+</details>
 
 ## 1. 열거형이란?
 

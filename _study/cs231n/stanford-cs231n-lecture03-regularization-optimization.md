@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
 topic: "Regularization and Optimization"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 3 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 정규화는 훈련 오차가 아니라 보지 못한 데이터의 오차를 줄이기 위한 설계이고, 최적화는 그 목적함수의 지형을 기울기로 탐색하는 과정이다. 좋은 결과는 optimizer 이름 하나보다 학습률, 스케줄, 초기화, 데이터 표현의 조합에서 나온다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +40,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 3 PDF](https://cs231n.stanford.ed
 | 4 | Adaptive methods | 좌표별 gradient scale 차이를 어떻게 보정하는가? |
 | 5 | Learning-rate schedule | 학습 단계마다 보폭을 왜 바꾸는가? |
 
+</details>
 ## 1. 데이터 손실과 정규화
 
 훈련 목적함수는 보통 데이터 손실과 정규화 항을 결합한다.
@@ -229,6 +231,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **119쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -241,6 +246,7 @@ $$
 
 Optimizer 정의와 장단점은 강의 원문 요약이다. Adam bias correction, L2/decoupled decay 비교, Newton step 유도는 강의 식의 전제를 명시해 확장한 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 3](https://www.youtube.com/watch?v=dyNGd06MWn4){:target="_blank" rel="noopener"}

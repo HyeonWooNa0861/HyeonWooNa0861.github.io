@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 5: Perception (3) - R-CNN Inference and Fast R-CNN"
 course: "Autonomous Driving"
 topic: "Non-Maximum Suppression, Average Precision, Fast R-CNN, and RoI Pooling"
@@ -171,10 +171,15 @@ RoI pooling은 feature 길이를 맞추지만 좌표를 cell에 snap하므로 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. **계산 순서:** IoU 정의를 손으로 계산한 뒤, NMS의 예측–예측 IoU와 AP 매칭의 예측–GT IoU를 구분한다.
 2. **시험형 예제:** 원문 12–16쪽의 TP–TP–FP–FP–TP를 표로 다시 만들고 threshold 0.95와 0.10의 precision·recall을 직접 구한다. 그다음 AP의 TP 순위 1·2·5를 합한다.
 3. **설계 흐름:** R-CNN의 반복 CNN → Fast R-CNN의 공유 feature → RoI pooling으로 고정 크기화 → 남은 proposal 생성 병목을 한 문장씩 설명한다.
 4. **오개념 확인:** AP 0.5, NMS 0.7, confidence 0.95는 서로 다른 역할의 임계값이다. AP의 0.86/0.87 차이는 계산 방식과 반올림을 먼저 확인한다.
+
+</details>
 
 ## 복습 질문
 

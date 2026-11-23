@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 5: Variational Autoencoders I"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -25,6 +25,9 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Autoregressive model 복습 | Likelihood 계산은 쉽지만 순서 선택, sequential generation, feature learning 한계가 왜 남는가? |
@@ -45,6 +48,8 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 21–29 | Jensen, ELBO, KL gap, posterior approximation | pp. 21–25의 bound와 equality condition을 아래에서 유도; pp. 26–29는 해석·요약 |
 
 > Delta-method 오차와 finite-variance 조건은 강의 자료의 식이 성립하는 범위를 설명하는 보충 해설이다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -215,6 +220,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Latent variable은 모델을 유연하게 만들지만, posterior inference와 marginal likelihood 계산을 어렵게 만든다.
 - Mixture of Gaussians는 VAE를 이해하기 위한 shallow prototype이다.
 - VAE는 finite mixture component를 continuous latent space로 바꾼 infinite mixture 관점으로 볼 수 있다.
@@ -222,17 +230,24 @@ $$
 - Uniform Monte Carlo는 대부분 의미 없는 completion을 뽑기 때문에 variance가 커진다.
 - ELBO는 "log-likelihood를 직접 못 계산하니 lower bound를 최적화한다"는 VAE 학습의 출발점이다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 5의 핵심은 VAE를 "simple prior + neural conditional + hard posterior inference"로 이해하는 것이다. Latent variable을 넣으면 $$p(x\mid z)$$는 단순해지고 $$p(x)$$는 유연해지지만, $$z$$를 보지 못하기 때문에 likelihood 계산이 어려워진다. ELBO는 이 난점을 Jensen's inequality와 proposal distribution $$q$$로 우회하는 첫 번째 도구다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. Autoregressive model과 latent variable model을 likelihood 계산, generation 속도, representation learning 관점에서 비교한다.
 2. Mixture of Gaussians에서 $$z$$, $$p(z)$$, $$p(x\mid z)$$, $$p(z\mid x)$$가 각각 무엇을 의미하는지 그림 없이 설명해 본다.
 3. VAE가 "infinite mixture"처럼 보이는 이유를 finite mixture와 나란히 써 본다.
 4. Naive Monte Carlo, importance sampling, ELBO가 차례로 등장하는 이유를 variance와 log-likelihood 관점으로 연결한다.
 5. $$q(z)$$가 true posterior에 가까울수록 ELBO가 tight해진다는 문장을 식으로 확인한다.
+
+</details>
 
 ## 복습 질문
 

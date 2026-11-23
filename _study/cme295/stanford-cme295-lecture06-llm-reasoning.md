@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-03 15:57:55 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 한 prompt에서 여러 completion을 생성하고 각각 reward $$r_i$$를 얻으면, 슬라이드의 기본 형태는 $$r_i-\operatorname{mean}(r_1,\ldots,r_G)$$다. 평균보다 좋은 응답은 양의 advantage, 나쁜 응답은 음의 advantage를 얻어 policy update 방향이 정해진다. 실제 GRPO에서는 이 차이를 group 표준편차로 나눠 reward scale을 맞춘다. 실제 목적함수에서는 old policy 대비 급격한 확률비 변화는 clipping으로, reference policy와의 이탈은 KL penalty로 제한한다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에서는 최종 답뿐 아니라 추론 과정에 사용할 계산량도 성능을 좌우한다. 정답을 검증할 수 있는 보상과 그룹 내 상대 보상을 이용하는 GRPO는 이러한 추론 능력을 학습하는 한 방법이다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -47,6 +46,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 | 7 | GRPO 개선 | Output length 증가 문제에서 DAPO, Dr. GRPO, asymmetric epsilon은 어떤 수정 방향을 제시하는가? |
 | 8 | DeepSeek R1 pipeline | R1-Zero와 R1은 SFT, RL, cold-start data, rejection sampling, distillation을 어떻게 조합하는가? |
 
+</details>
 ## 핵심 내용
 
 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에는 답을 바로 내는 방식보다 중간 추론을 활용하는 방식이 도움이 될 수 있다. 강의는 일반 LLM이 코드 작성·디버깅·수필·시 창작에는 강해도 복잡한 추론, 고정된 지식 시점, 외부 행동의 부재, 자유 형식 출력 평가에서 제약을 갖는다고 설명한다. Reasoning model은 답 앞에 reasoning chain을 생성하는 방식으로 소개되며, chain-of-thought를 더 큰 규모로 확장한 발상과 이어진다. 추론 토큰이 늘어나면 생성 단계와 계산 비용도 증가한다.
@@ -238,6 +238,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=k5Fh-UgTuCo){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

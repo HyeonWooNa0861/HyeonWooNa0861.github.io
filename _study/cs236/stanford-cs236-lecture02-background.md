@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 2: Background"
 course: "CS236"
 topic: "Probability, Graphical Models, and Neural Parameterizations"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 생성 모델 학습 문제 | 데이터 분포 $$p_{\mathrm{data}}$$와 모델 분포 $$p_{\theta}$$를 어떻게 연결하는가? |
@@ -46,6 +49,8 @@ keywords:
 | pp. 25–29 | neural parameterization, continuous density, VAE preview | pp. 25–26의 비선형 경계는 아래에서 유도; 나머지는 정의·예시 중심 |
 
 > 강의 PDF의 모델 식에는 해당 페이지를 표시했다. Smoothing·단위·적용 실패 조건은 원문 설명과 구분한 보충 해설이다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -236,6 +241,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Chain rule은 항상 맞지만, 그 자체로 compact representation을 주지는 않는다.
 - Parameter savings는 independence 또는 functional form 같은 modeling assumption에서 나온다.
 - Bayesian network는 graph가 표현하는 조건부 독립성 덕분에 joint distribution을 local factor의 곱으로 바꾼다.
@@ -243,17 +251,24 @@ $$
 - Discriminative model은 필요한 $$p(Y \mid X)$$만 직접 학습하므로 prediction에는 간결하지만 $$p(X)$$에 대한 질문에는 답하지 못한다.
 - Neural network는 조건부 확률표를 직접 저장하지 않고, 입력 configuration을 probability parameter로 보내는 함수를 학습한다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 2강의 핵심은 고차원 확률분포를 다루려면 반드시 가정이 필요하다는 점이다. Full joint table은 정확하지만 불가능하고, 완전 독립은 싸지만 너무 약하다. Bayesian network는 조건부 독립성으로, logistic regression과 neural network는 functional form으로 복잡도를 줄인다. 이후 deep generative model은 이 선택들을 조합해 tractable하면서도 표현력 있는 $$p_{\theta}(x)$$를 만든다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. $$2^n - 1$$ parameter 문제가 왜 이미지와 언어에서 즉시 터지는지 먼저 계산해 본다.
 2. Independence, Markov assumption, Bayesian network를 "어떤 조건부를 얼마나 줄이는가"라는 기준으로 비교한다.
 3. Naive Bayes와 logistic regression을 spam classification 예시로 다시 그려 본다.
 4. Generative와 discriminative의 차이를 성능 우열이 아니라 "어떤 확률을 모델링하는가"로 정리한다.
 5. Continuous variable 예시는 이후 VAE와 flow를 이해하기 위한 예고편으로 둔다. Gaussian assumption이 neural network를 써도 완전히 사라지지 않는다는 점을 기억한다.
+
+</details>
 
 ## 복습 질문
 

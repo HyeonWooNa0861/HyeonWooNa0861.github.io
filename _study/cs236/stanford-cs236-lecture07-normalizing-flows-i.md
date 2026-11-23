@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 7: Normalizing Flows I"
 course: "CS236"
 topic: "Normalizing Flow Foundations"
@@ -25,6 +25,9 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | VAE의 autoencoder 해석 | ELBO의 reconstruction term과 KL term은 왜 생성 모델을 만들기 위한 두 압력인가? |
@@ -46,6 +49,8 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 | pp. 17–19 | determinant complexity, triangular Jacobian, planar flow | pp. 17–18의 $$O(n^3)\to O(n)$$ 근거와 p. 19의 determinant·충분조건을 아래에서 대조 |
 
 > Planar-flow의 strict sufficient condition은 강의 자료의 조건을 더 명확히 풀어 쓴 보충 해설이다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -165,11 +170,16 @@ $$0<\operatorname{sech}^{2}(a)\le 1$$이므로 $$c>-1$$이면 $$q'(a)>0$$이다.
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - VAE의 reconstruction term만 보면 stochastic autoencoder이지만, KL term이 있어야 prior sampling으로 새로운 데이터를 생성할 수 있다.
 - Normalizing flow는 VAE의 intractable marginal likelihood 문제를 "decoder를 invertible deterministic mapping으로 제한"하는 방식으로 해결한다.
 - $$p_Z(f^{-1}(x))$$만으로는 transformed density가 되지 않는다. 변환이 공간을 얼마나 늘리거나 줄였는지 반드시 보정해야 한다.
 - Flow는 exact likelihood, exact latent inference, direct sampling을 모두 제공하지만, continuous same-dimensional $$x,z$$라는 제약을 갖는다.
 - 실제 flow architecture의 성패는 neural network 표현력보다 Jacobian determinant를 빠르게 계산할 수 있는 구조 설계에 크게 달려 있다.
+
+</details>
 
 ## 마지막 핵심 정리
 
@@ -177,11 +187,16 @@ Lecture 7의 핵심은 "복잡한 분포를 직접 만들지 말고, 단순한 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. VAE의 ELBO를 reconstruction term과 KL regularization으로 나누어, 왜 generation time에는 encoder가 필요 없는지 설명해 본다.
 2. $$Z \sim U[0,2]$$, $$X=4Z$$ 예시를 직접 계산해 change of variables의 derivative term이 왜 필요한지 확인한다.
 3. 1차원 derivative correction과 다차원 Jacobian determinant correction을 같은 volume 보존 관점에서 연결한다.
 4. Flow에서 $$x$$와 $$z$$가 같은 차원이어야 하는 이유를 invertibility 조건으로 설명한다.
 5. Triangular Jacobian이 왜 determinant 계산을 $$O(n)$$으로 줄이는지 matrix 구조를 그려 본다.
+
+</details>
 
 ## 복습 질문
 

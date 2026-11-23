@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Standard Streams"
 course: "C++"
 topic: "Input and Output Streams"
@@ -21,6 +21,9 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 |
 |---:|---|---|
 | 1–6 | 표준 stream, C/C++ I/O, formatting, error stream | 1–5절 |
@@ -30,9 +33,14 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 
 24쪽 전체를 페이지 이미지로 대조했다. fd 0/1/2는 운영체제의 식별 번호이고 `setw(n)`·`setprecision(n)`의 $$n$$은 API parameter다. 자료에는 throughput 공식이나 buffer-size 모델 같은 정량식이 없으므로 수학 증명은 추가하지 않고, buffering과 descriptor 연결의 작동 조건을 설명했다.
 
+</details>
+
 > **핵심:** 표준 입력 `stdin`은 보통 파일 디스크립터 0, 표준 출력 `stdout`은 1에 연결된다. 두 스트림의 대상을 바꾸는 리디렉션은 프로그램 코드를 고치지 않고도 입력과 출력의 흐름을 바꾼다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -43,6 +51,8 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 | 5 | 리다이렉션과 파이프 | 쉘은 표준 스트림을 어떻게 바꾸는가? |
 | 6 | 버퍼링 | 출력이 바로 보이지 않는 이유는 무엇인가? |
 | 7 | 파일 디스크립터 | `FILE*`와 fd 0/1/2는 어떤 관계인가? |
+
+</details>
 
 ## 1. 세 가지 표준 스트림
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 19:32:34 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS06 Linked Lists"
 course: "Data Structures"
 topic: "Linked Lists"
@@ -32,6 +32,9 @@ Source PDF: `LS06_linked_list.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 배열 기반 리스트 복습 | 배열 리스트는 왜 인덱스 접근이 빠르고 삽입/삭제가 느린가? |
@@ -39,6 +42,8 @@ Source PDF: `LS06_linked_list.pdf`
 | 3 | 삽입 연산 | 맨 앞, 맨 뒤, 지정 위치 삽입은 어떻게 다른가? |
 | 4 | 삭제와 탐색 | 삭제 전에는 왜 이전 노드까지 가야 하는가? |
 | 5 | 배열 vs 연결 리스트 | 두 구현은 어떤 작업에서 각각 유리한가? |
+
+</details>
 
 ## 1. 연결 리스트의 구조
 

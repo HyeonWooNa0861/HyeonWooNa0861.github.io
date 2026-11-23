@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-12.pdf`
 > **핵심:** 확률변수들이 독립이면 joint distribution이 각 marginal distribution의 곱으로 분해된다. IID 표본은 서로 독립이며 모두 같은 분포를 따른다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-12.pdf`
 | 27 | correlation과 $$\lvert\operatorname{corr}(X,Y)\rvert\le1$$ | 9, 12.4 |
 
 페이지 28은 Q&A 마무리이다.
+
+</details>
 
 ## 1. 독립 확률변수
 
@@ -590,7 +595,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 joint에서 marginal과 conditional을 계산한 뒤 Bayes theorem의 numerator와 evidence denominator가 어떤 역할을 하는지 손으로 전개한다. independence는 joint factorization이고 zero correlation은 선형 관계가 없다는 뜻에 가까우므로 둘을 동치로 두지 않는다. mean·variance·covariance matrix를 계산하고 total variance를 내부 변동과 조건부 평균 변동으로 분해하는 순서까지 복습한다.
+
+</details>
 
 ## 복습 질문
 

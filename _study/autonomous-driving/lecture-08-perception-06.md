@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 8: Semantic and Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Dense Pixel Labels, Transposed Convolution, and Mask R-CNN"
@@ -163,7 +163,12 @@ $$m,i,j,k$$는 무차원 index·크기, 확률과 손실도 무차원이다. 식
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 7, 19, 20, 26쪽의 같은 사진을 비교해 **영상 label → box → class 영역 → 개체별 영역**의 출력 차이를 말로 설명한다. 그 다음 8–11쪽에서 채널과 공간 크기를 분리해 적고, 12–17쪽의 1D 예제를 실제 숫자로 계산한다. 마지막으로 21–24쪽에서 Faster R-CNN과 Mask R-CNN을 나란히 그려 RoIAlign·mask branch를 표시한다. 원문 그림의 `H/4` 반복과 2×2→4×4 중간 단계는 Source Check와 함께 보아야 수치를 잘못 암기하지 않는다.
+
+</details>
 
 ## 복습 질문
 

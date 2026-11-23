@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:26:36 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "AIX: Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
@@ -28,6 +28,9 @@ Source Images:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 구간 | 핵심 주제 | 시험에서 잡아야 할 기준 |
 |---|---|---|
 | 1 | Regression과 Optimization | linear score, residual, squared loss, gradient descent |
@@ -38,6 +41,8 @@ Source Images:
 | 6 | RNN과 Attention | sequential dependency, hidden state, global relationship |
 | 7 | Transformer | self-attention, Q/K/V, positional encoding, multi-head attention |
 | 8 | Modern AI | self-supervised learning, pre-training, fine-tuning, diffusion |
+
+</details>
 
 ## 복습 기준
 

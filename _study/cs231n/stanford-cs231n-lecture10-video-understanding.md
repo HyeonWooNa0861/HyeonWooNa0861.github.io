@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
 topic: "Video Understanding"
@@ -30,7 +30,8 @@ Official slides: [Lecture 10 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** 비디오는 단순히 이미지가 여러 장 모인 입력이 아니다. 정적 장면 단서가 강할 때는 프레임별 CNN도 훌륭한 기준선이지만, 행동의 방향과 순서를 구분하려면 특징을 **언제, 어느 깊이에서 시간축으로 결합할지** 설계해야 한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 10 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 | 5 | Multisensory video | 영상과 소리를 함께 보면 무엇을 더 알 수 있는가? |
 | 6 | Global context and efficiency | Non-local block과 X3D는 무엇을 개선하는가? |
 
+</details>
 ## 1. 비디오는 공간에 시간이 추가된 데이터다
 
 RGB 이미지를 $$3\times H\times W$$ 텐서로 본다면 비디오는 $$3\times T\times H\times W$$의 시공간 볼륨이다. 분류 손실 자체는 이미지 분류와 비슷하게 쓸 수 있지만, 입력 특징을 만드는 비용과 문제의 성격이 달라진다. 이미지가 객체·장면을 주로 묻는다면 비디오는 달리기, 수영, 점프처럼 **행동과 사건**을 자주 묻는다.
@@ -60,7 +62,7 @@ RGB 이미지를 $$3\times H\times W$$ 텐서로 본다면 비디오는 $$3\time
 
 ## 3. 2D convolution에서 3D convolution으로
 
-2D kernel이 $$K_h\times K_w$$ 공간만 훑는다면 3D kernel은 $$K_t\times K_h\times K_w$$로 시간축까지 훑는다. 출력 위치 하나는 주변 픽셀뿐 아니라 인접 프레임의 패턴에도 반응한다. 여러 층을 쌓으면 시간 수용영역이 커져 짧은 움직임에서 더 긴 행동 단위로 올라간다. 이 비교는 공식 slide pp.21–37과 영상 18:28–31:58에 대응한다.
+2D kernel이 $$K_h\times K_w$$ 공간만 훑는다면 3D kernel은 $$K_t\times K_h\times K_w$$로 시간축까지 훑는다. 출력 위치 하나는 주변 픽셀뿐 아니라 인접 프레임의 패턴에도 반응한다. 여러 층을 쌓으면 시간 수용영역이 커져 짧은 움직임에서 더 긴 행동 단위로 올라간다.
 
 3D CNN의 대가는 계산량과 데이터 요구량이다. 2D 이미지 모델의 kernel을 시간축으로 복제해 초기화하는 **inflation**은 이미지 사전학습의 이점을 비디오로 옮기는 실용적 연결고리다. 강의의 I3D 논의도 이 아이디어에 기반한다.
 
@@ -71,7 +73,7 @@ I3D는 2D kernel을 시간축으로 $$K_t$$번 복사하고 $$K_t$$로 나눠 �
 
 ### 작성자 보충: I3D inflation이 반복 frame의 출력을 보존하는 이유
 
-공식 slide pp.72–76, 특히 p.75와 영상 54:20–58:13이 이 초기화 방법을 제시한다. 2D convolution kernel을 $$W$$, inflation한 3D kernel의 시간 slice를 $$W'_{\tau}=W/K_t$$, $$\tau=1,\ldots,K_t$$라 하자. 시간 window의 모든 frame이 같은 image $$X$$라면 3D convolution의 한 pre-activation은 선형성에 의해
+공식 slide pp.72–76, 특히 p.75가 이 초기화 방법을 제시한다. 2D convolution kernel을 $$W$$, inflation한 3D kernel의 시간 slice를 $$W'_{\tau}=W/K_t$$, $$\tau=1,\ldots,K_t$$라 하자. 시간 window의 모든 frame이 같은 image $$X$$라면 3D convolution의 한 pre-activation은 선형성에 의해
 
 $$
 Y_{3D}
@@ -91,7 +93,7 @@ Two-stream 접근은 RGB의 appearance stream과 optical flow의 motion stream�
 
 ### 원문 수식: Optical flow의 brightness constancy
 
-공식 slide pp.45–46과 영상 42:20–42:57은 displacement field와 brightness constancy를 다음과 같이 둔다.
+공식 slide pp.45–46은 displacement field와 brightness constancy를 다음과 같이 둔다.
 
 $$
 F(x,y)=(dx,dy),
@@ -125,7 +127,7 @@ $$
 
 ### 원문 수식: Recurrent convolutional state
 
-또 다른 선택은 각 프레임의 CNN 특징을 RNN/LSTM에 순서대로 넣는 것이다. 공식 slide p.61과 영상 49:50–50:50은 vanilla RNN을
+또 다른 선택은 각 프레임의 CNN 특징을 RNN/LSTM에 순서대로 넣는 것이다. 공식 slide p.61은 vanilla RNN을
 
 $$
 h_{t+1}=\tanh(W_hh_t+W_xx)
@@ -141,7 +143,7 @@ $$
 
 ### 원문 수식과 작성자 보충: Spatiotemporal self-attention
 
-공식 slide p.64와 영상 51:48–53:31은 input vector $$x_i\in\mathbb{R}^{D}$$에서
+공식 slide p.64는 input vector $$x_i\in\mathbb{R}^{D}$$에서
 
 $$
 k_i=x_iW_k,
@@ -194,7 +196,10 @@ Sports-1M과 Kinetics 같은 대규모 행동 데이터셋은 3D 모델 학습�
 
 ## 원문 대조 기록
 
-공식 slide 103쪽을 전 페이지 시각 확인하고 video transcript의 해당 timestamp와 대조했다. 강의의 중요 수식과 본문 대응은 다음과 같다.
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
+공식 slide 103쪽을 전 페이지 시각 확인하고 video transcript와 대조했다. 강의의 중요 수식과 본문 대응은 다음과 같다.
 
 | 중요 수식·구조 | 공식 slide | 영상 구간 | 본문 대응 |
 |---|---|---|---|
@@ -205,6 +210,7 @@ Sports-1M과 Kinetics 같은 대규모 행동 데이터셋은 3D 모델 학습�
 | I3D inflation | pp.72–76 | 54:20–58:13 | 반복 frame에서 2D response를 보존하는 초기화 항등식 |
 | Audio-visual·efficient video systems | pp.85–102 | 01:01:46 이후 | 수식 증명보다 task·architecture 사례가 중심이므로 Sections 5와 핵심 정리에 반영 |
 
+</details>
 ## Study Guide
 
 `single frame → fusion → 3D convolution → two-stream/RNN → multisensory` 순으로 비교한다. 시험에서는 early/late/slow fusion의 결합 위치, 2D와 3D kernel의 차원, clip sampling이 평가 결과에 미치는 영향을 설명할 수 있어야 한다.

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C Programming Fundamentals"
 course: "C++"
 topic: "C Syntax Fundamentals"
@@ -26,6 +26,9 @@ Source PDFs:
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 원문 | 페이지 | 본문 대응 | 수식 판정 |
 |---|---:|---|---|
 | `C 프로그래밍 소개.pdf` | 1–9 | C와 Python 비교, compile/build | 개념·절차 중심 |
@@ -38,9 +41,14 @@ Source PDFs:
 
 두 PDF 118쪽을 페이지 이미지로 대조했다. 중요한 수학 관계는 10–11쪽의 조합 수와 31쪽·40쪽 코드가 사용하는 크기·평균식이다. 나머지 `gcc` option, pointer 표기, 함수 prototype은 수학식이 아니라 실행 규칙 또는 코드 문법이므로 증명 대상으로 만들지 않았다.
 
+</details>
+
 > **핵심:** C는 메모리와 실행 구조를 직접 다룰 수 있는 시스템 프로그래밍 언어다. C++는 그 기반에 클래스, 템플릿, 표준 라이브러리를 더해 더 다양한 추상화 방식을 제공한다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -51,6 +59,8 @@ Source PDFs:
 | 5 | C 기본 문법 | 변수, 자료형, 연산자, 조건문, 반복문은 어떻게 쓰는가? |
 | 6 | 함수와 값 전달 | C 함수 호출에서 원본 값은 어떻게 다뤄지는가? |
 | 7 | 포인터와 스코프 | 포인터가 필요한 이유는 무엇인가? |
+
+</details>
 
 ## 1. 교과목과 학습 목표
 

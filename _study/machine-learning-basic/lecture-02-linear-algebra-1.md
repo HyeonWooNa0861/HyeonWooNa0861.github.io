@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 02 Linear Algebra 1"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 1"
@@ -22,6 +22,9 @@ Source PDF: `machine-learning-basic-lecture-02.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 벡터와 벡터공간 | 벡터는 단순한 화살표보다 넓은 개념인가? |
@@ -41,6 +44,8 @@ Source PDF: `machine-learning-basic-lecture-02.pdf`
 | 33–35 | fixed-point·Richardson iteration | 7.2 |
 
 페이지 36은 Q&A 마무리이며 새로운 수식을 소개하지 않는다.
+
+</details>
 
 ## 1. 벡터의 관점
 
@@ -332,7 +337,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 Ax=b를 augmented matrix로 만든 뒤 세 기본 행 연산으로 REF, RREF까지 줄이며 pivot과 free variable을 표시한다. 해는 particular solution과 homogeneous solution의 합으로 쓰고, inverse multiplication을 모든 선형계의 기본 풀이로 오해하지 않는다. 계산 전후 matrix·vector shape를 확인하는 습관과 역행렬의 비용·수치 불안정성이 시험 포인트다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Robotics 2"
 course: "AIX"
 topic: "VLA, World Models, Physical RL"
@@ -37,6 +37,9 @@ Source PDF: `Robotics_2.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | LLM에서 Robots로 | 로보틱스는 왜 LLM 이후의 scaling frontier로 설명되는가? |
@@ -51,6 +54,8 @@ Source PDF: `Robotics_2.pdf`
 | 10 | Robotics Endgame | near-term milestone인 physical Turing test는 무엇을 뜻하는가? |
 
 Robotics 2는 LLM scaling의 성공 공식이 로보틱스로 확장될 수 있다는 thesis를 다룬다. 핵심은 VLA 하나로 끝나지 않는다. Broad world model을 만들고, robot embodiment에 맞춰 action fine-tuning을 하고, physical RL과 simulation ecosystem으로 human demonstration을 넘어서는 방향까지 이어진다.
+
+</details>
 
 ## 1. Physical AI와 New Robotics Thesis
 

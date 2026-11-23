@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 그림의 크기는 저장 용량을, 배치는 연산 장치와의 접근 관계를 직관화한다. FlashAttention의 핵심은 attention 식을 근사하는 것이 아니라, 작은 block을 SRAM에서 처리해 큰 중간 행렬을 HBM에 반복 저장하고 다시 읽는 횟수를 줄이는 데 있다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** LLM 학습은 대규모 다음 토큰 예측으로 범용 표현을 얻은 뒤, SFT 등으로 특정 사용 목적에 맞춘다. 사전학습의 규모가 커질수록 데이터·파라미터·계산 자원의 균형뿐 아니라 메모리와 데이터 이동을 줄이는 분산 학습 설계가 중요해진다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 | 6 | 정밀도와 quantization | FP32, FP16, BF16, mixed precision, quantization은 메모리와 속도를 어떻게 바꾸는가? |
 | 7 | SFT와 LoRA | Pre-trained autocomplete model을 assistant로 바꾸려면 어떤 supervised data와 parameter-efficient tuning이 필요한가? |
 
+</details>
 ## 핵심 내용
 
 작업마다 새 모델을 처음부터 학습하는 대신, 대규모 사전학습 모델을 목적에 맞게 조정할 수 있다. 사전학습은 Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 텍스트·코드 말뭉치에서 다음 토큰을 예측하는 비용 큰 단계다. 학습 데이터는 수천억에서 수십조 토큰까지 커지며, 강의는 GPT-3의 300B 토큰과 Llama 3의 15T 토큰을 예로 든다. FLOPs는 총 연산량, FLOPS는 초당 연산 속도를 뜻한다. 학습 비용은 토큰 수와 파라미터 수에 대략 비례하므로, 고정된 계산량에서는 Chinchilla law가 강조하는 두 규모의 균형을 고려해야 한다.
@@ -192,6 +192,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=VlA_jt_3Qc4){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

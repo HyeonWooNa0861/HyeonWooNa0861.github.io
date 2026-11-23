@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 13: Score-Based Models"
 course: "CS236"
 topic: "Score Functions, Denoising Score Matching, Sliced Score Matching, and Langevin Sampling"
@@ -28,6 +28,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Distribution representation recap | density, sampling process, score는 각각 어떤 generative model family를 만드는가? |
@@ -48,6 +51,8 @@ keywords:
 | slides 28--31 | Sliced Fisher divergence와 Jacobian-vector product | 같은 절에서 random-projection identity와 Monte Carlo 근사를 구분한다. |
 | slides 34--35 | Langevin update | `핵심 내용`에서 sampling 식과 step-size/mixing 실패 조건을 설명한다. |
 | slides 39--43 | Manifold, low-density, disjoint-mode 실패 사례 | `핵심 내용`과 마지막 정리에서 수식이 적용되기 어려운 영역을 설명한다. |
+
+</details>
 
 ## 원본 그림 해설
 
@@ -324,6 +329,9 @@ Score는 각 연결 성분 안의 density 모양만 알려 주는 local derivati
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Score의 gradient는 $$\theta$$가 아니라 $$x$$에 대한 미분이다. Parameter update gradient와 혼동하면 EBM과 score model의 장점이 흐려진다.
 - Score field는 normalization constant를 보지 않으므로 $$Z(\theta)$$가 어려운 EBM과 자연스럽게 맞물린다.
 - Direct score modeling은 "valid density를 명시적으로 정의하는가"보다 "sampling에 필요한 방향장을 잘 학습하는가"에 초점을 둔다.
@@ -331,11 +339,16 @@ Score는 각 연결 성분 안의 density 모양만 알려 주는 local derivati
 - Sliced score matching은 true score를 겨냥하지만 random projection과 derivative 계산이 필요해 denoising 방식보다 느릴 수 있다.
 - Langevin dynamics는 score만으로 sampling할 수 있게 하지만, clean data score를 바로 쓰면 manifold와 low-density region에서 실패하기 쉽다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 13의 핵심은 generative model을 density나 sampler가 아니라 score field로 표현할 수 있다는 점이다. Score는 normalization 문제를 피하고, denoising 또는 sliced score matching으로 학습할 수 있으며, Langevin dynamics와 결합하면 sample을 만들 수 있다. 그러나 clean score를 한 번에 학습하고 sampling하는 방식은 manifold, low-density region, slow mixing 문제를 남긴다. 이 한계가 multi-scale noise와 diffusion model로 이어진다.
 
 ## Study Guide
+
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
 
 1. 먼저 $$p_\theta(x)$$, $$g_\theta(z)$$, $$s_\theta(x)$$가 각각 어떤 model family의 중심 객체인지 비교한다.
 2. EBM에서 $$\nabla_x\log Z(\theta)=0$$이 되는 이유를 직접 써 보고, score가 partition function을 피하는 위치를 확인한다.
@@ -343,6 +356,8 @@ Lecture 13의 핵심은 generative model을 density나 sampler가 아니라 scor
 4. Denoising score matching과 sliced score matching을 target distribution, 계산 비용, 장점 기준으로 비교한다.
 5. Langevin dynamics update에서 gradient term과 noise term의 역할을 분리한다.
 6. 다음 강의를 읽기 전에 단일 noise scale이 왜 clean sample generation과 accurate score estimation 사이의 tradeoff를 만드는지 생각해 본다.
+
+</details>
 
 ## 복습 질문
 

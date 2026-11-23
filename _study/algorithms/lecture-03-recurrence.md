@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:32:34 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 3: Recurrence"
 course: "Algorithms"
 topic: "Recursive Algorithm Analysis and the Master Theorem"
@@ -194,7 +194,12 @@ $$a=2$$, $$b=2$$, $$p=1$$, $$f(n)=n=\Theta(n^p)$$이므로 균형 경우다. 따
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 문제에서 먼저 **입력 크기·기저·반올림·비용 단위**를 표시한다. 그다음 작은 입력을 한 번 계산해 점화식이 그 값을 재현하는지 본다. $$T(n-1)$$형은 항별 합, $$aT(n/b)+f(n)$$형은 재귀 트리의 층 비용을 먼저 적으면 답의 성장률을 추측하기 쉽다. 귀납법을 쓸 때는 기저와 귀납 단계 모두 적고, 마스터 정리를 쓸 때는 $$a,b,p=\log_ba,f(n)$$와 적용 조건을 한 줄씩 확인한다. 다음 강의(p. 29)는 정렬이며, 여러 정렬 알고리즘의 재귀 비용을 비교할 때 이번 도구가 쓰인다.
+
+</details>
 
 ## 복습 질문
 

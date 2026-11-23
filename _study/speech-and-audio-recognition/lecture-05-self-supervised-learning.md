@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-11-19 19:42:12 +0900
+last_modified_at: 2026-11-23 16:46:10 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -45,9 +45,9 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 | pp. 40–43 | Attention과 순서 정보 | Self-attention이 순서에 둔감한 이유와 positional information이 필요한 이유는 무엇인가? |
 | pp. 44–49 | HuBERT | Offline cluster target과 반복 refinement가 wav2vec 2.0의 online codebook과 어떻게 다른가? |
 
-**ASR III 1부 듣기:** 녹음의 약 13:59부터는 글자처럼 경계가 정해져 있지 않은 음성에서 무엇을 예측 단위로 삼을지 다룬다(관련 PDF 19쪽). 약 18:07부터는 코드북으로 정답을 만드는 과정(관련 PDF 25–29쪽), 약 21:51부터는 그 정답을 다른 후보와 구별하는 대조 손실(관련 PDF 30쪽)로 이어진다. 22:41경 추가 학습 항이 있다는 말에서 1부가 끝난다. 아래의 diversity loss 계산까지 1부에서 설명한 것은 아니다.
+wav2vec 2.0의 핵심 질문은 연속 음성에서 예측할 이산 target을 어떻게 만들고, 정답 target을 다른 후보와 어떻게 구별하는가이다(pp. 19, 25–30). Contrastive loss는 정답을 고르는 능력을, diversity loss는 일부 codebook entry로 선택이 몰리는 현상을 줄이는 능력을 맡는다(pp. 30–32). 두 목적은 서로 대체하지 않는다.
 
-**ASR III 2부 듣기:** 시각은 2부 녹음 시작을 기준으로 한다. 도입에서 코드북과 대조 손실을 다시 설명한 뒤, 약 03:42부터는 **정답을 잘 구별하는 것과 코드북의 여러 항목을 고르게 쓰는 것이 왜 다른 목표인지** 다룬다(관련 PDF 30–32쪽). 약 12:59에는 self-attention으로 돌아가고(관련 PDF 40–43쪽), 17:42–23:00에는 슬라이드 밖에서 같은 음성을 층별 특징과 인식 결과로 읽는 과정을 시연한다. 이어지는 HuBERT 설명에서는 학습 중 함께 바뀌는 코드북 대신, 미리 군집화한 라벨을 가린 위치의 정답으로 쓴다(관련 PDF 44–49쪽).
+Self-attention은 음성의 문맥을 결합하지만 순서 정보는 별도로 필요하다(pp. 40–43). HuBERT는 학습 중 함께 바뀌는 codebook 대신, 미리 군집화한 label을 가린 위치의 정답으로 사용한다(pp. 44–49). 따라서 wav2vec 2.0과 HuBERT의 차이는 단순한 encoder 구조가 아니라 **예측 target을 만드는 방식**에서 먼저 드러난다.
 
 ### 기호와 단위
 

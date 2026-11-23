@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 3: Perception I — Image Classification and Vision Backbones"
 course: "Autonomous Driving"
 topic: "Image Classification, CNNs, and Vision Transformers"
@@ -169,10 +169,15 @@ CNN은 작은 필터의 국소성과 위치 간 가중치 공유가 구조에 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 - 먼저 9–14쪽을 보고 입력 tensor와 class score의 차이를 설명한다. 그 뒤 20–22쪽의 loss, gradient, batch를 한 단계씩 연결한다.
 - 24–31쪽에서는 32×32×3 숫자 예를 직접 계산하고, “filter를 공유한다”는 말을 가중치 수 식으로 검산한다.
 - 35–53쪽은 패치 3개 정도를 가정해 $$Q,K,V,A,Z$$의 shape를 적은 후 축구 예의 행별 가중합을 확인한다.
 - Source Check의 네 항목은 원문 도식의 교육적 단순화와 정확한 수학적 성질을 구분하는 체크리스트로 삼는다.
+
+</details>
 
 ## 복습 질문
 

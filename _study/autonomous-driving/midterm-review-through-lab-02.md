@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:17:33 +0900
-last_modified_at: 2026-10-19 22:22:22 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Autonomous Driving Computing: Midterm Review"
 course: "Autonomous Driving"
 topic: "Sensors, 2D and 3D Perception, Lab 1, and Lab 2"
@@ -791,12 +791,17 @@ Simulator는 단순화한 물체에 ray를 쏘고 range noise와 point dropout�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 - **계산:** projection·stereo depth, IoU·AP, box encode·decode, voxel index를 숫자를 바꿔 직접 계산한다.
 - **비교:** two-stage와 one-stage, semantic과 instance segmentation, image·point·voxel·BEV 표현의 차이를 설명한다.
 - **논문:** 각 방법이 바꾼 병목·표현·출력을 설명한다. 직접 확장한 구조인지, 같은 문제의 대안인지 구분한다.
 - **Lab 1:** image, FPN, anchor, RPN proposal, RoI refinement의 입력·출력을 추적하고 RetinaNet의 dense head와 비교한다.
 - **Lab 2:** point, voxel, VFE, 3D convolution, BEV RPN 순서로 tensor의 축이 어떻게 바뀌는지 설명한다.
 - **평가:** IoU의 비교 대상, AP의 matching 규칙, 사용한 데이터 분포를 명시한다.
+
+</details>
 
 ## 복습 질문
 

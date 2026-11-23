@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:04 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 17: Planning and Control I"
 course: "Autonomous Driving"
 topic: "Route, Behavior, and Motion Planning"
@@ -244,6 +245,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 | 다시 볼 부분 | 확인할 내용 |
 |---|---|
 | pp. 12–15 | Planning output과 control command의 경계 |
@@ -252,6 +256,8 @@ $$
 | pp. 31–32 | Path와 trajectory 차이, optimization의 cost와 constraint |
 
 복습할 때는 **route, behavior, motion, control**의 입력과 출력을 먼저 한 줄씩 적는다. 그다음 20쪽 graph의 두 경로 비용을 계산하고, 27쪽 FSM에서 동시에 참이 될 수 있는 guard를 찾는다. 마지막으로 같은 path에서 속도에 따라 횡가속도가 달라지는 이유를 확인한다.
+
+</details>
 
 ## 복습 질문
 

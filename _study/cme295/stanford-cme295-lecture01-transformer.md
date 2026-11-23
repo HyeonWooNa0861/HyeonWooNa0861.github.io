@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
@@ -30,11 +30,10 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 아래 토큰 행은 attention의 입력이고, 가운데 세 열은 동일한 입력에서 역할이 다른 Q·K·V를 분기하는 단계다. 위 식은 Q와 K로 관계 점수를 만든 뒤 V를 가중합한다는 뜻이므로, 세 벡터를 각각 독립된 정보처럼 읽으면 안 된다.
 
-> **원문 확인 범위:** 공식 Stanford CME295 강의 영상과 timestamp가 포함된 English transcript를 대조했다. 로컬 CME295 아카이브에는 공식 slide deck 파일이 없으므로 아래 위치는 영상 발화를 기준으로 하며, 보이지 않는 slide나 frame의 내용을 추정하지 않는다.
-
 > **핵심:** NLP 문제는 입력 텍스트에서 라벨을 고르는 분류, 여러 위치의 값을 예측하는 다중 분류, 새로운 텍스트를 만드는 생성으로 나눌 수 있다. 토큰화와 임베딩으로 문장을 수치화한 뒤 RNN의 순차 처리 한계를 살펴보면, self-attention과 Transformer가 필요한 이유가 드러난다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -46,6 +45,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 | 6 | Self-attention | Query, key, value를 사용해 한 토큰을 다른 토큰들의 weighted sum으로 표현하는 과정은 무엇인가? |
 | 7 | Transformer encoder-decoder | Encoder self-attention, decoder masked self-attention, cross-attention은 각각 어떤 정보를 연결하는가? |
 
+</details>
 ## 핵심 내용
 
 LLM을 이해하려면 먼저 NLP 작업의 입력과 출력을 구분해야 한다. 텍스트에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 생성하는 generation이 기본 범주다. Sentiment extraction, NER, machine translation, question answering, summarization이 각각의 예로 이어진다. 평가 지표는 accuracy, precision, recall, F1, BLEU, ROUGE, perplexity 등이 있으며, BLEU/ROUGE에는 reference text가 필요하다. Perplexity는 실제 토큰 시퀀스에 모델이 부여한 확률을 통해 예측의 적합도를 본다.
@@ -181,6 +181,8 @@ $$
 </details>
 
 ## 참고자료
+
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
 
 - [강의 영상](https://www.youtube.com/watch?v=Ub3GoFaUcds){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

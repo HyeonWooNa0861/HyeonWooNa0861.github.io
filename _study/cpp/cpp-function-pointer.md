@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C++ Function Pointers"
 course: "C++"
 topic: "Function Pointers and Callbacks"
@@ -21,6 +21,9 @@ Source PDF: `C++ 함수포인터.pdf`
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 페이지 | 원문 주제 | 본문 대응 |
 |---:|---|---|
 | 1–4 | 함수 포인터 선언·호출, callback | 1–4절 |
@@ -30,9 +33,14 @@ Source PDF: `C++ 함수포인터.pdf`
 
 14쪽 전체를 페이지 이미지로 대조했다. 이 자료의 괄호, 반환형, 매개변수 목록은 함수 타입을 나타내는 **C++ 선언 문법**이고, comparator의 음수·0·양수 반환은 API 계약이다. 강의의 결론이나 알고리즘이 의존하는 수학 공식은 없으므로 유도·증명을 추가하지 않고 코드 호출 흐름을 추적했다.
 
+</details>
+
 > **핵심:** **함수 포인터**는 함수 주소를 저장하고 나중에 호출할 수 있다. **콜백 함수**는 동작을 함수 인자로 전달해 호출 시점과 동작 내용을 분리한다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -45,6 +53,8 @@ Source PDF: `C++ 함수포인터.pdf`
 | 7 | 람다 비교자 | 정렬 기준을 그 자리에서 바꿀 수 있는가? |
 | 8 | 훅(Hook) | 특정 시점에 사용자 함수를 끼워 넣는 구조는 무엇인가? |
 | 9 | 함수 포인터와 가상 함수 | 수동 디스패치와 `virtual`은 어떤 관계인가? |
+
+</details>
 
 ## 1. 함수 포인터란?
 

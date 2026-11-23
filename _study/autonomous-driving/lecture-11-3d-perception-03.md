@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 11: Multimodal 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Frustum PointNets, MV3D, and Perception Datasets"
@@ -366,7 +366,12 @@ Multimodal 3D detection의 핵심은 센서를 많이 쓰는 것이 아니라 **
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 9쪽에서 camera와 LiDAR의 강점·한계를 한 문장씩 쓰고, calibration 식으로 LiDAR point 하나를 pixel로 직접 투영한다. 다음으로 11–14쪽을 보며 `camera → frustum → mask → object coordinate` 변환과 세 network, center 합성식을 순서대로 그린다. 15–21쪽에서는 한 3D proposal이 BEV·FV·RGB의 세 RoI가 되는 경로를 따라간 뒤, deep fusion recurrence에서 공통 hidden state가 각 view branch로 되먹임되는 위치와 24-D corner target을 표시한다. 마지막으로 25–27쪽에서 dataset 이름보다 **공식 split, sensor suite, task, metric, version**을 먼저 확인하는 습관을 익힌다. Source Check의 11–14·17·20·25·27쪽 항목은 원문 문구를 그대로 암기하지 않기 위한 필수 보정이다.
+
+</details>
 
 ## 복습 질문
 

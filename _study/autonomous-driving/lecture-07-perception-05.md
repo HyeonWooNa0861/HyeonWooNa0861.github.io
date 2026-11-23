@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 7: Single-Stage Object Detection"
 course: "Autonomous Driving"
 topic: "RetinaNet, Focal Loss, YOLO, and FCOS"
@@ -148,7 +148,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 먼저 7쪽에서 **proposal이 왜 두 번째 단계인지** 그림을 따라가고, 8–11쪽에서 RetinaNet이 proposal 대신 grid의 anchor를 쓴다는 차이를 잡는다. 이후 focal loss의 $$\gamma=0$$ 및 $$p_t\to1$$ 경계를 직접 대입한다. 14–20쪽에서는 점 하나와 box 하나를 종이에 그려 네 거리, box 복원, centerness를 계산하면 암기보다 오래 남는다. 원 슬라이드의 출력 차원과 L2 문구는 Source Check의 정정을 함께 보아야 한다. 다음 강의는 box로 물체의 범위를 두르는 것에서 픽셀 단위 영역을 표시하는 문제로 넘어간다.
+
+</details>
 
 ## 복습 질문
 

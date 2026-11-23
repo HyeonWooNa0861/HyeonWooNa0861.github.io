@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 3: Autoregressive Models"
 course: "CS236"
 topic: "Autoregressive Factorization and Neural Density Models"
@@ -26,6 +26,9 @@ keywords:
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Autoregressive factorization | Chain rule로 $$p(x_1,\ldots,x_n)$$을 어떻게 순차 조건부의 곱으로 바꾸는가? |
@@ -46,6 +49,8 @@ keywords:
 | pp. 28–36 | PixelRNN/CNN, PixelDefend, WaveNet, summary | p. 28의 RGB factorization을 아래에서 대조; 성능 그림·응용은 결과/사례로 분류 |
 
 > 아래에서는 강의 자료의 모델 정의와 실제 data distribution에 대한 근사를 구분한다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -214,6 +219,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Autoregressive model의 강점은 likelihood 계산과 sampling 절차가 명확하다는 점이다.
 - 단점은 ordering이 필요하고, 실제 generation은 순차적이라는 점이다.
 - FVSBN은 chain rule을 logistic regression 조건부로 구현하지만 표현력이 약하고 parameter가 $$O(n^2)$$로 늘어난다.
@@ -222,17 +230,24 @@ $$
 - RNN은 extreme weight sharing으로 arbitrary length sequence를 다루지만, hidden state bottleneck과 sequential evaluation 때문에 transformer 이전 시대의 한계를 갖는다.
 - PixelCNN과 WaveNet은 autoregressive factorization이 텍스트뿐 아니라 이미지와 음성에도 적용된다는 것을 보여 준다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Autoregressive model은 고차원 분포를 순차 예측 문제로 바꾸는 가장 직접적인 방법이다. 이 방식은 $$p(x)$$를 명시적으로 계산할 수 있고 sampling도 chain rule 순서대로 진행할 수 있어 이해하기 쉽다. 그러나 모든 변수에 ordering을 부여해야 하며, generation은 본질적으로 순차적이다. FVSBN, NADE, MADE, RNN, Transformer, PixelCNN은 모두 이 trade-off 위에서 조건부 분포를 얼마나 강하고 효율적으로 parameterize할지에 대한 서로 다른 답이다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. 먼저 chain rule 식을 외우고, likelihood evaluation과 sampling이 같은 factorization을 어떻게 반대로 사용하는지 확인한다.
 2. FVSBN과 NADE를 parameter count, 표현력, 계산 재사용 관점에서 비교한다.
 3. Autoencoder가 reconstruction은 잘해도 왜 곧바로 generative model이 아닌지 설명해 본다.
 4. MADE의 mask가 training time parallelism과 autoregressive validity를 동시에 어떻게 제공하는지 그림 없이 말로 설명한다.
 5. RNN, Transformer, PixelCNN을 모두 "다음 variable conditional을 어떻게 계산하는가"라는 하나의 질문으로 묶어 본다.
+
+</details>
 
 ## 복습 질문
 

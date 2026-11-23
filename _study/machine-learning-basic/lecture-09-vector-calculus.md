@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 09 Vector Calculus"
 course: "Machine Learning Basic"
 topic: "Vector Calculus"
@@ -23,6 +23,9 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 미분의 필요성 | 에러를 줄이는 방향은 어떻게 계산하는가? |
@@ -41,6 +44,8 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 | 19–22 | 행렬 chain rule과 핵심 행렬 미분 항등식 | 6, 7.3–7.5 |
 
 페이지 23은 Q&A 마무리이다. Taylor 전개는 수렴반경 안의 무한급수와 유한 차수 근소 근사를 구분해 7.1에서 해석한다.
+
+</details>
 
 ## 1. 왜 벡터 미적분학이 필요한가?
 
@@ -251,7 +256,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 scalar, vector, matrix 출력에 따라 derivative와 Jacobian shape를 먼저 적고 계산을 시작한다. 합성 함수 하나를 계산 graph로 풀어 chain rule을 적용한 뒤, 같은 흐름이 neural network gradient로 이어짐을 확인한다. Taylor 0·1·2차 근사가 함수값·gradient·curvature를 어디까지 포함하는지 구분하는 문제가 시험 우선순위다.
+
+</details>
 
 ## 복습 질문
 

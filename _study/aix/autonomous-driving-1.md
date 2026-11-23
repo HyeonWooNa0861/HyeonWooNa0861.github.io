@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-10-16 18:47:16 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"
@@ -36,6 +36,9 @@ Source PDF: `Autonomous_Driving_1.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 자율주행이 AI 문제가 된 이유 | 운전은 왜 단순 제어가 아니라 인식과 불확실성 문제인가? |
@@ -46,6 +49,8 @@ Source PDF: `Autonomous_Driving_1.pdf`
 | 6 | RSS와 safety envelope | 규칙 기반 안전 보장은 왜 중요했는가? |
 | 7 | Modular stack의 한계 | error propagation, corner case, stitched output 문제는 무엇인가? |
 | 8 | Occupancy와 data engine | representation learning으로 중심이 어떻게 이동했는가? |
+
+</details>
 
 ## 1. 자율주행이 AI 문제가 된 이유
 

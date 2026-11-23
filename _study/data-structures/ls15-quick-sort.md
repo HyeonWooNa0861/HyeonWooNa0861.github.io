@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS15 Quick Sort"
 course: "Data Structures"
 topic: "Quick Sort"
@@ -32,6 +32,9 @@ Source PDF: `LS15_quick_sort_R1.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 퀵 정렬 전략 | 피벗을 기준으로 어떻게 문제를 나누는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS15_quick_sort_R1.pdf`
 | 3 | 재귀 호출 | 피벗 위치가 확정된 뒤 어디를 다시 정렬하는가? |
 | 4 | 복잡도 | 평균은 왜 빠르고 최악은 왜 느려질 수 있는가? |
 | 5 | 병합 정렬 비교 | 시간, 공간, 캐시 관점에서 어떤 차이가 있는가? |
+
+</details>
 
 ## 1. 퀵 정렬의 핵심 전략
 

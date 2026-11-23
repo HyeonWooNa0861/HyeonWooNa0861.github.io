@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS14 Merge Sort"
 course: "Data Structures"
 topic: "Merge Sort"
@@ -32,6 +32,9 @@ Source PDF: `LS14_merge_sort.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 분할 정복 | 큰 문제를 어떻게 나누고 다시 합치는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS14_merge_sort.pdf`
 | 3 | 두 정렬 배열 병합 | 두 포인터로 어떻게 $$O(n)$$ 병합을 하는가? |
 | 4 | 구현 | `mergeSort()`와 `merge()`는 어떤 역할을 하는가? |
 | 5 | 복잡도 | 왜 전체 시간이 $$O(n\log n)$$인가? |
+
+</details>
 
 ## 1. 분할 정복 Divide and Conquer
 

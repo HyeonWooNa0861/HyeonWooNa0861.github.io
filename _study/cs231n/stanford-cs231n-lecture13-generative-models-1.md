@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
 topic: "Generative Models 1"
@@ -29,7 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 13 PDF](https://cs231n.stanford.e
 
 > **핵심:** 생성 모델의 여러 이름은 결국 데이터 분포 $$p(x)$$를 **직접 계산할 수 있는가**, **근사하는가**, 아니면 **표본만 생성하는가**의 차이다. 1부는 tractable likelihood의 autoregressive model과 latent variable likelihood를 lower bound로 학습하는 VAE를 연결한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -39,6 +40,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 13 PDF](https://cs231n.stanford.e
 | 4 | Latent variables | 관측되지 않은 $$z$$가 왜 필요한가? |
 | 5 | VAE and ELBO | 계산 불가능한 likelihood를 어떻게 학습하는가? |
 
+</details>
 ## 1. 판별 모델과 생성 모델의 확률적 차이
 
 판별 모델은 입력이 주어졌을 때 label의 조건부 분포 $$p(y\mid x)$$를 모델링한다. 분류 경계를 만드는 데 집중하며 입력 자체가 얼마나 그럴듯한지는 답하지 않는다. 생성 모델은 데이터 분포 $$p(x)$$, 조건부 생성이면 $$p(x\mid y)$$를 모델링한다. 학습된 분포에서 새 표본을 뽑거나 데이터 likelihood를 평가하는 것이 목표다.
@@ -194,6 +196,9 @@ Gaussian encoder에서 $$z=\mu+\sigma\odot\epsilon$$, $$\epsilon\sim\mathcal N(0
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **116쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -205,6 +210,7 @@ Gaussian encoder에서 $$z=\mu+\sigma\odot\epsilon$$, $$\epsilon\sim\mathcal N(0
 
 Model family와 VAE 구성은 강의 원문 요약이다. ELBO equality/gap, support 조건, Gaussian reparameterization의 한계는 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=zbHXQRUNlH0){:target="_blank" rel="noopener"}

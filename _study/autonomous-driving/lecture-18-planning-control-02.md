@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 18: Planning and Control II"
 course: "Autonomous Driving"
 topic: "End-to-End, Open-Loop, and Closed-Loop Learning"
@@ -274,6 +275,9 @@ Critic이 부정확하면 actor도 잘못된 방향으로 학습할 수 있다. 
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 | 다시 볼 부분 | 확인할 내용 |
 |---|---|
 | pp. 7–12 | Modular pipeline의 중간 목표와 end-to-end 입출력 |
@@ -282,6 +286,8 @@ Critic이 부정확하면 actor도 잘못된 방향으로 학습할 수 있다. 
 | pp. 30–33 | Learning to Drive in a Day, actor–critic, 실제 도로 exploration trade-off |
 
 복습할 때는 같은 camera frame이 open-loop와 closed-loop에서 어떻게 다르게 사용되는지 먼저 설명한다. 이어서 MSE는 **전문가 action과 한 frame의 차이**, return은 **action 이후 장기 결과**를 평가한다는 차이를 수치 예제로 확인한다.
+
+</details>
 
 ## 복습 질문
 

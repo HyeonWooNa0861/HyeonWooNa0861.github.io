@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS08 Doubly Linked Lists and Dictionaries"
 course: "Data Structures"
 topic: "Doubly Linked Lists and Dictionaries"
@@ -32,6 +32,9 @@ Source PDF: `LS08_dll_dictionary.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 스택/큐 구현 복습 | 비어 있는 경우와 마지막 원소 삭제는 어떻게 처리하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS08_dll_dictionary.pdf`
 | 3 | 이중 연결 리스트 | `prev`와 `next`를 함께 쓰면 무엇이 좋아지는가? |
 | 4 | 딕셔너리 | 인덱스가 아니라 key로 값을 찾는 구조는 무엇인가? |
 | 5 | 해시 충돌 | 딕셔너리의 평균 $$O(1)$$은 언제 깨질 수 있는가? |
+
+</details>
 
 ## 1. 스택과 큐 구현에서 중요한 예외 처리
 

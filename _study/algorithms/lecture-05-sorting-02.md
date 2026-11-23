@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Lecture 5: Merge Sort and Quick Sort"
 course: "Algorithms"
 topic: "Divide-and-Conquer Sorting"
@@ -237,11 +237,16 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 점검표 보기</summary>
+
 1. 반열린 구간 $$[l,r)$$의 길이와 종료 조건을 먼저 확인한다. 특히 빈 배열을 함수에 넣어 보자.
 2. 병합의 입력은 **이미 정렬된 두 구간**, 분할의 입력은 **정렬되지 않은 한 구간**이다. 두 알고리즘에서 선형 작업이 일어나는 시점이 다르다.
 3. 병합과 분할 각각의 루프 불변식을 말로 쓴 뒤, 반복 한 번 후에도 유지되는지 확인한다.
 4. 재귀식을 쓸 때 $$\Theta(n)$$ 분할·병합 비용과 두 하위 문제의 크기를 별도로 적는다. “깊이가 로그”라는 사실만으로 총 시간이 로그가 되지는 않는다.
 5. 안정성·평균 시간은 알고리즘 이름만으로 단정하지 말고 **비교 연산자와 피벗 선택 가정**을 확인한다.
+
+</details>
 
 ## 복습 질문
 

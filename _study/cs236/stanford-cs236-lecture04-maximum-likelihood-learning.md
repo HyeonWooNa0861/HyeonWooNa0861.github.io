@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 4: Maximum Likelihood Learning"
 course: "CS236"
 topic: "Maximum Likelihood Learning"
@@ -25,6 +25,9 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Autoregressive model 마무리 | RNN, attention, convolution 기반 autoregressive model은 likelihood 계산과 병렬화에서 어떻게 다른가? |
@@ -45,6 +48,8 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 | pp. 20–25 | inductive bias, generalization, conditional likelihood | 원리·모델 선택 설명이며 p. 24의 conditional loss는 joint와 같은 log-rule 적용 |
 
 > 강의 자료의 정리·항등식과 finite-sample·optimization 한계에 관한 보충 해설을 구분한다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -203,6 +208,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Autoregressive model은 likelihood 계산이 쉽기 때문에 maximum likelihood와 잘 맞는다.
 - Transformer의 장점은 이론적 표현력만이 아니라 training loss를 위치별로 병렬 계산할 수 있다는 점이다.
 - KL divergence는 "거리"처럼 쓰이지만 대칭이 아니며, 어느 방향으로 쓰는지에 따라 학습된 모델의 성향이 달라진다.
@@ -210,17 +218,24 @@ $$
 - MLE는 $$P_{\mathrm{data}}$$를 직접 알지 못해도 empirical log-likelihood로 실용적인 목적함수를 만든다.
 - Overfitting을 막는 방법은 단순히 더 큰 모델을 피하는 것이 아니라, validation과 regularization으로 generalization을 확인하는 것이다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 4의 핵심은 generative model 학습을 "데이터 분포와 모델 분포를 어떤 기준으로 맞출 것인가"로 보는 것이다. Autoregressive model은 $$P_{\theta}(x)$$를 계산할 수 있으므로 $$D_{\mathrm{KL}}(P_{\mathrm{data}}\Vert P_{\theta})$$ 최소화가 empirical maximum likelihood로 바뀐다. 이 단순한 전환 덕분에 복잡한 neural generative model도 log-likelihood 합, backpropagation, SGD라는 익숙한 최적화 문제로 다룰 수 있다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. 먼저 $$P_{\mathrm{data}}$$, $$P_{\theta}$$, model family $$\mathcal{M}$$의 역할을 구분한다.
 2. KL divergence 식을 전개해 $$\theta$$와 무관한 항이 왜 사라지는지 직접 써 본다.
 3. Coin toss MLE 예시에서 likelihood와 log-likelihood가 같은 $$\theta$$를 고르는 이유를 확인한다.
 4. Autoregressive factorization을 log로 바꾸면 곱이 합이 된다는 점을 token-level cross entropy와 연결한다.
 5. Forward KL, reverse KL, GAN류 objective가 서로 다른 "분포 비교 방식"이라는 큰 틀을 잡아 둔다.
+
+</details>
 
 ## 복습 질문
 

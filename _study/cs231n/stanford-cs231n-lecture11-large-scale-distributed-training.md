@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
@@ -30,7 +30,8 @@ Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** 대규모 학습은 GPU 수를 늘리는 문제가 아니라 **연산, 메모리, 통신을 서로 다른 병렬화 축으로 분해하는 시스템 설계 문제**다. 가장 느린 데이터 이동 경로가 전체 처리량을 결정한다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 | 5 | Pipeline parallelism | 층을 나누면서 idle time을 어떻게 줄이는가? |
 | 6 | Tensor parallelism | 하나의 행렬 연산을 여러 장치가 어떻게 나누는가? |
 
+</details>
 ## 1. GPU는 빠른 연산기와 계층적 메모리의 조합이다
 
 강의는 H100을 예로 들어 GPU core 주변에 80GB HBM이 있고, core 내부에도 더 작고 빠른 메모리가 계층적으로 배치됨을 설명한다. 데이터가 tensor core까지 도달하지 못하면 이론상 FLOPS가 높아도 실제 kernel은 느리다. 즉 성능은 연산 횟수뿐 아니라 메모리 대역폭과 데이터 재사용에 달려 있다.
@@ -135,6 +137,9 @@ All-reduce 평균이 single-device global-batch gradient와 같은 이유를 보
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **148쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -147,6 +152,7 @@ All-reduce 평균이 single-device global-batch gradient와 같은 이유를 보
 
 병렬화 동작과 수치는 강의 원문 요약이다. Global-batch gradient와 all-reduce 평균의 동치, unequal batch caveat는 **작성자 보충**이다.
 
+</details>
 ## 참고자료
 
 - [Lecture video and transcript source](https://www.youtube.com/watch?v=9MvD-XsowsE){:target="_blank" rel="noopener"}

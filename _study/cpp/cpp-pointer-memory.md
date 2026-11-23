@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-10-16 19:00:05 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
@@ -26,6 +26,9 @@ Source PDFs:
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">원문 대조 내역 보기</summary>
+
 | 원문 | 페이지 | 본문 대응 | 수식 판정 |
 |---|---:|---|---|
 | `C_동적할당.pdf` | 1–6 | 메모리 구조, 정적/동적 할당, 오류 | 구조와 수명 규칙 중심 |
@@ -36,9 +39,14 @@ Source PDFs:
 
 두 PDF 33쪽을 페이지 이미지로 대조했다. byte 단위 allocation·copy 크기는 실제 안전 조건에 쓰이는 정확한 관계라서 설명했고, 주소 예시·참조 count·소유권 표는 특정 실행 상태 또는 API 의미이지 일반 수학 공식이 아니므로 증명을 꾸며내지 않았다.
 
+</details>
+
 > **핵심:** 힙 메모리는 프로그램 실행 중 필요한 크기만큼 동적으로 할당한다. C에서는 `malloc`으로 확보한 영역을 `free`로 해제하며, C++에서는 객체 수명과 소유권을 고려해 메모리를 관리한다.
 
 ## 전체 흐름
+
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -49,6 +57,8 @@ Source PDFs:
 | 5 | 클래스와 포인터 | 객체를 동적으로 만들 때 생성자/소멸자는 어떻게 동작하는가? |
 | 6 | 스마트 포인터 | RAII로 메모리 해제를 자동화할 수 있는가? |
 | 7 | 선택 기준 | `unique_ptr`, `shared_ptr`, `weak_ptr`는 언제 쓰는가? |
+
+</details>
 
 ## 1. 프로그램 메모리 구조
 

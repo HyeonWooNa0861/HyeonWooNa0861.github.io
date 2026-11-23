@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-10-16 18:48:08 +0900
+last_modified_at: 2026-11-23 16:46:00 +0900
 title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
 topic: "Attention and Transformers"
@@ -30,7 +30,8 @@ Official slides: [Lecture 8 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** Attention은 query와 key의 유사도로 value를 가중합하는 연산이다. Self-attention은 모든 token이 서로 직접 정보를 교환하게 해 RNN의 긴 경로와 순차 계산을 줄이고, Transformer는 이 연산에 residual connection, normalization, MLP를 결합한 범용 구조다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
@@ -41,6 +42,7 @@ Official slides: [Lecture 8 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 | 5 | Multi-head attention | 여러 관계를 동시에 표현하려면 어떻게 하는가? |
 | 6 | Transformer block | attention 주변에 어떤 연산이 필요한가? |
 
+</details>
 ## 1. RNN attention의 동기
 
 기존 encoder–decoder RNN은 입력 전체를 마지막 hidden state 하나로 압축했다. 긴 문장에서는 앞부분 정보가 이 병목을 통과하기 어렵다. Attention은 decoder의 현재 상태와 모든 encoder state의 유사도를 계산해, 이번 출력에 필요한 위치를 직접 가중합한다.
@@ -215,6 +217,9 @@ $$
 
 ## 원문 대조 기록
 
+<details markdown="block">
+<summary markdown="span">출처 대조 내역 보기</summary>
+
 공식 PDF **122쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
@@ -227,6 +232,7 @@ $$
 
 Attention과 현대 block 변형의 정의는 강의 원문 요약이다. Dot-product 분산과 RMSNorm scale 성질의 전개는 **작성자 보충**이며, MoE의 실제 처리량 평가는 수학적 보장이 아닌 시스템상 주의점이다.
 
+</details>
 ## 참고자료
 
 - [Stanford CS231N Spring 2025 Lecture 8](https://www.youtube.com/watch?v=RQowiOF_FvQ){:target="_blank" rel="noopener"}

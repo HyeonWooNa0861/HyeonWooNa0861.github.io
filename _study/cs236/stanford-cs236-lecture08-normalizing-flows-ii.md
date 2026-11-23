@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-10-16 19:12:45 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "Stanford CS236 Lecture 8: Normalizing Flows II"
 course: "CS236"
 topic: "Flow Architectures and Tradeoffs"
@@ -26,6 +26,9 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">학습 순서와 원문 대조 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | Flow recap | Exact likelihood를 얻으려면 inverse map과 Jacobian determinant가 왜 필요할까? |
@@ -47,6 +50,8 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 | pp. 26–35 | MintNet, Gaussianization, rotation, summary | p. 26의 triangular structure와 pp. 29–33의 CDF 변환을 본문에 설명; 결과·요약은 별도 증명 대상 없음 |
 
 > Hardware speed-up과 teacher/student 오차에 관한 해석은 강의 자료와 구분한 보충 해설이다.
+
+</details>
 
 ## 원본 그림 해설
 
@@ -188,6 +193,9 @@ $$
 
 ## 학습 포인트
 
+<details markdown="block">
+<summary markdown="span">추가 학습 포인트 보기</summary>
+
 - Flow layer는 "invertible인가", "forward와 inverse가 빠른가", "Jacobian determinant가 tractable한가"를 동시에 평가해야 한다.
 - Coupling layer의 강점은 변환을 담당하는 $$m_\theta,\mu_\theta,\alpha_\theta$$가 복잡해도 전체 mapping의 inverse가 단순하다는 점이다.
 - NICE는 volume preserving이라 단순하지만, RealNVP는 scaling을 추가해 local volume 변화를 학습할 수 있다.
@@ -195,17 +203,24 @@ $$
 - MLE training이 중요하면 MAF처럼 likelihood가 빠른 방향을, deployment sampling이 중요하면 IAF처럼 generation이 빠른 방향을 선호한다.
 - Parallel WaveNet은 teacher-student distillation으로 training tractability와 fast inference를 분리한 대표 사례다.
 
+</details>
+
 ## 마지막 핵심 정리
 
 Lecture 8의 핵심은 normalizing flow가 하나의 수식이 아니라 architecture design problem이라는 점이다. Coupling, autoregressive masking, invertible convolution, Gaussianization은 모두 같은 목표를 가진다. 복잡한 transformation을 만들되, inverse와 Jacobian determinant는 학습 루프 안에서 계산 가능해야 한다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">학습 방법 보기</summary>
+
 1. NICE additive coupling에서 왜 $$m_\theta$$가 arbitrary neural network여도 inverse가 쉬운지 직접 써 본다.
 2. RealNVP의 determinant가 scale factor의 곱으로 정리되는 이유를 triangular Jacobian으로 설명한다.
 3. MAF와 IAF를 sampling direction, likelihood direction, training suitability, deployment suitability 네 축으로 비교한다.
 4. Parallel WaveNet에서 teacher는 왜 MAF가 적합하고 student는 왜 IAF가 적합한지 정리한다.
 5. Gaussianization flow를 "data를 prior처럼 보이게 만드는 inverse flow" 관점에서 다시 설명한다.
+
+</details>
 
 ## 복습 질문
 

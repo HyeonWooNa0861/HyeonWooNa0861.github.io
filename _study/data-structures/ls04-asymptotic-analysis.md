@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS04 Asymptotic Analysis"
 course: "Data Structures"
 topic: "Asymptotic Analysis"
@@ -32,6 +32,9 @@ Source PDF: `LS04_asymptotic_analysis.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 수행 시간 함수 | `T(n)`을 어떻게 단순화하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS04_asymptotic_analysis.pdf`
 | 3 | Big-O | 실행 시간이 얼마나 느려질 수 있는가? |
 | 4 | Prefix Average | 같은 문제도 구현 방식에 따라 어떻게 달라지는가? |
 | 5 | Big-Ω, Big-Θ | 하한과 정확한 차수는 어떻게 표현하는가? |
+
+</details>
 
 ## 1. 점근적 성장 함수
 

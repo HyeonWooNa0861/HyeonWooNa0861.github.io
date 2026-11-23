@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
@@ -32,6 +32,9 @@ Source PDF: `LS07_stack_queue_R1.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 리스트 복습 | 배열 리스트와 연결 리스트의 연산 비용은 어떻게 다른가? |
@@ -39,6 +42,8 @@ Source PDF: `LS07_stack_queue_R1.pdf`
 | 3 | 스택 구현 | 배열 기반과 연결 리스트 기반 스택은 어떻게 다른가? |
 | 4 | 큐 | FIFO 구조를 어떤 연산으로 표현하는가? |
 | 5 | 큐 구현 | 원형 큐와 연결 큐는 어떤 포인터/인덱스를 관리하는가? |
+
+</details>
 
 ## 1. 스택 Stack
 

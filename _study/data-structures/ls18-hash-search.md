@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-23 16:50:00 +0900
 title: "LS18 Hash Search"
 course: "Data Structures"
 topic: "Hash Search"
@@ -32,6 +32,9 @@ Source PDF: `LS18_hash_search.pdf`
 
 ## 전체 흐름
 
+<details markdown="block">
+<summary markdown="span">글의 구성과 원문 대응 보기</summary>
+
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
 | 1 | 딕셔너리 복습 | key-value 구조는 어떤 연산을 제공하는가? |
@@ -39,6 +42,8 @@ Source PDF: `LS18_hash_search.pdf`
 | 3 | 해싱 | key를 배열 인덱스로 어떻게 바꾸는가? |
 | 4 | 충돌 | 서로 다른 key가 같은 슬롯으로 가면 어떻게 되는가? |
 | 5 | 좋은 해시 함수 | 균등 분포와 테이블 크기 선택이 왜 중요한가? |
+
+</details>
 
 ## 1. 딕셔너리 복습
 

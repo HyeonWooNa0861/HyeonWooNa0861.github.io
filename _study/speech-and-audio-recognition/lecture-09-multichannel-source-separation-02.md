@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-17 00:05:01 +0900
-last_modified_at: 2026-11-19 21:03:05 +0900
+last_modified_at: 2026-11-23 16:50:19 +0900
 title: "Lecture 9: Multi-channel Source Separation II"
 course: "Speech and Audio Recognition"
 topic: "Neural Beamforming and Complex Spectral Mapping"
@@ -21,23 +21,11 @@ keywords:
 
 Source PDF: `speech-audio-lecture-09-2.pdf` — *Multi-channel Source Separation 2-2*, 안인규(Inkyu An), 25 slides.
 
-> **핵심:** 다채널 신경망은 공간 필터를 없애기만 한 것이 아니다. 초기 방법은 신경망으로 mask를 예측해 공분산과 beamformer를 계산했고, 이후 방법은 시간영역 필터나 복소 STFT를 직접 추정했다. 최근 시스템은 직접 추정의 표현력과 선형 필터의 낮은 왜곡을 다시 결합한다. 성능표를 읽을 때는 **입력 채널 수, 데이터셋, 출력 표현, 후단 ASR, 평가 지표가 같은 비교인지** 먼저 확인해야 한다.
-
-## 전체 흐름
-
-| 슬라이드 | 주제 | 확인할 관계 |
-|---|---|---|
-| 1–4 | 다채널 ESD와 입력 특징 | waveform·spectrum, magnitude·IPD·angle feature는 입력 표현이고 출력·복원 방식과 별개의 축이다. |
-| 5–8 | Mask-based neural beamforming | DNN은 speech/noise mask를 예측하고, mask-weighted PSD와 GEV·MVDR가 선형 필터를 만든다. |
-| 9–11 | MIMO-Speech | 화자별 mask·beamformer·ASR를 PIT로 묶어 출력 순서 문제를 해결한다. |
-| 12–14 | FaSNet과 Beam-TasNet | 시간영역 필터를 직접 예측하거나, DNN source image를 통계 추정에만 쓰고 mixture를 beamforming한다. |
-| 15–16 | 출력 표현의 연속선 | real mask, mask-derived filter, learned linear filter, direct complex mapping은 자유도와 왜곡 제약이 다르다. |
-| 17–19 | DasFormer와 TF-GridNet | 시간·주파수 축 모델링과 complex spectral mapping을 결합하고, MCMFWF를 중간에 넣을 수 있다. |
-| 20–25 | SpatialNet | narrow-band와 cross-band 블록으로 시간축 공간 단서와 주파수축 관계를 번갈아 학습한다. |
+> **핵심:** 다채널 신경망의 출력은 mask, 공간 필터, 복소 spectrum 중 하나일 수 있다. 초기 방법은 mask로 공분산과 beamformer를 계산했고, 이후 방법은 시간영역 필터나 복소 STFT를 직접 추정했다. 최근 방법은 직접 추정의 표현력과 선형 필터의 낮은 왜곡을 결합한다. 성능표는 **입력 채널 수, 데이터셋, 출력 표현, 후단 ASR, 평가 지표**가 같은 조건인지 먼저 확인한다.
 
 이 글은 각 주파수 bin의 다채널 STFT snapshot을 $$\mathbf x_{t,f}=[X_{1,t,f},\ldots,X_{M,t,f}]^T\in\mathbb C^M$$로 둔다. $$M$$은 마이크 수, $$T$$는 frame 수, $$F$$는 주파수 bin 수, $$C$$ 또는 $$P$$는 분리할 화자 수다. STFT 값과 그 추정치는 원 신호와 STFT 정규화에 따른 amplitude 단위를 가지며, mask와 attention weight는 무차원이다.
 
-**11월 12일 녹화에서 찾아보기:** 34:12부터 9-2강 자료를 다룬다(관련 PDF 2–11쪽). 37:21에는 마이크 간 위상차(IPD)를 입력 특징으로 읽고(3–4쪽), 44:03에는 마스크를 따로 학습하는 방식과 인식 오류를 앞단까지 전달하는 방식을 비교한다(6–8쪽). 47:06에는 MIMO-Speech의 마스크와 분리 출력을 비교한다(9–11쪽). 50:32의 학습 손실과 인식 성능 지표 구분은 같은 내용을 두고 이어진 **질의응답**이다. **52:59의 FaSNet(12쪽)은 다음 수업 예고다.** 아래 5절 이후는 이날 설명의 연속이 아니라 PDF 뒷부분의 해설이다.
+슬라이드 2–11은 IPD 같은 공간 특징, mask 기반 beamforming, 인식 loss를 앞단까지 전달하는 학습, MIMO-Speech의 출력 할당을 연결한다. 이후 슬라이드는 시간영역 필터와 직접 complex mapping으로 범위를 넓힌다. 두 범위를 읽을 때는 mask·공간 필터·최종 분리 출력의 역할을 섞지 않는 것이 핵심이다.
 
 ## 1. 다채널 ESD에서 신경망이 맡을 수 있는 위치
 
