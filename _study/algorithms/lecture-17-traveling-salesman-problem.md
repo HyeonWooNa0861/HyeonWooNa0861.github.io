@@ -283,6 +283,10 @@ The traveling salesman problem asks for a minimum-cost Hamiltonian cycle. A stat
 
 - [Lecture 17: Traveling Salesman Problem — Source PDF](/assets/pdfs/study/algorithms/lecture-17-traveling-salesman-problem.pdf)
 
+## Lecture Transcript
+
+- [Lecture 17 automatic transcript]({{ "/assets/transcripts/study/algorithms/lecture-17-traveling-salesman-problem.html" | relative_url }}){: target="_blank" rel="noopener"}
+
 ## References
 
 - Youngwook Kim, *Algorithms — Traveling Salesman Problem*, provided lecture slides, pp. 1–41.

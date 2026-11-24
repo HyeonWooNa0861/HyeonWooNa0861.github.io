@@ -852,6 +852,10 @@ $$
   <li><a href="https://arxiv.org/abs/2601.18456" target="_blank" rel="noopener">Geneses preprint</a> — generative separation trend cited by the lecture; treated as a 2026 preprint rather than an established benchmark.</li>
 </ul>
 
+## Lecture Transcript
+
+<a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-07-2026-10-29-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 7 transcript · 2026-10-29</a> — 두 분할 녹음의 자동 전사를 강의 순서로 합친 병합본이며, 전 구간 직접 청취 교정본은 아니다.
+
 ## Source Check
 
 - 원본 PDF 26쪽을 모두 시각 확인하고, 추출 텍스트는 페이지 탐색 보조로만 사용했다.

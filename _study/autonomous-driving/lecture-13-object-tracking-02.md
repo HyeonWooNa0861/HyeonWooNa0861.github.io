@@ -418,3 +418,7 @@ MOTA 식에는 box의 위치 오차 크기나 fragmentation 수가 직접 들어
 ## PDF
 
 - [13 Object Tracking (2).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-13-object-tracking-02.pdf" | relative_url }})
+
+## Lecture Transcript
+
+- [Open the lecture transcript (partially reviewed)]({{ "/assets/transcripts/study/autonomous-driving/lecture-13-object-tracking-02-transcript.html" | relative_url }})

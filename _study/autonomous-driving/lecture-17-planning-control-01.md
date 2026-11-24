@@ -299,3 +299,7 @@ $$
 ## PDF
 
 [Open the original lecture PDF]({{ "/assets/pdfs/study/autonomous-driving/lecture-17-planning-control-01.pdf" | relative_url }})
+
+## Lecture Transcript
+
+[Open the lecture transcript (automatic)]({{ "/assets/transcripts/study/autonomous-driving/lecture-17-planning-control-01-transcript.html" | relative_url }})

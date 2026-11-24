@@ -611,6 +611,10 @@ $$\mathbf R_x$$가 positive-definite이므로 $$D$$는 양의 실수다. 이것�
 
 </details>
 
+## Lecture Transcript
+
+<a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-08-2-2026-11-05-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 8-2 transcript · 2026-11-05</a> — Lecture 8-1 복습과 Lecture 8-2의 MVDR 설명에 해당하는 00:00–49:05 자동 전사다. 49:05 이후는 원시 전사 품질이 낮아 제외했다.
+
 ## PDF
 
 - <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-08-2.pdf" | relative_url }}" target="_blank" rel="noopener">speech-audio-lecture-08-2.pdf</a>

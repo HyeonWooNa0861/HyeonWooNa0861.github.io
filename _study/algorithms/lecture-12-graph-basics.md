@@ -441,3 +441,7 @@ for start in range(len(graph)):
 ## PDF
 
 - [lecture-12-graph-basics.pdf]({{ "/assets/pdfs/study/algorithms/lecture-12-graph-basics.pdf" | relative_url }})
+
+## Lecture Transcript
+
+- [Lecture 12 automatic transcript]({{ "/assets/transcripts/study/algorithms/lecture-12-graph-basics.html" | relative_url }}){: target="_blank" rel="noopener"}

@@ -235,6 +235,10 @@ A와 B는 한쪽을 고정하고 다른 쪽을 독립적으로 바꾼다. 따라
 
 </details>
 
+## Lecture Transcript
+
+<a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-09-mvdr-lab-2026-11-19-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 9 MVDR lab transcript · 2026-11-19</a> — 강의 종료까지 분리한 강의 전용 음원의 자동 전사다. 전문 용어·수식·화자 귀속은 전 구간 직접 청취로 교정되지 않았다.
+
 ## Source Materials
 
 - <a href="https://ecampus.kookmin.ac.kr/mod/ubfile/view.php?id=2005510" target="_blank" rel="noopener">Lecture 9 MVDR lab notebook — KMU eCampus</a>

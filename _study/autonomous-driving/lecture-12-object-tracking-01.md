@@ -392,3 +392,7 @@ Hungarian algorithm은 **주어진 후보와 비용 안에서** 최적 배정을
 ## PDF
 
 - [12 Object Tracking (1).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-12-object-tracking-01.pdf" | relative_url }})
+
+## Lecture Transcript
+
+- [Open the lecture transcript (automatic)]({{ "/assets/transcripts/study/autonomous-driving/lecture-12-object-tracking-01-transcript.html" | relative_url }})

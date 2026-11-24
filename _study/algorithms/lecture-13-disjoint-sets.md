@@ -416,6 +416,10 @@ Python으로 위 입력의 `NO, YES, NO, YES`를 확인했다. 같은 원소·�
 
 - [Lecture 13: Disjoint Sets — Source PDF](/assets/pdfs/study/algorithms/lecture-13-disjoint-sets.pdf)
 
+## Lecture Transcript
+
+- [Lecture 13 automatic transcript]({{ "/assets/transcripts/study/algorithms/lecture-13-disjoint-sets.html" | relative_url }}){: target="_blank" rel="noopener"}
+
 ## References
 
 - Youngwook Kim, *Algorithms — 13. Disjoint Sets*, 제공된 강의 슬라이드, pp. 1–23.

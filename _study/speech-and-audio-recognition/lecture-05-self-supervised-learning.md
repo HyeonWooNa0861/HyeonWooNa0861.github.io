@@ -728,6 +728,15 @@ $$
 | pp. 44–49 | HuBERT predictive approach, 6th/9th layer, no collapse | MFCC 100-cluster → layer-6 500-cluster → layer-9 target의 iteration별 역할 확인. Online codebook collapse와 offline clustering 품질 문제를 구분 |
 | pp. 21–49 | wav2vec, wav2vec 2.0, XLS-R, Conformer 계열, HuBERT의 관계 | 원 wav2vec은 선행 맥락으로만 구분하고 강의의 상세 구조는 wav2vec 2.0으로 한정. 각 논문을 representation, pre-training target·objective, supervised ASR adaptation의 역할로 분리 |
 
+## Lecture Transcripts
+
+강의 흐름과 강조점을 다시 확인할 수 있는 시각 포함 전사다. 전문 용어 일부를 PDF와 대조했지만 전 구간 직접 청취 교정본은 아니다.
+
+<ul>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-05-asr-iii-1-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 5 ASR III-1 transcript</a></li>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-05-asr-iii-2-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 5 ASR III-2 transcript</a></li>
+</ul>
+
 ## PDF
 
 <ul>

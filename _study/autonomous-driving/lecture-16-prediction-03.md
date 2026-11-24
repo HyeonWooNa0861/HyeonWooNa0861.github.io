@@ -448,6 +448,10 @@ TNT 원 논문은 차량 예측을 Argoverse Forecasting·INTERACTION에서, 보
 
 [Open the original lecture PDF]({{ "/assets/pdfs/study/autonomous-driving/lecture-16-prediction-03.pdf" | relative_url }})
 
+## Lecture Transcript
+
+[Open the lecture transcript (automatic)]({{ "/assets/transcripts/study/autonomous-driving/lecture-16-prediction-03-transcript.html" | relative_url }})
+
 ## References
 
 - <a href="https://proceedings.mlr.press/v155/zhao21b.html" target="_blank" rel="noopener">TNT: Target-driven Trajectory Prediction — official PMLR record</a>. CoRL 2020; proceedings published in 2021.

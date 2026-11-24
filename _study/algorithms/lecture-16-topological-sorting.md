@@ -267,6 +267,10 @@ Topological sorting linearizes dependency constraints in a directed acyclic grap
 
 - [Lecture 16: Topological Sorting — Source PDF](/assets/pdfs/study/algorithms/lecture-16-topological-sorting.pdf)
 
+## Lecture Transcript
+
+- [Lecture 16 automatic transcript]({{ "/assets/transcripts/study/algorithms/lecture-16-topological-sorting.html" | relative_url }}){: target="_blank" rel="noopener"}
+
 ## References
 
 - Youngwook Kim, *Algorithms — Topological Sorting*, provided lecture slides, pp. 1–34.

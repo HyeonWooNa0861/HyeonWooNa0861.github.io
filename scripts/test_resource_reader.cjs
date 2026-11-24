@@ -322,7 +322,7 @@ class ReaderElement {
   }
 }
 
-function readerFixture({ modal = false, inert = true, additionalSources = 0 } = {}) {
+function readerFixture({ modal = false, inert = true, additionalSources = 0, extraResource } = {}) {
   const document = {
     activeElement: null,
     listeners: new Map(),
@@ -354,6 +354,7 @@ function readerFixture({ modal = false, inert = true, additionalSources = 0 } = 
   for (let index = 1; index <= additionalSources; index += 1) {
     sourceUrls.push(`/assets/pdfs/stress-resource-${String(index).padStart(2, "0")}.pdf`);
   }
+  if (extraResource) sourceUrls.push(extraResource);
   const links = sourceUrls.map((href, index) => {
     const link = document.createElement("a");
     link.href = href;
@@ -439,6 +440,15 @@ function isEffectivelyFocusable(element) {
   }
   return true;
 }
+
+const transcriptPath = "/assets/transcripts/study/algorithms/example.html";
+const studyReader = readerFixture({ extraResource: transcriptPath });
+studyReader.links[0].dispatch("click");
+studyReader.links.at(-1).dispatch("click");
+assertTabState(studyReader, 1);
+assert.equal(new URL(studyReader.frames()[1].getAttribute("src")).pathname, transcriptPath);
+studyReader.tabs()[0].dispatch("click");
+assertTabState(studyReader, 0);
 
 const desktop = readerFixture();
 desktop.links[0].textContent = "PDF";

@@ -423,3 +423,7 @@ LSTM이 시간 구조를 명시적으로 갖는다는 사실과, 어떤 데이�
 ## PDF
 
 [Open the original lecture PDF]({{ "/assets/pdfs/study/autonomous-driving/lecture-14-prediction-01.pdf" | relative_url }})
+
+## Lecture Transcript
+
+[Open the lecture transcript (automatic)]({{ "/assets/transcripts/study/autonomous-driving/lecture-14-prediction-01-transcript.html" | relative_url }})

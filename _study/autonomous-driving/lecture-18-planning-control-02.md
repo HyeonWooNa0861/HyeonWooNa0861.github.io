@@ -341,3 +341,7 @@ Critic이 부정확하면 actor도 잘못된 방향으로 학습할 수 있다. 
 ## PDF
 
 [Open the original lecture PDF]({{ "/assets/pdfs/study/autonomous-driving/lecture-18-planning-control-02.pdf" | relative_url }})
+
+## Lecture Transcript
+
+[Open the lecture transcript (partially reviewed)]({{ "/assets/transcripts/study/autonomous-driving/lecture-18-planning-control-02-transcript.html" | relative_url }})

@@ -531,6 +531,10 @@ $$
 
 </details>
 
+## Lecture Transcript
+
+<a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-08-1-2026-11-03-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 8-1 transcript · 2026-11-03</a> — 강의 구간 자동 전사 발췌본이다. 마지막 발화는 편집 경계에서 잘렸고 전 구간 직접 청취 교정본은 아니다.
+
 ## PDF
 
 <ul>

@@ -635,6 +635,15 @@ $$
 
 </details>
 
+## Lecture Transcripts
+
+강의 흐름과 강조점을 다시 확인할 수 있는 시각 포함 전사다. 전문 용어 일부를 PDF와 대조했지만 전 구간 직접 청취 교정본은 아니다.
+
+<ul>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-09-1-2026-11-10-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 9-1 transcript · 2026-11-10</a></li>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-09-1and2-2026-11-12-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 9-1·9-2 transcript · 2026-11-12</a></li>
+</ul>
+
 ## PDF
 
 - <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-09-1.pdf" | relative_url }}" target="_blank" rel="noopener">speech-audio-lecture-09-1.pdf</a>
