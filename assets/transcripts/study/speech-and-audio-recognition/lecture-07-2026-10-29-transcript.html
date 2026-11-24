@@ -1,821 +1,913 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lecture 7 강의 전사 · 2026-10-29</title>
-<style>
-  :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  body { margin: 0 auto; max-width: 76rem; padding: clamp(1rem, 4vw, 3rem); line-height: 1.72; }
-  h1 { line-height: 1.25; } .status { padding: 1rem; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); background: color-mix(in srgb, Canvas 92%, #dbeafe 8%); }
-  .utterance { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1rem; margin: 0; padding: .62rem 0; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
-  time { font-variant-numeric: tabular-nums; color: #2563a9; white-space: nowrap; }
-  @media (max-width: 46rem) { .utterance { grid-template-columns: 1fr; gap: .15rem; } }
-  @media print { body { max-width: none; } .utterance { break-inside: avoid; } }
-</style></head><body><main><h1>Lecture 7 강의 전사 · 2026-10-29</h1>
-<p class="status"><strong>전사 상태:</strong> 두 분할 녹음의 자동 전사를 강의 순서로 합친 병합본이다. ASR을 다시 실행하거나 전 구간을 직접 청취해 교정한 결과는 아니다. 시간은 편집한 강의 음원의 시작 기준이다. 강의 외 사생활 구간과 원음 파일은 포함하지 않았다.</p>
-<section aria-label="강의 전사"><p class="utterance"><time>00:00:00.000–00:00:03.000</time><span>스피커1과 스피커2를 사용하고 싶은거에요</span></p>
-<p class="utterance"><time>00:00:03.000–00:00:05.000</time><span>어떻게 하냐?</span></p>
-<p class="utterance"><time>00:00:05.000–00:00:08.000</time><span>우리가 앞에 드렸던 mask는 그대로 활용합니다</span></p>
-<p class="utterance"><time>00:00:08.000–00:00:10.000</time><span>mask는 그대로 활용하는데</span></p>
-<p class="utterance"><time>00:00:10.000–00:00:13.000</time><span>latent vector를 lsdm이 인정을 받아서</span></p>
-<p class="utterance"><time>00:00:13.000–00:00:18.000</time><span>mask 2개를 설치합니다</span></p>
-<p class="utterance"><time>00:00:18.000–00:00:20.000</time><span>이렇게 되면 lsdm은</span></p>
-<p class="utterance"><time>00:00:20.000–00:00:22.000</time><span>이 front layer잖아요</span></p>
-<p class="utterance"><time>00:00:22.000–00:00:24.000</time><span>그러면 어떻게 될까요?</span></p>
-<p class="utterance"><time>00:00:24.000–00:00:26.000</time><span>이 latent vector가</span></p>
-<p class="utterance"><time>00:00:26.000–00:00:29.000</time><span>sequential하게 지속적으로 들어오겠죠</span></p>
-<p class="utterance"><time>00:00:29.000–00:00:32.000</time><span>왜냐하면 얘가 지금은 여기로 돌아오고 있지만</span></p>
-<p class="utterance"><time>00:00:32.000–00:00:34.180</time><span>얘가 그 다음 시간에 이 홈아웃을 옮겨가서</span></p>
-<p class="utterance"><time>00:00:34.180–00:00:37.880</time><span>또 이거를 테크넷에 대해서 이력으로 또 들어가겠죠</span></p>
-<p class="utterance"><time>00:00:37.880–00:00:40.880</time><span>이게 지속적으로 latent vector를 하나씩 만들어내고</span></p>
-<p class="utterance"><time>00:00:40.880–00:00:45.840</time><span>그게 LSTM에 이코넌트하게 들어가면서</span></p>
-<p class="utterance"><time>00:00:45.840–00:00:49.240</time><span>이거를 활용을 해서 그때그때</span></p>
-<p class="utterance"><time>00:00:49.240–00:00:55.100</time><span>이 latent vector에 대한 마스크를 하나씩 만들어낸다고 봅니다</span></p>
-<p class="utterance"><time>00:00:55.100–00:00:56.960</time><span>이해돼요?</span></p>
-<p class="utterance"><time>00:00:56.960–00:00:59.400</time><span>사실 앞에서 했던 것들을 계속 보는 거예요.</span></p>
-<p class="utterance"><time>00:00:59.400–00:01:06.960</time><span>그렇게 했을 때 차이점은 이 SPM은 마스크의 개수를 내가 원하는 만큼 만들어야 돼요.</span></p>
-<p class="utterance"><time>00:01:06.960–00:01:13.400</time><span>내가 예를 들어서 여기서는 동시에 두 개의 스피커를 분리를 하는 모델을 만들었어요.</span></p>
-<p class="utterance"><time>00:01:13.400–00:01:14.860</time><span>두 개 이상은 못합니다.</span></p>
-<p class="utterance"><time>00:01:14.860–00:01:19.020</time><span>두 개까지 내가 분리를 하겠다 라고 하면 마스크를 두 개를 만드는 거예요.</span></p>
-<p class="utterance"><time>00:01:19.020–00:01:20.700</time><span>마스크를 두 개를 만듭니다.</span></p>
-<p class="utterance"><time>00:01:20.700–00:01:26.960</time><span>두 개를 만든 다음에 이거는 소프트 마스크라고 해서 0에서 1 사이 값을 받는 마스크예요.</span></p>
-<p class="utterance"><time>00:01:26.960–00:01:31.320</time><span>영콤프트 마스크라고 하면 일반적으로 바이너리 마스크는 0 아니면 1이 아니라</span></p>
-<p class="utterance"><time>00:01:31.320–00:01:35.720</time><span>그게 아니라 0에서 1 사이의 값을 받는 그런 마스크라고 봤을 때</span></p>
-<p class="utterance"><time>00:01:35.720–00:01:42.080</time><span>이 친구를 이 latent vector에 공개해줍니다.</span></p>
-<p class="utterance"><time>00:01:42.080–00:01:51.320</time><span>공개해주면 각각의 이 latent vector는 여기 리스트에 대한 이메일인데</span></p>
-<p class="utterance"><time>00:01:51.320–00:01:57.320</time><span>이 친구로부터 내가 뽑아내고 싶은 스피커에 해당하는 성분을 이 마스크를 가지고 뽑아내겠다.</span></p>
-<p class="utterance"><time>00:01:57.320–00:02:03.320</time><span>그렇게 뽑아내면 마스크 된 레이저 베퍼가 하나하나 나오겠죠.</span></p>
-<p class="utterance"><time>00:02:03.320–00:02:09.320</time><span>그거를 이제 이걸로 만들어야 되는데, 이 타임보밍 시그널을 다시 역변해야 되는데</span></p>
-<p class="utterance"><time>00:02:09.320–00:02:17.320</time><span>그때는 이 디코더에서, 여러분들 입장에서는 이게 조금 오마인가 싶을텐데</span></p>
-<p class="utterance"><time>00:02:17.320–00:02:19.960</time><span>앞에서 DFT 배울 때</span></p>
-<p class="utterance"><time>00:02:19.960–00:02:21.820</time><span>베이시스에 대해서 배웠잖아요.</span></p>
-<p class="utterance"><time>00:02:22.560–00:02:24.020</time><span>그렇죠. 역변환하고</span></p>
-<p class="utterance"><time>00:02:24.020–00:02:25.900</time><span>그걸 다시 Inverse DFT 할 때</span></p>
-<p class="utterance"><time>00:02:25.900–00:02:27.960</time><span>베이시스를 우리가 활용을 했잖아요.</span></p>
-<p class="utterance"><time>00:02:28.440–00:02:29.540</time><span>그 베이시스를</span></p>
-<p class="utterance"><time>00:02:29.540–00:02:31.720</time><span>런오블하게 구성을 했다.</span></p>
-<p class="utterance"><time>00:02:32.680–00:02:33.720</time><span>요거가 그게 뜻입니다.</span></p>
-<p class="utterance"><time>00:02:35.380–00:02:35.700</time><span>그래서</span></p>
-<p class="utterance"><time>00:02:35.700–00:02:37.480</time><span>요 마스크랑</span></p>
-<p class="utterance"><time>00:02:37.480–00:02:39.180</time><span>마스크를 해서 나온</span></p>
-<p class="utterance"><time>00:02:39.180–00:02:40.740</time><span>요거를 통해서 나온</span></p>
-<p class="utterance"><time>00:02:40.740–00:02:43.580</time><span>마스크는</span></p>
-<p class="utterance"><time>00:02:43.580–00:02:48.880</time><span>마크 그 베이징스 베터가 있을거잖아요</span></p>
-<p class="utterance"><time>00:02:48.880–00:02:53.000</time><span>이 친구랑 이 베이징스들이 엔게임을 했을텐데</span></p>
-<p class="utterance"><time>00:02:53.000–00:02:58.000</time><span>그거를 엔게임을 다 이너 프로덕트 한 다음에</span></p>
-<p class="utterance"><time>00:02:58.000–00:03:00.500</time><span>더하면은 엘리먼트 스킬이 공판을 한 다음에 더하면은</span></p>
-<p class="utterance"><time>00:03:00.500–00:03:02.340</time><span>이너 프로덕트가 되잖아요</span></p>
-<p class="utterance"><time>00:03:02.340–00:03:05.980</time><span>그거를 해주면은 요 친구가 하나씩 나오는거에요</span></p>
-<p class="utterance"><time>00:03:05.980–00:03:08.520</time><span>지금 유사한걸 쓰는거에요?</span></p>
-<p class="utterance"><time>00:03:08.520–00:03:10.140</time><span>베이징스는 쉽게 얘기하면은</span></p>
-<p class="utterance"><time>00:03:10.140–00:03:13.940</time><span>얘를 표현하기 위한 기본적인 어떤 그런 체일이라고 보면 돼요.</span></p>
-<p class="utterance"><time>00:03:14.600–00:03:18.260</time><span>기본적으로 내가 이 스피치 성분을 복원해야 되는데</span></p>
-<p class="utterance"><time>00:03:18.260–00:03:21.580</time><span>얘를 복원할 때 필요한 기본적인 성분들이 있잖아요.</span></p>
-<p class="utterance"><time>00:03:22.260–00:03:25.100</time><span>고글 베이시스를 학습을 통해서 발화한다고 보면 돼요.</span></p>
-<p class="utterance"><time>00:03:25.360–00:03:28.940</time><span>그러니까 이 베이시스를 어떻게 잘 조합하면 내가 스피커를 완성할 수 있는데</span></p>
-<p class="utterance"><time>00:03:28.940–00:03:34.000</time><span>어떻게 잘 조합할지를 마스크를 통해서 결정을 해주고</span></p>
-<p class="utterance"><time>00:03:34.000–00:03:38.620</time><span>그때 이거를 잘 표현하기 위한 기본적인 베이시스는 학습을 통해서야 합니다.</span></p>
-<p class="utterance"><time>00:03:38.620–00:03:42.620</time><span>이 질문에 대한 내용이 다 있습니다.</span></p>
-<p class="utterance"><time>00:03:42.620–00:03:44.620</time><span>이해 되시죠?</span></p>
-<p class="utterance"><time>00:03:44.620–00:03:46.620</time><span>이 질문</span></p>
-<p class="utterance"><time>00:03:46.620–00:03:50.620</time><span>사실 제가 방금 말씀드린 내용에서</span></p>
-<p class="utterance"><time>00:03:50.620–00:03:55.620</time><span>우리가 처시부터 얼마전까지 배웠던 모든 내용이 다 한쪽쪽으로 들어왔습니다.</span></p>
-<p class="utterance"><time>00:03:55.620–00:03:57.620</time><span>그래서 제가 강의가 왔습니다.</span></p>
-<p class="utterance"><time>00:03:57.620–00:03:59.620</time><span>이런 것들을 이해하려면 앞쪽 내용을 알아야 합니다.</span></p>
-<p class="utterance"><time>00:03:59.620–00:04:01.620</time><span>그런데 그 질문이 더 많은데요.</span></p>
-<p class="utterance"><time>00:04:01.620–00:04:02.620</time><span>네</span></p>
-<p class="utterance"><time>00:04:02.620–00:04:05.620</time><span>그냥 asr만 알아야 하는 거죠?</span></p>
-<p class="utterance"><time>00:04:05.620–00:04:07.620</time><span>이거 asr이 아니라 separation이 가능한 거죠?</span></p>
-<p class="utterance"><time>00:04:07.620–00:04:11.620</time><span>여자 목소리나 남자목소리로 분리해야 하는거죠?</span></p>
-<p class="utterance"><time>00:04:11.620–00:04:14.620</time><span>구분을 하려고 하는거죠.</span></p>
-<p class="utterance"><time>00:04:14.620–00:04:17.620</time><span>스피커 1,2를 분리하는거죠.</span></p>
-<p class="utterance"><time>00:04:17.620–00:04:21.620</time><span>미스쳐에는 두개의 사람의 목소리가 섞여있는거구요.</span></p>
-<p class="utterance"><time>00:04:21.620–00:04:26.620</time><span>여기는 두개의 스피커의 목소리가</span></p>
-<p class="utterance"><time>00:04:26.620–00:04:29.620</time><span>오이시트가 합쳐져 있는거구요.</span></p>
-<p class="utterance"><time>00:04:29.620–00:04:31.620</time><span>그걸 분리하고 싶은거에요.</span></p>
-<p class="utterance"><time>00:04:31.620–00:04:33.620</time><span>그렇게 했을때 스피커 1과 2는</span></p>
-<p class="utterance"><time>00:04:33.620–00:04:36.620</time><span>남자 목소리나 여자목소리가 중요하지 않고</span></p>
-<p class="utterance"><time>00:04:36.620–00:04:40.620</time><span>어떤 사람 목적이나 다른 사람 목소리를 분리하고 싶은 거야</span></p>
-<p class="utterance"><time>00:04:40.620–00:04:44.620</time><span>그 목적을 가져가는게 스피치 세퍼레이션, 소스 세퍼레이션</span></p>
-<p class="utterance"><time>00:04:44.620–00:04:51.620</time><span>베이시스만으로 수성을 하면은 음성에 관한 것만 보이고 나오는 거 아니야?</span></p>
-<p class="utterance"><time>00:04:51.620–00:04:56.620</time><span>네, 무슨 말을 했는지만 말의 특징은?</span></p>
-<p class="utterance"><time>00:04:56.620–00:04:59.620</time><span>그 말의 특징은...</span></p>
-<p class="utterance"><time>00:05:00.000–00:05:05.000</time><span>그런 것들은 배진 상태로 베이식스에서 나오는 건가요?</span></p>
-<p class="utterance"><time>00:05:05.000–00:05:07.000</time><span>이건 사실 그거랑 똑같다고 보면 돼요.</span></p>
-<p class="utterance"><time>00:05:07.000–00:05:14.000</time><span>그 inverse dmt나 dmt를 할 때 베이식스 펑션을 쓰는 것들이 스피치만을 위해서 만들어진 친구는 아니잖아요.</span></p>
-<p class="utterance"><time>00:05:14.000–00:05:16.000</time><span>사실 그 기능이라고 보면 돼요.</span></p>
-<p class="utterance"><time>00:05:16.000–00:05:23.000</time><span>사실 학습을 할 때 스피치를 가지고 학습을 하다가 베이식스가 스피치를 잘 표현하기 위한 베이식스 펑션이 만들어지겠지만</span></p>
-<p class="utterance"><time>00:05:23.000–00:05:29.000</time><span>근데 내가 사용하는 이 소스가 스피치가 아니라 다른 악기 소리가 있는지</span></p>
-<p class="utterance"><time>00:05:29.000–00:05:33.000</time><span>바뀌면 그 악기 소리를 잘 표현해 드리면 베이스북 펑크는 만들어지겠죠.</span></p>
-<p class="utterance"><time>00:05:33.000–00:05:39.000</time><span>사실 이거는 악기가 바뀐거고 내가 이렇게 구성했기 때문에 베이스북 펑크가 만들어지는거다.</span></p>
-<p class="utterance"><time>00:05:39.000–00:05:43.000</time><span>얘가 반드시 그렇게 만들어지는거다.</span></p>
-<p class="utterance"><time>00:05:43.000–00:05:48.000</time><span>그러면 이렇게 되는거고 그러면 포잘은 뭐냐</span></p>
-<p class="utterance"><time>00:05:48.000–00:05:50.000</time><span>이건 사실 지난번에 말씀드렸던 것 같아요.</span></p>
-<p class="utterance"><time>00:05:50.000–00:05:53.000</time><span>스포셜은 내가 과거로 볼 거냐, 미래까지 볼 거냐</span></p>
-<p class="utterance"><time>00:05:53.000–00:05:54.000</time><span>그렇게 쉽게 생각하면 돼요.</span></p>
-<p class="utterance"><time>00:05:54.000–00:05:56.000</time><span>미래까지 본다는 건 뭘까요?</span></p>
-<p class="utterance"><time>00:05:56.000–00:05:58.000</time><span>내가 지금 이렇게 입력을 받았을 때</span></p>
-<p class="utterance"><time>00:05:58.000–00:06:00.000</time><span>레이터스 벡터가 이렇게 계속 들어오는데</span></p>
-<p class="utterance"><time>00:06:00.000–00:06:02.000</time><span>미래까지 본다는 거는</span></p>
-<p class="utterance"><time>00:06:02.000–00:06:05.000</time><span>내가 LSTM에서</span></p>
-<p class="utterance"><time>00:06:05.000–00:06:10.000</time><span>이 전체에 대한, 예를 들어서 내가 3초라고 할게요.</span></p>
-<p class="utterance"><time>00:06:10.000–00:06:13.000</time><span>3초 입력에 대한 레이터스 벡터를 다 모아도</span></p>
-<p class="utterance"><time>00:06:13.000–00:06:16.000</time><span>그 벡터를 LSTM에 다 넣어줘서</span></p>
-<p class="utterance"><time>00:06:16.000–00:06:20.100</time><span>전체를 다 봐서 만들어내는 친구겠죠</span></p>
-<p class="utterance"><time>00:06:20.100–00:06:22.180</time><span>내가 과거를 못 본다 라고 하면</span></p>
-<p class="utterance"><time>00:06:22.180–00:06:25.760</time><span>내가 특정 여기 예를 들어 여기를 1.5초로 갈게요</span></p>
-<p class="utterance"><time>00:06:25.760–00:06:29.520</time><span>그러면 1.5초 이전까지만 LSTM을 넣을 수 있는 겁니다</span></p>
-<p class="utterance"><time>00:06:29.520–00:06:31.300</time><span>내가 만약에 코자리라고 하면</span></p>
-<p class="utterance"><time>00:06:31.300–00:06:32.420</time><span>나도 코자리라고 하면</span></p>
-<p class="utterance"><time>00:06:32.420–00:06:35.660</time><span>위에까지 다 한번 내가 넣을 수 있는 거거든요</span></p>
-<p class="utterance"><time>00:06:35.660–00:06:38.220</time><span>그렇게 했을 때 만약에 코자리 아니면</span></p>
-<p class="utterance"><time>00:06:38.220–00:06:40.000</time><span>내가 위에까지 볼 수 있으니까</span></p>
-<p class="utterance"><time>00:06:40.000–00:06:43.520</time><span>LSTM을 바이드레셔널하게 구성할 수도 있겠죠</span></p>
-<p class="utterance"><time>00:06:43.520–00:06:49.600</time><span>그래서 이 친구들은 바이드렉션을 읽고 보는거에요.</span></p>
-<p class="utterance"><time>00:06:49.600–00:06:53.680</time><span>그래서 바이드렉션을 읽는거고, 이 친구들은 내가 현재까지</span></p>
-<p class="utterance"><time>00:06:53.680–00:06:58.800</time><span>각종 레이저 벡터 시간까지 전까지만 이용을 하는거기 때문에</span></p>
-<p class="utterance"><time>00:06:58.800–00:07:04.080</time><span>ns-tm을 쓸 수 밖에 없고, 그렇게 쓸 때 결과를 보면</span></p>
-<p class="utterance"><time>00:07:04.080–00:07:10.480</time><span>잘 나온다. 10.08 정도 나온다 라고 보시면 되요.</span></p>
-<p class="utterance"><time>00:07:13.520–00:07:18.260</time><span>질문? 다행이네요?</span></p>
-<p class="utterance"><time>00:07:19.320–00:07:21.500</time><span>설명을 너무 잘하네요</span></p>
-<p class="utterance"><time>00:07:21.500–00:07:23.660</time><span>질문이 없네요</span></p>
-<p class="utterance"><time>00:07:23.660–00:07:26.800</time><span>여기서 한 가지 짚고 넘어가서는</span></p>
-<p class="utterance"><time>00:07:26.800–00:07:30.820</time><span>LSTM의 도립적인 문제죠</span></p>
-<p class="utterance"><time>00:07:30.820–00:07:34.520</time><span>우선 LSTM이 여기 사용하는 LSTM의 프라이팬 개수가 좀 큽니다</span></p>
-<p class="utterance"><time>00:07:34.520–00:07:36.940</time><span>25메가예요</span></p>
-<p class="utterance"><time>00:07:36.940–00:07:38.500</time><span>이 LSTM 하나가</span></p>
-<p class="utterance"><time>00:07:38.500–00:07:41.540</time><span>25메가는 2장씩 기준으로 큰 거예요</span></p>
-<p class="utterance"><time>00:07:41.540–00:07:45.440</time><span>사실 지금에선 이게 작은 건 아니지만</span></p>
-<p class="utterance"><time>00:07:45.440–00:07:49.420</time><span>근데 중요한 건 그거보다 더 중요한 거는</span></p>
-<p class="utterance"><time>00:07:49.420–00:07:53.140</time><span>이 LSTM은 이게 롱 프라이징을 볼 수가 없어요</span></p>
-<p class="utterance"><time>00:07:53.140–00:07:55.880</time><span>이거 왜 못 보는지 여러분도 배웠죠</span></p>
-<p class="utterance"><time>00:07:55.880–00:07:58.180</time><span>리커런트하게 들어가는 거니까</span></p>
-<p class="utterance"><time>00:07:58.180–00:08:04.000</time><span>내가 바로 입력한 과거들은 잘 내가 고려할 수가 있는데</span></p>
-<p class="utterance"><time>00:08:04.000–00:08:08.140</time><span>얘가 멀어지면 멀어질수록 그 입력 값이 옅어지겠죠</span></p>
-<p class="utterance"><time>00:08:08.140–00:08:11.120</time><span>리커런트하게 계속 입력으로 들어가야 되니까</span></p>
-<p class="utterance"><time>00:08:11.120–00:08:14.840</time><span>그래서 멀리 볼수록 잘 못 본다는 문제가 발생해요.</span></p>
-<p class="utterance"><time>00:08:14.840–00:08:17.420</time><span>아래는 파란색이 크지만</span></p>
-<p class="utterance"><time>00:08:17.420–00:08:19.380</time><span>그런 문제가 있었기 때문에</span></p>
-<p class="utterance"><time>00:08:19.380–00:08:23.680</time><span>이거를 컨볼루션 타스넷을 통해 가지고</span></p>
-<p class="utterance"><time>00:08:23.680–00:08:25.780</time><span>개선을 하겠다고 나왔고요.</span></p>
-<p class="utterance"><time>00:08:25.780–00:08:29.300</time><span>이 친구는 그냥 쉽게 얘기해서</span></p>
-<p class="utterance"><time>00:08:29.300–00:08:32.200</time><span>앞에서 LSTM으로 하는 구도를</span></p>
-<p class="utterance"><time>00:08:32.200–00:08:35.300</time><span>컨볼루션 레이어로 대체하겠다는 겁니다.</span></p>
-<p class="utterance"><time>00:08:35.300–00:08:38.740</time><span>사실 얘가 거의 끝이라고 보면 돼요.</span></p>
-<p class="utterance"><time>00:08:38.740–00:08:45.940</time><span>그래서 기존의 LSTM으로 하던 친구들</span></p>
-<p class="utterance"><time>00:08:45.940–00:08:51.200</time><span>이게 Temporal Convolution Layer로 다 대체가 됐고요</span></p>
-<p class="utterance"><time>00:08:51.200–00:08:53.500</time><span>Temporal Convolution Layer를 정한다는 거예요</span></p>
-<p class="utterance"><time>00:08:53.500–00:08:56.340</time><span>이것을 스펙트럼에 대해서 사용한다는 거예요</span></p>
-<p class="utterance"><time>00:08:56.340–00:08:58.000</time><span>Temporal, 시간축에 대해서</span></p>
-<p class="utterance"><time>00:08:58.000–00:09:00.980</time><span>그래서 ETCN이라고 하고요</span></p>
-<p class="utterance"><time>00:09:00.980–00:09:05.780</time><span>그때 중요한 것은 한 가지 더 보여야 되는 점은</span></p>
-<p class="utterance"><time>00:09:05.780–00:09:10.280</time><span>이 convolution layer를</span></p>
-<p class="utterance"><time>00:09:10.280–00:09:12.820</time><span>related convolution layer</span></p>
-<p class="utterance"><time>00:09:12.820–00:09:16.500</time><span>제가 과거에 한번 말씀드렸던거 기억나죠?</span></p>
-<p class="utterance"><time>00:09:16.500–00:09:19.700</time><span>이 친구가 한번 말씀을 드렸던거 같은데</span></p>
-<p class="utterance"><time>00:09:19.700–00:09:23.200</time><span>언제 얘기했지?</span></p>
-<p class="utterance"><time>00:09:23.200–00:09:28.060</time><span>이 친구를 아마 제가 speech asr 할 때 말을 했던거 같은데</span></p>
-<p class="utterance"><time>00:09:28.060–00:09:29.380</time><span>그 세포모? 그 뭐야?</span></p>
-<p class="utterance"><time>00:09:29.380–00:09:31.380</time><span>퍼포먼스 얘기하면서</span></p>
-<p class="utterance"><time>00:09:31.380–00:09:33.380</time><span>여기 있나?</span></p>
-<p class="utterance"><time>00:09:35.380–00:09:37.380</time><span>여기 있다</span></p>
-<p class="utterance"><time>00:09:39.380–00:09:41.380</time><span>얘가 아니지?</span></p>
-<p class="utterance"><time>00:09:41.380–00:09:43.380</time><span>어디서 얘기했죠?</span></p>
-<p class="utterance"><time>00:09:43.380–00:09:45.380</time><span>얘가 아니구나</span></p>
-<p class="utterance"><time>00:09:45.380–00:09:47.380</time><span>미안해요</span></p>
-<p class="utterance"><time>00:09:47.380–00:09:49.380</time><span>이 Deleted Conversion은 뭐냐면은</span></p>
-<p class="utterance"><time>00:09:49.380–00:09:51.380</time><span>기본적으로 Conversion Layer 보면은</span></p>
-<p class="utterance"><time>00:09:51.380–00:09:53.380</time><span>Filter Size 이게 이미지라고 보면은</span></p>
-<p class="utterance"><time>00:09:53.380–00:09:55.380</time><span>이미지를 스트레이션으로 이렇게 갖잖아요</span></p>
-<p class="utterance"><time>00:09:55.380–00:09:57.380</time><span>그쵸?</span></p>
-<p class="utterance"><time>00:09:57.380–00:09:59.380</time><span>얘가 성폭력상이라고 하면 이렇게 갖죠</span></p>
-<p class="utterance"><time>00:09:59.380–00:09:59.880</time><span>그래서</span></p>
-<p class="utterance"><time>00:10:00.000–00:10:04.000</time><span>내가 이 타겟 픽셀에 대해서 주변만 갖고 있잖아요</span></p>
-<p class="utterance"><time>00:10:04.000–00:10:07.000</time><span>이 delay-fit 이 친구는 뭐냐면은</span></p>
-<p class="utterance"><time>00:10:09.000–00:10:11.000</time><span>이렇게 구성하는게 아니라</span></p>
-<p class="utterance"><time>00:10:11.000–00:10:17.000</time><span>내가 예를 들어서 이 픽셀의 주변을 보고 싶어요</span></p>
-<p class="utterance"><time>00:10:17.000–00:10:20.000</time><span>그러면은 아까처럼 하는게 아니라</span></p>
-<p class="utterance"><time>00:10:20.000–00:10:23.000</time><span>한 칸씩 띄워서 한다라던가 이렇게</span></p>
-<p class="utterance"><time>00:10:27.000–00:10:28.000</time><span>이렇게</span></p>
-<p class="utterance"><time>00:10:28.000–00:10:31.000</time><span>예를 들어, 필터를 이렇게 잡는 겁니다.</span></p>
-<p class="utterance"><time>00:10:31.000–00:10:33.000</time><span>왜 이렇게 할까요?</span></p>
-<p class="utterance"><time>00:10:33.000–00:10:36.000</time><span>이렇게 하면 좀 더 멀리 볼 수 있겠죠.</span></p>
-<p class="utterance"><time>00:10:36.000–00:10:38.000</time><span>같은 필터 사이즈로</span></p>
-<p class="utterance"><time>00:10:38.000–00:10:40.000</time><span>천국합이 한 필터 사이즈인데</span></p>
-<p class="utterance"><time>00:10:40.000–00:10:42.000</time><span>더 한 칸씩 옆에까지 높이기 때문에요.</span></p>
-<p class="utterance"><time>00:10:42.000–00:10:44.000</time><span>이거 hierarchy를 높게 따가면</span></p>
-<p class="utterance"><time>00:10:44.000–00:10:47.000</time><span>내가 단순히 천국합이 한 밑자리</span></p>
-<p class="utterance"><time>00:10:47.000–00:10:49.000</time><span>일괄적인 컴포넌트 레이어를 사용한 것보다</span></p>
-<p class="utterance"><time>00:10:49.000–00:10:52.000</time><span>더 멀리까지 높이겠죠. 아래 밑까지.</span></p>
-<p class="utterance"><time>00:10:52.000–00:10:56.000</time><span>그렇게 해가지고 이렇게 구성을 했습니다. 이 친구는.</span></p>
-<p class="utterance"><time>00:10:56.000–00:11:08.000</time><span>이렇게 했을 때 앞에 컨볼루션 레이어 앞에 이 친구는 지금 인코더 쪽 보면은 앞에 여기랑 똑같죠?</span></p>
-<p class="utterance"><time>00:11:08.000–00:11:17.000</time><span>그쵸? 인코더 똑같죠? 왼쪽에 지금 보면은 제가 한 번 더 해볼게요. 여기랑 지금 여기랑 똑같죠?</span></p>
-<p class="utterance"><time>00:11:17.000–00:11:23.960</time><span>그리고 여기도 원기 컨볼루션을 통해서 디포디만 하는데</span></p>
-<p class="utterance"><time>00:11:23.960–00:11:26.720</time><span>여기서 그게 용기에 해당하는 거예요.</span></p>
-<p class="utterance"><time>00:11:27.580–00:11:29.720</time><span>얘가 사실 똑같은 얘기일 수 있어요. 똑같은 얘기입니다.</span></p>
-<p class="utterance"><time>00:11:29.960–00:11:30.720</time><span>왜 똑같은 얘기냐?</span></p>
-<p class="utterance"><time>00:11:30.720–00:11:37.720</time><span>여기서 학습 가능한 베이직스가 사실은 컨볼루션 레이어에서 커널하고 비슷한 계정이에요.</span></p>
-<p class="utterance"><time>00:11:37.720–00:11:47.720</time><span>이 터널을 컨볼루션 하잖아요.</span></p>
-<p class="utterance"><time>00:11:47.720–00:11:49.720</time><span>이 베이스는 컨볼루션 하는거거든요.</span></p>
-<p class="utterance"><time>00:11:49.720–00:11:51.720</time><span>그렇다라는 것은</span></p>
-<p class="utterance"><time>00:11:51.720–00:11:55.720</time><span>내가 이 전체 베이스를 길게 잡을 필요 없이</span></p>
-<p class="utterance"><time>00:11:55.720–00:11:57.720</time><span>로컬하게 짧게 잡다가</span></p>
-<p class="utterance"><time>00:11:57.720–00:11:59.720</time><span>헤라키하게 쌓으면은</span></p>
-<p class="utterance"><time>00:11:59.720–00:12:02.720</time><span>이 베이스랑 비슷한 성능을 하는 역할을</span></p>
-<p class="utterance"><time>00:12:02.720–00:12:06.720</time><span>이 원기 컨볼루션이 그대로 할 수 있게 됩니다.</span></p>
-<p class="utterance"><time>00:12:06.720–00:12:10.720</time><span>그래가지고 여기 들어가고, 사실 앞에서 얘기했던 거랑 같은 개념이다.</span></p>
-<p class="utterance"><time>00:12:10.720–00:12:13.720</time><span>같은 개념이다. 결국엔 디코딩을 하는 거다.</span></p>
-<p class="utterance"><time>00:12:13.720–00:12:17.720</time><span>베이스를 러너블하게 만들어서 그게 퍼볼러션 코너가 되는 거고</span></p>
-<p class="utterance"><time>00:12:17.720–00:12:20.720</time><span>그걸 통해서 이 제플레이션을 하는 거다.</span></p>
-<p class="utterance"><time>00:12:20.720–00:12:23.720</time><span>그렇게 됐을 때 차이점은 이 가운데 밖에 없어요.</span></p>
-<p class="utterance"><time>00:12:23.720–00:12:25.720</time><span>이 제플레이션 하는 부분.</span></p>
-<p class="utterance"><time>00:12:25.720–00:12:30.720</time><span>앞에서는 이게 LSTM인데, 얘가 원지 컨벌레이션 레이어들의 그거밖에 없고</span></p>
-<p class="utterance"><time>00:12:30.720–00:12:35.720</time><span>얘가 깊어졌기 때문에 스피커레이션 같은 것들이 많이 보이죠.</span></p>
-<p class="utterance"><time>00:12:35.720–00:12:38.720</time><span>스피드 커네션이 렌트에서 처음 나왔던 것 같은데</span></p>
-<p class="utterance"><time>00:12:38.720–00:12:42.720</time><span>이렇게 많이 쓰이지만 스피드 커네션은 커버젤레이가 깊어지면</span></p>
-<p class="utterance"><time>00:12:42.720–00:12:46.720</time><span>스피드 커네션이 안되는 문제를 해결하기 위해서 스피드 커네션을 만들고 있어요</span></p>
-<p class="utterance"><time>00:12:46.720–00:12:52.720</time><span>예를 들어서 층층이 쌓이면 이 경로로만 경호가 이동할 수가 있는데</span></p>
-<p class="utterance"><time>00:12:52.720–00:12:57.720</time><span>피쳐들이 중간에 이 선들을 끌고 와가지고 그 다음 친구들의 입력을 넣어주죠</span></p>
-<p class="utterance"><time>00:12:57.720–00:13:03.720</time><span>마찬가지로 얘도 다시 이렇게 끌고 와가지고 여기다 넣어주고</span></p>
-<p class="utterance"><time>00:13:03.720–00:13:05.720</time><span>스피드 컨디션이라고 하잖아요</span></p>
-<p class="utterance"><time>00:13:05.720–00:13:07.720</time><span>그쵸?</span></p>
-<p class="utterance"><time>00:13:07.720–00:13:09.720</time><span>아 얘가 여기로 들어가야 되는데</span></p>
-<p class="utterance"><time>00:13:09.720–00:13:11.720</time><span>여기로 들어가야 되겠죠</span></p>
-<p class="utterance"><time>00:13:11.720–00:13:13.720</time><span>요게 스피드 컨디션이고</span></p>
-<p class="utterance"><time>00:13:13.720–00:13:15.720</time><span>이렇게 그냥 구성하는거죠</span></p>
-<p class="utterance"><time>00:13:15.720–00:13:17.720</time><span>이렇게 해서 좋아지는거는</span></p>
-<p class="utterance"><time>00:13:17.720–00:13:19.720</time><span>더 작아졌구요</span></p>
-<p class="utterance"><time>00:13:19.720–00:13:21.720</time><span>엘지밋이 되가지고</span></p>
-<p class="utterance"><time>00:13:21.720–00:13:23.720</time><span>당연히 더 작아졌겠죠</span></p>
-<p class="utterance"><time>00:13:23.720–00:13:25.720</time><span>터널과 내가 포함이 되니까</span></p>
-<p class="utterance"><time>00:13:25.720–00:13:27.720</time><span>터널과 하면 되니까 더 작아졌고</span></p>
-<p class="utterance"><time>00:13:27.720–00:13:29.720</time><span>내가 그 수치를 가지고 왔는데</span></p>
-<p class="utterance"><time>00:13:29.720–00:13:31.720</time><span>얘가 5.1</span></p>
-<p class="utterance"><time>00:13:31.720–00:13:36.180</time><span>그리고 더 빠르고</span></p>
-<p class="utterance"><time>00:13:36.180–00:13:38.180</time><span>왜냐하면 투버맨드에 의하면 범결이 잘 가죠.</span></p>
-<p class="utterance"><time>00:13:38.180–00:13:38.740</time><span>범결화가.</span></p>
-<p class="utterance"><time>00:13:39.360–00:13:40.000</time><span>어떻게 하냐.</span></p>
-<p class="utterance"><time>00:13:40.280–00:13:42.580</time><span>예를 들어서 이미지가 들어오는데</span></p>
-<p class="utterance"><time>00:13:42.580–00:13:43.600</time><span>이게 오디오 겟다.</span></p>
-<p class="utterance"><time>00:13:43.720–00:13:45.500</time><span>이거를 이렇게 잘라가지고</span></p>
-<p class="utterance"><time>00:13:45.500–00:13:48.300</time><span>범결을 이걸로 넣으면 되죠.</span></p>
-<p class="utterance"><time>00:13:48.500–00:13:49.440</time><span>그 다음에 치워야 되죠.</span></p>
-<p class="utterance"><time>00:13:49.660–00:13:51.760</time><span>그렇게 하면 되고</span></p>
-<p class="utterance"><time>00:13:51.760–00:13:54.080</time><span>그래서 빨라졌고</span></p>
-<p class="utterance"><time>00:13:54.080–00:13:56.200</time><span>그리고 더 멀리 볼 수도 있어요.</span></p>
-<p class="utterance"><time>00:13:57.100–00:13:57.940</time><span>LSDM은</span></p>
-<p class="utterance"><time>00:13:57.940–00:14:00.300</time><span>이게 롱라이트는 길게 가면</span></p>
-<p class="utterance"><time>00:14:00.300–00:14:04.180</time><span>이곳은 그곳에 있는데 요거는 그런 문제는 없어지겠죠.</span></p>
-<p class="utterance"><time>00:14:04.340–00:14:06.380</time><span>왜냐면은 이 꼼줄이 공평하게</span></p>
-<p class="utterance"><time>00:14:06.380–00:14:10.440</time><span>이런 장점을 가지고 있는</span></p>
-<p class="utterance"><time>00:14:10.440–00:14:12.480</time><span>이런 진로는</span></p>
-<p class="utterance"><time>00:14:12.480–00:14:23.240</time><span>이게 위로 사질 짐이니까</span></p>
-<p class="utterance"><time>00:14:23.240–00:14:24.960</time><span>이 한층만 하는 게 아니라</span></p>
-<p class="utterance"><time>00:14:24.960–00:14:26.680</time><span>위층은 한 번 더 하잖아요.</span></p>
-<p class="utterance"><time>00:14:26.800–00:14:27.620</time><span>결국에 다</span></p>
-<p class="utterance"><time>00:14:27.620–00:14:29.620</time><span>아 여기 위에서 얘기하나요?</span></p>
-<p class="utterance"><time>00:14:29.620–00:14:31.620</time><span>위로 쌓아야 합니다</span></p>
-<p class="utterance"><time>00:14:33.620–00:14:35.620</time><span>그래서 결과를 보면은</span></p>
-<p class="utterance"><time>00:14:35.620–00:14:37.620</time><span>똑같이 했구요</span></p>
-<p class="utterance"><time>00:14:37.620–00:14:39.620</time><span>사실 앞에 여기는 똑같아요</span></p>
-<p class="utterance"><time>00:14:39.620–00:14:41.620</time><span>여기는 똑같습니다 이렇게 하는건 똑같고</span></p>
-<p class="utterance"><time>00:14:41.620–00:14:43.620</time><span>앞에 입력은 똑같은데</span></p>
-<p class="utterance"><time>00:14:43.620–00:14:45.620</time><span>결과를 보면은</span></p>
-<p class="utterance"><time>00:14:45.620–00:14:47.620</time><span>이 코스 타슨에</span></p>
-<p class="utterance"><time>00:14:47.620–00:14:49.620</time><span>이 코자리일 때</span></p>
-<p class="utterance"><time>00:14:49.620–00:14:51.620</time><span>코자리 아니면은</span></p>
-<p class="utterance"><time>00:14:51.620–00:14:53.620</time><span>15도는 30도 나오고</span></p>
-<p class="utterance"><time>00:14:53.620–00:14:55.620</time><span>코자리라고 하면은</span></p>
-<p class="utterance"><time>00:14:55.620–00:14:57.620</time><span>이렇게 10.6.5</span></p>
-<p class="utterance"><time>00:14:57.620–00:14:59.620</time><span>다운다</span></p>
-<p class="utterance"><time>00:15:00.000–00:15:07.000</time><span>흥미로운 점은, 포장일 때 LFK 보다 크게 좋아지지는 않아요.</span></p>
-<p class="utterance"><time>00:15:07.000–00:15:10.000</time><span>오히려 LFK도 더 좋습니다.</span></p>
-<p class="utterance"><time>00:15:10.000–00:15:11.000</time><span>파스네이션.</span></p>
-<p class="utterance"><time>00:15:11.000–00:15:15.000</time><span>얘는 이렇게, 이 바이렉션을 볼 때,</span></p>
-<p class="utterance"><time>00:15:15.000–00:15:19.000</time><span>그러니까 롱 프라이트를 볼 때 잘 된다는 기억을 갖고 있어요.</span></p>
-<p class="utterance"><time>00:15:19.000–00:15:23.000</time><span>이거는 전체를 한 번에 보는 거니까, 더 멀리 봐야 되겠죠.</span></p>
-<p class="utterance"><time>00:15:23.000–00:15:25.000</time><span>그때 더 잘 된다.</span></p>
-<p class="utterance"><time>00:15:25.000–00:15:28.000</time><span>그런 것들이 이 결과에 대해서는 되게 좋은 것 같아요.</span></p>
-<p class="utterance"><time>00:15:30.000–00:15:45.000</time><span>이렇게 하면 이렇게 했을 때 문제가 또 하나 있어요.</span></p>
-<p class="utterance"><time>00:15:45.000–00:15:50.400</time><span>지금 아 내가 그 결과 안 받은 것 같다</span></p>
-<p class="utterance"><time>00:15:50.400–00:15:51.260</time><span>아 이거 말해야 되는데</span></p>
-<p class="utterance"><time>00:15:51.260–00:15:53.660</time><span>내가 이거 살짝 수정해서 올려줄게요</span></p>
-<p class="utterance"><time>00:15:53.660–00:15:55.000</time><span>수정해서 올려줄 건데</span></p>
-<p class="utterance"><time>00:15:55.000–00:16:05.580</time><span>수정해서 올려줄게요</span></p>
-<p class="utterance"><time>00:16:05.580–00:16:07.720</time><span>무슨 말이냐면은</span></p>
-<p class="utterance"><time>00:16:07.720–00:16:08.580</time><span>이게</span></p>
-<p class="utterance"><time>00:16:08.580–00:16:10.580</time><span>이게...</span></p>
-<p class="utterance"><time>00:16:12.580–00:16:14.580</time><span>아니다</span></p>
-<p class="utterance"><time>00:16:14.580–00:16:16.580</time><span>잠깐만요</span></p>
-<p class="utterance"><time>00:16:16.580–00:16:18.580</time><span>이거 보면서 말하자면</span></p>
-<p class="utterance"><time>00:16:18.580–00:16:20.580</time><span>설명을 하는게 이거인거 같아요</span></p>
-<p class="utterance"><time>00:16:20.580–00:16:22.580</time><span>중요한데요</span></p>
-<p class="utterance"><time>00:16:24.580–00:16:26.580</time><span>제가 이 cpt는</span></p>
-<p class="utterance"><time>00:16:26.580–00:16:28.580</time><span>수정해서 올려드릴거고</span></p>
-<p class="utterance"><time>00:16:30.580–00:16:32.580</time><span>잠시만요</span></p>
-<p class="utterance"><time>00:16:38.580–00:16:40.580</time><span>아</span></p>
-<p class="utterance"><time>00:17:08.580–00:17:10.580</time><span>여기가 어떻게 뜨지?</span></p>
-<p class="utterance"><time>00:17:10.580–00:17:12.580</time><span>여기가 어떻게 뜨지?</span></p>
-<p class="utterance"><time>00:17:12.580–00:17:14.580</time><span>여기가 어떻게 뜨지?</span></p>
-<p class="utterance"><time>00:17:14.580–00:17:16.580</time><span>여기가 어떻게 뜨지?</span></p>
-<p class="utterance"><time>00:17:16.580–00:17:18.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:18.580–00:17:20.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:20.580–00:17:22.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:22.580–00:17:24.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:24.580–00:17:26.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:26.580–00:17:28.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:28.580–00:17:30.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:30.580–00:17:32.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:32.580–00:17:34.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:34.580–00:17:36.580</time><span>노래에 그 글자 그려낸 거</span></p>
-<p class="utterance"><time>00:17:36.580–00:18:06.580</time><span>7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 51, 52, 53, 53, 54, 57, 59, 52, 53, 53, 54, 57, 59, 52, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53,</span></p>
-<p class="utterance"><time>00:18:06.580–00:18:09.580</time><span>여기서 여기까지 설명을 했고요.</span></p>
-<p class="utterance"><time>00:18:09.580–00:18:11.580</time><span>이 결과를 보면은</span></p>
-<p class="utterance"><time>00:18:11.580–00:18:13.580</time><span>지금</span></p>
-<p class="utterance"><time>00:18:13.580–00:18:15.580</time><span>이걸 좀 확대를 해보면</span></p>
-<p class="utterance"><time>00:18:18.580–00:18:21.580</time><span>여기 보면은 n이 있고 m이 있잖아요.</span></p>
-<p class="utterance"><time>00:18:21.580–00:18:23.580</time><span>이 l이 뭐냐면은</span></p>
-<p class="utterance"><time>00:18:23.580–00:18:24.580</time><span>l이 뭐냐면은</span></p>
-<p class="utterance"><time>00:18:24.580–00:18:27.580</time><span>이 보면은 40이 있고 32가 있고 16이 있죠.</span></p>
-<p class="utterance"><time>00:18:27.580–00:18:29.580</time><span>사실 이 l이 중요해요.</span></p>
-<p class="utterance"><time>00:18:29.580–00:18:31.580</time><span>이 l이 중요한데</span></p>
-<p class="utterance"><time>00:18:31.580–00:18:33.580</time><span>여기서 그 l이 뭐냐면은</span></p>
-<p class="utterance"><time>00:18:33.580–00:18:35.580</time><span>여기서 입력으로 들어갈 때</span></p>
-<p class="utterance"><time>00:18:35.580–00:18:37.580</time><span>요거를 L이 가고 하는 겁니다.</span></p>
-<p class="utterance"><time>00:18:37.580–00:18:39.580</time><span>잠깐만 왜 안 나오지?</span></p>
-<p class="utterance"><time>00:18:39.580–00:18:41.580</time><span>아 나온다.</span></p>
-<p class="utterance"><time>00:18:41.580–00:18:43.580</time><span>요 친구가 L이에요.</span></p>
-<p class="utterance"><time>00:18:43.580–00:18:45.580</time><span>요 친구.</span></p>
-<p class="utterance"><time>00:18:45.580–00:18:47.580</time><span>요 입력으로 세금의 인식에 들어가는</span></p>
-<p class="utterance"><time>00:18:47.580–00:18:49.580</time><span>오디오 엠프트 이 친구가 L인데</span></p>
-<p class="utterance"><time>00:18:49.580–00:18:51.580</time><span>이 L을 길게 잡냐</span></p>
-<p class="utterance"><time>00:18:51.580–00:18:53.580</time><span>짧게 잡냐로 어브레이션 설치를 한 거예요.</span></p>
-<p class="utterance"><time>00:18:53.580–00:18:55.580</time><span>이게 컴퓨터스에서 논문에 나오거든요.</span></p>
-<p class="utterance"><time>00:18:55.580–00:18:57.580</time><span>그래서</span></p>
-<p class="utterance"><time>00:18:57.580–00:18:59.580</time><span>다시 여기 잠깐 가면은</span></p>
-<p class="utterance"><time>00:18:59.580–00:19:01.580</time><span>L이 40일 때, 40점 풀일 때</span></p>
-<p class="utterance"><time>00:19:01.580–00:19:03.580</time><span>결과와</span></p>
-<p class="utterance"><time>00:19:03.580–00:19:07.720</time><span>L이 16일 때 결과를 본거에요.</span></p>
-<p class="utterance"><time>00:19:07.720–00:19:12.180</time><span>그러면은 지금 이 결과를 쭉 봐서 오른쪽 결과를 보면은</span></p>
-<p class="utterance"><time>00:19:12.180–00:19:15.400</time><span>이 친구 보면 15.3점 정도 나오고 있죠?</span></p>
-<p class="utterance"><time>00:19:15.400–00:19:16.660</time><span>그 밑에</span></p>
-<p class="utterance"><time>00:19:16.660–00:19:20.020</time><span>근데 위에 가실수록 결과가 좀 안 좋아지는 것 같죠?</span></p>
-<p class="utterance"><time>00:19:20.020–00:19:25.580</time><span>그 말은 L을 작게 할수록 결과가 좋다 라는 거에요.</span></p>
-<p class="utterance"><time>00:19:25.580–00:19:29.140</time><span>L을 작게 할수록 여기서 이 문제에서</span></p>
-<p class="utterance"><time>00:19:29.140–00:19:32.700</time><span>오케이 사실 이걸 보여주고 싶었던 거고</span></p>
-<p class="utterance"><time>00:19:32.700–00:19:36.200</time><span>이게 사실 왜 그런지를 조금 고민을 해보면은</span></p>
-<p class="utterance"><time>00:19:36.200–00:19:40.840</time><span>이 A가 작아진다는 것은 어떤 얘기가 있냐</span></p>
-<p class="utterance"><time>00:19:40.840–00:19:46.380</time><span>그러니까 내가 예를 들어서 이거를 직전적으로 좀 다시 이해를 하면은</span></p>
-<p class="utterance"><time>00:19:46.380–00:19:50.620</time><span>이렇게 오류가 이렇게 1주짜리가 내가 인력을 더 샀다라고 치면은</span></p>
-<p class="utterance"><time>00:19:50.620–00:19:53.580</time><span>이 중에 요만큼을 세러멘테이션을 하는 거잖아요</span></p>
-<p class="utterance"><time>00:19:53.580–00:19:54.820</time><span>요만큼을 세러멘테이션을 하는 건데</span></p>
-<p class="utterance"><time>00:19:54.820–00:19:58.520</time><span>이게 길은 거냐 짧은 거냐 이런 거예요</span></p>
-<p class="utterance"><time>00:19:58.520–00:19:59.980</time><span>근데 길으면 어떻게 될까요?</span></p>
-<p class="utterance"><time>00:20:00.000–00:20:03.660</time><span>그 긴 랭크 안에 더 많은 정보가 담기겠죠.</span></p>
-<p class="utterance"><time>00:20:04.500–00:20:05.720</time><span>더 많은 정보가 담기고</span></p>
-<p class="utterance"><time>00:20:05.720–00:20:08.100</time><span>예를 들어 두 개의 미스처가 커밍이 되어 있다면</span></p>
-<p class="utterance"><time>00:20:08.100–00:20:11.360</time><span>그 패턴 같은 것도, 하로니스 같은 것도 표현될 거예요.</span></p>
-<p class="utterance"><time>00:20:12.460–00:20:14.740</time><span>거기서 그 두 개의 차이가</span></p>
-<p class="utterance"><time>00:20:14.740–00:20:17.680</time><span>페이지로 결국에 표현을 할 수밖에 없어져요.</span></p>
-<p class="utterance"><time>00:20:17.720–00:20:18.400</time><span>그게 길어지면.</span></p>
-<p class="utterance"><time>00:20:18.580–00:20:20.540</time><span>그 두 개의 딜레이라든지 이런 것들이</span></p>
-<p class="utterance"><time>00:20:20.540–00:20:22.460</time><span>페이스 정보가 중요해지는데</span></p>
-<p class="utterance"><time>00:20:22.460–00:20:24.100</time><span>얘가 짧아지면</span></p>
-<p class="utterance"><time>00:20:24.100–00:20:26.560</time><span>그 페이지를 보유하는 대신에</span></p>
-<p class="utterance"><time>00:20:26.560–00:20:28.740</time><span>그냥 그 쉐입 자체에</span></p>
-<p class="utterance"><time>00:20:28.740–00:20:34.240</time><span>시퀀스의 순서를 그냥 내가 외워버리는 형태로 학습이 되겠네요.</span></p>
-<p class="utterance"><time>00:20:34.240–00:20:37.740</time><span>짧아지면 대략적으로 무슨 느낌인지는 알겠죠?</span></p>
-<p class="utterance"><time>00:20:37.740–00:20:39.940</time><span>인트리티브하게 설명하면 그렇게 되죠.</span></p>
-<p class="utterance"><time>00:20:39.940–00:20:42.440</time><span>그렇기 때문에 짧아지면 더 잘 되는 게</span></p>
-<p class="utterance"><time>00:20:42.440–00:20:45.940</time><span>길어지면 페이스 성분을 다 고려해서</span></p>
-<p class="utterance"><time>00:20:45.940–00:20:49.740</time><span>뭔가 LFT를 취해도 페이스를 고려해야 하잖아요.</span></p>
-<p class="utterance"><time>00:20:49.740–00:20:51.140</time><span>빌레이 같은 걸 보기 위해서</span></p>
-<p class="utterance"><time>00:20:51.140–00:20:54.540</time><span>근데 길어지면 길어지면 그거 더 잘 봐야 하는데 그게 어렵잖아요.</span></p>
-<p class="utterance"><time>00:20:54.540–00:20:59.460</time><span>그래서 이게 랜스가 짧아지면 더 좋아진다는 게</span></p>
-<p class="utterance"><time>00:20:59.460–00:21:00.820</time><span>아까 결과를 나온 겁니다.</span></p>
-<p class="utterance"><time>00:21:02.840–00:21:05.140</time><span>근데 여기서 전제 조건은</span></p>
-<p class="utterance"><time>00:21:05.140–00:21:07.960</time><span>첫 번째로 클린 스피치 한 점이에요.</span></p>
-<p class="utterance"><time>00:21:08.060–00:21:08.820</time><span>지금 그 결과를.</span></p>
-<p class="utterance"><time>00:21:09.100–00:21:12.100</time><span>왜냐하면 이 친구는 활용하고 있는 데이터가</span></p>
-<p class="utterance"><time>00:21:12.100–00:21:14.240</time><span>이 월스텍전을 제로축인데</span></p>
-<p class="utterance"><time>00:21:14.240–00:21:16.420</time><span>얘는 노이즈가 포함이 안 돼 있는</span></p>
-<p class="utterance"><time>00:21:16.420–00:21:18.280</time><span>클린 데이터 두 개를 합친 거예요.</span></p>
-<p class="utterance"><time>00:21:18.740–00:21:20.000</time><span>노이즈가 없는 데이터입니다.</span></p>
-<p class="utterance"><time>00:21:20.300–00:21:20.920</time><span>쉬운 거예요.</span></p>
-<p class="utterance"><time>00:21:21.140–00:21:21.720</time><span>첫 번째.</span></p>
-<p class="utterance"><time>00:21:21.720–00:21:25.440</time><span>노이즈가 추가되면 얘가 주의하지 않다는 얘기도 할 수 있어요</span></p>
-<p class="utterance"><time>00:21:25.440–00:21:27.540</time><span>이게 두드러지지 않는다</span></p>
-<p class="utterance"><time>00:21:27.540–00:21:31.136</time><span>왜냐하면 페이스 성분이 공이거든요</span></p>
-<p class="utterance"><time>00:21:31.136–00:21:35.136</time><span>S에 대해서 R에 대해서 지금 하고 있죠?</span></p>
-<p class="utterance"><time>00:21:35.136–00:21:37.136</time><span>S에 대해서</span></p>
-<p class="utterance"><time>00:21:37.136–00:21:43.136</time><span>S에 대해서 한다는 것은 텍트럴하게 이걸 하겠다 라는 거고</span></p>
-<p class="utterance"><time>00:21:43.136–00:21:52.136</time><span>그리고 EP에 대해서 다시 한다는 것은 이렇게 R에 대해서 한다는 거니까</span></p>
-<p class="utterance"><time>00:21:52.136–00:21:56.896</time><span>요거는 내가 요 친구에 대한 어떤 히쳐 하나를 뽑았을 때</span></p>
-<p class="utterance"><time>00:21:56.896–00:22:01.876</time><span>내가 액세스 게임을 요거를 이제 보통 스펙트럴이라고 하잖아요</span></p>
-<p class="utterance"><time>00:22:01.876–00:22:03.136</time><span>Frequency Domain</span></p>
-<p class="utterance"><time>00:22:03.136–00:22:07.236</time><span>이 Frequency Domain하고 정확하게 이게 맞진 않겠지만</span></p>
-<p class="utterance"><time>00:22:07.236–00:22:11.636</time><span>어쨌든 그 뭔가 히든 스페이스로 얘가 이베이징이 되잖아요</span></p>
-<p class="utterance"><time>00:22:11.636–00:22:13.636</time><span>거기에 대해서 업데이션을 하는 겁니다</span></p>
-<p class="utterance"><time>00:22:13.636–00:22:14.636</time><span>아래에 있는 게임</span></p>
-<p class="utterance"><time>00:22:14.636–00:22:17.996</time><span>하나는 스펙트럴하게 하고 하나는 내가 그걸 이베이징한</span></p>
-<p class="utterance"><time>00:22:17.996–00:22:20.796</time><span>그 히든 스페이스에 대해서 업데이션을 하고</span></p>
-<p class="utterance"><time>00:22:20.796–00:22:24.076</time><span>그렇게 구분하는거에요. 한가닥만 구분하면 똑같아요.</span></p>
-<p class="utterance"><time>00:22:24.076–00:22:27.156</time><span>한가닥은 이쪽축으로 한거고 이쪽축으로 안하는거.</span></p>
-<p class="utterance"><time>00:22:27.156–00:22:30.736</time><span>그거를 해서 요거를 만들어낸다. 마스크를.</span></p>
-<p class="utterance"><time>00:22:30.736–00:22:32.016</time><span>그게 끝입니다.</span></p>
-<p class="utterance"><time>00:22:32.016–00:22:35.276</time><span>단건 될 것 같아요. 앞에 인코딩, 디코딩하는건 똑같은데</span></p>
-<p class="utterance"><time>00:22:35.276–00:22:38.236</time><span>가운데 이 마스크를 뽑아내는게 그 주가 되는거에요.</span></p>
-<p class="utterance"><time>00:22:40.756–00:22:42.616</time><span>질문.</span></p>
-<p class="utterance"><time>00:22:42.616–00:22:43.696</time><span>이해되죠?</span></p>
-<p class="utterance"><time>00:22:43.696–00:22:44.796</time><span>아 네.</span></p>
-<p class="utterance"><time>00:22:44.796–00:22:47.076</time><span>저 지금 피니티 틀어서 오버렛을.</span></p>
-<p class="utterance"><time>00:22:47.076–00:22:48.376</time><span>맞아요 오버렛을 해드립니다.</span></p>
-<p class="utterance"><time>00:22:48.376–00:23:18.376</time><span>으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으</span></p>
-<p class="utterance"><time>00:23:18.376–00:23:48.376</time><span>아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아</span></p>
-<p class="utterance"><time>00:23:48.376–00:23:54.536</time><span>이 인포더, 디포더는 마찬가지로 앞에서 봤던 그 친구들이고</span></p>
-<p class="utterance"><time>00:23:54.536–00:23:58.236</time><span>이 마스크 네트워크가 앞에서는 이 친구</span></p>
-<p class="utterance"><time>00:23:58.236–00:24:00.476</time><span>이게 마스크 네트워크였어요.</span></p>
-<p class="utterance"><time>00:24:00.476–00:24:02.476</time><span>이게 마스크였어요.</span></p>
-<p class="utterance"><time>00:24:03.036–00:24:08.736</time><span>얘가 이렇게 바뀌었다는 거고</span></p>
-<p class="utterance"><time>00:24:08.736–00:24:11.156</time><span>그래서 청균화직도 똑같아요.</span></p>
-<p class="utterance"><time>00:24:11.816–00:24:13.016</time><span>똑같은데 뭐가 다르냐</span></p>
-<p class="utterance"><time>00:24:13.016–00:24:16.896</time><span>이 가운데 있는 친구가 원래 이터 트랜스포머</span></p>
-<p class="utterance"><time>00:24:16.896–00:24:20.376</time><span>이 트랜스포거 이름과 사실 앞에랑 거의 똑같죠?</span></p>
-<p class="utterance"><time>00:24:20.376–00:24:23.276</time><span>그냥 단지 아래에 있는 트랜스포거로 바뀐 것 밖에 없어요</span></p>
-<p class="utterance"><time>00:24:23.276–00:24:25.576</time><span>그랬을 때 정확히 보다</span></p>
-<p class="utterance"><time>00:24:25.576–00:24:26.656</time><span>좋아졌다</span></p>
-<p class="utterance"><time>00:24:26.656–00:24:28.336</time><span>어떻게 좋아졌는지 안 가져왔네</span></p>
-<p class="utterance"><time>00:24:28.336–00:24:28.996</time><span>좋아졌어요</span></p>
-<p class="utterance"><time>00:24:28.996–00:24:29.496</time><span>좋아졌어</span></p>
-<p class="utterance"><time>00:24:29.496–00:24:30.616</time><span>안 가져왔나?</span></p>
-<p class="utterance"><time>00:24:30.616–00:24:31.616</time><span>아 가져왔네</span></p>
-<p class="utterance"><time>00:24:31.616–00:24:35.716</time><span>보면은 한 20 정도 나옵니다</span></p>
-<p class="utterance"><time>00:24:35.716–00:24:38.296</time><span>이 월핀전을 이 풀링스 데이터를</span></p>
-<p class="utterance"><time>00:24:38.296–00:24:43.336</time><span>앞에봤어 조혈팩트 아래에 있는 18.8 정도 나와야 돼요</span></p>
-<p class="utterance"><time>00:24:43.336–00:24:49.336</time><span>이 친구가 2021년도에 나온 친구에요.</span></p>
-<p class="utterance"><time>00:24:49.336–00:24:51.336</time><span>질문</span></p>
-<p class="utterance"><time>00:24:51.336–00:24:53.336</time><span>다 이해 되죠?</span></p>
-<p class="utterance"><time>00:24:53.336–00:24:55.336</time><span>이게 별색이 없습니다.</span></p>
-<p class="utterance"><time>00:24:55.336–00:24:57.336</time><span>이렇게 이렇게 이렇게 갈라졌는데</span></p>
-<p class="utterance"><time>00:24:57.336–00:24:59.336</time><span>이 계열들</span></p>
-<p class="utterance"><time>00:24:59.336–00:25:01.336</time><span>지금 이 계열들에서는</span></p>
-<p class="utterance"><time>00:25:01.336–00:25:03.336</time><span>기본적으로 이 LNS</span></p>
-<p class="utterance"><time>00:25:03.336–00:25:05.336</time><span>이 길이</span></p>
-<p class="utterance"><time>00:25:05.336–00:25:07.336</time><span>이 길이를 줄이고 싶었던거고</span></p>
-<p class="utterance"><time>00:25:07.336–00:25:09.336</time><span>그렇게 줄였을 때</span></p>
-<p class="utterance"><time>00:25:09.336–00:25:11.336</time><span>이 전체 LNS는 100배, 100배가 많아지니까</span></p>
-<p class="utterance"><time>00:25:11.336–00:25:16.336</time><span>그 다음에 최근에는 어떻게 진행되고 있냐면</span></p>
-<p class="utterance"><time>00:25:16.336–00:25:21.336</time><span>2023년도에 TF GridNet이라는 친구가 나왔어요.</span></p>
-<p class="utterance"><time>00:25:21.336–00:25:24.336</time><span>얘가 또 많이 늘어졌거든요.</span></p>
-<p class="utterance"><time>00:25:24.336–00:25:27.336</time><span>한 23도, 23dB 정도 나와요.</span></p>
-<p class="utterance"><time>00:25:27.336–00:25:32.336</time><span>그 다음에 이제 최근에는 어떻게 진행되고 있냐면</span></p>
-<p class="utterance"><time>00:25:32.336–00:25:37.336</time><span>2023년도에 TF GridNet이라는 친구가 나왔어요.</span></p>
-<p class="utterance"><time>00:25:37.336–00:25:41.336</time><span>얘가 또 많이 이어져서 23db 정도 나와요.</span></p>
-<p class="utterance"><time>00:25:41.336–00:25:43.336</time><span>아까 그 얘기 다 그랬는데</span></p>
-<p class="utterance"><time>00:25:43.336–00:25:48.336</time><span>많이 이어졌는데 얘는 다시 사실 이때까지만 해도</span></p>
-<p class="utterance"><time>00:25:48.336–00:25:51.336</time><span>ssd를 이력으로 받지 않잖아요.</span></p>
-<p class="utterance"><time>00:25:51.336–00:25:52.336</time><span>이력으로 받지 않잖아요.</span></p>
-<p class="utterance"><time>00:25:52.336–00:25:54.336</time><span>이렇게 받는 이유가 뭐냐면은</span></p>
-<p class="utterance"><time>00:25:54.336–00:25:59.336</time><span>앞에 보니까 ssd로 이걸 마스킹을 하니깐 잘 안되더라</span></p>
-<p class="utterance"><time>00:25:59.336–00:26:02.336</time><span>그래서 탑 스냇이 나오거든요.</span></p>
-<p class="utterance"><time>00:26:02.336–00:26:05.336</time><span>근데 탑 스냇이 그때까지 전혀 못 보는 거냐면은</span></p>
-<p class="utterance"><time>00:26:05.336–00:26:11.396</time><span>이 때 이 마스크가 단순히 메모리큐드에만 적용되는 마스크였어요.</span></p>
-<p class="utterance"><time>00:26:11.436–00:26:12.736</time><span>메모리큐드에만 적용되는 마스크예요.</span></p>
-<p class="utterance"><time>00:26:12.756–00:26:13.516</time><span>이 당시까지만 해도.</span></p>
-<p class="utterance"><time>00:26:14.016–00:26:14.836</time><span>이 19년도.</span></p>
-<p class="utterance"><time>00:26:15.416–00:26:17.116</time><span>메모리큐드 마스크만 했었습니다.</span></p>
-<p class="utterance"><time>00:26:18.136–00:26:20.916</time><span>메모리큐드라고 하면 앞에 대해서도 페이지가 고려가 안되잖아요.</span></p>
-<p class="utterance"><time>00:26:22.016–00:26:23.436</time><span>그렇기 때문에 잘 안됐던 건데</span></p>
-<p class="utterance"><time>00:26:23.436–00:26:26.476</time><span>이 페이지 고려하는 게 이때 당시 너무 복잡하니까</span></p>
-<p class="utterance"><time>00:26:26.476–00:26:27.756</time><span>사실 이 페이지가 어렵거든요.</span></p>
-<p class="utterance"><time>00:26:28.196–00:26:29.916</time><span>근데 이때까지는 해보니까 안되는 거예요.</span></p>
-<p class="utterance"><time>00:26:29.916–00:26:30.716</time><span>안되니까</span></p>
-<p class="utterance"><time>00:26:31.136–00:26:33.896</time><span>그냥 타임도매인 사자. 타임도매인 사자.</span></p>
-<p class="utterance"><time>00:26:33.896–00:26:38.556</time><span>그걸 내가 그냥 어디 커버를 설정해가지고 학습한 다음에 해보자.</span></p>
-<p class="utterance"><time>00:26:39.056–00:26:42.156</time><span>라오에서 나온 친구들이 파스텔에서 쭉 나왔던 거고요.</span></p>
-<p class="utterance"><time>00:26:42.936–00:26:46.656</time><span>그렇게 왔다가 이제 이것도 어느 정도 한계에 도달하니까</span></p>
-<p class="utterance"><time>00:26:46.656–00:26:49.196</time><span>다시 SFG를 돌아가자.</span></p>
-<p class="utterance"><time>00:26:49.836–00:26:50.976</time><span>라고 전화 드렸죠. 이 친구.</span></p>
-<p class="utterance"><time>00:26:51.756–00:26:53.016</time><span>이 친구가 나왔고요.</span></p>
-<p class="utterance"><time>00:26:53.016–00:26:56.016</time><span>이 다음으로 거의 대부분이 SFG를 처리해요.</span></p>
-<p class="utterance"><time>00:26:56.016–00:27:03.816</time><span>네. 우선은 첫 번째로 이때 당시로 사는 친구들의 그 핵심은 마스킹에 있다.</span></p>
-<p class="utterance"><time>00:27:04.276–00:27:07.976</time><span>마스킹이 이게 결론 변화입니다. 마스킹이 잘 되더라.</span></p>
-<p class="utterance"><time>00:27:09.456–00:27:12.736</time><span>라는 게 이때 지금 문제였고요.</span></p>
-<p class="utterance"><time>00:27:12.736–00:27:23.736</time><span>그래서 문제였고 그래서 문제를 빠뜨리기 위한</span></p>
-<p class="utterance"><time>00:27:23.736–00:27:29.736</time><span>그래서 이게 마스킹 기반의 문제가 이런 문제가 있기 때문에</span></p>
-<p class="utterance"><time>00:27:29.736–00:27:32.736</time><span>이거를 stft로 처리를 해보자는 거였고</span></p>
-<p class="utterance"><time>00:27:32.736–00:27:34.736</time><span>사실 여기서는 마스킹을 하지 않습니다.</span></p>
-<p class="utterance"><time>00:27:34.736–00:27:36.736</time><span>사실 이때부터 마스킹을 하지 않아요.</span></p>
-<p class="utterance"><time>00:27:36.736–00:27:40.736</time><span>마스킹 기반의 방법이 이게 잘 안된다는 게 어느 정도 있되</span></p>
-<p class="utterance"><time>00:27:40.736–00:27:43.736</time><span>어퍼 바운스가 있다는게 보이지만</span></p>
-<p class="utterance"><time>00:27:43.736–00:27:45.936</time><span>그렇기 때문에 마스킹을 하지 않고</span></p>
-<p class="utterance"><time>00:27:45.936–00:27:51.336</time><span>그냥 얘를 바로 올리려고 해서 났던 친구가 이 친구고요</span></p>
-<p class="utterance"><time>00:27:51.336–00:27:54.936</time><span>이것도 지금 제가 이 길이를 수정을 했는데</span></p>
-<p class="utterance"><time>00:27:54.936–00:27:57.536</time><span>이게 저널 버전을 제가 가지고 왔었거든요</span></p>
-<p class="utterance"><time>00:27:57.536–00:28:00.036</time><span>이게 저널 버전이 아니라</span></p>
-<p class="utterance"><time>00:28:00.036–00:28:02.536</time><span>이것도 잠깐 갔다올까요?</span></p>
-<p class="utterance"><time>00:28:02.536–00:28:03.536</time><span>잠깐 갔다올까요?</span></p>
-<p class="utterance"><time>00:28:03.536–00:28:04.636</time><span>다시</span></p>
-<p class="utterance"><time>00:28:04.636–00:28:06.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:06.636–00:28:08.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:08.636–00:28:10.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:10.636–00:28:12.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:12.636–00:28:14.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:14.636–00:28:16.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:16.636–00:28:18.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:18.636–00:28:20.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:20.636–00:28:22.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:22.636–00:28:24.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:24.636–00:28:26.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:26.636–00:28:28.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:28.636–00:28:30.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:30.636–00:28:32.636</time><span>다시 한번 해보겠습니다.</span></p>
-<p class="utterance"><time>00:28:32.636–00:28:36.636</time><span>돈을 좀 내야해요</span></p>
-<p class="utterance"><time>00:28:36.636–00:28:42.636</time><span>돈과 금이</span></p>
-<p class="utterance"><time>00:28:42.636–00:28:46.636</time><span>그래서 이거를 보면은</span></p>
-<p class="utterance"><time>00:28:46.636–00:28:48.636</time><span>제가 주인을 좀 바꿨어요</span></p>
-<p class="utterance"><time>00:28:48.636–00:28:50.636</time><span>사실 그게 아스테이프에 좀 부착되어가지고</span></p>
-<p class="utterance"><time>00:28:50.636–00:28:52.636</time><span>큰 차이가 없습니다</span></p>
-<p class="utterance"><time>00:28:52.636–00:28:54.636</time><span>보면은 뭐냐면은</span></p>
-<p class="utterance"><time>00:28:54.636–00:28:56.636</time><span>입력으로 sft 들어가구요</span></p>
-<p class="utterance"><time>00:28:56.636–00:28:58.636</time><span>그래서 결과적으로 지금 왼쪽 그림을 보면은</span></p>
-<p class="utterance"><time>00:28:58.636–00:29:00.636</time><span>입력으로 그 내가 mr y가 들어가져요</span></p>
-<p class="utterance"><time>00:29:00.636–00:29:04.636</time><span>그 내가 리스터 y가 들어가죠. 이게 앞에서부터 리스터에요.</span></p>
-<p class="utterance"><time>00:29:04.636–00:29:09.636</time><span>리스터가 들어가고 출력으로 s1부터 c까지 나오죠.</span></p>
-<p class="utterance"><time>00:29:09.636–00:29:18.636</time><span>그쵸? 여기 보면 s1부터 c까지 인벌스 isfd가 나오잖아요.</span></p>
-<p class="utterance"><time>00:29:18.636–00:29:24.636</time><span>보이나요? 아 보여요? 이게 나오는데 이거 보면 가운데 마스킹하는거 없죠.</span></p>
-<p class="utterance"><time>00:29:24.636–00:29:29.636</time><span>마스킹을 안하고 그냥 얘를 네트워크로 확정해보자는게 실이구요.</span></p>
-<p class="utterance"><time>00:29:29.636–00:29:33.816</time><span>구조는 거의 똑같아요. 거의 차이가 없어요.</span></p>
-<p class="utterance"><time>00:29:34.236–00:29:37.116</time><span>그래서 SF 들어가가지고 요거를 지우고 있습니다.</span></p>
-<p class="utterance"><time>00:29:37.596–00:29:39.996</time><span>그래서 우선 톱으로 레이어드 해가지고 한번 인베딩을 하고요.</span></p>
-<p class="utterance"><time>00:29:40.156–00:29:42.336</time><span>여기 친구 있죠. 인베딩을 하고</span></p>
-<p class="utterance"><time>00:29:42.336–00:29:46.916</time><span>그 위로 보면은 요 인트라 프레임 이 스펙트럴 모듈</span></p>
-<p class="utterance"><time>00:29:46.916–00:29:50.596</time><span>요거는 그 인트라 프레임에 대해서 이거를 어텐션을 하는 거고</span></p>
-<p class="utterance"><time>00:29:50.596–00:29:52.376</time><span>요거는 서브 밴드 템포럴 모듈</span></p>
-<p class="utterance"><time>00:29:52.376–00:29:53.776</time><span>뭐 이름이 같이 비슷하죠.</span></p>
-<p class="utterance"><time>00:29:54.596–00:29:56.536</time><span>자 한 번은 주파수 쪽으로 어텐션을 하고</span></p>
-<p class="utterance"><time>00:29:56.536–00:29:59.296</time><span>한 번은 요 템포럴하게 어텐션을 하겠다.</span></p>
-<p class="utterance"><time>00:29:59.636–00:30:06.396</time><span>사실 그겁니다. 그걸 할 때 어떻게 하는지는 여기 보면 좀 복잡하게 이렇게 이렇게 하겠다.</span></p>
-<p class="utterance"><time>00:30:06.396–00:30:15.076</time><span>이렇게 보면은 하나는 퍼리티 해가지고 밸브가 가지고 이렇게 커텐션을 하겠다. 사실 이 셀커텐션을 하는 거랑 거의 비슷하잖아요.</span></p>
-<p class="utterance"><time>00:30:15.076–00:30:19.636</time><span>이 Z가 여기, 여기 보면 이 Z에요.</span></p>
-<p class="utterance"><time>00:30:20.516–00:30:29.076</time><span>이거를 이제 이 TF브리드가 했고요. 하여튼 이렇게 하니까 더 잘 됐다라는 얘기를 하고 있습니다.</span></p>
-<p class="utterance"><time>00:30:29.076–00:30:36.396</time><span>크게 뭐 딱 한거 없고 그러니까 이거는 조금 이 아까 봤던 그 콩콩 스포츠는 전원을 이태전 하면서 여러분이 축하되는데</span></p>
-<p class="utterance"><time>00:30:36.396–00:30:42.756</time><span>그 여러 것들은 무사히 사거리가 다 그리기도 하고 그냥 이제 지금 자식이 좀 더 좋다고</span></p>
-<p class="utterance"><time>00:30:42.756–00:30:49.556</time><span>보자고 이건 이 컷이 것이라 게 뭐 출력을 남을 다시 뵙고 있다는 건데 이제 좀 작잖아요</span></p>
-<p class="utterance"><time>00:30:49.556–00:30:58.796</time><span>깔고 나게 입력으로 로 들어가고 또 쓰 이렇게 뽑아 내는데 그때 뽑아 내는 아피데이터는 이렇게 인자 프린트 랜드 이거는 딱 봤을 때</span></p>
-<p class="utterance"><time>00:30:58.796–00:31:05.516</time><span>이 펜을 할까 패턴을 해 보고 어땠어요 요거는 스탭을 얻어 되잖아 템프로레서 되잖아 그쪽 많이 봤어요</span></p>
-<p class="utterance"><time>00:31:05.516–00:31:08.476</time><span>그거로 다 라고</span></p>
-<p class="utterance"><time>00:31:10.436–00:31:14.896</time><span>아 여기 아예 를 썼네 그 어땠어</span></p>
-<p class="utterance"><time>00:31:14.896–00:31:17.896</time><span>그리고 이 부분은</span></p>
-<p class="utterance"><time>00:31:17.896–00:31:20.896</time><span>아까 말씀드린 대로</span></p>
-<p class="utterance"><time>00:31:20.896–00:31:23.896</time><span>아까 우리가 계속 봐왔던</span></p>
-<p class="utterance"><time>00:31:23.896–00:31:26.896</time><span>이 멀티저럴 투미스 데이터 세트</span></p>
-<p class="utterance"><time>00:31:26.896–00:31:29.896</time><span>거의 세트원 시스템이 되어있어요</span></p>
-<p class="utterance"><time>00:31:29.896–00:31:31.136</time><span>지금까지 보면 아까 봤던 이 친구</span></p>
-<p class="utterance"><time>00:31:31.136–00:31:36.136</time><span>KVM이 23.5도 나오거든요. 이때 이후로 거의 세트레이션입니다.</span></p>
-<p class="utterance"><time>00:31:36.136–00:31:43.136</time><span>KVM이 여기 있거든요. 여기 있어요.</span></p>
-<p class="utterance"><time>00:31:43.136–00:31:48.136</time><span>거의 세트레이션이 되어있죠. 여기가 지금 이 SIFD의 내방입니다.</span></p>
-<p class="utterance"><time>00:31:48.136–00:31:51.136</time><span>여기가 멀티저널이 세트레이션이 되어있죠.</span></p>
-<p class="utterance"><time>00:31:51.136–00:31:56.136</time><span>거의 여기까지 와있죠. 그 위로 많이 안왔지만 많이 도와주진 않죠.</span></p>
-<p class="utterance"><time>00:31:56.136–00:31:59.136</time><span>특히 세포모 같은 것들을 보면 많이 도와주진 않죠.</span></p>
-<p class="utterance"><time>00:31:59.136–00:32:03.136</time><span>그래서 지금 trend는 어떻게 되고 있냐면</span></p>
-<p class="utterance"><time>00:32:03.136–00:32:07.136</time><span>가운데 있는 이 친구가 지금 뭘 뜻하냐면</span></p>
-<p class="utterance"><time>00:32:07.136–00:32:12.136</time><span>이게 world fly accumulation 이라는 것도 약간</span></p>
-<p class="utterance"><time>00:32:12.136–00:32:15.136</time><span>그러니까 이 계산량을 나타내는 지표라고 보면 되는데</span></p>
-<p class="utterance"><time>00:32:15.136–00:32:19.136</time><span>곱하고 더하기에는 몇 개나 하냐 그런 뜻이에요</span></p>
-<p class="utterance"><time>00:32:19.136–00:32:23.136</time><span>그랬을 때 이게 많아질수록 그 열쇠량이 많다는 뜻이겠죠</span></p>
-<p class="utterance"><time>00:32:23.136–00:32:26.136</time><span>그렇죠? 모델이 크고 그리고 더 복잡하고</span></p>
-<p class="utterance"><time>00:32:26.136–00:32:29.176</time><span>더 시간 많이 걸리고 이렇게 생각할 수 있겠죠.</span></p>
-<p class="utterance"><time>00:32:29.236–00:32:30.616</time><span>병력 체력은 달라질 수 있겠지만</span></p>
-<p class="utterance"><time>00:32:30.616–00:32:33.696</time><span>그가수로 시간이 많이 걸리는 거니까</span></p>
-<p class="utterance"><time>00:32:33.696–00:32:35.416</time><span>경량화적으로 가고 싶을 거잖아요.</span></p>
-<p class="utterance"><time>00:32:35.836–00:32:37.836</time><span>얘를 이렇게 크고 다니고 싶겠죠.</span></p>
-<p class="utterance"><time>00:32:38.916–00:32:40.396</time><span>이 성능은 유지하면서</span></p>
-<p class="utterance"><time>00:32:40.396–00:32:42.836</time><span>그런 연구가 진행되고 있다.</span></p>
-<p class="utterance"><time>00:32:43.836–00:32:44.536</time><span>라고 보면 되고</span></p>
-<p class="utterance"><time>00:32:44.536–00:32:46.456</time><span>그래서 나오는 친구가</span></p>
-<p class="utterance"><time>00:32:46.456–00:32:48.736</time><span>이게 2014년 5년까지 왔어요.</span></p>
-<p class="utterance"><time>00:32:49.056–00:32:49.976</time><span>거의 최근으로 오고 있죠.</span></p>
-<p class="utterance"><time>00:32:50.536–00:32:52.616</time><span>그래서 이 ICLR</span></p>
-<p class="utterance"><time>00:32:52.616–00:32:55.296</time><span>2025년에 나오는 이 타이머 하는 친구가</span></p>
-<p class="utterance"><time>00:32:55.296–00:33:01.176</time><span>사람의 개수 줄이고 대산량 줄이고</span></p>
-<p class="utterance"><time>00:33:01.176–00:33:06.136</time><span>이것에 비해서 같은 성능을 내면서 이렇게 줄였구요</span></p>
-<p class="utterance"><time>00:33:06.136–00:33:09.236</time><span>그리고 이것은 조금 있다가 말씀드릴게요</span></p>
-<p class="utterance"><time>00:33:09.236–00:33:12.776</time><span>마찬가지로 이 Set Mamba 라는 식으로</span></p>
-<p class="utterance"><time>00:33:12.776–00:33:16.316</time><span>이 구조를 Self-Attention 구조의 이 한계를 극복하기 위해서</span></p>
-<p class="utterance"><time>00:33:16.316–00:33:18.096</time><span>만든 Mamba가 있잖아요</span></p>
-<p class="utterance"><time>00:33:18.096–00:33:20.296</time><span>이 Mamba를 통해서 이것을 만들어버렸다</span></p>
-<p class="utterance"><time>00:33:20.296–00:33:22.856</time><span>그래서 Long Audio, Long Life에 대해서</span></p>
-<p class="utterance"><time>00:33:22.856–00:33:24.856</time><span>로우 메모리를 가지고</span></p>
-<p class="utterance"><time>00:33:24.856–00:33:26.856</time><span>딱 가고 나오게 되었습니다</span></p>
-<p class="utterance"><time>00:33:26.856–00:33:28.856</time><span>이게 사실은 트렌드였어요</span></p>
-<p class="utterance"><time>00:33:28.856–00:33:30.856</time><span>지금도 바뀌긴 했습니다</span></p>
-<p class="utterance"><time>00:33:30.856–00:33:32.856</time><span>이렇게 왔었는데 더 나아가서</span></p>
-<p class="utterance"><time>00:33:32.856–00:33:34.856</time><span>그러면 데이터셋도 지금 너무 쉬운거 아니야</span></p>
-<p class="utterance"><time>00:33:34.856–00:33:36.856</time><span>이 친구가</span></p>
-<p class="utterance"><time>00:33:36.856–00:33:38.856</time><span>지금 큰 데이터셋이라고 했잖아요</span></p>
-<p class="utterance"><time>00:33:38.856–00:33:40.856</time><span>그러면 뭔가 노이즈한 데이터셋으로</span></p>
-<p class="utterance"><time>00:33:42.856–00:33:44.856</time><span>요거 먼저 하죠</span></p>
-<p class="utterance"><time>00:33:44.856–00:33:46.856</time><span>노이즈한 데이터셋으로 가고 싶겠죠</span></p>
-<p class="utterance"><time>00:33:46.856–00:33:48.856</time><span>그쵸</span></p>
-<p class="utterance"><time>00:33:48.856–00:33:50.856</time><span>그래가지고 여기 가장 쉬운 데이터셋부터</span></p>
-<p class="utterance"><time>00:33:52.856–00:33:58.456</time><span>WA-M이라는 리버레이션이 나왔고 여기에는 노이즈가 추가가 되었습니다.</span></p>
-<p class="utterance"><time>00:33:58.456–00:34:06.856</time><span>그 다음에 여기 아래에 붙은 친구는 리버레이션, 이 공간감 이거는 제가 이제 바람씩 좀 있다가 나중에 강의 한번 할거에요. 리버레이션이 뭔지.</span></p>
-<p class="utterance"><time>00:34:06.856–00:34:13.856</time><span>그래서 사실 여기서 말하는 이 노이즈는 우리가 신이 생각하는 화이트 노이즈 같은거지 않나요? 색소음 같은걸 추가한거라고 보이고</span></p>
-<p class="utterance"><time>00:34:13.856–00:34:17.856</time><span>여기는 실제 우리가 살아가는 인간에 대한 소음을 추가한거구요.</span></p>
-<p class="utterance"><time>00:34:17.856–00:34:23.696</time><span>그리고 점점 더 어려운 것들 이것 진짜 리얼리스트한 데이터셋으로</span></p>
-<p class="utterance"><time>00:34:23.696–00:34:27.756</time><span>점점 업그레이드 됐을 때 정확히 비교적 확장이 됐고</span></p>
-<p class="utterance"><time>00:34:27.756–00:34:33.116</time><span>아까 말씀드린 타이거 모델에서 이 맥북을 가지고 왔어요</span></p>
-<p class="utterance"><time>00:34:33.116–00:34:36.196</time><span>이걸 가지고 왔는데 뭘 얘기하는지 뭐냐면</span></p>
-<p class="utterance"><time>00:34:36.196–00:34:42.336</time><span>이 보면은 이 컴퓨터셋에서 얘네들이 얘기하는 타이거 모델에 대해서</span></p>
-<p class="utterance"><time>00:34:42.336–00:34:46.736</time><span>이 데이터셋, 가장 쉬운 데이터부터</span></p>
-<p class="utterance"><time>00:34:46.736–00:34:48.736</time><span>리얼리스트한 데이터, 어려운 데이터까지</span></p>
-<p class="utterance"><time>00:34:48.736–00:34:51.536</time><span>이걸로 가지고 트레이닝을 시켰을 때</span></p>
-<p class="utterance"><time>00:34:51.536–00:34:53.936</time><span>정확도가 어떻게 나오냐</span></p>
-<p class="utterance"><time>00:34:53.936–00:34:55.736</time><span>이거를 테스트를 하는데</span></p>
-<p class="utterance"><time>00:34:55.736–00:34:58.936</time><span>테스트를 얘네들이 만든 리얼데이터셋으로</span></p>
-<p class="utterance"><time>00:34:58.936–00:35:01.536</time><span>공개를 했는지 안 했는지 모르겠는데</span></p>
-<p class="utterance"><time>00:35:01.536–00:35:03.936</time><span>그러니까 여기가 트레이닝을 하실 때 데이터가 아니라</span></p>
-<p class="utterance"><time>00:35:03.936–00:35:05.736</time><span>실제 데이터셋인데</span></p>
-<p class="utterance"><time>00:35:05.736–00:35:08.736</time><span>되게 어려운 데이터셋에서 테스트를 한 거예요</span></p>
-<p class="utterance"><time>00:35:08.736–00:35:12.136</time><span>그렇게 해서 정확도를 L과 S랑 비교해보니까</span></p>
-<p class="utterance"><time>00:35:12.136–00:35:23.136</time><span>예를 들면 특히 쉬운 데이터 테스트는 잘 안된다. 하지만 좋은 데이터라고 할 때는 리얼리티한 데이터 테스트를 하면 어느정도 성능은 조금은 나온다.</span></p>
-<p class="utterance"><time>00:35:23.136–00:35:38.136</time><span>최신으로 올수록 점점점 얘네들은 좀 좋아지고 있는데 우리 방법은 쉬운걸로 해도 좀 잘되고 어려운걸로 학습하니까 더 잘되는 이런 것들을 보여주는 방법입니다.</span></p>
-<p class="utterance"><time>00:35:38.136–00:35:41.136</time><span>이런 것들, 데이터 테크로는 좀 어려울 수 있다.</span></p>
-<p class="utterance"><time>00:35:41.136–00:35:46.136</time><span>그렇게 보시면 되고, 사실 이 스피치 테크로 인해서 데이터 테크 만들기가 쉽지가 않아요.</span></p>
-<p class="utterance"><time>00:35:46.136–00:35:49.136</time><span>왜냐면은, 왜 그럴까요? 데이터 테크를 만들자면은</span></p>
-<p class="utterance"><time>00:35:49.136–00:35:52.136</time><span>네이버에 클린 데이터가 있어야 되겠죠. 클린 스피치 데이터가.</span></p>
-<p class="utterance"><time>00:35:52.136–00:35:55.136</time><span>그렇기 때문에 사실 데이터 테크를 만들기가 쉽지가 않습니다.</span></p>
-<p class="utterance"><time>00:35:55.136–00:35:58.136</time><span>그래서 얘네들 좀 더 아닌 것도 있어요.</span></p>
-<p class="utterance"><time>00:35:58.136–00:36:02.136</time><span>그리고, 여러분들이 앞에서 제가 강의를</span></p>
-<p class="utterance"><time>00:36:02.136–00:36:05.136</time><span>우리가 한 30분 전에 시작했죠?</span></p>
-<p class="utterance"><time>00:36:05.136–00:36:13.896</time><span>앞에서 얘기했을 때 약간 이상하다고 생각했던게 뭐지?</span></p>
-<p class="utterance"><time>00:36:13.896–00:36:20.136</time><span>여기 보면 이상한거 있지 않아요? 제가 일부러 여기다가 놓은건데</span></p>
-<p class="utterance"><time>00:36:20.136–00:36:24.936</time><span>이 2스피커 타이드가 다가왔잖아요.</span></p>
-<p class="utterance"><time>00:36:24.936–00:36:29.476</time><span>여기 보면 다 2스피커 마찬가지로 2스피커 얘가 무슨말이냐?</span></p>
-<p class="utterance"><time>00:36:29.476–00:36:30.996</time><span>출력으로 나오는 마스크 아니면</span></p>
-<p class="utterance"><time>00:36:31.136–00:36:33.136</time><span>아</span></p>
-<p class="utterance"><time>00:37:01.136–00:37:04.136</time><span>이런 부분에서는 애를 두개 그냥 가져오니까</span></p>
-<p class="utterance"><time>00:37:04.136–00:37:05.136</time><span>흔적이 없잖아요</span></p>
-<p class="utterance"><time>00:37:05.136–00:37:08.136</time><span>그럼 현실적으로 블라인드는 수업이 아니잖아요</span></p>
-<p class="utterance"><time>00:37:08.136–00:37:11.136</time><span>그러면 예를 들어서 어떻게 정해진 문제일까요?</span></p>
-<p class="utterance"><time>00:37:14.136–00:37:15.136</time><span>아, 이런 문제인가요?</span></p>
-<p class="utterance"><time>00:37:15.136–00:37:17.136</time><span>아까 말씀드렸던 그런 문제가 발생을 하다</span></p>
-<p class="utterance"><time>00:37:17.136–00:37:18.136</time><span>라는 거고</span></p>
-<p class="utterance"><time>00:37:18.136–00:37:20.136</time><span>만약에 이럴 때 어떻게 해야 되냐</span></p>
-<p class="utterance"><time>00:37:20.136–00:37:21.136</time><span>소스트가 하나밖에 없는데</span></p>
-<p class="utterance"><time>00:37:21.136–00:37:23.136</time><span>그러면 실력이 두개일 때</span></p>
-<p class="utterance"><time>00:37:23.136–00:37:24.136</time><span>나머지 하나가 어떻게 되는지 그냥</span></p>
-<p class="utterance"><time>00:37:24.136–00:37:26.136</time><span>두개인 줄 알았으면 그냥 두개가 중요하긴 해요</span></p>
-<p class="utterance"><time>00:37:26.136–00:37:28.136</time><span>만약에 세개의 문제가 어떻게 되는지</span></p>
-<p class="utterance"><time>00:37:28.136–00:37:29.136</time><span>이런 문제가 있습니다</span></p>
-<p class="utterance"><time>00:37:29.136–00:37:30.136</time><span>이런 문제가 있고</span></p>
-<p class="utterance"><time>00:37:30.136–00:37:36.156</time><span>그래서 이런 것들을 사실 고민을 하고 있습니다.</span></p>
-<p class="utterance"><time>00:37:36.516–00:37:39.396</time><span>첫 번째는 우리가 아껴봤던 일을 생각하고 있습니다.</span></p>
-<p class="utterance"><time>00:37:40.836–00:37:42.396</time><span>내가 신원아웃을 정해놓은 거예요.</span></p>
-<p class="utterance"><time>00:37:42.596–00:37:46.316</time><span>내가 이 공간에서 내가 살아가는 성명에서는</span></p>
-<p class="utterance"><time>00:37:46.316–00:37:48.756</time><span>이거보다 많은 것 없어서</span></p>
-<p class="utterance"><time>00:37:48.756–00:37:50.016</time><span>나는 그냥 가버린다는 거예요.</span></p>
-<p class="utterance"><time>00:37:50.016–00:37:50.616</time><span>그래서 세 개.</span></p>
-<p class="utterance"><time>00:37:50.936–00:37:52.356</time><span>세 개 이상의 오버워치인 데에</span></p>
-<p class="utterance"><time>00:37:52.356–00:37:55.016</time><span>소스가 몸이 제 발전을 한다는 생각을 하는 거고</span></p>
-<p class="utterance"><time>00:37:55.016–00:37:58.436</time><span>두 번째는 리퀄딩화하게 입적을 하는 거예요.</span></p>
-<p class="utterance"><time>00:37:58.436–00:38:00.436</time><span>마지막에 로리덴을 만들어볼 때</span></p>
-<p class="utterance"><time>00:38:00.436–00:38:02.436</time><span>처음에 세 개가 있어요</span></p>
-<p class="utterance"><time>00:38:02.436–00:38:04.436</time><span>나는 두 개의 형태로 분리할 수 있대</span></p>
-<p class="utterance"><time>00:38:04.436–00:38:06.436</time><span>그러면은 처음에 분리해서</span></p>
-<p class="utterance"><time>00:38:06.436–00:38:10.436</time><span>소스 1과 두 개의 루터를 분리할 수 있대</span></p>
-<p class="utterance"><time>00:38:10.436–00:38:12.436</time><span>그러면은 이 두 개를</span></p>
-<p class="utterance"><time>00:38:12.436–00:38:14.436</time><span>다시 리퀄리티 파악을 올리면은</span></p>
-<p class="utterance"><time>00:38:14.436–00:38:16.436</time><span>다시 분리할 수 있을까</span></p>
-<p class="utterance"><time>00:38:16.436–00:38:18.436</time><span>이런 방법입니다</span></p>
-<p class="utterance"><time>00:38:18.436–00:38:20.436</time><span>그리고</span></p>
-<p class="utterance"><time>00:38:20.436–00:38:22.436</time><span>두 분 친구는 내가</span></p>
-<p class="utterance"><time>00:38:22.436–00:38:24.436</time><span>따온 모델을 가지고서</span></p>
-<p class="utterance"><time>00:38:24.436–00:38:26.436</time><span>소스의 배수를 카운트하는</span></p>
-<p class="utterance"><time>00:38:26.436–00:38:36.436</time><span>이 친구가 배수를 통용한 다음에 그거를 선지선한 이 친구를 받아서 처리하겠다</span></p>
-<p class="utterance"><time>00:38:36.436–00:38:39.436</time><span>이런 것들이 있습니다</span></p>
-<p class="utterance"><time>00:38:39.436–00:38:42.436</time><span>이런 것들에 문제가 없나요?</span></p>
-<p class="utterance"><time>00:38:42.436–00:38:46.436</time><span>특히 이 친구, 이 친구도 맞아서</span></p>
-<p class="utterance"><time>00:38:46.436–00:38:49.436</time><span>문제가 없나요?</span></p>
-<p class="utterance"><time>00:38:49.436–00:38:56.436</time><span>그 부분에 대해서는 모델의 오후차가 들어가게 됩니다.</span></p>
-<p class="utterance"><time>00:38:56.436–00:39:01.436</time><span>예를 들어 모델의 오후차가 90%입니다.</span></p>
-<p class="utterance"><time>00:39:01.436–00:39:09.436</time><span>그러면 오후차가 90%돼서 결국에 나오는 친구는 80%로 나오게 됩니다.</span></p>
-<p class="utterance"><time>00:39:09.436–00:39:16.436</time><span>예를 들어 80%로 나오게 되면 오후차가 90%입니다.</span></p>
-<p class="utterance"><time>00:39:16.436–00:39:22.756</time><span>마찬가지로 이 5루기 있는 친구도 이 카운팅하는 모델의 성능에 따라서</span></p>
-<p class="utterance"><time>00:39:22.756–00:39:28.436</time><span>이 결과에 그런 에러가 발생되기 때문에 이런 문제가 발생합니다.</span></p>
-<p class="utterance"><time>00:39:28.436–00:39:31.436</time><span>그래서 사실 이거를 탁준히 이용하는 방법이 있어요.</span></p>
-<p class="utterance"><time>00:39:31.436–00:39:35.436</time><span>그냥 멘트범을 접어하는 게 성능적으로 유지할 수 있어요.</span></p>
-<p class="utterance"><time>00:39:35.436–00:39:37.436</time><span>그래서 이 방법을 사용합니다.</span></p>
-<p class="utterance"><time>00:39:37.436–00:39:42.436</time><span>제가 저번에 얘기했던 거고, 그러면은 이제 그 다음으로</span></p>
-<p class="utterance"><time>00:39:42.436–00:39:44.836</time><span>그러면 이제 버절로 갱카츠가 어려운 경우도 있잖아요.</span></p>
-<p class="utterance"><time>00:39:44.836–00:39:48.836</time><span>그러면 더 어려운 갱카츠에서 뭔가 하기 위해서</span></p>
-<p class="utterance"><time>00:39:48.836–00:39:52.836</time><span>셀프 스포가이스가 아니면 어느 스포가이스가 더 좋던지 알아요.</span></p>
-<p class="utterance"><time>00:39:52.836–00:39:55.836</time><span>얘네들은 어.. 어떻게 생각하세요?</span></p>
-<p class="utterance"><time>00:39:55.836–00:39:57.836</time><span>이게 실제 나왔던지 모르겠어요.</span></p>
-<p class="utterance"><time>00:39:57.836–00:39:59.836</time><span>실제 나왔던지 모르겠어요.</span></p>
-<p class="utterance"><time>00:39:59.836–00:40:03.836</time><span>이거 예전에도 나올 때 한 번도 안 봤었는데</span></p>
-<p class="utterance"><time>00:40:03.836–00:40:05.836</time><span>그래서 안 봤고요.</span></p>
-<p class="utterance"><time>00:40:05.836–00:40:10.836</time><span>얘는 실제 뭐냐면은 어느 스포가이스를 하고 싶어요.</span></p>
-<p class="utterance"><time>00:40:10.836–00:40:12.836</time><span>어려운 점은 내가 뭐라고 했죠?</span></p>
-<p class="utterance"><time>00:40:12.836–00:40:14.836</time><span>이 PIS 수업을 통해서</span></p>
-<p class="utterance"><time>00:40:14.836–00:40:16.836</time><span>이걸 보면은</span></p>
-<p class="utterance"><time>00:40:16.836–00:40:18.836</time><span>내가 클린포스트들에 대한</span></p>
-<p class="utterance"><time>00:40:18.836–00:40:20.836</time><span>그런 정보를 다 알고있다는 거예요</span></p>
-<p class="utterance"><time>00:40:20.836–00:40:22.836</time><span>내가 여기 부터 간</span></p>
-<p class="utterance"><time>00:40:22.836–00:40:24.836</time><span>이 소품들의 정보를 다 알고있다는 거예요</span></p>
-<p class="utterance"><time>00:40:24.836–00:40:26.836</time><span>내가 리얼지식상 데이터</span></p>
-<p class="utterance"><time>00:40:26.836–00:40:28.836</time><span>를 만들고 싶다면은</span></p>
-<p class="utterance"><time>00:40:28.836–00:40:30.836</time><span>이걸 어디에선 학점을 해서 만들었는데</span></p>
-<p class="utterance"><time>00:40:30.836–00:40:32.836</time><span>그거 자체에서 뭔가</span></p>
-<p class="utterance"><time>00:40:32.836–00:40:34.836</time><span>평등의 그런</span></p>
-<p class="utterance"><time>00:40:34.836–00:40:36.836</time><span>이걸 원해야 하는 공부가</span></p>
-<p class="utterance"><time>00:40:36.836–00:40:38.836</time><span>발생을 하는 것 같다는 거예요</span></p>
-<p class="utterance"><time>00:40:38.836–00:40:40.836</time><span>그리고 이것을 내가 알기 어려워</span></p>
-<p class="utterance"><time>00:40:40.836–00:40:44.836</time><span>그런데 실제로 우리가 유튜브에서 선택하는 데이터 테스트를 보면</span></p>
-<p class="utterance"><time>00:40:44.836–00:40:46.836</time><span>되게 심각하잖아요</span></p>
-<p class="utterance"><time>00:40:46.836–00:40:48.836</time><span>여러개의 테스트가 동시에 오면 데이터가</span></p>
-<p class="utterance"><time>00:40:48.836–00:40:50.836</time><span>복잡한 것 같아요</span></p>
-<p class="utterance"><time>00:40:50.836–00:40:52.836</time><span>큰 테스트가 아니죠</span></p>
-<p class="utterance"><time>00:40:52.836–00:40:54.836</time><span>그런 데이터를</span></p>
-<p class="utterance"><time>00:40:54.836–00:40:56.836</time><span>QA에서 되게 많이 사용할 수 없다는</span></p>
-<p class="utterance"><time>00:40:56.836–00:40:58.836</time><span>문제가 있습니다</span></p>
-<p class="utterance"><time>00:40:58.836–00:41:00.836</time><span>그러면 이 밑에 있는 에너지 워크를</span></p>
-<p class="utterance"><time>00:41:00.836–00:41:02.836</time><span>그냥</span></p>
-<p class="utterance"><time>00:41:02.836–00:41:04.836</time><span>얻고 갈 수 있는</span></p>
-<p class="utterance"><time>00:41:04.836–00:41:06.836</time><span>그냥</span></p>
-<p class="utterance"><time>00:41:06.836–00:41:09.836</time><span>이 부분을 믹스해서</span></p>
-<p class="utterance"><time>00:41:09.836–00:41:12.836</time><span>그냥 믹스터를, 리트로에이저 데이터를 그냥 이 자체를 믹스하는 거죠.</span></p>
-<p class="utterance"><time>00:41:12.836–00:41:14.836</time><span>믹스한 다음에</span></p>
-<p class="utterance"><time>00:41:14.836–00:41:17.836</time><span>세포레이저를 요렇게 그냥 하는 겁니다.</span></p>
-<p class="utterance"><time>00:41:17.836–00:41:19.836</time><span>이렇게 하는 거죠. 요렇게.</span></p>
-<p class="utterance"><time>00:41:19.836–00:41:23.836</time><span>요렇게를 이거를 모공제 세포레이저 하고 싶은 건데</span></p>
-<p class="utterance"><time>00:41:23.836–00:41:28.836</time><span>이렇게 한 다음에 그러면은 이거 그냥 스피드에이저 나오죠.</span></p>
-<p class="utterance"><time>00:41:28.836–00:41:31.136</time><span>예를 들어서 여기</span></p>
-<p class="utterance"><time>00:41:31.136–00:41:34.896</time><span>여기에 2개 있고 여기에 지금 3개 있는 상황이에요</span></p>
-<p class="utterance"><time>00:41:34.896–00:41:38.496</time><span>합치면은 combination이 5개가 나올텐데</span></p>
-<p class="utterance"><time>00:41:38.496–00:41:41.356</time><span>그게 지금 총 8개에 대한</span></p>
-<p class="utterance"><time>00:41:41.356–00:41:43.996</time><span>얘가 skt 소스에 대해서</span></p>
-<p class="utterance"><time>00:41:43.996–00:41:46.336</time><span>ideal case에 대해서는</span></p>
-<p class="utterance"><time>00:41:46.336–00:41:50.496</time><span>어? 뭐야? 다시 돌아와</span></p>
-<p class="utterance"><time>00:41:50.496–00:41:51.216</time><span>ok</span></p>
-<p class="utterance"><time>00:41:51.216–00:41:55.296</time><span>요 ideal case에 대해서는 요게 그런 식으로 뭔가</span></p>
-<p class="utterance"><time>00:41:55.296–00:41:57.796</time><span>들어가 있겠죠? 들어가 있겠죠?</span></p>
-<p class="utterance"><time>00:41:57.796–00:41:59.276</time><span>내가 잘 뽑아야겠다 라고 하면은</span></p>
-<p class="utterance"><time>00:41:59.276–00:42:05.776</time><span>그러면 이 combination을 다시 내가 meeting합니다.</span></p>
-<p class="utterance"><time>00:42:05.776–00:42:09.096</time><span>모든 combination에 대해서 meeting을 다시 해요.</span></p>
-<p class="utterance"><time>00:42:09.096–00:42:13.696</time><span>그 중에 snr loss를 이 리스트워드와 비교했을 때</span></p>
-<p class="utterance"><time>00:42:13.696–00:42:20.376</time><span>가장 높은 친구가 있겠죠. 그거를 학습에 활용합니다.</span></p>
-<p class="utterance"><time>00:42:20.376–00:42:23.156</time><span>이렇게 하나 보면은 데이터가 모두 많기 때문에</span></p>
-<p class="utterance"><time>00:42:23.156–00:42:26.676</time><span>결국에 수요에 간다 라는 거죠.</span></p>
-<p class="utterance"><time>00:42:26.676–00:42:28.676</time><span>아이저가 괜찮죠?</span></p>
-<p class="utterance"><time>00:42:28.676–00:42:30.676</time><span>아이저가 괜찮다고요</span></p>
-<p class="utterance"><time>00:42:30.676–00:42:32.676</time><span>2020년도에는 원스파이 방법이</span></p>
-<p class="utterance"><time>00:42:32.676–00:42:34.676</time><span>아주 유명할 때에요</span></p>
-<p class="utterance"><time>00:42:34.676–00:42:36.676</time><span>이런거 보면 굉장히 많습니다</span></p>
-<p class="utterance"><time>00:42:36.676–00:42:38.676</time><span>그러면은</span></p>
-<p class="utterance"><time>00:42:38.676–00:42:40.676</time><span>진짜 최근에는 이제 어떤 존재가 되고 있나</span></p>
-<p class="utterance"><time>00:42:40.676–00:42:42.676</time><span>이제는 약간 트레이저가 잡혀있어요</span></p>
-<p class="utterance"><time>00:42:42.676–00:42:44.676</time><span>지금까지는 모델을 통해서</span></p>
-<p class="utterance"><time>00:42:44.676–00:42:46.676</time><span>디트리미니스틱하게</span></p>
-<p class="utterance"><time>00:42:46.676–00:42:48.676</time><span>그 마스크를 클래스 한다던지</span></p>
-<p class="utterance"><time>00:42:48.676–00:42:50.676</time><span>아이페이저 한다던지 아니면은</span></p>
-<p class="utterance"><time>00:42:50.676–00:42:52.676</time><span>그냥 소스 자체를 텍러리에</span></p>
-<p class="utterance"><time>00:42:52.676–00:42:54.676</time><span>하는 그 방법들이 나왔다라고 하면은</span></p>
-<p class="utterance"><time>00:42:54.676–00:42:57.816</time><span>이제는 Generation Model을 넣어서 합니다.</span></p>
-<p class="utterance"><time>00:42:57.816–00:42:59.816</time><span>Generation Model이라는 디퓨저 모델 보이시죠?</span></p>
-<p class="utterance"><time>00:42:59.816–00:43:03.816</time><span>여러분들이 잘 아는 디퓨저 모델 있죠?</span></p>
-<p class="utterance"><time>00:43:03.816–00:43:06.816</time><span>디퓨저 모델이 나오면 사실 얘가 뜨기 시작했어요.</span></p>
-<p class="utterance"><time>00:43:06.816–00:43:10.816</time><span>그래서 디퓨저 모델, 디퓨저 미스틱한 방법들</span></p>
-<p class="utterance"><time>00:43:10.816–00:43:15.816</time><span>이 나오다가 이 다음에 처음에 여기서는 이제</span></p>
-<p class="utterance"><time>00:43:15.816–00:43:21.816</time><span>여기서도 마찬가지로 Generation Model인거고</span></p>
-<p class="utterance"><time>00:43:21.816–00:43:26.096</time><span>여기에서 이제 가구가 나오게 됩니다. 프로매치 기반의</span></p>
-<p class="utterance"><time>00:43:27.056–00:43:31.376</time><span>이제 점점 디퓨전 기반의 가구들이 나오고 있다 라고 보시면 됩니다.</span></p>
-<p class="utterance"><time>00:43:31.376–00:43:38.056</time><span>사실 이 강의는 예를 들면 2025년? 2024년?</span></p>
-<p class="utterance"><time>00:43:38.056–00:43:42.156</time><span>이제부터 많이 나올 것 같은데 할까 말까 하다가</span></p>
-<p class="utterance"><time>00:43:42.156–00:43:45.656</time><span>우선 된다거나 안 된다거나 할 텐데 나중에 시간이 나오면 제가 강의를 하겠습니다.</span></p>
-<p class="utterance"><time>00:43:45.656–00:43:49.096</time><span>이것에 대해서는 나중에 다시 얘기할게요.</span></p>
-<p class="utterance"><time>00:43:49.096–00:43:58.456</time><span>왜요 이거 여기가 아 아 그래 가지고 대학을 굳이 지금 얘기할 수 없을까 보인 만 우리가 지금 배워도 몸에 이래서</span></p>
-<p class="utterance"><time>00:43:58.456–00:44:05.896</time><span>이 쪽으로 될 거야 더 한 거거든요 그렇게 뭐 그냥 기초 모델이 무지한 위주로 할 수 있어야 할 게 알기 위해서는</span></p>
-<p class="utterance"><time>00:44:05.896–00:44:11.196</time><span>우리의 나를 위한 게 그는 강좌가 나오고 갈게요</span></p>
-<p class="utterance"><time>00:44:11.196–00:44:16.196</time><span>여기까지 해서 페포레이션을 한거구요</span></p>
-<p class="utterance"><time>00:44:16.196–00:44:20.196</time><span>지금까지 우리가 얘기한 것은 입력으로 들어가는 오디오가</span></p>
-<p class="utterance"><time>00:44:20.196–00:44:23.196</time><span>한글 채널입니다. 채널이 하나였죠.</span></p>
-<p class="utterance"><time>00:44:23.196–00:44:26.196</time><span>그런데 마이크를 여러개 활용할 수 있겠죠</span></p>
-<p class="utterance"><time>00:44:26.196–00:44:29.196</time><span>멀티 채널 오디오로 활용할 수 있어요</span></p>
-<p class="utterance"><time>00:44:29.196–00:44:33.196</time><span>그걸 활용하면 뭘 할 수 있는지를 다음 시간에 보니 할 수 있어요</span></p>
-<p class="utterance"><time>00:44:33.196–00:44:37.196</time><span>채널 하나만 쓰는게 아니라 채널이 열어져 있으면 뭐가 바뀌느냐</span></p>
-<p class="utterance"><time>00:44:37.196–00:44:39.196</time><span>사실 얘가 훨씬 좋아요</span></p>
-<p class="utterance"><time>00:44:39.196–00:44:41.196</time><span>왜 좋냐?</span></p>
-<p class="utterance"><time>00:44:41.196–00:44:43.196</time><span>이게 왜 가능한지를</span></p>
-<p class="utterance"><time>00:44:43.196–00:44:45.196</time><span>바람처럼 보게</span></p>
-<p class="utterance"><time>00:44:45.196–00:44:47.196</time><span>지금 어때요?</span></p>
-<p class="utterance"><time>00:44:47.196–00:44:49.196</time><span>지금 어때요?</span></p>
-<p class="utterance"><time>00:44:49.196–00:44:51.196</time><span>오케이</span></p>
-<p class="utterance"><time>00:44:51.196–00:44:53.196</time><span>여기까지 하겠습니다</span></p>
-<p class="utterance"><time>00:44:53.196–00:44:55.196</time><span>두 분 두 분</span></p>
-<p class="utterance"><time>00:44:55.196–00:44:57.196</time><span>아</span></p>
-<p class="utterance"><time>00:44:57.196–00:44:59.196</time><span>아</span></p>
-<p class="utterance"><time>00:44:59.196–00:45:01.196</time><span>아</span></p>
-<p class="utterance"><time>00:45:01.196–00:45:03.196</time><span>아</span></p>
-<p class="utterance"><time>00:45:03.196–00:45:05.196</time><span>아</span></p>
-<p class="utterance"><time>00:45:05.196–00:45:05.259</time><span>감사합니다.</span></p></section>
+<link rel="stylesheet" href="../reader.css"></head><body><main>
+<h1>Lecture 7 강의 전사 · 2026-10-29</h1>
+<p class="status">전사 상태: 두 분할 녹음의 자동 전사를 강의 순서로 합친 병합본이다. ASR을 다시 실행하거나 전 구간을 직접 청취해 교정한 결과는 아니다. 시간은 편집한 강의 음원의 시작 기준이다. 강의 외 사생활 구간과 원음 파일은 포함하지 않았다.</p>
+<nav aria-label="강의 목차"><details><summary>강의 목차</summary><ol>
+<li><a href="#part-1">두 화자를 위한 mask 추정</a></li>
+<li><a href="#part-2">LSTM을 대신하는 temporal convolution</a></li>
+<li><a href="#part-3">segmentation과 chunk 길이의 trade-off</a></li>
+<li><a href="#part-4">TF-GridNet과 time-frequency 처리</a></li>
+<li><a href="#part-5">데이터셋 난이도와 실제 환경</a></li>
+<li><a href="#part-6">화자 수 추정과 남은 문제</a></li>
+</ol></details></nav>
+<section id="part-1"><h2>두 화자를 위한 mask 추정</h2>
+<p class="prose">두 화자를 분리하려면 앞에서 사용한 mask 구조를 유지하면서 latent vector로부터 화자별 mask 두 개를 추정한다.</p>
+<p class="prose">이렇게 되면 lsdm은 이 front layer잖아요. 그러면 어떻게 될까요? 이 latent vector가 sequential하게 지속적으로 들어오겠죠. 왜냐하면 얘가 지금은 여기로 돌아오고 있지만 얘가 그 다음 시간에 이 홈아웃을 옮겨가서 또 이거를 테크넷에 대해서 이력으로 또 들어가겠죠. 이게 지속적으로 latent vector를 하나씩 만들어내고 그게 LSTM에 이코넌트하게 들어가면서 이거를 활용을 해서 그때그때 이 latent vector에 대한 마스크를 하나씩 만들어낸다고 봅니다.</p>
+<p class="prose">이해돼요? 사실 앞에서 했던 것들을 계속 보는 거예요. 그렇게 했을 때 차이점은 이 SPM은 마스크의 개수를 내가 원하는 만큼 만들어야 돼요. 내가 예를 들어서 여기서는 동시에 두 개의 스피커를 분리를 하는 모델을 만들었어요. 두 개 이상은 못합니다. 두 개까지 내가 분리를 하겠다 라고 하면 마스크를 두 개를 만드는 거예요. 마스크를 두 개를 만듭니다. 두 개를 만든 다음에 이거는 소프트 마스크라고 해서 0에서 1 사이 값을 받는 마스크예요.</p>
+<p class="prose">영콤프트 마스크라고 하면 일반적으로 바이너리 마스크는 0 아니면 1이 아니라 그게 아니라 0에서 1 사이의 값을 받는 그런 마스크라고 봤을 때 이 친구를 이 latent vector에 공개해줍니다. 공개해주면 각각의 이 latent vector는 여기 리스트에 대한 이메일인데 이 친구로부터 내가 뽑아내고 싶은 스피커에 해당하는 성분을 이 마스크를 가지고 뽑아내겠다. 그렇게 뽑아내면 마스크 된 레이저 베퍼가 하나하나 나오겠죠.</p>
+<p class="prose">그거를 이제 이걸로 만들어야 되는데, 이 타임보밍 시그널을 다시 역변해야 되는데 그때는 이 디코더에서, 여러분들 입장에서는 이게 조금 오마인가 싶을텐데 앞에서 DFT 배울 때 베이시스에 대해서 배웠잖아요. 그렇죠. 역변환하고 그걸 다시 Inverse DFT 할 때 베이시스를 우리가 활용을 했잖아요. 그 베이시스를 런오블하게 구성을 했다. 요거가 그게 뜻입니다. 그래서 요 마스크랑 마스크를 해서 나온 요거를 통해서 나온 마스크는 마크 그 베이징스 베터가 있을거잖아요.</p>
+<p class="prose">이 친구랑 이 베이징스들이 엔게임을 했을텐데 그거를 엔게임을 다 이너 프로덕트 한 다음에 더하면은 엘리먼트 스킬이 공판을 한 다음에 더하면은 이너 프로덕트가 되잖아요. 그거를 해주면은 요 친구가 하나씩 나오는거에요. 지금 유사한걸 쓰는거에요? 베이징스는 쉽게 얘기하면은 얘를 표현하기 위한 기본적인 어떤 그런 체일이라고 보면 돼요. 기본적으로 내가 이 스피치 성분을 복원해야 되는데 얘를 복원할 때 필요한 기본적인 성분들이 있잖아요.</p>
+<p class="prose">고글 베이시스를 학습을 통해서 발화한다고 보면 돼요. 그러니까 이 베이시스를 어떻게 잘 조합하면 내가 스피커를 완성할 수 있는데 어떻게 잘 조합할지를 마스크를 통해서 결정을 해주고 그때 이거를 잘 표현하기 위한 기본적인 베이시스는 학습을 통해서야 합니다. 이 질문에 대한 내용이 다 있습니다. 이해 되시죠? 이 질문 사실 제가 방금 말씀드린 내용에서 우리가 처시부터 얼마전까지 배웠던 모든 내용이 다 한쪽쪽으로 들어왔습니다.</p>
+<p class="prose">그래서 제가 강의가 왔습니다. 이런 것들을 이해하려면 앞쪽 내용을 알아야 합니다. 그런데 그 질문이 더 많은데요. 네 그냥 asr만 알아야 하는 거죠? 이거 asr이 아니라 separation이 가능한 거죠? 여자 목소리나 남자목소리로 분리해야 하는거죠? 구분을 하려고 하는거죠. 스피커 1,2를 분리하는거죠. 미스쳐에는 두개의 사람의 목소리가 섞여있는거구요. 여기는 두개의 스피커의 목소리가 오이시트가 합쳐져 있는거구요.</p>
+<p class="prose">그걸 분리하고 싶은거에요. 그렇게 했을때 스피커 1과 2는 남자 목소리나 여자목소리가 중요하지 않고 어떤 사람 목적이나 다른 사람 목소리를 분리하고 싶은 거야. 그 목적을 가져가는게 스피치 세퍼레이션, 소스 세퍼레이션 베이시스만으로 수성을 하면은 음성에 관한 것만 보이고 나오는 거 아니야? 네, 무슨 말을 했는지만 말의 특징은? 그 말의 특징은... 그런 것들은 배진 상태로 베이식스에서 나오는 건가요?</p>
+<p class="prose">이건 사실 그거랑 똑같다고 보면 돼요. 그 inverse dmt나 dmt를 할 때 베이식스 펑션을 쓰는 것들이 스피치만을 위해서 만들어진 친구는 아니잖아요. 사실 그 기능이라고 보면 돼요. 사실 학습을 할 때 스피치를 가지고 학습을 하다가 베이식스가 스피치를 잘 표현하기 위한 베이식스 펑션이 만들어지겠지만 근데 내가 사용하는 이 소스가 스피치가 아니라 다른 악기 소리가 있는지 바뀌면 그 악기 소리를 잘 표현해 드리면 베이스북 펑크는 만들어지겠죠.</p>
+<p class="prose">사실 이거는 악기가 바뀐거고 내가 이렇게 구성했기 때문에 베이스북 펑크가 만들어지는거다. 얘가 반드시 그렇게 만들어지는거다. 그러면 이렇게 되는거고 그러면 포잘은 뭐냐 이건 사실 지난번에 말씀드렸던 것 같아요. 스포셜은 내가 과거로 볼 거냐, 미래까지 볼 거냐 그렇게 쉽게 생각하면 돼요. 미래까지 본다는 건 뭘까요? 내가 지금 이렇게 입력을 받았을 때 레이터스 벡터가 이렇게 계속 들어오는데 미래까지 본다는 거는 내가 LSTM에서 이 전체에 대한, 예를 들어서 내가 3초라고 할게요.</p>
+<p class="prose">3초 입력에 대한 레이터스 벡터를 다 모아도 그 벡터를 LSTM에 다 넣어줘서 전체를 다 봐서 만들어내는 친구겠죠. 내가 과거를 못 본다 라고 하면 내가 특정 여기 예를 들어 여기를 1.5초로 갈게요 그러면 1.5초 이전까지만 LSTM을 넣을 수 있는 겁니다. 내가 만약에 코자리라고 하면 나도 코자리라고 하면 위에까지 다 한번 내가 넣을 수 있는 거거든요. 그렇게 했을 때 만약에 코자리 아니면 내가 위에까지 볼 수 있으니까 LSTM을 바이드레셔널하게 구성할 수도 있겠죠.</p>
+<p class="prose">그래서 이 친구들은 바이드렉션을 읽고 보는거에요. 그래서 바이드렉션을 읽는거고, 이 친구들은 내가 현재까지 각종 레이저 벡터 시간까지 전까지만 이용을 하는거기 때문에 ns-tm을 쓸 수 밖에 없고, 그렇게 쓸 때 결과를 보면 잘 나온다. 10.08 정도 나온다 라고 보시면 되요. 질문? 다행이네요? 설명을 너무 잘하네요 질문이 없네요 여기서 한 가지 짚고 넘어가서는 LSTM의 도립적인 문제죠.</p>
+<p class="prose">우선 LSTM이 여기 사용하는 LSTM의 프라이팬 개수가 좀 큽니다. 25메가예요. 이 LSTM 하나가 25메가는 2장씩 기준으로 큰 거예요. 사실 지금에선 이게 작은 건 아니지만 근데 중요한 건 그거보다 더 중요한 거는 이 LSTM은 이게 롱 프라이징을 볼 수가 없어요. 이거 왜 못 보는지 여러분도 배웠죠. 리커런트하게 들어가는 거니까 내가 바로 입력한 과거들은 잘 내가 고려할 수가 있는데 얘가 멀어지면 멀어질수록 그 입력 값이 옅어지겠죠.</p>
+<p class="prose">리커런트하게 계속 입력으로 들어가야 되니까 그래서 멀리 볼수록 잘 못 본다는 문제가 발생해요. 아래는 파란색이 크지만 그런 문제가 있었기 때문에 이거를 컨볼루션 타스넷을 통해 가지고 개선을 하겠다고 나왔고요. 이 친구는 그냥 쉽게 얘기해서 앞에서 LSTM으로 하는 구도를 컨볼루션 레이어로 대체하겠다는 겁니다. 사실 얘가 거의 끝이라고 보면 돼요. 그래서 기존의 LSTM으로 하던 친구들</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:00:00.000–00:00:03.000</time> <span>스피커1과 스피커2를 사용하고 싶은거에요</span></li>
+<li><time>00:00:03.000–00:00:05.000</time> <span>어떻게 하냐?</span></li>
+<li><time>00:00:05.000–00:00:08.000</time> <span>우리가 앞에 드렸던 mask는 그대로 활용합니다</span></li>
+<li><time>00:00:08.000–00:00:10.000</time> <span>mask는 그대로 활용하는데</span></li>
+<li><time>00:00:10.000–00:00:13.000</time> <span>latent vector를 lsdm이 인정을 받아서</span></li>
+<li><time>00:00:13.000–00:00:18.000</time> <span>mask 2개를 설치합니다</span></li>
+<li><time>00:00:18.000–00:00:20.000</time> <span>이렇게 되면 lsdm은</span></li>
+<li><time>00:00:20.000–00:00:22.000</time> <span>이 front layer잖아요</span></li>
+<li><time>00:00:22.000–00:00:24.000</time> <span>그러면 어떻게 될까요?</span></li>
+<li><time>00:00:24.000–00:00:26.000</time> <span>이 latent vector가</span></li>
+<li><time>00:00:26.000–00:00:29.000</time> <span>sequential하게 지속적으로 들어오겠죠</span></li>
+<li><time>00:00:29.000–00:00:32.000</time> <span>왜냐하면 얘가 지금은 여기로 돌아오고 있지만</span></li>
+<li><time>00:00:32.000–00:00:34.180</time> <span>얘가 그 다음 시간에 이 홈아웃을 옮겨가서</span></li>
+<li><time>00:00:34.180–00:00:37.880</time> <span>또 이거를 테크넷에 대해서 이력으로 또 들어가겠죠</span></li>
+<li><time>00:00:37.880–00:00:40.880</time> <span>이게 지속적으로 latent vector를 하나씩 만들어내고</span></li>
+<li><time>00:00:40.880–00:00:45.840</time> <span>그게 LSTM에 이코넌트하게 들어가면서</span></li>
+<li><time>00:00:45.840–00:00:49.240</time> <span>이거를 활용을 해서 그때그때</span></li>
+<li><time>00:00:49.240–00:00:55.100</time> <span>이 latent vector에 대한 마스크를 하나씩 만들어낸다고 봅니다</span></li>
+<li><time>00:00:55.100–00:00:56.960</time> <span>이해돼요?</span></li>
+<li><time>00:00:56.960–00:00:59.400</time> <span>사실 앞에서 했던 것들을 계속 보는 거예요.</span></li>
+<li><time>00:00:59.400–00:01:06.960</time> <span>그렇게 했을 때 차이점은 이 SPM은 마스크의 개수를 내가 원하는 만큼 만들어야 돼요.</span></li>
+<li><time>00:01:06.960–00:01:13.400</time> <span>내가 예를 들어서 여기서는 동시에 두 개의 스피커를 분리를 하는 모델을 만들었어요.</span></li>
+<li><time>00:01:13.400–00:01:14.860</time> <span>두 개 이상은 못합니다.</span></li>
+<li><time>00:01:14.860–00:01:19.020</time> <span>두 개까지 내가 분리를 하겠다 라고 하면 마스크를 두 개를 만드는 거예요.</span></li>
+<li><time>00:01:19.020–00:01:20.700</time> <span>마스크를 두 개를 만듭니다.</span></li>
+<li><time>00:01:20.700–00:01:26.960</time> <span>두 개를 만든 다음에 이거는 소프트 마스크라고 해서 0에서 1 사이 값을 받는 마스크예요.</span></li>
+<li><time>00:01:26.960–00:01:31.320</time> <span>영콤프트 마스크라고 하면 일반적으로 바이너리 마스크는 0 아니면 1이 아니라</span></li>
+<li><time>00:01:31.320–00:01:35.720</time> <span>그게 아니라 0에서 1 사이의 값을 받는 그런 마스크라고 봤을 때</span></li>
+<li><time>00:01:35.720–00:01:42.080</time> <span>이 친구를 이 latent vector에 공개해줍니다.</span></li>
+<li><time>00:01:42.080–00:01:51.320</time> <span>공개해주면 각각의 이 latent vector는 여기 리스트에 대한 이메일인데</span></li>
+<li><time>00:01:51.320–00:01:57.320</time> <span>이 친구로부터 내가 뽑아내고 싶은 스피커에 해당하는 성분을 이 마스크를 가지고 뽑아내겠다.</span></li>
+<li><time>00:01:57.320–00:02:03.320</time> <span>그렇게 뽑아내면 마스크 된 레이저 베퍼가 하나하나 나오겠죠.</span></li>
+<li><time>00:02:03.320–00:02:09.320</time> <span>그거를 이제 이걸로 만들어야 되는데, 이 타임보밍 시그널을 다시 역변해야 되는데</span></li>
+<li><time>00:02:09.320–00:02:17.320</time> <span>그때는 이 디코더에서, 여러분들 입장에서는 이게 조금 오마인가 싶을텐데</span></li>
+<li><time>00:02:17.320–00:02:19.960</time> <span>앞에서 DFT 배울 때</span></li>
+<li><time>00:02:19.960–00:02:21.820</time> <span>베이시스에 대해서 배웠잖아요.</span></li>
+<li><time>00:02:22.560–00:02:24.020</time> <span>그렇죠. 역변환하고</span></li>
+<li><time>00:02:24.020–00:02:25.900</time> <span>그걸 다시 Inverse DFT 할 때</span></li>
+<li><time>00:02:25.900–00:02:27.960</time> <span>베이시스를 우리가 활용을 했잖아요.</span></li>
+<li><time>00:02:28.440–00:02:29.540</time> <span>그 베이시스를</span></li>
+<li><time>00:02:29.540–00:02:31.720</time> <span>런오블하게 구성을 했다.</span></li>
+<li><time>00:02:32.680–00:02:33.720</time> <span>요거가 그게 뜻입니다.</span></li>
+<li><time>00:02:35.380–00:02:35.700</time> <span>그래서</span></li>
+<li><time>00:02:35.700–00:02:37.480</time> <span>요 마스크랑</span></li>
+<li><time>00:02:37.480–00:02:39.180</time> <span>마스크를 해서 나온</span></li>
+<li><time>00:02:39.180–00:02:40.740</time> <span>요거를 통해서 나온</span></li>
+<li><time>00:02:40.740–00:02:43.580</time> <span>마스크는</span></li>
+<li><time>00:02:43.580–00:02:48.880</time> <span>마크 그 베이징스 베터가 있을거잖아요</span></li>
+<li><time>00:02:48.880–00:02:53.000</time> <span>이 친구랑 이 베이징스들이 엔게임을 했을텐데</span></li>
+<li><time>00:02:53.000–00:02:58.000</time> <span>그거를 엔게임을 다 이너 프로덕트 한 다음에</span></li>
+<li><time>00:02:58.000–00:03:00.500</time> <span>더하면은 엘리먼트 스킬이 공판을 한 다음에 더하면은</span></li>
+<li><time>00:03:00.500–00:03:02.340</time> <span>이너 프로덕트가 되잖아요</span></li>
+<li><time>00:03:02.340–00:03:05.980</time> <span>그거를 해주면은 요 친구가 하나씩 나오는거에요</span></li>
+<li><time>00:03:05.980–00:03:08.520</time> <span>지금 유사한걸 쓰는거에요?</span></li>
+<li><time>00:03:08.520–00:03:10.140</time> <span>베이징스는 쉽게 얘기하면은</span></li>
+<li><time>00:03:10.140–00:03:13.940</time> <span>얘를 표현하기 위한 기본적인 어떤 그런 체일이라고 보면 돼요.</span></li>
+<li><time>00:03:14.600–00:03:18.260</time> <span>기본적으로 내가 이 스피치 성분을 복원해야 되는데</span></li>
+<li><time>00:03:18.260–00:03:21.580</time> <span>얘를 복원할 때 필요한 기본적인 성분들이 있잖아요.</span></li>
+<li><time>00:03:22.260–00:03:25.100</time> <span>고글 베이시스를 학습을 통해서 발화한다고 보면 돼요.</span></li>
+<li><time>00:03:25.360–00:03:28.940</time> <span>그러니까 이 베이시스를 어떻게 잘 조합하면 내가 스피커를 완성할 수 있는데</span></li>
+<li><time>00:03:28.940–00:03:34.000</time> <span>어떻게 잘 조합할지를 마스크를 통해서 결정을 해주고</span></li>
+<li><time>00:03:34.000–00:03:38.620</time> <span>그때 이거를 잘 표현하기 위한 기본적인 베이시스는 학습을 통해서야 합니다.</span></li>
+<li><time>00:03:38.620–00:03:42.620</time> <span>이 질문에 대한 내용이 다 있습니다.</span></li>
+<li><time>00:03:42.620–00:03:44.620</time> <span>이해 되시죠?</span></li>
+<li><time>00:03:44.620–00:03:46.620</time> <span>이 질문</span></li>
+<li><time>00:03:46.620–00:03:50.620</time> <span>사실 제가 방금 말씀드린 내용에서</span></li>
+<li><time>00:03:50.620–00:03:55.620</time> <span>우리가 처시부터 얼마전까지 배웠던 모든 내용이 다 한쪽쪽으로 들어왔습니다.</span></li>
+<li><time>00:03:55.620–00:03:57.620</time> <span>그래서 제가 강의가 왔습니다.</span></li>
+<li><time>00:03:57.620–00:03:59.620</time> <span>이런 것들을 이해하려면 앞쪽 내용을 알아야 합니다.</span></li>
+<li><time>00:03:59.620–00:04:01.620</time> <span>그런데 그 질문이 더 많은데요.</span></li>
+<li><time>00:04:01.620–00:04:02.620</time> <span>네</span></li>
+<li><time>00:04:02.620–00:04:05.620</time> <span>그냥 asr만 알아야 하는 거죠?</span></li>
+<li><time>00:04:05.620–00:04:07.620</time> <span>이거 asr이 아니라 separation이 가능한 거죠?</span></li>
+<li><time>00:04:07.620–00:04:11.620</time> <span>여자 목소리나 남자목소리로 분리해야 하는거죠?</span></li>
+<li><time>00:04:11.620–00:04:14.620</time> <span>구분을 하려고 하는거죠.</span></li>
+<li><time>00:04:14.620–00:04:17.620</time> <span>스피커 1,2를 분리하는거죠.</span></li>
+<li><time>00:04:17.620–00:04:21.620</time> <span>미스쳐에는 두개의 사람의 목소리가 섞여있는거구요.</span></li>
+<li><time>00:04:21.620–00:04:26.620</time> <span>여기는 두개의 스피커의 목소리가</span></li>
+<li><time>00:04:26.620–00:04:29.620</time> <span>오이시트가 합쳐져 있는거구요.</span></li>
+<li><time>00:04:29.620–00:04:31.620</time> <span>그걸 분리하고 싶은거에요.</span></li>
+<li><time>00:04:31.620–00:04:33.620</time> <span>그렇게 했을때 스피커 1과 2는</span></li>
+<li><time>00:04:33.620–00:04:36.620</time> <span>남자 목소리나 여자목소리가 중요하지 않고</span></li>
+<li><time>00:04:36.620–00:04:40.620</time> <span>어떤 사람 목적이나 다른 사람 목소리를 분리하고 싶은 거야</span></li>
+<li><time>00:04:40.620–00:04:44.620</time> <span>그 목적을 가져가는게 스피치 세퍼레이션, 소스 세퍼레이션</span></li>
+<li><time>00:04:44.620–00:04:51.620</time> <span>베이시스만으로 수성을 하면은 음성에 관한 것만 보이고 나오는 거 아니야?</span></li>
+<li><time>00:04:51.620–00:04:56.620</time> <span>네, 무슨 말을 했는지만 말의 특징은?</span></li>
+<li><time>00:04:56.620–00:04:59.620</time> <span>그 말의 특징은...</span></li>
+<li><time>00:05:00.000–00:05:05.000</time> <span>그런 것들은 배진 상태로 베이식스에서 나오는 건가요?</span></li>
+<li><time>00:05:05.000–00:05:07.000</time> <span>이건 사실 그거랑 똑같다고 보면 돼요.</span></li>
+<li><time>00:05:07.000–00:05:14.000</time> <span>그 inverse dmt나 dmt를 할 때 베이식스 펑션을 쓰는 것들이 스피치만을 위해서 만들어진 친구는 아니잖아요.</span></li>
+<li><time>00:05:14.000–00:05:16.000</time> <span>사실 그 기능이라고 보면 돼요.</span></li>
+<li><time>00:05:16.000–00:05:23.000</time> <span>사실 학습을 할 때 스피치를 가지고 학습을 하다가 베이식스가 스피치를 잘 표현하기 위한 베이식스 펑션이 만들어지겠지만</span></li>
+<li><time>00:05:23.000–00:05:29.000</time> <span>근데 내가 사용하는 이 소스가 스피치가 아니라 다른 악기 소리가 있는지</span></li>
+<li><time>00:05:29.000–00:05:33.000</time> <span>바뀌면 그 악기 소리를 잘 표현해 드리면 베이스북 펑크는 만들어지겠죠.</span></li>
+<li><time>00:05:33.000–00:05:39.000</time> <span>사실 이거는 악기가 바뀐거고 내가 이렇게 구성했기 때문에 베이스북 펑크가 만들어지는거다.</span></li>
+<li><time>00:05:39.000–00:05:43.000</time> <span>얘가 반드시 그렇게 만들어지는거다.</span></li>
+<li><time>00:05:43.000–00:05:48.000</time> <span>그러면 이렇게 되는거고 그러면 포잘은 뭐냐</span></li>
+<li><time>00:05:48.000–00:05:50.000</time> <span>이건 사실 지난번에 말씀드렸던 것 같아요.</span></li>
+<li><time>00:05:50.000–00:05:53.000</time> <span>스포셜은 내가 과거로 볼 거냐, 미래까지 볼 거냐</span></li>
+<li><time>00:05:53.000–00:05:54.000</time> <span>그렇게 쉽게 생각하면 돼요.</span></li>
+<li><time>00:05:54.000–00:05:56.000</time> <span>미래까지 본다는 건 뭘까요?</span></li>
+<li><time>00:05:56.000–00:05:58.000</time> <span>내가 지금 이렇게 입력을 받았을 때</span></li>
+<li><time>00:05:58.000–00:06:00.000</time> <span>레이터스 벡터가 이렇게 계속 들어오는데</span></li>
+<li><time>00:06:00.000–00:06:02.000</time> <span>미래까지 본다는 거는</span></li>
+<li><time>00:06:02.000–00:06:05.000</time> <span>내가 LSTM에서</span></li>
+<li><time>00:06:05.000–00:06:10.000</time> <span>이 전체에 대한, 예를 들어서 내가 3초라고 할게요.</span></li>
+<li><time>00:06:10.000–00:06:13.000</time> <span>3초 입력에 대한 레이터스 벡터를 다 모아도</span></li>
+<li><time>00:06:13.000–00:06:16.000</time> <span>그 벡터를 LSTM에 다 넣어줘서</span></li>
+<li><time>00:06:16.000–00:06:20.100</time> <span>전체를 다 봐서 만들어내는 친구겠죠</span></li>
+<li><time>00:06:20.100–00:06:22.180</time> <span>내가 과거를 못 본다 라고 하면</span></li>
+<li><time>00:06:22.180–00:06:25.760</time> <span>내가 특정 여기 예를 들어 여기를 1.5초로 갈게요</span></li>
+<li><time>00:06:25.760–00:06:29.520</time> <span>그러면 1.5초 이전까지만 LSTM을 넣을 수 있는 겁니다</span></li>
+<li><time>00:06:29.520–00:06:31.300</time> <span>내가 만약에 코자리라고 하면</span></li>
+<li><time>00:06:31.300–00:06:32.420</time> <span>나도 코자리라고 하면</span></li>
+<li><time>00:06:32.420–00:06:35.660</time> <span>위에까지 다 한번 내가 넣을 수 있는 거거든요</span></li>
+<li><time>00:06:35.660–00:06:38.220</time> <span>그렇게 했을 때 만약에 코자리 아니면</span></li>
+<li><time>00:06:38.220–00:06:40.000</time> <span>내가 위에까지 볼 수 있으니까</span></li>
+<li><time>00:06:40.000–00:06:43.520</time> <span>LSTM을 바이드레셔널하게 구성할 수도 있겠죠</span></li>
+<li><time>00:06:43.520–00:06:49.600</time> <span>그래서 이 친구들은 바이드렉션을 읽고 보는거에요.</span></li>
+<li><time>00:06:49.600–00:06:53.680</time> <span>그래서 바이드렉션을 읽는거고, 이 친구들은 내가 현재까지</span></li>
+<li><time>00:06:53.680–00:06:58.800</time> <span>각종 레이저 벡터 시간까지 전까지만 이용을 하는거기 때문에</span></li>
+<li><time>00:06:58.800–00:07:04.080</time> <span>ns-tm을 쓸 수 밖에 없고, 그렇게 쓸 때 결과를 보면</span></li>
+<li><time>00:07:04.080–00:07:10.480</time> <span>잘 나온다. 10.08 정도 나온다 라고 보시면 되요.</span></li>
+<li><time>00:07:13.520–00:07:18.260</time> <span>질문? 다행이네요?</span></li>
+<li><time>00:07:19.320–00:07:21.500</time> <span>설명을 너무 잘하네요</span></li>
+<li><time>00:07:21.500–00:07:23.660</time> <span>질문이 없네요</span></li>
+<li><time>00:07:23.660–00:07:26.800</time> <span>여기서 한 가지 짚고 넘어가서는</span></li>
+<li><time>00:07:26.800–00:07:30.820</time> <span>LSTM의 도립적인 문제죠</span></li>
+<li><time>00:07:30.820–00:07:34.520</time> <span>우선 LSTM이 여기 사용하는 LSTM의 프라이팬 개수가 좀 큽니다</span></li>
+<li><time>00:07:34.520–00:07:36.940</time> <span>25메가예요</span></li>
+<li><time>00:07:36.940–00:07:38.500</time> <span>이 LSTM 하나가</span></li>
+<li><time>00:07:38.500–00:07:41.540</time> <span>25메가는 2장씩 기준으로 큰 거예요</span></li>
+<li><time>00:07:41.540–00:07:45.440</time> <span>사실 지금에선 이게 작은 건 아니지만</span></li>
+<li><time>00:07:45.440–00:07:49.420</time> <span>근데 중요한 건 그거보다 더 중요한 거는</span></li>
+<li><time>00:07:49.420–00:07:53.140</time> <span>이 LSTM은 이게 롱 프라이징을 볼 수가 없어요</span></li>
+<li><time>00:07:53.140–00:07:55.880</time> <span>이거 왜 못 보는지 여러분도 배웠죠</span></li>
+<li><time>00:07:55.880–00:07:58.180</time> <span>리커런트하게 들어가는 거니까</span></li>
+<li><time>00:07:58.180–00:08:04.000</time> <span>내가 바로 입력한 과거들은 잘 내가 고려할 수가 있는데</span></li>
+<li><time>00:08:04.000–00:08:08.140</time> <span>얘가 멀어지면 멀어질수록 그 입력 값이 옅어지겠죠</span></li>
+<li><time>00:08:08.140–00:08:11.120</time> <span>리커런트하게 계속 입력으로 들어가야 되니까</span></li>
+<li><time>00:08:11.120–00:08:14.840</time> <span>그래서 멀리 볼수록 잘 못 본다는 문제가 발생해요.</span></li>
+<li><time>00:08:14.840–00:08:17.420</time> <span>아래는 파란색이 크지만</span></li>
+<li><time>00:08:17.420–00:08:19.380</time> <span>그런 문제가 있었기 때문에</span></li>
+<li><time>00:08:19.380–00:08:23.680</time> <span>이거를 컨볼루션 타스넷을 통해 가지고</span></li>
+<li><time>00:08:23.680–00:08:25.780</time> <span>개선을 하겠다고 나왔고요.</span></li>
+<li><time>00:08:25.780–00:08:29.300</time> <span>이 친구는 그냥 쉽게 얘기해서</span></li>
+<li><time>00:08:29.300–00:08:32.200</time> <span>앞에서 LSTM으로 하는 구도를</span></li>
+<li><time>00:08:32.200–00:08:35.300</time> <span>컨볼루션 레이어로 대체하겠다는 겁니다.</span></li>
+<li><time>00:08:35.300–00:08:38.740</time> <span>사실 얘가 거의 끝이라고 보면 돼요.</span></li>
+<li><time>00:08:38.740–00:08:45.940</time> <span>그래서 기존의 LSTM으로 하던 친구들</span></li>
+</ol></details></section>
+<section id="part-2"><h2>LSTM을 대신하는 temporal convolution</h2>
+<p class="prose">이게 Temporal Convolution Layer로 다 대체가 됐고요. Temporal Convolution Layer를 정한다는 거예요. 이것을 스펙트럼에 대해서 사용한다는 거예요. Temporal, 시간축에 대해서 그래서 ETCN이라고 하고요. 그때 중요한 것은 한 가지 더 보여야 되는 점은 이 convolution layer를 related convolution layer 제가 과거에 한번 말씀드렸던거 기억나죠?</p>
+<p class="prose">이 친구가 한번 말씀을 드렸던거 같은데 언제 얘기했지? 이 친구를 아마 제가 speech asr 할 때 말을 했던거 같은데 그 세포모? 그 뭐야? 퍼포먼스 얘기하면서 여기 있나? 여기 있다 얘가 아니지? 어디서 얘기했죠? 얘가 아니구나 미안해요. 이 Deleted Conversion은 뭐냐면은 기본적으로 Conversion Layer 보면은 Filter Size 이게 이미지라고 보면은 이미지를 스트레이션으로 이렇게 갖잖아요.</p>
+<p class="prose">그쵸? 얘가 성폭력상이라고 하면 이렇게 갖죠. 그래서 내가 이 타겟 픽셀에 대해서 주변만 갖고 있잖아요. 이 delay-fit 이 친구는 뭐냐면은 이렇게 구성하는게 아니라 내가 예를 들어서 이 픽셀의 주변을 보고 싶어요. 그러면은 아까처럼 하는게 아니라 한 칸씩 띄워서 한다라던가 이렇게 이렇게 예를 들어, 필터를 이렇게 잡는 겁니다. 왜 이렇게 할까요? 이렇게 하면 좀 더 멀리 볼 수 있겠죠. 같은 필터 사이즈로 천국합이 한 필터 사이즈인데 더 한 칸씩 옆에까지 높이기 때문에요.</p>
+<p class="prose">이거 hierarchy를 높게 따가면 내가 단순히 천국합이 한 밑자리 일괄적인 컴포넌트 레이어를 사용한 것보다 더 멀리까지 높이겠죠. 아래 밑까지. 그렇게 해가지고 이렇게 구성을 했습니다. 이 친구는. 이렇게 했을 때 앞에 컨볼루션 레이어 앞에 이 친구는 지금 인코더 쪽 보면은 앞에 여기랑 똑같죠? 그쵸? 인코더 똑같죠? 왼쪽에 지금 보면은 제가 한 번 더 해볼게요. 여기랑 지금 여기랑 똑같죠? 그리고 여기도 원기 컨볼루션을 통해서 디포디만 하는데 여기서 그게 용기에 해당하는 거예요.</p>
+<p class="prose">얘가 사실 똑같은 얘기일 수 있어요. 똑같은 얘기입니다. 왜 똑같은 얘기냐? 여기서 학습 가능한 베이직스가 사실은 컨볼루션 레이어에서 커널하고 비슷한 계정이에요. 이 터널을 컨볼루션 하잖아요. 이 베이스는 컨볼루션 하는거거든요. 그렇다라는 것은 내가 이 전체 베이스를 길게 잡을 필요 없이 로컬하게 짧게 잡다가 헤라키하게 쌓으면은 이 베이스랑 비슷한 성능을 하는 역할을 이 원기 컨볼루션이 그대로 할 수 있게 됩니다.</p>
+<p class="prose">그래가지고 여기 들어가고, 사실 앞에서 얘기했던 거랑 같은 개념이다. 같은 개념이다. 결국엔 디코딩을 하는 거다. 베이스를 러너블하게 만들어서 그게 퍼볼러션 코너가 되는 거고 그걸 통해서 이 제플레이션을 하는 거다. 그렇게 됐을 때 차이점은 이 가운데 밖에 없어요. 이 제플레이션 하는 부분. 앞에서는 이게 LSTM인데, 얘가 원지 컨벌레이션 레이어들의 그거밖에 없고 얘가 깊어졌기 때문에 스피커레이션 같은 것들이 많이 보이죠.</p>
+<p class="prose">스피드 커네션이 렌트에서 처음 나왔던 것 같은데 이렇게 많이 쓰이지만 스피드 커네션은 커버젤레이가 깊어지면 스피드 커네션이 안되는 문제를 해결하기 위해서 스피드 커네션을 만들고 있어요.</p>
+<p class="prose">예를 들어서 층층이 쌓이면 이 경로로만 경호가 이동할 수가 있는데 피쳐들이 중간에 이 선들을 끌고 와가지고 그 다음 친구들의 입력을 넣어주죠. 마찬가지로 얘도 다시 이렇게 끌고 와가지고 여기다 넣어주고 스피드 컨디션이라고 하잖아요. 그쵸? 아 얘가 여기로 들어가야 되는데 여기로 들어가야 되겠죠. 요게 스피드 컨디션이고 이렇게 그냥 구성하는거죠. 이렇게 해서 좋아지는거는 더 작아졌구요. 엘지밋이 되가지고 당연히 더 작아졌겠죠.</p>
+<p class="prose">터널과 내가 포함이 되니까 터널과 하면 되니까 더 작아졌고 내가 그 수치를 가지고 왔는데 얘가 5.1 그리고 더 빠르고 왜냐하면 투버맨드에 의하면 범결이 잘 가죠. 범결화가. 어떻게 하냐.</p>
+<p class="prose">예를 들어서 이미지가 들어오는데 이게 오디오 겟다. 이거를 이렇게 잘라가지고 범결을 이걸로 넣으면 되죠. 그 다음에 치워야 되죠. 그렇게 하면 되고 그래서 빨라졌고 그리고 더 멀리 볼 수도 있어요. LSDM은 이게 롱라이트는 길게 가면 이곳은 그곳에 있는데 요거는 그런 문제는 없어지겠죠. 왜냐면은 이 꼼줄이 공평하게 이런 장점을 가지고 있는 이런 진로는 이게 위로 사질 짐이니까 이 한층만 하는 게 아니라 위층은 한 번 더 하잖아요.</p>
+<p class="prose">결국에 다 아 여기 위에서 얘기하나요? 위로 쌓아야 합니다. 그래서 결과를 보면은 똑같이 했구요. 사실 앞에 여기는 똑같아요. 여기는 똑같습니다 이렇게 하는건 똑같고 앞에 입력은 똑같은데 결과를 보면은 이 코스 타슨에 이 코자리일 때 코자리 아니면은 15도는 30도 나오고 코자리라고 하면은 이렇게 10.6.5 다운다 흥미로운 점은, 포장일 때 LFK 보다 크게 좋아지지는 않아요. 오히려 LFK도 더 좋습니다.</p>
+<p class="prose">파스네이션. 얘는 이렇게, 이 바이렉션을 볼 때, 그러니까 롱 프라이트를 볼 때 잘 된다는 기억을 갖고 있어요. 이거는 전체를 한 번에 보는 거니까, 더 멀리 봐야 되겠죠. 그때 더 잘 된다. 그런 것들이 이 결과에 대해서는 되게 좋은 것 같아요. 이렇게 하면 이렇게 했을 때 문제가 또 하나 있어요. 지금 아 내가 그 결과 안 받은 것 같다 아 이거 말해야 되는데 내가 이거 살짝 수정해서 올려줄게요 수정해서 올려줄 건데 수정해서 올려줄게요 무슨 말이냐면은 이게 이게...</p>
+<p class="prose">아니다. 잠깐만요 이거 보면서 말하자면 설명을 하는게 이거인거 같아요. 중요한데요. 제가 이 cpt는 수정해서 올려드릴거고 잠시만요 아 여기가 어떻게 뜨지? 노래에 그 글자 그려낸 거 [자동 전사 반복 구간 생략] 여기서 여기까지 설명을 했고요. 이 결과를 보면은 지금 이걸 좀 확대를 해보면 여기 보면은 n이 있고 m이 있잖아요. 이 l이 뭐냐면은 l이 뭐냐면은 이 보면은 40이 있고 32가 있고 16이 있죠.</p>
+<p class="prose">사실 이 l이 중요해요. 이 l이 중요한데 여기서 그 l이 뭐냐면은 여기서 입력으로 들어갈 때 요거를 L이 가고 하는 겁니다. 잠깐만 왜 안 나오지? 아 나온다. 요 친구가 L이에요. 요 친구. 요 입력으로 세금의 인식에 들어가는 오디오 엠프트 이 친구가 L인데 이 L을 길게 잡냐 짧게 잡냐로 어브레이션 설치를 한 거예요. 이게 컴퓨터스에서 논문에 나오거든요. 그래서</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:08:45.940–00:08:51.200</time> <span>이게 Temporal Convolution Layer로 다 대체가 됐고요</span></li>
+<li><time>00:08:51.200–00:08:53.500</time> <span>Temporal Convolution Layer를 정한다는 거예요</span></li>
+<li><time>00:08:53.500–00:08:56.340</time> <span>이것을 스펙트럼에 대해서 사용한다는 거예요</span></li>
+<li><time>00:08:56.340–00:08:58.000</time> <span>Temporal, 시간축에 대해서</span></li>
+<li><time>00:08:58.000–00:09:00.980</time> <span>그래서 ETCN이라고 하고요</span></li>
+<li><time>00:09:00.980–00:09:05.780</time> <span>그때 중요한 것은 한 가지 더 보여야 되는 점은</span></li>
+<li><time>00:09:05.780–00:09:10.280</time> <span>이 convolution layer를</span></li>
+<li><time>00:09:10.280–00:09:12.820</time> <span>related convolution layer</span></li>
+<li><time>00:09:12.820–00:09:16.500</time> <span>제가 과거에 한번 말씀드렸던거 기억나죠?</span></li>
+<li><time>00:09:16.500–00:09:19.700</time> <span>이 친구가 한번 말씀을 드렸던거 같은데</span></li>
+<li><time>00:09:19.700–00:09:23.200</time> <span>언제 얘기했지?</span></li>
+<li><time>00:09:23.200–00:09:28.060</time> <span>이 친구를 아마 제가 speech asr 할 때 말을 했던거 같은데</span></li>
+<li><time>00:09:28.060–00:09:29.380</time> <span>그 세포모? 그 뭐야?</span></li>
+<li><time>00:09:29.380–00:09:31.380</time> <span>퍼포먼스 얘기하면서</span></li>
+<li><time>00:09:31.380–00:09:33.380</time> <span>여기 있나?</span></li>
+<li><time>00:09:35.380–00:09:37.380</time> <span>여기 있다</span></li>
+<li><time>00:09:39.380–00:09:41.380</time> <span>얘가 아니지?</span></li>
+<li><time>00:09:41.380–00:09:43.380</time> <span>어디서 얘기했죠?</span></li>
+<li><time>00:09:43.380–00:09:45.380</time> <span>얘가 아니구나</span></li>
+<li><time>00:09:45.380–00:09:47.380</time> <span>미안해요</span></li>
+<li><time>00:09:47.380–00:09:49.380</time> <span>이 Deleted Conversion은 뭐냐면은</span></li>
+<li><time>00:09:49.380–00:09:51.380</time> <span>기본적으로 Conversion Layer 보면은</span></li>
+<li><time>00:09:51.380–00:09:53.380</time> <span>Filter Size 이게 이미지라고 보면은</span></li>
+<li><time>00:09:53.380–00:09:55.380</time> <span>이미지를 스트레이션으로 이렇게 갖잖아요</span></li>
+<li><time>00:09:55.380–00:09:57.380</time> <span>그쵸?</span></li>
+<li><time>00:09:57.380–00:09:59.380</time> <span>얘가 성폭력상이라고 하면 이렇게 갖죠</span></li>
+<li><time>00:09:59.380–00:09:59.880</time> <span>그래서</span></li>
+<li><time>00:10:00.000–00:10:04.000</time> <span>내가 이 타겟 픽셀에 대해서 주변만 갖고 있잖아요</span></li>
+<li><time>00:10:04.000–00:10:07.000</time> <span>이 delay-fit 이 친구는 뭐냐면은</span></li>
+<li><time>00:10:09.000–00:10:11.000</time> <span>이렇게 구성하는게 아니라</span></li>
+<li><time>00:10:11.000–00:10:17.000</time> <span>내가 예를 들어서 이 픽셀의 주변을 보고 싶어요</span></li>
+<li><time>00:10:17.000–00:10:20.000</time> <span>그러면은 아까처럼 하는게 아니라</span></li>
+<li><time>00:10:20.000–00:10:23.000</time> <span>한 칸씩 띄워서 한다라던가 이렇게</span></li>
+<li><time>00:10:27.000–00:10:28.000</time> <span>이렇게</span></li>
+<li><time>00:10:28.000–00:10:31.000</time> <span>예를 들어, 필터를 이렇게 잡는 겁니다.</span></li>
+<li><time>00:10:31.000–00:10:33.000</time> <span>왜 이렇게 할까요?</span></li>
+<li><time>00:10:33.000–00:10:36.000</time> <span>이렇게 하면 좀 더 멀리 볼 수 있겠죠.</span></li>
+<li><time>00:10:36.000–00:10:38.000</time> <span>같은 필터 사이즈로</span></li>
+<li><time>00:10:38.000–00:10:40.000</time> <span>천국합이 한 필터 사이즈인데</span></li>
+<li><time>00:10:40.000–00:10:42.000</time> <span>더 한 칸씩 옆에까지 높이기 때문에요.</span></li>
+<li><time>00:10:42.000–00:10:44.000</time> <span>이거 hierarchy를 높게 따가면</span></li>
+<li><time>00:10:44.000–00:10:47.000</time> <span>내가 단순히 천국합이 한 밑자리</span></li>
+<li><time>00:10:47.000–00:10:49.000</time> <span>일괄적인 컴포넌트 레이어를 사용한 것보다</span></li>
+<li><time>00:10:49.000–00:10:52.000</time> <span>더 멀리까지 높이겠죠. 아래 밑까지.</span></li>
+<li><time>00:10:52.000–00:10:56.000</time> <span>그렇게 해가지고 이렇게 구성을 했습니다. 이 친구는.</span></li>
+<li><time>00:10:56.000–00:11:08.000</time> <span>이렇게 했을 때 앞에 컨볼루션 레이어 앞에 이 친구는 지금 인코더 쪽 보면은 앞에 여기랑 똑같죠?</span></li>
+<li><time>00:11:08.000–00:11:17.000</time> <span>그쵸? 인코더 똑같죠? 왼쪽에 지금 보면은 제가 한 번 더 해볼게요. 여기랑 지금 여기랑 똑같죠?</span></li>
+<li><time>00:11:17.000–00:11:23.960</time> <span>그리고 여기도 원기 컨볼루션을 통해서 디포디만 하는데</span></li>
+<li><time>00:11:23.960–00:11:26.720</time> <span>여기서 그게 용기에 해당하는 거예요.</span></li>
+<li><time>00:11:27.580–00:11:29.720</time> <span>얘가 사실 똑같은 얘기일 수 있어요. 똑같은 얘기입니다.</span></li>
+<li><time>00:11:29.960–00:11:30.720</time> <span>왜 똑같은 얘기냐?</span></li>
+<li><time>00:11:30.720–00:11:37.720</time> <span>여기서 학습 가능한 베이직스가 사실은 컨볼루션 레이어에서 커널하고 비슷한 계정이에요.</span></li>
+<li><time>00:11:37.720–00:11:47.720</time> <span>이 터널을 컨볼루션 하잖아요.</span></li>
+<li><time>00:11:47.720–00:11:49.720</time> <span>이 베이스는 컨볼루션 하는거거든요.</span></li>
+<li><time>00:11:49.720–00:11:51.720</time> <span>그렇다라는 것은</span></li>
+<li><time>00:11:51.720–00:11:55.720</time> <span>내가 이 전체 베이스를 길게 잡을 필요 없이</span></li>
+<li><time>00:11:55.720–00:11:57.720</time> <span>로컬하게 짧게 잡다가</span></li>
+<li><time>00:11:57.720–00:11:59.720</time> <span>헤라키하게 쌓으면은</span></li>
+<li><time>00:11:59.720–00:12:02.720</time> <span>이 베이스랑 비슷한 성능을 하는 역할을</span></li>
+<li><time>00:12:02.720–00:12:06.720</time> <span>이 원기 컨볼루션이 그대로 할 수 있게 됩니다.</span></li>
+<li><time>00:12:06.720–00:12:10.720</time> <span>그래가지고 여기 들어가고, 사실 앞에서 얘기했던 거랑 같은 개념이다.</span></li>
+<li><time>00:12:10.720–00:12:13.720</time> <span>같은 개념이다. 결국엔 디코딩을 하는 거다.</span></li>
+<li><time>00:12:13.720–00:12:17.720</time> <span>베이스를 러너블하게 만들어서 그게 퍼볼러션 코너가 되는 거고</span></li>
+<li><time>00:12:17.720–00:12:20.720</time> <span>그걸 통해서 이 제플레이션을 하는 거다.</span></li>
+<li><time>00:12:20.720–00:12:23.720</time> <span>그렇게 됐을 때 차이점은 이 가운데 밖에 없어요.</span></li>
+<li><time>00:12:23.720–00:12:25.720</time> <span>이 제플레이션 하는 부분.</span></li>
+<li><time>00:12:25.720–00:12:30.720</time> <span>앞에서는 이게 LSTM인데, 얘가 원지 컨벌레이션 레이어들의 그거밖에 없고</span></li>
+<li><time>00:12:30.720–00:12:35.720</time> <span>얘가 깊어졌기 때문에 스피커레이션 같은 것들이 많이 보이죠.</span></li>
+<li><time>00:12:35.720–00:12:38.720</time> <span>스피드 커네션이 렌트에서 처음 나왔던 것 같은데</span></li>
+<li><time>00:12:38.720–00:12:42.720</time> <span>이렇게 많이 쓰이지만 스피드 커네션은 커버젤레이가 깊어지면</span></li>
+<li><time>00:12:42.720–00:12:46.720</time> <span>스피드 커네션이 안되는 문제를 해결하기 위해서 스피드 커네션을 만들고 있어요</span></li>
+<li><time>00:12:46.720–00:12:52.720</time> <span>예를 들어서 층층이 쌓이면 이 경로로만 경호가 이동할 수가 있는데</span></li>
+<li><time>00:12:52.720–00:12:57.720</time> <span>피쳐들이 중간에 이 선들을 끌고 와가지고 그 다음 친구들의 입력을 넣어주죠</span></li>
+<li><time>00:12:57.720–00:13:03.720</time> <span>마찬가지로 얘도 다시 이렇게 끌고 와가지고 여기다 넣어주고</span></li>
+<li><time>00:13:03.720–00:13:05.720</time> <span>스피드 컨디션이라고 하잖아요</span></li>
+<li><time>00:13:05.720–00:13:07.720</time> <span>그쵸?</span></li>
+<li><time>00:13:07.720–00:13:09.720</time> <span>아 얘가 여기로 들어가야 되는데</span></li>
+<li><time>00:13:09.720–00:13:11.720</time> <span>여기로 들어가야 되겠죠</span></li>
+<li><time>00:13:11.720–00:13:13.720</time> <span>요게 스피드 컨디션이고</span></li>
+<li><time>00:13:13.720–00:13:15.720</time> <span>이렇게 그냥 구성하는거죠</span></li>
+<li><time>00:13:15.720–00:13:17.720</time> <span>이렇게 해서 좋아지는거는</span></li>
+<li><time>00:13:17.720–00:13:19.720</time> <span>더 작아졌구요</span></li>
+<li><time>00:13:19.720–00:13:21.720</time> <span>엘지밋이 되가지고</span></li>
+<li><time>00:13:21.720–00:13:23.720</time> <span>당연히 더 작아졌겠죠</span></li>
+<li><time>00:13:23.720–00:13:25.720</time> <span>터널과 내가 포함이 되니까</span></li>
+<li><time>00:13:25.720–00:13:27.720</time> <span>터널과 하면 되니까 더 작아졌고</span></li>
+<li><time>00:13:27.720–00:13:29.720</time> <span>내가 그 수치를 가지고 왔는데</span></li>
+<li><time>00:13:29.720–00:13:31.720</time> <span>얘가 5.1</span></li>
+<li><time>00:13:31.720–00:13:36.180</time> <span>그리고 더 빠르고</span></li>
+<li><time>00:13:36.180–00:13:38.180</time> <span>왜냐하면 투버맨드에 의하면 범결이 잘 가죠.</span></li>
+<li><time>00:13:38.180–00:13:38.740</time> <span>범결화가.</span></li>
+<li><time>00:13:39.360–00:13:40.000</time> <span>어떻게 하냐.</span></li>
+<li><time>00:13:40.280–00:13:42.580</time> <span>예를 들어서 이미지가 들어오는데</span></li>
+<li><time>00:13:42.580–00:13:43.600</time> <span>이게 오디오 겟다.</span></li>
+<li><time>00:13:43.720–00:13:45.500</time> <span>이거를 이렇게 잘라가지고</span></li>
+<li><time>00:13:45.500–00:13:48.300</time> <span>범결을 이걸로 넣으면 되죠.</span></li>
+<li><time>00:13:48.500–00:13:49.440</time> <span>그 다음에 치워야 되죠.</span></li>
+<li><time>00:13:49.660–00:13:51.760</time> <span>그렇게 하면 되고</span></li>
+<li><time>00:13:51.760–00:13:54.080</time> <span>그래서 빨라졌고</span></li>
+<li><time>00:13:54.080–00:13:56.200</time> <span>그리고 더 멀리 볼 수도 있어요.</span></li>
+<li><time>00:13:57.100–00:13:57.940</time> <span>LSDM은</span></li>
+<li><time>00:13:57.940–00:14:00.300</time> <span>이게 롱라이트는 길게 가면</span></li>
+<li><time>00:14:00.300–00:14:04.180</time> <span>이곳은 그곳에 있는데 요거는 그런 문제는 없어지겠죠.</span></li>
+<li><time>00:14:04.340–00:14:06.380</time> <span>왜냐면은 이 꼼줄이 공평하게</span></li>
+<li><time>00:14:06.380–00:14:10.440</time> <span>이런 장점을 가지고 있는</span></li>
+<li><time>00:14:10.440–00:14:12.480</time> <span>이런 진로는</span></li>
+<li><time>00:14:12.480–00:14:23.240</time> <span>이게 위로 사질 짐이니까</span></li>
+<li><time>00:14:23.240–00:14:24.960</time> <span>이 한층만 하는 게 아니라</span></li>
+<li><time>00:14:24.960–00:14:26.680</time> <span>위층은 한 번 더 하잖아요.</span></li>
+<li><time>00:14:26.800–00:14:27.620</time> <span>결국에 다</span></li>
+<li><time>00:14:27.620–00:14:29.620</time> <span>아 여기 위에서 얘기하나요?</span></li>
+<li><time>00:14:29.620–00:14:31.620</time> <span>위로 쌓아야 합니다</span></li>
+<li><time>00:14:33.620–00:14:35.620</time> <span>그래서 결과를 보면은</span></li>
+<li><time>00:14:35.620–00:14:37.620</time> <span>똑같이 했구요</span></li>
+<li><time>00:14:37.620–00:14:39.620</time> <span>사실 앞에 여기는 똑같아요</span></li>
+<li><time>00:14:39.620–00:14:41.620</time> <span>여기는 똑같습니다 이렇게 하는건 똑같고</span></li>
+<li><time>00:14:41.620–00:14:43.620</time> <span>앞에 입력은 똑같은데</span></li>
+<li><time>00:14:43.620–00:14:45.620</time> <span>결과를 보면은</span></li>
+<li><time>00:14:45.620–00:14:47.620</time> <span>이 코스 타슨에</span></li>
+<li><time>00:14:47.620–00:14:49.620</time> <span>이 코자리일 때</span></li>
+<li><time>00:14:49.620–00:14:51.620</time> <span>코자리 아니면은</span></li>
+<li><time>00:14:51.620–00:14:53.620</time> <span>15도는 30도 나오고</span></li>
+<li><time>00:14:53.620–00:14:55.620</time> <span>코자리라고 하면은</span></li>
+<li><time>00:14:55.620–00:14:57.620</time> <span>이렇게 10.6.5</span></li>
+<li><time>00:14:57.620–00:14:59.620</time> <span>다운다</span></li>
+<li><time>00:15:00.000–00:15:07.000</time> <span>흥미로운 점은, 포장일 때 LFK 보다 크게 좋아지지는 않아요.</span></li>
+<li><time>00:15:07.000–00:15:10.000</time> <span>오히려 LFK도 더 좋습니다.</span></li>
+<li><time>00:15:10.000–00:15:11.000</time> <span>파스네이션.</span></li>
+<li><time>00:15:11.000–00:15:15.000</time> <span>얘는 이렇게, 이 바이렉션을 볼 때,</span></li>
+<li><time>00:15:15.000–00:15:19.000</time> <span>그러니까 롱 프라이트를 볼 때 잘 된다는 기억을 갖고 있어요.</span></li>
+<li><time>00:15:19.000–00:15:23.000</time> <span>이거는 전체를 한 번에 보는 거니까, 더 멀리 봐야 되겠죠.</span></li>
+<li><time>00:15:23.000–00:15:25.000</time> <span>그때 더 잘 된다.</span></li>
+<li><time>00:15:25.000–00:15:28.000</time> <span>그런 것들이 이 결과에 대해서는 되게 좋은 것 같아요.</span></li>
+<li><time>00:15:30.000–00:15:45.000</time> <span>이렇게 하면 이렇게 했을 때 문제가 또 하나 있어요.</span></li>
+<li><time>00:15:45.000–00:15:50.400</time> <span>지금 아 내가 그 결과 안 받은 것 같다</span></li>
+<li><time>00:15:50.400–00:15:51.260</time> <span>아 이거 말해야 되는데</span></li>
+<li><time>00:15:51.260–00:15:53.660</time> <span>내가 이거 살짝 수정해서 올려줄게요</span></li>
+<li><time>00:15:53.660–00:15:55.000</time> <span>수정해서 올려줄 건데</span></li>
+<li><time>00:15:55.000–00:16:05.580</time> <span>수정해서 올려줄게요</span></li>
+<li><time>00:16:05.580–00:16:07.720</time> <span>무슨 말이냐면은</span></li>
+<li><time>00:16:07.720–00:16:08.580</time> <span>이게</span></li>
+<li><time>00:16:08.580–00:16:10.580</time> <span>이게...</span></li>
+<li><time>00:16:12.580–00:16:14.580</time> <span>아니다</span></li>
+<li><time>00:16:14.580–00:16:16.580</time> <span>잠깐만요</span></li>
+<li><time>00:16:16.580–00:16:18.580</time> <span>이거 보면서 말하자면</span></li>
+<li><time>00:16:18.580–00:16:20.580</time> <span>설명을 하는게 이거인거 같아요</span></li>
+<li><time>00:16:20.580–00:16:22.580</time> <span>중요한데요</span></li>
+<li><time>00:16:24.580–00:16:26.580</time> <span>제가 이 cpt는</span></li>
+<li><time>00:16:26.580–00:16:28.580</time> <span>수정해서 올려드릴거고</span></li>
+<li><time>00:16:30.580–00:16:32.580</time> <span>잠시만요</span></li>
+<li><time>00:16:38.580–00:16:40.580</time> <span>아</span></li>
+<li><time>00:17:08.580–00:17:10.580</time> <span>여기가 어떻게 뜨지?</span></li>
+<li><time>00:17:10.580–00:17:12.580</time> <span>여기가 어떻게 뜨지?</span></li>
+<li><time>00:17:12.580–00:17:14.580</time> <span>여기가 어떻게 뜨지?</span></li>
+<li><time>00:17:14.580–00:17:16.580</time> <span>여기가 어떻게 뜨지?</span></li>
+<li><time>00:17:16.580–00:17:18.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:18.580–00:17:20.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:20.580–00:17:22.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:22.580–00:17:24.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:24.580–00:17:26.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:26.580–00:17:28.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:28.580–00:17:30.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:30.580–00:17:32.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:32.580–00:17:34.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:34.580–00:17:36.580</time> <span>노래에 그 글자 그려낸 거</span></li>
+<li><time>00:17:36.580–00:18:06.580</time> <span>7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 51, 52, 53, 53, 54, 57, 59, 52, 53, 53, 54, 57, 59, 52, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53,</span></li>
+<li><time>00:18:06.580–00:18:09.580</time> <span>여기서 여기까지 설명을 했고요.</span></li>
+<li><time>00:18:09.580–00:18:11.580</time> <span>이 결과를 보면은</span></li>
+<li><time>00:18:11.580–00:18:13.580</time> <span>지금</span></li>
+<li><time>00:18:13.580–00:18:15.580</time> <span>이걸 좀 확대를 해보면</span></li>
+<li><time>00:18:18.580–00:18:21.580</time> <span>여기 보면은 n이 있고 m이 있잖아요.</span></li>
+<li><time>00:18:21.580–00:18:23.580</time> <span>이 l이 뭐냐면은</span></li>
+<li><time>00:18:23.580–00:18:24.580</time> <span>l이 뭐냐면은</span></li>
+<li><time>00:18:24.580–00:18:27.580</time> <span>이 보면은 40이 있고 32가 있고 16이 있죠.</span></li>
+<li><time>00:18:27.580–00:18:29.580</time> <span>사실 이 l이 중요해요.</span></li>
+<li><time>00:18:29.580–00:18:31.580</time> <span>이 l이 중요한데</span></li>
+<li><time>00:18:31.580–00:18:33.580</time> <span>여기서 그 l이 뭐냐면은</span></li>
+<li><time>00:18:33.580–00:18:35.580</time> <span>여기서 입력으로 들어갈 때</span></li>
+<li><time>00:18:35.580–00:18:37.580</time> <span>요거를 L이 가고 하는 겁니다.</span></li>
+<li><time>00:18:37.580–00:18:39.580</time> <span>잠깐만 왜 안 나오지?</span></li>
+<li><time>00:18:39.580–00:18:41.580</time> <span>아 나온다.</span></li>
+<li><time>00:18:41.580–00:18:43.580</time> <span>요 친구가 L이에요.</span></li>
+<li><time>00:18:43.580–00:18:45.580</time> <span>요 친구.</span></li>
+<li><time>00:18:45.580–00:18:47.580</time> <span>요 입력으로 세금의 인식에 들어가는</span></li>
+<li><time>00:18:47.580–00:18:49.580</time> <span>오디오 엠프트 이 친구가 L인데</span></li>
+<li><time>00:18:49.580–00:18:51.580</time> <span>이 L을 길게 잡냐</span></li>
+<li><time>00:18:51.580–00:18:53.580</time> <span>짧게 잡냐로 어브레이션 설치를 한 거예요.</span></li>
+<li><time>00:18:53.580–00:18:55.580</time> <span>이게 컴퓨터스에서 논문에 나오거든요.</span></li>
+<li><time>00:18:55.580–00:18:57.580</time> <span>그래서</span></li>
+</ol></details></section>
+<section id="part-3"><h2>segmentation과 chunk 길이의 trade-off</h2>
+<p class="prose">다시 여기 잠깐 가면은 L이 40일 때, 40점 풀일 때 결과와 L이 16일 때 결과를 본거에요. 그러면은 지금 이 결과를 쭉 봐서 오른쪽 결과를 보면은 이 친구 보면 15.3점 정도 나오고 있죠? 그 밑에 근데 위에 가실수록 결과가 좀 안 좋아지는 것 같죠? 그 말은 L을 작게 할수록 결과가 좋다 라는 거에요.</p>
+<p class="prose">L을 작게 할수록 여기서 이 문제에서 오케이 사실 이걸 보여주고 싶었던 거고 이게 사실 왜 그런지를 조금 고민을 해보면은 이 A가 작아진다는 것은 어떤 얘기가 있냐 그러니까 내가 예를 들어서 이거를 직전적으로 좀 다시 이해를 하면은 이렇게 오류가 이렇게 1주짜리가 내가 인력을 더 샀다라고 치면은 이 중에 요만큼을 세러멘테이션을 하는 거잖아요. 요만큼을 세러멘테이션을 하는 건데 이게 길은 거냐 짧은 거냐 이런 거예요.</p>
+<p class="prose">근데 길으면 어떻게 될까요? 그 긴 랭크 안에 더 많은 정보가 담기겠죠. 더 많은 정보가 담기고 예를 들어 두 개의 미스처가 커밍이 되어 있다면 그 패턴 같은 것도, 하로니스 같은 것도 표현될 거예요. 거기서 그 두 개의 차이가 페이지로 결국에 표현을 할 수밖에 없어져요. 그게 길어지면. 그 두 개의 딜레이라든지 이런 것들이 페이스 정보가 중요해지는데 얘가 짧아지면 그 페이지를 보유하는 대신에 그냥 그 쉐입 자체에 시퀀스의 순서를 그냥 내가 외워버리는 형태로 학습이 되겠네요.</p>
+<p class="prose">짧아지면 대략적으로 무슨 느낌인지는 알겠죠? 인트리티브하게 설명하면 그렇게 되죠. 그렇기 때문에 짧아지면 더 잘 되는 게 길어지면 페이스 성분을 다 고려해서 뭔가 LFT를 취해도 페이스를 고려해야 하잖아요. 빌레이 같은 걸 보기 위해서 근데 길어지면 길어지면 그거 더 잘 봐야 하는데 그게 어렵잖아요. 그래서 이게 랜스가 짧아지면 더 좋아진다는 게 아까 결과를 나온 겁니다. 근데 여기서 전제 조건은 첫 번째로 클린 스피치 한 점이에요.</p>
+<p class="prose">지금 그 결과를. 왜냐하면 이 친구는 활용하고 있는 데이터가 이 월스텍전을 제로축인데 얘는 노이즈가 포함이 안 돼 있는 클린 데이터 두 개를 합친 거예요. 노이즈가 없는 데이터입니다. 쉬운 거예요. 첫 번째. 노이즈가 추가되면 얘가 주의하지 않다는 얘기도 할 수 있어요. 이게 두드러지지 않는다 왜냐하면 페이스 성분이 공이거든요. S에 대해서 R에 대해서 지금 하고 있죠?</p>
+<p class="prose">S에 대해서 S에 대해서 한다는 것은 텍트럴하게 이걸 하겠다 라는 거고 그리고 EP에 대해서 다시 한다는 것은 이렇게 R에 대해서 한다는 거니까 요거는 내가 요 친구에 대한 어떤 히쳐 하나를 뽑았을 때 내가 액세스 게임을 요거를 이제 보통 스펙트럴이라고 하잖아요. Frequency Domain 이 Frequency Domain하고 정확하게 이게 맞진 않겠지만 어쨌든 그 뭔가 히든 스페이스로 얘가 이베이징이 되잖아요.</p>
+<p class="prose">거기에 대해서 업데이션을 하는 겁니다. 아래에 있는 게임 하나는 스펙트럴하게 하고 하나는 내가 그걸 이베이징한 그 히든 스페이스에 대해서 업데이션을 하고 그렇게 구분하는거에요. 한가닥만 구분하면 똑같아요. 한가닥은 이쪽축으로 한거고 이쪽축으로 안하는거. 그거를 해서 요거를 만들어낸다. 마스크를. 그게 끝입니다. 단건 될 것 같아요. 앞에 인코딩, 디코딩하는건 똑같은데 가운데 이 마스크를 뽑아내는게 그 주가 되는거에요.</p>
+<p class="prose">질문. 이해되죠? 아 네. 저 지금 피니티 틀어서 오버렛을. 맞아요 오버렛을 해드립니다. [자동 전사 반복 구간 생략] 이 인포더, 디포더는 마찬가지로 앞에서 봤던 그 친구들이고 이 마스크 네트워크가 앞에서는 이 친구 이게 마스크 네트워크였어요. 이게 마스크였어요. 얘가 이렇게 바뀌었다는 거고 그래서 청균화직도 똑같아요. 똑같은데 뭐가 다르냐 이 가운데 있는 친구가 원래 이터 트랜스포머 이 트랜스포거 이름과 사실 앞에랑 거의 똑같죠?</p>
+<p class="prose">그냥 단지 아래에 있는 트랜스포거로 바뀐 것 밖에 없어요. 그랬을 때 정확히 보다 좋아졌다 어떻게 좋아졌는지 안 가져왔네 좋아졌어요. 좋아졌어 안 가져왔나? 아 가져왔네 보면은 한 20 정도 나옵니다. 이 월핀전을 이 풀링스 데이터를 앞에봤어 조혈팩트 아래에 있는 18.8 정도 나와야 돼요. 이 친구가 2021년도에 나온 친구에요. 질문 다 이해 되죠? 이게 별색이 없습니다.</p>
+<p class="prose">이렇게 이렇게 이렇게 갈라졌는데 이 계열들 지금 이 계열들에서는 기본적으로 이 LNS 이 길이 이 길이를 줄이고 싶었던거고 그렇게 줄였을 때 이 전체 LNS는 100배, 100배가 많아지니까 그 다음에 최근에는 어떻게 진행되고 있냐면</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:18:57.580–00:18:59.580</time> <span>다시 여기 잠깐 가면은</span></li>
+<li><time>00:18:59.580–00:19:01.580</time> <span>L이 40일 때, 40점 풀일 때</span></li>
+<li><time>00:19:01.580–00:19:03.580</time> <span>결과와</span></li>
+<li><time>00:19:03.580–00:19:07.720</time> <span>L이 16일 때 결과를 본거에요.</span></li>
+<li><time>00:19:07.720–00:19:12.180</time> <span>그러면은 지금 이 결과를 쭉 봐서 오른쪽 결과를 보면은</span></li>
+<li><time>00:19:12.180–00:19:15.400</time> <span>이 친구 보면 15.3점 정도 나오고 있죠?</span></li>
+<li><time>00:19:15.400–00:19:16.660</time> <span>그 밑에</span></li>
+<li><time>00:19:16.660–00:19:20.020</time> <span>근데 위에 가실수록 결과가 좀 안 좋아지는 것 같죠?</span></li>
+<li><time>00:19:20.020–00:19:25.580</time> <span>그 말은 L을 작게 할수록 결과가 좋다 라는 거에요.</span></li>
+<li><time>00:19:25.580–00:19:29.140</time> <span>L을 작게 할수록 여기서 이 문제에서</span></li>
+<li><time>00:19:29.140–00:19:32.700</time> <span>오케이 사실 이걸 보여주고 싶었던 거고</span></li>
+<li><time>00:19:32.700–00:19:36.200</time> <span>이게 사실 왜 그런지를 조금 고민을 해보면은</span></li>
+<li><time>00:19:36.200–00:19:40.840</time> <span>이 A가 작아진다는 것은 어떤 얘기가 있냐</span></li>
+<li><time>00:19:40.840–00:19:46.380</time> <span>그러니까 내가 예를 들어서 이거를 직전적으로 좀 다시 이해를 하면은</span></li>
+<li><time>00:19:46.380–00:19:50.620</time> <span>이렇게 오류가 이렇게 1주짜리가 내가 인력을 더 샀다라고 치면은</span></li>
+<li><time>00:19:50.620–00:19:53.580</time> <span>이 중에 요만큼을 세러멘테이션을 하는 거잖아요</span></li>
+<li><time>00:19:53.580–00:19:54.820</time> <span>요만큼을 세러멘테이션을 하는 건데</span></li>
+<li><time>00:19:54.820–00:19:58.520</time> <span>이게 길은 거냐 짧은 거냐 이런 거예요</span></li>
+<li><time>00:19:58.520–00:19:59.980</time> <span>근데 길으면 어떻게 될까요?</span></li>
+<li><time>00:20:00.000–00:20:03.660</time> <span>그 긴 랭크 안에 더 많은 정보가 담기겠죠.</span></li>
+<li><time>00:20:04.500–00:20:05.720</time> <span>더 많은 정보가 담기고</span></li>
+<li><time>00:20:05.720–00:20:08.100</time> <span>예를 들어 두 개의 미스처가 커밍이 되어 있다면</span></li>
+<li><time>00:20:08.100–00:20:11.360</time> <span>그 패턴 같은 것도, 하로니스 같은 것도 표현될 거예요.</span></li>
+<li><time>00:20:12.460–00:20:14.740</time> <span>거기서 그 두 개의 차이가</span></li>
+<li><time>00:20:14.740–00:20:17.680</time> <span>페이지로 결국에 표현을 할 수밖에 없어져요.</span></li>
+<li><time>00:20:17.720–00:20:18.400</time> <span>그게 길어지면.</span></li>
+<li><time>00:20:18.580–00:20:20.540</time> <span>그 두 개의 딜레이라든지 이런 것들이</span></li>
+<li><time>00:20:20.540–00:20:22.460</time> <span>페이스 정보가 중요해지는데</span></li>
+<li><time>00:20:22.460–00:20:24.100</time> <span>얘가 짧아지면</span></li>
+<li><time>00:20:24.100–00:20:26.560</time> <span>그 페이지를 보유하는 대신에</span></li>
+<li><time>00:20:26.560–00:20:28.740</time> <span>그냥 그 쉐입 자체에</span></li>
+<li><time>00:20:28.740–00:20:34.240</time> <span>시퀀스의 순서를 그냥 내가 외워버리는 형태로 학습이 되겠네요.</span></li>
+<li><time>00:20:34.240–00:20:37.740</time> <span>짧아지면 대략적으로 무슨 느낌인지는 알겠죠?</span></li>
+<li><time>00:20:37.740–00:20:39.940</time> <span>인트리티브하게 설명하면 그렇게 되죠.</span></li>
+<li><time>00:20:39.940–00:20:42.440</time> <span>그렇기 때문에 짧아지면 더 잘 되는 게</span></li>
+<li><time>00:20:42.440–00:20:45.940</time> <span>길어지면 페이스 성분을 다 고려해서</span></li>
+<li><time>00:20:45.940–00:20:49.740</time> <span>뭔가 LFT를 취해도 페이스를 고려해야 하잖아요.</span></li>
+<li><time>00:20:49.740–00:20:51.140</time> <span>빌레이 같은 걸 보기 위해서</span></li>
+<li><time>00:20:51.140–00:20:54.540</time> <span>근데 길어지면 길어지면 그거 더 잘 봐야 하는데 그게 어렵잖아요.</span></li>
+<li><time>00:20:54.540–00:20:59.460</time> <span>그래서 이게 랜스가 짧아지면 더 좋아진다는 게</span></li>
+<li><time>00:20:59.460–00:21:00.820</time> <span>아까 결과를 나온 겁니다.</span></li>
+<li><time>00:21:02.840–00:21:05.140</time> <span>근데 여기서 전제 조건은</span></li>
+<li><time>00:21:05.140–00:21:07.960</time> <span>첫 번째로 클린 스피치 한 점이에요.</span></li>
+<li><time>00:21:08.060–00:21:08.820</time> <span>지금 그 결과를.</span></li>
+<li><time>00:21:09.100–00:21:12.100</time> <span>왜냐하면 이 친구는 활용하고 있는 데이터가</span></li>
+<li><time>00:21:12.100–00:21:14.240</time> <span>이 월스텍전을 제로축인데</span></li>
+<li><time>00:21:14.240–00:21:16.420</time> <span>얘는 노이즈가 포함이 안 돼 있는</span></li>
+<li><time>00:21:16.420–00:21:18.280</time> <span>클린 데이터 두 개를 합친 거예요.</span></li>
+<li><time>00:21:18.740–00:21:20.000</time> <span>노이즈가 없는 데이터입니다.</span></li>
+<li><time>00:21:20.300–00:21:20.920</time> <span>쉬운 거예요.</span></li>
+<li><time>00:21:21.140–00:21:21.720</time> <span>첫 번째.</span></li>
+<li><time>00:21:21.720–00:21:25.440</time> <span>노이즈가 추가되면 얘가 주의하지 않다는 얘기도 할 수 있어요</span></li>
+<li><time>00:21:25.440–00:21:27.540</time> <span>이게 두드러지지 않는다</span></li>
+<li><time>00:21:27.540–00:21:31.136</time> <span>왜냐하면 페이스 성분이 공이거든요</span></li>
+<li><time>00:21:31.136–00:21:35.136</time> <span>S에 대해서 R에 대해서 지금 하고 있죠?</span></li>
+<li><time>00:21:35.136–00:21:37.136</time> <span>S에 대해서</span></li>
+<li><time>00:21:37.136–00:21:43.136</time> <span>S에 대해서 한다는 것은 텍트럴하게 이걸 하겠다 라는 거고</span></li>
+<li><time>00:21:43.136–00:21:52.136</time> <span>그리고 EP에 대해서 다시 한다는 것은 이렇게 R에 대해서 한다는 거니까</span></li>
+<li><time>00:21:52.136–00:21:56.896</time> <span>요거는 내가 요 친구에 대한 어떤 히쳐 하나를 뽑았을 때</span></li>
+<li><time>00:21:56.896–00:22:01.876</time> <span>내가 액세스 게임을 요거를 이제 보통 스펙트럴이라고 하잖아요</span></li>
+<li><time>00:22:01.876–00:22:03.136</time> <span>Frequency Domain</span></li>
+<li><time>00:22:03.136–00:22:07.236</time> <span>이 Frequency Domain하고 정확하게 이게 맞진 않겠지만</span></li>
+<li><time>00:22:07.236–00:22:11.636</time> <span>어쨌든 그 뭔가 히든 스페이스로 얘가 이베이징이 되잖아요</span></li>
+<li><time>00:22:11.636–00:22:13.636</time> <span>거기에 대해서 업데이션을 하는 겁니다</span></li>
+<li><time>00:22:13.636–00:22:14.636</time> <span>아래에 있는 게임</span></li>
+<li><time>00:22:14.636–00:22:17.996</time> <span>하나는 스펙트럴하게 하고 하나는 내가 그걸 이베이징한</span></li>
+<li><time>00:22:17.996–00:22:20.796</time> <span>그 히든 스페이스에 대해서 업데이션을 하고</span></li>
+<li><time>00:22:20.796–00:22:24.076</time> <span>그렇게 구분하는거에요. 한가닥만 구분하면 똑같아요.</span></li>
+<li><time>00:22:24.076–00:22:27.156</time> <span>한가닥은 이쪽축으로 한거고 이쪽축으로 안하는거.</span></li>
+<li><time>00:22:27.156–00:22:30.736</time> <span>그거를 해서 요거를 만들어낸다. 마스크를.</span></li>
+<li><time>00:22:30.736–00:22:32.016</time> <span>그게 끝입니다.</span></li>
+<li><time>00:22:32.016–00:22:35.276</time> <span>단건 될 것 같아요. 앞에 인코딩, 디코딩하는건 똑같은데</span></li>
+<li><time>00:22:35.276–00:22:38.236</time> <span>가운데 이 마스크를 뽑아내는게 그 주가 되는거에요.</span></li>
+<li><time>00:22:40.756–00:22:42.616</time> <span>질문.</span></li>
+<li><time>00:22:42.616–00:22:43.696</time> <span>이해되죠?</span></li>
+<li><time>00:22:43.696–00:22:44.796</time> <span>아 네.</span></li>
+<li><time>00:22:44.796–00:22:47.076</time> <span>저 지금 피니티 틀어서 오버렛을.</span></li>
+<li><time>00:22:47.076–00:22:48.376</time> <span>맞아요 오버렛을 해드립니다.</span></li>
+<li><time>00:22:48.376–00:23:18.376</time> <span>으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으 으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으으</span></li>
+<li><time>00:23:18.376–00:23:48.376</time> <span>아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아</span></li>
+<li><time>00:23:48.376–00:23:54.536</time> <span>이 인포더, 디포더는 마찬가지로 앞에서 봤던 그 친구들이고</span></li>
+<li><time>00:23:54.536–00:23:58.236</time> <span>이 마스크 네트워크가 앞에서는 이 친구</span></li>
+<li><time>00:23:58.236–00:24:00.476</time> <span>이게 마스크 네트워크였어요.</span></li>
+<li><time>00:24:00.476–00:24:02.476</time> <span>이게 마스크였어요.</span></li>
+<li><time>00:24:03.036–00:24:08.736</time> <span>얘가 이렇게 바뀌었다는 거고</span></li>
+<li><time>00:24:08.736–00:24:11.156</time> <span>그래서 청균화직도 똑같아요.</span></li>
+<li><time>00:24:11.816–00:24:13.016</time> <span>똑같은데 뭐가 다르냐</span></li>
+<li><time>00:24:13.016–00:24:16.896</time> <span>이 가운데 있는 친구가 원래 이터 트랜스포머</span></li>
+<li><time>00:24:16.896–00:24:20.376</time> <span>이 트랜스포거 이름과 사실 앞에랑 거의 똑같죠?</span></li>
+<li><time>00:24:20.376–00:24:23.276</time> <span>그냥 단지 아래에 있는 트랜스포거로 바뀐 것 밖에 없어요</span></li>
+<li><time>00:24:23.276–00:24:25.576</time> <span>그랬을 때 정확히 보다</span></li>
+<li><time>00:24:25.576–00:24:26.656</time> <span>좋아졌다</span></li>
+<li><time>00:24:26.656–00:24:28.336</time> <span>어떻게 좋아졌는지 안 가져왔네</span></li>
+<li><time>00:24:28.336–00:24:28.996</time> <span>좋아졌어요</span></li>
+<li><time>00:24:28.996–00:24:29.496</time> <span>좋아졌어</span></li>
+<li><time>00:24:29.496–00:24:30.616</time> <span>안 가져왔나?</span></li>
+<li><time>00:24:30.616–00:24:31.616</time> <span>아 가져왔네</span></li>
+<li><time>00:24:31.616–00:24:35.716</time> <span>보면은 한 20 정도 나옵니다</span></li>
+<li><time>00:24:35.716–00:24:38.296</time> <span>이 월핀전을 이 풀링스 데이터를</span></li>
+<li><time>00:24:38.296–00:24:43.336</time> <span>앞에봤어 조혈팩트 아래에 있는 18.8 정도 나와야 돼요</span></li>
+<li><time>00:24:43.336–00:24:49.336</time> <span>이 친구가 2021년도에 나온 친구에요.</span></li>
+<li><time>00:24:49.336–00:24:51.336</time> <span>질문</span></li>
+<li><time>00:24:51.336–00:24:53.336</time> <span>다 이해 되죠?</span></li>
+<li><time>00:24:53.336–00:24:55.336</time> <span>이게 별색이 없습니다.</span></li>
+<li><time>00:24:55.336–00:24:57.336</time> <span>이렇게 이렇게 이렇게 갈라졌는데</span></li>
+<li><time>00:24:57.336–00:24:59.336</time> <span>이 계열들</span></li>
+<li><time>00:24:59.336–00:25:01.336</time> <span>지금 이 계열들에서는</span></li>
+<li><time>00:25:01.336–00:25:03.336</time> <span>기본적으로 이 LNS</span></li>
+<li><time>00:25:03.336–00:25:05.336</time> <span>이 길이</span></li>
+<li><time>00:25:05.336–00:25:07.336</time> <span>이 길이를 줄이고 싶었던거고</span></li>
+<li><time>00:25:07.336–00:25:09.336</time> <span>그렇게 줄였을 때</span></li>
+<li><time>00:25:09.336–00:25:11.336</time> <span>이 전체 LNS는 100배, 100배가 많아지니까</span></li>
+<li><time>00:25:11.336–00:25:16.336</time> <span>그 다음에 최근에는 어떻게 진행되고 있냐면</span></li>
+</ol></details></section>
+<section id="part-4"><h2>TF-GridNet과 time-frequency 처리</h2>
+<p class="prose">2023년도에 TF GridNet이라는 친구가 나왔어요. 얘가 또 많이 늘어졌거든요. 한 23도, 23dB 정도 나와요. 그 다음에 이제 최근에는 어떻게 진행되고 있냐면 2023년도에 TF GridNet이라는 친구가 나왔어요. 얘가 또 많이 이어져서 23db 정도 나와요. 아까 그 얘기 다 그랬는데 많이 이어졌는데 얘는 다시 사실 이때까지만 해도 ssd를 이력으로 받지 않잖아요. 이력으로 받지 않잖아요.</p>
+<p class="prose">이렇게 받는 이유가 뭐냐면은 앞에 보니까 ssd로 이걸 마스킹을 하니깐 잘 안되더라 그래서 탑 스냇이 나오거든요. 근데 탑 스냇이 그때까지 전혀 못 보는 거냐면은 이 때 이 마스크가 단순히 메모리큐드에만 적용되는 마스크였어요. 메모리큐드에만 적용되는 마스크예요. 이 당시까지만 해도. 이 19년도. 메모리큐드 마스크만 했었습니다. 메모리큐드라고 하면 앞에 대해서도 페이지가 고려가 안되잖아요. 그렇기 때문에 잘 안됐던 건데 이 페이지 고려하는 게 이때 당시 너무 복잡하니까 사실 이 페이지가 어렵거든요.</p>
+<p class="prose">근데 이때까지는 해보니까 안되는 거예요. 안되니까 그냥 타임도매인 사자. 타임도매인 사자. 그걸 내가 그냥 어디 커버를 설정해가지고 학습한 다음에 해보자. 라오에서 나온 친구들이 파스텔에서 쭉 나왔던 거고요. 그렇게 왔다가 이제 이것도 어느 정도 한계에 도달하니까 다시 SFG를 돌아가자. 라고 전화 드렸죠. 이 친구. 이 친구가 나왔고요. 이 다음으로 거의 대부분이 SFG를 처리해요. 네.</p>
+<p class="prose">우선은 첫 번째로 이때 당시로 사는 친구들의 그 핵심은 마스킹에 있다. 마스킹이 이게 결론 변화입니다. 마스킹이 잘 되더라. 라는 게 이때 지금 문제였고요. 그래서 문제였고 그래서 문제를 빠뜨리기 위한 그래서 이게 마스킹 기반의 문제가 이런 문제가 있기 때문에 이거를 stft로 처리를 해보자는 거였고 사실 여기서는 마스킹을 하지 않습니다. 사실 이때부터 마스킹을 하지 않아요.</p>
+<p class="prose">마스킹 기반의 방법이 이게 잘 안된다는 게 어느 정도 있되 어퍼 바운스가 있다는게 보이지만 그렇기 때문에 마스킹을 하지 않고 그냥 얘를 바로 올리려고 해서 났던 친구가 이 친구고요. 이것도 지금 제가 이 길이를 수정을 했는데 이게 저널 버전을 제가 가지고 왔었거든요. 이게 저널 버전이 아니라 이것도 잠깐 갔다올까요? 잠깐 갔다올까요? 다시 다시 한번 해보겠습니다. 돈을 좀 내야해요. 돈과 금이 그래서 이거를 보면은 제가 주인을 좀 바꿨어요.</p>
+<p class="prose">사실 그게 아스테이프에 좀 부착되어가지고 큰 차이가 없습니다. 보면은 뭐냐면은 입력으로 sft 들어가구요. 그래서 결과적으로 지금 왼쪽 그림을 보면은 입력으로 그 내가 mr y가 들어가져요 그 내가 리스터 y가 들어가죠. 이게 앞에서부터 리스터에요. 리스터가 들어가고 출력으로 s1부터 c까지 나오죠. 그쵸? 여기 보면 s1부터 c까지 인벌스 isfd가 나오잖아요. 보이나요? 아 보여요? 이게 나오는데 이거 보면 가운데 마스킹하는거 없죠.</p>
+<p class="prose">마스킹을 안하고 그냥 얘를 네트워크로 확정해보자는게 실이구요. 구조는 거의 똑같아요. 거의 차이가 없어요. 그래서 SF 들어가가지고 요거를 지우고 있습니다. 그래서 우선 톱으로 레이어드 해가지고 한번 인베딩을 하고요. 여기 친구 있죠. 인베딩을 하고 그 위로 보면은 요 인트라 프레임 이 스펙트럴 모듈 요거는 그 인트라 프레임에 대해서 이거를 어텐션을 하는 거고 요거는 서브 밴드 템포럴 모듈 뭐 이름이 같이 비슷하죠.</p>
+<p class="prose">자 한 번은 주파수 쪽으로 어텐션을 하고 한 번은 요 템포럴하게 어텐션을 하겠다. 사실 그겁니다. 그걸 할 때 어떻게 하는지는 여기 보면 좀 복잡하게 이렇게 이렇게 하겠다. 이렇게 보면은 하나는 퍼리티 해가지고 밸브가 가지고 이렇게 커텐션을 하겠다. 사실 이 셀커텐션을 하는 거랑 거의 비슷하잖아요. 이 Z가 여기, 여기 보면 이 Z에요. 이거를 이제 이 TF브리드가 했고요. 하여튼 이렇게 하니까 더 잘 됐다라는 얘기를 하고 있습니다.</p>
+<p class="prose">크게 뭐 딱 한거 없고 그러니까 이거는 조금 이 아까 봤던 그 콩콩 스포츠는 전원을 이태전 하면서 여러분이 축하되는데 그 여러 것들은 무사히 사거리가 다 그리기도 하고 그냥 이제 지금 자식이 좀 더 좋다고 보자고 이건 이 컷이 것이라 게 뭐 출력을 남을 다시 뵙고 있다는 건데 이제 좀 작잖아요.</p>
+<p class="prose">깔고 나게 입력으로 로 들어가고 또 쓰 이렇게 뽑아 내는데 그때 뽑아 내는 아피데이터는 이렇게 인자 프린트 랜드 이거는 딱 봤을 때 이 펜을 할까 패턴을 해 보고 어땠어요 요거는 스탭을 얻어 되잖아 템프로레서 되잖아 그쪽 많이 봤어요. 그거로 다 라고 아 여기 아예 를 썼네 그 어땠어 그리고 이 부분은 아까 말씀드린 대로 아까 우리가 계속 봐왔던 이 멀티저럴 투미스 데이터 세트 거의 세트원 시스템이 되어있어요.</p>
+<p class="prose">지금까지 보면 아까 봤던 이 친구 KVM이 23.5도 나오거든요. 이때 이후로 거의 세트레이션입니다. KVM이 여기 있거든요. 여기 있어요. 거의 세트레이션이 되어있죠. 여기가 지금 이 SIFD의 내방입니다. 여기가 멀티저널이 세트레이션이 되어있죠. 거의 여기까지 와있죠. 그 위로 많이 안왔지만 많이 도와주진 않죠. 특히 세포모 같은 것들을 보면 많이 도와주진 않죠.</p>
+<p class="prose">그래서 지금 trend는 어떻게 되고 있냐면 가운데 있는 이 친구가 지금 뭘 뜻하냐면 이게 world fly accumulation 이라는 것도 약간 그러니까 이 계산량을 나타내는 지표라고 보면 되는데 곱하고 더하기에는 몇 개나 하냐 그런 뜻이에요. 그랬을 때 이게 많아질수록 그 열쇠량이 많다는 뜻이겠죠. 그렇죠? 모델이 크고 그리고 더 복잡하고 더 시간 많이 걸리고 이렇게 생각할 수 있겠죠. 병력 체력은 달라질 수 있겠지만 그가수로 시간이 많이 걸리는 거니까 경량화적으로 가고 싶을 거잖아요.</p>
+<p class="prose">얘를 이렇게 크고 다니고 싶겠죠. 이 성능은 유지하면서 그런 연구가 진행되고 있다. 라고 보면 되고 그래서 나오는 친구가 이게 2014년 5년까지 왔어요. 거의 최근으로 오고 있죠. 그래서 이 ICLR 2025년에 나오는 이 타이머 하는 친구가 사람의 개수 줄이고 대산량 줄이고 이것에 비해서 같은 성능을 내면서 이렇게 줄였구요. 그리고 이것은 조금 있다가 말씀드릴게요 마찬가지로 이 Set Mamba 라는 식으로 이 구조를 Self-Attention 구조의 이 한계를 극복하기 위해서 만든 Mamba가 있잖아요.</p>
+<p class="prose">이 Mamba를 통해서 이것을 만들어버렸다 그래서 Long Audio, Long Life에 대해서 로우 메모리를 가지고 딱 가고 나오게 되었습니다. 이게 사실은 트렌드였어요. 지금도 바뀌긴 했습니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:25:16.336–00:25:21.336</time> <span>2023년도에 TF GridNet이라는 친구가 나왔어요.</span></li>
+<li><time>00:25:21.336–00:25:24.336</time> <span>얘가 또 많이 늘어졌거든요.</span></li>
+<li><time>00:25:24.336–00:25:27.336</time> <span>한 23도, 23dB 정도 나와요.</span></li>
+<li><time>00:25:27.336–00:25:32.336</time> <span>그 다음에 이제 최근에는 어떻게 진행되고 있냐면</span></li>
+<li><time>00:25:32.336–00:25:37.336</time> <span>2023년도에 TF GridNet이라는 친구가 나왔어요.</span></li>
+<li><time>00:25:37.336–00:25:41.336</time> <span>얘가 또 많이 이어져서 23db 정도 나와요.</span></li>
+<li><time>00:25:41.336–00:25:43.336</time> <span>아까 그 얘기 다 그랬는데</span></li>
+<li><time>00:25:43.336–00:25:48.336</time> <span>많이 이어졌는데 얘는 다시 사실 이때까지만 해도</span></li>
+<li><time>00:25:48.336–00:25:51.336</time> <span>ssd를 이력으로 받지 않잖아요.</span></li>
+<li><time>00:25:51.336–00:25:52.336</time> <span>이력으로 받지 않잖아요.</span></li>
+<li><time>00:25:52.336–00:25:54.336</time> <span>이렇게 받는 이유가 뭐냐면은</span></li>
+<li><time>00:25:54.336–00:25:59.336</time> <span>앞에 보니까 ssd로 이걸 마스킹을 하니깐 잘 안되더라</span></li>
+<li><time>00:25:59.336–00:26:02.336</time> <span>그래서 탑 스냇이 나오거든요.</span></li>
+<li><time>00:26:02.336–00:26:05.336</time> <span>근데 탑 스냇이 그때까지 전혀 못 보는 거냐면은</span></li>
+<li><time>00:26:05.336–00:26:11.396</time> <span>이 때 이 마스크가 단순히 메모리큐드에만 적용되는 마스크였어요.</span></li>
+<li><time>00:26:11.436–00:26:12.736</time> <span>메모리큐드에만 적용되는 마스크예요.</span></li>
+<li><time>00:26:12.756–00:26:13.516</time> <span>이 당시까지만 해도.</span></li>
+<li><time>00:26:14.016–00:26:14.836</time> <span>이 19년도.</span></li>
+<li><time>00:26:15.416–00:26:17.116</time> <span>메모리큐드 마스크만 했었습니다.</span></li>
+<li><time>00:26:18.136–00:26:20.916</time> <span>메모리큐드라고 하면 앞에 대해서도 페이지가 고려가 안되잖아요.</span></li>
+<li><time>00:26:22.016–00:26:23.436</time> <span>그렇기 때문에 잘 안됐던 건데</span></li>
+<li><time>00:26:23.436–00:26:26.476</time> <span>이 페이지 고려하는 게 이때 당시 너무 복잡하니까</span></li>
+<li><time>00:26:26.476–00:26:27.756</time> <span>사실 이 페이지가 어렵거든요.</span></li>
+<li><time>00:26:28.196–00:26:29.916</time> <span>근데 이때까지는 해보니까 안되는 거예요.</span></li>
+<li><time>00:26:29.916–00:26:30.716</time> <span>안되니까</span></li>
+<li><time>00:26:31.136–00:26:33.896</time> <span>그냥 타임도매인 사자. 타임도매인 사자.</span></li>
+<li><time>00:26:33.896–00:26:38.556</time> <span>그걸 내가 그냥 어디 커버를 설정해가지고 학습한 다음에 해보자.</span></li>
+<li><time>00:26:39.056–00:26:42.156</time> <span>라오에서 나온 친구들이 파스텔에서 쭉 나왔던 거고요.</span></li>
+<li><time>00:26:42.936–00:26:46.656</time> <span>그렇게 왔다가 이제 이것도 어느 정도 한계에 도달하니까</span></li>
+<li><time>00:26:46.656–00:26:49.196</time> <span>다시 SFG를 돌아가자.</span></li>
+<li><time>00:26:49.836–00:26:50.976</time> <span>라고 전화 드렸죠. 이 친구.</span></li>
+<li><time>00:26:51.756–00:26:53.016</time> <span>이 친구가 나왔고요.</span></li>
+<li><time>00:26:53.016–00:26:56.016</time> <span>이 다음으로 거의 대부분이 SFG를 처리해요.</span></li>
+<li><time>00:26:56.016–00:27:03.816</time> <span>네. 우선은 첫 번째로 이때 당시로 사는 친구들의 그 핵심은 마스킹에 있다.</span></li>
+<li><time>00:27:04.276–00:27:07.976</time> <span>마스킹이 이게 결론 변화입니다. 마스킹이 잘 되더라.</span></li>
+<li><time>00:27:09.456–00:27:12.736</time> <span>라는 게 이때 지금 문제였고요.</span></li>
+<li><time>00:27:12.736–00:27:23.736</time> <span>그래서 문제였고 그래서 문제를 빠뜨리기 위한</span></li>
+<li><time>00:27:23.736–00:27:29.736</time> <span>그래서 이게 마스킹 기반의 문제가 이런 문제가 있기 때문에</span></li>
+<li><time>00:27:29.736–00:27:32.736</time> <span>이거를 stft로 처리를 해보자는 거였고</span></li>
+<li><time>00:27:32.736–00:27:34.736</time> <span>사실 여기서는 마스킹을 하지 않습니다.</span></li>
+<li><time>00:27:34.736–00:27:36.736</time> <span>사실 이때부터 마스킹을 하지 않아요.</span></li>
+<li><time>00:27:36.736–00:27:40.736</time> <span>마스킹 기반의 방법이 이게 잘 안된다는 게 어느 정도 있되</span></li>
+<li><time>00:27:40.736–00:27:43.736</time> <span>어퍼 바운스가 있다는게 보이지만</span></li>
+<li><time>00:27:43.736–00:27:45.936</time> <span>그렇기 때문에 마스킹을 하지 않고</span></li>
+<li><time>00:27:45.936–00:27:51.336</time> <span>그냥 얘를 바로 올리려고 해서 났던 친구가 이 친구고요</span></li>
+<li><time>00:27:51.336–00:27:54.936</time> <span>이것도 지금 제가 이 길이를 수정을 했는데</span></li>
+<li><time>00:27:54.936–00:27:57.536</time> <span>이게 저널 버전을 제가 가지고 왔었거든요</span></li>
+<li><time>00:27:57.536–00:28:00.036</time> <span>이게 저널 버전이 아니라</span></li>
+<li><time>00:28:00.036–00:28:02.536</time> <span>이것도 잠깐 갔다올까요?</span></li>
+<li><time>00:28:02.536–00:28:03.536</time> <span>잠깐 갔다올까요?</span></li>
+<li><time>00:28:03.536–00:28:04.636</time> <span>다시</span></li>
+<li><time>00:28:04.636–00:28:06.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:06.636–00:28:08.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:08.636–00:28:10.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:10.636–00:28:12.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:12.636–00:28:14.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:14.636–00:28:16.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:16.636–00:28:18.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:18.636–00:28:20.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:20.636–00:28:22.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:22.636–00:28:24.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:24.636–00:28:26.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:26.636–00:28:28.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:28.636–00:28:30.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:30.636–00:28:32.636</time> <span>다시 한번 해보겠습니다.</span></li>
+<li><time>00:28:32.636–00:28:36.636</time> <span>돈을 좀 내야해요</span></li>
+<li><time>00:28:36.636–00:28:42.636</time> <span>돈과 금이</span></li>
+<li><time>00:28:42.636–00:28:46.636</time> <span>그래서 이거를 보면은</span></li>
+<li><time>00:28:46.636–00:28:48.636</time> <span>제가 주인을 좀 바꿨어요</span></li>
+<li><time>00:28:48.636–00:28:50.636</time> <span>사실 그게 아스테이프에 좀 부착되어가지고</span></li>
+<li><time>00:28:50.636–00:28:52.636</time> <span>큰 차이가 없습니다</span></li>
+<li><time>00:28:52.636–00:28:54.636</time> <span>보면은 뭐냐면은</span></li>
+<li><time>00:28:54.636–00:28:56.636</time> <span>입력으로 sft 들어가구요</span></li>
+<li><time>00:28:56.636–00:28:58.636</time> <span>그래서 결과적으로 지금 왼쪽 그림을 보면은</span></li>
+<li><time>00:28:58.636–00:29:00.636</time> <span>입력으로 그 내가 mr y가 들어가져요</span></li>
+<li><time>00:29:00.636–00:29:04.636</time> <span>그 내가 리스터 y가 들어가죠. 이게 앞에서부터 리스터에요.</span></li>
+<li><time>00:29:04.636–00:29:09.636</time> <span>리스터가 들어가고 출력으로 s1부터 c까지 나오죠.</span></li>
+<li><time>00:29:09.636–00:29:18.636</time> <span>그쵸? 여기 보면 s1부터 c까지 인벌스 isfd가 나오잖아요.</span></li>
+<li><time>00:29:18.636–00:29:24.636</time> <span>보이나요? 아 보여요? 이게 나오는데 이거 보면 가운데 마스킹하는거 없죠.</span></li>
+<li><time>00:29:24.636–00:29:29.636</time> <span>마스킹을 안하고 그냥 얘를 네트워크로 확정해보자는게 실이구요.</span></li>
+<li><time>00:29:29.636–00:29:33.816</time> <span>구조는 거의 똑같아요. 거의 차이가 없어요.</span></li>
+<li><time>00:29:34.236–00:29:37.116</time> <span>그래서 SF 들어가가지고 요거를 지우고 있습니다.</span></li>
+<li><time>00:29:37.596–00:29:39.996</time> <span>그래서 우선 톱으로 레이어드 해가지고 한번 인베딩을 하고요.</span></li>
+<li><time>00:29:40.156–00:29:42.336</time> <span>여기 친구 있죠. 인베딩을 하고</span></li>
+<li><time>00:29:42.336–00:29:46.916</time> <span>그 위로 보면은 요 인트라 프레임 이 스펙트럴 모듈</span></li>
+<li><time>00:29:46.916–00:29:50.596</time> <span>요거는 그 인트라 프레임에 대해서 이거를 어텐션을 하는 거고</span></li>
+<li><time>00:29:50.596–00:29:52.376</time> <span>요거는 서브 밴드 템포럴 모듈</span></li>
+<li><time>00:29:52.376–00:29:53.776</time> <span>뭐 이름이 같이 비슷하죠.</span></li>
+<li><time>00:29:54.596–00:29:56.536</time> <span>자 한 번은 주파수 쪽으로 어텐션을 하고</span></li>
+<li><time>00:29:56.536–00:29:59.296</time> <span>한 번은 요 템포럴하게 어텐션을 하겠다.</span></li>
+<li><time>00:29:59.636–00:30:06.396</time> <span>사실 그겁니다. 그걸 할 때 어떻게 하는지는 여기 보면 좀 복잡하게 이렇게 이렇게 하겠다.</span></li>
+<li><time>00:30:06.396–00:30:15.076</time> <span>이렇게 보면은 하나는 퍼리티 해가지고 밸브가 가지고 이렇게 커텐션을 하겠다. 사실 이 셀커텐션을 하는 거랑 거의 비슷하잖아요.</span></li>
+<li><time>00:30:15.076–00:30:19.636</time> <span>이 Z가 여기, 여기 보면 이 Z에요.</span></li>
+<li><time>00:30:20.516–00:30:29.076</time> <span>이거를 이제 이 TF브리드가 했고요. 하여튼 이렇게 하니까 더 잘 됐다라는 얘기를 하고 있습니다.</span></li>
+<li><time>00:30:29.076–00:30:36.396</time> <span>크게 뭐 딱 한거 없고 그러니까 이거는 조금 이 아까 봤던 그 콩콩 스포츠는 전원을 이태전 하면서 여러분이 축하되는데</span></li>
+<li><time>00:30:36.396–00:30:42.756</time> <span>그 여러 것들은 무사히 사거리가 다 그리기도 하고 그냥 이제 지금 자식이 좀 더 좋다고</span></li>
+<li><time>00:30:42.756–00:30:49.556</time> <span>보자고 이건 이 컷이 것이라 게 뭐 출력을 남을 다시 뵙고 있다는 건데 이제 좀 작잖아요</span></li>
+<li><time>00:30:49.556–00:30:58.796</time> <span>깔고 나게 입력으로 로 들어가고 또 쓰 이렇게 뽑아 내는데 그때 뽑아 내는 아피데이터는 이렇게 인자 프린트 랜드 이거는 딱 봤을 때</span></li>
+<li><time>00:30:58.796–00:31:05.516</time> <span>이 펜을 할까 패턴을 해 보고 어땠어요 요거는 스탭을 얻어 되잖아 템프로레서 되잖아 그쪽 많이 봤어요</span></li>
+<li><time>00:31:05.516–00:31:08.476</time> <span>그거로 다 라고</span></li>
+<li><time>00:31:10.436–00:31:14.896</time> <span>아 여기 아예 를 썼네 그 어땠어</span></li>
+<li><time>00:31:14.896–00:31:17.896</time> <span>그리고 이 부분은</span></li>
+<li><time>00:31:17.896–00:31:20.896</time> <span>아까 말씀드린 대로</span></li>
+<li><time>00:31:20.896–00:31:23.896</time> <span>아까 우리가 계속 봐왔던</span></li>
+<li><time>00:31:23.896–00:31:26.896</time> <span>이 멀티저럴 투미스 데이터 세트</span></li>
+<li><time>00:31:26.896–00:31:29.896</time> <span>거의 세트원 시스템이 되어있어요</span></li>
+<li><time>00:31:29.896–00:31:31.136</time> <span>지금까지 보면 아까 봤던 이 친구</span></li>
+<li><time>00:31:31.136–00:31:36.136</time> <span>KVM이 23.5도 나오거든요. 이때 이후로 거의 세트레이션입니다.</span></li>
+<li><time>00:31:36.136–00:31:43.136</time> <span>KVM이 여기 있거든요. 여기 있어요.</span></li>
+<li><time>00:31:43.136–00:31:48.136</time> <span>거의 세트레이션이 되어있죠. 여기가 지금 이 SIFD의 내방입니다.</span></li>
+<li><time>00:31:48.136–00:31:51.136</time> <span>여기가 멀티저널이 세트레이션이 되어있죠.</span></li>
+<li><time>00:31:51.136–00:31:56.136</time> <span>거의 여기까지 와있죠. 그 위로 많이 안왔지만 많이 도와주진 않죠.</span></li>
+<li><time>00:31:56.136–00:31:59.136</time> <span>특히 세포모 같은 것들을 보면 많이 도와주진 않죠.</span></li>
+<li><time>00:31:59.136–00:32:03.136</time> <span>그래서 지금 trend는 어떻게 되고 있냐면</span></li>
+<li><time>00:32:03.136–00:32:07.136</time> <span>가운데 있는 이 친구가 지금 뭘 뜻하냐면</span></li>
+<li><time>00:32:07.136–00:32:12.136</time> <span>이게 world fly accumulation 이라는 것도 약간</span></li>
+<li><time>00:32:12.136–00:32:15.136</time> <span>그러니까 이 계산량을 나타내는 지표라고 보면 되는데</span></li>
+<li><time>00:32:15.136–00:32:19.136</time> <span>곱하고 더하기에는 몇 개나 하냐 그런 뜻이에요</span></li>
+<li><time>00:32:19.136–00:32:23.136</time> <span>그랬을 때 이게 많아질수록 그 열쇠량이 많다는 뜻이겠죠</span></li>
+<li><time>00:32:23.136–00:32:26.136</time> <span>그렇죠? 모델이 크고 그리고 더 복잡하고</span></li>
+<li><time>00:32:26.136–00:32:29.176</time> <span>더 시간 많이 걸리고 이렇게 생각할 수 있겠죠.</span></li>
+<li><time>00:32:29.236–00:32:30.616</time> <span>병력 체력은 달라질 수 있겠지만</span></li>
+<li><time>00:32:30.616–00:32:33.696</time> <span>그가수로 시간이 많이 걸리는 거니까</span></li>
+<li><time>00:32:33.696–00:32:35.416</time> <span>경량화적으로 가고 싶을 거잖아요.</span></li>
+<li><time>00:32:35.836–00:32:37.836</time> <span>얘를 이렇게 크고 다니고 싶겠죠.</span></li>
+<li><time>00:32:38.916–00:32:40.396</time> <span>이 성능은 유지하면서</span></li>
+<li><time>00:32:40.396–00:32:42.836</time> <span>그런 연구가 진행되고 있다.</span></li>
+<li><time>00:32:43.836–00:32:44.536</time> <span>라고 보면 되고</span></li>
+<li><time>00:32:44.536–00:32:46.456</time> <span>그래서 나오는 친구가</span></li>
+<li><time>00:32:46.456–00:32:48.736</time> <span>이게 2014년 5년까지 왔어요.</span></li>
+<li><time>00:32:49.056–00:32:49.976</time> <span>거의 최근으로 오고 있죠.</span></li>
+<li><time>00:32:50.536–00:32:52.616</time> <span>그래서 이 ICLR</span></li>
+<li><time>00:32:52.616–00:32:55.296</time> <span>2025년에 나오는 이 타이머 하는 친구가</span></li>
+<li><time>00:32:55.296–00:33:01.176</time> <span>사람의 개수 줄이고 대산량 줄이고</span></li>
+<li><time>00:33:01.176–00:33:06.136</time> <span>이것에 비해서 같은 성능을 내면서 이렇게 줄였구요</span></li>
+<li><time>00:33:06.136–00:33:09.236</time> <span>그리고 이것은 조금 있다가 말씀드릴게요</span></li>
+<li><time>00:33:09.236–00:33:12.776</time> <span>마찬가지로 이 Set Mamba 라는 식으로</span></li>
+<li><time>00:33:12.776–00:33:16.316</time> <span>이 구조를 Self-Attention 구조의 이 한계를 극복하기 위해서</span></li>
+<li><time>00:33:16.316–00:33:18.096</time> <span>만든 Mamba가 있잖아요</span></li>
+<li><time>00:33:18.096–00:33:20.296</time> <span>이 Mamba를 통해서 이것을 만들어버렸다</span></li>
+<li><time>00:33:20.296–00:33:22.856</time> <span>그래서 Long Audio, Long Life에 대해서</span></li>
+<li><time>00:33:22.856–00:33:24.856</time> <span>로우 메모리를 가지고</span></li>
+<li><time>00:33:24.856–00:33:26.856</time> <span>딱 가고 나오게 되었습니다</span></li>
+<li><time>00:33:26.856–00:33:28.856</time> <span>이게 사실은 트렌드였어요</span></li>
+<li><time>00:33:28.856–00:33:30.856</time> <span>지금도 바뀌긴 했습니다</span></li>
+</ol></details></section>
+<section id="part-5"><h2>데이터셋 난이도와 실제 환경</h2>
+<p class="prose">이렇게 왔었는데 더 나아가서 그러면 데이터셋도 지금 너무 쉬운거 아니야 이 친구가 지금 큰 데이터셋이라고 했잖아요. 그러면 뭔가 노이즈한 데이터셋으로 요거 먼저 하죠. 노이즈한 데이터셋으로 가고 싶겠죠. 그쵸 그래가지고 여기 가장 쉬운 데이터셋부터 WA-M이라는 리버레이션이 나왔고 여기에는 노이즈가 추가가 되었습니다. 그 다음에 여기 아래에 붙은 친구는 리버레이션, 이 공간감 이거는 제가 이제 바람씩 좀 있다가 나중에 강의 한번 할거에요.</p>
+<p class="prose">리버레이션이 뭔지. 그래서 사실 여기서 말하는 이 노이즈는 우리가 신이 생각하는 화이트 노이즈 같은거지 않나요? 색소음 같은걸 추가한거라고 보이고 여기는 실제 우리가 살아가는 인간에 대한 소음을 추가한거구요. 그리고 점점 더 어려운 것들 이것 진짜 리얼리스트한 데이터셋으로 점점 업그레이드 됐을 때 정확히 비교적 확장이 됐고 아까 말씀드린 타이거 모델에서 이 맥북을 가지고 왔어요.</p>
+<p class="prose">이걸 가지고 왔는데 뭘 얘기하는지 뭐냐면 이 보면은 이 컴퓨터셋에서 얘네들이 얘기하는 타이거 모델에 대해서 이 데이터셋, 가장 쉬운 데이터부터 리얼리스트한 데이터, 어려운 데이터까지 이걸로 가지고 트레이닝을 시켰을 때 정확도가 어떻게 나오냐 이거를 테스트를 하는데 테스트를 얘네들이 만든 리얼데이터셋으로 공개를 했는지 안 했는지 모르겠는데 그러니까 여기가 트레이닝을 하실 때 데이터가 아니라 실제 데이터셋인데 되게 어려운 데이터셋에서 테스트를 한 거예요.</p>
+<p class="prose">그렇게 해서 정확도를 L과 S랑 비교해보니까 예를 들면 특히 쉬운 데이터 테스트는 잘 안된다. 하지만 좋은 데이터라고 할 때는 리얼리티한 데이터 테스트를 하면 어느정도 성능은 조금은 나온다. 최신으로 올수록 점점점 얘네들은 좀 좋아지고 있는데 우리 방법은 쉬운걸로 해도 좀 잘되고 어려운걸로 학습하니까 더 잘되는 이런 것들을 보여주는 방법입니다. 이런 것들, 데이터 테크로는 좀 어려울 수 있다. 그렇게 보시면 되고, 사실 이 스피치 테크로 인해서 데이터 테크 만들기가 쉽지가 않아요.</p>
+<p class="prose">왜냐면은, 왜 그럴까요? 데이터 테크를 만들자면은 네이버에 클린 데이터가 있어야 되겠죠. 클린 스피치 데이터가. 그렇기 때문에 사실 데이터 테크를 만들기가 쉽지가 않습니다. 그래서 얘네들 좀 더 아닌 것도 있어요. 그리고, 여러분들이 앞에서 제가 강의를 우리가 한 30분 전에 시작했죠? 앞에서 얘기했을 때 약간 이상하다고 생각했던게 뭐지? 여기 보면 이상한거 있지 않아요? 제가 일부러 여기다가 놓은건데 이 2스피커 타이드가 다가왔잖아요.</p>
+<p class="prose">여기 보면 다 2스피커 마찬가지로 2스피커 얘가 무슨말이냐? 출력으로 나오는 마스크 아니면 아 이런 부분에서는 애를 두개 그냥 가져오니까 흔적이 없잖아요. 그럼 현실적으로 블라인드는 수업이 아니잖아요. 그러면 예를 들어서 어떻게 정해진 문제일까요? 아, 이런 문제인가요? 아까 말씀드렸던 그런 문제가 발생을 하다 라는 거고</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:33:30.856–00:33:32.856</time> <span>이렇게 왔었는데 더 나아가서</span></li>
+<li><time>00:33:32.856–00:33:34.856</time> <span>그러면 데이터셋도 지금 너무 쉬운거 아니야</span></li>
+<li><time>00:33:34.856–00:33:36.856</time> <span>이 친구가</span></li>
+<li><time>00:33:36.856–00:33:38.856</time> <span>지금 큰 데이터셋이라고 했잖아요</span></li>
+<li><time>00:33:38.856–00:33:40.856</time> <span>그러면 뭔가 노이즈한 데이터셋으로</span></li>
+<li><time>00:33:42.856–00:33:44.856</time> <span>요거 먼저 하죠</span></li>
+<li><time>00:33:44.856–00:33:46.856</time> <span>노이즈한 데이터셋으로 가고 싶겠죠</span></li>
+<li><time>00:33:46.856–00:33:48.856</time> <span>그쵸</span></li>
+<li><time>00:33:48.856–00:33:50.856</time> <span>그래가지고 여기 가장 쉬운 데이터셋부터</span></li>
+<li><time>00:33:52.856–00:33:58.456</time> <span>WA-M이라는 리버레이션이 나왔고 여기에는 노이즈가 추가가 되었습니다.</span></li>
+<li><time>00:33:58.456–00:34:06.856</time> <span>그 다음에 여기 아래에 붙은 친구는 리버레이션, 이 공간감 이거는 제가 이제 바람씩 좀 있다가 나중에 강의 한번 할거에요. 리버레이션이 뭔지.</span></li>
+<li><time>00:34:06.856–00:34:13.856</time> <span>그래서 사실 여기서 말하는 이 노이즈는 우리가 신이 생각하는 화이트 노이즈 같은거지 않나요? 색소음 같은걸 추가한거라고 보이고</span></li>
+<li><time>00:34:13.856–00:34:17.856</time> <span>여기는 실제 우리가 살아가는 인간에 대한 소음을 추가한거구요.</span></li>
+<li><time>00:34:17.856–00:34:23.696</time> <span>그리고 점점 더 어려운 것들 이것 진짜 리얼리스트한 데이터셋으로</span></li>
+<li><time>00:34:23.696–00:34:27.756</time> <span>점점 업그레이드 됐을 때 정확히 비교적 확장이 됐고</span></li>
+<li><time>00:34:27.756–00:34:33.116</time> <span>아까 말씀드린 타이거 모델에서 이 맥북을 가지고 왔어요</span></li>
+<li><time>00:34:33.116–00:34:36.196</time> <span>이걸 가지고 왔는데 뭘 얘기하는지 뭐냐면</span></li>
+<li><time>00:34:36.196–00:34:42.336</time> <span>이 보면은 이 컴퓨터셋에서 얘네들이 얘기하는 타이거 모델에 대해서</span></li>
+<li><time>00:34:42.336–00:34:46.736</time> <span>이 데이터셋, 가장 쉬운 데이터부터</span></li>
+<li><time>00:34:46.736–00:34:48.736</time> <span>리얼리스트한 데이터, 어려운 데이터까지</span></li>
+<li><time>00:34:48.736–00:34:51.536</time> <span>이걸로 가지고 트레이닝을 시켰을 때</span></li>
+<li><time>00:34:51.536–00:34:53.936</time> <span>정확도가 어떻게 나오냐</span></li>
+<li><time>00:34:53.936–00:34:55.736</time> <span>이거를 테스트를 하는데</span></li>
+<li><time>00:34:55.736–00:34:58.936</time> <span>테스트를 얘네들이 만든 리얼데이터셋으로</span></li>
+<li><time>00:34:58.936–00:35:01.536</time> <span>공개를 했는지 안 했는지 모르겠는데</span></li>
+<li><time>00:35:01.536–00:35:03.936</time> <span>그러니까 여기가 트레이닝을 하실 때 데이터가 아니라</span></li>
+<li><time>00:35:03.936–00:35:05.736</time> <span>실제 데이터셋인데</span></li>
+<li><time>00:35:05.736–00:35:08.736</time> <span>되게 어려운 데이터셋에서 테스트를 한 거예요</span></li>
+<li><time>00:35:08.736–00:35:12.136</time> <span>그렇게 해서 정확도를 L과 S랑 비교해보니까</span></li>
+<li><time>00:35:12.136–00:35:23.136</time> <span>예를 들면 특히 쉬운 데이터 테스트는 잘 안된다. 하지만 좋은 데이터라고 할 때는 리얼리티한 데이터 테스트를 하면 어느정도 성능은 조금은 나온다.</span></li>
+<li><time>00:35:23.136–00:35:38.136</time> <span>최신으로 올수록 점점점 얘네들은 좀 좋아지고 있는데 우리 방법은 쉬운걸로 해도 좀 잘되고 어려운걸로 학습하니까 더 잘되는 이런 것들을 보여주는 방법입니다.</span></li>
+<li><time>00:35:38.136–00:35:41.136</time> <span>이런 것들, 데이터 테크로는 좀 어려울 수 있다.</span></li>
+<li><time>00:35:41.136–00:35:46.136</time> <span>그렇게 보시면 되고, 사실 이 스피치 테크로 인해서 데이터 테크 만들기가 쉽지가 않아요.</span></li>
+<li><time>00:35:46.136–00:35:49.136</time> <span>왜냐면은, 왜 그럴까요? 데이터 테크를 만들자면은</span></li>
+<li><time>00:35:49.136–00:35:52.136</time> <span>네이버에 클린 데이터가 있어야 되겠죠. 클린 스피치 데이터가.</span></li>
+<li><time>00:35:52.136–00:35:55.136</time> <span>그렇기 때문에 사실 데이터 테크를 만들기가 쉽지가 않습니다.</span></li>
+<li><time>00:35:55.136–00:35:58.136</time> <span>그래서 얘네들 좀 더 아닌 것도 있어요.</span></li>
+<li><time>00:35:58.136–00:36:02.136</time> <span>그리고, 여러분들이 앞에서 제가 강의를</span></li>
+<li><time>00:36:02.136–00:36:05.136</time> <span>우리가 한 30분 전에 시작했죠?</span></li>
+<li><time>00:36:05.136–00:36:13.896</time> <span>앞에서 얘기했을 때 약간 이상하다고 생각했던게 뭐지?</span></li>
+<li><time>00:36:13.896–00:36:20.136</time> <span>여기 보면 이상한거 있지 않아요? 제가 일부러 여기다가 놓은건데</span></li>
+<li><time>00:36:20.136–00:36:24.936</time> <span>이 2스피커 타이드가 다가왔잖아요.</span></li>
+<li><time>00:36:24.936–00:36:29.476</time> <span>여기 보면 다 2스피커 마찬가지로 2스피커 얘가 무슨말이냐?</span></li>
+<li><time>00:36:29.476–00:36:30.996</time> <span>출력으로 나오는 마스크 아니면</span></li>
+<li><time>00:36:31.136–00:36:33.136</time> <span>아</span></li>
+<li><time>00:37:01.136–00:37:04.136</time> <span>이런 부분에서는 애를 두개 그냥 가져오니까</span></li>
+<li><time>00:37:04.136–00:37:05.136</time> <span>흔적이 없잖아요</span></li>
+<li><time>00:37:05.136–00:37:08.136</time> <span>그럼 현실적으로 블라인드는 수업이 아니잖아요</span></li>
+<li><time>00:37:08.136–00:37:11.136</time> <span>그러면 예를 들어서 어떻게 정해진 문제일까요?</span></li>
+<li><time>00:37:14.136–00:37:15.136</time> <span>아, 이런 문제인가요?</span></li>
+<li><time>00:37:15.136–00:37:17.136</time> <span>아까 말씀드렸던 그런 문제가 발생을 하다</span></li>
+<li><time>00:37:17.136–00:37:18.136</time> <span>라는 거고</span></li>
+</ol></details></section>
+<section id="part-6"><h2>화자 수 추정과 남은 문제</h2>
+<p class="prose">만약에 이럴 때 어떻게 해야 되냐 소스트가 하나밖에 없는데 그러면 실력이 두개일 때 나머지 하나가 어떻게 되는지 그냥 두개인 줄 알았으면 그냥 두개가 중요하긴 해요. 만약에 세개의 문제가 어떻게 되는지 이런 문제가 있습니다. 이런 문제가 있고 그래서 이런 것들을 사실 고민을 하고 있습니다. 첫 번째는 우리가 아껴봤던 일을 생각하고 있습니다. 내가 신원아웃을 정해놓은 거예요. 내가 이 공간에서 내가 살아가는 성명에서는 이거보다 많은 것 없어서 나는 그냥 가버린다는 거예요.</p>
+<p class="prose">그래서 세 개. 세 개 이상의 오버워치인 데에 소스가 몸이 제 발전을 한다는 생각을 하는 거고 두 번째는 리퀄딩화하게 입적을 하는 거예요. 마지막에 로리덴을 만들어볼 때 처음에 세 개가 있어요. 나는 두 개의 형태로 분리할 수 있대 그러면은 처음에 분리해서 소스 1과 두 개의 루터를 분리할 수 있대 그러면은 이 두 개를 다시 리퀄리티 파악을 올리면은 다시 분리할 수 있을까. 이런 방법입니다.</p>
+<p class="prose">그리고 두 분 친구는 내가 따온 모델을 가지고서 소스의 배수를 카운트하는 이 친구가 배수를 통용한 다음에 그거를 선지선한 이 친구를 받아서 처리하겠다 이런 것들이 있습니다. 이런 것들에 문제가 없나요? 특히 이 친구, 이 친구도 맞아서 문제가 없나요? 그 부분에 대해서는 모델의 오후차가 들어가게 됩니다.</p>
+<p class="prose">예를 들어 모델의 오후차가 90%입니다. 그러면 오후차가 90%돼서 결국에 나오는 친구는 80%로 나오게 됩니다. 예를 들어 80%로 나오게 되면 오후차가 90%입니다. 마찬가지로 이 5루기 있는 친구도 이 카운팅하는 모델의 성능에 따라서 이 결과에 그런 에러가 발생되기 때문에 이런 문제가 발생합니다. 그래서 사실 이거를 탁준히 이용하는 방법이 있어요. 그냥 멘트범을 접어하는 게 성능적으로 유지할 수 있어요.</p>
+<p class="prose">그래서 이 방법을 사용합니다. 제가 저번에 얘기했던 거고, 그러면은 이제 그 다음으로 그러면 이제 버절로 갱카츠가 어려운 경우도 있잖아요. 그러면 더 어려운 갱카츠에서 뭔가 하기 위해서 셀프 스포가이스가 아니면 어느 스포가이스가 더 좋던지 알아요. 얘네들은 어.. 어떻게 생각하세요? 이게 실제 나왔던지 모르겠어요. 실제 나왔던지 모르겠어요. 이거 예전에도 나올 때 한 번도 안 봤었는데 그래서 안 봤고요.</p>
+<p class="prose">얘는 실제 뭐냐면은 어느 스포가이스를 하고 싶어요. 어려운 점은 내가 뭐라고 했죠? 이 PIS 수업을 통해서 이걸 보면은 내가 클린포스트들에 대한 그런 정보를 다 알고있다는 거예요. 내가 여기 부터 간 이 소품들의 정보를 다 알고있다는 거예요. 내가 리얼지식상 데이터 를 만들고 싶다면은 이걸 어디에선 학점을 해서 만들었는데 그거 자체에서 뭔가 평등의 그런 이걸 원해야 하는 공부가 발생을 하는 것 같다는 거예요.</p>
+<p class="prose">그리고 이것을 내가 알기 어려워 그런데 실제로 우리가 유튜브에서 선택하는 데이터 테스트를 보면 되게 심각하잖아요. 여러개의 테스트가 동시에 오면 데이터가 복잡한 것 같아요. 큰 테스트가 아니죠. 그런 데이터를 QA에서 되게 많이 사용할 수 없다는 문제가 있습니다. 그러면 이 밑에 있는 에너지 워크를 그냥 얻고 갈 수 있는 그냥 이 부분을 믹스해서 그냥 믹스터를, 리트로에이저 데이터를 그냥 이 자체를 믹스하는 거죠.</p>
+<p class="prose">믹스한 다음에 세포레이저를 요렇게 그냥 하는 겁니다. 이렇게 하는 거죠. 요렇게. 요렇게를 이거를 모공제 세포레이저 하고 싶은 건데 이렇게 한 다음에 그러면은 이거 그냥 스피드에이저 나오죠.</p>
+<p class="prose">예를 들어서 여기 여기에 2개 있고 여기에 지금 3개 있는 상황이에요. 합치면은 combination이 5개가 나올텐데 그게 지금 총 8개에 대한 얘가 skt 소스에 대해서 ideal case에 대해서는 어? 뭐야? 다시 돌아와 ok 요 ideal case에 대해서는 요게 그런 식으로 뭔가 들어가 있겠죠? 들어가 있겠죠? 내가 잘 뽑아야겠다 라고 하면은 그러면 이 combination을 다시 내가 meeting합니다.</p>
+<p class="prose">모든 combination에 대해서 meeting을 다시 해요. 그 중에 snr loss를 이 리스트워드와 비교했을 때 가장 높은 친구가 있겠죠. 그거를 학습에 활용합니다. 이렇게 하나 보면은 데이터가 모두 많기 때문에 결국에 수요에 간다 라는 거죠. 아이저가 괜찮죠? 아이저가 괜찮다고요. 2020년도에는 원스파이 방법이 아주 유명할 때에요. 이런거 보면 굉장히 많습니다. 그러면은 진짜 최근에는 이제 어떤 존재가 되고 있나 이제는 약간 트레이저가 잡혀있어요.</p>
+<p class="prose">지금까지는 모델을 통해서 디트리미니스틱하게 그 마스크를 클래스 한다던지 아이페이저 한다던지 아니면은 그냥 소스 자체를 텍러리에 하는 그 방법들이 나왔다라고 하면은 이제는 Generation Model을 넣어서 합니다. Generation Model이라는 디퓨저 모델 보이시죠? 여러분들이 잘 아는 디퓨저 모델 있죠? 디퓨저 모델이 나오면 사실 얘가 뜨기 시작했어요.</p>
+<p class="prose">그래서 디퓨저 모델, 디퓨저 미스틱한 방법들 이 나오다가 이 다음에 처음에 여기서는 이제 여기서도 마찬가지로 Generation Model인거고 여기에서 이제 가구가 나오게 됩니다. 프로매치 기반의 이제 점점 디퓨전 기반의 가구들이 나오고 있다 라고 보시면 됩니다. 사실 이 강의는 예를 들면 2025년? 2024년? 이제부터 많이 나올 것 같은데 할까 말까 하다가 우선 된다거나 안 된다거나 할 텐데 나중에 시간이 나오면 제가 강의를 하겠습니다.</p>
+<p class="prose">이것에 대해서는 나중에 다시 얘기할게요. 왜요 이거 여기가 아 아 그래 가지고 대학을 굳이 지금 얘기할 수 없을까 보인 만 우리가 지금 배워도 몸에 이래서 이 쪽으로 될 거야 더 한 거거든요 그렇게 뭐 그냥 기초 모델이 무지한 위주로 할 수 있어야 할 게 알기 위해서는 우리의 나를 위한 게 그는 강좌가 나오고 갈게요 여기까지 해서 페포레이션을 한거구요. 지금까지 우리가 얘기한 것은 입력으로 들어가는 오디오가 한글 채널입니다.</p>
+<p class="prose">채널이 하나였죠. 그런데 마이크를 여러개 활용할 수 있겠죠. 멀티 채널 오디오로 활용할 수 있어요. 그걸 활용하면 뭘 할 수 있는지를 다음 시간에 보니 할 수 있어요. 채널 하나만 쓰는게 아니라 채널이 열어져 있으면 뭐가 바뀌느냐 사실 얘가 훨씬 좋아요. 왜 좋냐? 이게 왜 가능한지를 바람처럼 보게 지금 어때요? 오케이 여기까지 하겠습니다. 두 분 두 분 아 감사합니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:37:18.136–00:37:20.136</time> <span>만약에 이럴 때 어떻게 해야 되냐</span></li>
+<li><time>00:37:20.136–00:37:21.136</time> <span>소스트가 하나밖에 없는데</span></li>
+<li><time>00:37:21.136–00:37:23.136</time> <span>그러면 실력이 두개일 때</span></li>
+<li><time>00:37:23.136–00:37:24.136</time> <span>나머지 하나가 어떻게 되는지 그냥</span></li>
+<li><time>00:37:24.136–00:37:26.136</time> <span>두개인 줄 알았으면 그냥 두개가 중요하긴 해요</span></li>
+<li><time>00:37:26.136–00:37:28.136</time> <span>만약에 세개의 문제가 어떻게 되는지</span></li>
+<li><time>00:37:28.136–00:37:29.136</time> <span>이런 문제가 있습니다</span></li>
+<li><time>00:37:29.136–00:37:30.136</time> <span>이런 문제가 있고</span></li>
+<li><time>00:37:30.136–00:37:36.156</time> <span>그래서 이런 것들을 사실 고민을 하고 있습니다.</span></li>
+<li><time>00:37:36.516–00:37:39.396</time> <span>첫 번째는 우리가 아껴봤던 일을 생각하고 있습니다.</span></li>
+<li><time>00:37:40.836–00:37:42.396</time> <span>내가 신원아웃을 정해놓은 거예요.</span></li>
+<li><time>00:37:42.596–00:37:46.316</time> <span>내가 이 공간에서 내가 살아가는 성명에서는</span></li>
+<li><time>00:37:46.316–00:37:48.756</time> <span>이거보다 많은 것 없어서</span></li>
+<li><time>00:37:48.756–00:37:50.016</time> <span>나는 그냥 가버린다는 거예요.</span></li>
+<li><time>00:37:50.016–00:37:50.616</time> <span>그래서 세 개.</span></li>
+<li><time>00:37:50.936–00:37:52.356</time> <span>세 개 이상의 오버워치인 데에</span></li>
+<li><time>00:37:52.356–00:37:55.016</time> <span>소스가 몸이 제 발전을 한다는 생각을 하는 거고</span></li>
+<li><time>00:37:55.016–00:37:58.436</time> <span>두 번째는 리퀄딩화하게 입적을 하는 거예요.</span></li>
+<li><time>00:37:58.436–00:38:00.436</time> <span>마지막에 로리덴을 만들어볼 때</span></li>
+<li><time>00:38:00.436–00:38:02.436</time> <span>처음에 세 개가 있어요</span></li>
+<li><time>00:38:02.436–00:38:04.436</time> <span>나는 두 개의 형태로 분리할 수 있대</span></li>
+<li><time>00:38:04.436–00:38:06.436</time> <span>그러면은 처음에 분리해서</span></li>
+<li><time>00:38:06.436–00:38:10.436</time> <span>소스 1과 두 개의 루터를 분리할 수 있대</span></li>
+<li><time>00:38:10.436–00:38:12.436</time> <span>그러면은 이 두 개를</span></li>
+<li><time>00:38:12.436–00:38:14.436</time> <span>다시 리퀄리티 파악을 올리면은</span></li>
+<li><time>00:38:14.436–00:38:16.436</time> <span>다시 분리할 수 있을까</span></li>
+<li><time>00:38:16.436–00:38:18.436</time> <span>이런 방법입니다</span></li>
+<li><time>00:38:18.436–00:38:20.436</time> <span>그리고</span></li>
+<li><time>00:38:20.436–00:38:22.436</time> <span>두 분 친구는 내가</span></li>
+<li><time>00:38:22.436–00:38:24.436</time> <span>따온 모델을 가지고서</span></li>
+<li><time>00:38:24.436–00:38:26.436</time> <span>소스의 배수를 카운트하는</span></li>
+<li><time>00:38:26.436–00:38:36.436</time> <span>이 친구가 배수를 통용한 다음에 그거를 선지선한 이 친구를 받아서 처리하겠다</span></li>
+<li><time>00:38:36.436–00:38:39.436</time> <span>이런 것들이 있습니다</span></li>
+<li><time>00:38:39.436–00:38:42.436</time> <span>이런 것들에 문제가 없나요?</span></li>
+<li><time>00:38:42.436–00:38:46.436</time> <span>특히 이 친구, 이 친구도 맞아서</span></li>
+<li><time>00:38:46.436–00:38:49.436</time> <span>문제가 없나요?</span></li>
+<li><time>00:38:49.436–00:38:56.436</time> <span>그 부분에 대해서는 모델의 오후차가 들어가게 됩니다.</span></li>
+<li><time>00:38:56.436–00:39:01.436</time> <span>예를 들어 모델의 오후차가 90%입니다.</span></li>
+<li><time>00:39:01.436–00:39:09.436</time> <span>그러면 오후차가 90%돼서 결국에 나오는 친구는 80%로 나오게 됩니다.</span></li>
+<li><time>00:39:09.436–00:39:16.436</time> <span>예를 들어 80%로 나오게 되면 오후차가 90%입니다.</span></li>
+<li><time>00:39:16.436–00:39:22.756</time> <span>마찬가지로 이 5루기 있는 친구도 이 카운팅하는 모델의 성능에 따라서</span></li>
+<li><time>00:39:22.756–00:39:28.436</time> <span>이 결과에 그런 에러가 발생되기 때문에 이런 문제가 발생합니다.</span></li>
+<li><time>00:39:28.436–00:39:31.436</time> <span>그래서 사실 이거를 탁준히 이용하는 방법이 있어요.</span></li>
+<li><time>00:39:31.436–00:39:35.436</time> <span>그냥 멘트범을 접어하는 게 성능적으로 유지할 수 있어요.</span></li>
+<li><time>00:39:35.436–00:39:37.436</time> <span>그래서 이 방법을 사용합니다.</span></li>
+<li><time>00:39:37.436–00:39:42.436</time> <span>제가 저번에 얘기했던 거고, 그러면은 이제 그 다음으로</span></li>
+<li><time>00:39:42.436–00:39:44.836</time> <span>그러면 이제 버절로 갱카츠가 어려운 경우도 있잖아요.</span></li>
+<li><time>00:39:44.836–00:39:48.836</time> <span>그러면 더 어려운 갱카츠에서 뭔가 하기 위해서</span></li>
+<li><time>00:39:48.836–00:39:52.836</time> <span>셀프 스포가이스가 아니면 어느 스포가이스가 더 좋던지 알아요.</span></li>
+<li><time>00:39:52.836–00:39:55.836</time> <span>얘네들은 어.. 어떻게 생각하세요?</span></li>
+<li><time>00:39:55.836–00:39:57.836</time> <span>이게 실제 나왔던지 모르겠어요.</span></li>
+<li><time>00:39:57.836–00:39:59.836</time> <span>실제 나왔던지 모르겠어요.</span></li>
+<li><time>00:39:59.836–00:40:03.836</time> <span>이거 예전에도 나올 때 한 번도 안 봤었는데</span></li>
+<li><time>00:40:03.836–00:40:05.836</time> <span>그래서 안 봤고요.</span></li>
+<li><time>00:40:05.836–00:40:10.836</time> <span>얘는 실제 뭐냐면은 어느 스포가이스를 하고 싶어요.</span></li>
+<li><time>00:40:10.836–00:40:12.836</time> <span>어려운 점은 내가 뭐라고 했죠?</span></li>
+<li><time>00:40:12.836–00:40:14.836</time> <span>이 PIS 수업을 통해서</span></li>
+<li><time>00:40:14.836–00:40:16.836</time> <span>이걸 보면은</span></li>
+<li><time>00:40:16.836–00:40:18.836</time> <span>내가 클린포스트들에 대한</span></li>
+<li><time>00:40:18.836–00:40:20.836</time> <span>그런 정보를 다 알고있다는 거예요</span></li>
+<li><time>00:40:20.836–00:40:22.836</time> <span>내가 여기 부터 간</span></li>
+<li><time>00:40:22.836–00:40:24.836</time> <span>이 소품들의 정보를 다 알고있다는 거예요</span></li>
+<li><time>00:40:24.836–00:40:26.836</time> <span>내가 리얼지식상 데이터</span></li>
+<li><time>00:40:26.836–00:40:28.836</time> <span>를 만들고 싶다면은</span></li>
+<li><time>00:40:28.836–00:40:30.836</time> <span>이걸 어디에선 학점을 해서 만들었는데</span></li>
+<li><time>00:40:30.836–00:40:32.836</time> <span>그거 자체에서 뭔가</span></li>
+<li><time>00:40:32.836–00:40:34.836</time> <span>평등의 그런</span></li>
+<li><time>00:40:34.836–00:40:36.836</time> <span>이걸 원해야 하는 공부가</span></li>
+<li><time>00:40:36.836–00:40:38.836</time> <span>발생을 하는 것 같다는 거예요</span></li>
+<li><time>00:40:38.836–00:40:40.836</time> <span>그리고 이것을 내가 알기 어려워</span></li>
+<li><time>00:40:40.836–00:40:44.836</time> <span>그런데 실제로 우리가 유튜브에서 선택하는 데이터 테스트를 보면</span></li>
+<li><time>00:40:44.836–00:40:46.836</time> <span>되게 심각하잖아요</span></li>
+<li><time>00:40:46.836–00:40:48.836</time> <span>여러개의 테스트가 동시에 오면 데이터가</span></li>
+<li><time>00:40:48.836–00:40:50.836</time> <span>복잡한 것 같아요</span></li>
+<li><time>00:40:50.836–00:40:52.836</time> <span>큰 테스트가 아니죠</span></li>
+<li><time>00:40:52.836–00:40:54.836</time> <span>그런 데이터를</span></li>
+<li><time>00:40:54.836–00:40:56.836</time> <span>QA에서 되게 많이 사용할 수 없다는</span></li>
+<li><time>00:40:56.836–00:40:58.836</time> <span>문제가 있습니다</span></li>
+<li><time>00:40:58.836–00:41:00.836</time> <span>그러면 이 밑에 있는 에너지 워크를</span></li>
+<li><time>00:41:00.836–00:41:02.836</time> <span>그냥</span></li>
+<li><time>00:41:02.836–00:41:04.836</time> <span>얻고 갈 수 있는</span></li>
+<li><time>00:41:04.836–00:41:06.836</time> <span>그냥</span></li>
+<li><time>00:41:06.836–00:41:09.836</time> <span>이 부분을 믹스해서</span></li>
+<li><time>00:41:09.836–00:41:12.836</time> <span>그냥 믹스터를, 리트로에이저 데이터를 그냥 이 자체를 믹스하는 거죠.</span></li>
+<li><time>00:41:12.836–00:41:14.836</time> <span>믹스한 다음에</span></li>
+<li><time>00:41:14.836–00:41:17.836</time> <span>세포레이저를 요렇게 그냥 하는 겁니다.</span></li>
+<li><time>00:41:17.836–00:41:19.836</time> <span>이렇게 하는 거죠. 요렇게.</span></li>
+<li><time>00:41:19.836–00:41:23.836</time> <span>요렇게를 이거를 모공제 세포레이저 하고 싶은 건데</span></li>
+<li><time>00:41:23.836–00:41:28.836</time> <span>이렇게 한 다음에 그러면은 이거 그냥 스피드에이저 나오죠.</span></li>
+<li><time>00:41:28.836–00:41:31.136</time> <span>예를 들어서 여기</span></li>
+<li><time>00:41:31.136–00:41:34.896</time> <span>여기에 2개 있고 여기에 지금 3개 있는 상황이에요</span></li>
+<li><time>00:41:34.896–00:41:38.496</time> <span>합치면은 combination이 5개가 나올텐데</span></li>
+<li><time>00:41:38.496–00:41:41.356</time> <span>그게 지금 총 8개에 대한</span></li>
+<li><time>00:41:41.356–00:41:43.996</time> <span>얘가 skt 소스에 대해서</span></li>
+<li><time>00:41:43.996–00:41:46.336</time> <span>ideal case에 대해서는</span></li>
+<li><time>00:41:46.336–00:41:50.496</time> <span>어? 뭐야? 다시 돌아와</span></li>
+<li><time>00:41:50.496–00:41:51.216</time> <span>ok</span></li>
+<li><time>00:41:51.216–00:41:55.296</time> <span>요 ideal case에 대해서는 요게 그런 식으로 뭔가</span></li>
+<li><time>00:41:55.296–00:41:57.796</time> <span>들어가 있겠죠? 들어가 있겠죠?</span></li>
+<li><time>00:41:57.796–00:41:59.276</time> <span>내가 잘 뽑아야겠다 라고 하면은</span></li>
+<li><time>00:41:59.276–00:42:05.776</time> <span>그러면 이 combination을 다시 내가 meeting합니다.</span></li>
+<li><time>00:42:05.776–00:42:09.096</time> <span>모든 combination에 대해서 meeting을 다시 해요.</span></li>
+<li><time>00:42:09.096–00:42:13.696</time> <span>그 중에 snr loss를 이 리스트워드와 비교했을 때</span></li>
+<li><time>00:42:13.696–00:42:20.376</time> <span>가장 높은 친구가 있겠죠. 그거를 학습에 활용합니다.</span></li>
+<li><time>00:42:20.376–00:42:23.156</time> <span>이렇게 하나 보면은 데이터가 모두 많기 때문에</span></li>
+<li><time>00:42:23.156–00:42:26.676</time> <span>결국에 수요에 간다 라는 거죠.</span></li>
+<li><time>00:42:26.676–00:42:28.676</time> <span>아이저가 괜찮죠?</span></li>
+<li><time>00:42:28.676–00:42:30.676</time> <span>아이저가 괜찮다고요</span></li>
+<li><time>00:42:30.676–00:42:32.676</time> <span>2020년도에는 원스파이 방법이</span></li>
+<li><time>00:42:32.676–00:42:34.676</time> <span>아주 유명할 때에요</span></li>
+<li><time>00:42:34.676–00:42:36.676</time> <span>이런거 보면 굉장히 많습니다</span></li>
+<li><time>00:42:36.676–00:42:38.676</time> <span>그러면은</span></li>
+<li><time>00:42:38.676–00:42:40.676</time> <span>진짜 최근에는 이제 어떤 존재가 되고 있나</span></li>
+<li><time>00:42:40.676–00:42:42.676</time> <span>이제는 약간 트레이저가 잡혀있어요</span></li>
+<li><time>00:42:42.676–00:42:44.676</time> <span>지금까지는 모델을 통해서</span></li>
+<li><time>00:42:44.676–00:42:46.676</time> <span>디트리미니스틱하게</span></li>
+<li><time>00:42:46.676–00:42:48.676</time> <span>그 마스크를 클래스 한다던지</span></li>
+<li><time>00:42:48.676–00:42:50.676</time> <span>아이페이저 한다던지 아니면은</span></li>
+<li><time>00:42:50.676–00:42:52.676</time> <span>그냥 소스 자체를 텍러리에</span></li>
+<li><time>00:42:52.676–00:42:54.676</time> <span>하는 그 방법들이 나왔다라고 하면은</span></li>
+<li><time>00:42:54.676–00:42:57.816</time> <span>이제는 Generation Model을 넣어서 합니다.</span></li>
+<li><time>00:42:57.816–00:42:59.816</time> <span>Generation Model이라는 디퓨저 모델 보이시죠?</span></li>
+<li><time>00:42:59.816–00:43:03.816</time> <span>여러분들이 잘 아는 디퓨저 모델 있죠?</span></li>
+<li><time>00:43:03.816–00:43:06.816</time> <span>디퓨저 모델이 나오면 사실 얘가 뜨기 시작했어요.</span></li>
+<li><time>00:43:06.816–00:43:10.816</time> <span>그래서 디퓨저 모델, 디퓨저 미스틱한 방법들</span></li>
+<li><time>00:43:10.816–00:43:15.816</time> <span>이 나오다가 이 다음에 처음에 여기서는 이제</span></li>
+<li><time>00:43:15.816–00:43:21.816</time> <span>여기서도 마찬가지로 Generation Model인거고</span></li>
+<li><time>00:43:21.816–00:43:26.096</time> <span>여기에서 이제 가구가 나오게 됩니다. 프로매치 기반의</span></li>
+<li><time>00:43:27.056–00:43:31.376</time> <span>이제 점점 디퓨전 기반의 가구들이 나오고 있다 라고 보시면 됩니다.</span></li>
+<li><time>00:43:31.376–00:43:38.056</time> <span>사실 이 강의는 예를 들면 2025년? 2024년?</span></li>
+<li><time>00:43:38.056–00:43:42.156</time> <span>이제부터 많이 나올 것 같은데 할까 말까 하다가</span></li>
+<li><time>00:43:42.156–00:43:45.656</time> <span>우선 된다거나 안 된다거나 할 텐데 나중에 시간이 나오면 제가 강의를 하겠습니다.</span></li>
+<li><time>00:43:45.656–00:43:49.096</time> <span>이것에 대해서는 나중에 다시 얘기할게요.</span></li>
+<li><time>00:43:49.096–00:43:58.456</time> <span>왜요 이거 여기가 아 아 그래 가지고 대학을 굳이 지금 얘기할 수 없을까 보인 만 우리가 지금 배워도 몸에 이래서</span></li>
+<li><time>00:43:58.456–00:44:05.896</time> <span>이 쪽으로 될 거야 더 한 거거든요 그렇게 뭐 그냥 기초 모델이 무지한 위주로 할 수 있어야 할 게 알기 위해서는</span></li>
+<li><time>00:44:05.896–00:44:11.196</time> <span>우리의 나를 위한 게 그는 강좌가 나오고 갈게요</span></li>
+<li><time>00:44:11.196–00:44:16.196</time> <span>여기까지 해서 페포레이션을 한거구요</span></li>
+<li><time>00:44:16.196–00:44:20.196</time> <span>지금까지 우리가 얘기한 것은 입력으로 들어가는 오디오가</span></li>
+<li><time>00:44:20.196–00:44:23.196</time> <span>한글 채널입니다. 채널이 하나였죠.</span></li>
+<li><time>00:44:23.196–00:44:26.196</time> <span>그런데 마이크를 여러개 활용할 수 있겠죠</span></li>
+<li><time>00:44:26.196–00:44:29.196</time> <span>멀티 채널 오디오로 활용할 수 있어요</span></li>
+<li><time>00:44:29.196–00:44:33.196</time> <span>그걸 활용하면 뭘 할 수 있는지를 다음 시간에 보니 할 수 있어요</span></li>
+<li><time>00:44:33.196–00:44:37.196</time> <span>채널 하나만 쓰는게 아니라 채널이 열어져 있으면 뭐가 바뀌느냐</span></li>
+<li><time>00:44:37.196–00:44:39.196</time> <span>사실 얘가 훨씬 좋아요</span></li>
+<li><time>00:44:39.196–00:44:41.196</time> <span>왜 좋냐?</span></li>
+<li><time>00:44:41.196–00:44:43.196</time> <span>이게 왜 가능한지를</span></li>
+<li><time>00:44:43.196–00:44:45.196</time> <span>바람처럼 보게</span></li>
+<li><time>00:44:45.196–00:44:47.196</time> <span>지금 어때요?</span></li>
+<li><time>00:44:47.196–00:44:49.196</time> <span>지금 어때요?</span></li>
+<li><time>00:44:49.196–00:44:51.196</time> <span>오케이</span></li>
+<li><time>00:44:51.196–00:44:53.196</time> <span>여기까지 하겠습니다</span></li>
+<li><time>00:44:53.196–00:44:55.196</time> <span>두 분 두 분</span></li>
+<li><time>00:44:55.196–00:44:57.196</time> <span>아</span></li>
+<li><time>00:44:57.196–00:44:59.196</time> <span>아</span></li>
+<li><time>00:44:59.196–00:45:01.196</time> <span>아</span></li>
+<li><time>00:45:01.196–00:45:03.196</time> <span>아</span></li>
+<li><time>00:45:03.196–00:45:05.196</time> <span>아</span></li>
+<li><time>00:45:05.196–00:45:05.259</time> <span>감사합니다.</span></li>
+</ol></details></section>
 </main></body></html>

@@ -1,827 +1,929 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lecture 8-2 강의 전사 · 2026-11-05</title>
-<style>
-  :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  body { margin: 0 auto; max-width: 76rem; padding: clamp(1rem, 4vw, 3rem); line-height: 1.72; }
-  h1 { line-height: 1.25; } .status { padding: 1rem; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); background: color-mix(in srgb, Canvas 92%, #dbeafe 8%); }
-  .utterance { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1rem; margin: 0; padding: .62rem 0; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
-  time { font-variant-numeric: tabular-nums; color: #2563a9; white-space: nowrap; }
-  @media (max-width: 46rem) { .utterance { grid-template-columns: 1fr; gap: .15rem; } }
-  @media print { body { max-width: none; } .utterance { break-inside: avoid; } }
-</style></head><body><main><h1>Lecture 8-2 강의 전사 · 2026-11-05</h1>
-<p class="status"><strong>전사 상태:</strong> Lecture 8-1 복습과 Lecture 8-2의 MVDR 설명에 해당하는 00:00–49:05 자동 전사다. 전문 용어·수식·화자 귀속은 전 구간 직접 청취로 교정되지 않았다. 49:05 이후는 원시 전사 품질이 낮아 공개 학습 자료에서 제외했다. 시간은 음성 메모 시작 기준이다.</p>
-<section aria-label="강의 전사"><p class="utterance"><time>00:00:00.000–00:00:02.000</time><span>안되는 사람?</span></p>
-<p class="utterance"><time>00:00:02.000–00:00:03.000</time><span>오케이</span></p>
-<p class="utterance"><time>00:00:03.000–00:00:05.000</time><span>그러면은 이런 다시 얘기해볼까</span></p>
-<p class="utterance"><time>00:00:05.000–00:00:08.000</time><span>우선 이건 이해돼요 이쪽 방향으로 유닛에서 들려오는 상황</span></p>
-<p class="utterance"><time>00:00:08.000–00:00:14.000</time><span>얘를 고정시켜놓고 내가 소리를 받아들이는 그 필터 있잖아요</span></p>
-<p class="utterance"><time>00:00:14.000–00:00:18.000</time><span>갓스 비포머라는 식의 필터의 방향을 내가 조절할 수 있겠죠</span></p>
-<p class="utterance"><time>00:00:18.000–00:00:21.000</time><span>가정을 이렇게 하는 거예요 이쪽 방향에서 소리가 들려온다</span></p>
-<p class="utterance"><time>00:00:21.000–00:00:25.000</time><span>이쪽 방향에서 소리가 들려온다라고 하면은 내가 필터를 어떻게 설계해야 되는지를</span></p>
-<p class="utterance"><time>00:00:25.000–00:00:29.000</time><span>계산을 앞에서 같은 요식을 통해서 할 수 있겠죠</span></p>
-<p class="utterance"><time>00:00:29.000–00:00:33.960</time><span>여기서 이 세타를 내가 원하는 각도로 세팅을 하려면</span></p>
-<p class="utterance"><time>00:00:33.960–00:00:38.420</time><span>그러면 저 세타에 따라서 W가 바뀌겠죠.</span></p>
-<p class="utterance"><time>00:00:39.100–00:00:43.700</time><span>그러면 내가 원하는 방향에 따라서 H 각도 바뀌고</span></p>
-<p class="utterance"><time>00:00:43.700–00:00:45.460</time><span>그에 따라서 W 각도 바뀌겠죠.</span></p>
-<p class="utterance"><time>00:00:46.040–00:00:47.860</time><span>그거를 쭉 변화시켰을 때</span></p>
-<p class="utterance"><time>00:00:47.860–00:00:52.440</time><span>이 들려오는 H는 H0으로 고정을 시켜주는 거예요.</span></p>
-<p class="utterance"><time>00:00:54.360–00:00:58.620</time><span>그러면 내가 필터를 만약에 이쪽 방향으로 설정했어요.</span></p>
-<p class="utterance"><time>00:00:58.620–00:01:01.100</time><span>예를 들어서 H1이라고 해볼게요.</span></p>
-<p class="utterance"><time>00:01:02.680–00:01:03.940</time><span>내가 이쪽 가량으로 필터를 했는데</span></p>
-<p class="utterance"><time>00:01:03.940–00:01:06.840</time><span>소리는 지금 이쪽 가량으로 들려오고 있으니까</span></p>
-<p class="utterance"><time>00:01:06.840–00:01:09.180</time><span>얘를 지워야 되잖아요.</span></p>
-<p class="utterance"><time>00:01:09.920–00:01:11.200</time><span>얼마만큼 잘 지우냐</span></p>
-<p class="utterance"><time>00:01:11.200–00:01:14.320</time><span>얼마만큼 잘 석배전시키냐를 보는 거다.</span></p>
-<p class="utterance"><time>00:01:15.380–00:01:15.980</time><span>라고 얘기합니다.</span></p>
-<p class="utterance"><time>00:01:16.040–00:01:16.740</time><span>5만 디엘이요.</span></p>
-<p class="utterance"><time>00:01:17.940–00:01:18.300</time><span>이렇게요.</span></p>
-<p class="utterance"><time>00:01:20.200–00:01:20.500</time><span>오케이.</span></p>
-<p class="utterance"><time>00:01:21.520–00:01:23.820</time><span>그 정도를 저렇게 표현하는 거예요.</span></p>
-<p class="utterance"><time>00:01:24.360–00:01:27.080</time><span>그러면은 다 먹선하게 작은 값을 받았으면 좋겠는데</span></p>
-<p class="utterance"><time>00:01:27.080–00:01:29.620</time><span>중간중간에 꽤 높은 값들이 보이죠</span></p>
-<p class="utterance"><time>00:01:29.620–00:01:31.880</time><span>저게 왜 나오냐</span></p>
-<p class="utterance"><time>00:01:31.880–00:01:34.660</time><span>그리고 저 밑으로 푹푹 꺼지는 건 뭐냐</span></p>
-<p class="utterance"><time>00:01:34.660–00:01:36.000</time><span>이런 것을 다 안정하게 배울 거고요</span></p>
-<p class="utterance"><time>00:01:36.000–00:01:38.320</time><span>그래서 저 모양이 나오는 이유는 뭐냐면</span></p>
-<p class="utterance"><time>00:01:38.320–00:01:40.220</time><span>우선 핵심만 말씀드리면</span></p>
-<p class="utterance"><time>00:01:40.220–00:01:43.580</time><span>내가 얘를 완벽하게 지우고 싶어요</span></p>
-<p class="utterance"><time>00:01:43.580–00:01:45.300</time><span>내가 특정 바이오로 들려오는 소리를</span></p>
-<p class="utterance"><time>00:01:45.300–00:01:47.080</time><span>완벽하게 지우고 싶다</span></p>
-<p class="utterance"><time>00:01:47.760–00:01:49.860</time><span>라고 하면 어떻게 하면 완벽하게 지우실까요</span></p>
-<p class="utterance"><time>00:01:49.860–00:01:51.220</time><span>지금 예를 들어서</span></p>
-<p class="utterance"><time>00:01:51.220–00:01:53.080</time><span>이 포네셜 처음으로 봤을 때</span></p>
-<p class="utterance"><time>00:01:53.080–00:01:55.940</time><span>내가 이 H라는 친구</span></p>
-<p class="utterance"><time>00:01:55.940–00:01:57.840</time><span>결국에 이 두 개 곱하는 것은</span></p>
-<p class="utterance"><time>00:01:57.840–00:01:59.900</time><span>예를 들어 그냥 이 두 개</span></p>
-<p class="utterance"><time>00:01:59.900–00:02:02.280</time><span>이 제곱하지는 아니고 이 두 개를 곱하는 값</span></p>
-<p class="utterance"><time>00:02:02.280–00:02:03.660</time><span>그러면 이거는</span></p>
-<p class="utterance"><time>00:02:03.660–00:02:05.540</time><span>이 스포네이션의</span></p>
-<p class="utterance"><time>00:02:05.540–00:02:08.520</time><span>어떤 j, pi라는 값으로</span></p>
-<p class="utterance"><time>00:02:08.520–00:02:09.140</time><span>떨어지겠죠.</span></p>
-<p class="utterance"><time>00:02:10.000–00:02:11.600</time><span>그렇죠. 이 두 개 곱한 거니까.</span></p>
-<p class="utterance"><time>00:02:12.020–00:02:13.840</time><span>그런데 지금 얘가 y가</span></p>
-<p class="utterance"><time>00:02:13.840–00:02:15.160</time><span>하나가 아니라 m개잖아요.</span></p>
-<p class="utterance"><time>00:02:15.860–00:02:17.560</time><span>그렇죠. 그렇다는 것은</span></p>
-<p class="utterance"><time>00:02:17.560–00:02:19.440</time><span>이게 플러스</span></p>
-<p class="utterance"><time>00:02:19.440–00:02:21.200</time><span>이 스포네이션의 j, pi</span></p>
-<p class="utterance"><time>00:02:21.200–00:02:23.460</time><span>2부터 더해서</span></p>
-<p class="utterance"><time>00:02:23.460–00:02:25.140</time><span>이 스포네이션의 j, pi</span></p>
-<p class="utterance"><time>00:02:25.140–00:02:28.140</time><span>n까지 더하는 값이 얘가 되겠죠</span></p>
-<p class="utterance"><time>00:02:28.140–00:02:34.140</time><span>이해 되요? 얘는 inner product니까</span></p>
-<p class="utterance"><time>00:02:34.140–00:02:36.140</time><span>이해 안되죠?</span></p>
-<p class="utterance"><time>00:02:36.140–00:02:40.140</time><span>지금 이렇게 생겼잖아요 지금 보면</span></p>
-<p class="utterance"><time>00:02:40.140–00:02:44.140</time><span>이 친구는 h라는 친구는 요거의 요 vector잖아요</span></p>
-<p class="utterance"><time>00:02:44.140–00:02:49.140</time><span>요걸 inner product하고 마찬가지로 이 h라는 친구는 어차피 이 친구인데</span></p>
-<p class="utterance"><time>00:02:49.140–00:02:52.140</time><span>이거 세타만 바꿔가지고 이거 두개끼리 지금</span></p>
-<p class="utterance"><time>00:02:52.140–00:02:56.540</time><span>여기서 곱한거잖아요 곱한 다음에 더하는거니까</span></p>
-<p class="utterance"><time>00:02:56.540–00:02:59.500</time><span>이런식으로 나와지겠죠 지금 두개가 어차피 곱하지만은</span></p>
-<p class="utterance"><time>00:02:59.500–00:03:04.660</time><span>이 파이 안에서는 서로 다른 타우와 오메가 곱한 것들끼리 더하는</span></p>
-<p class="utterance"><time>00:03:04.660–00:03:07.220</time><span>범위가 있잖아요 그걸 그냥 이 파이 범위가 나타낸</span></p>
-<p class="utterance"><time>00:03:07.220–00:03:12.340</time><span>겁니다 이렇게 돌릴 수 있겠죠</span></p>
-<p class="utterance"><time>00:03:12.340–00:03:15.260</time><span>이해되죠 그랬을 때 얘가 최소화가 되려면</span></p>
-<p class="utterance"><time>00:03:15.260–00:03:17.580</time><span>얘가 0이 되려면 어떻게 해요 쉽게 얘기해요</span></p>
-<p class="utterance"><time>00:03:17.580–00:03:21.540</time><span>0이 되려면은 얘들 한번 배웠어요 이거 0이 되려면 어떻게 되죠</span></p>
-<p class="utterance"><time>00:03:21.540–00:03:27.160</time><span>얘가 real이고 얘가 image인데 얘가 0이 되려면은</span></p>
-<p class="utterance"><time>00:03:27.160–00:03:31.220</time><span>요 8개의 벡터가 서로 다른 방향을 상황으로 다 찌르고 있으면 되겠다</span></p>
-<p class="utterance"><time>00:03:31.220–00:03:38.220</time><span>요렇게 요렇게 요렇게 요렇게 찌르고 있으면은</span></p>
-<p class="utterance"><time>00:03:38.220–00:03:41.960</time><span>이 delay 요 theta라는 칠구가 pi죠 정확히 top pi</span></p>
-<p class="utterance"><time>00:03:41.960–00:03:45.980</time><span>pi 1, pi 2 이게 위축 구성이 되어 있을 때</span></p>
-<p class="utterance"><time>00:03:45.980–00:03:49.300</time><span>얘가 단항을 치르고 있으면 이거 더하면 0이 되잖아요</span></p>
-<p class="utterance"><time>00:03:49.300–00:03:51.300</time><span>이렇게 되는 것을 지금 원하는 거예요.</span></p>
-<p class="utterance"><time>00:03:51.300–00:03:53.300</time><span>그게 아까 그 그림에서</span></p>
-<p class="utterance"><time>00:03:55.300–00:03:57.300</time><span>여기 밑으로 푹 꺼진 데 있죠?</span></p>
-<p class="utterance"><time>00:03:57.300–00:03:59.300</time><span>여기가 거기에 남아있어요.</span></p>
-<p class="utterance"><time>00:04:01.300–00:04:03.300</time><span>여기 푹 꺼진 데가 거기에 남아있고</span></p>
-<p class="utterance"><time>00:04:03.300–00:04:05.300</time><span>여기는 조금은 언라인이 안 맞아서</span></p>
-<p class="utterance"><time>00:04:05.300–00:04:07.300</time><span>이 텀들이 살아있는 거예요.</span></p>
-<p class="utterance"><time>00:04:11.300–00:04:13.300</time><span>이걸 한번 봅시다. 여러분들에게</span></p>
-<p class="utterance"><time>00:04:13.300–00:04:15.300</time><span>이해를 위해서</span></p>
-<p class="utterance"><time>00:04:15.300–00:04:17.300</time><span>제가 지난 시간에 봤던 이 친구를</span></p>
-<p class="utterance"><time>00:04:17.300–00:04:19.300</time><span>왜 가져갔는지 보여줄게요.</span></p>
-<p class="utterance"><time>00:04:19.300–00:04:23.300</time><span>밑에 있는 그림이 그걸 보여주고 있는거에요.</span></p>
-<p class="utterance"><time>00:04:23.300–00:04:25.300</time><span>그걸 보여주고 있는거고</span></p>
-<p class="utterance"><time>00:04:25.300–00:04:27.300</time><span>지금 이쪽 방향으로 소리가 들어왔을 때</span></p>
-<p class="utterance"><time>00:04:27.300–00:04:29.300</time><span>내가 이쪽을 스토리닝 하는거에요.</span></p>
-<p class="utterance"><time>00:04:29.300–00:04:33.300</time><span>그래서 이 그림이 들어오는데</span></p>
-<p class="utterance"><time>00:04:33.300–00:04:35.300</time><span>지금 이 세타</span></p>
-<p class="utterance"><time>00:04:35.300–00:04:39.300</time><span>내가 지금 바라보고 있는 이 세타가</span></p>
-<p class="utterance"><time>00:04:39.300–00:04:41.300</time><span>이쪽 방향을 바라보고 있어요.</span></p>
-<p class="utterance"><time>00:04:41.300–00:04:45.300</time><span>그랬을 때 이게 지금 여기에 해당하는거에요.</span></p>
-<p class="utterance"><time>00:04:45.300–00:04:47.300</time><span>여기</span></p>
-<p class="utterance"><time>00:04:47.300–00:04:48.800</time><span>여기에 해당하는 거고</span></p>
-<p class="utterance"><time>00:04:48.800–00:04:51.300</time><span>그때 그 페이스 텀을 하면은</span></p>
-<p class="utterance"><time>00:04:51.300–00:04:52.900</time><span>이런 식으로 돼서</span></p>
-<p class="utterance"><time>00:04:52.900–00:04:54.900</time><span>이게 사실 저희랑 똑같죠</span></p>
-<p class="utterance"><time>00:04:54.900–00:04:57.100</time><span>똑같은 건데 지금 이거를 그냥</span></p>
-<p class="utterance"><time>00:04:57.100–00:04:58.500</time><span>배턴끼리 더하면은</span></p>
-<p class="utterance"><time>00:04:58.500–00:05:00.000</time><span>한 바퀴 더 오는 거잖아요 결국에</span></p>
-<p class="utterance"><time>00:05:00.000–00:05:02.480</time><span>그거를 그냥 여기 그려놓은거에요.</span></p>
-<p class="utterance"><time>00:05:02.480–00:05:05.280</time><span>결국에 페이스가 제자리로 돌아온다.</span></p>
-<p class="utterance"><time>00:05:05.280–00:05:06.960</time><span>라는 걸 믿는거고</span></p>
-<p class="utterance"><time>00:05:06.960–00:05:10.280</time><span>그때 실제로 저 위상을</span></p>
-<p class="utterance"><time>00:05:10.280–00:05:12.120</time><span>마이크 신호로 표현을 하면은</span></p>
-<p class="utterance"><time>00:05:12.120–00:05:14.600</time><span>요런식으로 된다는거고</span></p>
-<p class="utterance"><time>00:05:14.600–00:05:17.480</time><span>다 위상이 조금씩 조금씩 어긋나서</span></p>
-<p class="utterance"><time>00:05:17.480–00:05:19.920</time><span>요런식으로 되면 얘를 더하면은</span></p>
-<p class="utterance"><time>00:05:19.920–00:05:21.400</time><span>영원히 써내게 되는거에요.</span></p>
-<p class="utterance"><time>00:05:21.400–00:05:23.680</time><span>페이스가 조금씩 달라지게 되는거에요.</span></p>
-<p class="utterance"><time>00:05:23.680–00:05:25.400</time><span>쉽게 얘기하면은 간단하게 얘기하면은</span></p>
-<p class="utterance"><time>00:05:25.400–00:05:27.440</time><span>요 시그널하고</span></p>
-<p class="utterance"><time>00:05:27.440–00:05:29.960</time><span>요 밑에 있는 요 시그널하고는</span></p>
-<p class="utterance"><time>00:05:29.960–00:05:34.960</time><span>그 개념은 0이죠. 그 개념이요.</span></p>
-<p class="utterance"><time>00:05:41.960–00:05:44.960</time><span>그렇다라는 것은 그리고 한가지 더</span></p>
-<p class="utterance"><time>00:05:44.960–00:05:47.960</time><span>Frequency에 따라서 형제가 조금씩 바뀝니다.</span></p>
-<p class="utterance"><time>00:05:47.960–00:05:52.960</time><span>왜 바뀌냐면 여기 앞에 스티어링 벡터에서 H라는 식으로</span></p>
-<p class="utterance"><time>00:05:52.960–00:05:56.340</time><span>이렇게 갔다오면은 요게 지금 오메가톤이 들어가 있잖아요.</span></p>
-<p class="utterance"><time>00:05:56.600–00:06:02.660</time><span>저 같은 속도가 오메가톤이 들어가 있으니까 오메가톤이 늘어나면은 더 빨리 돌겠죠.</span></p>
-<p class="utterance"><time>00:06:03.380–00:06:05.600</time><span>오메가톤이 작아지면 천천히 돌겠죠.</span></p>
-<p class="utterance"><time>00:06:05.600–00:06:12.400</time><span>그래서 위상이 딱 맞아지는 그 시점이 뒤로 늘어나냐 빨라지냐가 바뀌겠죠.</span></p>
-<p class="utterance"><time>00:06:15.540–00:06:20.900</time><span>그렇기 때문에 프리퀀티가 작아질수록 옆으로 위축해지는 거고</span></p>
-<p class="utterance"><time>00:06:20.900–00:06:24.900</time><span>프리퀀시가 높아질수록 보이는거에요</span></p>
-<p class="utterance"><time>00:06:24.900–00:06:27.900</time><span>그래서 이런 분위기입니다</span></p>
-<p class="utterance"><time>00:06:27.900–00:06:30.900</time><span>그런 얘기를 이해하시면 되요</span></p>
-<p class="utterance"><time>00:06:30.900–00:06:34.900</time><span>이해되요? 이해 안되는거 같은데요?</span></p>
-<p class="utterance"><time>00:06:34.900–00:06:39.900</time><span>두판도 오케이</span></p>
-<p class="utterance"><time>00:06:39.900–00:06:44.900</time><span>아까 여기서</span></p>
-<p class="utterance"><time>00:06:44.900–00:06:47.900</time><span>이건 지울게요</span></p>
-<p class="utterance"><time>00:06:47.900–00:06:49.900</time><span>H는</span></p>
-<p class="utterance"><time>00:06:49.900–00:06:51.900</time><span>이 포지션의</span></p>
-<p class="utterance"><time>00:06:51.900–00:06:53.900</time><span>마이너스 j 오메가</span></p>
-<p class="utterance"><time>00:06:53.900–00:06:55.900</time><span>여기 tau1부터</span></p>
-<p class="utterance"><time>00:06:55.900–00:06:57.900</time><span>마이너스 j</span></p>
-<p class="utterance"><time>00:06:57.900–00:06:59.900</time><span>오메가</span></p>
-<p class="utterance"><time>00:06:59.900–00:07:01.900</time><span>taun</span></p>
-<p class="utterance"><time>00:07:01.900–00:07:03.900</time><span>이렇게 분명히 되어있을 수 있습니다</span></p>
-<p class="utterance"><time>00:07:03.900–00:07:05.900</time><span>이 친구는</span></p>
-<p class="utterance"><time>00:07:05.900–00:07:07.900</time><span>근데 여기 이 오메가라는 것은</span></p>
-<p class="utterance"><time>00:07:07.900–00:07:09.900</time><span>가속도잖아요</span></p>
-<p class="utterance"><time>00:07:09.900–00:07:11.900</time><span>그 여기</span></p>
-<p class="utterance"><time>00:07:11.900–00:07:13.900</time><span>이게</span></p>
-<p class="utterance"><time>00:07:13.900–00:07:15.900</time><span>가속도가</span></p>
-<p class="utterance"><time>00:07:15.900–00:07:45.900</time><span>그 여기 이게 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이</span></p>
-<p class="utterance"><time>00:07:45.900–00:07:47.900</time><span>여러분이 아는 것과 동시에</span></p>
-<p class="utterance"><time>00:07:47.900–00:07:49.900</time><span>이렇게 올라오면은</span></p>
-<p class="utterance"><time>00:07:49.900–00:07:51.900</time><span>이 친구를</span></p>
-<p class="utterance"><time>00:07:51.900–00:07:53.900</time><span>이 친구를</span></p>
-<p class="utterance"><time>00:07:53.900–00:07:55.900</time><span>옆으로 맞춰놓고</span></p>
-<p class="utterance"><time>00:07:55.900–00:07:57.900</time><span>이렇게</span></p>
-<p class="utterance"><time>00:07:57.900–00:07:59.900</time><span>잘 안보여서</span></p>
-<p class="utterance"><time>00:07:59.900–00:08:01.900</time><span>대충, 대충 봐요</span></p>
-<p class="utterance"><time>00:08:01.900–00:08:03.900</time><span>이거를 여기서</span></p>
-<p class="utterance"><time>00:08:03.900–00:08:05.900</time><span>어</span></p>
-<p class="utterance"><time>00:08:05.900–00:08:07.900</time><span>다시 0에서 보면은</span></p>
-<p class="utterance"><time>00:08:07.900–00:08:09.900</time><span>얘가 조금씩 옆으로 이동하죠</span></p>
-<p class="utterance"><time>00:08:09.900–00:08:11.900</time><span>이렇게</span></p>
-<p class="utterance"><time>00:08:11.900–00:08:13.900</time><span>얘가 이렇게 이동을 하면서 결국</span></p>
-<p class="utterance"><time>00:08:13.900–00:08:18.900</time><span>근데 그게 빨리 가면 빨리 도달하고 천천히 가면 천천히 가겠죠.</span></p>
-<p class="utterance"><time>00:08:18.900–00:08:25.900</time><span>그 얘기에요. 그래서 이 바퀴가 지금 오메가인데</span></p>
-<p class="utterance"><time>00:08:25.900–00:08:30.900</time><span>얘를 이렇게 늘리면은 같은 거리를 이동해도 더 보관 나가는 거예요.</span></p>
-<p class="utterance"><time>00:08:30.900–00:08:36.900</time><span>마트 보면은 더 이렇게 보면은 처음에 이게 딱 맞아서 살짝 이렇게 올라가게 되는데</span></p>
-<p class="utterance"><time>00:08:36.900–00:08:39.900</time><span>이럴 때에는 다 더하면 중복이 되잖아요.</span></p>
-<p class="utterance"><time>00:08:39.900–00:08:42.900</time><span>예를 들면 시프트가 발전을 할텐데</span></p>
-<p class="utterance"><time>00:08:42.900–00:08:44.900</time><span>시프트가 발전을 하죠?</span></p>
-<p class="utterance"><time>00:08:44.900–00:08:47.900</time><span>이게 이 속도가 더 느려진다는 거예요</span></p>
-<p class="utterance"><time>00:08:47.900–00:08:51.900</time><span>왜냐하면 여기에 오메가가 있습니다</span></p>
-<p class="utterance"><time>00:08:51.900–00:08:53.900</time><span>그렇게 이해하시면 돼요</span></p>
-<p class="utterance"><time>00:08:53.900–00:09:03.900</time><span>이렇게 해야 됩니다.</span></p>
-<p class="utterance"><time>00:09:03.900–00:09:09.900</time><span>그리고 이것은 스파셜 엘리에이팅 이라는 친구인데</span></p>
-<p class="utterance"><time>00:09:09.900–00:09:11.900</time><span>이거 할까?</span></p>
-<p class="utterance"><time>00:09:11.900–00:09:13.900</time><span>이거는 중요하긴 한데</span></p>
-<p class="utterance"><time>00:09:13.900–00:09:15.900</time><span>이건 좀 더 어려운데</span></p>
-<p class="utterance"><time>00:09:15.900–00:09:17.900</time><span>좀 더 어려운데</span></p>
-<p class="utterance"><time>00:09:17.900–00:09:19.900</time><span>잠깐만</span></p>
-<p class="utterance"><time>00:09:19.900–00:09:21.900</time><span>음..</span></p>
-<p class="utterance"><time>00:09:21.900–00:09:23.900</time><span>오늘 할게요</span></p>
-<p class="utterance"><time>00:09:23.900–00:09:25.900</time><span>여러분들 이해를</span></p>
-<p class="utterance"><time>00:09:25.900–00:09:27.900</time><span>요거는 조금 약간 고급? 어드밴스도 있나요?</span></p>
-<p class="utterance"><time>00:09:27.900–00:09:29.900</time><span>약간? 약간 공기인데</span></p>
-<p class="utterance"><time>00:09:29.900–00:09:31.900</time><span>여기서 만약에 내가 초파수를</span></p>
-<p class="utterance"><time>00:09:31.900–00:09:33.900</time><span>엄청나게 증가시켜 놓을게요</span></p>
-<p class="utterance"><time>00:09:33.900–00:09:35.900</time><span>여러분</span></p>
-<p class="utterance"><time>00:09:35.900–00:09:37.900</time><span>초파수를 증가해보면은</span></p>
-<p class="utterance"><time>00:09:37.900–00:09:39.900</time><span>옆에 그림을 보면은</span></p>
-<p class="utterance"><time>00:09:39.900–00:09:41.900</time><span>그림을 하나 보면은 이게 점점점점 이게</span></p>
-<p class="utterance"><time>00:09:41.900–00:09:43.900</time><span>이 밑에 있는 요 친구</span></p>
-<p class="utterance"><time>00:09:43.900–00:09:45.900</time><span>그 비패성이 점점 쪼그라드는게 보이죠</span></p>
-<p class="utterance"><time>00:09:45.900–00:09:47.900</time><span>왜냐면 더 빨리 가니까</span></p>
-<p class="utterance"><time>00:09:47.900–00:09:49.900</time><span>근데 더 빨리 가다 못해</span></p>
-<p class="utterance"><time>00:09:49.900–00:09:51.900</time><span>더 빨리 가다 못해서</span></p>
-<p class="utterance"><time>00:09:51.900–00:09:53.900</time><span>내가 이동해야 되는 이 파일을</span></p>
-<p class="utterance"><time>00:09:53.900–00:09:55.900</time><span>초과하는 겁니다</span></p>
-<p class="utterance"><time>00:09:55.900–00:09:57.900</time><span>이 초과하면은</span></p>
-<p class="utterance"><time>00:09:57.900–00:09:59.900</time><span>우리 갑자기</span></p>
-<p class="utterance"><time>00:10:00.000–00:10:04.000</time><span>이 친구가 만들어져요.</span></p>
-<p class="utterance"><time>00:10:04.000–00:10:08.000</time><span>지금 보면 이 친구.</span></p>
-<p class="utterance"><time>00:10:08.000–00:10:12.000</time><span>다시 이거를 보면은 지금 이 친구가 갑자기 만들어집니다.</span></p>
-<p class="utterance"><time>00:10:12.000–00:10:16.000</time><span>이 친구가 만들어지는데 이 친구는 뭐냐?</span></p>
-<p class="utterance"><time>00:10:16.000–00:10:20.000</time><span>뭐냐면은 갑자기 여기서 다시 증가하는 시점이 발생해요.</span></p>
-<p class="utterance"><time>00:10:20.000–00:10:24.000</time><span>사실 얘는 뭐 때문에 발생을 하는 거냐면은</span></p>
-<p class="utterance"><time>00:10:24.000–00:10:28.000</time><span>마이크 간 거리 때문에 발생을 합니다.</span></p>
-<p class="utterance"><time>00:10:28.000–00:10:35.680</time><span>마이크 간 거리가 이렇게 가까울 수도 있고 멀 수도 있겠죠</span></p>
-<p class="utterance"><time>00:10:35.680–00:10:37.580</time><span>근데 소리라는 것은 파동을 갖잖아요</span></p>
-<p class="utterance"><time>00:10:37.580–00:10:41.580</time><span>파동은 1초에 몇 미터 가냐 하잖아요</span></p>
-<p class="utterance"><time>00:10:41.580–00:10:45.780</time><span>그 웨이브 앵크는 1초에 몇 미터 가냐</span></p>
-<p class="utterance"><time>00:10:45.780–00:10:50.120</time><span>그러니까 한 번 주기가 1초에 몇 미터 가냐가 파장이에요</span></p>
-<p class="utterance"><time>00:10:50.120–00:10:54.280</time><span>그렇다는 것은 한 웨이브 앵크가 예를 들어서</span></p>
-<p class="utterance"><time>00:10:54.280–00:10:57.360</time><span>내가 이쪽 방에 소리가 들려온다 라고 했을 때</span></p>
-<p class="utterance"><time>00:10:57.360–00:11:01.300</time><span>어떤 친구는 되게 빠른 고주파일 수도 있고</span></p>
-<p class="utterance"><time>00:11:01.300–00:11:05.300</time><span>어떤 친구는 되게 느린 친구가 들려올 수도 있겠죠</span></p>
-<p class="utterance"><time>00:11:05.300–00:11:08.800</time><span>근데 여기서 들리고 여기서 들렸어요</span></p>
-<p class="utterance"><time>00:11:08.800–00:11:12.200</time><span>근데 예를 들어서 여기 소리가 들렸을 때</span></p>
-<p class="utterance"><time>00:11:12.200–00:11:15.160</time><span>이 빨간색으로 보냅니다</span></p>
-<p class="utterance"><time>00:11:15.160–00:11:21.140</time><span>쉽게 얘기하면은 이렇게 파장이 그려지는 이런 친구가 있다라고 했을 때</span></p>
-<p class="utterance"><time>00:11:21.140–00:11:26.360</time><span>만약에 되게 빨리 타는 친구가 있어요 이렇게</span></p>
-<p class="utterance"><time>00:11:26.360–00:11:30.300</time><span>그러면 이 시점에서 녹음된 친구와 이 시점에서 녹음한 친구는</span></p>
-<p class="utterance"><time>00:11:30.300–00:11:36.360</time><span>얘는 이만큼 값이 녹음됐다고 하면 이 친구는 이 값이 녹음이 됐다고 볼 수 있어요.</span></p>
-<p class="utterance"><time>00:11:37.320–00:11:41.260</time><span>반대로 이 하이 피컨스에서 이 값이 녹음이 됐다고 볼 수 있어요.</span></p>
-<p class="utterance"><time>00:11:41.600–00:11:44.940</time><span>그런데 문제는 뭐냐면 지금 이 비포밍을 한다는 건</span></p>
-<p class="utterance"><time>00:11:44.940–00:11:47.860</time><span>얘를 옆으로 시켜가면서 얼라인이 맞는 걸 찾는 거잖아요.</span></p>
-<p class="utterance"><time>00:11:48.620–00:11:51.540</time><span>그런데 지금 이 거리 안에서 주기가 두 번이 맞대요.</span></p>
-<p class="utterance"><time>00:11:52.560–00:11:55.100</time><span>두 번 얼라인이 맞는 상황이 맞대요.</span></p>
-<p class="utterance"><time>00:11:55.100–00:11:57.100</time><span>주기가 두 번이 되어있네요.</span></p>
-<p class="utterance"><time>00:11:58.100–00:12:00.100</time><span>뭔지 대략적으로 이해가 되죠.</span></p>
-<p class="utterance"><time>00:12:00.100–00:12:03.100</time><span>얘가 얘를 움직여가면서 맞는 걸 찾는게 있는데</span></p>
-<p class="utterance"><time>00:12:03.100–00:12:06.100</time><span>지금 두 번 주기를 가지니까 두 번을 가지라는 거예요.</span></p>
-<p class="utterance"><time>00:12:06.100–00:12:08.100</time><span>주기가 맞는 시점이.</span></p>
-<p class="utterance"><time>00:12:08.100–00:12:11.100</time><span>그렇기 때문에 지금 주기가 맞아 버렸기 때문에</span></p>
-<p class="utterance"><time>00:12:11.100–00:12:13.100</time><span>지금 여기 그림을 보면은</span></p>
-<p class="utterance"><time>00:12:13.100–00:12:15.100</time><span>밑에 다시 이 그림을 보면</span></p>
-<p class="utterance"><time>00:12:15.100–00:12:18.100</time><span>지금 여기서 시작을 다시 했을 때</span></p>
-<p class="utterance"><time>00:12:18.100–00:12:20.100</time><span>지금은 딱 맞아요. 같은 마이매트 로 오니까</span></p>
-<p class="utterance"><time>00:12:20.100–00:12:22.100</time><span>얼른 맞다가 조금 틀리면</span></p>
-<p class="utterance"><time>00:12:22.100–00:12:24.100</time><span>이게 주기가 조금씩 달라지겠죠.</span></p>
-<p class="utterance"><time>00:12:24.100–00:12:38.100</time><span>달라지다가 갑자기 내가 아직 다 돌지 않았는데 온라인이 맞는 지점이 갑자기 등장하기 시작한다.</span></p>
-<p class="utterance"><time>00:12:38.100–00:12:42.100</time><span>이게 스파셜 LA의 주기입니다.</span></p>
-<p class="utterance"><time>00:12:42.100–00:12:44.100</time><span>대충 문제에 이해되죠?</span></p>
-<p class="utterance"><time>00:12:44.100–00:12:48.100</time><span>이 주기가 되게 중요하다는 거고</span></p>
-<p class="utterance"><time>00:12:48.100–00:12:51.100</time><span>그래서 마이크 간 거리도 중요하다는 겁니다.</span></p>
-<p class="utterance"><time>00:12:51.100–00:13:02.100</time><span>이거는 비전에서도 사실 똑같은 관측이 있어요. 거기서도 LSE라고 하잖아요. 예를 들어 피셀 간에 뭔가 하늘자가 보이잖아요.</span></p>
-<p class="utterance"><time>00:13:02.100–00:13:12.100</time><span>그게 뭐냐면 쉽게 얘기하면 이런거죠. 내가 핸드폰으로 찍고 있어요. 근데 형광등이 60Hz로 진동해요. 그러면 갑자기 여기 주민방 나타나죠.</span></p>
-<p class="utterance"><time>00:13:12.100–00:13:14.100</time><span>이거 경험해본적 있어요?</span></p>
-<p class="utterance"><time>00:13:14.100–00:13:16.100</time><span>그게 요거에요 똑같은거에요</span></p>
-<p class="utterance"><time>00:13:16.100–00:13:20.100</time><span>마찬가지로 나는 내가 찍는 그 주파수랑</span></p>
-<p class="utterance"><time>00:13:20.100–00:13:24.100</time><span>얘가 빛이 오는 그 주파수가</span></p>
-<p class="utterance"><time>00:13:24.100–00:13:28.100</time><span>내가 한 키스에 가는 거리에 비해 주파수가 더 이렇게 되면서</span></p>
-<p class="utterance"><time>00:13:28.100–00:13:30.100</time><span>그런 현상이 갈 때가 있어요</span></p>
-<p class="utterance"><time>00:13:30.100–00:13:32.100</time><span>여기도 똑같은거에요</span></p>
-<p class="utterance"><time>00:13:32.100–00:13:34.100</time><span>이건 마이크가 그 그게 되는거고</span></p>
-<p class="utterance"><time>00:13:34.100–00:13:38.100</time><span>다 사실 같은 개념인데 다 연결되는거에요</span></p>
-<p class="utterance"><time>00:13:38.100–00:13:40.100</time><span>이게 문제 아니겠죠?</span></p>
-<p class="utterance"><time>00:13:40.100–00:13:46.660</time><span>수학적인 것은 사실 여기 나와있는 디테일한 수식들</span></p>
-<p class="utterance"><time>00:13:46.660–00:13:52.340</time><span>이런 것들까지는 여러분들이 알면 좋지만 한번 이해하려고 했어요</span></p>
-<p class="utterance"><time>00:13:52.340–00:13:56.640</time><span>결국에 여기 된다는 것은 저기 distance d라는 값이</span></p>
-<p class="utterance"><time>00:13:56.640–00:14:02.360</time><span>내가 한번 진동해야 되는 이 주기보다 반드시 d가 작아야 되잖아요</span></p>
-<p class="utterance"><time>00:14:02.360–00:14:04.760</time><span>그거를 저렇게 표시해 놓은 거예요</span></p>
-<p class="utterance"><time>00:14:04.760–00:14:09.980</time><span>파장이라는 친구보다 파장의 2분의 1보다 d가 작아야 된다는 거예요</span></p>
-<p class="utterance"><time>00:14:09.980–00:14:12.340</time><span>그래야지 두 번 진동하는게 발생하지 않겠죠</span></p>
-<p class="utterance"><time>00:14:12.340–00:14:14.420</time><span>두 번 얼라인이 맞는게 발생하지 않겠죠</span></p>
-<p class="utterance"><time>00:14:14.420–00:14:18.360</time><span>그게 사실 어려운 이유가 아닙니다</span></p>
-<p class="utterance"><time>00:14:18.360–00:14:23.100</time><span>질문 없으면 다음으로 넘어갈게요</span></p>
-<p class="utterance"><time>00:14:23.100–00:14:24.780</time><span>여러분들 이걸 이해했다고 하면</span></p>
-<p class="utterance"><time>00:14:24.780–00:14:29.540</time><span>사실 되게 훌륭한 거고요</span></p>
-<p class="utterance"><time>00:14:29.540–00:14:35.180</time><span>그리고 사실 이런 거는 많이 도움이 되요 진짜로</span></p>
-<p class="utterance"><time>00:14:35.180–00:14:36.480</time><span>수고하셨습니다</span></p>
-<p class="utterance"><time>00:14:36.480–00:14:38.340</time><span>처음부터 다음으로 넘어갑시다</span></p>
-<p class="utterance"><time>00:14:38.340–00:14:40.060</time><span>이제 우리가 지난 시간에 배웠던 것은</span></p>
-<p class="utterance"><time>00:14:40.060–00:14:41.900</time><span>지난 시간 아니라 다음 시간에 배웠던 것은</span></p>
-<p class="utterance"><time>00:14:41.900–00:14:43.100</time><span>딜레이트 빙폼을 배웠어요</span></p>
-<p class="utterance"><time>00:14:43.100–00:14:45.780</time><span>딜레이트 빙폼은 간단한 친구죠</span></p>
-<p class="utterance"><time>00:14:45.780–00:14:47.860</time><span>결국에 그냥 딜레이만 주겠다는 거예요</span></p>
-<p class="utterance"><time>00:14:47.860–00:14:49.060</time><span>딜레이를 줘가지고</span></p>
-<p class="utterance"><time>00:14:49.060–00:14:53.160</time><span>내가 이거를 결국에 이 원 라인을 흐트러트린 다음에</span></p>
-<p class="utterance"><time>00:14:53.160–00:14:53.900</time><span>흐트러트린 다음에</span></p>
-<p class="utterance"><time>00:14:53.900–00:14:55.020</time><span>그 이대로 흐트러트린 다음에</span></p>
-<p class="utterance"><time>00:14:55.020–00:14:57.180</time><span>그거를 n분의 1으로 나눠주게 되면</span></p>
-<p class="utterance"><time>00:14:57.180–00:14:58.880</time><span>써클증이 되니까</span></p>
-<p class="utterance"><time>00:14:58.880–00:14:59.960</time><span>그렇게 해보겠다는</span></p>
-<p class="utterance"><time>00:15:00.000–00:15:07.000</time><span>이게 스텝 I인거고, 그랬을 때 문제는 이 Side Loss가 발생을 한다.</span></p>
-<p class="utterance"><time>00:15:07.000–00:15:11.000</time><span>보면 다 역으로 만들어 버릴 수 있겠지만, 그게 통적으로 안되잖아요.</span></p>
-<p class="utterance"><time>00:15:11.000–00:15:21.000</time><span>중간 중간에 이 Side Loss가 발생을 해서, 근데 내가 보면 나쁘게, 예를 들어 이런거, 이런거.</span></p>
-<p class="utterance"><time>00:15:21.000–00:15:26.000</time><span>지금 이건 드림 스텝 한 경우인데, 예를 들어서 소리가, 이때 두개가 있는거에요.</span></p>
-<p class="utterance"><time>00:15:26.000–00:15:28.200</time><span>나는 이 친구를 스테링을 하고 싶어요.</span></p>
-<p class="utterance"><time>00:15:28.860–00:15:30.900</time><span>그러면 필터를 이리로 설정하면 되겠죠.</span></p>
-<p class="utterance"><time>00:15:31.720–00:15:33.380</time><span>펄터만 이렇게 하려고 보니까</span></p>
-<p class="utterance"><time>00:15:33.380–00:15:37.200</time><span>이 두 개가 분해가 잘 안되는 거예요.</span></p>
-<p class="utterance"><time>00:15:37.340–00:15:39.300</time><span>왜냐하면 이 친구가 너무 큰 거 같아요.</span></p>
-<p class="utterance"><time>00:15:40.420–00:15:42.880</time><span>나중에 내가 페이스 디렉터를 통해서 하니까</span></p>
-<p class="utterance"><time>00:15:42.880–00:15:46.860</time><span>이 딜레이터 디렉터는 이 모양이 딱 정해진다는 거예요.</span></p>
-<p class="utterance"><time>00:15:46.860–00:15:50.660</time><span>그 모양이 딱 정해진다는 거예요.</span></p>
-<p class="utterance"><time>00:15:51.140–00:15:52.320</time><span>딱 정해진다는 거고</span></p>
-<p class="utterance"><time>00:15:52.320–00:15:55.860</time><span>그렇기 때문에 만약에 나는 지금 0도를 스테링하고 있는데</span></p>
-<p class="utterance"><time>00:15:55.860–00:16:02.860</time><span>다른 친구가 여기 들어오거나 이런데 들어오게 되면은 생각만큼 분리가 잘 안된다는거에요</span></p>
-<p class="utterance"><time>00:16:02.860–00:16:09.860</time><span>원안이 정확하게 다 그렇게 가방으로 갖다 놓은 이런거에 간다고 그러죠</span></p>
-<p class="utterance"><time>00:16:09.860–00:16:13.860</time><span>무슨말인지 이해되죠? 이해 안되는 사람은?</span></p>
-<p class="utterance"><time>00:16:13.860–00:16:15.860</time><span>이 안쪽은</span></p>
-<p class="utterance"><time>00:16:15.860–00:16:17.860</time><span>무슨 말이냐면</span></p>
-<p class="utterance"><time>00:16:17.860–00:16:19.860</time><span>이게</span></p>
-<p class="utterance"><time>00:16:19.860–00:16:21.860</time><span>줄이고 있는게</span></p>
-<p class="utterance"><time>00:16:21.860–00:16:23.860</time><span>소리를 줄이고 싶은거에요</span></p>
-<p class="utterance"><time>00:16:23.860–00:16:25.860</time><span>다시 이 그림을 갖다 보면은</span></p>
-<p class="utterance"><time>00:16:25.860–00:16:27.860</time><span>여기서</span></p>
-<p class="utterance"><time>00:16:27.860–00:16:29.860</time><span>이 그림을 갖다 보면은</span></p>
-<p class="utterance"><time>00:16:29.860–00:16:31.860</time><span>이거를 조금 내리고</span></p>
-<p class="utterance"><time>00:16:31.860–00:16:33.860</time><span>조금 내리고</span></p>
-<p class="utterance"><time>00:16:33.860–00:16:35.860</time><span>결국에 소리를 줄이고 싶은건데</span></p>
-<p class="utterance"><time>00:16:35.860–00:16:37.860</time><span>이거를 요렇게</span></p>
-<p class="utterance"><time>00:16:37.860–00:16:39.860</time><span>이 정도로 맞추고</span></p>
-<p class="utterance"><time>00:16:39.860–00:16:41.860</time><span>이렇게</span></p>
-<p class="utterance"><time>00:16:41.860–00:16:43.860</time><span>그리고 이 부분은 어디가 돼요?</span></p>
-<p class="utterance"><time>00:16:43.860–00:16:48.860</time><span>여기가 아니지만 맞추고 이렇게</span></p>
-<p class="utterance"><time>00:16:48.860–00:16:54.860</time><span>이거는 내가 체크하는 친구랑 소리가 들려온다 해야 딱 얼른 맞는 상황이거든요</span></p>
-<p class="utterance"><time>00:16:54.860–00:17:01.860</time><span>그러면 위상이 거의 틀어지지 않기 때문에 얘를 더한 다음에 m분의 1으로 나누면 거의 다 틀어서 유지가 돼요</span></p>
-<p class="utterance"><time>00:17:01.860–00:17:07.860</time><span>다 더하면 m이 되니까 m, 1을 m번 더하면 m이니까 그걸 m번 더하면 1이 되요</span></p>
-<p class="utterance"><time>00:17:07.860–00:17:09.860</time><span>이렇게 시키면 됩니다.</span></p>
-<p class="utterance"><time>00:17:09.860–00:17:15.860</time><span>그런데 내가 이거를 쭉 이렇게 업그레이드 하고 싶을때가 되면</span></p>
-<p class="utterance"><time>00:17:15.860–00:17:20.860</time><span>딱 그 얼라인이 다 이렇게 되면서 지금 0이 된거에요.</span></p>
-<p class="utterance"><time>00:17:20.860–00:17:22.860</time><span>거의 여기 한 4억 값이에요.</span></p>
-<p class="utterance"><time>00:17:22.860–00:17:24.860</time><span>이렇게 됐을때.</span></p>
-<p class="utterance"><time>00:17:24.860–00:17:27.860</time><span>조금 더 바라보는데 문제는 조금 더 바라보면</span></p>
-<p class="utterance"><time>00:17:27.860–00:17:31.860</time><span>이게 다시 얼라인이 대략 맞는 상황이 발생한다는거에요.</span></p>
-<p class="utterance"><time>00:17:31.860–00:17:33.860</time><span>이 중에</span></p>
-<p class="utterance"><time>00:17:33.860–00:17:35.860</time><span>여기 보면은</span></p>
-<p class="utterance"><time>00:17:35.860–00:17:37.860</time><span>여기로 올라가서 여기 보면은</span></p>
-<p class="utterance"><time>00:17:37.860–00:17:39.860</time><span>여기</span></p>
-<p class="utterance"><time>00:17:39.860–00:17:41.860</time><span>지금 저 빨간색깔 선이 저거를 더한 다음에</span></p>
-<p class="utterance"><time>00:17:41.860–00:17:43.860</time><span>M으로</span></p>
-<p class="utterance"><time>00:17:43.860–00:17:45.860</time><span>M으로 나오는거 같아요</span></p>
-<p class="utterance"><time>00:17:45.860–00:17:47.860</time><span>요 신호들을 더한 다음에</span></p>
-<p class="utterance"><time>00:17:47.860–00:17:49.860</time><span>M으로 나오는거 같습니다</span></p>
-<p class="utterance"><time>00:17:49.860–00:17:51.860</time><span>Shift를 Fade를 준 다음에</span></p>
-<p class="utterance"><time>00:17:51.860–00:17:53.860</time><span>더한 다음에</span></p>
-<p class="utterance"><time>00:17:53.860–00:17:55.860</time><span>M으로 나누면 빨간색이 나온다고 하는데</span></p>
-<p class="utterance"><time>00:17:55.860–00:17:57.860</time><span>여기 같이 지금</span></p>
-<p class="utterance"><time>00:17:57.860–00:17:59.860</time><span>이게 다 어라인이 굳어져가지고</span></p>
-<p class="utterance"><time>00:17:59.860–00:18:01.860</time><span>여기 딱 떨어지는게 좋겠지만</span></p>
-<p class="utterance"><time>00:18:01.860–00:18:06.860</time><span>이 디포머라는거의 특성상 이게 여기 치치는 경우가 이제 이거는 살아있잖아요</span></p>
-<p class="utterance"><time>00:18:06.860–00:18:09.860</time><span>내가 나무도 있고 이거는 결국 살아있다라는거죠</span></p>
-<p class="utterance"><time>00:18:09.860–00:18:13.860</time><span>내가 필터링 하고 싶은데 지금 살아있는거잖아요</span></p>
-<p class="utterance"><time>00:18:13.860–00:18:16.860</time><span>이런 경우를 어떻게 형태라고 얘기하는거죠</span></p>
-<p class="utterance"><time>00:18:16.860–00:18:18.860</time><span>무슨 말인지 이해되나요?</span></p>
-<p class="utterance"><time>00:18:18.860–00:18:24.860</time><span>그러니까 이게 완벽하게 떨어지지 않고 이거를 보면은 그 중에 얼라인이 표현을 해야하는 친구도 있는데</span></p>
-<p class="utterance"><time>00:18:24.860–00:18:28.860</time><span>얼라인이 어느정도 맞는 친구들도 있었네요 이게 살아있다라는거</span></p>
-<p class="utterance"><time>00:18:28.860–00:18:32.860</time><span>그래야 할 때 이거를 한번 해보자.</span></p>
-<p class="utterance"><time>00:18:32.860–00:18:36.860</time><span>이 사이드로우 호스가 그 지점을 나타내준다.</span></p>
-<p class="utterance"><time>00:18:36.860–00:18:40.860</time><span>그것을 어떻게 생각할 수 있을까? 라는 거고</span></p>
-<p class="utterance"><time>00:18:40.860–00:18:44.860</time><span>예를 들어 이런 것도 마찬가지예요. 바로 옆에 찍혀있으면.</span></p>
-<p class="utterance"><time>00:18:44.860–00:18:48.860</time><span>이 그림에서 바로 옆에 찍혀있다 라고 하면은</span></p>
-<p class="utterance"><time>00:18:48.860–00:18:52.860</time><span>바로 옆에 이렇게 있으면은 거의 분리가 안되죠.</span></p>
-<p class="utterance"><time>00:18:52.860–00:18:56.860</time><span>바로 옆에 찍혀있으면 이런 것들. 이런 것들이 어떻게 생각할 수 있을까?</span></p>
-<p class="utterance"><time>00:18:56.860–00:18:58.860</time><span>그거를 얘기해서 보여줘요.</span></p>
-<p class="utterance"><time>00:18:58.860–00:19:00.860</time><span>그래서 지금 이런거에요.</span></p>
-<p class="utterance"><time>00:19:00.860–00:19:02.860</time><span>쉽게 얘기하면은</span></p>
-<p class="utterance"><time>00:19:02.860–00:19:04.860</time><span>나는 이 스피커 1만 스파팅하고 싶어요.</span></p>
-<p class="utterance"><time>00:19:04.860–00:19:06.860</time><span>이쪽으로만 소리를</span></p>
-<p class="utterance"><time>00:19:06.860–00:19:08.860</time><span>하고 싶은데 스피커 2가 있는데</span></p>
-<p class="utterance"><time>00:19:08.860–00:19:10.860</time><span>여기 사이드로우스가 있어가지고</span></p>
-<p class="utterance"><time>00:19:10.860–00:19:12.860</time><span>이 부분이 계속 더 많이 사라져야 돼요.</span></p>
-<p class="utterance"><time>00:19:12.860–00:19:14.860</time><span>얘가 아까 그 0으로 딱 떨어지는</span></p>
-<p class="utterance"><time>00:19:14.860–00:19:16.860</time><span>지점에 있어서 그걸로 스피커 2를</span></p>
-<p class="utterance"><time>00:19:16.860–00:19:18.860</time><span>그러면은 이거를 어떻게 해야 될까?</span></p>
-<p class="utterance"><time>00:19:18.860–00:19:20.860</time><span>이 사이드로우스를</span></p>
-<p class="utterance"><time>00:19:20.860–00:19:22.860</time><span>줄이는 거나 정말 업데이트하는</span></p>
-<p class="utterance"><time>00:19:22.860–00:19:24.860</time><span>방법이 없을까 해서</span></p>
-<p class="utterance"><time>00:19:24.860–00:19:29.860</time><span>이것이 바로 MVD의 소품입니다.</span></p>
-<p class="utterance"><time>00:19:29.860–00:19:31.860</time><span>이것은 매직입니다.</span></p>
-<p class="utterance"><time>00:19:31.860–00:19:34.860</time><span>사실 이게 수학적으로는 굉장히 복잡한데</span></p>
-<p class="utterance"><time>00:19:34.860–00:19:37.860</time><span>결론부터 얘기하면</span></p>
-<p class="utterance"><time>00:19:37.860–00:19:40.860</time><span>이것을 줄이면 어떻게 하면 내가 줄일 수 있을까요?</span></p>
-<p class="utterance"><time>00:19:40.860–00:19:44.860</time><span>쉽게 얘기하면, 내가 이 모양이 바뀌지 않는 세상이야.</span></p>
-<p class="utterance"><time>00:19:44.860–00:19:48.860</time><span>쉽게 얘기하면, 앞에서 봤던</span></p>
-<p class="utterance"><time>00:19:48.860–00:19:52.860</time><span>이것들, 이 필터를 내가 잘 조절을 해서</span></p>
-<p class="utterance"><time>00:19:52.860–00:19:54.040</time><span>그렇게 만들고 싶은데</span></p>
-<p class="utterance"><time>00:19:54.040–00:19:55.840</time><span>이 그림은 정해져 있어요.</span></p>
-<p class="utterance"><time>00:19:55.980–00:19:57.400</time><span>이 그림은 대략적으로 나옵니다.</span></p>
-<p class="utterance"><time>00:19:57.760–00:19:59.000</time><span>어떻게 하면 사이드 로봇을</span></p>
-<p class="utterance"><time>00:19:59.000–00:19:59.960</time><span>뭔가</span></p>
-<p class="utterance"><time>00:20:00.000–00:20:30.000</time><span>아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아</span></p>
-<p class="utterance"><time>00:20:30.000–00:20:34.000</time><span>이걸 보면 좀 흔합니다.</span></p>
-<p class="utterance"><time>00:20:34.000–00:20:39.000</time><span>우선 첫 번째, 이거는 아까 봤던 거죠?</span></p>
-<p class="utterance"><time>00:20:39.000–00:20:45.000</time><span>내가 특정 방향 세타로 유니비플스가 들려온다고 했을 때</span></p>
-<p class="utterance"><time>00:20:45.000–00:20:52.000</time><span>그 세타에 대한 필터 값이 B0로 공정하게 된다.</span></p>
-<p class="utterance"><time>00:20:52.000–00:21:04.000</time><span>그 말은 뭐냐면 내가 각종 값에 대한 필터링 그 성분이 그 값을 줄이는 쪽으로 뭔가 얘가 움직이면 안된다라는 것을 컨셉으로 주는거야.</span></p>
-<p class="utterance"><time>00:21:04.900–00:21:10.860</time><span>얘는 사실 무슨 말인지 이해 돼요? 정말로? 이해 돼요? 안 돼요?</span></p>
-<p class="utterance"><time>00:21:10.860–00:21:25.560</time><span>그러니까 여기서 보면 지금 내가 이 그림에서는 0도로 소리가 들어오고 0도로 내가 스트링 했을 때 이것이 찍히는 거죠.</span></p>
-<p class="utterance"><time>00:21:26.460–00:21:28.500</time><span>이 성분이 줄어들면 안되잖아요.</span></p>
-<p class="utterance"><time>00:21:29.620–00:21:30.760</time><span>이 부분 줄어들면 안되죠.</span></p>
-<p class="utterance"><time>00:21:31.080–00:21:33.360</time><span>이거를 고정시키면 좋겠다는 거예요.</span></p>
-<p class="utterance"><time>00:21:33.840–00:21:34.840</time><span>이 제도라는 것 밖으로.</span></p>
-<p class="utterance"><time>00:21:34.840–00:21:40.460</time><span>그거를 절대 얘가 줄어들게 만들지 말아라는 컨트롤을 주는 겁니다.</span></p>
-<p class="utterance"><time>00:21:40.860–00:21:43.280</time><span>2만지 이제 이해되죠?</span></p>
-<p class="utterance"><time>00:21:44.140–00:21:46.280</time><span>저거를 줄어들게 하지 말아라는 컨셉들을</span></p>
-<p class="utterance"><time>00:21:46.280–00:21:47.120</time><span>이렇게 주는거에요</span></p>
-<p class="utterance"><time>00:21:47.120–00:21:49.780</time><span>그쪽 방향으로 내가 저거를 곱했을 때</span></p>
-<p class="utterance"><time>00:21:49.780–00:21:52.320</time><span>값이 쉽게 얘기해서 1보다 작으면</span></p>
-<p class="utterance"><time>00:21:52.320–00:21:54.860</time><span>그러면 뭔가 값이 줄어들었다는거죠</span></p>
-<p class="utterance"><time>00:21:55.560–00:21:56.860</time><span>1보다 아니면</span></p>
-<p class="utterance"><time>00:21:57.520–00:22:00.500</time><span>그게 비제로가 1이다고 생각해도 되구요</span></p>
-<p class="utterance"><time>00:22:00.500–00:22:01.860</time><span>1보다 작으면 줄어들었다는거고</span></p>
-<p class="utterance"><time>00:22:02.480–00:22:04.620</time><span>1이면 그 값이 그대로 유지가 되는거죠</span></p>
-<p class="utterance"><time>00:22:04.620–00:22:06.100</time><span>왜냐면은</span></p>
-<p class="utterance"><time>00:22:06.100–00:22:07.700</time><span>2층부의 매그니트가 1이기 때문에</span></p>
-<p class="utterance"><time>00:22:07.700–00:22:10.340</time><span>그렇게 봤을 때</span></p>
-<p class="utterance"><time>00:22:10.340–00:22:17.100</time><span>이 쪽을 컨트롤 시켜준다는 것은 이쪽 방향으로 손 퍼싱을 잘해라</span></p>
-<p class="utterance"><time>00:22:17.100–00:22:21.400</time><span>이쪽 방향을 그대로 유지시켜 놔라 이게 첫 번째고요</span></p>
-<p class="utterance"><time>00:22:21.400–00:22:25.780</time><span>그럴 때 미니마이즈를 하는데</span></p>
-<p class="utterance"><time>00:22:25.780–00:22:30.840</time><span>이 세트는 고정이고요 얘랑 여기 세트가 다른 거예요</span></p>
-<p class="utterance"><time>00:22:30.840–00:22:36.460</time><span>그랬을 때 이거를 미니마이즈 해라</span></p>
-<p class="utterance"><time>00:22:36.460–00:22:42.500</time><span>이거는 뭐냐? 저거는 쉽게 얘기해서는 빔포밍 저거는 설명을 해야겠다.</span></p>
-<p class="utterance"><time>00:22:42.500–00:22:50.340</time><span>이거는 파워를 사실 미니마이드를 하는 거예요.</span></p>
-<p class="utterance"><time>00:22:50.340–00:22:53.740</time><span>그래서 결국에 지금 우리가 하는 게 이거 지울게요.</span></p>
-<p class="utterance"><time>00:22:53.740–00:22:59.860</time><span>우리가 하는 게 뭐냐면은 빔포밍식을 여러분들 갖다 오면은</span></p>
-<p class="utterance"><time>00:22:59.860–00:23:03.220</time><span>이 W라는 필터를 지금 내가 만들고 있는 건데</span></p>
-<p class="utterance"><time>00:23:03.220–00:23:13.020</time><span>w라는 필터와 내가 녹음한 값 x라는 값을 곱해서 나온 y라는 성분을 뽑아내고 있는거죠</span></p>
-<p class="utterance"><time>00:23:13.020–00:23:14.820</time><span>빈포밀을 하고 있는게</span></p>
-<p class="utterance"><time>00:23:14.820–00:23:20.380</time><span>내가 마이크로 녹음한 값 그리고 내가 만든 필터를 곱해서 더했을 때</span></p>
-<p class="utterance"><time>00:23:20.380–00:23:25.940</time><span>이게 흔적하는 y를 알아내고 싶은거에요 흔적 마이어를 뽑아내는 성분과</span></p>
-<p class="utterance"><time>00:23:25.940–00:23:38.980</time><span>그렇다고 할 때 파워는 제곱으로 볼 수 있죠</span></p>
-<p class="utterance"><time>00:23:38.980–00:23:41.580</time><span>그렇기 때문에 이거를 다시 표현을 하면</span></p>
-<p class="utterance"><time>00:23:41.580–00:23:51.620</time><span>w 에다가 xx 요거에다가 요걸 우리가 풀어 쓸 수가 있어요. 제곱이면. 이게 벡터들이기 때문에 이렇게 풀어 쓸 수가 있어요.</span></p>
-<p class="utterance"><time>00:23:51.620–00:23:58.460</time><span>이미 알고 계신거에요. 이렇게 했을 때 요 친구를 r이라고 하는데 한가지 더 나아가면은</span></p>
-<p class="utterance"><time>00:23:58.460–00:24:06.380</time><span>그냥 이렇게 하면은 값 하나만 보는거죠. 근데 우리는 값 하나에 대해서 하는게 아니라 모든 마이크 입력에 대해서 처리를 하는거잖아요.</span></p>
-<p class="utterance"><time>00:24:06.380–00:24:13.200</time><span>지금 여기서 x라는 값은 여기서 이렇게 소리가 계속 들어오고 있을 때 마찬가지로 마이크가 두 개라고 합니다.</span></p>
-<p class="utterance"><time>00:24:13.200–00:24:19.460</time><span>마이크 두 개라고 하면은 이중에 이만큼만 지금 잘라서 x라고 하고 있을 거예요.</span></p>
-<p class="utterance"><time>00:24:19.460–00:24:28.780</time><span>전체를 볼 수가 없으니까 전체를 보면 좋지만 이렇게 하지 못해서 x라는 값 이만큼 x1, 2라고 했을 때</span></p>
-<p class="utterance"><time>00:24:28.780–00:24:38.140</time><span>요거를 지금 x라고 하고 있을 겁니다. 그래서 얘는 x는 x1과 x2에 대한 이렇게 이루어져 있을 거예요.</span></p>
-<p class="utterance"><time>00:24:38.140–00:24:48.580</time><span>이렇게 이루어져 있을텐데, 근데 우리는 이 전체에 대해서 이 값을 알고 싶잖아요. 이 전체에 대한 그런 특성을 알기 위해서는 우리가 쉽게 하는거 뭐죠?</span></p>
-<p class="utterance"><time>00:24:48.580–00:24:57.380</time><span>이 전체에 대해서 내가 뭔가를 알고 싶어요. 그러면은 평균값을 구하면 되겠죠. expectation</span></p>
-<p class="utterance"><time>00:24:57.380–00:24:59.980</time><span>쉽게 얘기하면 평균</span></p>
-<p class="utterance"><time>00:25:00.000–00:25:07.180</time><span>다시 여러개의 expectation을 구하면 여기다가 우리가 2를 붙이죠</span></p>
-<p class="utterance"><time>00:25:07.180–00:25:10.720</time><span>마찬가지로 여기다가 2를 붙이죠</span></p>
-<p class="utterance"><time>00:25:10.720–00:25:12.380</time><span>expectation은 이거잖아요</span></p>
-<p class="utterance"><time>00:25:12.380–00:25:15.440</time><span>expectation의 어떤거의 x의 expectation은</span></p>
-<p class="utterance"><time>00:25:15.440–00:25:19.500</time><span>이거에 대한 모든 i에 대한 x의 퍼메이션 나누기</span></p>
-<p class="utterance"><time>00:25:19.500–00:25:22.620</time><span>이걸 예를 들어 n이라고 하면</span></p>
-<p class="utterance"><time>00:25:22.620–00:25:24.240</time><span>n으로 나누는 거잖아요</span></p>
-<p class="utterance"><time>00:25:24.240–00:25:25.900</time><span>이게 expectation의 공식이죠</span></p>
-<p class="utterance"><time>00:25:25.900–00:25:28.160</time><span>마찬가지로 그걸 여기다 똑같이 하는 겁니다</span></p>
-<p class="utterance"><time>00:25:28.160–00:25:32.560</time><span>이렇게 하면은 이거는 디테트인데 얘는 상수니까</span></p>
-<p class="utterance"><time>00:25:32.560–00:25:34.000</time><span>이 w는 상수잖아요</span></p>
-<p class="utterance"><time>00:25:34.000–00:25:37.200</time><span>근데 얘가 안으로 들어오게 되고</span></p>
-<p class="utterance"><time>00:25:37.200–00:25:40.960</time><span>여러분들 그렇게 어려워지기 시작하잖아요 수학이 나오니까</span></p>
-<p class="utterance"><time>00:25:40.960–00:25:46.180</time><span>이렇게 된게 지금 저 왼쪽에 있는 그림이에요</span></p>
-<p class="utterance"><time>00:25:46.180–00:25:50.660</time><span>요 친구를 우리가 다른 말로 포 베리언스라고 합니다</span></p>
-<p class="utterance"><time>00:25:50.660–00:25:53.320</time><span>포 베리언스 말투에 있어 이렇게 공산 분포 형량</span></p>
-<p class="utterance"><time>00:25:53.320–00:25:58.320</time><span>입력 x에 대한 분포라고 합니다.</span></p>
-<p class="utterance"><time>00:25:58.320–00:26:02.320</time><span>따라오고 있어요 여러분들? 여기가서 못 따라오기 시작했죠?</span></p>
-<p class="utterance"><time>00:26:02.320–00:26:07.320</time><span>우선은 이거는 나중에 좀 보고 사실 이거 알아야, 여러분들 한번 물어봅시다.</span></p>
-<p class="utterance"><time>00:26:07.320–00:26:11.320</time><span>여러분들 딥러닝에 관심이 많은 친구들 많죠? 다 관심 있겠죠?</span></p>
-<p class="utterance"><time>00:26:11.320–00:26:15.320</time><span>거기에 포멜레스 매트리스라는 용어를 한번에 들어 본 사람 있어요?</span></p>
-<p class="utterance"><time>00:26:15.320–00:26:18.320</time><span>다 들어 봤죠? 이게 바로 이거에요.</span></p>
-<p class="utterance"><time>00:26:18.320–00:26:21.320</time><span>여러분들이 그 개념을 모르고 쓰고 있었던 거예요.</span></p>
-<p class="utterance"><time>00:26:21.320–00:26:26.320</time><span>거기서 얘기한 그 코브레스 매트리스가 뭔지를 모르고 쓰고 있었단 말이에요.</span></p>
-<p class="utterance"><time>00:26:26.320–00:26:31.320</time><span>이 코브레스 매트리스를 잘 타고 오면 얘는 그거에 대한 분포를 배워보게 될 수 있어요.</span></p>
-<p class="utterance"><time>00:26:31.320–00:26:36.320</time><span>내가 어떤 레저먼트가 있든 아니면 어떤 히든 스테이트가 있고</span></p>
-<p class="utterance"><time>00:26:36.320–00:26:40.320</time><span>그거 다 벡터잖아요. 결국에 코브레스 매트리스는 벡터잖아요.</span></p>
-<p class="utterance"><time>00:26:40.320–00:26:43.320</time><span>벡터의 분포를 알고 싶어요.</span></p>
-<p class="utterance"><time>00:26:43.320–00:26:46.320</time><span>그 벡터가 단순히 값 하나로 이루어지는 게 아니라</span></p>
-<p class="utterance"><time>00:26:46.320–00:26:53.320</time><span>이는 입력에 따라서, 예를 들어 히든스테이트에 있는 어떤 벡터 하나의 코브레스 매트릭스를 알고 싶다는 것은</span></p>
-<p class="utterance"><time>00:26:53.320–00:26:57.320</time><span>입력이 바뀔 때 그 벡터가 어떻게 바뀌냐, 어떤 문구를 줬냐,</span></p>
-<p class="utterance"><time>00:26:57.320–00:27:01.320</time><span>그런 게 나타나 있는 그걸 알고 싶을 때 우리가 코브레스 매트릭스를 구한다 라는 거고</span></p>
-<p class="utterance"><time>00:27:01.320–00:27:03.320</time><span>이 코브레스 매트릭스는 우리가 어떻게 구하죠 여러분들?</span></p>
-<p class="utterance"><time>00:27:03.320–00:27:08.320</time><span>이 코브레스 매트릭스 한다는 것은 이 두 개 한 다음에 이걸 이퓨티션 취한다는 것은</span></p>
-<p class="utterance"><time>00:27:08.320–00:27:12.320</time><span>저 코브레스 매트릭스 할 때 이거잖아요.</span></p>
-<p class="utterance"><time>00:27:12.320–00:27:17.320</time><span>쉽게 얘기하면, 코리스 매트릭스를 여기다가 봅시다.</span></p>
-<p class="utterance"><time>00:27:17.320–00:27:22.320</time><span>일부러 천천히 나가고 있는 거예요.</span></p>
-<p class="utterance"><time>00:27:22.320–00:27:30.080</time><span>이 코비스 매트릭스라는 이 익스테이션에 x, x, 또 여기</span></p>
-<p class="utterance"><time>00:27:30.080–00:27:34.580</time><span>이거는 뭐냐면은 얘가 뭘 얘기하고 있다면은</span></p>
-<p class="utterance"><time>00:27:34.580–00:27:38.160</time><span>얘를 하면은 결국에 이 m by m 매트릭스가 나오는데</span></p>
-<p class="utterance"><time>00:27:38.160–00:27:46.580</time><span>예를 들어 이 x라는 친구를 우리가 x1부터 x, n까지 이루어져 있다라고 하면은</span></p>
-<p class="utterance"><time>00:27:46.580–00:27:49.520</time><span>이 가운데 있는 이 나이거다나 통들은 어떻게 되죠?</span></p>
-<p class="utterance"><time>00:27:50.400–00:27:51.680</time><span>제곱의 나누기 m이죠</span></p>
-<p class="utterance"><time>00:27:51.680–00:28:01.180</time><span>그래서 결국에 얘의 평균을 구해야 되고</span></p>
-<p class="utterance"><time>00:28:01.180–00:28:06.440</time><span>x1-2의 제곱이 되잖아요.</span></p>
-<p class="utterance"><time>00:28:06.520–00:28:08.360</time><span>m을 지우고 생각해봅시다.</span></p>
-<p class="utterance"><time>00:28:08.780–00:28:10.680</time><span>이렇게 우리가 이 포비라스 매틱스 구할 수 있죠.</span></p>
-<p class="utterance"><time>00:28:13.180–00:28:14.940</time><span>여러분들이 잘 모르는 것 같아서</span></p>
-<p class="utterance"><time>00:28:14.940–00:28:17.740</time><span>포비라스 매틱스의 정의가 나오는 우리</span></p>
-<p class="utterance"><time>00:28:17.740–00:28:20.900</time><span>천천히 나가세요.</span></p>
-<p class="utterance"><time>00:28:21.680–00:28:23.680</time><span>다시 신청해 놔볼 테니까</span></p>
-<p class="utterance"><time>00:28:26.680–00:28:27.680</time><span>맞죠?</span></p>
-<p class="utterance"><time>00:28:27.680–00:28:30.680</time><span>또 에뮤언스 매트릭스</span></p>
-<p class="utterance"><time>00:28:30.680–00:28:33.680</time><span>에뮤언스 매트릭스라는 친구는</span></p>
-<p class="utterance"><time>00:28:47.680–00:28:49.680</time><span>우리가 이렇게 구할 수 있잖아요 이렇게</span></p>
-<p class="utterance"><time>00:28:49.680–00:28:52.680</time><span>이렇게 요거를 다르게 쓰면은</span></p>
-<p class="utterance"><time>00:29:02.680–00:29:04.680</time><span>요렇게 요거를</span></p>
-<p class="utterance"><time>00:29:16.680–00:29:18.680</time><span>다른 친구들은 이거 어떻게 되는지</span></p>
-<p class="utterance"><time>00:29:19.680–00:29:23.680</time><span>한국말을 불러야 하는 거고 생존수학에 있는 수학을 생존을 해야 하니까</span></p>
-<p class="utterance"><time>00:29:23.680–00:29:44.680</time><span>그러니까 이렇게 할 수가 있는 거죠</span></p>
-<p class="utterance"><time>00:29:44.680–00:29:49.500</time><span>그러면 이게 x고 이게 이 x의 평균이고</span></p>
-<p class="utterance"><time>00:29:49.500–00:29:52.940</time><span>y고 이게 y의 평균인데 우리는 x랑 x랑 같잖아요.</span></p>
-<p class="utterance"><time>00:29:53.540–00:29:54.980</time><span>그런데 얘랑 얘랑 지금 같죠.</span></p>
-<p class="utterance"><time>00:29:55.620–00:29:57.240</time><span>그렇기 때문에 지금 이걸 한다는 것은</span></p>
-<p class="utterance"><time>00:29:57.240–00:29:59.580</time><span>이거를 이렇게 해서 이렇게 한다는 것은</span></p>
-<p class="utterance"><time>00:30:00.000–00:30:05.080</time><span>이거의 분산, 이거의 분산, 1과 2의 분산, 1과 2의 분산이니까</span></p>
-<p class="utterance"><time>00:30:05.080–00:30:08.200</time><span>우리 분산의 공식은 여러분들 알고 있잖아요.</span></p>
-<p class="utterance"><time>00:30:08.700–00:30:10.780</time><span>그것을 각각의 엘먼트에서 쭉 한다는 거니까</span></p>
-<p class="utterance"><time>00:30:10.780–00:30:15.120</time><span>분산이 결국에 얼마만큼 얘가 퍼져 있는지를 나타내는 값인 거고</span></p>
-<p class="utterance"><time>00:30:15.120–00:30:18.460</time><span>그렇게 했을 때 사실 이 그림이 되게 중요해요.</span></p>
-<p class="utterance"><time>00:30:18.460–00:30:23.020</time><span>이 포비란스는 결국에 내가 어떤 스태피티스를 알고 있을 때</span></p>
-<p class="utterance"><time>00:30:23.020–00:30:25.600</time><span>그런 확률적인 특성을 알고 있을 때</span></p>
-<p class="utterance"><time>00:30:25.600–00:30:34.160</time><span>이 분포가 얼마만큼 퍼져있고 어떤 모양을 갖고 있는지를 나타내는 지표에요.</span></p>
-<p class="utterance"><time>00:30:34.160–00:30:39.360</time><span>이 코브렌스는 이것 하나로 표현이 될텐데</span></p>
-<p class="utterance"><time>00:30:39.360–00:30:44.880</time><span>그랬을 때 이 밸런스가 얘를 작은거고 얘를 큰거잖아요.</span></p>
-<p class="utterance"><time>00:30:44.880–00:30:49.440</time><span>얘를 멀티 디멘션에 대해서 구하는 값인거거든요.</span></p>
-<p class="utterance"><time>00:30:49.440–00:30:52.480</time><span>마찬가지로 여기도 똑같은거에요.</span></p>
-<p class="utterance"><time>00:30:52.480–00:31:03.080</time><span>이 상황에서도 이 x 라는 이 매절먼트가 마이크 md에 대해서 같이 있는데 그거에 대한 공포가 어떻게 나오는지 표현하는 그 제품이라고 보면 됩니다.</span></p>
-<p class="utterance"><time>00:31:03.080–00:31:11.720</time><span>그거를 구한다 라고 보면 되겠죠. 그거를 결국에 이게 들어오게 되는거고 얘를 이용해서 이렇게 하면은 얘 파워가 나옵니다. 이렇게 하면은 얘는</span></p>
-<p class="utterance"><time>00:31:11.720–00:31:18.980</time><span>결국에 이 친구는 y의 제곱이 되겠죠. y의 제곱. a의 제곱. 파워가 되겠죠.</span></p>
-<p class="utterance"><time>00:31:18.980–00:31:25.380</time><span>파워를 구하는거에요. 파워는 미니마일 하고 싶은거에요. 다시 돌아와서 결론을 말씀드리면</span></p>
-<p class="utterance"><time>00:31:25.380–00:31:30.360</time><span>얘는 고정을 하고 모든 방향에 대한 파워를 미니마일 해서 하는거에요.</span></p>
-<p class="utterance"><time>00:31:31.920–00:31:42.780</time><span>이 그림에서 볼까? 이쪽 방향은 고정을 시키고 나머지는 다 미니마일 하라는거에요.</span></p>
-<p class="utterance"><time>00:31:42.780–00:31:47.980</time><span>얘도 고정을 시키고 얘네들은 다 미니마일 하라는거에요.</span></p>
-<p class="utterance"><time>00:31:47.980–00:31:55.980</time><span>그거를 지금 하는거에요. 근데 사실 이렇게 미니마이드가 결국엔 안되긴 안되는데 그게 목적으로 저 수식을 푸는 겁니다.</span></p>
-<p class="utterance"><time>00:31:55.980–00:32:05.980</time><span>그래서 풀면은 풀면은 이거는 몰라도 되요. 참고 내가 적어놨죠. 참고. 참고 써있죠 참고.</span></p>
-<p class="utterance"><time>00:32:05.980–00:32:10.980</time><span>이거는 사실 이거를 푸는 방법은 나그라미안 웨이크 플라이어 이거 활용을 하면 됩니다.</span></p>
-<p class="utterance"><time>00:32:10.980–00:32:17.420</time><span>나가라무제안이라는 대단히 유명한 수학자가 한 번씩 들어왔어요. 그 분께서 이거를 푸셨거든요.</span></p>
-<p class="utterance"><time>00:32:17.420–00:32:22.600</time><span>그래서 이렇게 하면 하여튼 결국에 이 친구가 나오게 되요.</span></p>
-<p class="utterance"><time>00:32:22.600–00:32:27.880</time><span>그래서 구하면 이 W라는 필터는 NVIDIA 필터는 이렇게 보이실거에요.</span></p>
-<p class="utterance"><time>00:32:27.880–00:32:31.600</time><span>라고 여러분들은 우선 알고 계신거에요.</span></p>
-<p class="utterance"><time>00:32:33.200–00:32:37.600</time><span>여기까지 우선 질문을 받을게요. 어차피 안 뜯을거에요.</span></p>
-<p class="utterance"><time>00:32:37.600–00:32:40.080</time><span>질문</span></p>
-<p class="utterance"><time>00:32:40.080–00:32:42.080</time><span>질문 없어요? 질문</span></p>
-<p class="utterance"><time>00:32:42.080–00:32:44.080</time><span>한 단계 더 나아가기 위해서</span></p>
-<p class="utterance"><time>00:32:44.080–00:32:46.080</time><span>한 번 쉬었다 가려고 질문을 받는거에요</span></p>
-<p class="utterance"><time>00:32:46.080–00:32:52.080</time><span>어차피 오늘까지 여러분들이 이게 어려운게 뭐냐면은</span></p>
-<p class="utterance"><time>00:32:52.080–00:32:54.080</time><span>예전에는 수업을 다 이런식으로 했어요</span></p>
-<p class="utterance"><time>00:32:54.080–00:32:56.080</time><span>이런식으로 제가 다닐 때까지는</span></p>
-<p class="utterance"><time>00:32:56.080–00:32:58.080</time><span>수학으로 어떻게 되고 어떻게 되고</span></p>
-<p class="utterance"><time>00:32:58.080–00:33:00.080</time><span>다 했는데 지금 여러분들은</span></p>
-<p class="utterance"><time>00:33:00.080–00:33:02.080</time><span>디너닝 못해놓고 데이터 능력이 됐다</span></p>
-<p class="utterance"><time>00:33:02.080–00:33:04.080</time><span>이렇게 끝나잖아요</span></p>
-<p class="utterance"><time>00:33:04.080–00:33:06.080</time><span>사실 저는 제가 봤을 때는 여러분들이 배워가는게 없는거에요</span></p>
-<p class="utterance"><time>00:33:06.080–00:33:08.080</time><span>그거는 전혀 보기 안돼요</span></p>
-<p class="utterance"><time>00:33:08.080–00:33:38.080</time><span>예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할</span></p>
-<p class="utterance"><time>00:33:38.080–00:33:43.520</time><span>변론을 얘기하겠지만 그게 이 사이드 로브스가 줄어들지 않아요.</span></p>
-<p class="utterance"><time>00:33:43.520–00:33:46.920</time><span>이게 줄어들지 않고 걔가 너플로시가 붙어 합니다.</span></p>
-<p class="utterance"><time>00:33:46.920–00:33:50.480</time><span>그럼 제가 바로 이어서 보여줄게요.</span></p>
-<p class="utterance"><time>00:33:50.480–00:33:53.580</time><span>그래서 이렇게 나온다는 거고</span></p>
-<p class="utterance"><time>00:33:53.580–00:33:55.880</time><span>그래서 이게 사실 그 코비너스 매트리스가 뭐고</span></p>
-<p class="utterance"><time>00:33:55.880–00:34:00.660</time><span>이런 얘기를 지금 설명을 하고 있는 거고</span></p>
-<p class="utterance"><time>00:34:00.660–00:34:03.980</time><span>사실 얘를 먼저 설명을 하죠.</span></p>
-<p class="utterance"><time>00:34:03.980–00:34:14.980</time><span>사실 사실 예 2시야 예 2시 하고 요거 봐야 되요 지금 길 소리가 쪽 빠져 갖고 쪽 빠져 있구요</span></p>
-<p class="utterance"><time>00:34:14.980–00:34:20.000</time><span>내가 지금 쪽 영기 그리를 편히 가고 얘가 받아 오신 거예요 얘가 하십니다</span></p>
-<p class="utterance"><time>00:34:20.000–00:34:27.700</time><span>이 쪽 방향으로 소리가 들려오고 있어요 얘를 줄이고 싶겠죠 그래서 딜레이션 비폭으로 하면은 요걸 보면은 여기 회색깔에</span></p>
-<p class="utterance"><time>00:34:27.700–00:34:33.140</time><span>걸리잖아요. 그 색깔이 걸리고 있죠. 그렇기 때문에 얘가 많이 살아나가요.</span></p>
-<p class="utterance"><time>00:34:33.140–00:34:42.100</time><span>근데 MVD와 빈폼으로 하면 어떻게 되냐면 이 파란 색깔 이걸 하면은 지금 보면은 이 모양이 살짝 이렇게 틀어졌죠.</span></p>
-<p class="utterance"><time>00:34:42.100–00:34:49.720</time><span>그래서 이쪽 방향으로 들려오는 소리가 여기 0에 가까운 값에 닿도록 필터를 조절하는 거예요.</span></p>
-<p class="utterance"><time>00:34:49.720–00:34:56.000</time><span>아까는 이 애를 옆으로 시프트 시켜 나가면서 원 라인이 맞는 지점을 찾을 거잖아요.</span></p>
-<p class="utterance"><time>00:34:56.700–00:35:00.000</time><span>그 시점 그 속도가 다 동일했죠.</span></p>
-<p class="utterance"><time>00:35:00.000–00:35:02.960</time><span>앞에서는, delay에서, before에서는</span></p>
-<p class="utterance"><time>00:35:02.960–00:35:06.960</time><span>그게 frequency가 정해지면은 그 속도는 다 동일하잖아요</span></p>
-<p class="utterance"><time>00:35:06.960–00:35:08.960</time><span>그러니까 무슨 말이냐면은</span></p>
-<p class="utterance"><time>00:35:08.960–00:35:12.960</time><span>여기서, 아까 이 그림에서</span></p>
-<p class="utterance"><time>00:35:12.960–00:35:14.960</time><span>이 그림에서</span></p>
-<p class="utterance"><time>00:35:14.960–00:35:20.960</time><span>이거 왔다갔다 할 때, 이 이동하는 속도가 똑같겠죠 지금</span></p>
-<p class="utterance"><time>00:35:20.960–00:35:24.960</time><span>근데 이 이동하는 속도를 조금 다르게 할 수 있겠죠</span></p>
-<p class="utterance"><time>00:35:24.960–00:35:28.960</time><span>다르게 해가지고, 이걸 조금씩 다르게 하면 어떤 상황이 나타나자면은</span></p>
-<p class="utterance"><time>00:35:28.960–00:35:31.960</time><span>이걸 조절을 할 수 있게 되면</span></p>
-<p class="utterance"><time>00:35:31.960–00:35:34.960</time><span>얘가 들려오는 방향일 때</span></p>
-<p class="utterance"><time>00:35:34.960–00:35:36.960</time><span>이걸 null이라고 하거든요</span></p>
-<p class="utterance"><time>00:35:36.960–00:35:38.960</time><span>0, 다는 0이잖아요</span></p>
-<p class="utterance"><time>00:35:38.960–00:35:43.960</time><span>null 위치, 이 방향으로 맞춰지게끔 최적화가 되는 겁니다</span></p>
-<p class="utterance"><time>00:35:43.960–00:35:47.960</time><span>수업적으로 풀면 얘가 다 튀어나온다는 거예요</span></p>
-<p class="utterance"><time>00:35:47.960–00:35:52.960</time><span>이렇게 되면 이쪽 방향으로 들려오는 소리가 엄청나게 많이 줄어들겠죠</span></p>
-<p class="utterance"><time>00:35:52.960–00:35:54.960</time><span>이해돼요?</span></p>
-<p class="utterance"><time>00:35:54.960–00:35:56.960</time><span>이렇게 결국에 하고 싶은 거예요</span></p>
-<p class="utterance"><time>00:35:56.960–00:35:58.960</time><span>예를 하고 싶었던 겁니다.</span></p>
-<p class="utterance"><time>00:35:58.960–00:36:02.960</time><span>근데 보면은 요 사이드 로브스의 크기는 오히려 줄어들지 않고 커졌죠.</span></p>
-<p class="utterance"><time>00:36:02.960–00:36:07.960</time><span>오히려 커졌지만 결과적으로 이쪽 방향으로 들려오는 소리는</span></p>
-<p class="utterance"><time>00:36:07.960–00:36:10.960</time><span>많이 내가 컷아웃 시킬 수 있다.</span></p>
-<p class="utterance"><time>00:36:10.960–00:36:12.960</time><span>컷아웃 시킬 수 있다는 말이에요.</span></p>
-<p class="utterance"><time>00:36:12.960–00:36:14.960</time><span>무슨 말인지 이해되죠?</span></p>
-<p class="utterance"><time>00:36:14.960–00:36:16.960</time><span>그래서 그걸 하고 싶은 거고요.</span></p>
-<p class="utterance"><time>00:36:16.960–00:36:21.960</time><span>그래서 결국에 지금 요렇게 우리가 아까 봤던 거</span></p>
-<p class="utterance"><time>00:36:21.960–00:36:25.960</time><span>아까 말했던 그 아웃 파워는 요렇게 더한다.</span></p>
-<p class="utterance"><time>00:36:25.960–00:36:27.960</time><span>뭐 아 제가 여기다 써놨던 거랑 똑같은 거예요.</span></p>
-<p class="utterance"><time>00:36:27.960–00:36:30.960</time><span>그리고 밑에 이 correlation, 아 covalence만 있을까?</span></p>
-<p class="utterance"><time>00:36:30.960–00:36:31.960</time><span>아니요. correlation만 있을까?</span></p>
-<p class="utterance"><time>00:36:31.960–00:36:34.960</time><span>미안해요. covalence는 서로 다른 값이 두 개가 있을 때고</span></p>
-<p class="utterance"><time>00:36:34.960–00:36:37.960</time><span>얘는 correlation이니까 내가 같은 값에 대한 매력이 있으니까</span></p>
-<p class="utterance"><time>00:36:37.960–00:36:39.960</time><span>correlation이라고 하는 거 같아요.</span></p>
-<p class="utterance"><time>00:36:39.960–00:36:41.960</time><span>어찌됐든 같은 기념이에요.</span></p>
-<p class="utterance"><time>00:36:41.960–00:36:43.960</time><span>그래서 이렇게 두 번 구한다는 거고</span></p>
-<p class="utterance"><time>00:36:43.960–00:36:47.960</time><span>그래서 지금 이 상황을 가정을 해보면은</span></p>
-<p class="utterance"><time>00:36:47.960–00:36:53.960</time><span>지금 스피커 1번과 스피커 2번과 센서 노이즈가 있는 상황이라고 가정을 하고</span></p>
-<p class="utterance"><time>00:36:53.960–00:36:59.300</time><span>한번 같이 보면 어떻게 되냐 이걸 생각해 볼 거에요</span></p>
-<p class="utterance"><time>00:36:59.300–00:37:04.200</time><span>다시 이걸 보기 전에 결과적으로 이걸 하고 싶은 거에요</span></p>
-<p class="utterance"><time>00:37:04.200–00:37:10.200</time><span>지금 보면은 지금 빔포밍 기준으로</span></p>
-<p class="utterance"><time>00:37:10.200–00:37:13.200</time><span>딜레이선 빔포머 기준으로 보면은 이 방향에 대해서</span></p>
-<p class="utterance"><time>00:37:13.200–00:37:16.840</time><span>제가 0도 기준으로 아까 그 그림 있죠</span></p>
-<p class="utterance"><time>00:37:16.840–00:37:21.460</time><span>그러면은 지금 그 null 얘가 지금 온라인에 딱 맞아서</span></p>
-<p class="utterance"><time>00:37:21.460–00:37:27.120</time><span>0이 되는 지점이 25도, 59도, 59도, 마이너스 15도 이렇게 구성이 되어 있을 때</span></p>
-<p class="utterance"><time>00:37:27.120–00:37:29.940</time><span>그런데 지금 얘는 옆에 있으니까 많이 살아남잖아요.</span></p>
-<p class="utterance"><time>00:37:30.540–00:37:32.220</time><span>이게 위치를 이리로 옮기고 싶다.</span></p>
-<p class="utterance"><time>00:37:32.400–00:37:33.960</time><span>나는 결국에 이렇게 맞추고 싶은 거야.</span></p>
-<p class="utterance"><time>00:37:34.860–00:37:37.720</time><span>이렇게 맞춰서 이쪽으로 돌리는 소리를 다 줄이고 싶은 거예요.</span></p>
-<p class="utterance"><time>00:37:38.820–00:37:39.600</time><span>이렇게 하고 싶은 거예요.</span></p>
-<p class="utterance"><time>00:37:40.740–00:37:42.860</time><span>그런데 이게 지금 어떻게 가능하냐면</span></p>
-<p class="utterance"><time>00:37:42.860–00:37:45.640</time><span>쉽게 얘기하면 수학적으로 저거를 제가 가지고 온 건데</span></p>
-<p class="utterance"><time>00:37:45.640–00:37:49.100</time><span>결국에 우리가 지금 이걸 테스트한 게</span></p>
-<p class="utterance"><time>00:37:49.100–00:37:52.100</time><span>이것을 가지고 빈 패턴을 구했잖아요.</span></p>
-<p class="utterance"><time>00:37:52.100–00:37:56.100</time><span>이것, 이렇게 필터 그리고 특정 방향으로 돌려오고 있는</span></p>
-<p class="utterance"><time>00:37:56.100–00:37:59.100</time><span>그 유리 인펄스가 들려왔을 때</span></p>
-<p class="utterance"><time>00:37:59.100–00:38:02.100</time><span>이것을 구해서 이것을 지금 우리가 구했는데</span></p>
-<p class="utterance"><time>00:38:02.100–00:38:05.100</time><span>이것을 지금 풀었으면</span></p>
-<p class="utterance"><time>00:38:05.100–00:38:10.100</time><span>지금 이렇게 마이크에 대해서 두 개 곱한 것</span></p>
-<p class="utterance"><time>00:38:10.100–00:38:12.100</time><span>제가 아까 위에가 섰던 것 있죠.</span></p>
-<p class="utterance"><time>00:38:12.100–00:38:14.100</time><span>그것을 똑같이 그리고 있는 거고요.</span></p>
-<p class="utterance"><time>00:38:14.100–00:38:17.100</time><span>그랬을 때 각각의 Z는 이렇게 구성이 되고</span></p>
-<p class="utterance"><time>00:38:17.100–00:38:22.420</time><span>되고 이렇게 구성이 된다. 그리고 얘는 30합시다. 그렇게 지금 얘기</span></p>
-<p class="utterance"><time>00:38:22.420–00:38:29.540</time><span>하고 있는 거예요. 다시 얘기하면 은 다시 얘기하면은 다시 얘기하면</span></p>
-<p class="utterance"><time>00:38:29.540–00:38:37.820</time><span>이 중에 나오나 다시 얘기하면은 결국에 아까 그 봤던 그림 있죠</span></p>
-<p class="utterance"><time>00:38:37.820–00:38:47.500</time><span>이 exponential에 minus j pi 1 plus 쭉 가서 minus j pi n까지 더한 값이</span></p>
-<p class="utterance"><time>00:38:47.500–00:38:50.560</time><span>여기서 저기서는 a라는 값이 되는 거죠.</span></p>
-<p class="utterance"><time>00:38:50.720–00:38:51.260</time><span>a셋 값.</span></p>
-<p class="utterance"><time>00:38:52.720–00:38:54.120</time><span>이거를 저는 다시 쓴 거예요.</span></p>
-<p class="utterance"><time>00:38:54.760–00:38:56.600</time><span>그랬을 때 중요한 거는 여기서</span></p>
-<p class="utterance"><time>00:38:56.600–00:39:00.280</time><span>이게 지금 여기 보면 w가 지금부터 있잖아요.</span></p>
-<p class="utterance"><time>00:39:00.280–00:39:02.820</time><span>w를 여기서 만약에 빼앗다고 하면</span></p>
-<p class="utterance"><time>00:39:02.820–00:39:06.800</time><span>w에서 이 값을 결국에 0으로 만드는</span></p>
-<p class="utterance"><time>00:39:06.800–00:39:11.460</time><span>0으로 만드는 저 w의 값의 해는</span></p>
-<p class="utterance"><time>00:39:11.460–00:39:13.780</time><span>해는 이 모든 세타에 대해서</span></p>
-<p class="utterance"><time>00:39:13.780–00:39:18.480</time><span>해는 이 n-1만큼의 해를 갖는다 라는 거예요.</span></p>
-<p class="utterance"><time>00:39:18.480–00:39:20.240</time><span>왜냐하면 우리 자항식에서</span></p>
-<p class="utterance"><time>00:39:20.240–00:39:23.740</time><span>자항식에서</span></p>
-<p class="utterance"><time>00:39:23.740–00:39:26.400</time><span>자항식에서</span></p>
-<p class="utterance"><time>00:39:26.400–00:39:31.980</time><span>y가 ax 플러스 b라고 했을 때</span></p>
-<p class="utterance"><time>00:39:31.980–00:39:33.980</time><span>얘의 해외계수는 몇개죠?</span></p>
-<p class="utterance"><time>00:39:33.980–00:39:38.980</time><span>얘가 0이 되는 해외계수</span></p>
-<p class="utterance"><time>00:39:38.980–00:39:41.980</time><span>x의 개수가 뭐죠?</span></p>
-<p class="utterance"><time>00:39:41.980–00:39:46.980</time><span>이게 각각의 어떤 답을 실수라고 했을 때</span></p>
-<p class="utterance"><time>00:39:46.980–00:39:48.980</time><span>몇개죠?</span></p>
-<p class="utterance"><time>00:39:48.980–00:39:50.980</time><span>하나죠. 이걸 알아야해요 여러분</span></p>
-<p class="utterance"><time>00:39:50.980–00:39:52.980</time><span>하나잖아요. 이거 하나잖아요. 그렇죠?</span></p>
-<p class="utterance"><time>00:39:52.980–00:39:55.980</time><span>0을 만드는 y값도 하나잖아요. 그렇죠?</span></p>
-<p class="utterance"><time>00:39:55.980–00:39:59.980</time><span>근데 만약에 이게 A</span></p>
-<p class="utterance"><time>00:40:00.000–00:40:04.000</time><span>bx c는 얘는 해가 몇개죠?</span></p>
-<p class="utterance"><time>00:40:04.000–00:40:06.000</time><span>두개죠</span></p>
-<p class="utterance"><time>00:40:06.000–00:40:08.000</time><span>그거에요</span></p>
-<p class="utterance"><time>00:40:08.000–00:40:10.000</time><span>그러면은 그래서 해</span></p>
-<p class="utterance"><time>00:40:10.000–00:40:12.000</time><span>그리고 그러면은 저거를</span></p>
-<p class="utterance"><time>00:40:12.000–00:40:14.000</time><span>이 m의 제곱이 지금 여기있죠</span></p>
-<p class="utterance"><time>00:40:14.000–00:40:16.000</time><span>m만큼</span></p>
-<p class="utterance"><time>00:40:16.000–00:40:18.000</time><span>그렇기 때문에 개수가 m-3개가 됩니다</span></p>
-<p class="utterance"><time>00:40:18.000–00:40:20.000</time><span>k개수가</span></p>
-<p class="utterance"><time>00:40:20.000–00:40:22.000</time><span>이 null 개수가 m-3개가 특히나요</span></p>
-<p class="utterance"><time>00:40:22.000–00:40:24.000</time><span>c의 경우</span></p>
-<p class="utterance"><time>00:40:24.000–00:40:26.000</time><span>0이 되는 개수가 m-3개라는거고</span></p>
-<p class="utterance"><time>00:40:26.000–00:40:30.000</time><span>마이크의 개수에 따라서 결정이 된다는 얘기입니다.</span></p>
-<p class="utterance"><time>00:40:30.000–00:40:32.000</time><span>한번 넘어가는거죠.</span></p>
-<p class="utterance"><time>00:40:32.000–00:40:36.000</time><span>그리고 두번째는</span></p>
-<p class="utterance"><time>00:40:36.000–00:40:38.000</time><span>두번째는</span></p>
-<p class="utterance"><time>00:40:38.000–00:40:42.000</time><span>지금 그래서 아까 얘기했듯이</span></p>
-<p class="utterance"><time>00:40:42.000–00:40:46.000</time><span>아까 얘기했듯이 요것도 너무 어렵다.</span></p>
-<p class="utterance"><time>00:40:46.000–00:40:48.000</time><span>이렇게 해내래요.</span></p>
-<p class="utterance"><time>00:40:48.000–00:40:50.000</time><span>이렇게 하고 싶다.</span></p>
-<p class="utterance"><time>00:40:50.000–00:40:52.000</time><span>이렇게 하면</span></p>
-<p class="utterance"><time>00:40:52.000–00:40:54.000</time><span>이렇게 말할게.</span></p>
-<p class="utterance"><time>00:40:54.000–00:40:56.000</time><span>그래서 하고 싶은 건 뭐냐면은</span></p>
-<p class="utterance"><time>00:40:56.000–00:40:57.240</time><span>지금 그 결국에 무슨 얘기가</span></p>
-<p class="utterance"><time>00:40:57.240–00:41:00.180</time><span>내가 타깃인 H라는 그 타깃</span></p>
-<p class="utterance"><time>00:41:00.180–00:41:03.120</time><span>내가 그 방향을 조정한 친구가 H라고 했을 때</span></p>
-<p class="utterance"><time>00:41:03.120–00:41:06.040</time><span>얘가 있고 내가 다른 스티커들</span></p>
-<p class="utterance"><time>00:41:06.040–00:41:08.240</time><span>아까는 스티커가 다른 친구가 하나밖에 없었죠</span></p>
-<p class="utterance"><time>00:41:08.240–00:41:11.920</time><span>그래서 다른 스티커들이 있겠죠 테이크의 만큼</span></p>
-<p class="utterance"><time>00:41:11.920–00:41:16.380</time><span>그랬을 때 내가 너를 이 각각의 스티커 위치에 담아가지고</span></p>
-<p class="utterance"><time>00:41:16.380–00:41:18.980</time><span>결국 걔를 줄이고 싶다는 거죠</span></p>
-<p class="utterance"><time>00:41:18.980–00:41:19.620</time><span>줄이고 싶다는 거죠</span></p>
-<p class="utterance"><time>00:41:19.620–00:41:22.120</time><span>그래서 내가 이 짓을 하고 싶다는 거죠</span></p>
-<p class="utterance"><time>00:41:22.120–00:41:23.580</time><span>이 짓을 하고 싶다</span></p>
-<p class="utterance"><time>00:41:23.580–00:41:25.880</time><span>그래서 얘는 그대로 위치를 시키고</span></p>
-<p class="utterance"><time>00:41:25.880–00:41:28.980</time><span>이 친구들의 위치에 너를 위치시켜가지고</span></p>
-<p class="utterance"><time>00:41:28.980–00:41:30.560</time><span>얘를 지우고 싶다.</span></p>
-<p class="utterance"><time>00:41:31.040–00:41:33.940</time><span>그 말은 이 널의 개수가 이 스피커의 개수보다</span></p>
-<p class="utterance"><time>00:41:33.940–00:41:35.620</time><span>더 많아야지 이걸 할 수 있겠죠.</span></p>
-<p class="utterance"><time>00:41:36.960–00:41:39.160</time><span>널의 개수가 이 스피커의 개수보다 작으면</span></p>
-<p class="utterance"><time>00:41:39.160–00:41:41.280</time><span>결국 못하잖아요.</span></p>
-<p class="utterance"><time>00:41:41.280–00:41:43.560</time><span>근데 그 널의 개수는 마이너스의 수에 따라서</span></p>
-<p class="utterance"><time>00:41:43.560–00:41:44.220</time><span>수정이 된다.</span></p>
-<p class="utterance"><time>00:41:44.500–00:41:45.920</time><span>이 얘기를 드릴 때가 성공이고요.</span></p>
-<p class="utterance"><time>00:41:47.120–00:41:47.820</time><span>그랬을 때</span></p>
-<p class="utterance"><time>00:41:47.820–00:41:50.940</time><span>이런 수정이 간다.</span></p>
-<p class="utterance"><time>00:41:51.400–00:41:52.700</time><span>여기까지만 할 수 있어요.</span></p>
-<p class="utterance"><time>00:41:53.580–00:41:55.580</time><span>다행이네</span></p>
-<p class="utterance"><time>00:41:55.580–00:41:57.580</time><span>근데 지금</span></p>
-<p class="utterance"><time>00:41:57.580–00:41:59.580</time><span>아 이건 여기까지만 해야겠다</span></p>
-<p class="utterance"><time>00:41:59.580–00:42:01.580</time><span>그래서</span></p>
-<p class="utterance"><time>00:42:01.580–00:42:03.580</time><span>얘 무슨 얘기를 하고 있는거죠</span></p>
-<p class="utterance"><time>00:42:03.580–00:42:05.580</time><span>여기를 보면은 얘는 얘가 되죠</span></p>
-<p class="utterance"><time>00:42:05.580–00:42:07.580</time><span>무슨 말 하고 있는지</span></p>
-<p class="utterance"><time>00:42:07.580–00:42:09.580</time><span>이리로 넘어오면은 얘는 그 얘기 똑같죠</span></p>
-<p class="utterance"><time>00:42:09.580–00:42:11.580</time><span>무슨 말이냐면은</span></p>
-<p class="utterance"><time>00:42:11.580–00:42:13.580</time><span>만약에 지금</span></p>
-<p class="utterance"><time>00:42:13.580–00:42:15.580</time><span>여기까지는</span></p>
-<p class="utterance"><time>00:42:15.580–00:42:17.580</time><span>내가 어떤거에 빈폼이 파워를 해 놨을 때</span></p>
-<p class="utterance"><time>00:42:17.580–00:42:19.580</time><span>이 펌을 이렇게 세 개로 나눌 수가 있다</span></p>
-<p class="utterance"><time>00:42:19.580–00:42:21.580</time><span>첫 번째</span></p>
-<p class="utterance"><time>00:42:21.580–00:42:23.580</time><span>첫번째는 멀티지로 들어온 친구에 대한 허</span></p>
-<p class="utterance"><time>00:42:23.580–00:42:29.580</time><span>두번째는 내가 멀티지로 만들고 싶은 품에 대한 허</span></p>
-<p class="utterance"><time>00:42:29.580–00:42:31.580</time><span>그리고 꼬다라는 친구는 노이즈</span></p>
-<p class="utterance"><time>00:42:31.580–00:42:33.580</time><span>이 노이즈는 센스 노이즈가 있어요</span></p>
-<p class="utterance"><time>00:42:33.580–00:42:35.580</time><span>방향성이 없는 친구가 있을 수 있어요</span></p>
-<p class="utterance"><time>00:42:35.580–00:42:40.580</time><span>그냥 그 하류 자체에서 발생하는 소음이 있을 수 있잖아요</span></p>
-<p class="utterance"><time>00:42:40.580–00:42:42.580</time><span>방향성이 없는 친구들</span></p>
-<p class="utterance"><time>00:42:42.580–00:42:44.580</time><span>그런 친구들이 있을 수 있어요</span></p>
-<p class="utterance"><time>00:42:44.580–00:42:46.580</time><span>이렇게 세 개가 소음이 있어요</span></p>
-<p class="utterance"><time>00:42:46.580–00:42:50.580</time><span>나는 이 두 개를 지우고 싶은 거고</span></p>
-<p class="utterance"><time>00:42:50.580–00:42:55.580</time><span>근데 얘는 다양성이 있으니까 센터 안에서 어디까지 찍히겠죠</span></p>
-<p class="utterance"><time>00:42:55.580–00:42:59.580</time><span>그래서 이 넓이 패치를 만들어 지울 수가 있어요</span></p>
-<p class="utterance"><time>00:42:59.580–00:43:03.580</time><span>근데 내가 이 위치를 조절하게 되면은</span></p>
-<p class="utterance"><time>00:43:03.580–00:43:06.580</time><span>무슨 현상이 발생하는지 보면 알겠지만</span></p>
-<p class="utterance"><time>00:43:06.580–00:43:12.580</time><span>얘를 옮김으로써 여기보다 높아지는 상황들이 발생됩니다</span></p>
-<p class="utterance"><time>00:43:12.580–00:43:16.580</time><span>딜리에서 미폼으로 하면은 이 회사까지잖아요</span></p>
-<p class="utterance"><time>00:43:16.580–00:43:21.400</time><span>근데 얘를 옮기게 되면은 그거에 대한 사이드 테스트로 요게 조금씩 이렇게 꼽힙니다.</span></p>
-<p class="utterance"><time>00:43:22.400–00:43:23.700</time><span>이게 뒤쪽에서 발전을 하는거에요.</span></p>
-<p class="utterance"><time>00:43:23.700–00:43:26.460</time><span>얘가 조금 땡기면서 위로 올라가는거죠. 양쪽이.</span></p>
-<p class="utterance"><time>00:43:27.100–00:43:28.900</time><span>이게 발전해요. 얘를 옆으로 이동하게 되는거.</span></p>
-<p class="utterance"><time>00:43:28.900–00:43:30.060</time><span>이게 발전을 합니다.</span></p>
-<p class="utterance"><time>00:43:30.560–00:43:33.980</time><span>근데 지금 뭐냐면은 얘는 아이콘이 없는 수준이잖아요.</span></p>
-<p class="utterance"><time>00:43:34.460–00:43:37.880</time><span>그렇기 때문에 모든 영역에 대해서</span></p>
-<p class="utterance"><time>00:43:37.880–00:43:40.840</time><span>비호 시그마 N만큼의 노이즈를 줄 수 있죠.</span></p>
-<p class="utterance"><time>00:43:41.400–00:43:45.640</time><span>근데 만약에 얘가 작으면은 역전 0일밖에 안되면은 하나도 없어요.</span></p>
-<p class="utterance"><time>00:43:45.640–00:43:52.920</time><span>어떻게 이거가 크지 않기 때문에 얘를 맞춰줘서 얘를 줄이는게 더 있을게</span></p>
-<p class="utterance"><time>00:43:52.920–00:44:00.460</time><span>근데 만약에 얘가 되게 크다 센터노이브 같은 다이소가 없는 친구가 되게 크다 라고 하면은</span></p>
-<p class="utterance"><time>00:44:00.460–00:44:10.080</time><span>얘를 이렇게 옮겨서 얘를 줄이는 것보다 얘가 올라가서 얘가 더 많이 들어오는 그 값이 더 커지겠죠</span></p>
-<p class="utterance"><time>00:44:10.080–00:44:15.080</time><span>그래서 그 경우일 때는 최적화를 하면 이런식으로</span></p>
-<p class="utterance"><time>00:44:15.080–00:44:20.080</time><span>별로 정확하게 보이지 않고</span></p>
-<p class="utterance"><time>00:44:20.080–00:44:23.080</time><span>오게 되면 어차피 그게 더 최적화이는데</span></p>
-<p class="utterance"><time>00:44:23.080–00:44:27.080</time><span>얘들보다 중요할 수가 그렇게 됩니다.</span></p>
-<p class="utterance"><time>00:44:27.080–00:44:30.080</time><span>그 말은 뭐냐면 전체적인 이 패턴을 봤을 때</span></p>
-<p class="utterance"><time>00:44:30.080–00:44:34.080</time><span>이 전체적인 이 모양 중에 이 사이드로프트의 높이가</span></p>
-<p class="utterance"><time>00:44:34.080–00:44:38.080</time><span>최소화가 되는 그 지점을 그리해서 믿어보고요.</span></p>
-<p class="utterance"><time>00:44:38.080–00:44:41.080</time><span>얘가 가장 낮고 얘가 낮은데 가장 낮은데</span></p>
-<p class="utterance"><time>00:44:41.080–00:44:46.080</time><span>얘를 옮김으로써 얘가 투자하는 사이티비스트가 발생하기 때문에</span></p>
-<p class="utterance"><time>00:44:46.080–00:44:49.080</time><span>이런 경우일 때는 이렇게 된다</span></p>
-<p class="utterance"><time>00:44:49.080–00:44:50.080</time><span>이런 것들</span></p>
-<p class="utterance"><time>00:44:50.080–00:44:53.080</time><span>이런 것들을 여러분들이 어떻게 생각할 수 있냐면</span></p>
-<p class="utterance"><time>00:44:53.080–00:44:56.080</time><span>예를 들어서 로봇이라고 할께요</span></p>
-<p class="utterance"><time>00:44:56.080–00:44:57.080</time><span>저는 실제 로봇을 하거든요</span></p>
-<p class="utterance"><time>00:44:57.080–00:45:00.000</time><span>로봇을 하는데 로봇은 움직이기 위해</span></p>
-<p class="utterance"><time>00:45:00.000–00:45:03.000</time><span>로봇 뒤에다가 마이크를 올려줬어요.</span></p>
-<p class="utterance"><time>00:45:03.000–00:45:06.000</time><span>그 진동이 그대로 말 때 모금이 되겠죠.</span></p>
-<p class="utterance"><time>00:45:06.000–00:45:09.000</time><span>그 친구는 다이아몬드에 진동이 있을까요? 없을까요?</span></p>
-<p class="utterance"><time>00:45:09.000–00:45:11.000</time><span>로봇에 진동은 없죠.</span></p>
-<p class="utterance"><time>00:45:11.000–00:45:14.000</time><span>거기서 비포밍을 하면</span></p>
-<p class="utterance"><time>00:45:14.000–00:45:16.000</time><span>특히 딜레이징 비포밍을 하면</span></p>
-<p class="utterance"><time>00:45:16.000–00:45:19.000</time><span>거의 소용이 없다는 얘기죠.</span></p>
-<p class="utterance"><time>00:45:19.000–00:45:21.000</time><span>그 얘기를 하고 있어요.</span></p>
-<p class="utterance"><time>00:45:21.000–00:45:23.000</time><span>거기 상황에서 스피커 지우겠다고</span></p>
-<p class="utterance"><time>00:45:23.000–00:45:25.000</time><span>거기서 다른 스피커 비포밍 하겠다고</span></p>
-<p class="utterance"><time>00:45:25.000–00:45:28.000</time><span>이렇게 설계를 하면 어차피 안 된다.</span></p>
-<p class="utterance"><time>00:45:28.000–00:45:31.000</time><span>끝난다 이런 것들을 볼 수가 있어요</span></p>
-<p class="utterance"><time>00:45:34.000–00:45:36.000</time><span>오케이, 그럼 몇 시지?</span></p>
-<p class="utterance"><time>00:45:36.000–00:45:37.000</time><span>55분</span></p>
-<p class="utterance"><time>00:45:38.000–00:45:40.000</time><span>그래서 여기까지 할 수 있겠다?</span></p>
-<p class="utterance"><time>00:45:40.000–00:45:43.000</time><span>오케이, 자꾸 끝난다고 해도 좀 더 해서 미안해요</span></p>
-<p class="utterance"><time>00:45:43.000–00:45:45.000</time><span>결국에 그걸 보여주고 있어요</span></p>
-<p class="utterance"><time>00:45:45.000–00:45:46.000</time><span>그걸 보여주고 있습니다</span></p>
-<p class="utterance"><time>00:45:46.000–00:45:48.000</time><span>그러니까 너를 만드는 게</span></p>
-<p class="utterance"><time>00:45:48.000–00:45:49.000</time><span>너를 깊이 만드는 게</span></p>
-<p class="utterance"><time>00:45:49.000–00:45:50.000</time><span>내가 원하는 위치를 만드는 게</span></p>
-<p class="utterance"><time>00:45:50.000–00:45:53.000</time><span>결국 공짜가 아니라는 얘기에요</span></p>
-<p class="utterance"><time>00:45:53.000–00:45:54.000</time><span>무슨 말이냐면은</span></p>
-<p class="utterance"><time>00:45:54.000–00:45:56.000</time><span>무슨 말이냐고 하면은</span></p>
-<p class="utterance"><time>00:45:56.000–00:46:00.700</time><span>지금 타겟이 여기 0라고 했을 때</span></p>
-<p class="utterance"><time>00:46:00.700–00:46:05.440</time><span>지금 이 스피커의 위치가</span></p>
-<p class="utterance"><time>00:46:05.440–00:46:06.660</time><span>interfere 라는 친구가</span></p>
-<p class="utterance"><time>00:46:06.660–00:46:11.400</time><span>얘가 지금 noise라는 의미거든요</span></p>
-<p class="utterance"><time>00:46:11.400–00:46:12.340</time><span>noise라는 의미인데</span></p>
-<p class="utterance"><time>00:46:12.340–00:46:16.600</time><span>noise가 5도일 때 10도일 때 20도일 때</span></p>
-<p class="utterance"><time>00:46:16.600–00:46:19.660</time><span>점점 타겟이랑 가까워지면 가까워질수록</span></p>
-<p class="utterance"><time>00:46:19.660–00:46:23.620</time><span>이 null 위치를 이쪽으로 옮겨야 되겠죠</span></p>
-<p class="utterance"><time>00:46:23.620–00:46:30.420</time><span>그래서 처음에 20도일 때는 멀리 떨어졌으니까 원래 이 위치에서 조금만 오면 돼요 너리</span></p>
-<p class="utterance"><time>00:46:30.420–00:46:36.580</time><span>그렇기 때문에 이 바뀌는 지점이 크게 크지 않아요</span></p>
-<p class="utterance"><time>00:46:36.580–00:46:42.480</time><span>근데 여기도 더 와야 돼요 더 오게 되면 그만큼 이만큼 뻥튀기 되죠</span></p>
-<p class="utterance"><time>00:46:42.480–00:46:49.160</time><span>더 오게 되면 이만큼 뻥튀기가 돼요 그만큼 이쪽으로도 디지털이 발생할 수밖에 없게 돼요</span></p>
-<p class="utterance"><time>00:46:49.160–00:46:52.500</time><span>얘는 그대로 유지가 되지만 얘는 퍼즐티를 여기서 달아놨기 때문에</span></p>
-<p class="utterance"><time>00:46:52.500–00:46:59.660</time><span>여기로 유지가 되지만 이쪽 방향으로는 오히려 신호가 증폭되는 그런 형성들이 발생을 합니다</span></p>
-<p class="utterance"><time>00:47:02.160–00:47:07.580</time><span>한 가지 조금 더 나아가서 그러면 이게 왜 뻥치기가 되는지를 보면은</span></p>
-<p class="utterance"><time>00:47:07.580–00:47:09.660</time><span>이거 그림을 보면 알 수 있어요</span></p>
-<p class="utterance"><time>00:47:09.660–00:47:12.540</time><span>내가 결국에 이 h라는 값은 vector잖아요</span></p>
-<p class="utterance"><time>00:47:12.540–00:47:18.160</time><span>w라는 값은 vector 마이크 갯수만큼 m의 element에 갈 거죠</span></p>
-<p class="utterance"><time>00:47:18.160–00:47:23.440</time><span>그랬을 때 내가 그 어떤 거를 지운다 라는 것은</span></p>
-<p class="utterance"><time>00:47:23.440–00:47:30.300</time><span>이 노이즈와 수직이 내는 성분을 내정하는 거잖아요</span></p>
-<p class="utterance"><time>00:47:30.300–00:47:35.160</time><span>어떤 벡터 두 개가 오석원화 할 때 두 개를 내정하면 0이잖아요</span></p>
-<p class="utterance"><time>00:47:35.160–00:47:38.320</time><span>그 짓거리를 하고 싶은 거예요 결국에는 이걸 하고 싶은 거예요 사실은</span></p>
-<p class="utterance"><time>00:47:38.320–00:47:40.440</time><span>앞에 했던 것도 다 이거랑 똑같은 비결입니다</span></p>
-<p class="utterance"><time>00:47:40.440–00:47:43.320</time><span>0이 되는 것도 그 오석원화한 성분을 곱하는 거예요</span></p>
-<p class="utterance"><time>00:47:43.320–00:47:48.000</time><span>예를 하고 싶은 건데 내가 타겟이 여기 있으면 상관이 없어요</span></p>
-<p class="utterance"><time>00:47:48.000–00:47:54.880</time><span>타겟은 여기 있어요. 그러면 얘를 곱하면 얘를 잘 사과 남고 얘가 없어져요.</span></p>
-<p class="utterance"><time>00:47:54.880–00:48:00.500</time><span>왜냐하면 이거에 대한 두 개 곱했을 때 크기, 이거는 컨시엔트를 유지해야 하기 때문에</span></p>
-<p class="utterance"><time>00:48:00.500–00:48:06.600</time><span>얘는 지금 내가 컨시엔트로 둘잖아요. 이 값은. 컨시엔트로 둘기 때문에 이 값은 그대로 유지가 되기 때문에</span></p>
-<p class="utterance"><time>00:48:06.600–00:48:09.320</time><span>얘랑 가까우면 곱하면 얘는 그대로 유지가 됩니다.</span></p>
-<p class="utterance"><time>00:48:10.140–00:48:13.880</time><span>근데 이쪽으로 오면 만약에 타겟하고 노이즈가 가까워져요.</span></p>
-<p class="utterance"><time>00:48:13.880–00:48:20.120</time><span>그러면 얘를 지우기 위해서는 얘를 5소고단한 성을 가져야 되는데 타겟도 거의 5소고단하잖아요.</span></p>
-<p class="utterance"><time>00:48:20.120–00:48:23.540</time><span>그러면 얘를 되게 많이 지워지죠. 오판은 이만큼밖에 안 쌓아나가요.</span></p>
-<p class="utterance"><time>00:48:23.540–00:48:29.620</time><span>얘를 이만큼 뻥튀기 시키기 위해서는 얘를 키우는 수밖에 없죠.</span></p>
-<p class="utterance"><time>00:48:29.620–00:48:33.020</time><span>얘를 키워야지 얘가 이렇게 늘어나잖아요.</span></p>
-<p class="utterance"><time>00:48:33.020–00:48:35.660</time><span>그래서 아까 그 컨스트레이트를 만족하게 되잖아요.</span></p>
-<p class="utterance"><time>00:48:35.660–00:48:40.540</time><span>그렇기 때문에 얘가 늘어나게 되고 그렇기 때문에 얘가 뻥튀기 되는 거예요.</span></p>
-<p class="utterance"><time>00:48:40.540–00:48:44.540</time><span>무슨 말인지 이해 되죠?</span></p>
-<p class="utterance"><time>00:48:44.540–00:48:48.540</time><span>그렇기 때문에 저 현상이 이런 것들 때문에 발생을 하는 현상이 나와요</span></p>
-<p class="utterance"><time>00:48:48.540–00:48:52.540</time><span>네</span></p>
-<p class="utterance"><time>00:48:52.540–00:48:56.540</time><span>다 왔어요</span></p>
-<p class="utterance"><time>00:48:56.540–00:49:00.540</time><span>다 왔네요. 그냥 다 할게요. 다 왔어요</span></p>
-<p class="utterance"><time>00:49:00.540–00:49:04.540</time><span>그래서 결국에 이거는 제가 다음 시간에 한 번 더 설명할게요</span></p></section>
+<link rel="stylesheet" href="../reader.css"></head><body><main>
+<h1>Lecture 8-2 강의 전사 · 2026-11-05</h1>
+<p class="status">전사 상태: Lecture 8-1 복습과 Lecture 8-2의 MVDR 설명에 해당하는 00:00–49:05 자동 전사다. 전문 용어·수식·화자 귀속은 전 구간 직접 청취로 교정되지 않았다. 49:05 이후는 원시 전사 품질이 낮아 공개 학습 자료에서 제외했다. 시간은 음성 메모 시작 기준이다.</p>
+<nav aria-label="강의 목차"><details><summary>강의 목차</summary><ol>
+<li><a href="#part-1">원하는 방향을 향하는 beamformer</a></li>
+<li><a href="#part-2">주파수에 따른 phase 변화</a></li>
+<li><a href="#part-3">공간 aliasing과 배열 간격</a></li>
+<li><a href="#part-4">side lobe가 만드는 간섭</a></li>
+<li><a href="#part-5">공분산 행렬과 MVDR의 목적</a></li>
+<li><a href="#part-6">간섭 방향에 null 배치하기</a></li>
+<li><a href="#part-7">null 이동과 side-lobe trade-off</a></li>
+</ol></details></nav>
+<section id="part-1"><h2>원하는 방향을 향하는 beamformer</h2>
+<p class="prose">원하는 방향에서 오는 소리를 받으려면 beamformer의 방향 θ를 설정하고 그 방향에 맞는 필터를 설계해야 한다. θ가 바뀌면 필터 가중치 W와 방향 응답 H도 함께 달라진다.</p>
+<p class="prose">그에 따라서 W 각도 바뀌겠죠. 그거를 쭉 변화시켰을 때 이 들려오는 H는 H0으로 고정을 시켜주는 거예요. 그러면 내가 필터를 만약에 이쪽 방향으로 설정했어요. 예를 들어서 H1이라고 해볼게요. 내가 이쪽 가량으로 필터를 했는데 소리는 지금 이쪽 가량으로 들려오고 있으니까 얘를 지워야 되잖아요. 얼마만큼 잘 지우냐 얼마만큼 잘 석배전시키냐를 보는 거다. 라고 얘기합니다. 5만 디엘이요. 이렇게요. 오케이.</p>
+<p class="prose">그 정도를 저렇게 표현하는 거예요. 그러면은 다 먹선하게 작은 값을 받았으면 좋겠는데 중간중간에 꽤 높은 값들이 보이죠. 저게 왜 나오냐 그리고 저 밑으로 푹푹 꺼지는 건 뭐냐 이런 것을 다 안정하게 배울 거고요. 그래서 저 모양이 나오는 이유는 뭐냐면 우선 핵심만 말씀드리면 내가 얘를 완벽하게 지우고 싶어요. 내가 특정 바이오로 들려오는 소리를 완벽하게 지우고 싶다 라고 하면 어떻게 하면 완벽하게 지우실까요?</p>
+<p class="prose">지금 예를 들어서 이 포네셜 처음으로 봤을 때 내가 이 H라는 친구 결국에 이 두 개 곱하는 것은 예를 들어 그냥 이 두 개 이 제곱하지는 아니고 이 두 개를 곱하는 값 그러면 이거는 이 스포네이션의 어떤 j, pi라는 값으로 떨어지겠죠. 그렇죠. 이 두 개 곱한 거니까. 그런데 지금 얘가 y가 하나가 아니라 m개잖아요. 그렇죠. 그렇다는 것은 이게 플러스 이 스포네이션의 j, pi 2부터 더해서 이 스포네이션의 j, pi n까지 더하는 값이 얘가 되겠죠.</p>
+<p class="prose">이해 되요? 얘는 inner product니까 이해 안되죠? 지금 이렇게 생겼잖아요 지금 보면 이 친구는 h라는 친구는 요거의 요 vector잖아요. 요걸 inner product하고 마찬가지로 이 h라는 친구는 어차피 이 친구인데 이거 세타만 바꿔가지고 이거 두개끼리 지금 여기서 곱한거잖아요 곱한 다음에 더하는거니까 이런식으로 나와지겠죠 지금 두개가 어차피 곱하지만은 이 파이 안에서는 서로 다른 타우와 오메가 곱한 것들끼리 더하는 범위가 있잖아요 그걸 그냥 이 파이 범위가 나타낸 겁니다 이렇게 돌릴 수 있겠죠.</p>
+<p class="prose">이해되죠 그랬을 때 얘가 최소화가 되려면 얘가 0이 되려면 어떻게 해요 쉽게 얘기해요. 0이 되려면은 얘들 한번 배웠어요 이거 0이 되려면 어떻게 되죠. 얘가 real이고 얘가 image인데 얘가 0이 되려면은 요 8개의 벡터가 서로 다른 방향을 상황으로 다 찌르고 있으면 되겠다 요렇게 요렇게 요렇게 요렇게 찌르고 있으면은 이 delay 요 theta라는 칠구가 pi죠 정확히 top pi pi 1, pi 2 이게 위축 구성이 되어 있을 때 얘가 단항을 치르고 있으면 이거 더하면 0이 되잖아요.</p>
+<p class="prose">이렇게 되는 것을 지금 원하는 거예요. 그게 아까 그 그림에서 여기 밑으로 푹 꺼진 데 있죠? 여기가 거기에 남아있어요. 여기 푹 꺼진 데가 거기에 남아있고 여기는 조금은 언라인이 안 맞아서 이 텀들이 살아있는 거예요. 이걸 한번 봅시다. 여러분들에게 이해를 위해서 제가 지난 시간에 봤던 이 친구를 왜 가져갔는지 보여줄게요. 밑에 있는 그림이 그걸 보여주고 있는거에요. 그걸 보여주고 있는거고 지금 이쪽 방향으로 소리가 들어왔을 때 내가 이쪽을 스토리닝 하는거에요.</p>
+<p class="prose">그래서 이 그림이 들어오는데 지금 이 세타 내가 지금 바라보고 있는 이 세타가 이쪽 방향을 바라보고 있어요. 그랬을 때 이게 지금 여기에 해당하는거에요. 여기 여기에 해당하는 거고 그때 그 페이스 텀을 하면은 이런 식으로 돼서 이게 사실 저희랑 똑같죠. 똑같은 건데 지금 이거를 그냥 배턴끼리 더하면은 한 바퀴 더 오는 거잖아요 결국에 그거를 그냥 여기 그려놓은거에요. 결국에 페이스가 제자리로 돌아온다.</p>
+<p class="prose">라는 걸 믿는거고 그때 실제로 저 위상을 마이크 신호로 표현을 하면은 요런식으로 된다는거고 다 위상이 조금씩 조금씩 어긋나서 요런식으로 되면 얘를 더하면은 영원히 써내게 되는거에요. 페이스가 조금씩 달라지게 되는거에요. 쉽게 얘기하면은 간단하게 얘기하면은 요 시그널하고 요 밑에 있는 요 시그널하고는 그 개념은 0이죠. 그 개념이요. 그렇다라는 것은 그리고 한가지 더</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:00:00.000–00:00:02.000</time> <span>안되는 사람?</span></li>
+<li><time>00:00:02.000–00:00:03.000</time> <span>오케이</span></li>
+<li><time>00:00:03.000–00:00:05.000</time> <span>그러면은 이런 다시 얘기해볼까</span></li>
+<li><time>00:00:05.000–00:00:08.000</time> <span>우선 이건 이해돼요 이쪽 방향으로 유닛에서 들려오는 상황</span></li>
+<li><time>00:00:08.000–00:00:14.000</time> <span>얘를 고정시켜놓고 내가 소리를 받아들이는 그 필터 있잖아요</span></li>
+<li><time>00:00:14.000–00:00:18.000</time> <span>갓스 비포머라는 식의 필터의 방향을 내가 조절할 수 있겠죠</span></li>
+<li><time>00:00:18.000–00:00:21.000</time> <span>가정을 이렇게 하는 거예요 이쪽 방향에서 소리가 들려온다</span></li>
+<li><time>00:00:21.000–00:00:25.000</time> <span>이쪽 방향에서 소리가 들려온다라고 하면은 내가 필터를 어떻게 설계해야 되는지를</span></li>
+<li><time>00:00:25.000–00:00:29.000</time> <span>계산을 앞에서 같은 요식을 통해서 할 수 있겠죠</span></li>
+<li><time>00:00:29.000–00:00:33.960</time> <span>여기서 이 세타를 내가 원하는 각도로 세팅을 하려면</span></li>
+<li><time>00:00:33.960–00:00:38.420</time> <span>그러면 저 세타에 따라서 W가 바뀌겠죠.</span></li>
+<li><time>00:00:39.100–00:00:43.700</time> <span>그러면 내가 원하는 방향에 따라서 H 각도 바뀌고</span></li>
+<li><time>00:00:43.700–00:00:45.460</time> <span>그에 따라서 W 각도 바뀌겠죠.</span></li>
+<li><time>00:00:46.040–00:00:47.860</time> <span>그거를 쭉 변화시켰을 때</span></li>
+<li><time>00:00:47.860–00:00:52.440</time> <span>이 들려오는 H는 H0으로 고정을 시켜주는 거예요.</span></li>
+<li><time>00:00:54.360–00:00:58.620</time> <span>그러면 내가 필터를 만약에 이쪽 방향으로 설정했어요.</span></li>
+<li><time>00:00:58.620–00:01:01.100</time> <span>예를 들어서 H1이라고 해볼게요.</span></li>
+<li><time>00:01:02.680–00:01:03.940</time> <span>내가 이쪽 가량으로 필터를 했는데</span></li>
+<li><time>00:01:03.940–00:01:06.840</time> <span>소리는 지금 이쪽 가량으로 들려오고 있으니까</span></li>
+<li><time>00:01:06.840–00:01:09.180</time> <span>얘를 지워야 되잖아요.</span></li>
+<li><time>00:01:09.920–00:01:11.200</time> <span>얼마만큼 잘 지우냐</span></li>
+<li><time>00:01:11.200–00:01:14.320</time> <span>얼마만큼 잘 석배전시키냐를 보는 거다.</span></li>
+<li><time>00:01:15.380–00:01:15.980</time> <span>라고 얘기합니다.</span></li>
+<li><time>00:01:16.040–00:01:16.740</time> <span>5만 디엘이요.</span></li>
+<li><time>00:01:17.940–00:01:18.300</time> <span>이렇게요.</span></li>
+<li><time>00:01:20.200–00:01:20.500</time> <span>오케이.</span></li>
+<li><time>00:01:21.520–00:01:23.820</time> <span>그 정도를 저렇게 표현하는 거예요.</span></li>
+<li><time>00:01:24.360–00:01:27.080</time> <span>그러면은 다 먹선하게 작은 값을 받았으면 좋겠는데</span></li>
+<li><time>00:01:27.080–00:01:29.620</time> <span>중간중간에 꽤 높은 값들이 보이죠</span></li>
+<li><time>00:01:29.620–00:01:31.880</time> <span>저게 왜 나오냐</span></li>
+<li><time>00:01:31.880–00:01:34.660</time> <span>그리고 저 밑으로 푹푹 꺼지는 건 뭐냐</span></li>
+<li><time>00:01:34.660–00:01:36.000</time> <span>이런 것을 다 안정하게 배울 거고요</span></li>
+<li><time>00:01:36.000–00:01:38.320</time> <span>그래서 저 모양이 나오는 이유는 뭐냐면</span></li>
+<li><time>00:01:38.320–00:01:40.220</time> <span>우선 핵심만 말씀드리면</span></li>
+<li><time>00:01:40.220–00:01:43.580</time> <span>내가 얘를 완벽하게 지우고 싶어요</span></li>
+<li><time>00:01:43.580–00:01:45.300</time> <span>내가 특정 바이오로 들려오는 소리를</span></li>
+<li><time>00:01:45.300–00:01:47.080</time> <span>완벽하게 지우고 싶다</span></li>
+<li><time>00:01:47.760–00:01:49.860</time> <span>라고 하면 어떻게 하면 완벽하게 지우실까요</span></li>
+<li><time>00:01:49.860–00:01:51.220</time> <span>지금 예를 들어서</span></li>
+<li><time>00:01:51.220–00:01:53.080</time> <span>이 포네셜 처음으로 봤을 때</span></li>
+<li><time>00:01:53.080–00:01:55.940</time> <span>내가 이 H라는 친구</span></li>
+<li><time>00:01:55.940–00:01:57.840</time> <span>결국에 이 두 개 곱하는 것은</span></li>
+<li><time>00:01:57.840–00:01:59.900</time> <span>예를 들어 그냥 이 두 개</span></li>
+<li><time>00:01:59.900–00:02:02.280</time> <span>이 제곱하지는 아니고 이 두 개를 곱하는 값</span></li>
+<li><time>00:02:02.280–00:02:03.660</time> <span>그러면 이거는</span></li>
+<li><time>00:02:03.660–00:02:05.540</time> <span>이 스포네이션의</span></li>
+<li><time>00:02:05.540–00:02:08.520</time> <span>어떤 j, pi라는 값으로</span></li>
+<li><time>00:02:08.520–00:02:09.140</time> <span>떨어지겠죠.</span></li>
+<li><time>00:02:10.000–00:02:11.600</time> <span>그렇죠. 이 두 개 곱한 거니까.</span></li>
+<li><time>00:02:12.020–00:02:13.840</time> <span>그런데 지금 얘가 y가</span></li>
+<li><time>00:02:13.840–00:02:15.160</time> <span>하나가 아니라 m개잖아요.</span></li>
+<li><time>00:02:15.860–00:02:17.560</time> <span>그렇죠. 그렇다는 것은</span></li>
+<li><time>00:02:17.560–00:02:19.440</time> <span>이게 플러스</span></li>
+<li><time>00:02:19.440–00:02:21.200</time> <span>이 스포네이션의 j, pi</span></li>
+<li><time>00:02:21.200–00:02:23.460</time> <span>2부터 더해서</span></li>
+<li><time>00:02:23.460–00:02:25.140</time> <span>이 스포네이션의 j, pi</span></li>
+<li><time>00:02:25.140–00:02:28.140</time> <span>n까지 더하는 값이 얘가 되겠죠</span></li>
+<li><time>00:02:28.140–00:02:34.140</time> <span>이해 되요? 얘는 inner product니까</span></li>
+<li><time>00:02:34.140–00:02:36.140</time> <span>이해 안되죠?</span></li>
+<li><time>00:02:36.140–00:02:40.140</time> <span>지금 이렇게 생겼잖아요 지금 보면</span></li>
+<li><time>00:02:40.140–00:02:44.140</time> <span>이 친구는 h라는 친구는 요거의 요 vector잖아요</span></li>
+<li><time>00:02:44.140–00:02:49.140</time> <span>요걸 inner product하고 마찬가지로 이 h라는 친구는 어차피 이 친구인데</span></li>
+<li><time>00:02:49.140–00:02:52.140</time> <span>이거 세타만 바꿔가지고 이거 두개끼리 지금</span></li>
+<li><time>00:02:52.140–00:02:56.540</time> <span>여기서 곱한거잖아요 곱한 다음에 더하는거니까</span></li>
+<li><time>00:02:56.540–00:02:59.500</time> <span>이런식으로 나와지겠죠 지금 두개가 어차피 곱하지만은</span></li>
+<li><time>00:02:59.500–00:03:04.660</time> <span>이 파이 안에서는 서로 다른 타우와 오메가 곱한 것들끼리 더하는</span></li>
+<li><time>00:03:04.660–00:03:07.220</time> <span>범위가 있잖아요 그걸 그냥 이 파이 범위가 나타낸</span></li>
+<li><time>00:03:07.220–00:03:12.340</time> <span>겁니다 이렇게 돌릴 수 있겠죠</span></li>
+<li><time>00:03:12.340–00:03:15.260</time> <span>이해되죠 그랬을 때 얘가 최소화가 되려면</span></li>
+<li><time>00:03:15.260–00:03:17.580</time> <span>얘가 0이 되려면 어떻게 해요 쉽게 얘기해요</span></li>
+<li><time>00:03:17.580–00:03:21.540</time> <span>0이 되려면은 얘들 한번 배웠어요 이거 0이 되려면 어떻게 되죠</span></li>
+<li><time>00:03:21.540–00:03:27.160</time> <span>얘가 real이고 얘가 image인데 얘가 0이 되려면은</span></li>
+<li><time>00:03:27.160–00:03:31.220</time> <span>요 8개의 벡터가 서로 다른 방향을 상황으로 다 찌르고 있으면 되겠다</span></li>
+<li><time>00:03:31.220–00:03:38.220</time> <span>요렇게 요렇게 요렇게 요렇게 찌르고 있으면은</span></li>
+<li><time>00:03:38.220–00:03:41.960</time> <span>이 delay 요 theta라는 칠구가 pi죠 정확히 top pi</span></li>
+<li><time>00:03:41.960–00:03:45.980</time> <span>pi 1, pi 2 이게 위축 구성이 되어 있을 때</span></li>
+<li><time>00:03:45.980–00:03:49.300</time> <span>얘가 단항을 치르고 있으면 이거 더하면 0이 되잖아요</span></li>
+<li><time>00:03:49.300–00:03:51.300</time> <span>이렇게 되는 것을 지금 원하는 거예요.</span></li>
+<li><time>00:03:51.300–00:03:53.300</time> <span>그게 아까 그 그림에서</span></li>
+<li><time>00:03:55.300–00:03:57.300</time> <span>여기 밑으로 푹 꺼진 데 있죠?</span></li>
+<li><time>00:03:57.300–00:03:59.300</time> <span>여기가 거기에 남아있어요.</span></li>
+<li><time>00:04:01.300–00:04:03.300</time> <span>여기 푹 꺼진 데가 거기에 남아있고</span></li>
+<li><time>00:04:03.300–00:04:05.300</time> <span>여기는 조금은 언라인이 안 맞아서</span></li>
+<li><time>00:04:05.300–00:04:07.300</time> <span>이 텀들이 살아있는 거예요.</span></li>
+<li><time>00:04:11.300–00:04:13.300</time> <span>이걸 한번 봅시다. 여러분들에게</span></li>
+<li><time>00:04:13.300–00:04:15.300</time> <span>이해를 위해서</span></li>
+<li><time>00:04:15.300–00:04:17.300</time> <span>제가 지난 시간에 봤던 이 친구를</span></li>
+<li><time>00:04:17.300–00:04:19.300</time> <span>왜 가져갔는지 보여줄게요.</span></li>
+<li><time>00:04:19.300–00:04:23.300</time> <span>밑에 있는 그림이 그걸 보여주고 있는거에요.</span></li>
+<li><time>00:04:23.300–00:04:25.300</time> <span>그걸 보여주고 있는거고</span></li>
+<li><time>00:04:25.300–00:04:27.300</time> <span>지금 이쪽 방향으로 소리가 들어왔을 때</span></li>
+<li><time>00:04:27.300–00:04:29.300</time> <span>내가 이쪽을 스토리닝 하는거에요.</span></li>
+<li><time>00:04:29.300–00:04:33.300</time> <span>그래서 이 그림이 들어오는데</span></li>
+<li><time>00:04:33.300–00:04:35.300</time> <span>지금 이 세타</span></li>
+<li><time>00:04:35.300–00:04:39.300</time> <span>내가 지금 바라보고 있는 이 세타가</span></li>
+<li><time>00:04:39.300–00:04:41.300</time> <span>이쪽 방향을 바라보고 있어요.</span></li>
+<li><time>00:04:41.300–00:04:45.300</time> <span>그랬을 때 이게 지금 여기에 해당하는거에요.</span></li>
+<li><time>00:04:45.300–00:04:47.300</time> <span>여기</span></li>
+<li><time>00:04:47.300–00:04:48.800</time> <span>여기에 해당하는 거고</span></li>
+<li><time>00:04:48.800–00:04:51.300</time> <span>그때 그 페이스 텀을 하면은</span></li>
+<li><time>00:04:51.300–00:04:52.900</time> <span>이런 식으로 돼서</span></li>
+<li><time>00:04:52.900–00:04:54.900</time> <span>이게 사실 저희랑 똑같죠</span></li>
+<li><time>00:04:54.900–00:04:57.100</time> <span>똑같은 건데 지금 이거를 그냥</span></li>
+<li><time>00:04:57.100–00:04:58.500</time> <span>배턴끼리 더하면은</span></li>
+<li><time>00:04:58.500–00:05:00.000</time> <span>한 바퀴 더 오는 거잖아요 결국에</span></li>
+<li><time>00:05:00.000–00:05:02.480</time> <span>그거를 그냥 여기 그려놓은거에요.</span></li>
+<li><time>00:05:02.480–00:05:05.280</time> <span>결국에 페이스가 제자리로 돌아온다.</span></li>
+<li><time>00:05:05.280–00:05:06.960</time> <span>라는 걸 믿는거고</span></li>
+<li><time>00:05:06.960–00:05:10.280</time> <span>그때 실제로 저 위상을</span></li>
+<li><time>00:05:10.280–00:05:12.120</time> <span>마이크 신호로 표현을 하면은</span></li>
+<li><time>00:05:12.120–00:05:14.600</time> <span>요런식으로 된다는거고</span></li>
+<li><time>00:05:14.600–00:05:17.480</time> <span>다 위상이 조금씩 조금씩 어긋나서</span></li>
+<li><time>00:05:17.480–00:05:19.920</time> <span>요런식으로 되면 얘를 더하면은</span></li>
+<li><time>00:05:19.920–00:05:21.400</time> <span>영원히 써내게 되는거에요.</span></li>
+<li><time>00:05:21.400–00:05:23.680</time> <span>페이스가 조금씩 달라지게 되는거에요.</span></li>
+<li><time>00:05:23.680–00:05:25.400</time> <span>쉽게 얘기하면은 간단하게 얘기하면은</span></li>
+<li><time>00:05:25.400–00:05:27.440</time> <span>요 시그널하고</span></li>
+<li><time>00:05:27.440–00:05:29.960</time> <span>요 밑에 있는 요 시그널하고는</span></li>
+<li><time>00:05:29.960–00:05:34.960</time> <span>그 개념은 0이죠. 그 개념이요.</span></li>
+<li><time>00:05:41.960–00:05:44.960</time> <span>그렇다라는 것은 그리고 한가지 더</span></li>
+</ol></details></section>
+<section id="part-2"><h2>주파수에 따른 phase 변화</h2>
+<p class="prose">Frequency에 따라서 형제가 조금씩 바뀝니다. 왜 바뀌냐면 여기 앞에 스티어링 벡터에서 H라는 식으로 이렇게 갔다오면은 요게 지금 오메가톤이 들어가 있잖아요. 저 같은 속도가 오메가톤이 들어가 있으니까 오메가톤이 늘어나면은 더 빨리 돌겠죠. 오메가톤이 작아지면 천천히 돌겠죠. 그래서 위상이 딱 맞아지는 그 시점이 뒤로 늘어나냐 빨라지냐가 바뀌겠죠. 그렇기 때문에 프리퀀티가 작아질수록 옆으로 위축해지는 거고 프리퀀시가 높아질수록 보이는거에요.</p>
+<p class="prose">그래서 이런 분위기입니다. 그런 얘기를 이해하시면 되요 이해되요? 이해 안되는거 같은데요? 두판도 오케이 아까 여기서 이건 지울게요 H는 이 포지션의 마이너스 j 오메가 여기 tau1부터 마이너스 j 오메가 taun 이렇게 분명히 되어있을 수 있습니다. 이 친구는 근데 여기 이 오메가라는 것은 가속도잖아요. 그 여기 이게 가속도가 [자동 전사 반복 구간 생략]</p>
+<p class="prose">여러분이 아는 것과 동시에 이렇게 올라오면은 이 친구를 옆으로 맞춰놓고 이렇게 잘 안보여서 대충, 대충 봐요 이거를 여기서 어 다시 0에서 보면은 얘가 조금씩 옆으로 이동하죠. 이렇게 얘가 이렇게 이동을 하면서 결국 근데 그게 빨리 가면 빨리 도달하고 천천히 가면 천천히 가겠죠. 그 얘기에요. 그래서 이 바퀴가 지금 오메가인데 얘를 이렇게 늘리면은 같은 거리를 이동해도 더 보관 나가는 거예요.</p>
+<p class="prose">마트 보면은 더 이렇게 보면은 처음에 이게 딱 맞아서 살짝 이렇게 올라가게 되는데 이럴 때에는 다 더하면 중복이 되잖아요. 예를 들면 시프트가 발전을 할텐데 시프트가 발전을 하죠? 이게 이 속도가 더 느려진다는 거예요. 왜냐하면 여기에 오메가가 있습니다. 그렇게 이해하시면 돼요. 이렇게 해야 됩니다. 그리고 이것은 스파셜 엘리에이팅 이라는 친구인데 이거 할까? 이거는 중요하긴 한데 이건 좀 더 어려운데 좀 더 어려운데 잠깐만 음..</p>
+<p class="prose">오늘 할게요 여러분들 이해를 요거는 조금 약간 고급? 어드밴스도 있나요? 약간? 약간 공기인데 여기서 만약에 내가 초파수를 엄청나게 증가시켜 놓을게요 여러분 초파수를 증가해보면은 옆에 그림을 보면은 그림을 하나 보면은 이게 점점점점 이게 이 밑에 있는 요 친구 그 비패성이 점점 쪼그라드는게 보이죠. 왜냐면 더 빨리 가니까 근데 더 빨리 가다 못해 더 빨리 가다 못해서 내가 이동해야 되는 이 파일을 초과하는 겁니다.</p>
+<p class="prose">이 초과하면은 우리 갑자기 이 친구가 만들어져요. 지금 보면 이 친구. 다시 이거를 보면은 지금 이 친구가 갑자기 만들어집니다. 이 친구가 만들어지는데 이 친구는 뭐냐? 뭐냐면은 갑자기 여기서 다시 증가하는 시점이 발생해요. 사실 얘는 뭐 때문에 발생을 하는 거냐면은 마이크 간 거리 때문에 발생을 합니다. 마이크 간 거리가 이렇게 가까울 수도 있고 멀 수도 있겠죠. 근데 소리라는 것은 파동을 갖잖아요. 파동은 1초에 몇 미터 가냐 하잖아요.</p>
+<p class="prose">그 웨이브 앵크는 1초에 몇 미터 가냐 그러니까 한 번 주기가 1초에 몇 미터 가냐가 파장이에요. 그렇다는 것은 한 웨이브 앵크가 예를 들어서 내가 이쪽 방에 소리가 들려온다 라고 했을 때 어떤 친구는 되게 빠른 고주파일 수도 있고 어떤 친구는 되게 느린 친구가 들려올 수도 있겠죠. 근데 여기서 들리고 여기서 들렸어요. 근데 예를 들어서 여기 소리가 들렸을 때 이 빨간색으로 보냅니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:05:44.960–00:05:47.960</time> <span>Frequency에 따라서 형제가 조금씩 바뀝니다.</span></li>
+<li><time>00:05:47.960–00:05:52.960</time> <span>왜 바뀌냐면 여기 앞에 스티어링 벡터에서 H라는 식으로</span></li>
+<li><time>00:05:52.960–00:05:56.340</time> <span>이렇게 갔다오면은 요게 지금 오메가톤이 들어가 있잖아요.</span></li>
+<li><time>00:05:56.600–00:06:02.660</time> <span>저 같은 속도가 오메가톤이 들어가 있으니까 오메가톤이 늘어나면은 더 빨리 돌겠죠.</span></li>
+<li><time>00:06:03.380–00:06:05.600</time> <span>오메가톤이 작아지면 천천히 돌겠죠.</span></li>
+<li><time>00:06:05.600–00:06:12.400</time> <span>그래서 위상이 딱 맞아지는 그 시점이 뒤로 늘어나냐 빨라지냐가 바뀌겠죠.</span></li>
+<li><time>00:06:15.540–00:06:20.900</time> <span>그렇기 때문에 프리퀀티가 작아질수록 옆으로 위축해지는 거고</span></li>
+<li><time>00:06:20.900–00:06:24.900</time> <span>프리퀀시가 높아질수록 보이는거에요</span></li>
+<li><time>00:06:24.900–00:06:27.900</time> <span>그래서 이런 분위기입니다</span></li>
+<li><time>00:06:27.900–00:06:30.900</time> <span>그런 얘기를 이해하시면 되요</span></li>
+<li><time>00:06:30.900–00:06:34.900</time> <span>이해되요? 이해 안되는거 같은데요?</span></li>
+<li><time>00:06:34.900–00:06:39.900</time> <span>두판도 오케이</span></li>
+<li><time>00:06:39.900–00:06:44.900</time> <span>아까 여기서</span></li>
+<li><time>00:06:44.900–00:06:47.900</time> <span>이건 지울게요</span></li>
+<li><time>00:06:47.900–00:06:49.900</time> <span>H는</span></li>
+<li><time>00:06:49.900–00:06:51.900</time> <span>이 포지션의</span></li>
+<li><time>00:06:51.900–00:06:53.900</time> <span>마이너스 j 오메가</span></li>
+<li><time>00:06:53.900–00:06:55.900</time> <span>여기 tau1부터</span></li>
+<li><time>00:06:55.900–00:06:57.900</time> <span>마이너스 j</span></li>
+<li><time>00:06:57.900–00:06:59.900</time> <span>오메가</span></li>
+<li><time>00:06:59.900–00:07:01.900</time> <span>taun</span></li>
+<li><time>00:07:01.900–00:07:03.900</time> <span>이렇게 분명히 되어있을 수 있습니다</span></li>
+<li><time>00:07:03.900–00:07:05.900</time> <span>이 친구는</span></li>
+<li><time>00:07:05.900–00:07:07.900</time> <span>근데 여기 이 오메가라는 것은</span></li>
+<li><time>00:07:07.900–00:07:09.900</time> <span>가속도잖아요</span></li>
+<li><time>00:07:09.900–00:07:11.900</time> <span>그 여기</span></li>
+<li><time>00:07:11.900–00:07:13.900</time> <span>이게</span></li>
+<li><time>00:07:13.900–00:07:15.900</time> <span>가속도가</span></li>
+<li><time>00:07:15.900–00:07:45.900</time> <span>그 여기 이게 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이 이</span></li>
+<li><time>00:07:45.900–00:07:47.900</time> <span>여러분이 아는 것과 동시에</span></li>
+<li><time>00:07:47.900–00:07:49.900</time> <span>이렇게 올라오면은</span></li>
+<li><time>00:07:49.900–00:07:51.900</time> <span>이 친구를</span></li>
+<li><time>00:07:51.900–00:07:53.900</time> <span>이 친구를</span></li>
+<li><time>00:07:53.900–00:07:55.900</time> <span>옆으로 맞춰놓고</span></li>
+<li><time>00:07:55.900–00:07:57.900</time> <span>이렇게</span></li>
+<li><time>00:07:57.900–00:07:59.900</time> <span>잘 안보여서</span></li>
+<li><time>00:07:59.900–00:08:01.900</time> <span>대충, 대충 봐요</span></li>
+<li><time>00:08:01.900–00:08:03.900</time> <span>이거를 여기서</span></li>
+<li><time>00:08:03.900–00:08:05.900</time> <span>어</span></li>
+<li><time>00:08:05.900–00:08:07.900</time> <span>다시 0에서 보면은</span></li>
+<li><time>00:08:07.900–00:08:09.900</time> <span>얘가 조금씩 옆으로 이동하죠</span></li>
+<li><time>00:08:09.900–00:08:11.900</time> <span>이렇게</span></li>
+<li><time>00:08:11.900–00:08:13.900</time> <span>얘가 이렇게 이동을 하면서 결국</span></li>
+<li><time>00:08:13.900–00:08:18.900</time> <span>근데 그게 빨리 가면 빨리 도달하고 천천히 가면 천천히 가겠죠.</span></li>
+<li><time>00:08:18.900–00:08:25.900</time> <span>그 얘기에요. 그래서 이 바퀴가 지금 오메가인데</span></li>
+<li><time>00:08:25.900–00:08:30.900</time> <span>얘를 이렇게 늘리면은 같은 거리를 이동해도 더 보관 나가는 거예요.</span></li>
+<li><time>00:08:30.900–00:08:36.900</time> <span>마트 보면은 더 이렇게 보면은 처음에 이게 딱 맞아서 살짝 이렇게 올라가게 되는데</span></li>
+<li><time>00:08:36.900–00:08:39.900</time> <span>이럴 때에는 다 더하면 중복이 되잖아요.</span></li>
+<li><time>00:08:39.900–00:08:42.900</time> <span>예를 들면 시프트가 발전을 할텐데</span></li>
+<li><time>00:08:42.900–00:08:44.900</time> <span>시프트가 발전을 하죠?</span></li>
+<li><time>00:08:44.900–00:08:47.900</time> <span>이게 이 속도가 더 느려진다는 거예요</span></li>
+<li><time>00:08:47.900–00:08:51.900</time> <span>왜냐하면 여기에 오메가가 있습니다</span></li>
+<li><time>00:08:51.900–00:08:53.900</time> <span>그렇게 이해하시면 돼요</span></li>
+<li><time>00:08:53.900–00:09:03.900</time> <span>이렇게 해야 됩니다.</span></li>
+<li><time>00:09:03.900–00:09:09.900</time> <span>그리고 이것은 스파셜 엘리에이팅 이라는 친구인데</span></li>
+<li><time>00:09:09.900–00:09:11.900</time> <span>이거 할까?</span></li>
+<li><time>00:09:11.900–00:09:13.900</time> <span>이거는 중요하긴 한데</span></li>
+<li><time>00:09:13.900–00:09:15.900</time> <span>이건 좀 더 어려운데</span></li>
+<li><time>00:09:15.900–00:09:17.900</time> <span>좀 더 어려운데</span></li>
+<li><time>00:09:17.900–00:09:19.900</time> <span>잠깐만</span></li>
+<li><time>00:09:19.900–00:09:21.900</time> <span>음..</span></li>
+<li><time>00:09:21.900–00:09:23.900</time> <span>오늘 할게요</span></li>
+<li><time>00:09:23.900–00:09:25.900</time> <span>여러분들 이해를</span></li>
+<li><time>00:09:25.900–00:09:27.900</time> <span>요거는 조금 약간 고급? 어드밴스도 있나요?</span></li>
+<li><time>00:09:27.900–00:09:29.900</time> <span>약간? 약간 공기인데</span></li>
+<li><time>00:09:29.900–00:09:31.900</time> <span>여기서 만약에 내가 초파수를</span></li>
+<li><time>00:09:31.900–00:09:33.900</time> <span>엄청나게 증가시켜 놓을게요</span></li>
+<li><time>00:09:33.900–00:09:35.900</time> <span>여러분</span></li>
+<li><time>00:09:35.900–00:09:37.900</time> <span>초파수를 증가해보면은</span></li>
+<li><time>00:09:37.900–00:09:39.900</time> <span>옆에 그림을 보면은</span></li>
+<li><time>00:09:39.900–00:09:41.900</time> <span>그림을 하나 보면은 이게 점점점점 이게</span></li>
+<li><time>00:09:41.900–00:09:43.900</time> <span>이 밑에 있는 요 친구</span></li>
+<li><time>00:09:43.900–00:09:45.900</time> <span>그 비패성이 점점 쪼그라드는게 보이죠</span></li>
+<li><time>00:09:45.900–00:09:47.900</time> <span>왜냐면 더 빨리 가니까</span></li>
+<li><time>00:09:47.900–00:09:49.900</time> <span>근데 더 빨리 가다 못해</span></li>
+<li><time>00:09:49.900–00:09:51.900</time> <span>더 빨리 가다 못해서</span></li>
+<li><time>00:09:51.900–00:09:53.900</time> <span>내가 이동해야 되는 이 파일을</span></li>
+<li><time>00:09:53.900–00:09:55.900</time> <span>초과하는 겁니다</span></li>
+<li><time>00:09:55.900–00:09:57.900</time> <span>이 초과하면은</span></li>
+<li><time>00:09:57.900–00:09:59.900</time> <span>우리 갑자기</span></li>
+<li><time>00:10:00.000–00:10:04.000</time> <span>이 친구가 만들어져요.</span></li>
+<li><time>00:10:04.000–00:10:08.000</time> <span>지금 보면 이 친구.</span></li>
+<li><time>00:10:08.000–00:10:12.000</time> <span>다시 이거를 보면은 지금 이 친구가 갑자기 만들어집니다.</span></li>
+<li><time>00:10:12.000–00:10:16.000</time> <span>이 친구가 만들어지는데 이 친구는 뭐냐?</span></li>
+<li><time>00:10:16.000–00:10:20.000</time> <span>뭐냐면은 갑자기 여기서 다시 증가하는 시점이 발생해요.</span></li>
+<li><time>00:10:20.000–00:10:24.000</time> <span>사실 얘는 뭐 때문에 발생을 하는 거냐면은</span></li>
+<li><time>00:10:24.000–00:10:28.000</time> <span>마이크 간 거리 때문에 발생을 합니다.</span></li>
+<li><time>00:10:28.000–00:10:35.680</time> <span>마이크 간 거리가 이렇게 가까울 수도 있고 멀 수도 있겠죠</span></li>
+<li><time>00:10:35.680–00:10:37.580</time> <span>근데 소리라는 것은 파동을 갖잖아요</span></li>
+<li><time>00:10:37.580–00:10:41.580</time> <span>파동은 1초에 몇 미터 가냐 하잖아요</span></li>
+<li><time>00:10:41.580–00:10:45.780</time> <span>그 웨이브 앵크는 1초에 몇 미터 가냐</span></li>
+<li><time>00:10:45.780–00:10:50.120</time> <span>그러니까 한 번 주기가 1초에 몇 미터 가냐가 파장이에요</span></li>
+<li><time>00:10:50.120–00:10:54.280</time> <span>그렇다는 것은 한 웨이브 앵크가 예를 들어서</span></li>
+<li><time>00:10:54.280–00:10:57.360</time> <span>내가 이쪽 방에 소리가 들려온다 라고 했을 때</span></li>
+<li><time>00:10:57.360–00:11:01.300</time> <span>어떤 친구는 되게 빠른 고주파일 수도 있고</span></li>
+<li><time>00:11:01.300–00:11:05.300</time> <span>어떤 친구는 되게 느린 친구가 들려올 수도 있겠죠</span></li>
+<li><time>00:11:05.300–00:11:08.800</time> <span>근데 여기서 들리고 여기서 들렸어요</span></li>
+<li><time>00:11:08.800–00:11:12.200</time> <span>근데 예를 들어서 여기 소리가 들렸을 때</span></li>
+<li><time>00:11:12.200–00:11:15.160</time> <span>이 빨간색으로 보냅니다</span></li>
+</ol></details></section>
+<section id="part-3"><h2>공간 aliasing과 배열 간격</h2>
+<p class="prose">쉽게 얘기하면은 이렇게 파장이 그려지는 이런 친구가 있다라고 했을 때 만약에 되게 빨리 타는 친구가 있어요 이렇게 그러면 이 시점에서 녹음된 친구와 이 시점에서 녹음한 친구는 얘는 이만큼 값이 녹음됐다고 하면 이 친구는 이 값이 녹음이 됐다고 볼 수 있어요.</p>
+<p class="prose">반대로 이 하이 피컨스에서 이 값이 녹음이 됐다고 볼 수 있어요. 그런데 문제는 뭐냐면 지금 이 비포밍을 한다는 건 얘를 옆으로 시켜가면서 얼라인이 맞는 걸 찾는 거잖아요. 그런데 지금 이 거리 안에서 주기가 두 번이 맞대요. 두 번 얼라인이 맞는 상황이 맞대요. 주기가 두 번이 되어있네요. 뭔지 대략적으로 이해가 되죠. 얘가 얘를 움직여가면서 맞는 걸 찾는게 있는데 지금 두 번 주기를 가지니까 두 번을 가지라는 거예요.</p>
+<p class="prose">주기가 맞는 시점이. 그렇기 때문에 지금 주기가 맞아 버렸기 때문에 지금 여기 그림을 보면은 밑에 다시 이 그림을 보면 지금 여기서 시작을 다시 했을 때 지금은 딱 맞아요. 같은 마이매트 로 오니까 얼른 맞다가 조금 틀리면 이게 주기가 조금씩 달라지겠죠. 달라지다가 갑자기 내가 아직 다 돌지 않았는데 온라인이 맞는 지점이 갑자기 등장하기 시작한다. 이게 스파셜 LA의 주기입니다. 대충 문제에 이해되죠?</p>
+<p class="prose">이 주기가 되게 중요하다는 거고 그래서 마이크 간 거리도 중요하다는 겁니다. 이거는 비전에서도 사실 똑같은 관측이 있어요. 거기서도 LSE라고 하잖아요. 예를 들어 피셀 간에 뭔가 하늘자가 보이잖아요. 그게 뭐냐면 쉽게 얘기하면 이런거죠. 내가 핸드폰으로 찍고 있어요. 근데 형광등이 60Hz로 진동해요. 그러면 갑자기 여기 주민방 나타나죠. 이거 경험해본적 있어요? 그게 요거에요 똑같은거에요.</p>
+<p class="prose">마찬가지로 나는 내가 찍는 그 주파수랑 얘가 빛이 오는 그 주파수가 내가 한 키스에 가는 거리에 비해 주파수가 더 이렇게 되면서 그런 현상이 갈 때가 있어요. 여기도 똑같은거에요. 이건 마이크가 그 그게 되는거고 다 사실 같은 개념인데 다 연결되는거에요. 이게 문제 아니겠죠? 수학적인 것은 사실 여기 나와있는 디테일한 수식들 이런 것들까지는 여러분들이 알면 좋지만 한번 이해하려고 했어요. 결국에 여기 된다는 것은 저기 distance d라는 값이 내가 한번 진동해야 되는 이 주기보다 반드시 d가 작아야 되잖아요.</p>
+<p class="prose">그거를 저렇게 표시해 놓은 거예요. 파장이라는 친구보다 파장의 2분의 1보다 d가 작아야 된다는 거예요. 그래야지 두 번 진동하는게 발생하지 않겠죠. 두 번 얼라인이 맞는게 발생하지 않겠죠. 그게 사실 어려운 이유가 아닙니다. 질문 없으면 다음으로 넘어갈게요 여러분들 이걸 이해했다고 하면 사실 되게 훌륭한 거고요. 그리고 사실 이런 거는 많이 도움이 되요 진짜로 수고하셨습니다. 처음부터 다음으로 넘어갑시다 이제 우리가 지난 시간에 배웠던 것은 지난 시간 아니라 다음 시간에 배웠던 것은 딜레이트 빙폼을 배웠어요.</p>
+<p class="prose">딜레이트 빙폼은 간단한 친구죠. 결국에 그냥 딜레이만 주겠다는 거예요. 딜레이를 줘가지고 내가 이거를 결국에 이 원 라인을 흐트러트린 다음에 흐트러트린 다음에 그 이대로 흐트러트린 다음에 그거를 n분의 1으로 나눠주게 되면 써클증이 되니까 그렇게 해보겠다는</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:11:15.160–00:11:21.140</time> <span>쉽게 얘기하면은 이렇게 파장이 그려지는 이런 친구가 있다라고 했을 때</span></li>
+<li><time>00:11:21.140–00:11:26.360</time> <span>만약에 되게 빨리 타는 친구가 있어요 이렇게</span></li>
+<li><time>00:11:26.360–00:11:30.300</time> <span>그러면 이 시점에서 녹음된 친구와 이 시점에서 녹음한 친구는</span></li>
+<li><time>00:11:30.300–00:11:36.360</time> <span>얘는 이만큼 값이 녹음됐다고 하면 이 친구는 이 값이 녹음이 됐다고 볼 수 있어요.</span></li>
+<li><time>00:11:37.320–00:11:41.260</time> <span>반대로 이 하이 피컨스에서 이 값이 녹음이 됐다고 볼 수 있어요.</span></li>
+<li><time>00:11:41.600–00:11:44.940</time> <span>그런데 문제는 뭐냐면 지금 이 비포밍을 한다는 건</span></li>
+<li><time>00:11:44.940–00:11:47.860</time> <span>얘를 옆으로 시켜가면서 얼라인이 맞는 걸 찾는 거잖아요.</span></li>
+<li><time>00:11:48.620–00:11:51.540</time> <span>그런데 지금 이 거리 안에서 주기가 두 번이 맞대요.</span></li>
+<li><time>00:11:52.560–00:11:55.100</time> <span>두 번 얼라인이 맞는 상황이 맞대요.</span></li>
+<li><time>00:11:55.100–00:11:57.100</time> <span>주기가 두 번이 되어있네요.</span></li>
+<li><time>00:11:58.100–00:12:00.100</time> <span>뭔지 대략적으로 이해가 되죠.</span></li>
+<li><time>00:12:00.100–00:12:03.100</time> <span>얘가 얘를 움직여가면서 맞는 걸 찾는게 있는데</span></li>
+<li><time>00:12:03.100–00:12:06.100</time> <span>지금 두 번 주기를 가지니까 두 번을 가지라는 거예요.</span></li>
+<li><time>00:12:06.100–00:12:08.100</time> <span>주기가 맞는 시점이.</span></li>
+<li><time>00:12:08.100–00:12:11.100</time> <span>그렇기 때문에 지금 주기가 맞아 버렸기 때문에</span></li>
+<li><time>00:12:11.100–00:12:13.100</time> <span>지금 여기 그림을 보면은</span></li>
+<li><time>00:12:13.100–00:12:15.100</time> <span>밑에 다시 이 그림을 보면</span></li>
+<li><time>00:12:15.100–00:12:18.100</time> <span>지금 여기서 시작을 다시 했을 때</span></li>
+<li><time>00:12:18.100–00:12:20.100</time> <span>지금은 딱 맞아요. 같은 마이매트 로 오니까</span></li>
+<li><time>00:12:20.100–00:12:22.100</time> <span>얼른 맞다가 조금 틀리면</span></li>
+<li><time>00:12:22.100–00:12:24.100</time> <span>이게 주기가 조금씩 달라지겠죠.</span></li>
+<li><time>00:12:24.100–00:12:38.100</time> <span>달라지다가 갑자기 내가 아직 다 돌지 않았는데 온라인이 맞는 지점이 갑자기 등장하기 시작한다.</span></li>
+<li><time>00:12:38.100–00:12:42.100</time> <span>이게 스파셜 LA의 주기입니다.</span></li>
+<li><time>00:12:42.100–00:12:44.100</time> <span>대충 문제에 이해되죠?</span></li>
+<li><time>00:12:44.100–00:12:48.100</time> <span>이 주기가 되게 중요하다는 거고</span></li>
+<li><time>00:12:48.100–00:12:51.100</time> <span>그래서 마이크 간 거리도 중요하다는 겁니다.</span></li>
+<li><time>00:12:51.100–00:13:02.100</time> <span>이거는 비전에서도 사실 똑같은 관측이 있어요. 거기서도 LSE라고 하잖아요. 예를 들어 피셀 간에 뭔가 하늘자가 보이잖아요.</span></li>
+<li><time>00:13:02.100–00:13:12.100</time> <span>그게 뭐냐면 쉽게 얘기하면 이런거죠. 내가 핸드폰으로 찍고 있어요. 근데 형광등이 60Hz로 진동해요. 그러면 갑자기 여기 주민방 나타나죠.</span></li>
+<li><time>00:13:12.100–00:13:14.100</time> <span>이거 경험해본적 있어요?</span></li>
+<li><time>00:13:14.100–00:13:16.100</time> <span>그게 요거에요 똑같은거에요</span></li>
+<li><time>00:13:16.100–00:13:20.100</time> <span>마찬가지로 나는 내가 찍는 그 주파수랑</span></li>
+<li><time>00:13:20.100–00:13:24.100</time> <span>얘가 빛이 오는 그 주파수가</span></li>
+<li><time>00:13:24.100–00:13:28.100</time> <span>내가 한 키스에 가는 거리에 비해 주파수가 더 이렇게 되면서</span></li>
+<li><time>00:13:28.100–00:13:30.100</time> <span>그런 현상이 갈 때가 있어요</span></li>
+<li><time>00:13:30.100–00:13:32.100</time> <span>여기도 똑같은거에요</span></li>
+<li><time>00:13:32.100–00:13:34.100</time> <span>이건 마이크가 그 그게 되는거고</span></li>
+<li><time>00:13:34.100–00:13:38.100</time> <span>다 사실 같은 개념인데 다 연결되는거에요</span></li>
+<li><time>00:13:38.100–00:13:40.100</time> <span>이게 문제 아니겠죠?</span></li>
+<li><time>00:13:40.100–00:13:46.660</time> <span>수학적인 것은 사실 여기 나와있는 디테일한 수식들</span></li>
+<li><time>00:13:46.660–00:13:52.340</time> <span>이런 것들까지는 여러분들이 알면 좋지만 한번 이해하려고 했어요</span></li>
+<li><time>00:13:52.340–00:13:56.640</time> <span>결국에 여기 된다는 것은 저기 distance d라는 값이</span></li>
+<li><time>00:13:56.640–00:14:02.360</time> <span>내가 한번 진동해야 되는 이 주기보다 반드시 d가 작아야 되잖아요</span></li>
+<li><time>00:14:02.360–00:14:04.760</time> <span>그거를 저렇게 표시해 놓은 거예요</span></li>
+<li><time>00:14:04.760–00:14:09.980</time> <span>파장이라는 친구보다 파장의 2분의 1보다 d가 작아야 된다는 거예요</span></li>
+<li><time>00:14:09.980–00:14:12.340</time> <span>그래야지 두 번 진동하는게 발생하지 않겠죠</span></li>
+<li><time>00:14:12.340–00:14:14.420</time> <span>두 번 얼라인이 맞는게 발생하지 않겠죠</span></li>
+<li><time>00:14:14.420–00:14:18.360</time> <span>그게 사실 어려운 이유가 아닙니다</span></li>
+<li><time>00:14:18.360–00:14:23.100</time> <span>질문 없으면 다음으로 넘어갈게요</span></li>
+<li><time>00:14:23.100–00:14:24.780</time> <span>여러분들 이걸 이해했다고 하면</span></li>
+<li><time>00:14:24.780–00:14:29.540</time> <span>사실 되게 훌륭한 거고요</span></li>
+<li><time>00:14:29.540–00:14:35.180</time> <span>그리고 사실 이런 거는 많이 도움이 되요 진짜로</span></li>
+<li><time>00:14:35.180–00:14:36.480</time> <span>수고하셨습니다</span></li>
+<li><time>00:14:36.480–00:14:38.340</time> <span>처음부터 다음으로 넘어갑시다</span></li>
+<li><time>00:14:38.340–00:14:40.060</time> <span>이제 우리가 지난 시간에 배웠던 것은</span></li>
+<li><time>00:14:40.060–00:14:41.900</time> <span>지난 시간 아니라 다음 시간에 배웠던 것은</span></li>
+<li><time>00:14:41.900–00:14:43.100</time> <span>딜레이트 빙폼을 배웠어요</span></li>
+<li><time>00:14:43.100–00:14:45.780</time> <span>딜레이트 빙폼은 간단한 친구죠</span></li>
+<li><time>00:14:45.780–00:14:47.860</time> <span>결국에 그냥 딜레이만 주겠다는 거예요</span></li>
+<li><time>00:14:47.860–00:14:49.060</time> <span>딜레이를 줘가지고</span></li>
+<li><time>00:14:49.060–00:14:53.160</time> <span>내가 이거를 결국에 이 원 라인을 흐트러트린 다음에</span></li>
+<li><time>00:14:53.160–00:14:53.900</time> <span>흐트러트린 다음에</span></li>
+<li><time>00:14:53.900–00:14:55.020</time> <span>그 이대로 흐트러트린 다음에</span></li>
+<li><time>00:14:55.020–00:14:57.180</time> <span>그거를 n분의 1으로 나눠주게 되면</span></li>
+<li><time>00:14:57.180–00:14:58.880</time> <span>써클증이 되니까</span></li>
+<li><time>00:14:58.880–00:14:59.960</time> <span>그렇게 해보겠다는</span></li>
+</ol></details></section>
+<section id="part-4"><h2>side lobe가 만드는 간섭</h2>
+<p class="prose">이게 스텝 I인거고, 그랬을 때 문제는 이 Side Loss가 발생을 한다. 보면 다 역으로 만들어 버릴 수 있겠지만, 그게 통적으로 안되잖아요. 중간 중간에 이 Side Loss가 발생을 해서, 근데 내가 보면 나쁘게, 예를 들어 이런거, 이런거. 지금 이건 드림 스텝 한 경우인데, 예를 들어서 소리가, 이때 두개가 있는거에요. 나는 이 친구를 스테링을 하고 싶어요. 그러면 필터를 이리로 설정하면 되겠죠.</p>
+<p class="prose">펄터만 이렇게 하려고 보니까 이 두 개가 분해가 잘 안되는 거예요. 왜냐하면 이 친구가 너무 큰 거 같아요. 나중에 내가 페이스 디렉터를 통해서 하니까 이 딜레이터 디렉터는 이 모양이 딱 정해진다는 거예요. 그 모양이 딱 정해진다는 거예요. 딱 정해진다는 거고 그렇기 때문에 만약에 나는 지금 0도를 스테링하고 있는데 다른 친구가 여기 들어오거나 이런데 들어오게 되면은 생각만큼 분리가 잘 안된다는거에요.</p>
+<p class="prose">원안이 정확하게 다 그렇게 가방으로 갖다 놓은 이런거에 간다고 그러죠. 무슨말인지 이해되죠? 이해 안되는 사람은? 이 안쪽은 무슨 말이냐면 이게 줄이고 있는게 소리를 줄이고 싶은거에요. 다시 이 그림을 갖다 보면은 여기서 이 그림을 갖다 보면은 이거를 조금 내리고 조금 내리고 결국에 소리를 줄이고 싶은건데 이거를 요렇게 이 정도로 맞추고 이렇게 그리고 이 부분은 어디가 돼요? 여기가 아니지만 맞추고 이렇게 이거는 내가 체크하는 친구랑 소리가 들려온다 해야 딱 얼른 맞는 상황이거든요.</p>
+<p class="prose">그러면 위상이 거의 틀어지지 않기 때문에 얘를 더한 다음에 m분의 1으로 나누면 거의 다 틀어서 유지가 돼요. 다 더하면 m이 되니까 m, 1을 m번 더하면 m이니까 그걸 m번 더하면 1이 되요 이렇게 시키면 됩니다. 그런데 내가 이거를 쭉 이렇게 업그레이드 하고 싶을때가 되면 딱 그 얼라인이 다 이렇게 되면서 지금 0이 된거에요. 거의 여기 한 4억 값이에요. 이렇게 됐을때. 조금 더 바라보는데 문제는 조금 더 바라보면 이게 다시 얼라인이 대략 맞는 상황이 발생한다는거에요.</p>
+<p class="prose">이 중에 여기 보면은 여기로 올라가서 여기 보면은 여기 지금 저 빨간색깔 선이 저거를 더한 다음에 M으로 M으로 나오는거 같아요. 요 신호들을 더한 다음에 M으로 나오는거 같습니다. Shift를 Fade를 준 다음에 더한 다음에 M으로 나누면 빨간색이 나온다고 하는데 여기 같이 지금 이게 다 어라인이 굳어져가지고 여기 딱 떨어지는게 좋겠지만 이 디포머라는거의 특성상 이게 여기 치치는 경우가 이제 이거는 살아있잖아요.</p>
+<p class="prose">내가 나무도 있고 이거는 결국 살아있다라는거죠. 내가 필터링 하고 싶은데 지금 살아있는거잖아요. 이런 경우를 어떻게 형태라고 얘기하는거죠. 무슨 말인지 이해되나요? 그러니까 이게 완벽하게 떨어지지 않고 이거를 보면은 그 중에 얼라인이 표현을 해야하는 친구도 있는데 얼라인이 어느정도 맞는 친구들도 있었네요 이게 살아있다라는거 그래야 할 때 이거를 한번 해보자. 이 사이드로우 호스가 그 지점을 나타내준다.</p>
+<p class="prose">그것을 어떻게 생각할 수 있을까? 라는 거고 예를 들어 이런 것도 마찬가지예요. 바로 옆에 찍혀있으면. 이 그림에서 바로 옆에 찍혀있다 라고 하면은 바로 옆에 이렇게 있으면은 거의 분리가 안되죠. 바로 옆에 찍혀있으면 이런 것들. 이런 것들이 어떻게 생각할 수 있을까? 그거를 얘기해서 보여줘요. 그래서 지금 이런거에요. 쉽게 얘기하면은 나는 이 스피커 1만 스파팅하고 싶어요. 이쪽으로만 소리를 하고 싶은데 스피커 2가 있는데 여기 사이드로우스가 있어가지고 이 부분이 계속 더 많이 사라져야 돼요.</p>
+<p class="prose">얘가 아까 그 0으로 딱 떨어지는 지점에 있어서 그걸로 스피커 2를 그러면은 이거를 어떻게 해야 될까? 이 사이드로우스를 줄이는 거나 정말 업데이트하는 방법이 없을까 해서 이것이 바로 MVD의 소품입니다. 이것은 매직입니다. 사실 이게 수학적으로는 굉장히 복잡한데 결론부터 얘기하면 이것을 줄이면 어떻게 하면 내가 줄일 수 있을까요? 쉽게 얘기하면, 내가 이 모양이 바뀌지 않는 세상이야. 쉽게 얘기하면, 앞에서 봤던 이것들, 이 필터를 내가 잘 조절을 해서 그렇게 만들고 싶은데 이 그림은 정해져 있어요.</p>
+<p class="prose">이 그림은 대략적으로 나옵니다. 어떻게 하면 사이드 로봇을 뭔가 [자동 전사 반복 구간 생략] 이걸 보면 좀 흔합니다. 우선 첫 번째, 이거는 아까 봤던 거죠? 내가 특정 방향 세타로 유니비플스가 들려온다고 했을 때 그 세타에 대한 필터 값이 B0로 공정하게 된다. 그 말은 뭐냐면 내가 각종 값에 대한 필터링 그 성분이 그 값을 줄이는 쪽으로 뭔가 얘가 움직이면 안된다라는 것을 컨셉으로 주는거야. 얘는 사실 무슨 말인지 이해 돼요?</p>
+<p class="prose">정말로? 이해 돼요? 안 돼요? 그러니까 여기서 보면 지금 내가 이 그림에서는 0도로 소리가 들어오고 0도로 내가 스트링 했을 때 이것이 찍히는 거죠. 이 성분이 줄어들면 안되잖아요. 이 부분 줄어들면 안되죠. 이거를 고정시키면 좋겠다는 거예요. 이 제도라는 것 밖으로. 그거를 절대 얘가 줄어들게 만들지 말아라는 컨트롤을 주는 겁니다. 2만지 이제 이해되죠? 저거를 줄어들게 하지 말아라는 컨셉들을 이렇게 주는거에요.</p>
+<p class="prose">그쪽 방향으로 내가 저거를 곱했을 때 값이 쉽게 얘기해서 1보다 작으면 그러면 뭔가 값이 줄어들었다는거죠. 1보다 아니면 그게 비제로가 1이다고 생각해도 되구요. 1보다 작으면 줄어들었다는거고 1이면 그 값이 그대로 유지가 되는거죠. 왜냐면은 2층부의 매그니트가 1이기 때문에 그렇게 봤을 때 이 쪽을 컨트롤 시켜준다는 것은 이쪽 방향으로 손 퍼싱을 잘해라 이쪽 방향을 그대로 유지시켜 놔라 이게 첫 번째고요.</p>
+<p class="prose">그럴 때 미니마이즈를 하는데 이 세트는 고정이고요 얘랑 여기 세트가 다른 거예요. 그랬을 때 이거를 미니마이즈 해라 이거는 뭐냐? 저거는 쉽게 얘기해서는 빔포밍 저거는 설명을 해야겠다. 이거는 파워를 사실 미니마이드를 하는 거예요. 그래서 결국에 지금 우리가 하는 게 이거 지울게요. 우리가 하는 게 뭐냐면은 빔포밍식을 여러분들 갖다 오면은 이 W라는 필터를 지금 내가 만들고 있는 건데 w라는 필터와 내가 녹음한 값 x라는 값을 곱해서 나온 y라는 성분을 뽑아내고 있는거죠.</p>
+<p class="prose">빈포밀을 하고 있는게 내가 마이크로 녹음한 값 그리고 내가 만든 필터를 곱해서 더했을 때 이게 흔적하는 y를 알아내고 싶은거에요 흔적 마이어를 뽑아내는 성분과 그렇다고 할 때 파워는 제곱으로 볼 수 있죠. 그렇기 때문에 이거를 다시 표현을 하면 w 에다가 xx 요거에다가 요걸 우리가 풀어 쓸 수가 있어요. 제곱이면. 이게 벡터들이기 때문에 이렇게 풀어 쓸 수가 있어요. 이미 알고 계신거에요. 이렇게 했을 때 요 친구를 r이라고 하는데 한가지 더 나아가면은 그냥 이렇게 하면은 값 하나만 보는거죠.</p>
+<p class="prose">근데 우리는 값 하나에 대해서 하는게 아니라 모든 마이크 입력에 대해서 처리를 하는거잖아요. 지금 여기서 x라는 값은 여기서 이렇게 소리가 계속 들어오고 있을 때 마찬가지로 마이크가 두 개라고 합니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:15:00.000–00:15:07.000</time> <span>이게 스텝 I인거고, 그랬을 때 문제는 이 Side Loss가 발생을 한다.</span></li>
+<li><time>00:15:07.000–00:15:11.000</time> <span>보면 다 역으로 만들어 버릴 수 있겠지만, 그게 통적으로 안되잖아요.</span></li>
+<li><time>00:15:11.000–00:15:21.000</time> <span>중간 중간에 이 Side Loss가 발생을 해서, 근데 내가 보면 나쁘게, 예를 들어 이런거, 이런거.</span></li>
+<li><time>00:15:21.000–00:15:26.000</time> <span>지금 이건 드림 스텝 한 경우인데, 예를 들어서 소리가, 이때 두개가 있는거에요.</span></li>
+<li><time>00:15:26.000–00:15:28.200</time> <span>나는 이 친구를 스테링을 하고 싶어요.</span></li>
+<li><time>00:15:28.860–00:15:30.900</time> <span>그러면 필터를 이리로 설정하면 되겠죠.</span></li>
+<li><time>00:15:31.720–00:15:33.380</time> <span>펄터만 이렇게 하려고 보니까</span></li>
+<li><time>00:15:33.380–00:15:37.200</time> <span>이 두 개가 분해가 잘 안되는 거예요.</span></li>
+<li><time>00:15:37.340–00:15:39.300</time> <span>왜냐하면 이 친구가 너무 큰 거 같아요.</span></li>
+<li><time>00:15:40.420–00:15:42.880</time> <span>나중에 내가 페이스 디렉터를 통해서 하니까</span></li>
+<li><time>00:15:42.880–00:15:46.860</time> <span>이 딜레이터 디렉터는 이 모양이 딱 정해진다는 거예요.</span></li>
+<li><time>00:15:46.860–00:15:50.660</time> <span>그 모양이 딱 정해진다는 거예요.</span></li>
+<li><time>00:15:51.140–00:15:52.320</time> <span>딱 정해진다는 거고</span></li>
+<li><time>00:15:52.320–00:15:55.860</time> <span>그렇기 때문에 만약에 나는 지금 0도를 스테링하고 있는데</span></li>
+<li><time>00:15:55.860–00:16:02.860</time> <span>다른 친구가 여기 들어오거나 이런데 들어오게 되면은 생각만큼 분리가 잘 안된다는거에요</span></li>
+<li><time>00:16:02.860–00:16:09.860</time> <span>원안이 정확하게 다 그렇게 가방으로 갖다 놓은 이런거에 간다고 그러죠</span></li>
+<li><time>00:16:09.860–00:16:13.860</time> <span>무슨말인지 이해되죠? 이해 안되는 사람은?</span></li>
+<li><time>00:16:13.860–00:16:15.860</time> <span>이 안쪽은</span></li>
+<li><time>00:16:15.860–00:16:17.860</time> <span>무슨 말이냐면</span></li>
+<li><time>00:16:17.860–00:16:19.860</time> <span>이게</span></li>
+<li><time>00:16:19.860–00:16:21.860</time> <span>줄이고 있는게</span></li>
+<li><time>00:16:21.860–00:16:23.860</time> <span>소리를 줄이고 싶은거에요</span></li>
+<li><time>00:16:23.860–00:16:25.860</time> <span>다시 이 그림을 갖다 보면은</span></li>
+<li><time>00:16:25.860–00:16:27.860</time> <span>여기서</span></li>
+<li><time>00:16:27.860–00:16:29.860</time> <span>이 그림을 갖다 보면은</span></li>
+<li><time>00:16:29.860–00:16:31.860</time> <span>이거를 조금 내리고</span></li>
+<li><time>00:16:31.860–00:16:33.860</time> <span>조금 내리고</span></li>
+<li><time>00:16:33.860–00:16:35.860</time> <span>결국에 소리를 줄이고 싶은건데</span></li>
+<li><time>00:16:35.860–00:16:37.860</time> <span>이거를 요렇게</span></li>
+<li><time>00:16:37.860–00:16:39.860</time> <span>이 정도로 맞추고</span></li>
+<li><time>00:16:39.860–00:16:41.860</time> <span>이렇게</span></li>
+<li><time>00:16:41.860–00:16:43.860</time> <span>그리고 이 부분은 어디가 돼요?</span></li>
+<li><time>00:16:43.860–00:16:48.860</time> <span>여기가 아니지만 맞추고 이렇게</span></li>
+<li><time>00:16:48.860–00:16:54.860</time> <span>이거는 내가 체크하는 친구랑 소리가 들려온다 해야 딱 얼른 맞는 상황이거든요</span></li>
+<li><time>00:16:54.860–00:17:01.860</time> <span>그러면 위상이 거의 틀어지지 않기 때문에 얘를 더한 다음에 m분의 1으로 나누면 거의 다 틀어서 유지가 돼요</span></li>
+<li><time>00:17:01.860–00:17:07.860</time> <span>다 더하면 m이 되니까 m, 1을 m번 더하면 m이니까 그걸 m번 더하면 1이 되요</span></li>
+<li><time>00:17:07.860–00:17:09.860</time> <span>이렇게 시키면 됩니다.</span></li>
+<li><time>00:17:09.860–00:17:15.860</time> <span>그런데 내가 이거를 쭉 이렇게 업그레이드 하고 싶을때가 되면</span></li>
+<li><time>00:17:15.860–00:17:20.860</time> <span>딱 그 얼라인이 다 이렇게 되면서 지금 0이 된거에요.</span></li>
+<li><time>00:17:20.860–00:17:22.860</time> <span>거의 여기 한 4억 값이에요.</span></li>
+<li><time>00:17:22.860–00:17:24.860</time> <span>이렇게 됐을때.</span></li>
+<li><time>00:17:24.860–00:17:27.860</time> <span>조금 더 바라보는데 문제는 조금 더 바라보면</span></li>
+<li><time>00:17:27.860–00:17:31.860</time> <span>이게 다시 얼라인이 대략 맞는 상황이 발생한다는거에요.</span></li>
+<li><time>00:17:31.860–00:17:33.860</time> <span>이 중에</span></li>
+<li><time>00:17:33.860–00:17:35.860</time> <span>여기 보면은</span></li>
+<li><time>00:17:35.860–00:17:37.860</time> <span>여기로 올라가서 여기 보면은</span></li>
+<li><time>00:17:37.860–00:17:39.860</time> <span>여기</span></li>
+<li><time>00:17:39.860–00:17:41.860</time> <span>지금 저 빨간색깔 선이 저거를 더한 다음에</span></li>
+<li><time>00:17:41.860–00:17:43.860</time> <span>M으로</span></li>
+<li><time>00:17:43.860–00:17:45.860</time> <span>M으로 나오는거 같아요</span></li>
+<li><time>00:17:45.860–00:17:47.860</time> <span>요 신호들을 더한 다음에</span></li>
+<li><time>00:17:47.860–00:17:49.860</time> <span>M으로 나오는거 같습니다</span></li>
+<li><time>00:17:49.860–00:17:51.860</time> <span>Shift를 Fade를 준 다음에</span></li>
+<li><time>00:17:51.860–00:17:53.860</time> <span>더한 다음에</span></li>
+<li><time>00:17:53.860–00:17:55.860</time> <span>M으로 나누면 빨간색이 나온다고 하는데</span></li>
+<li><time>00:17:55.860–00:17:57.860</time> <span>여기 같이 지금</span></li>
+<li><time>00:17:57.860–00:17:59.860</time> <span>이게 다 어라인이 굳어져가지고</span></li>
+<li><time>00:17:59.860–00:18:01.860</time> <span>여기 딱 떨어지는게 좋겠지만</span></li>
+<li><time>00:18:01.860–00:18:06.860</time> <span>이 디포머라는거의 특성상 이게 여기 치치는 경우가 이제 이거는 살아있잖아요</span></li>
+<li><time>00:18:06.860–00:18:09.860</time> <span>내가 나무도 있고 이거는 결국 살아있다라는거죠</span></li>
+<li><time>00:18:09.860–00:18:13.860</time> <span>내가 필터링 하고 싶은데 지금 살아있는거잖아요</span></li>
+<li><time>00:18:13.860–00:18:16.860</time> <span>이런 경우를 어떻게 형태라고 얘기하는거죠</span></li>
+<li><time>00:18:16.860–00:18:18.860</time> <span>무슨 말인지 이해되나요?</span></li>
+<li><time>00:18:18.860–00:18:24.860</time> <span>그러니까 이게 완벽하게 떨어지지 않고 이거를 보면은 그 중에 얼라인이 표현을 해야하는 친구도 있는데</span></li>
+<li><time>00:18:24.860–00:18:28.860</time> <span>얼라인이 어느정도 맞는 친구들도 있었네요 이게 살아있다라는거</span></li>
+<li><time>00:18:28.860–00:18:32.860</time> <span>그래야 할 때 이거를 한번 해보자.</span></li>
+<li><time>00:18:32.860–00:18:36.860</time> <span>이 사이드로우 호스가 그 지점을 나타내준다.</span></li>
+<li><time>00:18:36.860–00:18:40.860</time> <span>그것을 어떻게 생각할 수 있을까? 라는 거고</span></li>
+<li><time>00:18:40.860–00:18:44.860</time> <span>예를 들어 이런 것도 마찬가지예요. 바로 옆에 찍혀있으면.</span></li>
+<li><time>00:18:44.860–00:18:48.860</time> <span>이 그림에서 바로 옆에 찍혀있다 라고 하면은</span></li>
+<li><time>00:18:48.860–00:18:52.860</time> <span>바로 옆에 이렇게 있으면은 거의 분리가 안되죠.</span></li>
+<li><time>00:18:52.860–00:18:56.860</time> <span>바로 옆에 찍혀있으면 이런 것들. 이런 것들이 어떻게 생각할 수 있을까?</span></li>
+<li><time>00:18:56.860–00:18:58.860</time> <span>그거를 얘기해서 보여줘요.</span></li>
+<li><time>00:18:58.860–00:19:00.860</time> <span>그래서 지금 이런거에요.</span></li>
+<li><time>00:19:00.860–00:19:02.860</time> <span>쉽게 얘기하면은</span></li>
+<li><time>00:19:02.860–00:19:04.860</time> <span>나는 이 스피커 1만 스파팅하고 싶어요.</span></li>
+<li><time>00:19:04.860–00:19:06.860</time> <span>이쪽으로만 소리를</span></li>
+<li><time>00:19:06.860–00:19:08.860</time> <span>하고 싶은데 스피커 2가 있는데</span></li>
+<li><time>00:19:08.860–00:19:10.860</time> <span>여기 사이드로우스가 있어가지고</span></li>
+<li><time>00:19:10.860–00:19:12.860</time> <span>이 부분이 계속 더 많이 사라져야 돼요.</span></li>
+<li><time>00:19:12.860–00:19:14.860</time> <span>얘가 아까 그 0으로 딱 떨어지는</span></li>
+<li><time>00:19:14.860–00:19:16.860</time> <span>지점에 있어서 그걸로 스피커 2를</span></li>
+<li><time>00:19:16.860–00:19:18.860</time> <span>그러면은 이거를 어떻게 해야 될까?</span></li>
+<li><time>00:19:18.860–00:19:20.860</time> <span>이 사이드로우스를</span></li>
+<li><time>00:19:20.860–00:19:22.860</time> <span>줄이는 거나 정말 업데이트하는</span></li>
+<li><time>00:19:22.860–00:19:24.860</time> <span>방법이 없을까 해서</span></li>
+<li><time>00:19:24.860–00:19:29.860</time> <span>이것이 바로 MVD의 소품입니다.</span></li>
+<li><time>00:19:29.860–00:19:31.860</time> <span>이것은 매직입니다.</span></li>
+<li><time>00:19:31.860–00:19:34.860</time> <span>사실 이게 수학적으로는 굉장히 복잡한데</span></li>
+<li><time>00:19:34.860–00:19:37.860</time> <span>결론부터 얘기하면</span></li>
+<li><time>00:19:37.860–00:19:40.860</time> <span>이것을 줄이면 어떻게 하면 내가 줄일 수 있을까요?</span></li>
+<li><time>00:19:40.860–00:19:44.860</time> <span>쉽게 얘기하면, 내가 이 모양이 바뀌지 않는 세상이야.</span></li>
+<li><time>00:19:44.860–00:19:48.860</time> <span>쉽게 얘기하면, 앞에서 봤던</span></li>
+<li><time>00:19:48.860–00:19:52.860</time> <span>이것들, 이 필터를 내가 잘 조절을 해서</span></li>
+<li><time>00:19:52.860–00:19:54.040</time> <span>그렇게 만들고 싶은데</span></li>
+<li><time>00:19:54.040–00:19:55.840</time> <span>이 그림은 정해져 있어요.</span></li>
+<li><time>00:19:55.980–00:19:57.400</time> <span>이 그림은 대략적으로 나옵니다.</span></li>
+<li><time>00:19:57.760–00:19:59.000</time> <span>어떻게 하면 사이드 로봇을</span></li>
+<li><time>00:19:59.000–00:19:59.960</time> <span>뭔가</span></li>
+<li><time>00:20:00.000–00:20:30.000</time> <span>아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아 아</span></li>
+<li><time>00:20:30.000–00:20:34.000</time> <span>이걸 보면 좀 흔합니다.</span></li>
+<li><time>00:20:34.000–00:20:39.000</time> <span>우선 첫 번째, 이거는 아까 봤던 거죠?</span></li>
+<li><time>00:20:39.000–00:20:45.000</time> <span>내가 특정 방향 세타로 유니비플스가 들려온다고 했을 때</span></li>
+<li><time>00:20:45.000–00:20:52.000</time> <span>그 세타에 대한 필터 값이 B0로 공정하게 된다.</span></li>
+<li><time>00:20:52.000–00:21:04.000</time> <span>그 말은 뭐냐면 내가 각종 값에 대한 필터링 그 성분이 그 값을 줄이는 쪽으로 뭔가 얘가 움직이면 안된다라는 것을 컨셉으로 주는거야.</span></li>
+<li><time>00:21:04.900–00:21:10.860</time> <span>얘는 사실 무슨 말인지 이해 돼요? 정말로? 이해 돼요? 안 돼요?</span></li>
+<li><time>00:21:10.860–00:21:25.560</time> <span>그러니까 여기서 보면 지금 내가 이 그림에서는 0도로 소리가 들어오고 0도로 내가 스트링 했을 때 이것이 찍히는 거죠.</span></li>
+<li><time>00:21:26.460–00:21:28.500</time> <span>이 성분이 줄어들면 안되잖아요.</span></li>
+<li><time>00:21:29.620–00:21:30.760</time> <span>이 부분 줄어들면 안되죠.</span></li>
+<li><time>00:21:31.080–00:21:33.360</time> <span>이거를 고정시키면 좋겠다는 거예요.</span></li>
+<li><time>00:21:33.840–00:21:34.840</time> <span>이 제도라는 것 밖으로.</span></li>
+<li><time>00:21:34.840–00:21:40.460</time> <span>그거를 절대 얘가 줄어들게 만들지 말아라는 컨트롤을 주는 겁니다.</span></li>
+<li><time>00:21:40.860–00:21:43.280</time> <span>2만지 이제 이해되죠?</span></li>
+<li><time>00:21:44.140–00:21:46.280</time> <span>저거를 줄어들게 하지 말아라는 컨셉들을</span></li>
+<li><time>00:21:46.280–00:21:47.120</time> <span>이렇게 주는거에요</span></li>
+<li><time>00:21:47.120–00:21:49.780</time> <span>그쪽 방향으로 내가 저거를 곱했을 때</span></li>
+<li><time>00:21:49.780–00:21:52.320</time> <span>값이 쉽게 얘기해서 1보다 작으면</span></li>
+<li><time>00:21:52.320–00:21:54.860</time> <span>그러면 뭔가 값이 줄어들었다는거죠</span></li>
+<li><time>00:21:55.560–00:21:56.860</time> <span>1보다 아니면</span></li>
+<li><time>00:21:57.520–00:22:00.500</time> <span>그게 비제로가 1이다고 생각해도 되구요</span></li>
+<li><time>00:22:00.500–00:22:01.860</time> <span>1보다 작으면 줄어들었다는거고</span></li>
+<li><time>00:22:02.480–00:22:04.620</time> <span>1이면 그 값이 그대로 유지가 되는거죠</span></li>
+<li><time>00:22:04.620–00:22:06.100</time> <span>왜냐면은</span></li>
+<li><time>00:22:06.100–00:22:07.700</time> <span>2층부의 매그니트가 1이기 때문에</span></li>
+<li><time>00:22:07.700–00:22:10.340</time> <span>그렇게 봤을 때</span></li>
+<li><time>00:22:10.340–00:22:17.100</time> <span>이 쪽을 컨트롤 시켜준다는 것은 이쪽 방향으로 손 퍼싱을 잘해라</span></li>
+<li><time>00:22:17.100–00:22:21.400</time> <span>이쪽 방향을 그대로 유지시켜 놔라 이게 첫 번째고요</span></li>
+<li><time>00:22:21.400–00:22:25.780</time> <span>그럴 때 미니마이즈를 하는데</span></li>
+<li><time>00:22:25.780–00:22:30.840</time> <span>이 세트는 고정이고요 얘랑 여기 세트가 다른 거예요</span></li>
+<li><time>00:22:30.840–00:22:36.460</time> <span>그랬을 때 이거를 미니마이즈 해라</span></li>
+<li><time>00:22:36.460–00:22:42.500</time> <span>이거는 뭐냐? 저거는 쉽게 얘기해서는 빔포밍 저거는 설명을 해야겠다.</span></li>
+<li><time>00:22:42.500–00:22:50.340</time> <span>이거는 파워를 사실 미니마이드를 하는 거예요.</span></li>
+<li><time>00:22:50.340–00:22:53.740</time> <span>그래서 결국에 지금 우리가 하는 게 이거 지울게요.</span></li>
+<li><time>00:22:53.740–00:22:59.860</time> <span>우리가 하는 게 뭐냐면은 빔포밍식을 여러분들 갖다 오면은</span></li>
+<li><time>00:22:59.860–00:23:03.220</time> <span>이 W라는 필터를 지금 내가 만들고 있는 건데</span></li>
+<li><time>00:23:03.220–00:23:13.020</time> <span>w라는 필터와 내가 녹음한 값 x라는 값을 곱해서 나온 y라는 성분을 뽑아내고 있는거죠</span></li>
+<li><time>00:23:13.020–00:23:14.820</time> <span>빈포밀을 하고 있는게</span></li>
+<li><time>00:23:14.820–00:23:20.380</time> <span>내가 마이크로 녹음한 값 그리고 내가 만든 필터를 곱해서 더했을 때</span></li>
+<li><time>00:23:20.380–00:23:25.940</time> <span>이게 흔적하는 y를 알아내고 싶은거에요 흔적 마이어를 뽑아내는 성분과</span></li>
+<li><time>00:23:25.940–00:23:38.980</time> <span>그렇다고 할 때 파워는 제곱으로 볼 수 있죠</span></li>
+<li><time>00:23:38.980–00:23:41.580</time> <span>그렇기 때문에 이거를 다시 표현을 하면</span></li>
+<li><time>00:23:41.580–00:23:51.620</time> <span>w 에다가 xx 요거에다가 요걸 우리가 풀어 쓸 수가 있어요. 제곱이면. 이게 벡터들이기 때문에 이렇게 풀어 쓸 수가 있어요.</span></li>
+<li><time>00:23:51.620–00:23:58.460</time> <span>이미 알고 계신거에요. 이렇게 했을 때 요 친구를 r이라고 하는데 한가지 더 나아가면은</span></li>
+<li><time>00:23:58.460–00:24:06.380</time> <span>그냥 이렇게 하면은 값 하나만 보는거죠. 근데 우리는 값 하나에 대해서 하는게 아니라 모든 마이크 입력에 대해서 처리를 하는거잖아요.</span></li>
+<li><time>00:24:06.380–00:24:13.200</time> <span>지금 여기서 x라는 값은 여기서 이렇게 소리가 계속 들어오고 있을 때 마찬가지로 마이크가 두 개라고 합니다.</span></li>
+</ol></details></section>
+<section id="part-5"><h2>공분산 행렬과 MVDR의 목적</h2>
+<p class="prose">마이크 두 개라고 하면은 이중에 이만큼만 지금 잘라서 x라고 하고 있을 거예요. 전체를 볼 수가 없으니까 전체를 보면 좋지만 이렇게 하지 못해서 x라는 값 이만큼 x1, 2라고 했을 때 요거를 지금 x라고 하고 있을 겁니다. 그래서 얘는 x는 x1과 x2에 대한 이렇게 이루어져 있을 거예요. 이렇게 이루어져 있을텐데, 근데 우리는 이 전체에 대해서 이 값을 알고 싶잖아요. 이 전체에 대한 그런 특성을 알기 위해서는 우리가 쉽게 하는거 뭐죠?</p>
+<p class="prose">이 전체에 대해서 내가 뭔가를 알고 싶어요. 그러면은 평균값을 구하면 되겠죠. expectation 쉽게 얘기하면 평균 다시 여러개의 expectation을 구하면 여기다가 우리가 2를 붙이죠. 마찬가지로 여기다가 2를 붙이죠. expectation은 이거잖아요. expectation의 어떤거의 x의 expectation은 이거에 대한 모든 i에 대한 x의 퍼메이션 나누기 이걸 예를 들어 n이라고 하면 n으로 나누는 거잖아요.</p>
+<p class="prose">이게 expectation의 공식이죠. 마찬가지로 그걸 여기다 똑같이 하는 겁니다. 이렇게 하면은 이거는 디테트인데 얘는 상수니까 이 w는 상수잖아요. 근데 얘가 안으로 들어오게 되고 여러분들 그렇게 어려워지기 시작하잖아요 수학이 나오니까 이렇게 된게 지금 저 왼쪽에 있는 그림이에요. 요 친구를 우리가 다른 말로 포 베리언스라고 합니다. 포 베리언스 말투에 있어 이렇게 공산 분포 형량 입력 x에 대한 분포라고 합니다.</p>
+<p class="prose">따라오고 있어요 여러분들? 여기가서 못 따라오기 시작했죠? 우선은 이거는 나중에 좀 보고 사실 이거 알아야, 여러분들 한번 물어봅시다. 여러분들 딥러닝에 관심이 많은 친구들 많죠? 다 관심 있겠죠? 거기에 포멜레스 매트리스라는 용어를 한번에 들어 본 사람 있어요? 다 들어 봤죠? 이게 바로 이거에요. 여러분들이 그 개념을 모르고 쓰고 있었던 거예요. 거기서 얘기한 그 코브레스 매트리스가 뭔지를 모르고 쓰고 있었단 말이에요.</p>
+<p class="prose">이 코브레스 매트리스를 잘 타고 오면 얘는 그거에 대한 분포를 배워보게 될 수 있어요. 내가 어떤 레저먼트가 있든 아니면 어떤 히든 스테이트가 있고 그거 다 벡터잖아요. 결국에 코브레스 매트리스는 벡터잖아요. 벡터의 분포를 알고 싶어요.</p>
+<p class="prose">그 벡터가 단순히 값 하나로 이루어지는 게 아니라 이는 입력에 따라서, 예를 들어 히든스테이트에 있는 어떤 벡터 하나의 코브레스 매트릭스를 알고 싶다는 것은 입력이 바뀔 때 그 벡터가 어떻게 바뀌냐, 어떤 문구를 줬냐, 그런 게 나타나 있는 그걸 알고 싶을 때 우리가 코브레스 매트릭스를 구한다 라는 거고 이 코브레스 매트릭스는 우리가 어떻게 구하죠 여러분들? 이 코브레스 매트릭스 한다는 것은 이 두 개 한 다음에 이걸 이퓨티션 취한다는 것은 저 코브레스 매트릭스 할 때 이거잖아요.</p>
+<p class="prose">쉽게 얘기하면, 코리스 매트릭스를 여기다가 봅시다. 일부러 천천히 나가고 있는 거예요. 이 코비스 매트릭스라는 이 익스테이션에 x, x, 또 여기 이거는 뭐냐면은 얘가 뭘 얘기하고 있다면은 얘를 하면은 결국에 이 m by m 매트릭스가 나오는데 예를 들어 이 x라는 친구를 우리가 x1부터 x, n까지 이루어져 있다라고 하면은 이 가운데 있는 이 나이거다나 통들은 어떻게 되죠? 제곱의 나누기 m이죠.</p>
+<p class="prose">그래서 결국에 얘의 평균을 구해야 되고 x1-2의 제곱이 되잖아요. m을 지우고 생각해봅시다. 이렇게 우리가 이 포비라스 매틱스 구할 수 있죠. 여러분들이 잘 모르는 것 같아서 포비라스 매틱스의 정의가 나오는 우리 천천히 나가세요. 다시 신청해 놔볼 테니까 맞죠?</p>
+<p class="prose">또 에뮤언스 매트릭스 에뮤언스 매트릭스라는 친구는 우리가 이렇게 구할 수 있잖아요 이렇게 이렇게 요거를 다르게 쓰면은 요렇게 요거를 다른 친구들은 이거 어떻게 되는지 한국말을 불러야 하는 거고 생존수학에 있는 수학을 생존을 해야 하니까 그러니까 이렇게 할 수가 있는 거죠. 그러면 이게 x고 이게 이 x의 평균이고 y고 이게 y의 평균인데 우리는 x랑 x랑 같잖아요. 그런데 얘랑 얘랑 지금 같죠.</p>
+<p class="prose">그렇기 때문에 지금 이걸 한다는 것은 이거를 이렇게 해서 이렇게 한다는 것은 이거의 분산, 이거의 분산, 1과 2의 분산, 1과 2의 분산이니까 우리 분산의 공식은 여러분들 알고 있잖아요. 그것을 각각의 엘먼트에서 쭉 한다는 거니까 분산이 결국에 얼마만큼 얘가 퍼져 있는지를 나타내는 값인 거고 그렇게 했을 때 사실 이 그림이 되게 중요해요. 이 포비란스는 결국에 내가 어떤 스태피티스를 알고 있을 때 그런 확률적인 특성을 알고 있을 때 이 분포가 얼마만큼 퍼져있고 어떤 모양을 갖고 있는지를 나타내는 지표에요.</p>
+<p class="prose">이 코브렌스는 이것 하나로 표현이 될텐데 그랬을 때 이 밸런스가 얘를 작은거고 얘를 큰거잖아요. 얘를 멀티 디멘션에 대해서 구하는 값인거거든요. 마찬가지로 여기도 똑같은거에요. 이 상황에서도 이 x 라는 이 매절먼트가 마이크 md에 대해서 같이 있는데 그거에 대한 공포가 어떻게 나오는지 표현하는 그 제품이라고 보면 됩니다. 그거를 구한다 라고 보면 되겠죠. 그거를 결국에 이게 들어오게 되는거고 얘를 이용해서 이렇게 하면은 얘 파워가 나옵니다.</p>
+<p class="prose">이렇게 하면은 얘는 결국에 이 친구는 y의 제곱이 되겠죠. y의 제곱. a의 제곱. 파워가 되겠죠. 파워를 구하는거에요. 파워는 미니마일 하고 싶은거에요. 다시 돌아와서 결론을 말씀드리면 얘는 고정을 하고 모든 방향에 대한 파워를 미니마일 해서 하는거에요. 이 그림에서 볼까? 이쪽 방향은 고정을 시키고 나머지는 다 미니마일 하라는거에요. 얘도 고정을 시키고 얘네들은 다 미니마일 하라는거에요. 그거를 지금 하는거에요.</p>
+<p class="prose">근데 사실 이렇게 미니마이드가 결국엔 안되긴 안되는데 그게 목적으로 저 수식을 푸는 겁니다. 그래서 풀면은 풀면은 이거는 몰라도 되요. 참고 내가 적어놨죠. 참고. 참고 써있죠 참고. 이거는 사실 이거를 푸는 방법은 나그라미안 웨이크 플라이어 이거 활용을 하면 됩니다. 나가라무제안이라는 대단히 유명한 수학자가 한 번씩 들어왔어요. 그 분께서 이거를 푸셨거든요. 그래서 이렇게 하면 하여튼 결국에 이 친구가 나오게 되요.</p>
+<p class="prose">그래서 구하면 이 W라는 필터는 NVIDIA 필터는 이렇게 보이실거에요. 라고 여러분들은 우선 알고 계신거에요. 여기까지 우선 질문을 받을게요. 어차피 안 뜯을거에요. 질문 질문 없어요? 질문 한 단계 더 나아가기 위해서 한 번 쉬었다 가려고 질문을 받는거에요. 어차피 오늘까지 여러분들이 이게 어려운게 뭐냐면은 예전에는 수업을 다 이런식으로 했어요. 이런식으로 제가 다닐 때까지는 수학으로 어떻게 되고 어떻게 되고 다 했는데 지금 여러분들은 디너닝 못해놓고 데이터 능력이 됐다 이렇게 끝나잖아요.</p>
+<p class="prose">사실 저는 제가 봤을 때는 여러분들이 배워가는게 없는거에요. 그거는 전혀 보기 안돼요. [자동 전사 반복 구간 생략] 변론을 얘기하겠지만 그게 이 사이드 로브스가 줄어들지 않아요. 이게 줄어들지 않고 걔가 너플로시가 붙어 합니다. 그럼 제가 바로 이어서 보여줄게요. 그래서 이렇게 나온다는 거고 그래서 이게 사실 그 코비너스 매트리스가 뭐고 이런 얘기를 지금 설명을 하고 있는 거고 사실 얘를 먼저 설명을 하죠.</p>
+<p class="prose">사실 사실 예 2시야 예 2시 하고 요거 봐야 되요 지금 길 소리가 쪽 빠져 갖고 쪽 빠져 있구요. 내가 지금 쪽 영기 그리를 편히 가고 얘가 받아 오신 거예요 얘가 하십니다. 이 쪽 방향으로 소리가 들려오고 있어요 얘를 줄이고 싶겠죠 그래서 딜레이션 비폭으로 하면은 요걸 보면은 여기 회색깔에 걸리잖아요. 그 색깔이 걸리고 있죠. 그렇기 때문에 얘가 많이 살아나가요. 근데 MVD와 빈폼으로 하면 어떻게 되냐면 이 파란 색깔 이걸 하면은 지금 보면은 이 모양이 살짝 이렇게 틀어졌죠.</p>
+<p class="prose">그래서 이쪽 방향으로 들려오는 소리가 여기 0에 가까운 값에 닿도록 필터를 조절하는 거예요. 아까는 이 애를 옆으로 시프트 시켜 나가면서 원 라인이 맞는 지점을 찾을 거잖아요. 그 시점 그 속도가 다 동일했죠. 앞에서는, delay에서, before에서는 그게 frequency가 정해지면은 그 속도는 다 동일하잖아요. 그러니까 무슨 말이냐면은 여기서, 아까 이 그림에서 이 그림에서 이거 왔다갔다 할 때, 이 이동하는 속도가 똑같겠죠 지금 근데 이 이동하는 속도를 조금 다르게 할 수 있겠죠.</p>
+<p class="prose">다르게 해가지고, 이걸 조금씩 다르게 하면 어떤 상황이 나타나자면은</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:24:13.200–00:24:19.460</time> <span>마이크 두 개라고 하면은 이중에 이만큼만 지금 잘라서 x라고 하고 있을 거예요.</span></li>
+<li><time>00:24:19.460–00:24:28.780</time> <span>전체를 볼 수가 없으니까 전체를 보면 좋지만 이렇게 하지 못해서 x라는 값 이만큼 x1, 2라고 했을 때</span></li>
+<li><time>00:24:28.780–00:24:38.140</time> <span>요거를 지금 x라고 하고 있을 겁니다. 그래서 얘는 x는 x1과 x2에 대한 이렇게 이루어져 있을 거예요.</span></li>
+<li><time>00:24:38.140–00:24:48.580</time> <span>이렇게 이루어져 있을텐데, 근데 우리는 이 전체에 대해서 이 값을 알고 싶잖아요. 이 전체에 대한 그런 특성을 알기 위해서는 우리가 쉽게 하는거 뭐죠?</span></li>
+<li><time>00:24:48.580–00:24:57.380</time> <span>이 전체에 대해서 내가 뭔가를 알고 싶어요. 그러면은 평균값을 구하면 되겠죠. expectation</span></li>
+<li><time>00:24:57.380–00:24:59.980</time> <span>쉽게 얘기하면 평균</span></li>
+<li><time>00:25:00.000–00:25:07.180</time> <span>다시 여러개의 expectation을 구하면 여기다가 우리가 2를 붙이죠</span></li>
+<li><time>00:25:07.180–00:25:10.720</time> <span>마찬가지로 여기다가 2를 붙이죠</span></li>
+<li><time>00:25:10.720–00:25:12.380</time> <span>expectation은 이거잖아요</span></li>
+<li><time>00:25:12.380–00:25:15.440</time> <span>expectation의 어떤거의 x의 expectation은</span></li>
+<li><time>00:25:15.440–00:25:19.500</time> <span>이거에 대한 모든 i에 대한 x의 퍼메이션 나누기</span></li>
+<li><time>00:25:19.500–00:25:22.620</time> <span>이걸 예를 들어 n이라고 하면</span></li>
+<li><time>00:25:22.620–00:25:24.240</time> <span>n으로 나누는 거잖아요</span></li>
+<li><time>00:25:24.240–00:25:25.900</time> <span>이게 expectation의 공식이죠</span></li>
+<li><time>00:25:25.900–00:25:28.160</time> <span>마찬가지로 그걸 여기다 똑같이 하는 겁니다</span></li>
+<li><time>00:25:28.160–00:25:32.560</time> <span>이렇게 하면은 이거는 디테트인데 얘는 상수니까</span></li>
+<li><time>00:25:32.560–00:25:34.000</time> <span>이 w는 상수잖아요</span></li>
+<li><time>00:25:34.000–00:25:37.200</time> <span>근데 얘가 안으로 들어오게 되고</span></li>
+<li><time>00:25:37.200–00:25:40.960</time> <span>여러분들 그렇게 어려워지기 시작하잖아요 수학이 나오니까</span></li>
+<li><time>00:25:40.960–00:25:46.180</time> <span>이렇게 된게 지금 저 왼쪽에 있는 그림이에요</span></li>
+<li><time>00:25:46.180–00:25:50.660</time> <span>요 친구를 우리가 다른 말로 포 베리언스라고 합니다</span></li>
+<li><time>00:25:50.660–00:25:53.320</time> <span>포 베리언스 말투에 있어 이렇게 공산 분포 형량</span></li>
+<li><time>00:25:53.320–00:25:58.320</time> <span>입력 x에 대한 분포라고 합니다.</span></li>
+<li><time>00:25:58.320–00:26:02.320</time> <span>따라오고 있어요 여러분들? 여기가서 못 따라오기 시작했죠?</span></li>
+<li><time>00:26:02.320–00:26:07.320</time> <span>우선은 이거는 나중에 좀 보고 사실 이거 알아야, 여러분들 한번 물어봅시다.</span></li>
+<li><time>00:26:07.320–00:26:11.320</time> <span>여러분들 딥러닝에 관심이 많은 친구들 많죠? 다 관심 있겠죠?</span></li>
+<li><time>00:26:11.320–00:26:15.320</time> <span>거기에 포멜레스 매트리스라는 용어를 한번에 들어 본 사람 있어요?</span></li>
+<li><time>00:26:15.320–00:26:18.320</time> <span>다 들어 봤죠? 이게 바로 이거에요.</span></li>
+<li><time>00:26:18.320–00:26:21.320</time> <span>여러분들이 그 개념을 모르고 쓰고 있었던 거예요.</span></li>
+<li><time>00:26:21.320–00:26:26.320</time> <span>거기서 얘기한 그 코브레스 매트리스가 뭔지를 모르고 쓰고 있었단 말이에요.</span></li>
+<li><time>00:26:26.320–00:26:31.320</time> <span>이 코브레스 매트리스를 잘 타고 오면 얘는 그거에 대한 분포를 배워보게 될 수 있어요.</span></li>
+<li><time>00:26:31.320–00:26:36.320</time> <span>내가 어떤 레저먼트가 있든 아니면 어떤 히든 스테이트가 있고</span></li>
+<li><time>00:26:36.320–00:26:40.320</time> <span>그거 다 벡터잖아요. 결국에 코브레스 매트리스는 벡터잖아요.</span></li>
+<li><time>00:26:40.320–00:26:43.320</time> <span>벡터의 분포를 알고 싶어요.</span></li>
+<li><time>00:26:43.320–00:26:46.320</time> <span>그 벡터가 단순히 값 하나로 이루어지는 게 아니라</span></li>
+<li><time>00:26:46.320–00:26:53.320</time> <span>이는 입력에 따라서, 예를 들어 히든스테이트에 있는 어떤 벡터 하나의 코브레스 매트릭스를 알고 싶다는 것은</span></li>
+<li><time>00:26:53.320–00:26:57.320</time> <span>입력이 바뀔 때 그 벡터가 어떻게 바뀌냐, 어떤 문구를 줬냐,</span></li>
+<li><time>00:26:57.320–00:27:01.320</time> <span>그런 게 나타나 있는 그걸 알고 싶을 때 우리가 코브레스 매트릭스를 구한다 라는 거고</span></li>
+<li><time>00:27:01.320–00:27:03.320</time> <span>이 코브레스 매트릭스는 우리가 어떻게 구하죠 여러분들?</span></li>
+<li><time>00:27:03.320–00:27:08.320</time> <span>이 코브레스 매트릭스 한다는 것은 이 두 개 한 다음에 이걸 이퓨티션 취한다는 것은</span></li>
+<li><time>00:27:08.320–00:27:12.320</time> <span>저 코브레스 매트릭스 할 때 이거잖아요.</span></li>
+<li><time>00:27:12.320–00:27:17.320</time> <span>쉽게 얘기하면, 코리스 매트릭스를 여기다가 봅시다.</span></li>
+<li><time>00:27:17.320–00:27:22.320</time> <span>일부러 천천히 나가고 있는 거예요.</span></li>
+<li><time>00:27:22.320–00:27:30.080</time> <span>이 코비스 매트릭스라는 이 익스테이션에 x, x, 또 여기</span></li>
+<li><time>00:27:30.080–00:27:34.580</time> <span>이거는 뭐냐면은 얘가 뭘 얘기하고 있다면은</span></li>
+<li><time>00:27:34.580–00:27:38.160</time> <span>얘를 하면은 결국에 이 m by m 매트릭스가 나오는데</span></li>
+<li><time>00:27:38.160–00:27:46.580</time> <span>예를 들어 이 x라는 친구를 우리가 x1부터 x, n까지 이루어져 있다라고 하면은</span></li>
+<li><time>00:27:46.580–00:27:49.520</time> <span>이 가운데 있는 이 나이거다나 통들은 어떻게 되죠?</span></li>
+<li><time>00:27:50.400–00:27:51.680</time> <span>제곱의 나누기 m이죠</span></li>
+<li><time>00:27:51.680–00:28:01.180</time> <span>그래서 결국에 얘의 평균을 구해야 되고</span></li>
+<li><time>00:28:01.180–00:28:06.440</time> <span>x1-2의 제곱이 되잖아요.</span></li>
+<li><time>00:28:06.520–00:28:08.360</time> <span>m을 지우고 생각해봅시다.</span></li>
+<li><time>00:28:08.780–00:28:10.680</time> <span>이렇게 우리가 이 포비라스 매틱스 구할 수 있죠.</span></li>
+<li><time>00:28:13.180–00:28:14.940</time> <span>여러분들이 잘 모르는 것 같아서</span></li>
+<li><time>00:28:14.940–00:28:17.740</time> <span>포비라스 매틱스의 정의가 나오는 우리</span></li>
+<li><time>00:28:17.740–00:28:20.900</time> <span>천천히 나가세요.</span></li>
+<li><time>00:28:21.680–00:28:23.680</time> <span>다시 신청해 놔볼 테니까</span></li>
+<li><time>00:28:26.680–00:28:27.680</time> <span>맞죠?</span></li>
+<li><time>00:28:27.680–00:28:30.680</time> <span>또 에뮤언스 매트릭스</span></li>
+<li><time>00:28:30.680–00:28:33.680</time> <span>에뮤언스 매트릭스라는 친구는</span></li>
+<li><time>00:28:47.680–00:28:49.680</time> <span>우리가 이렇게 구할 수 있잖아요 이렇게</span></li>
+<li><time>00:28:49.680–00:28:52.680</time> <span>이렇게 요거를 다르게 쓰면은</span></li>
+<li><time>00:29:02.680–00:29:04.680</time> <span>요렇게 요거를</span></li>
+<li><time>00:29:16.680–00:29:18.680</time> <span>다른 친구들은 이거 어떻게 되는지</span></li>
+<li><time>00:29:19.680–00:29:23.680</time> <span>한국말을 불러야 하는 거고 생존수학에 있는 수학을 생존을 해야 하니까</span></li>
+<li><time>00:29:23.680–00:29:44.680</time> <span>그러니까 이렇게 할 수가 있는 거죠</span></li>
+<li><time>00:29:44.680–00:29:49.500</time> <span>그러면 이게 x고 이게 이 x의 평균이고</span></li>
+<li><time>00:29:49.500–00:29:52.940</time> <span>y고 이게 y의 평균인데 우리는 x랑 x랑 같잖아요.</span></li>
+<li><time>00:29:53.540–00:29:54.980</time> <span>그런데 얘랑 얘랑 지금 같죠.</span></li>
+<li><time>00:29:55.620–00:29:57.240</time> <span>그렇기 때문에 지금 이걸 한다는 것은</span></li>
+<li><time>00:29:57.240–00:29:59.580</time> <span>이거를 이렇게 해서 이렇게 한다는 것은</span></li>
+<li><time>00:30:00.000–00:30:05.080</time> <span>이거의 분산, 이거의 분산, 1과 2의 분산, 1과 2의 분산이니까</span></li>
+<li><time>00:30:05.080–00:30:08.200</time> <span>우리 분산의 공식은 여러분들 알고 있잖아요.</span></li>
+<li><time>00:30:08.700–00:30:10.780</time> <span>그것을 각각의 엘먼트에서 쭉 한다는 거니까</span></li>
+<li><time>00:30:10.780–00:30:15.120</time> <span>분산이 결국에 얼마만큼 얘가 퍼져 있는지를 나타내는 값인 거고</span></li>
+<li><time>00:30:15.120–00:30:18.460</time> <span>그렇게 했을 때 사실 이 그림이 되게 중요해요.</span></li>
+<li><time>00:30:18.460–00:30:23.020</time> <span>이 포비란스는 결국에 내가 어떤 스태피티스를 알고 있을 때</span></li>
+<li><time>00:30:23.020–00:30:25.600</time> <span>그런 확률적인 특성을 알고 있을 때</span></li>
+<li><time>00:30:25.600–00:30:34.160</time> <span>이 분포가 얼마만큼 퍼져있고 어떤 모양을 갖고 있는지를 나타내는 지표에요.</span></li>
+<li><time>00:30:34.160–00:30:39.360</time> <span>이 코브렌스는 이것 하나로 표현이 될텐데</span></li>
+<li><time>00:30:39.360–00:30:44.880</time> <span>그랬을 때 이 밸런스가 얘를 작은거고 얘를 큰거잖아요.</span></li>
+<li><time>00:30:44.880–00:30:49.440</time> <span>얘를 멀티 디멘션에 대해서 구하는 값인거거든요.</span></li>
+<li><time>00:30:49.440–00:30:52.480</time> <span>마찬가지로 여기도 똑같은거에요.</span></li>
+<li><time>00:30:52.480–00:31:03.080</time> <span>이 상황에서도 이 x 라는 이 매절먼트가 마이크 md에 대해서 같이 있는데 그거에 대한 공포가 어떻게 나오는지 표현하는 그 제품이라고 보면 됩니다.</span></li>
+<li><time>00:31:03.080–00:31:11.720</time> <span>그거를 구한다 라고 보면 되겠죠. 그거를 결국에 이게 들어오게 되는거고 얘를 이용해서 이렇게 하면은 얘 파워가 나옵니다. 이렇게 하면은 얘는</span></li>
+<li><time>00:31:11.720–00:31:18.980</time> <span>결국에 이 친구는 y의 제곱이 되겠죠. y의 제곱. a의 제곱. 파워가 되겠죠.</span></li>
+<li><time>00:31:18.980–00:31:25.380</time> <span>파워를 구하는거에요. 파워는 미니마일 하고 싶은거에요. 다시 돌아와서 결론을 말씀드리면</span></li>
+<li><time>00:31:25.380–00:31:30.360</time> <span>얘는 고정을 하고 모든 방향에 대한 파워를 미니마일 해서 하는거에요.</span></li>
+<li><time>00:31:31.920–00:31:42.780</time> <span>이 그림에서 볼까? 이쪽 방향은 고정을 시키고 나머지는 다 미니마일 하라는거에요.</span></li>
+<li><time>00:31:42.780–00:31:47.980</time> <span>얘도 고정을 시키고 얘네들은 다 미니마일 하라는거에요.</span></li>
+<li><time>00:31:47.980–00:31:55.980</time> <span>그거를 지금 하는거에요. 근데 사실 이렇게 미니마이드가 결국엔 안되긴 안되는데 그게 목적으로 저 수식을 푸는 겁니다.</span></li>
+<li><time>00:31:55.980–00:32:05.980</time> <span>그래서 풀면은 풀면은 이거는 몰라도 되요. 참고 내가 적어놨죠. 참고. 참고 써있죠 참고.</span></li>
+<li><time>00:32:05.980–00:32:10.980</time> <span>이거는 사실 이거를 푸는 방법은 나그라미안 웨이크 플라이어 이거 활용을 하면 됩니다.</span></li>
+<li><time>00:32:10.980–00:32:17.420</time> <span>나가라무제안이라는 대단히 유명한 수학자가 한 번씩 들어왔어요. 그 분께서 이거를 푸셨거든요.</span></li>
+<li><time>00:32:17.420–00:32:22.600</time> <span>그래서 이렇게 하면 하여튼 결국에 이 친구가 나오게 되요.</span></li>
+<li><time>00:32:22.600–00:32:27.880</time> <span>그래서 구하면 이 W라는 필터는 NVIDIA 필터는 이렇게 보이실거에요.</span></li>
+<li><time>00:32:27.880–00:32:31.600</time> <span>라고 여러분들은 우선 알고 계신거에요.</span></li>
+<li><time>00:32:33.200–00:32:37.600</time> <span>여기까지 우선 질문을 받을게요. 어차피 안 뜯을거에요.</span></li>
+<li><time>00:32:37.600–00:32:40.080</time> <span>질문</span></li>
+<li><time>00:32:40.080–00:32:42.080</time> <span>질문 없어요? 질문</span></li>
+<li><time>00:32:42.080–00:32:44.080</time> <span>한 단계 더 나아가기 위해서</span></li>
+<li><time>00:32:44.080–00:32:46.080</time> <span>한 번 쉬었다 가려고 질문을 받는거에요</span></li>
+<li><time>00:32:46.080–00:32:52.080</time> <span>어차피 오늘까지 여러분들이 이게 어려운게 뭐냐면은</span></li>
+<li><time>00:32:52.080–00:32:54.080</time> <span>예전에는 수업을 다 이런식으로 했어요</span></li>
+<li><time>00:32:54.080–00:32:56.080</time> <span>이런식으로 제가 다닐 때까지는</span></li>
+<li><time>00:32:56.080–00:32:58.080</time> <span>수학으로 어떻게 되고 어떻게 되고</span></li>
+<li><time>00:32:58.080–00:33:00.080</time> <span>다 했는데 지금 여러분들은</span></li>
+<li><time>00:33:00.080–00:33:02.080</time> <span>디너닝 못해놓고 데이터 능력이 됐다</span></li>
+<li><time>00:33:02.080–00:33:04.080</time> <span>이렇게 끝나잖아요</span></li>
+<li><time>00:33:04.080–00:33:06.080</time> <span>사실 저는 제가 봤을 때는 여러분들이 배워가는게 없는거에요</span></li>
+<li><time>00:33:06.080–00:33:08.080</time> <span>그거는 전혀 보기 안돼요</span></li>
+<li><time>00:33:08.080–00:33:38.080</time> <span>예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할 수 있는 것 보고 예약을 할</span></li>
+<li><time>00:33:38.080–00:33:43.520</time> <span>변론을 얘기하겠지만 그게 이 사이드 로브스가 줄어들지 않아요.</span></li>
+<li><time>00:33:43.520–00:33:46.920</time> <span>이게 줄어들지 않고 걔가 너플로시가 붙어 합니다.</span></li>
+<li><time>00:33:46.920–00:33:50.480</time> <span>그럼 제가 바로 이어서 보여줄게요.</span></li>
+<li><time>00:33:50.480–00:33:53.580</time> <span>그래서 이렇게 나온다는 거고</span></li>
+<li><time>00:33:53.580–00:33:55.880</time> <span>그래서 이게 사실 그 코비너스 매트리스가 뭐고</span></li>
+<li><time>00:33:55.880–00:34:00.660</time> <span>이런 얘기를 지금 설명을 하고 있는 거고</span></li>
+<li><time>00:34:00.660–00:34:03.980</time> <span>사실 얘를 먼저 설명을 하죠.</span></li>
+<li><time>00:34:03.980–00:34:14.980</time> <span>사실 사실 예 2시야 예 2시 하고 요거 봐야 되요 지금 길 소리가 쪽 빠져 갖고 쪽 빠져 있구요</span></li>
+<li><time>00:34:14.980–00:34:20.000</time> <span>내가 지금 쪽 영기 그리를 편히 가고 얘가 받아 오신 거예요 얘가 하십니다</span></li>
+<li><time>00:34:20.000–00:34:27.700</time> <span>이 쪽 방향으로 소리가 들려오고 있어요 얘를 줄이고 싶겠죠 그래서 딜레이션 비폭으로 하면은 요걸 보면은 여기 회색깔에</span></li>
+<li><time>00:34:27.700–00:34:33.140</time> <span>걸리잖아요. 그 색깔이 걸리고 있죠. 그렇기 때문에 얘가 많이 살아나가요.</span></li>
+<li><time>00:34:33.140–00:34:42.100</time> <span>근데 MVD와 빈폼으로 하면 어떻게 되냐면 이 파란 색깔 이걸 하면은 지금 보면은 이 모양이 살짝 이렇게 틀어졌죠.</span></li>
+<li><time>00:34:42.100–00:34:49.720</time> <span>그래서 이쪽 방향으로 들려오는 소리가 여기 0에 가까운 값에 닿도록 필터를 조절하는 거예요.</span></li>
+<li><time>00:34:49.720–00:34:56.000</time> <span>아까는 이 애를 옆으로 시프트 시켜 나가면서 원 라인이 맞는 지점을 찾을 거잖아요.</span></li>
+<li><time>00:34:56.700–00:35:00.000</time> <span>그 시점 그 속도가 다 동일했죠.</span></li>
+<li><time>00:35:00.000–00:35:02.960</time> <span>앞에서는, delay에서, before에서는</span></li>
+<li><time>00:35:02.960–00:35:06.960</time> <span>그게 frequency가 정해지면은 그 속도는 다 동일하잖아요</span></li>
+<li><time>00:35:06.960–00:35:08.960</time> <span>그러니까 무슨 말이냐면은</span></li>
+<li><time>00:35:08.960–00:35:12.960</time> <span>여기서, 아까 이 그림에서</span></li>
+<li><time>00:35:12.960–00:35:14.960</time> <span>이 그림에서</span></li>
+<li><time>00:35:14.960–00:35:20.960</time> <span>이거 왔다갔다 할 때, 이 이동하는 속도가 똑같겠죠 지금</span></li>
+<li><time>00:35:20.960–00:35:24.960</time> <span>근데 이 이동하는 속도를 조금 다르게 할 수 있겠죠</span></li>
+<li><time>00:35:24.960–00:35:28.960</time> <span>다르게 해가지고, 이걸 조금씩 다르게 하면 어떤 상황이 나타나자면은</span></li>
+</ol></details></section>
+<section id="part-6"><h2>간섭 방향에 null 배치하기</h2>
+<p class="prose">이걸 조절을 할 수 있게 되면 얘가 들려오는 방향일 때 이걸 null이라고 하거든요. 0, 다는 0이잖아요. null 위치, 이 방향으로 맞춰지게끔 최적화가 되는 겁니다. 수업적으로 풀면 얘가 다 튀어나온다는 거예요. 이렇게 되면 이쪽 방향으로 들려오는 소리가 엄청나게 많이 줄어들겠죠. 이해돼요? 이렇게 결국에 하고 싶은 거예요. 예를 하고 싶었던 겁니다. 근데 보면은 요 사이드 로브스의 크기는 오히려 줄어들지 않고 커졌죠.</p>
+<p class="prose">오히려 커졌지만 결과적으로 이쪽 방향으로 들려오는 소리는 많이 내가 컷아웃 시킬 수 있다. 컷아웃 시킬 수 있다는 말이에요. 무슨 말인지 이해되죠? 그래서 그걸 하고 싶은 거고요. 그래서 결국에 지금 요렇게 우리가 아까 봤던 거 아까 말했던 그 아웃 파워는 요렇게 더한다. 뭐 아 제가 여기다 써놨던 거랑 똑같은 거예요. 그리고 밑에 이 correlation, 아 covalence만 있을까? 아니요. correlation만 있을까?</p>
+<p class="prose">미안해요. covalence는 서로 다른 값이 두 개가 있을 때고 얘는 correlation이니까 내가 같은 값에 대한 매력이 있으니까 correlation이라고 하는 거 같아요. 어찌됐든 같은 기념이에요. 그래서 이렇게 두 번 구한다는 거고 그래서 지금 이 상황을 가정을 해보면은 지금 스피커 1번과 스피커 2번과 센서 노이즈가 있는 상황이라고 가정을 하고 한번 같이 보면 어떻게 되냐 이걸 생각해 볼 거에요.</p>
+<p class="prose">다시 이걸 보기 전에 결과적으로 이걸 하고 싶은 거에요. 지금 보면은 지금 빔포밍 기준으로 딜레이선 빔포머 기준으로 보면은 이 방향에 대해서 제가 0도 기준으로 아까 그 그림 있죠. 그러면은 지금 그 null 얘가 지금 온라인에 딱 맞아서 0이 되는 지점이 25도, 59도, 59도, 마이너스 15도 이렇게 구성이 되어 있을 때 그런데 지금 얘는 옆에 있으니까 많이 살아남잖아요. 이게 위치를 이리로 옮기고 싶다.</p>
+<p class="prose">나는 결국에 이렇게 맞추고 싶은 거야. 이렇게 맞춰서 이쪽으로 돌리는 소리를 다 줄이고 싶은 거예요. 이렇게 하고 싶은 거예요. 그런데 이게 지금 어떻게 가능하냐면 쉽게 얘기하면 수학적으로 저거를 제가 가지고 온 건데 결국에 우리가 지금 이걸 테스트한 게 이것을 가지고 빈 패턴을 구했잖아요.</p>
+<p class="prose">이것, 이렇게 필터 그리고 특정 방향으로 돌려오고 있는 그 유리 인펄스가 들려왔을 때 이것을 구해서 이것을 지금 우리가 구했는데 이것을 지금 풀었으면 지금 이렇게 마이크에 대해서 두 개 곱한 것 제가 아까 위에가 섰던 것 있죠. 그것을 똑같이 그리고 있는 거고요. 그랬을 때 각각의 Z는 이렇게 구성이 되고 되고 이렇게 구성이 된다. 그리고 얘는 30합시다. 그렇게 지금 얘기 하고 있는 거예요. 다시 얘기하면 은 다시 얘기하면은 다시 얘기하면 이 중에 나오나 다시 얘기하면은 결국에 아까 그 봤던 그림 있죠.</p>
+<p class="prose">이 exponential에 minus j pi 1 plus 쭉 가서 minus j pi n까지 더한 값이 여기서 저기서는 a라는 값이 되는 거죠. a셋 값. 이거를 저는 다시 쓴 거예요. 그랬을 때 중요한 거는 여기서 이게 지금 여기 보면 w가 지금부터 있잖아요. w를 여기서 만약에 빼앗다고 하면 w에서 이 값을 결국에 0으로 만드는 0으로 만드는 저 w의 값의 해는 해는 이 모든 세타에 대해서 해는 이 n-1만큼의 해를 갖는다 라는 거예요.</p>
+<p class="prose">왜냐하면 우리 자항식에서 자항식에서 y가 ax 플러스 b라고 했을 때 얘의 해외계수는 몇개죠? 얘가 0이 되는 해외계수 x의 개수가 뭐죠? 이게 각각의 어떤 답을 실수라고 했을 때 몇개죠? 하나죠. 이걸 알아야해요 여러분 하나잖아요. 이거 하나잖아요. 그렇죠? 0을 만드는 y값도 하나잖아요. 그렇죠? 근데 만약에 이게 A bx c는 얘는 해가 몇개죠? 두개죠. 그거에요. 그러면은 그래서 해 그리고 그러면은 저거를 이 m의 제곱이 지금 여기있죠.</p>
+<p class="prose">m만큼 그렇기 때문에 개수가 m-3개가 됩니다. k개수가 이 null 개수가 m-3개가 특히나요? c의 경우 0이 되는 개수가 m-3개라는거고 마이크의 개수에 따라서 결정이 된다는 얘기입니다. 한번 넘어가는거죠. 그리고 두번째는 두번째는 지금 그래서 아까 얘기했듯이 아까 얘기했듯이 요것도 너무 어렵다. 이렇게 해내래요. 이렇게 하고 싶다. 이렇게 하면 이렇게 말할게.</p>
+<p class="prose">그래서 하고 싶은 건 뭐냐면은 지금 그 결국에 무슨 얘기가 내가 타깃인 H라는 그 타깃 내가 그 방향을 조정한 친구가 H라고 했을 때 얘가 있고 내가 다른 스티커들 아까는 스티커가 다른 친구가 하나밖에 없었죠. 그래서 다른 스티커들이 있겠죠 테이크의 만큼 그랬을 때 내가 너를 이 각각의 스티커 위치에 담아가지고 결국 걔를 줄이고 싶다는 거죠. 줄이고 싶다는 거죠. 그래서 내가 이 짓을 하고 싶다는 거죠.</p>
+<p class="prose">이 짓을 하고 싶다 그래서 얘는 그대로 위치를 시키고 이 친구들의 위치에 너를 위치시켜가지고 얘를 지우고 싶다. 그 말은 이 널의 개수가 이 스피커의 개수보다 더 많아야지 이걸 할 수 있겠죠. 널의 개수가 이 스피커의 개수보다 작으면 결국 못하잖아요. 근데 그 널의 개수는 마이너스의 수에 따라서 수정이 된다. 이 얘기를 드릴 때가 성공이고요. 그랬을 때 이런 수정이 간다. 여기까지만 할 수 있어요. 다행이네 근데 지금 아 이건 여기까지만 해야겠다 그래서 얘 무슨 얘기를 하고 있는거죠.</p>
+<p class="prose">여기를 보면은 얘는 얘가 되죠. 무슨 말 하고 있는지 이리로 넘어오면은 얘는 그 얘기 똑같죠. 무슨 말이냐면은 만약에 지금 여기까지는 내가 어떤거에 빈폼이 파워를 해 놨을 때 이 펌을 이렇게 세 개로 나눌 수가 있다 첫 번째 첫번째는 멀티지로 들어온 친구에 대한 허 두번째는 내가 멀티지로 만들고 싶은 품에 대한 허 그리고 꼬다라는 친구는 노이즈 이 노이즈는 센스 노이즈가 있어요. 방향성이 없는 친구가 있을 수 있어요.</p>
+<p class="prose">그냥 그 하류 자체에서 발생하는 소음이 있을 수 있잖아요. 방향성이 없는 친구들 그런 친구들이 있을 수 있어요. 이렇게 세 개가 소음이 있어요. 나는 이 두 개를 지우고 싶은 거고 근데 얘는 다양성이 있으니까 센터 안에서 어디까지 찍히겠죠. 그래서 이 넓이 패치를 만들어 지울 수가 있어요. 근데 내가 이 위치를 조절하게 되면은 무슨 현상이 발생하는지 보면 알겠지만 얘를 옮김으로써 여기보다 높아지는 상황들이 발생됩니다.</p>
+<p class="prose">딜리에서 미폼으로 하면은 이 회사까지잖아요. 근데 얘를 옮기게 되면은 그거에 대한 사이드 테스트로 요게 조금씩 이렇게 꼽힙니다. 이게 뒤쪽에서 발전을 하는거에요. 얘가 조금 땡기면서 위로 올라가는거죠. 양쪽이. 이게 발전해요. 얘를 옆으로 이동하게 되는거. 이게 발전을 합니다. 근데 지금 뭐냐면은 얘는 아이콘이 없는 수준이잖아요. 그렇기 때문에 모든 영역에 대해서 비호 시그마 N만큼의 노이즈를 줄 수 있죠.</p>
+<p class="prose">근데 만약에 얘가 작으면은 역전 0일밖에 안되면은 하나도 없어요. 어떻게 이거가 크지 않기 때문에 얘를 맞춰줘서 얘를 줄이는게 더 있을게 근데 만약에 얘가 되게 크다 센터노이브 같은 다이소가 없는 친구가 되게 크다 라고 하면은 얘를 이렇게 옮겨서 얘를 줄이는 것보다 얘가 올라가서 얘가 더 많이 들어오는 그 값이 더 커지겠죠. 그래서 그 경우일 때는 최적화를 하면 이런식으로 별로 정확하게 보이지 않고 오게 되면 어차피 그게 더 최적화이는데 얘들보다 중요할 수가 그렇게 됩니다.</p>
+<p class="prose">그 말은 뭐냐면 전체적인 이 패턴을 봤을 때 이 전체적인 이 모양 중에 이 사이드로프트의 높이가 최소화가 되는 그 지점을 그리해서 믿어보고요.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:35:28.960–00:35:31.960</time> <span>이걸 조절을 할 수 있게 되면</span></li>
+<li><time>00:35:31.960–00:35:34.960</time> <span>얘가 들려오는 방향일 때</span></li>
+<li><time>00:35:34.960–00:35:36.960</time> <span>이걸 null이라고 하거든요</span></li>
+<li><time>00:35:36.960–00:35:38.960</time> <span>0, 다는 0이잖아요</span></li>
+<li><time>00:35:38.960–00:35:43.960</time> <span>null 위치, 이 방향으로 맞춰지게끔 최적화가 되는 겁니다</span></li>
+<li><time>00:35:43.960–00:35:47.960</time> <span>수업적으로 풀면 얘가 다 튀어나온다는 거예요</span></li>
+<li><time>00:35:47.960–00:35:52.960</time> <span>이렇게 되면 이쪽 방향으로 들려오는 소리가 엄청나게 많이 줄어들겠죠</span></li>
+<li><time>00:35:52.960–00:35:54.960</time> <span>이해돼요?</span></li>
+<li><time>00:35:54.960–00:35:56.960</time> <span>이렇게 결국에 하고 싶은 거예요</span></li>
+<li><time>00:35:56.960–00:35:58.960</time> <span>예를 하고 싶었던 겁니다.</span></li>
+<li><time>00:35:58.960–00:36:02.960</time> <span>근데 보면은 요 사이드 로브스의 크기는 오히려 줄어들지 않고 커졌죠.</span></li>
+<li><time>00:36:02.960–00:36:07.960</time> <span>오히려 커졌지만 결과적으로 이쪽 방향으로 들려오는 소리는</span></li>
+<li><time>00:36:07.960–00:36:10.960</time> <span>많이 내가 컷아웃 시킬 수 있다.</span></li>
+<li><time>00:36:10.960–00:36:12.960</time> <span>컷아웃 시킬 수 있다는 말이에요.</span></li>
+<li><time>00:36:12.960–00:36:14.960</time> <span>무슨 말인지 이해되죠?</span></li>
+<li><time>00:36:14.960–00:36:16.960</time> <span>그래서 그걸 하고 싶은 거고요.</span></li>
+<li><time>00:36:16.960–00:36:21.960</time> <span>그래서 결국에 지금 요렇게 우리가 아까 봤던 거</span></li>
+<li><time>00:36:21.960–00:36:25.960</time> <span>아까 말했던 그 아웃 파워는 요렇게 더한다.</span></li>
+<li><time>00:36:25.960–00:36:27.960</time> <span>뭐 아 제가 여기다 써놨던 거랑 똑같은 거예요.</span></li>
+<li><time>00:36:27.960–00:36:30.960</time> <span>그리고 밑에 이 correlation, 아 covalence만 있을까?</span></li>
+<li><time>00:36:30.960–00:36:31.960</time> <span>아니요. correlation만 있을까?</span></li>
+<li><time>00:36:31.960–00:36:34.960</time> <span>미안해요. covalence는 서로 다른 값이 두 개가 있을 때고</span></li>
+<li><time>00:36:34.960–00:36:37.960</time> <span>얘는 correlation이니까 내가 같은 값에 대한 매력이 있으니까</span></li>
+<li><time>00:36:37.960–00:36:39.960</time> <span>correlation이라고 하는 거 같아요.</span></li>
+<li><time>00:36:39.960–00:36:41.960</time> <span>어찌됐든 같은 기념이에요.</span></li>
+<li><time>00:36:41.960–00:36:43.960</time> <span>그래서 이렇게 두 번 구한다는 거고</span></li>
+<li><time>00:36:43.960–00:36:47.960</time> <span>그래서 지금 이 상황을 가정을 해보면은</span></li>
+<li><time>00:36:47.960–00:36:53.960</time> <span>지금 스피커 1번과 스피커 2번과 센서 노이즈가 있는 상황이라고 가정을 하고</span></li>
+<li><time>00:36:53.960–00:36:59.300</time> <span>한번 같이 보면 어떻게 되냐 이걸 생각해 볼 거에요</span></li>
+<li><time>00:36:59.300–00:37:04.200</time> <span>다시 이걸 보기 전에 결과적으로 이걸 하고 싶은 거에요</span></li>
+<li><time>00:37:04.200–00:37:10.200</time> <span>지금 보면은 지금 빔포밍 기준으로</span></li>
+<li><time>00:37:10.200–00:37:13.200</time> <span>딜레이선 빔포머 기준으로 보면은 이 방향에 대해서</span></li>
+<li><time>00:37:13.200–00:37:16.840</time> <span>제가 0도 기준으로 아까 그 그림 있죠</span></li>
+<li><time>00:37:16.840–00:37:21.460</time> <span>그러면은 지금 그 null 얘가 지금 온라인에 딱 맞아서</span></li>
+<li><time>00:37:21.460–00:37:27.120</time> <span>0이 되는 지점이 25도, 59도, 59도, 마이너스 15도 이렇게 구성이 되어 있을 때</span></li>
+<li><time>00:37:27.120–00:37:29.940</time> <span>그런데 지금 얘는 옆에 있으니까 많이 살아남잖아요.</span></li>
+<li><time>00:37:30.540–00:37:32.220</time> <span>이게 위치를 이리로 옮기고 싶다.</span></li>
+<li><time>00:37:32.400–00:37:33.960</time> <span>나는 결국에 이렇게 맞추고 싶은 거야.</span></li>
+<li><time>00:37:34.860–00:37:37.720</time> <span>이렇게 맞춰서 이쪽으로 돌리는 소리를 다 줄이고 싶은 거예요.</span></li>
+<li><time>00:37:38.820–00:37:39.600</time> <span>이렇게 하고 싶은 거예요.</span></li>
+<li><time>00:37:40.740–00:37:42.860</time> <span>그런데 이게 지금 어떻게 가능하냐면</span></li>
+<li><time>00:37:42.860–00:37:45.640</time> <span>쉽게 얘기하면 수학적으로 저거를 제가 가지고 온 건데</span></li>
+<li><time>00:37:45.640–00:37:49.100</time> <span>결국에 우리가 지금 이걸 테스트한 게</span></li>
+<li><time>00:37:49.100–00:37:52.100</time> <span>이것을 가지고 빈 패턴을 구했잖아요.</span></li>
+<li><time>00:37:52.100–00:37:56.100</time> <span>이것, 이렇게 필터 그리고 특정 방향으로 돌려오고 있는</span></li>
+<li><time>00:37:56.100–00:37:59.100</time> <span>그 유리 인펄스가 들려왔을 때</span></li>
+<li><time>00:37:59.100–00:38:02.100</time> <span>이것을 구해서 이것을 지금 우리가 구했는데</span></li>
+<li><time>00:38:02.100–00:38:05.100</time> <span>이것을 지금 풀었으면</span></li>
+<li><time>00:38:05.100–00:38:10.100</time> <span>지금 이렇게 마이크에 대해서 두 개 곱한 것</span></li>
+<li><time>00:38:10.100–00:38:12.100</time> <span>제가 아까 위에가 섰던 것 있죠.</span></li>
+<li><time>00:38:12.100–00:38:14.100</time> <span>그것을 똑같이 그리고 있는 거고요.</span></li>
+<li><time>00:38:14.100–00:38:17.100</time> <span>그랬을 때 각각의 Z는 이렇게 구성이 되고</span></li>
+<li><time>00:38:17.100–00:38:22.420</time> <span>되고 이렇게 구성이 된다. 그리고 얘는 30합시다. 그렇게 지금 얘기</span></li>
+<li><time>00:38:22.420–00:38:29.540</time> <span>하고 있는 거예요. 다시 얘기하면 은 다시 얘기하면은 다시 얘기하면</span></li>
+<li><time>00:38:29.540–00:38:37.820</time> <span>이 중에 나오나 다시 얘기하면은 결국에 아까 그 봤던 그림 있죠</span></li>
+<li><time>00:38:37.820–00:38:47.500</time> <span>이 exponential에 minus j pi 1 plus 쭉 가서 minus j pi n까지 더한 값이</span></li>
+<li><time>00:38:47.500–00:38:50.560</time> <span>여기서 저기서는 a라는 값이 되는 거죠.</span></li>
+<li><time>00:38:50.720–00:38:51.260</time> <span>a셋 값.</span></li>
+<li><time>00:38:52.720–00:38:54.120</time> <span>이거를 저는 다시 쓴 거예요.</span></li>
+<li><time>00:38:54.760–00:38:56.600</time> <span>그랬을 때 중요한 거는 여기서</span></li>
+<li><time>00:38:56.600–00:39:00.280</time> <span>이게 지금 여기 보면 w가 지금부터 있잖아요.</span></li>
+<li><time>00:39:00.280–00:39:02.820</time> <span>w를 여기서 만약에 빼앗다고 하면</span></li>
+<li><time>00:39:02.820–00:39:06.800</time> <span>w에서 이 값을 결국에 0으로 만드는</span></li>
+<li><time>00:39:06.800–00:39:11.460</time> <span>0으로 만드는 저 w의 값의 해는</span></li>
+<li><time>00:39:11.460–00:39:13.780</time> <span>해는 이 모든 세타에 대해서</span></li>
+<li><time>00:39:13.780–00:39:18.480</time> <span>해는 이 n-1만큼의 해를 갖는다 라는 거예요.</span></li>
+<li><time>00:39:18.480–00:39:20.240</time> <span>왜냐하면 우리 자항식에서</span></li>
+<li><time>00:39:20.240–00:39:23.740</time> <span>자항식에서</span></li>
+<li><time>00:39:23.740–00:39:26.400</time> <span>자항식에서</span></li>
+<li><time>00:39:26.400–00:39:31.980</time> <span>y가 ax 플러스 b라고 했을 때</span></li>
+<li><time>00:39:31.980–00:39:33.980</time> <span>얘의 해외계수는 몇개죠?</span></li>
+<li><time>00:39:33.980–00:39:38.980</time> <span>얘가 0이 되는 해외계수</span></li>
+<li><time>00:39:38.980–00:39:41.980</time> <span>x의 개수가 뭐죠?</span></li>
+<li><time>00:39:41.980–00:39:46.980</time> <span>이게 각각의 어떤 답을 실수라고 했을 때</span></li>
+<li><time>00:39:46.980–00:39:48.980</time> <span>몇개죠?</span></li>
+<li><time>00:39:48.980–00:39:50.980</time> <span>하나죠. 이걸 알아야해요 여러분</span></li>
+<li><time>00:39:50.980–00:39:52.980</time> <span>하나잖아요. 이거 하나잖아요. 그렇죠?</span></li>
+<li><time>00:39:52.980–00:39:55.980</time> <span>0을 만드는 y값도 하나잖아요. 그렇죠?</span></li>
+<li><time>00:39:55.980–00:39:59.980</time> <span>근데 만약에 이게 A</span></li>
+<li><time>00:40:00.000–00:40:04.000</time> <span>bx c는 얘는 해가 몇개죠?</span></li>
+<li><time>00:40:04.000–00:40:06.000</time> <span>두개죠</span></li>
+<li><time>00:40:06.000–00:40:08.000</time> <span>그거에요</span></li>
+<li><time>00:40:08.000–00:40:10.000</time> <span>그러면은 그래서 해</span></li>
+<li><time>00:40:10.000–00:40:12.000</time> <span>그리고 그러면은 저거를</span></li>
+<li><time>00:40:12.000–00:40:14.000</time> <span>이 m의 제곱이 지금 여기있죠</span></li>
+<li><time>00:40:14.000–00:40:16.000</time> <span>m만큼</span></li>
+<li><time>00:40:16.000–00:40:18.000</time> <span>그렇기 때문에 개수가 m-3개가 됩니다</span></li>
+<li><time>00:40:18.000–00:40:20.000</time> <span>k개수가</span></li>
+<li><time>00:40:20.000–00:40:22.000</time> <span>이 null 개수가 m-3개가 특히나요</span></li>
+<li><time>00:40:22.000–00:40:24.000</time> <span>c의 경우</span></li>
+<li><time>00:40:24.000–00:40:26.000</time> <span>0이 되는 개수가 m-3개라는거고</span></li>
+<li><time>00:40:26.000–00:40:30.000</time> <span>마이크의 개수에 따라서 결정이 된다는 얘기입니다.</span></li>
+<li><time>00:40:30.000–00:40:32.000</time> <span>한번 넘어가는거죠.</span></li>
+<li><time>00:40:32.000–00:40:36.000</time> <span>그리고 두번째는</span></li>
+<li><time>00:40:36.000–00:40:38.000</time> <span>두번째는</span></li>
+<li><time>00:40:38.000–00:40:42.000</time> <span>지금 그래서 아까 얘기했듯이</span></li>
+<li><time>00:40:42.000–00:40:46.000</time> <span>아까 얘기했듯이 요것도 너무 어렵다.</span></li>
+<li><time>00:40:46.000–00:40:48.000</time> <span>이렇게 해내래요.</span></li>
+<li><time>00:40:48.000–00:40:50.000</time> <span>이렇게 하고 싶다.</span></li>
+<li><time>00:40:50.000–00:40:52.000</time> <span>이렇게 하면</span></li>
+<li><time>00:40:52.000–00:40:54.000</time> <span>이렇게 말할게.</span></li>
+<li><time>00:40:54.000–00:40:56.000</time> <span>그래서 하고 싶은 건 뭐냐면은</span></li>
+<li><time>00:40:56.000–00:40:57.240</time> <span>지금 그 결국에 무슨 얘기가</span></li>
+<li><time>00:40:57.240–00:41:00.180</time> <span>내가 타깃인 H라는 그 타깃</span></li>
+<li><time>00:41:00.180–00:41:03.120</time> <span>내가 그 방향을 조정한 친구가 H라고 했을 때</span></li>
+<li><time>00:41:03.120–00:41:06.040</time> <span>얘가 있고 내가 다른 스티커들</span></li>
+<li><time>00:41:06.040–00:41:08.240</time> <span>아까는 스티커가 다른 친구가 하나밖에 없었죠</span></li>
+<li><time>00:41:08.240–00:41:11.920</time> <span>그래서 다른 스티커들이 있겠죠 테이크의 만큼</span></li>
+<li><time>00:41:11.920–00:41:16.380</time> <span>그랬을 때 내가 너를 이 각각의 스티커 위치에 담아가지고</span></li>
+<li><time>00:41:16.380–00:41:18.980</time> <span>결국 걔를 줄이고 싶다는 거죠</span></li>
+<li><time>00:41:18.980–00:41:19.620</time> <span>줄이고 싶다는 거죠</span></li>
+<li><time>00:41:19.620–00:41:22.120</time> <span>그래서 내가 이 짓을 하고 싶다는 거죠</span></li>
+<li><time>00:41:22.120–00:41:23.580</time> <span>이 짓을 하고 싶다</span></li>
+<li><time>00:41:23.580–00:41:25.880</time> <span>그래서 얘는 그대로 위치를 시키고</span></li>
+<li><time>00:41:25.880–00:41:28.980</time> <span>이 친구들의 위치에 너를 위치시켜가지고</span></li>
+<li><time>00:41:28.980–00:41:30.560</time> <span>얘를 지우고 싶다.</span></li>
+<li><time>00:41:31.040–00:41:33.940</time> <span>그 말은 이 널의 개수가 이 스피커의 개수보다</span></li>
+<li><time>00:41:33.940–00:41:35.620</time> <span>더 많아야지 이걸 할 수 있겠죠.</span></li>
+<li><time>00:41:36.960–00:41:39.160</time> <span>널의 개수가 이 스피커의 개수보다 작으면</span></li>
+<li><time>00:41:39.160–00:41:41.280</time> <span>결국 못하잖아요.</span></li>
+<li><time>00:41:41.280–00:41:43.560</time> <span>근데 그 널의 개수는 마이너스의 수에 따라서</span></li>
+<li><time>00:41:43.560–00:41:44.220</time> <span>수정이 된다.</span></li>
+<li><time>00:41:44.500–00:41:45.920</time> <span>이 얘기를 드릴 때가 성공이고요.</span></li>
+<li><time>00:41:47.120–00:41:47.820</time> <span>그랬을 때</span></li>
+<li><time>00:41:47.820–00:41:50.940</time> <span>이런 수정이 간다.</span></li>
+<li><time>00:41:51.400–00:41:52.700</time> <span>여기까지만 할 수 있어요.</span></li>
+<li><time>00:41:53.580–00:41:55.580</time> <span>다행이네</span></li>
+<li><time>00:41:55.580–00:41:57.580</time> <span>근데 지금</span></li>
+<li><time>00:41:57.580–00:41:59.580</time> <span>아 이건 여기까지만 해야겠다</span></li>
+<li><time>00:41:59.580–00:42:01.580</time> <span>그래서</span></li>
+<li><time>00:42:01.580–00:42:03.580</time> <span>얘 무슨 얘기를 하고 있는거죠</span></li>
+<li><time>00:42:03.580–00:42:05.580</time> <span>여기를 보면은 얘는 얘가 되죠</span></li>
+<li><time>00:42:05.580–00:42:07.580</time> <span>무슨 말 하고 있는지</span></li>
+<li><time>00:42:07.580–00:42:09.580</time> <span>이리로 넘어오면은 얘는 그 얘기 똑같죠</span></li>
+<li><time>00:42:09.580–00:42:11.580</time> <span>무슨 말이냐면은</span></li>
+<li><time>00:42:11.580–00:42:13.580</time> <span>만약에 지금</span></li>
+<li><time>00:42:13.580–00:42:15.580</time> <span>여기까지는</span></li>
+<li><time>00:42:15.580–00:42:17.580</time> <span>내가 어떤거에 빈폼이 파워를 해 놨을 때</span></li>
+<li><time>00:42:17.580–00:42:19.580</time> <span>이 펌을 이렇게 세 개로 나눌 수가 있다</span></li>
+<li><time>00:42:19.580–00:42:21.580</time> <span>첫 번째</span></li>
+<li><time>00:42:21.580–00:42:23.580</time> <span>첫번째는 멀티지로 들어온 친구에 대한 허</span></li>
+<li><time>00:42:23.580–00:42:29.580</time> <span>두번째는 내가 멀티지로 만들고 싶은 품에 대한 허</span></li>
+<li><time>00:42:29.580–00:42:31.580</time> <span>그리고 꼬다라는 친구는 노이즈</span></li>
+<li><time>00:42:31.580–00:42:33.580</time> <span>이 노이즈는 센스 노이즈가 있어요</span></li>
+<li><time>00:42:33.580–00:42:35.580</time> <span>방향성이 없는 친구가 있을 수 있어요</span></li>
+<li><time>00:42:35.580–00:42:40.580</time> <span>그냥 그 하류 자체에서 발생하는 소음이 있을 수 있잖아요</span></li>
+<li><time>00:42:40.580–00:42:42.580</time> <span>방향성이 없는 친구들</span></li>
+<li><time>00:42:42.580–00:42:44.580</time> <span>그런 친구들이 있을 수 있어요</span></li>
+<li><time>00:42:44.580–00:42:46.580</time> <span>이렇게 세 개가 소음이 있어요</span></li>
+<li><time>00:42:46.580–00:42:50.580</time> <span>나는 이 두 개를 지우고 싶은 거고</span></li>
+<li><time>00:42:50.580–00:42:55.580</time> <span>근데 얘는 다양성이 있으니까 센터 안에서 어디까지 찍히겠죠</span></li>
+<li><time>00:42:55.580–00:42:59.580</time> <span>그래서 이 넓이 패치를 만들어 지울 수가 있어요</span></li>
+<li><time>00:42:59.580–00:43:03.580</time> <span>근데 내가 이 위치를 조절하게 되면은</span></li>
+<li><time>00:43:03.580–00:43:06.580</time> <span>무슨 현상이 발생하는지 보면 알겠지만</span></li>
+<li><time>00:43:06.580–00:43:12.580</time> <span>얘를 옮김으로써 여기보다 높아지는 상황들이 발생됩니다</span></li>
+<li><time>00:43:12.580–00:43:16.580</time> <span>딜리에서 미폼으로 하면은 이 회사까지잖아요</span></li>
+<li><time>00:43:16.580–00:43:21.400</time> <span>근데 얘를 옮기게 되면은 그거에 대한 사이드 테스트로 요게 조금씩 이렇게 꼽힙니다.</span></li>
+<li><time>00:43:22.400–00:43:23.700</time> <span>이게 뒤쪽에서 발전을 하는거에요.</span></li>
+<li><time>00:43:23.700–00:43:26.460</time> <span>얘가 조금 땡기면서 위로 올라가는거죠. 양쪽이.</span></li>
+<li><time>00:43:27.100–00:43:28.900</time> <span>이게 발전해요. 얘를 옆으로 이동하게 되는거.</span></li>
+<li><time>00:43:28.900–00:43:30.060</time> <span>이게 발전을 합니다.</span></li>
+<li><time>00:43:30.560–00:43:33.980</time> <span>근데 지금 뭐냐면은 얘는 아이콘이 없는 수준이잖아요.</span></li>
+<li><time>00:43:34.460–00:43:37.880</time> <span>그렇기 때문에 모든 영역에 대해서</span></li>
+<li><time>00:43:37.880–00:43:40.840</time> <span>비호 시그마 N만큼의 노이즈를 줄 수 있죠.</span></li>
+<li><time>00:43:41.400–00:43:45.640</time> <span>근데 만약에 얘가 작으면은 역전 0일밖에 안되면은 하나도 없어요.</span></li>
+<li><time>00:43:45.640–00:43:52.920</time> <span>어떻게 이거가 크지 않기 때문에 얘를 맞춰줘서 얘를 줄이는게 더 있을게</span></li>
+<li><time>00:43:52.920–00:44:00.460</time> <span>근데 만약에 얘가 되게 크다 센터노이브 같은 다이소가 없는 친구가 되게 크다 라고 하면은</span></li>
+<li><time>00:44:00.460–00:44:10.080</time> <span>얘를 이렇게 옮겨서 얘를 줄이는 것보다 얘가 올라가서 얘가 더 많이 들어오는 그 값이 더 커지겠죠</span></li>
+<li><time>00:44:10.080–00:44:15.080</time> <span>그래서 그 경우일 때는 최적화를 하면 이런식으로</span></li>
+<li><time>00:44:15.080–00:44:20.080</time> <span>별로 정확하게 보이지 않고</span></li>
+<li><time>00:44:20.080–00:44:23.080</time> <span>오게 되면 어차피 그게 더 최적화이는데</span></li>
+<li><time>00:44:23.080–00:44:27.080</time> <span>얘들보다 중요할 수가 그렇게 됩니다.</span></li>
+<li><time>00:44:27.080–00:44:30.080</time> <span>그 말은 뭐냐면 전체적인 이 패턴을 봤을 때</span></li>
+<li><time>00:44:30.080–00:44:34.080</time> <span>이 전체적인 이 모양 중에 이 사이드로프트의 높이가</span></li>
+<li><time>00:44:34.080–00:44:38.080</time> <span>최소화가 되는 그 지점을 그리해서 믿어보고요.</span></li>
+</ol></details></section>
+<section id="part-7"><h2>null 이동과 side-lobe trade-off</h2>
+<p class="prose">얘가 가장 낮고 얘가 낮은데 가장 낮은데 얘를 옮김으로써 얘가 투자하는 사이티비스트가 발생하기 때문에 이런 경우일 때는 이렇게 된다. 이런 것들 이런 것들을 여러분들이 어떻게 생각할 수 있냐면 예를 들어서 로봇이라고 할께요 저는 실제 로봇을 하거든요. 로봇을 하는데 로봇은 움직이기 위해 로봇 뒤에다가 마이크를 올려줬어요. 그 진동이 그대로 말 때 모금이 되겠죠. 그 친구는 다이아몬드에 진동이 있을까요?</p>
+<p class="prose">없을까요? 로봇에 진동은 없죠. 거기서 비포밍을 하면 특히 딜레이징 비포밍을 하면 거의 소용이 없다는 얘기죠. 그 얘기를 하고 있어요. 거기 상황에서 스피커 지우겠다고 거기서 다른 스피커 비포밍 하겠다고 이렇게 설계를 하면 어차피 안 된다. 끝난다 이런 것들을 볼 수가 있어요. 오케이, 그럼 몇 시지? 55분 그래서 여기까지 할 수 있겠다? 오케이, 자꾸 끝난다고 해도 좀 더 해서 미안해요. 결국에 그걸 보여주고 있어요.</p>
+<p class="prose">그걸 보여주고 있습니다. 그러니까 너를 만드는 게 너를 깊이 만드는 게 내가 원하는 위치를 만드는 게 결국 공짜가 아니라는 얘기에요. 무슨 말이냐면은 무슨 말이냐고 하면은 지금 타겟이 여기 0라고 했을 때 지금 이 스피커의 위치가 interfere 라는 친구가 얘가 지금 noise라는 의미거든요. noise라는 의미인데 noise가 5도일 때 10도일 때 20도일 때 점점 타겟이랑 가까워지면 가까워질수록 이 null 위치를 이쪽으로 옮겨야 되겠죠.</p>
+<p class="prose">그래서 처음에 20도일 때는 멀리 떨어졌으니까 원래 이 위치에서 조금만 오면 돼요 너리 그렇기 때문에 이 바뀌는 지점이 크게 크지 않아요. 근데 여기도 더 와야 돼요 더 오게 되면 그만큼 이만큼 뻥튀기 되죠. 더 오게 되면 이만큼 뻥튀기가 돼요 그만큼 이쪽으로도 디지털이 발생할 수밖에 없게 돼요. 얘는 그대로 유지가 되지만 얘는 퍼즐티를 여기서 달아놨기 때문에 여기로 유지가 되지만 이쪽 방향으로는 오히려 신호가 증폭되는 그런 형성들이 발생을 합니다.</p>
+<p class="prose">한 가지 조금 더 나아가서 그러면 이게 왜 뻥치기가 되는지를 보면은 이거 그림을 보면 알 수 있어요. 내가 결국에 이 h라는 값은 vector잖아요. w라는 값은 vector 마이크 갯수만큼 m의 element에 갈 거죠. 그랬을 때 내가 그 어떤 거를 지운다 라는 것은 이 노이즈와 수직이 내는 성분을 내정하는 거잖아요. 어떤 벡터 두 개가 오석원화 할 때 두 개를 내정하면 0이잖아요. 그 짓거리를 하고 싶은 거예요 결국에는 이걸 하고 싶은 거예요 사실은 앞에 했던 것도 다 이거랑 똑같은 비결입니다.</p>
+<p class="prose">0이 되는 것도 그 오석원화한 성분을 곱하는 거예요. 예를 하고 싶은 건데 내가 타겟이 여기 있으면 상관이 없어요. 타겟은 여기 있어요. 그러면 얘를 곱하면 얘를 잘 사과 남고 얘가 없어져요. 왜냐하면 이거에 대한 두 개 곱했을 때 크기, 이거는 컨시엔트를 유지해야 하기 때문에 얘는 지금 내가 컨시엔트로 둘잖아요. 이 값은. 컨시엔트로 둘기 때문에 이 값은 그대로 유지가 되기 때문에 얘랑 가까우면 곱하면 얘는 그대로 유지가 됩니다.</p>
+<p class="prose">근데 이쪽으로 오면 만약에 타겟하고 노이즈가 가까워져요. 그러면 얘를 지우기 위해서는 얘를 5소고단한 성을 가져야 되는데 타겟도 거의 5소고단하잖아요. 그러면 얘를 되게 많이 지워지죠. 오판은 이만큼밖에 안 쌓아나가요. 얘를 이만큼 뻥튀기 시키기 위해서는 얘를 키우는 수밖에 없죠. 얘를 키워야지 얘가 이렇게 늘어나잖아요. 그래서 아까 그 컨스트레이트를 만족하게 되잖아요. 그렇기 때문에 얘가 늘어나게 되고 그렇기 때문에 얘가 뻥튀기 되는 거예요.</p>
+<p class="prose">무슨 말인지 이해 되죠? 그렇기 때문에 저 현상이 이런 것들 때문에 발생을 하는 현상이 나와요 네 다 왔어요. 다 왔네요. 그냥 다 할게요. 다 왔어요. 그래서 결국에 이거는 제가 다음 시간에 한 번 더 설명할게요</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary><ol>
+<li><time>00:44:38.080–00:44:41.080</time> <span>얘가 가장 낮고 얘가 낮은데 가장 낮은데</span></li>
+<li><time>00:44:41.080–00:44:46.080</time> <span>얘를 옮김으로써 얘가 투자하는 사이티비스트가 발생하기 때문에</span></li>
+<li><time>00:44:46.080–00:44:49.080</time> <span>이런 경우일 때는 이렇게 된다</span></li>
+<li><time>00:44:49.080–00:44:50.080</time> <span>이런 것들</span></li>
+<li><time>00:44:50.080–00:44:53.080</time> <span>이런 것들을 여러분들이 어떻게 생각할 수 있냐면</span></li>
+<li><time>00:44:53.080–00:44:56.080</time> <span>예를 들어서 로봇이라고 할께요</span></li>
+<li><time>00:44:56.080–00:44:57.080</time> <span>저는 실제 로봇을 하거든요</span></li>
+<li><time>00:44:57.080–00:45:00.000</time> <span>로봇을 하는데 로봇은 움직이기 위해</span></li>
+<li><time>00:45:00.000–00:45:03.000</time> <span>로봇 뒤에다가 마이크를 올려줬어요.</span></li>
+<li><time>00:45:03.000–00:45:06.000</time> <span>그 진동이 그대로 말 때 모금이 되겠죠.</span></li>
+<li><time>00:45:06.000–00:45:09.000</time> <span>그 친구는 다이아몬드에 진동이 있을까요? 없을까요?</span></li>
+<li><time>00:45:09.000–00:45:11.000</time> <span>로봇에 진동은 없죠.</span></li>
+<li><time>00:45:11.000–00:45:14.000</time> <span>거기서 비포밍을 하면</span></li>
+<li><time>00:45:14.000–00:45:16.000</time> <span>특히 딜레이징 비포밍을 하면</span></li>
+<li><time>00:45:16.000–00:45:19.000</time> <span>거의 소용이 없다는 얘기죠.</span></li>
+<li><time>00:45:19.000–00:45:21.000</time> <span>그 얘기를 하고 있어요.</span></li>
+<li><time>00:45:21.000–00:45:23.000</time> <span>거기 상황에서 스피커 지우겠다고</span></li>
+<li><time>00:45:23.000–00:45:25.000</time> <span>거기서 다른 스피커 비포밍 하겠다고</span></li>
+<li><time>00:45:25.000–00:45:28.000</time> <span>이렇게 설계를 하면 어차피 안 된다.</span></li>
+<li><time>00:45:28.000–00:45:31.000</time> <span>끝난다 이런 것들을 볼 수가 있어요</span></li>
+<li><time>00:45:34.000–00:45:36.000</time> <span>오케이, 그럼 몇 시지?</span></li>
+<li><time>00:45:36.000–00:45:37.000</time> <span>55분</span></li>
+<li><time>00:45:38.000–00:45:40.000</time> <span>그래서 여기까지 할 수 있겠다?</span></li>
+<li><time>00:45:40.000–00:45:43.000</time> <span>오케이, 자꾸 끝난다고 해도 좀 더 해서 미안해요</span></li>
+<li><time>00:45:43.000–00:45:45.000</time> <span>결국에 그걸 보여주고 있어요</span></li>
+<li><time>00:45:45.000–00:45:46.000</time> <span>그걸 보여주고 있습니다</span></li>
+<li><time>00:45:46.000–00:45:48.000</time> <span>그러니까 너를 만드는 게</span></li>
+<li><time>00:45:48.000–00:45:49.000</time> <span>너를 깊이 만드는 게</span></li>
+<li><time>00:45:49.000–00:45:50.000</time> <span>내가 원하는 위치를 만드는 게</span></li>
+<li><time>00:45:50.000–00:45:53.000</time> <span>결국 공짜가 아니라는 얘기에요</span></li>
+<li><time>00:45:53.000–00:45:54.000</time> <span>무슨 말이냐면은</span></li>
+<li><time>00:45:54.000–00:45:56.000</time> <span>무슨 말이냐고 하면은</span></li>
+<li><time>00:45:56.000–00:46:00.700</time> <span>지금 타겟이 여기 0라고 했을 때</span></li>
+<li><time>00:46:00.700–00:46:05.440</time> <span>지금 이 스피커의 위치가</span></li>
+<li><time>00:46:05.440–00:46:06.660</time> <span>interfere 라는 친구가</span></li>
+<li><time>00:46:06.660–00:46:11.400</time> <span>얘가 지금 noise라는 의미거든요</span></li>
+<li><time>00:46:11.400–00:46:12.340</time> <span>noise라는 의미인데</span></li>
+<li><time>00:46:12.340–00:46:16.600</time> <span>noise가 5도일 때 10도일 때 20도일 때</span></li>
+<li><time>00:46:16.600–00:46:19.660</time> <span>점점 타겟이랑 가까워지면 가까워질수록</span></li>
+<li><time>00:46:19.660–00:46:23.620</time> <span>이 null 위치를 이쪽으로 옮겨야 되겠죠</span></li>
+<li><time>00:46:23.620–00:46:30.420</time> <span>그래서 처음에 20도일 때는 멀리 떨어졌으니까 원래 이 위치에서 조금만 오면 돼요 너리</span></li>
+<li><time>00:46:30.420–00:46:36.580</time> <span>그렇기 때문에 이 바뀌는 지점이 크게 크지 않아요</span></li>
+<li><time>00:46:36.580–00:46:42.480</time> <span>근데 여기도 더 와야 돼요 더 오게 되면 그만큼 이만큼 뻥튀기 되죠</span></li>
+<li><time>00:46:42.480–00:46:49.160</time> <span>더 오게 되면 이만큼 뻥튀기가 돼요 그만큼 이쪽으로도 디지털이 발생할 수밖에 없게 돼요</span></li>
+<li><time>00:46:49.160–00:46:52.500</time> <span>얘는 그대로 유지가 되지만 얘는 퍼즐티를 여기서 달아놨기 때문에</span></li>
+<li><time>00:46:52.500–00:46:59.660</time> <span>여기로 유지가 되지만 이쪽 방향으로는 오히려 신호가 증폭되는 그런 형성들이 발생을 합니다</span></li>
+<li><time>00:47:02.160–00:47:07.580</time> <span>한 가지 조금 더 나아가서 그러면 이게 왜 뻥치기가 되는지를 보면은</span></li>
+<li><time>00:47:07.580–00:47:09.660</time> <span>이거 그림을 보면 알 수 있어요</span></li>
+<li><time>00:47:09.660–00:47:12.540</time> <span>내가 결국에 이 h라는 값은 vector잖아요</span></li>
+<li><time>00:47:12.540–00:47:18.160</time> <span>w라는 값은 vector 마이크 갯수만큼 m의 element에 갈 거죠</span></li>
+<li><time>00:47:18.160–00:47:23.440</time> <span>그랬을 때 내가 그 어떤 거를 지운다 라는 것은</span></li>
+<li><time>00:47:23.440–00:47:30.300</time> <span>이 노이즈와 수직이 내는 성분을 내정하는 거잖아요</span></li>
+<li><time>00:47:30.300–00:47:35.160</time> <span>어떤 벡터 두 개가 오석원화 할 때 두 개를 내정하면 0이잖아요</span></li>
+<li><time>00:47:35.160–00:47:38.320</time> <span>그 짓거리를 하고 싶은 거예요 결국에는 이걸 하고 싶은 거예요 사실은</span></li>
+<li><time>00:47:38.320–00:47:40.440</time> <span>앞에 했던 것도 다 이거랑 똑같은 비결입니다</span></li>
+<li><time>00:47:40.440–00:47:43.320</time> <span>0이 되는 것도 그 오석원화한 성분을 곱하는 거예요</span></li>
+<li><time>00:47:43.320–00:47:48.000</time> <span>예를 하고 싶은 건데 내가 타겟이 여기 있으면 상관이 없어요</span></li>
+<li><time>00:47:48.000–00:47:54.880</time> <span>타겟은 여기 있어요. 그러면 얘를 곱하면 얘를 잘 사과 남고 얘가 없어져요.</span></li>
+<li><time>00:47:54.880–00:48:00.500</time> <span>왜냐하면 이거에 대한 두 개 곱했을 때 크기, 이거는 컨시엔트를 유지해야 하기 때문에</span></li>
+<li><time>00:48:00.500–00:48:06.600</time> <span>얘는 지금 내가 컨시엔트로 둘잖아요. 이 값은. 컨시엔트로 둘기 때문에 이 값은 그대로 유지가 되기 때문에</span></li>
+<li><time>00:48:06.600–00:48:09.320</time> <span>얘랑 가까우면 곱하면 얘는 그대로 유지가 됩니다.</span></li>
+<li><time>00:48:10.140–00:48:13.880</time> <span>근데 이쪽으로 오면 만약에 타겟하고 노이즈가 가까워져요.</span></li>
+<li><time>00:48:13.880–00:48:20.120</time> <span>그러면 얘를 지우기 위해서는 얘를 5소고단한 성을 가져야 되는데 타겟도 거의 5소고단하잖아요.</span></li>
+<li><time>00:48:20.120–00:48:23.540</time> <span>그러면 얘를 되게 많이 지워지죠. 오판은 이만큼밖에 안 쌓아나가요.</span></li>
+<li><time>00:48:23.540–00:48:29.620</time> <span>얘를 이만큼 뻥튀기 시키기 위해서는 얘를 키우는 수밖에 없죠.</span></li>
+<li><time>00:48:29.620–00:48:33.020</time> <span>얘를 키워야지 얘가 이렇게 늘어나잖아요.</span></li>
+<li><time>00:48:33.020–00:48:35.660</time> <span>그래서 아까 그 컨스트레이트를 만족하게 되잖아요.</span></li>
+<li><time>00:48:35.660–00:48:40.540</time> <span>그렇기 때문에 얘가 늘어나게 되고 그렇기 때문에 얘가 뻥튀기 되는 거예요.</span></li>
+<li><time>00:48:40.540–00:48:44.540</time> <span>무슨 말인지 이해 되죠?</span></li>
+<li><time>00:48:44.540–00:48:48.540</time> <span>그렇기 때문에 저 현상이 이런 것들 때문에 발생을 하는 현상이 나와요</span></li>
+<li><time>00:48:48.540–00:48:52.540</time> <span>네</span></li>
+<li><time>00:48:52.540–00:48:56.540</time> <span>다 왔어요</span></li>
+<li><time>00:48:56.540–00:49:00.540</time> <span>다 왔네요. 그냥 다 할게요. 다 왔어요</span></li>
+<li><time>00:49:00.540–00:49:04.540</time> <span>그래서 결국에 이거는 제가 다음 시간에 한 번 더 설명할게요</span></li>
+</ol></details></section>
 </main></body></html>
