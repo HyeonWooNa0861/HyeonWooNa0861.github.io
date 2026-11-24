@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 5 PDF](https://cs231n.stanford.ed
 
 > **핵심:** CNN은 이미지를 평평한 벡터로만 보지 않고, 지역 연결과 가중치 공유로 공간 구조를 모델에 넣는다. 필터 하나는 모든 위치에서 같은 패턴을 찾고, 여러 층은 작은 지역 관측을 넓은 receptive field와 계층적 표현으로 확장한다.
 
+완전연결층은 이미지 왼쪽 위의 선과 오른쪽 아래의 같은 선을 서로 다른 parameter로 배운다. Convolution filter는 작은 영역을 보면서 이미지 전체 위치에 같은 가중치를 적용하므로, 패턴이 이동해도 같은 검출기를 재사용한다. Feature map의 한 값은 특정 위치에서 그 패턴이 얼마나 강한지를 나타내고, 깊은 층은 여러 지역 패턴을 조합해 더 큰 구조를 표현한다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 4 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 신경망의 표현력은 affine transform 사이에 비선형성을 넣는 데서 나오고, 학습 가능성은 계산 그래프의 chain rule을 역순으로 재사용하는 backpropagation에서 나온다.
 
+선형 변환만 여러 번 이어도 전체는 다시 하나의 선형 변환이므로 굽은 결정 경계를 만들 수 없다. Activation function은 이 합쳐짐을 막아 층마다 새로운 표현을 만든다. Backpropagation은 최종 loss 변화량을 계산 그래프의 각 연산으로 거꾸로 나누어 보내며, 각 parameter가 오차에 기여한 정도를 한 번의 역방향 계산으로 구한다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

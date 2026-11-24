@@ -30,6 +30,8 @@ Official slides: [Lecture 14 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** GAN은 확률값 대신 discriminator의 학습 신호로 generator를 훈련하고, diffusion은 데이터에 노이즈를 넣은 뒤 그 과정을 되감는 denoiser를 학습한다. 현대 생성 시스템은 VAE, adversarial loss, diffusion/Transformer를 **경쟁 모델이 아니라 조합 가능한 부품**으로 사용한다.
 
+GAN은 생성 결과와 실제 데이터를 구분하는 판별기의 신호로 generator를 고치므로 선명한 표본을 만들 수 있지만 두 모델의 균형이 깨지면 학습이 불안정하다. Diffusion은 깨끗한 데이터에 noise를 더하는 알려진 과정을 만든 뒤, 각 단계에서 noise를 제거하는 방향을 학습한다. 두 방법은 같은 `이미지 생성` 결과를 내더라도 학습 신호와 생성 절차가 다르다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

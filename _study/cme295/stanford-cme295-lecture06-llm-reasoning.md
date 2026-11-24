@@ -51,7 +51,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에는 답을 바로 내는 방식보다 중간 추론을 활용하는 방식이 도움이 될 수 있다. 강의는 일반 LLM이 코드 작성·디버깅·수필·시 창작에는 강해도 복잡한 추론, 고정된 지식 시점, 외부 행동의 부재, 자유 형식 출력 평가에서 제약을 갖는다고 설명한다. Reasoning model은 답 앞에 reasoning chain을 생성하는 방식으로 소개되며, chain-of-thought를 더 큰 규모로 확장한 발상과 이어진다. 추론 토큰이 늘어나면 생성 단계와 계산 비용도 증가한다.
 
+예를 들어 여러 조건을 만족하는 숫자를 찾는 문제에서 첫 직감 하나만 출력하면 중간 조건을 빠뜨려도 고칠 기회가 없다. 조건을 하나씩 적용해 후보를 줄이거나 서로 다른 풀이 후보를 만들면, 마지막 답을 내기 전에 모순을 찾을 여지가 생긴다. Reasoning token은 이 중간 계산에 쓰이는 출력 공간이다. 다만 토큰을 많이 쓴다는 사실만으로 풀이가 옳아지는 것은 아니므로, 계산 예산과 검증 기준을 함께 보아야 한다.
+
 이후에는 reasoning 평가와 학습 방법을 정리한다. Coding benchmark로 HumanEval, CodeForces, SWE-bench가, math benchmark로 AIME와 GSM 8K가 언급된다. pass@k는 k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric이며, n개 sample 중 c개가 성공했을 때 1 - C(n-c, k) / C(n, k)로 유도된다. Temperature는 낮으면 diverse하지 않고 높으면 token quality가 흔들릴 수 있어 benchmark마다 명시되어야 하며, consensus@k와 self-consistency도 관련 metric으로 소개된다.
+
+`pass@k`와 `consensus@k`는 여러 답을 쓰지만 묻는 내용이 다르다. pass@k는 후보 중 하나라도 정답이면 성공으로 보므로 코드 테스트처럼 정답 검증기가 있을 때 유용하다. Consensus는 가장 자주 나온 답을 고르므로 정답 검증기가 없어도 쓸 수 있지만, 여러 후보가 같은 오답에 모이면 실패한다. 따라서 숫자만 비교하기 전에 후보 생성 조건과 정답 판정 방식을 확인해야 한다.
 
 강의의 핵심 학습 알고리즘은 GRPO이다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명한다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둔다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만든다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명된다.
 

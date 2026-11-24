@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 3 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 정규화는 훈련 오차가 아니라 보지 못한 데이터의 오차를 줄이기 위한 설계이고, 최적화는 그 목적함수의 지형을 기울기로 탐색하는 과정이다. 좋은 결과는 optimizer 이름 하나보다 학습률, 스케줄, 초기화, 데이터 표현의 조합에서 나온다.
 
+훈련 사진만 완벽히 외운 분류기는 새 사진의 조명이나 배경이 달라지면 쉽게 틀린다. Regularization은 가능한 해 가운데 지나치게 복잡하거나 특정 표본에 민감한 해를 덜 선호하게 만든다. Gradient는 현재 parameter를 조금 바꿨을 때 loss가 어느 방향으로 커지는지를 뜻하며, optimizer는 반대 방향의 이동량을 정해 loss를 낮춘다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

@@ -50,9 +50,13 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 토큰화와 word2vec은 텍스트를 모델이 처리할 표현으로 바꾸고, RNN의 긴 의존성 문제는 self-attention과 Transformer로 이어진다. 강의는 encoder·decoder 구조에서 RoPE, grouped-query attention, pre-norm, BERT·GPT·T5, MoE와 temperature sampling까지 주요 변형을 다시 연결한다. 학습 규모에서는 파라미터 수와 토큰 수의 균형, 100B 파라미터에 최소 2T 토큰이라는 강의의 경험칙, FlashAttention의 HBM·SRAM 최적화, data/model parallelism을 복습한다.
 
+용어를 시간순 목록으로 외우기보다 한 요청이 처리되는 흐름을 따라가면 전체 수업이 연결된다. 입력 문장은 token과 embedding으로 바뀌고, Transformer가 문맥 표현을 계산하며, decoder가 다음 토큰 분포를 만든다. Pre-training은 이 기본 능력을 만들고 SFT·preference tuning은 응답 행동을 조정한다. 모델 내부 지식만으로 부족하면 RAG나 tool을 사용하고, 마지막에는 과제에 맞는 평가가 결과를 판정한다. 각 기술은 이 흐름의 서로 다른 병목을 해결한다.
+
 강의는 LLM 학습 과정을 pre-training, SFT, preference tuning으로 다시 정리한다. preference tuning에서는 LLM을 policy처럼 보고 reward model과 Bradley-Terry formulation을 사용하며, reward hacking을 막기 위해 base model 또는 이전 RL iteration에서 너무 멀어지지 않도록 한다. Reasoning model에서는 chain of thought 또는 hidden reasoning chain을 만들도록 RL을 사용하고, PPO와 달리 GRPO는 value model 없이 여러 completion의 상대 reward로 advantage를 계산한다. GRPO Done Right와 DAPO는 length bias를 줄이는 extension으로 언급된다. 이어 RAG, tool calling, agentic workflow, LLM-as-a-Judge, 주요 benchmark가 final exam 범위로 묶여 복습된다.
 
 두 번째와 세 번째 부분은 2025년 트렌드와 수업 이후의 방향이다. Transformer는 Vision Transformer, VLM, LLaVA, Llama 3식 cross-attention, diffusion transformer처럼 non-text 영역으로 확장되었고, 반대로 image diffusion의 아이디어는 text generation에 들어와 masked diffusion model 또는 diffusion-based LLM으로 연구되고 있다. LLaDA, Google I/O의 experimental text diffusion model, Inception이 예시로 언급되며, diffusion LLM은 autoregressive decoding보다 훨씬 적은 forward pass로 긴 출력과 fill-in-the-middle task에서 속도 이점을 줄 수 있지만 frontier autoregressive model 수준으로 따라잡는 작업은 진행 중이다. 마지막으로 DeepSeek OCR, 2D RoPE, Muon과 MuonClip, RMSNorm, data curation, mid-training, model collapse, small language models, hardware specialization, AI-assisted coding, ChatGPT Atlas, continuous learning, hallucination, personalization, interpretability, safety, 그리고 arXiv, NeurIPS, HuggingFace trending papers, X, YouTube, company blogs로 최신 흐름을 따라가는 방법이 소개된다.
+
+이 트렌드들은 모두 기존 Transformer를 버린다는 뜻은 아니다. Vision Transformer는 이미지 조각을 token처럼 다루고, VLM은 이미지 표현과 언어 표현을 연결하며, diffusion LLM은 왼쪽부터 한 토큰씩 생성하는 방식과 다른 생성 순서를 탐색한다. 즉 같은 구성요소를 다른 입력에 확장하는 연구와, 생성 절차 자체를 바꾸는 연구를 구분해 읽어야 성능 주장도 올바르게 비교할 수 있다.
 
 ## 핵심 개념
 

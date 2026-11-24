@@ -24,6 +24,8 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 
 > **핵심:** Lecture 9는 지금까지의 likelihood-based generative model에서 벗어나 GAN을 도입한다. Autoregressive model은 chain rule로 $$p_\theta(x)$$를 직접 계산하고, VAE는 marginal likelihood가 어려워 ELBO를 최적화하며, normalizing flow는 change of variables로 exact likelihood를 계산한다.
 
+실제 사진 묶음과 생성 사진 묶음만 있고 각 사진의 정확한 확률은 모른다고 하자. 두 묶음을 잘 구분하는 classifier를 학습하면 어디에서 생성 분포가 실제 분포와 다른지 신호를 얻을 수 있다. GAN의 discriminator는 이 비교 신호를 만들고 generator는 그 구분을 어렵게 만들지만, discriminator의 출력 자체를 $$p_\theta(x)$$로 해석하면 안 된다.
+
 ## 전체 흐름
 
 <details markdown="block">

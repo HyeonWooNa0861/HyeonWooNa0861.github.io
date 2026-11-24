@@ -30,6 +30,8 @@ Official slides: [Lecture 2 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** 이미지 분류는 사람이 규칙을 직접 쓰는 문제가 아니라, 데이터로부터 점수 함수를 학습하는 문제다. k-NN은 데이터와 거리의 의미를, 선형 분류기는 점수·손실·최적화로 이어지는 학습의 기본 틀을 보여준다.
 
+예를 들어 $$32\times32\times3$$ 이미지는 3,072개 숫자로 들어오고, 선형 분류기는 이 숫자에 class별 가중치를 곱해 점수를 만든다. 한 번의 선형 계산은 빠르지만 고양이의 얼굴이 여러 위치와 자세로 나타나는 복잡한 패턴을 하나의 template로만 처리한다. Loss는 정답 점수가 다른 class보다 얼마나 높아야 하는지 수치화하고, optimization은 그 기준을 만족하도록 가중치를 바꾼다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

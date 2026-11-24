@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 9 PDF](https://cs231n.stanford.ed
 
 > **핵심:** 분류가 이미지 전체의 한 레이블을 예측한다면 segmentation은 픽셀마다, detection은 객체마다 구조화된 출력을 예측한다. 현대 방법은 CNN/ViT backbone의 feature를 공유하고 task-specific head를 붙이며, Grad-CAM 같은 도구는 예측을 지지한 공간적 근거를 점검하게 한다.
 
+거리 사진 한 장에 자동차와 사람이 함께 있다면 `자동차 사진`이라는 레이블 하나만으로는 위치와 개수를 알 수 없다. Detection은 객체마다 class와 bounding box를, semantic segmentation은 각 pixel의 class를 출력한다. Backbone은 공통 시각 특징을 만들고 head는 필요한 출력 형태로 바꾸며, Grad-CAM은 모델의 내부 근거를 완전히 설명하기보다 어느 영역이 점수에 강하게 기여했는지 점검하는 도구다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

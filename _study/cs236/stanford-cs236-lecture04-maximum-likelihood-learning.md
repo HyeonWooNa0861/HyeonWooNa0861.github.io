@@ -23,6 +23,8 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 
 > **핵심:** Lecture 4는 이전 강의의 autoregressive model을 마무리하면서 시작한다. RNN은 지금까지의 문맥을 하나의 hidden vector에 압축하기 때문에 long-range dependency와 exploding/vanishing gradient 문제가 생긴다.
 
+훈련 문장이 주어졌다면 모델이 그 문장의 각 다음 token에 높은 확률을 주도록 조정하는 것이 maximum likelihood다. RNN은 앞선 내용을 hidden state 하나에 계속 담으려 하므로 멀리 떨어진 정보가 약해질 수 있다. Attention과 convolution은 이 정보 전달 경로를 바꾸지만, 관측 데이터의 log-likelihood를 높인다는 학습 기준은 그대로 유지된다.
+
 ## 전체 흐름
 
 <details markdown="block">

@@ -50,7 +50,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호와 어긋날 수 있다. Preference tuning은 같은 prompt에 대한 선호 응답과 비선호 응답을 비교해 이 차이를 학습한다. 강의는 pointwise·pairwise·listwise 중 pairwise data가 비교적 다루기 쉽다고 설명한다. 선호 쌍은 양의 temperature로 여러 completion을 sampling하거나 기존 로그의 나쁜 응답을 다시 쓰는 방식으로 만들 수 있다. 평가는 사람, LLM-as-a-Judge 또는 BLEU/ROUGE 같은 지표를 활용할 수 있다.
 
+여기서 선호는 사실 정답을 다시 외우게 하는 신호와 다르다. 두 응답이 모두 사실을 포함해도 하나는 질문을 직접 해결하고 근거를 분명히 밝히는 반면, 다른 하나는 장황하거나 위험한 지시를 그대로 따를 수 있다. 사람은 같은 prompt에 대한 두 답 중 더 나은 쪽을 고르고, preference tuning은 그 비교를 모델의 출력 확률에 반영한다. 그래서 SFT가 “이 질문에는 이런 답이 있다”를 보여 준다면, 선호학습은 “가능한 답들 중 어떤 답이 더 바람직한가”를 가르친다.
+
 강의의 중심은 RLHF이다. 전통적인 RL의 agent, state, action, policy, reward를 LLM에 대응시키면 agent는 LLM, state는 지금까지의 input, action은 next token, policy는 next-token probability distribution, reward는 completion에 대한 preference signal이다. RLHF는 먼저 preference pair로 reward model을 학습하고, 그 frozen reward model을 사용해 SFT model의 policy를 더 높은 reward 쪽으로 조정한다. Reward model 학습에는 Bradley-Terry formulation이 쓰이며, P(yi > yj) = exp(ri) / (exp(ri) + exp(rj)) = sigma(ri - rj), loss는 -E log sigma(r_w - r_l) 형태로 설명된다.
+
+한 응답은 여러 토큰으로 이루어지지만 보상은 대개 완성된 응답에 매겨진다. Reward model은 선호 쌍을 보고 각 완성본에 점수를 주는 법을 배우고, policy는 높은 점수를 받을 문장을 만들도록 토큰 확률을 조정한다. 이때 reward만 무작정 높이면 문장이 원래 언어 모델의 자연스러운 분포에서 벗어날 수 있어, 뒤의 KL penalty가 기준 모델과의 거리를 함께 제한한다.
 
 후반부는 PPO, Best-of-N, DPO의 trade-off를 비교한다. PPO clipping은 sampling에 사용한 old policy 대비 확률비를 기준으로 큰 update의 목적함수상 이득을 제한한다. RLHF에서 별도로 사용하는 KL penalty는 고정 reference/SFT policy에서의 과도한 이탈을 억제한다. 두 기준은 서로 다르며, clipping만으로 reference policy와의 거리가 제한된다고 볼 수 없다. Policy, value function, reward model, reference model 등 많은 model component와 hyperparameter가 필요하고 reward hacking, instability, exploration 문제가 남는다. Best-of-N은 RL training을 건너뛰고 inference에서 여러 completion을 reward model로 score해 최고를 고르지만 latency와 cost가 커진다. DPO는 Direct Preference Optimization으로, reward model 없이 preference pair에 대한 supervised loss를 직접 최적화해 policy와 reference model 두 개만 쓰지만, 강의에서는 PPO가 보통 더 높은 성능을 줄 수 있고 DPO에는 distribution shift 문제가 있다고 정리한다.
 

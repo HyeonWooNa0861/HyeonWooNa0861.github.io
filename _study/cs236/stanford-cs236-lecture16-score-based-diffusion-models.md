@@ -29,6 +29,8 @@ keywords:
 
 > **핵심:** Lecture 16은 score-based model과 diffusion model을 하나의 관점으로 묶는다. Density $$p(x)$$ 자체보다 시간별 score field를 학습하고, noise에서 출발한 reverse process로 sample을 만드는 것이 핵심이다.
 
+깨끗한 이미지에 noise를 조금씩 더하면 마지막에는 다루기 쉬운 Gaussian에 가까워진다. 생성은 이 경로를 거꾸로 가야 하지만, 각 시점에 어느 방향으로 noise를 제거할지 알 수 없다. 시간 조건부 score는 그 방향을 학습하며, reverse SDE와 probability flow ODE는 같은 분포 변화를 서로 다른 궤적으로 기술한다.
+
 ## 전체 흐름
 
 <details markdown="block">

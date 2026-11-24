@@ -30,6 +30,8 @@ Official slides: [Lecture 10 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** 비디오는 단순히 이미지가 여러 장 모인 입력이 아니다. 정적 장면 단서가 강할 때는 프레임별 CNN도 훌륭한 기준선이지만, 행동의 방향과 순서를 구분하려면 특징을 **언제, 어느 깊이에서 시간축으로 결합할지** 설계해야 한다.
 
+정지 frame 한 장만 보면 사람이 문을 여는 중인지 닫는 중인지 구분하기 어렵다. 연속 frame의 차이는 움직임의 방향과 속도를 제공하지만, 모든 frame을 한꺼번에 처리하면 계산량이 커진다. Temporal fusion은 공간 특징을 먼저 만든 뒤 합칠지, 초기부터 시간 정보를 함께 계산할지를 정하는 설계이며 optical flow는 pixel 이동을 명시적으로 표현하는 한 방법이다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

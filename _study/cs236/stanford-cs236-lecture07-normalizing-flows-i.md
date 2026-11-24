@@ -23,6 +23,8 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 
 > **핵심:** 이 강의는 먼저 VAE를 autoencoder로 다시 해석하면서 시작한다. VAE의 encoder $$q_\phi(z \mid x)$$는 입력 $$x$$를 latent variable distribution으로 보내고, decoder $$p_\theta(x \mid z)$$는 그 latent sample에서 원래 입력이 얼마나 잘 설명되는지 평가한다.
 
+단순한 Gaussian 표본을 여러 번 휘고 늘려 복잡한 데이터 모양으로 바꾸는 과정을 생각하면 flow의 목적이 보인다. 다만 변환이 한 영역을 넓히거나 압축하면 같은 점 주변의 확률밀도도 달라진다. Jacobian determinant는 바로 이 부피 변화를 보정하며, 역변환 가능성은 생성과 likelihood 계산을 모두 정확하게 유지한다.
+
 ## 전체 흐름
 
 <details markdown="block">

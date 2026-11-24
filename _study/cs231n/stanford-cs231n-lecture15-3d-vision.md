@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 15 PDF](https://cs231n.stanford.e
 
 > **핵심:** 3D vision에는 pixel처럼 유일한 표준 표현이 없다. Point cloud, mesh, voxel, implicit field는 각각 저장, topology, differentiability, rendering 비용이 다르며, **표현 선택이 곧 가능한 network와 loss를 결정한다.**
 
+같은 3D 물체도 point cloud는 표면의 점 목록, mesh는 점과 면의 연결, voxel은 공간 격자의 점유 여부로 저장한다. Point cloud는 점 순서가 의미 없고 mesh는 연결 구조가 불규칙하며, voxel은 해상도를 높일수록 빈 공간까지 메모리를 쓴다. 따라서 입력 표현을 고르면 network가 지켜야 할 불변성과 비교에 사용할 loss도 함께 정해진다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

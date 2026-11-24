@@ -24,6 +24,8 @@ Source PDF: [4 Perception (2).pdf]({{ "/assets/pdfs/study/autonomous-driving/lec
 
 > **핵심:** Localization은 단일 물체의 class와 box를, detection은 모든 물체 각각의 class와 box를 요구한다. IoU는 예측 box와 정답 box의 겹침을 평가한다. R-CNN은 약 2,000개 region proposal을 선별해 CNN으로 해석하고 box를 보정하지만, 제안·영역별 반복 계산이 시간 비용을 만든다.
 
+전방 영상에 자동차 세 대와 보행자 한 명이 있을 때 `자동차가 있다`는 분류 결과만으로는 제동 대상을 정할 수 없다. 차량은 각 물체의 종류와 위치를 따로 알아야 한다. Localization은 대표 물체 하나를 찾는 연습 문제이고, detection은 개수가 정해지지 않은 실제 장면으로 확장한 문제다. 곧바로 모든 위치를 검사하면 후보가 지나치게 많아지므로 R-CNN은 먼저 물체일 법한 영역을 제안한다. 이후 분류와 box 보정이 필요한 이유는 proposal이 **물체 후보**일 뿐, 정확한 class와 경계를 보장하는 정답 box는 아니기 때문이다.
+
 ## 전체 흐름
 
 | 범위 | 주제 | 이해할 질문 |

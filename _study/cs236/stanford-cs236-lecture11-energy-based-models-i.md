@@ -24,6 +24,8 @@ keywords:
 
 > **핵심:** Lecture 11은 energy-based model(EBM)을 통해 생성 모델의 design space를 다시 정리한다. Autoregressive model은 chain rule로 joint probability를 조건부들의 곱으로 만들기 때문에 likelihood 계산과 sampling이 명확하지만 순서와 factorization 구조가 들어간다.
 
+EBM은 입력마다 먼저 `얼마나 그럴듯한가`를 나타내는 energy를 매긴다. 낮은 energy에 높은 확률을 주려면 모든 가능한 입력의 점수를 합친 partition function $$Z(\theta)$$로 정규화해야 한다. 모델 형태는 자유로워지지만, 고차원에서는 이 전체 합을 계산하기 어렵다는 대가가 생긴다.
+
 ## 전체 흐름
 
 <details markdown="block">

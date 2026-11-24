@@ -30,6 +30,8 @@ Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** 대규모 학습은 GPU 수를 늘리는 문제가 아니라 **연산, 메모리, 통신을 서로 다른 병렬화 축으로 분해하는 시스템 설계 문제**다. 가장 느린 데이터 이동 경로가 전체 처리량을 결정한다.
 
+한 GPU의 메모리에 모델과 activation이 들어가지 않거나 학습 시간이 너무 길면 계산을 여러 장치에 나눈다. Batch를 나누는 data parallelism은 각 장치가 만든 gradient를 다시 합쳐야 하고, layer나 tensor를 나누는 방식은 중간 activation을 주고받아야 한다. 따라서 GPU 계산이 빨라도 통신 시간이 더 길면 장치 수를 늘린 만큼 학습이 빨라지지 않는다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

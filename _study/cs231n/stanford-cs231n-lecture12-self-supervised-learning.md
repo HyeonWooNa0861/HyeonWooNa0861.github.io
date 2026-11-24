@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.e
 
 > **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 한다.
 
+레이블 없는 이미지에서도 일부 patch를 가리고 복원하게 하거나 같은 이미지의 두 변형을 가깝게 만들 수 있다. 이때 모델이 배경색 같은 쉬운 단서만 이용하면 pretext loss는 낮아져도 물체 의미는 배우지 못한다. 자기지도 목표의 역할은 정답 레이블을 흉내 내는 것이 아니라 이후 여러 task에서 재사용할 구조를 입력 자체에서 찾게 하는 데 있다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

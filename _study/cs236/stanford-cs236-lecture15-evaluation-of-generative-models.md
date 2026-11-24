@@ -26,6 +26,8 @@ keywords:
 
 > **핵심:** Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룬다. Discriminative model은 task가 비교적 명확하다.
 
+같은 생성 모델도 압축에 쓸 때는 likelihood가, 사람이 볼 이미지를 만들 때는 fidelity와 diversity가 더 중요할 수 있다. 한 지표가 좋아도 다른 목적까지 자동으로 좋아지는 것은 아니다. 따라서 평가식부터 고르는 대신 모델을 어디에 쓸지 정하고, 그 목적에서 생길 수 있는 실패를 함께 측정해야 한다.
+
 ## 전체 흐름
 
 <details markdown="block">

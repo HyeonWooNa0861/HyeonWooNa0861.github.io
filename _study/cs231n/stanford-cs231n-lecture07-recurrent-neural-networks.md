@@ -30,6 +30,8 @@ Official slides: [Lecture 7 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** RNN은 같은 transition function을 시간축에 반복 적용해 가변 길이 시퀀스를 처리한다. 이 공유 구조는 강력하지만 긴 경로에서 같은 Jacobian을 반복 곱하므로 vanishing/exploding gradient가 생기며, LSTM은 additive cell-state path와 gate로 장기 정보 흐름을 개선한다.
 
+문장처럼 길이가 달라지는 입력에서는 현재 단어만 보고 다음 출력을 정할 수 없다. RNN의 hidden state는 이전 입력을 요약해 다음 시점으로 넘기지만, 오래전 정보까지 gradient가 가려면 같은 변환을 여러 번 통과해야 한다. LSTM의 cell state는 정보를 더 직접적으로 전달하고, gate는 무엇을 유지하고 지울지를 값의 범위로 조절한다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

@@ -50,7 +50,11 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 작업마다 새 모델을 처음부터 학습하는 대신, 대규모 사전학습 모델을 목적에 맞게 조정할 수 있다. 사전학습은 Common Crawl, Wikipedia, Reddit, GitHub, Stack Overflow 같은 텍스트·코드 말뭉치에서 다음 토큰을 예측하는 비용 큰 단계다. 학습 데이터는 수천억에서 수십조 토큰까지 커지며, 강의는 GPT-3의 300B 토큰과 Llama 3의 15T 토큰을 예로 든다. FLOPs는 총 연산량, FLOPS는 초당 연산 속도를 뜻한다. 학습 비용은 토큰 수와 파라미터 수에 대략 비례하므로, 고정된 계산량에서는 Chinchilla law가 강조하는 두 규모의 균형을 고려해야 한다.
 
+사전학습과 SFT의 차이는 **언어를 폭넓게 익히는 단계**와 **원하는 역할로 답하는 법을 익히는 단계**로 보면 된다. 사전학습 모델은 많은 글을 통해 문장과 지식의 패턴을 배우지만, 사용자의 지시를 친절하고 안전하게 따르도록 자동으로 정렬되지는 않는다. 뒤에서 다루는 SFT는 비교적 적은 고품질 `지시–응답` 예제로 이 응답 방식을 가르친다. 이 때문에 두 단계는 데이터의 양뿐 아니라 목적도 다르다.
+
 이후에는 실제 대규모 학습을 가능하게 하는 시스템 기법이 이어진다. forward pass의 activation, backward pass의 gradient, Adam의 first/second moment optimizer state가 GPU 메모리를 차지하므로 data parallelism, ZeRO 1/2/3, expert/tensor/pipeline parallelism 같은 분산 기법이 필요하다. FlashAttention은 HBM과 SRAM의 속도 차이를 이용해 attention 계산의 HBM read/write를 줄이고, tiling과 recomputation으로 exact attention을 더 빠르고 메모리 효율적으로 만든다.
+
+분산 기법의 이름은 “무엇을 나누는가”로 구분하면 된다. Data parallelism은 같은 모델을 여러 GPU에 두고 서로 다른 데이터를 처리하며, tensor·pipeline parallelism은 한 모델의 계산 자체를 여러 GPU에 나눈다. ZeRO는 각 GPU에 중복 저장되던 optimizer state, gradient, parameter를 단계적으로 분할한다. 즉 계산을 더 많이 만드는 기술이 아니라, 한 장의 GPU에 들어가지 않는 학습 상태를 여러 장에 배치하는 기술이다.
 
 마지막 부분은 사전학습 모델을 유용한 assistant로 만드는 SFT와 instruction tuning을 다룬다. SFT는 입력에는 loss를 걸지 않고 출력 토큰 예측을 학습하며, story writing, list generation, explanation, code, math, safety refusal 같은 고품질 instruction data를 사용한다. 데이터 규모는 pre-training보다 훨씬 작고, 평가와 prompt distribution 관리가 어렵다. 이어서 LoRA는 frozen pre-trained weight W0에 낮은 rank의 BA 업데이트만 학습하는 방식으로 fine-tuning 비용을 줄이며, QLoRA는 frozen weight를 NF4로 quantize하고 A/B는 BF16으로 학습해 큰 VRAM 절감을 얻는 방법으로 소개된다.
 

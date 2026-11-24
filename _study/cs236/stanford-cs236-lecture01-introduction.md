@@ -24,6 +24,8 @@ keywords:
 
 > **핵심:** 1강은 CS236 전체를 여는 강의로, deep generative model을 단순한 이미지 생성 도구가 아니라 복잡한 데이터 분포를 모델링하는 통계적 방법으로 정의한다. 강의의 출발점은 computer vision, NLP, robotics, computational speech가 모두 high-dimensional unstructured input을 이해해야 한다는 점이다.
 
+사진 한 장을 입력받았다고 생각해 보자. 분류 모델은 그 사진의 이름을 맞히는 데 집중하지만, 생성 모델은 비슷한 사진이 어떤 규칙으로 나타나는지까지 설명하려 한다. 여기서 $$p(x)$$는 정답표가 아니라 가능한 데이터 각각에 얼마나 무게를 둘지를 나타내는 규칙이며, 이후 모델들은 이 규칙을 계산하거나 표본으로 구현하는 서로 다른 방법이다.
+
 ## 전체 흐름
 
 <details markdown="block">

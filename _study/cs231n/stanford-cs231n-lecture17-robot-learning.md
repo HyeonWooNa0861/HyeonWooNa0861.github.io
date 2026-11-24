@@ -30,6 +30,8 @@ Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없다.
 
+사진 속 컵을 고양이라고 잘못 분류해도 사진은 그대로예요. 그런데 로봇이 컵을 집으려다 옆으로 밀면 어떻게 될까요? 다음 순간 카메라에는 **원래 자리에서 벗어난 컵**이 보여요. 로봇은 방금 한 행동 때문에 달라진 장면에서 다시 결정해야 해요. 사람의 시범으로 배우는 모방학습에서는 ‘시범에 없던 이 장면에서도 컵을 집을 수 있을까?’가 문제가 돼요. 여러 행동 뒤 받은 보상으로 배우는 강화학습에서는 ‘어떤 행동이 결국 컵을 집는 데 도움이 됐을까?’를 따져야 해요.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

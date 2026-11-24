@@ -26,6 +26,8 @@ Source PDF: [10 3D Perception (2).pdf]({{ "/assets/pdfs/study/autonomous-driving
 
 > **핵심:** PointNet은 각 점을 같은 MLP로 처리한 뒤 대칭 함수인 max pooling으로 순서가 없는 집합을 요약한다. PointNet++는 이 과정을 국소 이웃에 계층적으로 적용한다. PointRCNN은 원시 점에서 foreground를 찾고 proposal을 두 단계로 다듬으며, VoxelNet은 3D voxel과 VFE를 거쳐 3D convolution을 사용한다. PIXOR는 높이 축을 channel로 접어 BEV 위에서 2D convolution을 수행한다. 따라서 세 detector의 차이는 단순히 one-stage와 two-stage의 차이가 아니라 **point-wise, voxel-wise, BEV pixel-wise 표현 중 무엇을 계산의 중심에 두는가**에 있다.
 
+카메라 영상은 왼쪽 위부터 오른쪽 아래까지 pixel 위치가 정해진 격자지만, LiDAR point cloud는 $$(x,y,z)$$ 점들의 목록이다. 같은 장면의 점을 파일에서 다른 순서로 나열해도 물체는 바뀌지 않는다. 따라서 점 번호에 따라 결과가 달라지는 계산은 적절하지 않다. PointNet이 모든 점에 같은 MLP를 적용하고 max pooling을 쓰는 이유는, 각 점에서 강하게 검출된 특징만 모으면 입력 순서를 바꾸어도 같은 요약을 얻기 때문이다. 다만 전체 max 하나만으로는 가까운 점끼리 만든 작은 구조를 놓칠 수 있어, PointNet++는 먼저 국소 이웃을 묶은 뒤 같은 계산을 계층적으로 반복한다.
+
 ## 전체 흐름
 
 | 순서 | 슬라이드 | 핵심 질문 |

@@ -28,6 +28,8 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 > **핵심:** FFT는 DFT의 정의를 바꾸지 않고 계산을 재사용한다. STFT는 유한한 시간 창마다 주파수를 계산해 시간 변화를 드러내지만 창 길이와 모양 때문에 시간·주파수 분해능과 spectral leakage가 함께 결정된다. Mel filterbank, log, DCT는 표현을 다시 조직하는 단계이지 인식 정확도를 보장하는 연산이 아니다.
 
+한 번의 FFT로 3초짜리 발화를 분석하면 “어떤 주파수가 있었는가”는 알 수 있지만, 그 주파수가 첫 음절에 있었는지 마지막 음절에 있었는지는 사라진다. STFT는 발화를 짧게 겹쳐 자르고 각 조각에 FFT를 적용해 이 시간 위치를 남긴다. Window는 조각 경계가 갑자기 끊겨 가짜 주파수 성분이 생기는 것을 줄이고, Mel filterbank와 log는 사람이 구별하는 주파수·크기 변화에 맞게 많은 값을 묶고 압축한다. 따라서 각 연산은 장식이 아니라 **시간 위치 보존, 경계 왜곡 완화, 인식에 쓸 크기 범위 정리**라는 서로 다른 이유로 이어진다.
+
 ## 전체 흐름
 
 Source Materials: <a href="{{ "/assets/materials/study/speech-spectral-analysis/sar-lec01-public.ipynb" | relative_url }}" download>Notebook</a> · <a href="{{ "/assets/materials/study/speech-spectral-analysis/aliasing-dtfs-n8.html" | relative_url }}" target="_blank" rel="noopener">Aliasing Demo</a>. 노트북은 코드와 저장 그림을 유지하고 실행 계정 메타데이터·설치 로그를 제거한 공개용 사본이다.

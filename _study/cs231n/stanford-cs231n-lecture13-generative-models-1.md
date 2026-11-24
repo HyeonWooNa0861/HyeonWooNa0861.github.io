@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 13 PDF](https://cs231n.stanford.e
 
 > **핵심:** 생성 모델의 여러 이름은 결국 데이터 분포 $$p(x)$$를 **직접 계산할 수 있는가**, **근사하는가**, 아니면 **표본만 생성하는가**의 차이다. 1부는 tractable likelihood의 autoregressive model과 latent variable likelihood를 lower bound로 학습하는 VAE를 연결한다.
 
+분류 모델이 주어진 이미지의 class를 묻는다면 생성 모델은 이미지 자체가 어떤 분포에서 나오는지를 다룬다. Autoregressive model은 pixel이나 token의 순서를 정해 joint probability를 조건부 확률의 곱으로 정확히 계산한다. VAE는 숨은 변수 $$z$$로 데이터를 설명하지만 $$p(x)$$ 적분이 어려워, 계산 가능한 lower bound를 대신 높인다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

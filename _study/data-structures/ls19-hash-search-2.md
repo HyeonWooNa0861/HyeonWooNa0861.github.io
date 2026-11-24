@@ -125,6 +125,8 @@ if occupied -> probe next candidate slot
 
 삭제 시에는 tombstone처럼 "삭제된 자리"를 표시해야 한다. 완전히 빈 슬롯처럼 처리하면 그 뒤에 probe되어 들어간 원소를 탐색하지 못할 수 있다.
 
+크기 7인 테이블에서 `h(k) = k mod 7`이고 linear probing을 쓴다고 하자. key 12는 5번 슬롯에 들어가고, key 19도 처음에는 5번을 가리키지만 충돌 때문에 6번에 들어간다. 나중에 12를 지운 5번 칸을 완전히 빈 칸으로 표시하면, 19를 찾는 탐색은 5번에서 "이 probe 경로에는 값이 없다"고 잘못 종료한다. 5번을 tombstone으로 남기면 탐색은 삭제된 칸을 지나 6번까지 계속할 수 있다. 삽입은 tombstone을 재사용할 수 있지만, 탐색은 tombstone을 종료 신호로 사용하면 안 된다.
+
 ## 5. Open Hashing vs Closed Hashing
 
 | 비교 | Open Hashing | Closed Hashing |

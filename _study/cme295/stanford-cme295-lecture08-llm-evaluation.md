@@ -50,7 +50,11 @@ $$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라�
 
 이 강의에서 평가 대상은 응답 속도나 가격보다 출력의 품질이다. 자연어·코드·수학 추론처럼 형태가 다른 LLM 출력을 한 지표로 평가하기는 어렵다. 사람이 직접 평가하면 비용과 시간이 들고 판단도 주관적일 수 있으므로 평가자 간 일치도를 함께 본다. 단순 일치율은 우연히 같은 판정을 내릴 가능성을 반영하지 못한다. Cohen's kappa, Fleiss's kappa, Krippendorff's alpha가 이를 보완하는 지표로 소개된다.
 
+평가는 먼저 “좋은 답이 무엇인가”를 정하는 일이다. 코드 문제는 테스트 통과 여부로 비교적 명확하게 판정할 수 있지만, 요약문은 사실을 유지하면서 표현이 달라도 좋은 답일 수 있다. 안전한 답변은 정확성뿐 아니라 금지된 행동을 유도하지 않는지도 봐야 한다. 이처럼 과제마다 실패의 모양이 다르기 때문에, 점수 하나를 모든 출력에 그대로 적용하지 않고 평가 기준과 판정자를 과제에 맞춰 고른다.
+
 그 다음 강의는 reference output을 고정하고 METEOR, BLEU, ROUGE 같은 rule-based metric으로 예측 출력과 비교하는 방식을 설명한다. METEOR는 precision, recall, ordering penalty를 조합하고, BLEU는 n-gram precision과 brevity penalty를 사용하며, ROUGE는 summarization에서 자주 쓰인다. 그러나 이런 지표들은 문체적 변형을 충분히 허용하지 못하고 human rating과의 상관도 제한적이어서, prompt, response, criteria를 다른 LLM에 넣어 rationale과 score를 얻는 LLM-as-a-Judge가 핵심 방법으로 제시된다.
+
+예를 들어 reference가 `서울의 날씨는 맑다`이고 응답이 `오늘 서울은 화창하다`라면 의미는 가깝지만 단어 겹침은 적다. BLEU·ROUGE류는 이런 차이를 놓칠 수 있고, LLM judge는 의미와 기준을 함께 읽을 수 있다. 반대로 judge도 위치나 문장 길이에 편향될 수 있으므로, 사람 평가를 완전히 없애는 대체물이 아니라 반복 평가를 확장하는 도구로 다룬다.
 
 후반부는 LLM-as-a-Judge의 실무 주의점과 더 넓은 벤치마크 생태계를 다룬다. judge는 pointwise 또는 pairwise로 쓸 수 있고, structured output을 위해 constrained-guided decoding 또는 provider의 structured output 기능을 사용한다. position bias, verbosity bias, self-enhancement bias를 줄이려면 응답 순서 바꾸기, 명확한 guideline, binary scale, rationale-before-score, human calibration, 낮은 temperature가 필요하다. factuality는 텍스트를 fact 단위로 쪼개고 RAG나 web search로 사실 여부를 binary로 확인한 뒤 가중합으로 평가할 수 있으며, 에이전트 평가는 tool prediction, tool execution, output synthesis 각각의 실패 모드를 분리해 본다. 마지막으로 MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench, data contamination, Pareto frontier, Goodhart's law가 LLM 성능 해석의 맥락으로 소개된다.
 

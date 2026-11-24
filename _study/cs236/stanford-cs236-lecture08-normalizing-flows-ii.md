@@ -24,6 +24,8 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 
 > **핵심:** Lecture 8은 Lecture 7에서 세운 normalizing flow의 조건을 실제 architecture로 구체화한다. Flow는 simple prior $$p_Z(z)$$에서 시작해 invertible transformation $$x=f_\theta(z)$$를 적용하고, likelihood는 inverse $$z=f_\theta^{-1}(x)$$와 Jacobian determinant로 계산한다.
 
+일반 neural network는 복잡한 변환을 만들 수 있지만 역함수와 determinant를 싸게 구하기 어렵다. Coupling layer는 입력 일부를 그대로 두고 그 값으로 나머지를 변환해 이 문제를 푼다. 무엇을 순차적으로 계산하도록 설계하느냐에 따라 density 평가와 sampling 중 어느 쪽이 빠른지가 달라진다.
+
 ## 전체 흐름
 
 <details markdown="block">

@@ -50,9 +50,13 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 LLM을 이해하려면 먼저 NLP 작업의 입력과 출력을 구분해야 한다. 텍스트에서 하나의 라벨을 예측하는 classification, 여러 토큰이나 엔티티를 예측하는 multi-classification, 텍스트를 생성하는 generation이 기본 범주다. Sentiment extraction, NER, machine translation, question answering, summarization이 각각의 예로 이어진다. 평가 지표는 accuracy, precision, recall, F1, BLEU, ROUGE, perplexity 등이 있으며, BLEU/ROUGE에는 reference text가 필요하다. Perplexity는 실제 토큰 시퀀스에 모델이 부여한 확률을 통해 예측의 적합도를 본다.
 
+처음에는 이 작업들을 “텍스트를 넣고 답을 받는 일”로 한데 묶기 쉽다. 그러나 영화평 한 문장에 `긍정`을 붙이는 일은 출력이 하나인 분류이고, 문장 안의 사람·장소를 각각 찾는 일은 여러 위치를 판정하는 작업이며, 번역은 길이가 정해지지 않은 새 토큰 열을 만드는 생성이다. 출력 모양이 달라지면 학습 목표와 평가법도 달라지므로, Transformer 구조에 들어가기 전에 먼저 이 구분을 잡는다.
+
 그 다음 텍스트를 모델 입력으로 만들기 위한 tokenization과 representation을 다룬다. word-level, subword-level, character-level tokenizer의 장단점을 비교하며, word-level은 Out Of Vocabulary 위험이 크고 subword는 어근을 활용하지만 sequence length가 길어지며, character-level은 오탈자에 강하지만 sequence가 매우 길어진다고 설명한다. One-Hot Encoding은 모든 토큰 벡터가 서로 직교하므로 의미적 유사도를 담기 어렵고, Word2vec은 Continuous Bag of Words와 Skip-gram 같은 proxy task를 통해 의미 있는 embedding을 학습한다. 예시 네트워크에서는 vocabulary size v의 one-hot input을 더 작은 hidden dimension d로 투영하고, cross-entropy loss와 backpropagation으로 다음 단어 예측을 학습한 뒤 hidden representation을 word representation으로 사용한다.
 
 후반부는 RNN/LSTM의 한계에서 attention과 Transformer로 이어진다. RNN은 hidden state로 sequence so far를 유지해 word order를 반영하지만 long-range dependency, vanishing gradient, sequential computation 때문에 긴 문맥과 학습 속도에서 문제가 생긴다. Attention은 예측하려는 출력과 입력의 관련 부분을 직접 연결하는 방식이고, Transformer는 2017년 Attention is All You Need 논문에서 self-attention을 중심으로 제안되었다. Query, key, value는 학습되는 projection으로 만들어지며, scaled dot-product attention은 softmax(QK^T / sqrt(d_k))V로 표현된다. Transformer는 encoder와 decoder로 구성되고, encoder self-attention은 입력 토큰들이 서로를 보게 하며, decoder의 masked self-attention은 지금까지 생성된 토큰만 보게 하고, cross-attention은 decoder query가 encoder의 key/value를 참조하게 한다. Position encoding, multi-head attention, FFN, BOS/EOS token, label smoothing도 함께 소개된다.
+
+Query, key, value는 이름보다 역할로 읽으면 쉽다. 현재 토큰의 query는 “지금 어떤 정보가 필요한가”를 나타내고, 각 토큰의 key는 그 질문과 비교할 표지, value는 선택되었을 때 실제로 가져올 내용이다. Query와 key가 잘 맞는 토큰에 큰 가중치를 준 뒤 value를 섞기 때문에, 한 단어의 표현이 문장 속 관련 단어를 반영한 표현으로 바뀐다. 이 직접 연결이 RNN처럼 앞 토큰을 차례로 거치지 않고도 먼 문맥을 참조하게 하는 핵심이다.
 
 ## 핵심 개념
 

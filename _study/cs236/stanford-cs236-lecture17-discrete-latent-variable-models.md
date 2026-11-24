@@ -25,6 +25,8 @@ keywords:
 
 > **핵심:** Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어간다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"다.
 
+연속 latent는 값을 조금 바꿨을 때 출력도 조금 변하므로 보통 gradient를 전달할 수 있다. 반면 범주 하나를 뽑는 discrete sampling은 선택 결과가 계단처럼 바뀌어 같은 방식의 미분이 막힌다. Log-derivative estimator는 sampling 경로를 직접 미분하지 않고도 기대값의 gradient를 만들지만, 추정값의 variance가 커지는 문제가 남는다.
+
 ## 전체 흐름
 
 <details markdown="block">

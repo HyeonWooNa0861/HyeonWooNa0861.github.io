@@ -29,6 +29,8 @@ Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.ed
 
 > **핵심:** CNN architecture의 발전은 단순한 층 증가가 아니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 $$3\times3$$ filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습된다.
 
+층을 깊게 쌓으면 넓은 문맥과 복잡한 특징을 표현할 수 있지만, activation과 gradient가 지나치게 작아지거나 커져 학습이 멈출 수 있다. VGG와 Inception은 특징을 계산하는 블록의 모양을 바꾸고, ResNet은 입력을 변환 결과에 더하는 우회 경로로 깊은 층까지 정보와 gradient를 보낸다. Architecture 이름보다 각 구조가 계산량, 표현 범위, 학습 안정성 중 어떤 병목을 풀었는지 보는 편이 중요하다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

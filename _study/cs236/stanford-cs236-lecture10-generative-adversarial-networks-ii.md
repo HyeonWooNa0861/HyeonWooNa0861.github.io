@@ -24,6 +24,8 @@ keywords:
 
 > **핵심:** Lecture 10은 GAN을 단순한 이미지 생성 기법이 아니라 `samples only` 조건에서 분포를 비교하는 방법으로 확장한다. 지난 강의의 기본 GAN은 generator $$G_\theta$$가 prior $$p(z)$$의 sample을 data space로 보내고, discriminator $$D_\phi$$가 real sample과 fake sample을 구분하는 minimax game이다.
 
+실제 표본과 생성 표본이 처음에는 전혀 다른 영역에 놓이면, 어떤 divergence는 두 분포를 더 가깝게 옮길 방향을 충분히 알려 주지 못한다. Wasserstein 관점은 표본 질량을 옮기는 비용으로 거리를 재어 더 연속적인 학습 신호를 노린다. 이 강의의 여러 GAN 목적함수는 같은 게임을 반복하는 것이 아니라, 분포 차이를 어떤 기준으로 측정할지 바꾸는 선택지다.
+
 ## 전체 흐름
 
 <details markdown="block">

@@ -28,6 +28,8 @@ Source: [Stanford CS231N Spring 2025 Lecture 18](https://www.youtube.com/watch?v
 
 > **핵심:** Human-centered AI는 정확도 뒤에 윤리 점검표를 붙이는 일이 아니다. 인간의 지각 한계를 보완하고 실제 필요를 해결하도록 **문제 선택, sensor, privacy representation, workflow, robot task, 평가 기준을 처음부터 사람 중심으로 설계**하는 접근이다.
 
+병원 camera 모델의 정확도가 높아도 환자를 식별할 필요가 없는 작업에서 얼굴 정보를 그대로 저장하면 설계가 적절하지 않다. 사람 중심 평가는 모델 점수뿐 아니라 누구의 문제를 풀고, 어떤 정보를 수집하며, 실제 workflow에서 도움이 되는 결과를 만드는지까지 묻는다. Privacy와 접근성은 완성 뒤 덧붙이는 제한이 아니라 입력 표현과 평가 기준을 정하는 초기 조건이다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

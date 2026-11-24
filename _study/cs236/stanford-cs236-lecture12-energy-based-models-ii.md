@@ -24,6 +24,8 @@ keywords:
 
 > **핵심:** Lecture 12는 EBM의 가장 큰 병목인 sampling과 likelihood 학습을 우회하는 방법을 다룬다. MCMC를 복습한 뒤 score matching, noise contrastive estimation, adversarial training처럼 model sampling 의존을 줄이는 학습법을 비교한다.
 
+EBM의 상대 점수는 두 입력 중 무엇이 더 그럴듯한지는 말해 주지만, 실제 표본을 얻거나 normalized likelihood를 계산하려면 어려운 $$Z(\theta)$$가 다시 나타난다. Score는 log-density를 입력 방향으로 미분해 $$Z(\theta)$$를 없애고, NCE는 데이터와 알려진 noise를 구분하는 문제로 바꾼다. 각 방법은 같은 병목을 서로 다른 계산으로 우회한다.
+
 ## 전체 흐름
 
 <details markdown="block">

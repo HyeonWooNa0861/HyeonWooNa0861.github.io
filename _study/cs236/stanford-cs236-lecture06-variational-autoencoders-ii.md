@@ -23,6 +23,8 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 
 > **핵심:** Lecture 6은 전 강의에서 만든 ELBO를 실제 VAE 학습 알고리즘으로 바꾸는 강의다. VAE는 $$z\sim N(0,I)$$를 먼저 뽑고, decoder network가 $$p_{\theta}(x\mid z)$$의 mean과 covariance를 만든다.
 
+입력 이미지마다 적절한 latent 위치를 별도로 탐색하면 새 데이터가 올 때마다 최적화를 다시 해야 한다. Encoder가 $$x$$를 받아 $$\mu$$와 $$\sigma$$를 바로 예측하게 하면 이 추론 비용을 학습 과정 전체에 나눌 수 있다. 또한 $$z=\mu+\sigma\epsilon$$으로 표본의 무작위성과 학습할 parameter를 분리해야 gradient가 encoder까지 전달된다.
+
 ## 전체 흐름
 
 <details markdown="block">

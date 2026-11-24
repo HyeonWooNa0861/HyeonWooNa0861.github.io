@@ -37,6 +37,8 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 > **핵심:** 음성 신호 처리는 연속적인 음압 변화를 무작정 저장하는 일이 아니다. 시간축에서는 sampling, 진폭축에서는 quantization을 수행해 PCM을 만들고, Fourier basis로 신호를 분해해 pitch·harmonic·spectrum처럼 모델이 다루기 쉬운 구조를 드러내는 과정이다.
 
+마이크에 `아`라고 길게 말하면 컴퓨터가 처음 받는 것은 글자 `아`가 아니라 시간에 따라 위아래로 흔들리는 전압이다. Sampling은 이 흔들림을 일정한 시각마다 읽고, quantization은 각 읽기값을 저장 가능한 숫자로 바꾼다. 그러나 숫자열만 보면 어떤 높이의 진동이 섞였는지 알기 어렵다. 그래서 다음 단계에서 Fourier basis를 사용해 같은 신호를 **시간별 높이의 목록**에서 **주파수별 성분의 목록**으로 다시 본다. 변환은 소리를 바꾸려는 것이 아니라, pitch와 harmonic처럼 시간축에서 바로 읽기 어려운 구조를 드러내기 위해 필요하다.
+
 > **Phase를 배우는 이유:** Frequency는 얼마나 자주, amplitude는 얼마나 크게 진동하는지를 말한다. **Phase는 각 성분이 기준 시각에서 어디에 놓이는지**를 알려 주므로 같은 크기의 frequency 성분들로도 서로 다른 waveform이 만들어지는 이유를 설명한다. Amplitude-phase 변환은 그 정보를 읽기 쉽게 다시 쓰는 것이지 신호를 바꾸는 필수 전처리가 아니다.
 
 ## 학습 목표

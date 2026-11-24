@@ -23,6 +23,8 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 
 > **핵심:** Lecture 5는 autoregressive model의 장단점을 정리한 뒤 latent variable model로 넘어간다. Autoregressive model은 chain rule 덕분에 likelihood 평가와 MLE 학습이 쉽다.
 
+같은 숫자 `3` 이미지도 굵기와 기울기가 다르다. 이처럼 관측값 $$x$$ 뒤의 숨은 요인을 $$z$$로 두면 생성 과정을 간결하게 설명할 수 있지만, 가능한 모든 $$z$$를 합산하거나 적분해 $$p_\theta(x)$$를 구하는 계산이 어렵다. VAE는 이 병목을 풀기 위해 실제 posterior를 대신할 분포 $$q_\phi(z\mid x)$$를 도입한다.
+
 ## 전체 흐름
 
 <details markdown="block">

@@ -27,6 +27,8 @@ keywords:
 
 > **핵심:** Lecture 14는 제목상 Energy-Based Models III로 묶여 있지만 실제 전개는 score-based model을 diffusion model로 확장하는 강의다. 지난 강의에서 score model은 $$s_\theta(x)\approx \nabla_x\log p_{\mathrm{data}}(x)$$를 학습하고 Langevin dynamics로 sample을 만들었다.
 
+원본 데이터가 얇은 manifold에 몰려 있으면 그 주변의 score를 안정적으로 배우기 어렵다. 서로 다른 세기의 Gaussian noise를 더하면 큰 noise에서는 전체 구조가, 작은 noise에서는 세부가 드러나는 연속된 분포를 만들 수 있다. Noise-conditioned score는 각 단계에서 깨끗한 데이터 쪽을 가리키며, 생성은 큰 noise부터 이 방향을 차례로 따라간다.
+
 ## 전체 흐름
 
 <details markdown="block">

@@ -23,7 +23,9 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 18](https://www.youtube.com/watch?v=mCaRNnEnYwA){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture18.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture18.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 18은 diffusion model을 discrete data로 옮기는 문제를 다룬다. Continuous data에서는 image pixel이나 latent vector를 조금 움직이는 것이 의미 있다.
+사진의 한 점을 조금 더 밝게 할 수는 있어요. 그런데 문장 속 ‘고양이’라는 단어에 0.1을 더하면 어떤 단어가 될까요? 단어에 붙인 번호는 이름표일 뿐이라, 번호 차이가 밝기 차이처럼 해석되지는 않아요.
+
+**이산 확산(discrete diffusion)**에서는 숫자를 조금씩 더하는 대신, 각 단계에서 기호를 그대로 두거나 다른 기호로 바꿀 확률을 정해요. 예를 들어 단어 하나를 가림 표시로 바꾸면 원래 문장의 정보 일부가 사라져요. 모델이 배우는 것은 그 반대 방향이에요. 남아 있는 문맥을 보고 가려진 자리에 어떤 단어가 있었을지 확률을 추정하는 거예요.
 
 ## 전체 흐름
 

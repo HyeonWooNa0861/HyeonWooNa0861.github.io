@@ -26,6 +26,8 @@ keywords:
 
 > **핵심:** Lecture 13은 score-based model의 출발점을 정리한다. 지금까지의 generative model은 크게 세 가지 표현으로 나눌 수 있다.
 
+Score는 분류 점수가 아니라 현재 데이터 점 $$x$$에서 log-density가 가장 빠르게 커지는 방향을 가리키는 vector다. 즉 흐릿하거나 noisy한 표본에 작은 화살표를 붙여 더 그럴듯한 데이터 영역으로 이동할 방향을 알려 준다. 절대 density를 계산하지 않아도 이 방향장을 학습하고 따라가면 표본 생성에 이용할 수 있다.
+
 ## 전체 흐름
 
 <details markdown="block">

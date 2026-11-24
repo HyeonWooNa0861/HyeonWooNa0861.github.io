@@ -50,9 +50,13 @@ Query와 Chunk는 원문 문자열 그대로 비교되는 것이 아니라 각�
 
 학습이 끝난 LLM의 가중치에는 이후의 정보가 자동으로 반영되지 않는다. 가중치를 계속 갱신하면 회귀 위험과 유지보수 비용이 생기고, 모든 최신 정보를 긴 프롬프트에 넣으면 컨텍스트 길이와 토큰 비용, 긴 문맥에서의 정보 검색 성능이 문제가 된다. RAG는 질문에 필요한 문서만 찾아 프롬프트에 더한 뒤 답을 만드는 retrieve–augment–generate 절차로 이 문제를 다룬다.
 
+RAG는 모델이 모르는 내용을 영구히 외우게 하는 방법이 아니라, 답할 때 참고할 쪽지를 찾아 건네는 방법에 가깝다. 예를 들어 사내 규정을 묻는 질문이 오면 규정 문서 전체를 매번 넣지 않고 관련 조항 몇 개를 검색해 질문 옆에 붙인다. 모델은 그 근거를 읽고 답하므로 문서가 바뀌면 검색 저장소를 갱신할 수 있고, 어떤 문장을 근거로 썼는지도 추적하기 쉬워진다.
+
 RAG의 핵심은 검색 품질이다. 문서를 토큰 수 기준의 chunk로 나누고 임베딩을 만든 뒤, candidate retrieval에서는 bi-encoder와 cosine similarity, approximate nearest neighbor, BM25 또는 하이브리드 검색으로 후보를 줄인다. 이어 reranking에서는 query와 chunk를 함께 넣는 cross-encoder로 더 정밀한 relevance score를 만들며, NDCG, reciprocal rank, precision@k, recall@k, MTEB 같은 기준으로 retriever를 평가한다. 강의는 chunk size, overlap, embedding size, context를 붙이는 방법, prompt caching 같은 실무적 선택도 다룬다.
 
 후반부는 구조화된 데이터와 외부 행동을 다루는 tool calling으로 이동한다. LLM은 함수의 API와 설명을 보고 적절한 도구와 인자를 예측하고, 실제 함수 실행 결과를 다시 받아 자연어 응답을 만든다. 이 능력은 SFT 예제나 프롬프트 설명 반복으로 유도할 수 있고, 도구가 많아지면 tool selector/router가 필요한 후보 도구만 고른다. MCP는 도구 노출 방식을 표준화하는 프로토콜로 소개되고, ReAct 계열 에이전트는 observe, plan, act 같은 반복 루프를 통해 목표를 하위 행동으로 나누며, Agent2Agent와 안전성 문제가 이어서 논의된다.
+
+RAG와 tool calling의 경계는 **정보를 읽는가, 외부 상태에 행동하는가**로 잡을 수 있다. 문서를 검색해 답변 근거로 쓰는 것은 RAG이고, 캘린더 조회 함수를 호출하거나 파일을 저장하는 것은 tool calling이다. Agent는 이 둘을 포함한 여러 단계를 계획하고 결과를 확인한 뒤 다음 행동을 정할 수 있다. 그래서 검색 한 번으로 답하는 RAG와, 관찰–행동을 반복하는 agent loop를 같은 개념으로 보지 않는다.
 
 **Supplementary table — 검색과 도구 실행의 단계별 실패 지점**
 

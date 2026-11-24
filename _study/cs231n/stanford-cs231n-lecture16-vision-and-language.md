@@ -30,6 +30,8 @@ Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lectur
 
 > **핵심:** Vision-language foundation model의 능력은 단순히 모델을 크게 만든 결과가 아니다. **어떤 image-text supervision을 수집하고, global alignment를 넘어 region·point grounding을 어떻게 가르치며, 다른 도구와 어떻게 연결하는가**가 실제 유용성과 신뢰성을 결정한다.
 
+이미지와 caption 쌍을 학습하면 모델은 두 입력을 같은 embedding 공간에서 비교할 수 있다. 그러나 사진 전체와 문장 전체가 가깝다는 사실만으로 `왼쪽의 빨간 컵`이 어느 영역인지 알 수는 없다. Region·point grounding은 언어 표현을 구체적인 위치에 연결하고, tool 연결은 이 표현을 검색이나 행동 같은 실제 작업으로 확장한다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

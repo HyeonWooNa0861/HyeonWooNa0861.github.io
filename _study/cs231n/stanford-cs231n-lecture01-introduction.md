@@ -30,6 +30,8 @@ Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part
 
 > **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
 
+컴퓨터가 받는 것은 `고양이`라는 의미가 아니라 위치마다 색 값이 적힌 배열이다. 같은 물체도 조명, 시점, 가림에 따라 픽셀이 크게 달라지므로 고정 규칙만으로 의미를 읽기 어렵다. Computer vision은 많은 예시에서 어떤 변화는 무시하고 어떤 차이는 구분해야 하는지를 학습해 분류, 위치 추정, 행동 판단으로 이어 간다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 

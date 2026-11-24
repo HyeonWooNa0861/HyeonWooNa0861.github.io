@@ -30,6 +30,8 @@ Official slides: [Lecture 8 PDF](https://cs231n.stanford.edu/slides/2025/lecture
 
 > **핵심:** Attention은 query와 key의 유사도로 value를 가중합하는 연산이다. Self-attention은 모든 token이 서로 직접 정보를 교환하게 해 RNN의 긴 경로와 순차 계산을 줄이고, Transformer는 이 연산에 residual connection, normalization, MLP를 결합한 범용 구조다.
 
+문장 속 한 token을 처리할 때 필요한 정보가 바로 옆에만 있지는 않다. Query는 현재 token이 찾는 정보, key는 각 token이 가진 검색 표지, value는 실제로 가져올 내용이다. Query-key 점수에 softmax를 적용한 값은 여러 value를 섞는 가중치이며, self-attention 자체에는 순서 정보가 없으므로 positional encoding을 별도로 더해야 한다.
+
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
