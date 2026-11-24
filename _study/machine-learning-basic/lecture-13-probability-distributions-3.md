@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-13.pdf`
 
-> **핵심:** Standard normal distribution은 평균이 0이고 분산이 1인 Gaussian이다. Multivariate Gaussian은 평균 벡터 $$\mu$$와 공분산 행렬 $$\Sigma$$로 정의된다.
+> **핵심:** Standard normal distribution은 평균이 0이고 분산이 1인 Gaussian입니다. Multivariate Gaussian은 평균 벡터 $$\mu$$와 공분산 행렬 $$\Sigma$$로 정의됩니다.
 
 ## 전체 흐름
 
@@ -28,15 +28,15 @@ Source PDF: `machine-learning-basic-lecture-13.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | Gaussian distribution | 정규분포가 왜 머신러닝의 기본 분포인가? |
-| 2 | Multivariate Gaussian | 평균 벡터와 공분산 행렬은 분포의 무엇을 정하는가? |
-| 3 | Conditional/Marginal Gaussian | 가우시안의 일부 변수만 보거나 일부 변수를 관측하면 어떤 분포가 되는가? |
-| 4 | Sum and Mixture | 가우시안 확률변수의 합과 가우시안 분포의 혼합은 왜 다른가? |
-| 5 | Linear transformation | 가우시안 확률변수는 선형 변환 후에도 가우시안인가? |
-| 6 | Sampling | 표준정규분포 샘플로 원하는 평균과 공분산을 가진 샘플을 어떻게 만드는가? |
-| 7 | Change of Variable | 확률변수를 함수로 변환하면 PDF를 어떻게 바꾸어야 하는가? |
+| 1 | Gaussian distribution | 정규분포가 왜 머신러닝의 기본 분포입니까? |
+| 2 | Multivariate Gaussian | 평균 벡터와 공분산 행렬은 분포의 무엇을 정합니까? |
+| 3 | Conditional/Marginal Gaussian | 가우시안의 일부 변수만 보거나 일부 변수를 관측하면 어떤 분포가 됩니까? |
+| 4 | Sum and Mixture | 가우시안 확률변수의 합과 가우시안 분포의 혼합은 왜 다릅니까? |
+| 5 | Linear transformation | 가우시안 확률변수는 선형 변환 후에도 가우시안입니까? |
+| 6 | Sampling | 표준정규분포 샘플로 원하는 평균과 공분산을 가진 샘플을 어떻게 만듭니까? |
+| 7 | Change of Variable | 확률변수를 함수로 변환하면 PDF를 어떻게 바꾸어야 합니까? |
 
-13강은 확률분포 중 머신러닝에서 가장 자주 등장하는 Gaussian distribution을 다룬다. 핵심은 정규분포의 공식만 외우는 것이 아니라, 가우시안이 조건부분포, 주변분포, 선형결합, 선형변환에서 어떻게 닫혀 있는지 이해하는 것이다.
+13강은 확률분포 중 머신러닝에서 가장 자주 등장하는 Gaussian distribution을 다룹니다. 핵심은 정규분포의 공식만 외우는 것이 아니라, 가우시안이 조건부분포, 주변분포, 선형결합, 선형변환에서 어떻게 닫혀 있는지 이해하는 것입니다.
 
 ### 원문 수식 추적표
 
@@ -49,13 +49,13 @@ Source PDF: `machine-learning-basic-lecture-13.pdf`
 | 15–19 | 이산·연속 변수변환, Jacobian determinant 보정 | 9–11, 13.3 |
 | 20 | 변수변환으로 본 Gaussian 선형변환 | 12, 13.1, 13.3 |
 
-페이지 21은 Q&A 마무리이다.
+페이지 21은 Q&A 마무리입니다.
 
 </details>
 
 ## 1. Gaussian Distribution
 
-Gaussian distribution 또는 normal distribution은 실수 공간에서 정의되는 대표적인 연속 확률분포다. 일변수 가우시안은 평균 $$\mu$$와 분산 $$\sigma^2$$로 결정된다.
+Gaussian distribution 또는 normal distribution은 실수 공간에서 정의되는 대표적인 연속 확률분포입니다. 일변수 가우시안은 평균 $$\mu$$와 분산 $$\sigma^2$$로 결정됩니다.
 
 $$
 p(x\mid\mu,\sigma^2)
@@ -63,31 +63,31 @@ p(x\mid\mu,\sigma^2)
 \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
 $$
 
-각 parameter의 역할은 다음과 같다.
+각 parameter의 역할은 다음과 같습니다.
 
 | parameter | 의미 | 분포에 미치는 영향 |
 |---|---|---|
-| $$\mu$$ | 평균 | 분포의 중심을 좌우로 이동시킨다. |
-| $$\sigma^2$$ | 분산 | 값들이 평균 주변에 얼마나 퍼지는지 정한다. |
-| $$\sigma$$ | 표준편차 | 분포 폭의 scale로 해석한다. |
+| $$\mu$$ | 평균 | 분포의 중심을 좌우로 이동시킵니다. |
+| $$\sigma^2$$ | 분산 | 값들이 평균 주변에 얼마나 퍼지는지 정합니다. |
+| $$\sigma$$ | 표준편차 | 분포 폭의 scale로 해석합니다. |
 
-평균이 0이고 분산이 1인 가우시안을 표준정규분포라고 한다.
+평균이 0이고 분산이 1인 가우시안을 표준정규분포라고 합니다.
 
 $$
 X\sim\mathcal{N}(0,1)
 $$
 
-가우시안은 Gaussian process, variational inference, reinforcement learning, signal processing, control theory, statistical analysis뿐 아니라 neural network의 random initialization과 random noise sampling에서도 기본 도구로 쓰인다.
+가우시안은 Gaussian process, variational inference, reinforcement learning, signal processing, control theory, statistical analysis뿐 아니라 neural network의 random initialization과 random noise sampling에서도 기본 도구로 쓰입니다.
 
 ## 2. Multivariate Gaussian
 
-다변수 가우시안 분포는 $$d$$차원 실수 공간에서 정의되는 확률분포다. 확률변수 $$x\in\mathbb{R}^d$$가 평균 $$\mu$$, 공분산 $$\Sigma$$를 갖는 다변수 가우시안을 따르면 다음처럼 쓴다.
+다변수 가우시안 분포는 $$d$$차원 실수 공간에서 정의되는 확률분포입니다. 확률변수 $$x\in\mathbb{R}^d$$가 평균 $$\mu$$, 공분산 $$\Sigma$$를 갖는 다변수 가우시안을 따르면 다음처럼 씁니다.
 
 $$
 x\sim\mathcal{N}(\mu,\Sigma)
 $$
 
-PDF는 다음과 같다.
+PDF는 다음과 같습니다.
 
 $$
 p(x\mid\mu,\Sigma)
@@ -104,17 +104,17 @@ $$
 | $$\lvert\Sigma\rvert$$ | 분포가 차지하는 부피 scale과 관련된 determinant |
 | $$\Sigma^{-1}$$ | 평균에서 얼마나 멀리 떨어졌는지 측정하는 metric 역할 |
 
-공분산 행렬 $$\Sigma$$의 대각 원소는 각 변수의 분산이고, 비대각 원소는 변수 쌍의 공분산이다. 고유벡터는 분포가 늘어나는 주된 방향을, 고유값은 그 방향으로의 분산 크기를 나타낸다.
+공분산 행렬 $$\Sigma$$의 대각 원소는 각 변수의 분산이고, 비대각 원소는 변수 쌍의 공분산입니다. 고유벡터는 분포가 늘어나는 주된 방향을, 고유값은 그 방향으로의 분산 크기를 나타냅니다.
 
 ## 3. Conditional and Marginal Gaussian
 
-다변수 가우시안의 중요한 장점은 조건부분포와 주변분포가 다시 가우시안이라는 점이다. 두 확률변수 블록 $$x$$, $$y$$가 함께 가우시안이라고 하자.
+다변수 가우시안의 중요한 장점은 조건부분포와 주변분포가 다시 가우시안이라는 점입니다. 두 확률변수 블록 $$x$$, $$y$$가 함께 가우시안이라고 하겠습니다.
 
 <a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-13-page-09.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-13-page-09.png" | relative_url }}" alt="원본 강의 슬라이드의 이변량 Gaussian 조건부분포와 주변분포" loading="lazy"></a>
 
-*원본 강의 PDF p. 9. 오른쪽 위 등고선에서 보라색 수평선은 $$x_2=-1$$로 고정한 단면이다. 아래 왼쪽은 주변분포 $$p(x_1)=\mathcal N(0,0.3)$$, 아래 오른쪽은 그 단면을 정규화한 조건부분포로 평균 0.6, 분산 0.1이다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-13.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>*
+*원본 강의 PDF p. 9. 오른쪽 위 등고선에서 보라색 수평선은 $$x_2=-1$$로 고정한 단면입니다. 아래 왼쪽은 주변분포 $$p(x_1)=\mathcal N(0,0.3)$$, 아래 오른쪽은 그 단면을 정규화한 조건부분포로 평균 0.6, 분산 0.1입니다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-13.pdf#page=9" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 9</a>*
 
-주변분포는 $$x_2$$의 모든 값을 적분해 없애므로 평균 0에 더 넓게 남는다. 조건부분포는 $$x_2=-1$$이라는 정보를 사용해 가능한 $$x_1$$ 범위를 좁히고, 음의 공분산 때문에 평균을 양의 방향으로 이동시킨다.
+주변분포는 $$x_2$$의 모든 값을 적분해 없애므로 평균 0에 더 넓게 남습니다. 조건부분포는 $$x_2=-1$$이라는 정보를 사용해 가능한 $$x_1$$ 범위를 좁히고, 음의 공분산 때문에 평균을 양의 방향으로 이동시킵니다.
 
 $$
 \begin{bmatrix}
@@ -134,41 +134,41 @@ y
 \right)
 $$
 
-여기서 $$\Sigma_{xx}$$는 $$x$$ 내부의 공분산, $$\Sigma_{yy}$$는 $$y$$ 내부의 공분산, $$\Sigma_{xy}$$와 $$\Sigma_{yx}$$는 두 변수 블록 사이의 공분산이다.
+여기서 $$\Sigma_{xx}$$는 $$x$$ 내부의 공분산, $$\Sigma_{yy}$$는 $$y$$ 내부의 공분산, $$\Sigma_{xy}$$와 $$\Sigma_{yx}$$는 두 변수 블록 사이의 공분산입니다.
 
-$$y$$를 관측했을 때 $$x$$의 조건부분포는 다음과 같이 다시 가우시안이다.
+$$y$$를 관측했을 때 $$x$$의 조건부분포는 다음과 같이 다시 가우시안입니다.
 
 $$
 p(x\mid y)=\mathcal{N}(\mu_{x\mid y},\Sigma_{x\mid y})
 $$
 
-조건부 평균은 다음과 같다.
+조건부 평균은 다음과 같습니다.
 
 $$
 \mu_{x\mid y}
 =\mu_x+\Sigma_{xy}\Sigma_{yy}^{-1}(y-\mu_y)
 $$
 
-조건부 공분산은 다음과 같다.
+조건부 공분산은 다음과 같습니다.
 
 $$
 \Sigma_{x\mid y}
 =\Sigma_{xx}-\Sigma_{xy}\Sigma_{yy}^{-1}\Sigma_{yx}
 $$
 
-이 식은 관측한 $$y$$가 평균 $$\mu_y$$에서 얼마나 벗어났는지를 보고 $$x$$에 대한 평균 추정을 조정한다. $$\Sigma_{xy}$$가 크면 $$y$$ 관측이 $$x$$ 추정에 더 강하게 반영된다.
+이 식은 관측한 $$y$$가 평균 $$\mu_y$$에서 얼마나 벗어났는지를 보고 $$x$$에 대한 평균 추정을 조정합니다. $$\Sigma_{xy}$$가 크면 $$y$$ 관측이 $$x$$ 추정에 더 강하게 반영됩니다.
 
-반대로 $$y$$를 보지 않고 $$x$$만 보면 주변분포가 된다.
+반대로 $$y$$를 보지 않고 $$x$$만 보면 주변분포가 됩니다.
 
 $$
 p(x)=\int p(x,y)dy=\mathcal{N}(\mu_x,\Sigma_{xx})
 $$
 
-주변분포는 함께 있던 변수 중 일부를 적분해서 제거하는 것이다. 가우시안에서는 이 과정을 거쳐도 남은 변수는 여전히 가우시안이다.
+주변분포는 함께 있던 변수 중 일부를 적분해서 제거하는 것입니다. 가우시안에서는 이 과정을 거쳐도 남은 변수는 여전히 가우시안입니다.
 
 ## 4. Gaussian Random Variables의 합
 
-가우시안 확률변수 $$x$$, $$y$$가 서로 독립이고 다음 분포를 따른다고 하자.
+가우시안 확률변수 $$x$$, $$y$$가 서로 독립이고 다음 분포를 따른다고 하겠습니다.
 
 $$
 p(x)=\mathcal{N}(x\mid\mu_x,\Sigma_x),
@@ -176,34 +176,34 @@ p(x)=\mathcal{N}(x\mid\mu_x,\Sigma_x),
 p(y)=\mathcal{N}(y\mid\mu_y,\Sigma_y)
 $$
 
-그러면 두 확률변수의 합 $$z=x+y$$도 가우시안이다.
+그러면 두 확률변수의 합 $$z=x+y$$도 가우시안입니다.
 
 $$
 p(z)=\mathcal{N}(z\mid\mu_x+\mu_y,\Sigma_x+\Sigma_y)
 $$
 
-더 일반적인 선형결합 $$t=ax+by$$도 가우시안이다.
+더 일반적인 선형결합 $$t=ax+by$$도 가우시안입니다.
 
 $$
 p(t)
 =\mathcal{N}(t\mid a\mu_x+b\mu_y,\;a^2\Sigma_x+b^2\Sigma_y)
 $$
 
-여기서 분산 또는 공분산이 더해지는 이유는 독립성을 가정했기 때문이다. 독립이 아니면 cross-covariance 항이 추가된다. 따라서 “각각 가우시안이다”만으로 충분한 것이 아니라, joint distribution의 구조가 중요하다.
+여기서 분산 또는 공분산이 더해지는 이유는 독립성을 가정했기 때문입니다. 독립이 아니면 cross-covariance 항이 추가됩니다. 따라서 “각각 가우시안이다”만으로 충분한 것이 아니라, joint distribution의 구조가 중요합니다.
 
 ## 5. Gaussian Sum과 Gaussian Mixture의 차이
 
-강의에서 강조하는 헷갈리는 지점은 가우시안 확률변수의 합과 가우시안 분포의 가중합이 다르다는 것이다.
+강의에서 강조하는 헷갈리는 지점은 가우시안 확률변수의 합과 가우시안 분포의 가중합이 다르다는 것입니다.
 
-확률변수의 합은 다음 상황이다.
+확률변수의 합은 다음 상황입니다.
 
 $$
 z=x+y
 $$
 
-서로 독립인 가우시안 확률변수들을 더하면 결과 확률변수 $$z$$는 가우시안이 된다.
+서로 독립인 가우시안 확률변수들을 더하면 결과 확률변수 $$z$$는 가우시안이 됩니다.
 
-반면 가우시안 분포의 가중합은 다음 형태다.
+반면 가우시안 분포의 가중합은 다음 형태입니다.
 
 $$
 p(x)=a p_1(x)+(1-a)p_2(x)
@@ -217,7 +217,7 @@ p_1(x)=\mathcal{N}(x\mid\mu_1,\sigma_1^2),
 p_2(x)=\mathcal{N}(x\mid\mu_2,\sigma_2^2)
 $$
 
-이면 $$p(x)$$는 일반적으로 하나의 가우시안이 아니다. 두 봉우리를 가진 bimodal distribution이 될 수도 있다. 이 아이디어가 Gaussian mixture model의 기본이다.
+이면 $$p(x)$$는 일반적으로 하나의 가우시안이 아닙니다. 두 봉우리를 가진 bimodal distribution이 될 수도 있습니다. 이 아이디어가 Gaussian mixture model의 기본입니다.
 
 **Supplementary table — 확률변수의 합과 분포의 혼합 비교**
 
@@ -225,20 +225,20 @@ $$
 
 | 비교 기준 | Gaussian random variables의 합 | Gaussian mixture |
 |---|---|---|
-| 무엇을 계산하는가 | 같은 시행에서 얻은 값들을 $$z=x+y$$처럼 더한다. | 먼저 component를 고른 뒤 그 component에서 값을 하나 뽑는다. |
-| 결과 밀도 | joint Gaussian이고 선형결합이면 다시 Gaussian이다. 독립이면 공분산의 cross term이 0이 된다. | $$a p_1(x)+(1-a)p_2(x)$$이며 일반적으로 단일 Gaussian이 아니다. |
+| 무엇을 계산합니까 | 같은 시행에서 얻은 값들을 $$z=x+y$$처럼 더합니다. | 먼저 component를 고른 뒤 그 component에서 값을 하나 뽑습니다. |
+| 결과 밀도 | joint Gaussian이고 선형결합이면 다시 Gaussian입니다. 독립이면 공분산의 cross term이 0이 됩니다. | $$a p_1(x)+(1-a)p_2(x)$$이며 일반적으로 단일 Gaussian이 아닙니다. |
 | 평균 | $$\mu_z=\mu_x+\mu_y$$ | $$\mu=a\mu_1+(1-a)\mu_2$$ |
-| 분산 | 독립이면 $$\Sigma_z=\Sigma_x+\Sigma_y$$ | component 내부 분산뿐 아니라 component 평균 사이의 차이도 포함한다. |
-| 모양 | Gaussian 가정이 유지되면 하나의 봉우리와 타원형 등고선 구조를 유지한다. | component가 떨어져 있으면 여러 봉우리가 나타날 수 있다. |
+| 분산 | 독립이면 $$\Sigma_z=\Sigma_x+\Sigma_y$$ | component 내부 분산뿐 아니라 component 평균 사이의 차이도 포함합니다. |
+| 모양 | Gaussian 가정이 유지되면 하나의 봉우리와 타원형 등고선 구조를 유지합니다. | component가 떨어져 있으면 여러 봉우리가 나타날 수 있습니다. |
 {: .reference-candidate-table style="min-width: 44rem;" }
 
 </div>
 
-표의 왼쪽은 **값을 더하는 연산**, 오른쪽은 **분포를 선택해 섞는 생성 절차**다. 두 식에 모두 `+`가 보이지만 더하는 대상이 다르다. 혼합분포 분산은 $$\sum_k\pi_k\bigl(\Sigma_k+(\mu_k-\mu)(\mu_k-\mu)^T\bigr)$$이므로 단순한 component 분산의 가중평균만으로 계산하지 않는다.
+표의 왼쪽은 **값을 더하는 연산**, 오른쪽은 **분포를 선택해 섞는 생성 절차**입니다. 두 식에 모두 `+`가 보이지만 더하는 대상이 다릅니다. 혼합분포 분산은 $$\sum_k\pi_k\bigl(\Sigma_k+(\mu_k-\mu)(\mu_k-\mu)^T\bigr)$$이므로 단순한 component 분산의 가중평균만으로 계산하지 않습니다.
 
 ## 6. Linear Transformation
 
-가우시안 확률변수는 선형 변환에 대해 닫혀 있다. 즉,
+가우시안 확률변수는 선형 변환에 대해 닫혀 있습니다. 즉,
 
 $$
 x\sim\mathcal{N}(\mu,\Sigma)
@@ -250,15 +250,15 @@ $$
 y=Ax
 $$
 
-라면 $$y$$도 가우시안이다.
+라면 $$y$$도 가우시안입니다.
 
-평균은 다음처럼 변환된다.
+평균은 다음처럼 변환됩니다.
 
 $$
 \mathbb{E}[Ax]=A\mathbb{E}[x]=A\mu
 $$
 
-공분산은 다음처럼 변환된다.
+공분산은 다음처럼 변환됩니다.
 
 $$
 \operatorname{Var}(Ax)
@@ -272,11 +272,11 @@ $$
 p(y)=\mathcal{N}(y\mid A\mu,A\Sigma A^T)
 $$
 
-선형 변환은 분포를 이동시키는 것이 아니라, 평균 벡터와 공분산 구조를 행렬 $$A$$에 맞게 회전, 스케일링, shearing, projection하는 과정으로 볼 수 있다.
+선형 변환은 분포를 이동시키는 것이 아니라, 평균 벡터와 공분산 구조를 행렬 $$A$$에 맞게 회전, 스케일링, shearing, projection하는 과정으로 볼 수 있습니다.
 
 ## 7. Linear Transformation 예시
 
-강의 예시에서는 다음 가우시안 확률변수를 사용한다.
+강의 예시에서는 다음 가우시안 확률변수를 사용합니다.
 
 $$
 \begin{bmatrix}
@@ -296,7 +296,7 @@ x_2
 \right)
 $$
 
-그리고 선형변환 행렬을 다음처럼 둔다.
+그리고 선형변환 행렬을 다음처럼 둡니다.
 
 $$
 A=
@@ -326,7 +326,7 @@ A\mu_x
 \end{bmatrix}
 $$
 
-이다. 공분산은
+입니다. 공분산은
 
 $$
 A\Sigma_x A^T
@@ -350,29 +350,29 @@ A\Sigma_x A^T
 \end{bmatrix}
 $$
 
-가 된다. 변환 후 분포는 중심이 $$[5,11]^T$$로 이동하고, 공분산도 $$A$$의 방향과 scale에 맞게 바뀐다.
+가 됩니다. 변환 후 분포는 중심이 $$[5,11]^T$$로 이동하고, 공분산도 $$A$$의 방향과 scale에 맞게 바뀝니다.
 
 ## 8. Sampling
 
-표준정규분포에서 샘플링할 수 있다고 하자.
+표준정규분포에서 샘플링할 수 있다고 하겠습니다.
 
 $$
 z\sim\mathcal{N}(0,I)
 $$
 
-목표는 원하는 평균 $$\mu$$와 공분산 $$\Sigma$$를 가진 샘플을 만드는 것이다.
+목표는 원하는 평균 $$\mu$$와 공분산 $$\Sigma$$를 가진 샘플을 만드는 것입니다.
 
 $$
 y\sim\mathcal{N}(\mu,\Sigma)
 $$
 
-선형 변환 성질을 이용하면 다음과 같이 만들 수 있다.
+선형 변환 성질을 이용하면 다음과 같이 만들 수 있습니다.
 
 $$
 y=\mu+Lz
 $$
 
-여기서 $$L$$은 다음을 만족하는 행렬이다.
+여기서 $$L$$은 다음을 만족하는 행렬입니다.
 
 $$
 LL^T=\Sigma
@@ -390,7 +390,7 @@ $$
 \operatorname{Var}(y)=L\operatorname{Var}(z)L^T=LIL^T=LL^T=\Sigma
 $$
 
-가 된다. 실제로는 $$\Sigma$$의 Cholesky decomposition이나 eigen decomposition을 이용해 $$L$$을 구한다.
+가 됩니다. 실제로는 $$\Sigma$$의 Cholesky decomposition이나 eigen decomposition을 이용해 $$L$$을 구합니다.
 
 ## 9. Change of Variable
 
@@ -400,9 +400,9 @@ $$
 y=u(x)
 $$
 
-의 분포를 구하는 문제다.
+의 분포를 구하는 문제입니다.
 
-이산확률변수라면 같은 $$y$$를 만드는 모든 $$x$$의 확률을 더한다. 예를 들어 $$x\in\{-2,-1,0,1,2\}$$가 각각 $$\frac{1}{5}$$의 확률을 갖고 $$y=x^2$$라면 다음과 같다.
+이산확률변수라면 같은 $$y$$를 만드는 모든 $$x$$의 확률을 더합니다. 예를 들어 $$x\in\{-2,-1,0,1,2\}$$가 각각 $$\frac{1}{5}$$의 확률을 갖고 $$y=x^2$$라면 다음과 같습니다.
 
 | $$y$$ | 가능한 $$x$$ | 확률 |
 |---|---|---|
@@ -410,9 +410,9 @@ $$
 | 1 | -1, 1 | $$\frac{2}{5}$$ |
 | 4 | -2, 2 | $$\frac{2}{5}$$ |
 
-즉, 변환이 many-to-one이면 preimage에 해당하는 확률들을 모아야 한다.
+즉, 변환이 many-to-one이면 preimage에 해당하는 확률들을 모아야 합니다.
 
-연속확률변수에서는 CDF를 먼저 구한 뒤 미분하는 방식이 기본이다. $$Y=u(X)$$라면
+연속확률변수에서는 CDF를 먼저 구한 뒤 미분하는 방식이 기본입니다. $$Y=u(X)$$라면
 
 $$
 F_Y(y)=P(Y\le y)
@@ -424,11 +424,11 @@ $$
 f_Y(y)=\frac{d}{dy}F_Y(y)
 $$
 
-로 PDF를 얻는다.
+로 PDF를 얻습니다.
 
 ## 10. Continuous Change of Variable 예시
 
-강의 예시는 다음과 같다.
+강의 예시는 다음과 같습니다.
 
 $$
 f_X(x)=3x^2,\qquad 0\le x\le 1
@@ -440,7 +440,7 @@ $$
 y=x^2
 $$
 
-라고 하자. $$0\le y\le 1$$에서 CDF는 다음처럼 계산된다.
+라고 하겠습니다. $$0\le y\le 1$$에서 CDF는 다음처럼 계산됩니다.
 
 $$
 F_Y(y)
@@ -467,13 +467,13 @@ f_Y(y)
 \qquad 0\le y\le 1
 $$
 
-이다.
+입니다.
 
 ## 11. Change of Variable Technique
 
-$$y=u(x)$$이고 $$u$$가 가역함수라고 하자. 이때는 CDF를 거치지 않고 Jacobian으로 density를 바로 바꿀 수 있다.
+$$y=u(x)$$이고 $$u$$가 가역함수라고 하겠습니다. 이때는 CDF를 거치지 않고 Jacobian으로 density를 바로 바꿀 수 있습니다.
 
-일변수에서는 다음과 같다.
+일변수에서는 다음과 같습니다.
 
 $$
 f_Y(y)
@@ -483,7 +483,7 @@ f_Y(y)
 \right\rvert
 $$
 
-다변수에서는 derivative가 Jacobian matrix가 되고, 부피 변화율을 determinant로 보정한다.
+다변수에서는 derivative가 Jacobian matrix가 되고, 부피 변화율을 determinant로 보정합니다.
 
 $$
 f_Y(y)
@@ -495,7 +495,7 @@ f_Y(y)
 \right\rvert
 $$
 
-Jacobian 보정이 필요한 이유는 변수 변환이 길이, 면적, 부피를 늘리거나 줄이기 때문이다. density는 확률 자체가 아니라 단위 부피당 확률이므로, 좌표계가 바뀌면 부피 변화율을 함께 보정해야 한다.
+Jacobian 보정이 필요한 이유는 변수 변환이 길이, 면적, 부피를 늘리거나 줄이기 때문입니다. density는 확률 자체가 아니라 단위 부피당 확률이므로, 좌표계가 바뀌면 부피 변화율을 함께 보정해야 합니다.
 
 ## 12. 변수 변환으로 보는 가우시안 선형 변환
 
@@ -509,7 +509,7 @@ x_2
 \end{bmatrix}
 $$
 
-가 다음 PDF를 따른다고 하자.
+가 다음 PDF를 따른다고 하겠습니다.
 
 $$
 f_X(x)
@@ -527,7 +527,7 @@ c & d
 \end{bmatrix}
 $$
 
-라고 하자. $$x=A^{-1}y$$이므로
+라고 하겠습니다. $$x=A^{-1}y$$이므로
 
 $$
 f_X(A^{-1}y)
@@ -537,7 +537,7 @@ f_X(A^{-1}y)
 \right)
 $$
 
-Jacobian 보정은 다음과 같다.
+Jacobian 보정은 다음과 같습니다.
 
 $$
 \left\lvert\det(A^{-1})\right\rvert
@@ -556,18 +556,18 @@ f_Y(y)
 \frac{1}{\lvert ad-bc\rvert}
 $$
 
-이 식은 선형변환된 가우시안의 PDF를 변수 변환 관점에서 다시 본 것이다. $$A$$가 공간을 크게 늘리면 density는 그만큼 작아지고, 공간을 압축하면 density는 커진다.
+이 식은 선형변환된 가우시안의 PDF를 변수 변환 관점에서 다시 본 것입니다. $$A$$가 공간을 크게 늘리면 density는 그만큼 작아지고, 공간을 압축하면 density는 커집니다.
 
 ## 13. Gaussian 핵심식의 증명 개요와 한계
 
-선형변환된 Gaussian의 평균·공분산은 기대값 선형성으로 얻고, 조건부 Gaussian은 joint quadratic form을 완전제곱해 얻는다. 변수변환의 Jacobian은 확률질량을 보존하기 위한 부피 보정이며, 상세 계산과 적용 한계는 아래에 둔다.
+선형변환된 Gaussian의 평균·공분산은 기대값 선형성으로 얻고, 조건부 Gaussian은 joint quadratic form을 완전제곱해 얻습니다. 변수변환의 Jacobian은 확률질량을 보존하기 위한 부피 보정이며, 상세 계산과 적용 한계는 아래에 둡니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Gaussian transformations, conditioning, and Jacobian correction</summary>
 
 ### 13.1 선형변환의 평균과 공분산
 
-$$x\sim\mathcal{N}(\mu,\Sigma)$$, $$y=Ax+b$$라 하자. 기대값 선형성으로
+$$x\sim\mathcal{N}(\mu,\Sigma)$$, $$y=Ax+b$$라 하겠습니다. 기대값 선형성으로
 
 $$
 \mathbb{E}[y]=A\mu+b
@@ -581,11 +581,11 @@ $$
 =A\Sigma A^T.
 $$
 
-두 식은 2차 적률이 존재할 때의 **정확한 등식**이다. Gaussian이라는 가정은 평균·공분산 변환식 자체보다, 변환 뒤에도 분포가 Gaussian이라는 결론에 필요하다.
+두 식은 2차 적률이 존재할 때의 **정확한 등식**입니다. Gaussian이라는 가정은 평균·공분산 변환식 자체보다, 변환 뒤에도 분포가 Gaussian이라는 결론에 필요합니다.
 
 ### 13.2 조건부 Gaussian 공식이 나오는 과정
 
-공동 Gaussian의 지수부 $$-\frac12(z-\mu)^T\Sigma^{-1}(z-\mu)$$를 관측한 $$y$$에 대해 고정하고 $$x$$의 이차식으로 전개한 뒤 complete the square를 수행한다. $$x$$에 관한 선형항과 이차항을 모으면
+공동 Gaussian의 지수부 $$-\frac12(z-\mu)^T\Sigma^{-1}(z-\mu)$$를 관측한 $$y$$에 대해 고정하고 $$x$$의 이차식으로 전개한 뒤 complete the square를 수행합니다. $$x$$에 관한 선형항과 이차항을 모으면
 
 $$
 \mu_{x\mid y}=\mu_x+\Sigma_{xy}\Sigma_{yy}^{-1}(y-\mu_y),
@@ -595,19 +595,19 @@ $$
 \Sigma_{x\mid y}=\Sigma_{xx}-\Sigma_{xy}\Sigma_{yy}^{-1}\Sigma_{yx}
 $$
 
-을 중심과 공분산으로 갖는 Gaussian kernel이 남는다. 이는 **증명 개요**이며 $$\Sigma_{yy}$$가 가역인 non-degenerate case를 가정한다. singular covariance에서는 generalized inverse와 지지공간을 따로 다뤄야 한다.
+을 중심과 공분산으로 갖는 Gaussian kernel이 남습니다. 이는 **증명 개요**이며 $$\Sigma_{yy}$$가 가역인 non-degenerate case를 가정합니다. singular covariance에서는 generalized inverse와 지지공간을 따로 다뤄야 합니다.
 
 ### 13.3 변수변환의 Jacobian 보정
 
-가역이고 미분 가능한 변환 $$y=g(x)$$에서는 작은 부피가 $$dy=\lvert\det J_g(x)\rvert dx$$로 바뀐다. 같은 확률질량 $$p_X(x)dx=p_Y(y)dy$$를 보존하면
+가역이고 미분 가능한 변환 $$y=g(x)$$에서는 작은 부피가 $$dy=\lvert\det J_g(x)\rvert dx$$로 바뀝니다. 같은 확률질량 $$p_X(x)dx=p_Y(y)dy$$를 보존하면
 
 $$
 p_Y(y)=p_X(g^{-1}(y))\left|\det J_{g^{-1}}(y)\right|
 $$
 
-이다. 이는 **정확한 밀도 변환식**이다. 변환이 일대일이 아니면 모든 역상 branch의 기여를 합해야 하며, Jacobian determinant가 0인 점에서는 이 단순식을 그대로 사용할 수 없다.
+입니다. 이는 **정확한 밀도 변환식**입니다. 변환이 일대일이 아니면 모든 역상 branch의 기여를 합해야 하며, Jacobian determinant가 0인 점에서는 이 단순식을 그대로 사용할 수 없습니다.
 
-Gaussian mixture가 Gaussian이라는 보장은 없다. 합 $$X+Y$$의 Gaussian 폐쇄성은 joint Gaussian 또는 독립 Gaussian 같은 조건에 따른 정리이고, 여러 density의 가중합은 서로 다른 모드를 만들 수 있는 mixture 정의다. 평균 $$\mu$$는 $$x$$와 같은 단위, 공분산 $$\Sigma$$는 단위의 제곱, density는 입력 단위의 역수 거듭제곱을 가진다.
+Gaussian mixture가 Gaussian이라는 보장은 없습니다. 합 $$X+Y$$의 Gaussian 폐쇄성은 joint Gaussian 또는 독립 Gaussian 같은 조건에 따른 정리이고, 여러 density의 가중합은 서로 다른 모드를 만들 수 있는 mixture 정의입니다. 평균 $$\mu$$는 $$x$$와 같은 단위, 공분산 $$\Sigma$$는 단위의 제곱, density는 입력 단위의 역수 거듭제곱을 가집니다.
 
 </details>
 
@@ -617,73 +617,73 @@ Gaussian mixture가 Gaussian이라는 보장은 없다. 합 $$X+Y$$의 Gaussian 
 
 | 질문 | 답의 방향 |
 |---|---|
-| standard normal distribution은? | 평균 0, 분산 1인 Gaussian |
-| multivariate Gaussian의 parameter는? | mean vector $$\mu$$, covariance matrix $$\Sigma$$ |
-| Gaussian의 marginal distribution은? | 다시 Gaussian이며 해당 block의 평균과 공분산을 사용한다. |
-| Gaussian의 conditional distribution은? | 다시 Gaussian이며 $$\mu_{x\mid y}$$, $$\Sigma_{x\mid y}$$ 공식으로 계산한다. |
-| 독립 Gaussian 확률변수의 선형결합은? | 다시 Gaussian |
-| Gaussian mixture는 항상 Gaussian인가? | 아니다. 여러 봉우리를 가질 수 있다. |
-| $$y=Ax$$에서 평균과 공분산은? | 평균 $$A\mu$$, 공분산 $$A\Sigma A^T$$ |
-| sampling에서 $$y=\mu+Lz$$를 쓰는 이유는? | $$LL^T=\Sigma$$가 되게 하여 원하는 공분산을 만들기 위해 |
-| 변수 변환에서 Jacobian이 필요한 이유는? | 좌표 변환에 따른 길이, 면적, 부피 변화율을 density에 반영하기 위해 |
+| standard normal distribution은 무엇입니까? | 평균 0, 분산 1인 Gaussian |
+| multivariate Gaussian의 parameter는 무엇입니까? | mean vector $$\mu$$, covariance matrix $$\Sigma$$ |
+| Gaussian의 marginal distribution은 무엇입니까? | 다시 Gaussian이며 해당 block의 평균과 공분산을 사용합니다. |
+| Gaussian의 conditional distribution은 무엇입니까? | 다시 Gaussian이며 $$\mu_{x\mid y}$$, $$\Sigma_{x\mid y}$$ 공식으로 계산합니다. |
+| 독립 Gaussian 확률변수의 선형결합은 무엇입니까? | 다시 Gaussian |
+| Gaussian mixture는 항상 Gaussian입니까? | 아닙니다. 여러 봉우리를 가질 수 있습니다. |
+| $$y=Ax$$에서 평균과 공분산은 무엇입니까? | 평균 $$A\mu$$, 공분산 $$A\Sigma A^T$$ |
+| sampling에서 $$y=\mu+Lz$$를 쓰는 이유는 무엇입니까? | $$LL^T=\Sigma$$가 되게 하여 원하는 공분산을 만들기 위해 |
+| 변수 변환에서 Jacobian이 필요한 이유는 무엇입니까? | 좌표 변환에 따른 길이, 면적, 부피 변화율을 density에 반영하기 위해 |
 
 ## Study Guide
 
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-standard Gaussian에서 multivariate Gaussian으로 확장하며 mean vector와 covariance block의 shape를 먼저 확인한다. marginal·conditional Gaussian 공식을 block별로 적용하고, y=Ax에서 평균 Aμ와 공분산 AΣAᵀ를 직접 계산한다. sampling은 z에서 y=μ+Lz로 옮기는 과정, density 변환은 Jacobian으로 부피 변화를 보정하는 과정이라는 차이를 분리한다.
+standard Gaussian에서 multivariate Gaussian으로 확장하며 mean vector와 covariance block의 shape를 먼저 확인합니다. marginal·conditional Gaussian 공식을 block별로 적용하고, y=Ax에서 평균 Aμ와 공분산 AΣAᵀ를 직접 계산합니다. sampling은 z에서 y=μ+Lz로 옮기는 과정, density 변환은 Jacobian으로 부피 변화를 보정하는 과정이라는 차이를 분리합니다.
 
 </details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary markdown="span">1. 공분산 행렬 $$\Sigma$$의 고유값이 큰 방향은 데이터 분포에서 어떤 의미인가?</summary>
+<summary markdown="span">1. 공분산 행렬 $$\Sigma$$의 고유값이 큰 방향은 데이터 분포에서 어떤 의미입니까?</summary>
 
-답변: 고유값이 큰 방향은 데이터가 그 방향으로 많이 퍼져 있다는 뜻이다. 다변수 가우시안의 등고선은 공분산 행렬의 고유벡터 방향으로 늘어나며, 고유값이 클수록 해당 축의 분산이 크다. PCA에서는 이런 방향이 principal component가 된다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">2. $$x$$와 $$y$$가 Gaussian이면 $$x+y$$는 항상 Gaussian인가?</summary>
-
-답변: 독립인 Gaussian random variable들의 선형 결합은 Gaussian이다. 더 일반적으로 joint Gaussian인 변수들의 선형 결합도 Gaussian이다. 하지만 각각의 marginal distribution이 Gaussian이라는 사실만으로 항상 합이 Gaussian이라고 단정할 수는 없다. joint distribution의 구조가 중요하다.
+답변: 고유값이 큰 방향은 데이터가 그 방향으로 많이 퍼져 있다는 뜻입니다. 다변수 가우시안의 등고선은 공분산 행렬의 고유벡터 방향으로 늘어나며, 고유값이 클수록 해당 축의 분산이 큽니다. PCA에서는 이런 방향이 principal component가 됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. 가우시안 확률변수의 합과 가우시안 mixture는 왜 다른가?</summary>
+<summary markdown="span">2. $$x$$와 $$y$$가 Gaussian이면 $$x+y$$는 항상 Gaussian입니까?</summary>
 
-답변: 확률변수의 합은 $$z=x+y$$처럼 두 random variable을 더해 새로운 random variable을 만드는 것이다. 독립 Gaussian이라면 결과도 Gaussian이다. 반면 mixture는 $$p(x)=a p_1(x)+(1-a)p_2(x)$$처럼 여러 분포 중 하나에서 샘플이 왔다고 보는 모델이다. mixture는 여러 봉우리를 가질 수 있어 일반적으로 하나의 Gaussian이 아니다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">4. $$y=Ax$$, $$x\sim\mathcal{N}(\mu,\Sigma)$$일 때 $$y$$의 평균과 공분산은 어떻게 되는가?</summary>
-
-답변: 평균은 $$\mathbb{E}[y]=\mathbb{E}[Ax]=A\mu$$이고, 공분산은 $$\operatorname{Var}(y)=\operatorname{Var}(Ax)=A\Sigma A^T$$이다. 따라서 $$y\sim\mathcal{N}(A\mu,A\Sigma A^T)$$이다.
+답변: 독립인 Gaussian random variable들의 선형 결합은 Gaussian입니다. 더 일반적으로 joint Gaussian인 변수들의 선형 결합도 Gaussian입니다. 하지만 각각의 marginal distribution이 Gaussian이라는 사실만으로 항상 합이 Gaussian이라고 단정할 수는 없습니다. joint distribution의 구조가 중요합니다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">5. 표준정규 샘플 $$z\sim\mathcal{N}(0,I)$$로 $$\mathcal{N}(\mu,\Sigma)$$ 샘플을 만들려면 어떻게 해야 하는가?</summary>
+<summary>3. 가우시안 확률변수의 합과 가우시안 mixture는 왜 다릅니까?</summary>
 
-답변: $$LL^T=\Sigma$$를 만족하는 행렬 $$L$$을 구한 뒤 $$y=\mu+Lz$$로 변환한다. 그러면 평균은 $$\mu$$, 공분산은 $$LIL^T=LL^T=\Sigma$$가 된다. $$L$$은 보통 Cholesky decomposition으로 구한다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">6. $$y=x^2$$처럼 여러 $$x$$가 같은 $$y$$로 가는 변환에서는 확률을 어떻게 모아야 하는가?</summary>
-
-답변: 같은 $$y$$를 만드는 모든 $$x$$의 확률 기여를 더해야 한다. 이산형이면 preimage들의 확률을 합한다. 연속형이면 CDF를 먼저 계산해 미분하거나, 각 branch의 inverse transform과 Jacobian 보정을 모두 더한다.
+답변: 확률변수의 합은 $$z=x+y$$처럼 두 random variable을 더해 새로운 random variable을 만드는 것입니다. 독립 Gaussian이라면 결과도 Gaussian입니다. 반면 mixture는 $$p(x)=a p_1(x)+(1-a)p_2(x)$$처럼 여러 분포 중 하나에서 샘플이 왔다고 보는 모델입니다. mixture는 여러 봉우리를 가질 수 있어 일반적으로 하나의 Gaussian이 아닙니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. 변수 변환 공식에서 determinant의 절댓값은 왜 들어가는가?</summary>
+<summary markdown="span">4. $$y=Ax$$, $$x\sim\mathcal{N}(\mu,\Sigma)$$일 때 $$y$$의 평균과 공분산은 어떻게 됩니까?</summary>
 
-답변: determinant는 변환이 부피를 얼마나 늘리거나 줄이는지 나타낸다. PDF는 단위 부피당 확률이므로, 좌표 변환으로 부피가 변하면 density도 반대로 조정되어야 전체 확률이 보존된다. 절댓값을 쓰는 이유는 부피 scale은 방향 전환 여부와 무관하게 양수여야 하기 때문이다.
+답변: 평균은 $$\mathbb{E}[y]=\mathbb{E}[Ax]=A\mu$$이고, 공분산은 $$\operatorname{Var}(y)=\operatorname{Var}(Ax)=A\Sigma A^T$$입니다. 따라서 $$y\sim\mathcal{N}(A\mu,A\Sigma A^T)$$입니다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">5. 표준정규 샘플 $$z\sim\mathcal{N}(0,I)$$로 $$\mathcal{N}(\mu,\Sigma)$$ 샘플을 만들려면 어떻게 해야 합니까?</summary>
+
+답변: $$LL^T=\Sigma$$를 만족하는 행렬 $$L$$을 구한 뒤 $$y=\mu+Lz$$로 변환합니다. 그러면 평균은 $$\mu$$, 공분산은 $$LIL^T=LL^T=\Sigma$$가 됩니다. $$L$$은 보통 Cholesky decomposition으로 구합니다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">6. $$y=x^2$$처럼 여러 $$x$$가 같은 $$y$$로 가는 변환에서는 확률을 어떻게 모아야 합니까?</summary>
+
+답변: 같은 $$y$$를 만드는 모든 $$x$$의 확률 기여를 더해야 합니다. 이산형이면 preimage들의 확률을 합합니다. 연속형이면 CDF를 먼저 계산해 미분하거나, 각 branch의 inverse transform과 Jacobian 보정을 모두 더합니다.
+
+</details>
+
+<details markdown="block">
+<summary>7. 변수 변환 공식에서 determinant의 절댓값은 왜 들어갑니까?</summary>
+
+답변: determinant는 변환이 부피를 얼마나 늘리거나 줄이는지 나타냅니다. PDF는 단위 부피당 확률이므로, 좌표 변환으로 부피가 변하면 density도 반대로 조정되어야 전체 확률이 보존됩니다. 절댓값을 쓰는 이유는 부피 scale은 방향 전환 여부와 무관하게 양수여야 하기 때문입니다.
 
 </details>
 

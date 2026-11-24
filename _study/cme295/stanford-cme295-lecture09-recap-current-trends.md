@@ -19,73 +19,73 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
 
-**원본 영상 먼저 보기:** [00:05:05의 scaled attention·RoPE 복습](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s){:target="_blank" rel="noopener"}에서 Transformer 핵심 연산과 상대 위치 정보가 다시 연결되는 순서를 먼저 듣는다. 아래 총정리는 이 구조를 학습·추론·선호 조정·도구 사용·평가로 확장하고, 뒤의 trend 주장을 검증된 강의 범위와 구분한다.
+**원본 영상 먼저 보기:** [00:05:05의 scaled attention·RoPE 복습](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s){:target="_blank" rel="noopener"}에서 Transformer 핵심 연산과 상대 위치 정보가 다시 연결되는 순서를 먼저 듣습니다. 아래 총정리는 이 구조를 학습·추론·선호 조정·도구 사용·평가로 확장하고, 뒤의 trend 주장을 검증된 강의 범위와 구분합니다.
 
 <figure>
   <a href="{{ '/assets/images/study/cme295/source-captures/lecture-09-attention-recap-00h05m05s.jpg' | relative_url }}" target="_blank" rel="noopener">
     <img src="{{ '/assets/images/study/cme295/source-captures/lecture-09-attention-recap-00h05m05s.jpg' | relative_url }}" alt="teddy bear 토큰의 query가 문장 토큰의 key와 연결되는 attention 복습 슬라이드" loading="lazy">
   </a>
-  <figcaption><a href="https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s" target="_blank" rel="noopener">공식 영상 00:05:05</a> — “teddy bear”의 query와 문장 각 토큰의 key를 연결해 어떤 value를 모을지 결정하는 attention 복습 장면이다.</figcaption>
+  <figcaption><a href="https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=305s" target="_blank" rel="noopener">공식 영상 00:05:05</a> — “teddy bear”의 query와 문장 각 토큰의 key를 연결해 어떤 value를 모을지 결정하는 attention 복습 장면입니다.</figcaption>
 </figure>
 
-가운데 “teddy bear” query에서 여러 key로 뻗는 선은 한 토큰이 문장 전체를 참조할 수 있음을 뜻한다. 각 연결의 점수는 softmax 뒤 가중치가 되고, 그 가중치로 value를 합쳐 문맥이 반영된 새 표현을 만든다.
+가운데 “teddy bear” query에서 여러 key로 뻗는 선은 한 토큰이 문장 전체를 참조할 수 있음을 뜻합니다. 각 연결의 점수는 softmax 뒤 가중치가 되고, 그 가중치로 value를 합쳐 문맥이 반영된 새 표현을 만듭니다.
 
-> **핵심:** 현대 LLM은 토큰 표현과 Transformer 구조 위에 효율적인 학습·추론 기법, 선호 조정, 검색·도구 사용, 평가 체계를 쌓아 발전했다. 마지막 강의는 이 흐름을 복습하고 멀티모달·diffusion 기반 언어 모델 등 이후의 연구 방향과 연결한다.
+> **핵심:** 현대 LLM은 토큰 표현과 Transformer 구조 위에 효율적인 학습·추론 기법, 선호 조정, 검색·도구 사용, 평가 체계를 쌓아 발전했습니다. 마지막 강의는 이 흐름을 복습하고 멀티모달·diffusion 기반 언어 모델 등 이후의 연구 방향과 연결합니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 초기 NLP와 transformer 도입 | tokenization, word2vec, RNN의 한계는 어떻게 self-attention과 transformer로 이어졌는가? |
-| 2 | 현대 LLM 아키텍처와 decoding | RoPE, grouped query attention, pre-norm, MoE, temperature sampling은 각각 어떤 문제를 다루는가? |
-| 3 | 학습과 효율화 | scaling law, FlashAttention, data/model parallelism은 큰 LLM 학습의 어떤 병목을 해결하는가? |
-| 4 | alignment와 reasoning | SFT, preference tuning, reward model, PPO, GRPO는 LLM 행동을 어떻게 바꾸는가? |
-| 5 | RAG, tools, evaluation 복습 | 외부 지식, 외부 행동, 출력 평가를 위해 각각 어떤 기술이 사용되었는가? |
-| 6 | 멀티모달과 diffusion LLM | Transformer가 image로 확장되고 diffusion이 text로 들어오는 양방향 흐름은 무엇을 보여 주는가? |
-| 7 | 앞으로의 연구와 사용 | data, architecture, hardware, agent reliability, safety에서 남아 있는 핵심 과제는 무엇인가? |
+| 1 | 초기 NLP와 transformer 도입 | tokenization, word2vec, RNN의 한계는 어떻게 self-attention과 transformer로 이어졌습니까? |
+| 2 | 현대 LLM 아키텍처와 decoding | RoPE, grouped query attention, pre-norm, MoE, temperature sampling은 각각 어떤 문제를 다룹니까? |
+| 3 | 학습과 효율화 | scaling law, FlashAttention, data/model parallelism은 큰 LLM 학습의 어떤 병목을 해결합니까? |
+| 4 | alignment와 reasoning | SFT, preference tuning, reward model, PPO, GRPO는 LLM 행동을 어떻게 바꿉니까? |
+| 5 | RAG, tools, evaluation 복습 | 외부 지식, 외부 행동, 출력 평가를 위해 각각 어떤 기술이 사용되었습니까? |
+| 6 | 멀티모달과 diffusion LLM | Transformer가 image로 확장되고 diffusion이 text로 들어오는 양방향 흐름은 무엇을 보여 줍니까? |
+| 7 | 앞으로의 연구와 사용 | data, architecture, hardware, agent reliability, safety에서 남아 있는 핵심 과제는 무엇입니까? |
 
 </details>
 ## 핵심 내용
 
-토큰화와 word2vec은 텍스트를 모델이 처리할 표현으로 바꾸고, RNN의 긴 의존성 문제는 self-attention과 Transformer로 이어진다. 강의는 encoder·decoder 구조에서 RoPE, grouped-query attention, pre-norm, BERT·GPT·T5, MoE와 temperature sampling까지 주요 변형을 다시 연결한다. 학습 규모에서는 파라미터 수와 토큰 수의 균형, 100B 파라미터에 최소 2T 토큰이라는 강의의 경험칙, FlashAttention의 HBM·SRAM 최적화, data/model parallelism을 복습한다.
+토큰화와 word2vec은 텍스트를 모델이 처리할 표현으로 바꾸고, RNN의 긴 의존성 문제는 self-attention과 Transformer로 이어집니다. 강의는 encoder·decoder 구조에서 RoPE, grouped-query attention, pre-norm, BERT·GPT·T5, MoE와 temperature sampling까지 주요 변형을 다시 연결합니다. 학습 규모에서는 파라미터 수와 토큰 수의 균형, 100B 파라미터에 최소 2T 토큰이라는 강의의 경험칙, FlashAttention의 HBM·SRAM 최적화, data/model parallelism을 복습합니다.
 
-용어를 시간순 목록으로 외우기보다 한 요청이 처리되는 흐름을 따라가면 전체 수업이 연결된다. 입력 문장은 token과 embedding으로 바뀌고, Transformer가 문맥 표현을 계산하며, decoder가 다음 토큰 분포를 만든다. Pre-training은 이 기본 능력을 만들고 SFT·preference tuning은 응답 행동을 조정한다. 모델 내부 지식만으로 부족하면 RAG나 tool을 사용하고, 마지막에는 과제에 맞는 평가가 결과를 판정한다. 각 기술은 이 흐름의 서로 다른 병목을 해결한다.
+용어를 시간순 목록으로 외우기보다 한 요청이 처리되는 흐름을 따라가면 전체 수업이 연결됩니다. 입력 문장은 token과 embedding으로 바뀌고, Transformer가 문맥 표현을 계산하며, decoder가 다음 토큰 분포를 만듭니다. Pre-training은 이 기본 능력을 만들고 SFT·preference tuning은 응답 행동을 조정합니다. 모델 내부 지식만으로 부족하면 RAG나 tool을 사용하고, 마지막에는 과제에 맞는 평가가 결과를 판정합니다. 각 기술은 이 흐름의 서로 다른 병목을 해결합니다.
 
-강의는 LLM 학습 과정을 pre-training, SFT, preference tuning으로 다시 정리한다. preference tuning에서는 LLM을 policy처럼 보고 reward model과 Bradley-Terry formulation을 사용하며, reward hacking을 막기 위해 base model 또는 이전 RL iteration에서 너무 멀어지지 않도록 한다. Reasoning model에서는 chain of thought 또는 hidden reasoning chain을 만들도록 RL을 사용하고, PPO와 달리 GRPO는 value model 없이 여러 completion의 상대 reward로 advantage를 계산한다. GRPO Done Right와 DAPO는 length bias를 줄이는 extension으로 언급된다. 이어 RAG, tool calling, agentic workflow, LLM-as-a-Judge, 주요 benchmark가 final exam 범위로 묶여 복습된다.
+강의는 LLM 학습 과정을 pre-training, SFT, preference tuning으로 다시 정리합니다. preference tuning에서는 LLM을 policy처럼 보고 reward model과 Bradley-Terry formulation을 사용하며, reward hacking을 막기 위해 base model 또는 이전 RL iteration에서 너무 멀어지지 않도록 합니다. Reasoning model에서는 chain of thought 또는 hidden reasoning chain을 만들도록 RL을 사용하고, PPO와 달리 GRPO는 value model 없이 여러 completion의 상대 reward로 advantage를 계산합니다. GRPO Done Right와 DAPO는 length bias를 줄이는 extension으로 언급됩니다. 이어 RAG, tool calling, agentic workflow, LLM-as-a-Judge, 주요 benchmark가 final exam 범위로 묶여 복습됩니다.
 
-두 번째와 세 번째 부분은 2025년 트렌드와 수업 이후의 방향이다. Transformer는 Vision Transformer, VLM, LLaVA, Llama 3식 cross-attention, diffusion transformer처럼 non-text 영역으로 확장되었고, 반대로 image diffusion의 아이디어는 text generation에 들어와 masked diffusion model 또는 diffusion-based LLM으로 연구되고 있다. LLaDA, Google I/O의 experimental text diffusion model, Inception이 예시로 언급되며, diffusion LLM은 autoregressive decoding보다 훨씬 적은 forward pass로 긴 출력과 fill-in-the-middle task에서 속도 이점을 줄 수 있지만 frontier autoregressive model 수준으로 따라잡는 작업은 진행 중이다. 마지막으로 DeepSeek OCR, 2D RoPE, Muon과 MuonClip, RMSNorm, data curation, mid-training, model collapse, small language models, hardware specialization, AI-assisted coding, ChatGPT Atlas, continuous learning, hallucination, personalization, interpretability, safety, 그리고 arXiv, NeurIPS, HuggingFace trending papers, X, YouTube, company blogs로 최신 흐름을 따라가는 방법이 소개된다.
+두 번째와 세 번째 부분은 2025년 트렌드와 수업 이후의 방향입니다. Transformer는 Vision Transformer, VLM, LLaVA, Llama 3식 cross-attention, diffusion transformer처럼 non-text 영역으로 확장되었고, 반대로 image diffusion의 아이디어는 text generation에 들어와 masked diffusion model 또는 diffusion-based LLM으로 연구되고 있습니다. LLaDA, Google I/O의 experimental text diffusion model, Inception이 예시로 언급되며, diffusion LLM은 autoregressive decoding보다 훨씬 적은 forward pass로 긴 출력과 fill-in-the-middle task에서 속도 이점을 줄 수 있지만 frontier autoregressive model 수준으로 따라잡는 작업은 진행 중입니다. 마지막으로 DeepSeek OCR, 2D RoPE, Muon과 MuonClip, RMSNorm, data curation, mid-training, model collapse, small language models, hardware specialization, AI-assisted coding, ChatGPT Atlas, continuous learning, hallucination, personalization, interpretability, safety, 그리고 arXiv, NeurIPS, HuggingFace trending papers, X, YouTube, company blogs로 최신 흐름을 따라가는 방법이 소개됩니다.
 
-이 트렌드들은 모두 기존 Transformer를 버린다는 뜻은 아니다. Vision Transformer는 이미지 조각을 token처럼 다루고, VLM은 이미지 표현과 언어 표현을 연결하며, diffusion LLM은 왼쪽부터 한 토큰씩 생성하는 방식과 다른 생성 순서를 탐색한다. 즉 같은 구성요소를 다른 입력에 확장하는 연구와, 생성 절차 자체를 바꾸는 연구를 구분해 읽어야 성능 주장도 올바르게 비교할 수 있다.
+이 트렌드들은 모두 기존 Transformer를 버린다는 뜻은 아닙니다. Vision Transformer는 이미지 조각을 token처럼 다루고, VLM은 이미지 표현과 언어 표현을 연결하며, diffusion LLM은 왼쪽부터 한 토큰씩 생성하는 방식과 다른 생성 순서를 탐색합니다. 즉 같은 구성요소를 다른 입력에 확장하는 연구와, 생성 절차 자체를 바꾸는 연구를 구분해 읽어야 성능 주장도 올바르게 비교할 수 있습니다.
 
 ## 핵심 개념
 
 | 개념 | 설명 |
 |---|---|
-| Self-attention | query와 key의 유사도를 softmax로 가중치화하고 value의 weighted average를 만드는 transformer의 핵심 연산이다. |
-| RoPE | Rotary position embeddings. query와 key를 회전시켜 attention에서 token 간 상대 위치 정보를 반영한다. |
-| Grouped Query Attention | attention head마다 key와 value projection을 모두 따로 두지 않고 grouping해 계산과 메모리 부담을 줄이는 방법으로 복습된다. |
-| FlashAttention | GPU의 HBM과 SRAM 구조를 활용해 memory movement를 줄이고, 일부 값을 저장하지 않고 필요할 때 재계산해 attention을 빠르게 계산하는 exact method다. |
-| Bradley-Terry formulation | 두 output의 reward score 차이로 한 output이 다른 output보다 선호될 확률을 모델링해 reward model 학습에 쓰인다. |
-| GRPO | Group Relative Policy Optimization. value model 없이 같은 query의 여러 completion reward를 비교해 relative advantage를 만드는 RL 알고리즘이다. |
-| Vision Transformer | 이미지를 patch로 나누어 vector token으로 만들고 transformer encoder를 통과시켜 CLS embedding으로 image classification을 수행하는 모델이다. |
-| VLM | Vision-language model. image token과 text token을 함께 처리하거나 cross-attention으로 연결해 이미지에 대한 질문에 답할 수 있는 모델이다. |
-| Masked Diffusion Model | text diffusion에서 noise의 analogue를 mask token으로 보고, 완전히 또는 부분적으로 masked된 sequence를 점진적으로 unmask하는 모델 계열이다. |
-| Model collapse | LLM generated text가 다양성이 낮아 training data distribution을 바꾸고 학습 품질을 떨어뜨릴 수 있다는 문제로 소개된다. |
+| Self-attention | query와 key의 유사도를 softmax로 가중치화하고 value의 weighted average를 만드는 transformer의 핵심 연산입니다. |
+| RoPE | Rotary position embeddings. query와 key를 회전시켜 attention에서 token 간 상대 위치 정보를 반영합니다. |
+| Grouped Query Attention | attention head마다 key와 value projection을 모두 따로 두지 않고 grouping해 계산과 메모리 부담을 줄이는 방법으로 복습됩니다. |
+| FlashAttention | GPU의 HBM과 SRAM 구조를 활용해 memory movement를 줄이고, 일부 값을 저장하지 않고 필요할 때 재계산해 attention을 빠르게 계산하는 exact method입니다. |
+| Bradley-Terry formulation | 두 output의 reward score 차이로 한 output이 다른 output보다 선호될 확률을 모델링해 reward model 학습에 쓰입니다. |
+| GRPO | Group Relative Policy Optimization. value model 없이 같은 query의 여러 completion reward를 비교해 relative advantage를 만드는 RL 알고리즘입니다. |
+| Vision Transformer | 이미지를 patch로 나누어 vector token으로 만들고 transformer encoder를 통과시켜 CLS embedding으로 image classification을 수행하는 모델입니다. |
+| VLM | Vision-language model. image token과 text token을 함께 처리하거나 cross-attention으로 연결해 이미지에 대한 질문에 답할 수 있는 모델입니다. |
+| Masked Diffusion Model | text diffusion에서 noise의 analogue를 mask token으로 보고, 완전히 또는 부분적으로 masked된 sequence를 점진적으로 unmask하는 모델 계열입니다. |
+| Model collapse | LLM generated text가 다양성이 낮아 training data distribution을 바꾸고 학습 품질을 떨어뜨릴 수 있다는 문제로 소개됩니다. |
 
 ## 수식 해설: recap 식과 empirical trend의 경계
 
-이 복습에서는 attention, RoPE, preference tuning, GRPO, FlashAttention을 하나의 흐름으로 연결한다. 핵심은 각 식이 구조의 정의인지, 계산을 보존하는 항등식인지, 특정 실험 조건에서 얻은 경험 법칙인지를 구분하는 것이다.
+이 복습에서는 attention, RoPE, preference tuning, GRPO, FlashAttention을 하나의 흐름으로 연결합니다. 핵심은 각 식이 구조의 정의인지, 계산을 보존하는 항등식인지, 특정 실험 조건에서 얻은 경험 법칙인지를 구분하는 것입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Attention, RoPE, GRPO, and online softmax recap</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
-| Scaled attention과 RoPE | 00:05:05–00:07:50 | Attention 공식과 RoPE의 상대 위치 역할은 강의 원문이며, 분산·rotation identity 유도는 Lectures 1–2의 작성자 보충을 재사용한다. |
-| Chinchilla rule | 00:17:30–00:17:45 | 약 $$20N$$ token이라는 rule of thumb은 강의 원문이며, 보편 theorem이 아니라는 경계 설명은 작성자 보충이다. |
-| FlashAttention | 00:18:19–00:20:16 | HBM/SRAM tiling, exact method, recomputation 설명은 강의 원문이며, bitwise equality 경계는 작성자 보충이다. |
-| Bradley-Terry와 GRPO recap | 00:25:54–00:26:06, 00:32:40–00:38:26 | Preference probability와 group-relative learning은 강의 원문이며, 식의 가정·정규화 한계는 Lectures 5–6의 작성자 보충을 재사용한다. |
+| Scaled attention과 RoPE | 00:05:05–00:07:50 | Attention 공식과 RoPE의 상대 위치 역할은 강의 원문이며, 분산·rotation identity 유도는 Lectures 1–2의 작성자 보충을 재사용합니다. |
+| Chinchilla rule | 00:17:30–00:17:45 | 약 $$20N$$ token이라는 rule of thumb은 강의 원문이며, 보편 theorem이 아니라는 경계 설명은 작성자 보충입니다. |
+| FlashAttention | 00:18:19–00:20:16 | HBM/SRAM tiling, exact method, recomputation 설명은 강의 원문이며, bitwise equality 경계는 작성자 보충입니다. |
+| Bradley-Terry와 GRPO recap | 00:25:54–00:26:06, 00:32:40–00:38:26 | Preference probability와 group-relative learning은 강의 원문이며, 식의 가정·정규화 한계는 Lectures 5–6의 작성자 보충을 재사용합니다. |
 
 강의가 복습한 scaled attention은
 
@@ -93,7 +93,7 @@ $$
 \operatorname{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
 $$
 
-이며 $$\sqrt{d_k}$$ scale은 독립·평균 0·단위분산인 query/key 성분을 가정할 때 dot-product variance $$d_k$$를 1로 맞춘다. RoPE는 rotation identity $$R(m)^\top R(n)=R(n-m)$$로 relative position을 반영한다. 두 유도와 기호 정의는 Lectures 1-2의 수식 해설을 따른다.
+이며 $$\sqrt{d_k}$$ scale은 독립·평균 0·단위분산인 query/key 성분을 가정할 때 dot-product variance $$d_k$$를 1로 맞춥니다. RoPE는 rotation identity $$R(m)^\top R(n)=R(n-m)$$로 relative position을 반영합니다. 두 유도와 기호 정의는 Lectures 1-2의 수식 해설을 따릅니다.
 
 Preference tuning의 Bradley-Terry relation은
 
@@ -101,20 +101,20 @@ $$
 P(y_w\succ y_l)=\sigma(r_w-r_l)
 $$
 
-이라는 pairwise probability model이고, GRPO의 $$A_i=(R_i-\bar R)/(s_R+\varepsilon)$$는 group-relative score 정의다. 전자는 실제 human preference에 대한 modeling assumption이고, 후자는 absolute correctness를 보장하지 않는다. 자세한 BCE·KL·clipping 경계는 Lectures 5-6에서 유도했다.
+이라는 pairwise probability model이고, GRPO의 $$A_i=(R_i-\bar R)/(s_R+\varepsilon)$$는 group-relative score 정의입니다. 전자는 실제 human preference에 대한 modeling assumption이고, 후자는 absolute correctness를 보장하지 않습니다. 자세한 BCE·KL·clipping 경계는 Lectures 5-6에서 유도했습니다.
 
-Parameter 수 $$N$$에 대해 training token을 약 $$20N$$으로 두는 rule, 더 많은 reasoning token이 더 높은 정확도를 준다는 관찰, diffusion LLM의 속도 우위는 모두 특정 실험·hardware·model regime의 **empirical result 또는 rule of thumb**이다. 수학적 항등식이나 보편 theorem으로 증명하지 않으며, 새로운 model에는 compute accounting, data quality, latency와 benchmark를 다시 측정해야 한다.
+Parameter 수 $$N$$에 대해 training token을 약 $$20N$$으로 두는 rule, 더 많은 reasoning token이 더 높은 정확도를 준다는 관찰, diffusion LLM의 속도 우위는 모두 특정 실험·hardware·model regime의 **empirical result 또는 rule of thumb**입니다. 수학적 항등식이나 보편 theorem으로 증명하지 않으며, 새로운 model에는 compute accounting, data quality, latency와 benchmark를 다시 측정해야 합니다.
 
-FlashAttention은 softmax attention 자체를 근사하는 식이 아니라 tiling과 online normalization으로 같은 결과를 계산하는 exact algorithm이다. 다만 floating-point 연산 순서가 달라 bitwise-identical output까지 보장한다는 뜻은 아니다.
+FlashAttention은 softmax attention 자체를 근사하는 식이 아니라 tiling과 online normalization으로 같은 결과를 계산하는 exact algorithm입니다. 다만 floating-point 연산 순서가 달라 bitwise-identical output까지 보장한다는 뜻은 아닙니다.
 
-Lecture 9만 읽어도 유도 경계를 확인할 수 있도록 핵심식을 다시 적는다. RoPE는 rotation matrix의 $$R(a)^\top=R(-a)$$와 $$R(a)R(b)=R(a+b)$$에서
+Lecture 9만 읽어도 유도 경계를 확인할 수 있도록 핵심식을 다시 적습니다. RoPE는 rotation matrix의 $$R(a)^\top=R(-a)$$와 $$R(a)R(b)=R(a+b)$$에서
 
 $$
 (R(m\theta)q)^\top(R(n\theta)k)
 =q^\top R((n-m)\theta)k
 $$
 
-를 얻는다. 따라서 score는 상대 위치 $$n-m$$에 의존한다. 이는 00:07:37–00:07:50의 RoPE 복습에 대한 작성자 보충 유도이며 long-context 품질 자체의 증명은 아니다.
+를 얻습니다. 따라서 score는 상대 위치 $$n-m$$에 의존합니다. 이는 00:07:37–00:07:50의 RoPE 복습에 대한 작성자 보충 유도이며 long-context 품질 자체의 증명은 아닙니다.
 
 Bradley-Terry는
 
@@ -124,7 +124,7 @@ $$
 =\sigma(r_w-r_l)
 $$
 
-로, 첫 분수의 분자·분모를 $$e^{r_w}$$로 나눈 결과다. 이는 00:25:54–00:26:06의 강의 원문 공식을 자립적으로 전개한 것이며 실제 human preference가 logistic relation을 따른다는 것은 modeling assumption이다.
+로, 첫 분수의 분자·분모를 $$e^{r_w}$$로 나눈 결과입니다. 이는 00:25:54–00:26:06의 강의 원문 공식을 자립적으로 전개한 것이며 실제 human preference가 logistic relation을 따른다는 것은 modeling assumption입니다.
 
 GRPO는 같은 prompt의 reward $$R_i$$에 대해
 
@@ -136,7 +136,7 @@ s_R=\sqrt{\frac1G\sum_i(R_i-\bar R)^2},
 A_i=\frac{R_i-\bar R}{s_R+\varepsilon}
 $$
 
-로 relative advantage를 만든다. $$s_R=0$$이면 상대 reward 신호가 없고 $$\varepsilon>0$$은 수치 안정화용이다. Completion 길이를 $$T_i$$, token ratio를 $$\rho_{i,t}=\pi_\theta(o_{i,t}\mid\cdot)/\pi_{old}(o_{i,t}\mid\cdot)$$라 하면 대표 objective는
+로 relative advantage를 만듭니다. $$s_R=0$$이면 상대 reward 신호가 없고 $$\varepsilon>0$$은 수치 안정화용입니다. Completion 길이를 $$T_i$$, token ratio를 $$\rho_{i,t}=\pi_\theta(o_{i,t}\mid\cdot)/\pi_{old}(o_{i,t}\mid\cdot)$$라 하면 대표 objective는
 
 $$
 J_{GRPO}=\mathbb E\!\left[
@@ -156,7 +156,7 @@ $$
 -\log\frac{\pi_{ref}(o_{i,t}\mid\cdot)}{\pi_\theta(o_{i,t}\mid\cdot)}-1\ge0
 $$
 
-이다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 오며, ratio와 log가 유한하려면 sampled token에서 current·old·reference probability가 양수여야 한다. $$\epsilon>0$$은 ratio clip 폭, $$\beta\ge0$$는 reference-policy KL penalty 강도다. 이 식들은 00:32:40–00:38:26의 value model 제거와 group 비교 설명을 Lecture 6의 정의로 보충한 것이며, KL estimator와 normalization 위치는 구현별로 다를 수 있다. Clipping은 monotonic improvement나 absolute correctness를 보장하지 않는다.
+입니다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 오며, ratio와 log가 유한하려면 sampled token에서 current·old·reference probability가 양수여야 합니다. $$\epsilon>0$$은 ratio clip 폭, $$\beta\ge0$$는 reference-policy KL penalty 강도입니다. 이 식들은 00:32:40–00:38:26의 value model 제거와 group 비교 설명을 Lecture 6의 정의로 보충한 것이며, KL estimator와 normalization 위치는 구현별로 다를 수 있습니다. Clipping은 monotonic improvement나 absolute correctness를 보장하지 않습니다.
 
 마지막으로 FlashAttention의 online-softmax row recurrence는 $$m=-\infty,\ell=0,u=0$$에서 시작해 새 score block $$B$$에 대해
 
@@ -171,80 +171,80 @@ u'=e^{m-m'}u+\sum_{j\in B}e^{s_j-m'}v_j,
 \qquad o'=u'/\ell'.
 $$
 
-모든 block 뒤에는 $$o'=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 되어 real arithmetic에서 vanilla attention과 같다. 이는 00:18:19–00:20:16의 exact tiling 설명에 대한 작성자 보충이며, unmasked finite score가 하나 이상 있어 $$\ell'>0$$이어야 한다. Floating-point reduction 순서 때문에 bitwise equality까지 뜻하지 않는다.
+모든 block 뒤에는 $$o'=\sum_j e^{s_j}v_j/\sum_j e^{s_j}$$가 되어 real arithmetic에서 vanilla attention과 같습니다. 이는 00:18:19–00:20:16의 exact tiling 설명에 대한 작성자 보충이며, unmasked finite score가 하나 이상 있어 $$\ell'>0$$이어야 합니다. Floating-point reduction 순서 때문에 bitwise equality까지 뜻하지 않습니다.
 
 </details>
 
 ## 학습 포인트
 
-- Self-attention은 query, key, value를 사용해 모든 token이 서로 attend하게 하며, 강의는 softmax(QK^T / sqrt(k))V 공식을 복습한다.
-- BERT는 encoder-only로 embedding과 classification에 적합하고, GPT는 decoder-only autoregressive text generation에 적합하며, T5는 encoder-decoder 구조다.
-- Scaling law 논의에서는 많은 당시 모델이 dataset size에 비해 너무 큰 undertrained 상태였고, parameter 수의 약 20배 token으로 학습하라는 rule of thumb이 제시된다.
-- FlashAttention은 HBM read/write를 줄이고 SRAM에서 block 단위 계산을 수행해 정확한 attention 결과를 더 빠르게 얻는다.
-- Preference tuning은 reward model과 RL을 사용하지만 reward hacking을 막기 위해 SFT base model과 이전 RL iteration에서 너무 멀어지지 않게 한다.
-- GRPO는 value model을 유지하지 않고 같은 prompt의 여러 completion rewards를 상대 비교해 reasoning task, 특히 verifiable reward가 있는 math/coding에 쓰인다.
-- Vision Transformer는 image patch를 token처럼 만들고 transformer encoder의 CLS embedding으로 classification을 수행한다.
-- Diffusion-based LLM은 text의 discrete token 문제를 mask token으로 다루며, autoregressive decoding보다 적은 diffusion step으로 긴 출력을 빠르게 만들 수 있다는 가능성을 보여 준다.
+- Self-attention은 query, key, value를 사용해 모든 token이 서로 attend하게 하며, 강의는 softmax(QK^T / sqrt(k))V 공식을 복습합니다.
+- BERT는 encoder-only로 embedding과 classification에 적합하고, GPT는 decoder-only autoregressive text generation에 적합하며, T5는 encoder-decoder 구조입니다.
+- Scaling law 논의에서는 많은 당시 모델이 dataset size에 비해 너무 큰 undertrained 상태였고, parameter 수의 약 20배 token으로 학습하라는 rule of thumb이 제시됩니다.
+- FlashAttention은 HBM read/write를 줄이고 SRAM에서 block 단위 계산을 수행해 정확한 attention 결과를 더 빠르게 얻습니다.
+- Preference tuning은 reward model과 RL을 사용하지만 reward hacking을 막기 위해 SFT base model과 이전 RL iteration에서 너무 멀어지지 않게 합니다.
+- GRPO는 value model을 유지하지 않고 같은 prompt의 여러 completion rewards를 상대 비교해 reasoning task, 특히 verifiable reward가 있는 math/coding에 쓰입니다.
+- Vision Transformer는 image patch를 token처럼 만들고 transformer encoder의 CLS embedding으로 classification을 수행합니다.
+- Diffusion-based LLM은 text의 discrete token 문제를 mask token으로 다루며, autoregressive decoding보다 적은 diffusion step으로 긴 출력을 빠르게 만들 수 있다는 가능성을 보여 줍니다.
 
 ## 마지막 핵심 정리
 
-이 강의의 핵심은 `CME295 전체 복습, 2025년 LLM 트렌드, 앞으로의 학습 방향`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것이다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 한다.
+이 강의의 핵심은 `CME295 전체 복습, 2025년 LLM 트렌드, 앞으로의 학습 방향`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것입니다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 합니다.
 
 ## Study Guide
 
-1. Lecture 1부터 8까지를 architecture, training, alignment, reasoning, external systems, evaluation이라는 축으로 다시 묶어 본다.
-2. PPO와 GRPO를 value model 필요 여부, reward source, advantage 계산 방식, reasoning task 적합성으로 비교한다.
-3. RAG, tool calling, LLM-as-a-Judge가 각각 knowledge cutoff, external action, free-form output evaluation 문제를 어떻게 다루는지 연결한다.
-4. Vision Transformer와 diffusion LLM을 transformer가 text 밖으로 나간 사례와 diffusion이 text 안으로 들어온 사례로 대비한다.
-5. 최신 LLM 논문을 읽을 때 architecture, data, optimizer, normalization, inference cost, safety benchmark 중 어떤 축의 기여인지 먼저 표시한다.
+1. Lecture 1부터 8까지를 architecture, training, alignment, reasoning, external systems, evaluation이라는 축으로 다시 묶어 봅니다.
+2. PPO와 GRPO를 value model 필요 여부, reward source, advantage 계산 방식, reasoning task 적합성으로 비교합니다.
+3. RAG, tool calling, LLM-as-a-Judge가 각각 knowledge cutoff, external action, free-form output evaluation 문제를 어떻게 다루는지 연결합니다.
+4. Vision Transformer와 diffusion LLM을 transformer가 text 밖으로 나간 사례와 diffusion이 text 안으로 들어온 사례로 대비합니다.
+5. 최신 LLM 논문을 읽을 때 architecture, data, optimizer, normalization, inference cost, safety benchmark 중 어떤 축의 기여인지 먼저 표시합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. word2vec 표현의 한계가 transformer로 이어지는 이유는 무엇인가?</summary>
+<summary>1. word2vec 표현의 한계가 transformer로 이어지는 이유는 무엇입니까?</summary>
 
-답변: word2vec은 같은 단어에 같은 표현을 주므로 문맥에 따라 의미가 달라지는 문제를 충분히 다루지 못한다. RNN은 순차 처리로 문맥을 반영하지만 long-range dependency가 약했고, self-attention은 token 사이의 직접 연결로 이를 보완했다.
-
-</details>
-
-<details markdown="block">
-<summary>2. FlashAttention이 더 많은 재계산을 하면서도 빨라질 수 있는 이유는 무엇인가?</summary>
-
-답변: 병목이 계산량만이 아니라 HBM 같은 큰 느린 메모리와의 read/write이기 때문이다. 일부 중간 결과를 저장하지 않고 SRAM에서 block 단위로 계산하며 필요할 때 재계산하면 memory movement를 줄여 전체 runtime을 줄일 수 있다.
+답변: word2vec은 같은 단어에 같은 표현을 주므로 문맥에 따라 의미가 달라지는 문제를 충분히 다루지 못합니다. RNN은 순차 처리로 문맥을 반영하지만 long-range dependency가 약했고, self-attention은 token 사이의 직접 연결로 이를 보완했습니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. GRPO가 PPO보다 reasoning model 학습에 매력적인 이유는 무엇인가?</summary>
+<summary>2. FlashAttention이 더 많은 재계산을 하면서도 빨라질 수 있는 이유는 무엇입니까?</summary>
 
-답변: GRPO는 value model을 따로 학습하고 유지하지 않아도 되고, math나 coding처럼 정답을 검증할 수 있는 task에서는 reward model 없이 verifiable reward를 사용할 수 있다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Vision Transformer가 convolutional neural network와 대비되는 점은 무엇인가?</summary>
-
-답변: CNN은 sliding window와 같은 강한 vision inductive bias를 갖지만, ViT는 image patch들이 self-attention으로 서로 attend하게 하며 상대적으로 낮은 inductive bias를 갖는다. 충분한 image data가 있으면 이 방식이 잘 동작할 수 있다고 설명된다.
+답변: 병목이 계산량만이 아니라 HBM 같은 큰 느린 메모리와의 read/write이기 때문입니다. 일부 중간 결과를 저장하지 않고 SRAM에서 block 단위로 계산하며 필요할 때 재계산하면 memory movement를 줄여 전체 runtime을 줄일 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. Diffusion-based LLM이 autoregressive LLM보다 빠를 수 있는 핵심 이유는 무엇인가?</summary>
+<summary>3. GRPO가 PPO보다 reasoning model 학습에 매력적인 이유는 무엇입니까?</summary>
 
-답변: autoregressive LLM은 출력 token 수만큼 순차 forward pass가 필요하지만, diffusion LLM은 정해진 수의 diffusion step으로 여러 mask token을 점진적으로 채울 수 있어 긴 출력에서 forward pass 수가 더 적을 수 있다.
+답변: GRPO는 value model을 따로 학습하고 유지하지 않아도 되고, math나 coding처럼 정답을 검증할 수 있는 task에서는 reward model 없이 verifiable reward를 사용할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>6. 강의가 최신 LLM 흐름을 따라가기 위해 제안한 자료원은 무엇인가?</summary>
+<summary>4. Vision Transformer가 convolutional neural network와 대비되는 점은 무엇입니까?</summary>
 
-답변: arXiv, NeurIPS 같은 학회, HuggingFace trending papers, X/Twitter 커뮤니티, Yannic Kilcher와 Andrej Karpathy의 YouTube 자료, company blogs, 그리고 수업 study guide가 언급된다.
+답변: CNN은 sliding window와 같은 강한 vision inductive bias를 갖지만, ViT는 image patch들이 self-attention으로 서로 attend하게 하며 상대적으로 낮은 inductive bias를 갖습니다. 충분한 image data가 있으면 이 방식이 잘 동작할 수 있다고 설명됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>5. Diffusion-based LLM이 autoregressive LLM보다 빠를 수 있는 핵심 이유는 무엇입니까?</summary>
+
+답변: autoregressive LLM은 출력 token 수만큼 순차 forward pass가 필요하지만, diffusion LLM은 정해진 수의 diffusion step으로 여러 mask token을 점진적으로 채울 수 있어 긴 출력에서 forward pass 수가 더 적을 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>6. 강의가 최신 LLM 흐름을 따라가기 위해 제안한 자료원은 무엇입니까?</summary>
+
+답변: arXiv, NeurIPS 같은 학회, HuggingFace trending papers, X/Twitter 커뮤니티, Yannic Kilcher와 Andrej Karpathy의 YouTube 자료, company blogs, 그리고 수업 study guide가 언급됩니다.
 
 </details>
 
 ## 참고자료
 
-- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했습니다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았습니다.
 
 - [강의 영상](https://www.youtube.com/watch?v=Q86qzJ1K1Ss){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

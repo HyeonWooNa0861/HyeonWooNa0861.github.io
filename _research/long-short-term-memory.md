@@ -28,36 +28,36 @@ keywords:
 
 ## 한 줄 요약
 
-LSTM은 recurrent backpropagation에서 장기 의존성을 학습하기 어려운 vanishing gradient 문제를 해결하기 위해, constant error flow를 유지하는 memory cell과 gate 구조를 제안한 고전 논문이다.
+LSTM은 recurrent backpropagation에서 장기 의존성을 학습하기 어려운 vanishing gradient 문제를 해결하기 위해, constant error flow를 유지하는 memory cell과 gate 구조를 제안한 고전 논문입니다.
 
 ## 핵심 내용
 
-이 논문은 RNN이 원칙적으로 과거 정보를 저장할 수 있지만 실제 학습에서는 긴 시간 간격을 다루기 어렵다는 문제에서 시작한다. Gradient가 반복적으로 곱해지며 작아지면 과거 정보가 현재 loss에 거의 영향을 주지 못하고, 모델은 long-term dependency를 학습하지 못한다.
+이 논문은 RNN이 원칙적으로 과거 정보를 저장할 수 있지만 실제 학습에서는 긴 시간 간격을 다루기 어렵다는 문제에서 시작합니다. Gradient가 반복적으로 곱해지며 작아지면 과거 정보가 현재 loss에 거의 영향을 주지 못하고, 모델은 long-term dependency를 학습하지 못합니다.
 
-LSTM은 memory cell과 gate를 통해 이 문제를 완화한다. Memory cell은 정보를 오래 보존하고, gate는 언제 정보를 저장하고 출력할지 결정한다. Constant error carousel은 gradient가 장기간 유지될 수 있는 경로를 제공한다.
+LSTM은 memory cell과 gate를 통해 이 문제를 완화합니다. Memory cell은 정보를 오래 보존하고, gate는 언제 정보를 저장하고 출력할지 결정합니다. Constant error carousel은 gradient가 장기간 유지될 수 있는 경로를 제공합니다.
 
-오늘날의 LSTM은 forget gate가 포함된 형태로 많이 쓰이지만, 원 논문의 핵심은 장기 기억을 위한 별도 memory path와 gate-based access control이다. QECO에서 LSTM을 사용하는 이유도 edge load와 task sequence의 시간적 패턴을 기억하기 위해서다.
+오늘날의 LSTM은 forget gate가 포함된 형태로 많이 쓰이지만, 원 논문의 핵심은 장기 기억을 위한 별도 memory path와 gate-based access control입니다. QECO에서 LSTM을 사용하는 이유도 edge load와 task sequence의 시간적 패턴을 기억하기 위해서입니다.
 
-LSTM의 핵심은 단순히 hidden state를 더 크게 만든 것이 아니라, 정보를 언제 쓰고 언제 보존할지 gate로 제어한다는 점이다. Constant error carousel 관점에서 memory cell은 gradient가 긴 시간 동안 사라지지 않게 돕고, gate는 불필요한 입력이나 출력을 차단해 장기 기억을 안정적으로 유지한다.
+LSTM의 핵심은 단순히 hidden state를 더 크게 만든 것이 아니라, 정보를 언제 쓰고 언제 보존할지 gate로 제어한다는 점입니다. Constant error carousel 관점에서 memory cell은 gradient가 긴 시간 동안 사라지지 않게 돕고, gate는 불필요한 입력이나 출력을 차단해 장기 기억을 안정적으로 유지합니다.
 
-현대 sequence model에서 Transformer가 많은 영역을 대체했지만, LSTM은 time series state가 비교적 작고 online으로 흘러오는 문제에서 여전히 해석 가치가 있다. MEC offloading에서는 edge load, queue, task arrival처럼 최근 상태와 오래된 추세가 함께 중요할 수 있다. QECO류 연구가 LSTM을 쓰는 이유는 이런 temporal dependency를 compact하게 담기 위해서다.
+현대 sequence model에서 Transformer가 많은 영역을 대체했지만, LSTM은 time series state가 비교적 작고 online으로 흘러오는 문제에서 여전히 해석 가치가 있습니다. MEC offloading에서는 edge load, queue, task arrival처럼 최근 상태와 오래된 추세가 함께 중요할 수 있습니다. QECO류 연구가 LSTM을 쓰는 이유는 이런 temporal dependency를 compact하게 담기 위해서입니다.
 
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 문제 배경 | RNN은 왜 긴 시간 간격의 정보를 저장하고 학습하기 어려운가? |
-| 2 | 핵심 구조 | Constant Error Carousel은 gradient decay를 어떻게 줄이는가? |
-| 3 | Gate | Input/output gate는 memory 접근을 어떻게 제어하는가? |
-| 4 | 결과 | 기존 recurrent algorithm보다 긴 time lag task를 더 잘 해결하는가? |
+| 1 | 문제 배경 | RNN은 왜 긴 시간 간격의 정보를 저장하고 학습하기 어렵습니까? |
+| 2 | 핵심 구조 | Constant Error Carousel은 gradient decay를 어떻게 줄입니까? |
+| 3 | Gate | Input/output gate는 memory 접근을 어떻게 제어합니까? |
+| 4 | 결과 | 기존 recurrent algorithm보다 긴 time lag task를 더 잘 해결합니까? |
 
 ## 1. 문제 배경
 
-기본 RNN은 feedback connection을 통해 과거 정보를 저장할 수 있지만, recurrent backpropagation에서는 error signal이 시간축을 따라 사라지거나 폭주할 수 있다. 특히 긴 time lag를 건너 정보를 유지해야 하는 task에서 학습이 매우 느려지거나 실패한다.
+기본 RNN은 feedback connection을 통해 과거 정보를 저장할 수 있지만, recurrent backpropagation에서는 error signal이 시간축을 따라 사라지거나 폭주할 수 있습니다. 특히 긴 time lag를 건너 정보를 유지해야 하는 task에서 학습이 매우 느려지거나 실패합니다.
 
 ## 2. 제안 방법
 
-LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant error carousel을 도입한다. Gate unit은 memory에 언제 쓰고 언제 읽을지 학습한다.
+LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant error carousel을 도입합니다. Gate unit은 memory에 언제 쓰고 언제 읽을지 학습합니다.
 
 | 구성 | 역할 |
 |---|---|
@@ -66,15 +66,15 @@ LSTM은 memory cell 내부에서 error가 일정하게 흐르도록 constant err
 | Input gate | 새 정보를 cell에 쓸지 제어 |
 | Output gate | cell state를 출력으로 노출할지 제어 |
 
-초기 LSTM은 이후 버전과 달리 forget gate가 기본 구성에 포함되지 않는다. Forget gate는 후속 연구에서 추가되어 더 널리 쓰이는 modern LSTM 구조가 된다.
+초기 LSTM은 이후 버전과 달리 forget gate가 기본 구성에 포함되지 않습니다. Forget gate는 후속 연구에서 추가되어 더 널리 쓰이는 modern LSTM 구조가 됩니다.
 
 ## 3. 결과 및 해석
 
-논문은 artificial long time lag task에서 LSTM이 기존 RTRL, BPTT, Elman network보다 더 성공적으로 학습한다고 보고한다. 핵심은 gradient path를 짧게 만드는 것이 아니라, 필요한 error flow를 cell 내부에서 보존하는 것이다.
+논문은 artificial long time lag task에서 LSTM이 기존 RTRL, BPTT, Elman network보다 더 성공적으로 학습한다고 보고합니다. 핵심은 gradient path를 짧게 만드는 것이 아니라, 필요한 error flow를 cell 내부에서 보존하는 것입니다.
 
 ## 4. 연구 맥락
 
-MEC offloading에서 LSTM은 task arrival, edge load, queue length처럼 시간적 의존성이 있는 state를 기억하기 위해 사용된다. 원 논문은 LSTM이 왜 장기 상태 추적에 적합한지 이론적 출발점을 제공한다.
+MEC offloading에서 LSTM은 task arrival, edge load, queue length처럼 시간적 의존성이 있는 state를 기억하기 위해 사용됩니다. 원 논문은 LSTM이 왜 장기 상태 추적에 적합한지 이론적 출발점을 제공합니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

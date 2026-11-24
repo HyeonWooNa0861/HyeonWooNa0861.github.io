@@ -19,74 +19,74 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 8](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
 
-**원본 영상 먼저 보기:** [00:08:40의 inter-rater agreement 한계 슬라이드](https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s){:target="_blank" rel="noopener"}에서 관측 일치율을 $$p_o$$로 두는 출발점과 평가의 주관성을 먼저 확인한다. 이어지는 Cohen's kappa 설명과 아래 평가 절은 우연 일치 baseline을 빼고 정규화하는 식, prevalence 한계를 연결한다.
+**원본 영상 먼저 보기:** [00:08:40의 inter-rater agreement 한계 슬라이드](https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s){:target="_blank" rel="noopener"}에서 관측 일치율을 $$p_o$$로 두는 출발점과 평가의 주관성을 먼저 확인합니다. 이어지는 Cohen's kappa 설명과 아래 평가 절은 우연 일치 baseline을 빼고 정규화하는 식, prevalence 한계를 연결합니다.
 
 <figure>
   <a href="{{ '/assets/images/study/cme295/source-captures/lecture-08-inter-rater-agreement-00h08m40s.jpg' | relative_url }}" target="_blank" rel="noopener">
     <img src="{{ '/assets/images/study/cme295/source-captures/lecture-08-inter-rater-agreement-00h08m40s.jpg' | relative_url }}" alt="평가의 주관성과 관측 일치율 p_o를 제시한 LLM 평가 강의 슬라이드" loading="lazy">
   </a>
-  <figcaption><a href="https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s" target="_blank" rel="noopener">공식 영상 00:08:40</a> — 평가가 주관적일 수 있음을 전제로, 두 평가자가 실제로 같은 판단을 내린 비율을 pₒ로 둔다.</figcaption>
+  <figcaption><a href="https://www.youtube.com/watch?v=8fNP4N46RRo&t=520s" target="_blank" rel="noopener">공식 영상 00:08:40</a> — 평가가 주관적일 수 있음을 전제로, 두 평가자가 실제로 같은 판단을 내린 비율을 pₒ로 둡니다.</figcaption>
 </figure>
 
-$$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라벨을 고를 가능성을 분리하지 못한다. Cohen's kappa가 기대 일치율 $$p_e$$를 추가하는 이유는 이 우연 일치분을 빼고 남은 일치를 가능한 개선 폭으로 정규화하기 위해서다.
+$$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라벨을 고를 가능성을 분리하지 못합니다. Cohen's kappa가 기대 일치율 $$p_e$$를 추가하는 이유는 이 우연 일치분을 빼고 남은 일치를 가능한 개선 폭으로 정규화하기 위해서입니다.
 
-> **핵심:** 자연어·코드·수학처럼 형태가 다른 LLM 출력을 하나의 지표로 평가하기는 어렵다. 사람 평가와 규칙 기반 지표, LLM-as-a-Judge는 각각 비용·일관성·편향의 문제가 있어 과제에 맞춰 평가 기준을 정하고 결과를 교차 확인해야 한다.
+> **핵심:** 자연어·코드·수학처럼 형태가 다른 LLM 출력을 하나의 지표로 평가하기는 어렵습니다. 사람 평가와 규칙 기반 지표, LLM-as-a-Judge는 각각 비용·일관성·편향의 문제가 있어 과제에 맞춰 평가 기준을 정하고 결과를 교차 확인해야 합니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 평가의 범위 | 이 강의에서 LLM evaluation은 latency나 pricing이 아니라 어떤 대상을 주로 평가하는가? |
-| 2 | human rating과 agreement | 사람 평가가 이상적이지만 비용, 속도, 주관성 때문에 어떤 agreement metric이 필요한가? |
-| 3 | rule-based metrics | METEOR, BLEU, ROUGE는 reference와 prediction을 어떻게 비교하며 어디서 한계가 생기는가? |
-| 4 | LLM-as-a-Judge | judge LLM에는 어떤 입력이 들어가고, 왜 rationale을 score보다 먼저 출력하게 하는가? |
-| 5 | judge bias와 best practices | position, verbosity, self-enhancement bias를 줄이기 위한 실무적 방법은 무엇인가? |
-| 6 | factuality와 agent evaluation | 긴 답변의 사실성을 fact 단위로 쪼개는 이유와 agent loop의 오류를 단계별로 나누는 이유는 무엇인가? |
-| 7 | 벤치마크와 해석 | MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench는 각각 어떤 능력을 보려는가? |
+| 1 | 평가의 범위 | 이 강의에서 LLM evaluation은 latency나 pricing이 아니라 어떤 대상을 주로 평가합니까? |
+| 2 | human rating과 agreement | 사람 평가가 이상적이지만 비용, 속도, 주관성 때문에 어떤 agreement metric이 필요합니까? |
+| 3 | rule-based metrics | METEOR, BLEU, ROUGE는 reference와 prediction을 어떻게 비교하며 어디서 한계가 생깁니까? |
+| 4 | LLM-as-a-Judge | judge LLM에는 어떤 입력이 들어가고, 왜 rationale을 score보다 먼저 출력하게 합니까? |
+| 5 | judge bias와 best practices | position, verbosity, self-enhancement bias를 줄이기 위한 실무적 방법은 무엇입니까? |
+| 6 | factuality와 agent evaluation | 긴 답변의 사실성을 fact 단위로 쪼개는 이유와 agent loop의 오류를 단계별로 나누는 이유는 무엇입니까? |
+| 7 | 벤치마크와 해석 | MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench는 각각 어떤 능력을 보려고 합니까? |
 
 </details>
 ## 핵심 내용
 
-이 강의에서 평가 대상은 응답 속도나 가격보다 출력의 품질이다. 자연어·코드·수학 추론처럼 형태가 다른 LLM 출력을 한 지표로 평가하기는 어렵다. 사람이 직접 평가하면 비용과 시간이 들고 판단도 주관적일 수 있으므로 평가자 간 일치도를 함께 본다. 단순 일치율은 우연히 같은 판정을 내릴 가능성을 반영하지 못한다. Cohen's kappa, Fleiss's kappa, Krippendorff's alpha가 이를 보완하는 지표로 소개된다.
+이 강의에서 평가 대상은 응답 속도나 가격보다 출력의 품질입니다. 자연어·코드·수학 추론처럼 형태가 다른 LLM 출력을 한 지표로 평가하기는 어렵습니다. 사람이 직접 평가하면 비용과 시간이 들고 판단도 주관적일 수 있으므로 평가자 간 일치도를 함께 봅니다. 단순 일치율은 우연히 같은 판정을 내릴 가능성을 반영하지 못합니다. Cohen's kappa, Fleiss's kappa, Krippendorff's alpha가 이를 보완하는 지표로 소개됩니다.
 
-평가는 먼저 “좋은 답이 무엇인가”를 정하는 일이다. 코드 문제는 테스트 통과 여부로 비교적 명확하게 판정할 수 있지만, 요약문은 사실을 유지하면서 표현이 달라도 좋은 답일 수 있다. 안전한 답변은 정확성뿐 아니라 금지된 행동을 유도하지 않는지도 봐야 한다. 이처럼 과제마다 실패의 모양이 다르기 때문에, 점수 하나를 모든 출력에 그대로 적용하지 않고 평가 기준과 판정자를 과제에 맞춰 고른다.
+평가는 먼저 “좋은 답이 무엇인가”를 정하는 일입니다. 코드 문제는 테스트 통과 여부로 비교적 명확하게 판정할 수 있지만, 요약문은 사실을 유지하면서 표현이 달라도 좋은 답일 수 있습니다. 안전한 답변은 정확성뿐 아니라 금지된 행동을 유도하지 않는지도 봐야 합니다. 이처럼 과제마다 실패의 모양이 다르기 때문에, 점수 하나를 모든 출력에 그대로 적용하지 않고 평가 기준과 판정자를 과제에 맞춰 고릅니다.
 
-그 다음 강의는 reference output을 고정하고 METEOR, BLEU, ROUGE 같은 rule-based metric으로 예측 출력과 비교하는 방식을 설명한다. METEOR는 precision, recall, ordering penalty를 조합하고, BLEU는 n-gram precision과 brevity penalty를 사용하며, ROUGE는 summarization에서 자주 쓰인다. 그러나 이런 지표들은 문체적 변형을 충분히 허용하지 못하고 human rating과의 상관도 제한적이어서, prompt, response, criteria를 다른 LLM에 넣어 rationale과 score를 얻는 LLM-as-a-Judge가 핵심 방법으로 제시된다.
+그 다음 강의는 reference output을 고정하고 METEOR, BLEU, ROUGE 같은 rule-based metric으로 예측 출력과 비교하는 방식을 설명합니다. METEOR는 precision, recall, ordering penalty를 조합하고, BLEU는 n-gram precision과 brevity penalty를 사용하며, ROUGE는 summarization에서 자주 쓰입니다. 그러나 이런 지표들은 문체적 변형을 충분히 허용하지 못하고 human rating과의 상관도 제한적이어서, prompt, response, criteria를 다른 LLM에 넣어 rationale과 score를 얻는 LLM-as-a-Judge가 핵심 방법으로 제시됩니다.
 
-예를 들어 reference가 `서울의 날씨는 맑다`이고 응답이 `오늘 서울은 화창하다`라면 의미는 가깝지만 단어 겹침은 적다. BLEU·ROUGE류는 이런 차이를 놓칠 수 있고, LLM judge는 의미와 기준을 함께 읽을 수 있다. 반대로 judge도 위치나 문장 길이에 편향될 수 있으므로, 사람 평가를 완전히 없애는 대체물이 아니라 반복 평가를 확장하는 도구로 다룬다.
+예를 들어 reference가 `서울의 날씨는 맑다`이고 응답이 `오늘 서울은 화창하다`라면 의미는 가깝지만 단어 겹침은 적습니다. BLEU·ROUGE류는 이런 차이를 놓칠 수 있고, LLM judge는 의미와 기준을 함께 읽을 수 있습니다. 반대로 judge도 위치나 문장 길이에 편향될 수 있으므로, 사람 평가를 완전히 없애는 대체물이 아니라 반복 평가를 확장하는 도구로 다룹니다.
 
-후반부는 LLM-as-a-Judge의 실무 주의점과 더 넓은 벤치마크 생태계를 다룬다. judge는 pointwise 또는 pairwise로 쓸 수 있고, structured output을 위해 constrained-guided decoding 또는 provider의 structured output 기능을 사용한다. position bias, verbosity bias, self-enhancement bias를 줄이려면 응답 순서 바꾸기, 명확한 guideline, binary scale, rationale-before-score, human calibration, 낮은 temperature가 필요하다. factuality는 텍스트를 fact 단위로 쪼개고 RAG나 web search로 사실 여부를 binary로 확인한 뒤 가중합으로 평가할 수 있으며, 에이전트 평가는 tool prediction, tool execution, output synthesis 각각의 실패 모드를 분리해 본다. 마지막으로 MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench, data contamination, Pareto frontier, Goodhart's law가 LLM 성능 해석의 맥락으로 소개된다.
+후반부는 LLM-as-a-Judge의 실무 주의점과 더 넓은 벤치마크 생태계를 다룹니다. judge는 pointwise 또는 pairwise로 쓸 수 있고, structured output을 위해 constrained-guided decoding 또는 provider의 structured output 기능을 사용합니다. position bias, verbosity bias, self-enhancement bias를 줄이려면 응답 순서 바꾸기, 명확한 guideline, binary scale, rationale-before-score, human calibration, 낮은 temperature가 필요합니다. factuality는 텍스트를 fact 단위로 쪼개고 RAG나 web search로 사실 여부를 binary로 확인한 뒤 가중합으로 평가할 수 있으며, 에이전트 평가는 tool prediction, tool execution, output synthesis 각각의 실패 모드를 분리해 봅니다. 마지막으로 MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench, data contamination, Pareto frontier, Goodhart's law가 LLM 성능 해석의 맥락으로 소개됩니다.
 
 ## 핵심 개념
 
 | 개념 | 설명 |
 |---|---|
-| Inter-rater agreement | 여러 사람이 같은 LLM 출력에 대해 얼마나 일관된 평가를 내리는지 측정하는 개념이다. |
-| Cohen's kappa | 두 평가자의 observed agreement를 chance agreement와 비교해 보정하는 지표로, 우연보다 나은 일치인지 판단하게 해 준다. |
-| METEOR | translation evaluation metric으로, precision과 recall 기반 F score에 ordering penalty를 곱해 reference와 prediction을 비교한다. |
-| BLEU | bilingual evaluation understudy. prediction의 n-gram precision을 중심으로 보며, 너무 짧은 번역을 막기 위해 brevity penalty를 둔다. |
-| LLM-as-a-Judge | LLM 출력 평가를 다른 LLM에 맡겨 score와 rationale을 생성하는 방식이다. |
-| Structured output | JSON 같은 특정 형식을 보장하기 위해 decoding 중 valid token만 허용하는 constrained-guided decoding 계열 기능이다. |
-| Position bias | pairwise judge에서 먼저 제시된 응답을 더 선호하는 경향이다. |
-| Self-enhancement bias | 모델이 자신이 생성한 응답을 더 선호할 수 있는 judge bias로, generation model과 judge model을 분리해 줄일 수 있다. |
-| tau-bench | airline과 retail 도메인에서 tools, policies, simulated user를 이용해 agent가 task를 일관되게 완료하는지 평가하는 benchmark다. |
-| Goodhart's law | 측정값이 목표가 되면 좋은 측정값이 아니게 된다는 법칙으로, benchmark 최적화가 실제 사용 품질을 대체할 수 없음을 경고한다. |
+| Inter-rater agreement | 여러 사람이 같은 LLM 출력에 대해 얼마나 일관된 평가를 내리는지 측정하는 개념입니다. |
+| Cohen's kappa | 두 평가자의 observed agreement를 chance agreement와 비교해 보정하는 지표로, 우연보다 나은 일치인지 판단하게 해 줍니다. |
+| METEOR | translation evaluation metric으로, precision과 recall 기반 F score에 ordering penalty를 곱해 reference와 prediction을 비교합니다. |
+| BLEU | bilingual evaluation understudy. prediction의 n-gram precision을 중심으로 보며, 너무 짧은 번역을 막기 위해 brevity penalty를 둡니다. |
+| LLM-as-a-Judge | LLM 출력 평가를 다른 LLM에 맡겨 score와 rationale을 생성하는 방식입니다. |
+| Structured output | JSON 같은 특정 형식을 보장하기 위해 decoding 중 valid token만 허용하는 constrained-guided decoding 계열 기능입니다. |
+| Position bias | pairwise judge에서 먼저 제시된 응답을 더 선호하는 경향입니다. |
+| Self-enhancement bias | 모델이 자신이 생성한 응답을 더 선호할 수 있는 judge bias로, generation model과 judge model을 분리해 줄일 수 있습니다. |
+| tau-bench | airline과 retail 도메인에서 tools, policies, simulated user를 이용해 agent가 task를 일관되게 완료하는지 평가하는 benchmark입니다. |
+| Goodhart's law | 측정값이 목표가 되면 좋은 측정값이 아니게 된다는 법칙으로, benchmark 최적화가 실제 사용 품질을 대체할 수 없음을 경고합니다. |
 
 ## 수식 해설: agreement, text metric, reliability
 
-Evaluation metric은 무엇을 정답으로 볼지 먼저 정의한 뒤 계산해야 한다. Kappa는 우연 일치를 보정하고, BLEU·METEOR는 reference overlap을 측정하며, 반복 성공률은 “한 번이라도 성공”과 “매번 성공”을 서로 다른 확률로 다룬다.
+Evaluation metric은 무엇을 정답으로 볼지 먼저 정의한 뒤 계산해야 합니다. Kappa는 우연 일치를 보정하고, BLEU·METEOR는 reference overlap을 측정하며, 반복 성공률은 “한 번이라도 성공”과 “매번 성공”을 서로 다른 확률로 다룹니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Agreement, overlap metrics, and repeated reliability</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
-| Chance agreement와 Cohen's kappa | 00:08:22–00:16:49 | 우연 일치 baseline과 kappa 해석은 강의 원문이며, 정의역·prevalence 한계는 작성자 보충이다. |
-| METEOR | 00:21:06–00:25:06 | Weighted harmonic mean과 fragmentation penalty의 구성은 강의 원문이며, 아래 완전한 식과 zero-match 처리는 작성자 보충이다. |
-| BLEU와 brevity penalty | 00:25:16–00:26:13 | N-gram precision과 brevity penalty의 역할은 강의 원문이며, piecewise 식·empty-candidate 처리는 작성자 보충이다. |
-| Weighted factuality | 00:54:15–00:59:49 | Fact 분해와 aggregation 흐름은 강의 원문이며, binary weighted-score 식과 경계 조건은 작성자 보충이다. |
-| All-pass reliability | 01:43:42–01:45:08 | pass-hat-k가 모든 시행의 성공을 묻는다는 설명은 강의 원문이며, 독립 시행의 $$p^k$$ 유도와 가정은 작성자 보충이다. |
+| Chance agreement와 Cohen's kappa | 00:08:22–00:16:49 | 우연 일치 baseline과 kappa 해석은 강의 원문이며, 정의역·prevalence 한계는 작성자 보충입니다. |
+| METEOR | 00:21:06–00:25:06 | Weighted harmonic mean과 fragmentation penalty의 구성은 강의 원문이며, 아래 완전한 식과 zero-match 처리는 작성자 보충입니다. |
+| BLEU와 brevity penalty | 00:25:16–00:26:13 | N-gram precision과 brevity penalty의 역할은 강의 원문이며, piecewise 식·empty-candidate 처리는 작성자 보충입니다. |
+| Weighted factuality | 00:54:15–00:59:49 | Fact 분해와 aggregation 흐름은 강의 원문이며, binary weighted-score 식과 경계 조건은 작성자 보충입니다. |
+| All-pass reliability | 01:43:42–01:45:08 | pass-hat-k가 모든 시행의 성공을 묻는다는 설명은 강의 원문이며, 독립 시행의 $$p^k$$ 유도와 가정은 작성자 보충입니다. |
 
 두 rater의 observed agreement를 $$p_o$$, 각 label marginal로 계산한 chance agreement를 $$p_e$$라 하면 Cohen's kappa는
 
@@ -94,9 +94,9 @@ $$
 \kappa=\frac{p_o-p_e}{1-p_e}.
 $$
 
-이는 chance baseline $$p_e$$부터 perfect agreement 1까지 남은 간격 중 실제로 얼마나 개선했는지 나타내는 **정의**다. $$p_e=1$$이면 분모가 0이라 정의되지 않는다. Kappa가 낮다고 반드시 rater가 나쁘다는 뜻은 아니며 label prevalence가 극단적이면 값이 민감하게 변한다.
+이는 chance baseline $$p_e$$부터 perfect agreement 1까지 남은 간격 중 실제로 얼마나 개선했는지 나타내는 **정의**입니다. $$p_e=1$$이면 분모가 0이라 정의되지 않습니다. Kappa가 낮다고 반드시 rater가 나쁘다는 뜻은 아니며 label prevalence가 극단적이면 값이 민감하게 변합니다.
 
-METEOR에서 matched unigram 수를 $$m$$, prediction/reference 길이를 $$h,r$$라 하면 $$P=m/h$$, $$R=m/r$$다. 강의의 variable-weight harmonic mean과 ordering penalty를 한 convention으로 쓰면
+METEOR에서 matched unigram 수를 $$m$$, prediction/reference 길이를 $$h,r$$라 하면 $$P=m/h$$, $$R=m/r$$입니다. 강의의 variable-weight harmonic mean과 ordering penalty를 한 convention으로 쓰면
 
 $$
 F_{\alpha}=\frac{PR}{\alpha P+(1-\alpha)R},
@@ -109,9 +109,9 @@ Penalty=\gamma\left(\frac{c}{m}\right)^{\beta},
 METEOR=(1-Penalty)F_{\alpha},
 $$
 
-이다. $$c$$는 alignment에서 순서가 이어지는 matched chunk 수이고 보통 $$\gamma\in[0,1]$$, $$\beta>0$$를 둔다. 같은 $$m$$이라도 fragment가 많아 $$c/m$$이 크면 ordering penalty가 커진다. $$m=0$$이면 $$c/m$$과 harmonic mean이 정의되지 않으므로 score를 0으로 정하는 명시적 branch가 필요하며, 빈 prediction/reference 처리와 stemming·synonym matching은 구현 convention이다. 이 완전한 식과 edge-case는 강의 설명을 옮긴 **작성자 보충**이고, hyperparameter 선택이 semantic equivalence를 증명하지 않는다.
+입니다. $$c$$는 alignment에서 순서가 이어지는 matched chunk 수이고 보통 $$\gamma\in[0,1]$$, $$\beta>0$$를 둡니다. 같은 $$m$$이라도 fragment가 많아 $$c/m$$이 크면 ordering penalty가 커집니다. $$m=0$$이면 $$c/m$$과 harmonic mean이 정의되지 않으므로 score를 0으로 정하는 명시적 branch가 필요하며, 빈 prediction/reference 처리와 stemming·synonym matching은 구현 convention입니다. 이 완전한 식과 edge-case는 강의 설명을 옮긴 **작성자 보충**이고, hyperparameter 선택이 semantic equivalence를 증명하지 않습니다.
 
-BLEU의 corpus-level 대표식은 modified n-gram precision $$p_n$$과 brevity penalty $$BP$$를 사용한다.
+BLEU의 corpus-level 대표식은 modified n-gram precision $$p_n$$과 brevity penalty $$BP$$를 사용합니다.
 
 $$
 BLEU=\begin{cases}
@@ -125,7 +125,7 @@ e^{1-r/c},&0<c\le r.
 \end{cases}
 $$
 
-여기서 $$c,r\ge0$$은 candidate/reference 길이, $$w_n\ge0$$, $$\sum_nw_n=1$$이다. Empty candidate인 $$c=0$$에서는 modified precision $$p_n$$ 자체가 $$0/0$$ 꼴로 정의되지 않을 수 있으므로, **precision과 logarithm을 평가하기 전에** 전체 $$BLEU$$를 0으로 정한다. 지수항과 $$BP$$는 $$c>0$$인 branch에서만 계산하므로 $$r/c$$나 $$\log p_n$$의 정의되지 않은 값을 $$0$$에 곱하는 방식이 아니다. 이는 metric의 명시적 convention이며 semantic equivalence를 증명하지 않는다. $$c>0$$이어도 어떤 $$p_n=0$$이면 unsmoothed corpus BLEU는 0으로 처리하고, smoothing 여부에 따라 sentence-level 결과가 크게 달라질 수 있다.
+여기서 $$c,r\ge0$$은 candidate/reference 길이, $$w_n\ge0$$, $$\sum_nw_n=1$$입니다. Empty candidate인 $$c=0$$에서는 modified precision $$p_n$$ 자체가 $$0/0$$ 꼴로 정의되지 않을 수 있으므로, **precision과 logarithm을 평가하기 전에** 전체 $$BLEU$$를 0으로 정합니다. 지수항과 $$BP$$는 $$c>0$$인 branch에서만 계산하므로 $$r/c$$나 $$\log p_n$$의 정의되지 않은 값을 $$0$$에 곱하는 방식이 아닙니다. 이는 metric의 명시적 convention이며 semantic equivalence를 증명하지 않습니다. $$c>0$$이어도 어떤 $$p_n=0$$이면 unsmoothed corpus BLEU는 0으로 처리하고, smoothing 여부에 따라 sentence-level 결과가 크게 달라질 수 있습니다.
 
 반복 실행에서 한 번의 성공확률이 $$p$$이고 각 trial이 독립이면, $$k$$번 모두 성공하는 reliability는
 
@@ -133,75 +133,75 @@ $$
 P(\text{all }k\text{ pass})=p^k,
 $$
 
-적어도 한 번 성공할 확률은 $$1-(1-p)^k$$다. 두 지표는 정반대 질문에 답한다. Agent benchmark에서 반복할수록 all-pass reliability가 낮아지는 것은 곱셈 법칙의 결과지만, trial이 독립·동일분포가 아니면 $$p^k$$를 그대로 사용할 수 없다.
+적어도 한 번 성공할 확률은 $$1-(1-p)^k$$입니다. 두 지표는 정반대 질문에 답합니다. Agent benchmark에서 반복할수록 all-pass reliability가 낮아지는 것은 곱셈 법칙의 결과지만, trial이 독립·동일분포가 아니면 $$p^k$$를 그대로 사용할 수 없습니다.
 
-Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있다. $$z_i\in\{0,1\}$$, $$w_i\ge0$$, $$\sum_iw_i>0$$이면 $$S\in[0,1]$$인 것은 정확하지만, fact 분해와 weight 자체는 evaluator 설계에 의존한다. 모든 weight가 0이면 분모도 0이라 score가 정의되지 않는다. LLM-as-a-Judge 점수는 경험적 proxy이므로 수학식이 bias 제거를 보장하지 않는다.
+Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있습니다. $$z_i\in\{0,1\}$$, $$w_i\ge0$$, $$\sum_iw_i>0$$이면 $$S\in[0,1]$$인 것은 정확하지만, fact 분해와 weight 자체는 evaluator 설계에 의존합니다. 모든 weight가 0이면 분모도 0이라 score가 정의되지 않습니다. LLM-as-a-Judge 점수는 경험적 proxy이므로 수학식이 bias 제거를 보장하지 않습니다.
 
 </details>
 
 ## 학습 포인트
 
-- LLM output quality 평가는 자유 형식 텍스트를 다루기 때문에 보편적인 단일 metric을 만들기 어렵다.
-- agreement rate는 우연히 일치할 확률을 반영하지 못하므로 Cohen's kappa 같은 chance-adjusted agreement metric이 필요하다.
-- METEOR, BLEU, ROUGE는 reference 기반 자동 평가이지만 문체 변형과 의미 동등성을 충분히 반영하지 못한다.
-- LLM-as-a-Judge는 prompt, response, criteria를 입력으로 받아 rationale과 score를 출력하며, pointwise와 pairwise 설정 모두 가능하다.
-- structured output은 constrained-guided decoding 또는 provider의 structured output 기능으로 JSON 같은 형식을 강제할 수 있다.
-- judge에는 position bias, verbosity bias, self-enhancement bias가 있을 수 있으므로 평가 prompt와 실험 설계를 조심해야 한다.
-- factuality 평가는 답변 전체를 한 번에 pass/fail하지 않고 fact extraction, fact checking, weighted aggregation으로 세분화할 수 있다.
-- benchmark score는 model profile을 보여주는 도구이지 절대적 품질 보증이 아니며, contamination과 Goodhart's law를 고려해야 한다.
+- LLM output quality 평가는 자유 형식 텍스트를 다루기 때문에 보편적인 단일 metric을 만들기 어렵습니다.
+- agreement rate는 우연히 일치할 확률을 반영하지 못하므로 Cohen's kappa 같은 chance-adjusted agreement metric이 필요합니다.
+- METEOR, BLEU, ROUGE는 reference 기반 자동 평가이지만 문체 변형과 의미 동등성을 충분히 반영하지 못합니다.
+- LLM-as-a-Judge는 prompt, response, criteria를 입력으로 받아 rationale과 score를 출력하며, pointwise와 pairwise 설정 모두 가능합니다.
+- structured output은 constrained-guided decoding 또는 provider의 structured output 기능으로 JSON 같은 형식을 강제할 수 있습니다.
+- judge에는 position bias, verbosity bias, self-enhancement bias가 있을 수 있으므로 평가 prompt와 실험 설계를 조심해야 합니다.
+- factuality 평가는 답변 전체를 한 번에 pass/fail하지 않고 fact extraction, fact checking, weighted aggregation으로 세분화할 수 있습니다.
+- benchmark score는 model profile을 보여주는 도구이지 절대적 품질 보증이 아니며, contamination과 Goodhart's law를 고려해야 합니다.
 
 ## 마지막 핵심 정리
 
-이 강의의 핵심은 `LLM 출력 품질 평가, LLM-as-a-Judge, 에이전트 및 벤치마크 평가`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것이다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 한다.
+이 강의의 핵심은 `LLM 출력 품질 평가, LLM-as-a-Judge, 에이전트 및 벤치마크 평가`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것입니다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 합니다.
 
 ## Study Guide
 
-1. human rating, rule-based metric, LLM-as-a-Judge를 비용, reference 필요 여부, 해석 가능성, 실패 모드 관점에서 비교한다.
-2. Cohen's kappa가 agreement rate와 다른 점을 chance agreement 예시와 함께 설명한다.
-3. LLM-as-a-Judge prompt에 prompt, response, criteria, output schema가 어떻게 들어가야 하는지 작은 예시를 만든다.
-4. position bias, verbosity bias, self-enhancement bias에 대해 각각 하나의 실패 사례와 mitigation을 적는다.
-5. MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench를 knowledge, reasoning, coding, safety, agent tool-use 범주로 분류한다.
+1. human rating, rule-based metric, LLM-as-a-Judge를 비용, reference 필요 여부, 해석 가능성, 실패 모드 관점에서 비교합니다.
+2. Cohen's kappa가 agreement rate와 다른 점을 chance agreement 예시와 함께 설명합니다.
+3. LLM-as-a-Judge prompt에 prompt, response, criteria, output schema가 어떻게 들어가야 하는지 작은 예시를 만듭니다.
+4. position bias, verbosity bias, self-enhancement bias에 대해 각각 하나의 실패 사례와 mitigation을 적습니다.
+5. MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench를 knowledge, reasoning, coding, safety, agent tool-use 범주로 분류합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. agreement rate만으로 inter-rater agreement를 평가하면 왜 문제가 되는가?</summary>
+<summary>1. agreement rate만으로 inter-rater agreement를 평가하면 왜 문제가 됩니까?</summary>
 
-답변: 두 평가자가 무작위로 답해도 일정 비율은 일치한다. 예를 들어 둘 다 0.5 확률로 1 또는 0을 고르면 우연 agreement rate가 0.5가 되므로, 관측 일치를 chance baseline과 비교해야 한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. METEOR와 BLEU의 공통 한계는 무엇인가?</summary>
-
-답변: 둘 다 reference와 prediction의 token 또는 n-gram matching에 크게 의존하므로, 의미는 같지만 표현이 다른 자연어 응답을 낮게 평가할 수 있다.
+답변: 두 평가자가 무작위로 답해도 일정 비율은 일치합니다. 예를 들어 둘 다 0.5 확률로 1 또는 0을 고르면 우연 agreement rate가 0.5가 되므로, 관측 일치를 chance baseline과 비교해야 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. LLM-as-a-Judge에서 rationale을 score보다 먼저 출력하게 하는 이유는 무엇인가?</summary>
+<summary>2. METEOR와 BLEU의 공통 한계는 무엇입니까?</summary>
 
-답변: 모델이 평가 근거를 먼저 verbalize하면 reasoning model이 답 전에 reasoning chain을 만드는 것과 비슷하게, score 품질이 경험적으로 좋아질 수 있기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>4. factuality를 평가할 때 답변 전체를 하나의 binary label로 처리하지 않는 이유는 무엇인가?</summary>
-
-답변: 한 답변 안에는 여러 사실이 있고 일부만 틀릴 수 있다. fact extraction, 개별 fact checking, 중요도 가중 aggregation을 쓰면 부분 오류의 정도를 더 잘 반영할 수 있다.
+답변: 둘 다 reference와 prediction의 token 또는 n-gram matching에 크게 의존하므로, 의미는 같지만 표현이 다른 자연어 응답을 낮게 평가할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. tau-bench에서 pass_hat_k가 중요한 이유는 무엇인가?</summary>
+<summary>3. LLM-as-a-Judge에서 rationale을 score보다 먼저 출력하게 하는 이유는 무엇입니까?</summary>
 
-답변: agent는 한 번만 성공하는 것보다 반복 실행에서 모두 성공하는 reliability와 consistency가 중요하다. 그래서 k번 시도 중 하나라도 성공하는 pass@k보다 모든 시도가 성공할 확률을 본다.
+답변: 모델이 평가 근거를 먼저 verbalize하면 reasoning model이 답 전에 reasoning chain을 만드는 것과 비슷하게, score 품질이 경험적으로 좋아질 수 있기 때문입니다.
+
+</details>
+
+<details markdown="block">
+<summary>4. factuality를 평가할 때 답변 전체를 하나의 binary label로 처리하지 않는 이유는 무엇입니까?</summary>
+
+답변: 한 답변 안에는 여러 사실이 있고 일부만 틀릴 수 있습니다. fact extraction, 개별 fact checking, 중요도 가중 aggregation을 쓰면 부분 오류의 정도를 더 잘 반영할 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>5. tau-bench에서 pass_hat_k가 중요한 이유는 무엇입니까?</summary>
+
+답변: agent는 한 번만 성공하는 것보다 반복 실행에서 모두 성공하는 reliability와 consistency가 중요합니다. 그래서 k번 시도 중 하나라도 성공하는 pass@k보다 모든 시도가 성공할 확률을 봅니다.
 
 </details>
 
 ## 참고자료
 
-- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했습니다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았습니다.
 
 - [강의 영상](https://www.youtube.com/watch?v=8fNP4N46RRo){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-09.pdf`
 
-> **핵심:** Gradient는 loss를 줄이기 위한 업데이트 방향을 정하는 데 쓰인다. Taylor series는 복잡한 함수를 기준점 근처에서 다항식으로 근사한다.
+> **핵심:** Gradient는 loss를 줄이기 위한 업데이트 방향을 정하는 데 쓰입니다. Taylor series는 복잡한 함수를 기준점 근처에서 다항식으로 근사합니다.
 
 ## 전체 흐름
 
@@ -28,11 +28,11 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 미분의 필요성 | 에러를 줄이는 방향은 어떻게 계산하는가? |
-| 2 | Taylor series | 복잡한 함수를 다항식으로 어떻게 근사하는가? |
-| 3 | 편미분과 gradient | 다변수 함수에서 각 입력의 영향은 어떻게 측정하는가? |
-| 4 | Chain rule | 합성 함수의 미분은 어떻게 계산하는가? |
-| 5 | Jacobian과 행렬 미분 | 벡터 출력 함수의 미분은 어떤 행렬로 표현되는가? |
+| 1 | 미분의 필요성 | 에러를 줄이는 방향은 어떻게 계산합니까? |
+| 2 | Taylor series | 복잡한 함수를 다항식으로 어떻게 근사합니까? |
+| 3 | 편미분과 gradient | 다변수 함수에서 각 입력의 영향은 어떻게 측정합니까? |
+| 4 | Chain rule | 합성 함수의 미분은 어떻게 계산합니까? |
+| 5 | Jacobian과 행렬 미분 | 벡터 출력 함수의 미분은 어떤 행렬로 표현됩니까? |
 
 ### 원문 수식 추적표
 
@@ -43,33 +43,33 @@ Source PDF: `machine-learning-basic-lecture-09.pdf`
 | 11–18 | 편미분, gradient, 다변수 chain rule, Jacobian | 3–5, 7.2, 7.3 |
 | 19–22 | 행렬 chain rule과 핵심 행렬 미분 항등식 | 6, 7.3–7.5 |
 
-페이지 23은 Q&A 마무리이다. Taylor 전개는 수렴반경 안의 무한급수와 유한 차수 근소 근사를 구분해 7.1에서 해석한다.
+페이지 23은 Q&A 마무리입니다. Taylor 전개는 수렴반경 안의 무한급수와 유한 차수 근소 근사를 구분해 7.1에서 해석합니다.
 
 </details>
 
 ## 1. 왜 벡터 미적분학이 필요한가?
 
-머신러닝 모델은 데이터를 보고 prediction error를 계산한 뒤, error를 줄이는 방향으로 parameter를 업데이트한다.
+머신러닝 모델은 데이터를 보고 prediction error를 계산한 뒤, error를 줄이는 방향으로 parameter를 업데이트합니다.
 
-에러를 가장 빠르게 증가시키는 방향은 gradient이고, 에러를 줄이려면 그 반대 방향으로 움직인다.
+에러를 가장 빠르게 증가시키는 방향은 gradient이고, 에러를 줄이려면 그 반대 방향으로 움직입니다.
 
 $$
 f:\mathbb{R}^D \to \mathbb{R}, \qquad x \mapsto f(x)
 $$
 
-따라서 gradient 계산은 학습 알고리즘의 핵심이다.
+따라서 gradient 계산은 학습 알고리즘의 핵심입니다.
 
 ## 2. 미분과 Taylor series
 
-미분은 한 점 근처에서 함수값이 얼마나 빠르게 변하는지 측정한다.
+미분은 한 점 근처에서 함수값이 얼마나 빠르게 변하는지 측정합니다.
 
 <a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-09-page-05.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-09-page-05.png" | relative_url }}" alt="원본 강의 슬라이드의 미분 차분몫 정의" loading="lazy"></a>
 
-*원본 강의 PDF p. 5. $$h$$만큼 이동했을 때의 함수값 변화 $$f(x+h)-f(x)$$를 입력 변화 $$h$$로 나눈 평균 변화율에서 시작해, $$h\to0$$ 극한으로 순간 변화율을 정의한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-09.pdf#page=5" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 5</a>*
+*원본 강의 PDF p. 5. $$h$$만큼 이동했을 때의 함수값 변화 $$f(x+h)-f(x)$$를 입력 변화 $$h$$로 나눈 평균 변화율에서 시작해, $$h\to0$$ 극한으로 순간 변화율을 정의합니다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-09.pdf#page=5" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 5</a>*
 
-분자는 출력 단위, 분모는 입력 단위를 가지므로 도함수의 단위는 `출력/입력`이다. 극한이 존재하지 않는 모서리점이나 불연속점에서는 이 정의로 하나의 미분값을 정할 수 없다.
+분자는 출력 단위, 분모는 입력 단위를 가지므로 도함수의 단위는 `출력/입력`입니다. 극한이 존재하지 않는 모서리점이나 불연속점에서는 이 정의로 하나의 미분값을 정할 수 없습니다.
 
-Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사하는 방법이다.
+Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사하는 방법입니다.
 
 | 차수 | 의미 |
 |---|---|
@@ -77,13 +77,13 @@ Taylor series는 복잡한 함수를 기준점 주변의 다항식으로 근사�
 | 1차 | 함수값 + 기울기 사용 |
 | 2차 | 함수값 + 기울기 + 곡률 사용 |
 
-최적화에서 1차 근사는 gradient descent, 2차 근사는 Newton method와 연결된다.
+최적화에서 1차 근사는 gradient descent, 2차 근사는 Newton method와 연결됩니다.
 
 ## 3. 편미분과 Gradient
 
-다변수 함수 $$f(x_1,\ldots,x_n)$$에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 한다.
+다변수 함수 $$f(x_1,\ldots,x_n)$$에서 한 변수만 움직이고 나머지는 고정해 미분한 것을 편미분이라고 합니다.
 
-모든 편미분을 모은 것이 gradient다. 이 글에서는 scalar 함수의 gradient를 일관되게 $$n\times1$$ **열벡터**로 둔다.
+모든 편미분을 모은 것이 gradient입니다. 이 글에서는 scalar 함수의 gradient를 일관되게 $$n\times1$$ **열벡터**로 둡니다.
 
 $$
 \nabla_x f =
@@ -94,11 +94,11 @@ $$
 \end{bmatrix}
 $$
 
-강의에서는 미분의 차원을 헷갈리지 않도록 첫 번째 차원을 함수 차원, 두 번째 차원을 입력 차원으로 두는 관점을 강조한다.
+강의에서는 미분의 차원을 헷갈리지 않도록 첫 번째 차원을 함수 차원, 두 번째 차원을 입력 차원으로 두는 관점을 강조합니다.
 
 ## 4. 미분 규칙
 
-기본 규칙은 1변수와 다변수 모두에서 중요하다.
+기본 규칙은 1변수와 다변수 모두에서 중요합니다.
 
 | 규칙 | 용도 |
 |---|---|
@@ -106,11 +106,11 @@ $$
 | 합 규칙 | 여러 항의 합 미분 |
 | 연쇄 법칙 | 합성 함수 미분 |
 
-딥러닝의 backpropagation은 큰 계산 그래프에 연쇄 법칙을 반복 적용하는 과정이다.
+딥러닝의 backpropagation은 큰 계산 그래프에 연쇄 법칙을 반복 적용하는 과정입니다.
 
 ## 5. Jacobian Matrix
 
-입력도 벡터이고 출력도 벡터인 함수에서는 미분 결과가 행렬이 된다. 이를 Jacobian matrix라고 한다.
+입력도 벡터이고 출력도 벡터인 함수에서는 미분 결과가 행렬이 됩니다. 이를 Jacobian matrix라고 합니다.
 
 $$
 f:\mathbb{R}^n \to \mathbb{R}^m
@@ -121,31 +121,31 @@ J \in \mathbb{R}^{m \times n}, \qquad
 J_{ij} = \frac{\partial f_i}{\partial x_j}
 $$
 
-Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담는다.
+Jacobian은 입력 변화가 출력 각 성분에 어떤 영향을 주는지 담습니다.
 
 ## 6. 행렬 미분
 
-머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많다. 따라서 $$x^TAx$$, $$\lVert Ax-b\rVert^2$$ 같은 식의 미분 공식이 자주 쓰인다.
+머신러닝 loss는 벡터와 행렬로 표현되는 경우가 많습니다. 따라서 $$x^TAx$$, $$\lVert Ax-b\rVert^2$$ 같은 식의 미분 공식이 자주 쓰입니다.
 
-공식만 외우기보다 차원 검사를 함께 해야 한다. 미분 결과가 parameter와 같은 shape인지 확인하면 실수를 줄일 수 있다.
+공식만 외우기보다 차원 검사를 함께 해야 합니다. 미분 결과가 parameter와 같은 shape인지 확인하면 실수를 줄일 수 있습니다.
 
 ## 7. 핵심 미분식의 유도
 
-Gradient는 작은 입력 변화에 대한 함수값의 1차 변화를 나타내고, Jacobian과 chain rule은 여러 변환을 합성할 때 이 변화를 연결한다. 행렬 미분식은 차원과 invertibility 조건을 함께 확인해야 하며, 상세 전개는 아래에 둔다.
+Gradient는 작은 입력 변화에 대한 함수값의 1차 변화를 나타내고, Jacobian과 chain rule은 여러 변환을 합성할 때 이 변화를 연결합니다. 행렬 미분식은 차원과 invertibility 조건을 함께 확인해야 하며, 상세 전개는 아래에 둡니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Taylor expansion, chain rule, and matrix derivatives</summary>
 
 ### 7.1 미분의 극한 정의와 일반 Taylor 전개
 
-원문에서 1변수 미분은 평균 변화율의 극한이라는 **정의**로 시작한다. 유한한 $$h$$에 대한 차분몫은 평균 변화율이고, 극한이 존재할 때만 미분값이 된다.
+원문에서 1변수 미분은 평균 변화율의 극한이라는 **정의**로 시작합니다. 유한한 $$h$$에 대한 차분몫은 평균 변화율이고, 극한이 존재할 때만 미분값이 됩니다.
 
 $$
 f'(x)=\frac{df}{dx}
 :=\lim_{h\to0}\frac{f(x+h)-f(x)}{h}.
 $$
 
-좌극한과 우극한이 다르거나 극한이 발산하면 그 점에서 미분 불가능하다. 따라서 ReLU의 0처럼 꺾인 점에 적용할 때는 고전적 미분 대신 별도로 정한 subgradient convention을 구분해야 한다.
+좌극한과 우극한이 다르거나 극한이 발산하면 그 점에서 미분 불가능합니다. 따라서 ReLU의 0처럼 꺾인 점에 적용할 때는 고전적 미분 대신 별도로 정한 subgradient convention을 구분해야 합니다.
 
 $$f$$가 $$x_0$$와 $$x$$를 포함하는 구간에서 $$n+1$$회 연속 미분 가능하면 $$n$$차 Taylor 다항식은
 
@@ -161,7 +161,7 @@ f(x)=T_n(x)+R_n(x),
 R_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}
 $$
 
-로 쓸 수 있다. 앞 식의 유한합과 나머지항은 조건 아래 **정확한 등식**이고, $$f(x)\approx T_n(x)$$라고 나머지를 버릴 때만 **근사**다. $$x$$가 $$x_0$$에서 멀거나 고계도 미분이 크면 오차가 커질 수 있다. 무한 Taylor 급수 $$\sum_{k=0}^{\infty}f^{(k)}(x_0)(x-x_0)^k/k!$$가 함수 자체와 같으려면 단순히 무한번 미분 가능하다는 것만으로는 부족하고, 나머지항이 0으로 수렴해야 한다. $$x_0=0$$이면 Maclaurin 급수다.
+로 쓸 수 있습니다. 앞 식의 유한합과 나머지항은 조건 아래 **정확한 등식**이고, $$f(x)\approx T_n(x)$$라고 나머지를 버릴 때만 **근사**입니다. $$x$$가 $$x_0$$에서 멀거나 고계도 미분이 크면 오차가 커질 수 있습니다. 무한 Taylor 급수 $$\sum_{k=0}^{\infty}f^{(k)}(x_0)(x-x_0)^k/k!$$가 함수 자체와 같으려면 단순히 무한번 미분 가능하다는 것만으로는 부족하고, 나머지항이 0으로 수렴해야 합니다. $$x_0=0$$이면 Maclaurin 급수입니다.
 
 ### 7.2 1차 Taylor 근사와 gradient 방향
 
@@ -171,7 +171,7 @@ $$
 f(x+\Delta x)=f(x)+\nabla f(x)^T\Delta x+o(\lVert\Delta x\rVert)
 $$
 
-이다. 첫 두 항만 쓰는 것은 **1차 근사**이며 $$\Delta x$$가 커지거나 곡률이 크면 오차가 커진다. $$\lVert\Delta x\rVert_2=\varepsilon$$로 고정하면 Cauchy-Schwarz 부등식으로 $$\nabla f^T\Delta x\le\varepsilon\lVert\nabla f\rVert_2$$이고, 등호는 $$\Delta x$$가 gradient와 같은 방향일 때 성립한다. 따라서 gradient는 국소적으로 가장 빠른 증가 방향이다.
+입니다. 첫 두 항만 쓰는 것은 **1차 근사**이며 $$\Delta x$$가 커지거나 곡률이 크면 오차가 커집니다. $$\lVert\Delta x\rVert_2=\varepsilon$$로 고정하면 Cauchy-Schwarz 부등식으로 $$\nabla f^T\Delta x\le\varepsilon\lVert\nabla f\rVert_2$$이고, 등호는 $$\Delta x$$가 gradient와 같은 방향일 때 성립합니다. 따라서 gradient는 국소적으로 가장 빠른 증가 방향입니다.
 
 ### 7.3 Chain rule의 행렬 형태
 
@@ -181,7 +181,7 @@ $$
 J_{f\circ g}(x)=J_f(g(x))J_g(x)
 $$
 
-이다. 이는 미분 가능성 아래의 **정확한 미분 항등식**이며 행렬곱 순서를 바꾸면 안 된다.
+입니다. 이는 미분 가능성 아래의 **정확한 미분 항등식**이며 행렬곱 순서를 바꾸면 안 됩니다.
 
 ### 7.4 자주 쓰는 이차식 미분
 
@@ -193,17 +193,17 @@ $$
 \nabla q=(A+A^T)x.
 $$
 
-$$A$$가 대칭일 때만 $$2Ax$$로 단순화된다. 또한 $$L(x)=\lVert Ax-b\rVert_2^2=(Ax-b)^T(Ax-b)$$이므로
+$$A$$가 대칭일 때만 $$2Ax$$로 단순화됩니다. 또한 $$L(x)=\lVert Ax-b\rVert_2^2=(Ax-b)^T(Ax-b)$$이므로
 
 $$
 \nabla_xL=2A^T(Ax-b).
 $$
 
-$$x$$가 물리 단위를 가지면 gradient 성분의 단위는 `함수값 단위 / 해당 입력 단위`다. Jacobian 원소도 `출력 단위 / 입력 단위`이며 무조건 무차원은 아니다.
+$$x$$가 물리 단위를 가지면 gradient 성분의 단위는 `함수값 단위 / 해당 입력 단위`입니다. Jacobian 원소도 `출력 단위 / 입력 단위`이며 무조건 무차원은 아닙니다.
 
 ### 7.5 Determinant와 inverse의 행렬 미분
 
-다음은 원문 마지막 공식표의 핵심 두 식을 differential로 유도한 **보충 해설**이다. $$X\in\mathbb{R}^{n\times n}$$가 가역이고 실수 행렬이며, scalar 함수의 gradient는 $$dg=\operatorname{tr}((\nabla_Xg)^T dX)$$를 만족하는 Frobenius inner-product convention으로 정의한다.
+다음은 원문 마지막 공식표의 핵심 두 식을 differential로 유도한 **보충 해설**입니다. $$X\in\mathbb{R}^{n\times n}$$가 가역이고 실수 행렬이며, scalar 함수의 gradient는 $$dg=\operatorname{tr}((\nabla_Xg)^T dX)$$를 만족하는 Frobenius inner-product convention으로 정의합니다.
 
 Jacobi 공식에서
 
@@ -218,9 +218,9 @@ $$
 \nabla_X\det(X)=\det(X)X^{-T}.
 $$
 
-이는 가역행렬에서의 **정확한 미분 항등식**이다. $$\det(X)=0$$인 점에서도 determinant 자체는 미분 가능하지만 위의 inverse 표현은 사용할 수 없고, cofactor로 만든 adjugate 표현을 써야 한다.
+이는 가역행렬에서의 **정확한 미분 항등식**입니다. $$\det(X)=0$$인 점에서도 determinant 자체는 미분 가능하지만 위의 inverse 표현은 사용할 수 없고, cofactor로 만든 adjugate 표현을 써야 합니다.
 
-Inverse는 항등식 $$XX^{-1}=I$$를 미분하여 유도한다.
+Inverse는 항등식 $$XX^{-1}=I$$를 미분하여 유도합니다.
 
 $$
 (dX)X^{-1}+X\,d(X^{-1})=0.
@@ -239,7 +239,7 @@ $$
 =-(X^{-1})_{ik}(X^{-1})_{\ell j}.
 $$
 
-이 식도 $$X$$가 가역인 열린 영역에서만 성립한다. singular 또는 매우 ill-conditioned한 행렬 근처에서는 inverse가 정의되지 않거나 작은 입력 변화가 큰 derivative를 만들어 수치 해석이 불안정하다. $$X$$의 원소가 단위 $$U$$를 가지면 $$X^{-1}$$은 $$U^{-1}$$, determinant는 $$U^n$$인 동종 단위 행렬에서 위 식들의 단위도 각각 호환된다.
+이 식도 $$X$$가 가역인 열린 영역에서만 성립합니다. singular 또는 매우 ill-conditioned한 행렬 근처에서는 inverse가 정의되지 않거나 작은 입력 변화가 큰 derivative를 만들어 수치 해석이 불안정합니다. $$X$$의 원소가 단위 $$U$$를 가지면 $$X^{-1}$$은 $$U^{-1}$$, determinant는 $$U^n$$인 동종 단위 행렬에서 위 식들의 단위도 각각 호환됩니다.
 
 </details>
 
@@ -249,40 +249,40 @@ $$
 
 | 질문 | 답의 방향 |
 |---|---|
-| gradient가 중요한 이유는? | loss를 줄이는 update 방향을 계산하기 위해 |
-| Taylor series의 역할은? | 복잡한 함수를 기준점 근처에서 근사 |
-| Jacobian의 shape은? | $$f:\mathbb{R}^n \to \mathbb{R}^m$$이면 $$m \times n$$ |
-| chain rule이 중요한 이유는? | 합성 함수와 신경망 미분의 기반 |
+| gradient가 중요한 이유는 무엇입니까? | loss를 줄이는 update 방향을 계산하기 위해 |
+| Taylor series의 역할은 무엇입니까? | 복잡한 함수를 기준점 근처에서 근사 |
+| Jacobian의 shape은 무엇입니까? | $$f:\mathbb{R}^n \to \mathbb{R}^m$$이면 $$m \times n$$ |
+| chain rule이 중요한 이유는 무엇입니까? | 합성 함수와 신경망 미분의 기반 |
 
 ## Study Guide
 
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-scalar, vector, matrix 출력에 따라 derivative와 Jacobian shape를 먼저 적고 계산을 시작한다. 합성 함수 하나를 계산 graph로 풀어 chain rule을 적용한 뒤, 같은 흐름이 neural network gradient로 이어짐을 확인한다. Taylor 0·1·2차 근사가 함수값·gradient·curvature를 어디까지 포함하는지 구분하는 문제가 시험 우선순위다.
+scalar, vector, matrix 출력에 따라 derivative와 Jacobian shape를 먼저 적고 계산을 시작합니다. 합성 함수 하나를 계산 graph로 풀어 chain rule을 적용한 뒤, 같은 흐름이 neural network gradient로 이어짐을 확인합니다. Taylor 0·1·2차 근사가 함수값·gradient·curvature를 어디까지 포함하는지 구분하는 문제가 시험 우선순위입니다.
 
 </details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. gradient는 함수값을 가장 빠르게 증가시키는 방향인가, 감소시키는 방향인가?</summary>
+<summary>1. gradient는 함수값을 가장 빠르게 증가시키는 방향인가, 감소시키는 방향입니까?</summary>
 
-답변: gradient는 함수값이 가장 빠르게 증가하는 방향이다. 최소화 문제에서는 그 반대 방향인 negative gradient 방향으로 이동한다. 이것이 gradient descent의 기본 아이디어다.
-
-</details>
-
-<details markdown="block">
-<summary>2. 1차 Taylor 근사와 2차 Taylor 근사는 최적화에서 각각 어떤 알고리즘과 연결되는가?</summary>
-
-답변: 1차 Taylor 근사는 gradient 정보를 사용하므로 gradient descent 같은 1차 최적화와 연결된다. 2차 Taylor 근사는 곡률 정보인 Hessian까지 사용하므로 Newton method 같은 2차 최적화와 연결된다.
+답변: gradient는 함수값이 가장 빠르게 증가하는 방향입니다. 최소화 문제에서는 그 반대 방향인 negative gradient 방향으로 이동합니다. 이것이 gradient descent의 기본 아이디어입니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Jacobian에서 행과 열은 각각 무엇에 대응하는가?</summary>
+<summary>2. 1차 Taylor 근사와 2차 Taylor 근사는 최적화에서 각각 어떤 알고리즘과 연결됩니까?</summary>
 
-답변: $$f:\mathbb{R}^n\to\mathbb{R}^m$$이면 Jacobian은 보통 $$m\times n$$ 행렬이다. 행은 출력 성분 $$f_i$$, 열은 입력 변수 $$x_j$$에 대응하며, 원소는 $$\partial f_i/\partial x_j$$이다.
+답변: 1차 Taylor 근사는 gradient 정보를 사용하므로 gradient descent 같은 1차 최적화와 연결됩니다. 2차 Taylor 근사는 곡률 정보인 Hessian까지 사용하므로 Newton method 같은 2차 최적화와 연결됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>3. Jacobian에서 행과 열은 각각 무엇에 대응합니까?</summary>
+
+답변: $$f:\mathbb{R}^n\to\mathbb{R}^m$$이면 Jacobian은 보통 $$m\times n$$ 행렬입니다. 행은 출력 성분 $$f_i$$, 열은 입력 변수 $$x_j$$에 대응하며, 원소는 $$\partial f_i/\partial x_j$$입니다.
 
 </details>
 

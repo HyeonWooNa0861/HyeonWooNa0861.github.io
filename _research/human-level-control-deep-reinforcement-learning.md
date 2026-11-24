@@ -28,36 +28,36 @@ keywords:
 
 ## 한 줄 요약
 
-이 논문은 raw pixel observation을 입력으로 받아 Atari game control policy를 학습하는 Deep Q-Network를 제안해, deep learning과 reinforcement learning을 결합한 대표적 전환점을 만든 연구다.
+이 논문은 raw pixel observation을 입력으로 받아 Atari game control policy를 학습하는 Deep Q-Network를 제안해, deep learning과 reinforcement learning을 결합한 대표적 전환점을 만든 연구입니다.
 
 ## 핵심 내용
 
-이 논문은 deep reinforcement learning의 대표적 출발점으로 볼 수 있다. 기존 RL은 사람이 설계한 feature를 사용하거나 작은 state space에 머무는 경우가 많았지만, DQN은 raw pixel에서 직접 action value를 학습한다.
+이 논문은 deep reinforcement learning의 대표적 출발점으로 볼 수 있습니다. 기존 RL은 사람이 설계한 feature를 사용하거나 작은 state space에 머무는 경우가 많았지만, DQN은 raw pixel에서 직접 action value를 학습합니다.
 
-핵심 안정화 장치는 experience replay와 target network다. Replay buffer는 연속된 경험의 상관관계를 줄이고, target network는 target Q-value가 매 step 크게 흔들리는 문제를 줄인다. 이 두 요소가 없으면 nonlinear network와 bootstrapping이 결합된 Q-learning은 쉽게 불안정해질 수 있다.
+핵심 안정화 장치는 experience replay와 target network입니다. Replay buffer는 연속된 경험의 상관관계를 줄이고, target network는 target Q-value가 매 step 크게 흔들리는 문제를 줄입니다. 이 두 요소가 없으면 nonlinear network와 bootstrapping이 결합된 Q-learning은 쉽게 불안정해질 수 있습니다.
 
-MEC 연구에서 DQN을 사용할 때도 같은 논리가 적용된다. Offloading agent는 현재 상태에서 local 처리, edge offloading, server 선택 등의 action value를 추정해야 한다. 따라서 DQN의 구조와 안정화 장치는 이후 MEC DRL 논문들의 기반으로 이해할 수 있다.
+MEC 연구에서 DQN을 사용할 때도 같은 논리가 적용됩니다. Offloading agent는 현재 상태에서 local 처리, edge offloading, server 선택 등의 action value를 추정해야 합니다. 따라서 DQN의 구조와 안정화 장치는 이후 MEC DRL 논문들의 기반으로 이해할 수 있습니다.
 
-DQN의 기여는 특정 게임에 맞춘 feature engineering 없이 같은 architecture와 hyperparameter로 여러 Atari task를 처리했다는 점에 있다. Experience replay는 연속된 sample의 correlation을 줄이고, target network는 bootstrapping target이 너무 빠르게 변하는 문제를 완화한다. 이 두 장치는 이후 deep RL 안정화의 기본 구성요소가 되었다.
+DQN의 기여는 특정 게임에 맞춘 feature engineering 없이 같은 architecture와 hyperparameter로 여러 Atari task를 처리했다는 점에 있습니다. Experience replay는 연속된 sample의 correlation을 줄이고, target network는 bootstrapping target이 너무 빠르게 변하는 문제를 완화합니다. 이 두 장치는 이후 deep RL 안정화의 기본 구성요소가 되었습니다.
 
-MEC offloading 논문들이 DQN 계열을 사용하는 이유도 여기서 이어진다. Offloading 환경은 Atari와 다르지만, state를 관찰하고 action을 선택하며 장기 reward를 최대화한다는 구조는 같다. 다만 MEC에서는 reward가 QoE, delay, energy, dropped task처럼 안전성과 제약을 포함하므로, DQN의 value learning을 그대로 가져오기보다 double/dueling/LSTM 같은 안정화 요소와 함께 쓰는 것이 중요하다.
+MEC offloading 논문들이 DQN 계열을 사용하는 이유도 여기서 이어집니다. Offloading 환경은 Atari와 다르지만, state를 관찰하고 action을 선택하며 장기 reward를 최대화한다는 구조는 같습니다. 다만 MEC에서는 reward가 QoE, delay, energy, dropped task처럼 안전성과 제약을 포함하므로, DQN의 value learning을 그대로 가져오기보다 double/dueling/LSTM 같은 안정화 요소와 함께 쓰는 것이 중요합니다.
 
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 문제 배경 | 고차원 sensory input에서 직접 control policy를 학습할 수 있는가? |
-| 2 | DQN 구조 | CNN이 action-value function을 어떻게 근사하는가? |
-| 3 | 안정화 | Experience replay와 target network는 왜 필요한가? |
-| 4 | 결과 | 여러 Atari 게임에서 human-level control에 도달하는가? |
+| 1 | 문제 배경 | 고차원 sensory input에서 직접 control policy를 학습할 수 있습니까? |
+| 2 | DQN 구조 | CNN이 action-value function을 어떻게 근사합니까? |
+| 3 | 안정화 | Experience replay와 target network는 왜 필요합니까? |
+| 4 | 결과 | 여러 Atari 게임에서 human-level control에 도달합니까? |
 
 ## 1. 문제 배경
 
-Reinforcement learning은 누적 보상을 최대화하는 policy를 학습하지만, neural network 같은 nonlinear function approximator를 함께 쓰면 학습이 불안정해질 수 있다. 특히 raw pixel처럼 고차원 입력을 그대로 사용하는 경우 representation learning과 control learning을 동시에 해결해야 한다.
+Reinforcement learning은 누적 보상을 최대화하는 policy를 학습하지만, neural network 같은 nonlinear function approximator를 함께 쓰면 학습이 불안정해질 수 있습니다. 특히 raw pixel처럼 고차원 입력을 그대로 사용하는 경우 representation learning과 control learning을 동시에 해결해야 합니다.
 
 ## 2. 제안 방법
 
-DQN은 convolutional neural network로 Q-function을 근사한다. 입력은 최근 frame stack이고, 출력은 각 action의 Q-value다.
+DQN은 convolutional neural network로 Q-function을 근사합니다. 입력은 최근 frame stack이고, 출력은 각 action의 Q-value입니다.
 
 | 구성 | 역할 |
 |---|---|
@@ -68,11 +68,11 @@ DQN은 convolutional neural network로 Q-function을 근사한다. 입력은 최
 
 ## 3. 결과 및 해석
 
-논문은 동일한 architecture와 hyperparameter로 다양한 Atari 게임을 학습해, 여러 게임에서 기존 알고리즘보다 높은 성능을 보였다. 중요한 점은 game-specific feature engineering 없이 raw pixel 기반으로 policy를 학습했다는 것이다.
+논문은 동일한 architecture와 hyperparameter로 다양한 Atari 게임을 학습해, 여러 게임에서 기존 알고리즘보다 높은 성능을 보였습니다. 중요한 점은 game-specific feature engineering 없이 raw pixel 기반으로 policy를 학습했다는 것입니다.
 
 ## 4. 연구 맥락
 
-QECO, DROO, LyDROO 같은 MEC offloading 연구에서 DQN 계열을 사용하는 배경에는 이 논문이 있다. MEC 상태는 pixel은 아니지만 channel, queue, energy, deadline 등 고차원 상태를 action value로 연결해야 한다는 점에서 DQN의 function approximation 관점이 이어진다.
+QECO, DROO, LyDROO 같은 MEC offloading 연구에서 DQN 계열을 사용하는 배경에는 이 논문이 있습니다. MEC 상태는 pixel은 아니지만 channel, queue, energy, deadline 등 고차원 상태를 action value로 연결해야 한다는 점에서 DQN의 function approximation 관점이 이어집니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

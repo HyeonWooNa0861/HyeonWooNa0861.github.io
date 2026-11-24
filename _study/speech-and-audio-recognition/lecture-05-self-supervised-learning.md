@@ -25,29 +25,29 @@ keywords:
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture5.pdf</a> — Inkyu An, Kookmin University (49 slides).
 
-[Lecture 4: Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)에서는 labeled transcript로 CTC, LAS, RNN-T를 학습하는 방법을 다뤘다. 이번 강의는 그보다 앞 단계로 돌아가, transcript가 없는 대규모 음성에서 먼저 유용한 표현을 배우고 적은 labeled speech로 ASR에 적응시키는 방법을 설명한다.
+[Lecture 4: Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)에서는 labeled transcript로 CTC, LAS, RNN-T를 학습하는 방법을 다뤘습니다. 이번 강의는 그보다 앞 단계로 돌아가, transcript가 없는 대규모 음성에서 먼저 유용한 표현을 배우고 적은 labeled speech로 ASR에 적응시키는 방법을 설명합니다.
 
-> **핵심:** Self-supervised learning은 입력 자체에서 예측 target을 만들어 representation을 학습한다. wav2vec 2.0은 가린 latent position의 **정답 quantized vector를 distractor와 구별**하고, HuBERT는 offline clustering으로 만든 **hidden-unit label을 문맥에서 예측**한다. 둘 다 이후 CTC 등으로 fine-tuning할 수 있지만 target 생성 방식, collapse 방지 장치, layer별 정보의 변화는 서로 다르다.
+> **핵심:** Self-supervised learning은 입력 자체에서 예측 target을 만들어 representation을 학습합니다. wav2vec 2.0은 가린 latent position의 **정답 quantized vector를 distractor와 구별**하고, HuBERT는 offline clustering으로 만든 **hidden-unit label을 문맥에서 예측**합니다. 둘 다 이후 CTC 등으로 fine-tuning할 수 있지만 target 생성 방식, collapse 방지 장치, layer별 정보의 변화는 서로 다릅니다.
 
-아래 페이지 번호는 PDF의 물리적 쪽 번호다. 수식 유도와 수치 예시는 **작성자 보충 설명**이다. 슬라이드의 축약 표현 가운데 조건이 빠졌거나 일반화하기 어려운 부분은 본문과 마지막 `Source Check`에서 원 논문에 맞춰 구분했다.
+아래 페이지 번호는 PDF의 물리적 쪽 번호입니다. 수식 유도와 수치 예시는 **작성자 보충 설명**입니다. 슬라이드의 축약 표현 가운데 조건이 빠졌거나 일반화하기 어려운 부분은 본문과 마지막 `Source Check`에서 원 논문에 맞춰 구분했습니다.
 
 ## 전체 흐름
 
 | PDF 위치 | 주제 | 이해할 질문 |
 |---|---|---|
-| pp. 1–2 | 강의 개요 | 왜 labeled ASR 전에 representation learning을 하는가? |
-| pp. 3–11 | Learning paradigms | Supervised, unsupervised, semi-supervised, weakly supervised는 supervision을 어디서 얻는가? |
-| p. 12 | 대규모 weak supervision | MMS와 Whisper의 데이터·학습 방식은 SSL과 어떻게 다른가? |
-| pp. 13–18 | Self-supervised learning | 입력 일부를 target으로 삼는다는 뜻과 장점의 조건은 무엇인가? |
-| pp. 19–20 | Speech SSL의 과제 | 연속 waveform에서 예측할 vocabulary와 시간 단위를 어떻게 만드는가? |
-| pp. 21–32 | wav2vec 2.0 pre-training | CNN, masking, Transformer, product quantization, contrastive·diversity loss가 어떻게 연결되는가? |
-| pp. 33–39 | Fine-tuning과 확장 | CTC, XLS-R, layer analysis, Conformer 계열 결과를 어떤 조건과 함께 읽어야 하는가? |
-| pp. 40–43 | Attention과 순서 정보 | Self-attention이 순서에 둔감한 이유와 positional information이 필요한 이유는 무엇인가? |
-| pp. 44–49 | HuBERT | Offline cluster target과 반복 refinement가 wav2vec 2.0의 online codebook과 어떻게 다른가? |
+| pp. 1–2 | 강의 개요 | 왜 labeled ASR 전에 representation learning을 합니까? |
+| pp. 3–11 | Learning paradigms | Supervised, unsupervised, semi-supervised, weakly supervised는 supervision을 어디서 얻습니까? |
+| p. 12 | 대규모 weak supervision | MMS와 Whisper의 데이터·학습 방식은 SSL과 어떻게 다릅니까? |
+| pp. 13–18 | Self-supervised learning | 입력 일부를 target으로 삼는다는 뜻과 장점의 조건은 무엇입니까? |
+| pp. 19–20 | Speech SSL의 과제 | 연속 waveform에서 예측할 vocabulary와 시간 단위를 어떻게 만듭니까? |
+| pp. 21–32 | wav2vec 2.0 pre-training | CNN, masking, Transformer, product quantization, contrastive·diversity loss가 어떻게 연결됩니까? |
+| pp. 33–39 | Fine-tuning과 확장 | CTC, XLS-R, layer analysis, Conformer 계열 결과를 어떤 조건과 함께 읽어야 합니까? |
+| pp. 40–43 | Attention과 순서 정보 | Self-attention이 순서에 둔감한 이유와 positional information이 필요한 이유는 무엇입니까? |
+| pp. 44–49 | HuBERT | Offline cluster target과 반복 refinement가 wav2vec 2.0의 online codebook과 어떻게 다릅니까? |
 
-wav2vec 2.0의 핵심 질문은 연속 음성에서 예측할 이산 target을 어떻게 만들고, 정답 target을 다른 후보와 어떻게 구별하는가이다(pp. 19, 25–30). Contrastive loss는 정답을 고르는 능력을, diversity loss는 일부 codebook entry로 선택이 몰리는 현상을 줄이는 능력을 맡는다(pp. 30–32). 두 목적은 서로 대체하지 않는다.
+wav2vec 2.0은 연속적인 음성 신호에서 예측할 이산 target을 만들고, 여러 후보 중에서 정답 target을 구별하도록 학습합니다(pp. 19, 25–30). 여기서 두 손실의 역할은 다릅니다. Contrastive loss는 모델이 정답을 고르도록 하고, diversity loss는 일부 codebook entry에 선택이 몰리지 않도록 합니다(pp. 30–32). 하나가 다른 하나의 역할까지 대신하지는 않습니다.
 
-Self-attention은 음성의 문맥을 결합하지만 순서 정보는 별도로 필요하다(pp. 40–43). HuBERT는 학습 중 함께 바뀌는 codebook 대신, 미리 군집화한 label을 가린 위치의 정답으로 사용한다(pp. 44–49). 따라서 wav2vec 2.0과 HuBERT의 차이는 단순한 encoder 구조가 아니라 **예측 target을 만드는 방식**에서 먼저 드러난다.
+Self-attention은 음성의 문맥을 결합하지만 순서 정보는 별도로 필요합니다(pp. 40–43). HuBERT는 학습 중 함께 바뀌는 codebook 대신, 미리 군집화한 label을 가린 위치의 정답으로 사용합니다(pp. 44–49). 따라서 wav2vec 2.0과 HuBERT의 차이는 단순한 encoder 구조가 아니라 **예측 target을 만드는 방식**에서 먼저 드러납니다.
 
 ### 기호와 단위
 
@@ -70,43 +70,43 @@ Self-attention은 음성의 문맥을 결합하지만 순서 정보는 별도로
 
 ### 1.1 Supervised learning
 
-Supervised learning은 입력 $$x_i$$와 사람이 정하거나 검수한 target $$y_i$$의 쌍으로 mapping을 학습한다(pp. 3–5). 분류 예시에서는 class boundary를 찾고, ASR에서는 음성과 transcript를 연결한다.
+Supervised learning은 입력 $$x_i$$와 사람이 정하거나 검수한 target $$y_i$$의 쌍으로 mapping을 학습합니다(pp. 3–5). 분류 예시에서는 class boundary를 찾고, ASR에서는 음성과 transcript를 연결합니다.
 
 $$
 \mathcal D_{\mathrm{sup}}=\{(x_i,y_i)\}_{i=1}^{N},\qquad
 \min_{\theta}\sum_i \ell(f_{\theta}(x_i),y_i)
 $$
 
-장점은 downstream 목적과 target이 직접 일치한다는 점이다. 비용은 label 제작이다. 음성 transcript는 언어 지식, 긴 청취 시간, 표기 규칙이 필요하고 저자원 언어에는 충분한 labeled corpus가 없을 수 있다.
+장점은 downstream 목적과 target이 직접 일치한다는 점입니다. 비용은 label 제작입니다. 음성 transcript는 언어 지식, 긴 청취 시간, 표기 규칙이 필요하고 저자원 언어에는 충분한 labeled corpus가 없을 수 있습니다.
 
 ### 1.2 Unsupervised learning
 
-Unsupervised learning은 외부 label 없이 입력의 구조를 찾는다(pp. 6–8). Clustering, density estimation, dimensionality reduction이 대표적이다. 그림의 회색 점을 여러 집단으로 묶는 일은 가능하지만, 각 cluster가 실제로 어떤 의미인지 또는 downstream class와 일치하는지는 별도 해석이 필요하다.
+Unsupervised learning은 외부 label 없이 입력의 구조를 찾습니다(pp. 6–8). Clustering, density estimation, dimensionality reduction이 대표적입니다. 그림의 회색 점을 여러 집단으로 묶는 일은 가능하지만, 각 cluster가 실제로 어떤 의미인지 또는 downstream class와 일치하는지는 별도 해석이 필요합니다.
 
-Self-supervised learning도 사람이 붙인 label 없이 학습하므로 넓은 분류에서는 unsupervised representation learning에 포함될 수 있다. 다만 **입력에서 자동으로 target을 구성해 명시적 예측 loss를 만든다**는 학습 설계가 강조된다.
+Self-supervised learning도 사람이 붙인 label 없이 학습하므로 넓은 분류에서는 unsupervised representation learning에 포함될 수 있습니다. 다만 **입력에서 자동으로 target을 구성해 명시적 예측 loss를 만든다**는 학습 설계가 강조됩니다.
 
 ### 1.3 Semi-supervised learning
 
-Semi-supervised learning은 적은 labeled data와 많은 unlabeled data를 함께 사용한다(pp. 9–10).
+Semi-supervised learning은 적은 labeled data와 많은 unlabeled data를 함께 사용합니다(pp. 9–10).
 
 $$
 \mathcal D=\mathcal D_L\cup\mathcal D_U,\qquad
 \mathcal D_L=\{(x_i,y_i)\},\quad \mathcal D_U=\{x_j\}
 $$
 
-Pseudo-labeling, consistency regularization, noisy student처럼 unlabeled example을 supervised model 개선에 직접 넣는 방법이 있다. SSL pre-training 뒤 labeled data로 fine-tuning하는 pipeline도 최종 시스템 전체를 보면 labeled와 unlabeled data를 모두 활용하지만, **pre-training objective 자체**는 self-supervised다. 한 모델을 어느 한 단어로만 부르기보다 어느 stage의 supervision을 말하는지 명시해야 한다.
+Pseudo-labeling, consistency regularization, noisy student처럼 unlabeled example을 supervised model 개선에 직접 넣는 방법이 있습니다. SSL pre-training 뒤 labeled data로 fine-tuning하는 pipeline도 최종 시스템 전체를 보면 labeled와 unlabeled data를 모두 활용하지만, **pre-training objective 자체**는 self-supervised입니다. 한 모델을 어느 한 단어로만 부르기보다 어느 stage의 supervision을 말하는지 명시해야 합니다.
 
 ### 1.4 Weak supervision
 
-Weak supervision은 label이 있으나 사람의 정밀 annotation보다 noisy, coarse, indirect하거나 자동 수집된 경우를 뜻한다(pp. 10–12). 이미지의 hashtag는 객체 위치·정확한 class를 보장하지 않지만 이미지와 함께 수집된다. 인터넷의 audio–caption pair도 transcript가 부정확하거나 음성과 완전히 정렬되지 않을 수 있다.
+Weak supervision은 label이 있으나 사람의 정밀 annotation보다 noisy, coarse, indirect하거나 자동 수집된 경우를 뜻합니다(pp. 10–12). 이미지의 hashtag는 객체 위치·정확한 class를 보장하지 않지만 이미지와 함께 수집됩니다. 인터넷의 audio–caption pair도 transcript가 부정확하거나 음성과 완전히 정렬되지 않을 수 있습니다.
 
-Whisper는 웹에서 모은 680,000시간의 multilingual·multitask audio–text pair로 대응 text를 예측한다. 따라서 입력만으로 target을 만드는 wav2vec 2.0식 SSL과 달리 **외부 text supervision을 사용하는 weakly supervised 학습**이다. MMS는 종교 문서와 읽기 음성을 정렬해 labeled ASR 데이터를 만들면서 wav2vec 2.0 self-supervised pre-training도 활용한다. MMS 전체를 한 종류의 supervision으로만 묶는 설명은 정확하지 않다.
+Whisper는 웹에서 모은 680,000시간의 multilingual·multitask audio–text pair로 대응 text를 예측합니다. 따라서 입력만으로 target을 만드는 wav2vec 2.0식 SSL과 달리 **외부 text supervision을 사용하는 weakly supervised 학습**입니다. MMS는 종교 문서와 읽기 음성을 정렬해 labeled ASR 데이터를 만들면서 wav2vec 2.0 self-supervised pre-training도 활용합니다. MMS 전체를 한 종류의 supervision으로만 묶는 설명은 정확하지 않습니다.
 
 ## 2. Self-supervision은 입력을 문제와 정답으로 나눈다
 
 ### 2.1 Masked prediction의 공통 원리
 
-슬라이드 pp. 13–16의 이미지 patch와 문장 token 예시는 원본 입력 $$x$$에서 일부를 가린 $$\tilde{x}$$를 만들고, 가린 부분 $$y$$를 target으로 삼는 과정을 보여 준다.
+슬라이드 pp. 13–16의 이미지 patch와 문장 token 예시는 원본 입력 $$x$$에서 일부를 가린 $$\tilde{x}$$를 만들고, 가린 부분 $$y$$를 target으로 삼는 과정을 보여 줍니다.
 
 $$
 \tilde{x}=\operatorname{corrupt}(x,M),\qquad
@@ -117,33 +117,33 @@ $$
 \min_{\theta}\;\ell\bigl(f_{\theta}(\tilde{x}),y\bigr)
 $$
 
-사람이 새 label을 붙이지 않아도 원본에서 target을 얻는다. 그러나 target이 “공짜”라는 말은 계산·저장·수집·정제 비용이 없다는 뜻이 아니다. Corruption 규칙과 target 표현을 잘못 고르면 모델은 의미보다 쉬운 복원 shortcut을 배울 수 있다.
+사람이 새 label을 붙이지 않아도 원본에서 target을 얻습니다. 그러나 target이 “공짜”라는 말은 계산·저장·수집·정제 비용이 없다는 뜻이 아닙니다. Corruption 규칙과 target 표현을 잘못 고르면 모델은 의미보다 쉬운 복원 shortcut을 배울 수 있습니다.
 
 ### 2.2 왜 downstream에 도움이 될 수 있는가
 
-슬라이드 p. 17은 빠른 수렴, 더 나은 수렴, low-resource, large-scale model, foundation model을 장점으로 제시한다. 이를 보장으로 읽어서는 안 된다. 효과가 나타나려면 다음 조건이 맞아야 한다.
+슬라이드 p. 17은 빠른 수렴, 더 나은 수렴, low-resource, large-scale model, foundation model을 장점으로 제시합니다. 이를 보장으로 읽어서는 안 됩니다. 효과가 나타나려면 다음 조건이 맞아야 합니다.
 
-- Pre-training data가 downstream 음성의 언어·도메인·channel과 충분히 관련되어야 한다.
-- Pretext objective가 phonetic, lexical, speaker, prosody 등 downstream에 필요한 정보를 보존해야 한다.
-- Model capacity와 optimization이 데이터 규모를 감당해야 한다.
-- Fine-tuning data, decoder, external LM, evaluation split을 같은 조건으로 비교해야 한다.
+- Pre-training data가 downstream 음성의 언어·도메인·channel과 충분히 관련되어야 합니다.
+- Pretext objective가 phonetic, lexical, speaker, prosody 등 downstream에 필요한 정보를 보존해야 합니다.
+- Model capacity와 optimization이 데이터 규모를 감당해야 합니다.
+- Fine-tuning data, decoder, external LM, evaluation split을 같은 조건으로 비교해야 합니다.
 
-좋은 초기 representation은 적은 label에서도 성능과 optimization을 개선할 수 있지만, domain mismatch나 부적절한 objective에서는 negative transfer가 생길 수 있다. `foundation model`도 폭넓은 adaptation 가능성을 가리키는 용어이지 모든 task에서 최적이라는 증명이 아니다.
+좋은 초기 representation은 적은 label에서도 성능과 optimization을 개선할 수 있지만, domain mismatch나 부적절한 objective에서는 negative transfer가 생길 수 있습니다. `foundation model`도 폭넓은 adaptation 가능성을 가리키는 용어이지 모든 task에서 최적이라는 증명이 아닙니다.
 
 ### 2.3 Text와 speech의 target 차이
 
-Text에는 tokenizer가 정의한 discrete vocabulary가 이미 있다(p. 18). Speech waveform은 연속값이며, 16 kHz mono 신호라면 1초에 16,000 samples가 있다는 뜻일 뿐 **항상 16,000 floats인 것은 아니다**(p. 19). 저장 dtype이 int16일 수도 있고 sampling rate가 8, 44.1, 48 kHz일 수도 있다.
+Text에는 tokenizer가 정의한 discrete vocabulary가 이미 있습니다(p. 18). Speech waveform은 연속값이며, 16 kHz mono 신호라면 1초에 16,000 samples가 있다는 뜻일 뿐 **항상 16,000 floats인 것은 아니다**(p. 19). 저장 dtype이 int16일 수도 있고 sampling rate가 8, 44.1, 48 kHz일 수도 있습니다.
 
 $$
 N_{\mathrm{samples}}=f_s\times \Delta t
 $$
 
-Speech SSL은 따라서 두 문제를 함께 해결해야 한다.
+Speech SSL은 따라서 두 문제를 함께 해결해야 합니다.
 
-1. 매우 긴 sample sequence를 계산 가능한 latent sequence로 줄인다.
-2. “맞혀야 할 단위”를 continuous vector, quantized code, cluster ID 등으로 정의한다.
+1. 매우 긴 sample sequence를 계산 가능한 latent sequence로 줄입니다.
+2. “맞혀야 할 단위”를 continuous vector, quantized code, cluster ID 등으로 정의합니다.
 
-pp. 20의 연대표는 generative, contrastive, predictive 계열이 공존함을 보여 준다. 이 구분은 절대적이지 않다. 예를 들어 wav2vec 2.0은 quantized target에 대한 contrastive classification을 하고, HuBERT는 cluster class의 masked prediction을 한다.
+pp. 20의 연대표는 generative, contrastive, predictive 계열이 공존함을 보여 줍니다. 이 구분은 절대적이지 않습니다. 예를 들어 wav2vec 2.0은 quantized target에 대한 contrastive classification을 하고, HuBERT는 cluster class의 masked prediction을 합니다.
 
 ## 3. wav2vec 2.0의 전체 구조
 
@@ -152,44 +152,44 @@ pp. 20의 연대표는 generative, contrastive, predictive 계열이 공존함�
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=24" | relative_url }}">lecture PDF, p. 24</a>.</figcaption>
 </figure>
 
-아래의 waveform이 CNN을 지나 latent sequence가 되고, 일부 위치가 `M`으로 가려진 뒤 Transformer가 context를 만든다. 이 페이지에는 quantization 경로가 아직 없다. Mask는 raw waveform을 지우는 것이 아니라 CNN 뒤의 latent 위치를 가린다. 정답을 만드는 별도 경로는 아래의 p.31 전체 학습 구조에서 확인한다.
+아래의 waveform이 CNN을 지나 latent sequence가 되고, 일부 위치가 `M`으로 가려진 뒤 Transformer가 context를 만듭니다. 이 페이지에는 quantization 경로가 아직 없습니다. Mask는 raw waveform을 지우는 것이 아니라 CNN 뒤의 latent 위치를 가립니다. 정답을 만드는 별도 경로는 아래의 p.31 전체 학습 구조에서 확인합니다.
 
 ### 3.1 Raw waveform → CNN latent sequence
 
-Feature encoder $$f$$는 raw waveform $$x$$를 latent sequence로 바꾼다(pp. 21–22).
+Feature encoder $$f$$는 raw waveform $$x$$를 latent sequence로 바꿉니다(pp. 21–22).
 
 $$
 z_1,\ldots,z_T=f(x)
 $$
 
-원 논문의 일곱 convolution stride를 모두 곱하면 320 samples다. 16 kHz 입력에서는 약 20 ms마다 latent가 하나 생긴다. 이 downsampling은 sample 단위의 긴 입력을 Transformer가 처리할 수 있는 길이로 줄이기 위해 필요하다.
+원 논문의 일곱 convolution stride를 모두 곱하면 320 samples입니다. 16 kHz 입력에서는 약 20 ms마다 latent가 하나 생깁니다. 이 downsampling은 sample 단위의 긴 입력을 Transformer가 처리할 수 있는 길이로 줄이기 위해 필요합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: CNN stride and receptive field</summary>
 
-Stride $$(5,2,2,2,2,2,2)$$의 누적값은 다음과 같다.
+Stride $$(5,2,2,2,2,2,2)$$의 누적값은 다음과 같습니다.
 
 $$
 5\times2^6=320\ \mathrm{samples}
 $$
 
-16 kHz라면 latent step 간격은 $$320/16000=0.02$$ s, 즉 약 20 ms다. 길이 1초가 정확히 50개 latent가 된다는 뜻은 padding과 boundary convention에 따라 달라진다. 원 논문은 output frequency를 약 49 Hz로 보고한다.
+16 kHz라면 latent step 간격은 $$320/16000=0.02$$ s, 즉 약 20 ms입니다. 길이 1초가 정확히 50개 latent가 된다는 뜻은 padding과 boundary convention에 따라 달라집니다. 원 논문은 output frequency를 약 49 Hz로 보고합니다.
 
-Kernel width $$(10,3,3,3,3,2,2)$$와 stride를 순서대로 적용하면 한 latent의 receptive field는 400 samples다. $$r_0=1,j_0=1$$에서
+Kernel width $$(10,3,3,3,3,2,2)$$와 stride를 순서대로 적용하면 한 latent의 receptive field는 400 samples입니다. $$r_0=1,j_0=1$$에서
 
 $$
 r_i=r_{i-1}+(k_i-1)j_{i-1},\qquad j_i=j_{i-1}s_i
 $$
 
-를 적용하면 마지막에 $$r=400,j=320$$이다. 16 kHz에서 receptive field는 25 ms, step은 20 ms라 인접 latent의 입력 구간이 겹친다.
+를 적용하면 마지막에 $$r=400,j=320$$입니다. 16 kHz에서 receptive field는 25 ms, step은 20 ms라 인접 latent의 입력 구간이 겹칩니다.
 
 </details>
 
-해석할 때는 **한 latent가 보는 구간**과 **latent 사이 간격**을 구분해야 한다. Receptive field 25 ms가 step 20 ms보다 크므로 이웃 latent는 일부 waveform을 공유한다.
+해석할 때는 **한 latent가 보는 구간**과 **latent 사이 간격**을 구분해야 합니다. Receptive field 25 ms가 step 20 ms보다 크므로 이웃 latent는 일부 waveform을 공유합니다.
 
 ### 3.2 Masking은 CNN 뒤, Transformer 앞에서 한다
 
-Mask index에는 학습 가능한 mask embedding $$m$$을 넣고 나머지 $$z_t$$는 유지한다(p. 23).
+Mask index에는 학습 가능한 mask embedding $$m$$을 넣고 나머지 $$z_t$$는 유지합니다(p. 23).
 
 $$
 \tilde z_t=
@@ -199,17 +199,17 @@ z_t,&t\notin M
 \end{cases}
 $$
 
-Transformer context network $$g$$가 주변의 unmasked latent를 이용해 contextualized representation을 만든다(p. 24).
+Transformer context network $$g$$가 주변의 unmasked latent를 이용해 contextualized representation을 만듭니다(p. 24).
 
 $$
 c_1,\ldots,c_T=g(\tilde z_1,\ldots,\tilde z_T)
 $$
 
-중요한 비대칭이 있다. **Transformer 입력 branch는 masked $$\tilde z$$를 보지만 quantizer branch는 원래 $$z$$를 본다.** 따라서 가린 위치의 target $$q_t$$는 손상되지 않은 latent에서 만들어진다. Target branch까지 mask하면 무엇을 맞혀야 하는지가 사라진다.
+중요한 비대칭이 있습니다. **Transformer 입력 branch는 masked $$\tilde z$$를 보지만 quantizer branch는 원래 $$z$$를 봅니다.** 따라서 가린 위치의 target $$q_t$$는 손상되지 않은 latent에서 만들어집니다. Target branch까지 mask하면 무엇을 맞혀야 하는지가 사라집니다.
 
 ### 3.3 Transformer에는 순서 정보가 따로 필요하다
 
-pp. 40–43은 일반 attention에서 self-attention까지의 변환을 복습한다. 입력 $$X$$에서
+pp. 40–43은 일반 attention에서 self-attention까지의 변환을 복습합니다. 입력 $$X$$에서
 
 $$
 Q=XW_Q,\qquad K=XW_K,\qquad V=XW_V
@@ -219,9 +219,9 @@ $$
 \operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V
 $$
 
-를 계산한다. Positional signal이 없다면 입력 순서를 같은 permutation으로 바꿀 때 출력도 그 순서를 따라 바뀌는 permutation-equivariant 연산이어서 “첫 번째 음소와 마지막 음소”의 절대·상대 위치를 자체로 알 수 없다. wav2vec 2.0은 fixed absolute position table 대신 convolutional positional embedding을 latent에 더한다. **Attention이 순서를 완전히 무시한다**기보다, 내용 기반 attention만으로는 위치를 식별할 근거가 부족하므로 position mechanism이 필요하다고 표현하는 편이 정확하다.
+를 계산합니다. Positional signal이 없다면 입력 순서를 같은 permutation으로 바꿀 때 출력도 그 순서를 따라 바뀌는 permutation-equivariant 연산이어서 “첫 번째 음소와 마지막 음소”의 절대·상대 위치를 자체로 알 수 없습니다. wav2vec 2.0은 fixed absolute position table 대신 convolutional positional embedding을 latent에 더합니다. **Attention이 순서를 완전히 무시한다**기보다, 내용 기반 attention만으로는 위치를 식별할 근거가 부족하므로 position mechanism이 필요하다고 표현하는 편이 정확합니다.
 
-한 프레임을 기준으로 식을 읽으면 세 기호의 역할이 구별된다. 그 프레임의 **query**를 각 프레임의 **key**와 비교해 관련성 점수를 낸다. Softmax는 이 점수들을 합이 1인 가중치로 바꾼다. 마지막에 섞이는 것은 key가 아니라 각 프레임의 **value**다. 따라서 한 시점의 출력에도 다른 시점의 음성 정보가 들어간다.
+한 프레임을 기준으로 식을 읽으면 세 기호의 역할이 구별됩니다. 그 프레임의 **query**를 각 프레임의 **key**와 비교해 관련성 점수를 냅니다. Softmax는 이 점수들을 합이 1인 가중치로 바꿉니다. 마지막에 섞이는 것은 key가 아니라 각 프레임의 **value**입니다. 따라서 한 시점의 출력에도 다른 시점의 음성 정보가 들어갑니다.
 
 ## 4. Product quantization은 speech vocabulary를 학습한다
 
@@ -230,17 +230,17 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=31" | relative_url }}">lecture PDF, p. 31</a>.</figcaption>
 </figure>
 
-그림 맨 아래에서 음성 한 구간을 골라 두 갈래의 화살표를 따라가 보자. 오른쪽에서는 그 구간을 가린다. Transformer가 쓸 수 있는 단서는 **주변에 어떤 소리가 있었는지**다. 왼쪽에서는 바로 그 구간을 가리지 않는다. 양자화기(quantizer)가 **그 자리에 실제로 있던 소리의 특징**을 코드북 항목의 조합으로 나타내 정답 후보를 만든다. 두 갈래가 만나는 위쪽에서 묻는 질문은 하나다. **주변 소리만 보고 만든 표현이 여러 후보 중 원래 구간의 표현을 구별하는가?** 이것이 대조 손실의 역할이다. 코드북 쪽의 diversity loss는 소수 항목에만 선택이 몰리는 현상을 줄이는 별도 항이다.
+그림 맨 아래에서 음성 한 구간을 골라 두 갈래의 화살표를 따라가 보겠습니다. 오른쪽에서는 그 구간을 가립니다. Transformer가 쓸 수 있는 단서는 **주변에 어떤 소리가 있었는지**입니다. 왼쪽에서는 바로 그 구간을 가리지 않습니다. 양자화기(quantizer)가 **그 자리에 실제로 있던 소리의 특징**을 코드북 항목의 조합으로 나타내 정답 후보를 만듭니다. 두 갈래가 만나는 위쪽에서 묻는 질문은 하나입니다. **주변 소리만 보고 만든 표현이 여러 후보 중 원래 구간의 표현을 구별합니까?** 이것이 대조 손실의 역할입니다. 코드북 쪽의 diversity loss는 소수 항목에만 선택이 몰리는 현상을 줄이는 별도 항입니다.
 
 ### 4.1 여러 codebook에서 하나씩 선택한다
 
-Quantization module은 $$z_t$$를 $$G$$개 codebook에 대한 logits로 바꾸고 각 codebook의 $$V$$개 entry 중 하나를 선택한다(pp. 25–28). 목적은 연속 latent를 제한된 선택지로 바꿔 contrastive target을 만드는 것이다. 선택한 vector를 이어 붙인 뒤 projection하여 $$q_t$$를 얻는다.
+Quantization module은 $$z_t$$를 $$G$$개 codebook에 대한 logits로 바꾸고 각 codebook의 $$V$$개 entry 중 하나를 선택합니다(pp. 25–28). 목적은 연속 latent를 제한된 선택지로 바꿔 contrastive target을 만드는 것입니다. 선택한 vector를 이어 붙인 뒤 projection하여 $$q_t$$를 얻습니다.
 
 $$
 q_t=W_q[e_{1,v_1};e_{2,v_2};\ldots;e_{G,v_G}]
 $$
 
-**보충 예제:** 두 코드북에서 각각 `A/B`와 `1/2/3` 중 하나를 고르면 `A1`, `A2`, `A3`, `B1`, `B2`, `B3`의 6개 조합이 가능하다. 선택지 수는 코드북별 경우의 수를 더하지 않고 곱한다.
+**보충 예제:** 두 코드북에서 각각 `A/B`와 `1/2/3` 중 하나를 고르면 `A1`, `A2`, `A3`, `B1`, `B2`, `B3`의 6개 조합이 가능합니다. 선택지 수는 코드북별 경우의 수를 더하지 않고 곱합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Product-code capacity</summary>
@@ -251,20 +251,20 @@ $$
 V^G
 $$
 
-이다. 원 설정의 $$G=2,V=320$$이면 $$320^2=102{,}400$$개 조합이다.
+입니다. 원 설정의 $$G=2,V=320$$이면 $$320^2=102{,}400$$개 조합입니다.
 
 </details>
 
-이 값은 표현 공간의 상한이다. 실제 학습에서 모든 조합이 등장하거나 서로 다른 음소 하나씩에 대응한다는 뜻은 아니다.
+이 값은 표현 공간의 상한입니다. 실제 학습에서 모든 조합이 등장하거나 서로 다른 음소 하나씩에 대응한다는 뜻은 아닙니다.
 
 ### 4.2 Gumbel-softmax로 discrete 선택을 학습한다
 
-Discrete argmax는 선택된 entry가 바뀌는 지점에서 미분할 수 없다. Gumbel-softmax는 학습 중에는 부드러운 확률로 gradient를 전달하고, forward 결과는 hard entry처럼 쓰기 위한 장치다. Temperature $$\tau$$가 높으면 여러 entry가 비슷한 확률을 받고, 낮으면 한 entry에 집중한다.
+Discrete argmax는 선택된 entry가 바뀌는 지점에서 미분할 수 없습니다. Gumbel-softmax는 학습 중에는 부드러운 확률로 gradient를 전달하고, forward 결과는 hard entry처럼 쓰기 위한 장치입니다. Temperature $$\tau$$가 높으면 여러 entry가 비슷한 확률을 받고, 낮으면 한 entry에 집중합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Gumbel-softmax selection</summary>
 
-Codebook $$g$$의 entry $$v$$에 대한 logit을 $$l_{g,v}$$라 하자. Uniform sample $$u_{g,v}\sim\mathcal U(0,1)$$에서 Gumbel noise를 만든다.
+Codebook $$g$$의 entry $$v$$에 대한 logit을 $$l_{g,v}$$라 하겠습니다. Uniform sample $$u_{g,v}\sim\mathcal U(0,1)$$에서 Gumbel noise를 만듭니다.
 
 $$
 n_{g,v}=-\log(-\log u_{g,v})
@@ -274,7 +274,7 @@ $$
 p_{g,v}=\frac{\exp((l_{g,v}+n_{g,v})/\tau)}{\sum_{j=1}^{V}\exp((l_{g,j}+n_{g,j})/\tau)}
 $$
 
-Forward에서는 argmax entry를 고르는 hard choice를 사용하고 backward에서는 soft probability의 gradient를 사용하는 straight-through estimator를 쓴다. $$\tau\to0$$은 수치적으로 민감하므로 원 설정도 양의 최솟값까지만 annealing한다.
+Forward에서는 argmax entry를 고르는 hard choice를 사용하고 backward에서는 soft probability의 gradient를 사용하는 straight-through estimator를 씁니다. $$\tau\to0$$은 수치적으로 민감하므로 원 설정도 양의 최솟값까지만 annealing합니다.
 
 </details>
 
@@ -282,15 +282,15 @@ Forward에서는 argmax entry를 고르는 hard choice를 사용하고 backward�
 
 ### 5.1 Positive와 distractor
 
-가린 position $$t$$에서 positive는 같은 position의 quantized target $$q_t$$다. 원 논문은 다른 **masked positions of the same utterance**에서 $$K$$개 distractor를 균등 표본한다(pp. 29–32). 후보 집합은 $$Q_t$$이고 크기는 $$K+1$$이다.
+가린 position $$t$$에서 positive는 같은 position의 quantized target $$q_t$$입니다. 원 논문은 다른 **masked positions of the same utterance**에서 $$K$$개 distractor를 균등 표본합니다(pp. 29–32). 후보 집합은 $$Q_t$$이고 크기는 $$K+1$$입니다.
 
-Cosine similarity는 두 벡터가 0이 아닐 때 다음과 같다.
+Cosine similarity는 두 벡터가 0이 아닐 때 다음과 같습니다.
 
 $$
 \operatorname{sim}(a,b)=\frac{a^{\top}b}{\lVert a\rVert_2\lVert b\rVert_2}
 $$
 
-Masked position 하나의 contrastive loss는 positive를 정답 class로 둔 cross-entropy다.
+Masked position 하나의 contrastive loss는 positive를 정답 class로 둔 cross-entropy입니다.
 
 $$
 \mathcal L_m(t)=-\log
@@ -298,16 +298,16 @@ $$
 {\sum_{\tilde q\in Q_t}\exp\left(\operatorname{sim}(c_t,\tilde q)/\kappa\right)}
 $$
 
-$$\kappa$$가 작으면 similarity 차이를 더 크게 확대한다. Negative가 쉬우면 loss가 작지만 representation 학습 신호도 약해질 수 있고, false negative가 실제로 같은 음성 단위를 담으면 불필요하게 둘을 밀어낼 수 있다. Same-utterance sampling은 speaker·channel shortcut을 줄이는 데 도움을 주지만 false negative 가능성을 없애지는 않는다.
+$$\kappa$$가 작으면 similarity 차이를 더 크게 확대합니다. Negative가 쉬우면 loss가 작지만 representation 학습 신호도 약해질 수 있고, false negative가 실제로 같은 음성 단위를 담으면 불필요하게 둘을 밀어낼 수 있습니다. Same-utterance sampling은 speaker·channel shortcut을 줄이는 데 도움을 주지만 false negative 가능성을 없애지는 않습니다.
 
 ### 5.2 작성자 수치 예시
 
-Positive가 distractor보다 훨씬 비슷하면 정답 후보의 softmax 확률이 커지고 loss는 작아진다. 아래 계산은 그 관계를 확인하는 설명용 예시이며 슬라이드의 실험 수치가 아니다.
+Positive가 distractor보다 훨씬 비슷하면 정답 후보의 softmax 확률이 커지고 loss는 작아집니다. 아래 계산은 그 관계를 확인하는 설명용 예시이며 슬라이드의 실험 수치가 아닙니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Contrastive-loss toy calculation</summary>
 
-Positive similarity가 0.8, 두 distractor similarity가 0.3과 0.1, $$\kappa=0.1$$이라고 하자. 분자·분모에서 $$\exp(8)$$을 나누면 overflow 없이 계산할 수 있다.
+Positive similarity가 0.8, 두 distractor similarity가 0.3과 0.1, $$\kappa=0.1$$이라고 하겠습니다. 분자·분모에서 $$\exp(8)$$을 나누면 overflow 없이 계산할 수 있습니다.
 
 $$
 \mathcal L_m
@@ -316,13 +316,13 @@ $$
 \approx0.0076207
 $$
 
-Positive가 가장 크고 temperature가 작아 정답 확률이 1에 가깝기 때문에 loss가 작다.
+Positive가 가장 크고 temperature가 작아 정답 확률이 1에 가깝기 때문에 loss가 작습니다.
 
 </details>
 
 ### 5.3 Diversity loss와 부호
 
-Contrastive loss만 최적화하면 일부 codebook entry만 쓰는 collapse가 생길 수 있다. Diversity term은 batch 전체에서 각 entry가 얼마나 쓰였는지 보고, 지나치게 한쪽으로 몰린 선택보다 고른 선택을 선호한다. 이름에 `loss`가 있어도 이 논문의 식은 음의 entropy이므로 값이 음수가 될 수 있다.
+Contrastive loss만 최적화하면 일부 codebook entry만 쓰는 collapse가 생길 수 있습니다. Diversity term은 batch 전체에서 각 entry가 얼마나 쓰였는지 보고, 지나치게 한쪽으로 몰린 선택보다 고른 선택을 선호합니다. 이름에 `loss`가 있어도 이 논문의 식은 음의 entropy이므로 값이 음수가 될 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Diversity-loss sign and entropy</summary>
@@ -334,37 +334,37 @@ $$
 =-\frac{1}{GV}\sum_{g=1}^{G}H(\bar p_g)
 $$
 
-이다. $$\mathcal L_d$$를 **최소화**하면 entropy를 크게 만드는 방향으로 움직인다. $$G=1,V=2$$에서 완전 collapse $$(1,0)$$이면 극한값으로 $$\mathcal L_d=0$$이고, 균등 사용 $$(0.5,0.5)$$이면
+입니다. $$\mathcal L_d$$를 **최소화**하면 entropy를 크게 만드는 방향으로 움직입니다. $$G=1,V=2$$에서 완전 collapse $$(1,0)$$이면 극한값으로 $$\mathcal L_d=0$$이고, 균등 사용 $$(0.5,0.5)$$이면
 
 $$
 \mathcal L_d=\frac{0.5\log0.5+0.5\log0.5}{2}
 =-0.346574
 $$
 
-이므로 균등 사용 쪽이 더 작은 값이다. `diversity loss`가 양수여야 한다고 생각해 앞의 음수를 임의로 없애면 optimization 방향이 뒤집힌다.
+이므로 균등 사용 쪽이 더 작은 값입니다. `diversity loss`가 양수여야 한다고 생각해 앞의 음수를 임의로 없애면 optimization 방향이 뒤집힙니다.
 
 </details>
 
-전체 objective는 masked positions에 대해 합·평균한 contrastive term과 diversity term을 결합한다.
+전체 objective는 masked positions에 대해 합·평균한 contrastive term과 diversity term을 결합합니다.
 
 $$
 \mathcal L=\mathcal L_m+\alpha\mathcal L_d
 $$
 
-원 논문의 $$\alpha=0.1$$은 특정 실험 설정이다. 너무 큰 가중치는 task discrimination보다 균등 사용을 과도하게 강제할 수 있고, 너무 작으면 collapse 방지가 약해질 수 있다.
+원 논문의 $$\alpha=0.1$$은 특정 실험 설정입니다. 너무 큰 가중치는 task discrimination보다 균등 사용을 과도하게 강제할 수 있고, 너무 작으면 collapse 방지가 약해질 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: wav2vec 2.0 objective pipeline on slides 25–32</summary>
 
-슬라이드 그림은 같은 CNN latent에서 두 branch가 갈라지는 구조를 단계별로 겹쳐 보여 준다.
+슬라이드 그림은 같은 CNN latent에서 두 branch가 갈라지는 구조를 단계별로 겹쳐 보여 줍니다.
 
-1. 아래 waveform은 CNN feature encoder를 지나 연속 latent $$z_t$$가 된다.
-2. 오른쪽 branch는 일부 $$z_t$$를 mask embedding으로 바꾸고 Transformer를 거쳐 context vector $$c_t$$를 만든다.
-3. 왼쪽 branch는 가리지 않은 $$z_t$$를 online product quantizer에 넣어 target $$q_t$$를 만든다.
-4. Contrastive loss는 masked 위치의 $$c_t$$가 같은 위치의 $$q_t$$를 distractor보다 높게 고르게 한다.
-5. Diversity loss는 특정 codebook entry만 반복 선택되는 collapse를 억제한다.
+1. 아래 waveform은 CNN feature encoder를 지나 연속 latent $$z_t$$가 됩니다.
+2. 오른쪽 branch는 일부 $$z_t$$를 mask embedding으로 바꾸고 Transformer를 거쳐 context vector $$c_t$$를 만듭니다.
+3. 왼쪽 branch는 가리지 않은 $$z_t$$를 online product quantizer에 넣어 target $$q_t$$를 만듭니다.
+4. Contrastive loss는 masked 위치의 $$c_t$$가 같은 위치의 $$q_t$$를 distractor보다 높게 고르게 합니다.
+5. Diversity loss는 특정 codebook entry만 반복 선택되는 collapse를 억제합니다.
 
-그림의 빨간 code가 곧 문자나 음소 label이라는 뜻은 아니다. 빨간색은 해당 위치에서 선택된 discrete target을 시각화한 것이며, ASR 문자 vocabulary는 fine-tuning 때 별도 CTC head로 정의된다.
+그림의 빨간 code가 곧 문자나 음소 label이라는 뜻은 아닙니다. 빨간색은 해당 위치에서 선택된 discrete target을 시각화한 것이며, ASR 문자 vocabulary는 fine-tuning 때 별도 CTC head로 정의됩니다.
 
 </details>
 
@@ -372,7 +372,7 @@ $$
 
 ### 6.1 CTC output layer를 붙인다
 
-Pre-training은 transcript를 사용하지 않는다. ASR fine-tuning 단계에서는 Transformer context output 위에 vocabulary projection을 붙이고 CTC loss를 최소화한다(p. 33).
+Pre-training은 transcript를 사용하지 않습니다. ASR fine-tuning 단계에서는 Transformer context output 위에 vocabulary projection을 붙이고 CTC loss를 최소화합니다(p. 33).
 
 $$
 o_t=W_c c_t+b_c,\qquad p_t=\operatorname{softmax}(o_t)
@@ -382,41 +382,41 @@ $$
 \mathcal L_{\mathrm{CTC}}=-\log\sum_{\pi:\mathcal B(\pi)=y}\prod_t p_t(\pi_t)
 $$
 
-Quantized code가 그대로 문자 vocabulary가 되는 것은 아니다. Pre-training codebook은 latent acoustic target이고, fine-tuning의 output class는 문자·phoneme·subword와 blank 등 downstream vocabulary다.
+Quantized code가 그대로 문자 vocabulary가 되는 것은 아닙니다. Pre-training codebook은 latent acoustic target이고, fine-tuning의 output class는 문자·phoneme·subword와 blank 등 downstream vocabulary입니다.
 
-**강의 시연에서 두 그림을 읽는 법.** 2부의 torchaudio 시연은 입력 음성의 샘플링 주파수를 모델에 맞춘 뒤 같은 파형에서 서로 다른 출력을 꺼낸다. 첫 그림은 Transformer 각 층의 **중간 특징**이다. 같은 시간 구간이 층을 지나며 어떻게 다르게 표현되는지 비교할 수 있지만, 밝은 칸 하나를 특정 글자로 읽을 수는 없다. 두 번째 출력인 **emission**에서는 비교 대상이 특징 성분에서 문자와 blank 같은 출력 후보로 바뀐다. 비로소 각 프레임에서 어느 후보의 점수가 높은지 읽고 CTC로 문자열을 복원할 수 있다. 여기서 blank는 ‘이 프레임에서 새 글자를 내지 않음’이지, 그 순간이 무음이라는 판정은 아니다.
+**강의 시연에서 두 그림을 읽는 법.** 2부의 torchaudio 시연은 입력 음성의 샘플링 주파수를 모델에 맞춘 뒤 같은 파형에서 서로 다른 출력을 꺼냅니다. 첫 그림은 Transformer 각 층의 **중간 특징**입니다. 같은 시간 구간이 층을 지나며 어떻게 다르게 표현되는지 비교할 수 있지만, 밝은 칸 하나를 특정 글자로 읽을 수는 없습니다. 두 번째 출력인 **emission**에서는 비교 대상이 특징 성분에서 문자와 blank 같은 출력 후보로 바뀝니다. 비로소 각 프레임에서 어느 후보의 점수가 높은지 읽고 CTC로 문자열을 복원할 수 있습니다. 여기서 blank는 ‘이 프레임에서 새 글자를 내지 않음’이지, 그 순간이 무음이라는 판정은 아닙니다.
 
-원 논문 Table 1의 model 규모는 Base 약 95M, Large 317M parameters다. 슬라이드의 96M은 반올림 또는 표기 차이로 볼 수 있다. Pre-training data, labeled minutes, decoder LM이 다르면 WER을 단순 비교해서는 안 된다. 특히 10분 labeled 설정의 낮은 WER은 LV-60k pre-training과 Transformer LM decoding 조건을 포함한다.
+원 논문 Table 1의 model 규모는 Base 약 95M, Large 317M parameters입니다. 슬라이드의 96M은 반올림 또는 표기 차이로 볼 수 있습니다. Pre-training data, labeled minutes, decoder LM이 다르면 WER을 단순 비교해서는 안 됩니다. 특히 10분 labeled 설정의 낮은 WER은 LV-60k pre-training과 Transformer LM decoding 조건을 포함합니다.
 
 ### 6.2 XLS-R은 cross-lingual scale을 키운 wav2vec 2.0이다
 
-XLS-R은 wav2vec 2.0 계열을 128개 언어, 약 436k hours 규모의 public speech로 확장하고 최대 2B parameter model을 학습한다(p. 34). 그림의 `recognition · translation · classification`은 하나의 frozen encoder가 곧바로 모든 과제를 zero-shot으로 푼다는 뜻이 아니다. 원 논문은 labeled downstream data로 과제별 fine-tuning을 수행해 automatic speech recognition, speech translation, language identification, speaker identification을 각각 평가한다. 예를 들어 speech translation은 XLS-R 위에 Transformer decoder를 쌓고, speaker identification은 XLS-R의 모든 parameter를 fine-tune한다.
+XLS-R은 wav2vec 2.0 계열을 128개 언어, 약 436k hours 규모의 public speech로 확장하고 최대 2B parameter model을 학습합니다(p. 34). 그림의 `recognition · translation · classification`은 하나의 frozen encoder가 곧바로 모든 과제를 zero-shot으로 푼다는 뜻이 아닙니다. 원 논문은 labeled downstream data로 과제별 fine-tuning을 수행해 automatic speech recognition, speech translation, language identification, speaker identification을 각각 평가합니다. 예를 들어 speech translation은 XLS-R 위에 Transformer decoder를 쌓고, speaker identification은 XLS-R의 모든 parameter를 fine-tune합니다.
 
-여러 언어가 하나의 pre-trained encoder capacity를 공유해 저자원 언어에 transfer할 수 있지만, downstream head·labeled data·fine-tuning protocol이 과제마다 다르고 언어 간 data imbalance와 model capacity도 결과에 영향을 준다. 따라서 `Cross-lingual`이라는 이름이나 p. 34의 과제 그림만으로 zero-shot 지원, 모든 과제의 동일한 성능, 모든 언어에 대한 공정성을 보장한다고 해석해서는 안 된다.
+여러 언어가 하나의 pre-trained encoder capacity를 공유해 저자원 언어에 transfer할 수 있지만, downstream head·labeled data·fine-tuning protocol이 과제마다 다르고 언어 간 data imbalance와 model capacity도 결과에 영향을 줍니다. 따라서 `Cross-lingual`이라는 이름이나 p. 34의 과제 그림만으로 zero-shot 지원, 모든 과제의 동일한 성능, 모든 언어에 대한 공정성을 보장한다고 해석해서는 안 됩니다.
 
 ### 6.3 Layer-wise analysis는 “한 층이 모든 정보를 가진다”가 아님을 보인다
 
-슬라이드 pp. 35, 38의 CCA 그래프는 각 layer representation과 spectrogram, phone label 등 reference feature 사이의 선형 연관을 비교한다. CCA similarity가 높다는 것은 선택한 metric에서 공유되는 선형 subspace가 크다는 뜻이지, 그 layer가 원본 spectrogram을 완전히 복원한다거나 task causal factor를 증명한다는 뜻은 아니다.
+슬라이드 pp. 35, 38의 CCA 그래프는 각 layer representation과 spectrogram, phone label 등 reference feature 사이의 선형 연관을 비교합니다. CCA similarity가 높다는 것은 선택한 metric에서 공유되는 선형 subspace가 크다는 뜻이지, 그 layer가 원본 spectrogram을 완전히 복원한다거나 task causal factor를 증명한다는 뜻은 아닙니다.
 
-연구 결과는 objective에 따라 acoustic·phonetic·word information의 layer trend가 달라지고, 어떤 downstream task에서는 한 layer를 잘 고르는 것이 모든 layer 결합과 비슷하거나 더 나을 수 있음을 보인다. 슬라이드의 `waveform → spectrogram`은 **raw-waveform CNN representation이 spectrogram과 높은 유사성을 보일 수 있다**는 분석·설계 가설로 읽어야 하며, wav2vec 2.0 입력이 실제 spectrogram으로 바뀌었다는 뜻이 아니다.
+연구 결과는 objective에 따라 acoustic·phonetic·word information의 layer trend가 달라지고, 어떤 downstream task에서는 한 layer를 잘 고르는 것이 모든 layer 결합과 비슷하거나 더 나을 수 있음을 보입니다. 슬라이드의 `waveform → spectrogram`은 **raw-waveform CNN representation이 spectrogram과 높은 유사성을 보일 수 있다**는 분석·설계 가설로 읽어야 하며, wav2vec 2.0 입력이 실제 spectrogram으로 바뀌었다는 뜻이 아닙니다.
 
 ### 6.4 Conformer 관련 슬라이드는 서로 다른 후속 연구다
 
-Conformer는 self-attention의 global interaction과 convolution의 local pattern modeling을 결합한다(p. 36). 대표 block은 두 feed-forward module 사이에 self-attention과 convolution module을 두는 Macaron형 구조이며, 각 feed-forward residual에는 절반 가중치를 쓰는 설정이 알려져 있다.
+Conformer는 self-attention의 global interaction과 convolution의 local pattern modeling을 결합합니다(p. 36). 대표 block은 두 feed-forward module 사이에 self-attention과 convolution module을 두는 Macaron형 구조이며, 각 feed-forward residual에는 절반 가중치를 쓰는 설정이 알려져 있습니다.
 
-pp. 36–37에는 세 연구가 함께 등장한다.
+pp. 36–37에는 세 연구가 함께 등장합니다.
 
-- **Conformer 원 논문:** supervised ASR encoder architecture를 제안한다. 이것 자체가 wav2vec 2.0 pre-training objective는 아니다.
-- **Wav2Vec-Aug:** 제한된 unlabeled data 조건에서 augmentation과 구성 개선을 wav2vec 2.0 pre-training에 적용한다.
-- **Pushing the Limits of Semi-Supervised Learning:** wav2vec 2.0의 masked contrastive idea를 쓰지만 입력과 target 경로를 그대로 복제하지 않는다. Raw waveform 대신 80-dimensional log-mel filter-bank feature를 입력으로 쓰고, 2D convolution subsampling 뒤 giant Conformer로 문맥을 만든다. Target branch도 quantizer가 아니라 linear projection이므로 quantization과 diversity loss를 쓰지 않는다. Pre-training source는 Libri-Light `unlab-60k`이지만, random segmentation으로 실제 구성한 2.9M utterances의 합은 **30,031 hours**다. 이후 LibriSpeech labeled data로 transducer를 fine-tune하고, SpecAugment와 iterative noisy-student training을 더한다.
+- **Conformer 원 논문:** supervised ASR encoder architecture를 제안합니다. 이것 자체가 wav2vec 2.0 pre-training objective는 아닙니다.
+- **Wav2Vec-Aug:** 제한된 unlabeled data 조건에서 augmentation과 구성 개선을 wav2vec 2.0 pre-training에 적용합니다.
+- **Pushing the Limits of Semi-Supervised Learning:** wav2vec 2.0의 masked contrastive idea를 쓰지만 입력과 target 경로를 그대로 복제하지 않습니다. Raw waveform 대신 80-dimensional log-mel filter-bank feature를 입력으로 쓰고, 2D convolution subsampling 뒤 giant Conformer로 문맥을 만듭니다. Target branch도 quantizer가 아니라 linear projection이므로 quantization과 diversity loss를 쓰지 않습니다. Pre-training source는 Libri-Light `unlab-60k`이지만, random segmentation으로 실제 구성한 2.9M utterances의 합은 **30,031 hours**입니다. 이후 LibriSpeech labeled data로 transducer를 fine-tune하고, SpecAugment와 iterative noisy-student training을 더합니다.
 
-따라서 `Transformer → Conformer`는 wav2vec 2.0의 필수 단계가 아니다. 이 연구는 context architecture뿐 아니라 **입력 표현**(waveform → log-mel), **target·objective 구성**(quantizer와 diversity loss 제거), **downstream training recipe**(transducer fine-tuning, SpecAugment, noisy student)까지 함께 바꾼 후속 pipeline이다. 성능 차이를 Conformer encoder 하나의 효과로 분리할 수 없다. 이는 §6.3의 CCA 관찰, 즉 raw-waveform model의 중간 representation이 spectrogram과 선형 상관을 보인다는 분석과도 별개의 주장이다.
+따라서 `Transformer → Conformer`는 wav2vec 2.0의 필수 단계가 아닙니다. 이 연구는 context architecture뿐 아니라 **입력 표현**(waveform → log-mel), **target·objective 구성**(quantizer와 diversity loss 제거), **downstream training recipe**(transducer fine-tuning, SpecAugment, noisy student)까지 함께 바꾼 후속 pipeline입니다. 성능 차이를 Conformer encoder 하나의 효과로 분리할 수 없습니다. 이는 §6.3의 CCA 관찰, 즉 raw-waveform model의 중간 representation이 spectrogram과 선형 상관을 보인다는 분석과도 별개의 주장입니다.
 
 ### 6.5 Frozen representation 분석을 읽는 조건
 
-p. 38의 c-siam과 wav2vec layer graph는 encoder를 freeze한 뒤 layer별 probing을 비교한다. Frozen probe가 좋은 layer는 고정 representation이 해당 label과 쉽게 연결된다는 뜻이다. 전체 fine-tuning 후의 최종 ASR 순위와 같다고 단정할 수 없다.
+p. 38의 c-siam과 wav2vec layer graph는 encoder를 freeze한 뒤 layer별 probing을 비교합니다. Frozen probe가 좋은 layer는 고정 representation이 해당 label과 쉽게 연결된다는 뜻입니다. 전체 fine-tuning 후의 최종 ASR 순위와 같다고 단정할 수 없습니다.
 
-p. 39의 `Frozen Encoder ⇒ Autoencoder-like behavior`는 contrastive 계열의 상위 layer가 입력 acoustic feature와 다시 유사해지는 관찰을 요약한 표현이다. 실제 waveform reconstruction decoder로 sample-level reconstruction loss를 학습한 autoencoder라는 뜻은 아니다. `autoencoder-like`는 layer trend에 대한 해석으로 한정해야 한다.
+p. 39의 `Frozen Encoder ⇒ Autoencoder-like behavior`는 contrastive 계열의 상위 layer가 입력 acoustic feature와 다시 유사해지는 관찰을 요약한 표현입니다. 실제 waveform reconstruction decoder로 sample-level reconstruction loss를 학습한 autoencoder라는 뜻은 아닙니다. `autoencoder-like`는 layer trend에 대한 해석으로 한정해야 합니다.
 
 ## 7. HuBERT: offline hidden unit을 예측한다
 
@@ -425,32 +425,32 @@ p. 39의 `Frozen Encoder ⇒ Autoencoder-like behavior`는 contrastive 계열의
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-05.pdf#page=46" | relative_url }}">lecture PDF, p. 46</a>.</figcaption>
 </figure>
 
-위쪽 K-means가 만든 7, 20, 5, 13 등의 숫자는 사람이 적은 단어나 음소 이름이 아니라 cluster ID다. 아래쪽 모델은 가려진 입력 위치의 ID를 예측한다. wav2vec 2.0의 contrastive 후보 선택과 달리, 여기서는 미리 만든 이산 label에 대한 분류 문제로 학습한다. 숫자의 대소에 의미를 부여하지 않고 같은 ID의 반복과 시간 정렬을 읽는다.
+위쪽 K-means가 만든 7, 20, 5, 13 등의 숫자는 사람이 적은 단어나 음소 이름이 아니라 cluster ID입니다. 아래쪽 모델은 가려진 입력 위치의 ID를 예측합니다. wav2vec 2.0의 contrastive 후보 선택과 달리, 여기서는 미리 만든 이산 label에 대한 분류 문제로 학습합니다. 숫자의 대소에 의미를 부여하지 않고 같은 ID의 반복과 시간 정렬을 읽습니다.
 
 ### 7.1 첫 target은 MFCC clustering에서 만든다
 
-HuBERT도 raw waveform을 CNN과 Transformer로 처리하고 latent span을 mask한다(pp. 44–46). 차이는 target이다. 첫 iteration에서는 39-dimensional MFCC(13 coefficients와 1·2차 delta)를 k-means로 clustering해 frame별 cluster ID $$y_t$$를 만든다.
+HuBERT도 raw waveform을 CNN과 Transformer로 처리하고 latent span을 mask합니다(pp. 44–46). 차이는 target입니다. 첫 iteration에서는 39-dimensional MFCC(13 coefficients와 1·2차 delta)를 k-means로 clustering해 frame별 cluster ID $$y_t$$를 만듭니다.
 
 $$
 y_t=\operatorname{kmeans}(a_t),\qquad a_t=\operatorname{MFCC}(x)_t
 $$
 
-이 cluster ID는 phoneme 정답이 아니다. 같은 phoneme가 speaker·context에 따라 여러 cluster로 갈 수 있고, 다른 sound가 한 cluster에 섞일 수도 있다. HuBERT의 핵심 가정은 target의 완벽한 의미보다 **시간에 걸친 일관성**이 masked contextual prediction을 학습시키는 데 유용하다는 것이다.
+이 cluster ID는 phoneme 정답이 아닙니다. 같은 phoneme가 speaker·context에 따라 여러 cluster로 갈 수 있고, 다른 sound가 한 cluster에 섞일 수도 있습니다. HuBERT의 핵심 가정은 target의 완벽한 의미보다 **시간에 걸친 일관성**이 masked contextual prediction을 학습시키는 데 유용하다는 것입니다.
 
 ### 7.2 Masked hidden-unit classification
 
-Mask set을 $$M$$, 손상된 입력을 $$\tilde X$$, cluster target을 $$y_t$$라 하자. 최소화하는 masked negative log-likelihood를 쓰면 다음과 같다.
+Mask set을 $$M$$, 손상된 입력을 $$\tilde X$$, cluster target을 $$y_t$$라 하겠습니다. 최소화하는 masked negative log-likelihood를 쓰면 다음과 같습니다.
 
 $$
 \mathcal L_{\mathrm{HuBERT}}
 =-\sum_{t\in M}\log p_{\theta}(y_t\mid\tilde X,t)
 $$
 
-원 논문은 masked와 unmasked log-likelihood에 가중치를 두는 일반식을 정의하고 핵심 설정에서는 masked region에만 loss를 둔다. Unmasked position의 정답을 그대로 흉내 내는 shortcut보다, 주변 문맥에서 가린 unit을 예측하도록 강제하기 위해서다.
+원 논문은 masked와 unmasked log-likelihood에 가중치를 두는 일반식을 정의하고 핵심 설정에서는 masked region에만 loss를 둡니다. Unmasked position의 정답을 그대로 흉내 내는 shortcut보다, 주변 문맥에서 가린 unit을 예측하도록 강제하기 위해서입니다.
 
 ### 7.3 Iterative refinement
 
-첫 HuBERT를 학습한 뒤 intermediate Transformer layer feature를 다시 k-means로 clustering하여 다음 iteration target을 만든다(p. 47).
+첫 HuBERT를 학습한 뒤 intermediate Transformer layer feature를 다시 k-means로 clustering하여 다음 iteration target을 만듭니다(p. 47).
 
 ```text
 MFCC -> 100-cluster labels -> HuBERT Base iteration 1
@@ -460,42 +460,42 @@ MFCC -> 100-cluster labels -> HuBERT Base iteration 1
      -> HuBERT Large / X-Large training target
 ```
 
-원 논문의 Base 두 번째 iteration은 첫 model의 6th layer를 사용하고, Large/X-Large target은 두 번째 Base model의 9th layer를 사용한다. 슬라이드의 `6-th / 9-th layer`는 임의의 두 layer를 동시에 섞는다는 뜻이 아니라 **model·iteration에 따라 선택한 teacher layer가 다르다**는 뜻이다.
+원 논문의 Base 두 번째 iteration은 첫 model의 6th layer를 사용하고, Large/X-Large target은 두 번째 Base model의 9th layer를 사용합니다. 슬라이드의 `6-th / 9-th layer`는 임의의 두 layer를 동시에 섞는다는 뜻이 아니라 **model·iteration에 따라 선택한 teacher layer가 다르다**는 뜻입니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: HuBERT target refinement on slides 46–47</summary>
 
-p. 46의 위쪽 feature strip은 spectrogram·MFCC·Mel spectrogram 같은 acoustic feature 후보를 뜻한다. K-means가 frame들을 cluster ID로 바꾸고, 아래 Transformer는 가린 위치에서 그 ID를 예측한다. 되돌아가는 화살표는 target이 같은 utterance에서 만들어진다는 뜻이며 gradient가 k-means까지 online으로 흐른다는 뜻은 아니다.
+p. 46의 위쪽 feature strip은 spectrogram·MFCC·Mel spectrogram 같은 acoustic feature 후보를 뜻합니다. K-means가 frame들을 cluster ID로 바꾸고, 아래 Transformer는 가린 위치에서 그 ID를 예측합니다. 되돌아가는 화살표는 target이 같은 utterance에서 만들어진다는 뜻이며 gradient가 k-means까지 online으로 흐른다는 뜻은 아닙니다.
 
-p. 47에서는 이전 iteration HuBERT의 intermediate layer feature가 새 clustering input이 된다. 따라서 `MFCC cluster → HuBERT feature cluster` 순서로 target을 갱신한다. 목적은 첫 acoustic cluster보다 문맥 정보를 더 담은 hidden unit을 다음 학습 target으로 쓰는 것이다.
+p. 47에서는 이전 iteration HuBERT의 intermediate layer feature가 새 clustering input이 됩니다. 따라서 `MFCC cluster → HuBERT feature cluster` 순서로 target을 갱신합니다. 목적은 첫 acoustic cluster보다 문맥 정보를 더 담은 hidden unit을 다음 학습 target으로 쓰는 것입니다.
 
 </details>
 
 ### 7.4 “No codebook collapse”의 정확한 범위
 
-HuBERT는 wav2vec 2.0처럼 student와 함께 online Gumbel codebook을 학습하지 않는다. Target을 offline k-means로 미리 고정하므로, contrastive training 중 codebook entry가 한두 개로 몰리는 **online codebook collapse mechanism**과 diversity loss가 필요하지 않다(p. 49).
+HuBERT는 wav2vec 2.0처럼 student와 함께 online Gumbel codebook을 학습하지 않습니다. Target을 offline k-means로 미리 고정하므로, contrastive training 중 codebook entry가 한두 개로 몰리는 **online codebook collapse mechanism**과 diversity loss가 필요하지 않습니다(p. 49).
 
-그러나 이것이 cluster가 항상 균형 있고 의미 있다는 보장은 아니다. K-means도 빈 cluster, 불균형 assignment, initialization 민감도, domain mismatch를 가질 수 있다. Offline vocabulary는 collapse 문제를 다른 stage로 분리할 뿐 clustering quality 검증을 없애지 않는다.
+그러나 이것이 cluster가 항상 균형 있고 의미 있다는 보장은 아닙니다. K-means도 빈 cluster, 불균형 assignment, initialization 민감도, domain mismatch를 가질 수 있습니다. Offline vocabulary는 collapse 문제를 다른 stage로 분리할 뿐 clustering quality 검증을 없애지 않습니다.
 
 ### 7.5 Labeled-data curve는 같은 조건 안에서 읽는다
 
-p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-other·test-other WER가 내려가는 곡선을 보여 준다. 이 그림에서 안전하게 읽을 수 있는 핵심은 **self-supervised pre-training 뒤에도 downstream label의 양이 성능에 영향을 준다**는 점이다. HuBERT와 wav2vec 2.0의 선 높이를 objective만의 순위로 해석해서는 안 된다. Pre-training corpus가 LibriSpeech 960 hours인지 Libri-Light 60k hours인지, model scale과 fine-tuning·decoding 조건이 무엇인지도 함께 고정해야 한다.
+p. 48은 10 minutes, 1, 10, 100, 960 hours의 labeled data가 늘어날 때 dev-other·test-other WER가 내려가는 곡선을 보여 줍니다. 이 그림에서 안전하게 읽을 수 있는 핵심은 **self-supervised pre-training 뒤에도 downstream label의 양이 성능에 영향을 준다**는 점입니다. HuBERT와 wav2vec 2.0의 선 높이를 objective만의 순위로 해석해서는 안 됩니다. Pre-training corpus가 LibriSpeech 960 hours인지 Libri-Light 60k hours인지, model scale과 fine-tuning·decoding 조건이 무엇인지도 함께 고정해야 합니다.
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: Labeled-data scaling curves on slide 48</summary>
 
-두 그래프의 x축은 labeled data 양이며 10 minutes부터 960 hours까지 배치되어 있다. y축은 각각 dev-other와 test-other WER이므로 낮을수록 좋다. 세 곡선 모두 label이 늘수록 내려가며, 저자원 구간에서 모델 간 간격이 더 크게 보인다.
+두 그래프의 x축은 labeled data 양이며 10 minutes부터 960 hours까지 배치되어 있습니다. y축은 각각 dev-other와 test-other WER이므로 낮을수록 좋습니다. 세 곡선 모두 label이 늘수록 내려가며, 저자원 구간에서 모델 간 간격이 더 크게 보입니다.
 
-이 곡선은 label이 늘면 SSL의 가치가 사라진다는 뜻이 아니다. 반대로 한 점의 낮은 WER만으로 objective의 우열을 증명하지도 않는다. 각 선의 pre-training data, model size, fine-tuning recipe, decoder 조건을 함께 확인해야 한다.
+이 곡선은 label이 늘면 SSL의 가치가 사라진다는 뜻이 아닙니다. 반대로 한 점의 낮은 WER만으로 objective의 우열을 증명하지도 않습니다. 각 선의 pre-training data, model size, fine-tuning recipe, decoder 조건을 함께 확인해야 합니다.
 
 </details>
 
 ## 8. wav2vec 2.0과 HuBERT를 나란히 보기
 {: #contrastive-vs-predictive}
 
-**Contrastive는 “정답 벡터를 다른 후보와 구별하기”, predictive는 여기서 “미리 정한 군집 번호를 예측하기”를 강조한다.** 두 모델 모두 가린 음성을 주변 문맥으로 학습한다. 따라서 예측을 하는 모델과 하지 않는 모델의 차이가 아니라, **무엇을 정답으로 만들고 어떤 후보들 사이에서 정답 확률을 높이는가**의 차이다.
+**Contrastive는 “정답 벡터를 다른 후보와 구별하기”, predictive는 여기서 “미리 정한 군집 번호를 예측하기”를 강조합니다.** 두 모델 모두 가린 음성을 주변 문맥으로 학습합니다. 따라서 예측을 하는 모델과 하지 않는 모델의 차이가 아니라, **무엇을 정답으로 만들고 어떤 후보들 사이에서 정답 확률을 높이는가**의 차이입니다.
 
-강의 p. 31에서는 가려진 세 번째 위치의 문맥 벡터 $$c_3$$와 원래 위치에서 얻은 $$q_3$$가 한 쌍이다. 다른 위치에서 가져온 $$q_{k+1},q_{k+2}$$는 distractor다. 모델은 $$c_3$$가 이 후보들 중 $$q_3$$에 가장 잘 대응하도록 학습한다. 반면 p. 46의 같은 세 번째 위치는 미리 만든 cluster ID **20**이 정답이다. HuBERT는 전체 군집 목록에 대한 확률을 출력하고, 20번의 확률을 높인다. **20은 벡터의 크기도, 스무 번째 글자도 아니라 군집의 이름**이다.
+강의 p. 31에서는 가려진 세 번째 위치의 문맥 벡터 $$c_3$$와 원래 위치에서 얻은 $$q_3$$가 한 쌍입니다. 다른 위치에서 가져온 $$q_{k+1},q_{k+2}$$는 distractor입니다. 모델은 $$c_3$$가 이 후보들 중 $$q_3$$에 가장 잘 대응하도록 학습합니다. 반면 p. 46의 같은 세 번째 위치는 미리 만든 cluster ID **20**이 정답입니다. HuBERT는 전체 군집 목록에 대한 확률을 출력하고, 20번의 확률을 높입니다. **20은 벡터의 크기도, 스무 번째 글자도 아니라 군집의 이름**입니다.
 
 Supplementary table: 원본 두 그림의 정답 경로와 학습 목표 비교.
 
@@ -511,33 +511,33 @@ Supplementary table: 원본 두 그림의 정답 경로와 학습 목표 비교.
 | 반복 refinement | 원 기본 구조의 필수 단계 아님 | 이전 iteration layer로 target을 재-clustering |
 | ASR adaptation | Labeled data에서 CTC fine-tuning | Labeled data에서 CTC fine-tuning 가능 |
 
-둘 중 하나가 모든 조건에서 우월하다는 결론은 슬라이드나 원 논문 비교만으로 낼 수 없다. Model size, pre-training hours, labeled subset, LM decoding, augmentation, fine-tuning recipe가 같아야 objective 차이를 가깝게 비교할 수 있다.
+둘 중 하나가 모든 조건에서 우월하다는 결론은 슬라이드나 원 논문 비교만으로 낼 수 없습니다. Model size, pre-training hours, labeled subset, LM decoding, augmentation, fine-tuning recipe가 같아야 objective 차이를 가깝게 비교할 수 있습니다.
 
 ### 확률 계산으로 확인하는 차이
 
-다음은 원본의 숫자를 옮긴 것이 아니라 계산을 위해 구성한 작은 예제다. wav2vec 2.0에서 정답과 두 distractor의 **temperature로 나눈 similarity**가 순서대로 2, 1, 0이라면, 정답 확률은 $$e^2/(e^2+e^1+e^0)\approx0.6652$$이고 loss는 $$-\log(0.6652)\approx0.4076$$ nats다. 무엇을 맞혔는지는 “2번 음소”가 아니라 **이번 후보 중 정답 벡터**다.
+다음은 원본의 숫자를 옮긴 것이 아니라 계산을 위해 구성한 작은 예제입니다. wav2vec 2.0에서 정답과 두 distractor의 **temperature로 나눈 similarity**가 순서대로 2, 1, 0이라면, 정답 확률은 $$e^2/(e^2+e^1+e^0)\approx0.6652$$이고 loss는 $$-\log(0.6652)\approx0.4076$$ nats입니다. 무엇을 맞혔는지는 “2번 음소”가 아니라 **이번 후보 중 정답 벡터**입니다.
 
-HuBERT를 군집 3개뿐인 설명용 설정으로 줄이고, 정답이 cluster 2라고 하자. 예측 분포가 $$(0.1,0.7,0.2)$$이면 정답 확률은 0.7, loss는 $$-\log(0.7)\approx0.3567$$ nats다. 군집 번호와 정답 assignment는 한 학습 단계 안에서 미리 정해져 있다. 매 minibatch마다 새로운 번호를 임의로 붙이는 것이 아니며, 다음 학습 단계에서 다시 clustering할 때 target을 갱신한다. 두 예제는 후보의 의미를 설명하기 위한 것이므로 loss의 크기로 모델 성능을 비교하지 않는다.
+HuBERT를 군집 3개뿐인 설명용 설정으로 줄이고, 정답이 cluster 2라고 하겠습니다. 예측 분포가 $$(0.1,0.7,0.2)$$이면 정답 확률은 0.7, loss는 $$-\log(0.7)\approx0.3567$$ nats입니다. 군집 번호와 정답 assignment는 한 학습 단계 안에서 미리 정해져 있습니다. 매 minibatch마다 새로운 번호를 임의로 붙이는 것이 아니며, 다음 학습 단계에서 다시 clustering할 때 target을 갱신합니다. 두 예제는 후보의 의미를 설명하기 위한 것이므로 loss의 크기로 모델 성능을 비교하지 않습니다.
 
 ### HuBERT에도 다른 후보와의 경쟁은 있다
 
-HuBERT가 **negative frame을 따로 뽑지 않는다**는 것은 다른 class와 비교하지 않는다는 뜻이 아니다. 전체 cluster에 대한 softmax이므로 정답 class 확률을 높이는 과정에 다른 class도 분모로 참여한다. 원 논문의 HuBERT도 출력과 학습 가능한 class embedding의 cosine similarity를 사용한다. 따라서 “wav2vec 2.0만 similarity를 쓰고 HuBERT는 쓰지 않는다”는 구분 역시 맞지 않는다.
+HuBERT가 **negative frame을 따로 뽑지 않는다**는 것은 다른 class와 비교하지 않는다는 뜻이 아닙니다. 전체 cluster에 대한 softmax이므로 정답 class 확률을 높이는 과정에 다른 class도 분모로 참여합니다. 원 논문의 HuBERT도 출력과 학습 가능한 class embedding의 cosine similarity를 사용합니다. 따라서 “wav2vec 2.0만 similarity를 쓰고 HuBERT는 쓰지 않는다”는 구분 역시 맞지 않습니다.
 
-두 모델 모두 masked prediction이고, 양방향 문맥을 사용할 수 있다. 여기서 HuBERT의 predictive는 **다음 시점만 예측하는 autoregressive 모델**, **원래 waveform을 복원하는 모델** 또는 **이미 문자를 읽는 ASR 모델**을 뜻하지 않는다. 두 사전학습 모델의 표현을 실제 transcript에 연결하는 일은 별도의 fine-tuning 단계다.
+두 모델 모두 masked prediction이고, 양방향 문맥을 사용할 수 있습니다. 여기서 HuBERT의 predictive는 **다음 시점만 예측하는 autoregressive 모델**, **원래 waveform을 복원하는 모델** 또는 **이미 문자를 읽는 ASR 모델**을 뜻하지 않습니다. 두 사전학습 모델의 표현을 실제 transcript에 연결하는 일은 별도의 fine-tuning 단계입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Same softmax form, different targets and candidate sets</summary>
 
-아래는 한 masked position의 loss만 비교한 작성자 유도다. 모든 logit은 무차원이고, temperature는 양수이며, cosine similarity의 두 벡터는 영벡터가 아니라고 가정한다. 자연로그 loss의 단위는 nats다.
+아래는 한 masked position의 loss만 비교한 작성자 유도입니다. 모든 logit은 무차원이고, temperature는 양수이며, cosine similarity의 두 벡터는 영벡터가 아니라고 가정합니다. 자연로그 loss의 단위는 nats입니다.
 
-wav2vec 2.0은 후보 index $$j=0,\ldots,K$$를 두고 정답 index를 0으로 정한다. $$q^{(0)}=q_t$$이고 나머지는 표본 추출한 distractor다. $$a_j=\operatorname{sim}(c_t,q^{(j)})/\kappa$$라 두면
+wav2vec 2.0은 후보 index $$j=0,\ldots,K$$를 두고 정답 index를 0으로 정합니다. $$q^{(0)}=q_t$$이고 나머지는 표본 추출한 distractor입니다. $$a_j=\operatorname{sim}(c_t,q^{(j)})/\kappa$$라 두면
 
 $$
 p_j=\frac{e^{a_j}}{\sum_{r=0}^{K}e^{a_r}},\qquad
 L=-\log p_0=-a_0+\log\sum_{r=0}^{K}e^{a_r}.
 $$
 
-HuBERT에서는 군집 수를 $$C$$, Transformer 출력을 $$o_t$$, projection을 $$A$$, cluster $$j$$의 학습 가능한 embedding을 $$e_j$$라 둔다. 원 논문 식 (3)의 class logit은 $$a_j=\operatorname{sim}(Ao_t,e_j)/\tau$$다. Offline clustering이 만든 **정답 번호**는 고정되어 있지만, classifier의 $$A,e_j$$까지 고정된다는 뜻은 아니다.
+HuBERT에서는 군집 수를 $$C$$, Transformer 출력을 $$o_t$$, projection을 $$A$$, cluster $$j$$의 학습 가능한 embedding을 $$e_j$$라 둡니다. 원 논문 식 (3)의 class logit은 $$a_j=\operatorname{sim}(Ao_t,e_j)/\tau$$입니다. Offline clustering이 만든 **정답 번호**는 고정되어 있지만, classifier의 $$A,e_j$$까지 고정된다는 뜻은 아닙니다.
 
 $$
 p_j=\frac{e^{a_j}}{\sum_{r=1}^{C}e^{a_r}},\qquad
@@ -552,46 +552,46 @@ $$
 =p_j-\mathbf{1}[j=y]
 $$
 
-를 얻는다. Gradient descent는 정답 logit을 올리고 다른 logit을 낮추는 방향의 신호를 만든다. HuBERT 예제에서는 $$(0.1,-0.3,0.2)$$가 되어 2번 logit을 높이는 방향이다. 공유 network parameter를 갱신하므로 모든 sample의 확률이 매번 단조롭게 좋아진다는 보장은 아니다.
+를 얻습니다. Gradient descent는 정답 logit을 올리고 다른 logit을 낮추는 방향의 신호를 만듭니다. HuBERT 예제에서는 $$(0.1,-0.3,0.2)$$가 되어 2번 logit을 높이는 방향입니다. 공유 network parameter를 갱신하므로 모든 sample의 확률이 매번 단조롭게 좋아진다는 보장은 아닙니다.
 
-**식의 모양이 비슷해도 정답과 분모의 의미는 다르다.** wav2vec 2.0은 jointly learned quantizer에서 나온 sample별 후보를 구별하고 diversity loss도 함께 사용한다. HuBERT는 offline cluster assignment를 정답으로 삼아 전체 cluster vocabulary를 분류한다. 이 구분은 <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">wav2vec 2.0 §3.2</a>과 <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">HuBERT §II-B·II-E·III</a>에 대응한다.
+**식의 모양이 비슷해도 정답과 분모의 의미는 다릅니다.** wav2vec 2.0은 jointly learned quantizer에서 나온 sample별 후보를 구별하고 diversity loss도 함께 사용합니다. HuBERT는 offline cluster assignment를 정답으로 삼아 전체 cluster vocabulary를 분류합니다. 이 구분은 <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">wav2vec 2.0 §3.2</a>과 <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">HuBERT §II-B·II-E·III</a>에 대응합니다.
 
 </details>
 
 ### 8.1 강의에 등장한 논문의 역할과 연결 관계
 
-이 강의에서 `wav2vec`라는 짧은 표기가 보이더라도 pp. 21–39에서 구조와 loss를 전개하는 주 모델은 **wav2vec 2.0**이다. 2019년 wav2vec은 convolutional context network가 미래 latent를 구별하도록 학습한 선행 연구지만, 강의는 그 구조를 별도로 전개하지 않는다. 따라서 두 이름을 같은 architecture로 바꾸어 쓰지 않는다. 아래 표는 실제 강의에 등장한 논문을 “어떤 문제를 다루고, 무엇을 바꾸며, 어느 stage에 기여하는가”로 구분한다.
+이 강의에서 `wav2vec`라는 짧은 표기가 보이더라도 pp. 21–39에서 구조와 loss를 전개하는 주 모델은 **wav2vec 2.0**입니다. 2019년 wav2vec은 convolutional context network가 미래 latent를 구별하도록 학습한 선행 연구지만, 강의는 그 구조를 별도로 전개하지 않습니다. 따라서 두 이름을 같은 architecture로 바꾸어 쓰지 않습니다. 아래 표는 실제 강의에 등장한 논문을 “어떤 문제를 다루고, 무엇을 바꾸며, 어느 stage에 기여하는가”로 구분합니다.
 
 <details markdown="block">
 <summary markdown="span">Supplementary table: Papers and learning objectives</summary>
 
 | 논문·방법 | 해결하려는 문제 | 핵심 메커니즘·pre-training target | 기여·학습되는 representation | ASR adaptation과 관계 |
 |---|---|---|---|---|
-| **wav2vec 2.0** (pp. 21–33) | Transcript 없이 연속 waveform에서 문맥 표현과 학습 target을 함께 만드는 문제 | 가린 latent의 context $$c_t$$가 원래 latent에서 online quantization한 $$q_t$$를 같은 utterance의 distractor와 구별한다. Diversity loss가 codebook 사용 쏠림을 완화한다. | CNN의 local acoustic latent, Transformer의 contextual representation, discrete target codebook을 하나의 objective로 함께 학습한다. | Pre-training codebook을 문자로 쓰지 않는다. Labeled transcript 단계에서 별도 vocabulary projection과 CTC loss를 붙인다. |
-| **XLS-R** (p. 34) | wav2vec 2.0의 표현을 많은 언어에 공유하고 저자원 언어로 transfer하는 문제 | wav2vec 2.0 계열 objective를 다언어 public speech와 큰 model scale에 적용한다. | 언어별 전용 encoder 대신 여러 언어가 공유할 수 있는 cross-lingual speech representation을 학습하는 방향을 검증한다. | ASR·speech translation·language ID·speaker ID는 같은 zero-shot 출력이 아니다. 과제별 labeled data와 head·fine-tuning 설정이 필요하다. |
-| **Comparative Layer-Wise Analysis** (p. 35, p. 38) | SSL encoder의 어느 layer가 acoustic·phonetic·word 정보를 담는지 모르는 문제 | CCA와 layer별 downstream evaluation으로 이미 학습된 representation을 측정한다. 새 pre-training target을 제안하지 않는다. | “모든 정보는 마지막 layer가 가장 좋다”는 가정을 깨고 objective·task별 layer trend를 비교한다. | Frozen probe의 layer 순위는 전체 encoder를 fine-tune한 최종 ASR 순위와 같은 증거가 아니다. |
-| **Conformer** (p. 36) | Attention의 global interaction만으로는 local acoustic pattern을 효율적으로 모델링하기 어려운 문제 | Feed-forward, multi-head self-attention, convolution module을 Macaron형 residual block에 결합한다. | Local convolution과 global attention을 결합한 **encoder architecture**를 제안한다. SSL target이나 label 생성법 자체는 아니다. | 원 논문은 supervised ASR encoder다. 후속 SSL 연구가 Conformer를 사용해도 pre-training objective와 downstream loss는 별도로 확인해야 한다. |
-| **Wav2Vec-Aug** (p. 36) | Unlabeled speech가 제한된 조건에서 wav2vec 2.0 pre-training의 data efficiency를 높이는 문제 | Data augmentation과 wav2vec 2.0 학습 구성을 결합한다. | 제한된 unlabeled data에서도 더 유용한 representation을 학습하려는 **training strategy**다. Conformer의 다른 이름이 아니다. | Downstream ASR 평가는 labeled fine-tuning을 거치며, augmentation 효과와 encoder·data 조건을 함께 비교해야 한다. |
-| **Pushing the Limits of Semi-Supervised Learning** (p. 37) | 대규모 unlabeled speech와 labeled speech를 한 ASR pipeline에서 활용하는 문제 | 80-D log-mel, 2D subsampling, giant Conformer, masked contrastive pre-training의 linear target, transducer fine-tuning, SpecAugment, iterative noisy student를 결합한다. | wav2vec 2.0의 masked contrastive 아이디어를 유지하면서 입력·target·encoder·후속 학습 recipe를 함께 바꾼다. | CTC가 아니라 transducer를 fine-tune한다. 결과를 `Transformer를 Conformer로 교체한 효과` 하나로 귀속할 수 없다. |
-| **Contrastive Siamese Network** (p. 38) | Unlabeled acoustic data에서 shortcut을 피하면서 high-level linguistic representation을 학습하는 문제 | 같은 구조의 augmented·target Transformer branch 출력을 contrastive loss로 맞춘다. Target branch에는 stop-gradient를 적용하고 augmented branch에는 변환과 temporal augmentation을 둔다. | Online product quantization 없이 두 view의 일관성으로 representation을 학습하는 별도 SSL 방법이다. p. 38의 frozen layer graph는 학습된 representation을 분석하는 문맥이다. | Frozen encoder의 layer별 품질 비교와 전체 model의 supervised ASR adaptation 결과를 구분해야 한다. |
-| **HuBERT** (pp. 44–49) | Speech의 정답 unit을 모르고, 초기 cluster label도 noisy할 수 있는 문제 | Offline k-means ID를 masked position에서 분류하고, 이전 HuBERT intermediate layer를 다시 clustering해 target을 반복 개선한다. | 완벽한 pseudo-label보다 시간적으로 일관된 hidden unit prediction이 representation 학습에 유용할 수 있음을 보인다. Online quantizer와 explicit distractor가 필요 없다. | Pre-training cluster ID는 ASR token이 아니다. Labeled transcript로 별도 head를 학습하고 CTC 등으로 fine-tune한다. |
+| **wav2vec 2.0** (pp. 21–33) | Transcript 없이 연속 waveform에서 문맥 표현과 학습 target을 함께 만드는 문제 | 가린 latent의 context $$c_t$$가 원래 latent에서 online quantization한 $$q_t$$를 같은 utterance의 distractor와 구별합니다. Diversity loss가 codebook 사용 쏠림을 완화합니다. | CNN의 local acoustic latent, Transformer의 contextual representation, discrete target codebook을 하나의 objective로 함께 학습합니다. | Pre-training codebook을 문자로 쓰지 않습니다. Labeled transcript 단계에서 별도 vocabulary projection과 CTC loss를 붙입니다. |
+| **XLS-R** (p. 34) | wav2vec 2.0의 표현을 많은 언어에 공유하고 저자원 언어로 transfer하는 문제 | wav2vec 2.0 계열 objective를 다언어 public speech와 큰 model scale에 적용합니다. | 언어별 전용 encoder 대신 여러 언어가 공유할 수 있는 cross-lingual speech representation을 학습하는 방향을 검증합니다. | ASR·speech translation·language ID·speaker ID는 같은 zero-shot 출력이 아닙니다. 과제별 labeled data와 head·fine-tuning 설정이 필요합니다. |
+| **Comparative Layer-Wise Analysis** (p. 35, p. 38) | SSL encoder의 어느 layer가 acoustic·phonetic·word 정보를 담는지 모르는 문제 | CCA와 layer별 downstream evaluation으로 이미 학습된 representation을 측정합니다. 새 pre-training target을 제안하지 않습니다. | “모든 정보는 마지막 layer가 가장 좋다”는 가정을 깨고 objective·task별 layer trend를 비교합니다. | Frozen probe의 layer 순위는 전체 encoder를 fine-tune한 최종 ASR 순위와 같은 증거가 아닙니다. |
+| **Conformer** (p. 36) | Attention의 global interaction만으로는 local acoustic pattern을 효율적으로 모델링하기 어려운 문제 | Feed-forward, multi-head self-attention, convolution module을 Macaron형 residual block에 결합합니다. | Local convolution과 global attention을 결합한 **encoder architecture**를 제안합니다. SSL target이나 label 생성법 자체는 아닙니다. | 원 논문은 supervised ASR encoder입니다. 후속 SSL 연구가 Conformer를 사용해도 pre-training objective와 downstream loss는 별도로 확인해야 합니다. |
+| **Wav2Vec-Aug** (p. 36) | Unlabeled speech가 제한된 조건에서 wav2vec 2.0 pre-training의 data efficiency를 높이는 문제 | Data augmentation과 wav2vec 2.0 학습 구성을 결합합니다. | 제한된 unlabeled data에서도 더 유용한 representation을 학습하려는 **training strategy**입니다. Conformer의 다른 이름이 아닙니다. | Downstream ASR 평가는 labeled fine-tuning을 거치며, augmentation 효과와 encoder·data 조건을 함께 비교해야 합니다. |
+| **Pushing the Limits of Semi-Supervised Learning** (p. 37) | 대규모 unlabeled speech와 labeled speech를 한 ASR pipeline에서 활용하는 문제 | 80-D log-mel, 2D subsampling, giant Conformer, masked contrastive pre-training의 linear target, transducer fine-tuning, SpecAugment, iterative noisy student를 결합합니다. | wav2vec 2.0의 masked contrastive 아이디어를 유지하면서 입력·target·encoder·후속 학습 recipe를 함께 바꿉니다. | CTC가 아니라 transducer를 fine-tune합니다. 결과를 `Transformer를 Conformer로 교체한 효과` 하나로 귀속할 수 없습니다. |
+| **Contrastive Siamese Network** (p. 38) | Unlabeled acoustic data에서 shortcut을 피하면서 high-level linguistic representation을 학습하는 문제 | 같은 구조의 augmented·target Transformer branch 출력을 contrastive loss로 맞춥니다. Target branch에는 stop-gradient를 적용하고 augmented branch에는 변환과 temporal augmentation을 둡니다. | Online product quantization 없이 두 view의 일관성으로 representation을 학습하는 별도 SSL 방법입니다. p. 38의 frozen layer graph는 학습된 representation을 분석하는 문맥입니다. | Frozen encoder의 layer별 품질 비교와 전체 model의 supervised ASR adaptation 결과를 구분해야 합니다. |
+| **HuBERT** (pp. 44–49) | Speech의 정답 unit을 모르고, 초기 cluster label도 noisy할 수 있는 문제 | Offline k-means ID를 masked position에서 분류하고, 이전 HuBERT intermediate layer를 다시 clustering해 target을 반복 개선합니다. | 완벽한 pseudo-label보다 시간적으로 일관된 hidden unit prediction이 representation 학습에 유용할 수 있음을 보입니다. Online quantizer와 explicit distractor가 필요 없습니다. | Pre-training cluster ID는 ASR token이 아닙니다. Labeled transcript로 별도 head를 학습하고 CTC 등으로 fine-tune합니다. |
 {: .reference-candidate-table}
 
 </details>
 
-관계의 핵심은 `wav2vec 2.0 → XLS-R`처럼 **같은 objective의 언어·규모 확장**, `wav2vec 2.0 → Wav2Vec-Aug`처럼 **제한된 data 조건의 학습 전략 확장**, `wav2vec 2.0 ↔ HuBERT`처럼 **공통 encoder 흐름에서 target·loss를 바꾼 비교**, `c-siam`처럼 **별도의 two-view SSL objective**, `Conformer`처럼 **objective와 독립적인 encoder 선택**, layer-wise analysis처럼 **학습된 representation을 측정하는 평가**를 구분하는 것이다. 마지막 CTC·transducer stage는 이 pre-training 관계와 별도의 supervised adaptation 단계다.
+관계의 핵심은 `wav2vec 2.0 → XLS-R`처럼 **같은 objective의 언어·규모 확장**, `wav2vec 2.0 → Wav2Vec-Aug`처럼 **제한된 data 조건의 학습 전략 확장**, `wav2vec 2.0 ↔ HuBERT`처럼 **공통 encoder 흐름에서 target·loss를 바꾼 비교**, `c-siam`처럼 **별도의 two-view SSL objective**, `Conformer`처럼 **objective와 독립적인 encoder 선택**, layer-wise analysis처럼 **학습된 representation을 측정하는 평가**를 구분하는 것입니다. 마지막 CTC·transducer stage는 이 pre-training 관계와 별도의 supervised adaptation 단계입니다.
 
 ## 9. 실패 조건과 실무 점검
 
 ### 9.1 무엇을 먼저 확인할 것인가
 
-1. **시간 단위:** sampling rate와 CNN stride를 함께 기록한다. `stride=320`만으로 ms를 알 수 없다.
-2. **Target branch:** mask가 context branch에만 적용되는지, target이 원래 signal에서 생성되는지 확인한다.
-3. **Candidate 정의:** wav2vec 2.0의 $$K$$가 distractor 수인지 전체 candidate 수인지 구분한다.
-4. **Loss 부호:** diversity term이 negative entropy이며 최소화 시 entropy를 높이는지 확인한다.
-5. **Fine-tuning 조건:** encoder freeze 구간, labeled hours, CTC vocabulary, LM 사용 여부를 기록한다.
-6. **Layer probe:** frozen probe, full fine-tuning, CCA similarity를 같은 성능 지표처럼 섞지 않는다.
-7. **HuBERT iteration:** cluster feature의 model iteration·layer·cluster 수를 함께 기록한다.
+1. **시간 단위:** sampling rate와 CNN stride를 함께 기록합니다. `stride=320`만으로 ms를 알 수 없습니다.
+2. **Target branch:** mask가 context branch에만 적용되는지, target이 원래 signal에서 생성되는지 확인합니다.
+3. **Candidate 정의:** wav2vec 2.0의 $$K$$가 distractor 수인지 전체 candidate 수인지 구분합니다.
+4. **Loss 부호:** diversity term이 negative entropy이며 최소화 시 entropy를 높이는지 확인합니다.
+5. **Fine-tuning 조건:** encoder freeze 구간, labeled hours, CTC vocabulary, LM 사용 여부를 기록합니다.
+6. **Layer probe:** frozen probe, full fine-tuning, CCA similarity를 같은 성능 지표처럼 섞지 않습니다.
+7. **HuBERT iteration:** cluster feature의 model iteration·layer·cluster 수를 함께 기록합니다.
 
 ### 9.2 대표적인 실패 양상
 
@@ -605,113 +605,113 @@ $$
 
 ## 마지막 핵심 정리
 
-- Supervised, semi-supervised, weakly supervised, self-supervised는 label의 존재만이 아니라 **어디서 target이 오고 어느 stage에 쓰이는가**로 구분한다.
-- 16 kHz speech 1초는 16,000 samples이지만 dtype이나 sampling rate까지 `16,000 floats`로 고정되는 것은 아니다.
-- wav2vec 2.0은 raw waveform을 stride 320 CNN latent로 줄이고, latent span을 mask한 뒤 Transformer context로 quantized target을 구별한다.
-- Product quantization의 가능한 조합은 $$V^G$$다. Gumbel-softmax는 hard selection의 forward와 soft gradient의 backward를 연결한다.
-- Contrastive candidate는 positive 하나와 $$K$$ distractors다. Diversity term은 negative entropy이므로 최소화할수록 평균 codebook usage의 entropy가 커진다.
-- ASR fine-tuning의 class vocabulary는 pre-training codebook과 다르며 CTC와 labeled transcript가 필요하다.
-- XLS-R, Conformer, Wav2Vec-Aug, noisy student는 data scale·architecture·training recipe를 서로 다르게 확장한 연구다. 이름만으로 성능을 비교하지 않는다.
-- HuBERT는 offline k-means label을 masked context에서 예측하고 이전 model의 intermediate layer로 target을 개선한다. Online codebook collapse는 피하지만 cluster 품질 문제까지 사라지는 것은 아니다.
-- 논문 관계는 `representation을 무엇으로 학습하는가`, `pre-training target·objective가 무엇인가`, `labeled ASR에서 CTC·transducer 중 무엇으로 적응하는가`의 세 축으로 읽는다.
+- Supervised, semi-supervised, weakly supervised, self-supervised는 label의 존재만이 아니라 **어디서 target이 오고 어느 stage에 쓰이는가**로 구분합니다.
+- 16 kHz speech 1초는 16,000 samples이지만 dtype이나 sampling rate까지 `16,000 floats`로 고정되는 것은 아닙니다.
+- wav2vec 2.0은 raw waveform을 stride 320 CNN latent로 줄이고, latent span을 mask한 뒤 Transformer context로 quantized target을 구별합니다.
+- Product quantization의 가능한 조합은 $$V^G$$입니다. Gumbel-softmax는 hard selection의 forward와 soft gradient의 backward를 연결합니다.
+- Contrastive candidate는 positive 하나와 $$K$$ distractors입니다. Diversity term은 negative entropy이므로 최소화할수록 평균 codebook usage의 entropy가 커집니다.
+- ASR fine-tuning의 class vocabulary는 pre-training codebook과 다르며 CTC와 labeled transcript가 필요합니다.
+- XLS-R, Conformer, Wav2Vec-Aug, noisy student는 data scale·architecture·training recipe를 서로 다르게 확장한 연구입니다. 이름만으로 성능을 비교하지 않습니다.
+- HuBERT는 offline k-means label을 masked context에서 예측하고 이전 model의 intermediate layer로 target을 개선합니다. Online codebook collapse는 피하지만 cluster 품질 문제까지 사라지는 것은 아닙니다.
+- 논문 관계는 `representation을 무엇으로 학습하는가`, `pre-training target·objective가 무엇인가`, `labeled ASR에서 CTC·transducer 중 무엇으로 적응하는가`의 세 축으로 읽습니다.
 
 ## Study Guide
 
-먼저 Section 1에서 네 learning paradigm을 **target의 출처**로 설명할 수 있어야 한다. 다음으로 wav2vec 2.0 그림을 `waveform → z → mask → c`와 `z → quantizer → q`의 두 branch로 나누어 그린다. Contrastive loss에서는 positive·distractor·temperature를, diversity loss에서는 부호와 entropy 방향을 직접 계산한다. 마지막으로 HuBERT의 `MFCC cluster → iteration 1 → layer 6 cluster → iteration 2` 흐름을 그린 뒤 두 모델의 target 생성 차이를 표로 복습한다.
+먼저 Section 1에서 네 learning paradigm을 **target의 출처**로 설명할 수 있어야 합니다. 다음으로 wav2vec 2.0 그림을 `waveform → z → mask → c`와 `z → quantizer → q`의 두 branch로 나누어 그립니다. Contrastive loss에서는 positive·distractor·temperature를, diversity loss에서는 부호와 entropy 방향을 직접 계산합니다. 마지막으로 HuBERT의 `MFCC cluster → iteration 1 → layer 6 cluster → iteration 2` 흐름을 그린 뒤 두 모델의 target 생성 차이를 표로 복습합니다.
 
-논문 이름을 외울 때는 §8.1의 세 질문을 붙인다. **무슨 문제를 푸는가, pre-training target·objective에서 무엇을 바꾸는가, downstream ASR에서 representation을 어떻게 쓰는가?** 이 기준이면 Conformer를 SSL objective로, codebook을 문자 vocabulary로, frozen probe를 end-to-end fine-tuning 결과로 오해하지 않는다.
+논문 이름을 외울 때는 §8.1의 세 질문을 붙입니다. **어떤 문제를 해결하는지, pre-training target·objective에서 무엇을 바꾸는지, downstream ASR에서 representation을 어떻게 사용하는지 확인합니다.** 이 기준이면 Conformer를 SSL objective로, codebook을 문자 vocabulary로, frozen probe를 end-to-end fine-tuning 결과로 오해하지 않습니다.
 
-시험에서는 숫자를 외우기보다 조건을 붙이는 것이 중요하다. `320 samples`는 16 kHz에서 20 ms이고, `K=100`은 후보 전체가 아니라 distractor 수이며, `Base 95M/Large 317M`은 원 논문의 특정 architecture다. WER은 labeled hours, unlabeled data, external LM과 split을 함께 쓰지 않으면 비교 근거가 부족하다.
+시험에서는 숫자를 외우기보다 조건을 붙이는 것이 중요합니다. `320 samples`는 16 kHz에서 20 ms이고, `K=100`은 후보 전체가 아니라 distractor 수이며, `Base 95M/Large 317M`은 원 논문의 특정 architecture입니다. WER은 labeled hours, unlabeled data, external LM과 split을 함께 쓰지 않으면 비교 근거가 부족합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Self-supervised learning과 unsupervised learning은 완전히 별개의 범주인가?</summary>
+<summary>1. Self-supervised learning과 unsupervised learning은 완전히 별개의 범주입니까?</summary>
 
-답변: 넓게는 SSL도 사람이 붙인 label 없이 representation을 학습하므로 unsupervised learning에 포함될 수 있다. SSL이라는 이름은 입력 자체에서 target을 만들어 명시적 예측 objective를 구성한다는 설계를 강조한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. Whisper와 wav2vec 2.0은 모두 대규모 음성으로 pre-training하므로 같은 supervision인가?</summary>
-
-답변: 아니다. Whisper는 인터넷에서 수집한 audio–text pair의 text supervision을 사용해 weakly supervised sequence-to-sequence 학습을 한다. wav2vec 2.0 pre-training은 transcript 없이 audio latent에서 target과 distractor를 만든다.
+답변: 넓게는 SSL도 사람이 붙인 label 없이 representation을 학습하므로 unsupervised learning에 포함될 수 있습니다. SSL이라는 이름은 입력 자체에서 target을 만들어 명시적 예측 objective를 구성한다는 설계를 강조합니다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">3. wav2vec 2.0의 stride 320은 16 kHz에서 몇 ms이며, 왜 sampling rate가 필요한가?</summary>
+<summary>2. Whisper와 wav2vec 2.0은 모두 대규모 음성으로 pre-training하므로 같은 supervision입니까?</summary>
 
-답변: $$320/16000=0.02$$ s이므로 20 ms다. 같은 320 samples라도 sampling rate가 다르면 시간 길이가 달라지므로 stride 숫자만으로 ms를 결정할 수 없다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Masking한 latent를 quantizer에도 넣으면 왜 문제가 되는가?</summary>
-
-답변: Context branch는 가린 입력에서 주변 문맥을 이용해야 하지만 target branch는 원래 position의 내용을 보존해야 한다. Quantizer까지 mask embedding을 보면 positive target이 실제 음성 latent를 나타내지 못한다.
+답변: 아닙니다. Whisper는 인터넷에서 수집한 audio–text pair의 text supervision을 사용해 weakly supervised sequence-to-sequence 학습을 합니다. wav2vec 2.0 pre-training은 transcript 없이 audio latent에서 target과 distractor를 만듭니다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">5. $$G=2,V=320$$일 때 가능한 product code 수가 왜 640이 아닌가?</summary>
+<summary markdown="span">3. wav2vec 2.0의 stride 320은 16 kHz에서 몇 ms이며, 왜 sampling rate가 필요합니까?</summary>
 
-답변: 각 codebook에서 하나씩 독립적으로 고르므로 ordered pair의 수는 $$320\times320=102{,}400$$이다. 640은 entry를 단순히 더한 수일 뿐 조합 수가 아니다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">6. Contrastive loss의 $$K=100$$은 무엇을 뜻하는가?</summary>
-
-답변: Positive target 외에 뽑는 distractor가 100개라는 뜻이다. 따라서 분모의 candidate는 positive를 포함해 101개다. 원 논문에서는 같은 utterance의 다른 masked position에서 distractor를 뽑는다.
+답변: $$320/16000=0.02$$ s이므로 20 ms입니다. 같은 320 samples라도 sampling rate가 다르면 시간 길이가 달라지므로 stride 숫자만으로 ms를 결정할 수 없습니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. Diversity loss가 음수인데도 최소화할 수 있는 이유는 무엇인가?</summary>
+<summary>4. Masking한 latent를 quantizer에도 넣으면 왜 문제가 됩니까?</summary>
 
-답변: 이 항은 평균 codebook 분포 entropy의 음수다. 균등 분포일수록 entropy가 크고 negative entropy는 더 작아진다. 전체 loss를 최소화하면 codebook entry를 더 고르게 쓰는 방향으로 유도된다.
-
-</details>
-
-<details markdown="block">
-<summary>8. Pre-training codebook entry가 ASR character와 일대일 대응하는가?</summary>
-
-답변: 아니다. Codebook은 latent acoustic representation의 학습된 단위다. ASR fine-tuning에서는 별도 projection과 문자·phoneme·subword vocabulary를 두고 CTC 등으로 transcript를 학습한다.
+답변: Context branch는 가린 입력에서 주변 문맥을 이용해야 하지만 target branch는 원래 position의 내용을 보존해야 합니다. Quantizer까지 mask embedding을 보면 positive target이 실제 음성 latent를 나타내지 못합니다.
 
 </details>
 
 <details markdown="block">
-<summary>9. CCA similarity가 높은 layer는 무엇을 증명하는가?</summary>
+<summary markdown="span">5. $$G=2,V=320$$일 때 가능한 product code 수가 왜 640이 아닙니까?</summary>
 
-답변: 선택한 reference feature와 layer representation 사이에 CCA가 찾은 선형 상관 subspace가 크다는 증거다. 원본을 완전 복원한다거나 그 정보가 모델 판단의 원인이라는 증명은 아니다.
-
-</details>
-
-<details markdown="block">
-<summary>10. HuBERT의 첫 번째와 다음 iteration target은 어떻게 다른가?</summary>
-
-답변: 첫 target은 MFCC를 k-means로 clustering한 ID다. 다음 target은 이전 HuBERT의 intermediate Transformer feature를 다시 clustering해 만든다. 원 설정에서는 첫 Base model의 6th layer와 두 번째 Base model의 9th layer가 서로 다른 후속 단계에 쓰인다.
+답변: 각 codebook에서 하나씩 독립적으로 고르므로 ordered pair의 수는 $$320\times320=102{,}400$$입니다. 640은 entry를 단순히 더한 수일 뿐 조합 수가 아닙니다.
 
 </details>
 
 <details markdown="block">
-<summary>11. HuBERT는 codebook collapse가 절대 없는가?</summary>
+<summary markdown="span">6. Contrastive loss의 $$K=100$$은 무엇을 뜻합니까?</summary>
 
-답변: Joint training 중 Gumbel codebook이 일부 entry로 몰리는 online collapse mechanism은 없다. 그러나 offline k-means도 불균형·빈 cluster·나쁜 target을 만들 수 있으므로 cluster 품질과 assignment 분포는 검증해야 한다.
+답변: Positive target 외에 뽑는 distractor가 100개라는 뜻입니다. 따라서 분모의 candidate는 positive를 포함해 101개입니다. 원 논문에서는 같은 utterance의 다른 masked position에서 distractor를 뽑습니다.
 
 </details>
 
 <details markdown="block">
-<summary>12. wav2vec 2.0과 HuBERT 중 어느 쪽이 항상 더 좋은가?</summary>
+<summary>7. Diversity loss가 음수인데도 최소화할 수 있는 이유는 무엇입니까?</summary>
 
-답변: 그렇게 결론 낼 수 없다. Objective뿐 아니라 model size, pre-training data, labeled hours, fine-tuning recipe, decoder와 LM, evaluation domain을 맞춰야 비교할 수 있다.
+답변: 이 항은 평균 codebook 분포 entropy의 음수입니다. 균등 분포일수록 entropy가 크고 negative entropy는 더 작아집니다. 전체 loss를 최소화하면 codebook entry를 더 고르게 쓰는 방향으로 유도됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>8. Pre-training codebook entry가 ASR character와 일대일 대응합니까?</summary>
+
+답변: 아닙니다. Codebook은 latent acoustic representation의 학습된 단위입니다. ASR fine-tuning에서는 별도 projection과 문자·phoneme·subword vocabulary를 두고 CTC 등으로 transcript를 학습합니다.
+
+</details>
+
+<details markdown="block">
+<summary>9. CCA similarity가 높은 layer는 무엇을 증명합니까?</summary>
+
+답변: 선택한 reference feature와 layer representation 사이에 CCA가 찾은 선형 상관 subspace가 크다는 증거입니다. 원본을 완전 복원한다거나 그 정보가 모델 판단의 원인이라는 증명은 아닙니다.
+
+</details>
+
+<details markdown="block">
+<summary>10. HuBERT의 첫 번째와 다음 iteration target은 어떻게 다릅니까?</summary>
+
+답변: 첫 target은 MFCC를 k-means로 clustering한 ID입니다. 다음 target은 이전 HuBERT의 intermediate Transformer feature를 다시 clustering해 만듭니다. 원 설정에서는 첫 Base model의 6th layer와 두 번째 Base model의 9th layer가 서로 다른 후속 단계에 쓰입니다.
+
+</details>
+
+<details markdown="block">
+<summary>11. HuBERT는 codebook collapse가 절대 없습니까?</summary>
+
+답변: Joint training 중 Gumbel codebook이 일부 entry로 몰리는 online collapse mechanism은 없습니다. 그러나 offline k-means도 불균형·빈 cluster·나쁜 target을 만들 수 있으므로 cluster 품질과 assignment 분포는 검증해야 합니다.
+
+</details>
+
+<details markdown="block">
+<summary>12. wav2vec 2.0과 HuBERT 중 어느 쪽이 항상 더 좋습니까?</summary>
+
+답변: 그렇게 결론 낼 수 없습니다. Objective뿐 아니라 model size, pre-training data, labeled hours, fine-tuning recipe, decoder와 LM, evaluation domain을 맞춰야 비교할 수 있습니다.
 
 </details>
 
 ## Source Check
 
-49쪽 전체를 시각적으로 대조하고 architecture, 시간 단위, objective, model 규모와 HuBERT iteration을 원 논문 및 직접 계산으로 확인했다. 아래 보충·정정은 원저자의 공식 정정문이 아니라 공개된 일차 문헌과 계산에 따른 검토다.
+49쪽 전체를 시각적으로 대조하고 architecture, 시간 단위, objective, model 규모와 HuBERT iteration을 원 논문 및 직접 계산으로 확인했습니다. 아래 보충·정정은 원저자의 공식 정정문이 아니라 공개된 일차 문헌과 계산에 따른 검토입니다.
 
 | 위치 | 원문 표현 | 본문의 처리·근거 |
 |---|---|---|
@@ -730,7 +730,7 @@ $$
 
 ## Lecture Transcripts
 
-강의 흐름과 강조점을 다시 확인할 수 있는 시각 포함 전사다. 전문 용어 일부를 PDF와 대조했지만 전 구간 직접 청취 교정본은 아니다.
+강의 흐름과 강조점을 다시 확인할 수 있는 시각 포함 전사입니다. 전문 용어 일부를 PDF와 대조했지만 전 구간 직접 청취 교정본은 아닙니다.
 
 <ul>
   <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-05-asr-iii-1-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 5 ASR III-1 transcript</a></li>

@@ -22,7 +22,7 @@ Source PDFs:
 - `C_동적할당.pdf`
 - `(심화) C++ 포인터.pdf`
 
-두 자료는 C의 `malloc/free`, C++의 `new/delete`, 포인터 문법, 스마트 포인터가 이어지는 주제를 다룬다. 중복되는 메모리 구조와 포인터 기초 설명은 합치고, C 방식에서 C++ 방식으로 발전하는 흐름으로 정리했다.
+두 자료는 C의 `malloc/free`, C++의 `new/delete`, 포인터 문법, 스마트 포인터가 이어지는 주제를 다룹니다. 중복되는 메모리 구조와 포인터 기초 설명은 합치고, C 방식에서 C++ 방식으로 발전하는 흐름으로 정리했습니다.
 
 ## 원문 페이지 대조와 수식 판정
 
@@ -37,11 +37,11 @@ Source PDFs:
 | `(심화) C++ 포인터.pdf` | 1–9 | C pointer 복습, `nullptr`, `new/delete`, `const`, class | 코드·타입 규칙 중심 |
 | 같은 원문 | 10–21 | RAII와 smart pointer의 소유권 | 수명·소유권 규칙 중심 |
 
-두 PDF 33쪽을 페이지 이미지로 대조했다. byte 단위 allocation·copy 크기는 실제 안전 조건에 쓰이는 정확한 관계라서 설명했고, 주소 예시·참조 count·소유권 표는 특정 실행 상태 또는 API 의미이지 일반 수학 공식이 아니므로 증명을 꾸며내지 않았다.
+두 PDF 33쪽을 페이지 이미지로 대조했습니다. byte 단위 allocation·copy 크기는 실제 안전 조건에 쓰이는 정확한 관계라서 설명했고, 주소 예시·참조 count·소유권 표는 특정 실행 상태 또는 API 의미이지 일반 수학 공식이 아니므로 증명을 꾸며내지 않았습니다.
 
 </details>
 
-> **핵심:** 힙 메모리는 프로그램 실행 중 필요한 크기만큼 동적으로 할당한다. C에서는 `malloc`으로 확보한 영역을 `free`로 해제하며, C++에서는 객체 수명과 소유권을 고려해 메모리를 관리한다.
+> **핵심:** 힙 메모리는 프로그램 실행 중 필요한 크기만큼 동적으로 할당합니다. C에서는 `malloc`으로 확보한 영역을 `free`로 해제하며, C++에서는 객체 수명과 소유권을 고려해 메모리를 관리합니다.
 
 ## 전체 흐름
 
@@ -50,19 +50,19 @@ Source PDFs:
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 메모리 구조 | Stack과 Heap은 어떤 역할을 하는가? |
-| 2 | C 동적 할당 | `malloc`, `calloc`, `free`는 어떻게 쓰는가? |
-| 3 | C++ 포인터 | `nullptr`, `new`, `delete`는 C와 무엇이 다른가? |
-| 4 | const와 포인터 | `const int*`, `int* const`는 어떻게 읽는가? |
-| 5 | 클래스와 포인터 | 객체를 동적으로 만들 때 생성자/소멸자는 어떻게 동작하는가? |
-| 6 | 스마트 포인터 | RAII로 메모리 해제를 자동화할 수 있는가? |
-| 7 | 선택 기준 | `unique_ptr`, `shared_ptr`, `weak_ptr`는 언제 쓰는가? |
+| 1 | 메모리 구조 | Stack과 Heap은 어떤 역할을 합니까? |
+| 2 | C 동적 할당 | `malloc`, `calloc`, `free`는 어떻게 씁니까? |
+| 3 | C++ 포인터 | `nullptr`, `new`, `delete`는 C와 무엇이 다릅니까? |
+| 4 | const와 포인터 | `const int*`, `int* const`는 어떻게 읽습니까? |
+| 5 | 클래스와 포인터 | 객체를 동적으로 만들 때 생성자/소멸자는 어떻게 동작합니까? |
+| 6 | 스마트 포인터 | RAII로 메모리 해제를 자동화할 수 있습니까? |
+| 7 | 선택 기준 | `unique_ptr`, `shared_ptr`, `weak_ptr`는 언제 씁니까? |
 
 </details>
 
 ## 1. 프로그램 메모리 구조
 
-프로그램 메모리는 일반적으로 다음 영역으로 나눌 수 있다.
+프로그램 메모리는 일반적으로 다음 영역으로 나눌 수 있습니다.
 
 | 영역 | 역할 |
 |---|---|
@@ -71,27 +71,27 @@ Source PDFs:
 | Stack | 지역 변수, 함수 호출 정보 저장 |
 | Heap | 실행 중 동적으로 할당한 메모리 저장 |
 
-Stack은 함수 호출에 따라 자동으로 할당/해제된다. Heap은 프로그래머가 직접 요청해서 얻는 공간이며, 직접 해제해야 한다.
+Stack은 함수 호출에 따라 자동으로 할당/해제됩니다. Heap은 프로그래머가 직접 요청해서 얻는 공간이며, 직접 해제해야 합니다.
 
 ## 2. 정적 할당과 동적 할당
 
-정적 또는 자동 할당은 크기가 컴파일 시점에 정해지는 경우에 적합하다.
+정적 또는 자동 할당은 크기가 컴파일 시점에 정해지는 경우에 적합합니다.
 
 ```c
 int arr[10];
 ```
 
-동적 할당은 실행 중에 필요한 크기가 결정될 때 사용한다.
+동적 할당은 실행 중에 필요한 크기가 결정될 때 사용합니다.
 
 ```c
 int* arr = malloc(sizeof(int) * n);
 ```
 
-동적 메모리는 바이트 단위로 할당되고, 할당된 메모리 자체에는 타입이 없다. 포인터 타입이 그 메모리를 어떻게 해석할지 결정한다.
+동적 메모리는 바이트 단위로 할당되고, 할당된 메모리 자체에는 타입이 없습니다. 포인터 타입이 그 메모리를 어떻게 해석할지 결정합니다.
 
 ## 3. `malloc`
 
-`malloc`은 지정한 바이트 수만큼 메모리를 할당하고, 시작 주소를 `void*`로 반환한다.
+`malloc`은 지정한 바이트 수만큼 메모리를 할당하고, 시작 주소를 `void*`로 반환합니다.
 
 ```c
 void* malloc(size_t size);
@@ -105,11 +105,11 @@ int* p = (int*)malloc(sizeof(int));
 free(p);
 ```
 
-초기값은 정해지지 않으므로 쓰레기 값이 들어 있을 수 있다.
+초기값은 정해지지 않으므로 쓰레기 값이 들어 있을 수 있습니다.
 
 ## 4. `calloc`
 
-`calloc`은 원소 개수와 원소 크기를 받아 전체 메모리를 할당하고 0으로 초기화한다.
+`calloc`은 원소 개수와 원소 크기를 받아 전체 메모리를 할당하고 0으로 초기화합니다.
 
 ```c
 void* calloc(size_t nmemb, size_t size);
@@ -121,13 +121,13 @@ void* calloc(size_t nmemb, size_t size);
 int* arr = (int*)calloc(n, sizeof(int));
 ```
 
-`malloc`과 달리 초기값이 0으로 설정된다.
+`malloc`과 달리 초기값이 0으로 설정됩니다.
 
 ### `calloc`이 요청하는 바이트 수
 
-> **작성자 보충:** 아래 식은 원소 수와 원소 크기에서 요청 바이트 수를 구하는 정확한 단위 항등식이며, 이어지는 문장은 overflow와 할당 실패 조건을 명시한다.
+> **작성자 보충:** 아래 식은 원소 수와 원소 크기에서 요청 바이트 수를 구하는 정확한 단위 항등식이며, 이어지는 문장은 overflow와 할당 실패 조건을 명시합니다.
 
-`calloc(n, sizeof(T))`의 입력은 원소 수와 원소당 바이트 수이고, 출력은 0 bit로 채워진 연속 메모리 블록의 시작 주소다. 요청 바이트 수는 두 입력의 곱이며, 계산 전에 곱셈 overflow를 검사해야 한다.
+`calloc(n, sizeof(T))`의 입력은 원소 수와 원소당 바이트 수이고, 출력은 0 bit로 채워진 연속 메모리 블록의 시작 주소입니다. 요청 바이트 수는 두 입력의 곱이며, 계산 전에 곱셈 overflow를 검사해야 합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Allocation size and overflow conditions for calloc</summary>
@@ -138,15 +138,15 @@ $$
 B=n\times s\quad\text{bytes}
 $$
 
-이다. `calloc(n, sizeof(int))`라면 $$B=n\operatorname{sizeof}(\texttt{int})$$ 바이트다. $$n$$의 단위는 원소 개수, $$s$$는 바이트/원소이므로 곱의 단위가 바이트가 된다. 모든 비트가 0인 상태로 초기화되지만, 이것이 모든 C 타입에서 의미상 숫자 0이나 null pointer와 같다고 일반화해서는 안 된다.
+입니다. `calloc(n, sizeof(int))`라면 $$B=n\operatorname{sizeof}(\texttt{int})$$ 바이트입니다. $$n$$의 단위는 원소 개수, $$s$$는 바이트/원소이므로 곱의 단위가 바이트가 됩니다. 모든 비트가 0인 상태로 초기화되지만, 이것이 모든 C 타입에서 의미상 숫자 0이나 null pointer와 같다고 일반화해서는 안 됩니다.
 
-할당 전에는 `n > SIZE_MAX / s`인지 검사해 곱셈 overflow를 막아야 하며, $$n>0$$인데 반환값이 `NULL`이면 할당 실패로 처리해야 한다. `calloc(0, s)`의 반환값은 구현에 따라 `NULL`일 수도, 해제 가능한 고유 포인터일 수도 있으므로 역참조해서는 안 된다.
+할당 전에는 `n > SIZE_MAX / s`인지 검사해 곱셈 overflow를 막아야 하며, $$n>0$$인데 반환값이 `NULL`이면 할당 실패로 처리해야 합니다. `calloc(0, s)`의 반환값은 구현에 따라 `NULL`일 수도, 해제 가능한 고유 포인터일 수도 있으므로 역참조해서는 안 됩니다.
 
 </details>
 
 ## 5. `free`와 메모리 오류
 
-동적 할당한 메모리는 반드시 `free`로 해제해야 한다.
+동적 할당한 메모리는 반드시 `free`로 해제해야 합니다.
 
 ```c
 free(p);
@@ -162,7 +162,7 @@ free(p);
 
 ## 6. 크기 재조정 패턴
 
-배열 크기를 늘리려면 새 공간을 할당하고 기존 내용을 복사한 뒤 기존 공간을 해제한다.
+배열 크기를 늘리려면 새 공간을 할당하고 기존 내용을 복사한 뒤 기존 공간을 해제합니다.
 
 ```c
 int* bigger = malloc(sizeof(int) * new_size);
@@ -171,33 +171,33 @@ free(old);
 old = bigger;
 ```
 
-이 패턴은 C에서 동적 배열을 직접 구현할 때 기본이 된다.
+이 패턴은 C에서 동적 배열을 직접 구현할 때 기본이 됩니다.
 
 ### Capacity를 두 배로 늘릴 때의 할당·복사량
 
-> **작성자 보충:** 아래 식은 capacity를 정확히 두 배로 늘리는 정책에서 새 할당량과 기존 원소 복사량을 세는 정확한 accounting이다.
+> **작성자 보충:** 아래 식은 capacity를 정확히 두 배로 늘리는 정책에서 새 할당량과 기존 원소 복사량을 세는 정확한 accounting입니다.
 
-재할당의 입력은 현재 원소 수 $$n$$, 기존 capacity $$c$$, 원소 크기 $$s$$다. 새 저장소는 $$2c$$개 원소를 담고, 복사는 실제로 존재하는 $$n$$개 원소에만 필요하다. 새 할당이 성공한 뒤에만 기존 저장소를 해제해야 한다.
+재할당의 입력은 현재 원소 수 $$n$$, 기존 capacity $$c$$, 원소 크기 $$s$$입니다. 새 저장소는 $$2c$$개 원소를 담고, 복사는 실제로 존재하는 $$n$$개 원소에만 필요합니다. 새 할당이 성공한 뒤에만 기존 저장소를 해제해야 합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Allocation and copy cost when capacity doubles</summary>
 
-원문 `C_동적할당.pdf` 11쪽의 재할당 pattern에서 현재 원소 수를 $$n$$, capacity를 $$c$$, 원소 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라 하자. 배열이 가득 찬 상태 $$n=c$$에서 capacity를 두 배로 늘리면
+원문 `C_동적할당.pdf` 11쪽의 재할당 pattern에서 현재 원소 수를 $$n$$, capacity를 $$c$$, 원소 크기를 $$s=\operatorname{sizeof}(T)$$ 바이트라 하겠습니다. 배열이 가득 찬 상태 $$n=c$$에서 capacity를 두 배로 늘리면
 
 $$
 c'=2c,\qquad B_{\text{alloc}}=2cs\ \text{bytes},\qquad
 B_{\text{copy}}=ns=cs\ \text{bytes}
 $$
 
-가 된다. 새 저장소는 $$2c$$개 원소를 담도록 $$2cs$$바이트를 요청하고, 실제로 존재하는 기존 $$n=c$$개 원소만 $$cs$$바이트 복사하는 것이다. 일반적으로 가득 차기 전에 늘린다면 복사량은 $$ns$$바이트이며 $$n\le c$$다.
+가 됩니다. 새 저장소는 $$2c$$개 원소를 담도록 $$2cs$$바이트를 요청하고, 실제로 존재하는 기존 $$n=c$$개 원소만 $$cs$$바이트 복사하는 것입니다. 일반적으로 가득 차기 전에 늘린다면 복사량은 $$ns$$바이트이며 $$n\le c$$입니다.
 
-이 계산은 연속 저장, 원소별 padding이 아닌 `sizeof(T)` 간격, byte-wise 복사가 허용되는 C 객체를 가정한다. 먼저 `c <= SIZE_MAX / 2`와 `2c <= SIZE_MAX / s`를 확인해야 한다. 새 할당이 실패하면 기존 포인터를 그대로 보존해야 하므로, 성공을 확인하기 전에 `old`를 덮어쓰거나 해제하면 안 된다. C++에서 생성자·소멸자나 비자명 복사가 필요한 객체에는 `memcpy`를 사용하지 말고 `std::vector` 같은 컨테이너나 적절한 객체 이동/복사를 사용한다.
+이 계산은 연속 저장, 원소별 padding이 아닌 `sizeof(T)` 간격, byte-wise 복사가 허용되는 C 객체를 가정합니다. 먼저 `c <= SIZE_MAX / 2`와 `2c <= SIZE_MAX / s`를 확인해야 합니다. 새 할당이 실패하면 기존 포인터를 그대로 보존해야 하므로, 성공을 확인하기 전에 `old`를 덮어쓰거나 해제하면 안 됩니다. C++에서 생성자·소멸자나 비자명 복사가 필요한 객체에는 `memcpy`를 사용하지 말고 `std::vector` 같은 컨테이너나 적절한 객체 이동/복사를 사용합니다.
 
 </details>
 
 ## 7. C++의 `nullptr`
 
-C의 `NULL`은 단순히 `0`으로 정의되는 경우가 있어 함수 오버로딩에서 혼란을 만들 수 있다. C++에서는 포인터 전용 null 상수인 `nullptr`를 사용한다.
+C의 `NULL`은 단순히 `0`으로 정의되는 경우가 있어 함수 오버로딩에서 혼란을 만들 수 있습니다. C++에서는 포인터 전용 null 상수인 `nullptr`를 사용합니다.
 
 ```cpp
 void func(int n);
@@ -206,11 +206,11 @@ void func(int* p);
 func(nullptr); // 포인터 버전 호출
 ```
 
-`nullptr`는 타입 안전한 null 포인터 표현이다.
+`nullptr`는 타입 안전한 null 포인터 표현입니다.
 
 ## 8. `new`와 `delete`
 
-C++에서는 `malloc/free` 대신 `new/delete`를 사용해 객체를 동적으로 생성하고 삭제할 수 있다.
+C++에서는 `malloc/free` 대신 `new/delete`를 사용해 객체를 동적으로 생성하고 삭제할 수 있습니다.
 
 ```cpp
 int* p = new int;
@@ -225,7 +225,7 @@ int* arr = new int[n];
 delete[] arr;
 ```
 
-`new`는 메모리 할당뿐 아니라 생성자 호출까지 수행한다. `delete`는 소멸자를 호출한 뒤 메모리를 해제한다.
+`new`는 메모리 할당뿐 아니라 생성자 호출까지 수행합니다. `delete`는 소멸자를 호출한 뒤 메모리를 해제합니다.
 
 ## 9. `new`와 `malloc` 차이
 
@@ -238,7 +238,7 @@ delete[] arr;
 | 해제 | `free` | `delete` |
 | 실패 시 | `NULL` 반환 가능 | 기본적으로 예외 발생 |
 
-주의할 점은 할당과 해제 방식을 반드시 맞춰야 한다는 것이다.
+주의할 점은 할당과 해제 방식을 반드시 맞춰야 한다는 것입니다.
 
 ```cpp
 int* p = new int;
@@ -248,11 +248,11 @@ int* q = (int*)malloc(sizeof(int));
 free(q); // 맞음
 ```
 
-`malloc`으로 할당한 것을 `delete`하거나, `new`로 만든 것을 `free`하면 안 된다.
+`malloc`으로 할당한 것을 `delete`하거나, `new`로 만든 것을 `free`하면 안 됩니다.
 
 ## 10. const와 포인터
 
-포인터와 `const`는 위치에 따라 의미가 달라진다.
+포인터와 `const`는 위치에 따라 의미가 달라집니다.
 
 | 형태 | 의미 |
 |---|---|
@@ -260,7 +260,7 @@ free(q); // 맞음
 | `int* const p` | p 자체가 다른 주소를 가리킬 수 없음 |
 | `const int* const p` | 값도 못 바꾸고, 포인터도 못 바꿈 |
 
-읽는 요령은 오른쪽에서 왼쪽으로 읽는 것이다.
+읽는 요령은 오른쪽에서 왼쪽으로 읽는 것입니다.
 
 ```cpp
 const int* p;      // pointer to const int
@@ -270,7 +270,7 @@ const int* const p; // const pointer to const int
 
 ## 11. 포인터와 클래스
 
-객체를 `new`로 생성하면 생성자가 호출된다.
+객체를 `new`로 생성하면 생성자가 호출됩니다.
 
 ```cpp
 Student* s = new Student(20, "홍길동");
@@ -284,11 +284,11 @@ Student* arr = new Student[3];
 delete[] arr;
 ```
 
-단일 객체에는 `delete`, 배열에는 `delete[]`를 사용해야 한다.
+단일 객체에는 `delete`, 배열에는 `delete[]`를 사용해야 합니다.
 
 ## 12. 스마트 포인터가 필요한 이유
 
-원시 포인터를 직접 관리하면 예외나 조기 반환 때문에 `delete`가 누락될 수 있다.
+원시 포인터를 직접 관리하면 예외나 조기 반환 때문에 `delete`가 누락될 수 있습니다.
 
 ```cpp
 void process(bool error) {
@@ -300,11 +300,11 @@ void process(bool error) {
 }
 ```
 
-스마트 포인터는 객체 수명과 자원 해제를 묶는 RAII 방식으로 이 문제를 줄인다.
+스마트 포인터는 객체 수명과 자원 해제를 묶는 RAII 방식으로 이 문제를 줄입니다.
 
 ## 13. RAII와 스마트 포인터
 
-RAII는 Resource Acquisition Is Initialization의 약자다. 자원을 객체가 소유하게 하고, 객체가 소멸될 때 소멸자에서 자원을 자동 해제하는 방식이다.
+RAII는 Resource Acquisition Is Initialization의 약자입니다. 자원을 객체가 소유하게 하고, 객체가 소멸될 때 소멸자에서 자원을 자동 해제하는 방식입니다.
 
 C++ 표준 스마트 포인터:
 
@@ -316,7 +316,7 @@ C++ 표준 스마트 포인터:
 
 ## 14. `unique_ptr`
 
-`unique_ptr`는 하나의 포인터만 객체를 소유하게 한다. 복사는 불가능하고 이동만 가능하다.
+`unique_ptr`는 하나의 포인터만 객체를 소유하게 합니다. 복사는 불가능하고 이동만 가능합니다.
 
 ```cpp
 #include <memory>
@@ -325,11 +325,11 @@ auto p = std::make_unique<int>(42);
 auto q = std::move(p);
 ```
 
-`p`의 소유권이 `q`로 이동한다. 단독 소유가 기본 선택지라면 `unique_ptr`가 가장 적합하다.
+`p`의 소유권이 `q`로 이동합니다. 단독 소유가 기본 선택지라면 `unique_ptr`가 가장 적합합니다.
 
 ## 15. `shared_ptr`
 
-`shared_ptr`는 여러 포인터가 같은 객체를 공유할 수 있게 한다.
+`shared_ptr`는 여러 포인터가 같은 객체를 공유할 수 있게 합니다.
 
 ```cpp
 auto a = std::make_shared<int>(99);
@@ -338,11 +338,11 @@ auto b = a;
 printf("%ld\n", a.use_count()); // 2
 ```
 
-내부적으로 참조 카운트를 관리하고, 마지막 `shared_ptr`가 사라질 때 객체를 해제한다.
+내부적으로 참조 카운트를 관리하고, 마지막 `shared_ptr`가 사라질 때 객체를 해제합니다.
 
 ## 16. 순환 참조와 `weak_ptr`
 
-`shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 메모리가 해제되지 않을 수 있다.
+`shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 메모리가 해제되지 않을 수 있습니다.
 
 ```cpp
 struct Node {
@@ -352,7 +352,7 @@ struct Node {
 };
 ```
 
-한쪽을 `weak_ptr`로 바꾸면 소유 관계를 끊을 수 있다.
+한쪽을 `weak_ptr`로 바꾸면 소유 관계를 끊을 수 있습니다.
 
 ```cpp
 struct Node {
@@ -362,11 +362,11 @@ struct Node {
 };
 ```
 
-`weak_ptr`는 객체를 소유하지 않으므로 참조 카운트를 증가시키지 않는다. 실제 접근이 필요할 때는 `lock()`으로 `shared_ptr`를 얻는다.
+`weak_ptr`는 객체를 소유하지 않으므로 참조 카운트를 증가시키지 않습니다. 실제 접근이 필요할 때는 `lock()`으로 `shared_ptr`를 얻습니다.
 
 ## 17. 커스텀 삭제자
 
-스마트 포인터는 `delete`가 아닌 방식으로 해제해야 하는 자원도 관리할 수 있다. 예를 들어 `FILE*`는 `fclose`로 닫아야 한다.
+스마트 포인터는 `delete`가 아닌 방식으로 해제해야 하는 자원도 관리할 수 있습니다. 예를 들어 `FILE*`는 `fclose`로 닫아야 합니다.
 
 ```cpp
 auto file_deleter = [](FILE* f) {
@@ -379,26 +379,26 @@ std::unique_ptr<FILE, decltype(file_deleter)> fp(
 );
 ```
 
-`shared_ptr`도 생성 시 삭제자를 전달할 수 있다.
+`shared_ptr`도 생성 시 삭제자를 전달할 수 있습니다.
 
 ## 18. `make_unique`, `make_shared` 권장
 
-직접 `new`를 쓰기보다 `make_unique`, `make_shared`를 사용하는 것이 권장된다.
+직접 `new`를 쓰기보다 `make_unique`, `make_shared`를 사용하는 것이 권장됩니다.
 
 ```cpp
 auto up = std::make_unique<T>(args...);
 auto sp = std::make_shared<T>(args...);
 ```
 
-`make_shared`는 객체와 control block을 한 번에 할당할 수 있어 메모리 효율이 좋다. 또한 함수 인자 평가 순서 문제로 인한 잠재적 누수를 줄인다.
+`make_shared`는 객체와 control block을 한 번에 할당할 수 있어 메모리 효율이 좋습니다. 또한 함수 인자 평가 순서 문제로 인한 잠재적 누수를 줄입니다.
 
 ## 19. 선택 가이드
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" alt="원본 강의 슬라이드의 스마트 포인터 선택 가이드" loading="lazy"></a>
 
-*원본 `(심화) C++ 포인터.pdf` p. 20. 위 결정 트리는 단독 소유면 `unique_ptr`, 여러 곳의 공동 소유면 `shared_ptr`, 공동 소유에서 순환 참조가 생기면 한쪽을 `weak_ptr`로 바꾸라고 안내한다. 이미 존재하는 `FILE*` 같은 C 자원은 custom deleter와 함께 감싼다. <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
+*원본 `(심화) C++ 포인터.pdf` p. 20. 위 결정 트리는 단독 소유면 `unique_ptr`, 여러 곳의 공동 소유면 `shared_ptr`, 공동 소유에서 순환 참조가 생기면 한쪽을 `weak_ptr`로 바꾸라고 안내합니다. 이미 존재하는 `FILE*` 같은 C 자원은 custom deleter와 함께 감쌉니다. <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
 
-선택 기준은 "편한 포인터"가 아니라 ownership이다. 소유자가 하나면 `unique_ptr`가 가장 명확하고, 실제 수명을 공동 책임질 때만 reference counting 비용을 감수해 `shared_ptr`를 사용한다.
+선택 기준은 "편한 포인터"가 아니라 ownership입니다. 소유자가 하나면 `unique_ptr`가 가장 명확하고, 실제 수명을 공동 책임질 때만 reference counting 비용을 감수해 `shared_ptr`를 사용합니다.
 
 | 상황 | 권장 |
 |---|---|
@@ -423,36 +423,36 @@ auto sp = std::make_shared<T>(args...);
 | `shared_ptr` | 공유 소유, 참조 카운팅 |
 | `weak_ptr` | 비소유 관찰, 순환 참조 방지 |
 
-이 문서의 핵심은 C의 수동 메모리 관리에서 C++의 RAII와 스마트 포인터로 발전하는 흐름이다. C++에서는 가능하면 원시 `new/delete`보다 스마트 포인터와 자동 수명 관리를 우선 고려하는 것이 안전하다.
+이 문서의 핵심은 C의 수동 메모리 관리에서 C++의 RAII와 스마트 포인터로 발전하는 흐름입니다. C++에서는 가능하면 원시 `new/delete`보다 스마트 포인터와 자동 수명 관리를 우선 고려하는 것이 안전합니다.
 
 ## Study Guide
 
-이 문서는 메모리 수명 관리를 중심으로 읽어야 한다. Stack은 함수 호출과 함께 자동으로 관리되고, Heap은 실행 중 필요한 크기만큼 직접 확보하는 영역이다. C의 `malloc/free`와 C++의 `new/delete`는 모두 Heap을 다루지만, 객체의 생성자와 소멸자 호출 여부에서 큰 차이가 난다.
+이 문서는 메모리 수명 관리를 중심으로 읽어야 합니다. Stack은 함수 호출과 함께 자동으로 관리되고, Heap은 실행 중 필요한 크기만큼 직접 확보하는 영역입니다. C의 `malloc/free`와 C++의 `new/delete`는 모두 Heap을 다루지만, 객체의 생성자와 소멸자 호출 여부에서 큰 차이가 납니다.
 
-포인터 문법은 기호보다 "무엇을 바꿀 수 있는가"로 정리하면 쉽다. `const int*`는 가리키는 값을 바꿀 수 없고, `int* const`는 포인터 자체의 목적지를 바꿀 수 없다. 이 구분은 함수 인자와 클래스 멤버를 읽을 때 반복해서 등장한다.
+포인터 문법은 기호보다 "무엇을 바꿀 수 있는가"로 정리하면 쉽습니다. `const int*`는 가리키는 값을 바꿀 수 없고, `int* const`는 포인터 자체의 목적지를 바꿀 수 없습니다. 이 구분은 함수 인자와 클래스 멤버를 읽을 때 반복해서 등장합니다.
 
-스마트 포인터 부분은 소유권 모델로 외우는 것이 좋다. `unique_ptr`는 단독 소유, `shared_ptr`는 공유 소유, `weak_ptr`는 소유하지 않는 관찰자다. C++ 메모리 관리의 결론은 "가능하면 소유권을 타입으로 표현하고, 직접 `delete`하지 않는 구조를 만든다"는 것이다.
+스마트 포인터 부분은 소유권 모델로 외우는 것이 좋습니다. `unique_ptr`는 단독 소유, `shared_ptr`는 공유 소유, `weak_ptr`는 소유하지 않는 관찰자입니다. C++ 메모리 관리의 결론은 "가능하면 소유권을 타입으로 표현하고, 직접 `delete`하지 않는 구조를 만든다"는 것입니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇인가?</summary>
+<summary>1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇입니까?</summary>
 
-답변: `malloc/free`는 단순히 메모리 블록을 할당하고 해제하며 생성자와 소멸자를 호출하지 않는다. `new/delete`는 메모리 할당과 함께 객체의 생성자/소멸자 호출까지 처리한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. `const int* p`와 `int* const p`는 어떻게 다르게 읽는가?</summary>
-
-답변: `const int* p`는 p가 가리키는 int 값을 수정할 수 없다는 뜻이다. 반면 `int* const p`는 포인터 p 자체가 const라서 다른 주소를 가리키도록 바꿀 수 없다는 뜻이다.
+답변: `malloc/free`는 단순히 메모리 블록을 할당하고 해제하며 생성자와 소멸자를 호출하지 않습니다. `new/delete`는 메모리 할당과 함께 객체의 생성자/소멸자 호출까지 처리합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결하는가?</summary>
+<summary>2. `const int* p`와 `int* const p`는 어떻게 다르게 읽습니까?</summary>
 
-답변: `shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 객체가 해제되지 않을 수 있다. `weak_ptr`는 객체를 소유하지 않고 관찰만 하므로 참조 카운트를 증가시키지 않아 순환 소유를 끊을 수 있다.
+답변: `const int* p`는 p가 가리키는 int 값을 수정할 수 없다는 뜻입니다. 반면 `int* const p`는 포인터 p 자체가 const라서 다른 주소를 가리키도록 바꿀 수 없다는 뜻입니다.
+
+</details>
+
+<details markdown="block">
+<summary>3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결합니까?</summary>
+
+답변: `shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 객체가 해제되지 않을 수 있습니다. `weak_ptr`는 객체를 소유하지 않고 관찰만 하므로 참조 카운트를 증가시키지 않아 순환 소유를 끊을 수 있습니다.
 
 </details>
 

@@ -13,48 +13,48 @@ Source PDF: `stdin, stdout, stderr, File Descriptor.pdf`
 
 ## 과제 개요
 
-C++ 코드의 `std::cin`, `std::cout`, `std::cerr`는 운영체제 관점에서 각각 파일 디스크립터 0, 1, 2번과 연결된다. 이 연결을 바꾸는 것이 리다이렉션과 파이프의 출발점이다.
+C++ 코드의 `std::cin`, `std::cout`, `std::cerr`는 운영체제 관점에서 각각 파일 디스크립터 0, 1, 2번과 연결됩니다. 이 연결을 바꾸는 것이 리다이렉션과 파이프의 출발점입니다.
 
-**핵심 메시지:** 프로그램은 터미널이나 파일을 고정해서 다루지 않고 0, 1, 2번 표준 디스크립터를 읽고 쓴다. Shell이 실행 전에 이 연결만 바꾸기 때문에 프로그램 코드를 수정하지 않고도 입력 파일, 출력 파일, 파이프를 조합할 수 있다.
+**핵심 메시지:** 프로그램은 터미널이나 파일을 고정해서 다루지 않고 0, 1, 2번 표준 디스크립터를 읽고 씁니다. Shell이 실행 전에 이 연결만 바꾸기 때문에 프로그램 코드를 수정하지 않고도 입력 파일, 출력 파일, 파이프를 조합할 수 있습니다.
 
 ## 1. 파일 디스크립터의 의미
 
-파일 디스크립터는 POSIX 계열 운영체제에서 열려 있는 입출력 대상을 가리키는 정수값이다. 프로그램은 파일, 터미널, 파이프, 소켓을 직접 다루는 것이 아니라 `read`, `write`, `close` 같은 시스템 콜에 파일 디스크립터 번호를 전달해 입출력을 수행한다.
+파일 디스크립터는 POSIX 계열 운영체제에서 열려 있는 입출력 대상을 가리키는 정수값입니다. 프로그램은 파일, 터미널, 파이프, 소켓을 직접 다루는 것이 아니라 `read`, `write`, `close` 같은 시스템 콜에 파일 디스크립터 번호를 전달해 입출력을 수행합니다.
 
-파일 디스크립터가 정수로 표현되는 이유는 프로세스마다 커널이 관리하는 파일 디스크립터 테이블이 있기 때문이다. 예를 들어 파일 디스크립터 3번이 열린 파일을 가리킨다면, 커널은 해당 프로세스의 테이블에서 3번 항목을 찾아 실제 파일 객체, 현재 파일 위치, 접근 모드 등을 확인한다.
+파일 디스크립터가 정수로 표현되는 이유는 프로세스마다 커널이 관리하는 파일 디스크립터 테이블이 있기 때문입니다. 예를 들어 파일 디스크립터 3번이 열린 파일을 가리킨다면, 커널은 해당 프로세스의 테이블에서 3번 항목을 찾아 실제 파일 객체, 현재 파일 위치, 접근 모드 등을 확인합니다.
 
-Windows는 내부적으로 POSIX 파일 디스크립터 대신 HANDLE을 주로 사용한다. 다만 Visual C++ 런타임이나 MinGW 같은 환경에서는 C/C++ 코드가 사용할 수 있도록 작은 정수 기반 파일 디스크립터 계층을 제공한다.
+Windows는 내부적으로 POSIX 파일 디스크립터 대신 HANDLE을 주로 사용합니다. 다만 Visual C++ 런타임이나 MinGW 같은 환경에서는 C/C++ 코드가 사용할 수 있도록 작은 정수 기반 파일 디스크립터 계층을 제공합니다.
 
 ## 2. 표준입출력과 기본 번호
 
-프로그램이 시작될 때 기본적으로 열리는 표준 스트림은 `stdin`, `stdout`, `stderr`이다. POSIX 기준으로 `stdin`은 0번, `stdout`은 1번, `stderr`는 2번 파일 디스크립터에 연결된다.
+프로그램이 시작될 때 기본적으로 열리는 표준 스트림은 `stdin`, `stdout`, `stderr`입니다. POSIX 기준으로 `stdin`은 0번, `stdout`은 1번, `stderr`는 2번 파일 디스크립터에 연결됩니다.
 
-`stdin`은 표준 입력이며 기본적으로 키보드나 입력 파일, 파이프와 연결된다. `stdout`은 정상 결과를 출력하는 표준 출력이고, `stderr`는 오류 메시지나 진단 메시지를 출력하는 표준 에러이다.
+`stdin`은 표준 입력이며 기본적으로 키보드나 입력 파일, 파이프와 연결됩니다. `stdout`은 정상 결과를 출력하는 표준 출력이고, `stderr`는 오류 메시지나 진단 메시지를 출력하는 표준 에러입니다.
 
-이 세 스트림은 프로그램 코드가 직접 열지 않아도 실행 시점에 이미 준비되어 있다. Shell은 프로그램을 실행하기 전에 리다이렉션이나 파이프 명령에 맞추어 0, 1, 2번 디스크립터의 연결 대상을 바꾼다.
+이 세 스트림은 프로그램 코드가 직접 열지 않아도 실행 시점에 이미 준비되어 있습니다. Shell은 프로그램을 실행하기 전에 리다이렉션이나 파이프 명령에 맞추어 0, 1, 2번 디스크립터의 연결 대상을 바꿉니다.
 
 ## 3. C++ 입출력과 운영체제의 연결
 
 <a href="{{ "/assets/images/assignment/cpp/source-captures/standard-io-file-descriptor-page-04.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/source-captures/standard-io-file-descriptor-page-04.png" | relative_url }}" alt="원본 과제의 getline 표준입출력과 stdout stderr 코드" loading="lazy"></a>
 
-*원본 `stdin, stdout, stderr, File Descriptor.pdf` p. 4. 첫 코드는 `std::getline(std::cin,line)`으로 표준 입력을 끝까지 읽어 `std::cout`에 내보낸다. 둘째 코드는 같은 process에서 `std::cout`과 `std::cerr`에 서로 다른 메시지를 출력해 redirection 실험을 준비한다. <a href="{{ "/assets/pdfs/assignment/cpp/stdin, stdout, stderr, File Descriptor.pdf#page=4" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 4</a>*
+*원본 `stdin, stdout, stderr, File Descriptor.pdf` p. 4. 첫 코드는 `std::getline(std::cin,line)`으로 표준 입력을 끝까지 읽어 `std::cout`에 내보냅니다. 둘째 코드는 같은 process에서 `std::cout`과 `std::cerr`에 서로 다른 메시지를 출력해 redirection 실험을 준비합니다. <a href="{{ "/assets/pdfs/assignment/cpp/stdin, stdout, stderr, File Descriptor.pdf#page=4" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 4</a>*
 
-program은 입력이 keyboard·file·pipe 중 무엇인지 직접 분기하지 않는다. shell이 FD 0의 연결 대상을 바꾸면 `std::cin` 코드는 그대로 재사용된다. FD 1과 2도 독립적이어서 정상 출력과 오류 출력을 서로 다른 파일이나 pipe로 보낼 수 있다.
+program은 입력이 keyboard·file·pipe 중 무엇인지 직접 분기하지 않습니다. shell이 FD 0의 연결 대상을 바꾸면 `std::cin` 코드는 그대로 재사용됩니다. FD 1과 2도 독립적이어서 정상 출력과 오류 출력을 서로 다른 파일이나 pipe로 보낼 수 있습니다.
 
-C++의 `std::cin`, `std::cout`, `std::cerr`는 iostream 객체이다. 이 객체들은 내부의 stream buffer와 C/C++ 런타임을 거쳐 최종적으로 운영체제의 입출력 기능에 도달한다.
+C++의 `std::cin`, `std::cout`, `std::cerr`는 iostream 객체입니다. 이 객체들은 내부의 stream buffer와 C/C++ 런타임을 거쳐 최종적으로 운영체제의 입출력 기능에 도달합니다.
 
-`std::cout`에 출력하는 코드는 표면적으로는 C++ 스트림에 데이터를 보내는 것처럼 보인다. 하지만 최종적으로는 파일 디스크립터 1번 또는 그에 해당하는 운영체제 핸들로 바이트가 전달된다. `std::cerr`는 파일 디스크립터 2번과 연결되므로 `stdout`과 독립적으로 리다이렉션할 수 있다.
+`std::cout`에 출력하는 코드는 표면적으로는 C++ 스트림에 데이터를 보내는 것처럼 보입니다. 하지만 최종적으로는 파일 디스크립터 1번 또는 그에 해당하는 운영체제 핸들로 바이트가 전달됩니다. `std::cerr`는 파일 디스크립터 2번과 연결되므로 `stdout`과 독립적으로 리다이렉션할 수 있습니다.
 
 <figure>
   <a href="{{ "/assets/images/assignment/cpp/supplementary-diagrams/standard-stream-routing.svg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/cpp/supplementary-diagrams/standard-stream-routing.svg" | relative_url }}" alt="Shell이 FD 0 1 2의 연결 대상을 바꾸고 C++ 프로그램은 같은 cin cout cerr 코드를 유지하는 표준 스트림 라우팅" loading="lazy"></a>
-  <figcaption><strong>Supplementary diagram.</strong> Shell이 실행 전에 FD 연결을 정하고, process의 `cin`, `cout`, `cerr`는 번호가 가리키는 source와 sink를 사용한다. 이미지를 누르면 확대된다.</figcaption>
+  <figcaption><strong>Supplementary diagram.</strong> Shell이 실행 전에 FD 연결을 정하고, process의 `cin`, `cout`, `cerr`는 번호가 가리키는 source와 sink를 사용합니다. 이미지를 누르면 확대됩니다.</figcaption>
 </figure>
 
-입력은 왼쪽에서 `source → FD 0 → std::cin → process` 순서로 읽는다. 출력은 `process → std::cout/err → FD 1/2 → sink` 순서다. `>`는 FD 1의 sink만 바꾸고 `2>`는 FD 2의 sink만 바꾼다. `2>&1`은 파일 이름을 복사하는 명령이 아니라, **그 시점에 FD 1이 가리키는 대상**을 FD 2에도 연결하므로 명령 순서가 결과에 영향을 준다.
+입력은 왼쪽에서 `source → FD 0 → std::cin → process` 순서로 읽습니다. 출력은 `process → std::cout/err → FD 1/2 → sink` 순서입니다. `>`는 FD 1의 sink만 바꾸고 `2>`는 FD 2의 sink만 바꿉니다. `2>&1`은 파일 이름을 복사하는 명령이 아니라, **그 시점에 FD 1이 가리키는 대상**을 FD 2에도 연결하므로 명령 순서가 결과에 영향을 줍니다.
 
 ## 4. stdout과 stderr 리다이렉션
 
-다음과 같은 프로그램이 있다고 할 때, `std::cout`은 정상 메시지를 출력하고 `std::cerr`는 에러 메시지를 출력한다.
+다음과 같은 프로그램이 있다고 할 때, `std::cout`은 정상 메시지를 출력하고 `std::cerr`는 에러 메시지를 출력합니다.
 
 ```cpp
 #include <iostream>
@@ -65,40 +65,40 @@ int main() {
 }
 ```
 
-기본 실행에서는 두 메시지가 모두 터미널에 보인다. 그러나 `./test > out.txt`처럼 실행하면 `stdout`만 `out.txt`로 이동하고, `stderr`는 여전히 터미널에 출력된다. `>`가 기본적으로 파일 디스크립터 1번을 리다이렉션하기 때문이다.
+기본 실행에서는 두 메시지가 모두 터미널에 보입니다. 그러나 `./test > out.txt`처럼 실행하면 `stdout`만 `out.txt`로 이동하고, `stderr`는 여전히 터미널에 출력됩니다. `>`가 기본적으로 파일 디스크립터 1번을 리다이렉션하기 때문입니다.
 
-반대로 `./test 2> err.txt`를 실행하면 파일 디스크립터 2번인 `stderr`만 `err.txt`로 이동한다. `stdout`과 `stderr`를 분리하려면 `./test > out.txt 2> err.txt`처럼 각각 다른 파일로 연결하면 된다.
+반대로 `./test 2> err.txt`를 실행하면 파일 디스크립터 2번인 `stderr`만 `err.txt`로 이동합니다. `stdout`과 `stderr`를 분리하려면 `./test > out.txt 2> err.txt`처럼 각각 다른 파일로 연결하면 됩니다.
 
-두 출력을 하나로 합치려면 `./test > all.txt 2>&1`을 사용할 수 있다. 이 명령은 먼저 `stdout`을 `all.txt`에 연결하고, 그다음 `stderr`를 현재 `stdout`이 가리키는 곳으로 복제한다. 그래서 두 출력이 모두 같은 파일에 저장된다.
+두 출력을 하나로 합치려면 `./test > all.txt 2>&1`을 사용할 수 있습니다. 이 명령은 먼저 `stdout`을 `all.txt`에 연결하고, 그다음 `stderr`를 현재 `stdout`이 가리키는 곳으로 복제합니다. 그래서 두 출력이 모두 같은 파일에 저장됩니다.
 
 ## 5. stdin 리다이렉션과 파이프
 
-`std::cin`은 프로그램 입장에서 항상 표준 입력에서 읽는다. 하지만 Shell이 파일 디스크립터 0번의 연결 대상을 바꾸면, 같은 코드가 키보드 입력도 읽고 파일 내용도 읽고 파이프로 전달된 데이터도 읽을 수 있다.
+`std::cin`은 프로그램 입장에서 항상 표준 입력에서 읽습니다. 하지만 Shell이 파일 디스크립터 0번의 연결 대상을 바꾸면, 같은 코드가 키보드 입력도 읽고 파일 내용도 읽고 파이프로 전달된 데이터도 읽을 수 있습니다.
 
-예를 들어 `./read_input < input.txt`는 프로그램 실행 전에 `stdin`을 키보드가 아니라 `input.txt`에 연결한다. 프로그램은 여전히 `std::cin`으로 읽지만 실제 데이터는 파일에서 온다.
+예를 들어 `./read_input < input.txt`는 프로그램 실행 전에 `stdin`을 키보드가 아니라 `input.txt`에 연결합니다. 프로그램은 여전히 `std::cin`으로 읽지만 실제 데이터는 파일에서 옵니다.
 
-파이프는 두 프로세스 사이에 커널이 관리하는 임시 데이터 통로를 만든다. `cat input.txt | ./read_input`에서 Shell은 `cat`의 `stdout`을 파이프의 쓰기 끝에 연결하고, `read_input`의 `stdin`을 파이프의 읽기 끝에 연결한다. 따라서 `read_input`은 파일을 직접 열지 않았지만 `std::cin`을 통해 데이터를 받을 수 있다.
+파이프는 두 프로세스 사이에 커널이 관리하는 임시 데이터 통로를 만듭니다. `cat input.txt | ./read_input`에서 Shell은 `cat`의 `stdout`을 파이프의 쓰기 끝에 연결하고, `read_input`의 `stdin`을 파이프의 읽기 끝에 연결합니다. 따라서 `read_input`은 파일을 직접 열지 않았지만 `std::cin`을 통해 데이터를 받을 수 있습니다.
 
 ## 6. 핵심 분석
 
-프로그램은 특정 파일 자체를 고정해서 읽는 것이 아니라, 자신에게 연결된 입력 스트림을 읽는다. POSIX 관점에서는 파일 디스크립터 0번으로 들어오는 바이트 스트림을 읽는 것이다. 이 스트림의 실제 연결 대상은 터미널, 일반 파일, 파이프, 소켓 등으로 바뀔 수 있다.
+프로그램은 특정 파일 자체를 고정해서 읽는 것이 아니라, 자신에게 연결된 입력 스트림을 읽습니다. POSIX 관점에서는 파일 디스크립터 0번으로 들어오는 바이트 스트림을 읽는 것입니다. 이 스트림의 실제 연결 대상은 터미널, 일반 파일, 파이프, 소켓 등으로 바뀔 수 있습니다.
 
-리다이렉션과 파이프가 가능한 이유는 프로그램이 구체적인 장치를 직접 고정하지 않고 표준 스트림과 파일 디스크립터를 통해 입출력하기 때문이다. Shell은 프로그램을 실행하기 전에 파일 디스크립터의 연결 대상을 조정하고, 프로그램은 같은 코드로 다양한 입력과 출력을 처리한다.
+리다이렉션과 파이프가 가능한 이유는 프로그램이 구체적인 장치를 직접 고정하지 않고 표준 스트림과 파일 디스크립터를 통해 입출력하기 때문입니다. Shell은 프로그램을 실행하기 전에 파일 디스크립터의 연결 대상을 조정하고, 프로그램은 같은 코드로 다양한 입력과 출력을 처리합니다.
 
 ## 핵심 정리
 
 | 항목 | 꼭 기억할 기준 |
 |---|---|
-| `stdin` | 파일 디스크립터 0이며 키보드, 파일, 파이프의 읽기 끝으로 연결될 수 있다. |
-| `stdout` | 파일 디스크립터 1이며 정상 결과를 전달한다. `>`는 기본적으로 이 연결을 바꾼다. |
-| `stderr` | 파일 디스크립터 2이며 진단 메시지를 전달하므로 `stdout`과 독립적으로 리다이렉션할 수 있다. |
-| `2>&1` | `stderr`를 그 시점에 `stdout`이 가리키는 대상으로 복제하므로 명령의 순서가 의미를 가진다. |
-| 파이프 | 앞 프로세스의 `stdout`을 파이프 쓰기 끝에, 뒤 프로세스의 `stdin`을 읽기 끝에 연결한다. |
-| C++ 추상화 | `std::cin`, `std::cout`, `std::cerr`는 stream buffer와 런타임을 거쳐 운영체제 입출력에 도달한다. |
+| `stdin` | 파일 디스크립터 0이며 키보드, 파일, 파이프의 읽기 끝으로 연결될 수 있습니다. |
+| `stdout` | 파일 디스크립터 1이며 정상 결과를 전달합니다. `>`는 기본적으로 이 연결을 바꿉니다. |
+| `stderr` | 파일 디스크립터 2이며 진단 메시지를 전달하므로 `stdout`과 독립적으로 리다이렉션할 수 있습니다. |
+| `2>&1` | `stderr`를 그 시점에 `stdout`이 가리키는 대상으로 복제하므로 명령의 순서가 의미를 가집니다. |
+| 파이프 | 앞 프로세스의 `stdout`을 파이프 쓰기 끝에, 뒤 프로세스의 `stdin`을 읽기 끝에 연결합니다. |
+| C++ 추상화 | `std::cin`, `std::cout`, `std::cerr`는 stream buffer와 런타임을 거쳐 운영체제 입출력에 도달합니다. |
 
 ## 결론 및 학습 성과
 
-`std::cin`, `std::cout`, `std::cerr`는 운영체제의 파일 디스크립터에 연결된 C++ 추상화다. 리다이렉션과 파이프는 별도의 입출력 코드를 요구하지 않는다. Shell이 프로그램을 실행하기 전에 파일 디스크립터 0, 1, 2번의 연결 대상만 바꾼다.
+`std::cin`, `std::cout`, `std::cerr`는 운영체제의 파일 디스크립터에 연결된 C++ 추상화입니다. 리다이렉션과 파이프는 별도의 입출력 코드를 요구하지 않습니다. Shell이 프로그램을 실행하기 전에 파일 디스크립터 0, 1, 2번의 연결 대상만 바꿉니다.
 
 ## PDF
 

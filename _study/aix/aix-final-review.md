@@ -27,11 +27,11 @@ Source Materials:
   <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
 
-기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX: Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행한다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룬다.
+기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX: Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행합니다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룹니다.
 
-중간고사 전 범위에서는 기본 개념과 오답을 가르는 기준을 확인한다. 중간고사 이후 범위에서는 LLM, 자율주행, imitation learning, robotics scaling의 연결을 더 깊게 살펴본다.
+중간고사 전 범위에서는 기본 개념과 오답을 가르는 기준을 확인합니다. 중간고사 이후 범위에서는 LLM, 자율주행, imitation learning, robotics scaling의 연결을 더 깊게 살펴봅니다.
 
-> **핵심:** 이 강의의 최소제곱 선형 회귀는 $$\hat{y}=w^Tx+b$$로 값을 예측하고, 잔차 $$y-\hat{y}$$의 제곱을 손실로 사용한다. 로지스틱 회귀는 선형 점수를 sigmoid에 통과시켜 이진 분류 확률로 해석한다.
+> **핵심:** 이 강의의 최소제곱 선형 회귀는 $$\hat{y}=w^Tx+b$$로 값을 예측하고, 잔차 $$y-\hat{y}$$의 제곱을 손실로 사용합니다. 로지스틱 회귀는 선형 점수를 sigmoid에 통과시켜 이진 분류 확률로 해석합니다.
 
 ## 전체 흐름
 
@@ -40,44 +40,44 @@ Source Materials:
 
 | 순서 | 범위 | 기말 대비 핵심 질문 |
 |---:|---|---|
-| 1 | Linear Regression | feature, target, residual, squared loss, gradient update를 구분할 수 있는가? |
-| 2 | Logistic Regression | sigmoid를 통해 linear score를 class probability로 바꾸는 이유는 무엇인가? |
-| 3 | MLP와 Deep Learning | hidden layer, nonlinearity, backpropagation, generalization의 역할은 무엇인가? |
-| 4 | Computer Vision | pixel을 meaning으로 연결한다는 말과 CNN의 장점은 무엇인가? |
-| 5 | NLP와 Word2Vec | tokenizer, embedding, Skip-Gram, pre-training, fine-tuning을 구분할 수 있는가? |
-| 6 | RNN과 Attention | sequential dependency와 global relationship의 차이는 무엇인가? |
-| 7 | Transformer | Q/K/V, self-attention, multi-head attention, positional encoding의 역할은 무엇인가? |
-| 8 | LLM | next token prediction, decoder-only Transformer, MoE, decoding 전략을 설명할 수 있는가? |
-| 9 | Autonomous Driving | modular stack, error propagation, occupancy, shared world representation을 구분할 수 있는가? |
-| 10 | Imitation Learning | behavioral cloning과 DAggER가 state distribution shift를 어떻게 다루는가? |
-| 11 | Robotics Scaling | VLA, ego-video, world model, action fine-tuning, physical RL을 하나의 흐름으로 묶을 수 있는가? |
+| 1 | Linear Regression | feature, target, residual, squared loss, gradient update를 구분할 수 있습니까? |
+| 2 | Logistic Regression | sigmoid를 통해 linear score를 class probability로 바꾸는 이유는 무엇입니까? |
+| 3 | MLP와 Deep Learning | hidden layer, nonlinearity, backpropagation, generalization의 역할은 무엇입니까? |
+| 4 | Computer Vision | pixel을 meaning으로 연결한다는 말과 CNN의 장점은 무엇입니까? |
+| 5 | NLP와 Word2Vec | tokenizer, embedding, Skip-Gram, pre-training, fine-tuning을 구분할 수 있습니까? |
+| 6 | RNN과 Attention | sequential dependency와 global relationship의 차이는 무엇입니까? |
+| 7 | Transformer | Q/K/V, self-attention, multi-head attention, positional encoding의 역할은 무엇입니까? |
+| 8 | LLM | next token prediction, decoder-only Transformer, MoE, decoding 전략을 설명할 수 있습니까? |
+| 9 | Autonomous Driving | modular stack, error propagation, occupancy, shared world representation을 구분할 수 있습니까? |
+| 10 | Imitation Learning | behavioral cloning과 DAggER가 state distribution shift를 어떻게 다룹니까? |
+| 11 | Robotics Scaling | VLA, ego-video, world model, action fine-tuning, physical RL을 하나의 흐름으로 묶을 수 있습니까? |
 
 </details>
 
 ## 0. 우선순위
 
-기말고사 준비에서는 모든 개념을 같은 깊이로 보지 않는다. 다음 순서로 공부한다.
+기말고사 준비에서는 모든 개념을 같은 깊이로 보지 않습니다. 다음 순서로 공부합니다.
 
 | 우선순위 | 자료 | 공부 방식 |
 |---|---|---|
-| 1 | After Midterm Quiz Review | 기말 직전 퀴즈 범위이므로 문항별 정답 기준을 거의 그대로 암기한다. |
-| 2 | Robotics 1, Robotics 2 | after-midterm의 imitation learning, DAggER, VLA, world model, physical RL 문항을 설명형으로 풀 수 있게 보강한다. |
-| 3 | Midterm Review | 이미 출제된 핵심 개념의 오답 제거 기준을 다시 본다. 같은 개념이 기말에 변형될 수 있다. |
-| 4 | Before Midterm Quiz Review | 기본 정의와 구조를 빠르게 복습한다. 특히 Transformer 이전 흐름을 잊지 않는다. |
-| 5 | 개별 AIX 강의자료 | 헷갈리는 개념을 배경 설명으로 보강한다. 문제 우선순위는 위 자료들이 더 높다. |
+| 1 | After Midterm Quiz Review | 기말 직전 퀴즈 범위이므로 문항별 정답 기준을 거의 그대로 암기합니다. |
+| 2 | Robotics 1, Robotics 2 | after-midterm의 imitation learning, DAggER, VLA, world model, physical RL 문항을 설명형으로 풀 수 있게 보강합니다. |
+| 3 | Midterm Review | 이미 출제된 핵심 개념의 오답 제거 기준을 다시 봅니다. 같은 개념이 기말에 변형될 수 있습니다. |
+| 4 | Before Midterm Quiz Review | 기본 정의와 구조를 빠르게 복습합니다. 특히 Transformer 이전 흐름을 잊지 않습니다. |
+| 5 | 개별 AIX 강의자료 | 헷갈리는 개념을 배경 설명으로 보강합니다. 문제 우선순위는 위 자료들이 더 높습니다. |
 
-기말에서 특히 강하게 잡아야 할 축은 다음 네 가지다.
+기말에서 특히 강하게 잡아야 할 축은 다음 네 가지입니다.
 
 | 축 | 핵심 문장 |
 |---|---|
-| LLM/Transformer | LLM은 decoder-only Transformer가 next token prediction을 반복하는 생성 모델이다. |
-| Autonomous Driving | modular stack은 해석 가능하지만 앞단 오류가 뒤로 전파되고, Tesla식 접근은 shared world representation으로 이동한다. |
-| Imitation Learning | behavioral cloning은 supervised learning처럼 보이지만 action이 다음 state distribution을 바꾸는 점이 다르다. |
-| Robotics Scaling | VLA와 ego-video, world model, action fine-tuning, physical RL은 로봇용 foundation model 흐름으로 연결된다. |
+| LLM/Transformer | LLM은 decoder-only Transformer가 next token prediction을 반복하는 생성 모델입니다. |
+| Autonomous Driving | modular stack은 해석 가능하지만 앞단 오류가 뒤로 전파되고, Tesla식 접근은 shared world representation으로 이동합니다. |
+| Imitation Learning | behavioral cloning은 supervised learning처럼 보이지만 action이 다음 state distribution을 바꾸는 점이 다릅니다. |
+| Robotics Scaling | VLA와 ego-video, world model, action fine-tuning, physical RL은 로봇용 foundation model 흐름으로 연결됩니다. |
 
 ## 핵심 수식 유도 지도
 
-종합 복습에서는 같은 증명을 반복하기보다 아래 논리 사슬을 손으로 재현한다. 상세 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/), [Large Language Models](/study/aix/large-language-models/), [Robotics 1](/study/aix/robotics-1/)에 있다.
+종합 복습에서는 같은 증명을 반복하기보다 아래 논리 사슬을 손으로 재현합니다. 상세 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/), [Large Language Models](/study/aix/large-language-models/), [Robotics 1](/study/aix/robotics-1/)에 있습니다.
 
 | 수식 | 성격과 유도 핵심 | 가정·실패 조건 |
 |---|---|---|
@@ -90,9 +90,9 @@ Source Materials:
 | $$-\log p_c$$ | categorical likelihood에 음의 로그를 취한 one-hot cross-entropy | Label smoothing이면 $$-\sum_i y_i\log p_i$$를 사용 |
 | $$T\epsilon$$ 대 $$O(T^2\epsilon)$$ | 전자는 step 오류 기대합, 후자는 $$\sum_{t=1}^{T}O(t\epsilon)$$인 **보수적 compounding-error 상한** | 정확한 관측 등식이 아니며 bounded cost와 단순화된 오류율 가정 필요 |
 
-여기서 $$T$$는 문맥에 따라 temperature 또는 horizon을 뜻하므로 반드시 주변 정의를 확인한다. 전자는 무차원 양수이고, 후자는 단위 없는 step 수다.
+여기서 $$T$$는 문맥에 따라 temperature 또는 horizon을 뜻하므로 반드시 주변 정의를 확인합니다. 전자는 무차원 양수이고, 후자는 단위 없는 step 수입니다.
 
-**원문 대응:** after-midterm quiz 5개 PDF는 각 p.1-3에 LLM·autonomous driving·imitation learning·robotics scaling 문항을 제시하지만 별도의 수식 증명은 싣지 않는다. 위 표의 계산 근거는 `1st_Regression.pdf` p.10-25, `02_MLP.pdf` p.11-24, `2_Overview_TF.pdf` p.10-20, `3_Large_Language_Models.pdf` p.17-48, `Robotics_1.pdf` p.9-15에 대응한다. 즉 퀴즈 정답 범위를 넘어선 전개는 각 상세 강의 글에서 원문 직접 제시식과 저자 보충을 구분해 검산한다.
+**원문 대응:** after-midterm quiz 5개 PDF는 각 p.1-3에 LLM·autonomous driving·imitation learning·robotics scaling 문항을 제시하지만 별도의 수식 증명은 싣지 않습니다. 위 표의 계산 근거는 `1st_Regression.pdf` p.10-25, `02_MLP.pdf` p.11-24, `2_Overview_TF.pdf` p.10-20, `3_Large_Language_Models.pdf` p.17-48, `Robotics_1.pdf` p.9-15에 대응합니다. 즉 퀴즈 정답 범위를 넘어선 전개는 각 상세 강의 글에서 원문 직접 제시식과 저자 보충을 구분해 검산합니다.
 
 ## 1. Linear Regression과 Optimization
 
@@ -101,27 +101,27 @@ Source Materials:
   <figcaption><a href="{{ "/assets/pdfs/study/aix/1st_Regression.pdf#page=8" | relative_url }}" target="_blank" rel="noopener"><code>1st_Regression.pdf</code> p.8</a> — 오차 부호 상쇄를 피하려 squared loss를 쓰는 출발점.</figcaption>
 </figure>
 
-원본의 첫 식은 양·음 residual이 상쇄될 수 있고, 둘째 식은 제곱으로 모든 항을 0 이상으로 만든다. 이 차이를 먼저 확인하면 gradient descent가 최소화하는 대상이 무엇인지 분명해진다.
+원본의 첫 식은 양·음 residual이 상쇄될 수 있고, 둘째 식은 제곱으로 모든 항을 0 이상으로 만듭니다. 이 차이를 먼저 확인하면 gradient descent가 최소화하는 대상이 무엇인지 분명해집니다.
 
-Linear Regression은 feature $$x$$로 target $$y$$를 예측하는 지도학습 모델이다. 가장 기본 형태는 다음 선형 score다.
+Linear Regression은 feature $$x$$로 target $$y$$를 예측하는 지도학습 모델입니다. 가장 기본 형태는 다음 선형 score입니다.
 
 $$
 \hat{y}=w^Tx+b
 $$
 
-Residual은 실제값과 예측값의 차이다.
+Residual은 실제값과 예측값의 차이입니다.
 
 $$
 residual=y-\hat{y}
 $$
 
-대표 loss는 residual의 제곱합이다.
+대표 loss는 residual의 제곱합입니다.
 
 $$
 L(w,b)=\sum_i (y_i-\hat{y}_i)^2
 $$
 
-시험에서는 이 세 가지를 헷갈리지 않아야 한다.
+시험에서는 이 세 가지를 헷갈리지 않아야 합니다.
 
 | 개념 | 한 줄 정리 | 오답 제거 기준 |
 |---|---|---|
@@ -132,23 +132,23 @@ $$
 | squared loss | residual을 제곱해 합친 objective | 부호가 상쇄되지 않게 제곱 |
 | iterative update | loss를 줄이도록 parameter를 반복 갱신 | closed-form처럼 한 번에 끝나는 방식이 아님 |
 
-Gradient descent는 loss를 줄이기 위해 gradient의 반대 방향으로 이동한다.
+Gradient descent는 loss를 줄이기 위해 gradient의 반대 방향으로 이동합니다.
 
 $$
 \theta \leftarrow \theta-\eta\nabla_\theta L(\theta)
 $$
 
-여기서 $$\eta$$는 learning rate다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요하다.
+여기서 $$\eta$$는 learning rate입니다. Gradient는 증가 방향이고, minimization에서는 그 반대 방향으로 움직인다는 점이 중요합니다.
 
 ## 2. Logistic Regression과 Classification
 
-Logistic Regression은 linear score를 버리지 않는다. 먼저 score를 계산한다.
+Logistic Regression은 linear score를 버리지 않습니다. 먼저 score를 계산합니다.
 
 $$
 z=w^Tx+b
 $$
 
-그 다음 sigmoid를 적용해 0과 1 사이의 probability로 바꾼다.
+그 다음 sigmoid를 적용해 0과 1 사이의 probability로 바꿉니다.
 
 $$
 \sigma(z)=\frac{1}{1+e^{-z}}
@@ -158,9 +158,9 @@ $$
 P(y=1\mid x)=\sigma(w^Tx+b)
 $$
 
-시험에서 logistic regression을 설명할 때는 다음 문장을 잡으면 된다.
+시험에서 logistic regression을 설명할 때는 다음 문장을 잡으면 됩니다.
 
-> linear score 위에 probability link function을 붙여 classification probability로 해석한다.
+> linear score 위에 probability link function을 붙여 classification probability로 해석합니다.
 
 | 비교 | Linear Regression | Logistic Regression |
 |---|---|---|
@@ -169,7 +169,7 @@ $$
 | 대표 목적 | squared residual 감소 | observed label이 most likely 하도록 학습 |
 | decision boundary | 회귀에서는 직접 경계가 핵심이 아님 | $$w^Tx+b=0$$이면 기본적으로 선형 경계 |
 
-다중 class에서는 softmax를 사용한다. Softmax는 여러 class score를 합이 1인 확률 분포로 바꾼다.
+다중 class에서는 softmax를 사용합니다. Softmax는 여러 class score를 합이 1인 확률 분포로 바꿉니다.
 
 $$
 p_k=\frac{\exp(z_k)}{\sum_j \exp(z_j)}
@@ -177,26 +177,26 @@ $$
 
 ## 3. MLP와 Deep Learning
 
-Single perceptron은 기본적으로 선형 경계를 만든다. XOR처럼 선형 분리가 안 되는 문제는 하나의 직선으로 해결할 수 없다. MLP는 hidden layer와 nonlinear activation을 추가해 더 복잡한 패턴을 표현한다.
+Single perceptron은 기본적으로 선형 경계를 만듭니다. XOR처럼 선형 분리가 안 되는 문제는 하나의 직선으로 해결할 수 없습니다. MLP는 hidden layer와 nonlinear activation을 추가해 더 복잡한 패턴을 표현합니다.
 
 | 개념 | 핵심 역할 |
 |---|---|
-| hidden layer | 입력과 출력 사이의 중간 표현을 만든다. |
-| activation | 선형 변환 사이에 비선형성을 부여한다. |
-| ReLU | 양수 구간 gradient가 일정해 sigmoid보다 vanishing gradient 문제가 덜하다. |
-| backpropagation | chain rule로 각 parameter의 gradient를 효율적으로 계산한다. |
-| gradient descent | 계산된 gradient로 parameter를 업데이트한다. |
+| hidden layer | 입력과 출력 사이의 중간 표현을 만듭니다. |
+| activation | 선형 변환 사이에 비선형성을 부여합니다. |
+| ReLU | 양수 구간 gradient가 일정해 sigmoid보다 vanishing gradient 문제가 덜합니다. |
+| backpropagation | chain rule로 각 parameter의 gradient를 효율적으로 계산합니다. |
+| gradient descent | 계산된 gradient로 parameter를 업데이트합니다. |
 
-Backpropagation과 gradient descent는 같은 말이 아니다.
+Backpropagation과 gradient descent는 같은 말이 아닙니다.
 
 | 용어 | 역할 |
 |---|---|
 | backpropagation | gradient를 계산하는 방법 |
 | gradient descent | gradient를 이용해 parameter를 갱신하는 최적화 방법 |
 
-Good learning은 training loss를 낮추는 것만이 아니다. 충분한 expressivity를 가지면서도 regularization과 bias-variance 균형을 통해 unseen data에서 generalize해야 한다.
+Good learning은 training loss를 낮추는 것만이 아닙니다. 충분한 expressivity를 가지면서도 regularization과 bias-variance 균형을 통해 unseen data에서 generalize해야 합니다.
 
-Deep learning의 발전은 한 가지 요소로 설명하지 않는다.
+Deep learning의 발전은 한 가지 요소로 설명하지 않습니다.
 
 $$
 \text{Deep Learning Progress}
@@ -210,7 +210,7 @@ $$
 
 ## 4. Computer Vision
 
-Computer Vision의 high-level 목표는 pixel을 meaning으로 연결하는 것이다. 단순히 이미지 크기를 줄이거나 GPU로 빠르게 계산하는 것이 목표가 아니다.
+Computer Vision의 high-level 목표는 pixel을 meaning으로 연결하는 것입니다. 단순히 이미지 크기를 줄이거나 GPU로 빠르게 계산하는 것이 목표가 아닙니다.
 
 | 개념 | 시험 기준 |
 |---|---|
@@ -221,9 +221,9 @@ Computer Vision의 high-level 목표는 pixel을 meaning으로 연결하는 것�
 | AlexNet | CNN 기반 딥러닝이 전통적 CV를 넘어선 전환점 |
 | visual reasoning | 객체, 관계, 언어, 문맥을 함께 이해하는 structured understanding |
 
-CNN의 장점은 fully-connected layer처럼 모든 pixel을 독립 weight로 연결하지 않는다는 점이다. 가까운 pixel들이 만드는 local pattern을 convolution으로 보고, 같은 filter를 여러 위치에 공유한다.
+CNN의 장점은 fully-connected layer처럼 모든 pixel을 독립 weight로 연결하지 않는다는 점입니다. 가까운 pixel들이 만드는 local pattern을 convolution으로 보고, 같은 filter를 여러 위치에 공유합니다.
 
-최근 vision에서는 classification만이 아니라 generation과 3D understanding도 중요해진다.
+최근 vision에서는 classification만이 아니라 generation과 3D understanding도 중요해집니다.
 
 | 주제 | 핵심 정리 |
 |---|---|
@@ -232,7 +232,7 @@ CNN의 장점은 fully-connected layer처럼 모든 pixel을 독립 weight로 �
 
 ## 5. NLP, Tokenizer, Word2Vec
 
-NLP에서 text는 바로 model에 들어가지 않는다. 먼저 tokenizer가 문장을 token으로 나누고 vocabulary 항목에 대응시킨다.
+NLP에서 text는 바로 model에 들어가지 않습니다. 먼저 tokenizer가 문장을 token으로 나누고 vocabulary 항목에 대응시킵니다.
 
 | 개념 | 역할 |
 |---|---|
@@ -241,15 +241,15 @@ NLP에서 text는 바로 model에 들어가지 않는다. 먼저 tokenizer가 �
 | learned embedding | 의미 관계를 담을 수 있는 dense vector |
 | subword | rare word와 OOV 문제를 줄이는 부분 단어 단위 |
 
-Word2Vec은 단어 의미를 사람이 직접 입력하는 방식이 아니다. Proxy task를 학습하는 얕은 신경망을 만들고, hidden layer의 병목 표현을 embedding으로 사용한다.
+Word2Vec은 단어 의미를 사람이 직접 입력하는 방식이 아닙니다. Proxy task를 학습하는 얕은 신경망을 만들고, hidden layer의 병목 표현을 embedding으로 사용합니다.
 
-Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측한다.
+Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측합니다.
 
 $$
 \text{center word}\rightarrow\text{context words}
 $$
 
-Pre-training과 fine-tuning도 반드시 구분해야 한다.
+Pre-training과 fine-tuning도 반드시 구분해야 합니다.
 
 | 단계 | 의미 |
 |---|---|
@@ -259,15 +259,15 @@ Pre-training과 fine-tuning도 반드시 구분해야 한다.
 
 ## 6. RNN과 Attention
 
-RNN은 sequence를 시간 순서대로 처리한다.
+RNN은 sequence를 시간 순서대로 처리합니다.
 
 $$
 h_t=f(x_t,h_{t-1})
 $$
 
-현재 hidden state가 이전 hidden state에 의존하므로 sequential dependency가 생긴다. 이 구조는 순서 데이터에 적합하지만, 먼 과거 정보가 뒤쪽까지 전달되기 어렵고 병렬 처리에 불리하다.
+현재 hidden state가 이전 hidden state에 의존하므로 sequential dependency가 생깁니다. 이 구조는 순서 데이터에 적합하지만, 먼 과거 정보가 뒤쪽까지 전달되기 어렵고 병렬 처리에 불리합니다.
 
-Attention은 token 사이의 관계를 직접 계산한다. 긴 문장이나 긴 대화에서 필요한 이전 token을 직접 참조할 수 있으므로 global relationship을 더 잘 본다.
+Attention은 token 사이의 관계를 직접 계산합니다. 긴 문장이나 긴 대화에서 필요한 이전 token을 직접 참조할 수 있으므로 global relationship을 더 잘 봅니다.
 
 | 비교 | RNN | Attention |
 |---|---|---|
@@ -283,11 +283,11 @@ Attention은 token 사이의 관계를 직접 계산한다. 긴 문장이나 긴
   <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.13</a> — token 표현이 Q·K·V로 나뉘어 관계 점수와 value 조합을 만드는 과정.</figcaption>
 </figure>
 
-아래 token representation에서 Q, K, V가 만들어지고, $$QK^T/\sqrt{d_k}$$가 어떤 value를 얼마나 섞을지 결정한다. 시험에서는 세 vector의 이름보다 검색 기준(Q), 비교 표지(K), 가져올 내용(V)의 역할을 구분한다.
+아래 token representation에서 Q, K, V가 만들어지고, $$QK^T/\sqrt{d_k}$$가 어떤 value를 얼마나 섞을지 결정합니다. 시험에서는 세 vector의 이름보다 검색 기준(Q), 비교 표지(K), 가져올 내용(V)의 역할을 구분합니다.
 
-Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합한다.
+Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합합니다.
 
-Self-attention의 핵심 식은 다음과 같다.
+Self-attention의 핵심 식은 다음과 같습니다.
 
 $$
 \text{Attention}(Q,K,V)
@@ -305,26 +305,26 @@ $$
 | positional encoding | self-attention만으로 부족한 순서 정보를 보강 |
 | multi-head attention | 여러 head가 서로 다른 관계나 패턴을 병렬로 봄 |
 
-Q와 K는 dot product를 해야 하므로 차원이 같아야 한다. V는 관련도 점수 계산이 아니라 최종 출력 표현을 만들 때 사용된다.
+Q와 K는 dot product를 해야 하므로 차원이 같아야 합니다. V는 관련도 점수 계산이 아니라 최종 출력 표현을 만들 때 사용됩니다.
 
-시험에서는 다음 오답을 조심한다.
+시험에서는 다음 오답을 조심합니다.
 
-| 오답 유형 | 왜 틀렸는가 |
+| 오답 유형 | 왜 틀렸습니까 |
 |---|---|
-| self-attention이 tokenization을 대신한다 | tokenization은 전처리, self-attention은 모델 내부 연산이다. |
-| self-attention만으로 순서를 완벽히 안다 | 순서 정보를 위해 positional encoding이 필요하다. |
-| multi-head attention은 token 수를 줄인다 | 여러 관계 패턴을 병렬로 보는 것이 핵심이다. |
-| Q/K/V가 모두 같은 역할이다 | Q/K는 관련도 계산, V는 정보 출력에 쓰인다. |
+| self-attention이 tokenization을 대신합니다 | tokenization은 전처리, self-attention은 모델 내부 연산입니다. |
+| self-attention만으로 순서를 완벽히 압니다 | 순서 정보를 위해 positional encoding이 필요합니다. |
+| multi-head attention은 token 수를 줄입니다 | 여러 관계 패턴을 병렬로 보는 것이 핵심입니다. |
+| Q/K/V가 모두 같은 역할입니다 | Q/K는 관련도 계산, V는 정보 출력에 쓰입니다. |
 
 ## 8. LLM, MoE, Decoding
 
-LLM은 지금까지의 token을 조건으로 다음 token 하나를 예측하고, 이를 반복해 문장을 생성한다.
+LLM은 지금까지의 token을 조건으로 다음 token 하나를 예측하고, 이를 반복해 문장을 생성합니다.
 
 $$
 P(x_t\mid x_1,x_2,\ldots,x_{t-1})
 $$
 
-GPT 계열 LLM은 주로 decoder-only Transformer이며, autoregressive generation을 수행한다.
+GPT 계열 LLM은 주로 decoder-only Transformer이며, autoregressive generation을 수행합니다.
 
 | 개념 | 핵심 설명 |
 |---|---|
@@ -333,14 +333,14 @@ GPT 계열 LLM은 주로 decoder-only Transformer이며, autoregressive generati
 | decoder-only Transformer | causal attention으로 이전 token만 참고하며 다음 token 예측 |
 | cross-entropy loss | 정답 token 확률을 높이도록 학습 |
 
-Decoding 방식도 구분해야 한다.
+Decoding 방식도 구분해야 합니다.
 
 | 방식 | 핵심 | 장점 | 한계 |
 |---|---|---|---|
 | greedy decoding | 매 step 가장 확률 높은 token 하나 선택 | 빠르고 단순 | 전체 문장 최적 보장 없음 |
 | beam search | 가능성 높은 $$k$$개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
 
-Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식이다. 모든 token이 모든 expert를 쓰는 것이 아니라, router가 token마다 필요한 expert 일부만 활성화한다.
+Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식입니다. 모든 token이 모든 expert를 쓰는 것이 아니라, router가 token마다 필요한 expert 일부만 활성화합니다.
 
 | 개념 | 시험 기준 |
 |---|---|
@@ -356,11 +356,11 @@ Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식이다
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.26</a> — multi-camera와 temporal feature를 공유 world representation으로 통합하는 중심 구조.</figcaption>
 </figure>
 
-그림은 perception task마다 별도 pipeline을 두는 대신, camera와 시간 정보를 하나의 world representation으로 모은 뒤 필요한 output을 query하는 구조다. Representation-level end-to-end의 의미는 이 공유 표현까지 함께 학습한다는 데 있다.
+그림은 perception task마다 별도 pipeline을 두는 대신, camera와 시간 정보를 하나의 world representation으로 모은 뒤 필요한 output을 query하는 구조입니다. Representation-level end-to-end의 의미는 이 공유 표현까지 함께 학습한다는 데 있습니다.
 
-자율주행은 단순 제어 문제가 아니라 perception과 uncertainty가 큰 AI 문제다. 도로에는 차량, 보행자, 차선, 신호, 날씨, 가려짐, corner case가 섞여 있다.
+자율주행은 단순 제어 문제가 아니라 perception과 uncertainty가 큰 AI 문제입니다. 도로에는 차량, 보행자, 차선, 신호, 날씨, 가려짐, corner case가 섞여 있습니다.
 
-전통적 구조는 modular stack이다.
+전통적 구조는 modular stack입니다.
 
 $$
 \text{Perception}
@@ -379,9 +379,9 @@ $$
 | planning | ego vehicle의 경로와 행동 계획 |
 | control | 조향, 가감속 등 실제 제어 명령 생성 |
 
-Modular stack의 장점은 해석 가능성과 모듈별 개발이다. 하지만 앞단 오류가 뒤 단계로 전파될 수 있다. Perception에서 보행자를 놓치면 prediction, planning, control도 잘못된 입력을 바탕으로 동작한다.
+Modular stack의 장점은 해석 가능성과 모듈별 개발입니다. 하지만 앞단 오류가 뒤 단계로 전파될 수 있습니다. Perception에서 보행자를 놓치면 prediction, planning, control도 잘못된 입력을 바탕으로 동작합니다.
 
-Tesla식 전환에서 핵심은 object list에서 occupancy/shared world representation으로 이동한 것이다.
+Tesla식 전환에서 핵심은 object list에서 occupancy/shared world representation으로 이동한 것입니다.
 
 | 표현 | 특징 |
 |---|---|
@@ -390,21 +390,21 @@ Tesla식 전환에서 핵심은 object list에서 occupancy/shared world represe
 | shared world representation | 여러 task가 공유하는 unified latent world state |
 | representation-level end-to-end | 카메라에서 조향까지 단순 직결이 아니라 world representation을 통합적으로 학습 |
 
-Occupancy는 object 이름만이 아니라 geometry, free space, semantics를 함께 다뤄 planning과 연결하기 좋다.
+Occupancy는 object 이름만이 아니라 geometry, free space, semantics를 함께 다뤄 planning과 연결하기 좋습니다.
 
 ## 10. Imitation Learning과 DAggER
 
-Imitation learning은 expert demonstration을 사용해 비싸고 위험한 trial-and-error를 줄인다. 특히 실제 로봇에서는 시행착오가 비용과 안전 문제를 만들기 때문에 expert trajectory가 중요하다.
+Imitation learning은 expert demonstration을 사용해 비싸고 위험한 trial-and-error를 줄입니다. 특히 실제 로봇에서는 시행착오가 비용과 안전 문제를 만들기 때문에 expert trajectory가 중요합니다.
 
-Behavioral Cloning은 expert trajectory를 supervised learning 문제로 바꾼다.
+Behavioral Cloning은 expert trajectory를 supervised learning 문제로 바꿉니다.
 
 $$
 o\rightarrow a
 $$
 
-즉 observation을 입력으로 받고 expert action을 label로 삼아 policy를 학습한다.
+즉 observation을 입력으로 받고 expert action을 label로 삼아 policy를 학습합니다.
 
-하지만 imitation learning은 ordinary supervised learning과 다르다. Policy가 선택한 action이 다음 state를 바꾸고, 이 때문에 미래 입력 분포 자체가 달라진다.
+하지만 imitation learning은 ordinary supervised learning과 다릅니다. Policy가 선택한 action이 다음 state를 바꾸고, 이 때문에 미래 입력 분포 자체가 달라집니다.
 
 | 문제 | 설명 |
 |---|---|
@@ -412,7 +412,7 @@ $$
 | compounding error | 작은 행동 오류가 다음 state를 바꾸고 이후 오류가 누적됨 |
 | state distribution shift | learner의 action 때문에 test-time state distribution이 expert data와 달라짐 |
 
-DAggER는 이 문제를 줄이기 위해 learner가 실제로 방문한 state를 모으고, 그 state에 expert label을 다시 붙여 dataset에 aggregate한 뒤 retrain한다.
+DAggER는 이 문제를 줄이기 위해 learner가 실제로 방문한 state를 모으고, 그 state에 expert label을 다시 붙여 dataset에 aggregate한 뒤 retrain합니다.
 
 $$
 \text{run learner}
@@ -426,7 +426,7 @@ $$
 \text{retrain}
 $$
 
-Robotics 1은 이 파트를 가장 직접적으로 보강한다. 특히 behavioral cloning의 한계가 "모델이 약해서"가 아니라 expert distribution 밖 recovery data가 부족해서 생긴다는 점을 잡아야 한다.
+Robotics 1은 이 파트를 가장 직접적으로 보강합니다. 특히 behavioral cloning의 한계가 "모델이 약해서"가 아니라 expert distribution 밖 recovery data가 부족해서 생긴다는 점을 잡아야 합니다.
 
 | Robotics 1 활용 지점 | Final Review에서 연결되는 개념 |
 |---|---|
@@ -444,11 +444,11 @@ Robotics 1은 이 파트를 가장 직접적으로 보강한다. 특히 behavior
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Robotics_2.pdf#page=33" | relative_url }}" target="_blank" rel="noopener"><code>Robotics_2.pdf</code> p.33</a> — 사전학습 데이터 시간이 커질수록 validation loss가 낮아지는 scaling 근거.</figcaption>
 </figure>
 
-왼쪽 곡선은 더 큰 dataset이 같은 training step에서 낮은 loss를 보이는지 비교하고, 오른쪽은 각 규모의 최적점을 요약한다. Robotics scaling은 모델 크기만 키우는 주장이 아니라 다양한 행동 데이터의 시간과 범위를 함께 늘리는 전략이다.
+왼쪽 곡선은 더 큰 dataset이 같은 training step에서 낮은 loss를 보이는지 비교하고, 오른쪽은 각 규모의 최적점을 요약합니다. Robotics scaling은 모델 크기만 키우는 주장이 아니라 다양한 행동 데이터의 시간과 범위를 함께 늘리는 전략입니다.
 
-로보틱스는 AI scaling의 다음 frontier로 설명된다. LLM에서 대규모 데이터와 foundation model이 성능 향상을 만들었듯이, 로봇도 대규모 비디오, world model, action data, physical RL을 결합하는 방향으로 이동한다.
+로보틱스는 AI scaling의 다음 frontier로 설명됩니다. LLM에서 대규모 데이터와 foundation model이 성능 향상을 만들었듯이, 로봇도 대규모 비디오, world model, action data, physical RL을 결합하는 방향으로 이동합니다.
 
-VLA는 Vision-Language-Action이다.
+VLA는 Vision-Language-Action입니다.
 
 | 구성 | 의미 |
 |---|---|
@@ -456,7 +456,7 @@ VLA는 Vision-Language-Action이다.
 | Language | 자연어 지시나 목표를 이해 |
 | Action | 실제 로봇 행동을 출력 |
 
-Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 완벽한 action label이 있어서가 아니라, 사람이 물리 세계와 상호작용하는 dynamics와 affordance 단서를 많이 담고 있기 때문이다.
+Ego-video나 internet-scale video는 embodied AI에서 중요합니다. 이유는 완벽한 action label이 있어서가 아니라, 사람이 물리 세계와 상호작용하는 dynamics와 affordance 단서를 많이 담고 있기 때문입니다.
 
 | 흐름 | 설명 |
 |---|---|
@@ -464,11 +464,11 @@ Ego-video나 internet-scale video는 embodied AI에서 중요하다. 이유는 �
 | action fine-tuning | vision/language 기반 모델을 robot action에 맞게 조정 |
 | physical RL | 실제 환경에서 시행착오를 통해 행동 성능 보정 |
 
-기말에서는 이 흐름을 하나의 문장으로 정리하면 좋다.
+기말에서는 이 흐름을 하나의 문장으로 정리하면 좋습니다.
 
-> 로보틱스는 pre-trained world/foundation model 위에 action 적응과 실제 환경 학습을 더하는 방향으로 scaling된다.
+> 로보틱스는 pre-trained world/foundation model 위에 action 적응과 실제 환경 학습을 더하는 방향으로 scaling됩니다.
 
-Robotics 2는 이 문장을 세 단계로 더 구체화한다.
+Robotics 2는 이 문장을 세 단계로 더 구체화합니다.
 
 | Robotics 2 활용 지점 | Final Review에서 연결되는 개념 |
 |---|---|
@@ -506,180 +506,180 @@ Robotics 2는 이 문장을 세 단계로 더 구체화한다.
 
 | 주제 | 반드시 기억할 문장 |
 |---|---|
-| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. |
-| Logistic Regression | linear score에 sigmoid를 붙여 class probability로 해석한다. |
-| MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
-| Backpropagation | chain rule로 gradient를 계산하고, gradient descent가 parameter를 갱신한다. |
-| Computer Vision | pixel을 meaning으로 연결하는 것이 목표다. |
-| NLP | tokenizer는 token 분리, embedding은 dense representation이다. |
-| Word2Vec | proxy task를 학습하며 hidden layer를 embedding으로 사용한다. |
-| RNN | sequence를 순서대로 처리하고 이전 hidden state에 의존한다. |
-| Attention | token 사이 global relationship을 직접 계산한다. |
-| Transformer | Q/K/V attention, multi-head, positional encoding을 결합한다. |
-| LLM | decoder-only Transformer가 next token prediction을 반복한다. |
-| MoE | token마다 필요한 expert 일부만 활성화한다. |
-| Autonomous Driving | modular stack은 error propagation이 있고, occupancy는 world representation을 강화한다. |
-| Imitation Learning | action이 다음 state distribution을 바꾸므로 ordinary supervised learning과 다르다. |
-| Robotics | VLA, ego-video, world model, action fine-tuning, physical RL이 scaling 흐름을 만든다. |
+| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심입니다. |
+| Logistic Regression | linear score에 sigmoid를 붙여 class probability로 해석합니다. |
+| MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 합니다. |
+| Backpropagation | chain rule로 gradient를 계산하고, gradient descent가 parameter를 갱신합니다. |
+| Computer Vision | pixel을 meaning으로 연결하는 것이 목표입니다. |
+| NLP | tokenizer는 token 분리, embedding은 dense representation입니다. |
+| Word2Vec | proxy task를 학습하며 hidden layer를 embedding으로 사용합니다. |
+| RNN | sequence를 순서대로 처리하고 이전 hidden state에 의존합니다. |
+| Attention | token 사이 global relationship을 직접 계산합니다. |
+| Transformer | Q/K/V attention, multi-head, positional encoding을 결합합니다. |
+| LLM | decoder-only Transformer가 next token prediction을 반복합니다. |
+| MoE | token마다 필요한 expert 일부만 활성화합니다. |
+| Autonomous Driving | modular stack은 error propagation이 있고, occupancy는 world representation을 강화합니다. |
+| Imitation Learning | action이 다음 state distribution을 바꾸므로 ordinary supervised learning과 다릅니다. |
+| Robotics | VLA, ego-video, world model, action fine-tuning, physical RL이 scaling 흐름을 만듭니다. |
 
 ## Study Guide
 
-먼저 `After Midterm Quiz Review`를 외운다. 20260521부터 20260605까지의 퀴즈는 기말 직전 범위이므로, 문항별 핵심 정답 키워드를 먼저 잡는 것이 효율적이다.
+먼저 `After Midterm Quiz Review`를 외웁니다. 20260521부터 20260605까지의 퀴즈는 기말 직전 범위이므로, 문항별 핵심 정답 키워드를 먼저 잡는 것이 효율적입니다.
 
-그다음 `Robotics 1`, `Robotics 2`를 읽어 after-midterm quiz의 로보틱스 문항을 설명형으로 바꿔 말해 본다. `Robotics 1`은 behavioral cloning과 DAggER, `Robotics 2`는 VLA, world model, data engine, physical RL을 보강한다.
+그다음 `Robotics 1`, `Robotics 2`를 읽어 after-midterm quiz의 로보틱스 문항을 설명형으로 바꿔 말해 봅니다. `Robotics 1`은 behavioral cloning과 DAggER, `Robotics 2`는 VLA, world model, data engine, physical RL을 보강합니다.
 
-그다음 `Midterm Review`의 전체 정답 체크리스트를 빠르게 훑는다. 이미 중간고사에서 다룬 기본 개념이라도, 기말에서는 LLM과 자율주행, 로보틱스 개념을 이해하기 위한 기반으로 다시 등장할 수 있다.
+그다음 `Midterm Review`의 전체 정답 체크리스트를 빠르게 훑습니다. 이미 중간고사에서 다룬 기본 개념이라도, 기말에서는 LLM과 자율주행, 로보틱스 개념을 이해하기 위한 기반으로 다시 등장할 수 있습니다.
 
-마지막으로 `Before Midterm Quiz Review`에서 기본 정의를 보강한다. 특히 logistic regression, MLP, RNN, attention, Transformer는 뒤쪽 범위의 언어모델과 로봇 foundation model을 이해하는 뼈대다.
+마지막으로 `Before Midterm Quiz Review`에서 기본 정의를 보강합니다. 특히 logistic regression, MLP, RNN, attention, Transformer는 뒤쪽 범위의 언어모델과 로봇 foundation model을 이해하는 뼈대입니다.
 
 | 공부 순서 | 할 일 |
 |---:|---|
-| 1 | After-midterm 5개 quiz의 핵심 정답 키워드를 암기한다. |
-| 2 | Robotics 1/2로 imitation learning, DAggER, VLA, WAM, physical RL을 보강한다. |
-| 3 | LLM, 자율주행, imitation learning, robotics scaling을 설명형 문장으로 말해 본다. |
-| 4 | Midterm Review의 오답 제거 기준을 보고 헷갈리는 선택지를 제거하는 연습을 한다. |
-| 5 | Before-midterm의 기본 ML/CV/NLP/Transformer 정의를 빠르게 복습한다. |
-| 6 | 복습 질문을 닫은 상태로 먼저 답하고, 펼쳐서 답변을 확인한다. |
+| 1 | After-midterm 5개 quiz의 핵심 정답 키워드를 암기합니다. |
+| 2 | Robotics 1/2로 imitation learning, DAggER, VLA, WAM, physical RL을 보강합니다. |
+| 3 | LLM, 자율주행, imitation learning, robotics scaling을 설명형 문장으로 말해 봅니다. |
+| 4 | Midterm Review의 오답 제거 기준을 보고 헷갈리는 선택지를 제거하는 연습을 합니다. |
+| 5 | Before-midterm의 기본 ML/CV/NLP/Transformer 정의를 빠르게 복습합니다. |
+| 6 | 복습 질문을 닫은 상태로 먼저 답하고, 펼쳐서 답변을 확인합니다. |
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Linear regression에서 feature와 target은 무엇인가?</summary>
+<summary>1. Linear regression에서 feature와 target은 무엇입니까?</summary>
 
-답변: Feature는 모델의 입력 정보이고 보통 $$x$$로 둔다. Target은 예측해야 하는 정답이고 보통 $$y$$로 둔다.
-
-</details>
-
-<details markdown="block">
-<summary>2. Logistic regression은 왜 classification에 적합한가?</summary>
-
-답변: Linear score $$w^Tx+b$$를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문이다.
+답변: Feature는 모델의 입력 정보이고 보통 $$x$$로 둡니다. Target은 예측해야 하는 정답이고 보통 $$y$$로 둡니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. MLP가 single perceptron보다 강한 이유는 무엇인가?</summary>
+<summary>2. Logistic regression은 왜 classification에 적합합니까?</summary>
 
-답변: Hidden layer와 nonlinear activation을 사용하므로 single perceptron이 만들 수 없는 복잡한 비선형 패턴을 표현할 수 있기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Backpropagation과 gradient descent는 어떻게 다른가?</summary>
-
-답변: Backpropagation은 chain rule로 gradient를 계산하는 방법이고, gradient descent는 그 gradient를 이용해 parameter를 갱신하는 최적화 방법이다.
+답변: Linear score $$w^Tx+b$$를 sigmoid에 넣어 0과 1 사이 값으로 바꾸므로 binary class probability로 해석할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. Computer Vision의 high-level 목표는 무엇인가?</summary>
+<summary>3. MLP가 single perceptron보다 강한 이유는 무엇입니까?</summary>
 
-답변: Raw pixel을 object, scene, relation, meaning으로 해석하는 것이다. 단순 압축이나 저장 효율이 핵심 목표가 아니다.
-
-</details>
-
-<details markdown="block">
-<summary>6. CNN이 이미지 처리에 적합한 이유는 무엇인가?</summary>
-
-답변: Local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습할 수 있기 때문이다.
+답변: Hidden layer와 nonlinear activation을 사용하므로 single perceptron이 만들 수 없는 복잡한 비선형 패턴을 표현할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. Tokenizer와 embedding은 어떻게 다른가?</summary>
+<summary>4. Backpropagation과 gradient descent는 어떻게 다릅니까?</summary>
 
-답변: Tokenizer는 문장을 token으로 나누고 vocabulary 항목에 대응시키는 과정이다. Embedding은 token을 의미 관계를 담을 수 있는 dense vector로 바꾸는 표현이다.
-
-</details>
-
-<details markdown="block">
-<summary>8. Skip-Gram은 어떤 task인가?</summary>
-
-답변: 중심 단어 하나를 보고 주변 context 단어를 예측하는 Word2Vec의 proxy task다.
+답변: Backpropagation은 chain rule로 gradient를 계산하는 방법이고, gradient descent는 그 gradient를 이용해 parameter를 갱신하는 최적화 방법입니다.
 
 </details>
 
 <details markdown="block">
-<summary>9. RNN이 긴 sequence에서 어려움을 겪는 이유는 무엇인가?</summary>
+<summary>5. Computer Vision의 high-level 목표는 무엇입니까?</summary>
 
-답변: 정보가 hidden state를 따라 순차적으로 전달되므로 먼 과거 정보가 뒤쪽까지 유지되기 어렵고, 순차 계산 때문에 병렬 처리에도 불리하기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>10. Attention이 RNN보다 global relationship을 잘 보는 이유는 무엇인가?</summary>
-
-답변: Attention은 각 token이 다른 token들과의 관련도를 직접 계산해 필요한 정보를 바로 참조할 수 있기 때문이다.
+답변: Raw pixel을 object, scene, relation, meaning으로 해석하는 것입니다. 단순 압축이나 저장 효율이 핵심 목표가 아닙니다.
 
 </details>
 
 <details markdown="block">
-<summary>11. Transformer에서 Q, K, V의 역할은 무엇인가?</summary>
+<summary>6. CNN이 이미지 처리에 적합한 이유는 무엇입니까?</summary>
 
-답변: Q와 K는 dot product로 token 간 관련도 점수를 계산하는 데 쓰이고, V는 그 attention weight를 바탕으로 실제 출력 정보를 만드는 데 쓰인다.
-
-</details>
-
-<details markdown="block">
-<summary>12. Positional encoding이 필요한 이유는 무엇인가?</summary>
-
-답변: Self-attention 자체는 token 사이 관계를 보지만 순서 정보를 충분히 담지 못하므로, token의 위치와 순서를 모델에 알려 주기 위해 positional encoding을 더한다.
+답변: Local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>13. LLM의 next token prediction은 무엇인가?</summary>
+<summary>7. Tokenizer와 embedding은 어떻게 다릅니까?</summary>
 
-답변: 지금까지 생성되거나 입력된 token sequence를 조건으로 다음 token의 확률분포를 예측하고, 선택된 token을 다시 문맥에 붙여 반복 생성하는 방식이다.
-
-</details>
-
-<details markdown="block">
-<summary>14. Greedy decoding과 beam search는 어떻게 다른가?</summary>
-
-답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고른다. Beam search는 가능성 높은 $$k$$개의 후보 sequence를 유지하며 더 넓게 탐색한다.
+답변: Tokenizer는 문장을 token으로 나누고 vocabulary 항목에 대응시키는 과정입니다. Embedding은 token을 의미 관계를 담을 수 있는 dense vector로 바꾸는 표현입니다.
 
 </details>
 
 <details markdown="block">
-<summary>15. MoE의 핵심 아이디어는 무엇인가?</summary>
+<summary>8. Skip-Gram은 어떤 task입니까?</summary>
 
-답변: 모든 token이 모든 expert를 사용하는 것이 아니라, router가 token마다 필요한 expert 일부만 선택해 sparse하게 활성화하는 것이다.
-
-</details>
-
-<details markdown="block">
-<summary>16. Modular autonomous driving stack의 약점은 무엇인가?</summary>
-
-답변: Perception, prediction, planning, control이 단계별로 나뉘어 있어 해석은 쉽지만, 앞단의 오류가 뒤 단계로 전파되어 최종 주행 결과를 나쁘게 만들 수 있다.
+답변: 중심 단어 하나를 보고 주변 context 단어를 예측하는 Word2Vec의 proxy task입니다.
 
 </details>
 
 <details markdown="block">
-<summary>17. Tesla식 end-to-end에서 occupancy가 중요한 이유는 무엇인가?</summary>
+<summary>9. RNN이 긴 sequence에서 어려움을 겪는 이유는 무엇입니까?</summary>
 
-답변: Occupancy는 object list보다 geometry, free space, semantics를 함께 표현할 수 있어 planning에 필요한 world representation을 더 잘 제공하기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>18. Behavioral cloning이 ordinary supervised learning과 다른 이유는 무엇인가?</summary>
-
-답변: Robot policy의 action은 다음 state를 바꾸고, 그 결과 미래 입력 분포 자체가 달라질 수 있다. 일반 supervised learning보다 covariate shift와 compounding error 문제가 크다.
+답변: 정보가 hidden state를 따라 순차적으로 전달되므로 먼 과거 정보가 뒤쪽까지 유지되기 어렵고, 순차 계산 때문에 병렬 처리에도 불리하기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>19. DAggER는 무엇을 해결하려는 방법인가?</summary>
+<summary>10. Attention이 RNN보다 global relationship을 잘 보는 이유는 무엇입니까?</summary>
 
-답변: Learner가 실제로 방문한 state를 모으고 expert label을 붙여 dataset에 aggregate한 뒤 retrain함으로써 state distribution shift와 compounding error를 줄이려는 방법이다.
+답변: Attention은 각 token이 다른 token들과의 관련도를 직접 계산해 필요한 정보를 바로 참조할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>20. VLA는 무엇인가?</summary>
+<summary>11. Transformer에서 Q, K, V의 역할은 무엇입니까?</summary>
 
-답변: Vision-Language-Action의 약자로, 이미지나 비디오를 보고 언어 지시를 이해한 뒤 실제 로봇 action을 출력하는 로봇용 backbone이다.
+답변: Q와 K는 dot product로 token 간 관련도 점수를 계산하는 데 쓰이고, V는 그 attention weight를 바탕으로 실제 출력 정보를 만드는 데 쓰입니다.
+
+</details>
+
+<details markdown="block">
+<summary>12. Positional encoding이 필요한 이유는 무엇입니까?</summary>
+
+답변: Self-attention 자체는 token 사이 관계를 보지만 순서 정보를 충분히 담지 못하므로, token의 위치와 순서를 모델에 알려 주기 위해 positional encoding을 더합니다.
+
+</details>
+
+<details markdown="block">
+<summary>13. LLM의 next token prediction은 무엇입니까?</summary>
+
+답변: 지금까지 생성되거나 입력된 token sequence를 조건으로 다음 token의 확률분포를 예측하고, 선택된 token을 다시 문맥에 붙여 반복 생성하는 방식입니다.
+
+</details>
+
+<details markdown="block">
+<summary>14. Greedy decoding과 beam search는 어떻게 다릅니까?</summary>
+
+답변: Greedy decoding은 매 step에서 확률이 가장 높은 token 하나만 고릅니다. Beam search는 가능성 높은 $$k$$개의 후보 sequence를 유지하며 더 넓게 탐색합니다.
+
+</details>
+
+<details markdown="block">
+<summary>15. MoE의 핵심 아이디어는 무엇입니까?</summary>
+
+답변: 모든 token이 모든 expert를 사용하는 것이 아니라, router가 token마다 필요한 expert 일부만 선택해 sparse하게 활성화하는 것입니다.
+
+</details>
+
+<details markdown="block">
+<summary>16. Modular autonomous driving stack의 약점은 무엇입니까?</summary>
+
+답변: Perception, prediction, planning, control이 단계별로 나뉘어 있어 해석은 쉽지만, 앞단의 오류가 뒤 단계로 전파되어 최종 주행 결과를 나쁘게 만들 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>17. Tesla식 end-to-end에서 occupancy가 중요한 이유는 무엇입니까?</summary>
+
+답변: Occupancy는 object list보다 geometry, free space, semantics를 함께 표현할 수 있어 planning에 필요한 world representation을 더 잘 제공하기 때문입니다.
+
+</details>
+
+<details markdown="block">
+<summary>18. Behavioral cloning이 ordinary supervised learning과 다른 이유는 무엇입니까?</summary>
+
+답변: Robot policy의 action은 다음 state를 바꾸고, 그 결과 미래 입력 분포 자체가 달라질 수 있습니다. 일반 supervised learning보다 covariate shift와 compounding error 문제가 큽니다.
+
+</details>
+
+<details markdown="block">
+<summary>19. DAggER는 무엇을 해결하려는 방법입니까?</summary>
+
+답변: Learner가 실제로 방문한 state를 모으고 expert label을 붙여 dataset에 aggregate한 뒤 retrain함으로써 state distribution shift와 compounding error를 줄이려는 방법입니다.
+
+</details>
+
+<details markdown="block">
+<summary>20. VLA는 무엇입니까?</summary>
+
+답변: Vision-Language-Action의 약자로, 이미지나 비디오를 보고 언어 지시를 이해한 뒤 실제 로봇 action을 출력하는 로봇용 backbone입니다.
 
 </details>
 

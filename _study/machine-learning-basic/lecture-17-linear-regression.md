@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-17.pdf`
 
-> **핵심:** 회귀는 입력 $$x$$에서 연속적인 값 $$y$$를 예측하는 문제다. Gaussian noise를 가정하면 관측값은 $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$로 표현된다.
+> **핵심:** 회귀는 입력 $$x$$에서 연속적인 값 $$y$$를 예측하는 문제입니다. Gaussian noise를 가정하면 관측값은 $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$로 표현됩니다.
 
 ## 전체 흐름
 
@@ -28,18 +28,18 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 회귀 문제 | 독립 변수와 종속 변수 사이의 관계를 어떻게 모델링하는가? |
-| 2 | Noise model | 관측값에 noise가 있다는 가정은 수식으로 어떻게 들어가는가? |
-| 3 | Linear regression | $$f(x)=\theta^Tx$$는 어떤 의미의 선형 모델인가? |
-| 4 | MLE | Gaussian noise 가정에서 왜 squared error가 나오는가? |
-| 5 | Closed-form solution | $$\theta_{\mathrm{ML}}$$은 어떤 normal equation으로 구하는가? |
-| 6 | Basis expansion | $$\phi(x)$$를 쓰면 선형 회귀가 어떻게 비선형 회귀로 확장되는가? |
-| 7 | RMSE | 학습 objective와 평가 metric은 어떻게 다른가? |
-| 8 | Overfitting | 다항식 차수가 커질 때 왜 training error와 test error가 갈라지는가? |
-| 9 | MAP | prior를 넣으면 큰 parameter를 어떻게 억제하는가? |
-| 10 | MLE vs MAP | MAP 추정은 ridge regression과 어떻게 연결되는가? |
+| 1 | 회귀 문제 | 독립 변수와 종속 변수 사이의 관계를 어떻게 모델링합니까? |
+| 2 | Noise model | 관측값에 noise가 있다는 가정은 수식으로 어떻게 들어갑니까? |
+| 3 | Linear regression | $$f(x)=\theta^Tx$$는 어떤 의미의 선형 모델입니까? |
+| 4 | MLE | Gaussian noise 가정에서 왜 squared error가 나옵니까? |
+| 5 | Closed-form solution | $$\theta_{\mathrm{ML}}$$은 어떤 normal equation으로 구합니까? |
+| 6 | Basis expansion | $$\phi(x)$$를 쓰면 선형 회귀가 어떻게 비선형 회귀로 확장됩니까? |
+| 7 | RMSE | 학습 objective와 평가 metric은 어떻게 다릅니까? |
+| 8 | Overfitting | 다항식 차수가 커질 때 왜 training error와 test error가 갈라집니까? |
+| 9 | MAP | prior를 넣으면 큰 parameter를 어떻게 억제합니까? |
+| 10 | MLE vs MAP | MAP 추정은 ridge regression과 어떻게 연결됩니까? |
 
-17강은 선형 회귀를 단순한 최소제곱 공식으로 외우는 데서 멈추지 않고, 확률 모델에서 MLE로 유도한 뒤 MAP로 regularization까지 연결한다. 핵심 흐름은 Gaussian observation noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나온다는 것이다.
+17강은 선형 회귀를 단순한 최소제곱 공식으로 외우는 데서 멈추지 않고, 확률 모델에서 MLE로 유도한 뒤 MAP로 regularization까지 연결합니다. 핵심 흐름은 Gaussian observation noise에서 squared error가 나오고, Gaussian prior에서 L2 penalty가 나온다는 것입니다.
 
 ### 원문 수식 추적표
 
@@ -52,13 +52,13 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 | 14–16 | Bayes/MAP objective와 Gaussian prior의 ridge 해 | 11, 12, 14 |
 | 17 | MLE·MAP 예측 비교 | 13 |
 
-페이지 18은 Q&A 마무리이다. Normal-equation inverse는 design matrix가 full column rank일 때만 유일해를 주며, rank-deficient·ill-conditioned 경우의 실패 조건은 14절에 구분했다.
+페이지 18은 Q&A 마무리입니다. Normal-equation inverse는 design matrix가 full column rank일 때만 유일해를 주며, rank-deficient·ill-conditioned 경우의 실패 조건은 14절에 구분했습니다.
 
 </details>
 
 ## 1. 회귀란?
 
-회귀(regression)는 하나의 종속 변수 $$y$$와 하나 이상의 독립 변수 $$x$$ 사이의 관계를 수학적 모델로 추정하고 예측하는 분석 기법이다.
+회귀(regression)는 하나의 종속 변수 $$y$$와 하나 이상의 독립 변수 $$x$$ 사이의 관계를 수학적 모델로 추정하고 예측하는 분석 기법입니다.
 
 | 용어 | 의미 |
 |---|---|
@@ -66,41 +66,41 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 | 종속 변수 $$y$$ | 결과 값, 관측 target |
 | 회귀 모델 | $$x$$를 이용해 $$y$$를 예측하는 함수 또는 확률분포 |
 
-우리가 원하는 것은 training data를 지나가는 예쁜 곡선을 그리는 것만이 아니다. 관측하지 않은 새 입력 $$x'$$에 대해 $$y'$$를 잘 예측하는 함수 $$f$$를 찾는 것이 목표다.
+우리가 원하는 것은 training data를 지나가는 예쁜 곡선을 그리는 것만이 아닙니다. 관측하지 않은 새 입력 $$x'$$에 대해 $$y'$$를 잘 예측하는 함수 $$f$$를 찾는 것이 목표입니다.
 
 ## 2. 문제 구성과 Noise
 
-회귀 문제에서는 관측값에 noise가 포함되어 있다고 본다. 즉, 실제 관측 $$y$$는 함수값 $$f(x)$$에 noise $$\epsilon$$이 더해진 값이다.
+회귀 문제에서는 관측값에 noise가 포함되어 있다고 봅니다. 즉, 실제 관측 $$y$$는 함수값 $$f(x)$$에 noise $$\epsilon$$이 더해진 값입니다.
 
 $$
 y=f(x)+\epsilon
 $$
 
-강의에서는 이 noise가 평균 0, 분산 $$\sigma^2$$인 Gaussian distribution을 따른다고 가정한다.
+강의에서는 이 noise가 평균 0, 분산 $$\sigma^2$$인 Gaussian distribution을 따른다고 가정합니다.
 
 $$
 \epsilon\sim\mathcal{N}(0,\sigma^2)
 $$
 
-이 가정은 "같은 $$x$$를 관측해도 측정 오차, 환경 차이, 설명하지 못한 요인 때문에 $$y$$가 조금씩 흔들릴 수 있다"는 뜻이다.
+이 가정은 "같은 $$x$$를 관측해도 측정 오차, 환경 차이, 설명하지 못한 요인 때문에 $$y$$가 조금씩 흔들릴 수 있다"는 뜻입니다.
 
-선형 회귀는 함수 $$f$$를 parameter $$\theta$$에 대해 선형인 형태로 둔다.
+선형 회귀는 함수 $$f$$를 parameter $$\theta$$에 대해 선형인 형태로 둡니다.
 
 $$
 f(x)=\theta^T x
 $$
 
-더 일반적으로 basis function $$\phi(x)$$를 쓰면 다음처럼 표현할 수 있다.
+더 일반적으로 basis function $$\phi(x)$$를 쓰면 다음처럼 표현할 수 있습니다.
 
 $$
 f(x)=\theta^T\phi(x)
 $$
 
-여기서 중요한 점은 $$x$$에 대해서는 비선형일 수 있어도 $$\theta$$에 대해서는 선형이라는 것이다.
+여기서 중요한 점은 $$x$$에 대해서는 비선형일 수 있어도 $$\theta$$에 대해서는 선형이라는 것입니다.
 
 ## 3. 학습 데이터와 확률 모델
 
-학습 데이터는 다음처럼 주어진다.
+학습 데이터는 다음처럼 주어집니다.
 
 $$
 \mathcal{D}
@@ -108,7 +108,7 @@ $$
 \{(x_1,y_1),\ldots,(x_N,y_N)\}
 $$
 
-선형 회귀의 Gaussian observation model은 각 sample에 대해 다음과 같이 쓸 수 있다.
+선형 회귀의 Gaussian observation model은 각 sample에 대해 다음과 같이 쓸 수 있습니다.
 
 $$
 p(y_n\mid x_n,\theta)
@@ -116,7 +116,7 @@ p(y_n\mid x_n,\theta)
 \mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)
 $$
 
-데이터가 i.i.d.라고 가정하면 전체 likelihood는 sample별 likelihood의 곱이 된다.
+데이터가 i.i.d.라고 가정하면 전체 likelihood는 sample별 likelihood의 곱이 됩니다.
 
 $$
 P(Y\mid X,\theta)
@@ -134,7 +134,7 @@ P(y_n\mid x_n,\theta)
 \mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)
 $$
 
-MLE는 이 likelihood를 최대화하는 parameter를 찾는다.
+MLE는 이 likelihood를 최대화하는 parameter를 찾습니다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -143,7 +143,7 @@ $$
 P(Y\mid X,\theta)
 $$
 
-찾은 $$\theta^*$$를 예측에 사용하면 새 입력 $$x'$$에 대한 예측 분포는 다음과 같다.
+찾은 $$\theta^*$$를 예측에 사용하면 새 입력 $$x'$$에 대한 예측 분포는 다음과 같습니다.
 
 $$
 P(y'\mid x',\theta^*)
@@ -153,7 +153,7 @@ $$
 
 ## 4. 선형 회귀 MLE
 
-MLE는 likelihood 최대화 문제지만, 실제 계산에서는 negative log-likelihood를 최소화하는 문제로 바꾼다.
+MLE는 likelihood 최대화 문제지만, 실제 계산에서는 negative log-likelihood를 최소화하는 문제로 바꿉니다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -162,7 +162,7 @@ $$
 -\log P(Y\mid X,\theta)
 $$
 
-i.i.d. 가정을 사용하면 곱은 log 안에서 합으로 바뀐다.
+i.i.d. 가정을 사용하면 곱은 log 안에서 합으로 바뀝니다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -173,7 +173,7 @@ $$
 \log p(y_n\mid x_n,\theta)
 $$
 
-Gaussian density의 log를 쓰면 다음 항이 나온다.
+Gaussian density의 log를 쓰면 다음 항이 나옵니다.
 
 $$
 \log p(y_n\mid x_n,\theta)
@@ -184,7 +184,7 @@ $$
 +\mathrm{const}
 $$
 
-따라서 negative log-likelihood는 squared error 합과 같은 형태가 된다.
+따라서 negative log-likelihood는 squared error 합과 같은 형태가 됩니다.
 
 $$
 L(\theta)
@@ -197,11 +197,11 @@ L(\theta)
 +\mathrm{const}
 $$
 
-즉, Gaussian noise를 가정한 선형 회귀의 MLE는 squared error를 최소화하는 문제와 같다.
+즉, Gaussian noise를 가정한 선형 회귀의 MLE는 squared error를 최소화하는 문제와 같습니다.
 
 ## 5. 행렬 형태의 NLL
 
-각 sample을 행으로 쌓아 feature matrix를 만들자.
+각 sample을 행으로 쌓아 feature matrix를 만들겠습니다.
 
 $$
 X=
@@ -219,13 +219,13 @@ y_N
 \end{bmatrix}
 $$
 
-그러면 전체 예측값은 $$X\theta$$이고 residual vector는 다음과 같다.
+그러면 전체 예측값은 $$X\theta$$이고 residual vector는 다음과 같습니다.
 
 $$
 y-X\theta
 $$
 
-NLL은 행렬 형태로 다음처럼 쓸 수 있다.
+NLL은 행렬 형태로 다음처럼 쓸 수 있습니다.
 
 $$
 L(\theta)
@@ -245,7 +245,7 @@ L(\theta)
 +\mathrm{const}
 $$
 
-상수항과 양의 배율 $$\frac{1}{2\sigma^2}$$은 minimizer를 바꾸지 않으므로, 결국 다음 문제와 같은 해를 가진다.
+상수항과 양의 배율 $$\frac{1}{2\sigma^2}$$은 minimizer를 바꾸지 않으므로, 결국 다음 문제와 같은 해를 가집니다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -256,12 +256,12 @@ $$
 
 ## 6. 최적해 구하기
 
-Squared error의 gradient를 0으로 두면 normal equation $$X^TX\theta=X^Ty$$가 나온다. $$X$$가 full column rank이면 inverse 해가 유일하고, 그렇지 않으면 pseudoinverse나 regularization이 필요하다. 전개 과정은 아래에서 확인한다.
+Squared error의 gradient를 0으로 두면 normal equation $$X^TX\theta=X^Ty$$가 나옵니다. $$X$$가 full column rank이면 inverse 해가 유일하고, 그렇지 않으면 pseudoinverse나 regularization이 필요합니다. 전개 과정은 아래에서 확인합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: From squared error to the normal equation</summary>
 
-NLL에서 상수와 양의 배율을 제외하고 squared error만 생각하면 다음 objective를 최소화하면 된다. 여기서는 column vector convention을 사용한다.
+NLL에서 상수와 양의 배율을 제외하고 squared error만 생각하면 다음 objective를 최소화하면 됩니다. 여기서는 column vector convention을 사용합니다.
 
 $$
 X\in\mathbb{R}^{N\times D},
@@ -277,7 +277,7 @@ J(\theta)
 (y-X\theta)^T(y-X\theta)
 $$
 
-이 식을 전개하면 다음과 같다.
+이 식을 전개하면 다음과 같습니다.
 
 $$
 J(\theta)
@@ -288,7 +288,7 @@ y^Ty
 +\theta^TX^TX\theta
 $$
 
-여기서 $$y^TX\theta$$와 $$\theta^TX^Ty$$는 둘 다 scalar이고 서로 같은 값이다. 따라서 다음처럼 정리할 수 있다.
+여기서 $$y^TX\theta$$와 $$\theta^TX^Ty$$는 둘 다 scalar이고 서로 같은 값입니다. 따라서 다음처럼 정리할 수 있습니다.
 
 $$
 J(\theta)
@@ -307,7 +307,7 @@ $$
 +2X^TX\theta
 $$
 
-이다. NLL $$L(\theta)=\frac{1}{2\sigma^2}J(\theta)+\mathrm{const}$$를 직접 미분하면 같은 조건이 다음처럼 나온다.
+입니다. NLL $$L(\theta)=\frac{1}{2\sigma^2}J(\theta)+\mathrm{const}$$를 직접 미분하면 같은 조건이 다음처럼 나옵니다.
 
 $$
 \nabla_\theta L(\theta)
@@ -318,7 +318,7 @@ X^TX\theta-X^Ty
 \right)
 $$
 
-최적점에서는 gradient가 0이므로 normal equation을 얻는다.
+최적점에서는 gradient가 0이므로 normal equation을 얻습니다.
 
 $$
 \nabla_\theta L(\theta)=0
@@ -326,7 +326,7 @@ $$
 X^TX\theta=X^Ty
 $$
 
-$$X^TX$$가 invertible이면 closed-form solution은 다음과 같다.
+$$X^TX$$가 invertible이면 closed-form solution은 다음과 같습니다.
 
 $$
 \theta_{\mathrm{ML}}
@@ -334,25 +334,25 @@ $$
 (X^TX)^{-1}X^Ty
 $$
 
-이 식은 선형 회귀의 대표적인 normal equation solution이다. 다만 $$X^TX$$가 invertible이려면 $$X$$가 full column rank여야 한다.
+이 식은 선형 회귀의 대표적인 normal equation solution입니다. 다만 $$X^TX$$가 invertible이려면 $$X$$가 full column rank여야 합니다.
 
 $$
 \operatorname{rank}(X)=D
 $$
 
-만약 $$X^TX$$가 invertible하지 않으면 이 inverse 식을 그대로 사용할 수 없다. 이때는 normal equation을 만족하는 minimizer가 하나로 정해지지 않을 수 있으며, 최소제곱 관점에서는 Moore-Penrose pseudoinverse $$X^+$$를 이용한 최소 norm 해를 사용할 수 있다.
+만약 $$X^TX$$가 invertible하지 않으면 이 inverse 식을 그대로 사용할 수 없습니다. 이때는 normal equation을 만족하는 minimizer가 하나로 정해지지 않을 수 있으며, 최소제곱 관점에서는 Moore-Penrose pseudoinverse $$X^+$$를 이용한 최소 norm 해를 사용할 수 있습니다.
 
 $$
 \theta_{\mathrm{ML}}=X^+y
 $$
 
-이 rank 문제가 뒤에서 MAP 또는 ridge regression을 쓰는 이유와도 연결된다. $$\Phi^T\Phi+\lambda I$$처럼 양의 항을 더하면 matrix가 더 안정적으로 invertible해진다.
+이 rank 문제가 뒤에서 MAP 또는 ridge regression을 쓰는 이유와도 연결됩니다. $$\Phi^T\Phi+\lambda I$$처럼 양의 항을 더하면 matrix가 더 안정적으로 invertible해집니다.
 
 </details>
 
 ## 7. 선형 회귀를 넘어서: Basis Function
 
-선형 회귀는 $$x$$ 자체에 대해서만 직선을 그리는 모델로 끝나지 않는다. 입력을 basis function $$\phi(x)$$로 변환하면 $$x$$에 대해서는 비선형인 함수를 만들 수 있다.
+선형 회귀는 $$x$$ 자체에 대해서만 직선을 그리는 모델로 끝나지 않습니다. 입력을 basis function $$\phi(x)$$로 변환하면 $$x$$에 대해서는 비선형인 함수를 만들 수 있습니다.
 
 $$
 p(y\mid x,\theta)
@@ -360,7 +360,7 @@ p(y\mid x,\theta)
 \mathcal{N}(y\mid\phi(x)^T\theta,\sigma^2)
 $$
 
-관측 모델은 다음처럼 쓸 수 있다.
+관측 모델은 다음처럼 쓸 수 있습니다.
 
 $$
 y
@@ -372,11 +372,11 @@ y
 +\epsilon
 $$
 
-이때 모델은 $$\phi_k(x)$$ 때문에 $$x$$에 대해서는 비선형일 수 있지만, parameter $$\theta_k$$에 대해서는 여전히 선형이다. 그래서 basis expansion 후에도 같은 선형 회귀 공식이 적용된다.
+이때 모델은 $$\phi_k(x)$$ 때문에 $$x$$에 대해서는 비선형일 수 있지만, parameter $$\theta_k$$에 대해서는 여전히 선형입니다. 그래서 basis expansion 후에도 같은 선형 회귀 공식이 적용됩니다.
 
 ## 8. 다항식으로의 확장
 
-다항 회귀에서는 다음 basis vector를 사용할 수 있다.
+다항 회귀에서는 다음 basis vector를 사용할 수 있습니다.
 
 $$
 \phi(x)
@@ -392,7 +392,7 @@ x^{K-1}
 \mathbb{R}^{K}
 $$
 
-모든 sample에 대해 $$\phi(x_n)^T$$를 행으로 쌓으면 feature matrix $$\Phi$$가 된다.
+모든 sample에 대해 $$\phi(x_n)^T$$를 행으로 쌓으면 feature matrix $$\Phi$$가 됩니다.
 
 $$
 \Phi
@@ -406,7 +406,7 @@ $$
 \mathbb{R}^{N\times K}
 $$
 
-그러면 NLL은 다음처럼 바뀐다.
+그러면 NLL은 다음처럼 바뀝니다.
 
 $$
 -\log p(Y\mid X,\theta)
@@ -424,17 +424,17 @@ $$
 (\Phi^T\Phi)^{-1}\Phi^T y
 $$
 
-이다. 단, $$\Phi^T\Phi$$가 invertible이려면 $$\Phi$$가 full column rank여야 한다.
+입니다. 단, $$\Phi^T\Phi$$가 invertible이려면 $$\Phi$$가 full column rank여야 합니다.
 
 $$
 \operatorname{rank}(\Phi)=K
 $$
 
-즉, feature 수 $$K$$가 너무 많거나 feature column들이 선형 종속이면 closed-form inverse가 존재하지 않을 수 있다.
+즉, feature 수 $$K$$가 너무 많거나 feature column들이 선형 종속이면 closed-form inverse가 존재하지 않을 수 있습니다.
 
 ## 9. 평가: MSE와 RMSE
 
-학습할 때는 평균 squared error를 최소화하는 형태로 objective를 둔다.
+학습할 때는 평균 squared error를 최소화하는 형태로 objective를 둡니다.
 
 $$
 \frac{1}{N}
@@ -444,7 +444,7 @@ y_n-\phi(x_n)^T\theta
 \right)^2
 $$
 
-평가할 때는 Root Mean Square Error(RMSE)를 자주 사용한다.
+평가할 때는 Root Mean Square Error(RMSE)를 자주 사용합니다.
 
 $$
 \mathrm{RMSE}
@@ -455,7 +455,7 @@ $$
 }
 $$
 
-sample별로 풀어 쓰면 다음과 같다.
+sample별로 풀어 쓰면 다음과 같습니다.
 
 $$
 \mathrm{RMSE}
@@ -469,19 +469,19 @@ y_n-\phi(x_n)^T\theta
 }
 $$
 
-MSE는 squared error의 평균이고, RMSE는 그 제곱근이다. RMSE는 단위가 $$y$$와 같아 해석하기 쉽다.
+MSE는 squared error의 평균이고, RMSE는 그 제곱근입니다. RMSE는 단위가 $$y$$와 같아 해석하기 쉽습니다.
 
 ## 10. 과적합
 
-다항식 차수가 커지면 모델은 training data를 매우 유연하게 맞출 수 있다. 그러나 너무 높은 차수는 training data의 noise까지 따라가면서 test error를 크게 만들 수 있다.
+다항식 차수가 커지면 모델은 training data를 매우 유연하게 맞출 수 있습니다. 그러나 너무 높은 차수는 training data의 noise까지 따라가면서 test error를 크게 만들 수 있습니다.
 
 <a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-17-page-13.png" | relative_url }}" alt="원본 강의 슬라이드의 다항식 차수별 적합과 train-test RMSE" loading="lazy"></a>
 
-*원본 강의 PDF p. 13. 위 여섯 그래프는 차수 $$M=0,1,3,4,6,9$$의 적합 곡선을 비교한다. 아래 그래프에서 파란 training RMSE는 차수가 커질수록 낮아지지만, 주황 test RMSE는 차수 6 이후 급격히 증가한다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=13" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 13</a>*
+*원본 강의 PDF p. 13. 위 여섯 그래프는 차수 $$M=0,1,3,4,6,9$$의 적합 곡선을 비교합니다. 아래 그래프에서 파란 training RMSE는 차수가 커질수록 낮아지지만, 주황 test RMSE는 차수 6 이후 급격히 증가합니다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=13" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 13</a>*
 
-$$M=9$$ 곡선의 큰 진동은 학습점 사이에서 모델이 불안정해졌음을 보여준다. training error만 최소화하면 이 변화를 발견하지 못하므로, 보지 않은 validation/test data로 일반화 오차를 따로 확인해야 한다.
+$$M=9$$ 곡선의 큰 진동은 학습점 사이에서 모델이 불안정해졌음을 보여줍니다. training error만 최소화하면 이 변화를 발견하지 못하므로, 보지 않은 validation/test data로 일반화 오차를 따로 확인해야 합니다.
 
-강의 슬라이드의 그림은 다항식 차수 $$M$$이 커질수록 training error는 계속 낮아질 수 있지만, test error는 어느 순간부터 급격히 증가할 수 있음을 보여준다.
+강의 슬라이드의 그림은 다항식 차수 $$M$$이 커질수록 training error는 계속 낮아질 수 있지만, test error는 어느 순간부터 급격히 증가할 수 있음을 보여줍니다.
 
 | 모델 복잡도 | 현상 |
 |---|---|
@@ -489,15 +489,15 @@ $$M=9$$ 곡선의 큰 진동은 학습점 사이에서 모델이 불안정해졌
 | 적절함 | training과 test 모두에서 안정적 |
 | 너무 높음 | overfitting, training noise까지 따라감 |
 
-다항식 feature 수가 $$K$$일 때, 보통 $$K\le N$$이고 $$\Phi$$가 full column rank이면 unique solution을 기대할 수 있다. 반대로 feature 수가 sample 수보다 많거나 rank가 부족하면 $$\Phi^T\Phi$$가 singular해지고, 유일해가 존재하지 않을 수 있다.
+다항식 feature 수가 $$K$$일 때, 보통 $$K\le N$$이고 $$\Phi$$가 full column rank이면 unique solution을 기대할 수 있습니다. 반대로 feature 수가 sample 수보다 많거나 rank가 부족하면 $$\Phi^T\Phi$$가 singular해지고, 유일해가 존재하지 않을 수 있습니다.
 
-이 경우에는 선형 방정식을 푸는 다른 방법이 필요하고, 해가 무한히 많아질 수도 있다.
+이 경우에는 선형 방정식을 푸는 다른 방법이 필요하고, 해가 무한히 많아질 수도 있습니다.
 
 ## 11. MAP로 과적합 줄이기
 
-과적합이 일어나는 경우에는 parameter 값이 매우 커지는 현상이 자주 나타난다. 큰 계수는 다항식 곡선을 심하게 흔들리게 만들 수 있기 때문이다.
+과적합이 일어나는 경우에는 parameter 값이 매우 커지는 현상이 자주 나타납니다. 큰 계수는 다항식 곡선을 심하게 흔들리게 만들 수 있기 때문입니다.
 
-MAP는 parameter prior를 넣어 큰 parameter에 낮은 확률을 부여한다.
+MAP는 parameter prior를 넣어 큰 parameter에 낮은 확률을 부여합니다.
 
 $$
 p(\theta\mid X,Y)
@@ -509,7 +509,7 @@ p(Y\mid X)
 }
 $$
 
-log를 취하면 다음처럼 likelihood와 prior가 더해진다.
+log를 취하면 다음처럼 likelihood와 prior가 더해집니다.
 
 $$
 \log p(\theta\mid X,Y)
@@ -519,7 +519,7 @@ $$
 +\mathrm{const}
 $$
 
-MAP는 posterior를 최대화하는 parameter를 고른다. negative log 관점에서는 다음을 최소화한다.
+MAP는 posterior를 최대화하는 parameter를 고릅니다. negative log 관점에서는 다음을 최소화합니다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -531,11 +531,11 @@ $$
 \right]
 $$
 
-즉, MLE objective에 prior에서 온 penalty가 추가된다.
+즉, MLE objective에 prior에서 온 penalty가 추가됩니다.
 
 ## 12. Gaussian Prior와 MAP 해
 
-[원문 PDF p. 16]({{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=16" | relative_url }})은 평균이 0인 Gaussian prior를 사용한다. $$b^2>0$$는 계수가 0 주변에 얼마나 넓게 분포할 수 있는지를 나타내는 prior variance이고, $$I$$는 단위행렬이다.
+[원문 PDF p. 16]({{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-17.pdf#page=16" | relative_url }})은 평균이 0인 Gaussian prior를 사용합니다. $$b^2>0$$는 계수가 0 주변에 얼마나 넓게 분포할 수 있는지를 나타내는 prior variance이고, $$I$$는 단위행렬입니다.
 
 $$
 p(\theta)
@@ -543,9 +543,9 @@ p(\theta)
 \mathcal{N}(0,b^2I)
 $$
 
-**이 prior는 계수를 반드시 0으로 만드는 규칙이 아니라, 큰 계수에 비용을 부과하는 규칙이다.** 데이터 적합도의 이득이 그 비용보다 크면 큰 계수도 선택될 수 있다. 계수를 원점에 연결한 스프링에 비유하면, 변위는 계수 $$\theta_j$$, 스프링의 세기는 아래의 $$\lambda$$에 대응한다. 계수가 멀어질수록 0으로 돌아오게 하는 벌점의 기울기가 커진다. 다만 실제로 물리적 힘이 작용하거나 계수가 정해진 시간에 0으로 수렴한다는 뜻은 아니다. 실제 계산은 관측 오차와 계수 크기의 두 비용을 함께 최소화한다.
+**이 prior는 계수를 반드시 0으로 만드는 규칙이 아니라, 큰 계수에 비용을 부과하는 규칙입니다.** 데이터 적합도의 이득이 그 비용보다 크면 큰 계수도 선택될 수 있습니다. 계수를 원점에 연결한 스프링에 비유하면, 변위는 계수 $$\theta_j$$, 스프링의 세기는 아래의 $$\lambda$$에 대응합니다. 계수가 멀어질수록 0으로 돌아오게 하는 벌점의 기울기가 커집니다. 다만 실제로 물리적 힘이 작용하거나 계수가 정해진 시간에 0으로 수렴한다는 뜻은 아닙니다. 실제 계산은 관측 오차와 계수 크기의 두 비용을 함께 최소화합니다.
 
-Gaussian observation noise의 variance가 $$\sigma^2>0$$로 고정되어 있을 때, 원문의 negative log posterior에 양수 $$\sigma^2$$를 곱하고 $$\theta$$와 무관한 상수를 제거하면 다음과 **같은 최적해**를 갖는다.
+Gaussian observation noise의 variance가 $$\sigma^2>0$$로 고정되어 있을 때, 원문의 negative log posterior에 양수 $$\sigma^2$$를 곱하고 $$\theta$$와 무관한 상수를 제거하면 다음과 **같은 최적해**를 갖습니다.
 
 $$
 F_\lambda(\theta)
@@ -554,11 +554,11 @@ F_\lambda(\theta)
 \qquad \lambda=\frac{\sigma^2}{b^2}.
 $$
 
-첫 항은 예측이 관측값에서 벗어난 비용이고, 둘째 항은 큰 계수의 비용이다. $$b^2$$가 작아지면 0 근처를 더 강하게 선호하므로 $$\lambda$$가 커진다. $$b^2$$를 고정하고 $$\sigma^2$$를 키우면 관측 오차를 상대적으로 덜 신뢰하게 되어 prior의 영향이 커진다. 양쪽의 $$1/2$$는 미분할 때 생기는 2를 상쇄하는 표기이며, 한 항의 계수만 바꾸면 같은 $$\lambda$$가 아니다. 여기서는 제곱오차의 **합**을 사용한다. 평균 오차를 쓰는 정의와 비교할 때도 두 항의 상대 비율을 맞춰야 한다.
+첫 항은 예측이 관측값에서 벗어난 비용이고, 둘째 항은 큰 계수의 비용입니다. $$b^2$$가 작아지면 0 근처를 더 강하게 선호하므로 $$\lambda$$가 커집니다. $$b^2$$를 고정하고 $$\sigma^2$$를 키우면 관측 오차를 상대적으로 덜 신뢰하게 되어 prior의 영향이 커집니다. 양쪽의 $$1/2$$는 미분할 때 생기는 2를 상쇄하는 표기이며, 한 항의 계수만 바꾸면 같은 $$\lambda$$가 아닙니다. 여기서는 제곱오차의 **합**을 사용합니다. 평균 오차를 쓰는 정의와 비교할 때도 두 항의 상대 비율을 맞춰야 합니다.
 
 ### 12.1 한 계수로 확인하는 shrinkage
 
-아래는 강의 실험 결과가 아니라 계수 축소를 확인하기 위한 작성자 예제다. 모든 값은 무차원이고, 절편이 없는 모델 $$\hat y=\theta x$$에 관측 하나 $$(x,y)=(1,6)$$을 사용한다. 그러면
+아래는 강의 실험 결과가 아니라 계수 축소를 확인하기 위한 작성자 예제입니다. 모든 값은 무차원이고, 절편이 없는 모델 $$\hat y=\theta x$$에 관측 하나 $$(x,y)=(1,6)$$을 사용합니다. 그러면
 
 $$
 F_\lambda(\theta)=\frac12(6-\theta)^2+\frac{\lambda}{2}\theta^2,
@@ -567,20 +567,20 @@ $$
 
 | $$\lambda$$ | 계수·예측값 $$\hat\theta=\hat y$$ | 잔차 $$6-\hat y$$ | 의미 |
 |---:|---:|---:|---|
-| 0 | 6 | 0 | MLE 비교 기준. 관측값을 정확히 맞춘다. |
-| 1 | 3 | 3 | 데이터 오차와 계수 비용 사이에서 절충한다. |
-| 3 | 1.5 | 4.5 | 더 강한 penalty 때문에 계수가 0에 가까워진다. |
+| 0 | 6 | 0 | MLE 비교 기준. 관측값을 정확히 맞춥니다. |
+| 1 | 3 | 3 | 데이터 오차와 계수 비용 사이에서 절충합니다. |
+| 3 | 1.5 | 4.5 | 더 강한 penalty 때문에 계수가 0에 가까워집니다. |
 
-*Supplementary table — 같은 데이터에서 penalty의 상대 세기만 바꾼 계산이다. $$\lambda=0$$은 유한한 $$b^2$$의 Gaussian prior가 아니라 regularization을 제거한 MLE 기준이다.*
+*Supplementary table — 같은 데이터에서 penalty의 상대 세기만 바꾼 계산입니다. $$\lambda=0$$은 유한한 $$b^2$$의 Gaussian prior가 아니라 regularization을 제거한 MLE 기준입니다.*
 
-예를 들어 $$\lambda=1$$이면 $$\theta=6$$의 관측 오차는 0이지만 계수 비용이 18이다. $$\theta=3$$에서는 두 비용이 각각 4.5라서 합이 9다. MAP가 관측값을 완벽히 맞추는 6 대신 3을 고르는 이유가 여기에 있다. 이 예제는 축소의 원리를 보여 줄 뿐, 작은 계수가 항상 새 데이터의 예측을 개선한다는 증거는 아니다. Prior가 실제 계수와 맞지 않거나 penalty가 지나치면 과소적합할 수 있다.
+예를 들어 $$\lambda=1$$이면 $$\theta=6$$의 관측 오차는 0이지만 계수 비용이 18입니다. $$\theta=3$$에서는 두 비용이 각각 4.5라서 합이 9입니다. MAP가 관측값을 완벽히 맞추는 6 대신 3을 고르는 이유가 여기에 있습니다. 이 예제는 축소의 원리를 보여 줄 뿐, 작은 계수가 항상 새 데이터의 예측을 개선한다는 증거는 아닙니다. Prior가 실제 계수와 맞지 않거나 penalty가 지나치면 과소적합할 수 있습니다.
 
-아래 유도는 원문의 isotropic prior처럼 **모든 계수에 같은 prior를 적용**한다. 절편을 제외하거나 feature별 단위·scale에 맞춰 다른 prior를 사용하면 penalty 행렬도 달라진다. $$\lambda>0$$이면 $$\Phi$$가 rank deficient여도 ridge 행렬은 양의 정부호가 되지만, 이 성질만으로 모델의 적합성이나 일반화 성능이 보장되지는 않는다.
+아래 유도는 원문의 isotropic prior처럼 **모든 계수에 같은 prior를 적용**합니다. 절편을 제외하거나 feature별 단위·scale에 맞춰 다른 prior를 사용하면 penalty 행렬도 달라집니다. $$\lambda>0$$이면 $$\Phi$$가 rank deficient여도 ridge 행렬은 양의 정부호가 되지만, 이 성질만으로 모델의 적합성이나 일반화 성능이 보장되지는 않습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Gaussian prior, ridge normalization, and the MAP solution</summary>
 
-원문 p. 16의 행렬식을 column-vector gradient로 전개하고, 위 한 변수 예제로 확인한다. $$\Phi\in\mathbb R^{N\times D}$$는 design matrix, $$y\in\mathbb R^N$$는 관측 벡터, $$\theta\in\mathbb R^D$$는 계수다. 관측 오차는 서로 독립인 $$\mathcal N(0,\sigma^2)$$이고, $$\sigma^2>0$$와 $$b^2>0$$는 고정한다. Prior는 $$\mathcal N(0,b^2I)$$다. 이 가정에서 negative log posterior는 다음과 같다.
+원문 p. 16의 행렬식을 column-vector gradient로 전개하고, 위 한 변수 예제로 확인합니다. $$\Phi\in\mathbb R^{N\times D}$$는 design matrix, $$y\in\mathbb R^N$$는 관측 벡터, $$\theta\in\mathbb R^D$$는 계수입니다. 관측 오차는 서로 독립인 $$\mathcal N(0,\sigma^2)$$이고, $$\sigma^2>0$$와 $$b^2>0$$는 고정합니다. Prior는 $$\mathcal N(0,b^2I)$$입니다. 이 가정에서 negative log posterior는 다음과 같습니다.
 
 $$
 -\log p(\theta\mid X,Y)
@@ -593,9 +593,9 @@ $$
 +\mathrm{const}
 $$
 
-두 번째 항 $$\frac{1}{2b^2}\theta^T\theta$$가 Gaussian prior에서 나온 L2 penalty다. 여기에 $$\sigma^2$$를 곱하면 본문의 $$F_\lambda$$가 된다. 양수의 곱과 상수 제거는 최솟값의 위치를 바꾸지 않는다.
+두 번째 항 $$\frac{1}{2b^2}\theta^T\theta$$가 Gaussian prior에서 나온 L2 penalty입니다. 여기에 $$\sigma^2$$를 곱하면 본문의 $$F_\lambda$$가 됩니다. 양수의 곱과 상수 제거는 최솟값의 위치를 바꾸지 않습니다.
 
-미분하면 두 quadratic term의 2와 앞의 $$1/2$$가 각각 상쇄된다.
+미분하면 두 quadratic term의 2와 앞의 $$1/2$$가 각각 상쇄됩니다.
 
 $$
 \nabla_\theta[-\log p(\theta\mid X,Y)]
@@ -603,7 +603,7 @@ $$
 +\frac{1}{b^2}\theta.
 $$
 
-Gradient를 0으로 두고 $$\sigma^2$$를 곱해 정리하면 $$(\Phi^T\Phi+\frac{\sigma^2}{b^2}I)\theta=\Phi^Ty$$다. 이를 전치하면 원문의 row-vector 표기와 같다.
+Gradient를 0으로 두고 $$\sigma^2$$를 곱해 정리하면 $$(\Phi^T\Phi+\frac{\sigma^2}{b^2}I)\theta=\Phi^Ty$$입니다. 이를 전치하면 원문의 row-vector 표기와 같습니다.
 
 $$
 \theta^T
@@ -614,7 +614,7 @@ $$
 y^T\Phi
 $$
 
-이고, column vector 형태의 해는 다음과 같다.
+이고, column vector 형태의 해는 다음과 같습니다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -625,7 +625,7 @@ $$
 \Phi^Ty
 $$
 
-$$\lambda=\sigma^2/b^2$$를 대입하면 ridge regression의 해를 얻는다.
+$$\lambda=\sigma^2/b^2$$를 대입하면 ridge regression의 해를 얻습니다.
 
 $$
 \theta_{\mathrm{MAP}}
@@ -633,15 +633,15 @@ $$
 (\Phi^T\Phi+\lambda I)^{-1}\Phi^Ty
 $$
 
-$$\lambda>0$$일 때 임의의 $$v\ne0$$에 대해 $$v^T(\Phi^T\Phi+\lambda I)v=\lVert\Phi v\rVert_2^2+\lambda\lVert v\rVert_2^2>0$$이므로 이 stationary point는 유일한 전역 최솟값이다. $$\lambda=0$$이면 같은 inverse 식을 사용하려면 $$\Phi$$의 full column rank가 필요하다.
+$$\lambda>0$$일 때 임의의 $$v\ne0$$에 대해 $$v^T(\Phi^T\Phi+\lambda I)v=\lVert\Phi v\rVert_2^2+\lambda\lVert v\rVert_2^2>0$$이므로 이 stationary point는 유일한 전역 최솟값입니다. $$\lambda=0$$이면 같은 inverse 식을 사용하려면 $$\Phi$$의 full column rank가 필요합니다.
 
-한 변수 예제에서는 $$F'_\lambda(\theta)=(\theta-6)+\lambda\theta=0$$이므로 $$\hat\theta=6/(1+\lambda)$$다. 행렬식에 $$\Phi=[1]$$, $$y=[6]$$을 대입해도 $$(1+\lambda)^{-1}6$$으로 일치한다. $$\lambda=1$$, $$\sigma^2=b^2=1$$이면 원문의 비정규화 objective도 $$\frac12(6-\theta)^2+\frac12\theta^2+\mathrm{const}$$가 되어 같은 최적해 3을 준다.
+한 변수 예제에서는 $$F'_\lambda(\theta)=(\theta-6)+\lambda\theta=0$$이므로 $$\hat\theta=6/(1+\lambda)$$입니다. 행렬식에 $$\Phi=[1]$$, $$y=[6]$$을 대입해도 $$(1+\lambda)^{-1}6$$으로 일치합니다. $$\lambda=1$$, $$\sigma^2=b^2=1$$이면 원문의 비정규화 objective도 $$\frac12(6-\theta)^2+\frac12\theta^2+\mathrm{const}$$가 되어 같은 최적해 3을 줍니다.
 
 </details>
 
 ## 13. MLE와 MAP 차이
 
-MLE와 MAP의 차이는 prior를 쓰는지 여부다.
+MLE와 MAP의 차이는 prior를 쓰는지 여부입니다.
 
 | 구분 | MLE | MAP |
 |---|---|---|
@@ -651,13 +651,13 @@ MLE와 MAP의 차이는 prior를 쓰는지 여부다.
 | 선형 회귀 해 | $$(\Phi^T\Phi)^{-1}\Phi^Ty$$ | $$(\Phi^T\Phi+\lambda I)^{-1}\Phi^Ty$$ |
 | 과적합 대응 | 직접적인 억제 없음 | 큰 parameter를 penalty로 억제 |
 
-MLE는 training data를 가장 그럴듯하게 만드는 parameter를 찾는다. 데이터가 충분하고 모델이 적절하면 강력하지만, 복잡한 feature를 많이 쓰면 overfitting될 수 있다.
+MLE는 training data를 가장 그럴듯하게 만드는 parameter를 찾습니다. 데이터가 충분하고 모델이 적절하면 강력하지만, 복잡한 feature를 많이 쓰면 overfitting될 수 있습니다.
 
-MAP는 prior를 통해 parameter가 너무 커지는 것을 막는다. Gaussian prior를 쓰면 결과적으로 L2 regularization과 같은 역할을 하며, 더 부드러운 곡선을 선택하는 경향이 생긴다.
+MAP는 prior를 통해 parameter가 너무 커지는 것을 막습니다. Gaussian prior를 쓰면 결과적으로 L2 regularization과 같은 역할을 하며, 더 부드러운 곡선을 선택하는 경향이 생깁니다.
 
 ## 14. 핵심 회귀식의 조건·단위·실패 지점
 
-이 강의의 normal equation 유도는 다음 조건에서 **정확한 등식**이다.
+이 강의의 normal equation 유도는 다음 조건에서 **정확한 등식**입니다.
 
 $$
 \nabla_\theta\lVert y-\Phi\theta\rVert_2^2
@@ -670,7 +670,7 @@ $$
 \hat\theta_{\mathrm{MLE}}=(\Phi^T\Phi)^{-1}\Phi^Ty
 $$
 
-가 유일하다. rank deficient이면 inverse 식은 실패하지만 최소제곱 문제 자체는 Moore-Penrose pseudoinverse로 minimum-norm 해를 정할 수 있다. 수치적으로 condition number가 크면 역행렬을 명시적으로 만들지 말고 QR 또는 SVD 풀이를 쓰는 편이 안정적이다.
+가 유일합니다. rank deficient이면 inverse 식은 실패하지만 최소제곱 문제 자체는 Moore-Penrose pseudoinverse로 minimum-norm 해를 정할 수 있습니다. 수치적으로 condition number가 크면 역행렬을 명시적으로 만들지 말고 QR 또는 SVD 풀이를 쓰는 편이 안정적입니다.
 
 Gaussian prior가 주는 ridge 해
 
@@ -679,7 +679,7 @@ $$
 =(\Phi^T\Phi+\lambda I)^{-1}\Phi^Ty
 $$
 
-에서 $$\lambda>0$$이면 행렬은 positive definite가 되어 역행렬이 존재한다. 단, bias까지 동일하게 regularize할지는 모델링 선택이며 모든 parameter에 같은 prior가 적절하다는 보장은 없다.
+에서 $$\lambda>0$$이면 행렬은 positive definite가 되어 역행렬이 존재합니다. 단, bias까지 동일하게 regularize할지는 모델링 선택이며 모든 parameter에 같은 prior가 적절하다는 보장은 없습니다.
 
 | 기호 | 의미 | 크기·단위 |
 |---|---|---|
@@ -691,7 +691,7 @@ $$
 | MSE | 평균 제곱오차 | $$u_y^2$$ |
 | RMSE | MSE의 제곱근 | $$u_y$$ |
 
-선형 회귀식은 basis function을 쓰면 입력에 대해 비선형일 수 있지만 parameter $$\theta$$에는 선형이어야 이 closed-form 유도가 유지된다. Gaussian noise가 아니거나 오차가 서로 상관되면 동일한 MLE 식이 일반적으로 성립하지 않는다.
+선형 회귀식은 basis function을 쓰면 입력에 대해 비선형일 수 있지만 parameter $$\theta$$에는 선형이어야 이 closed-form 유도가 유지됩니다. Gaussian noise가 아니거나 오차가 서로 상관되면 동일한 MLE 식이 일반적으로 성립하지 않습니다.
 
 ## 마지막 핵심 정리
 
@@ -713,11 +713,11 @@ $$
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-먼저 회귀 문제를 $$y=f(x)+\epsilon$$으로 보는 관점을 잡아야 한다. 그다음 Gaussian noise 가정에서 likelihood를 쓰고, negative log를 취하면 squared error가 나온다는 흐름을 이해한다.
+먼저 회귀 문제를 $$y=f(x)+\epsilon$$으로 보는 관점을 잡아야 합니다. 그다음 Gaussian noise 가정에서 likelihood를 쓰고, negative log를 취하면 squared error가 나온다는 흐름을 이해합니다.
 
-두 번째로 normal equation을 외우기 전에 행렬 모양을 확인해야 한다. $$X$$ 또는 $$\Phi$$는 sample을 행으로 쌓은 matrix이고, $$y$$는 target vector다. 따라서 $$\Phi^T\Phi$$는 parameter 차원 $$K\times K$$ matrix가 된다.
+두 번째로 normal equation을 외우기 전에 행렬 모양을 확인해야 합니다. $$X$$ 또는 $$\Phi$$는 sample을 행으로 쌓은 matrix이고, $$y$$는 target vector입니다. 따라서 $$\Phi^T\Phi$$는 parameter 차원 $$K\times K$$ matrix가 됩니다.
 
-마지막으로 MLE와 MAP의 차이를 regularization 관점으로 연결한다. Gaussian prior는 큰 $$\theta$$에 낮은 prior probability를 주고, negative log를 취하면 $$\theta^T\theta$$ penalty가 된다.
+마지막으로 MLE와 MAP의 차이를 regularization 관점으로 연결합니다. Gaussian prior는 큰 $$\theta$$에 낮은 prior probability를 주고, negative log를 취하면 $$\theta^T\theta$$ penalty가 됩니다.
 
 | 시험 대비 포인트 | 확인할 내용 |
 |---|---|
@@ -733,58 +733,58 @@ $$
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Gaussian noise를 가정하면 선형 회귀 MLE가 왜 squared error 최소화가 되는가?</summary>
+<summary>1. Gaussian noise를 가정하면 선형 회귀 MLE가 왜 squared error 최소화가 됩니까?</summary>
 
-답변: $$p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)$$라고 두면 log likelihood 안에 $$-(y_n-x_n^T\theta)^2/(2\sigma^2)$$가 생긴다. likelihood를 최대화하는 것은 negative log-likelihood를 최소화하는 것과 같고, 상수항을 제외하면 squared error 합을 최소화하는 문제가 된다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">2. Normal equation $$X^TX\theta=X^Ty$$는 어디서 나오는가?</summary>
-
-답변: squared error $$J(\theta)=(y-X\theta)^T(y-X\theta)$$를 $$\theta$$에 대해 미분하고 gradient를 0으로 두면 나온다. $$X^TX$$가 invertible이면 $$\theta_{\mathrm{ML}}=(X^TX)^{-1}X^Ty$$가 된다.
+답변: $$p(y_n\mid x_n,\theta)=\mathcal{N}(y_n\mid x_n^T\theta,\sigma^2)$$라고 두면 log likelihood 안에 $$-(y_n-x_n^T\theta)^2/(2\sigma^2)$$가 생깁니다. likelihood를 최대화하는 것은 negative log-likelihood를 최소화하는 것과 같고, 상수항을 제외하면 squared error 합을 최소화하는 문제가 됩니다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">3. $$f(x)=\theta^T\phi(x)$$가 비선형 회귀로 확장될 수 있는 이유는?</summary>
+<summary markdown="span">2. Normal equation $$X^TX\theta=X^Ty$$는 어디서 나옵니까?</summary>
 
-답변: $$\phi(x)$$가 $$[1,x,x^2,\ldots]^T$$처럼 비선형 feature를 만들면 모델은 원래 입력 $$x$$에 대해 곡선을 표현할 수 있다. 하지만 parameter $$\theta$$에 대해서는 여전히 선형이므로 선형 회귀의 MLE 공식을 그대로 사용할 수 있다.
-
-</details>
-
-<details markdown="block">
-<summary markdown="span">4. $$\Phi^T\Phi$$가 invertible하려면 어떤 조건이 필요한가?</summary>
-
-답변: feature matrix $$\Phi\in\mathbb{R}^{N\times K}$$가 full column rank여야 한다. 즉, $$\operatorname{rank}(\Phi)=K$$가 되어야 한다. feature 수가 너무 많거나 column들이 선형 종속이면 $$\Phi^T\Phi$$가 singular해져 inverse가 존재하지 않을 수 있다.
+답변: squared error $$J(\theta)=(y-X\theta)^T(y-X\theta)$$를 $$\theta$$에 대해 미분하고 gradient를 0으로 두면 나옵니다. $$X^TX$$가 invertible이면 $$\theta_{\mathrm{ML}}=(X^TX)^{-1}X^Ty$$가 됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. MSE와 RMSE의 차이는 무엇인가?</summary>
+<summary markdown="span">3. $$f(x)=\theta^T\phi(x)$$가 비선형 회귀로 확장될 수 있는 이유는 무엇입니까?</summary>
 
-답변: MSE는 squared error의 평균이고, RMSE는 MSE의 제곱근이다. RMSE는 원래 target $$y$$와 같은 단위를 가지므로 예측 오차를 해석하기 더 쉽다.
-
-</details>
-
-<details markdown="block">
-<summary>6. 다항식 차수가 너무 커지면 왜 과적합이 발생할 수 있는가?</summary>
-
-답변: 높은 차수의 다항식은 매우 복잡한 곡선을 만들 수 있어 training data의 noise까지 따라갈 수 있다. 그 결과 training error는 낮아지지만 unseen data에 대한 test error는 커질 수 있다.
+답변: $$\phi(x)$$가 $$[1,x,x^2,\ldots]^T$$처럼 비선형 feature를 만들면 모델은 원래 입력 $$x$$에 대해 곡선을 표현할 수 있습니다. 하지만 parameter $$\theta$$에 대해서는 여전히 선형이므로 선형 회귀의 MLE 공식을 그대로 사용할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. Gaussian prior가 L2 regularization으로 이어지는 이유는?</summary>
+<summary markdown="span">4. $$\Phi^T\Phi$$가 invertible하려면 어떤 조건이 필요합니까?</summary>
 
-답변: $$p(\theta)=\mathcal{N}(0,b^2I)$$이면 $$-\log p(\theta)$$가 $$\theta^T\theta/(2b^2)$$에 비례한다. MAP objective는 NLL에 $$-\log p(\theta)$$를 더한 형태이므로, 결과적으로 L2 penalty가 추가된다.
+답변: feature matrix $$\Phi\in\mathbb{R}^{N\times K}$$가 full column rank여야 합니다. 즉, $$\operatorname{rank}(\Phi)=K$$가 되어야 합니다. feature 수가 너무 많거나 column들이 선형 종속이면 $$\Phi^T\Phi$$가 singular해져 inverse가 존재하지 않을 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>8. MLE와 MAP의 가장 중요한 차이는 무엇인가?</summary>
+<summary>5. MSE와 RMSE의 차이는 무엇입니까?</summary>
 
-답변: MLE는 데이터 likelihood만 최대화한다. MAP는 likelihood에 parameter prior를 곱한 posterior를 최대화한다. 그래서 MAP는 데이터 적합도뿐 아니라 parameter가 prior 관점에서 얼마나 그럴듯한지도 함께 본다.
+답변: MSE는 squared error의 평균이고, RMSE는 MSE의 제곱근입니다. RMSE는 원래 target $$y$$와 같은 단위를 가지므로 예측 오차를 해석하기 더 쉽습니다.
+
+</details>
+
+<details markdown="block">
+<summary>6. 다항식 차수가 너무 커지면 왜 과적합이 발생할 수 있습니까?</summary>
+
+답변: 높은 차수의 다항식은 매우 복잡한 곡선을 만들 수 있어 training data의 noise까지 따라갈 수 있습니다. 그 결과 training error는 낮아지지만 unseen data에 대한 test error는 커질 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>7. Gaussian prior가 L2 regularization으로 이어지는 이유는 무엇입니까?</summary>
+
+답변: $$p(\theta)=\mathcal{N}(0,b^2I)$$이면 $$-\log p(\theta)$$가 $$\theta^T\theta/(2b^2)$$에 비례합니다. MAP objective는 NLL에 $$-\log p(\theta)$$를 더한 형태이므로, 결과적으로 L2 penalty가 추가됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>8. MLE와 MAP의 가장 중요한 차이는 무엇입니까?</summary>
+
+답변: MLE는 데이터 likelihood만 최대화합니다. MAP는 likelihood에 parameter prior를 곱한 posterior를 최대화합니다. 그래서 MAP는 데이터 적합도뿐 아니라 parameter가 prior 관점에서 얼마나 그럴듯한지도 함께 봅니다.
 
 </details>
 

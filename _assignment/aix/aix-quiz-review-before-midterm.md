@@ -16,9 +16,9 @@ Source Images:
 
 ## 과제 개요
 
-중간고사 전 AIX Quiz 이미지 24장은 선형·로지스틱 회귀에서 Transformer와 자기지도학습까지 이어진다.
+중간고사 전 AIX Quiz 이미지 24장은 선형·로지스틱 회귀에서 Transformer와 자기지도학습까지 이어집니다.
 
-**핵심 메시지:** 각 모델의 이름보다 입력을 어떤 표현으로 바꾸고, 어떤 목적함수로 학습하며, 이전 구조의 한계를 어떻게 보완하는지를 연결해 이해하는 것이 중요하다.
+**핵심 메시지:** 각 모델의 이름보다 입력을 어떤 표현으로 바꾸고, 어떤 목적함수로 학습하며, 이전 구조의 한계를 어떻게 보완하는지를 연결해 이해하는 것이 중요합니다.
 
 ## 전체 흐름
 
@@ -33,13 +33,13 @@ Source Images:
 | 7 | Transformer | token embedding, self-attention, multi-head attention, positional encoding |
 | 8 | Self-Supervised Learning | data 자체의 supervision, transferable representation, diffusion |
 
-빠르게 복습할 때는 다음 문장을 먼저 기억하면 된다.
+빠르게 복습할 때는 다음 문장을 먼저 기억하면 됩니다.
 
-1. Linear regression은 $$x$$를 feature, $$y$$를 target으로 보고 $$\hat{y}=w^Tx+b$$ 형태의 선형 점수를 학습한다.
-2. Logistic regression은 linear score 위에 sigmoid를 붙여 class probability로 해석한다.
-3. MLP는 hidden layer와 nonlinearity 덕분에 single perceptron보다 복잡한 패턴을 표현할 수 있다.
-4. RNN은 순차적으로 hidden state를 갱신하고, attention은 token 사이의 관계를 더 직접적이고 전역적으로 본다.
-5. Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합한다.
+1. Linear regression은 $$x$$를 feature, $$y$$를 target으로 보고 $$\hat{y}=w^Tx+b$$ 형태의 선형 점수를 학습합니다.
+2. Logistic regression은 linear score 위에 sigmoid를 붙여 class probability로 해석합니다.
+3. MLP는 hidden layer와 nonlinearity 덕분에 single perceptron보다 복잡한 패턴을 표현할 수 있습니다.
+4. RNN은 순차적으로 hidden state를 갱신하고, attention은 token 사이의 관계를 더 직접적이고 전역적으로 봅니다.
+5. Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합합니다.
 
 ## 1. Linear Regression
 
@@ -48,7 +48,7 @@ Source Images:
   <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-001.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-001.png</code></a> — 선형 회귀에서 입력 feature와 예측 target을 구분하게 하는 원본 Quiz.</figcaption>
 </figure>
 
-문항을 볼 때는 모델 이름보다 먼저 어떤 값이 입력이고 어떤 값을 예측하는지 표시한다. 이 구분이 잡혀야 $$w^Tx+b$$, residual, loss의 역할을 순서대로 연결할 수 있다.
+문항을 볼 때는 모델 이름보다 먼저 어떤 값이 입력이고 어떤 값을 예측하는지 표시합니다. 이 구분이 잡혀야 $$w^Tx+b$$, residual, loss의 역할을 순서대로 연결할 수 있습니다.
 
 ### 핵심 정답 키워드
 
@@ -61,66 +61,66 @@ Source Images:
 | Q5 | iterative update | loss를 줄이도록 parameter를 반복적으로 update |
 
 <details markdown="block">
-<summary>Linear regression에서 feature와 target은 어떻게 구분하는가?</summary>
+<summary>Linear regression에서 feature와 target은 어떻게 구분합니까?</summary>
 
 풀이과정:
 
-Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target이다. 관례적으로 feature vector를 $$x$$, target value를 $$y$$로 둔다.
+Linear regression에서 입력 변수는 feature이고, 예측하고 싶은 값은 target입니다. 관례적으로 feature vector를 $$x$$, target value를 $$y$$로 둡니다.
 
-답변: $$x$$는 features, $$y$$는 target이다.
+답변: $$x$$는 features, $$y$$는 target입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Linear regression의 선형 score 식은 무엇인가?</summary>
+<summary>Linear regression의 선형 score 식은 무엇입니까?</summary>
 
 풀이과정:
 
-Linear regression은 feature vector $$x$$에 weight vector $$w$$를 곱하고 bias $$b$$를 더해 예측값을 만든다.
+Linear regression은 feature vector $$x$$에 weight vector $$w$$를 곱하고 bias $$b$$를 더해 예측값을 만듭니다.
 
 $$
 \hat{y}=score=w^Tx+b
 $$
 
-곱셈만 있거나, $$w+x+b$$처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아니다.
+곱셈만 있거나, $$w+x+b$$처럼 vector의 가중합 구조가 사라진 식은 linear regression의 표준 형태가 아닙니다.
 
-답변: $$score=w^Tx+b$$이다.
+답변: $$score=w^Tx+b$$입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Residual과 squared loss는 어떻게 연결되는가?</summary>
+<summary>Residual과 squared loss는 어떻게 연결됩니까?</summary>
 
 풀이과정:
 
-Residual은 실제 값과 예측값의 차이다.
+Residual은 실제 값과 예측값의 차이입니다.
 
 $$
 residual = y-\hat{y}
 $$
 
-Linear regression의 대표적인 objective는 residual을 제곱해 모두 더한 값이다.
+Linear regression의 대표적인 objective는 residual을 제곱해 모두 더한 값입니다.
 
 $$
 L(w,b)=\sum_i (y_i-\hat{y}_i)^2
 $$
 
-제곱하는 이유는 양수/음수 오차가 서로 상쇄되지 않게 하고, 큰 오차를 더 크게 벌주기 위해서다.
+제곱하는 이유는 양수/음수 오차가 서로 상쇄되지 않게 하고, 큰 오차를 더 크게 벌주기 위해서입니다.
 
-답변: residual은 $$y-\hat{y}$$이고, loss는 squared sum of residual을 사용한다.
+답변: residual은 $$y-\hat{y}$$이고, loss는 squared sum of residual을 사용합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Iterative update는 무엇인가?</summary>
+<summary>Iterative update는 무엇입니까?</summary>
 
 풀이과정:
 
-Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아니다. 현재 parameter에서 loss가 줄어드는 방향으로 $$w$$, $$b$$를 조금씩 반복 갱신하는 방식이다.
+Iterative update는 closed-form처럼 한 번에 답을 구하는 방식이 아닙니다. 현재 parameter에서 loss가 줄어드는 방향으로 $$w$$, $$b$$를 조금씩 반복 갱신하는 방식입니다.
 
-Deep learning의 training도 기본적으로 이 아이디어를 따른다.
+Deep learning의 training도 기본적으로 이 아이디어를 따릅니다.
 
-답변: loss를 줄이도록 parameter를 반복적으로 업데이트하는 방식이다.
+답변: loss를 줄이도록 parameter를 반복적으로 업데이트하는 방식입니다.
 
 </details>
 
@@ -137,60 +137,60 @@ Deep learning의 training도 기본적으로 이 아이디어를 따른다.
 | Q5 | decision boundary | linear regression보다 classification loss/probability를 더해도 boundary는 선형 |
 
 <details markdown="block">
-<summary>Classification에서 logistic regression을 쓰는 이유는 무엇인가?</summary>
+<summary>Classification에서 logistic regression을 쓰는 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-Linear regression의 score는 아무 실수값이나 될 수 있다. classification에서는 출력이 class probability처럼 해석되기를 원한다. Logistic regression은 sigmoid를 사용해 score를 0과 1 사이 값으로 바꾼다.
+Linear regression의 score는 아무 실수값이나 될 수 있습니다. classification에서는 출력이 class probability처럼 해석되기를 원합니다. Logistic regression은 sigmoid를 사용해 score를 0과 1 사이 값으로 바꿉니다.
 
 $$
 P(y=1\mid x)=\sigma(w^Tx+b)
 $$
 
-답변: 출력값을 class probability처럼 0과 1 사이로 해석하기 위해서다.
+답변: 출력값을 class probability처럼 0과 1 사이로 해석하기 위해서입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Sigmoid function은 어떤 역할을 하는가?</summary>
+<summary>Sigmoid function은 어떤 역할을 합니까?</summary>
 
 풀이과정:
 
-Sigmoid는 선형 score를 확률로 바꾸는 link function이다.
+Sigmoid는 선형 score를 확률로 바꾸는 link function입니다.
 
 $$
 \sigma(z)=\frac{1}{1+e^{-z}}
 $$
 
-여기서 $$z=w^Tx+b$$다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙인다.
+여기서 $$z=w^Tx+b$$입니다. 따라서 logistic regression은 linear score를 버리는 것이 아니라, 그 위에 probability 변환을 붙입니다.
 
-답변: score를 probability로 바꿔 class probability로 해석할 수 있게 한다.
-
-</details>
-
-<details markdown="block">
-<summary>Training logistic regression의 high-level intuition은 무엇인가?</summary>
-
-풀이과정:
-
-Logistic regression은 관측된 label이 가장 그럴듯하게 나오도록 parameter를 고른다. 즉 positive sample에는 높은 probability를, negative sample에는 낮은 probability를 주도록 학습한다.
-
-이 관점은 likelihood maximization 또는 cross-entropy loss minimization으로 연결된다.
-
-답변: observed labels가 most likely 하도록 parameter를 고르는 것이다.
+답변: score를 probability로 바꿔 class probability로 해석할 수 있게 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Logistic regression의 decision boundary는 어떻게 이해해야 하는가?</summary>
+<summary>Training logistic regression의 high-level intuition은 무엇입니까?</summary>
 
 풀이과정:
 
-Logistic regression은 probability와 classification용 loss를 사용하지만, 원래 feature 공간에서의 decision boundary는 보통 선형이다.
+Logistic regression은 관측된 label이 가장 그럴듯하게 나오도록 parameter를 고릅니다. 즉 positive sample에는 높은 probability를, negative sample에는 낮은 probability를 주도록 학습합니다.
 
-Binary classification에서 기준을 $$P(y=1\mid x)=0.5$$로 두면, 이는 $$w^Tx+b=0$$과 대응된다.
+이 관점은 likelihood maximization 또는 cross-entropy loss minimization으로 연결됩니다.
 
-답변: 확률 해석과 classification loss를 더하지만, 기본 decision boundary는 여전히 linear하다.
+답변: observed labels가 most likely 하도록 parameter를 고르는 것입니다.
+
+</details>
+
+<details markdown="block">
+<summary>Logistic regression의 decision boundary는 어떻게 이해해야 합니까?</summary>
+
+풀이과정:
+
+Logistic regression은 probability와 classification용 loss를 사용하지만, 원래 feature 공간에서의 decision boundary는 보통 선형입니다.
+
+Binary classification에서 기준을 $$P(y=1\mid x)=0.5$$로 두면, 이는 $$w^Tx+b=0$$과 대응됩니다.
+
+답변: 확률 해석과 classification loss를 더하지만, 기본 decision boundary는 여전히 linear합니다.
 
 </details>
 
@@ -205,37 +205,37 @@ Binary classification에서 기준을 $$P(y=1\mid x)=0.5$$로 두면, 이는 $$w
 | Q3 | deep learning 도약 조건 | data, computation, algorithms가 함께 맞물림 |
 
 <details markdown="block">
-<summary>MLP가 single perceptron보다 강한 이유는 무엇인가?</summary>
+<summary>MLP가 single perceptron보다 강한 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-Single perceptron은 기본적으로 하나의 선형 결정 경계를 만든다. MLP는 hidden layer와 nonlinear activation을 사용하므로, 단일 선형 모델이 표현하지 못하는 복잡한 패턴을 표현할 수 있다.
+Single perceptron은 기본적으로 하나의 선형 결정 경계를 만듭니다. MLP는 hidden layer와 nonlinear activation을 사용하므로, 단일 선형 모델이 표현하지 못하는 복잡한 패턴을 표현할 수 있습니다.
 
-답변: hidden layer와 nonlinearity가 있어 single perceptron이 표현하지 못하는 패턴을 표현할 수 있기 때문이다.
+답변: hidden layer와 nonlinearity가 있어 single perceptron이 표현하지 못하는 패턴을 표현할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Good learning은 단순히 training loss를 낮추는 것인가?</summary>
+<summary>Good learning은 단순히 training loss를 낮추는 것입니까?</summary>
 
 풀이과정:
 
-좋은 학습은 training set을 외우는 것이 아니다. 모델이 충분한 표현력(expressivity)을 가지되, regularization과 bias-variance 균형을 통해 unseen data에서도 잘 일반화해야 한다.
+좋은 학습은 training set을 외우는 것이 아닙니다. 모델이 충분한 표현력(expressivity)을 가지되, regularization과 bias-variance 균형을 통해 unseen data에서도 잘 일반화해야 합니다.
 
-따라서 hidden layer 수를 무조건 늘리거나 training loss만 낮추는 설명은 부족하다.
+따라서 hidden layer 수를 무조건 늘리거나 training loss만 낮추는 설명은 부족합니다.
 
-답변: expressivity, regularization, bias-variance를 균형 있게 다뤄 unseen data에서도 generalize해야 한다.
+답변: expressivity, regularization, bias-variance를 균형 있게 다뤄 unseen data에서도 generalize해야 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Deep learning의 큰 도약을 가능하게 한 조합은 무엇인가?</summary>
+<summary>Deep learning의 큰 도약을 가능하게 한 조합은 무엇입니까?</summary>
 
 풀이과정:
 
-Deep learning은 data만 많거나, computation만 좋거나, algorithm만 좋아서 발전한 것이 아니다. 대규모 데이터, GPU/TPU 같은 계산 자원, 학습 알고리즘과 모델 구조가 함께 맞물리며 발전했다.
+Deep learning은 data만 많거나, computation만 좋거나, algorithm만 좋아서 발전한 것이 아닙니다. 대규모 데이터, GPU/TPU 같은 계산 자원, 학습 알고리즘과 모델 구조가 함께 맞물리며 발전했습니다.
 
-답변: Data, Computation, Algorithms가 함께 맞물려야 한다.
+답변: Data, Computation, Algorithms가 함께 맞물려야 합니다.
 
 </details>
 
@@ -251,50 +251,50 @@ Deep learning은 data만 많거나, computation만 좋거나, algorithm만 좋�
 | Q4 | 3D Vision이 어려운 이유 | geometry, pose, spatial relationship과 다양한 representation |
 
 <details markdown="block">
-<summary>Computer Vision의 high-level 목표는 무엇인가?</summary>
+<summary>Computer Vision의 high-level 목표는 무엇입니까?</summary>
 
 풀이과정:
 
-Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 분야가 아니다. 핵심은 pixel data를 object, scene, relation, meaning으로 해석하는 것이다.
+Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 분야가 아닙니다. 핵심은 pixel data를 object, scene, relation, meaning으로 해석하는 것입니다.
 
-답변: 픽셀을 의미로 연결하는 것이다.
+답변: 픽셀을 의미로 연결하는 것입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Visual reasoning이 중요해진 이유는 무엇인가?</summary>
+<summary>Visual reasoning이 중요해진 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-단순 image classification은 이미지 하나에 label을 붙이는 데 초점이 있다. 하지만 최근 모델은 객체 간 관계, 장면 구조, 언어적 설명, 문맥까지 이해해야 한다.
+단순 image classification은 이미지 하나에 label을 붙이는 데 초점이 있습니다. 하지만 최근 모델은 객체 간 관계, 장면 구조, 언어적 설명, 문맥까지 이해해야 합니다.
 
-예를 들어 "사람이 컵을 잡고 있다"는 것은 사람, 컵, 손, 동작, 위치 관계를 함께 이해해야 한다.
+예를 들어 "사람이 컵을 잡고 있다"는 것은 사람, 컵, 손, 동작, 위치 관계를 함께 이해해야 합니다.
 
-답변: 객체 간 관계, 언어, 문맥까지 연결한 structured/compositional understanding이 중요해졌기 때문이다.
+답변: 객체 간 관계, 언어, 문맥까지 연결한 structured/compositional understanding이 중요해졌기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>최근 image/video generation의 대표적 주류 모델은 무엇인가?</summary>
+<summary>최근 image/video generation의 대표적 주류 모델은 무엇입니까?</summary>
 
 풀이과정:
 
-최근 image/video generation에서 대표적으로 쓰이는 모델 계열은 diffusion models다. Noise를 점진적으로 제거하면서 데이터를 생성하는 방식으로 이해하면 된다.
+최근 image/video generation에서 대표적으로 쓰이는 모델 계열은 diffusion models입니다. Noise를 점진적으로 제거하면서 데이터를 생성하는 방식으로 이해하면 됩니다.
 
-답변: Diffusion models다.
+답변: Diffusion models입니다.
 
 </details>
 
 <details markdown="block">
-<summary>3D Vision이 여전히 어려운 이유는 무엇인가?</summary>
+<summary>3D Vision이 여전히 어려운 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-3D Vision은 단순한 2D classification과 다르다. geometry, pose, spatial relationship을 다루며, 데이터 표현도 point clouds, voxels, meshes 등으로 다양하다.
+3D Vision은 단순한 2D classification과 다릅니다. geometry, pose, spatial relationship을 다루며, 데이터 표현도 point clouds, voxels, meshes 등으로 다양합니다.
 
-표현 형식이 다양하다는 것은 모델 입력과 학습 방식도 더 복잡해진다는 뜻이다.
+표현 형식이 다양하다는 것은 모델 입력과 학습 방식도 더 복잡해진다는 뜻입니다.
 
-답변: geometry, pose, spatial relationship을 다루고 data format/representation이 다양하기 때문이다.
+답변: geometry, pose, spatial relationship을 다루고 data format/representation이 다양하기 때문입니다.
 
 </details>
 
@@ -305,7 +305,7 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
   <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-006.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-006.png</code></a> — 중심 단어와 주변 단어의 예측 방향을 확인하는 Word2Vec 원본 Quiz.</figcaption>
 </figure>
 
-그림에서는 중심 token과 context token의 방향을 먼저 확인한다. Skip-Gram은 중심 단어로 주변 단어를 예측하고, CBOW는 주변 단어들로 중심 단어를 예측하므로 화살표 방향이 정답 판단 기준이다.
+그림에서는 중심 token과 context token의 방향을 먼저 확인합니다. Skip-Gram은 중심 단어로 주변 단어를 예측하고, CBOW는 주변 단어들로 중심 단어를 예측하므로 화살표 방향이 정답 판단 기준입니다.
 
 ### 핵심 정답 키워드
 
@@ -319,59 +319,59 @@ Computer Vision은 단순히 픽셀 수를 줄이거나 GPU 성능을 높이는 
 | Q6 | Fine-tuning | pretrained model을 특정 task 목적에 맞게 미세 조정 |
 
 <details markdown="block">
-<summary>Task-specific NLP era는 어떤 방식이었는가?</summary>
+<summary>Task-specific NLP era는 어떤 방식이었습니까?</summary>
 
 풀이과정:
 
-pre-trained foundation model을 하나 만들어 여러 task에 재사용하는 방식이 일반화되기 전에는, 각 task마다 별도의 모델을 처음부터 학습하는 방식이 흔했다.
+pre-trained foundation model을 하나 만들어 여러 task에 재사용하는 방식이 일반화되기 전에는, 각 task마다 별도의 모델을 처음부터 학습하는 방식이 흔했습니다.
 
-답변: 각 task마다 별도의 모델을 from scratch로 학습하는 방식이 일반적이었다.
+답변: 각 task마다 별도의 모델을 from scratch로 학습하는 방식이 일반적이었습니다.
 
 </details>
 
 <details markdown="block">
-<summary>Tokenizer는 어떤 역할을 하는가?</summary>
+<summary>Tokenizer는 어떤 역할을 합니까?</summary>
 
 풀이과정:
 
-Tokenizer는 문장을 token 단위로 나누고, 각 token을 vocabulary의 항목으로 대응시킨다. naive하게 보면 vocabulary size 차원의 one-hot vector로 표현할 수도 있다.
+Tokenizer는 문장을 token 단위로 나누고, 각 token을 vocabulary의 항목으로 대응시킵니다. naive하게 보면 vocabulary size 차원의 one-hot vector로 표현할 수도 있습니다.
 
-답변: 문장을 token으로 나누고, 각 token을 vocabulary 항목으로 대응시킨다.
+답변: 문장을 token으로 나누고, 각 token을 vocabulary 항목으로 대응시킵니다.
 
 </details>
 
 <details markdown="block">
-<summary>Word2Vec은 어떻게 embedding을 배우는가?</summary>
+<summary>Word2Vec은 어떻게 embedding을 배웁니까?</summary>
 
 풀이과정:
 
-Word2Vec은 사람이 단어 의미를 직접 써 넣는 방식이 아니다. proxy task를 학습하는 얕은 신경망을 만들고, 가운데의 좁은 hidden layer를 단어 embedding으로 사용한다.
+Word2Vec은 사람이 단어 의미를 직접 써 넣는 방식이 아닙니다. proxy task를 학습하는 얕은 신경망을 만들고, 가운데의 좁은 hidden layer를 단어 embedding으로 사용합니다.
 
-이때 중요한 것은 task 자체보다 task를 풀면서 생긴 dense representation이다.
+이때 중요한 것은 task 자체보다 task를 풀면서 생긴 dense representation입니다.
 
-답변: proxy task를 학습하는 얕은 신경망을 만들고, hidden layer를 embedding으로 사용한다.
+답변: proxy task를 학습하는 얕은 신경망을 만들고, hidden layer를 embedding으로 사용합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Skip-Gram은 어떤 proxy task인가?</summary>
+<summary>Skip-Gram은 어떤 proxy task입니까?</summary>
 
 풀이과정:
 
-Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측하는 task다. 예를 들어 "king"이라는 단어가 나오면 주변에 어떤 단어들이 함께 등장할지 맞히도록 학습한다.
+Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측하는 task입니다. 예를 들어 "king"이라는 단어가 나오면 주변에 어떤 단어들이 함께 등장할지 맞히도록 학습합니다.
 
-답변: 한 단어를 보고 주변 context 단어들을 맞히는 task다.
+답변: 한 단어를 보고 주변 context 단어들을 맞히는 task입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Pre-training과 Fine-tuning은 어떻게 구분하는가?</summary>
+<summary>Pre-training과 Fine-tuning은 어떻게 구분합니까?</summary>
 
 풀이과정:
 
-Pre-training은 큰 데이터로 base model을 만들고 언어의 일반적인 특징을 배우게 하는 단계다. Fine-tuning은 그 pretrained model을 바탕으로 특정 task 목적에 맞게 미세 조정하는 단계다.
+Pre-training은 큰 데이터로 base model을 만들고 언어의 일반적인 특징을 배우게 하는 단계입니다. Fine-tuning은 그 pretrained model을 바탕으로 특정 task 목적에 맞게 미세 조정하는 단계입니다.
 
-답변: pre-training은 일반적 base를 만드는 단계이고, fine-tuning은 특정 task에 맞게 조정하는 단계다.
+답변: pre-training은 일반적 base를 만드는 단계이고, fine-tuning은 특정 task에 맞게 조정하는 단계입니다.
 
 </details>
 
@@ -389,52 +389,52 @@ Pre-training은 큰 데이터로 base model을 만들고 언어의 일반적인 
 | Q6 | attention 장점 | token 사이 global relationship을 더 직접적으로 봄 |
 
 <details markdown="block">
-<summary>RNN은 어떤 모델인가?</summary>
+<summary>RNN은 어떤 모델입니까?</summary>
 
 풀이과정:
 
-RNN은 sequence를 시간 순서대로 처리하는 모델이다. 현재 시점의 입력과 이전 시점의 hidden state를 이용해 새로운 hidden state를 만든다.
+RNN은 sequence를 시간 순서대로 처리하는 모델입니다. 현재 시점의 입력과 이전 시점의 hidden state를 이용해 새로운 hidden state를 만듭니다.
 
 $$
 h_t = f(x_t, h_{t-1})
 $$
 
-답변: 시간적 순서를 따라 연결되며 sequence를 처리하는 모델이다.
+답변: 시간적 순서를 따라 연결되며 sequence를 처리하는 모델입니다.
 
 </details>
 
 <details markdown="block">
-<summary>RNN이 attention보다 계산 구조가 단순하다고 볼 수 있는 이유는 무엇인가?</summary>
+<summary>RNN이 attention보다 계산 구조가 단순하다고 볼 수 있는 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-RNN은 모든 token-to-token 관계를 한 번에 계산하지 않는다. 현재 token과 이전 hidden state를 이용해 다음 hidden state를 갱신한다.
+RNN은 모든 token-to-token 관계를 한 번에 계산하지 않습니다. 현재 token과 이전 hidden state를 이용해 다음 hidden state를 갱신합니다.
 
-반면 attention은 token 사이의 관계를 행렬 형태로 계산하므로 global relationship을 직접 다루지만 계산 구조는 더 크다.
+반면 attention은 token 사이의 관계를 행렬 형태로 계산하므로 global relationship을 직접 다루지만 계산 구조는 더 큽니다.
 
-답변: 현재 입력과 이전 hidden state만 이용해 update하며, attention처럼 모든 token-to-token 관계를 한꺼번에 계산하지 않기 때문이다.
+답변: 현재 입력과 이전 hidden state만 이용해 update하며, attention처럼 모든 token-to-token 관계를 한꺼번에 계산하지 않기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>RNN의 대표적 문제점은 무엇인가?</summary>
+<summary>RNN의 대표적 문제점은 무엇입니까?</summary>
 
 풀이과정:
 
-RNN은 정보가 순서대로 전달된다. 따라서 먼 과거 정보가 뒤쪽 token까지 전달되기 어렵고, token을 순차적으로 처리하기 때문에 병렬 처리에도 불리하다.
+RNN은 정보가 순서대로 전달됩니다. 따라서 먼 과거 정보가 뒤쪽 token까지 전달되기 어렵고, token을 순차적으로 처리하기 때문에 병렬 처리에도 불리합니다.
 
-답변: 정보가 순서대로 전달되어 먼 과거 정보를 다루기 어렵고 병렬 처리에도 불리하다.
+답변: 정보가 순서대로 전달되어 먼 과거 정보를 다루기 어렵고 병렬 처리에도 불리합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Attention이 RNN보다 global relationship을 더 잘 볼 수 있는 이유는 무엇인가?</summary>
+<summary>Attention이 RNN보다 global relationship을 더 잘 볼 수 있는 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 있다. 긴 문장이나 긴 대화에서 앞부분 정보가 뒤에서 다시 중요해질 때, 필요한 이전 부분을 직접 참조할 수 있다.
+Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 있습니다. 긴 문장이나 긴 대화에서 앞부분 정보가 뒤에서 다시 중요해질 때, 필요한 이전 부분을 직접 참조할 수 있습니다.
 
-답변: token/feature/patch 사이를 더 유연하고 전역적으로 연결할 수 있기 때문이다.
+답변: token/feature/patch 사이를 더 유연하고 전역적으로 연결할 수 있기 때문입니다.
 
 </details>
 
@@ -445,7 +445,7 @@ Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 �
   <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-013.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-013.png</code></a> — self-attention의 token 관계와 multi-head의 병렬 projection을 구분하는 원본 Quiz.</figcaption>
 </figure>
 
-문항은 attention을 단순한 중요도 표시로 보지 않고, Q–K score로 V를 다시 조합하는 계산으로 읽어야 풀린다. Multi-head는 동일 계산을 서로 다른 projection 공간에서 병렬 수행한다.
+문항은 attention을 단순한 중요도 표시로 보지 않고, Q–K score로 V를 다시 조합하는 계산으로 읽어야 풀립니다. Multi-head는 동일 계산을 서로 다른 projection 공간에서 병렬 수행합니다.
 
 ### 핵심 정답 키워드
 
@@ -458,63 +458,63 @@ Attention은 각 token이 다른 token들과의 관계를 직접 계산할 수 �
 | Q5 | matrix computation | attention은 행렬 연산으로 표현되어 병렬 계산에 유리 |
 
 <details markdown="block">
-<summary>Transformer에서 텍스트 입력은 어떻게 처리되는가?</summary>
+<summary>Transformer에서 텍스트 입력은 어떻게 처리됩니까?</summary>
 
 풀이과정:
 
-Transformer는 문장을 숫자 변환 없이 바로 attention에 넣지 않는다. 먼저 텍스트를 token으로 나누고, 각 token을 learned embedding vector로 바꾼다.
+Transformer는 문장을 숫자 변환 없이 바로 attention에 넣지 않습니다. 먼저 텍스트를 token으로 나누고, 각 token을 learned embedding vector로 바꿉니다.
 
-답변: 텍스트를 tokenize하고, 각 token을 learned embedding으로 표현한다.
+답변: 텍스트를 tokenize하고, 각 token을 learned embedding으로 표현합니다.
 
 </details>
 
 <details markdown="block">
-<summary>Self-attention을 가장 쉽게 설명하면?</summary>
+<summary>Self-attention을 가장 쉽게 어떻게 설명할 수 있습니까?</summary>
 
 풀이과정:
 
-Self-attention은 한 문장 안의 각 token이 다른 token들과의 관련성을 보고 자기 표현을 새로 만드는 방식이다. 모든 단어를 똑같이 평균내는 것이 아니라 중요한 단어에 더 큰 weight를 둔다.
+Self-attention은 한 문장 안의 각 token이 다른 token들과의 관련성을 보고 자기 표현을 새로 만드는 방식입니다. 모든 단어를 똑같이 평균내는 것이 아니라 중요한 단어에 더 큰 weight를 둡니다.
 
-답변: 각 token이 다른 token들 중 자신과 관련 있는 정보를 더 참고해서 자신의 표현을 만든다.
+답변: 각 token이 다른 token들 중 자신과 관련 있는 정보를 더 참고해서 자신의 표현을 만듭니다.
 
 </details>
 
 <details markdown="block">
-<summary>Multi-head attention의 장점은 무엇인가?</summary>
+<summary>Multi-head attention의 장점은 무엇입니까?</summary>
 
 풀이과정:
 
-하나의 attention head만 있으면 하나의 관계 관점에 치우칠 수 있다. Multi-head attention은 여러 head가 서로 다른 관계나 패턴을 병렬로 보게 한다.
+하나의 attention head만 있으면 하나의 관계 관점에 치우칠 수 있습니다. Multi-head attention은 여러 head가 서로 다른 관계나 패턴을 병렬로 보게 합니다.
 
-예를 들어 어떤 head는 문법 관계를, 다른 head는 의미 관계를, 또 다른 head는 위치 관계를 볼 수 있다.
+예를 들어 어떤 head는 문법 관계를, 다른 head는 의미 관계를, 또 다른 head는 위치 관계를 볼 수 있습니다.
 
-답변: 여러 head가 서로 다른 관계나 패턴을 병렬로 볼 수 있게 해 준다.
+답변: 여러 head가 서로 다른 관계나 패턴을 병렬로 볼 수 있게 해 줍니다.
 
 </details>
 
 <details markdown="block">
-<summary>Positional encoding이 필요한 이유는 무엇인가?</summary>
+<summary>Positional encoding이 필요한 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-Self-attention은 모든 token 사이의 관계를 계산하지만, 그 자체만으로는 token의 순서 정보가 충분하지 않을 수 있다. 따라서 모델이 token의 순서와 상대적 위치를 이해하도록 position information을 더한다.
+Self-attention은 모든 token 사이의 관계를 계산하지만, 그 자체만으로는 token의 순서 정보가 충분하지 않을 수 있습니다. 따라서 모델이 token의 순서와 상대적 위치를 이해하도록 position information을 더합니다.
 
-답변: 모델이 token의 순서와 상대적 위치를 이해하도록 돕기 위해서다.
+답변: 모델이 token의 순서와 상대적 위치를 이해하도록 돕기 위해서입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Attention이 efficient computations with matrices와 연결되는 이유는 무엇인가?</summary>
+<summary>Attention이 efficient computations with matrices와 연결되는 이유는 무엇입니까?</summary>
 
 풀이과정:
 
-Attention은 query, key, value를 행렬로 묶어 계산할 수 있다. 이 구조는 GPU에서 병렬 계산하기에 유리하다.
+Attention은 query, key, value를 행렬로 묶어 계산할 수 있습니다. 이 구조는 GPU에서 병렬 계산하기에 유리합니다.
 
 $$
 \text{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
 $$
 
-답변: attention은 행렬 연산으로 잘 표현되어 병렬 계산에 유리하기 때문이다.
+답변: attention은 행렬 연산으로 잘 표현되어 병렬 계산에 유리하기 때문입니다.
 
 </details>
 
@@ -525,14 +525,14 @@ $$
   <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-019.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-019.png</code></a> — vision task의 입력·출력 형태를 확인하는 원본 Quiz.</figcaption>
 </figure>
 
-Vision 문항은 classification, detection, segmentation이 같은 이미지를 받아도 출력 형식이 다르다는 기준으로 읽는다. 하나의 label인지, box 집합인지, pixel-wise mask인지가 우선 판단점이다.
+Vision 문항은 classification, detection, segmentation이 같은 이미지를 받아도 출력 형식이 다르다는 기준으로 읽습니다. 하나의 label인지, box 집합인지, pixel-wise mask인지가 우선 판단점입니다.
 
 <figure>
   <a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" alt="AIX 중간고사 전 Quiz 원본 24. tokenizer와 subword 단위의 필요성을 묻는 문항." loading="lazy"></a>
   <figcaption><a href="{{ "/assets/images/assignment/aix/pre-midterm/aix-pre-midterm-024.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-pre-midterm-024.png</code></a> — vocabulary 크기와 unknown token 문제를 함께 보는 tokenizer 원본 Quiz.</figcaption>
 </figure>
 
-Tokenizer 문항은 단어 전체를 그대로 vocabulary에 넣을 때 생기는 희소성과 OOV 문제를 먼저 본다. Subword는 자주 쓰이는 조각을 재사용해 vocabulary 크기와 표현 범위 사이를 절충한다.
+Tokenizer 문항은 단어 전체를 그대로 vocabulary에 넣을 때 생기는 희소성과 OOV 문제를 먼저 봅니다. Subword는 자주 쓰이는 조각을 재사용해 vocabulary 크기와 표현 범위 사이를 절충합니다.
 
 ### 핵심 정답 키워드
 
@@ -543,24 +543,24 @@ Tokenizer 문항은 단어 전체를 그대로 vocabulary에 넣을 때 생기�
 | Q3 | 3D Vision | geometry, pose, spatial relationship, 다양한 representation |
 
 <details markdown="block">
-<summary>Self-Supervised Learning의 objective는 무엇인가?</summary>
+<summary>Self-Supervised Learning의 objective는 무엇입니까?</summary>
 
 풀이과정:
 
-Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식이 아니다. 데이터 자체에서 예측 문제를 만들어 supervision으로 사용하고, 다른 task로 옮겨 쓸 수 있는 transferable representation을 배우는 것이 목표다.
+Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식이 아닙니다. 데이터 자체에서 예측 문제를 만들어 supervision으로 사용하고, 다른 task로 옮겨 쓸 수 있는 transferable representation을 배우는 것이 목표입니다.
 
-답변: 데이터 자체에서 supervision을 만들고 transferable representation을 배우는 것이다.
+답변: 데이터 자체에서 supervision을 만들고 transferable representation을 배우는 것입니다.
 
 </details>
 
 <details markdown="block">
-<summary>Modern vision 범위에서 diffusion과 3D vision은 어떻게 정리하는가?</summary>
+<summary>Modern vision 범위에서 diffusion과 3D vision은 어떻게 정리합니까?</summary>
 
 풀이과정:
 
-최근 image/video generation의 대표적 주류는 diffusion models다. 3D vision은 point clouds, voxels, meshes처럼 표현 방식이 다양하고, geometry와 pose, spatial relationship을 함께 다뤄야 하므로 어렵다.
+최근 image/video generation의 대표적 주류는 diffusion models입니다. 3D vision은 point clouds, voxels, meshes처럼 표현 방식이 다양하고, geometry와 pose, spatial relationship을 함께 다뤄야 하므로 어렵습니다.
 
-답변: 생성 모델은 diffusion models가 대표적이고, 3D vision은 다양한 representation과 공간 관계 때문에 어렵다.
+답변: 생성 모델은 diffusion models가 대표적이고, 3D vision은 다양한 representation과 공간 관계 때문에 어렵습니다.
 
 </details>
 
@@ -568,15 +568,15 @@ Self-supervised learning은 사람 label을 최대한 많이 수집하는 방식
 
 | 구분 | 꼭 기억할 문장 |
 |---|---|
-| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심이다. |
-| Logistic Regression | linear score를 sigmoid로 probability로 바꿔 classification에 사용한다. |
-| MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 한다. |
-| Computer Vision | pixel을 meaning으로 연결하는 것이 high-level 목표다. |
-| Word2Vec | proxy task를 풀며 hidden layer를 embedding으로 사용한다. |
-| Pre-training | 큰 데이터로 일반적 base representation을 만든다. |
-| RNN | sequence를 순서대로 처리하며 hidden state에 의존한다. |
-| Attention | token 사이 global relationship을 직접 계산한다. |
-| Transformer | token embedding, self-attention, multi-head attention, positional encoding을 결합한다. |
+| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심입니다. |
+| Logistic Regression | linear score를 sigmoid로 probability로 바꿔 classification에 사용합니다. |
+| MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 합니다. |
+| Computer Vision | pixel을 meaning으로 연결하는 것이 high-level 목표입니다. |
+| Word2Vec | proxy task를 풀며 hidden layer를 embedding으로 사용합니다. |
+| Pre-training | 큰 데이터로 일반적 base representation을 만듭니다. |
+| RNN | sequence를 순서대로 처리하며 hidden state에 의존합니다. |
+| Attention | token 사이 global relationship을 직접 계산합니다. |
+| Transformer | token embedding, self-attention, multi-head attention, positional encoding을 결합합니다. |
 
 ## Source Images
 

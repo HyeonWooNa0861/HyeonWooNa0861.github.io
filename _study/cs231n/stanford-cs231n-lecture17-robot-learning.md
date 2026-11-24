@@ -21,52 +21,52 @@ Source: [Stanford CS231N Spring 2025 Lecture 17](https://www.youtube.com/watch?v
 
 Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lecture_17.pdf){:target="_blank" rel="noopener"}
 
-**원본 자료 먼저 보기:** [PDF pp.54–67의 model learning·model-based planning 절](https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54){:target="_blank" rel="noopener"}에서 p.54의 agent–physical world loop와 state, action, reward 방향을 먼저 읽는다. 뒤 슬라이드는 learned dynamics로 다음 state를 예측하고 후보 action sequence를 평가하는 planning으로 확장한다. 아래 3절은 model error와 receding-horizon control의 관계를 이 흐름에 맞춰 설명한다.
+**원본 자료 먼저 보기:** [PDF pp.54–67의 model learning·model-based planning 절](https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54){:target="_blank" rel="noopener"}에서 p.54의 agent–physical world loop와 state, action, reward 방향을 먼저 읽습니다. 뒤 슬라이드는 learned dynamics로 다음 state를 예측하고 후보 action sequence를 평가하는 planning으로 확장합니다. 아래 3절은 model error와 receding-horizon control의 관계를 이 흐름에 맞춰 설명합니다.
 
 <figure id="cs231n-lecture17-source-p54">
   <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture17-p54.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture17-p54.jpg" | relative_url }}" alt="human goal이 agent로 들어가고 agent action이 physical world를 바꾸며 state와 reward가 다시 agent로 돌아오는 closed-loop 도식" loading="lazy"></a>
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54" target="_blank" rel="noopener">CS231N Lecture 17, PDF p. 54 (printed slide 54)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없다.
+> **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아닙니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없습니다.
 
-사진 속 컵을 고양이라고 잘못 분류해도 사진은 그대로예요. 그런데 로봇이 컵을 집으려다 옆으로 밀면 어떻게 될까요? 다음 순간 카메라에는 **원래 자리에서 벗어난 컵**이 보여요. 로봇은 방금 한 행동 때문에 달라진 장면에서 다시 결정해야 해요. 사람의 시범으로 배우는 모방학습에서는 ‘시범에 없던 이 장면에서도 컵을 집을 수 있을까?’가 문제가 돼요. 여러 행동 뒤 받은 보상으로 배우는 강화학습에서는 ‘어떤 행동이 결국 컵을 집는 데 도움이 됐을까?’를 따져야 해요.
+사진 속 컵을 고양이라고 잘못 분류해도 사진은 그대로입니다. 그런데 로봇이 컵을 집으려다 옆으로 밀면 어떻게 될까요? 다음 순간 카메라에는 **원래 자리에서 벗어난 컵**이 보입니다. 로봇은 방금 한 행동 때문에 달라진 장면에서 다시 결정해야 합니다. 사람의 시범으로 배우는 모방학습에서는 ‘시범에 없던 이 장면에서도 컵을 집을 수 있을까?’가 문제가 됩니다. 여러 행동 뒤 받은 보상으로 배우는 강화학습에서는 ‘어떤 행동이 결국 컵을 집는 데 도움이 됐을까?’를 따져야 합니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | Sequential decision making | State, action, reward, transition은 어떻게 연결되는가? |
-| 2 | Reinforcement learning | Delayed reward와 exploration을 어떻게 다루는가? |
-| 3 | Model-based planning | 미래 state를 예측해 action을 고를 수 있는가? |
-| 4 | Imitation and diffusion policy | Multimodal demonstration을 어떤 action distribution으로 학습하는가? |
-| 5 | VLA foundation models | RT-1, RT-2, RT-X, OpenVLA는 무엇을 generalize하려 하는가? |
+| 1 | Sequential decision making | State, action, reward, transition은 어떻게 연결됩니까? |
+| 2 | Reinforcement learning | Delayed reward와 exploration을 어떻게 다룹니까? |
+| 3 | Model-based planning | 미래 state를 예측해 action을 고를 수 있습니까? |
+| 4 | Imitation and diffusion policy | Multimodal demonstration을 어떤 action distribution으로 학습합니까? |
+| 5 | VLA foundation models | RT-1, RT-2, RT-X, OpenVLA는 무엇을 generalize하려 합니까? |
 
 </details>
 ## 1. Perception-action loop
 
-Agent는 state 또는 observation $$s_t$$를 받아 action $$a_t$$를 선택하고, environment는 다음 state $$s_{t+1}$$와 reward $$r_t$$를 돌려준다. 목표는 한 번의 정답이 아니라 시간에 걸친 discounted return
+Agent는 state 또는 observation $$s_t$$를 받아 action $$a_t$$를 선택하고, environment는 다음 state $$s_{t+1}$$와 reward $$r_t$$를 돌려줍니다. 목표는 한 번의 정답이 아니라 시간에 걸친 discounted return
 
 $$
 G_t=\sum_{k=0}^{\infty}\gamma^k r_{t+k}
 $$
 
-을 크게 하는 policy $$\pi(a\mid s)$$를 찾는 것이다. Cart-pole, game pixel, board game, chatbot, cloth folding 사례는 state와 action의 형태가 달라도 이 구조로 표현됨을 보여준다.
+을 크게 하는 policy $$\pi(a\mid s)$$를 찾는 것입니다. Cart-pole, game pixel, board game, chatbot, cloth folding 사례는 state와 action의 형태가 달라도 이 구조로 표현됨을 보여줍니다.
 
-Robot에서는 완전한 physical state를 직접 알기 어렵고 camera·touch 등 noisy observation만 받는다. 또한 action이 object pose와 다음 camera view까지 바꾸므로 perception error와 control error가 누적된다. 때로는 물체를 건드리는 action 자체가 숨은 속성을 알아내는 active perception이 된다.
+Robot에서는 완전한 physical state를 직접 알기 어렵고 camera·touch 등 noisy observation만 받습니다. 또한 action이 object pose와 다음 camera view까지 바꾸므로 perception error와 control error가 누적됩니다. 때로는 물체를 건드리는 action 자체가 숨은 속성을 알아내는 active perception이 됩니다.
 
 ## 2. Reinforcement learning의 힘과 비용
 
-Model-free RL은 interaction에서 얻은 reward로 value나 policy를 학습한다. Action value는
+Model-free RL은 interaction에서 얻은 reward로 value나 policy를 학습합니다. Action value는
 
 $$
 Q^\pi(s,a)=\mathbb{E}_\pi[G_t\mid s_t=s,a_t=a]
 $$
 
-처럼 현재 선택의 장기 결과를 요약한다. 높은 $$Q$$의 action을 고르기만 하면 exploitation은 되지만, 아직 모르는 행동을 시도하는 exploration도 필요하다.
+처럼 현재 선택의 장기 결과를 요약합니다. 높은 $$Q$$의 action을 고르기만 하면 exploitation은 되지만, 아직 모르는 행동을 시도하는 exploration도 필요합니다.
 
-Supervised learning과 달리 data distribution이 policy에 따라 바뀌고, 같은 action의 결과도 stochastic하며, reward가 성공 끝에 늦게 올 수 있다. Physical robot에서 대규모 trial-and-error는 느리고 위험하며 장비를 마모시킨다. Simulation은 scale을 돕지만 dynamics와 appearance 차이로 sim-to-real gap이 생긴다.
+Supervised learning과 달리 data distribution이 policy에 따라 바뀌고, 같은 action의 결과도 stochastic하며, reward가 성공 끝에 늦게 올 수 있습니다. Physical robot에서 대규모 trial-and-error는 느리고 위험하며 장비를 마모시킵니다. Simulation은 scale을 돕지만 dynamics와 appearance 차이로 sim-to-real gap이 생깁니다.
 
 ## 3. Dynamics model과 model-predictive control
 
@@ -76,36 +76,36 @@ $$
 \widehat{s}_{t+1}=f_\theta(s_t,a_t)
 $$
 
-을 학습해 후보 action sequence의 결과를 상상한다. 현재 state에서 목표에 가까워지는 sequence를 찾고 첫 action만 실행한 뒤 새 observation에서 다시 계획하는 방식이 model-predictive control이다. 매 step 재계획하면 model error와 외부 변화에 대응할 수 있다.
+을 학습해 후보 action sequence의 결과를 상상합니다. 현재 state에서 목표에 가까워지는 sequence를 찾고 첫 action만 실행한 뒤 새 observation에서 다시 계획하는 방식이 model-predictive control입니다. 매 step 재계획하면 model error와 외부 변화에 대응할 수 있습니다.
 
-Pixel dynamics는 raw image를 직접 예측할 수 있지만 불필요한 appearance까지 맞춰야 한다. Object/keypoint/latent representation은 planning에 필요한 구조만 보존해 더 효율적일 수 있다. 어떤 state representation을 쓸지가 dynamics accuracy와 action optimization 난도를 함께 결정한다.
+Pixel dynamics는 raw image를 직접 예측할 수 있지만 불필요한 appearance까지 맞춰야 합니다. Object/keypoint/latent representation은 planning에 필요한 구조만 보존해 더 효율적일 수 있습니다. 어떤 state representation을 쓸지가 dynamics accuracy와 action optimization 난도를 함께 결정합니다.
 
 ## 4. Imitation learning과 distribution shift
 
-Behavior cloning은 expert demonstration의 $$(s,a)$$ pair로 supervised policy를 학습한다. Reward 설계나 위험한 exploration 없이 복잡한 manipulation을 배울 수 있다. 그러나 학습 data에 없는 state에서 작은 실수가 나면 다음 state가 더 멀어지고 오류가 누적된다.
+Behavior cloning은 expert demonstration의 $$(s,a)$$ pair로 supervised policy를 학습합니다. Reward 설계나 위험한 exploration 없이 복잡한 manipulation을 배울 수 있습니다. 그러나 학습 data에 없는 state에서 작은 실수가 나면 다음 state가 더 멀어지고 오류가 누적됩니다.
 
-이를 줄이려면 실행 중 방문하는 state에서 expert label을 더 모으거나, diverse demonstration과 corrective data를 수집하고, imitation으로 초기화한 뒤 RL 또는 planning으로 보완할 수 있다. 강의의 deformable-object manipulation 사례는 perception과 learned dynamics, planning을 결합하는 이유를 보여준다.
+이를 줄이려면 실행 중 방문하는 state에서 expert label을 더 모으거나, diverse demonstration과 corrective data를 수집하고, imitation으로 초기화한 뒤 RL 또는 planning으로 보완할 수 있습니다. 강의의 deformable-object manipulation 사례는 perception과 learned dynamics, planning을 결합하는 이유를 보여줍니다.
 
-단순 regression policy는 같은 관찰에서 여러 유효한 행동이 가능한 demonstration을 평균내 어색한 action을 만들 수 있다. Energy-based implicit behavior cloning은 observation-action pair에 score를 주고 inference에서 좋은 action을 찾으며, **diffusion policy**는 generative diffusion model을 policy function class로 사용해 multimodal action distribution을 표현한다. 강의는 butter spreading, scrambled eggs, potato peeling, book sliding처럼 fine-grained manipulation을 demonstration에서 빠르게 학습한 사례를 보여주되, 신뢰성과 초기 조건 generalization에는 반복적인 data collection이 필요하다고 선을 긋는다.
+단순 regression policy는 같은 관찰에서 여러 유효한 행동이 가능한 demonstration을 평균내 어색한 action을 만들 수 있습니다. Energy-based implicit behavior cloning은 observation-action pair에 score를 주고 inference에서 좋은 action을 찾으며, **diffusion policy**는 generative diffusion model을 policy function class로 사용해 multimodal action distribution을 표현합니다. 강의는 butter spreading, scrambled eggs, potato peeling, book sliding처럼 fine-grained manipulation을 demonstration에서 빠르게 학습한 사례를 보여주되, 신뢰성과 초기 조건 generalization에는 반복적인 data collection이 필요하다고 선을 긋습니다.
 
 ## 5. Robot foundation policy와 world model
 
-최근 robot foundation model은 image, language instruction, proprioception을 받아 action token이나 trajectory를 출력하려 한다. Vision-language pretraining의 지식은 task 이해를 돕지만 정확한 contact dynamics와 embodiment별 control은 robot interaction data가 필요하다. Language model처럼 web에서 사실상 무한 data를 얻기 어려운 것이 핵심 bottleneck이다.
+최근 robot foundation model은 image, language instruction, proprioception을 받아 action token이나 trajectory를 출력하려 합니다. Vision-language pretraining의 지식은 task 이해를 돕지만 정확한 contact dynamics와 embodiment별 control은 robot interaction data가 필요합니다. Language model처럼 web에서 사실상 무한 data를 얻기 어려운 것이 핵심 bottleneck입니다.
 
-강의는 이 흐름을 2022년 12월 공개된 **RT-1**에서 시작해 **RT-2, RT-X, OpenVLA**로 이어지는 계보로 정리한다. 이들은 observation과 language task specification에서 action을 내는 Vision-Language-Action(VLA) policy라는 공통 목표를 가지며, 한 task 전용 policy보다 넓은 상황에서 매끄럽고 instruction-consistent한 trajectory를 생성하려 한다. 이어지는 공통 pipeline 설명에서는 academia와 자체 수집 data를 여러 embodiment에 걸쳐 모아 pretraining의 연료로 사용한다. 강의는 이 네 모델의 architecture를 각각 비교하기보다 역사적 전개와 generalization 목표를 중심으로 소개한다.
+강의는 이 흐름을 2022년 12월 공개된 **RT-1**에서 시작해 **RT-2, RT-X, OpenVLA**로 이어지는 계보로 정리합니다. 이들은 observation과 language task specification에서 action을 내는 Vision-Language-Action(VLA) policy라는 공통 목표를 가지며, 한 task 전용 policy보다 넓은 상황에서 매끄럽고 instruction-consistent한 trajectory를 생성하려 합니다. 이어지는 공통 pipeline 설명에서는 academia와 자체 수집 data를 여러 embodiment에 걸쳐 모아 pretraining의 연료로 사용합니다. 강의는 이 네 모델의 architecture를 각각 비교하기보다 역사적 전개와 generalization 목표를 중심으로 소개합니다.
 
-Generalization은 새로운 object뿐 아니라 새로운 task, scene, robot body까지 포함한다. 강의는 foundation policy, predictive world model, scalable robot data, post-training과 evaluation platform이 함께 발전해야 한다고 정리한다. “Foundation”이라는 이름은 범용성을 보장하는 결과가 아니라 넓은 data와 adaptation을 요구하는 목표다. Broad generalization을 주장하려면 성공 영상만이 아니라 정량적이고 재현 가능한 평가 근거가 필요하다.
+Generalization은 새로운 object뿐 아니라 새로운 task, scene, robot body까지 포함합니다. 강의는 foundation policy, predictive world model, scalable robot data, post-training과 evaluation platform이 함께 발전해야 한다고 정리합니다. “Foundation”이라는 이름은 범용성을 보장하는 결과가 아니라 넓은 data와 adaptation을 요구하는 목표입니다. Broad generalization을 주장하려면 성공 영상만이 아니라 정량적이고 재현 가능한 평가 근거가 필요합니다.
 
 ## 핵심 수식 유도
 
-Policy gradient는 trajectory probability의 log derivative를 이용해 expected return의 gradient를 policy log-probability gradient로 바꾼다. Environment dynamics가 policy parameter와 무관할 때 그 항은 미분에서 사라지지만, sampled return 때문에 estimator variance는 클 수 있다.
+Policy gradient는 trajectory probability의 log derivative를 이용해 expected return의 gradient를 policy log-probability gradient로 바꿉니다. Environment dynamics가 policy parameter와 무관할 때 그 항은 미분에서 사라지지만, sampled return 때문에 estimator variance는 클 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Trajectory policy-gradient identity</summary>
 
 ### 작성자 보충: trajectory policy-gradient identity
 
-강의 원문은 reinforcement learning의 세부 유도를 생략한다고 밝히므로, 아래 전개는 강의의 robot-learning 흐름을 이해하기 위한 작성자 보충이다. 유한 horizon trajectory를 $$\tau=(s_0,a_0,\ldots,s_T)$$, 초기 state distribution을 $$\rho_0$$, environment transition을 $$P(s_{t+1}\mid s_t,a_t)$$라 하면 trajectory density 또는 probability mass는
+강의 원문은 reinforcement learning의 세부 유도를 생략한다고 밝히므로, 아래 전개는 강의의 robot-learning 흐름을 이해하기 위한 작성자 보충입니다. 유한 horizon trajectory를 $$\tau=(s_0,a_0,\ldots,s_T)$$, 초기 state distribution을 $$\rho_0$$, environment transition을 $$P(s_{t+1}\mid s_t,a_t)$$라 하면 trajectory density 또는 probability mass는
 
 $$
 p_\theta(\tau)
@@ -115,7 +115,7 @@ p_\theta(\tau)
 P(s_{t+1}\mid s_t,a_t)
 $$
 
-로 factorization된다. Return을 $$R(\tau)=\sum_{t=0}^{T-1}\gamma^t r_t$$, objective를
+로 factorization됩니다. Return을 $$R(\tau)=\sum_{t=0}^{T-1}\gamma^t r_t$$, objective를
 
 $$
 J(\theta)
@@ -123,7 +123,7 @@ J(\theta)
 =\int p_\theta(\tau)R(\tau)\,d\tau
 $$
 
-로 정의하자. 합으로 표현되는 discrete trajectory도 같은 전개를 따른다. 미분과 적분을 교환할 수 있고 $$R$$이 $$\theta$$에 직접 의존하지 않는다면
+로 정의하겠습니다. 합으로 표현되는 discrete trajectory도 같은 전개를 따릅니다. 미분과 적분을 교환할 수 있고 $$R$$이 $$\theta$$에 직접 의존하지 않는다면
 
 $$
 \begin{aligned}
@@ -137,7 +137,7 @@ R(\tau)\,d\tau\\
 \end{aligned}
 $$
 
-두 번째 줄은 $$\nabla_\theta p_\theta=p_\theta\nabla_\theta\log p_\theta$$라는 log-derivative **항등식**을 사용한다. 이제 trajectory factorization에 log를 취하면 곱이 합으로 바뀐다.
+두 번째 줄은 $$\nabla_\theta p_\theta=p_\theta\nabla_\theta\log p_\theta$$라는 log-derivative **항등식**을 사용합니다. 이제 trajectory factorization에 log를 취하면 곱이 합으로 바뀝니다.
 
 $$
 \log p_\theta(\tau)
@@ -162,7 +162,7 @@ $$
 \nabla_\theta\log\pi_\theta(a_t\mid s_t)
 $$
 
-만 남는다. 이를 expectation 식에 대입하면 최종적으로
+만 남습니다. 이를 expectation 식에 대입하면 최종적으로
 
 $$
 \boxed{
@@ -176,43 +176,43 @@ R(\tau)
 }
 $$
 
-을 얻는다. 이는 Monte Carlo 근사가 아니라, policy가 미분 가능하고 trajectory support가 $$\theta$$에 따라 바뀌지 않으며 위 정칙 조건이 성립할 때의 **정확한 score-function 항등식**이다. Sample trajectory로 expectation을 평균하는 단계가 Monte Carlo estimator이며, on-policy sample이 독립적으로 충분히 주어지면 unbiased하지만 보통 variance가 크다. Action과 무관한 state-dependent baseline이나 advantage를 사용하면 expectation을 바꾸지 않으면서 variance를 줄일 수 있다.
+을 얻습니다. 이는 Monte Carlo 근사가 아니라, policy가 미분 가능하고 trajectory support가 $$\theta$$에 따라 바뀌지 않으며 위 정칙 조건이 성립할 때의 **정확한 score-function 항등식**입니다. Sample trajectory로 expectation을 평균하는 단계가 Monte Carlo estimator이며, on-policy sample이 독립적으로 충분히 주어지면 unbiased하지만 보통 variance가 큽니다. Action과 무관한 state-dependent baseline이나 advantage를 사용하면 expectation을 바꾸지 않으면서 variance를 줄일 수 있습니다.
 
-Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $$r_t$$와 return $$R$$ 및 $$J$$는 task가 정한 같은 단위를 가지며, $$\theta$$가 무차원 parameter라면 gradient도 reward 단위를 갖는다. Parameter에 물리 단위가 있다면 gradient의 단위는 `reward 단위 / parameter 단위`다.
+Probability와 log-probability, discount $$\gamma$$는 무차원입니다. Reward $$r_t$$와 return $$R$$ 및 $$J$$는 task가 정한 같은 단위를 가지며, $$\theta$$가 무차원 parameter라면 gradient도 reward 단위를 갖습니다. Parameter에 물리 단위가 있다면 gradient의 단위는 `reward 단위 / parameter 단위`입니다.
 
-실패 조건도 분명하다. Deterministic·불연속 policy나 $$\theta$$에 따라 support가 변하는 policy에서는 log-derivative를 그대로 쓸 수 없다. Environment dynamics, 초기 분포, reward가 $$\theta$$에 직접 의존하면 위에서 0으로 둔 항 또는 $$\nabla_\theta R$$ 항을 추가해야 한다. Off-policy data에는 importance weighting 같은 correction이 필요하고, behavior policy가 target policy의 중요한 action을 전혀 방문하지 않으면 coverage가 없어 correction만으로 복구할 수 없다. Long horizon과 sparse reward는 variance와 credit-assignment 문제를 키우며, partial observability에서는 state 대신 observation history나 belief를 조건으로 삼아야 한다. Reward misspecification은 gradient 계산이 정확해도 의도하지 않은 행동을 최적화하게 만든다.
+실패 조건도 분명합니다. Deterministic·불연속 policy나 $$\theta$$에 따라 support가 변하는 policy에서는 log-derivative를 그대로 쓸 수 없습니다. Environment dynamics, 초기 분포, reward가 $$\theta$$에 직접 의존하면 위에서 0으로 둔 항 또는 $$\nabla_\theta R$$ 항을 추가해야 합니다. Off-policy data에는 importance weighting 같은 correction이 필요하고, behavior policy가 target policy의 중요한 action을 전혀 방문하지 않으면 coverage가 없어 correction만으로 복구할 수 없습니다. Long horizon과 sparse reward는 variance와 credit-assignment 문제를 키우며, partial observability에서는 state 대신 observation history나 belief를 조건으로 삼아야 합니다. Reward misspecification은 gradient 계산이 정확해도 의도하지 않은 행동을 최적화하게 만듭니다.
 
 </details>
 
 ## 마지막 핵심 정리
 
-- Robot learning은 action이 다음 data를 만드는 closed-loop 학습이다.
-- RL은 reward에서 행동을 발견하지만 exploration, delayed credit, physical data cost가 크다.
-- Model-based planning은 dynamics로 미래를 예측하고 매 step 재계획한다.
-- Imitation은 expert data를 활용하지만 learner가 만든 state에서 distribution shift가 생긴다.
-- Diffusion policy는 multimodal demonstration의 여러 유효한 action mode를 생성 분포로 표현한다.
-- RT-1에서 RT-2·RT-X·OpenVLA로 이어지는 VLA 흐름은 image와 instruction을 다양한 embodiment의 action으로 연결하려 한다.
-- Foundation robotics의 핵심 제한은 모델 크기보다 **다양하고 신뢰할 수 있는 interaction data**다.
+- Robot learning은 action이 다음 data를 만드는 closed-loop 학습입니다.
+- RL은 reward에서 행동을 발견하지만 exploration, delayed credit, physical data cost가 큽니다.
+- Model-based planning은 dynamics로 미래를 예측하고 매 step 재계획합니다.
+- Imitation은 expert data를 활용하지만 learner가 만든 state에서 distribution shift가 생깁니다.
+- Diffusion policy는 multimodal demonstration의 여러 유효한 action mode를 생성 분포로 표현합니다.
+- RT-1에서 RT-2·RT-X·OpenVLA로 이어지는 VLA 흐름은 image와 instruction을 다양한 embodiment의 action으로 연결하려 합니다.
+- Foundation robotics의 핵심 제한은 모델 크기보다 **다양하고 신뢰할 수 있는 interaction data**입니다.
 
 ## Study Guide
 
-하나의 manipulation task를 골라 state, observation, action, reward를 직접 정의한다. 같은 task를 RL, model-based planning, behavior cloning으로 풀 때 필요한 data와 실패 방식을 비교하고, foundation policy가 재사용할 부분과 embodiment-specific 부분을 나눈다.
+하나의 manipulation task를 골라 state, observation, action, reward를 직접 정의합니다. 같은 task를 RL, model-based planning, behavior cloning으로 풀 때 필요한 data와 실패 방식을 비교하고, foundation policy가 재사용할 부분과 embodiment-specific 부분을 나눕니다.
 
 ## 복습 질문
 
-<details markdown="block"><summary>1. Robot learning에서 data가 i.i.d.가 아닌 이유는?</summary>
+<details markdown="block"><summary>1. Robot learning에서 data가 i.i.d.가 아닌 이유는 무엇입니까?</summary>
 
-답변: 현재 policy의 action이 다음 state와 앞으로 관측할 data distribution을 바꾸기 때문이다. Policy가 달라지면 수집되는 학습 data도 달라진다.
+답변: 현재 policy의 action이 다음 state와 앞으로 관측할 data distribution을 바꾸기 때문입니다. Policy가 달라지면 수집되는 학습 data도 달라집니다.
 </details>
 
-<details markdown="block"><summary>2. Model-predictive control이 첫 action만 실행하는 이유는?</summary>
+<details markdown="block"><summary>2. Model-predictive control이 첫 action만 실행하는 이유는 무엇입니까?</summary>
 
-답변: Learned dynamics는 완벽하지 않고 실제 환경도 변한다. 새 observation을 받은 뒤 다시 계획하면 누적 model error를 줄일 수 있다.
+답변: Learned dynamics는 완벽하지 않고 실제 환경도 변합니다. 새 observation을 받은 뒤 다시 계획하면 누적 model error를 줄일 수 있습니다.
 </details>
 
-<details markdown="block"><summary>3. Behavior cloning의 작은 오류가 커지는 이유는?</summary>
+<details markdown="block"><summary>3. Behavior cloning의 작은 오류가 커지는 이유는 무엇입니까?</summary>
 
-답변: 한 번 expert trajectory에서 벗어나면 training에 거의 없던 state를 만나고, 그곳의 잘못된 action이 더 큰 distribution shift를 만들기 때문이다.
+답변: 한 번 expert trajectory에서 벗어나면 training에 거의 없던 state를 만나고, 그곳의 잘못된 action이 더 큰 distribution shift를 만들기 때문입니다.
 </details>
 
 ## 원문 대조 기록
@@ -220,7 +220,7 @@ Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $
 <details markdown="block">
 <summary markdown="span">출처 대조 내역 보기</summary>
 
-공식 PDF **103쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
+공식 PDF **103쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했습니다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
 |---|---|---|
@@ -229,7 +229,7 @@ Probability와 log-probability, discount $$\gamma$$는 무차원이다. Reward $
 | PDF 68–78쪽 · 영상 00:55:38 | imitation learning, implicit BC, diffusion policy | 4절 |
 | PDF 79–102쪽 · 영상 01:03:23 | robotic foundation models와 evaluation | 5절 |
 
-공식 강의는 RL의 세부 수학 유도를 생략한다. 따라서 discounted return과 value의 정의를 제외한 trajectory policy-gradient 전개 전체는 출처 사실과 구분한 **작성자 보충**이다.
+공식 강의는 RL의 세부 수학 유도를 생략합니다. 따라서 discounted return과 value의 정의를 제외한 trajectory policy-gradient 전개 전체는 출처 사실과 구분한 **작성자 보충**입니다.
 
 </details>
 ## 참고자료

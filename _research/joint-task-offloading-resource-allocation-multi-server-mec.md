@@ -28,36 +28,36 @@ keywords:
 
 ## 한 줄 요약
 
-JTORA는 multi-cell MEC에서 task offloading decision, uplink transmission power, MEC computing resource allocation을 함께 최적화해 task completion time과 energy consumption을 줄이는 문제를 다룬다.
+JTORA는 multi-cell MEC에서 task offloading decision, uplink transmission power, MEC computing resource allocation을 함께 최적화해 task completion time과 energy consumption을 줄이는 문제를 다룹니다.
 
 ## 핵심 내용
 
-이 논문은 multi-server MEC에서 task offloading과 resource allocation을 하나의 결합 문제로 다룬다. 사용자가 edge로 task를 보내더라도 uplink power가 부족하거나 MEC server resource가 부족하면 실제 gain은 줄어든다.
+이 논문은 multi-server MEC에서 task offloading과 resource allocation을 하나의 결합 문제로 다룹니다. 사용자가 edge로 task를 보내더라도 uplink power가 부족하거나 MEC server resource가 부족하면 실제 gain은 줄어듭니다.
 
-JTORA는 offloading decision, transmission power, computing resource를 함께 최적화한다. 이 문제는 integer decision과 continuous resource가 섞인 MINLP이므로 그대로 풀기 어렵다. 논문은 문제를 resource allocation과 task offloading으로 분해해 계산 가능하게 만든다.
+JTORA는 offloading decision, transmission power, computing resource를 함께 최적화합니다. 이 문제는 integer decision과 continuous resource가 섞인 MINLP이므로 그대로 풀기 어렵습니다. 논문은 문제를 resource allocation과 task offloading으로 분해해 계산 가능하게 만듭니다.
 
-이 연구는 DRL 논문들과 달리 학습 기반 방법 자체를 강조하지는 않지만, MEC offloading에서 무엇을 최적화해야 하는지 명확한 기준을 제공한다. 이후 DRL 기반 방법은 이런 최적화 문제를 online, distributed, scalable하게 근사하는 방향으로 발전한다고 볼 수 있다.
+이 연구는 DRL 논문들과 달리 학습 기반 방법 자체를 강조하지는 않지만, MEC offloading에서 무엇을 최적화해야 하는지 명확한 기준을 제공합니다. 이후 DRL 기반 방법은 이런 최적화 문제를 online, distributed, scalable하게 근사하는 방향으로 발전한다고 볼 수 있습니다.
 
-JTORA를 읽을 때는 "offloading"과 "resource allocation"이 분리 가능한 문제가 아니라는 점을 봐야 한다. 사용자가 edge로 task를 보낼지 결정한 뒤 resource를 나누는 순차 접근은 간단하지만, 실제 delay는 두 결정의 조합으로 정해진다. 특정 server가 channel은 좋아도 CPU가 부족하면 deadline miss가 생길 수 있고, 반대로 CPU가 남아도 transmission bottleneck이 있으면 offloading 이점이 줄어든다.
+JTORA를 읽을 때는 "offloading"과 "resource allocation"이 분리 가능한 문제가 아니라는 점을 봐야 합니다. 사용자가 edge로 task를 보낼지 결정한 뒤 resource를 나누는 순차 접근은 간단하지만, 실제 delay는 두 결정의 조합으로 정해집니다. 특정 server가 channel은 좋아도 CPU가 부족하면 deadline miss가 생길 수 있고, 반대로 CPU가 남아도 transmission bottleneck이 있으면 offloading 이점이 줄어듭니다.
 
-이 연구의 의미는 multi-server 환경에서 action space와 constraint가 빠르게 커진다는 데 있다. DRL 기반 접근은 복잡한 조합 문제를 online decision으로 다룰 수 있게 하지만, state/action 설계가 성능을 크게 좌우한다. QECO-Adapt 같은 load-aware 연구와 연결하면, server 선택과 resource 배분을 동시에 보는 것이 dense MEC에서 dropped task를 줄이는 핵심 조건임을 알 수 있다.
+이 연구의 의미는 multi-server 환경에서 action space와 constraint가 빠르게 커진다는 데 있습니다. DRL 기반 접근은 복잡한 조합 문제를 online decision으로 다룰 수 있게 하지만, state/action 설계가 성능을 크게 좌우합니다. QECO-Adapt 같은 load-aware 연구와 연결하면, server 선택과 resource 배분을 동시에 보는 것이 dense MEC에서 dropped task를 줄이는 핵심 조건임을 알 수 있습니다.
 
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 문제 배경 | Multi-server MEC에서 offloading과 resource allocation은 왜 분리하기 어려운가? |
-| 2 | 문제 정식화 | Task offloading gain을 completion time과 energy reduction으로 어떻게 정의하는가? |
-| 3 | 분해 | NP-hard MINLP를 어떤 하위 문제로 나누는가? |
-| 4 | 결과 | 분해 기반 접근이 large-scale network에서 실용적인가? |
+| 1 | 문제 배경 | Multi-server MEC에서 offloading과 resource allocation은 왜 분리하기 어렵습니까? |
+| 2 | 문제 정식화 | Task offloading gain을 completion time과 energy reduction으로 어떻게 정의합니까? |
+| 3 | 분해 | NP-hard MINLP를 어떤 하위 문제로 나눕니까? |
+| 4 | 결과 | 분해 기반 접근이 large-scale network에서 실용적입니까? |
 
 ## 1. 문제 배경
 
-MEC server가 여러 base station에 배치되면 사용자는 가까운 edge resource를 활용할 수 있다. 그러나 어떤 task를 어느 server에 offload할지, uplink power를 어떻게 조절할지, 각 MEC server의 computing resource를 어떻게 나눌지는 서로 연결되어 있다.
+MEC server가 여러 base station에 배치되면 사용자는 가까운 edge resource를 활용할 수 있습니다. 그러나 어떤 task를 어느 server에 offload할지, uplink power를 어떻게 조절할지, 각 MEC server의 computing resource를 어떻게 나눌지는 서로 연결되어 있습니다.
 
 ## 2. 제안 방법
 
-논문은 Joint Task Offloading and Resource Allocation(JTORA)을 MINLP로 정식화한다. 직접 최적해를 구하기 어렵기 때문에, resource allocation 문제와 task offloading 문제로 분해한다.
+논문은 Joint Task Offloading and Resource Allocation(JTORA)을 MINLP로 정식화합니다. 직접 최적해를 구하기 어렵기 때문에, resource allocation 문제와 task offloading 문제로 분해합니다.
 
 | 하위 문제 | 역할 |
 |---|---|
@@ -67,11 +67,11 @@ MEC server가 여러 base station에 배치되면 사용자는 가까운 edge re
 
 ## 3. 결과 및 해석
 
-JTORA의 의미는 MEC offloading gain을 단순 delay만이 아니라 energy reduction과 함께 본다는 데 있다. 또한 offloading decision만 학습하거나 최적화하는 것이 아니라, resource allocation과 함께 풀어야 실제 성능이 나온다는 점을 보여준다.
+JTORA의 의미는 MEC offloading gain을 단순 delay만이 아니라 energy reduction과 함께 본다는 데 있습니다. 또한 offloading decision만 학습하거나 최적화하는 것이 아니라, resource allocation과 함께 풀어야 실제 성능이 나온다는 점을 보여줍니다.
 
 ## 4. 연구 맥락
 
-QECO 계열 연구는 DRL 기반 online/distributed decision에 초점을 둔다. JTORA는 그 이전 단계에서 MEC offloading problem을 최적화 문제로 엄밀하게 정식화한 기준점으로 볼 수 있다.
+QECO 계열 연구는 DRL 기반 online/distributed decision에 초점을 둡니다. JTORA는 그 이전 단계에서 MEC offloading problem을 최적화 문제로 엄밀하게 정식화한 기준점으로 볼 수 있습니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

@@ -19,78 +19,78 @@ keywords:
 
 Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=k5Fh-UgTuCo){:target="_blank" rel="noopener"}
 
-**원본 영상 먼저 보기:** [01:02:40의 GRPO advantage 계산](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s){:target="_blank" rel="noopener"}에서 같은 prompt의 응답들을 한 group으로 묶고 각 reward를 group 평균과 비교하는 핵심 연산을 먼저 확인한다. 아래 GRPO 절은 이를 표준편차 정규화까지 확장해 value model 없이 advantage를 만드는 과정과 퇴화 조건을 다룬다.
+**원본 영상 먼저 보기:** [01:02:40의 GRPO advantage 계산](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s){:target="_blank" rel="noopener"}에서 같은 prompt의 응답들을 한 group으로 묶고 각 reward를 group 평균과 비교하는 핵심 연산을 먼저 확인합니다. 아래 GRPO 절은 이를 표준편차 정규화까지 확장해 value model 없이 advantage를 만드는 과정과 퇴화 조건을 다룹니다.
 
 <figure>
   <a href="{{ '/assets/images/study/cme295/source-captures/lecture-06-grpo-advantage-01h02m40s.jpg' | relative_url }}" target="_blank" rel="noopener">
     <img src="{{ '/assets/images/study/cme295/source-captures/lecture-06-grpo-advantage-01h02m40s.jpg' | relative_url }}" alt="GRPO 목적을 advantage 최대화와 기준 모델 이탈 억제로 나누고 group 평균 reward로 advantage를 계산하는 강의 슬라이드" loading="lazy">
   </a>
-  <figcaption><a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s" target="_blank" rel="noopener">공식 영상 01:02:40</a> — GRPO의 advantage 최대화와 정책 이탈 억제 개요. Advantage는 개별 reward와 group 평균 reward의 차이로 근사한다. 구체적인 목적함수에서는 old-policy ratio clipping과 reference-policy KL penalty를 구분한다.</figcaption>
+  <figcaption><a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=3760s" target="_blank" rel="noopener">공식 영상 01:02:40</a> — GRPO의 advantage 최대화와 정책 이탈 억제 개요. Advantage는 개별 reward와 group 평균 reward의 차이로 근사합니다. 구체적인 목적함수에서는 old-policy ratio clipping과 reference-policy KL penalty를 구분합니다.</figcaption>
 </figure>
 
-한 prompt에서 여러 completion을 생성하고 각각 reward $$r_i$$를 얻으면, 슬라이드의 기본 형태는 $$r_i-\operatorname{mean}(r_1,\ldots,r_G)$$다. 평균보다 좋은 응답은 양의 advantage, 나쁜 응답은 음의 advantage를 얻어 policy update 방향이 정해진다. 실제 GRPO에서는 이 차이를 group 표준편차로 나눠 reward scale을 맞춘다. 실제 목적함수에서는 old policy 대비 급격한 확률비 변화는 clipping으로, reference policy와의 이탈은 KL penalty로 제한한다.
+한 prompt에서 여러 completion을 생성하고 각각 reward $$r_i$$를 얻으면, 슬라이드의 기본 형태는 $$r_i-\operatorname{mean}(r_1,\ldots,r_G)$$입니다. 평균보다 좋은 응답은 양의 advantage, 나쁜 응답은 음의 advantage를 얻어 policy update 방향이 정해집니다. 실제 GRPO에서는 이 차이를 group 표준편차로 나눠 reward scale을 맞춥니다. 실제 목적함수에서는 old policy 대비 급격한 확률비 변화는 clipping으로, reference policy와의 이탈은 KL penalty로 제한합니다.
 
-> **핵심:** 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에서는 최종 답뿐 아니라 추론 과정에 사용할 계산량도 성능을 좌우한다. 정답을 검증할 수 있는 보상과 그룹 내 상대 보상을 이용하는 GRPO는 이러한 추론 능력을 학습하는 한 방법이다.
+> **핵심:** 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에서는 최종 답뿐 아니라 추론 과정에 사용할 계산량도 성능을 좌우합니다. 정답을 검증할 수 있는 보상과 그룹 내 상대 보상을 이용하는 GRPO는 이러한 추론 능력을 학습하는 한 방법입니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | RLHF 복습 | PPO, KL penalty, reward model, SFT reference model은 reasoning training의 어떤 배경이 되는가? |
-| 2 | Reasoning 정의 | 단순 지식 질문과 multi-step reasoning problem은 어떻게 다른가? |
-| 3 | Reasoning model의 출력 | Vanilla LLM의 answer-only 출력과 reasoning chain plus answer 출력은 무엇이 다른가? |
-| 4 | Benchmark와 pass@k | Coding/math benchmark에서 pass@k, temperature, consensus@k는 성능 평가를 어떻게 바꾸는가? |
-| 5 | RL로 reasoning 학습 | 왜 reasoning chain SFT보다 verifiable reward를 이용한 RL이 자연스러운 출발점이 되는가? |
-| 6 | GRPO | GRPO는 PPO의 value function을 없애고 group-relative advantage를 어떻게 계산하는가? |
-| 7 | GRPO 개선 | Output length 증가 문제에서 DAPO, Dr. GRPO, asymmetric epsilon은 어떤 수정 방향을 제시하는가? |
-| 8 | DeepSeek R1 pipeline | R1-Zero와 R1은 SFT, RL, cold-start data, rejection sampling, distillation을 어떻게 조합하는가? |
+| 1 | RLHF 복습 | PPO, KL penalty, reward model, SFT reference model은 reasoning training의 어떤 배경이 됩니까? |
+| 2 | Reasoning 정의 | 단순 지식 질문과 multi-step reasoning problem은 어떻게 다릅니까? |
+| 3 | Reasoning model의 출력 | Vanilla LLM의 answer-only 출력과 reasoning chain plus answer 출력은 무엇이 다릅니까? |
+| 4 | Benchmark와 pass@k | Coding/math benchmark에서 pass@k, temperature, consensus@k는 성능 평가를 어떻게 바꿉니까? |
+| 5 | RL로 reasoning 학습 | 왜 reasoning chain SFT보다 verifiable reward를 이용한 RL이 자연스러운 출발점이 됩니까? |
+| 6 | GRPO | GRPO는 PPO의 value function을 없애고 group-relative advantage를 어떻게 계산합니까? |
+| 7 | GRPO 개선 | Output length 증가 문제에서 DAPO, Dr. GRPO, asymmetric epsilon은 어떤 수정 방향을 제시합니까? |
+| 8 | DeepSeek R1 pipeline | R1-Zero와 R1은 SFT, RL, cold-start data, rejection sampling, distillation을 어떻게 조합합니까? |
 
 </details>
 ## 핵심 내용
 
-수학·코딩처럼 여러 단계를 거쳐야 하는 문제에는 답을 바로 내는 방식보다 중간 추론을 활용하는 방식이 도움이 될 수 있다. 강의는 일반 LLM이 코드 작성·디버깅·수필·시 창작에는 강해도 복잡한 추론, 고정된 지식 시점, 외부 행동의 부재, 자유 형식 출력 평가에서 제약을 갖는다고 설명한다. Reasoning model은 답 앞에 reasoning chain을 생성하는 방식으로 소개되며, chain-of-thought를 더 큰 규모로 확장한 발상과 이어진다. 추론 토큰이 늘어나면 생성 단계와 계산 비용도 증가한다.
+수학·코딩처럼 여러 단계를 거쳐야 하는 문제에는 답을 바로 내는 방식보다 중간 추론을 활용하는 방식이 도움이 될 수 있습니다. 강의는 일반 LLM이 코드 작성·디버깅·수필·시 창작에는 강해도 복잡한 추론, 고정된 지식 시점, 외부 행동의 부재, 자유 형식 출력 평가에서 제약을 갖는다고 설명합니다. Reasoning model은 답 앞에 reasoning chain을 생성하는 방식으로 소개되며, chain-of-thought를 더 큰 규모로 확장한 발상과 이어집니다. 추론 토큰이 늘어나면 생성 단계와 계산 비용도 증가합니다.
 
-예를 들어 여러 조건을 만족하는 숫자를 찾는 문제에서 첫 직감 하나만 출력하면 중간 조건을 빠뜨려도 고칠 기회가 없다. 조건을 하나씩 적용해 후보를 줄이거나 서로 다른 풀이 후보를 만들면, 마지막 답을 내기 전에 모순을 찾을 여지가 생긴다. Reasoning token은 이 중간 계산에 쓰이는 출력 공간이다. 다만 토큰을 많이 쓴다는 사실만으로 풀이가 옳아지는 것은 아니므로, 계산 예산과 검증 기준을 함께 보아야 한다.
+예를 들어 여러 조건을 만족하는 숫자를 찾는 문제에서 첫 직감 하나만 출력하면 중간 조건을 빠뜨려도 고칠 기회가 없습니다. 조건을 하나씩 적용해 후보를 줄이거나 서로 다른 풀이 후보를 만들면, 마지막 답을 내기 전에 모순을 찾을 여지가 생깁니다. Reasoning token은 이 중간 계산에 쓰이는 출력 공간입니다. 다만 토큰을 많이 쓴다는 사실만으로 풀이가 옳아지는 것은 아니므로, 계산 예산과 검증 기준을 함께 보아야 합니다.
 
-이후에는 reasoning 평가와 학습 방법을 정리한다. Coding benchmark로 HumanEval, CodeForces, SWE-bench가, math benchmark로 AIME와 GSM 8K가 언급된다. pass@k는 k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric이며, n개 sample 중 c개가 성공했을 때 1 - C(n-c, k) / C(n, k)로 유도된다. Temperature는 낮으면 diverse하지 않고 높으면 token quality가 흔들릴 수 있어 benchmark마다 명시되어야 하며, consensus@k와 self-consistency도 관련 metric으로 소개된다.
+이후에는 reasoning 평가와 학습 방법을 정리합니다. Coding benchmark로 HumanEval, CodeForces, SWE-bench가, math benchmark로 AIME와 GSM 8K가 언급됩니다. pass@k는 k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric이며, n개 sample 중 c개가 성공했을 때 1 - C(n-c, k) / C(n, k)로 유도됩니다. Temperature는 낮으면 diverse하지 않고 높으면 token quality가 흔들릴 수 있어 benchmark마다 명시되어야 하며, consensus@k와 self-consistency도 관련 metric으로 소개됩니다.
 
-`pass@k`와 `consensus@k`는 여러 답을 쓰지만 묻는 내용이 다르다. pass@k는 후보 중 하나라도 정답이면 성공으로 보므로 코드 테스트처럼 정답 검증기가 있을 때 유용하다. Consensus는 가장 자주 나온 답을 고르므로 정답 검증기가 없어도 쓸 수 있지만, 여러 후보가 같은 오답에 모이면 실패한다. 따라서 숫자만 비교하기 전에 후보 생성 조건과 정답 판정 방식을 확인해야 한다.
+`pass@k`와 `consensus@k`는 여러 답을 쓰지만 묻는 내용이 다릅니다. pass@k는 후보 중 하나라도 정답이면 성공으로 보므로 코드 테스트처럼 정답 검증기가 있을 때 유용합니다. Consensus는 가장 자주 나온 답을 고르므로 정답 검증기가 없어도 쓸 수 있지만, 여러 후보가 같은 오답에 모이면 실패합니다. 따라서 숫자만 비교하기 전에 후보 생성 조건과 정답 판정 방식을 확인해야 합니다.
 
-강의의 핵심 학습 알고리즘은 GRPO이다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명한다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둔다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만든다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명된다.
+강의의 핵심 학습 알고리즘은 GRPO입니다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명합니다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둡니다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만듭니다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명됩니다.
 
-이 주제들을 기능별로 구분하면 **CoT는 추론 단계를 전개하는 방식, test-time compute는 추론에 투입하는 연산량, pass@k는 여러 후보의 성공 여부를 재는 평가 지표, GRPO는 모델을 갱신하는 학습 방식**이다. 한 번의 생성으로 복잡한 문제를 놓칠 때 추론 단계를 늘리거나 여러 후보를 만드는 선택을 검토하고, 그 후보들 안에 정답이 있는지는 pass@k로 평가한다. 반면 GRPO는 검증 가능한 reward를 이용해 좋은 응답을 생성하는 방향으로 모델의 parameter를 학습한다. 따라서 이 주제들이 하나의 문제를 둘러싸고 연결되더라도 `평가 후 반드시 GRPO 실행`이라는 직렬 pipeline은 아니다. GRPO로 학습하지 않은 모델에도 CoT와 pass@k를 사용할 수 있고, GRPO로 학습한 모델도 추론할 때마다 reward group을 만들어 policy를 갱신하는 것은 아니다. 강의의 [00:32:17–00:34:44](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=1937s){:target="_blank" rel="noopener"}는 여러 답을 생성할 계산 여유와 pass@k의 관계를 설명하며, 위 구분은 평가·추론·학습의 역할을 나누어 읽기 위한 정리다.
+이 주제들을 기능별로 구분하면 **CoT는 추론 단계를 전개하는 방식, test-time compute는 추론에 투입하는 연산량, pass@k는 여러 후보의 성공 여부를 재는 평가 지표, GRPO는 모델을 갱신하는 학습 방식**입니다. 한 번의 생성으로 복잡한 문제를 놓칠 때 추론 단계를 늘리거나 여러 후보를 만드는 선택을 검토하고, 그 후보들 안에 정답이 있는지는 pass@k로 평가합니다. 반면 GRPO는 검증 가능한 reward를 이용해 좋은 응답을 생성하는 방향으로 모델의 parameter를 학습합니다. 따라서 이 주제들이 하나의 문제를 둘러싸고 연결되더라도 `평가 후 반드시 GRPO 실행`이라는 직렬 pipeline은 아닙니다. GRPO로 학습하지 않은 모델에도 CoT와 pass@k를 사용할 수 있고, GRPO로 학습한 모델도 추론할 때마다 reward group을 만들어 policy를 갱신하는 것은 아닙니다. 강의의 [00:32:17–00:34:44](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=1937s){:target="_blank" rel="noopener"}는 여러 답을 생성할 계산 여유와 pass@k의 관계를 설명하며, 위 구분은 평가·추론·학습의 역할을 나누어 읽기 위한 정리입니다.
 
 ## 핵심 개념
 
 | 개념 | 설명 |
 |---|---|
-| Reasoning model | 질문에 바로 답하지 않고 reasoning chain을 생성한 뒤 answer를 내도록 학습된 LLM. 강의에서는 reasoning plus answer가 출력이라고 설명한다. |
-| Chain of thought | 모델이 blanket answer를 내기 전에 문제를 단계별로 풀도록 유도하는 방법. 강의에서는 in-context examples로 reasoning을 보이게 하는 방식으로 복습된다. |
-| Compute budget | 모델이 response를 생성하는 데 쓸 수 있는 reasoning/generation budget. 더 많은 token generation은 더 많은 forward pass와 compute를 뜻한다. |
-| pass@k | k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric. 강의에서는 1 - C(n-c,k)/C(n,k)로 유도한다. |
-| Consensus@k | 여러 generation 중 가장 많이 나온 answer를 선택하는 metric 또는 방식이며, self-consistency와 관련이 있다고 설명된다. |
+| Reasoning model | 질문에 바로 답하지 않고 reasoning chain을 생성한 뒤 answer를 내도록 학습된 LLM. 강의에서는 reasoning plus answer가 출력이라고 설명합니다. |
+| Chain of thought | 모델이 blanket answer를 내기 전에 문제를 단계별로 풀도록 유도하는 방법. 강의에서는 in-context examples로 reasoning을 보이게 하는 방식으로 복습됩니다. |
+| Compute budget | 모델이 response를 생성하는 데 쓸 수 있는 reasoning/generation budget. 더 많은 token generation은 더 많은 forward pass와 compute를 뜻합니다. |
+| pass@k | k번 시도 중 적어도 하나가 성공할 확률을 추정하는 metric. 강의에서는 1 - C(n-c,k)/C(n,k)로 유도합니다. |
+| Consensus@k | 여러 generation 중 가장 많이 나온 answer를 선택하는 metric 또는 방식이며, self-consistency와 관련이 있다고 설명됩니다. |
 | Verifiable reward | Code가 test cases를 통과하는지, math answer가 ground truth와 같은지처럼 model 없이 correctness를 확인할 수 있는 reward signal. |
-| GRPO | Group Relative Policy Optimization. 같은 prompt에 대한 여러 completion reward를 group average와 standard deviation으로 normalize해 advantage를 만들고 policy를 학습한다. |
-| DAPO / Dr. GRPO | GRPO의 output length 관련 incentive를 다루는 수정 방향. DAPO는 token-level contribution을 equalize하고, Dr. GRPO는 해당 factor를 제거한다고 설명된다. |
-| DeepSeek R1-Zero / R1 | R1-Zero는 pre-trained base model에서 바로 RL을 적용한 proof-of-concept이고, R1은 cold-start SFT와 여러 RL/SFT 단계를 섞은 full pipeline이다. |
+| GRPO | Group Relative Policy Optimization. 같은 prompt에 대한 여러 completion reward를 group average와 standard deviation으로 normalize해 advantage를 만들고 policy를 학습합니다. |
+| DAPO / Dr. GRPO | GRPO의 output length 관련 incentive를 다루는 수정 방향. DAPO는 token-level contribution을 equalize하고, Dr. GRPO는 해당 factor를 제거한다고 설명됩니다. |
+| DeepSeek R1-Zero / R1 | R1-Zero는 pre-trained base model에서 바로 RL을 적용한 proof-of-concept이고, R1은 cold-start SFT와 여러 RL/SFT 단계를 섞은 full pipeline입니다. |
 | Distillation for reasoning | R1 같은 teacher model이 reasoning tokens를 포함한 sample responses를 offline으로 만들고, smaller student model이 그 full sequence를 SFT로 맞추는 방식. |
 
 ## 수식 해설: pass@k와 group-relative advantage
 
-$$\operatorname{pass@k}$$는 여러 후보 중 하나 이상이 맞는지를 측정하고, GRPO는 같은 prompt에서 얻은 여러 completion의 reward를 서로 비교해 advantage를 만든다. 두 값 모두 sampling 조건에 의존하므로 독립 시행과 중복 없는 finite sample을 구분해야 한다.
+$$\operatorname{pass@k}$$는 여러 후보 중 하나 이상이 맞는지를 측정하고, GRPO는 같은 prompt에서 얻은 여러 completion의 reward를 서로 비교해 advantage를 만듭니다. 두 값 모두 sampling 조건에 의존하므로 독립 시행과 중복 없는 finite sample을 구분해야 합니다.
 
 ### pass@k: 후보 묶음에 정답이 들어 있는가?
 
-검사가 끝난 답안들을 섞어 놓고 몇 장을 뽑는 상황으로 생각할 수 있다. 답안 한 장은 생성한 completion 하나, 정답 표시가 있는 답안은 test를 통과한 completion에 대응한다. 다만 이 비유는 **이미 생성한 후보 중에서 중복 없이 고르는 계산**에만 해당한다. 새 답을 계속 생성할 때의 성공확률이나, 정답을 모르는 상태에서 가장 좋은 답을 고르는 방법까지 설명하지는 않는다.
+검사가 끝난 답안들을 섞어 놓고 몇 장을 뽑는 상황으로 생각할 수 있습니다. 답안 한 장은 생성한 completion 하나, 정답 표시가 있는 답안은 test를 통과한 completion에 대응합니다. 다만 이 비유는 **이미 생성한 후보 중에서 중복 없이 고르는 계산**에만 해당합니다. 새 답을 계속 생성할 때의 성공확률이나, 정답을 모르는 상태에서 가장 좋은 답을 고르는 방법까지 설명하지는 않습니다.
 
-설명용으로 후보 $$n=6$$개 중 정답이 $$c=2$$개이고, $$k=2$$개를 고른다고 하자. 두 개를 고르는 전체 조합은 15개다. 오답 4개에서만 두 개를 고르는 실패 조합은 6개이므로, 하나 이상 맞는 조합은 9개다. 따라서 이 후보 묶음의 $$\widehat{\operatorname{pass@2}}=9/15=0.6$$이다. 같은 묶음의 $$\widehat{\operatorname{pass@1}}=2/6\approx0.333$$과 비교하면 여러 번 시도할 기회의 의미가 보인다. **0.6은 최종 선택한 답의 정확도가 아니라, 두 후보 안에 정답이 하나 이상 포함될 확률의 추정값**이다. 이 숫자는 강의의 실험 결과가 아니라 조합을 확인하기 위해 구성한 예다.
+설명용으로 후보 $$n=6$$개 중 정답이 $$c=2$$개이고, $$k=2$$개를 고른다고 하겠습니다. 두 개를 고르는 전체 조합은 15개입니다. 오답 4개에서만 두 개를 고르는 실패 조합은 6개이므로, 하나 이상 맞는 조합은 9개입니다. 따라서 이 후보 묶음의 $$\widehat{\operatorname{pass@2}}=9/15=0.6$$입니다. 같은 묶음의 $$\widehat{\operatorname{pass@1}}=2/6\approx0.333$$과 비교하면 여러 번 시도할 기회의 의미가 보입니다. **0.6은 최종 선택한 답의 정확도가 아니라, 두 후보 안에 정답이 하나 이상 포함될 확률의 추정값**입니다. 이 숫자는 강의의 실험 결과가 아니라 조합을 확인하기 위해 구성한 예입니다.
 
 ### GRPO: 같은 문제의 답안을 그룹 안에서 상대 채점한다
 
-GRPO의 비교 기준은 다른 prompt 전체가 아니라 **같은 prompt에 대해 생성한 답안들의 평균 reward**다. 같은 문제를 푼 답안을 모아 평균보다 얼마나 높거나 낮은지 상대 채점하는 것에 가깝다. 여기서 답안은 completion, 점수는 reward, 평균에서 벗어난 정도를 그룹의 표준편차로 나눈 값은 advantage에 대응한다. 다만 등수를 매기거나 정해진 수의 답안에 합격을 주는 규칙은 아니다. 실제 policy update에는 아래 토글의 확률비 clipping과 KL penalty도 함께 작용한다.
+GRPO의 비교 기준은 다른 prompt 전체가 아니라 **같은 prompt에 대해 생성한 답안들의 평균 reward**입니다. 같은 문제를 푼 답안을 모아 평균보다 얼마나 높거나 낮은지 상대 채점하는 것에 가깝습니다. 여기서 답안은 completion, 점수는 reward, 평균에서 벗어난 정도를 그룹의 표준편차로 나눈 값은 advantage에 대응합니다. 다만 등수를 매기거나 정해진 수의 답안에 합격을 주는 규칙은 아닙니다. 실제 policy update에는 아래 토글의 확률비 clipping과 KL penalty도 함께 작용합니다.
 
-계산을 위해 정답이면 1, 오답이면 0인 reward를 가정하고, 같은 prompt의 네 completion이 $$[0,0,1,1]$$을 받았다고 하자. 평균은 $$\bar R=0.5$$다. 이 글에서 쓰는 **모분산 방식은 편차 제곱의 합을 그룹 크기 $$G=4$$로 나누므로**, 분산은 0.25, 표준편차는 $$s_R=0.5$$다. 아래는 분산이 0이 아닌 이 예에서 수치 안정화 상수를 생략한 $$A_i=(R_i-\bar R)/s_R$$의 계산이다.
+계산을 위해 정답이면 1, 오답이면 0인 reward를 가정하고, 같은 prompt의 네 completion이 $$[0,0,1,1]$$을 받았다고 하겠습니다. 평균은 $$\bar R=0.5$$입니다. 이 글에서 쓰는 **모분산 방식은 편차 제곱의 합을 그룹 크기 $$G=4$$로 나누므로**, 분산은 0.25, 표준편차는 $$s_R=0.5$$입니다. 아래는 분산이 0이 아닌 이 예에서 수치 안정화 상수를 생략한 $$A_i=(R_i-\bar R)/s_R$$의 계산입니다.
 
 | Completion | Reward $$R_i$$ | 평균과의 차이 | Advantage $$A_i$$ |
 |---|---:|---:|---:|
@@ -99,35 +99,35 @@ GRPO의 비교 기준은 다른 prompt 전체가 아니라 **같은 prompt에 �
 | 3 | 1 | +0.5 | +1 |
 | 4 | 1 | +0.5 | +1 |
 
-Supplementary table: 그룹 내부의 상대 점수를 확인하기 위해 구성한 예다. Reward·advantage는 모두 무차원이며 강의의 관측 수치가 아니다.
+Supplementary table: 그룹 내부의 상대 점수를 확인하기 위해 구성한 예입니다. Reward·advantage는 모두 무차원이며 강의의 관측 수치가 아닙니다.
 
-음의 advantage는 해당 응답의 확률을 낮추는 방향, 양의 advantage는 높이는 방향의 reward 학습 신호가 된다. 토글의 안정화 정의처럼 분모에 $$\varepsilon>0$$를 더하면 정확한 크기는 $$0.5/(0.5+\varepsilon)$$이므로, $$\varepsilon$$이 0.5보다 충분히 작을 때만 위 값이 근사적으로 $$[-1,-1,1,1]$$이 된다. 표준편차를 계산할 때 $$G-1$$로 나누는 표본분산을 사용하면 숫자도 달라진다.
+음의 advantage는 해당 응답의 확률을 낮추는 방향, 양의 advantage는 높이는 방향의 reward 학습 신호가 됩니다. 토글의 안정화 정의처럼 분모에 $$\varepsilon>0$$를 더하면 정확한 크기는 $$0.5/(0.5+\varepsilon)$$이므로, $$\varepsilon$$이 0.5보다 충분히 작을 때만 위 값이 근사적으로 $$[-1,-1,1,1]$$이 됩니다. 표준편차를 계산할 때 $$G-1$$로 나누는 표본분산을 사용하면 숫자도 달라집니다.
 
-**상대 점수는 절대 정확도가 아니다.** 안정화 상수를 생략한 위 표의 advantage +1은 정답 확률 100%라는 뜻이 아니라, 이 그룹의 평균보다 표준편차 하나만큼 높은 reward라는 뜻이다. 네 reward가 모두 0인 경우와 모두 1인 경우는 실제 정답률이 다르지만, 두 그룹 모두 평균과의 차이가 0이다. $$\varepsilon>0$$인 정의에서는 모든 advantage가 0이 되어 이 reward의 그룹 비교로는 응답 간 우열을 학습할 신호가 없다. $$\varepsilon=0$$이면 분모도 0이므로 계산 자체가 정의되지 않는다. 이것은 상대 reward 항의 한계이며, KL 등 다른 항의 update까지 반드시 0이라는 뜻은 아니다.
+**상대 점수는 절대 정확도가 아닙니다.** 안정화 상수를 생략한 위 표의 advantage +1은 정답 확률 100%라는 뜻이 아니라, 이 그룹의 평균보다 표준편차 하나만큼 높은 reward라는 뜻입니다. 네 reward가 모두 0인 경우와 모두 1인 경우는 실제 정답률이 다르지만, 두 그룹 모두 평균과의 차이가 0입니다. $$\varepsilon>0$$인 정의에서는 모든 advantage가 0이 되어 이 reward의 그룹 비교로는 응답 간 우열을 학습할 신호가 없습니다. $$\varepsilon=0$$이면 분모도 0이므로 계산 자체가 정의되지 않습니다. 이것은 상대 reward 항의 한계이며, KL 등 다른 항의 update까지 반드시 0이라는 뜻은 아닙니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Pass-at-k, group advantage, and clipped objectives</summary>
 
 | 수식 주제 | 공식 영상 timestamp | 출처 경계 |
 |---|---:|---|
-| pass@k estimator | 00:32:17–00:44:29 | At-least-one-pass 정의와 without-replacement 식은 강의 원문이며, complement-counting 전개와 독립 시행 비교는 작성자 보충이다. |
-| GRPO relative advantage | 00:58:49–01:07:42 | Group reward를 평균·표준편차로 정규화하는 방식은 강의 원문이며, 퇴화 조건과 절대 품질 한계는 작성자 보충이다. |
-| GRPO/PPO objective와 length bias | 01:11:49–01:27:38 | Clipping·KL·normalization과 bias 논의는 강의 원문이며, 아래 수식 해설은 Lecture 5의 유도와 연결한 작성자 보충이다. |
+| pass@k estimator | 00:32:17–00:44:29 | At-least-one-pass 정의와 without-replacement 식은 강의 원문이며, complement-counting 전개와 독립 시행 비교는 작성자 보충입니다. |
+| GRPO relative advantage | 00:58:49–01:07:42 | Group reward를 평균·표준편차로 정규화하는 방식은 강의 원문이며, 퇴화 조건과 절대 품질 한계는 작성자 보충입니다. |
+| GRPO/PPO objective와 length bias | 01:11:49–01:27:38 | Clipping·KL·normalization과 bias 논의는 강의 원문이며, 아래 수식 해설은 Lecture 5의 유도와 연결한 작성자 보충입니다. |
 
-$$n$$개 sample 중 correct가 $$c$$개이고, 중복 없이 $$k$$개를 고른다고 하자. 전체 선택 수는 $$\binom{n}{k}$$, 모두 incorrect일 선택 수는 $$\binom{n-c}{k}$$이므로 complement counting으로
+$$n$$개 sample 중 correct가 $$c$$개이고, 중복 없이 $$k$$개를 고른다고 하겠습니다. 전체 선택 수는 $$\binom{n}{k}$$, 모두 incorrect일 선택 수는 $$\binom{n-c}{k}$$이므로 complement counting으로
 
 $$
 \widehat{\operatorname{pass@k}}
 =1-\frac{\binom{n-c}{k}}{\binom{n}{k}}
 $$
 
-를 얻는다. 이는 $$0\le k\le n$$인 finite sample에서의 **정확한 조합론적 estimator**다. $$n-c<k$$이면 실패 조합이 없어 값은 1이다. 각 시도를 독립적으로 새로 sampling하고 단일 성공확률이 $$p$$라고 가정하는 population reliability는
+를 얻습니다. 이는 $$0\le k\le n$$인 finite sample에서의 **정확한 조합론적 estimator**입니다. $$n-c<k$$이면 실패 조합이 없어 값은 1입니다. 각 시도를 독립적으로 새로 sampling하고 단일 성공확률이 $$p$$라고 가정하는 population reliability는
 
 $$
 P(\text{at least one pass})=1-(1-p)^k
 $$
 
-이며, 이는 위의 without-replacement estimator와 가정이 다르다. 상관된 decoding, 중복 answer, test contamination이 있으면 독립식은 실제 reliability를 과대평가할 수 있다.
+이며, 이는 위의 without-replacement estimator와 가정이 다릅니다. 상관된 decoding, 중복 answer, test contamination이 있으면 독립식은 실제 reliability를 과대평가할 수 있습니다.
 
 GRPO가 같은 prompt의 $$G$$개 completion reward $$R_i$$를 표준화할 때 대표 형태는
 
@@ -137,7 +137,7 @@ s_R=\sqrt{\frac1G\sum_{i=1}^{G}(R_i-\bar R)^2},\qquad
 A_i=\frac{R_i-\bar R}{s_R+\varepsilon}.
 $$
 
-이는 group 안에서 mean 0에 가까운 상대 score를 만드는 **정의**이고 물리 단위는 없다. $$s_R=0$$이면 모든 reward가 같아 상대 학습 신호가 없으며 $$\varepsilon$$은 수치 안정화용이다. Advantage가 unbiased하다는 보장이나 group 밖의 절대 quality 보장은 없다.
+이는 group 안에서 mean 0에 가까운 상대 score를 만드는 **정의**이고 물리 단위는 없습니다. $$s_R=0$$이면 모든 reward가 같아 상대 학습 신호가 없으며 $$\varepsilon$$은 수치 안정화용입니다. Advantage가 unbiased하다는 보장이나 group 밖의 절대 quality 보장은 없습니다.
 
 Completion $$o_i=(o_{i,1},\ldots,o_{i,T_i})$$에 대해 old policy와 current policy의 token ratio를
 
@@ -147,7 +147,7 @@ $$
 {\pi_{old}(o_{i,t}\mid q,o_{i,<t})}
 $$
 
-라 두면, 강의가 설명한 대표적인 GRPO clipped/KL objective는 다음처럼 쓸 수 있다.
+라 두면, 강의가 설명한 대표적인 GRPO clipped/KL objective는 다음처럼 쓸 수 있습니다.
 
 $$
 J_{GRPO}(\theta)=\mathbb E\!\left[
@@ -167,83 +167,83 @@ $$
 -\log\frac{\pi_{ref}(o_{i,t}\mid\cdot)}{\pi_\theta(o_{i,t}\mid\cdot)}-1\ge0
 $$
 
-이다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 온다. 이 세부식은 01:11:49–01:20:35의 ratio·clipping·explicit KL 설명을 완전한 표기로 옮긴 **작성자 보충**이며, 구현마다 KL estimator와 normalization 위치가 다를 수 있다. Importance ratio 분모와 log-ratio가 유한하려면 sampled token에서 관련 probability가 양수여야 한다.
+입니다. 마지막 부등식은 $$x-\log x-1\ge0$$에서 옵니다. 이 세부식은 01:11:49–01:20:35의 ratio·clipping·explicit KL 설명을 완전한 표기로 옮긴 **작성자 보충**이며, 구현마다 KL estimator와 normalization 위치가 다를 수 있습니다. Importance ratio 분모와 log-ratio가 유한하려면 sampled token에서 관련 probability가 양수여야 합니다.
 
-기본식의 $$T_i^{-1}$$는 각 completion을 먼저 평균내므로 동일한 negative advantage에서도 긴 오답의 token당 penalty가 더 작아질 수 있다. 강의 01:21:14–01:25:50의 비교처럼 DAPO식 token-level normalization은 batch/group의 전체 유효 token에 공통 denominator를 사용해 token 기여를 맞추고, Dr.GRPO식 수정은 response별 $$T_i^{-1}$$ factor를 고정 상수 denominator로 대체하거나 제거하는 방향이다. 어느 방식도 길이 bias 제거와 성능 향상을 보편적으로 보장하지 않는다. Reasoning token을 늘리면 항상 정확도가 오른다는 주장도 empirical trend이지 증명이 아니다.
+기본식의 $$T_i^{-1}$$는 각 completion을 먼저 평균내므로 동일한 negative advantage에서도 긴 오답의 token당 penalty가 더 작아질 수 있습니다. 강의 01:21:14–01:25:50의 비교처럼 DAPO식 token-level normalization은 batch/group의 전체 유효 token에 공통 denominator를 사용해 token 기여를 맞추고, Dr.GRPO식 수정은 response별 $$T_i^{-1}$$ factor를 고정 상수 denominator로 대체하거나 제거하는 방향입니다. 어느 방식도 길이 bias 제거와 성능 향상을 보편적으로 보장하지 않습니다. Reasoning token을 늘리면 항상 정확도가 오른다는 주장도 empirical trend이지 증명이 아닙니다.
 
 </details>
 
 ## 학습 포인트
 
-- Reasoning은 강의에서 math/coding problem처럼 multi-step process로 문제를 푸는 능력으로 정의된다.
-- Reasoning model은 answer 전에 reasoning chain을 생성하며, 사용자가 보는 thought summary는 raw reasoning chain이 아니라 summary라고 설명된다.
-- Reasoning tokens도 output tokens에 포함되어 charge되므로, reasoning ability와 token budget 사이에 효율성 문제가 있다.
-- pass@k는 n개 생성 중 c개가 correct일 때 1 - C(n-c, k) / C(n, k)로 추정되며, pass@1은 successful attempt 비율로 단순화된다.
-- Reasoning task는 code test cases나 math ground truth answer 같은 verifiable reward가 있어서 reward model 없이 RL을 적용할 수 있다.
-- GRPO는 같은 prompt에서 여러 completion을 만들고 reward를 group mean/std와 비교해 advantage를 계산하므로 value function을 학습하지 않는다.
-- 기본 GRPO objective의 output length normalization은 long bad outputs를 상대적으로 덜 벌주는 incentive를 만들 수 있어 output length 증가 문제와 연결된다.
-- DeepSeek R1-Zero는 RL-only proof-of-concept이고, R1은 cold-start SFT, RL, reasoning/non-reasoning SFT, final RL을 결합한 full reasoning pipeline이다.
+- Reasoning은 강의에서 math/coding problem처럼 multi-step process로 문제를 푸는 능력으로 정의됩니다.
+- Reasoning model은 answer 전에 reasoning chain을 생성하며, 사용자가 보는 thought summary는 raw reasoning chain이 아니라 summary라고 설명됩니다.
+- Reasoning tokens도 output tokens에 포함되어 charge되므로, reasoning ability와 token budget 사이에 효율성 문제가 있습니다.
+- pass@k는 n개 생성 중 c개가 correct일 때 1 - C(n-c, k) / C(n, k)로 추정되며, pass@1은 successful attempt 비율로 단순화됩니다.
+- Reasoning task는 code test cases나 math ground truth answer 같은 verifiable reward가 있어서 reward model 없이 RL을 적용할 수 있습니다.
+- GRPO는 같은 prompt에서 여러 completion을 만들고 reward를 group mean/std와 비교해 advantage를 계산하므로 value function을 학습하지 않습니다.
+- 기본 GRPO objective의 output length normalization은 long bad outputs를 상대적으로 덜 벌주는 incentive를 만들 수 있어 output length 증가 문제와 연결됩니다.
+- DeepSeek R1-Zero는 RL-only proof-of-concept이고, R1은 cold-start SFT, RL, reasoning/non-reasoning SFT, final RL을 결합한 full reasoning pipeline입니다.
 
 ## 마지막 핵심 정리
 
-이 강의의 핵심은 `Reasoning model, benchmark, GRPO, DeepSeek R1 계열 학습 파이프라인`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것이다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 한다.
+이 강의의 핵심은 `Reasoning model, benchmark, GRPO, DeepSeek R1 계열 학습 파이프라인`를 개별 기법 목록이 아니라 Transformer 기반 LLM의 설계·학습·운영 흐름 속에서 이해하는 것입니다. 세부 구현을 볼 때도 입력 표현, 학습 목표, 추론 비용, 평가 기준이 서로 어떻게 연결되는지 함께 확인해야 합니다.
 
 ## Study Guide
 
-1. Reasoning model이 vanilla LLM과 다른 출력 구조를 'question -> reasoning chain -> answer'로 그려 본다.
-2. pass@k 유도에서 'at least one correct = 1 - all incorrect' 전환과 sampling without replacement를 직접 계산한다.
-3. PPO와 GRPO를 reward, value function, advantage, KL/reference model, train되는 model 수 관점에서 비교한다.
-4. GRPO에서 같은 prompt에 대해 여러 completion을 sampling하는 이유와 (reward - mean) / std normalization의 의미를 정리한다.
-5. DeepSeek R1-Zero와 R1의 차이를 cold-start SFT 유무, language consistency reward, rejection sampling, final RL 단계로 구분한다.
-6. Reasoning token length가 성능 증가와 비용 증가를 동시에 만들 수 있다는 점을 GRPO length issue와 연결해 설명한다.
+1. Reasoning model이 vanilla LLM과 다른 출력 구조를 'question -> reasoning chain -> answer'로 그려 봅니다.
+2. pass@k 유도에서 'at least one correct = 1 - all incorrect' 전환과 sampling without replacement를 직접 계산합니다.
+3. PPO와 GRPO를 reward, value function, advantage, KL/reference model, train되는 model 수 관점에서 비교합니다.
+4. GRPO에서 같은 prompt에 대해 여러 completion을 sampling하는 이유와 (reward - mean) / std normalization의 의미를 정리합니다.
+5. DeepSeek R1-Zero와 R1의 차이를 cold-start SFT 유무, language consistency reward, rejection sampling, final RL 단계로 구분합니다.
+6. Reasoning token length가 성능 증가와 비용 증가를 동시에 만들 수 있다는 점을 GRPO length issue와 연결해 설명합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. 강의에서 reasoning은 어떻게 정의되는가?</summary>
+<summary>1. 강의에서 reasoning은 어떻게 정의됩니까?</summary>
 
-답변: Math나 coding 문제처럼 여러 단계로 문제를 분해하고 해결해야 하는 능력으로 설명되며, 단순 지식 recall과 구분된다.
-
-</details>
-
-<details markdown="block">
-<summary>2. pass@k 공식은 무엇을 추정하는가?</summary>
-
-답변: k개 attempt 중 적어도 하나가 성공할 확률을 추정한다. n개 sample 중 c개가 성공이면 강의에서는 1 - C(n-c,k)/C(n,k)로 유도한다.
+답변: Math나 coding 문제처럼 여러 단계로 문제를 분해하고 해결해야 하는 능력으로 설명되며, 단순 지식 recall과 구분됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Reasoning training에서 reward model 없이 RL이 가능한 이유는 무엇인가?</summary>
+<summary>2. pass@k 공식은 무엇을 추정합니까?</summary>
 
-답변: Coding은 test cases, math는 ground truth answer 비교처럼 correctness를 직접 검증할 수 있는 verifiable reward가 있기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>4. GRPO가 PPO와 가장 크게 다른 점은 무엇인가?</summary>
-
-답변: PPO는 value function을 학습해 advantage를 추정하지만, GRPO는 같은 prompt의 여러 completion reward를 group과 비교해 advantage를 만들기 때문에 value function을 학습하지 않는다.
+답변: k개 attempt 중 적어도 하나가 성공할 확률을 추정합니다. n개 sample 중 c개가 성공이면 강의에서는 1 - C(n-c,k)/C(n,k)로 유도합니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. DeepSeek R1-Zero의 문제와 R1의 보완 방식은 무엇인가?</summary>
+<summary>3. Reasoning training에서 reward model 없이 RL이 가능한 이유는 무엇입니까?</summary>
 
-답변: R1-Zero는 RL-only로 reasoning performance를 올렸지만 language mixing과 syntax 문제가 있었다. R1은 human-rewritten cold-start CoT SFT, language consistency reward, rejection sampling 기반 SFT, final RL을 추가해 보완한다.
+답변: Coding은 test cases, math는 ground truth answer 비교처럼 correctness를 직접 검증할 수 있는 verifiable reward가 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>6. Reasoning distillation은 강의에서 어떻게 설명되는가?</summary>
+<summary>4. GRPO가 PPO와 가장 크게 다른 점은 무엇입니까?</summary>
 
-답변: 큰 teacher model인 R1이 thinking tokens를 포함한 responses를 생성하고, 작은 student model이 그 전체 sequence를 SFT로 맞추도록 학습하는 방식이다.
+답변: PPO는 value function을 학습해 advantage를 추정하지만, GRPO는 같은 prompt의 여러 completion reward를 group과 비교해 advantage를 만들기 때문에 value function을 학습하지 않습니다.
+
+</details>
+
+<details markdown="block">
+<summary>5. DeepSeek R1-Zero의 문제와 R1의 보완 방식은 무엇입니까?</summary>
+
+답변: R1-Zero는 RL-only로 reasoning performance를 올렸지만 language mixing과 syntax 문제가 있었습니다. R1은 human-rewritten cold-start CoT SFT, language consistency reward, rejection sampling 기반 SFT, final RL을 추가해 보완합니다.
+
+</details>
+
+<details markdown="block">
+<summary>6. Reasoning distillation은 강의에서 어떻게 설명됩니까?</summary>
+
+답변: 큰 teacher model인 R1이 thinking tokens를 포함한 responses를 생성하고, 작은 student model이 그 전체 sequence를 SFT로 맞추도록 학습하는 방식입니다.
 
 </details>
 
 ## 참고자료
 
-- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았다.
+- 자료 확인 범위: 공식 Stanford CME295 강의 영상과 영문 전사를 대조했습니다. 공식 슬라이드는 없어 화면에 보이지 않는 내용은 추정하지 않았습니다.
 
 - [강의 영상](https://www.youtube.com/watch?v=k5Fh-UgTuCo){:target="_blank" rel="noopener"}
 - [Stanford CME295 Autumn 2025 재생목록](https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy){:target="_blank" rel="noopener"}

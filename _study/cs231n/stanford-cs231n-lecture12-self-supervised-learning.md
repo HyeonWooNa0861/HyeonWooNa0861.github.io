@@ -20,62 +20,62 @@ keywords:
 Source: [Stanford CS231N Spring 2025 Lecture 12](https://www.youtube.com/watch?v=4howBU7THbM){:target="_blank" rel="noopener"}
 Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.edu/slides/2025/lecture_12.pdf){:target="_blank" rel="noopener"}
 
-**원본 자료 먼저 보기:** [PDF pp.52–64의 masked autoencoder pipeline](https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52){:target="_blank" rel="noopener"}에서 image patch의 대부분을 가린 뒤 visible token만 encoder에 넣고 decoder가 전체 patch를 복원하는 순서를 확인한다. 아래 3절은 mask가 단순 손상이 아니라 자동 학습 목표가 되는 이유를 설명한다.
+**원본 자료 먼저 보기:** [PDF pp.52–64의 masked autoencoder pipeline](https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52){:target="_blank" rel="noopener"}에서 image patch의 대부분을 가린 뒤 visible token만 encoder에 넣고 decoder가 전체 patch를 복원하는 순서를 확인합니다. 아래 3절은 mask가 단순 손상이 아니라 자동 학습 목표가 되는 이유를 설명합니다.
 
 <figure id="cs231n-lecture12-source-p52">
   <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture12-p52.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture12-p52.jpg" | relative_url }}" alt="50퍼센트와 75퍼센트 masking에서 masked input, reconstruction, visible patch 결합, original image를 나란히 비교한 MAE 슬라이드" loading="lazy"></a>
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52" target="_blank" rel="noopener">CS231N Lecture 12, PDF p. 52 (printed slide 52)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 한다.
+> **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계입니다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 합니다.
 
-레이블 없는 이미지에서도 일부 patch를 가리고 복원하게 하거나 같은 이미지의 두 변형을 가깝게 만들 수 있다. 이때 모델이 배경색 같은 쉬운 단서만 이용하면 pretext loss는 낮아져도 물체 의미는 배우지 못한다. 자기지도 목표의 역할은 정답 레이블을 흉내 내는 것이 아니라 이후 여러 task에서 재사용할 구조를 입력 자체에서 찾게 하는 데 있다.
+레이블 없는 이미지에서도 일부 patch를 가리고 복원하게 하거나 같은 이미지의 두 변형을 가깝게 만들 수 있습니다. 이때 모델이 배경색 같은 쉬운 단서만 이용하면 pretext loss는 낮아져도 물체 의미는 배우지 못합니다. 자기지도 목표의 역할은 정답 레이블을 흉내 내는 것이 아니라 이후 여러 task에서 재사용할 구조를 입력 자체에서 찾게 하는 데 있습니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | Pretext task | 입력에서 supervision을 어떻게 만드는가? |
-| 2 | Transformation tasks | 회전·조각 순서·색 복원이 무엇을 학습시키는가? |
-| 3 | Reconstruction | Inpainting과 MAE는 왜 비대칭 구조를 쓰는가? |
-| 4 | Contrastive learning | Positive는 가깝게, negative는 멀게 만드는 법은? |
-| 5 | SimCLR and MoCo | Augmentation, batch, queue가 어떤 역할을 하는가? |
+| 1 | Pretext task | 입력에서 supervision을 어떻게 만듭니까? |
+| 2 | Transformation tasks | 회전·조각 순서·색 복원이 무엇을 학습시킵니까? |
+| 3 | Reconstruction | Inpainting과 MAE는 왜 비대칭 구조를 씁니까? |
+| 4 | Contrastive learning | Positive는 가깝게, negative는 멀게 만드는 법은 무엇입니까? |
+| 5 | SimCLR and MoCo | Augmentation, batch, queue가 어떤 역할을 합니까? |
 
 </details>
 ## 1. Pretext task가 표현을 만든다
 
-Self-supervised learning은 사람이 붙인 class label 대신 입력 자체에서 target을 만든다. Encoder $$f_\theta$$를 pretext objective로 학습한 뒤 task-specific head를 붙여 fine-tuning하거나, encoder를 고정하고 linear probe로 표현 품질을 측정한다.
+Self-supervised learning은 사람이 붙인 class label 대신 입력 자체에서 target을 만듭니다. Encoder $$f_\theta$$를 pretext objective로 학습한 뒤 task-specific head를 붙여 fine-tuning하거나, encoder를 고정하고 linear probe로 표현 품질을 측정합니다.
 
-공통 문제는 **사람이 많은 이미지에 정답 label을 붙이지 않고도, 다른 task에서 재사용할 표현을 어떻게 학습할 것인가**다. 회전 예측·복원·대조학습은 이 문제에 서로 다른 자동 target을 제안한다. 회전 예측을 끝내야 복원을 시작하고, 복원을 끝내야 대조학습을 수행하는 필수 순서는 아니다. 뒤의 InfoNCE는 대조학습 목표의 한 형태이고, SimCLR·MoCo는 그 목표에 필요한 view와 비교 후보를 구성하는 방법이다.
+공통 문제는 **사람이 많은 이미지에 정답 label을 붙이지 않고도, 다른 task에서 재사용할 표현을 어떻게 학습할 것인가**입니다. 회전 예측·복원·대조학습은 이 문제에 서로 다른 자동 target을 제안합니다. 회전 예측을 끝내야 복원을 시작하고, 복원을 끝내야 대조학습을 수행하는 필수 순서는 아닙니다. 뒤의 InfoNCE는 대조학습 목표의 한 형태이고, SimCLR·MoCo는 그 목표에 필요한 view와 비교 후보를 구성하는 방법입니다.
 
-Pretext accuracy가 높다고 표현이 반드시 좋은 것은 아니다. 모델이 변환 과정의 경계선이나 고정된 crop 위치 같은 지름길로 답을 맞히면 의미 구조를 배우지 못한다. 평가의 초점은 **downstream transfer**에 있어야 한다.
+Pretext accuracy가 높다고 표현이 반드시 좋은 것은 아닙니다. 모델이 변환 과정의 경계선이나 고정된 crop 위치 같은 지름길로 답을 맞히면 의미 구조를 배우지 못합니다. 평가의 초점은 **downstream transfer**에 있어야 합니다.
 
 ## 2. 회전, jigsaw, 상대 위치, colorization
 
-회전 예측은 이미지를 $$0^\circ,90^\circ,180^\circ,270^\circ$$ 중 하나로 돌리고 각도를 분류한다. 물체의 정상 방향을 알려면 형태와 의미를 어느 정도 알아야 한다. Jigsaw는 patch를 섞어 permutation을 맞히게 하고, 상대 위치 예측은 기준 patch에 대한 다른 patch의 위치를 분류한다. 두 방법 모두 부분과 전체의 공간 관계를 요구한다.
+회전 예측은 이미지를 $$0^\circ,90^\circ,180^\circ,270^\circ$$ 중 하나로 돌리고 각도를 분류합니다. 물체의 정상 방향을 알려면 형태와 의미를 어느 정도 알아야 합니다. Jigsaw는 patch를 섞어 permutation을 맞히게 하고, 상대 위치 예측은 기준 patch에 대한 다른 patch의 위치를 분류합니다. 두 방법 모두 부분과 전체의 공간 관계를 요구합니다.
 
-Colorization은 grayscale 입력에서 색을 복원한다. 단순 RGB 회귀는 가능한 색의 평균을 내 흐릿해지기 쉬우므로, 강의는 색 공간을 양자화한 class distribution 예측과 불균형 보정 아이디어를 설명한다. 이 작업은 객체 종류와 영역 경계를 알아야 그럴듯한 색을 선택할 수 있다는 점에서 표현 학습 신호가 된다.
+Colorization은 grayscale 입력에서 색을 복원합니다. 단순 RGB 회귀는 가능한 색의 평균을 내 흐릿해지기 쉬우므로, 강의는 색 공간을 양자화한 class distribution 예측과 불균형 보정 아이디어를 설명합니다. 이 작업은 객체 종류와 영역 경계를 알아야 그럴듯한 색을 선택할 수 있다는 점에서 표현 학습 신호가 됩니다.
 
 ## 3. Inpainting에서 Masked Autoencoder로
 
-Inpainting은 입력 일부를 가리고 missing region을 복원한다. Masked Autoencoder(MAE)는 이미지를 patch token으로 바꾸고 높은 비율을 가린 뒤, 보이는 token만 큰 encoder에 넣는다. 작은 decoder가 encoder 출력과 공통 mask token, 위치 정보를 받아 가려진 patch의 pixel을 복원한다.
+Inpainting은 입력 일부를 가리고 missing region을 복원합니다. Masked Autoencoder(MAE)는 이미지를 patch token으로 바꾸고 높은 비율을 가린 뒤, 보이는 token만 큰 encoder에 넣습니다. 작은 decoder가 encoder 출력과 공통 mask token, 위치 정보를 받아 가려진 patch의 pixel을 복원합니다.
 
-핵심은 encoder와 decoder가 비대칭이라는 점이다. Encoder는 visible patch만 처리해 pretraining 계산량을 줄이고, reconstruction 전용 decoder는 downstream 사용 시 버린다. Loss도 주로 masked patch에서 계산하므로 이미 보이는 픽셀을 복사하는 쉬운 문제가 되지 않는다.
+핵심은 encoder와 decoder가 비대칭이라는 점입니다. Encoder는 visible patch만 처리해 pretraining 계산량을 줄이고, reconstruction 전용 decoder는 downstream 사용 시 버립니다. Loss도 주로 masked patch에서 계산하므로 이미 보이는 픽셀을 복사하는 쉬운 문제가 되지 않습니다.
 
 ## 4. Contrastive learning과 InfoNCE
 
-한 이미지에 서로 다른 augmentation을 적용한 두 view를 positive pair로, 다른 이미지의 view를 negative로 둔다. 정규화된 표현 $$z_i,z_j$$의 유사도를 $$s_{ij}=z_i^\top z_j$$, temperature를 $$\tau$$라 하면 한 방향의 InfoNCE는 다음처럼 쓸 수 있다.
+한 이미지에 서로 다른 augmentation을 적용한 두 view를 positive pair로, 다른 이미지의 view를 negative로 둡니다. 정규화된 표현 $$z_i,z_j$$의 유사도를 $$s_{ij}=z_i^\top z_j$$, temperature를 $$\tau$$라 하면 한 방향의 InfoNCE는 다음처럼 쓸 수 있습니다.
 
 $$
 \mathcal{L}_i=-\log\frac{\exp(s_{i,+}/\tau)}{\sum_{k}\exp(s_{ik}/\tau)}
 $$
 
-여기서 $$\tau>0$$이며 분모의 후보 $$k$$에는 positive와 negative가 모두 들어가지만 anchor 자신은 들어가지 않는다. 각 후보의 $$s_{ik}/\tau$$가 softmax에 넣는 logit이다. 이 loss는 **후보 중 어떤 view가 anchor와 같은 원본에서 왔는지 맞히는 분류 문제**로 읽을 수 있다. [강의 01:01:58–01:03:39](https://www.youtube.com/watch?v=4howBU7THbM&t=3718s){:target="_blank" rel="noopener"}도 유사도 점수를 softmax로 바꾸고 multi-class cross-entropy와 연결한다.
+여기서 $$\tau>0$$이며 분모의 후보 $$k$$에는 positive와 negative가 모두 들어가지만 anchor 자신은 들어가지 않습니다. 각 후보의 $$s_{ik}/\tau$$가 softmax에 넣는 logit입니다. 이 loss는 **후보 중 어떤 view가 anchor와 같은 원본에서 왔는지 맞히는 분류 문제**로 읽을 수 있습니다. [강의 01:01:58–01:03:39](https://www.youtube.com/watch?v=4howBU7THbM&t=3718s){:target="_blank" rel="noopener"}도 유사도 점수를 softmax로 바꾸고 multi-class cross-entropy와 연결합니다.
 
-후보들이 합계 1인 선택 확률의 몫을 나누는 경쟁으로 생각하면 분모의 역할이 보인다. Positive는 맞는 후보, negative는 비교 후보, 각 몫은 softmax 확률에 대응한다. Positive 점수가 그대로여도 negative 점수가 커지면 분모가 커져 positive의 몫은 줄어든다. 다만 이것은 학습용 **후보 식별 확률**이지 이미지의 실제 class를 맞힐 확률이 아니다. Negative가 항상 의미적으로 다른 class라는 보장도 없다.
+후보들이 합계 1인 선택 확률의 몫을 나누는 경쟁으로 생각하면 분모의 역할이 보입니다. Positive는 맞는 후보, negative는 비교 후보, 각 몫은 softmax 확률에 대응합니다. Positive 점수가 그대로여도 negative 점수가 커지면 분모가 커져 positive의 몫은 줄어듭니다. 다만 이것은 학습용 **후보 식별 확률**이지 이미지의 실제 class를 맞힐 확률이 아닙니다. Negative가 항상 의미적으로 다른 class라는 보장도 없습니다.
 
-작은 계산을 위해 한 anchor에 positive 하나와 negative 둘을 두고, 정규화된 표현의 유사도를 각각 $$[0.8,0.4,0.0]$$으로 정하자. 아래 값은 강의의 실험 결과가 아니라 softmax의 변화를 확인하기 위한 설명용 예다. 유사도·temperature·logit·확률은 모두 무차원이다.
+작은 계산을 위해 한 anchor에 positive 하나와 negative 둘을 두고, 정규화된 표현의 유사도를 각각 $$[0.8,0.4,0.0]$$으로 정하겠습니다. 아래 값은 강의의 실험 결과가 아니라 softmax의 변화를 확인하기 위한 설명용 예입니다. 유사도·temperature·logit·확률은 모두 무차원입니다.
 
 | 후보 | 유사도 $$s_{ik}$$ | Logit, $$\tau=0.2$$ | 확률, $$\tau=0.2$$ | 확률, $$\tau=0.1$$ |
 |---|---:|---:|---:|---:|
@@ -83,40 +83,40 @@ $$
 | Negative 1 | 0.4 | 2 | 0.1173 | 0.0180 |
 | Negative 2 | 0.0 | 0 | 0.0159 | 0.0003 |
 
-Supplementary table: 같은 유사도에서 temperature만 바꿨을 때의 후보별 softmax 확률이다. 각 열의 확률 합은 반올림 오차를 제외하면 1이다.
+Supplementary table: 같은 유사도에서 temperature만 바꿨을 때의 후보별 softmax 확률입니다. 각 열의 확률 합은 반올림 오차를 제외하면 1입니다.
 
-$$\tau=0.2$$이면 positive 확률은 $$e^4/(e^4+e^2+1)\approx0.8668$$이고, 자연로그를 쓰는 loss는 $$-\log(0.8668)\approx0.1429$$다. $$\tau=0.1$$로 낮추면 logits가 $$[8,4,0]$$으로 벌어져 positive 확률은 약 0.9817, loss는 약 0.0185가 된다. **같은 순위를 유지한 채 점수 차이를 강조한 것**이며, temperature를 바꿨다고 encoder가 새로운 의미를 학습한 것은 아니다.
+$$\tau=0.2$$이면 positive 확률은 $$e^4/(e^4+e^2+1)\approx0.8668$$이고, 자연로그를 쓰는 loss는 $$-\log(0.8668)\approx0.1429$$입니다. $$\tau=0.1$$로 낮추면 logits가 $$[8,4,0]$$으로 벌어져 positive 확률은 약 0.9817, loss는 약 0.0185가 됩니다. **같은 순위를 유지한 채 점수 차이를 강조한 것**이며, temperature를 바꿨다고 encoder가 새로운 의미를 학습한 것은 아닙니다.
 
-이 예에서 loss가 줄어든 이유는 positive가 이미 가장 높은 점수를 가졌기 때문이다. Negative가 가장 높은 경우에는 temperature를 낮출수록 그 잘못된 후보에 확률이 집중될 수 있다. 따라서 낮은 temperature가 항상 더 좋은 표현이나 높은 downstream 정확도를 보장하지는 않는다. 실제 학습에서는 어떤 pair에 gradient가 집중되는지도 달라진다.
+이 예에서 loss가 줄어든 이유는 positive가 이미 가장 높은 점수를 가졌기 때문입니다. Negative가 가장 높은 경우에는 temperature를 낮출수록 그 잘못된 후보에 확률이 집중될 수 있습니다. 따라서 낮은 temperature가 항상 더 좋은 표현이나 높은 downstream 정확도를 보장하지는 않습니다. 실제 학습에서는 어떤 pair에 gradient가 집중되는지도 달라집니다.
 
-Loss를 최소화하면 positive 유사도를 높이고 negative 유사도는 상대적으로 낮추는 방향으로 학습한다. 강의는 negative 수가 많을수록 mutual-information lower bound가 더 촘촘해지는 해석도 소개하지만, 실제 성공은 어떤 augmentation이 의미를 보존하는지에 크게 달려 있다. 이 하한의 sampling 가정과 유도는 아래 `핵심 수식 유도` 토글에서 구분한다.
+Loss를 최소화하면 positive 유사도를 높이고 negative 유사도는 상대적으로 낮추는 방향으로 학습합니다. 강의는 negative 수가 많을수록 mutual-information lower bound가 더 촘촘해지는 해석도 소개하지만, 실제 성공은 어떤 augmentation이 의미를 보존하는지에 크게 달려 있습니다. 이 하한의 sampling 가정과 유도는 아래 `핵심 수식 유도` 토글에서 구분합니다.
 
 ## 5. SimCLR, MoCo, DINO의 설계 선택
 
-SimCLR은 한 batch 안에서 각 이미지의 두 augmented view를 만들고, encoder 뒤 projection head에서 contrastive loss를 계산한다. 큰 batch는 많은 negative를 제공한다. Crop과 color distortion 같은 강한 augmentation의 조합이 핵심이며, downstream에는 projection 이전 표현을 사용한다.
+SimCLR은 한 batch 안에서 각 이미지의 두 augmented view를 만들고, encoder 뒤 projection head에서 contrastive loss를 계산합니다. 큰 batch는 많은 negative를 제공합니다. Crop과 color distortion 같은 강한 augmentation의 조합이 핵심이며, downstream에는 projection 이전 표현을 사용합니다.
 
-MoCo는 batch 밖 과거 key 표현을 queue에 저장해 많은 negative를 유지한다. Key encoder는 query encoder의 exponential moving average로 천천히 갱신되어 queue의 표현이 갑자기 바뀌지 않게 한다. 강의 말미는 DINO처럼 teacher-student와 momentum encoder를 사용하면서 명시적 negative에 덜 의존하는 흐름도 연결한다.
+MoCo는 batch 밖 과거 key 표현을 queue에 저장해 많은 negative를 유지합니다. Key encoder는 query encoder의 exponential moving average로 천천히 갱신되어 queue의 표현이 갑자기 바뀌지 않게 합니다. 강의 말미는 DINO처럼 teacher-student와 momentum encoder를 사용하면서 명시적 negative에 덜 의존하는 흐름도 연결합니다.
 
-여기서 SimCLR과 MoCo는 반드시 순서대로 실행하는 단계가 아니라 **많은 비교 후보를 확보하는 서로 다른 설계**다. 큰 batch 안에서 후보를 마련하면 batch 크기에 메모리 제약이 따른다. Queue는 후보 수를 현재 batch 크기와 분리하지만, 과거에 저장한 key와 현재 query의 표현이 달라지는 문제도 관리해야 한다. Momentum encoder는 이 차이가 급격히 커지지 않도록 key 표현을 천천히 바꾸는 장치다. [강의 01:10:52–01:13:34](https://www.youtube.com/watch?v=4howBU7THbM&t=4252s){:target="_blank" rel="noopener"}는 이 메모리 제약과 queue·momentum의 역할을 연결하고, MoCo v2에서 SimCLR의 augmentation·projection 설계와 MoCo의 후보 구성을 결합하는 사례도 소개한다. 이는 모든 방법이 한 줄로 교체된다는 뜻이 아니라, 설계 요소를 조합할 수 있다는 관계다.
+여기서 SimCLR과 MoCo는 반드시 순서대로 실행하는 단계가 아니라 **많은 비교 후보를 확보하는 서로 다른 설계**입니다. 큰 batch 안에서 후보를 마련하면 batch 크기에 메모리 제약이 따릅니다. Queue는 후보 수를 현재 batch 크기와 분리하지만, 과거에 저장한 key와 현재 query의 표현이 달라지는 문제도 관리해야 합니다. Momentum encoder는 이 차이가 급격히 커지지 않도록 key 표현을 천천히 바꾸는 장치입니다. [강의 01:10:52–01:13:34](https://www.youtube.com/watch?v=4howBU7THbM&t=4252s){:target="_blank" rel="noopener"}는 이 메모리 제약과 queue·momentum의 역할을 연결하고, MoCo v2에서 SimCLR의 augmentation·projection 설계와 MoCo의 후보 구성을 결합하는 사례도 소개합니다. 이는 모든 방법이 한 줄로 교체된다는 뜻이 아니라, 설계 요소를 조합할 수 있다는 관계입니다.
 
-DINO와의 연결도 같은 수준에서 구분해야 한다. 서로 다른 view에서 유용한 표현을 얻는 문제와 momentum teacher 같은 장치는 공유할 수 있지만, teacher의 출력을 student가 맞추는 자기증류는 positive·negative를 경쟁시키는 InfoNCE와 학습 목표가 다르다. **DINO를 MoCo 뒤에 덧붙이는 필수 단계나 negative가 필요한 대조 loss의 다른 이름으로 보지 않는다.** 강의의 [01:13:55–01:14:24](https://www.youtube.com/watch?v=4howBU7THbM&t=4435s){:target="_blank" rel="noopener"}에서는 세부 학습식보다 teacher-student 구조와 이러한 설계 방향을 짧게 소개한다.
+DINO와의 연결도 같은 수준에서 구분해야 합니다. 서로 다른 view에서 유용한 표현을 얻는 문제와 momentum teacher 같은 장치는 공유할 수 있지만, teacher의 출력을 student가 맞추는 자기증류는 positive·negative를 경쟁시키는 InfoNCE와 학습 목표가 다릅니다. **DINO를 MoCo 뒤에 덧붙이는 필수 단계나 negative가 필요한 대조 loss의 다른 이름으로 보지 않습니다.** 강의의 [01:13:55–01:14:24](https://www.youtube.com/watch?v=4howBU7THbM&t=4435s){:target="_blank" rel="noopener"}에서는 세부 학습식보다 teacher-student 구조와 이러한 설계 방향을 짧게 소개합니다.
 
 ## 핵심 수식 유도
 
-InfoNCE는 한 positive를 여러 candidate 중에서 찾는 classification loss다. Positive가 joint distribution에서, negatives가 marginal에서 독립적으로 뽑힌다는 조건에서 $$\log N-\mathcal L_{\mathrm{InfoNCE}}$$는 mutual information의 lower bound가 된다.
+InfoNCE는 한 positive를 여러 candidate 중에서 찾는 classification loss입니다. Positive가 joint distribution에서, negatives가 marginal에서 독립적으로 뽑힌다는 조건에서 $$\log N-\mathcal L_{\mathrm{InfoNCE}}$$는 mutual information의 lower bound가 됩니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: InfoNCE mutual-information lower bound</summary>
 
 ### 작성자 보충: InfoNCE mutual-information lower bound
 
-Anchor $$X$$와 positive $$X^+$$는 joint distribution $$p(x,x^+)$$에서 뽑고, negative는 marginal $$p_+(x^+)$$에서 독립적으로 뽑는다고 하자. 이 sampling을 대칭적으로 표현하기 위해 latent positive index $$I\sim\operatorname{Unif}\{1,\ldots,N\}$$를 도입한다. 분포 $$P$$에서는 $$X\sim p_X$$를 뽑은 뒤 $$X_I^+\sim p(x^+\mid X)$$, 나머지 $$X_j^+\sim p_+$$를 독립적으로 뽑는다. Classifier가 관찰하는 candidate 묶음은
+Anchor $$X$$와 positive $$X^+$$는 joint distribution $$p(x,x^+)$$에서 뽑고, negative는 marginal $$p_+(x^+)$$에서 독립적으로 뽑는다고 하겠습니다. 이 sampling을 대칭적으로 표현하기 위해 latent positive index $$I\sim\operatorname{Unif}\{1,\ldots,N\}$$를 도입합니다. 분포 $$P$$에서는 $$X\sim p_X$$를 뽑은 뒤 $$X_I^+\sim p(x^+\mid X)$$, 나머지 $$X_j^+\sim p_+$$를 독립적으로 뽑습니다. Classifier가 관찰하는 candidate 묶음은
 
 $$
 O=(X,X_1^+,\ldots,X_N^+)
 $$
 
-이다. 비교 분포 $$Q$$에서는 같은 uniform $$I$$와 anchor $$X\sim p_X$$를 사용하되, 모든 candidate를 $$X_j^+\sim p_+$$에서 독립적으로 뽑아 anchor와 candidate 사이의 의존성을 없앤다. 따라서
+입니다. 비교 분포 $$Q$$에서는 같은 uniform $$I$$와 anchor $$X\sim p_X$$를 사용하되, 모든 candidate를 $$X_j^+\sim p_+$$에서 독립적으로 뽑아 anchor와 candidate 사이의 의존성을 없앱니다. 따라서
 
 $$
 Q_O=p_X\prod_{j=1}^{N}p_+(x_j^+),
@@ -135,7 +135,7 @@ D_{\mathrm{KL}}(P_{I,O}\Vert P_IQ_O)
 =I(X;X^+)
 $$
 
-와 정확히 같다. 같은 KL에 chain rule을 적용하면
+와 정확히 같습니다. 같은 KL에 chain rule을 적용하면
 
 $$
 \begin{aligned}
@@ -154,7 +154,7 @@ q_f(i\mid O)
 =\frac{f(X,X_i^+)}{\sum_{j=1}^{N}f(X,X_j^+)}
 $$
 
-라 하자. 그 cross-entropy인 InfoNCE loss는
+라 하겠습니다. 그 cross-entropy인 InfoNCE loss는
 
 $$
 \mathcal L_f
@@ -175,38 +175,38 @@ $$
 }
 $$
 
-을 얻는다. Positive를 항상 첫 candidate로 두는 일반적인 표기는 candidate 순서를 무작위로 섞은 위 표현과 expectation이 같다. 이는 positive가 joint, negative가 i.i.d. marginal이라는 sampling 가정과 필요한 절대연속성 아래의 **정확한 정보이론적 하한**이며, 실제 neural critic과 finite batch로 계산하는 값은 그 하한의 Monte Carlo 추정이다. Density ratio $$p(x^+\mid x)/p_+(x^+)$$에 비례하는 critic이 Bayes-optimal positive-index classifier를 이루지만, bound 자체는 임의의 양의 critic에 성립한다.
+을 얻습니다. Positive를 항상 첫 candidate로 두는 일반적인 표기는 candidate 순서를 무작위로 섞은 위 표현과 expectation이 같습니다. 이는 positive가 joint, negative가 i.i.d. marginal이라는 sampling 가정과 필요한 절대연속성 아래의 **정확한 정보이론적 하한**이며, 실제 neural critic과 finite batch로 계산하는 값은 그 하한의 Monte Carlo 추정입니다. Density ratio $$p(x^+\mid x)/p_+(x^+)$$에 비례하는 critic이 Bayes-optimal positive-index classifier를 이루지만, bound 자체는 임의의 양의 critic에 성립합니다.
 
-Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다. Similarity, $$\tau>0$$, probability, loss와 mutual information은 모두 무차원이다. 하한은 최대 $$\log N$$까지만 표현하므로 작은 $$N$$에서는 true mutual information이 커도 느슨하다. Critic 용량 부족, correlated negative, finite-sample variance는 추정을 악화시키고, semantic class가 같은 false negative는 통계적으로 marginal sample일 수 있어도 원하는 표현을 서로 밀어낸다. 지나치게 작은 $$\tau$$는 일부 pair에 gradient를 집중시키며, augmentation이 semantic content를 파괴하면 joint positive라는 학습 가정 자체가 downstream 의미와 어긋난다.
+Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 됩니다. Similarity, $$\tau>0$$, probability, loss와 mutual information은 모두 무차원입니다. 하한은 최대 $$\log N$$까지만 표현하므로 작은 $$N$$에서는 true mutual information이 커도 느슨합니다. Critic 용량 부족, correlated negative, finite-sample variance는 추정을 악화시키고, semantic class가 같은 false negative는 통계적으로 marginal sample일 수 있어도 원하는 표현을 서로 밀어냅니다. 지나치게 작은 $$\tau$$는 일부 pair에 gradient를 집중시키며, augmentation이 semantic content를 파괴하면 joint positive라는 학습 가정 자체가 downstream 의미와 어긋납니다.
 
 </details>
 
 ## 마지막 핵심 정리
 
-- Self-supervision의 품질은 **자동 target이 어떤 의미 정보를 요구하는가**에 달려 있다.
-- MAE는 visible token만 큰 encoder에 넣어 계산을 아끼고 masked patch 복원에 집중한다.
-- InfoNCE는 positive similarity를 다른 후보보다 상대적으로 크게 만든다.
-- SimCLR은 augmentation과 큰 batch, MoCo는 momentum encoder와 queue로 학습 신호를 구성한다.
+- Self-supervision의 품질은 **자동 target이 어떤 의미 정보를 요구하는가**에 달려 있습니다.
+- MAE는 visible token만 큰 encoder에 넣어 계산을 아끼고 masked patch 복원에 집중합니다.
+- InfoNCE는 positive similarity를 다른 후보보다 상대적으로 크게 만듭니다.
+- SimCLR은 augmentation과 큰 batch, MoCo는 momentum encoder와 queue로 학습 신호를 구성합니다.
 
 ## Study Guide
 
-각 pretext task마다 “자동 정답”, “모델이 배워야 하는 정보”, “가능한 지름길”을 세 칸 표로 정리한다. MAE의 encoder 입력과 decoder 입력을 구분하고, SimCLR과 MoCo가 negative를 확보하는 방법을 비교하면 흐름이 선명해진다.
+각 pretext task마다 “자동 정답”, “모델이 배워야 하는 정보”, “가능한 지름길”을 세 칸 표로 정리합니다. MAE의 encoder 입력과 decoder 입력을 구분하고, SimCLR과 MoCo가 negative를 확보하는 방법을 비교하면 흐름이 선명해집니다.
 
 ## 복습 질문
 
-<details markdown="block"><summary>1. Pretext task 성능만으로 좋은 표현을 판단할 수 없는 이유는?</summary>
+<details markdown="block"><summary>1. Pretext task 성능만으로 좋은 표현을 판단할 수 없는 이유는 무엇입니까?</summary>
 
-답변: 모델이 의미 이해 없이 low-level artifact나 데이터 생성 규칙을 이용해 pretext 정답을 맞힐 수 있기 때문이다. Transfer 또는 linear-probe 결과로 재사용 가능성을 확인해야 한다.
+답변: 모델이 의미 이해 없이 low-level artifact나 데이터 생성 규칙을 이용해 pretext 정답을 맞힐 수 있기 때문입니다. Transfer 또는 linear-probe 결과로 재사용 가능성을 확인해야 합니다.
 </details>
 
-<details markdown="block"><summary>2. MAE가 masked token을 큰 encoder에 넣지 않는 이유는?</summary>
+<details markdown="block"><summary>2. MAE가 masked token을 큰 encoder에 넣지 않는 이유는 무엇입니까?</summary>
 
-답변: 보이는 patch만 처리하면 token 수가 줄어 pretraining 계산량을 크게 아낄 수 있다. Mask token과 전체 위치 복원은 작은 decoder가 담당한다.
+답변: 보이는 patch만 처리하면 token 수가 줄어 pretraining 계산량을 크게 아낄 수 있습니다. Mask token과 전체 위치 복원은 작은 decoder가 담당합니다.
 </details>
 
-<details markdown="block"><summary>3. SimCLR과 MoCo의 negative 확보 방식은 어떻게 다른가?</summary>
+<details markdown="block"><summary>3. SimCLR과 MoCo의 negative 확보 방식은 어떻게 다릅니까?</summary>
 
-답변: SimCLR은 현재 큰 batch의 다른 view를 negative로 사용한다. MoCo는 momentum key encoder로 만든 과거 표현을 queue에 저장해 batch 크기와 분리된 많은 negative를 사용한다.
+답변: SimCLR은 현재 큰 batch의 다른 view를 negative로 사용합니다. MoCo는 momentum key encoder로 만든 과거 표현을 queue에 저장해 batch 크기와 분리된 많은 negative를 사용합니다.
 </details>
 
 ## 원문 대조 기록
@@ -214,7 +214,7 @@ Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다.
 <details markdown="block">
 <summary markdown="span">출처 대조 내역 보기</summary>
 
-공식 PDF **115쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했다.
+공식 PDF **115쪽 전체**를 페이지 단위로 시각 점검하고 transcript를 대조했습니다.
 
 | 원문 위치 | 확인한 내용 | 노트 대응 |
 |---|---|---|
@@ -224,7 +224,7 @@ Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 된다.
 | PDF 94–110쪽 | CPC와 DINO | 5절 |
 | PDF 111–115쪽 | summary와 dense-object appendix | 핵심 개념 대조; 비수식 사례는 추가하지 않음 |
 
-Pretext·MAE·contrastive 설계는 강의 원문 요약이다. Positive-index 분류 문제에서 InfoNCE mutual-information lower bound를 도출한 부분은 가정과 한계를 명시한 **작성자 보충**이다.
+Pretext·MAE·contrastive 설계는 강의 원문 요약입니다. Positive-index 분류 문제에서 InfoNCE mutual-information lower bound를 도출한 부분은 가정과 한계를 명시한 **작성자 보충**입니다.
 
 </details>
 ## 참고자료

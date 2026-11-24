@@ -29,32 +29,32 @@ keywords:
 
 ## Source Status
 
-해설의 기준은 로컬에 보관된 arXiv v1 PDF(2024-05-18)다. 공식 arXiv record는 2025-12-04 v2에서 withdrawn 상태이며, 현재 withdrawn version에는 PDF가 제공되지 않는다. 따라서 제시된 방법과 실험은 v1의 주장으로 한정되며 peer-reviewed publication이나 최신 공식 version의 확정 결과가 아니다.
+해설의 기준은 로컬에 보관된 arXiv v1 PDF(2024-05-18)입니다. 공식 arXiv record는 2025-12-04 v2에서 withdrawn 상태이며, 현재 withdrawn version에는 PDF가 제공되지 않습니다. 따라서 제시된 방법과 실험은 v1의 주장으로 한정되며 peer-reviewed publication이나 최신 공식 version의 확정 결과가 아닙니다.
 
 ## 한 줄 요약
 
-이 논문 v1은 V2I edge offloading에서 application을 interdependent subtask DAG로 모델링하고, GAT로 dependency를 embedding한 뒤 parameterized hierarchical DRL로 subtask 선택, local/offload 선택, CPU frequency 또는 transmit power 결정을 함께 다루는 DHVO를 제안한다.
+이 논문 v1은 V2I edge offloading에서 application을 interdependent subtask DAG로 모델링하고, GAT로 dependency를 embedding한 뒤 parameterized hierarchical DRL로 subtask 선택, local/offload 선택, CPU frequency 또는 transmit power 결정을 함께 다루는 DHVO를 제안합니다.
 
 ## 핵심 내용
 
-- **문제:** V2I offloading은 DAG dependency, local/edge 선택, CPU frequency 또는 transmit power, RSU migration risk를 함께 다뤄야 한다.
-- **방법:** DHVO는 GAT로 subtask dependency를 embedding하고, hierarchical parameterized DRL로 subtask·실행 위치·continuous resource parameter를 순차 결정한다.
-- **결과:** 로컬 arXiv v1은 DHVO가 14 episode 안에 수렴하고 0.0018초 inference로 baseline보다 낮은 TESC를 유지한다고 보고한다.
-- **의의와 범위:** speed-aware hybrid action이라는 아이디어는 유용하지만 공식 arXiv record가 withdrawn 상태이므로, 결과는 v1 preprint의 주장으로 제한해 읽어야 한다.
+- **문제:** V2I offloading은 DAG dependency, local/edge 선택, CPU frequency 또는 transmit power, RSU migration risk를 함께 다뤄야 합니다.
+- **방법:** DHVO는 GAT로 subtask dependency를 embedding하고, hierarchical parameterized DRL로 subtask·실행 위치·continuous resource parameter를 순차 결정합니다.
+- **결과:** 로컬 arXiv v1은 DHVO가 14 episode 안에 수렴하고 0.0018초 inference로 baseline보다 낮은 TESC를 유지한다고 보고합니다.
+- **의의와 범위:** speed-aware hybrid action이라는 아이디어는 유용하지만 공식 arXiv record가 withdrawn 상태이므로, 결과는 v1 preprint의 주장으로 제한해 읽어야 합니다.
 
 ## 한국어 번역형 해설
 
 ### 문제 배경
 
-Vehicle-to-infrastructure network에서는 차량이 road-side unit에 computation task를 offload해 latency와 energy consumption을 줄일 수 있다. 대상 application은 driving assistance, augmented reality, image processing, speech recognition처럼 deadline이 강하고 계산량이 큰 작업이다. 차량 단말은 local computing capacity와 battery가 제한되어 있으므로, 모든 task를 local에서 실행하면 지연과 에너지가 커진다.
+Vehicle-to-infrastructure network에서는 차량이 road-side unit에 computation task를 offload해 latency와 energy consumption을 줄일 수 있습니다. 대상 application은 driving assistance, augmented reality, image processing, speech recognition처럼 deadline이 강하고 계산량이 큰 작업입니다. 차량 단말은 local computing capacity와 battery가 제한되어 있으므로, 모든 task를 local에서 실행하면 지연과 에너지가 커집니다.
 
-논문 v1이 기존 연구와 다르게 잡은 지점은 두 가지다. 첫째, application을 하나의 atomic task가 아니라 여러 dependent subtask로 이루어진 DAG로 본다. 둘째, offloading action이 discrete decision과 continuous resource parameter를 함께 가진다고 본다. 즉 "어떤 subtask를 실행할지", "local과 edge 중 어디서 실행할지", "local CPU frequency 또는 transmit power를 얼마로 둘지"를 동시에 결정해야 한다.
+논문 v1이 기존 연구와 다르게 잡은 지점은 두 가지입니다. 첫째, application을 하나의 atomic task가 아니라 여러 dependent subtask로 이루어진 DAG로 봅니다. 둘째, offloading action이 discrete decision과 continuous resource parameter를 함께 가진다고 봅니다. 즉 "어떤 subtask를 실행할지", "local과 edge 중 어디서 실행할지", "local CPU frequency 또는 transmit power를 얼마로 둘지"를 동시에 결정해야 합니다.
 
 ### 시스템 모델
 
-RSU는 highway를 따라 배치되고, 각 RSU는 coverage length $$L$$ 안의 차량을 지원한다. 차량 속도 $$v$$는 시간에 따라 변하며, task가 RSU coverage 안에서 끝나지 않으면 migration cost가 발생할 수 있다.
+RSU는 highway를 따라 배치되고, 각 RSU는 coverage length $$L$$ 안의 차량을 지원합니다. 차량 속도 $$v$$는 시간에 따라 변하며, task가 RSU coverage 안에서 끝나지 않으면 migration cost가 발생할 수 있습니다.
 
-Application은 DAG $$G=(V,E)$$로 표현된다. Node는 subtask이고 edge는 precedence constraint다. 각 subtask $$i$$는 $$\phi_i=(DI_i,DO_i,C_i)$$로 나타난다. $$DI_i$$는 input data, $$DO_i$$는 output data, $$C_i$$는 required CPU cycles다.
+Application은 DAG $$G=(V,E)$$로 표현됩니다. Node는 subtask이고 edge는 precedence constraint입니다. 각 subtask $$i$$는 $$\phi_i=(DI_i,DO_i,C_i)$$로 나타납니다. $$DI_i$$는 input data, $$DO_i$$는 output data, $$C_i$$는 required CPU cycles입니다.
 
 | 실행 방식 | 비용 구성 |
 |---|---|
@@ -63,19 +63,19 @@ Application은 DAG $$G=(V,E)$$로 표현된다. Node는 subtask이고 edge는 pr
 | Migration | RSU handover 전에 task가 끝나지 않을 때 migration fee와 추가 delay 발생 |
 | Dependency | subtask는 immediate predecessor가 끝난 뒤 시작 가능 |
 
-Objective는 time, energy, edge service cost를 결합한 TESC를 최소화하는 것이다. Weight는 $$\beta_1,\beta_2,\beta_3$$로 두며 합은 1이다. 논문은 offloading vector $$K$$, CPU frequency $$F$$, transmit power $$P$$를 함께 최적화해야 하므로 문제가 mixed-integer nonlinear programming이고 nonconvex, NP-hard라고 설명한다.
+Objective는 time, energy, edge service cost를 결합한 TESC를 최소화하는 것입니다. Weight는 $$\beta_1,\beta_2,\beta_3$$로 두며 합은 1입니다. 논문은 offloading vector $$K$$, CPU frequency $$F$$, transmit power $$P$$를 함께 최적화해야 하므로 문제가 mixed-integer nonlinear programming이고 nonconvex, NP-hard라고 설명합니다.
 
 ### 제안 방법: DHVO
 
-DHVO는 graph attention network와 parameterized DRL을 결합한다.
+DHVO는 graph attention network와 parameterized DRL을 결합합니다.
 
 ### DAG embedding with GAT
 
-Input node feature에는 input data, output data, required cycles, execution flag, coordinate, remaining task count, 최근 5초 speed vector가 포함된다. GAT는 attention mechanism으로 predecessor/successor dependency의 중요도를 다르게 반영한다. 논문은 task 수가 대체로 20개 이하라는 전제에서 one-layer GAT로도 dependency extraction이 충분하다고 본다.
+Input node feature에는 input data, output data, required cycles, execution flag, coordinate, remaining task count, 최근 5초 speed vector가 포함됩니다. GAT는 attention mechanism으로 predecessor/successor dependency의 중요도를 다르게 반영합니다. 논문은 task 수가 대체로 20개 이하라는 전제에서 one-layer GAT로도 dependency extraction이 충분하다고 봅니다.
 
 ### Hierarchical hybrid action
 
-Action은 세 계층으로 분해된다.
+Action은 세 계층으로 분해됩니다.
 
 | 계층 | 결정 |
 |---|---|
@@ -83,15 +83,15 @@ Action은 세 계층으로 분해된다.
 | Layer 2 | local execution 또는 edge offloading $$k_t$$ 선택 |
 | Layer 3 | local이면 CPU frequency $$f_t$$, edge이면 transmit power $$p_t$$ 선택 |
 
-Flat DDPG처럼 모든 action을 하나로 묶으면 dependency 때문에 invalid action이 많아지고, penalty 기반 학습은 sample efficiency가 낮아진다. DHVO는 parameterized normalized advantage function 구조를 사용해 discrete action과 continuous parameter를 함께 다룬다. $$Q(s,a_d,a_c)=V(s,a_d)+A(s,a_d,a_c)$$ 형태로 discrete value와 continuous advantage를 분리하고, continuous advantage는 positive-definite quadratic form으로 둔다. Discrete action은 $$\epsilon$$-greedy, continuous exploration은 Ornstein-Uhlenbeck noise를 사용한다.
+Flat DDPG처럼 모든 action을 하나로 묶으면 dependency 때문에 invalid action이 많아지고, penalty 기반 학습은 sample efficiency가 낮아집니다. DHVO는 parameterized normalized advantage function 구조를 사용해 discrete action과 continuous parameter를 함께 다룹니다. $$Q(s,a_d,a_c)=V(s,a_d)+A(s,a_d,a_c)$$ 형태로 discrete value와 continuous advantage를 분리하고, continuous advantage는 positive-definite quadratic form으로 둡니다. Discrete action은 $$\epsilon$$-greedy, continuous exploration은 Ornstein-Uhlenbeck noise를 사용합니다.
 
 ### Learning loop
 
-Algorithm 1은 GNN과 parameterized Q network, target network, replay buffer를 초기화한 뒤 반복한다. Agent는 현재 DAG state에서 hierarchical action $$(y_t,k_t=0,f_t)$$ 또는 $$(y_t,k_t=1,p_t)$$를 고르고, immediate TESC의 음수를 reward로 저장한다. Batch update에서는 target $$z_i=r_i+\gamma\max_{a_d}V'(s_{i+1},a_d)$$를 만들고 MSE loss로 GNN과 parameter network를 함께 갱신한다.
+Algorithm 1은 GNN과 parameterized Q network, target network, replay buffer를 초기화한 뒤 반복합니다. Agent는 현재 DAG state에서 hierarchical action $$(y_t,k_t=0,f_t)$$ 또는 $$(y_t,k_t=1,p_t)$$를 고르고, immediate TESC의 음수를 reward로 저장합니다. Batch update에서는 target $$z_i=r_i+\gamma\max_{a_d}V'(s_{i+1},a_d)$$를 만들고 MSE loss로 GNN과 parameter network를 함께 갱신합니다.
 
 ### 실험 설정
 
-Simulation은 real vehicle speed dataset인 CPIPC를 사용하며, 7일 동안 1초 granularity로 수집된 speed trace에서 네 개의 100초 trajectory를 사용한다. 각 episode는 20개 application을 실행하고, 각 application은 8 to 12개 subtask를 가진다. Replay buffer가 500 transition을 넘은 뒤 training을 시작하며 batch size는 256이다.
+Simulation은 real vehicle speed dataset인 CPIPC를 사용하며, 7일 동안 1초 granularity로 수집된 speed trace에서 네 개의 100초 trajectory를 사용합니다. 각 episode는 20개 application을 실행하고, 각 application은 8 to 12개 subtask를 가집니다. Replay buffer가 500 transition을 넘은 뒤 training을 시작하며 batch size는 256입니다.
 
 | 항목 | 값 |
 |---|---|
@@ -109,13 +109,13 @@ Simulation은 real vehicle speed dataset인 CPIPC를 사용하며, 7일 동안 1
 | Migration price $$u_m$$ | 2 USD/Mcycles |
 | TESC weights | $$(0.33,0.33,0.33)$$ |
 
-Neural network setting은 GAT attention heads 2, feature dimension per head 6, parameterized network hidden layer 128, discount factor 0.99, learning rate 0.01, soft update coefficient 0.1, ReLU, Adam, maximum episodes 20이다. Baseline은 ALE, AO, GOE, DQN10이다.
+Neural network setting은 GAT attention heads 2, feature dimension per head 6, parameterized network hidden layer 128, discount factor 0.99, learning rate 0.01, soft update coefficient 0.1, ReLU, Adam, maximum episodes 20입니다. Baseline은 ALE, AO, GOE, DQN10입니다.
 
 ### 핵심 결과
 
-논문 v1은 DHVO neural network가 14 episode 안에 수렴한다고 보고한다. One-batch training time은 1.58초, inference time은 0.0018초로 제시된다. 이는 해당 실험의 신경망 실행 시간이며, 통신·큐잉·handover를 포함한 V2I 종단 간 지연이나 실제 배포 성능을 입증하지는 않는다.
+논문 v1은 DHVO neural network가 14 episode 안에 수렴한다고 보고합니다. One-batch training time은 1.58초, inference time은 0.0018초로 제시됩니다. 이는 해당 실험의 신경망 실행 시간이며, 통신·큐잉·handover를 포함한 V2I 종단 간 지연이나 실제 배포 성능을 입증하지는 않습니다.
 
-결과 해석의 핵심은 migration risk다. GOE처럼 greedy하게 edge offloading을 선호하는 방법은 real speed variation 때문에 RSU coverage를 벗어나 migration penalty를 크게 받을 수 있다. ALE처럼 local execution에 치우친 방법은 migration은 피하지만 local time/energy cost가 커진다. DHVO는 speed vector와 DAG dependency를 state에 넣고, local/edge 및 resource parameter를 함께 선택해 TESC를 낮춘다고 주장한다.
+결과 해석의 핵심은 migration risk입니다. GOE처럼 greedy하게 edge offloading을 선호하는 방법은 real speed variation 때문에 RSU coverage를 벗어나 migration penalty를 크게 받을 수 있습니다. ALE처럼 local execution에 치우친 방법은 migration은 피하지만 local time/energy cost가 커집니다. DHVO는 speed vector와 DAG dependency를 state에 넣고, local/edge 및 resource parameter를 함께 선택해 TESC를 낮춘다고 주장합니다.
 
 | 실험 축 | 논문 v1의 주장 |
 |---|---|
@@ -125,22 +125,22 @@ Neural network setting은 GAT attention heads 2, feature dimension per head 6, p
 | Migration price 변화 | AO/GOE가 migration cost에 민감하고, DHVO는 speed-aware decision으로 migration을 줄임 |
 | Ablation | DHVO가 PNAF, GDQN2, GDQN5, GDQN10보다 hierarchical hybrid action 처리에서 유리하다고 보고 |
 
-정량 표가 모든 figure 값으로 제공되지는 않기 때문에, 공개 글에서는 정확한 figure reading 없이 논문이 명시한 trend 중심으로 해석한다.
+정량 표가 모든 figure 값으로 제공되지는 않기 때문에, 공개 글에서는 정확한 figure reading 없이 논문이 명시한 trend 중심으로 해석합니다.
 
 ### 논문이 말한 것과 해석을 구분하기
 
 | 구분 | 내용 |
 |---|---|
-| 논문 v1 주장 | DHVO는 DAG dependency와 hierarchical hybrid action을 함께 처리해 V2I offloading overhead를 줄인다. |
-| 근거 | GAT embedding, parameterized DRL, CPIPC speed trace simulation, baseline 비교를 제시한다. |
-| 해석 | 핵심 아이디어는 "차량 속도와 DAG dependency를 같이 보면서 migration risk를 줄이는 offloading controller"다. |
-| 주의점 | 공식 arXiv record가 withdrawn이므로, 이 결과는 v1 preprint의 주장이지 검증 완료된 최신 publication claim이 아니다. |
+| 논문 v1 주장 | DHVO는 DAG dependency와 hierarchical hybrid action을 함께 처리해 V2I offloading overhead를 줄입니다. |
+| 근거 | GAT embedding, parameterized DRL, CPIPC speed trace simulation, baseline 비교를 제시합니다. |
+| 해석 | 핵심 아이디어는 "차량 속도와 DAG dependency를 같이 보면서 migration risk를 줄이는 offloading controller"입니다. |
+| 주의점 | 공식 arXiv record가 withdrawn이므로, 이 결과는 v1 preprint의 주장이지 검증 완료된 최신 publication claim이 아닙니다. |
 
 ### 한계와 해결 방향
 
-가장 큰 한계는 publication status다. 현재 공식 arXiv record는 2025-12-04에 withdrawn 되었고, comments에는 저자 측이 더 이상 development나 submission을 진행하지 않겠다고 밝힌다. 따라서 검증된 결과보다 아이디어와 모델 구조를 탐색하는 참고자료로 활용하는 것이 적절하다. 해결 방향은 reproducible code, updated dataset split, peer-reviewed revision, 또는 유사한 published follow-up과의 교차 검증이다.
+가장 큰 한계는 publication status입니다. 현재 공식 arXiv record는 2025-12-04에 withdrawn 되었고, comments에는 저자 측이 더 이상 development나 submission을 진행하지 않겠다고 밝힙니다. 따라서 검증된 결과보다 아이디어와 모델 구조를 탐색하는 참고자료로 활용하는 것이 적절합니다. 해결 방향은 reproducible code, updated dataset split, peer-reviewed revision, 또는 유사한 published follow-up과의 교차 검증입니다.
 
-모델 측면에서는 single-vehicle 중심 simulation과 제한된 traffic/channel parameter가 현실성을 제한한다. 실제 V2I 서비스로 확장하려면 multi-vehicle competition, RSU queueing, handover failure, packet loss, broader mobility trace를 포함해야 한다. 방법적으로는 multi-agent hierarchical RL, uncertainty-aware speed prediction, migration-risk-constrained reward, adaptive option discovery가 자연스러운 확장 방향이다.
+모델 측면에서는 single-vehicle 중심 simulation과 제한된 traffic/channel parameter가 현실성을 제한합니다. 실제 V2I 서비스로 확장하려면 multi-vehicle competition, RSU queueing, handover failure, packet loss, broader mobility trace를 포함해야 합니다. 방법적으로는 multi-agent hierarchical RL, uncertainty-aware speed prediction, migration-risk-constrained reward, adaptive option discovery가 자연스러운 확장 방향입니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

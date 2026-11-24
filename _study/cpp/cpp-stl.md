@@ -35,11 +35,11 @@ Source PDF: `C++ STL.pdf`
 | 41–46 | algorithm 분류, functor, lambda | 23–27절 | callable·capture 문법 중심 |
 | 47–53 | 검색·정렬·변환·제거·집계 algorithm | 28–35절 | **51쪽 핵심 복잡도**: 정렬 전제 아래 binary search $$O(\log n)$$을 유도 |
 
-53쪽 전체를 페이지 이미지로 대조했다. 원문의 모든 중요 복잡도 표기는 아래 보충 해설에서 입력 크기, 최악·평균·상각 구분, 성립 조건까지 설명한다. Header, iterator 표기, lambda capture는 API와 언어 문법이므로 증명 대상으로 만들지 않았다.
+53쪽 전체를 페이지 이미지로 대조했습니다. 원문의 모든 중요 복잡도 표기는 아래 보충 해설에서 입력 크기, 최악·평균·상각 구분, 성립 조건까지 설명합니다. Header, iterator 표기, lambda capture는 API와 언어 문법이므로 증명 대상으로 만들지 않았습니다.
 
 </details>
 
-> **핵심:** STL에서는 컨테이너에 담긴 데이터를 이터레이터로 순회하고, 알고리즘에 함수 객체나 람다를 전달해 처리한다. `vector`는 연속 메모리를 사용하는 동적 배열로, 특별한 요구가 없다면 가장 먼저 고려할 컨테이너다.
+> **핵심:** STL에서는 컨테이너에 담긴 데이터를 이터레이터로 순회하고, 알고리즘에 함수 객체나 람다를 전달해 처리합니다. `vector`는 연속 메모리를 사용하는 동적 배열로, 특별한 요구가 없다면 가장 먼저 고려할 컨테이너입니다.
 
 ## 전체 흐름
 
@@ -48,22 +48,22 @@ Source PDF: `C++ STL.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | STL의 구조 | 컨테이너, 이터레이터, 알고리즘은 어떻게 연결되는가? |
-| 2 | `std::vector` | 동적 배열은 언제 기본 선택지가 되는가? |
-| 3 | `std::list` | 중간 삽입과 삭제가 많을 때 왜 연결 리스트가 유리한가? |
-| 4 | `std::array` | 고정 크기 배열을 STL 방식으로 쓰면 무엇이 달라지는가? |
-| 5 | 이터레이터 | 컨테이너 내부 구조가 달라도 왜 같은 반복문을 쓸 수 있는가? |
-| 6 | `std::set` | 중복 없는 집합과 빠른 존재 확인은 어떻게 처리하는가? |
-| 7 | `std::map` | 키-값 데이터를 어떻게 저장하고 검색하는가? |
-| 8 | 함수 객체와 람다 | 알고리즘에 조건과 동작을 어떻게 전달하는가? |
-| 9 | STL 알고리즘 | 검색, 정렬, 변환, 제거, 집계는 어떤 패턴으로 조합하는가? |
-| 10 | 실전 조합 | 학생 성적 데이터를 STL로 어떻게 처리하는가? |
+| 1 | STL의 구조 | 컨테이너, 이터레이터, 알고리즘은 어떻게 연결됩니까? |
+| 2 | `std::vector` | 동적 배열은 언제 기본 선택지가 됩니까? |
+| 3 | `std::list` | 중간 삽입과 삭제가 많을 때 왜 연결 리스트가 유리합니까? |
+| 4 | `std::array` | 고정 크기 배열을 STL 방식으로 쓰면 무엇이 달라집니까? |
+| 5 | 이터레이터 | 컨테이너 내부 구조가 달라도 왜 같은 반복문을 쓸 수 있습니까? |
+| 6 | `std::set` | 중복 없는 집합과 빠른 존재 확인은 어떻게 처리합니까? |
+| 7 | `std::map` | 키-값 데이터를 어떻게 저장하고 검색합니까? |
+| 8 | 함수 객체와 람다 | 알고리즘에 조건과 동작을 어떻게 전달합니까? |
+| 9 | STL 알고리즘 | 검색, 정렬, 변환, 제거, 집계는 어떤 패턴으로 조합합니까? |
+| 10 | 실전 조합 | 학생 성적 데이터를 STL로 어떻게 처리합니까? |
 
 </details>
 
 ## 1. STL이란?
 
-STL(Standard Template Library)은 C++ 표준 라이브러리에 포함된 **자료구조와 알고리즘의 묶음**이다. 직접 배열, 연결 리스트, 정렬 함수, 검색 함수를 매번 구현하지 않고, 검증된 표준 구현을 가져다 쓸 수 있게 한다.
+STL(Standard Template Library)은 C++ 표준 라이브러리에 포함된 **자료구조와 알고리즘의 묶음**입니다. 직접 배열, 연결 리스트, 정렬 함수, 검색 함수를 매번 구현하지 않고, 검증된 표준 구현을 가져다 쓸 수 있게 합니다.
 
 ```cpp
 #include <iostream>
@@ -86,16 +86,16 @@ int main() {
 }
 ```
 
-STL의 장점은 다음 네 가지로 정리할 수 있다.
+STL의 장점은 다음 네 가지로 정리할 수 있습니다.
 
 | 특성 | 의미 |
 |---|---|
-| 범용성 | 템플릿 기반이므로 `int`, `double`, 사용자 정의 타입 등 다양한 타입에 같은 인터페이스를 적용할 수 있다. |
-| 표준성 | 모든 표준 C++ 컴파일러가 제공하므로 별도 라이브러리 설치 없이 사용할 수 있다. |
-| 검증된 구현 | 정렬, 검색, 자료구조 구현이 이미 최적화되어 있고 안정적이다. |
-| 재사용성 | 자료구조와 알고리즘을 직접 반복 구현하지 않아도 된다. |
+| 범용성 | 템플릿 기반이므로 `int`, `double`, 사용자 정의 타입 등 다양한 타입에 같은 인터페이스를 적용할 수 있습니다. |
+| 표준성 | 모든 표준 C++ 컴파일러가 제공하므로 별도 라이브러리 설치 없이 사용할 수 있습니다. |
+| 검증된 구현 | 정렬, 검색, 자료구조 구현이 이미 최적화되어 있고 안정적입니다. |
+| 재사용성 | 자료구조와 알고리즘을 직접 반복 구현하지 않아도 됩니다. |
 
-STL은 크게 네 요소로 이해하면 된다.
+STL은 크게 네 요소로 이해하면 됩니다.
 
 | 구성 요소 | 역할 | 예시 |
 |---|---|---|
@@ -104,7 +104,7 @@ STL은 크게 네 요소로 이해하면 된다.
 | 알고리즘 | 이터레이터 범위에 적용되는 연산 | `sort`, `find`, `count_if`, `accumulate` |
 | 함수 객체/람다 | 알고리즘에 전달하는 조건 또는 동작 | `std::greater<int>()`, `[](int x){ return x > 0; }` |
 
-핵심 구조는 다음이다.
+핵심 구조는 다음입니다.
 
 ```text
 컨테이너가 데이터를 저장한다.
@@ -115,7 +115,7 @@ STL은 크게 네 요소로 이해하면 된다.
 
 ## 2. STL 헤더 파일
 
-STL은 기능별로 헤더가 나뉜다.
+STL은 기능별로 헤더가 나뉩니다.
 
 | 분류 | 헤더 | 대표 기능 |
 |---|---|---|
@@ -131,7 +131,7 @@ STL은 기능별로 헤더가 나뉜다.
 | 집계 | `<numeric>` | `accumulate`, `iota`, `inner_product` |
 | 함수 객체 | `<functional>` | `greater`, `less`, `plus`, `function` |
 
-기본 선택 기준은 간단하다.
+기본 선택 기준은 간단합니다.
 
 ```text
 특별한 이유가 없으면 std::vector를 먼저 고려한다.
@@ -141,7 +141,7 @@ STL은 기능별로 헤더가 나뉜다.
 
 ## 3. `std::vector`
 
-`std::vector`는 **동적 배열**이다. 내부적으로 연속된 메모리 공간을 사용하고, 원소가 늘어나면 더 큰 공간을 다시 확보한다. STL에서 가장 자주 쓰는 기본 컨테이너다.
+`std::vector`는 **동적 배열**입니다. 내부적으로 연속된 메모리 공간을 사용하고, 원소가 늘어나면 더 큰 공간을 다시 확보합니다. STL에서 가장 자주 쓰는 기본 컨테이너입니다.
 
 ```cpp
 #include <vector>
@@ -152,7 +152,7 @@ std::vector<int> v3(5, 0); // {0, 0, 0, 0, 0}
 std::vector<int> v4 = v2;  // {10, 20, 30}
 ```
 
-기본 조작은 다음과 같다.
+기본 조작은 다음과 같습니다.
 
 ```cpp
 std::vector<int> v;
@@ -169,7 +169,7 @@ v.back();  // 30
 v.pop_back(); // {10, 20}
 ```
 
-`vector`는 뒤쪽 추가와 삭제가 빠르다. `push_back`은 평균적으로 O(1)이다. 다만 중간 삽입과 삭제는 뒤쪽 원소를 이동시켜야 하므로 O(n)이다.
+`vector`는 뒤쪽 추가와 삭제가 빠릅니다. `push_back`은 평균적으로 O(1)입니다. 다만 중간 삽입과 삭제는 뒤쪽 원소를 이동시켜야 하므로 O(n)입니다.
 
 ```cpp
 std::vector<int> v = {10, 30, 40};
@@ -181,11 +181,11 @@ v.erase(v.begin() + 2);
 // {10, 20, 40}
 ```
 
-중간에 `20`을 넣으면 기존 `30`, `40`이 오른쪽으로 한 칸씩 이동한다. 반대로 중간 원소를 지우면 뒤쪽 원소가 왼쪽으로 당겨진다. 이 원소 이동 때문에 중간 삽입과 삭제가 O(n)이 된다.
+중간에 `20`을 넣으면 기존 `30`, `40`이 오른쪽으로 한 칸씩 이동합니다. 반대로 중간 원소를 지우면 뒤쪽 원소가 왼쪽으로 당겨집니다. 이 원소 이동 때문에 중간 삽입과 삭제가 O(n)이 됩니다.
 
 ## 4. `vector`의 원소 접근
 
-`vector` 원소는 배열처럼 접근할 수 있다.
+`vector` 원소는 배열처럼 접근할 수 있습니다.
 
 ```cpp
 std::vector<int> v = {10, 20, 30, 40, 50};
@@ -195,12 +195,12 @@ v[4];    // 50
 v.at(2); // 30
 ```
 
-`[]`와 `at()`의 차이는 경계 검사 여부다.
+`[]`와 `at()`의 차이는 경계 검사 여부입니다.
 
 | 방식 | 경계 검사 | 특징 |
 |---|---|---|
-| `v[i]` | 없음 | 빠르지만 잘못된 인덱스 접근은 미정의 동작이다. |
-| `v.at(i)` | 있음 | 범위를 벗어나면 `std::out_of_range` 예외가 발생한다. |
+| `v[i]` | 없음 | 빠르지만 잘못된 인덱스 접근은 미정의 동작입니다. |
+| `v.at(i)` | 있음 | 범위를 벗어나면 `std::out_of_range` 예외가 발생합니다. |
 
 ```cpp
 try {
@@ -210,7 +210,7 @@ try {
 }
 ```
 
-값 수정도 같은 방식으로 한다.
+값 수정도 같은 방식으로 합니다.
 
 ```cpp
 v[1] = 99;
@@ -221,7 +221,7 @@ for (auto& x : v) {
 }
 ```
 
-범위 기반 `for`에서 원본을 수정하려면 반드시 참조를 사용해야 한다.
+범위 기반 `for`에서 원본을 수정하려면 반드시 참조를 사용해야 합니다.
 
 ```cpp
 for (auto x : v) {
@@ -237,11 +237,11 @@ for (auto& x : v) {
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" alt="원본 강의 슬라이드의 vector size capacity reserve resize" loading="lazy"></a>
 
-*원본 `C++ STL.pdf` p. 12. 왼쪽은 원소 3개에서 `size=3`, `capacity=4`처럼 사용량과 확보 공간이 다름을 보여준다. 오른쪽 위는 `reserve(1000)`으로 반복 `push_back` 중 재할당을 막고, 아래는 `resize`가 실제 원소 수를 바꾸는 예다. <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 12</a>*
+*원본 `C++ STL.pdf` p. 12. 왼쪽은 원소 3개에서 `size=3`, `capacity=4`처럼 사용량과 확보 공간이 다름을 보여줍니다. 오른쪽 위는 `reserve(1000)`으로 반복 `push_back` 중 재할당을 막고, 아래는 `resize`가 실제 원소 수를 바꾸는 예입니다. <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 12</a>*
 
-capacity를 넘으면 더 큰 연속 배열을 할당하고 기존 원소를 이동한 뒤 옛 배열을 해제한다. 이때 기존 원소를 가리키던 pointer와 iterator가 무효화될 수 있다. `reserve`는 공간만 확보하고 `size`를 늘리지 않는다.
+capacity를 넘으면 더 큰 연속 배열을 할당하고 기존 원소를 이동한 뒤 옛 배열을 해제합니다. 이때 기존 원소를 가리키던 pointer와 iterator가 무효화될 수 있습니다. `reserve`는 공간만 확보하고 `size`를 늘리지 않습니다.
 
-`vector`를 이해할 때 `size`와 `capacity`를 구분해야 한다.
+`vector`를 이해할 때 `size`와 `capacity`를 구분해야 합니다.
 
 | 개념 | 의미 |
 |---|---|
@@ -262,7 +262,7 @@ v.size();     // 3
 v.capacity(); // 구현마다 다름
 ```
 
-`capacity`가 부족한 상태에서 `push_back`을 하면 내부적으로 다음 일이 일어난다.
+`capacity`가 부족한 상태에서 `push_back`을 하면 내부적으로 다음 일이 일어납니다.
 
 ```text
 1. 더 큰 배열을 새로 할당한다.
@@ -271,7 +271,7 @@ v.capacity(); // 구현마다 다름
 4. 새 원소를 뒤에 추가한다.
 ```
 
-이 재할당은 비용이 크다. 원소 개수를 미리 예상할 수 있다면 `reserve()`로 공간을 먼저 확보한다.
+이 재할당은 비용이 큽니다. 원소 개수를 미리 예상할 수 있다면 `reserve()`로 공간을 먼저 확보합니다.
 
 ```cpp
 std::vector<int> v;
@@ -282,7 +282,7 @@ for (int i = 0; i < 1000; ++i) {
 }
 ```
 
-`reserve()`는 원소 개수를 바꾸지 않는다. 공간만 미리 잡는다.
+`reserve()`는 원소 개수를 바꾸지 않습니다. 공간만 미리 잡습니다.
 
 ```cpp
 std::vector<int> v;
@@ -292,7 +292,7 @@ v.size();     // 0
 v.capacity(); // 5 이상
 ```
 
-반면 `resize()`는 실제 원소 개수를 바꾼다.
+반면 `resize()`는 실제 원소 개수를 바꿉니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
@@ -307,7 +307,7 @@ v.clear();
 // size는 0, capacity는 보통 유지
 ```
 
-정리하면 다음과 같다.
+정리하면 다음과 같습니다.
 
 | 함수 | 바꾸는 대상 | 원소 생성/삭제 |
 |---|---|---|
@@ -317,7 +317,7 @@ v.clear();
 
 ## 6. `std::list`
 
-`std::list`는 **이중 연결 리스트**다. 각 원소가 앞 노드와 뒤 노드의 주소를 가지고 있고, 원소들이 메모리에 연속적으로 놓이지 않는다.
+`std::list`는 **이중 연결 리스트**입니다. 각 원소가 앞 노드와 뒤 노드의 주소를 가지고 있고, 원소들이 메모리에 연속적으로 놓이지 않습니다.
 
 ```text
 vector:
@@ -327,7 +327,7 @@ list:
 [prev | 10 | next] <-> [prev | 20 | next] <-> [prev | 30 | next]
 ```
 
-기본 조작은 다음과 같다.
+기본 조작은 다음과 같습니다.
 
 ```cpp
 #include <list>
@@ -344,7 +344,7 @@ lst.front(); // 20
 lst.back();  // 30
 ```
 
-`list`는 앞과 뒤에서 모두 O(1)로 삽입과 삭제가 가능하다. 또한 이미 위치를 알고 있다면 중간 삽입과 삭제도 O(1)이다.
+`list`는 앞과 뒤에서 모두 O(1)로 삽입과 삭제가 가능합니다. 또한 이미 위치를 알고 있다면 중간 삽입과 삭제도 O(1)입니다.
 
 ```cpp
 std::list<int> lst = {10, 30, 40};
@@ -354,9 +354,9 @@ lst.insert(it, 20);
 // {10, 20, 30, 40}
 ```
 
-하지만 여기서 주의할 점이 있다. `insert` 자체는 O(1)이지만, `30`을 찾는 `find`는 앞에서부터 순서대로 보므로 O(n)이다. 즉 위치를 이미 알고 있을 때 list의 중간 삽입이 빠르다.
+하지만 여기서 주의할 점이 있습니다. `insert` 자체는 O(1)이지만, `30`을 찾는 `find`는 앞에서부터 순서대로 보므로 O(n)입니다. 즉 위치를 이미 알고 있을 때 list의 중간 삽입이 빠릅니다.
 
-`list`는 자체 멤버 알고리즘도 제공한다.
+`list`는 자체 멤버 알고리즘도 제공합니다.
 
 ```cpp
 std::list<int> lst = {30, 10, 40, 20, 10, 30};
@@ -366,9 +366,9 @@ lst.reverse(); // 역순
 lst.unique();  // 연속 중복 제거
 ```
 
-`std::sort(lst.begin(), lst.end())`는 사용할 수 없다. `std::sort`는 random access iterator가 필요하지만, `list` iterator는 bidirectional iterator이기 때문이다. 그래서 `list`는 `lst.sort()`를 사용한다.
+`std::sort(lst.begin(), lst.end())`는 사용할 수 없습니다. `std::sort`는 random access iterator가 필요하지만, `list` iterator는 bidirectional iterator이기 때문입니다. 그래서 `list`는 `lst.sort()`를 사용합니다.
 
-`splice`는 list 고유의 강력한 기능이다.
+`splice`는 list 고유의 강력한 기능입니다.
 
 ```cpp
 std::list<int> a = {1, 2, 3, 4, 5};
@@ -381,26 +381,26 @@ a.splice(pos, b);
 // b: {}
 ```
 
-`splice`는 원소를 복사하지 않고 노드 연결만 바꾼다. 그래서 구간 이동을 효율적으로 처리할 수 있다.
+`splice`는 원소를 복사하지 않고 노드 연결만 바꿉니다. 그래서 구간 이동을 효율적으로 처리할 수 있습니다.
 
 ### `list::splice`가 $$O(1)$$인 조건
 
-> **작성자 보충:** 아래 복잡도는 유효한 iterator와 호환 allocator가 이미 주어진 전체-list 또는 단일 원소 splice에 대한 표준 복잡도 보장을 조건과 함께 풀어 쓴 것이다.
+> **작성자 보충:** 아래 복잡도는 유효한 iterator와 호환 allocator가 이미 주어진 전체-list 또는 단일 원소 splice에 대한 표준 복잡도 보장을 조건과 함께 풀어 쓴 것입니다.
 
-핵심은 연결을 바꿀 위치가 이미 주어졌는지다. 전체 list나 단일 원소의 node 연결 변경 자체는 상수 시간이지만, 위치를 찾는 선형 탐색은 별도 비용이다.
+핵심은 연결을 바꿀 위치가 이미 주어졌는지를 확인하는 것입니다. 전체 list나 단일 원소의 node 연결 변경 자체는 상수 시간이지만, 위치를 찾는 선형 탐색은 별도 비용입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: When list splice is constant time</summary>
 
-위의 `a.splice(pos, b)`는 `b` 전체의 첫 노드와 마지막 노드를 `a`의 `pos` 앞에 연결하도록 몇 개의 link만 바꾼다. 이동 원소 수를 $$m$$이라 해도 원소별 복사·이동을 하지 않으므로, **`pos`와 두 list가 이미 주어지고 allocator가 호환되는 전체-list splice** 자체의 link 변경 횟수는 상수이고 시간복잡도는 $$O(1)$$이다. 단일 원소를 유효한 iterator로 지정한 splice도 같은 이유로 $$O(1)$$이다.
+위의 `a.splice(pos, b)`는 `b` 전체의 첫 노드와 마지막 노드를 `a`의 `pos` 앞에 연결하도록 몇 개의 link만 바꿉니다. 이동 원소 수를 $$m$$이라 해도 원소별 복사·이동을 하지 않으므로, **`pos`와 두 list가 이미 주어지고 allocator가 호환되는 전체-list splice** 자체의 link 변경 횟수는 상수이고 시간복잡도는 $$O(1)$$입니다. 단일 원소를 유효한 iterator로 지정한 splice도 같은 이유로 $$O(1)$$입니다.
 
-이 보장은 위치를 찾는 비용을 포함하지 않는다. 위 코드의 `std::find`는 최대 $$n$$개 노드를 방문하므로 전체 예제는 $$O(n)$$이다. 임의 구간 splice는 구현이 이동 구간 길이를 세어야 하는 경우 $$O(m)$$일 수 있으며, 서로 다른 list 사이의 splice는 allocator가 같아야 한다. 유효하지 않은 iterator, 대상 위치를 포함하는 잘못된 self-splice 구간, 호환되지 않는 allocator에서는 이 설명을 적용할 수 없다.
+이 보장은 위치를 찾는 비용을 포함하지 않습니다. 위 코드의 `std::find`는 최대 $$n$$개 노드를 방문하므로 전체 예제는 $$O(n)$$입니다. 임의 구간 splice는 구현이 이동 구간 길이를 세어야 하는 경우 $$O(m)$$일 수 있으며, 서로 다른 list 사이의 splice는 allocator가 같아야 합니다. 유효하지 않은 iterator, 대상 위치를 포함하는 잘못된 self-splice 구간, 호환되지 않는 allocator에서는 이 설명을 적용할 수 없습니다.
 
 </details>
 
 ## 7. `std::array`
 
-`std::array`는 **크기가 컴파일 타임에 고정된 배열**이다. C 배열과 비슷한 성능을 가지면서 STL 컨테이너 인터페이스를 제공한다.
+`std::array`는 **크기가 컴파일 타임에 고정된 배열**입니다. C 배열과 비슷한 성능을 가지면서 STL 컨테이너 인터페이스를 제공합니다.
 
 ```cpp
 #include <array>
@@ -414,7 +414,7 @@ a.back();  // 5
 a.size();  // 5
 ```
 
-`std::array<int, 5>`에서 크기 `5`는 타입에 포함된다. 따라서 `std::array<int, 5>`와 `std::array<int, 3>`은 서로 다른 타입이다.
+`std::array<int, 5>`에서 크기 `5`는 타입에 포함됩니다. 따라서 `std::array<int, 5>`와 `std::array<int, 3>`은 서로 다른 타입입니다.
 
 ```cpp
 void print(const std::array<int, 5>& a) {
@@ -424,7 +424,7 @@ void print(const std::array<int, 5>& a) {
 }
 ```
 
-`array`는 `fill`, `swap`, `data` 같은 기능을 제공한다.
+`array`는 `fill`, `swap`, `data` 같은 기능을 제공합니다.
 
 ```cpp
 std::array<int, 5> a = {1, 2, 3, 4, 5};
@@ -438,30 +438,30 @@ int* p = a.data();
 
 ### `array::swap`의 $$O(N)$$ 유도
 
-> **작성자 보충:** 아래 복잡도는 대응 원소를 모두 교환한다는 `std::array::swap`의 보장을, 원소 swap 비용이 상수라는 조건 아래 유도한 것이다.
+> **작성자 보충:** 아래 복잡도는 대응 원소를 모두 교환한다는 `std::array::swap`의 보장을, 원소 swap 비용이 상수라는 조건 아래 유도한 것입니다.
 
-`std::array`는 $$N$$개 원소를 객체 안에 직접 보관한다. 따라서 pointer 하나만 교환하는 것이 아니라 대응하는 $$N$$쌍을 모두 swap하며, 원소 swap이 상수 시간이면 전체 비용은 $$O(N)$$이다.
+`std::array`는 $$N$$개 원소를 객체 안에 직접 보관합니다. 따라서 pointer 하나만 교환하는 것이 아니라 대응하는 $$N$$쌍을 모두 swap하며, 원소 swap이 상수 시간이면 전체 비용은 $$O(N)$$입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Why array swap is linear in its fixed size</summary>
 
-`std::array<T, N>`은 내부 buffer 포인터만 교환하는 동적 컨테이너가 아니라 $$N$$개 원소를 객체 안에 직접 보관한다. 따라서 `a.swap(b)`는 대응하는 원소 쌍
+`std::array<T, N>`은 내부 buffer 포인터만 교환하는 동적 컨테이너가 아니라 $$N$$개 원소를 객체 안에 직접 보관합니다. 따라서 `a.swap(b)`는 대응하는 원소 쌍
 
 $$
 (a_0,b_0),(a_1,b_1),\ldots,(a_{N-1},b_{N-1})
 $$
 
-을 각각 한 번씩 swap한다. 원소 한 쌍의 swap 비용을 $$S_T$$라 하면
+을 각각 한 번씩 swap합니다. 원소 한 쌍의 swap 비용을 $$S_T$$라 하면
 
 $$
 T_{\texttt{array::swap}}(N)=\sum_{i=0}^{N-1}S_T=N S_T.
 $$
 
-`T`의 swap이 $$O(1)$$이면 전체는 정확히 $$N$$번의 원소 swap, 즉 $$O(N)$$이다. $$N=0$$이면 수행할 원소 swap도 0개다. `T`의 swap 비용이 상수가 아니거나 예외를 던질 수 있으면 전체 비용과 예외 안전성도 그 원소 swap의 성질을 따른다. 두 배열은 같은 `T`와 같은 $$N$$을 가진 동일한 `std::array` 타입이어야 한다.
+`T`의 swap이 $$O(1)$$이면 전체는 정확히 $$N$$번의 원소 swap, 즉 $$O(N)$$입니다. $$N=0$$이면 수행할 원소 swap도 0개입니다. `T`의 swap 비용이 상수가 아니거나 예외를 던질 수 있으면 전체 비용과 예외 안전성도 그 원소 swap의 성질을 따릅니다. 두 배열은 같은 `T`와 같은 $$N$$을 가진 동일한 `std::array` 타입이어야 합니다.
 
 </details>
 
-`data()`는 첫 원소의 raw pointer를 반환한다. 그래서 C 스타일 함수를 호출할 때도 사용할 수 있다.
+`data()`는 첫 원소의 raw pointer를 반환합니다. 그래서 C 스타일 함수를 호출할 때도 사용할 수 있습니다.
 
 ```cpp
 void legacy_print(const int* arr, int n);
@@ -471,7 +471,7 @@ legacy_print(a.data(), a.size());
 
 ## 8. 시퀀스 컨테이너 선택 기준
 
-시퀀스 컨테이너는 원소의 순서를 저장하는 컨테이너다. 대표적으로 `vector`, `array`, `list`가 있다.
+시퀀스 컨테이너는 원소의 순서를 저장하는 컨테이너입니다. 대표적으로 `vector`, `array`, `list`가 있습니다.
 
 | 컨테이너 | 메모리 구조 | 임의 접근 | 앞 삽입 | 중간 삽입 | 대표 상황 |
 |---|---|---|---|---|---|
@@ -479,7 +479,7 @@ legacy_print(a.data(), a.size());
 | `array` | 고정 연속 메모리 | O(1) | 불가 | 불가 | 크기가 컴파일 타임에 고정 |
 | `list` | 노드 기반 연결 구조 | 불가 | O(1) | 위치를 알면 O(1) | 중간 삽입/삭제와 iterator 유지가 중요 |
 
-선택 흐름은 다음과 같다.
+선택 흐름은 다음과 같습니다.
 
 ```text
 순서 있는 데이터를 저장한다.
@@ -494,7 +494,7 @@ legacy_print(a.data(), a.size());
    -> std::list<T>
 ```
 
-실무와 시험 모두에서 가장 중요한 결론은 다음이다.
+실무와 시험 모두에서 가장 중요한 결론은 다음입니다.
 
 ```text
 특별한 이유가 없으면 vector가 기본 선택이다.
@@ -504,7 +504,7 @@ list는 임의 접근이 안 되고 캐시 효율도 낮으므로 실제 성능�
 
 ## 9. 이터레이터
 
-이터레이터(iterator)는 컨테이너의 원소를 가리키는 객체다. 포인터처럼 `*it`로 값을 읽고, `++it`로 다음 원소로 이동한다.
+이터레이터(iterator)는 컨테이너의 원소를 가리키는 객체입니다. 포인터처럼 `*it`로 값을 읽고, `++it`로 다음 원소로 이동합니다.
 
 ```cpp
 std::vector<int> v = {10, 20, 30, 40, 50};
@@ -516,13 +516,13 @@ std::vector<int>::iterator it = v.begin();
 *it;  // 20
 ```
 
-보통은 타입을 직접 쓰지 않고 `auto`를 사용한다.
+보통은 타입을 직접 쓰지 않고 `auto`를 사용합니다.
 
 ```cpp
 auto it = v.begin();
 ```
 
-`begin()`과 `end()`는 STL 순회의 기본이다.
+`begin()`과 `end()`는 STL 순회의 기본입니다.
 
 ```cpp
 std::vector<int> v = {10, 20, 30};
@@ -535,7 +535,7 @@ for (auto it = v.begin(); it != v.end(); ++it) {
 }
 ```
 
-`end()`는 마지막 원소가 아니다. **마지막 원소의 다음 위치**다.
+`end()`는 마지막 원소가 아닙니다. **마지막 원소의 다음 위치**입니다.
 
 ```text
 begin()          end()
@@ -543,7 +543,7 @@ begin()          end()
 [10 | 20 | 30 |  x]
 ```
 
-따라서 `*v.end()`는 잘못된 코드다. `end()`는 범위의 경계를 나타내는 sentinel 역할을 한다. 포인터에서 못 찾은 결과를 `nullptr`로 표현하듯, STL 알고리즘은 못 찾은 결과를 `end()`로 표현한다.
+따라서 `*v.end()`는 잘못된 코드입니다. `end()`는 범위의 경계를 나타내는 sentinel 역할을 합니다. 포인터에서 못 찾은 결과를 `nullptr`로 표현하듯, STL 알고리즘은 못 찾은 결과를 `end()`로 표현합니다.
 
 ```cpp
 auto it = std::find(v.begin(), v.end(), 99);
@@ -557,7 +557,7 @@ if (it != v.end()) {
 
 ## 10. 이터레이터 카테고리
 
-이터레이터는 지원하는 연산에 따라 카테고리가 나뉜다. 알고리즘이 어떤 iterator를 요구하는지 이해해야 컨테이너별 제약을 알 수 있다.
+이터레이터는 지원하는 연산에 따라 카테고리가 나뉩니다. 알고리즘이 어떤 iterator를 요구하는지 이해해야 컨테이너별 제약을 알 수 있습니다.
 
 | 카테고리 | 주요 연산 | 대표 예 |
 |---|---|---|
@@ -567,7 +567,7 @@ if (it != v.end()) {
 | Bidirectional | forward + `--` | `list`, `set`, `map` |
 | Random Access | bidirectional + `+n`, `-n`, `[]`, `<` | `vector`, `array`, `deque` |
 
-예를 들어 `vector` iterator는 random access iterator다.
+예를 들어 `vector` iterator는 random access iterator입니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
@@ -577,7 +577,7 @@ it += 3;
 std::cout << *it; // 4
 ```
 
-반면 `list` iterator는 bidirectional iterator다.
+반면 `list` iterator는 bidirectional iterator입니다.
 
 ```cpp
 std::list<int> lst = {1, 2, 3, 4, 5};
@@ -589,11 +589,11 @@ auto it = lst.begin();
 // it += 3; // 오류: list iterator는 random access가 아님
 ```
 
-이 차이 때문에 `std::sort`는 `vector`에는 사용할 수 있지만 `list`에는 사용할 수 없다.
+이 차이 때문에 `std::sort`는 `vector`에는 사용할 수 있지만 `list`에는 사용할 수 없습니다.
 
 ## 11. 범위 기반 for, const iterator, reverse iterator
 
-C++11부터는 범위 기반 `for`를 사용해 iterator를 직접 쓰지 않고도 순회할 수 있다.
+C++11부터는 범위 기반 `for`를 사용해 iterator를 직접 쓰지 않고도 순회할 수 있습니다.
 
 ```cpp
 std::vector<int> v = {10, 20, 30};
@@ -603,7 +603,7 @@ for (const auto& x : v) {
 }
 ```
 
-순회 방식은 세 가지로 구분해서 기억하면 좋다.
+순회 방식은 세 가지로 구분해서 기억하면 좋습니다.
 
 | 형태 | 의미 | 원본 수정 |
 |---|---|---|
@@ -611,9 +611,9 @@ for (const auto& x : v) {
 | `auto& x` | 참조로 순회 | 가능 |
 | `const auto& x` | 읽기 전용 참조로 순회 | 불가 |
 
-읽기만 할 때는 보통 `const auto&`가 좋다. 복사를 피하면서 원본을 바꾸지 않겠다는 의도도 드러난다.
+읽기만 할 때는 보통 `const auto&`가 좋습니다. 복사를 피하면서 원본을 바꾸지 않겠다는 의도도 드러납니다.
 
-iterator도 읽기 전용과 역방향 순회를 지원한다.
+iterator도 읽기 전용과 역방향 순회를 지원합니다.
 
 | 함수 | iterator 종류 | 방향 | 수정 가능 |
 |---|---|---|---|
@@ -633,7 +633,7 @@ for (auto it = v.rbegin(); it != v.rend(); ++it) {
 
 ## 12. `std::set`
 
-`std::set`은 **중복을 허용하지 않는 정렬 집합**이다. 원소를 넣으면 자동으로 정렬된 상태를 유지하고, 중복 삽입은 무시된다.
+`std::set`은 **중복을 허용하지 않는 정렬 집합**입니다. 원소를 넣으면 자동으로 정렬된 상태를 유지하고, 중복 삽입은 무시됩니다.
 
 ```cpp
 #include <set>
@@ -651,7 +651,7 @@ for (int x : s) {
 // 10 20 30
 ```
 
-검색과 삭제는 O(log n)이다.
+검색과 삭제는 O(log n)입니다.
 
 ```cpp
 std::set<int> s = {10, 20, 30, 40, 50};
@@ -665,9 +665,9 @@ s.count(30); // 있으면 1, 없으면 0
 s.erase(20);
 ```
 
-`std::find(s.begin(), s.end(), 30)`도 가능하지만, set에서는 `s.find(30)`을 쓰는 것이 좋다. `std::find`는 선형 탐색 O(n)이고, `set::find`는 트리 구조를 이용해 O(log n)에 찾는다.
+`std::find(s.begin(), s.end(), 30)`도 가능하지만, set에서는 `s.find(30)`을 쓰는 것이 좋습니다. `std::find`는 선형 탐색 O(n)이고, `set::find`는 트리 구조를 이용해 O(log n)에 찾습니다.
 
-set의 활용 패턴은 다음과 같다.
+set의 활용 패턴은 다음과 같습니다.
 
 ```cpp
 std::vector<int> data = {3, 1, 4, 1, 5, 9, 2, 6, 5};
@@ -677,7 +677,7 @@ std::vector<int> unique_data(s.begin(), s.end());
 // {1, 2, 3, 4, 5, 6, 9}
 ```
 
-방문 여부 확인에도 자주 사용한다.
+방문 여부 확인에도 자주 사용합니다.
 
 ```cpp
 std::set<int> visited;
@@ -692,7 +692,7 @@ if (visited.count(5)) {
 
 ## 13. `std::map`
 
-`std::map`은 **키(key)로 값(value)을 찾는 사전형 컨테이너**다. 배열이 정수 인덱스로 값을 찾는다면, map은 문자열, 정수, 객체 등 다양한 키로 값을 찾는다.
+`std::map`은 **키(key)로 값(value)을 찾는 사전형 컨테이너**입니다. 배열이 정수 인덱스로 값을 찾는다면, map은 문자열, 정수, 객체 등 다양한 키로 값을 찾습니다.
 
 ```cpp
 #include <map>
@@ -706,7 +706,7 @@ score["Bob"] = 88;
 std::cout << score["Alice"]; // 95
 ```
 
-`map`의 각 원소는 `std::pair<const Key, Value>` 형태로 저장된다.
+`map`의 각 원소는 `std::pair<const Key, Value>` 형태로 저장됩니다.
 
 ```cpp
 std::map<std::string, int> score = {
@@ -720,7 +720,7 @@ it->first;  // key
 it->second; // value
 ```
 
-순회할 때는 C++17 구조화 바인딩을 쓰면 읽기 쉽다.
+순회할 때는 C++17 구조화 바인딩을 쓰면 읽기 쉽습니다.
 
 ```cpp
 for (const auto& [name, s] : score) {
@@ -728,7 +728,7 @@ for (const auto& [name, s] : score) {
 }
 ```
 
-값을 수정하려면 참조로 받아야 한다.
+값을 수정하려면 참조로 받아야 합니다.
 
 ```cpp
 for (auto& [name, s] : score) {
@@ -738,7 +738,7 @@ for (auto& [name, s] : score) {
 
 ## 14. `map`의 삽입과 `[]` 주의점
 
-`map`에는 여러 삽입 방식이 있다.
+`map`에는 여러 삽입 방식이 있습니다.
 
 ```cpp
 std::map<std::string, int> m;
@@ -756,7 +756,7 @@ m.insert_or_assign("Alice", 100);
 | `insert_or_assign` | 갱신 | 삽입 |
 | `operator[]` | 갱신 | 기본값으로 삽입 |
 
-`[]`는 편리하지만 읽기에서 함정이 있다.
+`[]`는 편리하지만 읽기에서 함정이 있습니다.
 
 ```cpp
 std::map<std::string, int> m;
@@ -767,7 +767,7 @@ std::cout << m["Nobody"]; // 0 출력
 std::cout << m.size();    // Nobody가 추가되어 size 증가
 ```
 
-없는 키를 `[]`로 읽으면 기본값을 넣어버린다. 따라서 읽기에는 `at()` 또는 `find()`를 사용하는 것이 안전하다.
+없는 키를 `[]`로 읽으면 기본값을 넣어버립니다. 따라서 읽기에는 `at()` 또는 `find()`를 사용하는 것이 안전합니다.
 
 ```cpp
 std::map<std::string, int> m = {
@@ -789,7 +789,7 @@ if (it != m.end()) {
 
 ## 15. `map`의 범위 조회와 빈도 카운팅
 
-`map`은 키 순서로 정렬되어 있으므로 범위 조회가 가능하다.
+`map`은 키 순서로 정렬되어 있으므로 범위 조회가 가능합니다.
 
 ```cpp
 std::map<int, std::string> m = {
@@ -809,7 +809,7 @@ for (auto it = m.lower_bound(20);
 | `lower_bound(key)` | key 이상인 첫 iterator |
 | `upper_bound(key)` | key 초과인 첫 iterator |
 
-`map`의 대표 활용은 빈도 카운팅이다.
+`map`의 대표 활용은 빈도 카운팅입니다.
 
 ```cpp
 std::vector<std::string> words = {
@@ -826,18 +826,18 @@ for (const auto& w : words) {
 // apple: 3, banana: 2, cherry: 1
 ```
 
-이 경우에는 `freq[w]++`가 좋은 사용이다. 없는 단어는 자동으로 0으로 삽입된 뒤 1 증가하기 때문이다.
+이 경우에는 `freq[w]++`가 좋은 사용입니다. 없는 단어는 자동으로 0으로 삽입된 뒤 1 증가하기 때문입니다.
 
 ## 16. 연관 컨테이너 비교
 
-`set`과 `map`은 모두 연관 컨테이너다. 원소가 키 순서로 정렬되어 있고, 삽입/검색/삭제가 O(log n)이다.
+`set`과 `map`은 모두 연관 컨테이너입니다. 원소가 키 순서로 정렬되어 있고, 삽입/검색/삭제가 O(log n)입니다.
 
 | 컨테이너 | 중복 키 | `[]` 사용 | 주 용도 |
 |---|---|---|---|
 | `set<T>` | 불가 | 불가 | 중복 없는 집합, 존재 여부 확인 |
 | `map<K, V>` | 불가 | 가능 | 키-값 저장, 빠른 검색 |
 
-선택 기준은 다음과 같다.
+선택 기준은 다음과 같습니다.
 
 ```text
 중복 없는 원소 집합이 필요한가?
@@ -852,34 +852,34 @@ for (const auto& w : words) {
 
 ### 보충 해설: `set`과 `map`이 $$O(\log n)$$인 이유
 
-> **작성자 보충:** 원문의 “트리 기반, 키 순 정렬”과 삽입·검색·삭제 $$O(\log n)$$ 표기에 대한 유도다.
+> **작성자 보충:** 원문의 “트리 기반, 키 순 정렬”과 삽입·검색·삭제 $$O(\log n)$$ 표기에 대한 유도입니다.
 
-`set`과 `map`의 단일 키 연산은 정렬된 탐색 경로 하나만 따라간다. 표준의 로그 복잡도 보장을 균형 이진 탐색 트리로 해석하면, 높이가 $$O(\log n)$$이므로 비교 횟수도 같은 차수가 된다.
+`set`과 `map`의 단일 키 연산은 정렬된 탐색 경로 하나만 따라갑니다. 표준의 로그 복잡도 보장을 균형 이진 탐색 트리로 해석하면, 높이가 $$O(\log n)$$이므로 비교 횟수도 같은 차수가 됩니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Logarithmic lookup in ordered associative containers</summary>
 
-여기서 $$n$$은 컨테이너에 저장된 원소 수이며 단위는 `원소 개수`다. `std::set`과 `std::map`의 구현 자료구조 자체가 표준에 고정된 것은 아니지만, 단일 키의 `find`, `insert`, `erase(key)` 등은 로그 복잡도를 보장한다. 이를 전형적인 균형 이진 탐색 트리로 해석하면 높이 $$h(n)$$이 어떤 상수 $$a,b$$에 대해
+여기서 $$n$$은 컨테이너에 저장된 원소 수이며 단위는 `원소 개수`입니다. `std::set`과 `std::map`의 구현 자료구조 자체가 표준에 고정된 것은 아니지만, 단일 키의 `find`, `insert`, `erase(key)` 등은 로그 복잡도를 보장합니다. 이를 전형적인 균형 이진 탐색 트리로 해석하면 높이 $$h(n)$$이 어떤 상수 $$a,b$$에 대해
 
 $$
 h(n) \le a\log_2(n+1)+b
 $$
 
-로 제한된다. 한 레벨에서 비교 한 번 후 왼쪽 또는 오른쪽 한 경로만 따라가므로
+로 제한됩니다. 한 레벨에서 비교 한 번 후 왼쪽 또는 오른쪽 한 경로만 따라가므로
 
 $$
 T(n) \le c\,h(n)+d = O(\log n)
 $$
 
-이다. 삽입과 삭제도 탐색 경로를 찾은 뒤 균형을 복구하는 작업이 트리 높이에 비례하므로 같은 상한을 갖는다.
+입니다. 삽입과 삭제도 탐색 경로를 찾은 뒤 균형을 복구하는 작업이 트리 높이에 비례하므로 같은 상한을 갖습니다.
 
-이 유도는 **키 비교 한 번이 $$O(1)$$**이라고 가정한다. 문자열처럼 비교 비용이 키 길이 $$L$$에 따라 최악 $$O(L)$$이면 전체 비용은 최악 $$O(L\log n)$$이 될 수 있다. 비교 함수가 strict weak ordering을 만족하지 않으면 컨테이너의 정렬 전제가 깨진다. 또한 `erase(iterator)`처럼 별도 복잡도 보장을 가진 overload나 범위 연산을 단일 키 연산과 같은 $$O(\log n)$$으로 뭉뚱그리면 안 된다.
+이 유도는 **키 비교 한 번이 $$O(1)$$**이라고 가정합니다. 문자열처럼 비교 비용이 키 길이 $$L$$에 따라 최악 $$O(L)$$이면 전체 비용은 최악 $$O(L\log n)$$이 될 수 있습니다. 비교 함수가 strict weak ordering을 만족하지 않으면 컨테이너의 정렬 전제가 깨집니다. 또한 `erase(iterator)`처럼 별도 복잡도 보장을 가진 overload나 범위 연산을 단일 키 연산과 같은 $$O(\log n)$$으로 뭉뚱그리면 안 됩니다.
 
 </details>
 
 ## 17. STL 알고리즘의 공통 패턴
 
-STL 알고리즘은 컨테이너 자체가 아니라 **iterator 범위**를 받는다.
+STL 알고리즘은 컨테이너 자체가 아니라 **iterator 범위**를 받습니다.
 
 ```cpp
 std::sort(v.begin(), v.end());
@@ -887,7 +887,7 @@ std::find(v.begin(), v.end(), 30);
 std::count_if(v.begin(), v.end(), [](int x){ return x > 0; });
 ```
 
-이 패턴 덕분에 알고리즘은 컨테이너 종류와 분리된다. 다만 모든 알고리즘이 모든 iterator에서 동작하는 것은 아니다.
+이 패턴 덕분에 알고리즘은 컨테이너 종류와 분리됩니다. 다만 모든 알고리즘이 모든 iterator에서 동작하는 것은 아닙니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5};
@@ -899,7 +899,7 @@ std::sort(v.begin(), v.end()); // 가능
 l.sort(); // list 전용 정렬
 ```
 
-대표 알고리즘은 다음과 같다.
+대표 알고리즘은 다음과 같습니다.
 
 | 분류 | 대표 함수 | 헤더 |
 |---|---|---|
@@ -913,7 +913,7 @@ l.sort(); // list 전용 정렬
 
 ## 18. 검색 알고리즘
 
-`find`는 특정 값과 같은 첫 원소를 찾는다.
+`find`는 특정 값과 같은 첫 원소를 찾습니다.
 
 ```cpp
 std::vector<int> v = {10, 20, 30, 40, 50};
@@ -926,7 +926,7 @@ if (it != v.end()) {
 }
 ```
 
-`find_if`는 조건을 만족하는 첫 원소를 찾는다.
+`find_if`는 조건을 만족하는 첫 원소를 찾습니다.
 
 ```cpp
 auto it = std::find_if(v.begin(), v.end(),
@@ -935,7 +935,7 @@ auto it = std::find_if(v.begin(), v.end(),
 // *it == 30
 ```
 
-검색 계열의 차이는 다음과 같다.
+검색 계열의 차이는 다음과 같습니다.
 
 | 함수 | 반환 | 의미 |
 |---|---|---|
@@ -944,13 +944,13 @@ auto it = std::find_if(v.begin(), v.end(),
 | `find_if_not` | iterator | 조건을 만족하지 않는 첫 원소 |
 | `count` | 정수 | 특정 값의 개수 |
 | `count_if` | 정수 | 조건을 만족하는 원소 개수 |
-| `any_of` | bool | 하나라도 조건을 만족하는가 |
-| `all_of` | bool | 모두 조건을 만족하는가 |
-| `none_of` | bool | 아무도 조건을 만족하지 않는가 |
+| `any_of` | bool | 하나라도 조건을 만족합니까 |
+| `all_of` | bool | 모두 조건을 만족합니까 |
+| `none_of` | bool | 아무도 조건을 만족하지 않습니까 |
 
 ## 19. 정렬 알고리즘
 
-정렬 알고리즘은 모두 iterator 범위를 받는다. 가장 기본은 `std::sort`이며, 오름차순 정렬이 기본 동작이다.
+정렬 알고리즘은 모두 iterator 범위를 받습니다. 가장 기본은 `std::sort`이며, 오름차순 정렬이 기본 동작입니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
@@ -959,7 +959,7 @@ std::sort(v.begin(), v.end());
 // {1, 1, 2, 3, 4, 5, 6, 9}
 ```
 
-`sort`의 세 번째 인자로 비교 기준을 전달하면 정렬 방향이나 기준을 바꿀 수 있다.
+`sort`의 세 번째 인자로 비교 기준을 전달하면 정렬 방향이나 기준을 바꿀 수 있습니다.
 
 ```cpp
 std::sort(v.begin(), v.end(), std::greater<int>());
@@ -970,7 +970,7 @@ std::sort(v.begin(), v.end(),
 // 람다로 직접 내림차순 기준 전달
 ```
 
-비교 함수는 “앞 원소가 뒤 원소보다 먼저 와야 하는가?”를 `bool`로 반환한다.
+비교 함수는 “앞 원소가 뒤 원소보다 먼저 와야 하는가?”를 `bool`로 반환합니다.
 
 ```cpp
 [](int a, int b) {
@@ -978,9 +978,9 @@ std::sort(v.begin(), v.end(),
 }
 ```
 
-이 람다는 `a`가 `b`보다 앞에 와야 할 조건을 뜻한다. `a > b`이면 큰 값이 앞에 오므로 내림차순이 된다.
+이 람다는 `a`가 `b`보다 앞에 와야 할 조건을 뜻합니다. `a > b`이면 큰 값이 앞에 오므로 내림차순이 됩니다.
 
-`stable_sort`는 정렬 기준이 같은 원소들의 **기존 상대 순서**를 유지한다. 예를 들어 같은 점수의 학생들이 원래 `A`, `B` 순서였다면, 점수 기준 정렬 후에도 `A`, `B` 순서가 유지된다.
+`stable_sort`는 정렬 기준이 같은 원소들의 **기존 상대 순서**를 유지합니다. 예를 들어 같은 점수의 학생들이 원래 `A`, `B` 순서였다면, 점수 기준 정렬 후에도 `A`, `B` 순서가 유지됩니다.
 
 ```cpp
 struct Student {
@@ -1001,7 +1001,7 @@ std::stable_sort(students.begin(), students.end(),
 // 결과 순서: A(90), B(90), C(80)
 ```
 
-`partial_sort`는 전체를 정렬하지 않고, 앞쪽 N개만 정렬된 상태로 만든다. “상위 3개만 필요하다”처럼 전체 정렬이 낭비인 상황에 쓴다.
+`partial_sort`는 전체를 정렬하지 않고, 앞쪽 N개만 정렬된 상태로 만듭니다. “상위 3개만 필요하다”처럼 전체 정렬이 낭비인 상황에 씁니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
@@ -1013,7 +1013,7 @@ std::partial_sort(v.begin(), v.begin() + 3, v.end());
 // 나머지 뒤쪽 순서는 보장하지 않음
 ```
 
-`nth_element`는 n번째 위치에 들어갈 원소만 제자리로 보낸다. 전체 정렬이 아니라 “n번째 기준으로 왼쪽은 작거나 같고, 오른쪽은 크거나 같은 상태”를 만든다.
+`nth_element`는 n번째 위치에 들어갈 원소만 제자리로 보냅니다. 전체 정렬이 아니라 “n번째 기준으로 왼쪽은 작거나 같고, 오른쪽은 크거나 같은 상태”를 만듭니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
@@ -1026,7 +1026,7 @@ std::nth_element(v.begin(), v.begin() + 3, v.end());
 // 전체가 정렬된 것은 아님
 ```
 
-`is_sorted`는 범위가 이미 정렬되어 있는지 확인한다.
+`is_sorted`는 범위가 이미 정렬되어 있는지 확인합니다.
 
 ```cpp
 std::vector<int> a = {1, 2, 3, 4, 5};
@@ -1036,7 +1036,7 @@ std::is_sorted(a.begin(), a.end()); // true
 std::is_sorted(b.begin(), b.end()); // false
 ```
 
-정렬 계열은 이렇게 구분한다.
+정렬 계열은 이렇게 구분합니다.
 
 | 함수 | 결과 | 주 용도 |
 |---|---|---|
@@ -1048,7 +1048,7 @@ std::is_sorted(b.begin(), b.end()); // false
 
 ## 20. 변환 알고리즘
 
-`transform`은 각 원소에 함수를 적용해 결과를 저장한다.
+`transform`은 각 원소에 함수를 적용해 결과를 저장합니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
@@ -1061,7 +1061,7 @@ std::transform(v.begin(), v.end(),
 // result: {1, 4, 9, 16, 25}
 ```
 
-제자리 변환도 가능하다.
+제자리 변환도 가능합니다.
 
 ```cpp
 std::transform(v.begin(), v.end(),
@@ -1070,7 +1070,7 @@ std::transform(v.begin(), v.end(),
 // v: {2, 4, 6, 8, 10}
 ```
 
-두 범위를 함께 읽어서 새 결과를 만들 수도 있다.
+두 범위를 함께 읽어서 새 결과를 만들 수도 있습니다.
 
 ```cpp
 std::vector<int> a = {1, 2, 3};
@@ -1085,7 +1085,7 @@ std::transform(a.begin(), a.end(),
 // c: {5, 7, 9}
 ```
 
-`copy`는 범위를 그대로 복사한다. 이때 목적지에는 충분한 공간이 있어야 한다.
+`copy`는 범위를 그대로 복사합니다. 이때 목적지에는 충분한 공간이 있어야 합니다.
 
 ```cpp
 std::vector<int> src = {1, 2, 3, 4, 5};
@@ -1095,7 +1095,7 @@ std::copy(src.begin(), src.end(), dst.begin());
 // dst: {1, 2, 3, 4, 5}
 ```
 
-조건을 만족하는 원소만 복사할 때는 `copy_if`와 `back_inserter`를 자주 함께 쓴다. 조건을 만족하는 원소 개수를 미리 알기 어렵기 때문이다.
+조건을 만족하는 원소만 복사할 때는 `copy_if`와 `back_inserter`를 자주 함께 씁니다. 조건을 만족하는 원소 개수를 미리 알기 어렵기 때문입니다.
 
 ```cpp
 std::vector<int> src = {1, 2, 3, 4, 5};
@@ -1107,7 +1107,7 @@ std::copy_if(src.begin(), src.end(),
 // evens: {2, 4}
 ```
 
-`fill`은 이미 존재하는 범위를 같은 값으로 채운다.
+`fill`은 이미 존재하는 범위를 같은 값으로 채웁니다.
 
 ```cpp
 std::vector<int> dst(5);
@@ -1116,7 +1116,7 @@ std::fill(dst.begin(), dst.end(), 0);
 // dst: {0, 0, 0, 0, 0}
 ```
 
-`generate`는 함수를 호출한 결과로 범위를 채운다.
+`generate`는 함수를 호출한 결과로 범위를 채웁니다.
 
 ```cpp
 std::vector<int> dst(5);
@@ -1128,7 +1128,7 @@ std::generate(dst.begin(), dst.end(),
 // dst: {0, 1, 2, 3, 4}
 ```
 
-정리하면 다음과 같다.
+정리하면 다음과 같습니다.
 
 | 함수 | 역할 | 주의점 |
 |---|---|---|
@@ -1140,7 +1140,7 @@ std::generate(dst.begin(), dst.end(),
 
 ## 21. 제거와 중복 처리 알고리즘
 
-`remove`와 `unique`는 이름과 다르게 실제 컨테이너 크기를 줄이지 않는다.
+`remove`와 `unique`는 이름과 다르게 실제 컨테이너 크기를 줄이지 않습니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 2, 4, 2, 5};
@@ -1151,15 +1151,15 @@ v.erase(new_end, v.end());
 // {1, 3, 4, 5}
 ```
 
-보통은 한 줄로 쓴다.
+보통은 한 줄로 씁니다.
 
 ```cpp
 v.erase(std::remove(v.begin(), v.end(), 2), v.end());
 ```
 
-이것을 erase-remove 관용구라고 한다. `std::remove`는 지울 값을 뒤로 밀고, “남겨야 할 원소들의 끝”을 반환한다. 그래서 컨테이너 크기를 실제로 줄이는 작업은 `erase`가 맡는다.
+이것을 erase-remove 관용구라고 합니다. `std::remove`는 지울 값을 뒤로 밀고, “남겨야 할 원소들의 끝”을 반환합니다. 그래서 컨테이너 크기를 실제로 줄이는 작업은 `erase`가 맡습니다.
 
-`remove_if`는 조건으로 제거 대상을 정한다.
+`remove_if`는 조건으로 제거 대상을 정합니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5, 6};
@@ -1172,7 +1172,7 @@ v.erase(
 // v: {1, 3, 5}
 ```
 
-중복 제거는 `sort`와 `unique`를 조합한다.
+중복 제거는 `sort`와 `unique`를 조합합니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6, 5};
@@ -1182,7 +1182,7 @@ v.erase(std::unique(v.begin(), v.end()), v.end());
 // {1, 2, 3, 4, 5, 6, 9}
 ```
 
-`unique`는 **연속된 중복**만 처리한다. 따라서 전체 중복을 제거하려면 먼저 정렬해서 같은 값들이 붙어 있게 만든 뒤 `unique`를 적용한다.
+`unique`는 **연속된 중복**만 처리합니다. 따라서 전체 중복을 제거하려면 먼저 정렬해서 같은 값들이 붙어 있게 만든 뒤 `unique`를 적용합니다.
 
 | 함수 | 실제 삭제 여부 | 핵심 |
 |---|---|---|
@@ -1193,7 +1193,7 @@ v.erase(std::unique(v.begin(), v.end()), v.end());
 
 ## 22. 순회, 뒤집기, 이진 검색
 
-`for_each`는 각 원소에 동작을 적용한다. 단순 출력에도 쓸 수 있고, 참조 매개변수를 사용하면 원소 수정도 가능하다.
+`for_each`는 각 원소에 동작을 적용합니다. 단순 출력에도 쓸 수 있고, 참조 매개변수를 사용하면 원소 수정도 가능합니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
@@ -1207,7 +1207,7 @@ std::for_each(v.begin(), v.end(),
 // v: {2, 4, 6, 8, 10}
 ```
 
-`reverse`는 범위의 순서를 뒤집는다.
+`reverse`는 범위의 순서를 뒤집습니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
@@ -1220,7 +1220,7 @@ std::reverse(s.begin(), s.end());
 // s: "olleh"
 ```
 
-`binary_search`, `lower_bound`, `upper_bound`는 정렬된 범위에서만 올바르게 동작한다.
+`binary_search`, `lower_bound`, `upper_bound`는 정렬된 범위에서만 올바르게 동작합니다.
 
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1241,7 +1241,7 @@ auto ub = std::upper_bound(v.begin(), v.end(), 5);
 | `lower_bound` | iterator | key 이상인 첫 위치 |
 | `upper_bound` | iterator | key 초과인 첫 위치 |
 
-값이 없으면 `lower_bound`도 `end()`를 반환할 수 있다.
+값이 없으면 `lower_bound`도 `end()`를 반환할 수 있습니다.
 
 ```cpp
 auto it = std::lower_bound(v.begin(), v.end(), 99);
@@ -1253,14 +1253,14 @@ if (it == v.end()) {
 
 ### 보충 해설: 이진 검색의 절반 감소 점화식
 
-> **작성자 보충:** 원문의 정렬 전제와 $$O(\log n)$$ 표기를 후보 범위가 줄어드는 과정으로 유도한다.
+> **작성자 보충:** 원문의 정렬 전제와 $$O(\log n)$$ 표기를 후보 범위가 줄어드는 과정으로 유도합니다.
 
-이진 검색은 비교할 때마다 후보 구간의 절반을 버린다. 같은 comparator로 정렬된 범위라면 후보가 $$n$$개에서 1개 이하가 될 때까지 필요한 단계 수는 $$\lceil\log_2 n\rceil$$ 차수다.
+이진 검색은 비교할 때마다 후보 구간의 절반을 버립니다. 같은 comparator로 정렬된 범위라면 후보가 $$n$$개에서 1개 이하가 될 때까지 필요한 단계 수는 $$\lceil\log_2 n\rceil$$ 차수입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Why binary search needs logarithmic comparisons</summary>
 
-처음 후보 원소 수를 $$m_0=n$$이라 하자. 가운데 원소와 비교한 뒤 한쪽 절반만 남기므로 각 단계의 후보 수는
+처음 후보 원소 수를 $$m_0=n$$이라 하겠습니다. 가운데 원소와 비교한 뒤 한쪽 절반만 남기므로 각 단계의 후보 수는
 
 $$
 m_{t+1} \le \left\lceil \frac{m_t}{2} \right\rceil
@@ -1272,21 +1272,21 @@ $$
 m_t \le \left\lceil \frac{n}{2^t} \right\rceil
 $$
 
-이다. 후보가 1개 이하가 되려면 $$n/2^t \le 1$$이면 충분하므로
+입니다. 후보가 1개 이하가 되려면 $$n/2^t \le 1$$이면 충분하므로
 
 $$
 t \ge \lceil \log_2 n \rceil
 $$
 
-번의 단계가 필요하다. 비교 한 번의 비용을 상수로 보면 비교 횟수는 $$O(\log n)$$이다. $$n$$과 $$m_t$$의 단위는 `원소 개수`, $$t$$는 `비교 단계 수`이며 모두 무차원 정수다.
+번의 단계가 필요합니다. 비교 한 번의 비용을 상수로 보면 비교 횟수는 $$O(\log n)$$입니다. $$n$$과 $$m_t$$의 단위는 `원소 개수`, $$t$$는 `비교 단계 수`이며 모두 무차원 정수입니다.
 
-이 결론은 범위가 **같은 비교 기준으로 정렬 또는 partition**되어 있을 때만 올바르다. 정렬되지 않았거나 정렬에 쓴 comparator와 검색 comparator가 다르면 반환 결과를 신뢰할 수 없다. 또한 `vector`·`array` 같은 random-access 범위에서는 위치 이동도 빠르지만, forward iterator만 제공하는 범위에 `lower_bound`를 적용하면 비교 횟수는 로그여도 iterator 증가 횟수는 선형이 될 수 있다.
+이 결론은 범위가 **같은 비교 기준으로 정렬 또는 partition**되어 있을 때만 올바릅니다. 정렬되지 않았거나 정렬에 쓴 comparator와 검색 comparator가 다르면 반환 결과를 신뢰할 수 없습니다. 또한 `vector`·`array` 같은 random-access 범위에서는 위치 이동도 빠르지만, forward iterator만 제공하는 범위에 `lower_bound`를 적용하면 비교 횟수는 로그여도 iterator 증가 횟수는 선형이 될 수 있습니다.
 
 </details>
 
 ## 23. 집계 알고리즘
 
-`accumulate`는 범위를 하나의 값으로 접는다.
+`accumulate`는 범위를 하나의 값으로 접습니다.
 
 ```cpp
 #include <numeric>
@@ -1301,7 +1301,7 @@ int product = std::accumulate(v.begin(), v.end(), 1,
 // 120
 ```
 
-`accumulate`의 세 번째 인자는 **초기값**이다. 합계에서는 0, 곱에서는 1처럼 연산의 항등원을 넣어야 자연스럽다.
+`accumulate`의 세 번째 인자는 **초기값**입니다. 합계에서는 0, 곱에서는 1처럼 연산의 항등원을 넣어야 자연스럽습니다.
 
 ```cpp
 int wrong_product = std::accumulate(v.begin(), v.end(), 0,
@@ -1310,7 +1310,7 @@ int wrong_product = std::accumulate(v.begin(), v.end(), 0,
 // 0에서 곱하기 시작하므로 결과는 항상 0
 ```
 
-문자열 연결도 가능하다.
+문자열 연결도 가능합니다.
 
 ```cpp
 std::vector<std::string> words = {"C++", " ", "STL"};
@@ -1321,7 +1321,7 @@ std::string sentence = std::accumulate(
 // sentence == "C++ STL"
 ```
 
-최댓값과 최솟값은 iterator로 반환된다.
+최댓값과 최솟값은 iterator로 반환됩니다.
 
 ```cpp
 std::vector<int> v = {3, 1, 4, 1, 5, 9, 2, 6};
@@ -1334,7 +1334,7 @@ std::cout << (max_it - v.begin()); // 5
 std::cout << *min_it;              // 1
 ```
 
-최솟값과 최댓값을 한 번에 찾고 싶으면 `minmax_element`를 쓴다.
+최솟값과 최댓값을 한 번에 찾고 싶으면 `minmax_element`를 씁니다.
 
 ```cpp
 auto [lo, hi] = std::minmax_element(v.begin(), v.end());
@@ -1343,7 +1343,7 @@ std::cout << *lo << ", " << *hi;
 // 1, 9
 ```
 
-`iota`는 순차 값을 채운다.
+`iota`는 순차 값을 채웁니다.
 
 ```cpp
 std::vector<int> v(5);
@@ -1351,7 +1351,7 @@ std::iota(v.begin(), v.end(), 1);
 // {1, 2, 3, 4, 5}
 ```
 
-집계 계열은 다음처럼 정리할 수 있다.
+집계 계열은 다음처럼 정리할 수 있습니다.
 
 | 함수 | 반환 | 의미 |
 |---|---|---|
@@ -1363,9 +1363,9 @@ std::iota(v.begin(), v.end(), 1);
 
 ## 24. 함수 객체와 람다
 
-STL 알고리즘은 조건이나 동작을 함수처럼 받는다. 이때 함수 객체(functor)나 람다를 사용할 수 있다.
+STL 알고리즘은 조건이나 동작을 함수처럼 받습니다. 이때 함수 객체(functor)나 람다를 사용할 수 있습니다.
 
-함수 객체는 `operator()`를 정의한 객체다.
+함수 객체는 `operator()`를 정의한 객체입니다.
 
 ```cpp
 struct IsEven {
@@ -1380,7 +1380,7 @@ int cnt = std::count_if(v.begin(), v.end(), IsEven{});
 // 3
 ```
 
-상태를 가진 함수 객체도 만들 수 있다.
+상태를 가진 함수 객체도 만들 수 있습니다.
 
 ```cpp
 struct GreaterThan {
@@ -1397,7 +1397,7 @@ auto it = std::find_if(v.begin(), v.end(), GreaterThan{3});
 // *it == 4
 ```
 
-표준 라이브러리는 자주 쓰는 함수 객체를 `<functional>`에 제공한다.
+표준 라이브러리는 자주 쓰는 함수 객체를 `<functional>`에 제공합니다.
 
 ```cpp
 #include <functional>
@@ -1405,7 +1405,7 @@ auto it = std::find_if(v.begin(), v.end(), GreaterThan{3});
 std::sort(v.begin(), v.end(), std::greater<int>());
 ```
 
-람다는 이름 없는 함수 객체에 가깝다. 알고리즘 호출 위치에서 바로 조건을 정의할 수 있다.
+람다는 이름 없는 함수 객체에 가깝습니다. 알고리즘 호출 위치에서 바로 조건을 정의할 수 있습니다.
 
 ```cpp
 std::sort(v.begin(), v.end(),
@@ -1415,13 +1415,13 @@ auto it = std::find_if(v.begin(), v.end(),
     [](int x){ return x > 3; });
 ```
 
-람다 기본 문법은 다음과 같다.
+람다 기본 문법은 다음과 같습니다.
 
 ```cpp
 [캡처](매개변수) -> 반환타입 { 본문 }
 ```
 
-반환 타입은 생략할 수 있다.
+반환 타입은 생략할 수 있습니다.
 
 ```cpp
 [](int x){ return x * 2; }
@@ -1430,7 +1430,7 @@ auto it = std::find_if(v.begin(), v.end(),
 []{ return 42; }
 ```
 
-외부 변수를 쓰려면 캡처가 필요하다.
+외부 변수를 쓰려면 캡처가 필요합니다.
 
 ```cpp
 int threshold = 30;
@@ -1440,7 +1440,7 @@ auto it = std::find_if(v.begin(), v.end(),
     [threshold](int x){ return x > threshold; });
 ```
 
-캡처 방식은 다음처럼 구분한다.
+캡처 방식은 다음처럼 구분합니다.
 
 | 캡처 | 의미 |
 |---|---|
@@ -1454,9 +1454,9 @@ auto it = std::find_if(v.begin(), v.end(),
 
 ## 25. 알고리즘 조합 예제
 
-STL의 진짜 힘은 여러 알고리즘을 조합할 때 드러난다.
+STL의 진짜 힘은 여러 알고리즘을 조합할 때 드러납니다.
 
-입력은 이름과 점수를 가진 `Student` 배열이다. 처리는 점수 정렬, 조건 집계, 합계 누적, 상위 집합 복사 순서이며, 출력은 합격 인원·평균·90점 이상 명단이다. 각 algorithm은 원본 또는 출력 container의 어느 범위를 읽고 쓰는지 확인해야 한다.
+입력은 이름과 점수를 가진 `Student` 배열입니다. 처리는 점수 정렬, 조건 집계, 합계 누적, 상위 집합 복사 순서이며, 출력은 합격 인원·평균·90점 이상 명단입니다. 각 algorithm은 원본 또는 출력 container의 어느 범위를 읽고 쓰는지 확인해야 합니다.
 
 <details markdown="block">
 <summary markdown="span">Code Walkthrough: Sorting, aggregating, and filtering student records</summary>
@@ -1514,7 +1514,7 @@ int main() {
 
 </details>
 
-이 예제에는 STL의 핵심 패턴이 모두 들어 있다.
+이 예제에는 STL의 핵심 패턴이 모두 들어 있습니다.
 
 | 작업 | 사용한 기능 |
 |---|---|
@@ -1526,9 +1526,9 @@ int main() {
 
 ## 보충 해설: 원문 컨테이너 복잡도의 조건
 
-원문에서 강조한 주요 컨테이너 연산을 최악 비용과 상각 또는 평균 비용을 구분해 다시 적으면 다음과 같다. $$n$$은 현재 원소 수이며, 원소 한 개의 이동·비교·해시 비용이 상수라는 가정이다.
+원문에서 강조한 주요 컨테이너 연산을 최악 비용과 상각 또는 평균 비용을 구분해 다시 적으면 다음과 같습니다. $$n$$은 현재 원소 수이며, 원소 한 개의 이동·비교·해시 비용이 상수라는 가정입니다.
 
-본문에서 기억할 구분은 `worst`, `average`, `amortized`다. 특히 `vector::push_back`의 amortized $$O(1)$$은 모든 개별 호출이 상수 시간이라는 뜻이 아니고, 재할당이 발생한 한 호출은 $$O(n)$$일 수 있다.
+본문에서 기억할 구분은 `worst`, `average`, `amortized`입니다. 특히 `vector::push_back`의 amortized $$O(1)$$은 모든 개별 호출이 상수 시간이라는 뜻이 아니고, 재할당이 발생한 한 호출은 $$O(n)$$일 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Container complexity assumptions and amortized growth</summary>
@@ -1546,13 +1546,13 @@ int main() {
 
 ### `vector::push_back`의 amortized $$O(1)$$
 
-슬라이드 11–12의 $$O(1)$$, $$O(n)$$ 표기는 실행시간의 물리 단위가 아니라 입력 크기 $$n$$에 따른 연산 수의 점근적 상한이다. Capacity를 매번 일정 배수 $$g>1$$로 늘린다고 가정하면, $$N$$번의 `push_back` 동안 재할당 복사 수는
+슬라이드 11–12의 $$O(1)$$, $$O(n)$$ 표기는 실행시간의 물리 단위가 아니라 입력 크기 $$n$$에 따른 연산 수의 점근적 상한입니다. Capacity를 매번 일정 배수 $$g>1$$로 늘린다고 가정하면, $$N$$번의 `push_back` 동안 재할당 복사 수는
 
 $$
 1+g+g^2+\cdots+g^k < \frac{g}{g-1}N=O(N)
 $$
 
-이다. 일반 삽입 $$N$$회의 비용 $$N$$을 더해도 총 $$O(N)$$, 한 번당 평균은 amortized $$O(1)$$이다. 이는 **상각 분석**이며 개별 호출의 worst case는 재할당 때문에 $$O(n)$$이다. 성장 정책이 기하급수적이지 않거나 원소 이동 비용이 상수가 아니면 이 단순한 결론을 그대로 적용할 수 없다. 중간 삽입·삭제가 $$O(n)$$인 이유는 뒤쪽 최대 $$n$$개 원소를 이동해야 하기 때문이다.
+입니다. 일반 삽입 $$N$$회의 비용 $$N$$을 더해도 총 $$O(N)$$, 한 번당 평균은 amortized $$O(1)$$입니다. 이는 **상각 분석**이며 개별 호출의 worst case는 재할당 때문에 $$O(n)$$입니다. 성장 정책이 기하급수적이지 않거나 원소 이동 비용이 상수가 아니면 이 단순한 결론을 그대로 적용할 수 없습니다. 중간 삽입·삭제가 $$O(n)$$인 이유는 뒤쪽 최대 $$n$$개 원소를 이동해야 하기 때문입니다.
 
 </details>
 
@@ -1583,133 +1583,133 @@ $$
 
 ## Study Guide
 
-이 자료는 API를 전부 암기하는 방식보다 **선택 기준과 반복 패턴**을 먼저 잡는 것이 좋다.
+이 자료는 API를 전부 암기하는 방식보다 **선택 기준과 반복 패턴**을 먼저 잡는 것이 좋습니다.
 
-1. 먼저 `vector`, `list`, `array`의 메모리 구조와 시간 복잡도를 비교한다.
-2. 그다음 `begin()`과 `end()`가 `[first, last)` 범위를 만든다는 점을 익힌다.
-3. `find`, `sort`, `count_if`, `transform`, `accumulate`처럼 자주 쓰는 알고리즘을 같은 iterator 범위 패턴으로 읽는다.
-4. `sort`/`stable_sort`/`partial_sort`/`nth_element`의 결과 차이를 예제로 구분한다.
-5. `set::find`와 `std::find`의 차이, `map["key"]`의 자동 삽입, `remove`가 실제 삭제가 아니라는 점을 따로 표시해 둔다.
-6. `accumulate`의 초기값, `binary_search`의 정렬 전제, `copy_if`와 `back_inserter`의 조합은 시험에 바로 나오기 좋은 부분이다.
+1. 먼저 `vector`, `list`, `array`의 메모리 구조와 시간 복잡도를 비교합니다.
+2. 그다음 `begin()`과 `end()`가 `[first, last)` 범위를 만든다는 점을 익힙니다.
+3. `find`, `sort`, `count_if`, `transform`, `accumulate`처럼 자주 쓰는 알고리즘을 같은 iterator 범위 패턴으로 읽습니다.
+4. `sort`/`stable_sort`/`partial_sort`/`nth_element`의 결과 차이를 예제로 구분합니다.
+5. `set::find`와 `std::find`의 차이, `map["key"]`의 자동 삽입, `remove`가 실제 삭제가 아니라는 점을 따로 표시해 둡니다.
+6. `accumulate`의 초기값, `binary_search`의 정렬 전제, `copy_if`와 `back_inserter`의 조합은 시험에 바로 나오기 좋은 부분입니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. STL의 네 가지 구성 요소는 무엇인가?</summary>
+<summary>1. STL의 네 가지 구성 요소는 무엇입니까?</summary>
 
-답변: 컨테이너, 이터레이터, 알고리즘, 함수 객체/람다다. 컨테이너는 데이터를 저장하고, 이터레이터는 범위를 표현하며, 알고리즘은 그 범위에 연산을 적용한다. 함수 객체와 람다는 알고리즘에 정렬 기준이나 검색 조건 같은 동작을 전달한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. 특별한 이유가 없을 때 `vector`를 먼저 선택하는 이유는 무엇인가?</summary>
-
-답변: <code>vector</code>는 연속 메모리를 사용하므로 임의 접근이 O(1)이고 캐시 효율이 좋다. 뒤쪽 추가도 평균 O(1)이어서 대부분의 순차 데이터 처리에 적합하다. 중간 삽입과 삭제가 잦은 경우가 아니라면 기본 선택지로 충분하다.
+답변: 컨테이너, 이터레이터, 알고리즘, 함수 객체/람다입니다. 컨테이너는 데이터를 저장하고, 이터레이터는 범위를 표현하며, 알고리즘은 그 범위에 연산을 적용합니다. 함수 객체와 람다는 알고리즘에 정렬 기준이나 검색 조건 같은 동작을 전달합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. `reserve()`와 `resize()`의 차이는 무엇인가?</summary>
+<summary>2. 특별한 이유가 없을 때 `vector`를 먼저 선택하는 이유는 무엇입니까?</summary>
 
-답변: <code>reserve()</code>는 capacity만 미리 확보하고 실제 원소 개수인 size는 바꾸지 않는다. <code>resize()</code>는 실제 원소 개수를 바꾸며, 크기를 늘리면 새 원소를 생성하고 줄이면 뒤쪽 원소를 제거한다.
-
-</details>
-
-<details markdown="block">
-<summary>4. `end()`는 왜 마지막 원소가 아닌가?</summary>
-
-답변: STL 범위는 <code>[begin, end)</code> 형태로 표현된다. <code>begin()</code>은 첫 원소를 가리키고, <code>end()</code>는 마지막 원소의 다음 위치를 가리킨다. 따라서 반복문은 <code>it != end()</code>까지 순회하고, <code>*end()</code>는 미정의 동작이다.
+답변: <code>vector</code>는 연속 메모리를 사용하므로 임의 접근이 O(1)이고 캐시 효율이 좋습니다. 뒤쪽 추가도 평균 O(1)이어서 대부분의 순차 데이터 처리에 적합합니다. 중간 삽입과 삭제가 잦은 경우가 아니라면 기본 선택지로 충분합니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. `list`의 중간 삽입이 O(1)이라는 말은 항상 맞는가?</summary>
+<summary>3. `reserve()`와 `resize()`의 차이는 무엇입니까?</summary>
 
-답변: 위치를 이미 알고 있을 때만 맞다. <code>list</code>에서 iterator 위치가 주어지면 노드 포인터만 바꾸면 되므로 삽입과 삭제가 O(1)이다. 그러나 그 위치를 찾기 위해 처음부터 탐색해야 한다면 탐색 비용 O(n)이 추가된다.
-
-</details>
-
-<details markdown="block">
-<summary>6. 왜 `std::sort`를 `list`에 직접 사용할 수 없는가?</summary>
-
-답변: <code>std::sort</code>는 random access iterator가 필요하다. <code>vector</code>와 <code>array</code>는 random access iterator를 제공하지만, <code>list</code>는 bidirectional iterator만 제공한다. 그래서 <code>list</code>는 전용 멤버 함수인 <code>lst.sort()</code>를 사용한다.
+답변: <code>reserve()</code>는 capacity만 미리 확보하고 실제 원소 개수인 size는 바꾸지 않습니다. <code>resize()</code>는 실제 원소 개수를 바꾸며, 크기를 늘리면 새 원소를 생성하고 줄이면 뒤쪽 원소를 제거합니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. `set::find`와 `std::find`의 차이는 무엇인가?</summary>
+<summary>4. `end()`는 왜 마지막 원소가 아닙니까?</summary>
 
-답변: <code>std::find</code>는 iterator 범위를 앞에서부터 선형 탐색하므로 O(n)이다. 반면 <code>set::find</code>는 set 내부의 정렬 트리 구조를 이용하므로 O(log n)에 검색한다. set에서 특정 원소를 찾을 때는 보통 멤버 함수 <code>find</code>가 더 적절하다.
-
-</details>
-
-<details markdown="block">
-<summary>8. `map["Nobody"]`처럼 없는 키를 읽으면 어떤 일이 생기는가?</summary>
-
-답변: <code>operator[]</code>는 없는 키에 접근하면 해당 키를 기본값으로 삽입한다. 예를 들어 <code>std::map&lt;std::string, int&gt;</code>에서 없는 키를 읽으면 값 0이 들어간 원소가 새로 생길 수 있다. 읽기만 할 때는 <code>at()</code> 또는 <code>find()</code>를 사용하는 것이 안전하다.
+답변: STL 범위는 <code>[begin, end)</code> 형태로 표현됩니다. <code>begin()</code>은 첫 원소를 가리키고, <code>end()</code>는 마지막 원소의 다음 위치를 가리킵니다. 따라서 반복문은 <code>it != end()</code>까지 순회하고, <code>*end()</code>는 미정의 동작입니다.
 
 </details>
 
 <details markdown="block">
-<summary>9. `remove`를 호출했는데 왜 vector 크기가 줄지 않는가?</summary>
+<summary>5. `list`의 중간 삽입이 O(1)이라는 말은 항상 맞습니까?</summary>
 
-답변: <code>std::remove</code>는 원소를 실제로 삭제하지 않고, 남길 원소들을 앞쪽으로 모은 뒤 유효 범위의 끝 iterator를 반환한다. 컨테이너 크기를 줄이려면 반환된 iterator부터 <code>end()</code>까지 <code>erase</code>해야 한다. 이것이 erase-remove 관용구다.
-
-</details>
-
-<details markdown="block">
-<summary>10. `binary_search`와 `lower_bound`를 쓰기 전에 필요한 조건은 무엇인가?</summary>
-
-답변: 범위가 정렬되어 있어야 한다. 이진 검색 계열 알고리즘은 정렬된 범위를 전제로 O(log n)에 동작한다. 정렬되지 않은 데이터에 사용하면 결과가 올바르지 않을 수 있다.
+답변: 위치를 이미 알고 있을 때만 맞습니다. <code>list</code>에서 iterator 위치가 주어지면 노드 포인터만 바꾸면 되므로 삽입과 삭제가 O(1)입니다. 그러나 그 위치를 찾기 위해 처음부터 탐색해야 한다면 탐색 비용 O(n)이 추가됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>11. 람다의 캡처 리스트는 왜 필요한가?</summary>
+<summary>6. 왜 `std::sort`를 `list`에 직접 사용할 수 없습니까?</summary>
 
-답변: 람다 본문에서 바깥 지역 변수를 사용하려면 캡처 리스트에 명시해야 한다. <code>[x]</code>는 값을 복사하고, <code>[&x]</code>는 참조로 접근한다. 값 캡처는 람다 생성 시점의 값을 기억하고, 참조 캡처는 원본 변수의 현재 값을 사용하거나 수정할 수 있다.
-
-</details>
-
-<details markdown="block">
-<summary>12. `copy_if`에서 `back_inserter`를 쓰는 이유는 무엇인가?</summary>
-
-답변: 조건을 만족하는 원소 개수를 미리 모를 때 결과 vector의 크기를 정확히 준비하기 어렵다. <code>std::back_inserter</code>를 사용하면 알고리즘이 결과를 쓸 때마다 내부적으로 <code>push_back</code>을 호출하므로, 빈 vector에도 안전하게 원소를 추가할 수 있다.
+답변: <code>std::sort</code>는 random access iterator가 필요합니다. <code>vector</code>와 <code>array</code>는 random access iterator를 제공하지만, <code>list</code>는 bidirectional iterator만 제공합니다. 그래서 <code>list</code>는 전용 멤버 함수인 <code>lst.sort()</code>를 사용합니다.
 
 </details>
 
 <details markdown="block">
-<summary>13. `sort`와 `stable_sort`의 차이는 무엇인가?</summary>
+<summary>7. `set::find`와 `std::find`의 차이는 무엇입니까?</summary>
 
-답변: 둘 다 전체 범위를 정렬하지만, <code>sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 보장하지 않는다. <code>stable_sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 유지한다. 예를 들어 점수 90점인 A, B가 원래 A 다음 B 순서였다면, 점수 기준 안정 정렬 후에도 A, B 순서가 유지된다.
-
-</details>
-
-<details markdown="block">
-<summary>14. `partial_sort`와 `nth_element`는 전체 정렬과 어떻게 다른가?</summary>
-
-답변: <code>partial_sort</code>는 앞 N개만 정렬된 상태로 만들고, 뒤쪽 나머지 순서는 보장하지 않는다. <code>nth_element</code>는 n번째 위치에 들어갈 원소만 제자리로 보내며, 그 왼쪽은 n번째 원소 이하, 오른쪽은 n번째 원소 이상이 되게 한다. 둘 다 전체 정렬이 필요 없는 상황에서 비용을 줄이기 위해 사용한다.
+답변: <code>std::find</code>는 iterator 범위를 앞에서부터 선형 탐색하므로 O(n)입니다. 반면 <code>set::find</code>는 set 내부의 정렬 트리 구조를 이용하므로 O(log n)에 검색합니다. set에서 특정 원소를 찾을 때는 보통 멤버 함수 <code>find</code>가 더 적절합니다.
 
 </details>
 
 <details markdown="block">
-<summary>15. `accumulate`에서 초기값이 중요한 이유는 무엇인가?</summary>
+<summary>8. `map["Nobody"]`처럼 없는 키를 읽으면 어떤 일이 생깁니까?</summary>
 
-답변: <code>accumulate</code>는 세 번째 인자인 초기값에서 누적을 시작한다. 합계는 0에서 시작하는 것이 자연스럽지만, 곱은 1에서 시작해야 한다. 곱셈 누적의 초기값을 0으로 두면 이후 어떤 값을 곱해도 결과가 계속 0이 된다.
-
-</details>
-
-<details markdown="block">
-<summary>16. `transform`, `fill`, `generate`는 각각 언제 쓰는가?</summary>
-
-답변: <code>transform</code>은 각 원소에 함수를 적용해 변환 결과를 저장할 때 쓴다. <code>fill</code>은 이미 존재하는 범위를 같은 값으로 채울 때 쓴다. <code>generate</code>는 함수를 매번 호출한 결과로 범위를 채울 때 쓰며, 람다 캡처를 이용해 0, 1, 2처럼 상태가 변하는 값을 만들 수 있다.
+답변: <code>operator[]</code>는 없는 키에 접근하면 해당 키를 기본값으로 삽입합니다. 예를 들어 <code>std::map&lt;std::string, int&gt;</code>에서 없는 키를 읽으면 값 0이 들어간 원소가 새로 생길 수 있습니다. 읽기만 할 때는 <code>at()</code> 또는 <code>find()</code>를 사용하는 것이 안전합니다.
 
 </details>
 
 <details markdown="block">
-<summary>17. `binary_search`, `lower_bound`, `upper_bound`의 공통 전제는 무엇인가?</summary>
+<summary>9. `remove`를 호출했는데 왜 vector 크기가 줄지 않습니까?</summary>
 
-답변: 세 함수 모두 정렬된 범위에서만 올바르게 동작한다. <code>binary_search</code>는 값의 존재 여부를 bool로 반환하고, <code>lower_bound</code>는 key 이상인 첫 위치, <code>upper_bound</code>는 key 초과인 첫 위치를 iterator로 반환한다.
+답변: <code>std::remove</code>는 원소를 실제로 삭제하지 않고, 남길 원소들을 앞쪽으로 모은 뒤 유효 범위의 끝 iterator를 반환합니다. 컨테이너 크기를 줄이려면 반환된 iterator부터 <code>end()</code>까지 <code>erase</code>해야 합니다. 이것이 erase-remove 관용구입니다.
+
+</details>
+
+<details markdown="block">
+<summary>10. `binary_search`와 `lower_bound`를 쓰기 전에 필요한 조건은 무엇입니까?</summary>
+
+답변: 범위가 정렬되어 있어야 합니다. 이진 검색 계열 알고리즘은 정렬된 범위를 전제로 O(log n)에 동작합니다. 정렬되지 않은 데이터에 사용하면 결과가 올바르지 않을 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>11. 람다의 캡처 리스트는 왜 필요합니까?</summary>
+
+답변: 람다 본문에서 바깥 지역 변수를 사용하려면 캡처 리스트에 명시해야 합니다. <code>[x]</code>는 값을 복사하고, <code>[&x]</code>는 참조로 접근합니다. 값 캡처는 람다 생성 시점의 값을 기억하고, 참조 캡처는 원본 변수의 현재 값을 사용하거나 수정할 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>12. `copy_if`에서 `back_inserter`를 쓰는 이유는 무엇입니까?</summary>
+
+답변: 조건을 만족하는 원소 개수를 미리 모를 때 결과 vector의 크기를 정확히 준비하기 어렵습니다. <code>std::back_inserter</code>를 사용하면 알고리즘이 결과를 쓸 때마다 내부적으로 <code>push_back</code>을 호출하므로, 빈 vector에도 안전하게 원소를 추가할 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>13. `sort`와 `stable_sort`의 차이는 무엇입니까?</summary>
+
+답변: 둘 다 전체 범위를 정렬하지만, <code>sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 보장하지 않습니다. <code>stable_sort</code>는 같은 기준값을 가진 원소들의 기존 상대 순서를 유지합니다. 예를 들어 점수 90점인 A, B가 원래 A 다음 B 순서였다면, 점수 기준 안정 정렬 후에도 A, B 순서가 유지됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>14. `partial_sort`와 `nth_element`는 전체 정렬과 어떻게 다릅니까?</summary>
+
+답변: <code>partial_sort</code>는 앞 N개만 정렬된 상태로 만들고, 뒤쪽 나머지 순서는 보장하지 않습니다. <code>nth_element</code>는 n번째 위치에 들어갈 원소만 제자리로 보내며, 그 왼쪽은 n번째 원소 이하, 오른쪽은 n번째 원소 이상이 되게 합니다. 둘 다 전체 정렬이 필요 없는 상황에서 비용을 줄이기 위해 사용합니다.
+
+</details>
+
+<details markdown="block">
+<summary>15. `accumulate`에서 초기값이 중요한 이유는 무엇입니까?</summary>
+
+답변: <code>accumulate</code>는 세 번째 인자인 초기값에서 누적을 시작합니다. 합계는 0에서 시작하는 것이 자연스럽지만, 곱은 1에서 시작해야 합니다. 곱셈 누적의 초기값을 0으로 두면 이후 어떤 값을 곱해도 결과가 계속 0이 됩니다.
+
+</details>
+
+<details markdown="block">
+<summary>16. `transform`, `fill`, `generate`는 각각 언제 씁니까?</summary>
+
+답변: <code>transform</code>은 각 원소에 함수를 적용해 변환 결과를 저장할 때 씁니다. <code>fill</code>은 이미 존재하는 범위를 같은 값으로 채울 때 씁니다. <code>generate</code>는 함수를 매번 호출한 결과로 범위를 채울 때 쓰며, 람다 캡처를 이용해 0, 1, 2처럼 상태가 변하는 값을 만들 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>17. `binary_search`, `lower_bound`, `upper_bound`의 공통 전제는 무엇입니까?</summary>
+
+답변: 세 함수 모두 정렬된 범위에서만 올바르게 동작합니다. <code>binary_search</code>는 값의 존재 여부를 bool로 반환하고, <code>lower_bound</code>는 key 이상인 첫 위치, <code>upper_bound</code>는 key 초과인 첫 위치를 iterator로 반환합니다.
 
 </details>
 

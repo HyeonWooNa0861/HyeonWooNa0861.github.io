@@ -91,11 +91,11 @@ Source Pages:
 | `Smart Pointer, RAII, Reference Counting.pdf` | 1–7 | ownership, reference counting, JVM GC 비교 | count 증감과 0에서 파괴는 상태 전이 규칙; 일반 수학 증명 대상이 아님 |
 | `stdin, stdout, stderr, File Descriptor.pdf` | 1–12 | 표준 I/O, buffer, fd, redirect 실험 | fd 번호·buffer 예제는 운영체제/API 의미; 정량 모델 없음 |
 
-강의 PDF 16개 343쪽과 과제 PDF 4개 46쪽, 합계 389쪽을 페이지 이미지로 대조했다. 종합 글에서는 수식을 중복 전개하지 않고 정확한 원문 페이지와 상세 유도가 있는 하위 글을 연결했다. 단, 과제의 유리수 사칙연산과 gcd 정규화는 이 글의 핵심 구현에 직접 쓰이므로 아래에서 완전한 식과 실패 조건을 유지한다.
+강의 PDF 16개 343쪽과 과제 PDF 4개 46쪽, 합계 389쪽을 페이지 이미지로 대조했습니다. 종합 글에서는 수식을 중복 전개하지 않고 정확한 원문 페이지와 상세 유도가 있는 하위 글을 연결했습니다. 단, 과제의 유리수 사칙연산과 gcd 정규화는 이 글의 핵심 구현에 직접 쓰이므로 아래에서 완전한 식과 실패 조건을 유지합니다.
 
 </details>
 
-> **핵심:** C++ 객체는 데이터와 동작뿐 아니라 생성·소멸 시점도 함께 설계한다. RAII는 자원의 획득과 해제를 객체 수명에 연결해 누락과 중복 해제를 줄인다.
+> **핵심:** C++ 객체는 데이터와 동작뿐 아니라 생성·소멸 시점도 함께 설계합니다. RAII는 자원의 획득과 해제를 객체 수명에 연결해 누락과 중복 해제를 줄입니다.
 
 ## 전체 흐름
 
@@ -124,51 +124,51 @@ Source Pages:
 
 <a href="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/c-programming-basics-page-22.png" | relative_url }}" alt="변수 x의 주소를 저장하는 포인터 p의 원본 강의 그림" loading="lazy"></a>
 
-`p`에는 `x`의 주소가, `*p`에는 그 주소의 값이 보인다. `*p=100`은 `x`를 바꾼다. [포인터 기초]({{ "/study/cpp/c-programming-basics/" | relative_url }}#11-포인터-기초)와 <a href="{{ "/assets/pdfs/study/cpp/C 프로그래밍 소개.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 p. 22</a>에서 이어서 확인한다.
+`p`에는 `x`의 주소가, `*p`에는 그 주소의 값이 보입니다. `*p=100`은 `x`를 바꿉니다. [포인터 기초]({{ "/study/cpp/c-programming-basics/" | relative_url }}#11-포인터-기초)와 <a href="{{ "/assets/pdfs/study/cpp/C 프로그래밍 소개.pdf#page=22" | relative_url }}" target="_blank" rel="noopener">원문 p. 22</a>에서 이어서 확인합니다.
 
 #### Ownership
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-pointer-memory-page-20.png" | relative_url }}" alt="ownership 조건에 따른 스마트 포인터 선택 가이드" loading="lazy"></a>
 
-단독 소유, 공동 소유, 순환 참조, C 자원 순으로 선택이 갈린다. [스마트 포인터 선택]({{ "/study/cpp/cpp-pointer-memory/" | relative_url }}#19-선택-가이드)과 <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 p. 20</a>에서 이어서 확인한다.
+단독 소유, 공동 소유, 순환 참조, C 자원 순으로 선택이 갈립니다. [스마트 포인터 선택]({{ "/study/cpp/cpp-pointer-memory/" | relative_url }}#19-선택-가이드)과 <a href="{{ "/assets/pdfs/study/cpp/(심화) C++ 포인터.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 p. 20</a>에서 이어서 확인합니다.
 
 #### 동적 dispatch
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-function-pointer-page-14.png" | relative_url }}" alt="수동 함수 포인터 table과 compiler 생성 vtable 비교" loading="lazy"></a>
 
-수동 table과 vtable 모두 함수 주소를 간접 호출하지만, vtable은 type과 상속 관계에 통합된다. [함수 포인터와 vtable]({{ "/study/cpp/cpp-function-pointer/" | relative_url }}#14-함수-포인터와-vtable)과 <a href="{{ "/assets/pdfs/study/cpp/C++ 함수포인터.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 p. 14</a>에서 이어서 확인한다.
+수동 table과 vtable 모두 함수 주소를 간접 호출하지만, vtable은 type과 상속 관계에 통합됩니다. [함수 포인터와 vtable]({{ "/study/cpp/cpp-function-pointer/" | relative_url }}#14-함수-포인터와-vtable)과 <a href="{{ "/assets/pdfs/study/cpp/C++ 함수포인터.pdf#page=14" | relative_url }}" target="_blank" rel="noopener">원문 p. 14</a>에서 이어서 확인합니다.
 
 #### 연속 저장소
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-stl-page-12.png" | relative_url }}" alt="vector의 size capacity reserve resize 원본 강의 예시" loading="lazy"></a>
 
-`size`는 원소 수, `capacity`는 확보 공간이다. capacity 초과 재할당은 기존 pointer와 iterator를 무효화할 수 있다. [vector 공간 관리]({{ "/study/cpp/cpp-stl/" | relative_url }}#5-size-capacity-reserve-resize)와 <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 p. 12</a>에서 이어서 확인한다.
+`size`는 원소 수, `capacity`는 확보 공간입니다. capacity 초과 재할당은 기존 pointer와 iterator를 무효화할 수 있습니다. [vector 공간 관리]({{ "/study/cpp/cpp-stl/" | relative_url }}#5-size-capacity-reserve-resize)와 <a href="{{ "/assets/pdfs/study/cpp/C++ STL.pdf#page=12" | relative_url }}" target="_blank" rel="noopener">원문 p. 12</a>에서 이어서 확인합니다.
 
-총정리는 개별 글에서 판독한 같은 원본 그림을 재사용한다. 코드를 외우기 전에 그림에서 주소, 소유권, 호출 table, 저장소 재할당 관계를 먼저 추적하고, 상세 코드는 연결된 단원에서 확인한다.
+총정리는 개별 글에서 판독한 같은 원본 그림을 재사용합니다. 코드를 외우기 전에 그림에서 주소, 소유권, 호출 table, 저장소 재할당 관계를 먼저 추적하고, 상세 코드는 연결된 단원에서 확인합니다.
 
 ## 1. 시험 직전 큰 지도
 
-C++ 기말 범위는 작은 문법을 따로 외우는 시험이라기보다, **타입과 메모리, 객체 수명, 함수 호출 방식, STL 패턴을 연결해서 설명하는 시험**으로 보는 것이 좋다.
+C++ 기말 범위는 작은 문법을 따로 외우는 시험이라기보다, **타입과 메모리, 객체 수명, 함수 호출 방식, STL 패턴을 연결해서 설명하는 시험**으로 보는 것이 좋습니다.
 
-가장 큰 줄기는 다음 네 가지다.
+가장 큰 줄기는 다음 네 가지입니다.
 
 | 축 | 질문 | 연결되는 단원 |
 |---|---|---|
-| 메모리 | 이 객체나 값은 어디에 저장되고 누가 해제하는가? | 포인터, 동적 할당, smart pointer, stack/heap |
-| 타입 | 이 문법에서 실제 타입은 무엇이고 어떤 변환이 일어나는가? | 참조, const, enum class, template, STL |
-| 호출 | 이 코드는 어떤 함수 호출로 해석되는가? | 함수 포인터, operator overload, virtual function, lambda |
-| 범위 | 이 반복/탐색은 어디서 시작해 어디 직전까지 처리하는가? | iterator, STL algorithm, erase-remove |
+| 메모리 | 이 객체나 값은 어디에 저장되고 누가 해제합니까? | 포인터, 동적 할당, smart pointer, stack/heap |
+| 타입 | 이 문법에서 실제 타입은 무엇이고 어떤 변환이 일어납니까? | 참조, const, enum class, template, STL |
+| 호출 | 이 코드는 어떤 함수 호출로 해석됩니까? | 함수 포인터, operator overload, virtual function, lambda |
+| 범위 | 이 반복/탐색은 어디서 시작해 어디 직전까지 처리합니까? | iterator, STL algorithm, erase-remove |
 
-시험장에서 코드를 볼 때는 다음 순서로 읽는다.
+시험장에서 코드를 볼 때는 다음 순서로 읽습니다.
 
-1. 객체가 만들어지는 지점과 사라지는 지점을 찾는다.
-2. 포인터인지 참조인지 값 복사인지 확인한다.
-3. 함수 호출이 일반 함수, 멤버 함수, 연산자 함수, 가상 함수, 템플릿 인스턴스 중 무엇인지 본다.
-4. STL 코드라면 `begin()`과 `end()` 범위, 반환 iterator, size 변화 여부를 확인한다.
+1. 객체가 만들어지는 지점과 사라지는 지점을 찾습니다.
+2. 포인터인지 참조인지 값 복사인지 확인합니다.
+3. 함수 호출이 일반 함수, 멤버 함수, 연산자 함수, 가상 함수, 템플릿 인스턴스 중 무엇인지 봅니다.
+4. STL 코드라면 `begin()`과 `end()` 범위, 반환 iterator, size 변화 여부를 확인합니다.
 
 ## 2. C와 C++ 기본 문법
 
-C는 절차적 언어에 가깝고, C++은 C 문법을 기반으로 객체지향, 제네릭 프로그래밍, RAII를 추가한 언어다.
+C는 절차적 언어에 가깝고, C++은 C 문법을 기반으로 객체지향, 제네릭 프로그래밍, RAII를 추가한 언어입니다.
 
 | 구분 | C | C++ |
 |---|---|---|
@@ -178,7 +178,7 @@ C는 절차적 언어에 가깝고, C++은 C 문법을 기반으로 객체지향
 | 사용자 정의 타입 | `struct` 중심 | `class`, 생성자, 소멸자, 접근 지정자 |
 | 코드 재사용 | 함수, 매크로 | 함수, 클래스, 상속, 템플릿 |
 
-기본 C 프로그램은 다음 요소를 가진다.
+기본 C 프로그램은 다음 요소를 가집니다.
 
 ```cpp
 #include <stdio.h>
@@ -190,7 +190,7 @@ int main() {
 }
 ```
 
-C++에서는 다음처럼 쓸 수 있다.
+C++에서는 다음처럼 쓸 수 있습니다.
 
 ```cpp
 #include <iostream>
@@ -202,17 +202,17 @@ int main() {
 }
 ```
 
-컴파일 관점에서는 전처리, 컴파일, 링크의 흐름을 기억한다.
+컴파일 관점에서는 전처리, 컴파일, 링크의 흐름을 기억합니다.
 
 ```text
 source file -> preprocessing -> compilation -> object file -> linking -> executable
 ```
 
-헤더에는 선언을 두고, `.cpp`에는 구현을 두는 방식이 일반적이다. 다만 템플릿은 예외적으로 정의를 헤더에 두는 경우가 많다. 컴파일러가 템플릿에 실제 타입을 넣어 코드를 생성하려면 정의를 볼 수 있어야 하기 때문이다.
+헤더에는 선언을 두고, `.cpp`에는 구현을 두는 방식이 일반적입니다. 다만 템플릿은 예외적으로 정의를 헤더에 두는 경우가 많습니다. 컴파일러가 템플릿에 실제 타입을 넣어 코드를 생성하려면 정의를 볼 수 있어야 하기 때문입니다.
 
 ## 3. 메모리 영역과 동적 할당
 
-프로그램 메모리는 보통 Code, Data, Stack, Heap 영역으로 설명한다.
+프로그램 메모리는 보통 Code, Data, Stack, Heap 영역으로 설명합니다.
 
 | 영역 | 저장 내용 | 수명 |
 |---|---|---|
@@ -221,7 +221,7 @@ source file -> preprocessing -> compilation -> object file -> linking -> executa
 | Stack | 지역 변수, 매개변수, 반환 주소 | 함수 호출 동안 |
 | Heap | 동적 할당 객체 | 직접 해제하거나 소유 객체가 해제할 때까지 |
 
-Stack은 함수 호출과 함께 자동으로 관리된다.
+Stack은 함수 호출과 함께 자동으로 관리됩니다.
 
 ```cpp
 void f() {
@@ -229,21 +229,21 @@ void f() {
 }
 ```
 
-Heap은 실행 중 필요한 크기를 동적으로 확보한다.
+Heap은 실행 중 필요한 크기를 동적으로 확보합니다.
 
 ```cpp
 int* p = new int(10);
 delete p;
 ```
 
-C 방식 동적 할당은 다음과 같다.
+C 방식 동적 할당은 다음과 같습니다.
 
 ```cpp
 int* p = (int*)malloc(sizeof(int) * 5);
 free(p);
 ```
 
-`malloc/free`와 `new/delete`의 핵심 차이는 생성자/소멸자 호출 여부다.
+`malloc/free`와 `new/delete`의 핵심 차이는 생성자/소멸자 호출 여부입니다.
 
 | 구분 | `malloc/free` | `new/delete` |
 |---|---|---|
@@ -253,11 +253,11 @@ free(p);
 | 소멸자 | 호출 안 함 | 호출함 |
 | 실패 처리 | `nullptr` 가능 | 기본적으로 예외 |
 
-객체를 다룰 때는 `new/delete`가 C++스럽고, 더 좋은 방향은 smart pointer와 RAII를 쓰는 것이다.
+객체를 다룰 때는 `new/delete`가 C++스럽고, 더 좋은 방향은 smart pointer와 RAII를 쓰는 것입니다.
 
 ## 4. RAII와 smart pointer
 
-RAII(Resource Acquisition Is Initialization)는 **자원 획득을 객체 초기화에 묶고, 자원 해제를 객체 소멸자에 맡기는 방식**이다.
+RAII(Resource Acquisition Is Initialization)는 **자원 획득을 객체 초기화에 묶고, 자원 해제를 객체 소멸자에 맡기는 방식**입니다.
 
 ```cpp
 {
@@ -265,7 +265,7 @@ RAII(Resource Acquisition Is Initialization)는 **자원 획득을 객체 초기
 } // scope 종료 시 자동 해제
 ```
 
-스마트 포인터 선택 기준은 다음과 같다.
+스마트 포인터 선택 기준은 다음과 같습니다.
 
 | 포인터 | 소유권 | 복사 | 대표 상황 |
 |---|---|---|---|
@@ -273,18 +273,18 @@ RAII(Resource Acquisition Is Initialization)는 **자원 획득을 객체 초기
 | `std::shared_ptr` | 공유 소유 | 가능 | 여러 객체가 같은 자원 공유 |
 | `std::weak_ptr` | 비소유 관찰 | 가능 | `shared_ptr` 순환 참조 방지 |
 
-`shared_ptr`는 reference counting으로 수명을 관리한다. 마지막 `shared_ptr`가 사라질 때 객체가 해제된다.
+`shared_ptr`는 reference counting으로 수명을 관리합니다. 마지막 `shared_ptr`가 사라질 때 객체가 해제됩니다.
 
 ```cpp
 auto p1 = std::make_shared<int>(10);
 auto p2 = p1; // reference count 증가
 ```
 
-하지만 서로가 서로를 `shared_ptr`로 잡으면 reference count가 0이 되지 않는 순환 참조가 생긴다. 이때 한쪽 연결을 `weak_ptr`로 바꾸면 소유권 순환을 끊을 수 있다.
+하지만 서로가 서로를 `shared_ptr`로 잡으면 reference count가 0이 되지 않는 순환 참조가 생깁니다. 이때 한쪽 연결을 `weak_ptr`로 바꾸면 소유권 순환을 끊을 수 있습니다.
 
 ## 5. 포인터, 참조, const
 
-포인터는 주소를 저장하는 변수이고, 참조는 기존 객체의 별칭이다.
+포인터는 주소를 저장하는 변수이고, 참조는 기존 객체의 별칭입니다.
 
 | 구분 | 포인터 | 참조 |
 |---|---|---|
@@ -293,7 +293,7 @@ auto p2 = p1; // reference count 증가
 | 사용 문법 | `*p`, `p->x` | 원래 변수처럼 사용 |
 | 의미 | 대상을 가리킴 | 대상의 별칭 |
 
-함수 인자 전달은 세 가지로 비교한다.
+함수 인자 전달은 세 가지로 비교합니다.
 
 ```cpp
 void byValue(Student s);          // 복사
@@ -302,7 +302,7 @@ void byReference(Student& s);     // 별칭 전달, null 없음
 void readOnly(const Student& s);  // 복사 없이 읽기 전용
 ```
 
-큰 객체를 읽기만 할 때는 `const T&`가 자주 쓰인다.
+큰 객체를 읽기만 할 때는 `const T&`가 자주 쓰입니다.
 
 ```cpp
 void printStudent(const Student& s) {
@@ -310,7 +310,7 @@ void printStudent(const Student& s) {
 }
 ```
 
-`const` 포인터 문법은 위치로 읽는다.
+`const` 포인터 문법은 위치로 읽습니다.
 
 | 형태 | 의미 |
 |---|---|
@@ -320,14 +320,14 @@ void printStudent(const Student& s) {
 
 ## 6. 구조체와 클래스
 
-C의 `struct`는 데이터를 묶는 데 주로 쓰지만, C++의 `struct`와 `class`는 멤버 함수, 생성자, 소멸자도 가질 수 있다. 차이는 기본 접근 지정자다.
+C의 `struct`는 데이터를 묶는 데 주로 쓰지만, C++의 `struct`와 `class`는 멤버 함수, 생성자, 소멸자도 가질 수 있습니다. 차이는 기본 접근 지정자입니다.
 
 | 구분 | 기본 접근 |
 |---|---|
 | `struct` | `public` |
 | `class` | `private` |
 
-클래스는 데이터를 감추고 public interface를 통해 접근하게 만든다.
+클래스는 데이터를 감추고 public interface를 통해 접근하게 만듭니다.
 
 ```cpp
 class Student {
@@ -345,27 +345,27 @@ public:
 };
 ```
 
-생성자 초기화 리스트는 멤버를 생성 시점에 초기화한다.
+생성자 초기화 리스트는 멤버를 생성 시점에 초기화합니다.
 
 ```cpp
 Student(int age, std::string name)
     : age(age), name(std::move(name)) {}
 ```
 
-중요한 점은 **초기화 순서는 초기화 리스트에 적은 순서가 아니라, 클래스 안에 멤버가 선언된 순서**라는 것이다.
+중요한 점은 **초기화 순서는 초기화 리스트에 적은 순서가 아니라, 클래스 안에 멤버가 선언된 순서**라는 것입니다.
 
 ## 7. 복사 생성자와 복사 대입
 
-객체 복사 상황은 두 가지다.
+객체 복사 상황은 두 가지입니다.
 
 | 상황 | 예 | 호출 |
 |---|---|---|
 | 새 객체를 기존 객체로 생성 | `Student b = a;` | 복사 생성자 |
 | 이미 있는 객체에 대입 | `b = a;` | 복사 대입 연산자 |
 
-동적 메모리를 직접 소유하는 클래스는 기본 복사만으로 위험할 수 있다. 포인터 값만 복사되면 두 객체가 같은 메모리를 가리키고, double delete가 생길 수 있다.
+동적 메모리를 직접 소유하는 클래스는 기본 복사만으로 위험할 수 있습니다. 포인터 값만 복사되면 두 객체가 같은 메모리를 가리키고, double delete가 생길 수 있습니다.
 
-복사 대입 연산자는 보통 자기 대입을 검사하고, 기존 자원을 정리한 뒤 깊은 복사를 수행한다.
+복사 대입 연산자는 보통 자기 대입을 검사하고, 기존 자원을 정리한 뒤 깊은 복사를 수행합니다.
 
 ```cpp
 Buffer& operator=(const Buffer& other) {
@@ -383,11 +383,11 @@ Buffer& operator=(const Buffer& other) {
 }
 ```
 
-`return *this;`는 `a = b = c` 같은 체이닝을 가능하게 하고, 현재 객체 자신을 반환한다는 의미를 드러낸다.
+`return *this;`는 `a = b = c` 같은 체이닝을 가능하게 하고, 현재 객체 자신을 반환한다는 의미를 드러냅니다.
 
 ## 8. 표준 입출력과 파일 디스크립터
 
-C++의 기본 입출력은 `iostream`을 사용한다.
+C++의 기본 입출력은 `iostream`을 사용합니다.
 
 | C++ 스트림 | 의미 | POSIX file descriptor |
 |---|---|---|
@@ -396,27 +396,27 @@ C++의 기본 입출력은 `iostream`을 사용한다.
 | `std::cerr` | 표준 에러 | 2 |
 | `std::clog` | 로그용 표준 에러 | 2 |
 
-`std::endl`은 줄바꿈과 flush를 함께 수행한다.
+`std::endl`은 줄바꿈과 flush를 함께 수행합니다.
 
 ```cpp
 std::cout << "hello" << std::endl;
 ```
 
-반면 `"\n"`은 줄바꿈 문자만 출력한다.
+반면 `"\n"`은 줄바꿈 문자만 출력합니다.
 
 ```cpp
 std::cout << "hello\n";
 ```
 
-시험에서는 `stdout`과 `stderr`를 구분하는 문제가 자주 나온다.
+시험에서는 `stdout`과 `stderr`를 구분하는 문제가 자주 나옵니다.
 
 ```bash
 ./program > out.txt 2> err.txt
 ```
 
-이 명령은 정상 출력은 `out.txt`, 에러 출력은 `err.txt`로 보낸다.
+이 명령은 정상 출력은 `out.txt`, 에러 출력은 `err.txt`로 보냅니다.
 
-`stdin`에 남은 개행 때문에 `getline`이 바로 빈 문자열을 읽는 문제도 중요하다.
+`stdin`에 남은 개행 때문에 `getline`이 바로 빈 문자열을 읽는 문제도 중요합니다.
 
 ```cpp
 int age;
@@ -429,7 +429,7 @@ std::getline(std::cin, name);
 
 ## 9. enum과 enum class
 
-C-style enum은 이름이 바깥 scope로 퍼지고, 정수로 암시 변환될 수 있다.
+C-style enum은 이름이 바깥 scope로 퍼지고, 정수로 암시 변환될 수 있습니다.
 
 ```cpp
 enum Color { Red, Green, Blue };
@@ -437,7 +437,7 @@ enum Color { Red, Green, Blue };
 int x = Red; // 가능
 ```
 
-`enum class`는 더 안전하다.
+`enum class`는 더 안전합니다.
 
 ```cpp
 enum class Color { Red, Green, Blue };
@@ -446,7 +446,7 @@ Color c = Color::Red;
 // int x = c; // 오류
 ```
 
-비트 플래그를 `enum class`로 만들면 연산자를 직접 정의해야 한다.
+비트 플래그를 `enum class`로 만들면 연산자를 직접 정의해야 합니다.
 
 ```cpp
 enum class Permission {
@@ -456,34 +456,34 @@ enum class Permission {
 };
 ```
 
-`enum class`는 암시적으로 정수 연산을 허용하지 않으므로, `operator|` 같은 연산자를 따로 제공해야 자연스럽게 쓸 수 있다.
+`enum class`는 암시적으로 정수 연산을 허용하지 않으므로, `operator|` 같은 연산자를 따로 제공해야 자연스럽게 쓸 수 있습니다.
 
 ## 10. 연산자 오버로딩
 
-연산자 오버로딩은 사용자 정의 타입도 자연스러운 연산 문법으로 사용할 수 있게 한다.
+연산자 오버로딩은 사용자 정의 타입도 자연스러운 연산 문법으로 사용할 수 있게 합니다.
 
-멤버 연산자에서는 왼쪽 피연산자가 항상 `*this`다.
+멤버 연산자에서는 왼쪽 피연산자가 항상 `*this`입니다.
 
 ```cpp
 Complex operator+(const Complex& rhs) const;
 // z1 + z2 -> z1.operator+(z2)
 ```
 
-비멤버 연산자는 두 피연산자를 모두 매개변수로 받는다.
+비멤버 연산자는 두 피연산자를 모두 매개변수로 받습니다.
 
 ```cpp
 Complex operator+(const Complex& lhs, const Complex& rhs);
 // z1 + z2 -> operator+(z1, z2)
 ```
 
-왼쪽 피연산자가 기본 타입일 수 있으면 비멤버 연산자가 자연스럽다.
+왼쪽 피연산자가 기본 타입일 수 있으면 비멤버 연산자가 자연스럽습니다.
 
 ```cpp
 Complex operator+(double lhs, const Complex& rhs);
 // 1.0 + z
 ```
 
-반드시 멤버 함수여야 하는 연산자도 있다.
+반드시 멤버 함수여야 하는 연산자도 있습니다.
 
 | 연산자 | 이유 |
 |---|---|
@@ -492,7 +492,7 @@ Complex operator+(double lhs, const Complex& rhs);
 | `operator()` | 함수 호출 형태 |
 | `operator->` | 멤버 접근 연산 |
 
-출력 연산자는 보통 비멤버로 만든다.
+출력 연산자는 보통 비멤버로 만듭니다.
 
 ```cpp
 std::ostream& operator<<(std::ostream& os, const Complex& c) {
@@ -501,18 +501,18 @@ std::ostream& operator<<(std::ostream& os, const Complex& c) {
 }
 ```
 
-반환 타입이 `std::ostream&`인 이유는 `std::cout << a << b`처럼 체이닝해야 하기 때문이다.
+반환 타입이 `std::ostream&`인 이유는 `std::cout << a << b`처럼 체이닝해야 하기 때문입니다.
 
 ### `Rational` 사칙연산과 정규화
 
-핵심은 분모가 0이 아닌 두 분수에 보통의 분수 사칙연산을 적용한 뒤, 최대공약수로 약분하고 분모를 양수로 통일하는 것이다. 나눗셈은 오른쪽 피연산자가 0인지 먼저 확인해야 하며, 고정 폭 정수에서는 교차 곱의 overflow도 별도로 막아야 한다.
+핵심은 분모가 0이 아닌 두 분수에 보통의 분수 사칙연산을 적용한 뒤, 최대공약수로 약분하고 분모를 양수로 통일하는 것입니다. 나눗셈은 오른쪽 피연산자가 0인지 먼저 확인해야 하며, 고정 폭 정수에서는 교차 곱의 overflow도 별도로 막아야 합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Rational arithmetic and canonical normalization</summary>
 
-> **작성자 보충:** `Operator Overloading.pdf` 12–13쪽의 `Fraction` 실행 결과와 gcd 정규화를 일반화한다. 아래 사칙연산 식은 분모가 0이 아닌 정의역에서의 정확한 유리수 항등식이고, gcd 약분과 양의 분모 처리는 같은 값을 하나의 표현으로 만드는 정규화 convention이다.
+> **작성자 보충:** `Operator Overloading.pdf` 12–13쪽의 `Fraction` 실행 결과와 gcd 정규화를 일반화합니다. 아래 사칙연산 식은 분모가 0이 아닌 정의역에서의 정확한 유리수 항등식이고, gcd 약분과 양의 분모 처리는 같은 값을 하나의 표현으로 만드는 정규화 convention입니다.
 
-`Operator Overloading` 자료의 유리수 예제를 일반화하자. 두 유리수를
+`Operator Overloading` 자료의 유리수 예제를 일반화하겠습니다. 두 유리수를
 
 $$
 x=\frac{a}{b},\qquad y=\frac{c}{d},\qquad b\ne0,\ d\ne0
@@ -526,13 +526,13 @@ x-y=\frac{ad-bc}{bd},\qquad
 xy=\frac{ac}{bd}
 $$
 
-를 얻는다. 나눗셈은 역수를 곱하므로
+를 얻습니다. 나눗셈은 역수를 곱하므로
 
 $$
 \frac{x}{y}=\frac{a}{b}\times\frac{d}{c}=\frac{ad}{bc},\qquad c\ne0
 $$
 
-이다. $$a,b,c,d$$가 무차원 정수라면 결과도 무차원 유리수다. 차원이 있는 양을 표현한다면 덧셈·뺄셈은 두 피연산자의 단위가 같아야 하고, 곱셈·나눗셈의 단위는 각각 곱과 비로 변한다.
+입니다. $$a,b,c,d$$가 무차원 정수라면 결과도 무차원 유리수입니다. 차원이 있는 양을 표현한다면 덧셈·뺄셈은 두 피연산자의 단위가 같아야 하고, 곱셈·나눗셈의 단위는 각각 곱과 비로 변합니다.
 
 계산 뒤 분자 $$p$$와 분모 $$q$$에 대해 $$g=\gcd(\lvert p\rvert,\lvert q\rvert)$$를 구하고
 
@@ -540,13 +540,13 @@ $$
 (p,q)\leftarrow\left(\frac{p}{g},\frac{q}{g}\right)
 $$
 
-로 약분한다. 이어서 $$q<0$$이면 $$(p,q)\leftarrow(-p,-q)$$로 바꾸어 **분모는 항상 양수**라는 정규형을 유지한다. 입력이나 연산 결과의 분모가 0이면 유리수가 아니므로 생성 또는 연산을 거부해야 하며, 특히 나눗셈에서는 $$y=0$$, 즉 $$c=0$$인지 먼저 검사해야 한다. 고정 폭 정수 구현에서는 `ad`, `bc`, `bd`, `ac`가 overflow할 수 있으므로 곱셈 전 범위 검사, 더 넓은 중간 타입, 또는 임의 정밀도 정수가 필요하다.
+로 약분합니다. 이어서 $$q<0$$이면 $$(p,q)\leftarrow(-p,-q)$$로 바꾸어 **분모는 항상 양수**라는 정규형을 유지합니다. 입력이나 연산 결과의 분모가 0이면 유리수가 아니므로 생성 또는 연산을 거부해야 하며, 특히 나눗셈에서는 $$y=0$$, 즉 $$c=0$$인지 먼저 검사해야 합니다. 고정 폭 정수 구현에서는 `ad`, `bc`, `bd`, `ac`가 overflow할 수 있으므로 곱셈 전 범위 검사, 더 넓은 중간 타입, 또는 임의 정밀도 정수가 필요합니다.
 
 </details>
 
 ## 11. 함수 포인터, 콜백, 람다
 
-함수 포인터는 함수의 주소를 저장한다.
+함수 포인터는 함수의 주소를 저장합니다.
 
 ```cpp
 int add(int a, int b) { return a + b; }
@@ -555,7 +555,7 @@ int (*op)(int, int) = add;
 std::cout << op(3, 4);
 ```
 
-콜백은 “실행할 함수를 인자로 전달하고, 호출 시점은 받은 쪽이 정하는 구조”다.
+콜백은 “실행할 함수를 인자로 전달하고, 호출 시점은 받은 쪽이 정하는 구조”입니다.
 
 ```cpp
 int apply(int a, int b, int (*op)(int, int)) {
@@ -563,7 +563,7 @@ int apply(int a, int b, int (*op)(int, int)) {
 }
 ```
 
-`qsort`는 C 스타일 콜백 정렬의 대표 예다.
+`qsort`는 C 스타일 콜백 정렬의 대표 예입니다.
 
 ```cpp
 int cmp_asc(const void* a, const void* b) {
@@ -573,9 +573,9 @@ int cmp_asc(const void* a, const void* b) {
 }
 ```
 
-정수 차이를 바로 반환하면 signed overflow가 생길 수 있으므로, 대소 비교 결과를 `-1`, `0`, `1`로 변환한다. C++ 객체 정렬에는 raw byte를 재배치하는 `qsort`보다 타입 안전한 `std::sort`를 우선한다.
+정수 차이를 바로 반환하면 signed overflow가 생길 수 있으므로, 대소 비교 결과를 `-1`, `0`, `1`로 변환합니다. C++ 객체 정렬에는 raw byte를 재배치하는 `qsort`보다 타입 안전한 `std::sort`를 우선합니다.
 
-현대 C++에서는 `std::sort`와 람다가 더 자연스럽다.
+현대 C++에서는 `std::sort`와 람다가 더 자연스럽습니다.
 
 ```cpp
 std::sort(v.begin(), v.end(),
@@ -584,13 +584,13 @@ std::sort(v.begin(), v.end(),
     });
 ```
 
-람다는 이름 없는 함수 객체에 가깝다.
+람다는 이름 없는 함수 객체에 가깝습니다.
 
 ```cpp
 [capture](parameters) -> return_type { body }
 ```
 
-외부 변수를 쓰려면 capture가 필요하다.
+외부 변수를 쓰려면 capture가 필요합니다.
 
 ```cpp
 int threshold = 30;
@@ -603,7 +603,7 @@ auto it = std::find_if(v.begin(), v.end(),
 
 ## 12. 상속
 
-상속은 공통 속성과 동작을 기본 클래스에 두고, 파생 클래스가 이를 확장하는 구조다.
+상속은 공통 속성과 동작을 기본 클래스에 두고, 파생 클래스가 이를 확장하는 구조입니다.
 
 ```cpp
 class Animal {
@@ -617,7 +617,7 @@ public:
 };
 ```
 
-상속 접근 지정자는 기본 클래스의 public/protected 멤버가 파생 클래스 밖에서 어떻게 보이는지를 바꾼다.
+상속 접근 지정자는 기본 클래스의 public/protected 멤버가 파생 클래스 밖에서 어떻게 보이는지를 바꿉니다.
 
 | 상속 방식 | public 멤버 | protected 멤버 |
 |---|---|---|
@@ -625,14 +625,14 @@ public:
 | `protected` | protected로 변경 | protected 유지 |
 | `private` | private로 변경 | private로 변경 |
 
-생성자/소멸자 순서도 중요하다.
+생성자/소멸자 순서도 중요합니다.
 
 ```text
 생성: 기본 클래스 -> 멤버 객체 -> 파생 클래스
 소멸: 파생 클래스 -> 멤버 객체 -> 기본 클래스
 ```
 
-파생 클래스 생성자는 기본 클래스 생성자를 초기화 리스트에서 명시할 수 있다.
+파생 클래스 생성자는 기본 클래스 생성자를 초기화 리스트에서 명시할 수 있습니다.
 
 ```cpp
 Derived(int x, int y)
@@ -641,7 +641,7 @@ Derived(int x, int y)
 
 ## 13. 다형성
 
-다형성은 같은 인터페이스로 여러 실제 타입의 동작을 다르게 실행하는 능력이다.
+다형성은 같은 인터페이스로 여러 실제 타입의 동작을 다르게 실행하는 능력입니다.
 
 ```cpp
 class Shape {
@@ -656,7 +656,7 @@ public:
 };
 ```
 
-기본 클래스 포인터나 참조로 파생 클래스 객체를 다룰 때, `virtual` 함수는 런타임에 실제 객체 타입을 기준으로 호출된다.
+기본 클래스 포인터나 참조로 파생 클래스 객체를 다룰 때, `virtual` 함수는 런타임에 실제 객체 타입을 기준으로 호출됩니다.
 
 ```cpp
 Shape* s = new Circle();
@@ -664,23 +664,23 @@ s->area(); // Circle::area()
 delete s;
 ```
 
-기본 클래스 소멸자는 다형적으로 사용할 경우 반드시 `virtual`이어야 한다.
+기본 클래스 소멸자는 다형적으로 사용할 경우 반드시 `virtual`이어야 합니다.
 
 ```cpp
 virtual ~Shape() = default;
 ```
 
-`override`는 파생 클래스 함수가 실제로 기반 클래스 가상 함수를 재정의하는지 컴파일러가 확인하게 한다.
+`override`는 파생 클래스 함수가 실제로 기반 클래스 가상 함수를 재정의하는지 컴파일러가 확인하게 합니다.
 
 ```cpp
 double area() const override;
 ```
 
-순수 가상 함수가 하나라도 있으면 추상 클래스가 되고, 직접 객체를 만들 수 없다.
+순수 가상 함수가 하나라도 있으면 추상 클래스가 되고, 직접 객체를 만들 수 없습니다.
 
 ## 14. 템플릿
 
-템플릿은 타입이나 값을 매개변수로 받아 컴파일 시점에 코드를 생성하는 문법이다.
+템플릿은 타입이나 값을 매개변수로 받아 컴파일 시점에 코드를 생성하는 문법입니다.
 
 ```cpp
 template <typename T>
@@ -689,14 +689,14 @@ T max_value(T a, T b) {
 }
 ```
 
-호출 시 실제 타입으로 인스턴스화된다.
+호출 시 실제 타입으로 인스턴스화됩니다.
 
 ```cpp
 max_value(3, 5);       // T = int
 max_value(1.2, 4.5);   // T = double
 ```
 
-클래스 템플릿은 자료구조를 타입에 독립적으로 만든다.
+클래스 템플릿은 자료구조를 타입에 독립적으로 만듭니다.
 
 ```cpp
 template <typename T>
@@ -709,7 +709,7 @@ public:
 };
 ```
 
-비타입 템플릿 매개변수는 타입이 아니라 값을 템플릿 인자로 받는다.
+비타입 템플릿 매개변수는 타입이 아니라 값을 템플릿 인자로 받습니다.
 
 ```cpp
 template <typename T, int N>
@@ -719,19 +719,19 @@ private:
 };
 ```
 
-여기서 `Vector<int, 3>`과 `Vector<int, 4>`는 서로 다른 타입이다.
+여기서 `Vector<int, 3>`과 `Vector<int, 4>`는 서로 다른 타입입니다.
 
-템플릿은 보통 헤더에 정의를 둔다. 컴파일러가 실제 타입을 넣어 코드를 만들 때 함수 본문을 볼 수 있어야 하기 때문이다.
+템플릿은 보통 헤더에 정의를 둡니다. 컴파일러가 실제 타입을 넣어 코드를 만들 때 함수 본문을 볼 수 있어야 하기 때문입니다.
 
 ## 15. STL 컨테이너
 
-STL은 컨테이너, iterator, algorithm, 함수 객체/람다가 연결된 구조다.
+STL은 컨테이너, iterator, algorithm, 함수 객체/람다가 연결된 구조입니다.
 
 ```text
 container -> iterator range -> algorithm -> predicate/comparator
 ```
 
-주요 컨테이너 선택 기준은 다음과 같다.
+주요 컨테이너 선택 기준은 다음과 같습니다.
 
 | 컨테이너 | 특징 | 대표 사용 |
 |---|---|---|
@@ -741,7 +741,7 @@ container -> iterator range -> algorithm -> predicate/comparator
 | `set` | 중복 없는 정렬 집합 | 방문 여부, 중복 제거 |
 | `map` | key-value 저장 | 빈도 카운팅, 사전 |
 
-`vector`에서 `size`와 `capacity`는 다르다.
+`vector`에서 `size`와 `capacity`는 다릅니다.
 
 ```cpp
 std::vector<int> v;
@@ -749,7 +749,7 @@ v.reserve(1000); // capacity 확보, size는 그대로
 v.resize(10);    // 실제 원소 개수를 10으로 변경
 ```
 
-`end()`는 마지막 원소가 아니라 마지막 원소 다음 위치다.
+`end()`는 마지막 원소가 아니라 마지막 원소 다음 위치입니다.
 
 ```cpp
 for (auto it = v.begin(); it != v.end(); ++it) {
@@ -757,32 +757,32 @@ for (auto it = v.begin(); it != v.end(); ++it) {
 }
 ```
 
-iterator 순회에서 `++it`를 선호하는 이유는 `it++`가 증가 전 상태를 반환해야 해서 불필요한 복사를 만들 수 있기 때문이다.
+iterator 순회에서 `++it`를 선호하는 이유는 `it++`가 증가 전 상태를 반환해야 해서 불필요한 복사를 만들 수 있기 때문입니다.
 
 ## 16. STL 알고리즘
 
-`std::find`는 iterator 범위를 순차 탐색한다.
+`std::find`는 iterator 범위를 순차 탐색합니다.
 
 ```cpp
 auto it = std::find(v.begin(), v.end(), 30);
 ```
 
-반면 `set.find()`나 `map.find()`는 컨테이너 내부 구조를 이용한다.
+반면 `set.find()`나 `map.find()`는 컨테이너 내부 구조를 이용합니다.
 
 ```cpp
 auto it = freq.find("apple");
 ```
 
-`std::remove`는 실제 삭제를 하지 않는다.
+`std::remove`는 실제 삭제를 하지 않습니다.
 
 ```cpp
 auto new_end = std::remove(v.begin(), v.end(), 2);
 v.erase(new_end, v.end());
 ```
 
-`std::remove`만 호출하면 `size`는 줄지 않는다. 제거 대상이 아닌 원소를 앞쪽으로 모으고, 유효 범위의 끝 iterator를 반환할 뿐이다.
+`std::remove`만 호출하면 `size`는 줄지 않습니다. 제거 대상이 아닌 원소를 앞쪽으로 모으고, 유효 범위의 끝 iterator를 반환할 뿐입니다.
 
-`max_element`와 비교 함수도 자주 헷갈린다.
+`max_element`와 비교 함수도 자주 헷갈립니다.
 
 ```cpp
 auto max_it = std::max_element(freq.begin(), freq.end(),
@@ -791,9 +791,9 @@ auto max_it = std::max_element(freq.begin(), freq.end(),
     });
 ```
 
-여기서 비교식은 “a가 b보다 작다”를 정의한다. 따라서 `max_element`는 `second`가 가장 큰 원소를 찾는다.
+여기서 비교식은 “a가 b보다 작다”를 정의합니다. 따라서 `max_element`는 `second`가 가장 큰 원소를 찾습니다.
 
-정렬/검색/집계 알고리즘은 다음처럼 정리한다.
+정렬/검색/집계 알고리즘은 다음처럼 정리합니다.
 
 | 알고리즘 | 핵심 |
 |---|---|
@@ -810,12 +810,12 @@ auto max_it = std::max_element(freq.begin(), freq.end(),
 
 ### 보충 해설: 이 종합 복습의 수식 범위
 
-행렬-벡터 곱은 행마다 열 수만큼 항을 합하므로 $$\Theta(mn)$$이고, 이진 검색과 균형 트리의 단일 키 연산은 탐색 범위 또는 트리 높이가 로그 크기여서 $$O(\log n)$$이다. `strlen`은 종료 문자를 찾을 때까지 읽어 $$\Theta(n)$$이지만 저장된 길이를 반환하는 `string::size()`는 $$\Theta(1)$$이다. 다음 토글은 이 결론의 식과 적용 조건을 모아 둔다.
+행렬-벡터 곱은 행마다 열 수만큼 항을 합하므로 $$\Theta(mn)$$이고, 이진 검색과 균형 트리의 단일 키 연산은 탐색 범위 또는 트리 높이가 로그 크기여서 $$O(\log n)$$입니다. `strlen`은 종료 문자를 찾을 때까지 읽어 $$\Theta(n)$$이지만 저장된 길이를 반환하는 `string::size()`는 $$\Theta(1)$$입니다. 다음 토글은 이 결론의 식과 적용 조건을 모아 둡니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Matrix products and core complexity bounds</summary>
 
-> **작성자 보충:** 이 글은 시험 직전의 통합 지도이므로 모든 유도를 반복하지 않고 핵심 식과 결론만 둔다. 행렬 저장식의 단계별 유도와 실패 조건은 [C++ Classes and Operator Overloading]({{ "/study/cpp/cpp-overloading/" | relative_url }}), 문자열과 컨테이너 복잡도의 전체 유도는 [C Structs and C++ Classes]({{ "/study/cpp/c-struct-to-cpp-class/" | relative_url }})와 [C++ STL]({{ "/study/cpp/cpp-stl/" | relative_url }})에서 확인한다.
+> **작성자 보충:** 이 글은 시험 직전의 통합 지도이므로 모든 유도를 반복하지 않고 핵심 식과 결론만 둡니다. 행렬 저장식의 단계별 유도와 실패 조건은 [C++ Classes and Operator Overloading]({{ "/study/cpp/cpp-overloading/" | relative_url }}), 문자열과 컨테이너 복잡도의 전체 유도는 [C Structs and C++ Classes]({{ "/study/cpp/c-struct-to-cpp-class/" | relative_url }})와 [C++ STL]({{ "/study/cpp/cpp-stl/" | relative_url }})에서 확인합니다.
 
 $$m \times n$$ 행렬 $$A$$와 길이 $$n$$의 열벡터 $$x$$의 곱 $$y=Ax$$는 성분별로
 
@@ -823,9 +823,9 @@ $$
 y_i=\sum_{j=0}^{n-1}A_{ij}x_j, \qquad 0\le i<m
 $$
 
-이다. 이는 행렬 곱의 **정의에 따른 정확한 등식**이며, $$i,j$$는 0 기반 무차원 인덱스다. 모든 성분을 직접 계산하면 각 $$y_i$$에 $$n$$개 항이 필요하므로 총 산술 연산 수는 $$\Theta(mn)$$이다. 차원이 맞지 않거나 `Matrix2D`의 범위를 벗어난 인덱스를 쓰면 식 또는 코드 접근이 성립하지 않는다.
+입니다. 이는 행렬 곱의 **정의에 따른 정확한 등식**이며, $$i,j$$는 0 기반 무차원 인덱스입니다. 모든 성분을 직접 계산하면 각 $$y_i$$에 $$n$$개 항이 필요하므로 총 산술 연산 수는 $$\Theta(mn)$$입니다. 차원이 맞지 않거나 `Matrix2D`의 범위를 벗어난 인덱스를 쓰면 식 또는 코드 접근이 성립하지 않습니다.
 
-이 글에서 생략하지 않아야 할 핵심 복잡도 근거는 다음 세 줄로 압축된다.
+이 글에서 생략하지 않아야 할 핵심 복잡도 근거는 다음 세 줄로 압축됩니다.
 
 $$
 T_{\texttt{strlen}}(n)=\sum_{k=0}^{n}c=\Theta(n),
@@ -847,13 +847,13 @@ T_{\texttt{set/map}}(n)=O(\log n)
 \quad\text{(단일 키 연산과 상수 비교 비용)}
 $$
 
-`vector::push_back`은 여러 호출을 합친 amortized $$O(1)$$이고 재할당이 일어난 한 호출의 worst case는 $$O(n)$$이다. `unordered_map`과 `unordered_set`의 탐색은 average $$O(1)$$이지만 충돌이 집중되는 worst case는 $$O(n)$$이다. 위 결과는 실행시간의 초 단위가 아니라 원소 수에 따른 연산 횟수의 점근적 크기이며, 정렬 전제·유효 인덱스·상수 비교/해시 비용이 깨지면 그대로 적용할 수 없다.
+`vector::push_back`은 여러 호출을 합친 amortized $$O(1)$$이고 재할당이 일어난 한 호출의 worst case는 $$O(n)$$입니다. `unordered_map`과 `unordered_set`의 탐색은 average $$O(1)$$이지만 충돌이 집중되는 worst case는 $$O(n)$$입니다. 위 결과는 실행시간의 초 단위가 아니라 원소 수에 따른 연산 횟수의 점근적 크기이며, 정렬 전제·유효 인덱스·상수 비교/해시 비용이 깨지면 그대로 적용할 수 없습니다.
 
 </details>
 
 ## 17. 과제 연결 포인트
 
-과제 자료는 강의 개념을 시험 문제식으로 바꿔 보는 데 좋다.
+과제 자료는 강의 개념을 시험 문제식으로 바꿔 보는 데 좋습니다.
 
 | 과제 | 시험 연결 |
 |---|---|
@@ -862,7 +862,7 @@ $$
 | Smart Pointer | RAII, reference counting, 순환 참조, GC 비교 |
 | Standard I/O and File Descriptor | `stdin/stdout/stderr`, redirection, pipe |
 
-Python 비교가 나오는 경우 다음 기준을 잡는다.
+Python 비교가 나오는 경우 다음 기준을 잡습니다.
 
 | C++ | Python |
 |---|---|
@@ -873,174 +873,174 @@ Python 비교가 나오는 경우 다음 기준을 잡는다.
 | `operator<<` | `__str__`, `__repr__`와 비교 가능 |
 | `operator bool()` | `__bool__`, `__len__` |
 
-C++은 어느 함수가 어떤 피연산자를 받는지와 반환 타입을 직접 설계하고, Python은 객체 프로토콜의 이름을 통해 동작을 제공한다.
+C++은 어느 함수가 어떤 피연산자를 받는지와 반환 타입을 직접 설계하고, Python은 객체 프로토콜의 이름을 통해 동작을 제공합니다.
 
 ## 18. 시험 실수 방지표
 
 | 헷갈리는 부분 | 틀리기 쉬운 생각 | 올바른 기준 |
 |---|---|---|
-| `reserve` | size를 늘린다 | capacity만 확보한다 |
-| `resize` | 공간만 확보한다 | 실제 원소 개수를 바꾼다 |
-| `end()` | 마지막 원소다 | 마지막 원소 다음 위치다 |
-| `std::remove` | 원소를 실제 삭제한다 | 유효 범위 끝을 반환할 뿐 size는 그대로다 |
-| `erase` | capacity를 줄인다 | size를 줄이고 capacity는 보통 유지된다 |
-| `std::find` | 모든 컨테이너에서 최적이다 | 순차 탐색이다 |
-| `.find()` | vector에서도 쓴다 | `set`, `map` 등 전용 탐색 멤버다 |
-| `stable_sort` | 그냥 느린 sort다 | 같은 기준값의 상대 순서를 유지한다 |
-| `shared_ptr` | 항상 안전하다 | 순환 참조는 `weak_ptr`가 필요하다 |
-| `virtual` 소멸자 | 선택 사항이다 | 다형적 삭제에는 사실상 필수다 |
-| 템플릿 | 런타임에 타입을 고른다 | 컴파일 시점에 인스턴스화된다 |
-| `enum class` | 정수처럼 바로 연산된다 | 강한 타입이라 명시 변환/연산자 정의가 필요하다 |
+| `reserve` | size를 늘립니다 | capacity만 확보합니다 |
+| `resize` | 공간만 확보합니다 | 실제 원소 개수를 바꿉니다 |
+| `end()` | 마지막 원소입니다 | 마지막 원소 다음 위치입니다 |
+| `std::remove` | 원소를 실제 삭제합니다 | 유효 범위 끝을 반환할 뿐 size는 그대로입니다 |
+| `erase` | capacity를 줄입니다 | size를 줄이고 capacity는 보통 유지됩니다 |
+| `std::find` | 모든 컨테이너에서 최적입니다 | 순차 탐색입니다 |
+| `.find()` | vector에서도 씁니다 | `set`, `map` 등 전용 탐색 멤버입니다 |
+| `stable_sort` | 그냥 느린 sort입니다 | 같은 기준값의 상대 순서를 유지합니다 |
+| `shared_ptr` | 항상 안전합니다 | 순환 참조는 `weak_ptr`가 필요합니다 |
+| `virtual` 소멸자 | 선택 사항입니다 | 다형적 삭제에는 사실상 필수입니다 |
+| 템플릿 | 런타임에 타입을 고릅니다 | 컴파일 시점에 인스턴스화됩니다 |
+| `enum class` | 정수처럼 바로 연산됩니다 | 강한 타입이라 명시 변환/연산자 정의가 필요합니다 |
 
 ## 마지막 핵심 정리
 
 | 개념 | 한 줄 정리 |
 |---|---|
-| C++ 객체 | 데이터와 동작, 생성과 소멸까지 함께 설계한다 |
-| RAII | 자원 해제를 객체 수명에 묶는다 |
-| 참조 | null 없는 별칭으로 생각한다 |
-| `const T&` | 큰 객체를 복사 없이 읽기 전용으로 받는다 |
-| 연산자 오버로딩 | 연산자를 함수 호출로 설계한다 |
-| 함수 포인터 | 함수 주소를 저장하고 간접 호출한다 |
-| 람다 | 즉석 함수 객체다 |
-| 상속 | 공통 인터페이스와 확장 관계를 만든다 |
-| 다형성 | `virtual`로 런타임 동적 바인딩을 만든다 |
-| 템플릿 | 타입/값을 매개변수로 받는 컴파일 타임 코드 생성 도구다 |
-| STL | 컨테이너와 iterator 범위에 알고리즘을 적용하는 구조다 |
+| C++ 객체 | 데이터와 동작, 생성과 소멸까지 함께 설계합니다 |
+| RAII | 자원 해제를 객체 수명에 묶습니다 |
+| 참조 | null 없는 별칭으로 생각합니다 |
+| `const T&` | 큰 객체를 복사 없이 읽기 전용으로 받습니다 |
+| 연산자 오버로딩 | 연산자를 함수 호출로 설계합니다 |
+| 함수 포인터 | 함수 주소를 저장하고 간접 호출합니다 |
+| 람다 | 즉석 함수 객체입니다 |
+| 상속 | 공통 인터페이스와 확장 관계를 만듭니다 |
+| 다형성 | `virtual`로 런타임 동적 바인딩을 만듭니다 |
+| 템플릿 | 타입/값을 매개변수로 받는 컴파일 타임 코드 생성 도구입니다 |
+| STL | 컨테이너와 iterator 범위에 알고리즘을 적용하는 구조입니다 |
 
 ## Study Guide
 
-1. 먼저 메모리와 객체 수명부터 정리한다. `new/delete`, RAII, smart pointer, stack/heap을 모르면 뒤쪽 개념도 흔들린다.
-2. 그다음 클래스 문법을 본다. 생성자, 소멸자, 복사 생성자, 복사 대입, `this`, `const` 멤버 함수가 핵심이다.
-3. 연산자 오버로딩과 함수 포인터는 “코드가 실제로 어떤 함수 호출로 바뀌는가”를 기준으로 읽는다.
-4. 상속과 다형성은 생성/소멸 순서, 접근 지정자, `virtual`, `override`, 가상 소멸자를 반드시 묶어서 본다.
-5. 템플릿과 STL은 시험 직전 코드 패턴을 많이 보는 것이 좋다. 특히 iterator 반환값, `end()` 비교, erase-remove 관용구를 손에 익힌다.
+1. 먼저 메모리와 객체 수명부터 정리합니다. `new/delete`, RAII, smart pointer, stack/heap을 모르면 뒤쪽 개념도 흔들립니다.
+2. 그다음 클래스 문법을 봅니다. 생성자, 소멸자, 복사 생성자, 복사 대입, `this`, `const` 멤버 함수가 핵심입니다.
+3. 연산자 오버로딩과 함수 포인터는 “코드가 실제로 어떤 함수 호출로 바뀌는가”를 기준으로 읽습니다.
+4. 상속과 다형성은 생성/소멸 순서, 접근 지정자, `virtual`, `override`, 가상 소멸자를 반드시 묶어서 봅니다.
+5. 템플릿과 STL은 시험 직전 코드 패턴을 많이 보는 것이 좋습니다. 특히 iterator 반환값, `end()` 비교, erase-remove 관용구를 손에 익힙니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Stack과 Heap의 가장 큰 차이는 무엇인가?</summary>
+<summary>1. Stack과 Heap의 가장 큰 차이는 무엇입니까?</summary>
 
-답변: Stack은 함수 호출과 함께 자동으로 관리되는 영역이고, Heap은 실행 중 동적으로 할당되는 영역이다. Stack 객체는 scope를 벗어나면 자동으로 정리되지만, Heap 객체는 직접 해제하거나 RAII 객체가 해제해야 한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. `malloc/free`와 `new/delete`의 핵심 차이는 무엇인가?</summary>
-
-답변: <code>malloc/free</code>는 메모리 블록만 할당/해제하고 생성자와 소멸자를 호출하지 않는다. <code>new/delete</code>는 C++ 객체의 생성자와 소멸자를 호출한다.
+답변: Stack은 함수 호출과 함께 자동으로 관리되는 영역이고, Heap은 실행 중 동적으로 할당되는 영역입니다. Stack 객체는 scope를 벗어나면 자동으로 정리되지만, Heap 객체는 직접 해제하거나 RAII 객체가 해제해야 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. `const T&`를 함수 매개변수로 자주 쓰는 이유는 무엇인가?</summary>
+<summary>2. `malloc/free`와 `new/delete`의 핵심 차이는 무엇입니까?</summary>
 
-답변: 큰 객체를 복사하지 않고 받을 수 있고, 함수 안에서 원본을 수정하지 않겠다는 약속도 함께 표현할 수 있기 때문이다.
-
-</details>
-
-<details markdown="block">
-<summary>4. 복사 생성자와 복사 대입 연산자는 언제 다르게 호출되는가?</summary>
-
-답변: 새 객체를 기존 객체로 만들 때는 복사 생성자가 호출되고, 이미 존재하는 객체에 값을 대입할 때는 복사 대입 연산자가 호출된다.
+답변: <code>malloc/free</code>는 메모리 블록만 할당/해제하고 생성자와 소멸자를 호출하지 않습니다. <code>new/delete</code>는 C++ 객체의 생성자와 소멸자를 호출합니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. `return *this;`를 대입 연산자에서 반환하는 이유는 무엇인가?</summary>
+<summary>3. `const T&`를 함수 매개변수로 자주 쓰는 이유는 무엇입니까?</summary>
 
-답변: 현재 객체 자신을 반환해 <code>a = b = c</code> 같은 체이닝을 가능하게 하고, 불필요한 복사를 줄이기 위해 보통 참조로 반환한다.
-
-</details>
-
-<details markdown="block">
-<summary>6. `std::endl`과 `"\n"`의 차이는 무엇인가?</summary>
-
-답변: 둘 다 줄바꿈을 만들지만, <code>std::endl</code>은 출력 버퍼를 flush한다. <code>"\n"</code>은 줄바꿈 문자만 출력한다.
+답변: 큰 객체를 복사하지 않고 받을 수 있고, 함수 안에서 원본을 수정하지 않겠다는 약속도 함께 표현할 수 있기 때문입니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. 멤버 연산자와 비멤버 연산자의 가장 중요한 차이는 무엇인가?</summary>
+<summary>4. 복사 생성자와 복사 대입 연산자는 언제 다르게 호출됩니까?</summary>
 
-답변: 멤버 연산자는 왼쪽 피연산자가 항상 <code>*this</code>다. 비멤버 연산자는 두 피연산자를 모두 매개변수로 받으므로, 왼쪽 피연산자가 기본 타입인 경우에도 대응하기 쉽다.
-
-</details>
-
-<details markdown="block">
-<summary>8. <code>operator&lt;&lt;</code>를 보통 비멤버 함수로 만드는 이유는 무엇인가?</summary>
-
-답변: <code>std::cout &lt;&lt; obj</code>에서 왼쪽 피연산자는 <code>std::ostream</code>이다. 사용자 정의 타입의 멤버 함수로는 <code>std::ostream</code>을 수정할 수 없으므로 보통 비멤버 연산자로 만든다.
+답변: 새 객체를 기존 객체로 만들 때는 복사 생성자가 호출되고, 이미 존재하는 객체에 값을 대입할 때는 복사 대입 연산자가 호출됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>9. 함수 포인터와 람다는 어떤 공통점이 있는가?</summary>
+<summary>5. `return *this;`를 대입 연산자에서 반환하는 이유는 무엇입니까?</summary>
 
-답변: 둘 다 어떤 동작을 다른 함수나 알고리즘에 전달할 수 있다. 함수 포인터는 함수 주소를 전달하고, 람다는 그 자리에서 정의한 함수 객체를 전달한다.
-
-</details>
-
-<details markdown="block">
-<summary>10. 기본 클래스 소멸자를 `virtual`로 두어야 하는 경우는 언제인가?</summary>
-
-답변: 기본 클래스 포인터로 파생 클래스 객체를 삭제할 가능성이 있을 때다. 소멸자가 가상 함수가 아니면 해당 `delete`의 동작이 정의되지 않는다. 가상 소멸자는 실제 객체의 파생 소멸자부터 기본 소멸자까지 올바르게 호출되게 한다.
+답변: 현재 객체 자신을 반환해 <code>a = b = c</code> 같은 체이닝을 가능하게 하고, 불필요한 복사를 줄이기 위해 보통 참조로 반환합니다.
 
 </details>
 
 <details markdown="block">
-<summary>11. 템플릿이 런타임 다형성과 다른 점은 무엇인가?</summary>
+<summary>6. `std::endl`과 `"\n"`의 차이는 무엇입니까?</summary>
 
-답변: 템플릿은 컴파일 시점에 실제 타입을 넣어 코드를 생성한다. 런타임 다형성은 기본 클래스 포인터/참조와 virtual function을 통해 실행 중 실제 객체 타입에 맞는 함수를 호출한다.
-
-</details>
-
-<details markdown="block">
-<summary>12. `std::vector`에서 `reserve`와 `resize`의 차이는 무엇인가?</summary>
-
-답변: <code>reserve</code>는 capacity만 확보하고 size는 바꾸지 않는다. <code>resize</code>는 실제 원소 개수인 size를 바꾼다.
+답변: 둘 다 줄바꿈을 만들지만, <code>std::endl</code>은 출력 버퍼를 flush합니다. <code>"\n"</code>은 줄바꿈 문자만 출력합니다.
 
 </details>
 
 <details markdown="block">
-<summary>13. iterator의 `end()`는 무엇을 가리키는가?</summary>
+<summary>7. 멤버 연산자와 비멤버 연산자의 가장 중요한 차이는 무엇입니까?</summary>
 
-답변: 마지막 원소가 아니라 마지막 원소의 다음 위치를 가리킨다. 따라서 <code>*end()</code>는 하면 안 되고, 보통 <code>it != end()</code> 조건으로 반복을 끝낸다.
-
-</details>
-
-<details markdown="block">
-<summary>14. `std::remove`만 호출하면 왜 vector 크기가 줄지 않는가?</summary>
-
-답변: <code>std::remove</code>는 제거 대상이 아닌 원소를 앞쪽으로 모으고 유효 범위 끝 iterator를 반환할 뿐이다. 실제 size를 줄이려면 <code>erase</code>를 이어서 호출해야 한다.
+답변: 멤버 연산자는 왼쪽 피연산자가 항상 <code>*this</code>입니다. 비멤버 연산자는 두 피연산자를 모두 매개변수로 받으므로, 왼쪽 피연산자가 기본 타입인 경우에도 대응하기 쉽습니다.
 
 </details>
 
 <details markdown="block">
-<summary>15. `std::find`와 `.find()`는 왜 다른가?</summary>
+<summary>8. <code>operator&lt;&lt;</code>를 보통 비멤버 함수로 만드는 이유는 무엇입니까?</summary>
 
-답변: <code>std::find</code>는 iterator 범위를 앞에서부터 순차 탐색하는 범용 알고리즘이다. <code>.find()</code>는 <code>set</code>, <code>map</code> 같은 컨테이너가 내부 구조를 이용해 제공하는 전용 탐색 함수다.
-
-</details>
-
-<details markdown="block">
-<summary>16. <code>std::max_element</code>에서 비교식 <code>a.second &lt; b.second</code>를 쓰면 왜 최대 빈도가 나오는가?</summary>
-
-답변: 비교식은 “a가 b보다 작다”를 정의한다. <code>a.second &lt; b.second</code>를 기준으로 작고 큼을 판단하면, <code>max_element</code>는 <code>second</code>가 가장 큰 원소를 최대 원소로 선택한다.
+답변: <code>std::cout &lt;&lt; obj</code>에서 왼쪽 피연산자는 <code>std::ostream</code>입니다. 사용자 정의 타입의 멤버 함수로는 <code>std::ostream</code>을 수정할 수 없으므로 보통 비멤버 연산자로 만듭니다.
 
 </details>
 
 <details markdown="block">
-<summary>17. `enum class`가 C-style enum보다 안전한 이유는 무엇인가?</summary>
+<summary>9. 함수 포인터와 람다는 어떤 공통점이 있습니까?</summary>
 
-답변: <code>enum class</code>는 이름이 enum scope 안에 묶이고, 정수로 암시 변환되지 않는다. 그래서 이름 충돌과 의도하지 않은 정수 연산을 줄일 수 있다.
+답변: 둘 다 어떤 동작을 다른 함수나 알고리즘에 전달할 수 있습니다. 함수 포인터는 함수 주소를 전달하고, 람다는 그 자리에서 정의한 함수 객체를 전달합니다.
 
 </details>
 
 <details markdown="block">
-<summary>18. `shared_ptr`의 순환 참조는 왜 문제가 되는가?</summary>
+<summary>10. 기본 클래스 소멸자를 `virtual`로 두어야 하는 경우는 언제입니까?</summary>
 
-답변: 서로를 <code>shared_ptr</code>로 소유하면 reference count가 0이 되지 않아 객체가 해제되지 않는다. 이때 한쪽 참조를 <code>weak_ptr</code>로 바꾸면 소유권 순환을 끊을 수 있다.
+답변: 기본 클래스 포인터로 파생 클래스 객체를 삭제할 가능성이 있을 때입니다. 소멸자가 가상 함수가 아니면 해당 `delete`의 동작이 정의되지 않습니다. 가상 소멸자는 실제 객체의 파생 소멸자부터 기본 소멸자까지 올바르게 호출되게 합니다.
+
+</details>
+
+<details markdown="block">
+<summary>11. 템플릿이 런타임 다형성과 다른 점은 무엇입니까?</summary>
+
+답변: 템플릿은 컴파일 시점에 실제 타입을 넣어 코드를 생성합니다. 런타임 다형성은 기본 클래스 포인터/참조와 virtual function을 통해 실행 중 실제 객체 타입에 맞는 함수를 호출합니다.
+
+</details>
+
+<details markdown="block">
+<summary>12. `std::vector`에서 `reserve`와 `resize`의 차이는 무엇입니까?</summary>
+
+답변: <code>reserve</code>는 capacity만 확보하고 size는 바꾸지 않습니다. <code>resize</code>는 실제 원소 개수인 size를 바꿉니다.
+
+</details>
+
+<details markdown="block">
+<summary>13. iterator의 `end()`는 무엇을 가리킵니까?</summary>
+
+답변: 마지막 원소가 아니라 마지막 원소의 다음 위치를 가리킵니다. 따라서 <code>*end()</code>는 하면 안 되고, 보통 <code>it != end()</code> 조건으로 반복을 끝냅니다.
+
+</details>
+
+<details markdown="block">
+<summary>14. `std::remove`만 호출하면 왜 vector 크기가 줄지 않습니까?</summary>
+
+답변: <code>std::remove</code>는 제거 대상이 아닌 원소를 앞쪽으로 모으고 유효 범위 끝 iterator를 반환할 뿐입니다. 실제 size를 줄이려면 <code>erase</code>를 이어서 호출해야 합니다.
+
+</details>
+
+<details markdown="block">
+<summary>15. `std::find`와 `.find()`는 왜 다릅니까?</summary>
+
+답변: <code>std::find</code>는 iterator 범위를 앞에서부터 순차 탐색하는 범용 알고리즘입니다. <code>.find()</code>는 <code>set</code>, <code>map</code> 같은 컨테이너가 내부 구조를 이용해 제공하는 전용 탐색 함수입니다.
+
+</details>
+
+<details markdown="block">
+<summary>16. <code>std::max_element</code>에서 비교식 <code>a.second &lt; b.second</code>를 쓰면 왜 최대 빈도가 나옵니까?</summary>
+
+답변: 비교식은 “a가 b보다 작다”를 정의합니다. <code>a.second &lt; b.second</code>를 기준으로 작고 큼을 판단하면, <code>max_element</code>는 <code>second</code>가 가장 큰 원소를 최대 원소로 선택합니다.
+
+</details>
+
+<details markdown="block">
+<summary>17. `enum class`가 C-style enum보다 안전한 이유는 무엇입니까?</summary>
+
+답변: <code>enum class</code>는 이름이 enum scope 안에 묶이고, 정수로 암시 변환되지 않습니다. 그래서 이름 충돌과 의도하지 않은 정수 연산을 줄일 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>18. `shared_ptr`의 순환 참조는 왜 문제가 됩니까?</summary>
+
+답변: 서로를 <code>shared_ptr</code>로 소유하면 reference count가 0이 되지 않아 객체가 해제되지 않습니다. 이때 한쪽 참조를 <code>weak_ptr</code>로 바꾸면 소유권 순환을 끊을 수 있습니다.
 
 </details>
 

@@ -30,58 +30,58 @@ keywords:
 
 ## 한 줄 요약
 
-이 논문은 시간이 계속 누적되는 고차원 벡터 데이터에서 특정 시간 구간 안의 approximate kNN을 빠르게 찾기 위해, timestamp 기반 계층 블록마다 graph index를 두는 Multi-Level Block Indexing(MBI)을 제안하고 이를 다중 수치 속성 필터링 문제로 확장한다.
+이 논문은 시간이 계속 누적되는 고차원 벡터 데이터에서 특정 시간 구간 안의 approximate kNN을 빠르게 찾기 위해, timestamp 기반 계층 블록마다 graph index를 두는 Multi-Level Block Indexing(MBI)을 제안하고 이를 다중 수치 속성 필터링 문제로 확장합니다.
 
 ## 핵심 내용
 
-논문은 고차원 embedding 데이터에서 kNN 검색을 수행할 때, similarity 조건뿐 아니라 timestamp나 수치 속성 범위 조건이 함께 붙는 상황을 다룬다. 일반 ANN index는 전체 database에서 가까운 vector를 빠르게 찾는 데 적합하지만, 사용자가 특정 기간 안의 결과만 요구하면 검색 후 filter 과정에서 많은 후보가 버려질 수 있다. 반대로 먼저 시간 구간을 잘라 brute-force로 찾으면 구간이 길 때 계산량이 커진다.
+논문은 고차원 embedding 데이터에서 kNN 검색을 수행할 때, similarity 조건뿐 아니라 timestamp나 수치 속성 범위 조건이 함께 붙는 상황을 다룹니다. 일반 ANN index는 전체 database에서 가까운 vector를 빠르게 찾는 데 적합하지만, 사용자가 특정 기간 안의 결과만 요구하면 검색 후 filter 과정에서 많은 후보가 버려질 수 있습니다. 반대로 먼저 시간 구간을 잘라 brute-force로 찾으면 구간이 길 때 계산량이 커집니다.
 
-이 문제를 해결하기 위해 논문은 Multi-Level Block Indexing(MBI)을 제안한다. Timestamp 순서로 정렬된 데이터를 leaf block에 넣고, 인접 block을 계층적으로 합쳐 parent block을 만든다. 각 block은 자체 graph index를 가진다. Query time window가 짧으면 작은 block을 사용하고, 길면 큰 block을 사용하므로 BSBF와 SF의 약점을 절충할 수 있다.
+이 문제를 해결하기 위해 논문은 Multi-Level Block Indexing(MBI)을 제안합니다. Timestamp 순서로 정렬된 데이터를 leaf block에 넣고, 인접 block을 계층적으로 합쳐 parent block을 만듭니다. 각 block은 자체 graph index를 가집니다. Query time window가 짧으면 작은 block을 사용하고, 길면 큰 block을 사용하므로 BSBF와 SF의 약점을 절충할 수 있습니다.
 
-질의 처리는 query window를 덮는 search block set을 고르는 단계와 각 block에서 kNN search를 수행한 뒤 결과를 merge하는 단계로 나뉜다. Block 선택은 overlap ratio와 threshold $$\tau$$로 결정된다. $$\tau$$가 낮으면 큰 block을 선택해 graph search 이점을 살리고, $$\tau$$가 높으면 작은 block을 선택해 filter 비용을 줄인다. 논문은 $$\tau \le 0.5$$ 조건에서 T kNN query를 처리하는 block 수가 최대 2개임을 보이며, 이것이 query window 길이에 따른 성능 변동을 줄이는 핵심 근거가 된다.
+질의 처리는 query window를 덮는 search block set을 고르는 단계와 각 block에서 kNN search를 수행한 뒤 결과를 merge하는 단계로 나뉩니다. Block 선택은 overlap ratio와 threshold $$\tau$$로 결정됩니다. $$\tau$$가 낮으면 큰 block을 선택해 graph search 이점을 살리고, $$\tau$$가 높으면 작은 block을 선택해 filter 비용을 줄입니다. 논문은 $$\tau \le 0.5$$ 조건에서 T kNN query를 처리하는 block 수가 최대 2개임을 보이며, 이것이 query window 길이에 따른 성능 변동을 줄이는 핵심 근거가 됩니다.
 
-논문은 timestamp 하나만 다루는 T kNN을 여러 numerical attribute constraint가 있는 m-AkNN으로 확장한다. 이 경우 binary tree는 $$2^{m}$$-ary tree로 일반화되고, 데이터 분포가 균일하지 않기 때문에 count-based recursive partitioning을 사용한다. 다만 T kNN은 timestamp 증가 순서 삽입을 가정하는 반면, m-AkNN은 static dataset 중심이라는 차이가 있다.
+논문은 timestamp 하나만 다루는 T kNN을 여러 numerical attribute constraint가 있는 m-AkNN으로 확장합니다. 이 경우 binary tree는 $$2^{m}$$-ary tree로 일반화되고, 데이터 분포가 균일하지 않기 때문에 count-based recursive partitioning을 사용합니다. 다만 T kNN은 timestamp 증가 순서 삽입을 가정하는 반면, m-AkNN은 static dataset 중심이라는 차이가 있습니다.
 
-실험에서는 MovieLens, COMS, GloVe, SIFT1M, GIST1M, DEEP1B subset 등 다양한 dataset에서 MBI가 BSBF와 SF보다 안정적인 query speed를 보였다. Index size는 더 커지지만, 속도를 위해 block별 graph index를 저장하는 trade-off로 해석할 수 있다. 남은 과제는 arbitrary insertion/deletion, sliding-window deletion, m-AkNN dynamic update, block selection의 formal optimality 분석이다.
+실험에서는 MovieLens, COMS, GloVe, SIFT1M, GIST1M, DEEP1B subset 등 다양한 dataset에서 MBI가 BSBF와 SF보다 안정적인 query speed를 보였습니다. Index size는 더 커지지만, 속도를 위해 block별 graph index를 저장하는 trade-off로 해석할 수 있습니다. 남은 과제는 arbitrary insertion/deletion, sliding-window deletion, m-AkNN dynamic update, block selection의 formal optimality 분석입니다.
 
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 문제 배경 | 왜 일반 ANN index만으로 time-restricted kNN을 처리하기 어려운가? |
-| 2 | 문제 정의 | T kNN과 m-AkNN은 어떤 조건부 kNN 문제인가? |
-| 3 | 단순 접근 | BSBF와 SF는 각각 어떤 구간에서 느려지는가? |
-| 4 | MBI 구조 | 시간을 기준으로 block tree를 만들면 무엇이 좋아지는가? |
-| 5 | 삽입 | 새 데이터가 시간순으로 들어올 때 index를 어떻게 갱신하는가? |
-| 6 | 질의 처리 | query window에 맞는 block set을 어떻게 고르는가? |
-| 7 | 다중 속성 확장 | timestamp 하나에서 여러 수치 속성 constraint로 어떻게 확장하는가? |
-| 8 | 복잡도 | index size, indexing time, query time은 어떻게 해석되는가? |
-| 9 | 실험 | 어떤 dataset에서 얼마나 빨라졌는가? |
-| 10 | 한계 | update, deletion, optimality 분석에는 어떤 과제가 남는가? |
+| 1 | 문제 배경 | 왜 일반 ANN index만으로 time-restricted kNN을 처리하기 어렵습니까? |
+| 2 | 문제 정의 | T kNN과 m-AkNN은 어떤 조건부 kNN 문제입니까? |
+| 3 | 단순 접근 | BSBF와 SF는 각각 어떤 구간에서 느려집니까? |
+| 4 | MBI 구조 | 시간을 기준으로 block tree를 만들면 무엇이 좋아집니까? |
+| 5 | 삽입 | 새 데이터가 시간순으로 들어올 때 index를 어떻게 갱신합니까? |
+| 6 | 질의 처리 | query window에 맞는 block set을 어떻게 고릅니까? |
+| 7 | 다중 속성 확장 | timestamp 하나에서 여러 수치 속성 constraint로 어떻게 확장합니까? |
+| 8 | 복잡도 | index size, indexing time, query time은 어떻게 해석됩니까? |
+| 9 | 실험 | 어떤 dataset에서 얼마나 빨라졌습니까? |
+| 10 | 한계 | update, deletion, optimality 분석에는 어떤 과제가 남습니까? |
 
 ## 1. 문제 배경
 
-현대 데이터는 시간이 지나며 계속 쌓인다. 위성 이미지, 음악 트랙, 유튜브 영상, SNS 사진처럼 새 항목이 지속적으로 추가되고, 각 항목은 보통 embedding vector로 표현된다.
+현대 데이터는 시간이 지나며 계속 쌓입니다. 위성 이미지, 음악 트랙, 유튜브 영상, SNS 사진처럼 새 항목이 지속적으로 추가되고, 각 항목은 보통 embedding vector로 표현됩니다.
 
-일반 kNN search는 query vector와 가까운 항목을 찾는다.
+일반 kNN search는 query vector와 가까운 항목을 찾습니다.
 
 ```text
 query vector w
 -> nearest vectors in whole database D
 ```
 
-하지만 실제 검색에서는 전체 DB가 아니라 특정 기간 안에서만 찾고 싶을 때가 많다.
+하지만 실제 검색에서는 전체 DB가 아니라 특정 기간 안에서만 찾고 싶을 때가 많습니다.
 
 ```text
 "1980년부터 1995년 사이에 개봉한 영화 중 Zootopia와 가장 비슷한 5개"
 "2010년 1월부터 2011년 5월 사이에 찍은 사진 중 현재 사진과 가장 비슷한 10개"
 ```
 
-이런 질의는 similarity 조건과 time window 조건을 동시에 만족해야 한다. 논문은 이를 Time-Restricted kNN, 줄여서 T kNN 문제로 정의한다.
+이런 질의는 similarity 조건과 time window 조건을 동시에 만족해야 합니다. 논문은 이를 Time-Restricted kNN, 줄여서 T kNN 문제로 정의합니다.
 
 ## 2. 문제 정의
 
-데이터베이스는 timestamp가 붙은 벡터 집합이다.
+데이터베이스는 timestamp가 붙은 벡터 집합입니다.
 
 $$
 \mathcal{D} = \{(v,t)\}
@@ -91,14 +91,14 @@ $$
 v \in \mathbb{R}^{d},\qquad t \in \mathcal{T}
 $$
 
-시간 구간 $$[t_a,t_b)$$에 속한 데이터만 모으면 다음처럼 쓴다.
+시간 구간 $$[t_a,t_b)$$에 속한 데이터만 모으면 다음처럼 씁니다.
 
 $$
 \mathcal{D}[t_a:t_b]
 = \{(v,t)\in\mathcal{D}\mid t_a \le t < t_b\}
 $$
 
-T kNN query는 다음 형태다.
+T kNN query는 다음 형태입니다.
 
 $$
 q = (w,k,t_s,t_e)
@@ -111,34 +111,34 @@ $$
 | $$t_s, t_e$$ | 검색할 시작/끝 timestamp |
 | $$\mathcal{D}[t_s:t_e]$$ | 시간 조건을 만족하는 후보 집합 |
 
-목표는 $$\mathcal{D}[t_s:t_e]$$ 안에서 $$w$$와 가장 가까운 $$k$$개를 찾는 것이다.
+목표는 $$\mathcal{D}[t_s:t_e]$$ 안에서 $$w$$와 가장 가까운 $$k$$개를 찾는 것입니다.
 
-논문은 이를 더 일반화해 m-Attribute Filtering kNN, 즉 m-AkNN도 정의한다. timestamp 하나가 아니라 나이, 키, 몸무게, 논문 인용수, 출판일처럼 여러 수치 속성에 범위 조건을 걸고 kNN을 수행하는 문제다.
+논문은 이를 더 일반화해 m-Attribute Filtering kNN, 즉 m-AkNN도 정의합니다. timestamp 하나가 아니라 나이, 키, 몸무게, 논문 인용수, 출판일처럼 여러 수치 속성에 범위 조건을 걸고 kNN을 수행하는 문제입니다.
 
 $$
 q = (w,k,a_{\mathrm{lower}},a_{\mathrm{upper}})
 $$
 
-T kNN은 filtering attribute가 timestamp 하나인 $$m = 1$$ 특수 사례로 볼 수 있다.
+T kNN은 filtering attribute가 timestamp 하나인 $$m = 1$$ 특수 사례로 볼 수 있습니다.
 
 ## 3. 단순 접근의 한계
 
-논문은 먼저 두 가지 직관적인 baseline을 설명한다.
+논문은 먼저 두 가지 직관적인 baseline을 설명합니다.
 
 | 방법 | 핵심 아이디어 | 강한 구간 | 약한 구간 |
 |---|---|---|---|
 | BSBF | timestamp 정렬 후 binary search로 시간 구간을 찾고, 그 안에서 brute-force kNN 수행 | query time window가 짧을 때 | query time window가 길 때 |
 | SF | 전체 graph-based ANN index를 탐색하면서 시간 조건을 만족하는 후보만 모음 | query time window가 넓을 때 | query time window가 좁을 때 |
 
-BSBF(Binary Search and Brute-Force)는 시간 구간을 빠르게 찾지만, 구간이 커지면 결국 많은 벡터와 query distance를 직접 계산해야 한다.
+BSBF(Binary Search and Brute-Force)는 시간 구간을 빠르게 찾지만, 구간이 커지면 결국 많은 벡터와 query distance를 직접 계산해야 합니다.
 
-SF(Search and Filtering)는 기존 graph-based approximate kNN index를 그대로 활용한다. 하지만 시간 구간이 좁으면 탐색 중 만나는 대부분의 후보가 filter out된다. 결과 `k`개를 채울 때까지 탐색 범위를 크게 넓혀야 하므로 느려진다.
+SF(Search and Filtering)는 기존 graph-based approximate kNN index를 그대로 활용합니다. 하지만 시간 구간이 좁으면 탐색 중 만나는 대부분의 후보가 filter out됩니다. 결과 `k`개를 채울 때까지 탐색 범위를 크게 넓혀야 하므로 느려집니다.
 
-m-AkNN에서는 BSBF가 AFBF(Attribute-Filtering Brute-Force)로 바뀐다. 여러 속성에는 timestamp처럼 간단한 binary search를 적용하기 어렵기 때문에, 먼저 전체 데이터에서 속성 조건을 brute-force로 검사하고 그 결과 안에서 kNN을 수행한다.
+m-AkNN에서는 BSBF가 AFBF(Attribute-Filtering Brute-Force)로 바뀝니다. 여러 속성에는 timestamp처럼 간단한 binary search를 적용하기 어렵기 때문에, 먼저 전체 데이터에서 속성 조건을 brute-force로 검사하고 그 결과 안에서 kNN을 수행합니다.
 
 ## 4. MBI의 핵심 아이디어
 
-MBI는 BSBF와 SF의 장단점을 block tree로 절충한다.
+MBI는 BSBF와 SF의 장단점을 block tree로 절충합니다.
 
 ```text
 timestamp-sorted vectors
@@ -147,16 +147,16 @@ timestamp-sorted vectors
 -> root block
 ```
 
-각 block은 두 가지를 가진다.
+각 block은 두 가지를 가집니다.
 
 | 구성 | 의미 |
 |---|---|
 | vector set | 해당 block의 timestamp 범위에 속한 데이터 |
 | graph index | block 내부에서 approximate kNN을 빠르게 수행하기 위한 graph-based index |
 
-root block은 전체 데이터를 담고, leaf block은 최대 $$S_L$$개 정도의 작은 데이터만 담는다. 중간 block은 인접한 child block을 합친 timestamp 구간을 표현한다.
+root block은 전체 데이터를 담고, leaf block은 최대 $$S_L$$개 정도의 작은 데이터만 담습니다. 중간 block은 인접한 child block을 합친 timestamp 구간을 표현합니다.
 
-이 구조의 직관은 다음과 같다.
+이 구조의 직관은 다음과 같습니다.
 
 | query time window | 선택되는 block 경향 | 동작 느낌 |
 |---|---|---|
@@ -164,11 +164,11 @@ root block은 전체 데이터를 담고, leaf block은 최대 $$S_L$$개 정도
 | 긴 구간 | 큰 block | SF처럼 graph search의 장점을 사용 |
 | 중간 구간 | 크고 작은 block 조합 | 시간 범위를 덮는 적절한 block set에서 검색 |
 
-핵심은 시간 제한을 검색 후 filter로 처리하지 않고, index 구조 자체에 반영한다는 점이다.
+핵심은 시간 제한을 검색 후 filter로 처리하지 않고, index 구조 자체에 반영한다는 점입니다.
 
 ## 5. MBI의 삽입 방식
 
-T kNN 설정에서 데이터는 timestamp가 증가하는 순서로 들어온다고 가정한다. 새 vector가 들어오면 최신 leaf block에 추가된다.
+T kNN 설정에서 데이터는 timestamp가 증가하는 순서로 들어온다고 가정합니다. 새 vector가 들어오면 최신 leaf block에 추가됩니다.
 
 | 상황 | 처리 |
 |---|---|
@@ -176,26 +176,26 @@ T kNN 설정에서 데이터는 timestamp가 증가하는 순서로 들어온다
 | leaf block이 가득 참 | 새 leaf block 생성 |
 | leaf block이 $$S_L$$개를 채움 | 해당 leaf의 graph index 생성 후 ancestor block을 bottom-up으로 merge |
 
-bottom-up merge는 child block의 vector set을 합쳐 parent block을 만들고, parent block의 graph index를 새로 만든다. 논문은 block 번호를 postorder traversal 순서로 부여해 sibling과 parent를 효율적으로 찾는다.
+bottom-up merge는 child block의 vector set을 합쳐 parent block을 만들고, parent block의 graph index를 새로 만듭니다. 논문은 block 번호를 postorder traversal 순서로 부여해 sibling과 parent를 효율적으로 찾습니다.
 
-중요한 점은 각 block의 graph index가 독립적으로 만들어진다는 것이다. 따라서 여러 block의 index construction은 병렬화하기 쉽다.
+중요한 점은 각 block의 graph index가 독립적으로 만들어진다는 것입니다. 따라서 여러 block의 index construction은 병렬화하기 쉽습니다.
 
 ## 6. Query Processing
 
-MBI query는 두 단계로 볼 수 있다.
+MBI query는 두 단계로 볼 수 있습니다.
 
 ```text
 1. query time window를 덮는 search block set 선택
 2. 각 block에서 kNN search 수행 후 결과 merge
 ```
 
-block 선택은 overlap ratio로 결정된다.
+block 선택은 overlap ratio로 결정됩니다.
 
 ```text
 overlap ratio = query window와 block window가 겹치는 비율
 ```
 
-논문은 threshold $$\tau$$를 사용한다.
+논문은 threshold $$\tau$$를 사용합니다.
 
 | 조건 | 처리 |
 |---|---|
@@ -203,7 +203,7 @@ overlap ratio = query window와 block window가 겹치는 비율
 | leaf block이거나 overlap ratio가 $$\tau$$ 이상 | 해당 block 선택 |
 | non-leaf이고 overlap ratio가 $$\tau$$보다 작음 | child block으로 내려감 |
 
-$$\tau$$는 block 선택의 보수성을 조절한다.
+$$\tau$$는 block 선택의 보수성을 조절합니다.
 
 | $$\tau$$ 값 | 선택 경향 | 장단점 |
 |---|---|---|
@@ -211,11 +211,11 @@ $$\tau$$는 block 선택의 보수성을 조절한다.
 | 높음 | leaf에 가까운 작은 block 선택 | 짧은 window에 유리하지만 block 수가 많아짐 |
 | 약 0.5 | 실험상 무난한 기본값 | 대부분의 dataset에서 안정적 |
 
-논문은 $$\tau \le 0.5$$이면 T kNN query를 처리하는 block 수가 최대 2개임을 보인다. 이것이 MBI가 다양한 query window 길이에서 안정적인 속도를 보이는 핵심 이유다.
+논문은 $$\tau \le 0.5$$이면 T kNN query를 처리하는 block 수가 최대 2개임을 보입니다. 이것이 MBI가 다양한 query window 길이에서 안정적인 속도를 보이는 핵심 이유입니다.
 
 ## 7. m-AkNN으로 확장
 
-T kNN은 filtering attribute가 timestamp 하나라서 binary tree로 충분하다. m-AkNN은 여러 수치 속성의 범위 조건을 동시에 만족해야 한다.
+T kNN은 filtering attribute가 timestamp 하나라서 binary tree로 충분합니다. m-AkNN은 여러 수치 속성의 범위 조건을 동시에 만족해야 합니다.
 
 ```text
 age in [20, 40)
@@ -223,7 +223,7 @@ height in [160, 180)
 weight in [50, 80)
 ```
 
-이 경우 MBI는 $$2^{m}$$-ary tree로 확장된다.
+이 경우 MBI는 $$2^{m}$$-ary tree로 확장됩니다.
 
 | $$m$$ | 구조 |
 |---:|---|
@@ -231,20 +231,20 @@ weight in [50, 80)
 | 2 | quadtree |
 | 3 | octree |
 
-다만 실제 데이터는 균일한 grid에 예쁘게 분포하지 않는다. 그래서 논문은 rigid grid 대신 count-based recursive space partitioning을 사용한다. 데이터가 많은 영역은 더 깊게 나누고, sparse한 영역은 얕게 유지한다.
+다만 실제 데이터는 균일한 grid에 예쁘게 분포하지 않습니다. 그래서 논문은 rigid grid 대신 count-based recursive space partitioning을 사용합니다. 데이터가 많은 영역은 더 깊게 나누고, sparse한 영역은 얕게 유지합니다.
 
-T kNN과 다른 중요한 제약도 있다.
+T kNN과 다른 중요한 제약도 있습니다.
 
 | 문제 | update 가정 |
 |---|---|
 | T kNN | timestamp 증가 순서의 incremental insertion 지원 |
 | m-AkNN | attribute가 insertion order와 독립적이므로 static dataset 중심 |
 
-즉, m-AkNN 확장은 query filtering에는 강하지만 arbitrary insertion/deletion까지 다루지는 않는다.
+즉, m-AkNN 확장은 query filtering에는 강하지만 arbitrary insertion/deletion까지 다루지는 않습니다.
 
 ## 8. 복잡도 정리
 
-논문은 block 내부 index로 NNDescent 기반 graph index를 사용한다고 두고 분석한다.
+논문은 block 내부 index로 NNDescent 기반 graph index를 사용한다고 두고 분석합니다.
 
 | 항목 | 결과 | 해석 |
 |---|---|---|
@@ -254,11 +254,11 @@ T kNN과 다른 중요한 제약도 있다.
 | T kNN query, $$\tau \le 0.5$$ | $$O(\log b/\tau+k/\tau)$$ | $$b=\lvert D[t_s:t_e]\rvert$$, query time window 안의 데이터 수 |
 | m-AkNN query upper bound | $$O\left(\frac{b}{S_L\tau}\left(\log S_L+\frac{k}{\tau}\right)\right)$$ | 최악의 경우 leaf block 위주로 처리한다고 보는 거친 상한 |
 
-분석상 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점이다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적이다.
+분석상 중요한 해석은 MBI가 index memory를 더 쓰는 대신 query time을 안정화한다는 점입니다. 특히 query window가 짧든 길든 한쪽 baseline처럼 급격히 나빠지지 않는 것이 목적입니다.
 
 ## 9. 실험 설정
 
-T kNN 실험에는 6개 dataset을 사용한다.
+T kNN 실험에는 6개 dataset을 사용합니다.
 
 | Dataset | Train items | Test items | Dim. | Distance |
 |---|---:|---:|---:|---|
@@ -269,18 +269,18 @@ T kNN 실험에는 6개 dataset을 사용한다.
 | GIST1M | 1,000,000 | 1,000 | 960 | Euclidean |
 | DEEP1B subset | 9,990,000 | 10,000 | 96 | Angular |
 
-m-AkNN 실험에는 COMS-GTS와 CORD-19를 사용한다.
+m-AkNN 실험에는 COMS-GTS와 CORD-19를 사용합니다.
 
 | Dataset | Items | Dim. | Filtering attributes |
 |---|---:|---:|---|
 | COMS-GTS | 25,544 | 128 | timestamp, temperature, humidity |
 | CORD-19 | 49,800 | 728 | publication date, citation counts |
 
-query 성능은 approximate answer와 exact answer의 overlap인 recall@k로 맞춘 뒤 queries per second를 비교한다.
+query 성능은 approximate answer와 exact answer의 overlap인 recall@k로 맞춘 뒤 queries per second를 비교합니다.
 
 ## 10. 주요 결과
 
-T kNN에서 MBI는 query time window의 길이에 관계없이 BSBF와 SF보다 안정적인 속도를 보인다.
+T kNN에서 MBI는 query time window의 길이에 관계없이 BSBF와 SF보다 안정적인 속도를 보입니다.
 
 | 결과 | 의미 |
 |---|---|
@@ -290,7 +290,7 @@ T kNN에서 MBI는 query time window의 길이에 관계없이 BSBF와 SF보다 
 | SIFT1M scalability slope 약 1.29 | 데이터가 커질수록 이론적 $$n^{1.14}$$에 가까워지는 경향 |
 | parallel indexing | block index를 병렬 생성하면 indexing time이 최대 5.08배 감소 |
 
-m-AkNN에서도 MBI는 AFBF와 SF의 약점을 줄인다.
+m-AkNN에서도 MBI는 AFBF와 SF의 약점을 줄입니다.
 
 | 결과 | 의미 |
 |---|---|
@@ -299,7 +299,7 @@ m-AkNN에서도 MBI는 AFBF와 SF의 약점을 줄인다.
 | faster than AFBF | AFBF보다 적은 vector를 직접 검사하므로 query speed가 높음 |
 | stable indexing trend | m-AkNN에서도 T kNN과 유사한 scalability trend 관찰 |
 
-index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input data 3.92GB에 대해 MBI index가 18.24GB, SF index가 6.10GB로 보고된다. 속도를 위해 저장공간을 쓰는 trade-off다.
+index size는 SF보다 커집니다. 예를 들어 DEEP1B subset에서는 input data 3.92GB에 대해 MBI index가 18.24GB, SF index가 6.10GB로 보고됩니다. 속도를 위해 저장공간을 쓰는 trade-off입니다.
 
 ## 11. 논문의 핵심 기여
 
@@ -314,28 +314,28 @@ index size는 SF보다 커진다. 예를 들어 DEEP1B subset에서는 input dat
 
 ## 12. 읽을 때 잡아야 할 관점
 
-이 논문은 "새로운 ANN search graph"를 제안하는 논문이라기보다, 기존 graph-based ANN index를 시간/속성 필터 조건이 있는 검색에 맞게 배치하는 indexing framework 논문으로 읽는 것이 좋다.
+이 논문은 "새로운 ANN search graph"를 제안하는 논문이라기보다, 기존 graph-based ANN index를 시간/속성 필터 조건이 있는 검색에 맞게 배치하는 indexing framework 논문으로 읽는 것이 좋습니다.
 
 | 관점 | 질문 |
 |---|---|
-| Filtering-first vs search-first | 먼저 조건을 거르고 찾을 것인가, 먼저 찾고 조건을 거를 것인가? |
-| Block granularity | leaf size $$S_L$$이 작거나 클 때 어떤 비용이 커지는가? |
-| Threshold $$\tau$$ | query window 길이에 따라 큰 block과 작은 block 중 무엇을 고를 것인가? |
-| Memory trade-off | block마다 graph index를 저장하는 추가 비용을 감당할 수 있는가? |
-| Dynamic workload | timestamp 순서 삽입이라는 가정이 실제 서비스에 맞는가? |
+| Filtering-first vs search-first | 먼저 조건을 거르고 찾을 것인가, 먼저 찾고 조건을 거를 것입니까? |
+| Block granularity | leaf size $$S_L$$이 작거나 클 때 어떤 비용이 커집니까? |
+| Threshold $$\tau$$ | query window 길이에 따라 큰 block과 작은 block 중 무엇을 고를 것입니까? |
+| Memory trade-off | block마다 graph index를 저장하는 추가 비용을 감당할 수 있습니까? |
+| Dynamic workload | timestamp 순서 삽입이라는 가정이 실제 서비스에 맞습니까? |
 
 ## 13. 한계와 향후 과제
 
-논문이 직접 언급한 한계는 다음과 같다.
+논문이 직접 언급한 한계는 다음과 같습니다.
 
 | 한계 | 설명 |
 |---|---|
-| timestamp 순서 가정 | T kNN indexing은 데이터가 non-decreasing timestamp order로 들어온다고 가정한다. |
-| arbitrary insertion/deletion 미지원 | 과거 timestamp로 새 데이터를 넣거나 임의 삭제하는 경우는 다루지 않는다. |
-| m-AkNN static dataset | 다중 속성 설정에서는 dynamic update를 고려하지 않는다. |
-| formal optimality open | MBI block selection이 이론적으로 최적인지에 대한 분석은 남아 있다. |
+| timestamp 순서 가정 | T kNN indexing은 데이터가 non-decreasing timestamp order로 들어온다고 가정합니다. |
+| arbitrary insertion/deletion 미지원 | 과거 timestamp로 새 데이터를 넣거나 임의 삭제하는 경우는 다루지 않습니다. |
+| m-AkNN static dataset | 다중 속성 설정에서는 dynamic update를 고려하지 않습니다. |
+| formal optimality open | MBI block selection이 이론적으로 최적인지에 대한 분석은 남아 있습니다. |
 
-가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시된다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향이다.
+가능한 확장으로는 오래된 왼쪽 block을 순차적으로 제거하는 sliding-window deletion이 제시됩니다. 실시간 서비스에서 최근 몇 년 또는 최근 몇 달만 유지하는 형태라면 자연스러운 확장 방향입니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

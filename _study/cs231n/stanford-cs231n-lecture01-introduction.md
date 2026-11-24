@@ -21,59 +21,59 @@ Source: [Stanford CS231N Deep Learning for Computer Vision, Spring 2025, Lecture
 
 Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf){:target="_blank" rel="noopener"} · [Part 2](https://cs231n.stanford.edu/slides/2025/lecture_1_part_2.pdf){:target="_blank" rel="noopener"}
 
-**원본 자료 먼저 보기:** [Part 1 p.39의 backpropagation 도식과 chain-rule 식](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39){:target="_blank" rel="noopener"}을 먼저 연다. 도식은 출력 오차에서 입력 방향으로 연결을 거슬러 올라가며 각 edge의 local derivative를 곱하는 흐름을 보여준다. 아래 4절과 작성자 보충은 이 원본 관계를 식으로 풀어 쓴다.
+**원본 자료 먼저 보기:** [Part 1 p.39의 backpropagation 도식과 chain-rule 식](https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39){:target="_blank" rel="noopener"}을 먼저 엽니다. 도식은 출력 오차에서 입력 방향으로 연결을 거슬러 올라가며 각 edge의 local derivative를 곱하는 흐름을 보여줍니다. 아래 4절과 작성자 보충은 이 원본 관계를 식으로 풀어 씁니다.
 
 <figure id="cs231n-lecture01-source-p39">
   <a href="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture01-p39.jpg" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs231n/source-captures/cs231n-lecture01-p39.jpg" | relative_url }}" alt="다층 신경망의 출력 오차에서 가중치 w_ji로 이어지는 chain rule 경로를 표시한 backpropagation 슬라이드" loading="lazy"></a>
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39" target="_blank" rel="noopener">CS231N Lecture 1 Part 1, PDF p. 39 (printed slide 39)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 한다.
+> **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제입니다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 합니다.
 
-컴퓨터가 받는 것은 `고양이`라는 의미가 아니라 위치마다 색 값이 적힌 배열이다. 같은 물체도 조명, 시점, 가림에 따라 픽셀이 크게 달라지므로 고정 규칙만으로 의미를 읽기 어렵다. Computer vision은 많은 예시에서 어떤 변화는 무시하고 어떤 차이는 구분해야 하는지를 학습해 분류, 위치 추정, 행동 판단으로 이어 간다.
+컴퓨터가 받는 것은 `고양이`라는 의미가 아니라 위치마다 색 값이 적힌 배열입니다. 같은 물체도 조명, 시점, 가림에 따라 픽셀이 크게 달라지므로 고정 규칙만으로 의미를 읽기 어렵습니다. Computer vision은 많은 예시에서 어떤 변화는 무시하고 어떤 차이는 구분해야 하는지를 학습해 분류, 위치 추정, 행동 판단으로 이어 갑니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | Computer vision의 위치 | 시각 지능은 AI 안에서 어떤 문제를 다루는가? |
-| 2 | 시각의 역사 | 생물학적 시각과 기계 시각은 어떻게 연결되는가? |
-| 3 | 초기 연구 | Hubel-Wiesel, Marr, Summer Vision Project는 어떤 관점을 남겼는가? |
-| 4 | Neural network와 CNN | 역전파와 합성곱 구조는 왜 중요했는가? |
-| 5 | ImageNet과 AlexNet | 현대 딥러닝 전환점은 어떤 조건들이 맞물린 결과였는가? |
-| 6 | Vision task의 확장 | 분류 이후 검출, 분할, 비디오, 생성으로 어떻게 넓어지는가? |
-| 7 | 사회적 함의 | 편향, 안전, 인간 중심 설계를 왜 함께 고려해야 하는가? |
-| 8 | CS231N 수업 구조 | 앞으로 어떤 주제를 순서대로 배우는가? |
+| 1 | Computer vision의 위치 | 시각 지능은 AI 안에서 어떤 문제를 다룹니까? |
+| 2 | 시각의 역사 | 생물학적 시각과 기계 시각은 어떻게 연결됩니까? |
+| 3 | 초기 연구 | Hubel-Wiesel, Marr, Summer Vision Project는 어떤 관점을 남겼습니까? |
+| 4 | Neural network와 CNN | 역전파와 합성곱 구조는 왜 중요했습니까? |
+| 5 | ImageNet과 AlexNet | 현대 딥러닝 전환점은 어떤 조건들이 맞물린 결과였습니까? |
+| 6 | Vision task의 확장 | 분류 이후 검출, 분할, 비디오, 생성으로 어떻게 넓어집니까? |
+| 7 | 사회적 함의 | 편향, 안전, 인간 중심 설계를 왜 함께 고려해야 합니까? |
+| 8 | CS231N 수업 구조 | 앞으로 어떤 주제를 순서대로 배웁니까? |
 
 </details>
 ## 1. Computer Vision의 위치
 
-CS231N은 인공지능 전체를 다루는 수업이 아니라, 컴퓨터 비전과 딥러닝이 만나는 핵심 영역을 다룬다. 컴퓨터 비전의 목표는 이미지와 비디오의 픽셀을 물체, 장면, 행동, 관계 같은 의미로 바꾸는 것이다.
+CS231N은 인공지능 전체를 다루는 수업이 아니라, 컴퓨터 비전과 딥러닝이 만나는 핵심 영역을 다룹니다. 컴퓨터 비전의 목표는 이미지와 비디오의 픽셀을 물체, 장면, 행동, 관계 같은 의미로 바꾸는 것입니다.
 
 ```text
 pixels -> features -> objects/scenes/actions -> decisions
 ```
 
-이 문제는 자연어 처리, 로보틱스, 의학, 과학, 법, 교육, 비즈니스와도 연결된다. 시각 정보는 현실 세계를 이해하는 중요한 입력이기 때문에, 컴퓨터 비전은 단순한 이미지 처리보다 넓은 시각 지능 문제로 보아야 한다.
+이 문제는 자연어 처리, 로보틱스, 의학, 과학, 법, 교육, 비즈니스와도 연결됩니다. 시각 정보는 현실 세계를 이해하는 중요한 입력이기 때문에, 컴퓨터 비전은 단순한 이미지 처리보다 넓은 시각 지능 문제로 보아야 합니다.
 
 ## 2. 시각과 지능
 
-강의는 시각을 지능 진화의 중요한 계기로 설명한다. 생물학적 시각은 환경을 더 능동적으로 감지하고 반응하게 만들었고, 인간 역시 시각 의존도가 매우 높은 존재다.
+강의는 시각을 지능 진화의 중요한 계기로 설명합니다. 생물학적 시각은 환경을 더 능동적으로 감지하고 반응하게 만들었고, 인간 역시 시각 의존도가 매우 높은 존재입니다.
 
-이 관점에서 computer vision은 카메라나 센서를 만드는 일이 아니라, 시각 입력에서 의미를 추론하는 시스템을 만드는 일이다. 물체가 같은 범주에 속하더라도 조명, 시점, 가림, 배경이 달라지면 픽셀은 크게 달라진다. 따라서 컴퓨터 비전의 어려움은 픽셀과 의미 사이의 간극에서 나온다.
+이 관점에서 computer vision은 카메라나 센서를 만드는 일이 아니라, 시각 입력에서 의미를 추론하는 시스템을 만드는 일입니다. 물체가 같은 범주에 속하더라도 조명, 시점, 가림, 배경이 달라지면 픽셀은 크게 달라집니다. 따라서 컴퓨터 비전의 어려움은 픽셀과 의미 사이의 간극에서 나옵니다.
 
 ## 3. 초기 Computer Vision과 신경과학
 
-Hubel과 Wiesel의 시각 피질 연구는 계층적 시각 처리라는 직관을 제공했다. 낮은 수준에서는 선분, 방향, 가장자리 같은 단순 패턴을 감지하고, 더 높은 수준에서는 복잡한 형태와 의미를 다룬다는 생각이다.
+Hubel과 Wiesel의 시각 피질 연구는 계층적 시각 처리라는 직관을 제공했습니다. 낮은 수준에서는 선분, 방향, 가장자리 같은 단순 패턴을 감지하고, 더 높은 수준에서는 복잡한 형태와 의미를 다룬다는 생각입니다.
 
-초기 computer vision 연구도 이 영향을 받았다. Larry Roberts의 3D 형상 연구, MIT Summer Vision Project, David Marr의 시각 처리 이론은 이미지에서 구조를 추론하려는 시도였다. 하지만 실제 이미지는 조명, 시점, 가림, 물체 다양성 때문에 사람이 설계한 규칙만으로는 충분히 다루기 어려웠다.
+초기 computer vision 연구도 이 영향을 받았습니다. Larry Roberts의 3D 형상 연구, MIT Summer Vision Project, David Marr의 시각 처리 이론은 이미지에서 구조를 추론하려는 시도였습니다. 하지만 실제 이미지는 조명, 시점, 가림, 물체 다양성 때문에 사람이 설계한 규칙만으로는 충분히 다루기 어려웠습니다.
 
 ## 4. Neural Network와 CNN
 
-신경망은 생물학적 시각 시스템에서 영감을 받았지만, 실제 성능을 내기 위해서는 학습 방법과 계산 자원이 필요했다. 역전파는 출력 오류를 네트워크 내부 파라미터로 전달해 feature 자체를 학습하게 만든 핵심 방법이다.
+신경망은 생물학적 시각 시스템에서 영감을 받았지만, 실제 성능을 내기 위해서는 학습 방법과 계산 자원이 필요했습니다. 역전파는 출력 오류를 네트워크 내부 파라미터로 전달해 feature 자체를 학습하게 만든 핵심 방법입니다.
 
-CNN은 이미지의 공간 구조를 활용한다. 작은 filter를 이미지 전체에 공유하고, 낮은 layer에서는 edge 같은 지역 패턴을, 높은 layer에서는 물체 부분과 의미적 표현을 학습한다.
+CNN은 이미지의 공간 구조를 활용합니다. 작은 filter를 이미지 전체에 공유하고, 낮은 layer에서는 edge 같은 지역 패턴을, 높은 layer에서는 물체 부분과 의미적 표현을 학습합니다.
 
 | 개념 | 역할 |
 |---|---|
@@ -82,14 +82,14 @@ CNN은 이미지의 공간 구조를 활용한다. 작은 filter를 이미지 �
 | Hierarchy | 낮은 수준 특징에서 높은 수준 의미로 표현 확장 |
 | Backpropagation | feature와 classifier를 함께 학습 |
 
-역전파의 핵심은 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱하는 chain rule이다. 여러 계산 경로가 같은 변수에 모이면 각 경로의 gradient를 더한다.
+역전파의 핵심은 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱하는 chain rule입니다. 여러 계산 경로가 같은 변수에 모이면 각 경로의 gradient를 더합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Backpropagation chain rule</summary>
 
 ### 작성자 보충: Backpropagation 식의 chain rule
 
-공식 slide Part 1 p.39는 역전파의 핵심을 다음 chain rule로 제시한다.
+공식 slide Part 1 p.39는 역전파의 핵심을 다음 chain rule로 제시합니다.
 
 $$
 \frac{\partial E_p}{\partial w_{ji}}
@@ -98,7 +98,7 @@ $$
 \frac{\partial o_{pj}}{\partial w_{ji}}.
 $$
 
-여기서 $$E_p$$는 sample $$p$$의 error, $$w_{ji}$$는 node $$i$$에서 $$j$$로 가는 weight, $$o_{pj}$$는 sample $$p$$에 대한 node $$j$$의 output이다. 이 식은 $$E_p=E_p(o_{pj}(w_{ji}))$$처럼 error가 이 경로를 통해 weight에 의존하고 두 함수가 해당 지점에서 미분 가능하다고 둘 때의 **정확한 국소 항등식**이다. 합성함수의 미소 변화는
+여기서 $$E_p$$는 sample $$p$$의 error, $$w_{ji}$$는 node $$i$$에서 $$j$$로 가는 weight, $$o_{pj}$$는 sample $$p$$에 대한 node $$j$$의 output입니다. 이 식은 $$E_p=E_p(o_{pj}(w_{ji}))$$처럼 error가 이 경로를 통해 weight에 의존하고 두 함수가 해당 지점에서 미분 가능하다고 둘 때의 **정확한 국소 항등식**입니다. 합성함수의 미소 변화는
 
 $$
 dE_p
@@ -108,19 +108,19 @@ do_{pj}
 =\frac{\partial o_{pj}}{\partial w_{ji}}\,dw_{ji}
 $$
 
-이므로 두 식을 대입하고 $$dw_{ji}$$의 계수를 비교하면 slide의 식이 나온다. 직관적으로는 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱해 gradient를 뒤로 전달한다. 여러 계산 경로가 같은 변수로 합쳐지면 각 경로의 항을 더해야 하며, 비미분점에서는 선택한 subgradient 규칙까지 명시해야 한다. 이는 slide의 역사적 소개를 풀어 쓴 작성자 보충이며, 전체 network의 역전파 알고리즘 증명은 아니다. Gradient의 단위는 `error / weight`이고, 우변의 `error / output`과 `output / weight`가 곱해져 같은 단위가 된다.
+이므로 두 식을 대입하고 $$dw_{ji}$$의 계수를 비교하면 slide의 식이 나옵니다. 직관적으로는 출력 쪽 error sensitivity와 현재 weight가 node output에 미치는 sensitivity를 곱해 gradient를 뒤로 전달합니다. 여러 계산 경로가 같은 변수로 합쳐지면 각 경로의 항을 더해야 하며, 비미분점에서는 선택한 subgradient 규칙까지 명시해야 합니다. 이는 slide의 역사적 소개를 풀어 쓴 작성자 보충이며, 전체 network의 역전파 알고리즘 증명은 아닙니다. Gradient의 단위는 `error / weight`이고, 우변의 `error / output`과 `output / weight`가 곱해져 같은 단위가 됩니다.
 
 </details>
 
 ## 5. ImageNet과 AlexNet
 
-현대 딥러닝의 전환은 알고리즘 하나만의 결과가 아니다. 대규모 데이터, GPU 계산 자원, 학습 가능한 신경망 구조, 역전파가 함께 맞물렸다.
+현대 딥러닝의 전환은 알고리즘 하나만의 결과가 아닙니다. 대규모 데이터, GPU 계산 자원, 학습 가능한 신경망 구조, 역전파가 함께 맞물렸습니다.
 
-ImageNet은 수많은 이미지를 공통 범주와 평가 체계로 묶어 대규모 시각 인식 benchmark를 만들었다. AlexNet은 2012년 ImageNet에서 deep CNN이 기존 방법보다 큰 성능 향상을 낼 수 있음을 보여주었다. 이 사건은 데이터와 계산 자원이 충분할 때 high-capacity model이 시각 문제에서 강력하게 작동한다는 신호가 되었다.
+ImageNet은 수많은 이미지를 공통 범주와 평가 체계로 묶어 대규모 시각 인식 benchmark를 만들었습니다. AlexNet은 2012년 ImageNet에서 deep CNN이 기존 방법보다 큰 성능 향상을 낼 수 있음을 보여주었습니다. 이 사건은 데이터와 계산 자원이 충분할 때 high-capacity model이 시각 문제에서 강력하게 작동한다는 신호가 되었습니다.
 
 ## 6. Classification 이후의 Vision Task
 
-Image classification은 이미지 하나에 label을 붙이는 문제지만, 실제 비전 시스템은 더 구조적인 출력을 요구한다.
+Image classification은 이미지 하나에 label을 붙이는 문제지만, 실제 비전 시스템은 더 구조적인 출력을 요구합니다.
 
 | Task | 출력 |
 |---|---|
@@ -132,17 +132,17 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 | Vision-language model | 이미지와 텍스트의 연결 |
 | Generative vision | 이미지 생성, 편집, 변환 |
 
-이 흐름은 컴퓨터 비전이 단일 label 예측에서 장면 이해, 멀티모달 추론, 생성 모델, 3D vision, embodied agent로 확장되고 있음을 보여준다.
+이 흐름은 컴퓨터 비전이 단일 label 예측에서 장면 이해, 멀티모달 추론, 생성 모델, 3D vision, embodied agent로 확장되고 있음을 보여줍니다.
 
 ## 7. 사회적 함의
 
-컴퓨터 비전은 의료, 보조 기술, 과학, 안전 분야에서 큰 가치를 만들 수 있다. 동시에 얼굴 인식, 감시, 채용, 대출, 의료 판단처럼 사람의 삶에 영향을 주는 영역에서는 편향과 책임 문제가 발생한다.
+컴퓨터 비전은 의료, 보조 기술, 과학, 안전 분야에서 큰 가치를 만들 수 있습니다. 동시에 얼굴 인식, 감시, 채용, 대출, 의료 판단처럼 사람의 삶에 영향을 주는 영역에서는 편향과 책임 문제가 발생합니다.
 
-데이터는 인간 사회의 산물이기 때문에 데이터에 담긴 편향이 모델에 반영될 수 있다. 따라서 컴퓨터 비전 시스템은 정확도뿐 아니라 robustness, fairness, privacy, accountability를 함께 고려해야 한다.
+데이터는 인간 사회의 산물이기 때문에 데이터에 담긴 편향이 모델에 반영될 수 있습니다. 따라서 컴퓨터 비전 시스템은 정확도뿐 아니라 robustness, fairness, privacy, accountability를 함께 고려해야 합니다.
 
 ## 8. CS231N 수업 구조
 
-강의는 앞으로 다음 축을 따라 진행된다.
+강의는 앞으로 다음 축을 따라 진행됩니다.
 
 | 축 | 내용 |
 |---|---|
@@ -153,18 +153,18 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 
 ## 마지막 핵심 정리
 
-- Computer vision은 픽셀을 의미로 바꾸는 시각 지능 문제다.
-- CNN은 이미지의 지역성과 계층성을 활용하는 신경망 구조다.
-- ImageNet과 AlexNet은 데이터, 계산 자원, 알고리즘이 함께 맞물린 전환점이었다.
-- 현대 vision은 분류를 넘어 검출, 분할, 비디오, 생성, 멀티모달 이해로 확장된다.
-- 비전 시스템은 성능뿐 아니라 편향, 안전, 사회적 영향까지 함께 평가해야 한다.
+- Computer vision은 픽셀을 의미로 바꾸는 시각 지능 문제입니다.
+- CNN은 이미지의 지역성과 계층성을 활용하는 신경망 구조입니다.
+- ImageNet과 AlexNet은 데이터, 계산 자원, 알고리즘이 함께 맞물린 전환점이었습니다.
+- 현대 vision은 분류를 넘어 검출, 분할, 비디오, 생성, 멀티모달 이해로 확장됩니다.
+- 비전 시스템은 성능뿐 아니라 편향, 안전, 사회적 영향까지 함께 평가해야 합니다.
 
 ## 원문 대조 기록
 
 <details markdown="block">
 <summary markdown="span">출처 대조 내역 보기</summary>
 
-공식 slide 전 페이지(Part 1 69쪽, Part 2 50쪽)를 시각적으로 확인했다. 이 강의는 역사와 course overview가 중심이며, 후속 강의 내용을 예고하는 network diagram·성능 graph를 제외하면 단계별 유도가 필요한 핵심 수식은 Part 1 p.39의 backpropagation chain rule 한 건이다.
+공식 slide 전 페이지(Part 1 69쪽, Part 2 50쪽)를 시각적으로 확인했습니다. 이 강의는 역사와 course overview가 중심이며, 후속 강의 내용을 예고하는 network diagram·성능 graph를 제외하면 단계별 유도가 필요한 핵심 수식은 Part 1 p.39의 backpropagation chain rule 한 건입니다.
 
 | 본문 대응 | 공식 slide | 영상 구간 | 확인 결과 |
 |---|---|---|---|
@@ -179,46 +179,46 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 
 | 질문 | 확인할 개념 |
 |---|---|
-| 왜 시각을 지능의 핵심 요소로 볼 수 있는가? | 시각 입력과 환경 이해 |
-| Hubel-Wiesel 연구는 CNN과 어떻게 연결되는가? | 수용장, 계층적 표현 |
-| AlexNet의 성공을 한 가지 이유만으로 설명하면 왜 부족한가? | data, compute, algorithm |
-| Classification과 detection은 무엇이 다른가? | label vs location |
-| Computer vision의 편향 문제는 왜 공학만의 문제가 아닌가? | 데이터, 사회적 의사결정, 책임 |
+| 왜 시각을 지능의 핵심 요소로 볼 수 있습니까? | 시각 입력과 환경 이해 |
+| Hubel-Wiesel 연구는 CNN과 어떻게 연결됩니까? | 수용장, 계층적 표현 |
+| AlexNet의 성공을 한 가지 이유만으로 설명하면 왜 부족합니까? | data, compute, algorithm |
+| Classification과 detection은 무엇이 다릅니까? | label vs location |
+| Computer vision의 편향 문제는 왜 공학만의 문제가 아닙니까? | 데이터, 사회적 의사결정, 책임 |
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Computer vision에서 픽셀과 의미 사이의 간극은 어떤 예로 설명할 수 있는가?</summary>
+<summary>1. Computer vision에서 픽셀과 의미 사이의 간극은 어떤 예로 설명할 수 있습니까?</summary>
 
-답변: 같은 물체도 조명, 시점, 가림과 배경이 달라지면 픽셀 값은 크게 변하지만 의미는 유지된다. 반대로 픽셀 수준에서 비슷한 장면이 서로 다른 의미를 가질 수도 있으므로, 모델은 단순한 색 값 비교를 넘어 불변적인 표현을 학습해야 한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. CNN의 weight sharing은 왜 이미지 처리에 적합한가?</summary>
-
-답변: 같은 edge나 texture pattern은 이미지의 여러 위치에 나타날 수 있다. 하나의 filter를 공간 전체에 공유하면 위치마다 별도 파라미터를 학습하지 않고도 같은 특징을 탐지할 수 있어 데이터와 계산을 더 효율적으로 사용한다.
+답변: 같은 물체도 조명, 시점, 가림과 배경이 달라지면 픽셀 값은 크게 변하지만 의미는 유지됩니다. 반대로 픽셀 수준에서 비슷한 장면이 서로 다른 의미를 가질 수도 있으므로, 모델은 단순한 색 값 비교를 넘어 불변적인 표현을 학습해야 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. ImageNet은 단순한 데이터셋을 넘어 어떤 연구 인프라 역할을 했는가?</summary>
+<summary>2. CNN의 weight sharing은 왜 이미지 처리에 적합합니까?</summary>
 
-답변: 대규모 label data뿐 아니라 공통 task와 평가 기준을 제공해 서로 다른 모델을 비교하게 했다. 이 기반 위에서 AlexNet 같은 deep CNN의 성능 향상이 재현되고 널리 알려질 수 있었다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Detection, semantic segmentation, instance segmentation의 출력 차이는 무엇인가?</summary>
-
-답변: Detection은 객체별 class와 bounding box를 출력한다. Semantic segmentation은 모든 pixel에 class를 부여하지만 같은 class의 개체를 구분하지 않고, instance segmentation은 같은 class 안에서도 객체별 mask를 분리한다.
+답변: 같은 edge나 texture pattern은 이미지의 여러 위치에 나타날 수 있습니다. 하나의 filter를 공간 전체에 공유하면 위치마다 별도 파라미터를 학습하지 않고도 같은 특징을 탐지할 수 있어 데이터와 계산을 더 효율적으로 사용합니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. Vision-language model과 generative vision은 기존 classification 문제를 어떻게 확장하는가?</summary>
+<summary>3. ImageNet은 단순한 데이터셋을 넘어 어떤 연구 인프라 역할을 했습니까?</summary>
 
-답변: Vision-language model은 이미지와 자연어 사이의 의미 관계를 학습해 설명, 질의응답과 grounding을 수행한다. Generative vision은 주어진 이미지를 분류하는 데서 나아가 새로운 이미지의 생성, 편집과 변환을 모델링한다.
+답변: 대규모 label data뿐 아니라 공통 task와 평가 기준을 제공해 서로 다른 모델을 비교하게 했습니다. 이 기반 위에서 AlexNet 같은 deep CNN의 성능 향상이 재현되고 널리 알려질 수 있었습니다.
+
+</details>
+
+<details markdown="block">
+<summary>4. Detection, semantic segmentation, instance segmentation의 출력 차이는 무엇입니까?</summary>
+
+답변: Detection은 객체별 class와 bounding box를 출력합니다. Semantic segmentation은 모든 pixel에 class를 부여하지만 같은 class의 개체를 구분하지 않고, instance segmentation은 같은 class 안에서도 객체별 mask를 분리합니다.
+
+</details>
+
+<details markdown="block">
+<summary>5. Vision-language model과 generative vision은 기존 classification 문제를 어떻게 확장합니까?</summary>
+
+답변: Vision-language model은 이미지와 자연어 사이의 의미 관계를 학습해 설명, 질의응답과 grounding을 수행합니다. Generative vision은 주어진 이미지를 분류하는 데서 나아가 새로운 이미지의 생성, 편집과 변환을 모델링합니다.
 
 </details>
 

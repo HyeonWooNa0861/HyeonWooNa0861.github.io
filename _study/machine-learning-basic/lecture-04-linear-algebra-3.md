@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-04.pdf`
 
-> **핵심:** 기저는 공간 전체를 생성하면서 선형 독립인 벡터들의 집합이다. 공간의 차원은 기저를 이루는 벡터의 개수다.
+> **핵심:** 기저는 공간 전체를 생성하면서 선형 독립인 벡터들의 집합입니다. 공간의 차원은 기저를 이루는 벡터의 개수입니다.
 
 ## 전체 흐름
 
@@ -28,11 +28,11 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 선형 독립 판별 | REF의 pivot column은 무엇을 알려주는가? |
-| 2 | 생성 집합과 span | 벡터들이 공간 전체를 만들 수 있는가? |
-| 3 | 기저와 차원 | 최소 생성 집합과 최대 독립 집합은 어떻게 연결되는가? |
-| 4 | 랭크 | 행렬의 독립적인 정보량은 어떻게 측정하는가? |
-| 5 | 선형 사상과 좌표 | 행렬은 선형 변환을 어떻게 표현하는가? |
+| 1 | 선형 독립 판별 | REF의 pivot column은 무엇을 알려줍니까? |
+| 2 | 생성 집합과 span | 벡터들이 공간 전체를 만들 수 있습니까? |
+| 3 | 기저와 차원 | 최소 생성 집합과 최대 독립 집합은 어떻게 연결됩니까? |
+| 4 | 랭크 | 행렬의 독립적인 정보량은 어떻게 측정합니까? |
+| 5 | 선형 사상과 좌표 | 행렬은 선형 변환을 어떻게 표현합니까? |
 
 ### 원문 수식 추적표
 
@@ -44,24 +44,24 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 | 17–20 | 선형 사상, 단사·전사·동형사상 | 5 |
 | 21–25 | 좌표의 유일성과 변환행렬 $$A_{\Phi}(i,j)=\alpha_{ij}$$ | 6, 6.1, 6.2 |
 
-페이지 26–27은 Q&A·마무리로, 새로운 수식 항목은 없다.
+페이지 26–27은 Q&A·마무리로, 새로운 수식 항목은 없습니다.
 
 </details>
 
 ## 1. REF로 선형 독립 확인
 
-벡터들을 열로 모아 행렬을 만들고 REF로 바꾸면 pivot column을 확인할 수 있다.
+벡터들을 열로 모아 행렬을 만들고 REF로 바꾸면 pivot column을 확인할 수 있습니다.
 
 | 열 종류 | 의미 |
 |---|---|
 | pivot column | 이전 pivot column들과 선형 독립 |
 | non-pivot column | 앞의 pivot column들의 선형 조합으로 표현 가능 |
 
-따라서 모든 열이 pivot column이면 해당 벡터 집합은 선형 독립이다.
+따라서 모든 열이 pivot column이면 해당 벡터 집합은 선형 독립입니다.
 
 ### 1.1 강의의 REF 예시
 
-강의는 다음 다섯 벡터를 열로 모은다.
+강의는 다음 다섯 벡터를 열로 모읍니다.
 
 $$
 v_1=\begin{bmatrix}-2\\4\\1\\1\end{bmatrix},\quad
@@ -71,37 +71,37 @@ v_4=\begin{bmatrix}-1\\-3\\-1\\-3\end{bmatrix},\quad
 v_5=\begin{bmatrix}4\\1\\1\\4\end{bmatrix}.
 $$
 
-$$[v_1\ v_2\ v_3\ v_4\ v_5]$$를 REF로 만들면 pivot은 1, 3, 4열에 생긴다. 따라서 전체 다섯 벡터는 종속이고, 원래 행렬에서 대응하는 $$\{v_1,v_3,v_4\}$$가 column space의 기저다. 특히 $$v_2=-2v_1$$은 종속성을 즉시 보여준다.
+$$[v_1\ v_2\ v_3\ v_4\ v_5]$$를 REF로 만들면 pivot은 1, 3, 4열에 생깁니다. 따라서 전체 다섯 벡터는 종속이고, 원래 행렬에서 대응하는 $$\{v_1,v_3,v_4\}$$가 column space의 기저입니다. 특히 $$v_2=-2v_1$$은 종속성을 즉시 보여줍니다.
 
-행 연산은 pivot **위치**를 찾는 데 쓰지만 column space 자체는 보존하지 않는다. 따라서 기저는 REF의 열이 아니라 반드시 **원래 행렬의 pivot 대응 열**에서 골라야 한다. 정확한 산술에서는 이 판정이 정확하지만, 수치 데이터에서는 pivot을 0으로 판단하는 tolerance에 따라 numerical rank가 달라질 수 있다.
+행 연산은 pivot **위치**를 찾는 데 쓰지만 column space 자체는 보존하지 않습니다. 따라서 기저는 REF의 열이 아니라 반드시 **원래 행렬의 pivot 대응 열**에서 골라야 합니다. 정확한 산술에서는 이 판정이 정확하지만, 수치 데이터에서는 pivot을 0으로 판단하는 tolerance에 따라 numerical rank가 달라질 수 있습니다.
 
 ## 2. 생성 집합과 span
 
-벡터 집합 $$A$$의 선형 조합으로 벡터공간 $$V$$의 모든 원소를 만들 수 있으면 $$A$$는 $$V$$의 생성 집합이다.
+벡터 집합 $$A$$의 선형 조합으로 벡터공간 $$V$$의 모든 원소를 만들 수 있으면 $$A$$는 $$V$$의 생성 집합입니다.
 
 $$
 \operatorname{span}(A) = V
 $$
 
-span은 "이 벡터들로 만들 수 있는 모든 방향과 위치"를 뜻한다. 머신러닝에서는 feature들이 어떤 공간을 span하는지가 모델 표현력과 연결된다.
+span은 "이 벡터들로 만들 수 있는 모든 방향과 위치"를 뜻합니다. 머신러닝에서는 feature들이 어떤 공간을 span하는지가 모델 표현력과 연결됩니다.
 
 ## 3. 기저와 차원
 
-기저는 공간을 만들기에 충분하면서도 중복이 없는 벡터 집합이다.
+기저는 공간을 만들기에 충분하면서도 중복이 없는 벡터 집합입니다.
 
-동치 관점은 다음과 같다.
+동치 관점은 다음과 같습니다.
 
 | 관점 | 설명 |
 |---|---|
-| 최소 생성 집합 | 하나라도 빼면 공간 전체를 만들 수 없다. |
-| 최대 선형 독립 집합 | 더 넣으면 선형 종속이 된다. |
-| 유일한 좌표 표현 | 모든 벡터가 기저에 대해 유일한 선형 조합을 가진다. |
+| 최소 생성 집합 | 하나라도 빼면 공간 전체를 만들 수 없습니다. |
+| 최대 선형 독립 집합 | 더 넣으면 선형 종속이 됩니다. |
+| 유일한 좌표 표현 | 모든 벡터가 기저에 대해 유일한 선형 조합을 가집니다. |
 
-벡터공간의 차원은 기저 벡터의 개수다.
+벡터공간의 차원은 기저 벡터의 개수입니다.
 
 ## 4. 랭크 Rank
 
-행렬 `A`의 rank는 선형 독립인 열의 개수다. 이는 선형 독립인 행의 개수와도 같다.
+행렬 `A`의 rank는 선형 독립인 열의 개수입니다. 이는 선형 독립인 행의 개수와도 같습니다.
 
 | 개념 | 의미 |
 |---|---|
@@ -119,7 +119,7 @@ span은 "이 벡터들로 만들 수 있는 모든 방향과 위치"를 뜻한�
 
 ## 5. 선형 사상
 
-선형 사상은 덧셈과 스칼라곱 구조를 보존하는 함수다.
+선형 사상은 덧셈과 스칼라곱 구조를 보존하는 함수입니다.
 
 $$
 T(x+y) = T(x) + T(y)
@@ -131,24 +131,24 @@ $$
 
 | 용어 | 의미 |
 |---|---|
-| injective | 서로 다른 입력이 서로 다른 출력으로 간다. |
-| surjective | 공역의 모든 원소가 어떤 입력의 출력이다. |
+| injective | 서로 다른 입력이 서로 다른 출력으로 갑니다. |
+| surjective | 공역의 모든 원소가 어떤 입력의 출력입니다. |
 | bijective | injective이면서 surjective |
 | isomorphism | 선형이고 bijective인 사상 |
 
-유한 차원 벡터공간에서는 차원이 같으면 서로 동형인 구조로 볼 수 있다.
+유한 차원 벡터공간에서는 차원이 같으면 서로 동형인 구조로 볼 수 있습니다.
 
 ## 6. 좌표와 변환 행렬
 
-기저가 주어지면 벡터는 기저 벡터들의 선형 조합 계수로 표현된다. 이 계수 벡터가 좌표 벡터다.
+기저가 주어지면 벡터는 기저 벡터들의 선형 조합 계수로 표현됩니다. 이 계수 벡터가 좌표 벡터입니다.
 
 <a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-04-page-26.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-04-page-26.png" | relative_url }}" alt="원본 강의 슬라이드의 선형 사상 행렬 계산 예시" loading="lazy"></a>
 
-*원본 강의 PDF p. 26. 변환 행렬의 세 열은 기저벡터 $$b_1,b_2,b_3$$의 상 $$\Phi(b_1),\Phi(b_2),\Phi(b_3)$$를 출력 기저 좌표로 적은 것이다. 입력 좌표 $$(3,2,4)^T$$를 곱하면 출력 좌표 $$(7,11,27,17)^T$$를 얻는다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-04.pdf#page=26" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 26</a>*
+*원본 강의 PDF p. 26. 변환 행렬의 세 열은 기저벡터 $$b_1,b_2,b_3$$의 상 $$\Phi(b_1),\Phi(b_2),\Phi(b_3)$$를 출력 기저 좌표로 적은 것입니다. 입력 좌표 $$(3,2,4)^T$$를 곱하면 출력 좌표 $$(7,11,27,17)^T$$를 얻습니다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-04.pdf#page=26" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 26</a>*
 
-행렬곱은 임의의 숫자 조작이 아니다. 선형성 때문에 $$\Phi(3b_1+2b_2+4b_3)=3\Phi(b_1)+2\Phi(b_2)+4\Phi(b_3)$$이고, 이 선형 결합을 한 번에 계산한 표현이 변환 행렬이다.
+행렬곱은 임의의 숫자 조작이 아닙니다. 선형성 때문에 $$\Phi(3b_1+2b_2+4b_3)=3\Phi(b_1)+2\Phi(b_2)+4\Phi(b_3)$$이고, 이 선형 결합을 한 번에 계산한 표현이 변환 행렬입니다.
 
-선형 변환도 기저를 고르면 행렬로 표현된다. 즉 행렬은 추상적인 선형 사상을 좌표계 위에서 계산 가능하게 만든 표현이다.
+선형 변환도 기저를 고르면 행렬로 표현됩니다. 즉 행렬은 추상적인 선형 사상을 좌표계 위에서 계산 가능하게 만든 표현입니다.
 
 ### 6.1 정렬된 기저에서 좌표 구하기
 
@@ -158,7 +158,7 @@ $$
 x=\alpha_1b_1+\cdots+\alpha_nb_n
 $$
 
-이면 $$[x]_B=[\alpha_1,\ldots,\alpha_n]^T$$다. **정렬**이 중요하다. 같은 기저 벡터라도 순서를 바꾸면 좌표 성분의 순서가 바뀐다.
+이면 $$[x]_B=[\alpha_1,\ldots,\alpha_n]^T$$입니다. **정렬**이 중요합니다. 같은 기저 벡터라도 순서를 바꾸면 좌표 성분의 순서가 바뀝니다.
 
 강의의 좌표 예시에서
 
@@ -168,7 +168,7 @@ E=\left(e_1,e_2\right),\qquad
 B=\left(\begin{bmatrix}1\\-1\end{bmatrix},\begin{bmatrix}1\\1\end{bmatrix}\right)
 $$
 
-이므로 $$[x]_E=[2,3]^T$$다. 다른 기저에서는
+이므로 $$[x]_E=[2,3]^T$$입니다. 다른 기저에서는
 
 $$
 \alpha_1\begin{bmatrix}1\\-1\end{bmatrix}
@@ -176,30 +176,30 @@ $$
 =\begin{bmatrix}2\\3\end{bmatrix}
 $$
 
-를 풀어 $$\alpha_1=-\tfrac12$$, $$\alpha_2=\tfrac52$$를 얻는다. 따라서
+를 풀어 $$\alpha_1=-\tfrac12$$, $$\alpha_2=\tfrac52$$를 얻습니다. 따라서
 
 $$
 [x]_B=\begin{bmatrix}-\tfrac12\\ \tfrac52\end{bmatrix}.
 $$
 
-벡터 $$x$$는 그대로이고 좌표 tuple만 달라진다.
+벡터 $$x$$는 그대로이고 좌표 tuple만 달라집니다.
 
 #### 좌표가 유일한 이유와 좌표 벡터 독립성의 동치
 
-$$B=(b_1,\ldots,b_n)$$가 기저이면 좌표는 존재할 뿐 아니라 유일하다. 실제로
+$$B=(b_1,\ldots,b_n)$$가 기저이면 좌표는 존재할 뿐 아니라 유일합니다. 실제로
 
 $$
 x=\sum_{i=1}^{n}\alpha_i b_i
 =\sum_{i=1}^{n}\beta_i b_i
 $$
 
-라는 두 표현이 있다고 하자. 두 식을 빼면
+라는 두 표현이 있다고 하겠습니다. 두 식을 빼면
 
 $$
 \sum_{i=1}^{n}(\alpha_i-\beta_i)b_i=0
 $$
 
-이고, 기저 벡터들의 선형 독립성 때문에 모든 $$\alpha_i-\beta_i=0$$이다. 따라서 $$\alpha_i=\beta_i$$이고 $$[x]_B$$는 유일하다. 이 결론은 **정확한 정리**이며, $$B$$가 단순 생성 집합이 아니라 선형 독립인 기저라는 조건이 핵심이다. 종속인 생성 집합에서는 같은 벡터가 여러 계수 tuple을 가질 수 있다.
+이고, 기저 벡터들의 선형 독립성 때문에 모든 $$\alpha_i-\beta_i=0$$입니다. 따라서 $$\alpha_i=\beta_i$$이고 $$[x]_B$$는 유일합니다. 이 결론은 **정확한 정리**이며, $$B$$가 단순 생성 집합이 아니라 선형 독립인 기저라는 조건이 핵심입니다. 종속인 생성 집합에서는 같은 벡터가 여러 계수 tuple을 가질 수 있습니다.
 
 또한 좌표 사상 $$x\mapsto[x]_B$$는 선형이고 가역이므로, 임의의 벡터들 $$x_1,\ldots,x_r\in V$$에 대해
 
@@ -209,7 +209,7 @@ $$
 \{[x_1]_B,\ldots,[x_r]_B\}\text{ is linearly independent}.
 $$
 
-증명은 계수를 그대로 비교하면 된다.
+증명은 계수를 그대로 비교하면 됩니다.
 
 $$
 \sum_{j=1}^{r}c_jx_j=0
@@ -219,11 +219,11 @@ $$
 \sum_{j=1}^{r}c_j[x_j]_B=0.
 $$
 
-양쪽에서 0을 만드는 계수해가 완전히 같으므로 한쪽이 자명한 해만 가지는 것과 다른 쪽이 자명한 해만 가지는 것이 동치다. 좌표는 추상 공간에서는 무차원 계수지만, 단위가 있는 서로 다른 기저를 비교할 때에는 각 좌표가 `벡터 단위/기저 벡터 단위`를 가질 수 있다.
+양쪽에서 0을 만드는 계수해가 완전히 같으므로 한쪽이 자명한 해만 가지는 것과 다른 쪽이 자명한 해만 가지는 것이 동치입니다. 좌표는 추상 공간에서는 무차원 계수지만, 단위가 있는 서로 다른 기저를 비교할 때에는 각 좌표가 `벡터 단위/기저 벡터 단위`를 가질 수 있습니다.
 
 ### 6.2 변환 행렬의 열 구성과 작용
 
-$$V$$의 정렬된 기저를 $$B=(b_1,\ldots,b_n)$$, $$W$$의 정렬된 기저를 $$C=(c_1,\ldots,c_m)$$라 하고 선형 사상을 $$\Phi:V\to W$$라 하자. 각 입력 기저 벡터의 상을 출력 기저로 전개해
+$$V$$의 정렬된 기저를 $$B=(b_1,\ldots,b_n)$$, $$W$$의 정렬된 기저를 $$C=(c_1,\ldots,c_m)$$라 하고 선형 사상을 $$\Phi:V\to W$$라 하겠습니다. 각 입력 기저 벡터의 상을 출력 기저로 전개해
 
 $$
 \Phi(b_j)=\sum_{i=1}^{m}\alpha_{ij}c_i
@@ -237,13 +237,13 @@ $$
 =(\alpha_{ij})\in\mathbb{R}^{m\times n}.
 $$
 
-즉 **$$j$$번째 열은 $$\Phi(b_j)$$의 $$C$$-좌표**다. 모든 $$x\in V$$에 대해
+즉 **$$j$$번째 열은 $$\Phi(b_j)$$의 $$C$$-좌표**입니다. 모든 $$x\in V$$에 대해
 
 $$
 [\Phi(x)]_C=[\Phi]_{C\leftarrow B}[x]_B
 $$
 
-가 정확히 성립한다.
+가 정확히 성립합니다.
 
 강의의 예에서는
 
@@ -276,11 +276,11 @@ $$
 =\begin{bmatrix}7\\11\\27\\17\end{bmatrix}.
 $$
 
-여기서 좌표 벡터와 행렬은 추상 공간에서는 무차원이다. 물리량을 나타내면 행렬의 $$i,j$$ 원소는 출력 좌표 $$i$$의 단위/입력 좌표 $$j$$의 단위를 가져야 합이 의미가 있다.
+여기서 좌표 벡터와 행렬은 추상 공간에서는 무차원입니다. 물리량을 나타내면 행렬의 $$i,j$$ 원소는 출력 좌표 $$i$$의 단위/입력 좌표 $$j$$의 단위를 가져야 합이 의미가 있습니다.
 
 ## 7. 랭크 관련 식의 증명 개요
 
-Rank-nullity는 입력 차원을 출력에 남는 방향과 영공간으로 사라지는 방향으로 나눈다. 해 존재 여부는 목표 벡터가 column space에 포함되는지로 결정되며, 증명 개요는 아래에 둔다.
+Rank-nullity는 입력 차원을 출력에 남는 방향과 영공간으로 사라지는 방향으로 나눕니다. 해 존재 여부는 목표 벡터가 column space에 포함되는지로 결정되며, 증명 개요는 아래에 둡니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Rank-nullity and the consistency condition</summary>
@@ -293,25 +293,25 @@ $$
 \dim\operatorname{Im}(A)+\dim\operatorname{Null}(A)=n
 $$
 
-은 **정리이자 정확한 등식**이다. 증명은 다음 기저 구성으로 확인할 수 있다.
+은 **정리이자 정확한 등식**입니다. 증명은 다음 기저 구성으로 확인할 수 있습니다.
 
-1. 영공간의 기저를 $$z_1,\ldots,z_k$$라 둔다. 그러면 $$k=\operatorname{nullity}(A)$$다.
-2. 이를 정의역 전체의 기저 $$z_1,\ldots,z_k,v_{k+1},\ldots,v_n$$로 확장한다.
-3. $$Av_{k+1},\ldots,Av_n$$은 이미지 공간을 생성한다. 임의의 $$x$$를 위 기저로 전개하면 영공간 성분은 $$A$$를 통과하며 사라지기 때문이다.
-4. 이 벡터들은 선형 독립이다. $$\sum c_iAv_i=0$$이면 $$\sum c_iv_i$$가 영공간에 속하는데, 확장된 기저의 독립성 때문에 모든 $$c_i=0$$이다.
-5. 따라서 이미지 공간의 차원은 $$n-k$$, 즉 rank는 $$n-k$$다.
+1. 영공간의 기저를 $$z_1,\ldots,z_k$$라 둡니다. 그러면 $$k=\operatorname{nullity}(A)$$입니다.
+2. 이를 정의역 전체의 기저 $$z_1,\ldots,z_k,v_{k+1},\ldots,v_n$$로 확장합니다.
+3. $$Av_{k+1},\ldots,Av_n$$은 이미지 공간을 생성합니다. 임의의 $$x$$를 위 기저로 전개하면 영공간 성분은 $$A$$를 통과하며 사라지기 때문입니다.
+4. 이 벡터들은 선형 독립입니다. $$\sum c_iAv_i=0$$이면 $$\sum c_iv_i$$가 영공간에 속하는데, 확장된 기저의 독립성 때문에 모든 $$c_i=0$$입니다.
+5. 따라서 이미지 공간의 차원은 $$n-k$$, 즉 rank는 $$n-k$$입니다.
 
 ### 7.2 해 존재 조건의 이유
 
-$$Ax=b$$가 풀린다는 것은 $$b$$가 $$A$$의 열벡터 선형 조합이라는 뜻이다. 증강열 $$b$$를 붙였을 때 rank가 늘지 않는 것과 같으므로
+$$Ax=b$$가 풀린다는 것은 $$b$$가 $$A$$의 열벡터 선형 조합이라는 뜻입니다. 증강열 $$b$$를 붙였을 때 rank가 늘지 않는 것과 같으므로
 
 $$
 Ax=b\text{ has a solution}\iff\operatorname{rank}(A)=\operatorname{rank}([A\mid b])
 $$
 
-이다. 이는 **정확한 동치**이며 수치 계산에서 rank를 tolerance로 판정하면 거의 종속인 열 때문에 결론이 달라질 수 있다.
+입니다. 이는 **정확한 동치**이며 수치 계산에서 rank를 tolerance로 판정하면 거의 종속인 열 때문에 결론이 달라질 수 있습니다.
 
-여기서 $$n,m,k$$는 차원 수로 무차원 정수이고, rank와 nullity도 단위가 없는 개수다.
+여기서 $$n,m,k$$는 차원 수로 무차원 정수이고, rank와 nullity도 단위가 없는 개수입니다.
 
 </details>
 
@@ -321,40 +321,40 @@ $$
 
 | 질문 | 답의 방향 |
 |---|---|
-| 기저의 조건은? | span하면서 선형 독립 |
-| 차원이란? | 기저 벡터의 개수 |
-| rank-nullity 핵심은? | null space 차원은 $$n-\operatorname{rank}(A)$$ |
-| 선형 사상의 조건은? | 덧셈과 스칼라곱 보존 |
+| 기저의 조건은 무엇입니까? | span하면서 선형 독립 |
+| 차원이란 무엇입니까? | 기저 벡터의 개수 |
+| rank-nullity 핵심은 무엇입니까? | null space 차원은 $$n-\operatorname{rank}(A)$$ |
+| 선형 사상의 조건은 무엇입니까? | 덧셈과 스칼라곱 보존 |
 
 ## Study Guide
 
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-기저 문제는 먼저 span을 확인하고 그다음 linear independence를 검사하며, 기저 벡터 수를 dimension으로 연결한다. rank-nullity 식에 matrix의 column 수와 rank를 대입해 null space dimension을 계산하고 Ax=b의 consistency는 augmented rank로 판단한다. 선형 사상의 injective·surjective 여부를 null space와 image space에 연결해 외우면 용어 혼동이 줄어든다.
+기저 문제는 먼저 span을 확인하고 그다음 linear independence를 검사하며, 기저 벡터 수를 dimension으로 연결합니다. rank-nullity 식에 matrix의 column 수와 rank를 대입해 null space dimension을 계산하고 Ax=b의 consistency는 augmented rank로 판단합니다. 선형 사상의 injective·surjective 여부를 null space와 image space에 연결해 외우면 용어 혼동이 줄어듭니다.
 
 </details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. 모든 열이 pivot column이면 왜 선형 독립인가?</summary>
+<summary>1. 모든 열이 pivot column이면 왜 선형 독립입니까?</summary>
 
-답변: 모든 열이 pivot column이면 각 열이 이전 열들의 선형 결합으로 표현되지 않는다. 따라서 $$Ax=0$$의 해가 trivial solution $$x=0$$뿐이고, 열벡터들이 선형 독립이다.
-
-</details>
-
-<details markdown="block">
-<summary>2. 기저가 바뀌면 벡터 자체가 바뀌는가, 좌표 표현이 바뀌는가?</summary>
-
-답변: 벡터 자체가 바뀌는 것이 아니라 그 벡터를 표현하는 좌표가 바뀐다. 같은 대상이라도 어떤 basis를 기준으로 보느냐에 따라 coordinate vector가 달라진다.
+답변: 모든 열이 pivot column이면 각 열이 이전 열들의 선형 결합으로 표현되지 않습니다. 따라서 $$Ax=0$$의 해가 trivial solution $$x=0$$뿐이고, 열벡터들이 선형 독립입니다.
 
 </details>
 
 <details markdown="block">
-<summary markdown="span">3. $$\operatorname{rank}(A) < n$$이면 $$Ax=0$$은 어떤 해를 가지는가?</summary>
+<summary>2. 기저가 바뀌면 벡터 자체가 바뀌는가, 좌표 표현이 바뀝니까?</summary>
 
-답변: column 수 $$n$$보다 rank가 작으면 nullity가 양수다. 따라서 $$Ax=0$$은 $$x=0$$ 외에도 non-trivial solution을 가지며, null space에 자유도가 존재한다.
+답변: 벡터 자체가 바뀌는 것이 아니라 그 벡터를 표현하는 좌표가 바뀝니다. 같은 대상이라도 어떤 basis를 기준으로 보느냐에 따라 coordinate vector가 달라집니다.
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">3. $$\operatorname{rank}(A) < n$$이면 $$Ax=0$$은 어떤 해를 가집니까?</summary>
+
+답변: column 수 $$n$$보다 rank가 작으면 nullity가 양수입니다. 따라서 $$Ax=0$$은 $$x=0$$ 외에도 non-trivial solution을 가지며, null space에 자유도가 존재합니다.
 
 </details>
 

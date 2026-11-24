@@ -19,20 +19,20 @@ keywords:
 
 Source PDF: `Autonomous_Driving_1.pdf`
 
-> **원본 확인 범위:** 로컬 원본 PDF 40쪽의 텍스트 레이어와 핵심 도표 슬라이드를 대조했다. 아래 쪽수는 PDF 뷰어 기준이다. 이 deck은 RSS의 safe distance를 개념으로 소개하지만 계산식이나 증명은 제시하지 않으므로, 원본에 없는 RSS 공식을 임의로 보충하지 않는다.
+> **원본 확인 범위:** 로컬 원본 PDF 40쪽의 텍스트 레이어와 핵심 도표 슬라이드를 대조했습니다. 아래 쪽수는 PDF 뷰어 기준입니다. 이 deck은 RSS의 safe distance를 개념으로 소개하지만 계산식이나 증명은 제시하지 않으므로, 원본에 없는 RSS 공식을 임의로 보충하지 않습니다.
 
 ## 원본 슬라이드 매핑
 
 | 핵심 내용 | PDF 쪽 | 수식·출처 경계 |
 |---|---:|---|
-| Modular ADS pipeline | 7–10 | Localization, perception, prediction, planning, control의 분리는 원본 구조 설명이다. 정량식은 제시되지 않는다. |
-| Sensor fusion과 HD map | 12–13 | Camera·LiDAR·radar·map 결합과 localization의 역할은 원본 설명이며, sensor model이나 calibration 식은 deck 범위 밖이다. |
-| RSS safety envelope | 14–17 | Safe distance와 proper response는 원본의 개념 설명이다. RSS longitudinal/lateral distance 식과 그 가정은 원본에 없어 이 글에서 증명 대상으로 확장하지 않는다. |
-| Error propagation과 world-model 한계 | 21–26 | Upstream error가 downstream으로 전파되는 흐름과 object list의 한계는 원본의 정성적 설명이다. |
-| Occupancy representation | 28–29 | 3D cell의 occupied/free/semantic 상태는 원본 도표와 설명을 따른다. 확률 모델이나 loss 식은 원본에 없다. |
-| Fleet data engine | 34–36 | Mining → labeling → training → redeployment 폐루프는 원본의 시스템 흐름이며, 성능 향상을 보장하는 수학적 정리는 아니다. |
+| Modular ADS pipeline | 7–10 | Localization, perception, prediction, planning, control의 분리는 원본 구조 설명입니다. 정량식은 제시되지 않습니다. |
+| Sensor fusion과 HD map | 12–13 | Camera·LiDAR·radar·map 결합과 localization의 역할은 원본 설명이며, sensor model이나 calibration 식은 deck 범위 밖입니다. |
+| RSS safety envelope | 14–17 | Safe distance와 proper response는 원본의 개념 설명입니다. RSS longitudinal/lateral distance 식과 그 가정은 원본에 없어 이 글에서 증명 대상으로 확장하지 않습니다. |
+| Error propagation과 world-model 한계 | 21–26 | Upstream error가 downstream으로 전파되는 흐름과 object list의 한계는 원본의 정성적 설명입니다. |
+| Occupancy representation | 28–29 | 3D cell의 occupied/free/semantic 상태는 원본 도표와 설명을 따릅니다. 확률 모델이나 loss 식은 원본에 없습니다. |
+| Fleet data engine | 34–36 | Mining → labeling → training → redeployment 폐루프는 원본의 시스템 흐름이며, 성능 향상을 보장하는 수학적 정리는 아닙니다. |
 
-> **핵심:** 모듈형 자율주행 시스템은 localization, perception, prediction, planning, control을 연결해 주행을 결정한다. RSS는 학습된 주행 정책과 별도로 검증할 수 있는 안전 경계를 제시한다.
+> **핵심:** 모듈형 자율주행 시스템은 localization, perception, prediction, planning, control을 연결해 주행을 결정합니다. RSS는 학습된 주행 정책과 별도로 검증할 수 있는 안전 경계를 제시합니다.
 
 ## 전체 흐름
 
@@ -41,40 +41,40 @@ Source PDF: `Autonomous_Driving_1.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 자율주행이 AI 문제가 된 이유 | 운전은 왜 단순 제어가 아니라 인식과 불확실성 문제인가? |
-| 2 | DARPA Challenge | 초기 자율주행은 어떤 benchmark로 발전했는가? |
-| 3 | Modular ADS | localization, perception, prediction, planning, control은 왜 분리되었는가? |
-| 4 | ML의 첫 진입 지점 | machine learning은 왜 perception에서 먼저 강해졌는가? |
-| 5 | Sensor fusion과 HD map | 카메라, LiDAR, radar, map은 어떻게 결합되었는가? |
-| 6 | RSS와 safety envelope | 규칙 기반 안전 보장은 왜 중요했는가? |
-| 7 | Modular stack의 한계 | error propagation, corner case, stitched output 문제는 무엇인가? |
-| 8 | Occupancy와 data engine | representation learning으로 중심이 어떻게 이동했는가? |
+| 1 | 자율주행이 AI 문제가 된 이유 | 운전은 왜 단순 제어가 아니라 인식과 불확실성 문제입니까? |
+| 2 | DARPA Challenge | 초기 자율주행은 어떤 benchmark로 발전했습니까? |
+| 3 | Modular ADS | localization, perception, prediction, planning, control은 왜 분리되었습니까? |
+| 4 | ML의 첫 진입 지점 | machine learning은 왜 perception에서 먼저 강해졌습니까? |
+| 5 | Sensor fusion과 HD map | 카메라, LiDAR, radar, map은 어떻게 결합되었습니까? |
+| 6 | RSS와 safety envelope | 규칙 기반 안전 보장은 왜 중요했습니까? |
+| 7 | Modular stack의 한계 | error propagation, corner case, stitched output 문제는 무엇입니까? |
+| 8 | Occupancy와 data engine | representation learning으로 중심이 어떻게 이동했습니까? |
 
 </details>
 
 ## 1. 자율주행이 AI 문제가 된 이유
 
-운전은 단순히 steering angle과 acceleration을 제어하는 문제가 아니다. 실제 도로는 open-world 환경이며, 모델은 사람, 차량, 표지판, 차선, 장애물, 날씨, 예외 상황을 함께 이해해야 한다.
+운전은 단순히 steering angle과 acceleration을 제어하는 문제가 아닙니다. 실제 도로는 open-world 환경이며, 모델은 사람, 차량, 표지판, 차선, 장애물, 날씨, 예외 상황을 함께 이해해야 합니다.
 
 | 어려움 | 설명 |
 |---|---|
-| Perception | 주변 물체와 공간 구조를 인식해야 한다. |
-| Prediction | 다른 agent의 미래 행동을 추정해야 한다. |
-| Planning | 안전하고 규칙을 지키는 경로를 선택해야 한다. |
-| Uncertainty | sensor noise, occlusion, rare event를 다뤄야 한다. |
+| Perception | 주변 물체와 공간 구조를 인식해야 합니다. |
+| Prediction | 다른 agent의 미래 행동을 추정해야 합니다. |
+| Planning | 안전하고 규칙을 지키는 경로를 선택해야 합니다. |
+| Uncertainty | sensor noise, occlusion, rare event를 다뤄야 합니다. |
 
-따라서 자율주행은 robotics, computer vision, machine learning, control이 결합된 시스템 문제다.
+따라서 자율주행은 robotics, computer vision, machine learning, control이 결합된 시스템 문제입니다.
 
 ## 2. Challenge Era
 
-상용 제품 이전의 자율주행은 공개 robotics challenge를 통해 발전했다. DARPA Grand Challenge와 Urban Challenge는 자율주행을 하나의 통합 시스템 문제로 만들었다.
+상용 제품 이전의 자율주행은 공개 robotics challenge를 통해 발전했습니다. DARPA Grand Challenge와 Urban Challenge는 자율주행을 하나의 통합 시스템 문제로 만들었습니다.
 
 | Challenge | 의미 |
 |---|---|
 | DARPA Grand Challenge | off-road autonomous navigation을 목표로 함 |
 | DARPA Urban Challenge | 교통 규칙, 교차로, 움직이는 agent가 포함된 도시 주행 |
 
-Urban Challenge 이후 자율주행은 단순 경로 추종이 아니라 situational awareness와 decision making이 중요한 문제로 자리 잡았다.
+Urban Challenge 이후 자율주행은 단순 경로 추종이 아니라 situational awareness와 decision making이 중요한 문제로 자리 잡았습니다.
 
 ## 3. Modular ADS 구조
 
@@ -83,9 +83,9 @@ Urban Challenge 이후 자율주행은 단순 경로 추종이 아니라 situati
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=7" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.7</a> — modular pipeline과 end-to-end driving의 정보 흐름을 대비한 원본 도식.</figcaption>
 </figure>
 
-위 modular 구조는 perception과 planning 사이에 사람이 정의한 중간 출력을 둔다. 아래 end-to-end 구조는 sensor 입력에서 driving output까지 더 큰 학습 블록으로 연결한다. 차이는 모듈 수 자체보다 중간 표현을 누가 정의하고 어디서 공동 최적화하는지에 있다.
+위 modular 구조는 perception과 planning 사이에 사람이 정의한 중간 출력을 둡니다. 아래 end-to-end 구조는 sensor 입력에서 driving output까지 더 큰 학습 블록으로 연결합니다. 차이는 모듈 수 자체보다 중간 표현을 누가 정의하고 어디서 공동 최적화하는지에 있습니다.
 
-초기 산업용 autonomous driving system은 대부분 modular architecture를 따랐다.
+초기 산업용 autonomous driving system은 대부분 modular architecture를 따랐습니다.
 
 ```text
 sensors -> localization -> perception -> prediction -> planning -> control
@@ -99,11 +99,11 @@ sensors -> localization -> perception -> prediction -> planning -> control
 | Planning | 안전한 주행 경로와 행동 선택 |
 | Control | 계획된 경로를 실제 차량 명령으로 실행 |
 
-이 구조는 각 팀이 module을 독립적으로 개발, 검증, 디버깅하기 쉽다는 장점이 있었다.
+이 구조는 각 팀이 module을 독립적으로 개발, 검증, 디버깅하기 쉽다는 장점이 있었습니다.
 
 ## 4. Machine Learning이 먼저 들어온 곳
 
-Machine learning은 자율주행 전체를 한 번에 대체하기보다 perception에서 먼저 강한 효과를 보였다.
+Machine learning은 자율주행 전체를 한 번에 대체하기보다 perception에서 먼저 강한 효과를 보였습니다.
 
 | Perception task | ML 활용 |
 |---|---|
@@ -112,11 +112,11 @@ Machine learning은 자율주행 전체를 한 번에 대체하기보다 percept
 | Tracking | 시간에 따른 물체 위치 추적 |
 | Classification | 표지판, 신호 상태, object type 분류 |
 
-Perception은 대량의 sensor data와 label을 활용해 supervised learning을 적용하기 쉬운 영역이었다.
+Perception은 대량의 sensor data와 label을 활용해 supervised learning을 적용하기 쉬운 영역이었습니다.
 
 ## 5. Sensor Fusion과 HD Map
 
-초기 산업용 자율주행에서는 camera, LiDAR, radar, HD map을 결합하는 설계가 중요했다.
+초기 산업용 자율주행에서는 camera, LiDAR, radar, HD map을 결합하는 설계가 중요했습니다.
 
 | Sensor/정보 | 강점 |
 |---|---|
@@ -125,7 +125,7 @@ Perception은 대량의 sensor data와 label을 활용해 supervised learning을
 | Radar | 속도 추정과 악천후 강건성 |
 | HD map | 차선, 표지, 도로 구조에 대한 prior |
 
-이 접근은 다양한 sensor의 장점을 결합하지만, 시스템이 복잡해지고 map 유지 비용이 커진다.
+이 접근은 다양한 sensor의 장점을 결합하지만, 시스템이 복잡해지고 map 유지 비용이 커집니다.
 
 ## 6. RSS와 Rule-Based Safety
 
@@ -134,11 +134,11 @@ Perception은 대량의 sensor data와 label을 활용해 supervised learning을
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=14" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.14</a> — 주행 안전을 투명한 규칙과 proper response로 형식화하려는 RSS 원본 자료.</figcaption>
 </figure>
 
-그림은 RSS를 perception model이 아니라 안전 판단의 규칙 층으로 제시한다. 학습된 policy가 행동을 제안하더라도, 안전거리·우선권·회피 반응 같은 조건을 별도로 점검해 설명 가능하고 검증 가능한 경계를 두려는 접근이다.
+그림은 RSS를 perception model이 아니라 안전 판단의 규칙 층으로 제시합니다. 학습된 policy가 행동을 제안하더라도, 안전거리·우선권·회피 반응 같은 조건을 별도로 점검해 설명 가능하고 검증 가능한 경계를 두려는 접근입니다.
 
-Mobileye의 RSS(Responsibility-Sensitive Safety)는 안전을 learned policy의 감각에만 맡기지 않고, 명시적 규칙과 safe distance로 정의하려는 접근이다.
+Mobileye의 RSS(Responsibility-Sensitive Safety)는 안전을 learned policy의 감각에만 맡기지 않고, 명시적 규칙과 safe distance로 정의하려는 접근입니다.
 
-핵심 아이디어는 다음과 같다.
+핵심 아이디어는 다음과 같습니다.
 
 ```text
 proposed action -> safety envelope check -> proper response
@@ -150,20 +150,20 @@ proposed action -> safety envelope check -> proper response
 | Proper response | 위험 상황에서 취해야 하는 책임 있는 반응 |
 | Accountability | opaque model과 별도로 검증 가능한 안전 기준 제공 |
 
-산업에서는 규제, 검증, 책임 소재 때문에 rule-based safety layer가 오랫동안 중요했다.
+산업에서는 규제, 검증, 책임 소재 때문에 rule-based safety layer가 오랫동안 중요했습니다.
 
 ## 7. Modular System의 장점과 한계
 
-Modular system은 해석과 검증이 쉽지만, module 사이의 interface가 전체 성능을 제한할 수 있다.
+Modular system은 해석과 검증이 쉽지만, module 사이의 interface가 전체 성능을 제한할 수 있습니다.
 
 | 한계 | 설명 |
 |---|---|
-| Error propagation | perception의 작은 오류가 prediction, planning으로 전파된다. |
-| Long-tail corner case | 드문 상황마다 규칙을 추가하면 복잡도가 빠르게 증가한다. |
-| Stitched outputs | object list, lane list, freespace mask가 coherent world model을 만들지는 않는다. |
-| Local optimum | 각 module은 좋아도 전체 driving behavior가 최적이 아닐 수 있다. |
+| Error propagation | perception의 작은 오류가 prediction, planning으로 전파됩니다. |
+| Long-tail corner case | 드문 상황마다 규칙을 추가하면 복잡도가 빠르게 증가합니다. |
+| Stitched outputs | object list, lane list, freespace mask가 coherent world model을 만들지는 않습니다. |
+| Local optimum | 각 module은 좋아도 전체 driving behavior가 최적이 아닐 수 있습니다. |
 
-즉, module별 정확도만 높인다고 항상 좋은 주행 정책이 되는 것은 아니다.
+즉, module별 정확도만 높인다고 항상 좋은 주행 정책이 되는 것은 아닙니다.
 
 ## 8. Occupancy로의 이동
 
@@ -172,15 +172,15 @@ Modular system은 해석과 검증이 쉽지만, module 사이의 interface가 �
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=28" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.28</a> — occupancy와 semantic occupancy를 비교한 원본 슬라이드.</figcaption>
 </figure>
 
-왼쪽 volume은 각 voxel을 빈 공간 `0`과 점유 공간 `1`로만 나눈다. 오른쪽 volume은 같은 3D 위치에 class 색을 추가해 geometry와 semantics를 함께 표현한다. 따라서 occupancy는 알려진 object box 목록만 만드는 방식과 달리, 이름을 붙이기 어려운 장애물도 점유된 공간으로 먼저 나타낼 수 있다. 색 자체가 거리나 위험도를 뜻하는 것은 아니며, 원본 범례에서는 class 구분만 나타낸다.
+왼쪽 volume은 각 voxel을 빈 공간 `0`과 점유 공간 `1`로만 나눕니다. 오른쪽 volume은 같은 3D 위치에 class 색을 추가해 geometry와 semantics를 함께 표현합니다. 따라서 occupancy는 알려진 object box 목록만 만드는 방식과 달리, 이름을 붙이기 어려운 장애물도 점유된 공간으로 먼저 나타낼 수 있습니다. 색 자체가 거리나 위험도를 뜻하는 것은 아니며, 원본 범례에서는 class 구분만 나타냅니다.
 
-Occupancy representation은 물체 list만 예측하는 대신 3D space의 cell이 비어 있는지, 차 있는지, 어떤 의미를 갖는지 예측한다.
+Occupancy representation은 물체 list만 예측하는 대신 3D space의 cell이 비어 있는지, 차 있는지, 어떤 의미를 갖는지 예측합니다.
 
 ```text
 3D space -> voxel/grid -> occupied, free, semantic label
 ```
 
-이 방식은 알 수 없는 장애물이나 불규칙한 geometry도 표현할 수 있어 safety와 planning에 더 직접적으로 도움이 된다.
+이 방식은 알 수 없는 장애물이나 불규칙한 geometry도 표현할 수 있어 safety와 planning에 더 직접적으로 도움이 됩니다.
 
 ## 9. Data Engine과 Software 2.0
 
@@ -189,9 +189,9 @@ Occupancy representation은 물체 list만 예측하는 대신 3D space의 cell�
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_1.pdf#page=35" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_1.pdf</code> p.35</a> — 규칙 추가보다 데이터와 학습 인프라의 반복 개선을 강조한 원본 인용 화면.</figcaption>
 </figure>
 
-인용문은 vision-only end-to-end network와 방대한 실제 주행 데이터를 함께 언급한다. 즉 Software 2.0의 경쟁력은 단일 모델 구조가 아니라, 실패 사례를 모으고 재학습해 다시 배포하는 data-engine 순환에 있다.
+인용문은 vision-only end-to-end network와 방대한 실제 주행 데이터를 함께 언급합니다. 즉 Software 2.0의 경쟁력은 단일 모델 구조가 아니라, 실패 사례를 모으고 재학습해 다시 배포하는 data-engine 순환에 있습니다.
 
-End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다. Fleet data를 수집하고, 실패 사례를 mining하고, labeling과 retraining을 반복하는 data engine이 필요하다.
+End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족합니다. Fleet data를 수집하고, 실패 사례를 mining하고, labeling과 retraining을 반복하는 data engine이 필요합니다.
 
 | 구성 | 역할 |
 |---|---|
@@ -201,7 +201,7 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다.
 | Retraining | 새 데이터로 모델 갱신 |
 | Redeployment | 개선된 모델을 다시 차량에 배포 |
 
-이 관점에서 "모델"은 neural network 하나가 아니라 데이터 수집부터 배포까지 포함한 폐루프 시스템이다.
+이 관점에서 "모델"은 neural network 하나가 아니라 데이터 수집부터 배포까지 포함한 폐루프 시스템입니다.
 
 ## 마지막 핵심 정리
 
@@ -209,36 +209,36 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족하다.
 
 | 질문 | 답의 방향 |
 |---|---|
-| Modular ADS의 기본 module은? | localization, perception, prediction, planning, control |
-| RSS의 핵심 목적은? | learned policy와 별도로 검증 가능한 safety envelope 제공 |
-| Error propagation은 무엇인가? | 앞 module의 오류가 뒤 module 의사결정으로 전파되는 현상 |
-| Occupancy가 object list보다 나은 점은? | unknown object와 irregular geometry를 공간적으로 표현 가능 |
-| Data engine이 중요한 이유는? | rare case를 지속적으로 발견하고 모델을 갱신하기 위해 |
+| Modular ADS의 기본 module은 무엇입니까? | localization, perception, prediction, planning, control |
+| RSS의 핵심 목적은 무엇입니까? | learned policy와 별도로 검증 가능한 safety envelope 제공 |
+| Error propagation은 무엇입니까? | 앞 module의 오류가 뒤 module 의사결정으로 전파되는 현상 |
+| Occupancy가 object list보다 나은 점은 무엇입니까? | unknown object와 irregular geometry를 공간적으로 표현 가능 |
+| Data engine이 중요한 이유는 무엇입니까? | rare case를 지속적으로 발견하고 모델을 갱신하기 위해 |
 
 ## Study Guide
 
-복습은 localization에서 control까지 modular pipeline을 먼저 그린 뒤, 앞 모듈의 오차가 뒤 의사결정으로 전파되는 경로를 한 사례로 추적한다. 다음으로 object list와 occupancy를 unknown obstacle·irregular geometry 관점에서 비교해, 표현 전환의 이유를 설명할 수 있어야 한다. 시험에서는 RSS의 safety envelope와 fleet data → mining → auto-labeling → retraining → redeployment 폐루프를 우선 재현한다.
+복습은 localization에서 control까지 modular pipeline을 먼저 그린 뒤, 앞 모듈의 오차가 뒤 의사결정으로 전파되는 경로를 한 사례로 추적합니다. 다음으로 object list와 occupancy를 unknown obstacle·irregular geometry 관점에서 비교해, 표현 전환의 이유를 설명할 수 있어야 합니다. 시험에서는 RSS의 safety envelope와 fleet data → mining → auto-labeling → retraining → redeployment 폐루프를 우선 재현합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. 자율주행에서 perception과 planning을 완전히 분리하면 어떤 장단점이 생기는가?</summary>
+<summary>1. 자율주행에서 perception과 planning을 완전히 분리하면 어떤 장단점이 생깁니까?</summary>
 
-답변: 분리하면 각 모듈을 독립적으로 설계, 디버깅, 검증하기 쉽다. 하지만 perception의 오차가 planning으로 그대로 전달되고, planning에 필요한 정보가 perception 단계에서 사라질 수 있다. end-to-end 방식은 이런 정보 손실을 줄일 수 있지만 해석성과 안전 검증이 어려워진다.
-
-</details>
-
-<details markdown="block">
-<summary>2. HD map 기반 접근과 camera-first learning 접근의 차이를 설명하라.</summary>
-
-답변: HD map 기반 접근은 정밀 지도와 위치 추정을 강하게 활용해 안정적인 주행 계획을 만든다. 반면 camera-first learning은 카메라 입력에서 주변 구조를 직접 학습해 지도 의존도를 줄인다. 전자는 검증 가능성이 높고, 후자는 확장성과 최신 환경 대응이 장점이다.
+답변: 분리하면 각 모듈을 독립적으로 설계, 디버깅, 검증하기 쉽습니다. 하지만 perception의 오차가 planning으로 그대로 전달되고, planning에 필요한 정보가 perception 단계에서 사라질 수 있습니다. end-to-end 방식은 이런 정보 손실을 줄일 수 있지만 해석성과 안전 검증이 어려워집니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Occupancy representation이 end-to-end driving으로 가는 bridge가 되는 이유는 무엇인가?</summary>
+<summary>2. HD map 기반 접근과 camera-first learning 접근에는 어떤 차이가 있습니까?</summary>
 
-답변: occupancy는 객체 단위 인식 결과보다 더 조밀하게 공간의 점유 여부를 표현한다. 따라서 perception 결과를 planning이 바로 사용할 수 있는 3D 공간 표현으로 바꿔준다. 완전한 black-box end-to-end보다 해석 가능성을 남기면서도 학습 기반 주행으로 연결되는 중간 표현이다.
+답변: HD map 기반 접근은 정밀 지도와 위치 추정을 강하게 활용해 안정적인 주행 계획을 만듭니다. 반면 camera-first learning은 카메라 입력에서 주변 구조를 직접 학습해 지도 의존도를 줄입니다. 전자는 검증 가능성이 높고, 후자는 확장성과 최신 환경 대응이 장점입니다.
+
+</details>
+
+<details markdown="block">
+<summary>3. Occupancy representation이 end-to-end driving으로 가는 bridge가 되는 이유는 무엇입니까?</summary>
+
+답변: occupancy는 객체 단위 인식 결과보다 더 조밀하게 공간의 점유 여부를 표현합니다. 따라서 perception 결과를 planning이 바로 사용할 수 있는 3D 공간 표현으로 바꿔줍니다. 완전한 black-box end-to-end보다 해석 가능성을 남기면서도 학습 기반 주행으로 연결되는 중간 표현입니다.
 
 </details>
 

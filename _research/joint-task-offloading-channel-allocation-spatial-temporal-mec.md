@@ -27,40 +27,40 @@ keywords:
 
 ## 한 줄 요약
 
-이 논문은 이동성으로 인한 spatial dynamic과 task dependency로 인한 temporal correlation을 함께 고려해, task offloading과 channel allocation을 결합한 long-term delay-energy cost minimization 문제를 다룬다.
+이 논문은 이동성으로 인한 spatial dynamic과 task dependency로 인한 temporal correlation을 함께 고려해, task offloading과 channel allocation을 결합한 long-term delay-energy cost minimization 문제를 다룹니다.
 
 ## 핵심 내용
 
-이 논문은 MEC 네트워크의 동적 특성을 공간과 시간 두 방향으로 나누어 본다. 사용자가 이동하면 어느 edge server에 요청이 몰리는지가 바뀌고, task dependency가 있으면 이전 task와 다음 task의 resource 경쟁이 서로 영향을 준다.
+이 논문은 MEC 네트워크의 동적 특성을 공간과 시간 두 방향으로 나누어 봅니다. 사용자가 이동하면 어느 edge server에 요청이 몰리는지가 바뀌고, task dependency가 있으면 이전 task와 다음 task의 resource 경쟁이 서로 영향을 줍니다.
 
-논문은 먼저 task priority를 평가해 dependency를 다루고, channel allocation을 grouped knapsack 문제로 해결한다. 그 다음 D3QN이 offloading decision을 학습한다. 이때 channel allocation 결과가 reward에 들어가므로, agent는 단순히 계산 위치만 고르는 것이 아니라 통신 resource 상태까지 간접적으로 고려한다.
+논문은 먼저 task priority를 평가해 dependency를 다루고, channel allocation을 grouped knapsack 문제로 해결합니다. 그 다음 D3QN이 offloading decision을 학습합니다. 이때 channel allocation 결과가 reward에 들어가므로, agent는 단순히 계산 위치만 고르는 것이 아니라 통신 resource 상태까지 간접적으로 고려합니다.
 
-이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요하다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문이다.
+이 접근은 MEC offloading을 channel allocation과 분리해 보지 않는다는 점에서 중요합니다. Dense environment에서는 edge capacity뿐 아니라 wireless channel competition도 delay와 energy를 크게 바꿀 수 있기 때문입니다.
 
-핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점이다. 같은 edge server로 task를 보내더라도 channel 배분에 따라 transmission delay와 interference가 달라진다. 논문은 두 결정을 하나의 action으로 합치지 않고, offloading 결과를 바탕으로 channel을 배분한 뒤 그 결과를 offloading 학습의 reward에 반영한다.
+핵심은 channel allocation을 offloading 이후의 부가 문제로 보지 않는다는 점입니다. 같은 edge server로 task를 보내더라도 channel 배분에 따라 transmission delay와 interference가 달라집니다. 논문은 두 결정을 하나의 action으로 합치지 않고, offloading 결과를 바탕으로 channel을 배분한 뒤 그 결과를 offloading 학습의 reward에 반영합니다.
 
-D3QN은 실행 위치를 고르는 offloading action의 value estimation을 안정화한다. Dueling 구조는 state value와 action advantage를 분리하고, double Q-learning은 과대평가를 줄인다. Radio resource의 영향은 별도 channel allocation 결과를 reward에 넣어 학습한다.
+D3QN은 실행 위치를 고르는 offloading action의 value estimation을 안정화합니다. Dueling 구조는 state value와 action advantage를 분리하고, double Q-learning은 과대평가를 줄입니다. Radio resource의 영향은 별도 channel allocation 결과를 reward에 넣어 학습합니다.
 
 ## 전체 흐름
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 문제 배경 | MEC에서 사용자 이동성과 task dependency가 왜 함께 문제가 되는가? |
-| 2 | 우선순위 | Task dependency를 priority evaluation으로 어떻게 decouple하는가? |
-| 3 | Channel allocation | 현재 data load와 channel status를 grouped knapsack으로 어떻게 반영하는가? |
-| 4 | Offloading | D3QN이 offloading decision을 어떻게 학습하는가? |
+| 1 | 문제 배경 | MEC에서 사용자 이동성과 task dependency가 왜 함께 문제가 됩니까? |
+| 2 | 우선순위 | Task dependency를 priority evaluation으로 어떻게 decouple합니까? |
+| 3 | Channel allocation | 현재 data load와 channel status를 grouped knapsack으로 어떻게 반영합니까? |
+| 4 | Offloading | D3QN이 offloading decision을 어떻게 학습합니까? |
 
 ## 1. 문제 배경
 
-Multi-user multi-server MEC에서는 사용자의 이동으로 computing request가 공간적으로 계속 달라진다. 동시에 일부 application은 task 간 dependency가 있어 시간적으로 인접한 task들이 서로 다른 resource availability와 competition을 경험한다.
+Multi-user multi-server MEC에서는 사용자의 이동으로 computing request가 공간적으로 계속 달라집니다. 동시에 일부 application은 task 간 dependency가 있어 시간적으로 인접한 task들이 서로 다른 resource availability와 competition을 경험합니다.
 
-이 논문은 이런 spatial-temporal dynamic을 단순 noise가 아니라 offloading과 channel allocation decision에 직접 반영해야 할 조건으로 본다.
+이 논문은 이런 spatial-temporal dynamic을 단순 noise가 아니라 offloading과 channel allocation decision에 직접 반영해야 할 조건으로 봅니다.
 
 ## 2. 제안 방법
 
-논문은 task dependency를 priority evaluation으로 먼저 완화하고, channel allocation은 grouped knapsack 문제로 구성한다. 이후 D3QN을 사용해 offloading decision을 학습하며, channel allocation 결과를 reward feedback에 포함한다.
+논문은 task dependency를 priority evaluation으로 먼저 완화하고, channel allocation은 grouped knapsack 문제로 구성합니다. 이후 D3QN을 사용해 offloading decision을 학습하며, channel allocation 결과를 reward feedback에 포함합니다.
 
-DTO의 D3QN은 local 실행 또는 한 edge server를 선택하고, DCA는 선택된 단말별 subchannel 수를 최적화한다. 구체적인 subchannel ID는 그 수량에 맞춰 무작위 배정된다. D3QN이 channel ID를 직접 출력하는 구조는 아니다.
+DTO의 D3QN은 local 실행 또는 한 edge server를 선택하고, DCA는 선택된 단말별 subchannel 수를 최적화합니다. 구체적인 subchannel ID는 그 수량에 맞춰 무작위 배정됩니다. D3QN이 channel ID를 직접 출력하는 구조는 아닙니다.
 
 | 구성 | 역할 |
 |---|---|
@@ -71,11 +71,11 @@ DTO의 D3QN은 local 실행 또는 한 edge server를 선택하고, DCA는 선�
 
 ## 3. 결과 및 해석
 
-제안 방식은 communication resource와 computation resource를 분리해서 최적화하지 않고, offloading과 channel allocation의 상호작용을 학습 과정에 넣는다. 이는 MEC에서 delay-energy trade-off를 더 현실적으로 다루기 위한 설계다.
+제안 방식은 communication resource와 computation resource를 분리해서 최적화하지 않고, offloading과 channel allocation의 상호작용을 학습 과정에 넣습니다. 이는 MEC에서 delay-energy trade-off를 더 현실적으로 다루기 위한 설계입니다.
 
 ## 4. 연구 맥락
 
-QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 spatial mobility와 temporal dependency를 강조한다. 두 관점은 상호 보완적이며, 실제 MEC 시스템에서는 부하 집중, 이동성, channel competition이 함께 발생한다.
+QECO-Adapt는 dense load와 dropped task에 초점을 두지만, 이 논문은 spatial mobility와 temporal dependency를 강조합니다. 두 관점은 상호 보완적이며, 실제 MEC 시스템에서는 부하 집중, 이동성, channel competition이 함께 발생합니다.
 
 ## Seminar Materials
 | Materials | Slides | PDF | PowerPoint | Study Notes | Speaker Notes |

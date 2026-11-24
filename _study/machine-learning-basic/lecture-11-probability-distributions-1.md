@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-11.pdf`
 
-> **핵심:** 확률변수는 표본공간의 결과를 수치에 대응시키는 함수다. 이산확률변수의 각 값에 부여된 확률은 PMF로 나타낸다.
+> **핵심:** 확률변수는 표본공간의 결과를 수치에 대응시키는 함수입니다. 이산확률변수의 각 값에 부여된 확률은 PMF로 나타냅니다.
 
 ## 전체 흐름
 
@@ -28,11 +28,11 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 확률론의 필요성 | 불확실성을 어떻게 수량화하는가? |
-| 2 | 표본공간과 사건 | 확률을 정의하려면 어떤 집합이 필요한가? |
-| 3 | 확률변수 | 실험 결과를 수치로 바꾸는 함수는 무엇인가? |
-| 4 | 이산확률변수 | PMF와 joint PMF는 무엇인가? |
-| 5 | 연속확률변수 | CDF와 PDF는 어떻게 확률을 표현하는가? |
+| 1 | 확률론의 필요성 | 불확실성을 어떻게 수량화합니까? |
+| 2 | 표본공간과 사건 | 확률을 정의하려면 어떤 집합이 필요합니까? |
+| 3 | 확률변수 | 실험 결과를 수치로 바꾸는 함수는 무엇입니까? |
+| 4 | 이산확률변수 | PMF와 joint PMF는 무엇입니까? |
+| 5 | 연속확률변수 | CDF와 PDF는 어떻게 확률을 표현합니까? |
 
 ### 원문 수식 추적표
 
@@ -44,15 +44,15 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 | 16–20 | 연속확률변수, CDF/PDF, 구간확률, uniform density | 7, 8.2, 8.6 |
 | 21–23 | joint CDF/PDF, conditional density와 piecewise 경계 | 7, 8.5, 8.6 |
 
-페이지 24는 Q&A 마무리이다.
+페이지 24는 Q&A 마무리입니다.
 
 </details>
 
 ## 1. 확률론이 필요한 이유
 
-확률론은 불확실성을 수량적으로 다루는 이론이다. 머신러닝, 데이터 분석, Bayesian AI, LLM, diffusion model 등에서 핵심 기반이 된다.
+확률론은 불확실성을 수량적으로 다루는 이론입니다. 머신러닝, 데이터 분석, Bayesian AI, LLM, diffusion model 등에서 핵심 기반이 됩니다.
 
-확률은 단순한 참/거짓을 넘어서 어떤 명제가 얼마나 그럴듯한지를 일관된 수치로 표현한다.
+확률은 단순한 참/거짓을 넘어서 어떤 명제가 얼마나 그럴듯한지를 일관된 수치로 표현합니다.
 
 ## 2. 표본공간, 사건공간, 확률
 
@@ -62,11 +62,11 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 | 사건 | 확률을 계산하고 싶은 결과들의 집합 |
 | 확률 | 사건이 일어날 가능성 또는 믿음의 정도 |
 
-예를 들어 동전을 두 번 던지는 실험에서 표본공간은 `{HH, HT, TH, TT}`이다. "앞면이 한 번 이상 나온다"는 사건은 `{HH, HT, TH}`이다.
+예를 들어 동전을 두 번 던지는 실험에서 표본공간은 `{HH, HT, TH, TT}`입니다. "앞면이 한 번 이상 나온다"는 사건은 `{HH, HT, TH}`입니다.
 
 ## 3. 확률변수
 
-확률변수는 표본공간의 결과를 수치로 대응시키는 함수다.
+확률변수는 표본공간의 결과를 수치로 대응시키는 함수입니다.
 
 동전을 두 번 던질 때 앞면의 개수를 세는 확률변수 $$X$$를 생각하면:
 
@@ -74,63 +74,63 @@ $$
 X(HH)=2,\quad X(HT)=1,\quad X(TH)=1,\quad X(TT)=0
 $$
 
-우리가 계산하는 확률은 보통 $$P(X \ge 1)$$처럼 확률변수 위의 사건에 대한 확률이다.
+우리가 계산하는 확률은 보통 $$P(X \ge 1)$$처럼 확률변수 위의 사건에 대한 확률입니다.
 
 ## 4. 확률 함수의 조건
 
-확률은 아무 숫자나 붙이면 되는 것이 아니라 다음 조건을 만족해야 한다.
+확률은 아무 숫자나 붙이면 되는 것이 아니라 다음 조건을 만족해야 합니다.
 
 | 조건 | 의미 |
 |---|---|
-| nonnegative | 확률은 음수가 될 수 없다. |
-| normalization | 전체 표본공간의 확률은 1이다. |
-| additivity | 서로소 사건들의 합집합 확률은 확률의 합이다. |
+| nonnegative | 확률은 음수가 될 수 없습니다. |
+| normalization | 전체 표본공간의 확률은 1입니다. |
+| additivity | 서로소 사건들의 합집합 확률은 확률의 합입니다. |
 
-이 조건들로부터 여사건, 포함관계, 합집합 확률 같은 기본 성질이 따라온다.
+이 조건들로부터 여사건, 포함관계, 합집합 확률 같은 기본 성질이 따라옵니다.
 
 ## 5. 이산확률변수와 PMF
 
-이산확률변수는 가능한 값이 유한하거나 셀 수 있는 경우다. 이때 확률은 PMF(probability mass function)로 표현한다.
+이산확률변수는 가능한 값이 유한하거나 셀 수 있는 경우입니다. 이때 확률은 PMF(probability mass function)로 표현합니다.
 
 $$
 p_X(x) = P(X=x)
 $$
 
-여러 값으로 이루어진 사건의 확률은 해당 값들의 PMF를 더해서 구한다.
+여러 값으로 이루어진 사건의 확률은 해당 값들의 PMF를 더해서 구합니다.
 
 ## 6. Joint PMF
 
-두 확률변수 $$X$$, $$Y$$가 같은 표본공간에 정의되어 있을 때 joint PMF는 다음 확률이다.
+두 확률변수 $$X$$, $$Y$$가 같은 표본공간에 정의되어 있을 때 joint PMF는 다음 확률입니다.
 
 $$
 p_{X,Y}(x,y) = P(X=x, Y=y)
 $$
 
-이는 두 조건을 동시에 만족할 확률이다. 이후 조건부 확률, 합 법칙, 곱 법칙의 기반이 된다.
+이는 두 조건을 동시에 만족할 확률입니다. 이후 조건부 확률, 합 법칙, 곱 법칙의 기반이 됩니다.
 
 ## 7. 연속확률변수와 CDF/PDF
 
-연속확률변수는 값이 연속 공간 위에 있는 경우다. 이 경우 특정 점 하나의 확률은 0이다.
+연속확률변수는 값이 연속 공간 위에 있는 경우입니다. 이 경우 특정 점 하나의 확률은 0입니다.
 
 <a href="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-11-page-20.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/machine-learning-basic/source-captures/lecture-11-page-20.png" | relative_url }}" alt="원본 강의 슬라이드의 연속 균등분포 PDF" loading="lazy"></a>
 
-*원본 강의 PDF p. 20. 오른쪽 그래프는 구간 $$[a,b]$$에서 높이가 $$1/(b-a)$$인 일반 균등분포를, 왼쪽 식은 특수한 구간 $$[0,1]$$의 CDF와 PDF를 보여준다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-11.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
+*원본 강의 PDF p. 20. 오른쪽 그래프는 구간 $$[a,b]$$에서 높이가 $$1/(b-a)$$인 일반 균등분포를, 왼쪽 식은 특수한 구간 $$[0,1]$$의 CDF와 PDF를 보여줍니다. <a href="{{ "/assets/pdfs/study/machine-learning-basic/machine-learning-basic-lecture-11.pdf#page=20" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 20</a>*
 
-직사각형 전체 넓이는 $$(b-a)\cdot1/(b-a)=1$$이다. 부분 구간의 확률은 그 구간 아래 넓이로 계산하므로, 길이가 같은 두 부분 구간은 같은 확률을 가진다.
+직사각형 전체 넓이는 $$(b-a)\cdot1/(b-a)=1$$입니다. 부분 구간의 확률은 그 구간 아래 넓이로 계산하므로, 길이가 같은 두 부분 구간은 같은 확률을 가집니다.
 
-따라서 구간 확률을 계산해야 하며 CDF를 사용한다.
+따라서 구간 확률을 계산해야 하며 CDF를 사용합니다.
 
 $$
 F_X(x) = P(X \le x)
 $$
 
-PDF는 CDF의 변화율로 이해할 수 있고, 구간 확률은 PDF를 적분해 구한다.
+PDF는 CDF의 변화율로 이해할 수 있고, 구간 확률은 PDF를 적분해 구합니다.
 
-주의할 점: PDF 값은 1보다 클 수 있다. 1보다 클 수 없는 것은 확률과 CDF 값이다.
+주의할 점: PDF 값은 1보다 클 수 있습니다. 1보다 클 수 없는 것은 확률과 CDF 값입니다.
 
 ## 8. 확률식의 유도와 단위
 
-합집합·조건부 확률은 동일한 사건의 확률을 겹침 없이 나누는 법칙이고, CDF·PDF·PMF는 합이나 적분으로 확률을 보존한다. 연속 밀도는 확률이 아니라 단위를 가진 밀도라는 점을 유지하며, 세부 유도는 아래에서 확인한다.
+합집합·조건부 확률은 동일한 사건의 확률을 겹침 없이 나누는 법칙이고, CDF·PDF·PMF는 합이나 적분으로 확률을 보존합니다. 연속 밀도는 확률이 아니라 단위를 가진 밀도라는 점을 유지하며, 세부 유도는 아래에서 확인합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Probability identities, densities, and marginalization</summary>
@@ -143,13 +143,13 @@ $$
 1=P(S)=P(A)+P(A^c)
 $$
 
-이고 $$P(A^c)=1-P(A)$$다. 또한 $$A\cup B$$에서 교집합을 두 번 세지 않도록 빼면
+이고 $$P(A^c)=1-P(A)$$입니다. 또한 $$A\cup B$$에서 교집합을 두 번 세지 않도록 빼면
 
 $$
 P(A\cup B)=P(A)+P(B)-P(A\cap B)
 $$
 
-이다. 두 식은 **정확한 항등식**이며 두 사건이 독립일 필요가 없다.
+입니다. 두 식은 **정확한 항등식**이며 두 사건이 독립일 필요가 없습니다.
 
 ### 8.2 CDF와 PDF의 연결
 
@@ -161,7 +161,7 @@ F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt,
 f_X(x)=\frac{dF_X(x)}{dx}.
 $$
 
-미적분학의 기본정리로 얻는 **정확한 관계**다. 모든 분포가 PDF를 가지는 것은 아니며, 점질량이 섞인 분포에서는 CDF가 점프하므로 이 미분식만으로 전체 확률을 복원할 수 없다.
+미적분학의 기본정리로 얻는 **정확한 관계**입니다. 모든 분포가 PDF를 가지는 것은 아니며, 점질량이 섞인 분포에서는 CDF가 점프하므로 이 미분식만으로 전체 확률을 복원할 수 없습니다.
 
 구간 확률은
 
@@ -169,7 +169,7 @@ $$
 P(a<X\le b)=F_X(b)-F_X(a)=\int_a^b f_X(x)\,dx
 $$
 
-이다. $$X$$의 단위가 meter라면 $$f_X$$의 단위는 $$\mathrm{m}^{-1}$$이고, 적분한 확률·PMF·CDF는 무차원이다. 따라서 PDF 높이가 1을 넘더라도 면적이 $$[0,1]$$이면 문제가 없다.
+입니다. $$X$$의 단위가 meter라면 $$f_X$$의 단위는 $$\mathrm{m}^{-1}$$이고, 적분한 확률·PMF·CDF는 무차원입니다. 따라서 PDF 높이가 1을 넘더라도 면적이 $$[0,1]$$이면 문제가 없습니다.
 
 ### 8.3 Joint에서 marginal로
 
@@ -179,7 +179,7 @@ $$
 p_X(x)=\sum_y p_{X,Y}(x,y)
 $$
 
-이다. 연속형에서는 합이 적분으로 바뀐다. 적분 범위는 지원집합 전체를 포함해야 한다. Density를 지원집합 밖에서 0으로 연장하는 통상적 표기에서는 $$\mathbb{R}$$ 전체에 적분해도 바깥 구간의 기여가 0이므로 같은 결과를 얻는다. 연속형 density를 점확률로 해석해서는 안 된다.
+입니다. 연속형에서는 합이 적분으로 바뀝니다. 적분 범위는 지원집합 전체를 포함해야 합니다. Density를 지원집합 밖에서 0으로 연장하는 통상적 표기에서는 $$\mathbb{R}$$ 전체에 적분해도 바깥 구간의 기여가 0이므로 같은 결과를 얻습니다. 연속형 density를 점확률로 해석해서는 안 됩니다.
 
 ### 8.4 조건부 PMF, 합 법칙과 곱 법칙
 
@@ -191,31 +191,31 @@ p_{Y\mid X}(y\mid x)
 =\frac{p_{X,Y}(x,y)}{p_X(x)}
 $$
 
-로 정의된다. 따라서 joint PMF는 곱 법칙
+로 정의됩니다. 따라서 joint PMF는 곱 법칙
 
 $$
 p_{X,Y}(x,y)=p_{Y\mid X}(y\mid x)p_X(x)
 =p_{X\mid Y}(x\mid y)p_Y(y)
 $$
 
-으로 복원된다. 다른 변수를 더해 없애는 합 법칙은
+으로 복원됩니다. 다른 변수를 더해 없애는 합 법칙은
 
 $$
 p_X(x)=\sum_y p_{X,Y}(x,y)
 =\sum_y p_{X\mid Y}(x\mid y)p_Y(y)
 $$
 
-이다. 첫 번째 등식은 marginalization, 두 번째 등식은 total probability다. 이 식들은 분모가 양수이고 합이 지원집합 전체를 훑는다는 조건 아래의 **정확한 항등식**이며 독립성을 요구하지 않는다. 독립인 경우에만 $$p_{Y\mid X}(y\mid x)=p_Y(y)$$로 단순해진다. PMF와 확률은 무차원이고, $$p_X(x)=0$$인 조건값에서는 위 비율 정의를 사용할 수 없다.
+입니다. 첫 번째 등식은 marginalization, 두 번째 등식은 total probability입니다. 이 식들은 분모가 양수이고 합이 지원집합 전체를 훑는다는 조건 아래의 **정확한 항등식**이며 독립성을 요구하지 않습니다. 독립인 경우에만 $$p_{Y\mid X}(y\mid x)=p_Y(y)$$로 단순해집니다. PMF와 확률은 무차원이고, $$p_X(x)=0$$인 조건값에서는 위 비율 정의를 사용할 수 없습니다.
 
 ### 8.5 Joint CDF/PDF, 조건부 밀도와 곱 법칙
 
-원문 마지막 두 슬라이드의 연속형 확장을 정리한다. 두 연속확률변수 $$X,Y$$의 joint CDF는 **정의**로
+원문 마지막 두 슬라이드의 연속형 확장을 정리합니다. 두 연속확률변수 $$X,Y$$의 joint CDF는 **정의**로
 
 $$
 F_{X,Y}(x,y)=P(X\le x,\,Y\le y)
 $$
 
-이다. 결합분포가 joint density를 갖고 필요한 미분이 존재하는 점에서는
+입니다. 결합분포가 joint density를 갖고 필요한 미분이 존재하는 점에서는
 
 $$
 f_{X,Y}(x,y)
@@ -228,7 +228,7 @@ F_{X,Y}(x,y)
 f_{X,Y}(u,v)\,dv\,du.
 $$
 
-두 식은 joint distribution이 절대연속이라는 가정 아래의 **정확한 관계**다. 점질량이나 singular component가 섞이면 CDF는 여전히 정의되지만 하나의 joint PDF와 혼합미분만으로 전체 분포를 나타낼 수 없다.
+두 식은 joint distribution이 절대연속이라는 가정 아래의 **정확한 관계**입니다. 점질량이나 singular component가 섞이면 CDF는 여전히 정의되지만 하나의 joint PDF와 혼합미분만으로 전체 분포를 나타낼 수 없습니다.
 
 유효한 joint PDF는 $$f_{X,Y}(x,y)\ge0$$이고
 
@@ -236,9 +236,9 @@ $$
 \int_{\mathbb{R}}\int_{\mathbb{R}}f_{X,Y}(x,y)\,dy\,dx=1
 $$
 
-을 만족해야 한다. 개별 density 높이가 아니라 영역 위의 이중적분이 그 영역의 확률이다.
+을 만족해야 합니다. 개별 density 높이가 아니라 영역 위의 이중적분이 그 영역의 확률입니다.
 
-연속형 합 법칙, 즉 marginalization은 다른 변수를 그 지원집합 전체에서 적분하는 것이다.
+연속형 합 법칙, 즉 marginalization은 다른 변수를 그 지원집합 전체에서 적분하는 것입니다.
 
 $$
 f_X(x)=\int_{\mathbb{R}}f_{X,Y}(x,y)\,dy,
@@ -259,7 +259,7 @@ $$
 f_{X,Y}(x,y)=f_{Y\mid X}(y\mid x)f_X(x)
 $$
 
-을 얻는다. 이는 독립성을 요구하지 않는 **정확한 항등식**이다. 독립일 때만 conditional density가 marginal과 같아져 $$f_{X,Y}(x,y)=f_X(x)f_Y(y)$$로 단순화된다.
+을 얻습니다. 이는 독립성을 요구하지 않는 **정확한 항등식**입니다. 독립일 때만 conditional density가 marginal과 같아져 $$f_{X,Y}(x,y)=f_X(x)f_Y(y)$$로 단순화됩니다.
 
 | 양 | 단위 |
 |---|---|
@@ -268,11 +268,11 @@ $$
 | $$f_Y(y)$$, $$f_{Y\mid X}(y\mid x)$$ | $$Y$$ 단위의 역수 |
 | $$f_{X,Y}(x,y)$$ | `X 단위의 역수 × Y 단위의 역수` |
 
-따라서 joint density를 $$y$$에 대해 적분하면 $$Y$$의 역단위가 소거되어 $$f_X$$의 단위가 남는다. $$f_X(x)=0$$인 점에서는 위 비율로 conditional density를 정의할 수 없으며, density 값 자체를 점확률로 읽는 해석도 실패한다.
+따라서 joint density를 $$y$$에 대해 적분하면 $$Y$$의 역단위가 소거되어 $$f_X$$의 단위가 남습니다. $$f_X(x)=0$$인 점에서는 위 비율로 conditional density를 정의할 수 없으며, density 값 자체를 점확률로 읽는 해석도 실패합니다.
 
 ### 8.6 구간 균등분포의 piecewise PDF와 CDF
 
-$$X\sim\operatorname{Uniform}(a,b)$$, $$a<b$$라 하자. 전체 면적이 1이어야 하므로 상수 높이 $$c$$는 $$c(b-a)=1$$에서 $$c=1/(b-a)$$다. 따라서
+$$X\sim\operatorname{Uniform}(a,b)$$, $$a<b$$라 하겠습니다. 전체 면적이 1이어야 하므로 상수 높이 $$c$$는 $$c(b-a)=1$$에서 $$c=1/(b-a)$$입니다. 따라서
 
 $$
 f_X(x)=
@@ -294,7 +294,7 @@ F_X(x)=
 \end{cases}
 $$
 
-예를 들어 $$X\sim\operatorname{Uniform}(2,4)$$이면 $$f_X(x)=1/2$$가 1보다 작지만, 더 좁은 $$\operatorname{Uniform}(0,1/2)$$에서는 $$f_X(x)=2>1$$이다. 두 경우 모두 면적은 정확히 1이다. $$X$$의 단위가 second이면 $$a,b,x$$는 second, PDF는 $$\mathrm{s}^{-1}$$, CDF와 구간확률은 무차원이다. 끝점 하나의 포함 여부는 연속분포의 확률을 바꾸지 않지만, 위 piecewise 표기는 CDF의 연속성을 명확히 보이기 위해 닫힌 구간으로 썼다.
+예를 들어 $$X\sim\operatorname{Uniform}(2,4)$$이면 $$f_X(x)=1/2$$가 1보다 작지만, 더 좁은 $$\operatorname{Uniform}(0,1/2)$$에서는 $$f_X(x)=2>1$$입니다. 두 경우 모두 면적은 정확히 1입니다. $$X$$의 단위가 second이면 $$a,b,x$$는 second, PDF는 $$\mathrm{s}^{-1}$$, CDF와 구간확률은 무차원입니다. 끝점 하나의 포함 여부는 연속분포의 확률을 바꾸지 않지만, 위 piecewise 표기는 CDF의 연속성을 명확히 보이기 위해 닫힌 구간으로 썼습니다.
 
 </details>
 
@@ -304,40 +304,40 @@ $$
 
 | 질문 | 답의 방향 |
 |---|---|
-| 확률변수란? | 표본공간 결과를 수치로 보내는 함수 |
-| PMF는 언제 쓰는가? | 이산확률변수 |
-| PDF에서 한 점의 확률은? | 연속확률변수에서는 0 |
-| PDF 값이 1보다 클 수 있는가? | 가능하다. 면적이 확률이다. |
+| 확률변수란 무엇입니까? | 표본공간 결과를 수치로 보내는 함수 |
+| PMF는 언제 씁니까? | 이산확률변수 |
+| PDF에서 한 점의 확률은 무엇입니까? | 연속확률변수에서는 0 |
+| PDF 값이 1보다 클 수 있습니까? | 가능합니다. 면적이 확률입니다. |
 
 ## Study Guide
 
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-sample space와 event를 적은 뒤 random variable이 결과를 숫자로 보내는 함수임을 먼저 확인한다. 이산 변수는 PMF 합, 연속 변수는 PDF 적분으로 normalization을 검산하고 joint distribution에서 marginal을 구해 본다. PDF 값 자체는 1보다 클 수 있고 한 점의 확률은 0이라는 두 문장을 가장 우선적으로 점검한다.
+sample space와 event를 적은 뒤 random variable이 결과를 숫자로 보내는 함수임을 먼저 확인합니다. 이산 변수는 PMF 합, 연속 변수는 PDF 적분으로 normalization을 검산하고 joint distribution에서 marginal을 구해 봅니다. PDF 값 자체는 1보다 클 수 있고 한 점의 확률은 0이라는 두 문장을 가장 우선적으로 점검합니다.
 
 </details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary markdown="span">1. 동전 두 번 던지기에서 $$P(X \ge 1)$$은 어떤 사건의 확률인가?</summary>
+<summary markdown="span">1. 동전 두 번 던지기에서 $$P(X \ge 1)$$은 어떤 사건의 확률입니까?</summary>
 
-답변: $$X$$가 앞면의 개수라면 $$X\ge 1$$은 두 번 중 적어도 한 번 앞면이 나오는 사건이다. 표본공간이 $$HH, HT, TH, TT$$라면 해당 사건은 $$HH, HT, TH$$이다.
-
-</details>
-
-<details markdown="block">
-<summary>2. Joint PMF는 단순히 두 PMF를 곱한 것인가? 언제 곱할 수 있는가?</summary>
-
-답변: 일반적으로 joint PMF는 두 확률변수의 결합확률을 나타내며 단순 곱이 아니다. 두 확률변수가 독립일 때에만 $$p_{X,Y}(x,y)=p_X(x)p_Y(y)$$로 분해할 수 있다.
+답변: $$X$$가 앞면의 개수라면 $$X\ge 1$$은 두 번 중 적어도 한 번 앞면이 나오는 사건입니다. 표본공간이 $$HH, HT, TH, TT$$라면 해당 사건은 $$HH, HT, TH$$입니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. 연속확률변수에서 "정확히 2시"에 도착할 확률이 0인 이유는 무엇인가?</summary>
+<summary>2. Joint PMF는 단순히 두 PMF를 곱한 것입니까? 언제 곱할 수 있습니까?</summary>
 
-답변: 연속확률변수에서는 한 점의 길이가 0이므로 그 점에 해당하는 확률도 0이다. 확률은 보통 구간의 면적, 즉 density를 적분한 값으로 계산한다.
+답변: 일반적으로 joint PMF는 두 확률변수의 결합확률을 나타내며 단순 곱이 아닙니다. 두 확률변수가 독립일 때에만 $$p_{X,Y}(x,y)=p_X(x)p_Y(y)$$로 분해할 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>3. 연속확률변수에서 "정확히 2시"에 도착할 확률이 0인 이유는 무엇입니까?</summary>
+
+답변: 연속확률변수에서는 한 점의 길이가 0이므로 그 점에 해당하는 확률도 0입니다. 확률은 보통 구간의 면적, 즉 density를 적분한 값으로 계산합니다.
 
 </details>
 

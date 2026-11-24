@@ -22,9 +22,9 @@ Source Images:
 - `aix-midterm-answer-sheet-1.png`
 - `aix-midterm-answer-sheet-2.png`
 
-중간고사 정답지의 문항을 개념별로 묶어, 각 정답의 근거와 헷갈리기 쉬운 오답의 차이를 살펴본다. 문항 순서보다는 회귀·분류·신경망·컴퓨터 비전·자연어 처리의 연결을 따라 읽을 수 있다.
+중간고사 정답지의 문항을 개념별로 묶어, 각 정답의 근거와 헷갈리기 쉬운 오답의 차이를 살펴봅니다. 문항 순서보다는 회귀·분류·신경망·컴퓨터 비전·자연어 처리의 연결을 따라 읽을 수 있습니다.
 
-> **핵심:** 회귀 모델은 입력 특징 $$x$$에서 목표값 $$y$$를 예측하고, 잔차 $$y-\hat{y}$$로 예측 오차를 나타낸다. Gradient descent는 손실을 줄이기 위해 파라미터를 기울기의 반대 방향으로 갱신한다.
+> **핵심:** 회귀 모델은 입력 특징 $$x$$에서 목표값 $$y$$를 예측하고, 잔차 $$y-\hat{y}$$로 예측 오차를 나타냅니다. Gradient descent는 손실을 줄이기 위해 파라미터를 기울기의 반대 방향으로 갱신합니다.
 
 ## 전체 흐름
 
@@ -48,10 +48,10 @@ Source Images:
 
 | 관점 | 확인할 내용 |
 |---|---|
-| 정답 기준 | 문항이 요구하는 핵심 정의나 역할을 먼저 확인한다. |
-| 혼동 포인트 | 비슷해 보이는 개념이 실제로는 어떤 기준으로 갈리는지 비교한다. |
-| 오답 제거 | 선택지가 완전히 틀렸는지, 다른 개념에는 맞지만 현재 문항에는 맞지 않는지 구분한다. |
-| 추가 개념 | 정답을 이해하기 위해 필요한 배경 개념을 짧게 보강한다. |
+| 정답 기준 | 문항이 요구하는 핵심 정의나 역할을 먼저 확인합니다. |
+| 혼동 포인트 | 비슷해 보이는 개념이 실제로는 어떤 기준으로 갈리는지 비교합니다. |
+| 오답 제거 | 선택지가 완전히 틀렸는지, 다른 개념에는 맞지만 현재 문항에는 맞지 않는지 구분합니다. |
+| 추가 개념 | 정답을 이해하기 위해 필요한 배경 개념을 짧게 보강합니다. |
 
 ## 원문 대조 결과
 
@@ -68,77 +68,77 @@ Source Images:
   <figcaption><a href="{{ "/assets/images/study/aix/midterm/aix-midterm-answer-sheet-2.png" | relative_url }}" target="_blank" rel="noopener"><code>aix-midterm-answer-sheet-2.png</code></a> — Q26–Q50 원본 정답지.</figcaption>
 </figure>
 
-두 장의 번호 구간을 먼저 맞춘 뒤 아래 개념별 해설과 대조한다. 정답을 보지 않고 먼저 풀 수 있도록 원본 정답지는 기본적으로 닫아 두었다.
+두 장의 번호 구간을 먼저 맞춘 뒤 아래 개념별 해설과 대조합니다. 정답을 보지 않고 먼저 풀 수 있도록 원본 정답지는 기본적으로 닫아 두었습니다.
 
 </details>
 
-중간고사 정답지 이미지는 1번부터 50번까지 답과 짧은 해설이 붙어 있는 형태다. 현재 문서는 정답지의 문항 순서를 그대로 복사하지 않고, 같은 개념을 묻는 문제들을 묶어 다시 공부할 수 있게 재구성했다.
+중간고사 정답지 이미지는 1번부터 50번까지 답과 짧은 해설이 붙어 있는 형태입니다. 현재 문서는 정답지의 문항 순서를 그대로 복사하지 않고, 같은 개념을 묻는 문제들을 묶어 다시 공부할 수 있게 재구성했습니다.
 
 | 원문 범위 | 현재 문서 반영 위치 | 점검 결과 |
 |---|---|---|
-| 정답지 1, Q1-Q12 | RNN과 Attention, Logistic Regression, MLP와 Deep Learning, Computer Vision, NLP와 Word2Vec | 핵심 정답과 오답 제거 기준이 반영되어 있다. |
-| 정답지 1, Q13-Q25 | Regression과 Optimization, Transformer와 Self-Attention, Computer Vision, Modern AI | 수식, 역할, 대표 키워드가 개념별로 재정리되어 있다. |
-| 정답지 2, Q26-Q37 | Transformer와 Self-Attention, Logistic Regression, Regression, Computer Vision, NLP, RNN | 차원 조건, objective, residual, task-specific NLP 등 혼동 지점이 보강되어 있다. |
-| 정답지 2, Q38-Q50 | Regression, Attention, Transformer, Word Embedding, Diffusion, MLP, Deep Learning | feature/target, positional encoding, softmax, fine-tuning, generalization까지 체크리스트에 반영되어 있다. |
+| 정답지 1, Q1-Q12 | RNN과 Attention, Logistic Regression, MLP와 Deep Learning, Computer Vision, NLP와 Word2Vec | 핵심 정답과 오답 제거 기준이 반영되어 있습니다. |
+| 정답지 1, Q13-Q25 | Regression과 Optimization, Transformer와 Self-Attention, Computer Vision, Modern AI | 수식, 역할, 대표 키워드가 개념별로 재정리되어 있습니다. |
+| 정답지 2, Q26-Q37 | Transformer와 Self-Attention, Logistic Regression, Regression, Computer Vision, NLP, RNN | 차원 조건, objective, residual, task-specific NLP 등 혼동 지점이 보강되어 있습니다. |
+| 정답지 2, Q38-Q50 | Regression, Attention, Transformer, Word Embedding, Diffusion, MLP, Deep Learning | feature/target, positional encoding, softmax, fine-tuning, generalization까지 체크리스트에 반영되어 있습니다. |
 
 ## 핵심 수식 유도 지도
 
-이 종합 글에서는 시험에 필요한 논리만 압축하고, 전체 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/)에서 확인한다. 아래 기호는 정규화된 feature와 representation을 가정해 무차원이며, 물리량을 쓰면 weight가 입력 단위를 target 단위로 변환해야 한다.
+이 종합 글에서는 시험에 필요한 논리만 압축하고, 전체 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/)에서 확인합니다. 아래 기호는 정규화된 feature와 representation을 가정해 무차원이며, 물리량을 쓰면 weight가 입력 단위를 target 단위로 변환해야 합니다.
 
-1. **Gradient update:** $$L(\theta+\Delta)\approx L(\theta)+\nabla L^T\Delta$$라는 1차 근사에서 $$\Delta=-\eta\nabla L$$로 두면 변화량이 $$-\eta\lVert\nabla L\rVert^2\le0$$다. 충분히 작은 $$\eta>0$$에서만 감소를 기대하는 **국소 근사**다.
-2. **BCE:** $$y\in\{0,1\}$$인 Bernoulli likelihood $$p^y(1-p)^{1-y}$$에 음의 로그를 취하면 $$-y\log p-(1-y)\log(1-p)$$가 된다. $$p=\sigma(z)$$이면 chain rule로 $$\partial L/\partial z=p-y$$다. 이는 $$0<p<1$$에서의 **정확한 등식**이다.
-3. **Softmax:** $$p_i=e^{z_i}/\sum_j e^{z_j}$$이므로 $$p_i>0$$이고 $$\sum_i p_i=1$$이다. 따라서 여러 class logit을 categorical probability로 바꾸는 **정의**다.
-4. **선형층의 붕괴와 XOR:** Activation이 없으면 $$W_2(W_1x+b_1)+b_2=(W_2W_1)x+(W_2b_1+b_2)$$라 한 affine map으로 합쳐진다. XOR에서 $$b<0$$, $$w_1+b>0$$, $$w_2+b>0$$이면 $$w_1+w_2+b>0$$가 되어 $$(1,1)$$을 0으로 분류해야 한다는 조건과 모순이다.
-5. **Scaled attention:** query·key 성분이 독립·평균 0·분산 1이라는 근사 가정에서는 $$q^Tk$$의 분산이 약 $$d_k$$다. $$\sqrt{d_k}$$로 나누면 분산을 약 1로 유지한다. Learned vector에는 독립성이 보장되지 않으므로 이는 **근사적 분산 분석**이다.
+1. **Gradient update:** $$L(\theta+\Delta)\approx L(\theta)+\nabla L^T\Delta$$라는 1차 근사에서 $$\Delta=-\eta\nabla L$$로 두면 변화량이 $$-\eta\lVert\nabla L\rVert^2\le0$$입니다. 충분히 작은 $$\eta>0$$에서만 감소를 기대하는 **국소 근사**입니다.
+2. **BCE:** $$y\in\{0,1\}$$인 Bernoulli likelihood $$p^y(1-p)^{1-y}$$에 음의 로그를 취하면 $$-y\log p-(1-y)\log(1-p)$$가 됩니다. $$p=\sigma(z)$$이면 chain rule로 $$\partial L/\partial z=p-y$$입니다. 이는 $$0<p<1$$에서의 **정확한 등식**입니다.
+3. **Softmax:** $$p_i=e^{z_i}/\sum_j e^{z_j}$$이므로 $$p_i>0$$이고 $$\sum_i p_i=1$$입니다. 따라서 여러 class logit을 categorical probability로 바꾸는 **정의**입니다.
+4. **선형층의 붕괴와 XOR:** Activation이 없으면 $$W_2(W_1x+b_1)+b_2=(W_2W_1)x+(W_2b_1+b_2)$$라 한 affine map으로 합쳐집니다. XOR에서 $$b<0$$, $$w_1+b>0$$, $$w_2+b>0$$이면 $$w_1+w_2+b>0$$가 되어 $$(1,1)$$을 0으로 분류해야 한다는 조건과 모순입니다.
+5. **Scaled attention:** query·key 성분이 독립·평균 0·분산 1이라는 근사 가정에서는 $$q^Tk$$의 분산이 약 $$d_k$$입니다. $$\sqrt{d_k}$$로 나누면 분산을 약 1로 유지합니다. Learned vector에는 독립성이 보장되지 않으므로 이는 **근사적 분산 분석**입니다.
 
-각 식은 정의·정확한 등식·근사를 구분해 읽어야 한다. 큰 learning rate, 확률 0의 로그, 선형 종속 feature, 포화된 softmax처럼 가정이 깨지는 지점도 함께 확인한다.
+각 식은 정의·정확한 등식·근사를 구분해 읽어야 합니다. 큰 learning rate, 확률 0의 로그, 선형 종속 feature, 포화된 softmax처럼 가정이 깨지는 지점도 함께 확인합니다.
 
-**원문 대응:** 정답지 1의 Q13·Q19·Q24와 정답지 2의 Q26·Q28·Q30·Q34·Q38·Q40·Q43·Q47·Q49가 score, gradient, attention 차원, squared residual, positional encoding, XOR, softmax를 직접 확인한다. 위 유도는 이 정답 문구를 검산하기 위한 보충이며, 상세 원문은 `1st_Regression.pdf` p.4-25, `02_MLP.pdf` p.4-24, `2_Overview_TF.pdf` p.6-20에 대응한다. 정답지 이미지 자체에 없는 BCE likelihood·XOR 부등식·attention 분산 전개를 시험 원문의 직접 제시식으로 오인하면 안 된다.
+**원문 대응:** 정답지 1의 Q13·Q19·Q24와 정답지 2의 Q26·Q28·Q30·Q34·Q38·Q40·Q43·Q47·Q49가 score, gradient, attention 차원, squared residual, positional encoding, XOR, softmax를 직접 확인합니다. 위 유도는 이 정답 문구를 검산하기 위한 보충이며, 상세 원문은 `1st_Regression.pdf` p.4-25, `02_MLP.pdf` p.4-24, `2_Overview_TF.pdf` p.6-20에 대응합니다. 정답지 이미지 자체에 없는 BCE likelihood·XOR 부등식·attention 분산 전개를 시험 원문의 직접 제시식으로 오인하면 안 됩니다.
 
 ## 1. Regression과 Optimization
 
 ### 핵심 정리
 
-Linear Regression은 입력 feature $$x$$를 이용해 target $$y$$를 예측하는 지도학습 모델이다. 예측값은 보통 다음 선형 점수로 표현한다.
+Linear Regression은 입력 feature $$x$$를 이용해 target $$y$$를 예측하는 지도학습 모델입니다. 예측값은 보통 다음 선형 점수로 표현합니다.
 
 $$
 \hat{y}=w^Tx+b
 $$
 
-예측값과 실제값의 차이는 residual이며, 시험에서는 다음 정의를 기준으로 잡으면 된다.
+예측값과 실제값의 차이는 residual이며, 시험에서는 다음 정의를 기준으로 잡으면 됩니다.
 
 $$
 residual=y-\hat{y}
 $$
 
-Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, 대표적인 objective function은 residual의 제곱합이다. Gradient Descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 반복적으로 갱신한다.
+Linear Regression의 학습 목표는 residual을 작게 만드는 것이며, 대표적인 objective function은 residual의 제곱합입니다. Gradient Descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 반복적으로 갱신합니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q13 | $$score=w^Tx+b$$ | 선형 모델은 weight와 feature의 내적에 bias를 더한다. |
-| Q28 | Squared Sum of Residual | 회귀 문제의 대표 loss는 오차의 제곱합이다. |
-| Q34 | $$Residual=y-\hat{y}$$ | 실제값에서 예측값을 뺀 차이를 residual로 본다. |
-| Q38 | $$x$$: features, $$y$$: target | 입력 변수는 feature, 예측 대상은 target이다. |
-| Q49 | loss를 줄이도록 parameter를 반복 update | iterative update는 한 번에 닫힌 해를 구하는 방식이 아니라 반복 갱신이다. |
-| Q24 | loss 감소 방향, gradient의 반대 방향 | gradient는 증가 방향이므로 loss 최소화에는 반대 방향을 쓴다. |
+| Q13 | $$score=w^Tx+b$$ | 선형 모델은 weight와 feature의 내적에 bias를 더합니다. |
+| Q28 | Squared Sum of Residual | 회귀 문제의 대표 loss는 오차의 제곱합입니다. |
+| Q34 | $$Residual=y-\hat{y}$$ | 실제값에서 예측값을 뺀 차이를 residual로 봅니다. |
+| Q38 | $$x$$: features, $$y$$: target | 입력 변수는 feature, 예측 대상은 target입니다. |
+| Q49 | loss를 줄이도록 parameter를 반복 update | iterative update는 한 번에 닫힌 해를 구하는 방식이 아니라 반복 갱신입니다. |
+| Q24 | loss 감소 방향, gradient의 반대 방향 | gradient는 증가 방향이므로 loss 최소화에는 반대 방향을 씁니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| residual vs loss | residual은 개별 예측 오차이고, loss는 오차를 모아 학습 목표로 만든 값이다. | residual 자체보다 squared residual sum이 objective function으로 더 자주 쓰인다. |
-| score vs prediction | score는 모델이 계산한 선형 출력이고, regression에서는 보통 예측값으로 직접 사용된다. | classification에서는 score를 그대로 class probability로 해석하면 안 된다. |
-| gradient vs update direction | gradient는 loss가 증가하는 방향이고, 학습은 보통 그 반대 방향으로 이동한다. | “gradient 방향으로 간다”는 표현은 최소화 문제에서는 부정확할 수 있다. |
-| closed-form vs iterative update | closed-form은 한 번에 해를 구하고, iterative update는 반복적으로 parameter를 고친다. | Gradient Descent는 closed-form 방식이 아니라 반복 최적화 방식이다. |
-| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답이다. | $$x$$와 $$y$$를 바꿔 적은 선택지는 기본 구성 오류다. |
+| residual vs loss | residual은 개별 예측 오차이고, loss는 오차를 모아 학습 목표로 만든 값입니다. | residual 자체보다 squared residual sum이 objective function으로 더 자주 쓰입니다. |
+| score vs prediction | score는 모델이 계산한 선형 출력이고, regression에서는 보통 예측값으로 직접 사용됩니다. | classification에서는 score를 그대로 class probability로 해석하면 안 됩니다. |
+| gradient vs update direction | gradient는 loss가 증가하는 방향이고, 학습은 보통 그 반대 방향으로 이동합니다. | “gradient 방향으로 간다”는 표현은 최소화 문제에서는 부정확할 수 있습니다. |
+| closed-form vs iterative update | closed-form은 한 번에 해를 구하고, iterative update는 반복적으로 parameter를 고칩니다. | Gradient Descent는 closed-form 방식이 아니라 반복 최적화 방식입니다. |
+| feature vs target | feature는 입력 정보이고 target은 맞혀야 하는 정답입니다. | $$x$$와 $$y$$를 바꿔 적은 선택지는 기본 구성 오류입니다. |
 
 ## 2. Logistic Regression과 Classification
 
 ### 핵심 정리
 
-Logistic Regression은 Linear Regression의 선형 점수 구조를 버리지 않는다. 대신 선형 score 위에 sigmoid function을 적용하여 출력값을 class probability로 해석한다.
+Logistic Regression은 Linear Regression의 선형 점수 구조를 버리지 않습니다. 대신 선형 score 위에 sigmoid function을 적용하여 출력값을 class probability로 해석합니다.
 
 $$
 z=w^Tx+b
@@ -148,208 +148,208 @@ $$
 \sigma(z)=\frac{1}{1+e^{-z}}
 $$
 
-sigmoid를 통과한 값은 0과 1 사이의 확률로 해석할 수 있으므로 binary classification에 적합하다. 다중 class 문제에서는 여러 class score를 softmax에 넣어 합이 1인 확률 분포로 바꾼다.
+sigmoid를 통과한 값은 0과 1 사이의 확률로 해석할 수 있으므로 binary classification에 적합합니다. 다중 class 문제에서는 여러 class score를 softmax에 넣어 합이 1인 확률 분포로 바꿉니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q2 | 출력값을 0과 1 사이의 class probability로 해석 | logistic regression은 classification 결과를 확률처럼 다루기 위해 도입된다. |
-| Q10 | decision boundary는 여전히 linear | feature가 그대로라면 score가 선형이므로 결정 경계도 선형이다. |
-| Q15 | score를 probability로 바꾼다 | sigmoid function의 핵심 역할이다. |
-| Q27 | observed labels가 most likely 하도록 parameter 선택 | logistic regression은 관측 label의 likelihood를 높이는 방향으로 학습한다. |
-| Q31 | linear score 위에 probability link function 추가 | 구조는 linear score에 sigmoid를 결합한 형태다. |
-| Q47 | 여러 class score를 확률 분포로 변환 | softmax는 class별 score 합을 1인 확률 분포로 정규화한다. |
+| Q2 | 출력값을 0과 1 사이의 class probability로 해석 | logistic regression은 classification 결과를 확률처럼 다루기 위해 도입됩니다. |
+| Q10 | decision boundary는 여전히 linear | feature가 그대로라면 score가 선형이므로 결정 경계도 선형입니다. |
+| Q15 | score를 probability로 바꿉니다 | sigmoid function의 핵심 역할입니다. |
+| Q27 | observed labels가 most likely 하도록 parameter 선택 | logistic regression은 관측 label의 likelihood를 높이는 방향으로 학습합니다. |
+| Q31 | linear score 위에 probability link function 추가 | 구조는 linear score에 sigmoid를 결합한 형태입니다. |
+| Q47 | 여러 class score를 확률 분포로 변환 | softmax는 class별 score 합을 1인 확률 분포로 정규화합니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| linear regression vs logistic regression | 둘 다 $$w^Tx+b$$를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석한다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아니다. |
-| sigmoid vs softmax | sigmoid는 주로 binary probability, softmax는 여러 class score를 확률 분포로 바꾼다. | softmax의 출력 합은 1이고, sigmoid는 각 값을 독립적으로 0과 1 사이로 압축한다. |
-| probability vs decision boundary | probability는 class에 속할 가능성이고, decision boundary는 class를 나누는 경계다. | probability function이 있어도 feature가 선형이면 decision boundary는 선형일 수 있다. |
-| likelihood vs probability | probability는 특정 사건의 가능성이고, likelihood는 parameter 관점에서 관측 label을 얼마나 잘 설명하는지 본다. | “observed label이 most likely”라는 표현은 parameter 선택 기준이다. |
-| classification loss vs residual loss | regression은 residual 제곱을 많이 쓰고, classification은 likelihood나 cross-entropy 계열을 쓴다. | logistic regression에 squared residual을 그대로 연결하는 선택지는 조심해야 한다. |
+| linear regression vs logistic regression | 둘 다 $$w^Tx+b$$를 쓰지만, logistic regression은 sigmoid를 붙여 확률로 해석합니다. | logistic regression이 완전히 다른 비선형 구조를 쓰는 것은 아닙니다. |
+| sigmoid vs softmax | sigmoid는 주로 binary probability, softmax는 여러 class score를 확률 분포로 바꿉니다. | softmax의 출력 합은 1이고, sigmoid는 각 값을 독립적으로 0과 1 사이로 압축합니다. |
+| probability vs decision boundary | probability는 class에 속할 가능성이고, decision boundary는 class를 나누는 경계입니다. | probability function이 있어도 feature가 선형이면 decision boundary는 선형일 수 있습니다. |
+| likelihood vs probability | probability는 특정 사건의 가능성이고, likelihood는 parameter 관점에서 관측 label을 얼마나 잘 설명하는지 봅니다. | “observed label이 most likely”라는 표현은 parameter 선택 기준입니다. |
+| classification loss vs residual loss | regression은 residual 제곱을 많이 쓰고, classification은 likelihood나 cross-entropy 계열을 씁니다. | logistic regression에 squared residual을 그대로 연결하는 선택지는 조심해야 합니다. |
 
 ## 3. MLP와 Deep Learning
 
 ### 핵심 정리
 
-Single perceptron은 선형 분리 가능한 문제에는 적합하지만, XOR처럼 선형 경계 하나로 나눌 수 없는 문제에는 한계가 있다. MLP는 hidden layer와 nonlinear activation을 추가해 더 복잡한 패턴을 표현한다.
+Single perceptron은 선형 분리 가능한 문제에는 적합하지만, XOR처럼 선형 경계 하나로 나눌 수 없는 문제에는 한계가 있습니다. MLP는 hidden layer와 nonlinear activation을 추가해 더 복잡한 패턴을 표현합니다.
 
-Deep Learning의 성능 향상은 한 가지 요소만으로 설명하기 어렵다. 시험에서는 Data, Computation, Algorithms가 함께 맞물려야 큰 도약이 가능하다는 관점을 기억하면 된다.
+Deep Learning의 성능 향상은 한 가지 요소만으로 설명하기 어렵습니다. 시험에서는 Data, Computation, Algorithms가 함께 맞물려야 큰 도약이 가능하다는 관점을 기억하면 됩니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q8 | hidden layer와 nonlinearity | MLP는 단일 perceptron이 표현하지 못하는 복잡한 패턴을 표현한다. |
-| Q12 | chain rule로 각 parameter gradient 계산 | backpropagation은 합성 함수의 gradient를 효율적으로 구한다. |
-| Q18 | ReLU는 양수 구간 gradient가 일정 | sigmoid보다 vanishing gradient 문제가 덜하다. |
-| Q43 | XOR은 linearly separable하지 않다 | 하나의 직선 결정 경계로 XOR 구조를 나눌 수 없다. |
-| Q44 | Data, Computation, Algorithms | 딥러닝 발전은 데이터, 연산 자원, 알고리즘의 결합으로 설명된다. |
-| Q50 | expressivity, regularization, bias-variance 균형 | 좋은 학습은 training set 암기가 아니라 unseen data generalization을 목표로 한다. |
+| Q8 | hidden layer와 nonlinearity | MLP는 단일 perceptron이 표현하지 못하는 복잡한 패턴을 표현합니다. |
+| Q12 | chain rule로 각 parameter gradient 계산 | backpropagation은 합성 함수의 gradient를 효율적으로 구합니다. |
+| Q18 | ReLU는 양수 구간 gradient가 일정 | sigmoid보다 vanishing gradient 문제가 덜합니다. |
+| Q43 | XOR은 linearly separable하지 않습니다 | 하나의 직선 결정 경계로 XOR 구조를 나눌 수 없습니다. |
+| Q44 | Data, Computation, Algorithms | 딥러닝 발전은 데이터, 연산 자원, 알고리즘의 결합으로 설명됩니다. |
+| Q50 | expressivity, regularization, bias-variance 균형 | 좋은 학습은 training set 암기가 아니라 unseen data generalization을 목표로 합니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| single perceptron vs MLP | single perceptron은 선형 경계 중심이고, MLP는 hidden layer와 nonlinearity로 복잡한 경계를 만든다. | XOR 문제는 MLP가 왜 필요한지 보여주는 대표 사례다. |
-| activation vs hidden layer | hidden layer는 중간 표현을 만들고, activation은 비선형성을 부여한다. | hidden layer만 여러 개 있어도 activation이 없으면 선형 변환의 반복이 된다. |
-| ReLU vs sigmoid | ReLU는 양수 영역에서 gradient가 일정하고, sigmoid는 포화 구간에서 gradient가 작아진다. | vanishing gradient 완화 이유를 묻는 문제에서는 ReLU의 gradient 특성을 잡아야 한다. |
-| backpropagation vs gradient descent | backpropagation은 gradient 계산법이고, gradient descent는 그 gradient로 parameter를 갱신하는 최적화 방법이다. | 두 용어를 모두 “학습”이라고만 외우면 오답 선택지에 흔들리기 쉽다. |
-| overfitting vs generalization | overfitting은 training set에 과하게 맞는 것이고, generalization은 unseen data에서도 잘 맞는 것이다. | good learning은 training loss만 낮추는 것이 아니라 bias-variance와 regularization까지 고려한다. |
+| single perceptron vs MLP | single perceptron은 선형 경계 중심이고, MLP는 hidden layer와 nonlinearity로 복잡한 경계를 만듭니다. | XOR 문제는 MLP가 왜 필요한지 보여주는 대표 사례입니다. |
+| activation vs hidden layer | hidden layer는 중간 표현을 만들고, activation은 비선형성을 부여합니다. | hidden layer만 여러 개 있어도 activation이 없으면 선형 변환의 반복이 됩니다. |
+| ReLU vs sigmoid | ReLU는 양수 영역에서 gradient가 일정하고, sigmoid는 포화 구간에서 gradient가 작아집니다. | vanishing gradient 완화 이유를 묻는 문제에서는 ReLU의 gradient 특성을 잡아야 합니다. |
+| backpropagation vs gradient descent | backpropagation은 gradient 계산법이고, gradient descent는 그 gradient로 parameter를 갱신하는 최적화 방법입니다. | 두 용어를 모두 “학습”이라고만 외우면 오답 선택지에 흔들리기 쉽습니다. |
+| overfitting vs generalization | overfitting은 training set에 과하게 맞는 것이고, generalization은 unseen data에서도 잘 맞는 것입니다. | good learning은 training loss만 낮추는 것이 아니라 bias-variance와 regularization까지 고려합니다. |
 
 ## 4. Computer Vision
 
 ### 핵심 정리
 
-Computer Vision의 high-level 목표는 pixel을 의미로 연결하는 것이다. 단순히 pixel 수를 줄이거나 GPU 성능을 높이는 것이 아니라, 이미지 속 객체와 관계를 해석하는 것이 핵심이다.
+Computer Vision의 high-level 목표는 pixel을 의미로 연결하는 것입니다. 단순히 pixel 수를 줄이거나 GPU 성능을 높이는 것이 아니라, 이미지 속 객체와 관계를 해석하는 것이 핵심입니다.
 
-CNN은 local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습한다. AlexNet이 ImageNet Challenge에서 중요한 의미를 가진 것도 CNN 기반 딥러닝 모델이 기존 수작업 feature 기반 접근보다 뛰어난 성능을 보였기 때문이다.
+CNN은 local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습합니다. AlexNet이 ImageNet Challenge에서 중요한 의미를 가진 것도 CNN 기반 딥러닝 모델이 기존 수작업 feature 기반 접근보다 뛰어난 성능을 보였기 때문입니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q11 | CNN 기반 모델이 전통적 방법보다 우수한 성능 | AlexNet은 딥러닝 기반 컴퓨터 비전의 전환점으로 이해하면 된다. |
-| Q21 | local connectivity와 weight sharing | convolution layer가 fully-connected layer보다 이미지 패턴을 효율적으로 학습하는 이유다. |
-| Q22 | 사람이 유용한 입력 변수를 설계 | feature engineering은 모델 성능을 높이기 위해 사람이 feature를 설계하는 과정이다. |
-| Q25 | pixel을 meaning으로 연결 | Computer Vision의 핵심 목표다. |
-| Q29 | structured/compositional understanding | 최근 visual reasoning은 객체, 언어, 문맥 관계를 함께 이해하는 방향으로 중요해졌다. |
-| Q46 | hand-designed feature 의존 | SIFT 같은 전통적 방법은 task마다 feature를 별도로 설계해야 하는 한계가 있다. |
+| Q11 | CNN 기반 모델이 전통적 방법보다 우수한 성능 | AlexNet은 딥러닝 기반 컴퓨터 비전의 전환점으로 이해하면 됩니다. |
+| Q21 | local connectivity와 weight sharing | convolution layer가 fully-connected layer보다 이미지 패턴을 효율적으로 학습하는 이유입니다. |
+| Q22 | 사람이 유용한 입력 변수를 설계 | feature engineering은 모델 성능을 높이기 위해 사람이 feature를 설계하는 과정입니다. |
+| Q25 | pixel을 meaning으로 연결 | Computer Vision의 핵심 목표입니다. |
+| Q29 | structured/compositional understanding | 최근 visual reasoning은 객체, 언어, 문맥 관계를 함께 이해하는 방향으로 중요해졌습니다. |
+| Q46 | hand-designed feature 의존 | SIFT 같은 전통적 방법은 task마다 feature를 별도로 설계해야 하는 한계가 있습니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| pixel compression vs semantic understanding | pixel 수를 줄이는 것은 압축이고, Computer Vision의 목표는 의미 해석이다. | “저장 공간 절약” 같은 선택지는 high-level objective와 거리가 멀다. |
-| CNN vs fully-connected layer | CNN은 local connectivity와 weight sharing으로 공간 패턴을 효율적으로 학습한다. | fully-connected layer와 달리 모든 pixel을 독립 weight로 연결하지 않는다. |
-| hand-designed feature vs learned feature | 전통적 CV는 사람이 feature를 설계하고, deep learning은 데이터에서 feature를 학습한다. | SIFT 한계와 AlexNet 의의를 함께 연결해서 이해하면 좋다. |
-| classification vs visual reasoning | classification은 label 예측 중심이고, visual reasoning은 객체 관계와 문맥 구조까지 본다. | 최근 visual reasoning의 중요성은 structured understanding과 연결된다. |
-| 2D vision vs 3D vision | 2D 이미지는 grid 구조가 비교적 명확하지만, 3D는 point cloud, voxel, mesh 등 표현이 다양하다. | 3D Vision이 어려운 이유는 “이미 해결됐다”가 아니라 representation 다양성이다. |
+| pixel compression vs semantic understanding | pixel 수를 줄이는 것은 압축이고, Computer Vision의 목표는 의미 해석입니다. | “저장 공간 절약” 같은 선택지는 high-level objective와 거리가 멉니다. |
+| CNN vs fully-connected layer | CNN은 local connectivity와 weight sharing으로 공간 패턴을 효율적으로 학습합니다. | fully-connected layer와 달리 모든 pixel을 독립 weight로 연결하지 않습니다. |
+| hand-designed feature vs learned feature | 전통적 CV는 사람이 feature를 설계하고, deep learning은 데이터에서 feature를 학습합니다. | SIFT 한계와 AlexNet 의의를 함께 연결해서 이해하면 좋습니다. |
+| classification vs visual reasoning | classification은 label 예측 중심이고, visual reasoning은 객체 관계와 문맥 구조까지 봅니다. | 최근 visual reasoning의 중요성은 structured understanding과 연결됩니다. |
+| 2D vision vs 3D vision | 2D 이미지는 grid 구조가 비교적 명확하지만, 3D는 point cloud, voxel, mesh 등 표현이 다양합니다. | 3D Vision이 어려운 이유는 “이미 해결됐다”가 아니라 representation 다양성입니다. |
 
 ## 5. NLP, Tokenizer, Word2Vec
 
 ### 핵심 정리
 
-Tokenizer는 문장을 token 단위로 나누고, 각 token을 vocabulary 항목으로 대응시키는 과정이다. 단어를 바로 모델이 이해하는 것은 아니므로, token은 embedding vector로 변환된다.
+Tokenizer는 문장을 token 단위로 나누고, 각 token을 vocabulary 항목으로 대응시키는 과정입니다. 단어를 바로 모델이 이해하는 것은 아니므로, token은 embedding vector로 변환됩니다.
 
-Word2Vec은 단어 의미를 사람이 직접 규칙으로 입력하지 않는다. 대신 proxy task를 학습하는 얕은 신경망을 만들고, hidden layer의 병목 표현을 embedding으로 활용한다. Skip-Gram은 한 단어를 보고 주변 context 단어를 맞히는 방식이다.
+Word2Vec은 단어 의미를 사람이 직접 규칙으로 입력하지 않습니다. 대신 proxy task를 학습하는 얕은 신경망을 만들고, hidden layer의 병목 표현을 embedding으로 활용합니다. Skip-Gram은 한 단어를 보고 주변 context 단어를 맞히는 방식입니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q5 | 한 단어를 보고 주변 context 단어 예측 | Skip-Gram의 기본 proxy task다. |
-| Q6 | 문장을 token으로 나누고 vocabulary에 대응 | Tokenizer의 핵심 역할이다. |
-| Q14 | 생성 텍스트와 참조 텍스트의 n-gram 일치 | BLEU score는 번역 품질 평가에서 n-gram overlap을 활용한다. |
-| Q16 | subword pattern으로 OOV 문제 감소 | 접두사, 접미사, 부분 단어를 활용해 rare word 문제를 줄인다. |
-| Q35 | proxy task와 hidden layer embedding | Word2Vec은 task를 통해 의미 있는 embedding을 얻는다. |
-| Q37 | task마다 별도 모델을 from scratch로 학습 | task-specific NLP era의 일반적 특징이다. |
-| Q41 | 의미 관계를 반영한 dense vector | learned embedding은 one-hot보다 의미적 유사성을 더 잘 담을 수 있다. |
+| Q5 | 한 단어를 보고 주변 context 단어 예측 | Skip-Gram의 기본 proxy task입니다. |
+| Q6 | 문장을 token으로 나누고 vocabulary에 대응 | Tokenizer의 핵심 역할입니다. |
+| Q14 | 생성 텍스트와 참조 텍스트의 n-gram 일치 | BLEU score는 번역 품질 평가에서 n-gram overlap을 활용합니다. |
+| Q16 | subword pattern으로 OOV 문제 감소 | 접두사, 접미사, 부분 단어를 활용해 rare word 문제를 줄입니다. |
+| Q35 | proxy task와 hidden layer embedding | Word2Vec은 task를 통해 의미 있는 embedding을 얻습니다. |
+| Q37 | task마다 별도 모델을 from scratch로 학습 | task-specific NLP era의 일반적 특징입니다. |
+| Q41 | 의미 관계를 반영한 dense vector | learned embedding은 one-hot보다 의미적 유사성을 더 잘 담을 수 있습니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| tokenizer vs embedding | tokenizer는 문장을 token으로 나누고, embedding은 token을 dense vector로 바꾼다. | tokenizer가 의미 벡터를 직접 학습한다고 보면 안 된다. |
-| one-hot vs learned embedding | one-hot은 vocabulary index 표현이고, learned embedding은 의미 관계를 반영할 수 있는 dense vector다. | one-hot은 dictionary size 차원의 희소 벡터로 이해하면 된다. |
-| Skip-Gram vs CBOW | Skip-Gram은 중심 단어로 주변 단어를 예측하고, CBOW는 주변 단어로 중심 단어를 예측한다. | 중간고사 문항은 Skip-Gram을 묻기 때문에 “한 단어 -> 주변 context”가 정답 기준이다. |
-| Word2Vec proxy task vs final task | Word2Vec은 proxy task 자체가 최종 목표가 아니라 좋은 embedding을 얻기 위한 학습 문제다. | hidden layer 병목 표현을 embedding으로 쓴다는 점을 기억한다. |
-| BLEU score vs model training loss | BLEU는 생성 결과 평가 지표이고, training loss는 모델 parameter를 학습하기 위한 objective다. | n-gram 일치도는 BLEU와 연결되고, gradient update와는 직접 같은 개념이 아니다. |
-| task-specific NLP vs pre-trained NLP | task-specific 시대는 task마다 별도 모델을 학습하고, pre-trained 시대는 큰 base model을 여러 task에 재사용한다. | “모든 task를 하나의 pre-trained model로 바로 해결”은 task-specific 시대 설명이 아니다. |
+| tokenizer vs embedding | tokenizer는 문장을 token으로 나누고, embedding은 token을 dense vector로 바꿉니다. | tokenizer가 의미 벡터를 직접 학습한다고 보면 안 됩니다. |
+| one-hot vs learned embedding | one-hot은 vocabulary index 표현이고, learned embedding은 의미 관계를 반영할 수 있는 dense vector입니다. | one-hot은 dictionary size 차원의 희소 벡터로 이해하면 됩니다. |
+| Skip-Gram vs CBOW | Skip-Gram은 중심 단어로 주변 단어를 예측하고, CBOW는 주변 단어로 중심 단어를 예측합니다. | 중간고사 문항은 Skip-Gram을 묻기 때문에 “한 단어 -> 주변 context”가 정답 기준입니다. |
+| Word2Vec proxy task vs final task | Word2Vec은 proxy task 자체가 최종 목표가 아니라 좋은 embedding을 얻기 위한 학습 문제입니다. | hidden layer 병목 표현을 embedding으로 쓴다는 점을 기억합니다. |
+| BLEU score vs model training loss | BLEU는 생성 결과 평가 지표이고, training loss는 모델 parameter를 학습하기 위한 objective입니다. | n-gram 일치도는 BLEU와 연결되고, gradient update와는 직접 같은 개념이 아닙니다. |
+| task-specific NLP vs pre-trained NLP | task-specific 시대는 task마다 별도 모델을 학습하고, pre-trained 시대는 큰 base model을 여러 task에 재사용합니다. | “모든 task를 하나의 pre-trained model로 바로 해결”은 task-specific 시대 설명이 아닙니다. |
 
 ## 6. RNN과 Attention
 
 ### 핵심 정리
 
-RNN은 sequential data를 시간 순서대로 처리하며, 현재 시점의 hidden state가 이전 hidden state에 의존한다. 이 구조는 순서 정보를 다루는 데 적합하지만, 긴 sequence에서는 앞부분 정보가 희미해지고 병렬 처리가 어렵다.
+RNN은 sequential data를 시간 순서대로 처리하며, 현재 시점의 hidden state가 이전 hidden state에 의존합니다. 이 구조는 순서 정보를 다루는 데 적합하지만, 긴 sequence에서는 앞부분 정보가 희미해지고 병렬 처리가 어렵습니다.
 
-Attention은 token, feature, patch 사이의 관계를 더 직접적으로 연결한다. 따라서 RNN보다 global relationship을 더 잘 볼 수 있고, 긴 문맥에서 이전 정보를 다시 참고하기 쉽다.
+Attention은 token, feature, patch 사이의 관계를 더 직접적으로 연결합니다. 따라서 RNN보다 global relationship을 더 잘 볼 수 있고, 긴 문맥에서 이전 정보를 다시 참고하기 쉽습니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q1 | sequential data를 시간 순서대로 다루는 모델 | RNN의 기본 정의다. |
-| Q3 | 앞부분 정보가 압축되며 영향이 희미해짐 | 긴 sequence에서 RNN이 갖는 대표적 한계다. |
-| Q7 | 먼 과거 정보 처리와 병렬 처리에 불리 | RNN은 순차 계산 구조이므로 긴 의존성과 병렬화가 어렵다. |
-| Q17 | token/feature/patch를 유연하게 연결 | Attention의 global 관계 모델링 장점이다. |
-| Q20 | 현재 token과 이전 hidden state로 업데이트 | RNN이 attention보다 계산 구조가 단순할 수 있는 이유다. |
-| Q32 | 현재 hidden state가 이전 hidden state에 의존 | sequential dependency의 원인이다. |
-| Q33 | 필요한 이전 부분을 직접 참고 | 긴 대화에서 attention이 유리한 이유다. |
-| Q36 | 시간적 순서를 따라 연결되며 sequence 처리 | RNN의 고수준 정의다. |
-| Q39 | token 사이 global relationship을 더 잘 봄 | attention이 RNN보다 강한 부분이다. |
-| Q45 | current input과 previous hidden state만 사용 | RNN의 계산 구조가 상대적으로 단순한 이유다. |
+| Q1 | sequential data를 시간 순서대로 다루는 모델 | RNN의 기본 정의입니다. |
+| Q3 | 앞부분 정보가 압축되며 영향이 희미해짐 | 긴 sequence에서 RNN이 갖는 대표적 한계입니다. |
+| Q7 | 먼 과거 정보 처리와 병렬 처리에 불리 | RNN은 순차 계산 구조이므로 긴 의존성과 병렬화가 어렵습니다. |
+| Q17 | token/feature/patch를 유연하게 연결 | Attention의 global 관계 모델링 장점입니다. |
+| Q20 | 현재 token과 이전 hidden state로 업데이트 | RNN이 attention보다 계산 구조가 단순할 수 있는 이유입니다. |
+| Q32 | 현재 hidden state가 이전 hidden state에 의존 | sequential dependency의 원인입니다. |
+| Q33 | 필요한 이전 부분을 직접 참고 | 긴 대화에서 attention이 유리한 이유입니다. |
+| Q36 | 시간적 순서를 따라 연결되며 sequence 처리 | RNN의 고수준 정의입니다. |
+| Q39 | token 사이 global relationship을 더 잘 봄 | attention이 RNN보다 강한 부분입니다. |
+| Q45 | current input과 previous hidden state만 사용 | RNN의 계산 구조가 상대적으로 단순한 이유입니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| RNN sequential dependency vs attention global relation | RNN은 hidden state를 순차 갱신하고, attention은 token 간 관계를 직접 계산한다. | attention이 무조건 순서를 없애는 것이 아니라, 관계 계산 방식이 더 전역적이라는 뜻이다. |
-| hidden state vs attention score | hidden state는 RNN의 누적 상태이고, attention score는 token 간 관련도를 나타내는 값이다. | “attention score를 먼저 계산해야 RNN이 동작한다”는 설명은 RNN 정의와 맞지 않는다. |
-| long sequence problem vs unordered input | RNN의 문제는 순서를 못 쓰는 것이 아니라, 순서대로 처리하기 때문에 먼 정보와 병렬 처리에 약하다는 점이다. | “RNN은 순서를 무시한다”는 선택지는 반대 개념이다. |
-| local dependency vs global dependency | local dependency는 가까운 정보 중심이고, global dependency는 멀리 떨어진 정보까지 연결한다. | 긴 문맥에서 attention의 장점은 필요한 과거 정보를 직접 참조할 수 있다는 점이다. |
-| computation simplicity vs expressive relation | RNN은 계산 구조가 단순할 수 있지만, 모든 token-to-token 관계를 한 번에 비교하지 않는다. | “단순하다”는 말이 “더 강력하다”는 뜻은 아니다. |
+| RNN sequential dependency vs attention global relation | RNN은 hidden state를 순차 갱신하고, attention은 token 간 관계를 직접 계산합니다. | attention이 무조건 순서를 없애는 것이 아니라, 관계 계산 방식이 더 전역적이라는 뜻입니다. |
+| hidden state vs attention score | hidden state는 RNN의 누적 상태이고, attention score는 token 간 관련도를 나타내는 값입니다. | “attention score를 먼저 계산해야 RNN이 동작한다”는 설명은 RNN 정의와 맞지 않습니다. |
+| long sequence problem vs unordered input | RNN의 문제는 순서를 못 쓰는 것이 아니라, 순서대로 처리하기 때문에 먼 정보와 병렬 처리에 약하다는 점입니다. | “RNN은 순서를 무시한다”는 선택지는 반대 개념입니다. |
+| local dependency vs global dependency | local dependency는 가까운 정보 중심이고, global dependency는 멀리 떨어진 정보까지 연결합니다. | 긴 문맥에서 attention의 장점은 필요한 과거 정보를 직접 참조할 수 있다는 점입니다. |
+| computation simplicity vs expressive relation | RNN은 계산 구조가 단순할 수 있지만, 모든 token-to-token 관계를 한 번에 비교하지 않습니다. | “단순하다”는 말이 “더 강력하다”는 뜻은 아닙니다. |
 
 ## 7. Transformer와 Self-Attention
 
 ### 핵심 정리
 
-Transformer는 입력 문장을 token으로 나누고, 각 token을 embedding vector로 표현한다. Self-attention은 각 token이 자신과 관련 있는 다른 token들을 참고하여 자신의 표현을 갱신하는 방식이다.
+Transformer는 입력 문장을 token으로 나누고, 각 token을 embedding vector로 표현합니다. Self-attention은 각 token이 자신과 관련 있는 다른 token들을 참고하여 자신의 표현을 갱신하는 방식입니다.
 
-Q, K, V는 self-attention에서 서로 다른 역할을 한다. Query와 Key의 내적은 어떤 token이 서로 관련 있는지 점수화하고, Value는 그 관계를 바탕으로 출력 표현을 만들 때 사용된다.
+Q, K, V는 self-attention에서 서로 다른 역할을 합니다. Query와 Key의 내적은 어떤 token이 서로 관련 있는지 점수화하고, Value는 그 관계를 바탕으로 출력 표현을 만들 때 사용됩니다.
 
-Transformer는 self-attention만으로는 token 순서를 알기 어렵기 때문에 positional encoding을 더한다. Multi-head attention은 여러 head가 서로 다른 관계나 패턴을 병렬로 보게 해준다.
+Transformer는 self-attention만으로는 token 순서를 알기 어렵기 때문에 positional encoding을 더합니다. Multi-head attention은 여러 head가 서로 다른 관계나 패턴을 병렬로 보게 해줍니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q19 | Q와 K의 내적으로 관계를 구하고 V로 출력 구성 | Q/K/V의 기본 역할이다. |
-| Q26 | Q와 K의 차원이 같아야 dot product 가능 | 내적 계산에는 같은 차원의 vector가 필요하다. |
-| Q30 | 각 단어가 관련 단어를 참고해 표현 생성 | self-attention의 가장 쉬운 설명이다. |
-| Q40 | self-attention만으로 token 순서를 알기 어렵다 | positional encoding이 필요한 이유다. |
+| Q19 | Q와 K의 내적으로 관계를 구하고 V로 출력 구성 | Q/K/V의 기본 역할입니다. |
+| Q26 | Q와 K의 차원이 같아야 dot product 가능 | 내적 계산에는 같은 차원의 vector가 필요합니다. |
+| Q30 | 각 단어가 관련 단어를 참고해 표현 생성 | self-attention의 가장 쉬운 설명입니다. |
+| Q40 | self-attention만으로 token 순서를 알기 어렵습니다 | positional encoding이 필요한 이유입니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| self-attention vs tokenization | tokenization은 입력을 token으로 나누는 전처리이고, self-attention은 token 간 관계를 계산하는 모델 내부 연산이다. | self-attention이 tokenization을 대신한다는 설명은 틀리다. |
-| Q/K/V 역할 | Q와 K는 관련도 점수 계산에 쓰이고, V는 가중합을 통해 출력 표현을 만든다. | Q와 K의 dot product를 계산하려면 두 vector 차원이 같아야 한다. |
-| attention score vs value output | attention score는 어느 token을 얼마나 참고할지 정하고, value output은 실제로 가져오는 정보다. | 관련도 계산과 최종 표현 생성을 구분해야 한다. |
-| self-attention vs positional encoding | self-attention은 관계를 보고, positional encoding은 순서와 위치 정보를 보강한다. | self-attention만으로 token 순서를 자연스럽게 알 수 있다는 선택지는 주의한다. |
-| single-head vs multi-head attention | single-head는 한 관점의 관계를 보고, multi-head는 여러 관계 패턴을 병렬로 본다. | multi-head가 token 수를 줄이거나 positional encoding을 없애는 것은 아니다. |
-| efficient matrix computation | attention은 Q/K/V를 행렬로 묶어 병렬 연산하기 좋다. | 계산이 없는 것이 아니라, 행렬 연산으로 잘 표현된다는 점이 중요하다. |
+| self-attention vs tokenization | tokenization은 입력을 token으로 나누는 전처리이고, self-attention은 token 간 관계를 계산하는 모델 내부 연산입니다. | self-attention이 tokenization을 대신한다는 설명은 틀립니다. |
+| Q/K/V 역할 | Q와 K는 관련도 점수 계산에 쓰이고, V는 가중합을 통해 출력 표현을 만듭니다. | Q와 K의 dot product를 계산하려면 두 vector 차원이 같아야 합니다. |
+| attention score vs value output | attention score는 어느 token을 얼마나 참고할지 정하고, value output은 실제로 가져오는 정보입니다. | 관련도 계산과 최종 표현 생성을 구분해야 합니다. |
+| self-attention vs positional encoding | self-attention은 관계를 보고, positional encoding은 순서와 위치 정보를 보강합니다. | self-attention만으로 token 순서를 자연스럽게 알 수 있다는 선택지는 주의합니다. |
+| single-head vs multi-head attention | single-head는 한 관점의 관계를 보고, multi-head는 여러 관계 패턴을 병렬로 봅니다. | multi-head가 token 수를 줄이거나 positional encoding을 없애는 것은 아닙니다. |
+| efficient matrix computation | attention은 Q/K/V를 행렬로 묶어 병렬 연산하기 좋습니다. | 계산이 없는 것이 아니라, 행렬 연산으로 잘 표현된다는 점이 중요합니다. |
 
 ## 8. Modern AI 흐름
 
 ### 핵심 정리
 
-Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도 데이터 자체에서 supervision을 만들어 transferable representation을 학습하는 방식이다. Pre-training은 큰 데이터로 base model을 만들고 일반적인 특징을 학습하는 단계이며, fine-tuning은 이 모델을 특정 task에 맞게 미세 조정하는 단계다.
+Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도 데이터 자체에서 supervision을 만들어 transferable representation을 학습하는 방식입니다. Pre-training은 큰 데이터로 base model을 만들고 일반적인 특징을 학습하는 단계이며, fine-tuning은 이 모델을 특정 task에 맞게 미세 조정하는 단계입니다.
 
-최근 image/video generation에서 대표적인 주류 모델은 diffusion models이다. 3D Vision은 point clouds, voxels, meshes처럼 representation 형식이 다양해 다루기 어렵다.
+최근 image/video generation에서 대표적인 주류 모델은 diffusion models입니다. 3D Vision은 point clouds, voxels, meshes처럼 representation 형식이 다양해 다루기 어렵습니다.
 
 ### 관련 문항
 
 | 문항 | 정답 기준 | 해설 |
 |---:|---|---|
-| Q4 | 데이터 자체에서 supervision 생성 | self-supervised learning의 목적이다. |
-| Q9 | point clouds, voxels, meshes 등 format 다양 | 3D Vision이 어려운 이유다. |
-| Q23 | 큰 데이터로 base model을 만들고 일반 특징 학습 | pre-training의 핵심이다. |
-| Q42 | Diffusion models | 최근 image/video generation의 대표적 주류 모델이다. |
-| Q48 | pre-trained model을 특정 task에 맞게 조정 | fine-tuning의 정의다. |
+| Q4 | 데이터 자체에서 supervision 생성 | self-supervised learning의 목적입니다. |
+| Q9 | point clouds, voxels, meshes 등 format 다양 | 3D Vision이 어려운 이유입니다. |
+| Q23 | 큰 데이터로 base model을 만들고 일반 특징 학습 | pre-training의 핵심입니다. |
+| Q42 | Diffusion models | 최근 image/video generation의 대표적 주류 모델입니다. |
+| Q48 | pre-trained model을 특정 task에 맞게 조정 | fine-tuning의 정의입니다. |
 
 ### 혼동 포인트와 추가 개념
 
 | 비교 항목 | 구분 기준 | 시험에서 주의할 점 |
 |---|---|---|
-| supervised learning vs self-supervised learning | supervised learning은 사람이 준 label을 쓰고, self-supervised learning은 데이터 자체에서 학습 신호를 만든다. | self-supervised learning이 label 없이 아무 목표도 없이 학습한다는 뜻은 아니다. |
-| pre-training vs fine-tuning | pre-training은 큰 데이터로 일반 표현을 배우고, fine-tuning은 특정 task에 맞게 조정한다. | fine-tuning을 “처음부터 다시 학습”으로 설명하면 틀리다. |
-| base model vs task-specific model | base model은 여러 task로 전이될 수 있는 일반 표현을 갖고, task-specific model은 특정 task 중심이다. | pre-training 이후에도 task 적응 과정이 필요할 수 있다. |
-| diffusion model vs classical ML model | diffusion model은 image/video generation에서 주류로 쓰이고, linear regression이나 k-means는 생성 모델 대표 답이 아니다. | “최근 image/video generation의 대표 주류”라는 문항 조건을 확인해야 한다. |
-| representation vs final prediction | representation은 데이터의 의미 구조를 담은 중간 표현이고, final prediction은 특정 task의 결과다. | self-supervised learning의 장점은 transferable representation에 있다. |
+| supervised learning vs self-supervised learning | supervised learning은 사람이 준 label을 쓰고, self-supervised learning은 데이터 자체에서 학습 신호를 만듭니다. | self-supervised learning이 label 없이 아무 목표도 없이 학습한다는 뜻은 아닙니다. |
+| pre-training vs fine-tuning | pre-training은 큰 데이터로 일반 표현을 배우고, fine-tuning은 특정 task에 맞게 조정합니다. | fine-tuning을 “처음부터 다시 학습”으로 설명하면 틀립니다. |
+| base model vs task-specific model | base model은 여러 task로 전이될 수 있는 일반 표현을 갖고, task-specific model은 특정 task 중심입니다. | pre-training 이후에도 task 적응 과정이 필요할 수 있습니다. |
+| diffusion model vs classical ML model | diffusion model은 image/video generation에서 주류로 쓰이고, linear regression이나 k-means는 생성 모델 대표 답이 아닙니다. | “최근 image/video generation의 대표 주류”라는 문항 조건을 확인해야 합니다. |
+| representation vs final prediction | representation은 데이터의 의미 구조를 담은 중간 표현이고, final prediction은 특정 task의 결과입니다. | self-supervised learning의 장점은 transferable representation에 있습니다. |
 
 ## 전체 정답 체크리스트
 
@@ -410,79 +410,79 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 | 범위 | 반드시 남겨야 할 문장 |
 |---|---|
-| Regression | feature $$x$$로 target $$y$$를 예측하고, residual은 $$y-\hat{y}$$이다. |
-| Optimization | gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신한다. |
-| Logistic Regression | linear score $$w^Tx+b$$에 sigmoid를 붙여 class probability로 해석한다. |
-| MLP | hidden layer와 nonlinearity가 single perceptron보다 복잡한 pattern을 표현하게 한다. |
-| Computer Vision | high-level 목표는 pixel을 meaning으로 연결하는 것이다. |
-| NLP | tokenizer는 token으로 나누고, embedding은 token을 dense vector로 표현한다. |
-| RNN | sequential data를 시간 순서대로 처리하지만 긴 문맥과 병렬 처리에 약하다. |
-| Transformer | self-attention은 token 간 관계를 보고, positional encoding은 순서 정보를 보강한다. |
-| Modern AI | pre-training은 일반 표현 학습, fine-tuning은 특정 task 적응이다. |
+| Regression | feature $$x$$로 target $$y$$를 예측하고, residual은 $$y-\hat{y}$$입니다. |
+| Optimization | gradient descent는 loss가 줄어드는 방향, 즉 gradient의 반대 방향으로 parameter를 갱신합니다. |
+| Logistic Regression | linear score $$w^Tx+b$$에 sigmoid를 붙여 class probability로 해석합니다. |
+| MLP | hidden layer와 nonlinearity가 single perceptron보다 복잡한 pattern을 표현하게 합니다. |
+| Computer Vision | high-level 목표는 pixel을 meaning으로 연결하는 것입니다. |
+| NLP | tokenizer는 token으로 나누고, embedding은 token을 dense vector로 표현합니다. |
+| RNN | sequential data를 시간 순서대로 처리하지만 긴 문맥과 병렬 처리에 약합니다. |
+| Transformer | self-attention은 token 간 관계를 보고, positional encoding은 순서 정보를 보강합니다. |
+| Modern AI | pre-training은 일반 표현 학습, fine-tuning은 특정 task 적응입니다. |
 
 ## Study Guide
 
-1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기한다.
-2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인한다.
-3. 수식형 문항은 $$score=w^Tx+b$$, $$residual=y-\hat{y}$$, sigmoid, softmax, gradient update를 손으로 다시 써 본다.
-4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 본다.
-5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교한다.
+1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기합니다.
+2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인합니다.
+3. 수식형 문항은 $$score=w^Tx+b$$, $$residual=y-\hat{y}$$, sigmoid, softmax, gradient update를 손으로 다시 써 봅니다.
+4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 봅니다.
+5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Linear regression에서 feature, target, score, residual을 한 번에 구분하면?</summary>
+<summary>1. Linear regression에서 feature, target, score, residual을 어떻게 구분합니까?</summary>
 
-답변: feature는 입력 $$x$$, target은 맞혀야 하는 정답 $$y$$, score 또는 prediction은 $$\hat{y}=w^Tx+b$$, residual은 실제값과 예측값의 차이 $$y-\hat{y}$$이다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요하다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective다.
-
-</details>
-
-<details markdown="block">
-<summary>2. Gradient descent에서 왜 gradient의 반대 방향으로 이동하는가?</summary>
-
-답변: gradient $$\nabla L$$은 loss가 가장 빠르게 증가하는 방향을 가리킨다. 우리는 loss를 최소화하려 하므로 parameter를 $$\theta \leftarrow \theta-\eta\nabla L(\theta)$$처럼 반대 방향으로 갱신한다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있다.
+답변: feature는 입력 $$x$$, target은 맞혀야 하는 정답 $$y$$, score 또는 prediction은 $$\hat{y}=w^Tx+b$$, residual은 실제값과 예측값의 차이 $$y-\hat{y}$$입니다. 시험에서는 residual과 loss를 혼동하지 않는 것이 중요합니다. residual은 개별 오차이고, squared loss는 그 오차들을 제곱해 모은 objective입니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Logistic regression이 linear regression과 비슷하면서도 classification 모델인 이유는?</summary>
+<summary>2. Gradient descent에서 왜 gradient의 반대 방향으로 이동합니까?</summary>
 
-답변: logistic regression도 먼저 $$w^Tx+b$$라는 linear score를 만든다. 하지만 그 score를 sigmoid에 통과시켜 $$0$$과 $$1$$ 사이의 class probability로 바꾼다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용된다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Single perceptron은 XOR을 못 풀고 MLP는 풀 수 있는 이유는?</summary>
-
-답변: single perceptron은 하나의 선형 decision boundary를 만들기 때문에 linearly separable한 문제에만 적합하다. XOR은 하나의 직선으로 두 class를 나눌 수 없다. MLP는 hidden layer와 nonlinear activation을 통해 입력을 새로운 표현 공간으로 바꾸고, 여러 경계 조각을 조합해 XOR 같은 비선형 패턴을 표현할 수 있다.
+답변: gradient $$\nabla L$$은 loss가 가장 빠르게 증가하는 방향을 가리킵니다. 우리는 loss를 최소화하려 하므로 parameter를 $$\theta \leftarrow \theta-\eta\nabla L(\theta)$$처럼 반대 방향으로 갱신합니다. 따라서 “gradient 방향으로 간다”는 표현은 최대화가 아니라 최소화 문제에서는 틀릴 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. Backpropagation과 gradient descent는 같은 말인가?</summary>
+<summary>3. Logistic regression이 linear regression과 비슷하면서도 classification 모델인 이유는 무엇입니까?</summary>
 
-답변: 아니다. backpropagation은 chain rule을 이용해 각 parameter의 gradient를 계산하는 절차다. gradient descent는 계산된 gradient를 이용해 parameter를 실제로 업데이트하는 최적화 방법이다. 즉 backpropagation은 “기울기를 구하는 법”, gradient descent는 “그 기울기로 움직이는 법”에 가깝다.
-
-</details>
-
-<details markdown="block">
-<summary>6. Tokenizer, one-hot vector, embedding은 어떻게 이어지는가?</summary>
-
-답변: tokenizer는 문장을 token으로 나누고 vocabulary의 항목에 대응시킨다. one-hot vector는 token을 vocabulary 크기의 희소 벡터로 표현한다. embedding은 token을 더 낮은 차원의 dense vector로 바꾸어 의미적 유사성을 담을 수 있게 한다. 따라서 tokenizer와 embedding은 같은 단계가 아니라 순차적으로 연결되는 단계다.
+답변: logistic regression도 먼저 $$w^Tx+b$$라는 linear score를 만듭니다. 하지만 그 score를 sigmoid에 통과시켜 $$0$$과 $$1$$ 사이의 class probability로 바꿉니다. 구조의 출발점은 선형이지만 출력 해석과 학습 목표가 classification에 맞게 바뀌기 때문에 분류 모델로 사용됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>7. RNN이 sequence에 맞지만 긴 문장에서 약해지는 이유는?</summary>
+<summary>4. Single perceptron은 XOR을 못 풀고 MLP는 풀 수 있는 이유는 무엇입니까?</summary>
 
-답변: RNN은 현재 hidden state가 이전 hidden state에 의존하므로 시간 순서가 있는 데이터를 처리하기 좋다. 그러나 긴 문장에서는 앞부분 정보가 hidden state에 반복적으로 압축되면서 영향이 희미해질 수 있고, 이전 시점 계산이 끝나야 다음 시점을 계산할 수 있어 병렬화도 어렵다.
+답변: single perceptron은 하나의 선형 decision boundary를 만들기 때문에 linearly separable한 문제에만 적합합니다. XOR은 하나의 직선으로 두 class를 나눌 수 없습니다. MLP는 hidden layer와 nonlinear activation을 통해 입력을 새로운 표현 공간으로 바꾸고, 여러 경계 조각을 조합해 XOR 같은 비선형 패턴을 표현할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>8. Self-attention에서 Q, K, V와 positional encoding의 역할은?</summary>
+<summary>5. Backpropagation과 gradient descent는 같은 말입니까?</summary>
 
-답변: Q와 K의 내적은 token 사이 관련도 점수를 계산하는 데 쓰이고, V는 그 점수로 가중합해 실제 출력 표현을 만드는 데 쓰인다. self-attention은 token 간 관계를 잘 보지만 그 자체만으로 순서 정보를 자연스럽게 알기 어렵다. 그래서 positional encoding을 더해 각 token의 위치 정보를 보강한다.
+답변: 아닙니다. backpropagation은 chain rule을 이용해 각 parameter의 gradient를 계산하는 절차입니다. gradient descent는 계산된 gradient를 이용해 parameter를 실제로 업데이트하는 최적화 방법입니다. 즉 backpropagation은 “기울기를 구하는 법”, gradient descent는 “그 기울기로 움직이는 법”에 가깝습니다.
+
+</details>
+
+<details markdown="block">
+<summary>6. Tokenizer, one-hot vector, embedding은 어떻게 이어집니까?</summary>
+
+답변: tokenizer는 문장을 token으로 나누고 vocabulary의 항목에 대응시킵니다. one-hot vector는 token을 vocabulary 크기의 희소 벡터로 표현합니다. embedding은 token을 더 낮은 차원의 dense vector로 바꾸어 의미적 유사성을 담을 수 있게 합니다. 따라서 tokenizer와 embedding은 같은 단계가 아니라 순차적으로 연결되는 단계입니다.
+
+</details>
+
+<details markdown="block">
+<summary>7. RNN이 sequence에 맞지만 긴 문장에서 약해지는 이유는 무엇입니까?</summary>
+
+답변: RNN은 현재 hidden state가 이전 hidden state에 의존하므로 시간 순서가 있는 데이터를 처리하기 좋습니다. 그러나 긴 문장에서는 앞부분 정보가 hidden state에 반복적으로 압축되면서 영향이 희미해질 수 있고, 이전 시점 계산이 끝나야 다음 시점을 계산할 수 있어 병렬화도 어렵습니다.
+
+</details>
+
+<details markdown="block">
+<summary>8. Self-attention에서 Q, K, V와 positional encoding의 역할은 무엇입니까?</summary>
+
+답변: Q와 K의 내적은 token 사이 관련도 점수를 계산하는 데 쓰이고, V는 그 점수로 가중합해 실제 출력 표현을 만드는 데 쓰입니다. self-attention은 token 간 관계를 잘 보지만 그 자체만으로 순서 정보를 자연스럽게 알기 어렵습니다. 그래서 positional encoding을 더해 각 token의 위치 정보를 보강합니다.
 
 </details>
 

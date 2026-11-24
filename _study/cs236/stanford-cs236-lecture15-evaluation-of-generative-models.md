@@ -24,9 +24,9 @@ keywords:
 - Video: [Stanford CS236 Lecture 15](https://www.youtube.com/watch?v=MJt_ahtO-to){:target="_blank" rel="noopener"}
 - Source PDF: [lecture15.pdf](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룬다. Discriminative model은 task가 비교적 명확하다.
+> **핵심:** Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룹니다. Discriminative model은 task가 비교적 명확합니다.
 
-같은 생성 모델도 압축에 쓸 때는 likelihood가, 사람이 볼 이미지를 만들 때는 fidelity와 diversity가 더 중요할 수 있다. 한 지표가 좋아도 다른 목적까지 자동으로 좋아지는 것은 아니다. 따라서 평가식부터 고르는 대신 모델을 어디에 쓸지 정하고, 그 목적에서 생길 수 있는 실패를 함께 측정해야 한다.
+같은 생성 모델도 압축에 쓸 때는 likelihood가, 사람이 볼 이미지를 만들 때는 fidelity와 diversity가 더 중요할 수 있습니다. 한 지표가 좋아도 다른 목적까지 자동으로 좋아지는 것은 아닙니다. 따라서 평가식부터 고르는 대신 모델을 어디에 쓸지 정하고, 그 목적에서 생길 수 있는 실패를 함께 측정해야 합니다.
 
 ## 전체 흐름
 
@@ -35,23 +35,23 @@ keywords:
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | Mid-quarter recap | 지금까지의 model family와 training objective는 어떤 평가 질문으로 이어지는가? |
-| 2 | Task-first evaluation | Generative model은 density, compression, sampling, representation 중 무엇을 위해 쓰는가? |
-| 3 | Likelihood and compression | Test log-likelihood와 code length는 왜 같은 관점으로 볼 수 있는가? |
-| 4 | Approximate density evaluation | KDE와 AIS는 likelihood가 직접 tractable하지 않을 때 무엇을 근사하는가? |
-| 5 | Sample quality metrics | Human evaluation, Inception Score, FID, KID는 sample의 어떤 측면을 본다? |
-| 6 | Text-to-image evaluation | Quality, alignment, bias, robustness는 왜 하나의 metric으로 합치기 어려운가? |
-| 7 | Latent and prompting evaluation | Representation learning과 LLM prompting은 어떤 downstream/task metric을 요구하는가? |
+| 1 | Mid-quarter recap | 지금까지의 model family와 training objective는 어떤 평가 질문으로 이어집니까? |
+| 2 | Task-first evaluation | Generative model은 density, compression, sampling, representation 중 무엇을 위해 씁니까? |
+| 3 | Likelihood and compression | Test log-likelihood와 code length는 왜 같은 관점으로 볼 수 있습니까? |
+| 4 | Approximate density evaluation | KDE와 AIS는 likelihood가 직접 tractable하지 않을 때 무엇을 근사합니까? |
+| 5 | Sample quality metrics | Human evaluation, Inception Score, FID, KID는 sample의 어떤 측면을 봅니까? |
+| 6 | Text-to-image evaluation | Quality, alignment, bias, robustness는 왜 하나의 metric으로 합치기 어렵습니까? |
+| 7 | Latent and prompting evaluation | Representation learning과 LLM prompting은 어떤 downstream/task metric을 요구합니까? |
 
 ### 원본 수식 위치
 
 | 원본 PDF | 중요한 식·도식 | 본문 처리 |
 |---|---|---|
-| pp. 5--6 | Test log-likelihood, code length, perplexity | `핵심 내용`에서 evaluation 정의와 compression 해석을 설명한다. |
-| pp. 8--10 | KDE 정의, kernel 조건, bandwidth tradeoff | `핵심 내용`과 `핵심 개념`에서 sample-only density 근사와 고차원 실패를 설명한다. |
-| p. 11 | Likelihood weighting와 annealed importance sampling | `핵심 내용`에서 variance와 biased log-likelihood estimate를 포함해 설명한다. |
-| pp. 15--16 | Inception Score의 sharpness·diversity | `Inception Score의 두 인자`에서 entropy/KL 항등식과 classifier 가정을 설명한다. |
-| pp. 17--18 | FID와 MMD/KID | `FID와 MMD`에서 Gaussian 근사, RKHS identity, finite-sample 한계를 구분한다. |
+| pp. 5--6 | Test log-likelihood, code length, perplexity | `핵심 내용`에서 evaluation 정의와 compression 해석을 설명합니다. |
+| pp. 8--10 | KDE 정의, kernel 조건, bandwidth tradeoff | `핵심 내용`과 `핵심 개념`에서 sample-only density 근사와 고차원 실패를 설명합니다. |
+| p. 11 | Likelihood weighting와 annealed importance sampling | `핵심 내용`에서 variance와 biased log-likelihood estimate를 포함해 설명합니다. |
+| pp. 15--16 | Inception Score의 sharpness·diversity | `Inception Score의 두 인자`에서 entropy/KL 항등식과 classifier 가정을 설명합니다. |
+| pp. 17--18 | FID와 MMD/KID | `FID와 MMD`에서 Gaussian 근사, RKHS identity, finite-sample 한계를 구분합니다. |
 
 </details>
 
@@ -61,82 +61,82 @@ keywords:
 
 <figure>
   <a href="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-12-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-12-excerpt.png" | relative_url }}" alt="CS236 Lecture 15, p. 12: 서로 다른 두 분포에서 추출한 sample 이미지 격자. 원본 발췌." loading="lazy"></a>
-  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=12" target="_blank" rel="noopener">Original p. 12</a> — 서로 다른 두 분포에서 추출한 sample 이미지 격자. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=12" target="_blank" rel="noopener">Original p. 12</a> — 서로 다른 두 분포에서 추출한 sample 이미지 격자. 필요한 영역만 발췌했습니다. 이미지를 누르면 확대됩니다.</figcaption>
 </figure>
 
 [Lecture 15 PDF p. 12](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=12){:target="_blank" rel="noopener"}
 
-왼쪽과 오른쪽 이미지 격자는 두 분포에서 뽑은 sample 집합이다. 원문은 각각 $$S_1$$, $$S_2$$로 표시한다. 한 장의 선명함과 전체 집합의 다양성을 따로 살펴야 한다. 사람이 보기에 좋은 집합이라는 판단만으로 likelihood나 모든 downstream task의 성능까지 결론낼 수는 없다.
+왼쪽과 오른쪽 이미지 격자는 두 분포에서 뽑은 sample 집합입니다. 원문은 각각 $$S_1$$, $$S_2$$로 표시합니다. 한 장의 선명함과 전체 집합의 다양성을 따로 살펴야 합니다. 사람이 보기에 좋은 집합이라는 판단만으로 likelihood나 모든 downstream task의 성능까지 결론낼 수는 없습니다.
 
 <figure>
   <a href="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-17-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-15-source-17-excerpt.png" | relative_url }}" alt="CS236 Lecture 15, p. 17: feature 평균과 공분산을 비교하는 FID 식. 원본 발췌." loading="lazy"></a>
-  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17" target="_blank" rel="noopener">Original p. 17</a> — feature 평균과 공분산을 비교하는 FID 식. 필요한 영역만 발췌했다. 이미지를 누르면 확대된다.</figcaption>
+  <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17" target="_blank" rel="noopener">Original p. 17</a> — feature 평균과 공분산을 비교하는 FID 식. 필요한 영역만 발췌했습니다. 이미지를 누르면 확대됩니다.</figcaption>
 </figure>
 
-[PDF p.17](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17){:target="_blank" rel="noopener"}의 FID 식은 픽셀을 직접 비교하지 않는다. 생성 집합과 실제 집합을 같은 feature extractor에 넣고 각각의 평균과 공분산을 비교한다. 첫 항은 평균 차이, trace 항은 퍼짐과 상관 구조의 차이를 반영한다. 같은 특징 추출기·전처리·표본 조건에서 해석해야 하며 낮은 FID 하나로 각 이미지의 정확성을 보장할 수 없다.
+[PDF p.17](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf#page=17){:target="_blank" rel="noopener"}의 FID 식은 픽셀을 직접 비교하지 않습니다. 생성 집합과 실제 집합을 같은 feature extractor에 넣고 각각의 평균과 공분산을 비교합니다. 첫 항은 평균 차이, trace 항은 퍼짐과 상관 구조의 차이를 반영합니다. 같은 특징 추출기·전처리·표본 조건에서 해석해야 하며 낮은 FID 하나로 각 이미지의 정확성을 보장할 수 없습니다.
 
 ## 핵심 내용
 
-Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룬다. Discriminative model은 task가 비교적 명확하다. Classifier라면 held-out data에서 top-1 accuracy, top-5 accuracy, cross-entropy loss처럼 목적에 맞는 metric을 계산하면 된다. Generative model은 다르다. 같은 model이라도 density estimation, compression, image generation, representation learning, inverse problem, language model prompting 등 사용 목적이 다르면 좋은 모델의 의미가 바뀐다. 따라서 강의의 첫 원칙은 metric을 먼저 고르는 것이 아니라 task를 먼저 고르는 것이다.
+Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룹니다. Discriminative model은 task가 비교적 명확합니다. Classifier라면 held-out data에서 top-1 accuracy, top-5 accuracy, cross-entropy loss처럼 목적에 맞는 metric을 계산하면 됩니다. Generative model은 다릅니다. 같은 model이라도 density estimation, compression, image generation, representation learning, inverse problem, language model prompting 등 사용 목적이 다르면 좋은 모델의 의미가 바뀝니다. 따라서 강의의 첫 원칙은 metric을 먼저 고르는 것이 아니라 task를 먼저 고르는 것입니다.
 
-Density estimation을 목표로 한다면 가장 자연스러운 metric은 test log-likelihood다.
+Density estimation을 목표로 한다면 가장 자연스러운 metric은 test log-likelihood입니다.
 
 $$
 \mathbb{E}_{x\sim p_{\mathrm{data}}}[\log p_\theta(x)]
 $$
 
-Train/validation/test split을 만들고, training set으로 model을 학습하고, validation set으로 hyperparameter를 고른 뒤, test set에서 average log-likelihood를 평가한다. 이 관점은 compression과도 연결된다. Shannon coding 관점에서 probability가 높은 data point에는 짧은 code를, 낮은 data point에는 긴 code를 주면 평균 code length는 대략 $$-\log p_\theta(x)$$에 비례한다. 즉 maximum likelihood는 data를 잘 압축하는 model을 찾는 것과 같다. Language model에서 perplexity가 널리 쓰이는 이유도 여기에 있다. 다만 compression을 잘한다고 사용자가 원하는 semantic quality를 항상 잘 잡는 것은 아니다. Pixel-level likelihood는 배경 noise나 local statistics에 민감할 수 있고, 시각적으로 중요한 bit와 중요하지 않은 bit를 구분하지 않는다.
+Train/validation/test split을 만들고, training set으로 model을 학습하고, validation set으로 hyperparameter를 고른 뒤, test set에서 average log-likelihood를 평가합니다. 이 관점은 compression과도 연결됩니다. Shannon coding 관점에서 probability가 높은 data point에는 짧은 code를, 낮은 data point에는 긴 code를 주면 평균 code length는 대략 $$-\log p_\theta(x)$$에 비례합니다. 즉 maximum likelihood는 data를 잘 압축하는 model을 찾는 것과 같습니다. Language model에서 perplexity가 널리 쓰이는 이유도 여기에 있습니다. 다만 compression을 잘한다고 사용자가 원하는 semantic quality를 항상 잘 잡는 것은 아닙니다. Pixel-level likelihood는 배경 noise나 local statistics에 민감할 수 있고, 시각적으로 중요한 bit와 중요하지 않은 bit를 구분하지 않습니다.
 
-모든 model이 likelihood를 직접 제공하는 것은 아니다. Autoregressive model과 normalizing flow는 likelihood 계산이 비교적 직접적이고, VAE는 ELBO를 likelihood lower bound로 쓴다. GAN이나 일부 EBM, score-based model에서는 density evaluation이 어렵다. Sample만 있을 때 density를 추정하는 단순한 방법은 kernel density estimation이다.
+모든 model이 likelihood를 직접 제공하는 것은 아닙니다. Autoregressive model과 normalizing flow는 likelihood 계산이 비교적 직접적이고, VAE는 ELBO를 likelihood lower bound로 씁니다. GAN이나 일부 EBM, score-based model에서는 density evaluation이 어렵습니다. Sample만 있을 때 density를 추정하는 단순한 방법은 kernel density estimation입니다.
 
 $$
 \hat{p}(x)=\frac{1}{n}\sum_{i=1}^{n}K_\sigma(x-x^{(i)})
 $$
 
-Bandwidth $$\sigma$$가 작으면 training sample 근처에만 spike가 생기고, 너무 크면 distribution이 지나치게 smooth해진다. Cross-validation으로 bandwidth를 고를 수 있지만, high-dimensional data에서는 KDE가 급격히 불안정해진다. Latent variable model의 likelihood를 더 정교하게 추정하려면 importance sampling이나 annealed importance sampling(AIS)을 쓸 수 있다. 단순히 $$z\sim p(z)$$에서 $$p_\theta(x\mid z)$$를 평균내면 posterior $$p(z\mid x)$$와 proposal이 멀어 variance가 커진다. AIS는 prior와 posterior 사이의 intermediate distributions를 만들어 normalizing constant ratio를 더 안정적으로 추정한다. 단, unbiased likelihood estimate가 log-likelihood의 unbiased estimate를 의미하지는 않는다.
+Bandwidth $$\sigma$$가 작으면 training sample 근처에만 spike가 생기고, 너무 크면 distribution이 지나치게 smooth해집니다. Cross-validation으로 bandwidth를 고를 수 있지만, high-dimensional data에서는 KDE가 급격히 불안정해집니다. Latent variable model의 likelihood를 더 정교하게 추정하려면 importance sampling이나 annealed importance sampling(AIS)을 쓸 수 있습니다. 단순히 $$z\sim p(z)$$에서 $$p_\theta(x\mid z)$$를 평균내면 posterior $$p(z\mid x)$$와 proposal이 멀어 variance가 커집니다. AIS는 prior와 posterior 사이의 intermediate distributions를 만들어 normalizing constant ratio를 더 안정적으로 추정합니다. 단, unbiased likelihood estimate가 log-likelihood의 unbiased estimate를 의미하지는 않습니다.
 
-Sampling quality가 목표라면 likelihood만으로 부족하다. Human evaluation은 여전히 강한 기준이다. 사람이 real/fake를 구분하기 어려운지, 얼마나 짧은 시간에 판단할 수 있는지, sample이 자연스럽고 다양한지 직접 볼 수 있기 때문이다. HYPE 계열 평가는 human response time이나 unlimited-time fooling rate로 quality를 측정한다. 그러나 human evaluation은 비싸고, 재현성이 낮고, evaluator bias가 들어가며, model이 training data를 외운 경우 generalization을 충분히 잡아내지 못할 수 있다.
+Sampling quality가 목표라면 likelihood만으로 부족합니다. Human evaluation은 여전히 강한 기준입니다. 사람이 real/fake를 구분하기 어려운지, 얼마나 짧은 시간에 판단할 수 있는지, sample이 자연스럽고 다양한지 직접 볼 수 있기 때문입니다. HYPE 계열 평가는 human response time이나 unlimited-time fooling rate로 quality를 측정합니다. 그러나 human evaluation은 비싸고, 재현성이 낮고, evaluator bias가 들어가며, model이 training data를 외운 경우 generalization을 충분히 잡아내지 못할 수 있습니다.
 
-자동 sample metric의 대표는 Inception Score, FID, KID다. Inception Score는 pretrained classifier의 예측을 사용한다. 개별 generated sample에 대해 classifier가 확신하면 sharpness가 높고, generated samples 전체의 marginal label distribution이 넓으면 diversity가 높다. 둘이 모두 높을수록 점수가 좋다. 하지만 real data와 직접 비교하지 않고, label 내부의 다양성을 놓칠 수 있다. FID는 generated samples와 test samples를 pretrained network feature space로 보내고, 각각 Gaussian을 fit한 뒤 두 Gaussian의 Wasserstein-2 distance를 계산한다.
+자동 sample metric의 대표는 Inception Score, FID, KID입니다. Inception Score는 pretrained classifier의 예측을 사용합니다. 개별 generated sample에 대해 classifier가 확신하면 sharpness가 높고, generated samples 전체의 marginal label distribution이 넓으면 diversity가 높습니다. 둘이 모두 높을수록 점수가 좋습니다. 하지만 real data와 직접 비교하지 않고, label 내부의 다양성을 놓칠 수 있습니다. FID는 generated samples와 test samples를 pretrained network feature space로 보내고, 각각 Gaussian을 fit한 뒤 두 Gaussian의 Wasserstein-2 distance를 계산합니다.
 
 $$
 \mathrm{FID}=\lVert\mu_T-\mu_G\rVert_2^2+\mathrm{Tr}\left(\Sigma_T+\Sigma_G-2(\Sigma_T\Sigma_G)^{1/2}\right)
 $$
 
-낮을수록 좋지만, feature extractor와 Gaussian approximation에 의존한다. KID는 같은 feature space에서 MMD를 계산한다.
+낮을수록 좋지만, feature extractor와 Gaussian approximation에 의존합니다. KID는 같은 feature space에서 MMD를 계산합니다.
 
 $$
 \mathrm{MMD}(p,q)=\mathbb{E}_{x,x'\sim p}[K(x,x')]+\mathbb{E}_{y,y'\sim q}[K(y,y')]-2\mathbb{E}_{x\sim p,y\sim q}[K(x,y)]
 $$
 
-KID는 더 principled한 two-sample test로 볼 수 있고 unbiased estimator를 쓸 수 있지만, pairwise comparison 때문에 계산 비용이 더 크다.
+KID는 더 principled한 two-sample test로 볼 수 있고 unbiased estimator를 쓸 수 있지만, pairwise comparison 때문에 계산 비용이 더 큽니다.
 
-Text-to-image model은 image quality만 보아서는 부족하다. Caption과 image의 alignment, aesthetic quality, robustness, originality, toxicity, bias, spatial reasoning까지 함께 평가해야 한다. HEIM은 이런 다면 평가를 한 benchmark로 묶으려는 시도로 소개된다. Latent representation learning에서는 downstream task가 중요하다. Clustering이면 homogeneity, completeness, V-measure나 normalized mutual information을 볼 수 있고, reconstruction/compression이면 MSE, PSNR, SSIM을 볼 수 있다. Disentanglement는 independent하고 interpretable한 latent factor를 원하는 목표지만, 순수 unsupervised setting에서는 어떤 inductive bias나 supervision 없이 식별하기 어렵다는 점을 기억해야 한다. 마지막으로 LLM은 next-token generative model이지만 자연어 prompt로 task를 지정할 수 있으므로, HELM이나 BigBench처럼 task suite와 metric suite를 함께 설계하는 평가가 필요하다.
+Text-to-image model은 image quality만 보아서는 부족합니다. Caption과 image의 alignment, aesthetic quality, robustness, originality, toxicity, bias, spatial reasoning까지 함께 평가해야 합니다. HEIM은 이런 다면 평가를 한 benchmark로 묶으려는 시도로 소개됩니다. Latent representation learning에서는 downstream task가 중요합니다. Clustering이면 homogeneity, completeness, V-measure나 normalized mutual information을 볼 수 있고, reconstruction/compression이면 MSE, PSNR, SSIM을 볼 수 있습니다. Disentanglement는 independent하고 interpretable한 latent factor를 원하는 목표지만, 순수 unsupervised setting에서는 어떤 inductive bias나 supervision 없이 식별하기 어렵다는 점을 기억해야 합니다. 마지막으로 LLM은 next-token generative model이지만 자연어 prompt로 task를 지정할 수 있으므로, HELM이나 BigBench처럼 task suite와 metric suite를 함께 설계하는 평가가 필요합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: What FID and MMD measure</summary>
 
-> **Source mapping:** Official Lecture 15 PDF p. 17의 FID와 p. 18의 MMD/KID 정의에 대응한다.
+> **Source mapping:** Official Lecture 15 PDF p. 17의 FID와 p. 18의 MMD/KID 정의에 대응합니다.
 
-FID 식은 arbitrary image distribution 사이의 정리가 아니라, 고정 feature extractor의 embedding을 각각 Gaussian $$\mathcal N(\mu_T,\Sigma_T)$$, $$\mathcal N(\mu_G,\Sigma_G)$$으로 **근사**했을 때 두 Gaussian 사이 squared Wasserstein-2 distance의 닫힌형이다. 평균 항은 feature center 차이, trace 항은 covariance shape 차이를 잰다. Feature가 무차원이면 FID도 무차원이며, feature scaling을 바꾸면 값도 바뀐다. Non-Gaussian 구조와 classifier가 보지 못하는 오류는 놓칠 수 있고 finite-sample covariance bias 때문에 서로 다른 sample 수의 FID를 직접 비교하면 안 된다.
+FID 식은 arbitrary image distribution 사이의 정리가 아니라, 고정 feature extractor의 embedding을 각각 Gaussian $$\mathcal N(\mu_T,\Sigma_T)$$, $$\mathcal N(\mu_G,\Sigma_G)$$으로 **근사**했을 때 두 Gaussian 사이 squared Wasserstein-2 distance의 닫힌형입니다. 평균 항은 feature center 차이, trace 항은 covariance shape 차이를 잽니다. Feature가 무차원이면 FID도 무차원이며, feature scaling을 바꾸면 값도 바뀝니다. Non-Gaussian 구조와 classifier가 보지 못하는 오류는 놓칠 수 있고 finite-sample covariance bias 때문에 서로 다른 sample 수의 FID를 직접 비교하면 안 됩니다.
 
-MMD는 positive-definite kernel $$K$$의 RKHS에서 평균 embedding 차이의 제곱이라는 **항등식**이다.
+MMD는 positive-definite kernel $$K$$의 RKHS에서 평균 embedding 차이의 제곱이라는 **항등식**입니다.
 
 $$
 \lVert\mu_p-\mu_q\rVert_{\mathcal H}^2
 =\mathbb E_{p,p}[K]+\mathbb E_{q,q}[K]-2\mathbb E_{p,q}[K].
 $$
 
-Characteristic kernel이면 population MMD가 0일 때 $$p=q$$다. 다만 finite sample에서는 estimator variance가 있고 kernel·bandwidth 선택에 민감하다. 그러므로 FID·KID는 perceptual quality, memorization, fairness를 증명하는 단일 점수가 아니라 제한된 feature geometry에서의 비교 지표다.
+Characteristic kernel이면 population MMD가 0일 때 $$p=q$$입니다. 다만 finite sample에서는 estimator variance가 있고 kernel·bandwidth 선택에 민감합니다. 그러므로 FID·KID는 perceptual quality, memorization, fairness를 증명하는 단일 점수가 아니라 제한된 feature geometry에서의 비교 지표입니다.
 
 </details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Sharpness and diversity in the Inception Score</summary>
 
-> **Source mapping:** Official Lecture 15 PDF p. 15의 sharpness와 p. 16의 diversity 및 $$\mathrm{IS}=D\times S$$ 정의에 대응한다.
+> **Source mapping:** Official Lecture 15 PDF p. 15의 sharpness와 p. 16의 diversity 및 $$\mathrm{IS}=D\times S$$ 정의에 대응합니다.
 
-생성분포를 $$p_g(x)$$, 고정 classifier의 label posterior를 $$c(y\mid x)$$, 그 marginal을 $$c(y)=\mathbb E_{x\sim p_g}[c(y\mid x)]$$라 하자. Label이 이산이면 강의의 **sharpness**는
+생성분포를 $$p_g(x)$$, 고정 classifier의 label posterior를 $$c(y\mid x)$$, 그 marginal을 $$c(y)=\mathbb E_{x\sim p_g}[c(y\mid x)]$$라 하겠습니다. Label이 이산이면 강의의 **sharpness**는
 
 $$
 S=\exp\left(
@@ -152,7 +152,7 @@ D=\exp\left(-\sum_y c(y)\log c(y)\right)
 =\exp(H(c(\cdot)))
 $$
 
-로 정의된다. 따라서 결합 점수는
+로 정의됩니다. 따라서 결합 점수는
 
 $$
 \begin{aligned}
@@ -166,9 +166,9 @@ D_{\mathrm{KL}}(c(y\mid x)\,\Vert\,c(y))
 \end{aligned}
 $$
 
-이는 entropy와 KL 정의를 대입한 **정확한 항등식**이다. $$K$$개 class라면 $$1/K\le S\le1$$, $$1\le D\le K$$, $$1\le\mathrm{IS}\le K$$이고 모든 probability, entropy의 nat, IS는 무차원이다. Sharp sample은 classifier entropy가 낮고, diverse set은 marginal label entropy가 높다는 직관을 곱으로 결합한다.
+이는 entropy와 KL 정의를 대입한 **정확한 항등식**입니다. $$K$$개 class라면 $$1/K\le S\le1$$, $$1\le D\le K$$, $$1\le\mathrm{IS}\le K$$이고 모든 probability, entropy의 nat, IS는 무차원입니다. Sharp sample은 classifier entropy가 낮고, diverse set은 marginal label entropy가 높다는 직관을 곱으로 결합합니다.
 
-그러나 이 해석은 classifier의 label space가 평가 domain을 잘 나타내고 posterior가 calibrated되어 있다는 가정에 의존한다. IS는 real-data distribution을 직접 비교하지 않으며, class 안의 다양성·왜곡·중복과 training-set memorization을 놓칠 수 있다. Classifier가 자신 있게 틀리거나 adversarial artifact에 과신하면 sharpness가 부풀고, class prior가 본래 불균형한 domain에서는 uniform marginal을 선호하는 diversity 항이 부적절할 수 있다. 또한 finite-sample plug-in estimate와 split 수에 따라 값이 달라지므로 sample 수, preprocessing, classifier checkpoint, split protocol이 다른 IS는 직접 비교하면 안 된다.
+그러나 이 해석은 classifier의 label space가 평가 domain을 잘 나타내고 posterior가 calibrated되어 있다는 가정에 의존합니다. IS는 real-data distribution을 직접 비교하지 않으며, class 안의 다양성·왜곡·중복과 training-set memorization을 놓칠 수 있습니다. Classifier가 자신 있게 틀리거나 adversarial artifact에 과신하면 sharpness가 부풀고, class prior가 본래 불균형한 domain에서는 uniform marginal을 선호하는 diversity 항이 부적절할 수 있습니다. 또한 finite-sample plug-in estimate와 split 수에 따라 값이 달라지므로 sample 수, preprocessing, classifier checkpoint, split protocol이 다른 IS는 직접 비교하면 안 됩니다.
 
 </details>
 
@@ -176,90 +176,90 @@ $$
 
 | 개념 | 설명 |
 |---|---|
-| Task-first evaluation | Generative model의 좋고 나쁨은 사용 목적에 따라 달라지므로, metric보다 task 정의가 먼저다. |
-| Test log-likelihood | Held-out data에 model이 부여하는 평균 log probability로 density estimation 성능을 평가한다. |
-| Compression view | $$-\log p_\theta(x)$$가 code length와 연결되므로 likelihood maximization은 평균 code length minimization으로 해석된다. |
-| KDE | Sample 주변에 kernel을 놓아 density를 추정하는 nonparametric 방법이다. High-dimensional data에서는 신뢰성이 낮다. |
-| AIS | Intermediate distributions를 거쳐 latent variable model의 likelihood 또는 normalizing constant ratio를 추정하는 방법이다. |
-| Inception Score | Generated sample의 classifier confidence와 predicted label diversity를 결합한 sample quality metric이다. |
-| FID | Pretrained feature space에서 real/generated feature Gaussian 사이의 distance를 측정한다. 낮을수록 좋다. |
-| KID | Feature space에서 MMD를 사용해 real/generated sample distributions를 비교하는 metric이다. |
-| Disentanglement | Latent dimension이 독립적이고 해석 가능한 data factor를 반영하도록 만드는 representation goal이다. |
+| Task-first evaluation | Generative model의 좋고 나쁨은 사용 목적에 따라 달라지므로, metric을 고르기 전에 task를 정의해야 합니다. |
+| Test log-likelihood | Held-out data에 model이 부여하는 평균 log probability로 density estimation 성능을 평가합니다. |
+| Compression view | $$-\log p_\theta(x)$$가 code length와 연결되므로 likelihood maximization은 평균 code length minimization으로 해석됩니다. |
+| KDE | Sample 주변에 kernel을 놓아 density를 추정하는 nonparametric 방법입니다. High-dimensional data에서는 신뢰성이 낮습니다. |
+| AIS | Intermediate distributions를 거쳐 latent variable model의 likelihood 또는 normalizing constant ratio를 추정하는 방법입니다. |
+| Inception Score | Generated sample의 classifier confidence와 predicted label diversity를 결합한 sample quality metric입니다. |
+| FID | Pretrained feature space에서 real/generated feature Gaussian 사이의 distance를 측정합니다. 낮을수록 좋습니다. |
+| KID | Feature space에서 MMD를 사용해 real/generated sample distributions를 비교하는 metric입니다. |
+| Disentanglement | Latent dimension이 독립적이고 해석 가능한 data factor를 반영하도록 만드는 representation goal입니다. |
 
 ## 학습 포인트
 
 <details markdown="block">
 <summary markdown="span">추가 학습 포인트 보기</summary>
 
-- Generative model 평가에서 "좋은 sample"과 "높은 likelihood"는 같은 말이 아니다. 목적이 다르면 metric도 달라진다.
-- Likelihood는 density estimation과 compression에는 자연스럽지만 perceptual quality나 semantic alignment를 완전히 대변하지 않는다.
-- KDE는 sample-only density estimation의 직관을 주지만, high-dimensional image/text에서는 bandwidth와 curse of dimensionality 문제가 크다.
-- Human evaluation은 강력하지만 비용, bias, reproducibility, memorization detection 문제가 있다.
-- Inception Score는 generated samples만 보고, FID와 KID는 real/generated samples를 feature space에서 비교한다.
-- Text-to-image와 LLM 평가는 단일 숫자보다 scenario와 metric matrix가 더 중요하다.
-- Representation learning 평가는 downstream task, clustering, reconstruction, disentanglement처럼 사용 목적별로 나누어야 한다.
+- Generative model 평가에서 "좋은 sample"과 "높은 likelihood"는 같은 말이 아닙니다. 목적이 다르면 metric도 달라집니다.
+- Likelihood는 density estimation과 compression에는 자연스럽지만 perceptual quality나 semantic alignment를 완전히 대변하지 않습니다.
+- KDE는 sample-only density estimation의 직관을 주지만, high-dimensional image/text에서는 bandwidth와 curse of dimensionality 문제가 큽니다.
+- Human evaluation은 강력하지만 비용, bias, reproducibility, memorization detection 문제가 있습니다.
+- Inception Score는 generated samples만 보고, FID와 KID는 real/generated samples를 feature space에서 비교합니다.
+- Text-to-image와 LLM 평가는 단일 숫자보다 scenario와 metric matrix가 더 중요합니다.
+- Representation learning 평가는 downstream task, clustering, reconstruction, disentanglement처럼 사용 목적별로 나누어야 합니다.
 
 </details>
 
 ## 마지막 핵심 정리
 
-Lecture 15의 핵심은 generative model evaluation에 보편적인 단일 정답이 없다는 점이다. Density를 원하면 likelihood와 compression이 자연스럽고, sample을 원하면 human evaluation과 FID/KID 같은 feature-space metric이 필요하며, representation이나 prompting을 원하면 downstream task 중심 metric이 필요하다. Model family를 비교할 때는 먼저 "무엇을 잘해야 하는가"를 고정한 뒤 metric을 선택해야 한다.
+Lecture 15의 핵심은 generative model evaluation에 보편적인 단일 정답이 없다는 점입니다. Density를 원하면 likelihood와 compression이 자연스럽고, sample을 원하면 human evaluation과 FID/KID 같은 feature-space metric이 필요하며, representation이나 prompting을 원하면 downstream task 중심 metric이 필요합니다. Model family를 비교할 때는 먼저 "무엇을 잘해야 하는가"를 고정한 뒤 metric을 선택해야 합니다.
 
 ## Study Guide
 
 <details markdown="block">
 <summary markdown="span">학습 방법 보기</summary>
 
-1. 지금까지 배운 model family를 likelihood tractable 여부로 분류한다: autoregressive, flow, VAE, EBM, GAN, score-based model.
-2. Evaluation target을 density, compression, sampling, representation, prompting으로 나누고 각 target에 맞는 metric을 하나씩 연결한다.
-3. Likelihood가 높은 image model이 perceptually 좋은 sample을 보장하지 않는 이유를 bit-level compression 관점에서 설명해 본다.
-4. Inception Score, FID, KID를 "real data를 비교하는가", "classifier label을 쓰는가", "feature distribution을 어떻게 비교하는가"로 구분한다.
-5. Text-to-image model을 평가할 때 quality와 alignment를 별도 축으로 두는 이유를 예시로 정리한다.
-6. Disentanglement metric을 읽을 때는 어떤 latent factor supervision 또는 inductive bias가 숨어 있는지 확인한다.
+1. 지금까지 배운 model family를 likelihood tractable 여부로 분류합니다: autoregressive, flow, VAE, EBM, GAN, score-based model.
+2. Evaluation target을 density, compression, sampling, representation, prompting으로 나누고 각 target에 맞는 metric을 하나씩 연결합니다.
+3. Likelihood가 높은 image model이 perceptually 좋은 sample을 보장하지 않는 이유를 bit-level compression 관점에서 설명해 봅니다.
+4. Inception Score, FID, KID를 "real data를 비교하는가", "classifier label을 쓰는가", "feature distribution을 어떻게 비교하는가"로 구분합니다.
+5. Text-to-image model을 평가할 때 quality와 alignment를 별도 축으로 두는 이유를 예시로 정리합니다.
+6. Disentanglement metric을 읽을 때는 어떤 latent factor supervision 또는 inductive bias가 숨어 있는지 확인합니다.
 
 </details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Generative model 평가에서 task-first 접근이 필요한 이유는 무엇인가?</summary>
+<summary>1. Generative model 평가에서 task-first 접근이 필요한 이유는 무엇입니까?</summary>
 
-답변: Generative model은 density estimation, compression, sample generation, representation learning, prompting 등 서로 다른 목적으로 쓰인다. 같은 model도 목적에 따라 좋고 나쁨이 달라지므로, 먼저 어떤 task를 잘해야 하는지 정한 뒤 그 task에 맞는 metric을 선택해야 한다.
-
-</details>
-
-<details markdown="block">
-<summary>2. Likelihood와 compression은 어떻게 연결되는가?</summary>
-
-답변: Probability가 높은 data point에 짧은 code를 주고 낮은 data point에 긴 code를 주면 평균 code length는 대략 $$-\log p_\theta(x)$$에 비례한다. 따라서 average log-likelihood를 높이는 것은 평균 code length를 줄이는 compression objective로 해석할 수 있다.
+답변: Generative model은 density estimation, compression, sample generation, representation learning, prompting 등 서로 다른 목적으로 쓰입니다. 같은 model도 목적에 따라 좋고 나쁨이 달라지므로, 먼저 어떤 task를 잘해야 하는지 정한 뒤 그 task에 맞는 metric을 선택해야 합니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. KDE가 high-dimensional generative model 평가에 약한 이유는 무엇인가?</summary>
+<summary>2. Likelihood와 compression은 어떻게 연결됩니까?</summary>
 
-답변: KDE는 sample 주변에 kernel을 놓아 density를 추정하지만, 차원이 커지면 sample이 공간을 충분히 덮지 못한다. Bandwidth가 작으면 spike가 생기고, 크면 너무 smooth해지며, cross-validation으로 골라도 image 같은 high-dimensional data에서는 신뢰도가 낮다.
-
-</details>
-
-<details markdown="block">
-<summary>4. Inception Score의 주요 한계는 무엇인가?</summary>
-
-답변: Inception Score는 generated samples에 대한 classifier confidence와 predicted label diversity만 본다. Real data distribution과 직접 비교하지 않고, class label 내부의 mode collapse나 pretrained classifier가 보지 못하는 품질 문제를 놓칠 수 있다.
+답변: Probability가 높은 data point에 짧은 code를 주고 낮은 data point에 긴 code를 주면 평균 code length는 대략 $$-\log p_\theta(x)$$에 비례합니다. 따라서 average log-likelihood를 높이는 것은 평균 code length를 줄이는 compression objective로 해석할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>5. FID와 KID는 어떤 공통점과 차이가 있는가?</summary>
+<summary>3. KDE가 high-dimensional generative model 평가에 약한 이유는 무엇입니까?</summary>
 
-답변: 둘 다 pretrained classifier의 feature space에서 real samples와 generated samples를 비교한다. FID는 feature distribution을 Gaussian으로 근사하고 closed-form Wasserstein distance를 계산해 낮을수록 좋다. KID는 MMD 기반 two-sample statistic을 사용하며 더 principled한 unbiased estimator를 쓸 수 있지만 pairwise comparison 비용이 크다.
+답변: KDE는 sample 주변에 kernel을 놓아 density를 추정하지만, 차원이 커지면 sample이 공간을 충분히 덮지 못합니다. Bandwidth가 작으면 spike가 생기고, 크면 너무 smooth해지며, cross-validation으로 골라도 image 같은 high-dimensional data에서는 신뢰도가 낮습니다.
 
 </details>
 
 <details markdown="block">
-<summary>6. Text-to-image model을 FID 하나로 평가하기 어려운 이유는 무엇인가?</summary>
+<summary>4. Inception Score의 주요 한계는 무엇입니까?</summary>
 
-답변: Text-to-image model은 image realism뿐 아니라 prompt alignment, object relation, bias, toxicity, robustness, originality, aesthetic quality도 중요하다. FID는 feature distribution 유사도만 보므로 caption을 제대로 따랐는지나 안전성 문제를 충분히 평가하지 못한다.
+답변: Inception Score는 generated samples에 대한 classifier confidence와 predicted label diversity만 봅니다. Real data distribution과 직접 비교하지 않고, class label 내부의 mode collapse나 pretrained classifier가 보지 못하는 품질 문제를 놓칠 수 있습니다.
+
+</details>
+
+<details markdown="block">
+<summary>5. FID와 KID는 어떤 공통점과 차이가 있습니까?</summary>
+
+답변: 둘 다 pretrained classifier의 feature space에서 real samples와 generated samples를 비교합니다. FID는 feature distribution을 Gaussian으로 근사하고 closed-form Wasserstein distance를 계산해 낮을수록 좋습니다. KID는 MMD 기반 two-sample statistic을 사용하며 더 principled한 unbiased estimator를 쓸 수 있지만 pairwise comparison 비용이 큽니다.
+
+</details>
+
+<details markdown="block">
+<summary>6. Text-to-image model을 FID 하나로 평가하기 어려운 이유는 무엇입니까?</summary>
+
+답변: Text-to-image model은 image realism뿐 아니라 prompt alignment, object relation, bias, toxicity, robustness, originality, aesthetic quality도 중요합니다. FID는 feature distribution 유사도만 보므로 caption을 제대로 따랐는지나 안전성 문제를 충분히 평가하지 못합니다.
 
 </details>
 

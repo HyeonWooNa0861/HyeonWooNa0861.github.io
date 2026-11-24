@@ -31,11 +31,11 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 | 13–18 | buffer 종류, 대상별 buffering, flush | 11–13절 |
 | 19–24 | 입력 잔류, `FILE*`, file descriptor, redirection | 8·14–16절·마지막 정리 |
 
-24쪽 전체를 페이지 이미지로 대조했다. fd 0/1/2는 운영체제의 식별 번호이고 `setw(n)`·`setprecision(n)`의 $$n$$은 API parameter다. 자료에는 throughput 공식이나 buffer-size 모델 같은 정량식이 없으므로 수학 증명은 추가하지 않고, buffering과 descriptor 연결의 작동 조건을 설명했다.
+24쪽 전체를 페이지 이미지로 대조했습니다. fd 0/1/2는 운영체제의 식별 번호이고 `setw(n)`·`setprecision(n)`의 $$n$$은 API parameter입니다. 자료에는 throughput 공식이나 buffer-size 모델 같은 정량식이 없으므로 수학 증명은 추가하지 않고, buffering과 descriptor 연결의 작동 조건을 설명했습니다.
 
 </details>
 
-> **핵심:** 표준 입력 `stdin`은 보통 파일 디스크립터 0, 표준 출력 `stdout`은 1에 연결된다. 두 스트림의 대상을 바꾸는 리디렉션은 프로그램 코드를 고치지 않고도 입력과 출력의 흐름을 바꾼다.
+> **핵심:** 표준 입력 `stdin`은 보통 파일 디스크립터 0, 표준 출력 `stdout`은 1에 연결됩니다. 두 스트림의 대상을 바꾸는 리디렉션은 프로그램 코드를 고치지 않고도 입력과 출력의 흐름을 바꿉니다.
 
 ## 전체 흐름
 
@@ -44,19 +44,19 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 
 | 순서 | 주제 | 핵심 질문 |
 |---|---|---|
-| 1 | 표준 스트림 | `stdin`, `stdout`, `stderr`는 무엇인가? |
-| 2 | C vs C++ 입출력 | `printf/scanf`와 `cout/cin`은 어떻게 다른가? |
-| 3 | 출력 서식 | `iomanip`으로 숫자와 폭을 어떻게 조절하는가? |
-| 4 | 입력 처리 | `cin`, `getline`은 언제 다르게 써야 하는가? |
-| 5 | 리다이렉션과 파이프 | 쉘은 표준 스트림을 어떻게 바꾸는가? |
-| 6 | 버퍼링 | 출력이 바로 보이지 않는 이유는 무엇인가? |
-| 7 | 파일 디스크립터 | `FILE*`와 fd 0/1/2는 어떤 관계인가? |
+| 1 | 표준 스트림 | `stdin`, `stdout`, `stderr`는 무엇입니까? |
+| 2 | C vs C++ 입출력 | `printf/scanf`와 `cout/cin`은 어떻게 다릅니까? |
+| 3 | 출력 서식 | `iomanip`으로 숫자와 폭을 어떻게 조절합니까? |
+| 4 | 입력 처리 | `cin`, `getline`은 언제 다르게 써야 합니까? |
+| 5 | 리다이렉션과 파이프 | 쉘은 표준 스트림을 어떻게 바꿉니까? |
+| 6 | 버퍼링 | 출력이 바로 보이지 않는 이유는 무엇입니까? |
+| 7 | 파일 디스크립터 | `FILE*`와 fd 0/1/2는 어떤 관계입니까? |
 
 </details>
 
 ## 1. 세 가지 표준 스트림
 
-프로그램이 시작되면 기본적으로 세 가지 표준 스트림이 연결된다.
+프로그램이 시작되면 기본적으로 세 가지 표준 스트림이 연결됩니다.
 
 | 스트림 | 파일 디스크립터 | 용도 |
 |---|---:|---|
@@ -64,7 +64,7 @@ Source PDF: `C++ 표준 스트림 (updated).pdf`
 | `stdout` | 1 | 정상 출력 |
 | `stderr` | 2 | 에러 출력 |
 
-`stdin`은 키보드, 파일, 파이프에서 입력을 받을 수 있다. `stdout`은 정상 결과를 출력하고, `stderr`는 오류나 진단 메시지를 출력한다.
+`stdin`은 키보드, 파일, 파이프에서 입력을 받을 수 있습니다. `stdout`은 정상 결과를 출력하고, `stderr`는 오류나 진단 메시지를 출력합니다.
 
 ## 2. C vs C++ 표준 입출력
 
@@ -105,18 +105,18 @@ std::cout << name << ": " << age << "\n";
 
 ## 3. `std::cout`
 
-`std::cout`은 표준 출력 스트림이다.
+`std::cout`은 표준 출력 스트림입니다.
 
 ```cpp
 std::cout << "hello\n";
 std::cout << "value = " << 42 << "\n";
 ```
 
-`using namespace std;`를 쓰면 `std::` 접두사를 생략할 수 있지만, 큰 코드에서는 이름 충돌을 피하기 위해 명시적으로 쓰는 편이 좋다.
+`using namespace std;`를 쓰면 `std::` 접두사를 생략할 수 있지만, 큰 코드에서는 이름 충돌을 피하기 위해 명시적으로 쓰는 편이 좋습니다.
 
 ## 4. 출력 서식 조작자
 
-`<iomanip>`은 출력 폭, 정밀도, 채움 문자 등을 조절하는 조작자를 제공한다.
+`<iomanip>`은 출력 폭, 정밀도, 채움 문자 등을 조절하는 조작자를 제공합니다.
 
 ```cpp
 #include <iomanip>
@@ -132,17 +132,17 @@ std::cout << std::setw(10) << 42;
 | `std::setw(n)` | 다음 출력의 폭 지정 |
 | `std::setfill(c)` | 빈 공간을 채울 문자 지정 |
 
-`setw`는 다음 출력 한 번에만 적용된다.
+`setw`는 다음 출력 한 번에만 적용됩니다.
 
 ## 5. `stderr`, `std::cerr`, `std::clog`
 
-C에서는 에러 출력을 `fprintf(stderr, ...)`로 보낸다.
+C에서는 에러 출력을 `fprintf(stderr, ...)`로 보냅니다.
 
 ```c
 fprintf(stderr, "error\n");
 ```
 
-C++에서는 `std::cerr`와 `std::clog`를 사용한다.
+C++에서는 `std::cerr`와 `std::clog`를 사용합니다.
 
 ```cpp
 std::cerr << "치명적 오류\n";
@@ -156,7 +156,7 @@ std::clog << "로그 메시지\n";
 
 ## 6. `std::cin`
 
-`std::cin`은 표준 입력 스트림이다.
+`std::cin`은 표준 입력 스트림입니다.
 
 ```cpp
 int a;
@@ -165,7 +165,7 @@ double b;
 std::cin >> a >> b;
 ```
 
-C의 `scanf`는 주소를 넘기기 위해 `&`가 필요하지만, C++의 `cin`은 변수 자체를 넘긴다.
+C의 `scanf`는 주소를 넘기기 위해 `&`가 필요하지만, C++의 `cin`은 변수 자체를 넘깁니다.
 
 ```c
 scanf("%d", &a);
@@ -177,14 +177,14 @@ std::cin >> a;
 
 ## 7. `getline`
 
-`operator>>`는 공백을 기준으로 입력을 끊는다. 한 줄 전체를 읽으려면 `std::getline`을 사용한다.
+`operator>>`는 공백을 기준으로 입력을 끊습니다. 한 줄 전체를 읽으려면 `std::getline`을 사용합니다.
 
 ```cpp
 std::string line;
 std::getline(std::cin, line);
 ```
 
-EOF까지 모든 줄을 읽을 수도 있다.
+EOF까지 모든 줄을 읽을 수도 있습니다.
 
 ```cpp
 while (std::getline(std::cin, line)) {
@@ -192,11 +192,11 @@ while (std::getline(std::cin, line)) {
 }
 ```
 
-주의할 점은 `cin >> age` 뒤에 `getline`을 바로 쓰면 버퍼에 남은 개행 문자 때문에 빈 줄이 읽힐 수 있다는 것이다. 이런 경우 `ignore()`를 사용하거나, 모든 입력을 `getline`으로 받고 파싱하는 패턴이 안전하다.
+주의할 점은 `cin >> age` 뒤에 `getline`을 바로 쓰면 버퍼에 남은 개행 문자 때문에 빈 줄이 읽힐 수 있다는 것입니다. 이런 경우 `ignore()`를 사용하거나, 모든 입력을 `getline`으로 받고 파싱하는 패턴이 안전합니다.
 
 ## 8. stdin 잔류 문제 권장 패턴
 
-C에서는 `fgets`로 한 줄을 읽고 `sscanf`로 파싱하는 방식이 안전하다.
+C에서는 `fgets`로 한 줄을 읽고 `sscanf`로 파싱하는 방식이 안전합니다.
 
 ```c
 char line[256];
@@ -207,7 +207,7 @@ fgets(line, sizeof(line), stdin);
 sscanf(line, "%d %63s", &age, name);
 ```
 
-C++에서는 `getline`과 `istringstream` 조합이 좋다.
+C++에서는 `getline`과 `istringstream` 조합이 좋습니다.
 
 ```cpp
 std::string line;
@@ -221,7 +221,7 @@ iss >> age >> name;
 
 ## 9. 리다이렉션과 파이프
 
-쉘은 프로그램 실행 전에 표준 스트림의 연결 대상을 바꿀 수 있다.
+쉘은 프로그램 실행 전에 표준 스트림의 연결 대상을 바꿀 수 있습니다.
 
 | 명령 | 의미 |
 |---|---|
@@ -231,17 +231,17 @@ iss >> age >> name;
 | `./prog > all.txt 2>&1` | stdout과 stderr를 같은 파일로 저장 |
 | `./producer \| ./consumer` | producer의 stdout을 consumer의 stdin으로 연결 |
 
-Windows PowerShell은 리다이렉션 문법이 다를 수 있으므로, 강의 예제는 cmd 또는 POSIX 계열 쉘 기준으로 이해하는 것이 좋다.
+Windows PowerShell은 리다이렉션 문법이 다를 수 있으므로, 강의 예제는 cmd 또는 POSIX 계열 쉘 기준으로 이해하는 것이 좋습니다.
 
 ## 10. 버퍼란?
 
-버퍼는 출력 데이터를 바로 OS에 보내지 않고 잠시 모아 두는 유저 공간의 임시 저장소다.
+버퍼는 출력 데이터를 바로 OS에 보내지 않고 잠시 모아 두는 유저 공간의 임시 저장소입니다.
 
 ```text
 프로그램 → 유저 공간 버퍼 → 시스템 콜 → OS 커널 → 터미널/파일
 ```
 
-버퍼를 쓰는 이유는 시스템 콜 비용이 크기 때문이다. 작은 출력을 매번 OS에 보내는 것보다 모아서 보내는 편이 효율적이다.
+버퍼를 쓰는 이유는 시스템 콜 비용이 크기 때문입니다. 작은 출력을 매번 OS에 보내는 것보다 모아서 보내는 편이 효율적입니다.
 
 ## 11. 버퍼링의 종류
 
@@ -251,34 +251,34 @@ Windows PowerShell은 리다이렉션 문법이 다를 수 있으므로, 강의 
 | 라인 버퍼링 | `\n`을 만날 때 | stdout → 터미널 |
 | 즉시 flush | 각 출력 연산 뒤 buffer를 비움 | 기본 설정의 `std::cerr` |
 
-터미널에 연결된 C `stdout`은 보통 줄 단위로 플러시된다. 파일이나 파이프에 연결되면 풀 버퍼링이 적용될 수 있다. C++ `std::cerr`는 “buffer가 전혀 없다”기보다 `unitbuf` flag 때문에 출력 연산마다 flush되는 스트림으로 이해해야 한다.
+터미널에 연결된 C `stdout`은 보통 줄 단위로 플러시됩니다. 파일이나 파이프에 연결되면 풀 버퍼링이 적용될 수 있습니다. C++ `std::cerr`는 “buffer가 전혀 없다”기보다 `unitbuf` flag 때문에 출력 연산마다 flush되는 스트림으로 이해해야 합니다.
 
 ## 12. 플러시 제어
 
-C에서는 `fflush(stdout)`으로 강제 플러시할 수 있다.
+C에서는 `fflush(stdout)`으로 강제 플러시할 수 있습니다.
 
 ```c
 printf("진행 중...");
 fflush(stdout);
 ```
 
-C++에서는 `std::flush` 또는 `std::endl`을 사용할 수 있다.
+C++에서는 `std::flush` 또는 `std::endl`을 사용할 수 있습니다.
 
 ```cpp
 std::cout << "결과: " << 42 << std::endl;
 ```
 
-`std::endl`은 `'\n'` 출력과 flush를 함께 수행한다. 단, 불필요한 flush는 성능을 낮출 수 있으므로 줄바꿈만 필요하면 `"\n"`이 더 적합하다.
+`std::endl`은 `'\n'` 출력과 flush를 함께 수행합니다. 단, 불필요한 flush는 성능을 낮출 수 있으므로 줄바꿈만 필요하면 `"\n"`이 더 적합합니다.
 
 ## 13. `FILE*`와 파일 디스크립터
 
 <a href="{{ "/assets/images/study/cpp/source-captures/cpp-standard-stream-page-21.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cpp/source-captures/cpp-standard-stream-page-21.png" | relative_url }}" alt="원본 강의 슬라이드의 FILE 포인터와 파일 디스크립터 두 계층" loading="lazy"></a>
 
-*원본 `C++ 표준 스트림 (updated).pdf` p. 21. 위 사용자 공간에는 `FILE* stdin`, `stdout`, `stderr`와 라이브러리 버퍼가 있고, 아래 kernel 공간에는 정수 FD 0, 1, 2가 있다. `fread`, `fwrite`, `fprintf` 등은 필요할 때 system call을 거쳐 OS 계층으로 내려간다. <a href="{{ "/assets/pdfs/study/cpp/C++ 표준 스트림 (updated).pdf#page=21" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 21</a>*
+*원본 `C++ 표준 스트림 (updated).pdf` p. 21. 위 사용자 공간에는 `FILE* stdin`, `stdout`, `stderr`와 라이브러리 버퍼가 있고, 아래 kernel 공간에는 정수 FD 0, 1, 2가 있습니다. `fread`, `fwrite`, `fprintf` 등은 필요할 때 system call을 거쳐 OS 계층으로 내려갑니다. <a href="{{ "/assets/pdfs/study/cpp/C++ 표준 스트림 (updated).pdf#page=21" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 21</a>*
 
-`FILE*`는 정수 FD를 감싸면서 사용자 공간 버퍼와 상태를 관리한다. 그래서 `fflush`는 라이브러리 버퍼를 비우는 동작이고, FD는 kernel이 열린 파일·terminal·pipe를 식별하는 번호다.
+`FILE*`는 정수 FD를 감싸면서 사용자 공간 버퍼와 상태를 관리합니다. 그래서 `fflush`는 라이브러리 버퍼를 비우는 동작이고, FD는 kernel이 열린 파일·terminal·pipe를 식별하는 번호입니다.
 
-C의 `FILE*`는 유저 공간의 스트림 객체이고, 내부적으로 파일 디스크립터 번호와 버퍼 정보를 가진다.
+C의 `FILE*`는 유저 공간의 스트림 객체이고, 내부적으로 파일 디스크립터 번호와 버퍼 정보를 가집니다.
 
 ```c
 printf("%d\n", fileno(stdin));  // 0
@@ -296,7 +296,7 @@ FILE* stdin/stdout/stderr
 OS 커널의 실제 입출력 대상
 ```
 
-`FILE*`는 C 표준 레이어이고, 파일 디스크립터는 POSIX 계열 OS 커널 레이어라고 볼 수 있다.
+`FILE*`는 C 표준 레이어이고, 파일 디스크립터는 POSIX 계열 OS 커널 레이어라고 볼 수 있습니다.
 
 ## 마지막 핵심 정리
 
@@ -314,36 +314,36 @@ OS 커널의 실제 입출력 대상
 | 버퍼링 | 시스템 콜을 줄이기 위해 데이터를 모아 두는 방식 |
 | 플러시 | 버퍼 내용을 강제로 내보내는 동작 |
 
-표준 스트림은 단순한 입출력 문법이 아니라, 유저 공간 버퍼와 OS 파일 디스크립터가 연결된 추상화다. 이 구조를 이해하면 리다이렉션, 파이프, stdout/stderr 분리, 출력 지연 문제를 더 정확히 설명할 수 있다.
+표준 스트림은 단순한 입출력 문법이 아니라, 유저 공간 버퍼와 OS 파일 디스크립터가 연결된 추상화입니다. 이 구조를 이해하면 리다이렉션, 파이프, stdout/stderr 분리, 출력 지연 문제를 더 정확히 설명할 수 있습니다.
 
 ## Study Guide
 
-표준 스트림은 `cout`과 `cin` 문법만 외우는 단원이 아니다. 프로그램이 시작될 때 기본적으로 입력, 정상 출력, 에러 출력 세 통로가 연결되어 있고, 쉘은 이 통로를 파일이나 다른 프로그램으로 바꿀 수 있다.
+표준 스트림은 `cout`과 `cin` 문법만 외우는 단원이 아닙니다. 프로그램이 시작될 때 기본적으로 입력, 정상 출력, 에러 출력 세 통로가 연결되어 있고, 쉘은 이 통로를 파일이나 다른 프로그램으로 바꿀 수 있습니다.
 
-`stdout`과 `stderr`를 분리하는 이유를 이해하면 리다이렉션이 쉬워진다. 정상 결과는 파일로 저장하면서 에러 메시지는 터미널에 남기는 식의 제어가 가능하기 때문이다. 이 관점에서 fd 0, 1, 2는 단순 번호가 아니라 OS가 입출력 대상을 구분하는 기본 약속이다.
+`stdout`과 `stderr`를 분리하는 이유를 이해하면 리다이렉션이 쉬워집니다. 정상 결과는 파일로 저장하면서 에러 메시지는 터미널에 남기는 식의 제어가 가능하기 때문입니다. 이 관점에서 fd 0, 1, 2는 단순 번호가 아니라 OS가 입출력 대상을 구분하는 기본 약속입니다.
 
-버퍼링은 출력 지연 문제를 설명하는 핵심이다. `std::endl`은 줄바꿈과 flush를 함께 수행하므로 즉시 출력이 필요할 때 유용하지만, 매번 flush하면 성능이 떨어질 수 있다. 줄바꿈만 필요하면 `"\n"`을 쓰는 것이 더 적합하다.
+버퍼링은 출력 지연 문제를 설명하는 핵심입니다. `std::endl`은 줄바꿈과 flush를 함께 수행하므로 즉시 출력이 필요할 때 유용하지만, 매번 flush하면 성능이 떨어질 수 있습니다. 줄바꿈만 필요하면 `"\n"`을 쓰는 것이 더 적합합니다.
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. `stdin`, `stdout`, `stderr`의 파일 디스크립터 번호는 각각 무엇인가?</summary>
+<summary>1. `stdin`, `stdout`, `stderr`의 파일 디스크립터 번호는 각각 무엇입니까?</summary>
 
-답변: `stdin`은 0, `stdout`은 1, `stderr`는 2다. `stdin`은 입력, `stdout`은 정상 출력, `stderr`는 오류나 진단 메시지 출력에 사용된다.
-
-</details>
-
-<details markdown="block">
-<summary>2. `std::endl`과 `"\n"`은 어떤 차이가 있는가?</summary>
-
-답변: 둘 다 줄바꿈을 만들 수 있지만, `std::endl`은 줄바꿈 후 flush까지 수행한다. 단순 줄바꿈만 필요하면 `"\n"`이 더 가볍고, 출력 버퍼를 즉시 비워야 할 때 `std::endl`이나 `std::flush`를 사용한다.
+답변: `stdin`은 0, `stdout`은 1, `stderr`는 2입니다. `stdin`은 입력, `stdout`은 정상 출력, `stderr`는 오류나 진단 메시지 출력에 사용됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. 리다이렉션과 파이프는 표준 스트림 관점에서 무엇을 바꾸는가?</summary>
+<summary>2. `std::endl`과 `"\n"`은 어떤 차이가 있습니까?</summary>
 
-답변: 쉘이 프로그램의 표준 스트림 연결 대상을 바꾼다. 리다이렉션은 `stdout`이나 `stdin`을 파일로 연결하고, 파이프는 한 프로그램의 `stdout`을 다른 프로그램의 `stdin`으로 연결한다.
+답변: 둘 다 줄바꿈을 만들 수 있지만, `std::endl`은 줄바꿈 후 flush까지 수행합니다. 단순 줄바꿈만 필요하면 `"\n"`이 더 가볍고, 출력 버퍼를 즉시 비워야 할 때 `std::endl`이나 `std::flush`를 사용합니다.
+
+</details>
+
+<details markdown="block">
+<summary>3. 리다이렉션과 파이프는 표준 스트림 관점에서 무엇을 바꿉니까?</summary>
+
+답변: 쉘이 프로그램의 표준 스트림 연결 대상을 바꿉니다. 리다이렉션은 `stdout`이나 `stdin`을 파일로 연결하고, 파이프는 한 프로그램의 `stdout`을 다른 프로그램의 `stdin`으로 연결합니다.
 
 </details>
 
