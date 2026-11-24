@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-25 00:00:07 +0900
+last_modified_at: 2026-11-25 02:29:00 +0900
 title: "Lecture 19: Planning and Control III"
 course: "Autonomous Driving"
 topic: "End-to-End Interpretable Neural Motion Planning"
@@ -96,12 +97,12 @@ Cost volume은 하나의 정답 경로만 출력하지 않습니다. 여러 위�
 
 ## 4. Cost volume에서 trajectory를 어떻게 고릅니까?
 
-가장 단순한 방법은 timestep마다 cost가 가장 낮은 pixel을 고른 뒤 연결하는 것입니다. 그러나 이 점들은 서로 독립적으로 선택됩니다. 한 timestep에서 왼쪽 끝, 다음 timestep에서 오른쪽 끝을 고르면 차량이 실제로 따라갈 수 없는 급격한 경로가 만들어질 수 있습니다.
+각 시각의 비용 지도에서 가장 낮은 칸(argmin)을 하나씩 고르면 어떻게 될까요? 강의에서는 1초 뒤의 최저점이 차량 앞에 있는데 2초 뒤의 최저점은 오히려 뒤에 있는 경우를 듭니다. **두 칸 모두 그 시각의 최저점이지만, 그 사이를 1초 만에 주행할 수 있다는 뜻은 아닙니다.** 두 번째 칸을 고를 때 첫 번째 칸에서의 속도와 진행 방향을 고려하지 않았기 때문입니다.
 
 차량에는 steering angle, 속도, 가속도, 회전 반경 같은 물리적 제한이 있습니다. 따라서 이 model은 순서를 바꿉니다.
 
 1. Steering과 acceleration 조건으로 **실행 가능한 trajectory 후보**를 먼저 만듭니다.
-2. 각 후보가 미래 시각 $$t$$에 지나는 위치 $$s_t$$를 cost volume에서 조회합니다.
+2. 같은 후보를 따라가며 1초 뒤 위치의 비용은 1초 지도에서, 2초 뒤 위치의 비용은 2초 지도에서 읽습니다. 매번 가장 싼 칸을 다시 고르지 않습니다.
 3. 모든 timestep의 cost를 더합니다.
 4. 누적 cost가 가장 낮은 후보를 선택합니다.
 
@@ -117,7 +118,7 @@ $$\mathcal S_{\mathrm{feasible}}$$는 차량이 실제로 실행할 수 있도�
 
 ### 누적 cost 수치 예제
 
-3개 timestep에서 두 후보가 받는 cost가 다음과 같다고 하겠습니다.
+계산을 위한 보충 예제로, 세 시각에서 두 후보가 받는 비용을 비교해 보겠습니다.
 
 | Candidate | $$t=1$$ | $$t=2$$ | $$t=3$$ | Total |
 |---|---:|---:|---:|---:|
@@ -139,7 +140,7 @@ Candidate A는 처음 두 시각에는 더 좋아 보이지만, 마지막 위치
 
 Training data에는 사람이 실제로 운전한 ground-truth trajectory가 있지만, 모든 grid 위치의 정답 cost는 없습니다. “이 pixel의 cost는 0.7이어야 한다”는 label을 직접 만들기 어렵기 때문입니다.
 
-Model은 절대적인 cost 값을 맞추는 대신 **ground-truth trajectory가 sampled negative trajectory보다 낮은 cost를 받게** 학습합니다. 핵심 관계는 다음과 같습니다.
+강의에서는 운전자가 직진한 장면에 좌회전 후보도 생성된 경우를 예로 듭니다. 여기서 좌회전은 **차량이 할 수 없는 동작**이 아니라 **그 장면에서 운전자가 선택하지 않은 비교 경로**입니다. 이런 후보를 *sampled negative*라고 합니다. 추론할 때 가장 싼 경로를 고르므로, 학습할 때는 사람이 실제로 주행한 경로의 비용이 비교 경로보다 일정한 차이만큼 낮아지도록 합니다.
 
 $$
 J(s_{\mathrm{human}})+m_i
@@ -238,7 +239,16 @@ Perception loss는 주변 actor의 classification과 localization·future motion
 
 ## Study Guide
 
-읽을 때는 `입력 → 두 head → 후보 sampling → cost 합산 → max-margin 학습` 순서로 따라가면 됩니다. 특히 **cost volume은 trajectory 자체가 아니라 위치별 평가표**라는 점과 **anchor는 GT나 prediction이 아니라 box prediction의 기준 후보**라는 점을 구분합니다.
+<details markdown="block">
+<summary markdown="span">강의에서 다시 들을 세 구간</summary>
+
+| 본편 시각 | 다시 들을 질문 | 관련 자료 쪽 |
+|---|---|---|
+| 30:50–33:28 | 각 시각의 최저점을 이으면 왜 차가 따라가지 못할까요? | 20–22 |
+| 34:14–39:45 | 조향각과 가속도로 만든 후보 하나의 비용은 어떻게 계산할까요? | 23–25 |
+| 44:25–50:24 | 정답 비용표 없이도 운전자의 경로와 다른 후보의 순위를 어떻게 학습할까요? | 26–28 |
+
+</details>
 
 ## 복습 질문
 
