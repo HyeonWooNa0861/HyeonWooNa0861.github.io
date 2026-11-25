@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 16: Vision and Language"
 course: "CS231N"
 topic: "Vision-Language Models"
@@ -28,7 +28,7 @@ Official slides: [Lecture 16 PDF](https://cs231n.stanford.edu/slides/2025/lectur
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_16.pdf#page=56" target="_blank" rel="noopener">CS231N Lecture 16, PDF viewer p. 56</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Vision-language foundation model의 능력은 단순히 모델을 크게 만든 결과가 아닙니다. **어떤 image-text supervision을 수집하고, global alignment를 넘어 region·point grounding을 어떻게 가르치며, 다른 도구와 어떻게 연결하는가**가 실제 유용성과 신뢰성을 결정합니다.
+> **핵심:** “빨간 컵이 있다”는 설명에 맞는 사진을 고르는 것과, 그 사진에서 빨간 컵을 정확히 가리키는 것은 다른 과제입니다. 사진 전체에 붙은 문장만으로는 단어와 특정 위치의 대응이 보장되지 않습니다. 무엇을 가르치고 무엇으로 평가할지를 구분해야 합니다.
 
 이미지와 caption 쌍을 학습하면 모델은 두 입력을 같은 embedding 공간에서 비교할 수 있습니다. 그러나 사진 전체와 문장 전체가 가깝다는 사실만으로 `왼쪽의 빨간 컵`이 어느 영역인지 알 수는 없습니다. Region·point grounding은 언어 표현을 구체적인 위치에 연결하고, tool 연결은 이 표현을 검색이나 행동 같은 실제 작업으로 확장합니다.
 
@@ -53,7 +53,9 @@ Web-scale image-text pair는 class label보다 풍부하지만 noisy하고 편�
 
 ## 2. CLIP의 contrastive image-text alignment
 
-CLIP은 image encoder와 text encoder가 paired sample을 가까이, batch의 다른 조합을 멀리 배치하도록 학습합니다. 정규화한 image embedding $$v_i$$, text embedding $$t_j$$, temperature $$\tau$$로 similarity logit을
+CLIP은 맞는 이미지와 설명을 같은 표현 공간에서 가깝게, 관계없는 조합을 멀게 만드는 모델입니다. 한 batch에 이미지와 설명이 여러 쌍 있으면, 각 이미지는 자기 설명을 정답으로 고르고 다른 설명은 오답 후보로 봅니다. Image encoder와 text encoder가 각각 만든 벡터 사이의 유사도가 이 선택 점수가 됩니다.
+
+정규화한 image embedding $$v_i$$, text embedding $$t_j$$, temperature $$\tau$$로 similarity logit을
 
 $$
 \ell_{ij}=\frac{v_i^\top t_j}{\tau}
@@ -154,7 +156,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 `CLIP dual encoder → visual-token LLM → grounded pointing → model chaining`의 interface 변화를 따라갑니다. 각 단계에서 입력·출력과 supervision 단위가 global pair인지, token인지, coordinate인지 구분하면 발전 이유를 이해하기 쉽습니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS11 BST and AVL Trees"
 course: "Data Structures"
 topic: "BST and AVL Trees"
@@ -97,6 +97,8 @@ BST가 효율적이려면 균형이 중요합니다. 이 문제를 해결하기 
 
 AVL 트리는 모든 노드에서 왼쪽 서브트리와 오른쪽 서브트리의 높이 차이가 최대 1을 넘지 않도록 유지하는 self-balancing BST입니다.
 
+높이는 그 노드에서 가장 먼 leaf까지 내려가는 거리입니다. 예를 들어 왼쪽 높이가 3이고 오른쪽 높이가 1이면 차이가 2이므로 AVL 조건이 깨집니다. 회전은 key의 정렬 순서를 바꾸지 않은 채 이 긴 쪽의 높이를 낮추는 작업입니다.
+
 Balance Factor는 보통 다음처럼 생각합니다.
 
 $$
@@ -106,6 +108,8 @@ $$
 $$
 
 AVL 조건은 모든 노드에서 Balance Factor가 `-1`, `0`, `1` 중 하나여야 한다는 뜻으로 볼 수 있습니다.
+
+부호는 어느 쪽이 더 높은지를 알려 줍니다. 위 정의에서는 양수면 왼쪽이, 음수면 오른쪽이 더 높습니다. 절댓값이 2가 되는 순간 회전이 필요합니다.
 
 ## 5. AVL 삽입 과정
 
@@ -154,7 +158,12 @@ Left Rotation은 이 과정을 좌우 반대로 수행합니다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 BST 삭제는 leaf, 자식 하나, 자식 둘의 세 경우를 먼저 연습하고, 자식 둘이면 오른쪽 서브트리의 최소 노드로 대체하는 과정을 재현합니다. 그다음 삽입 경로를 따라 LL·RR·LR·RL을 판정해 단일 회전과 이중 회전 순서를 그림으로 확인합니다. BST ordering과 AVL balance condition은 별도 불변식이므로 삭제 대체가 끝난 뒤에도 높이와 balance factor를 다시 계산합니다.
+
+</details>
 
 ## 복습 질문
 

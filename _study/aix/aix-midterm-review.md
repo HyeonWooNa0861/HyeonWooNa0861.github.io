@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-07 19:26:36 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "AIX: Midterm Review"
 course: "AIX"
 topic: "Midterm Key Concept Review"
@@ -23,6 +23,8 @@ Source Images:
 - `aix-midterm-answer-sheet-2.png`
 
 중간고사 정답지의 문항을 개념별로 묶어, 각 정답의 근거와 헷갈리기 쉬운 오답의 차이를 살펴봅니다. 문항 순서보다는 회귀·분류·신경망·컴퓨터 비전·자연어 처리의 연결을 따라 읽을 수 있습니다.
+
+처음 읽는다면 수식부터 외우지 않아도 됩니다. 먼저 **무엇을 입력하고 무엇을 맞히려는지**, **틀렸을 때 오차를 어떻게 재는지**, **그 오차를 줄이려고 어떤 값을 바꾸는지**를 확인합니다. 아래 수식은 이 세 질문을 짧게 적은 표현입니다.
 
 > **핵심:** 회귀 모델은 입력 특징 $$x$$에서 목표값 $$y$$를 예측하고, 잔차 $$y-\hat{y}$$로 예측 오차를 나타냅니다. Gradient descent는 손실을 줄이기 위해 파라미터를 기울기의 반대 방향으로 갱신합니다.
 
@@ -83,7 +85,12 @@ Source Images:
 
 ## 핵심 수식 유도 지도
 
+<details markdown="block">
+<summary markdown="span">Reference: key equations by topic</summary>
+
 이 종합 글에서는 시험에 필요한 논리만 압축하고, 전체 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/)에서 확인합니다. 아래 기호는 정규화된 feature와 representation을 가정해 무차원이며, 물리량을 쓰면 weight가 입력 단위를 target 단위로 변환해야 합니다.
+
+다섯 식의 역할은 서로 다릅니다. 1번은 손실을 줄이는 갱신 방향, 2번과 3번은 정답 확률을 손실과 확률 분포로 바꾸는 방법, 4번은 비선형 층이 필요한 이유, 5번은 attention 점수가 지나치게 커지지 않게 하는 이유를 설명합니다.
 
 1. **Gradient update:** $$L(\theta+\Delta)\approx L(\theta)+\nabla L^T\Delta$$라는 1차 근사에서 $$\Delta=-\eta\nabla L$$로 두면 변화량이 $$-\eta\lVert\nabla L\rVert^2\le0$$입니다. 충분히 작은 $$\eta>0$$에서만 감소를 기대하는 **국소 근사**입니다.
 2. **BCE:** $$y\in\{0,1\}$$인 Bernoulli likelihood $$p^y(1-p)^{1-y}$$에 음의 로그를 취하면 $$-y\log p-(1-y)\log(1-p)$$가 됩니다. $$p=\sigma(z)$$이면 chain rule로 $$\partial L/\partial z=p-y$$입니다. 이는 $$0<p<1$$에서의 **정확한 등식**입니다.
@@ -94,6 +101,8 @@ Source Images:
 각 식은 정의·정확한 등식·근사를 구분해 읽어야 합니다. 큰 learning rate, 확률 0의 로그, 선형 종속 feature, 포화된 softmax처럼 가정이 깨지는 지점도 함께 확인합니다.
 
 **원문 대응:** 정답지 1의 Q13·Q19·Q24와 정답지 2의 Q26·Q28·Q30·Q34·Q38·Q40·Q43·Q47·Q49가 score, gradient, attention 차원, squared residual, positional encoding, XOR, softmax를 직접 확인합니다. 위 유도는 이 정답 문구를 검산하기 위한 보충이며, 상세 원문은 `1st_Regression.pdf` p.4-25, `02_MLP.pdf` p.4-24, `2_Overview_TF.pdf` p.6-20에 대응합니다. 정답지 이미지 자체에 없는 BCE likelihood·XOR 부등식·attention 분산 전개를 시험 원문의 직접 제시식으로 오인하면 안 됩니다.
+
+</details>
 
 ## 1. Regression과 Optimization
 
@@ -422,11 +431,16 @@ Self-Supervised Learning은 사람이 직접 label을 많이 붙이지 않아도
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 먼저 `전체 정답 체크리스트`를 보며 50문항의 정답 키워드를 빠르게 암기합니다.
 2. 틀리기 쉬운 문항은 각 개념 섹션의 `혼동 포인트와 추가 개념` 표로 돌아가 오답 제거 기준을 확인합니다.
 3. 수식형 문항은 $$score=w^Tx+b$$, $$residual=y-\hat{y}$$, sigmoid, softmax, gradient update를 손으로 다시 써 봅니다.
 4. 설명형 문항은 “정의 → 왜 필요한가 → 무엇과 헷갈리는가” 순서로 한 문단 답안을 만들어 봅니다.
 5. 마지막에는 아래 복습 질문을 펼치지 않고 먼저 답한 뒤, 토글 답변과 비교합니다.
+
+</details>
 
 ## 복습 질문
 

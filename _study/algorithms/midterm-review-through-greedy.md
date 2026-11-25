@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:20:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Algorithms: Midterm Review"
 course: "Algorithms"
 topic: "Comprehensive Review from Algorithm Analysis through Greedy Algorithms"
@@ -40,6 +40,8 @@ Source PDFs:
 - [Lecture 11: Greedy Algorithm](/assets/pdfs/study/algorithms/lecture-11-greedy-algorithm.pdf)
 - [Assignment 1 Instructions](/assets/pdfs/assignment/algorithms/algorithms-assignment-01-instructions.pdf)
 - [Assignment 1 Solutions](/assets/pdfs/assignment/algorithms/assignment-01-2026-solutions.pdf)
+
+이 총정리는 먼저 “입력이 커질 때 일이 얼마나 늘어나는가”를 계산하고, 그 계산을 재귀·정렬·동적 계획법·그리디 문제에 적용하는 순서로 읽습니다. 각 알고리즘에서는 이름을 외우기보다 **한 단계가 끝났을 때 무엇이 확정되는지**를 작은 예제로 확인합니다.
 
 > **핵심:** 알고리즘 분석은 코드가 실제로 수행하는 기본 연산을 세는 데서 시작합니다. 점화식은 재귀 호출 수와 호출 밖 작업을 분리하고, 정렬·선택·동적 계획법·그리디에서는 각 단계가 보존하는 불변식과 최적성 조건을 확인합니다. 결론만 외우지 말고 **입력·출력, 상태 또는 활성 구간, 적용 조건, 반례**를 한 묶음으로 설명할 수 있어야 합니다.
 
@@ -99,7 +101,7 @@ for i = 0 .. n-1:
 
 - **정확한 횟수:** 선택한 비용 모형에서 몇 번 실행됩니까.
 - **Best/Worst/Average case:** 같은 크기의 입력 중 어떤 입력 집합을 봅니까.
-- **Big-O/$$\Omega$$/$$\Theta$$:** 함수 사이의 점근적 상한·하한·tight bound를 말합니다.
+- **Big-O/$$\Omega$$/$$\Theta$$:** 입력이 충분히 커졌을 때 성장 속도의 상한·하한·양쪽이 일치하는 범위를 말합니다. 마지막 경우를 tight bound라고도 합니다.
 
 따라서 “worst case = Big-O”는 정의가 아닙니다. 예를 들어 삽입 정렬의 worst-case 실행시간은 $$\Theta(n^2)$$이며, 이 함수는 동시에 $$O(n^3)$$이기도 합니다. 가장 유용한 표현은 상·하한이 맞는 $$\Theta(n^2)$$입니다. Average case에는 입력 분포가 필요합니다. 분포를 지정하지 않은 “평균”은 수학적 기대값으로 정의되지 않습니다.
 

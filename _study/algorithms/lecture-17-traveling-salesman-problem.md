@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:02 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 17: Traveling Salesman Problem"
 course: "Algorithms"
 topic: "State-Space Trees, Backtracking, and Branch-and-Bound"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [lecture-17-traveling-salesman-problem.pdf](/assets/pdfs/study/algorithms/lecture-17-traveling-salesman-problem.pdf)
 
 외판원 문제(TSP)는 한 출발점에서 모든 정점을 정확히 한 번씩 방문하고 출발점으로 돌아오는 순회 중 비용이 가장 작은 것을 찾습니다. 가능한 순회를 모두 만들면 정답은 찾지만 경우의 수가 급격히 커집니다. 이 강의는 **state-space tree로 후보를 체계화하고, 정답이 될 수 없는 가지를 일찍 버리는 방법**을 backtracking과 branch-and-bound 순서로 설명합니다.
+
+도시가 네 개라면 여러 방문 순서를 직접 비교할 수 있지만, 도시 수가 늘면 순서의 수가 곱셈처럼 빠르게 증가합니다. 가지치기는 현재까지의 경로가 이미 너무 비싸거나, 앞으로 아무리 싸게 이어도 기존 최선보다 나쁠 때 그 뒤의 모든 순서를 계산하지 않는 방법입니다.
 
 > **핵심:** Backtracking은 지금까지 쓴 비용이 이미 최선보다 나쁜지 봅니다. Branch-and-bound는 현재 비용에 앞으로 반드시 들 최소 비용의 하한을 더해 더 일찍 자릅니다. 하한은 실제 가능한 완성 비용을 넘지 않아야 하며, 가지치기는 평균 탐색량을 줄여도 TSP의 최악 factorial 규모 자체를 없애지는 않습니다.
 

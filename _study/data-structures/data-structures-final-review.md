@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-09 18:22:09 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Data Structures Final Review"
 course: "Data Structures"
 topic: "Final Exam Review"
@@ -36,7 +36,9 @@ Source PDFs:
 
 이번 범위의 중심은 sorting, hashing, graph이며, 서술형은 heap sort, 그래프 표현 및 순회, 최단 경로를 직접 추적하고 설명하는 능력이 중요합니다.
 
-> **핵심:** 정렬 알고리즘은 시간복잡도뿐 아니라 stable·in-place 여부와 그 조건을 함께 비교해야 합니다. Heap sort는 먼저 max heap을 만들고, root를 마지막 원소와 교환하며 오른쪽의 정렬 완료 영역을 넓힙니다.
+정렬표에서 **stable(안정 정렬)**은 값이 같은 두 원소의 원래 순서를 유지한다는 뜻이고, **in-place(제자리 정렬)**는 입력 배열과 별도로 입력 크기에 비례하는 큰 배열을 만들지 않는다는 뜻입니다. 해시에서는 키가 가리킨 칸이 차 있으면 다른 후보 칸을 확인하는 일을 probing(탐사)이라고 합니다. 그래프 최단 경로에서는 새 우회로가 더 짧을 때 거리 기록을 줄이는 일을 relaxation(완화)이라고 합니다.
+
+> **핵심:** 정렬 알고리즘은 시간복잡도뿐 아니라 안정 정렬·제자리 정렬 여부와 그 조건을 함께 비교해야 합니다. Heap sort는 먼저 max heap을 만들고, root를 마지막 원소와 교환하며 오른쪽의 정렬 완료 영역을 넓힙니다.
 
 ## 원본 그림으로 복습하기
 
@@ -122,7 +124,7 @@ $$
 
 ### 빈 슬롯 탐색 확률의 정확한 유도
 
-직관적으로 load factor $$\alpha$$가 커질수록 빈 슬롯을 만날 확률이 작아져 probe 수가 늘어납니다. 아래 계산은 **중복 없이 균등한 순서로 슬롯을 방문한다는 모형**에서 정확하며, 실제 probing의 clustering에는 그대로 적용되지 않습니다.
+Load factor(적재율) $$\alpha$$는 `저장한 키 수 ÷ 테이블 슬롯 수`입니다. 이 값이 커질수록 빈 슬롯을 만날 확률이 작아져 probe 수가 늘어납니다. 아래 계산은 **중복 없이 균등한 순서로 슬롯을 방문한다는 모형**에서 정확하며, 실제 probing에서 값이 연속 구간으로 뭉치는 clustering 현상에는 그대로 적용되지 않습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: expected probes before the first empty slot</summary>
@@ -569,12 +571,17 @@ Dijkstra가 정점을 확정할 수 있는 조건은 모든 간선 weight가 음
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 먼저 1번 대비표를 보며 OX 문장에 붙일 한 줄 근거를 암기합니다.
 2. Heap sort는 배열 하나를 직접 골라 buildHeap 이후 root-last swap과 siftDown을 2회 이상 손으로 추적합니다.
 3. Graph representation은 같은 그래프를 adjacency matrix와 adjacency list로 각각 바꿔 봅니다.
 4. BFS는 queue와 distance, DFS는 discovery/finish time과 edge type을 따로 연습합니다.
 5. Dijkstra는 매 단계마다 "가장 작은 미확정 $$D$$"를 고르고, relaxation으로 $$D$$와 $$\text{prev}$$를 갱신하는 표를 작성합니다.
 6. 시험 답안에는 최종 답만 쓰지 말고, 중간고사 솔루션처럼 판단 근거나 상태 변화 표를 함께 남깁니다.
+
+</details>
 
 ## 복습 질문
 

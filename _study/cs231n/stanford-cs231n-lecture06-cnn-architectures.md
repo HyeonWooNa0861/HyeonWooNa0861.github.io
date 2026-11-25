@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 6: CNN Architectures"
 course: "CS231N"
 topic: "CNN Architectures"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.ed
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_6.pdf#page=23" target="_blank" rel="noopener">CS231N Lecture 6, PDF viewer p. 23</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** CNN architecture의 발전은 단순한 층 증가가 아닙니다. AlexNet은 GPU 기반 대규모 CNN의 가능성을 보였고, VGG는 작은 $$3\times3$$ filter를 반복하는 규칙을, GoogLeNet/Inception은 여러 scale을 병렬 처리하는 효율적 module을, ResNet은 깊은 모델을 실제로 최적화하는 residual path를 제시했습니다. 여기에 initialization, normalization, regularization, transfer learning이 결합되어야 구조가 안정적으로 학습됩니다.
+> **핵심:** 사진에서 더 복잡한 특징을 찾으려면 단순히 층 수만 늘려서는 안 됩니다. VGG는 작은 필터를 차례로 적용하고, Inception은 크기가 다른 영역을 나란히 살핍니다. ResNet은 앞 층의 값을 뒤 층에 바로 더하는 길을 두어, 여러 층이 입력을 처음부터 다시 만들지 않고 바꿀 부분을 배우게 합니다.
 
 층을 깊게 쌓으면 넓은 문맥과 복잡한 특징을 표현할 수 있지만, activation과 gradient가 지나치게 작아지거나 커져 학습이 멈출 수 있습니다. VGG와 Inception은 특징을 계산하는 블록의 모양을 바꾸고, ResNet은 입력을 변환 결과에 더하는 우회 경로로 깊은 층까지 정보와 gradient를 보냅니다. Architecture 이름보다 각 구조가 계산량, 표현 범위, 학습 안정성 중 어떤 병목을 풀었는지 보는 편이 중요합니다.
 
@@ -47,7 +47,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 6 PDF](https://cs231n.stanford.ed
 </details>
 ## 1. CNN layer의 역전파
 
-Max pooling은 순전파 창에서 최댓값의 위치를 저장하고, 역전파 때 그 위치로만 upstream gradient를 보냅니다. 같은 입력이 겹치는 여러 창의 최댓값이었다면 gradient를 합합니다. Average pooling은 gradient를 창의 원소 수로 나누어 모든 입력에 전달합니다.
+Pooling은 작은 영역을 값 하나로 줄여 특징의 위치가 조금 움직여도 비슷하게 처리하도록 돕습니다. Max pooling은 영역에서 가장 큰 값만 출력하므로, 역전파 때도 그 최댓값을 만들었던 입력만 출력 오차의 영향을 받습니다. 같은 입력이 겹치는 여러 창의 최댓값이었다면 각 창에서 온 gradient를 더합니다. Average pooling은 모든 입력이 평균에 기여했으므로 gradient를 창의 원소 수로 나눠 모두에게 전달합니다.
 
 Convolution에서는 kernel이 모든 위치에 공유되므로, 한 kernel weight의 gradient는 그 weight가 사용된 모든 공간 위치의 기여를 더한 값입니다. 입력 gradient는 각 출력 위치가 참조한 kernel-weighted gradient의 합입니다.
 
@@ -237,12 +237,17 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. AlexNet, VGG, Inception, ResNet을 `더 크게`, `더 규칙적으로`, `더 넓고 효율적으로`, `더 쉽게 최적화하도록`이라는 설계 목표로 비교합니다.
 2. VGG의 세 $$3\times3$$ layer와 한 $$7\times7$$ layer의 receptive field, 파라미터 수, activation 횟수를 계산합니다.
 3. Inception의 병렬 branch와 $$1\times1$$ bottleneck이 각각 표현과 계산량에 미치는 영향을 설명합니다.
 4. plain block과 residual block에서 gradient path를 비교합니다.
 5. BatchNorm의 train mode와 eval mode 차이를 점검합니다.
 6. 학습 시작 전 small-subset overfit, learning-rate sweep, curve diagnosis 순서를 익힙니다.
+
+</details>
 
 ## 복습 질문
 

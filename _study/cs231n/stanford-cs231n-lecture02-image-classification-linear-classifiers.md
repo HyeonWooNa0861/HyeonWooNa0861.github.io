@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 2: Image Classification with Linear Classifiers"
 course: "CS231N"
 topic: "Image Classification and Linear Classifiers"
@@ -28,7 +28,7 @@ Official slides: [Lecture 2 PDF](https://cs231n.stanford.edu/slides/2025/lecture
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_2.pdf#page=53" target="_blank" rel="noopener">CS231N Lecture 2, PDF p. 53 (printed slide 55)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 이미지 분류는 사람이 규칙을 직접 쓰는 문제가 아니라, 데이터로부터 점수 함수를 학습하는 문제입니다. k-NN은 데이터와 거리의 의미를, 선형 분류기는 점수·손실·최적화로 이어지는 학습의 기본 틀을 보여줍니다.
+> **핵심:** 고양이 사진을 판별하는 두 방법을 비교합니다. 하나는 이미 이름이 붙은 사진 중 가장 비슷한 사진을 찾고, 다른 하나는 각 동물의 점수를 계산하는 규칙을 배웁니다. 전자는 ‘무엇이 비슷한가’, 후자는 ‘틀렸을 때 규칙을 어떻게 고치는가’가 관건입니다.
 
 예를 들어 $$32\times32\times3$$ 이미지는 3,072개 숫자로 들어오고, 선형 분류기는 이 숫자에 class별 가중치를 곱해 점수를 만듭니다. 한 번의 선형 계산은 빠르지만 고양이의 얼굴이 여러 위치와 자세로 나타나는 복잡한 패턴을 하나의 template로만 처리합니다. Loss는 정답 점수가 다른 class보다 얼마나 높아야 하는지 수치화하고, optimization은 그 기준을 만족하도록 가중치를 바꿉니다.
 
@@ -207,10 +207,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. `image -> score function -> loss -> optimization`의 연결을 먼저 설명합니다.
 2. k-NN에서는 $$k$$와 거리 함수가 왜 파라미터가 아니라 hyperparameter인지 구분합니다.
 3. SVM loss와 softmax loss의 수식을 직접 계산해 보고, 점수 이동에 대한 불변성을 확인합니다.
 4. 선형 분류기의 클래스별 가중치를 이미지로 시각화했을 때 평균 템플릿처럼 보이는 이유를 설명합니다.
+
+</details>
 
 ## 복습 질문
 

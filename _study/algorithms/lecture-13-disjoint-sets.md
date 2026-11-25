@@ -349,6 +349,9 @@ Python으로 위 입력의 `NO, YES, NO, YES`를 확인했습니다. 같은 원�
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 원문 위치 | 주의할 표현·코드 | 이 글의 해석·보완 |
 |---|---|---|
 | p. 8 | find가 집합을 반환한다는 표현 | 구성원 목록이 아니라 집합 대표를 반환 |
@@ -357,6 +360,8 @@ Python으로 위 입력의 `NO, YES, NO, YES`를 확인했습니다. 같은 원�
 | p. 14 | union의 root 연결 | 두 find를 포함한 전체 비용과 root 연결 한 번의 비용을 구분 |
 | p. 17 | 높이 h이면 최소 $$2^h$$개 노드 | Rank 규칙으로 구성한 트리라는 전제와 singleton 높이 0을 명시 |
 | p. 19 | 재귀·반복 find의 반환문 누락 | 각각 `return parent[u]`, `return r`을 추가해 실행 검증 |
+
+</details>
 
 ## 마지막 핵심 정리
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-21 12:29:52 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 15 Model Meets Data"
 course: "Machine Learning Basic"
 topic: "Model Meets Data"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-15.pdf`
 
-> **핵심:** 데이터 벡터화는 원본 데이터를 feature vector나 feature matrix로 표현하는 과정입니다. 연속형 feature를 평균 0, 분산 1로 표준화하면 scale 차이가 줄어 gradient 기반 학습이 안정될 수 있습니다.
+> **핵심:** 모델 학습은 원자료를 일관된 숫자 표로 바꾸고, 예측 오차를 계산한 뒤, 그 오차가 작아지도록 parameter를 고르는 과정입니다. 훈련 데이터만 외우지 않았는지는 별도의 validation data로 확인합니다.
 
 ## 전체 흐름
 

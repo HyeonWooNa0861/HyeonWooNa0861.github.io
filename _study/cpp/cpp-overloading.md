@@ -805,11 +805,16 @@ printf("w = (%lf, %lf)\n", w(0), w(1));
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 이 문서는 C++ 클래스가 단순히 변수와 함수를 묶는 문법이 아니라, 객체의 생성, 복사, 접근, 출력, 연산 방식까지 설계하는 도구라는 흐름으로 읽어야 합니다. 생성자 오버로딩, 복사 생성자, 복사 대입은 모두 객체가 언제 어떻게 만들어지고 복사되는지 설명합니다.
 
 연산자 오버로딩은 "문법을 예쁘게 만드는 기능"으로만 보면 위험합니다. 핵심은 사용자 정의 타입에 자연스럽고 예측 가능한 연산 의미를 부여하는 것입니다. `Complex + Complex`, `Matrix * Vector`, `cout << obj`처럼 기존 수학적 또는 입출력 관례와 맞을 때 가장 효과적입니다.
 
 `operator[]`와 `operator()`는 반환 타입을 주의해서 봐야 합니다. 참조를 반환하면 대입문의 왼쪽에 올 수 있고, 값으로 반환하면 읽기만 가능합니다. const 객체에서 읽기 전용 접근을 제공하려면 const 버전의 연산자도 함께 설계해야 합니다.
+
+</details>
 
 ## 복습 질문
 

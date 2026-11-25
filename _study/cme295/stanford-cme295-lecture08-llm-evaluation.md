@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 8: LLM Evaluation"
 course: "CME295"
 topic: "LLM Output Quality Evaluation, LLM-as-a-Judge, Agent Evaluation, and Benchmarks"
@@ -56,7 +56,9 @@ $$p_o$$는 관측된 일치만 세므로 두 평가자가 우연히 같은 라�
 
 예를 들어 reference가 `서울의 날씨는 맑다`이고 응답이 `오늘 서울은 화창하다`라면 의미는 가깝지만 단어 겹침은 적습니다. BLEU·ROUGE류는 이런 차이를 놓칠 수 있고, LLM judge는 의미와 기준을 함께 읽을 수 있습니다. 반대로 judge도 위치나 문장 길이에 편향될 수 있으므로, 사람 평가를 완전히 없애는 대체물이 아니라 반복 평가를 확장하는 도구로 다룹니다.
 
-후반부는 LLM-as-a-Judge의 실무 주의점과 더 넓은 벤치마크 생태계를 다룹니다. judge는 pointwise 또는 pairwise로 쓸 수 있고, structured output을 위해 constrained-guided decoding 또는 provider의 structured output 기능을 사용합니다. position bias, verbosity bias, self-enhancement bias를 줄이려면 응답 순서 바꾸기, 명확한 guideline, binary scale, rationale-before-score, human calibration, 낮은 temperature가 필요합니다. factuality는 텍스트를 fact 단위로 쪼개고 RAG나 web search로 사실 여부를 binary로 확인한 뒤 가중합으로 평가할 수 있으며, 에이전트 평가는 tool prediction, tool execution, output synthesis 각각의 실패 모드를 분리해 봅니다. 마지막으로 MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench, data contamination, Pareto frontier, Goodhart's law가 LLM 성능 해석의 맥락으로 소개됩니다.
+후반부는 LLM-as-a-Judge를 실제로 사용할 때 생기는 편향을 다룹니다. Pointwise 평가는 답 하나를 기준표로 채점하고, pairwise 평가는 두 답 중 더 나은 쪽을 고릅니다. Pairwise judge가 먼저 제시된 답을 더 고르는 position bias를 줄이려면 두 답의 순서를 바꿔 다시 평가합니다. 긴 답을 무조건 높게 보는 verbosity bias에는 구체적인 채점 기준이 필요합니다. Judge가 자기 모델의 답을 선호하는 self-enhancement bias는 다른 모델·사람 평가와 대조합니다.
+
+긴 답의 사실성은 문장 전체에 점수 하나를 주기보다 확인 가능한 주장으로 나눠 각 주장을 근거와 대조합니다. 에이전트도 `도구 선택`, `실제 실행`, `결과를 답에 반영`하는 단계를 나눠야 실패 위치를 알 수 있습니다. MMLU, AIME, SWE-bench, HarmBench, tau-bench 같은 benchmark는 서로 다른 능력을 측정합니다. 한 점수가 모든 사용 품질을 대표하지 않으며, benchmark에 맞추는 일이 목표가 되면 실제 품질과 멀어질 수 있다는 Goodhart's law를 함께 기억해야 합니다.
 
 ## 핵심 개념
 
@@ -156,11 +158,16 @@ Weighted factuality를 $$S=\sum_iw_i z_i/\sum_iw_i$$로 집계할 수 있습니�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. human rating, rule-based metric, LLM-as-a-Judge를 비용, reference 필요 여부, 해석 가능성, 실패 모드 관점에서 비교합니다.
 2. Cohen's kappa가 agreement rate와 다른 점을 chance agreement 예시와 함께 설명합니다.
 3. LLM-as-a-Judge prompt에 prompt, response, criteria, output schema가 어떻게 들어가야 하는지 작은 예시를 만듭니다.
 4. position bias, verbosity bias, self-enhancement bias에 대해 각각 하나의 실패 사례와 mitigation을 적습니다.
 5. MMLU, AIME, PIQA, SWE-bench, HarmBench, tau-bench를 knowledge, reasoning, coding, safety, agent tool-use 범주로 분류합니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 5: Variational Autoencoders I"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -21,7 +21,7 @@ Source: [Stanford CS236 Lecture 5](https://www.youtube.com/watch?v=MAGBUh77bNg){
 
 Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 5는 autoregressive model의 장단점을 정리한 뒤 latent variable model로 넘어갑니다. Autoregressive model은 chain rule 덕분에 likelihood 평가와 MLE 학습이 쉽습니다.
+> **핵심:** 같은 숫자 3도 기울기와 굵기가 다릅니다. VAE는 이런 보이지 않는 생성 요인을 latent variable에 담고, 그 값을 바꾸어 서로 다른 이미지를 만드는 방법을 배웁니다.
 
 같은 숫자 `3` 이미지도 굵기와 기울기가 다릅니다. 이처럼 관측값 $$x$$ 뒤의 숨은 요인을 $$z$$로 두면 생성 과정을 간결하게 설명할 수 있지만, 가능한 모든 $$z$$를 합산하거나 적분해 $$p_\theta(x)$$를 구하는 계산이 어렵습니다. VAE는 이 병목을 풀기 위해 실제 posterior를 대신할 분포 $$q_\phi(z\mid x)$$를 도입합니다.
 
@@ -74,6 +74,8 @@ Source PDF: [cs236_lecture5.pdf](https://deepgenerativemodels.github.io/assets/s
 [PDF p.10](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture5.pdf#page=10){:target="_blank" rel="noopener"}의 주황·초록·붉은 점 무리는 Gaussian mixture의 성분과 연결됩니다. 타원은 성분의 위치와 퍼짐을 읽는 단서이고, 성분이 겹치는 곳에서는 한 점의 소속을 확정하기보다 $$P(z=i\mid x)$$로 비교합니다. 이 posterior를 계산하는 문제가 뒤의 variational inference로 이어집니다.
 
 ## 핵심 내용
+
+같은 숫자 3을 쓴 이미지도 글씨 굵기와 기울기가 다릅니다. VAE는 픽셀을 바로 외우는 대신, 이런 보이지 않는 생성 요인을 latent variable $$z$$에 담고 $$z$$에서 이미지를 만드는 방법을 배웁니다.
 
 Lecture 5는 autoregressive model의 장단점을 정리한 뒤 latent variable model로 넘어갑니다. Autoregressive model은 chain rule 덕분에 likelihood 평가와 MLE 학습이 쉽습니다. 그러나 ordering을 정해야 하고, generation이 순차적이며, 데이터의 숨은 feature를 직접 얻는 구조는 아닙니다. 이미지 데이터처럼 pose, hair color, digit style 등 다양한 변동 요인이 섞인 경우, 관측된 pixel $$x$$만으로 모든 분포를 직접 모델링하기보다 숨은 변수 $$z$$를 도입하면 모델이 더 자연스러워집니다.
 

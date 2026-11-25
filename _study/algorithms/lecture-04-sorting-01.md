@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 4: Sorting (1)"
 course: "Algorithms"
 topic: "Sorting Overview, Bubble Sort, Selection Sort, and Insertion Sort"
@@ -22,6 +22,8 @@ keywords:
 Source PDF: [4 Sorting (1).pdf]({{ '/assets/pdfs/study/algorithms/04-sorting-01.pdf' | relative_url }})
 
 버블 정렬, 선택 정렬, 삽입 정렬은 모두 단순한 제자리 정렬이지만, 이미 정렬된 구간을 확장하는 방식은 서로 다릅니다. 국민대학교 *Algorithms* 강의의 38쪽 슬라이드를 따라 세 방식을 비교합니다. 정확한 비교 횟수, 루프 불변식에 따른 정당성, 중복 키와 안정성은 **작성자 보충**이며, 원문 표기에 빠진 전제는 쪽수와 함께 *Source Check*에서 설명합니다.
+
+`[4, 1, 3]`을 정렬한다고 생각해 보겠습니다. 버블 정렬은 큰 값을 오른쪽으로 밀어 끝을 확정하고, 선택 정렬은 가장 작은 값을 찾아 왼쪽을 확정합니다. 삽입 정렬은 이미 정렬한 왼쪽 묶음 안에 다음 값을 알맞은 위치로 끼워 넣습니다.
 
 > **핵심:** 세 알고리즘은 모두 추가 배열 없이 정렬하지만 작업을 확정하는 위치가 다릅니다. 버블 정렬은 큰 값의 **정렬된 접미부**, 선택 정렬은 작은 값의 **정렬된 접두부**, 삽입 정렬은 매 단계 **정렬된 접두부 전체**를 만듭니다. 강의 의사코드에서 버블·선택 정렬의 비교 횟수는 입력 순서와 무관하게 $$n(n-1)/2$$회이고, 삽입 정렬은 이미 정렬된 입력에서 $$n-1$$회만 비교합니다.
 
@@ -176,6 +178,9 @@ def insertion_sort(arr):
 
 ## Source Check: 슬라이드를 읽을 때 확인할 전제
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 원문 위치 | 원문에서 보이는 표현 | 검토·보완 |
 |---|---|---|
 | 11쪽 | 계수·기수 정렬을 특수한 경우 $$\Theta(n)$$이라고 묶음 | 선형성은 **범위·자릿수 조건이 작게 제한될 때**만 가능합니다. 계수 정렬은 키 범위 크기 $$k$$를 포함해 $$\Theta(n+k)$$, 전형적인 자릿수별 기수 정렬은 $$d$$회 계수 정렬 시 $$\Theta(d(n+k))$$로 분석합니다. 여기서 $$d$$는 자릿수 수입니다. |
@@ -188,6 +193,8 @@ def insertion_sort(arr):
 이 표는 슬라이드의 요지를 뒤집으려는 것이 아니라 **표에 생략된 입력·구현·계수 조건**을 드러내는 것입니다. 특히 `# swap`은 “대입문 실행 횟수”와 “서로 다른 위치를 맞바꾼 횟수”를 구분해야 합니다.
 
 11쪽의 범위·자릿수 조건은 <a href="https://courses.csail.mit.edu/6.006/spring11/rec/rec11.pdf" target="_blank" rel="noopener">MIT 6.006 계수·기수 정렬 노트</a>의 비용식과도 일치합니다. 퀵 정렬의 평균·최악 구분은 <a href="https://ocw.mit.edu/courses/1-124j-foundations-of-software-engineering-fall-2000/pages/lecture-notes/sorting/" target="_blank" rel="noopener">MIT OpenCourseWare 정렬 강의 노트</a>에서도 확인할 수 있습니다.
+
+</details>
 
 ## 6. 직접 따라 해 보기
 

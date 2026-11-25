@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 14: Energy-Based Models III"
 course: "CS236"
 topic: "Noise Conditional Score Networks, Annealed Langevin Dynamics, and Reverse-Time SDEs"
@@ -25,7 +25,7 @@ keywords:
 
 > **슬라이드 열람:** 원문 PPTX는 `Source Slides`에서 새 탭으로 엽니다. 슬라이드 번호는 원본 파일의 순서를 따르며, 정적 뷰어에서는 애니메이션이나 수식 이미지가 빠질 수 있습니다.
 
-> **핵심:** Lecture 14는 제목상 Energy-Based Models III로 묶여 있지만 실제 전개는 score-based model을 diffusion model로 확장하는 강의입니다. 지난 강의에서 score model은 $$s_\theta(x)\approx \nabla_x\log p_{\mathrm{data}}(x)$$를 학습하고 Langevin dynamics로 sample을 만들었습니다.
+> **핵심:** 데이터가 없는 빈 공간에서는 어느 방향으로 가야 하는지 배우기 어렵습니다. 여러 세기의 noise로 데이터 덩어리를 부드럽게 연결하고, 큰 구조부터 작은 세부까지 차례로 복원하면 안정적인 생성 경로를 만들 수 있습니다.
 
 원본 데이터가 얇은 manifold에 몰려 있으면 그 주변의 score를 안정적으로 배우기 어렵습니다. 서로 다른 세기의 Gaussian noise를 더하면 큰 noise에서는 전체 구조가, 작은 noise에서는 세부가 드러나는 연속된 분포를 만들 수 있습니다. Noise-conditioned score는 각 단계에서 깨끗한 데이터 쪽을 가리키며, 생성은 큰 noise부터 이 방향을 차례로 따라갑니다.
 
@@ -77,6 +77,8 @@ keywords:
 **Slide 14**는 이 여러 score를 sampling에서 연결하는 annealed Langevin dynamics입니다. 한 noise level에서 얻은 sample을 다음 단계의 초기값으로 넘기고 noise level을 점차 낮춥니다. 각 단계를 독립적으로 처음부터 sampling하는 것이 아닙니다. 정적 화면의 점 구름은 애니메이션의 한 상태이므로, 그 배치만으로 수렴 속도나 최종 품질을 정량 비교해서는 안 됩니다.
 
 ## 핵심 내용
+
+깨끗한 데이터만 보면 데이터가 없는 빈 공간에서 어느 방향으로 가야 하는지 배울 단서가 없습니다. 먼저 큰 noise를 더해 데이터 덩어리 사이를 부드럽게 연결하고, 이후 noise를 줄이면서 세부 모양을 복원하면 먼 곳에서는 큰 방향을, 가까운 곳에서는 정밀한 방향을 배울 수 있습니다.
 
 Lecture 14는 제목상 Energy-Based Models III로 묶여 있지만 실제 전개는 score-based model을 diffusion model로 확장하는 강의입니다. 지난 강의에서 score model은 $$s_\theta(x)\approx \nabla_x\log p_{\mathrm{data}}(x)$$를 학습하고 Langevin dynamics로 sample을 만들었습니다. 그러나 clean data에 바로 score matching을 적용하면 manifold 위의 data, low-density region의 부정확한 score, mode 사이의 느린 mixing 때문에 sampling이 안정적이지 않았습니다.
 

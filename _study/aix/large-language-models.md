@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Large Language Models"
 course: "AIX"
 topic: "Decoder-Only LLMs and Generation"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `3_Large_Language_Models.pdf`
 
 > **핵심:** Decoder-only Transformer는 앞선 토큰으로 다음 토큰을 예측하는 자기회귀 생성과 구조가 맞습니다. Mixture of Experts(MoE)는 토큰마다 일부 expert만 활성화해 전체 모델 용량을 늘리면서 토큰당 연산량을 제한합니다.
+
+언어 모델은 지금까지 읽은 글 뒤에 어떤 토큰이 이어질지 확률로 계산합니다. 문장을 만들 때는 이 계산을 한 번만 하지 않고, 고른 토큰을 다시 입력에 붙여 다음 토큰을 계속 예측합니다. 이를 **자기회귀 생성**이라고 합니다. Decoder-only Transformer는 미래 토큰을 미리 보지 못하게 가린 채 이 작업을 반복하도록 설계된 구조입니다.
 
 ## 전체 흐름
 
@@ -53,7 +55,7 @@ Scaling에 관한 설명은 수학적 보장이 아니라 p.5-7의 경험적 관
 
 ## 1. LLM이란?
 
-Language model은 token sequence에 확률을 부여하고 다음 token을 예측하는 모델입니다. LLM은 이 모델이 대규모 parameter, 대규모 text data, 대규모 compute로 학습된 경우를 말합니다.
+Language model은 지금까지 나온 토큰 순서를 보고 다음 토큰의 확률을 예측하는 모델입니다. LLM의 `large`는 이름만 큰 것이 아니라, 보통 모델 내부 parameter 수, 학습 text 양, 학습에 사용한 계산량이 함께 큰 경우를 뜻합니다.
 
 $$
 P(\mathrm{token}_t \mid \mathrm{token}_1,\ldots,\mathrm{token}_{t-1})
@@ -106,7 +108,9 @@ Scaling은 단순히 모델을 크게 만드는 것이 아닙니다. 모델 크�
 
 왼쪽에서 입력 $$x$$는 router $$G$$로 들어가고, router는 expert마다 routing weight를 계산합니다. 빨간 표시는 선택되지 않은 expert, 초록 표시는 선택된 expert를 뜻합니다. 선택된 expert 출력만 계산한 뒤 오른쪽 식처럼 routing weight로 합쳐 $$\hat{y}$$를 만듭니다. 그림은 한 expert만 선택한 예시처럼 보이지만, 일반적인 top-$$k$$에서는 여러 expert가 동시에 선택될 수 있습니다.
 
-Dense model에서는 모든 token이 모든 feed-forward parameter를 사용합니다. Mixture of Experts는 여러 expert 중 일부만 선택해 token을 처리하게 하여 전체 capacity와 token당 compute를 분리합니다.
+Dense model에서는 모든 token이 같은 전체 feed-forward network를 통과합니다. Mixture of Experts는 여러 feed-forward network를 expert로 준비하고, token마다 일부만 골라 통과시킵니다. 따라서 모델에는 많은 parameter를 둘 수 있지만, token 하나를 처리할 때 모든 expert를 계산할 필요는 없습니다.
+
+예를 들어 expert가 8개이고 top-2 routing을 사용하면 token 하나는 8개 중 선택된 2개만 통과합니다. Router가 낸 두 weight가 $$0.7$$과 $$0.3$$이라면, 두 expert 출력도 그 비율로 섞습니다. 여기서 expert가 특정 문법이나 지식을 담당한다고 미리 정한 것은 아닙니다. 어떤 입력이 어느 expert로 모일지는 학습 결과로 결정됩니다.
 
 ```text
 token -> router -> top-k experts -> weighted output
@@ -286,26 +290,31 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 decoder-only causal generation에서 next-token probability와 cross-entropy가 연결되는 과정을 먼저 식과 함께 확인합니다. MoE는 dense/sparse 여부, top-k routing, load balancing을 한 묶음으로 비교해야 token당 compute를 줄이면서 capacity를 키우는 이유가 보입니다. 추론 파트는 같은 logits에 greedy, sampling, temperature를 적용했을 때 선택이 어떻게 달라지는지 작은 확률표로 재현합니다.
+
+</details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. LLM scaling에서 parameter, data, compute 중 하나만 키우면 왜 충분하지 않습니까?</summary>
+<summary markdown="span">1. LLM scaling에서 parameter, data, compute 중 하나만 키우면 왜 충분하지 않습니까?</summary>
 
 답변: parameter가 커도 데이터가 부족하면 overfitting이나 학습 부족이 생기고, 데이터가 많아도 compute가 부족하면 충분히 학습할 수 없습니다. compute만 늘려도 모델 용량이나 데이터 품질이 받쳐주지 않으면 성능 향상이 제한됩니다. LLM scaling은 세 요소의 균형이 중요합니다.
 
 </details>
 
 <details markdown="block">
-<summary>2. Sparse MoE는 token당 compute 관점에서 왜 dense model보다 효율적입니까?</summary>
+<summary markdown="span">2. Sparse MoE는 token당 compute 관점에서 왜 dense model보다 효율적입니까?</summary>
 
 답변: dense model은 모든 token이 모든 parameter 경로를 통과합니다. Sparse MoE는 많은 expert parameter를 가지고 있어도 token마다 일부 expert만 활성화합니다. 그래서 전체 parameter 수는 크게 늘리면서도 token당 실제 계산량은 제한할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. 예시를 기준으로 보면 top-k sampling과 top-p sampling에는 어떤 차이가 있습니까?</summary>
+<summary markdown="span">3. 예시를 기준으로 보면 top-k sampling과 top-p sampling에는 어떤 차이가 있습니까?</summary>
 
 답변: top-k는 확률이 높은 상위 $$k$$개 token만 후보로 남깁니다. top-p는 누적 확률이 $$p$$에 도달할 때까지 후보를 남기므로 후보 개수가 상황에 따라 달라집니다. 예를 들어 분포가 뾰족하면 top-p 후보는 적고, 분포가 평평하면 더 많은 token이 포함될 수 있습니다.
 

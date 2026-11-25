@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-05 01:51:19 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS23 Minimum Spanning Tree"
 course: "Data Structures"
 topic: "Minimum Spanning Tree"
@@ -164,9 +164,13 @@ MST 문제의 입력은 가중치가 있는 무방향 연결 그래프입니다.
 
 MST는 전체 연결 비용을 최소화합니다. 따라서 MST 위에서 어떤 두 정점 사이를 따라간 경로가 원래 그래프에서의 최단 경로라는 보장은 없습니다.
 
+세 정점 `A, B, C`의 간선 비용이 `A-B=2`, `B-C=2`, `A-C=3`이라고 하겠습니다. MST는 총비용이 4인 `A-B`와 `B-C`를 고릅니다. 그러나 `A`에서 `C`까지는 MST 경로 `A-B-C`의 비용 4보다 원래 그래프의 직접 간선 비용 3이 더 작습니다. 이 예제가 **전체 연결비 최소화**와 **두 점 사이 거리 최소화**의 차이입니다.
+
 ## 6. Prim's Algorithm의 직관
 
 Prim's Algorithm은 무향 가중치 그래프의 MST를 찾는 greedy 알고리즘입니다. 현재까지 만든 tree를 조금씩 키워 가며, 그 tree에 가장 싸게 붙일 수 있는 정점을 하나씩 추가합니다.
+
+중요한 값은 시작점부터의 누적 거리가 아닙니다. 각 바깥 정점을 **현재 트리에 연결하는 간선 하나의 가격**입니다. 그래서 Dijkstra와 비슷한 표를 사용해도 $$D[v]$$의 뜻이 다릅니다.
 
 직관은 다음과 같습니다.
 
@@ -446,6 +450,9 @@ Prim은 tree 하나를 계속 확장하는 방식이고, Kruskal은 여러 작�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 첫 번째로 spanning tree의 조건을 확실히 잡아야 합니다. 모든 정점을 포함해야 하고, 연결되어 있어야 하며, cycle이 없어야 합니다. 정점이 $$\lvert V\rvert$$개라면 간선은 $$\lvert V\rvert-1$$개입니다.
 
 두 번째로 MST는 shortest path가 아니라는 점을 반복해서 확인해야 합니다. MST는 모든 정점을 연결하는 전체 비용을 최소화합니다. 특정 두 정점 사이의 최단 거리와는 목표가 다릅니다.
@@ -464,6 +471,8 @@ Prim은 tree 하나를 계속 확장하는 방식이고, Kruskal은 여러 작�
 | Update 조건 | $$w(u,v)<D[v]$$ |
 | Dijkstra와 차이 | 누적 거리 vs 연결 edge 비용 |
 | 복잡도 | table scan과 min-heap 방식 구분 |
+
+</details>
 
 ## 복습 질문
 

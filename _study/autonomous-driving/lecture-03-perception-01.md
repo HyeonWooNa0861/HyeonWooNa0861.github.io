@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 3: Perception I — Image Classification and Vision Backbones"
 course: "Autonomous Driving"
 topic: "Image Classification, CNNs, and Vision Transformers"
@@ -45,7 +45,7 @@ Source PDF: [3 Perception (1).pdf]({{ "/assets/pdfs/study/autonomous-driving/lec
 
 ### 2.1 선형층과 비선형 활성화
 
-15–19쪽의 “magic box”를 수학적 함수로 풀면, 벡터 $$x$$에 대한 층의 예는 다음과 같습니다. $$x$$는 입력 특징(무차원 또는 전처리된 pixel 값), $$W$$는 학습 가중치, $$b$$는 편향, $$\phi$$는 원소별 활성화 함수입니다.
+한 층은 입력 숫자들을 서로 다른 비율로 섞고, 기준값을 더한 뒤, 다음 층으로 보낼 값을 선택합니다. 15–19쪽의 “magic box”를 이 세 동작으로 풀어 쓰면 다음 식이 됩니다. $$x$$는 입력 특징, $$W$$는 섞는 비율인 학습 가중치, $$b$$는 더하는 기준값인 편향, $$\phi$$는 결과를 다시 바꾸는 활성화 함수입니다.
 
 $$
 h=\phi(Wx+b)
@@ -55,7 +55,7 @@ $$
 
 ### 2.2 Softmax와 cross-entropy
 
-20쪽의 class score를 확률로 바꾸는 softmax와 정답 class $$y$$의 cross-entropy를 함께 정리하면 다음과 같습니다. $$z_k$$는 $$k$$번째 class logit(무차원), $$C$$는 class 수, $$p_k$$는 확률(무차원)입니다.
+모델은 먼저 `car 5.1`, `truck 3.2`처럼 class마다 비교용 점수를 냅니다. 이 숫자는 아직 확률이 아닙니다. Softmax가 모든 점수를 합이 1인 확률로 바꾸고, cross-entropy는 정답에 준 확률이 작을수록 큰 벌점을 줍니다. 20쪽의 두 연산을 식으로 쓰면 다음과 같습니다. $$z_k$$는 $$k$$번째 class의 원점수인 logit, $$C$$는 class 수, $$p_k$$는 변환된 확률입니다.
 
 $$
 p_k=\frac{e^{z_k}}{\sum_{j=1}^{C}e^{z_j}},\qquad
@@ -66,7 +66,7 @@ $$
 
 ### 2.3 Backpropagation, gradient descent, mini-batch
 
-21쪽의 chain rule 그림은 오차가 어떤 가중치에 얼마나 민감한지 역방향으로 구하는 원리입니다. 중간 출력 $$o$$가 가중치 $$w$$에 의존한다면 **정확한 미분 항등식**은 다음과 같습니다.
+예측이 틀렸을 때는 수많은 가중치 가운데 어느 값을 어느 방향으로 바꿀지 알아야 합니다. Backpropagation은 최종 오차에서 출발해 각 계산을 거꾸로 따라가며, 가중치를 조금 바꿨을 때 오차가 얼마나 변하는지 구합니다. 21쪽의 chain rule 그림에서 중간 출력 $$o$$가 가중치 $$w$$에 의존한다면 관계는 다음과 같습니다.
 
 $$
 \frac{\partial L}{\partial w}
@@ -84,7 +84,7 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-03-perception-01.pdf#page=27" | relative_url }}">lecture PDF, p. 27</a>.</figcaption>
 </figure>
 
-왼쪽 이미지를 여러 convolution과 pooling이 공간 feature로 바꾼 뒤 flatten과 fully connected layer가 class 점수로 바꿉니다. 맨 오른쪽 car·truck·van·bicycle은 이미지 전체의 분류 결과입니다. 아직 물체별 box를 출력하지 않으므로 이 그림을 detection 구조로 읽지 않습니다.
+왼쪽 자동차 사진에서 작은 모서리·색 변화·부분 모양을 차례로 찾고, 중간 그림처럼 더 작은 숫자 격자로 압축합니다. 마지막에는 그 숫자들을 모아 car·truck·van·bicycle 점수를 냅니다. 이 과정을 각각 convolution, pooling, flatten, fully connected layer라고 부릅니다. 그림은 이미지 전체의 이름 하나만 고르며 물체별 box는 출력하지 않습니다.
 
 ### 3.1 왜 모든 pixel을 처음부터 완전 연결하지 않는가?
 
@@ -96,7 +96,7 @@ Convolution은 작은 receptive field를 이동시키며 같은 필터를 여러
 
 ### 3.2 CNN이 얻는 것과 얻지 못하는 것
 
-28–31쪽의 장점은 (1) 공간 배열을 feature map으로 보존, (2) 필터 공유로 파라미터 절약, (3) 초기 층의 edge·색 blob에서 뒤 층의 부분·객체 패턴으로 계층화, (4) 물체 이동에 대한 유사한 반응입니다. 여기서 마지막 항목은 조심해야 합니다. **Convolution feature map은 이상적인 경계 조건에서 translation *equivariance***, 즉 입력이 이동하면 feature map도 함께 이동하는 성질을 갖습니다. Pooling·집계·분류 head가 일부 위치 변화에 대한 **invariance**를 도울 수 있지만, padding·stride·crop·경계·학습 데이터에 따라 완전한 불변성은 보장되지 않습니다. 도로 표지판이 픽셀 몇 칸 이동해도 인식이 안정적일 수 있다는 직관과, 어느 위치든 반드시 같은 예측이 나온다는 단정은 다릅니다.
+같은 필터를 사진 곳곳에 움직여 적용하면, 자동차가 화면에서 조금 옮겨져도 비슷한 바퀴·모서리 반응을 다시 찾을 수 있습니다. CNN은 이렇게 공간 배열을 feature map으로 남기고, 필터를 여러 위치에서 공유해 가중치 수를 줄이며, 앞층의 edge·색 덩어리를 뒤층의 부품·객체 패턴으로 조합합니다. 다만 입력이 이동할 때 feature map이 함께 이동하는 성질은 **translation equivariance**입니다. Pooling과 분류 head가 최종 class를 위치 변화에 덜 민감하게 만들 수 있지만, padding·stride·crop·영상 경계 때문에 어디서나 완전히 같은 결과가 보장되지는 않습니다.
 
 ### 3.3 VGG와 ResNet
 
@@ -117,7 +117,7 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-03-perception-01.pdf#page=53" | relative_url }}">lecture PDF, p. 53</a>.</figcaption>
 </figure>
 
-아래 이미지의 각 patch를 벡터로 바꾸고 위치 정보를 더합니다. 별도의 class token 0을 함께 처리한 결과가 위의 MLP head로 들어갑니다. 오른쪽 확대도에서는 normalization, attention, MLP 각각에 residual 연결이 있습니다. CNN의 공간 격자를 그대로 옮긴 것이 아니라 patch 사이 관계를 sequence로 계산하는 구조입니다.
+아래 사진을 작은 사각형으로 자른 뒤, 각 조각을 숫자 묶음으로 바꿉니다. 모델은 각 조각이 사진의 어느 위치였는지 표시를 더하고, 조각들이 서로 어떤 정보를 참고할지 계산합니다. 전체 사진을 대표하도록 추가한 0번 조각의 마지막 값이 위쪽 분류기로 들어갑니다. 이 작은 사각형을 patch, 숫자 묶음을 token, 서로 참고하는 계산을 attention이라고 부릅니다.
 
 35–38쪽에서 ViT는 이미지를 작은 패치로 자른 뒤 각 패치를 한 token처럼 취급합니다. $$H\times W\times C$$ 영상에 $$P\times P$$ 크기 패치를 비중첩으로 자르고 $$H,W$$가 $$P$$로 나누어떨어진다고 가정하면 token 수의 **정의**는 $$N=HW/P^2$$입니다. 예를 들어 224×224 영상을 16×16 패치로 나누면 $$14\times14=196$$개입니다. 각 패치를 길이 $$P^2C$$로 펼쳐 trainable linear projection을 거쳐 $$D$$차원 embedding으로 만듭니다. $$H,W,P,N,D,C$$는 모두 pixel 수 또는 채널·차원 개수이므로 무차원 count입니다.
 
@@ -125,7 +125,7 @@ $$
 
 ### 4.1 Q, K, V에서 context vector까지
 
-39–43쪽의 도식은 영상 출처를 표시하며 self-attention의 네 단계를 보여줍니다. 아래는 그 도식을 수식으로 정리한 **작성자 보충 유도**입니다. $$X\in\mathbb{R}^{n\times d_{\mathrm{model}}}$$를 token별 입력 embedding(무차원 특징), $$n$$을 [class] 포함 token 수, $$d_k$$를 query/key 차원, $$d_v$$를 value 차원(모두 무차원 count)이라 하겠습니다. 학습 행렬로 각 역할을 분리합니다.
+한 patch가 다른 patch의 정보를 얼마나 가져올지는 네 단계로 정합니다. 먼저 각 token에서 비교 질문 역할의 query, 비교 대상 역할의 key, 실제로 가져올 내용인 value를 만듭니다. Query와 key가 잘 맞을수록 해당 value를 더 많이 섞습니다. 39–43쪽의 도식을 수식으로 옮기면 다음과 같습니다. $$X\in\mathbb{R}^{n\times d_{\mathrm{model}}}$$는 token별 입력 특징, $$n$$은 [class]를 포함한 token 수, $$d_k$$와 $$d_v$$는 query/key와 value의 길이입니다.
 
 $$
 Q=XW_Q,\qquad K=XW_K,\qquad V=XW_V
@@ -148,12 +148,17 @@ CNN은 작은 필터의 국소성과 위치 간 가중치 공유가 구조에 �
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 분류 | 확인과 정리 |
 |---|---|---|
 | 13쪽 | 가정이 생략된 단순화 | 0–255 정수는 8-bit raw RGB의 예시입니다. 정규화된 모델 입력까지 같은 범위라고 일반화하지 않습니다. |
 | 31쪽 | 가정이 생략된 단순화 | 그림 제목의 translation invariance와 convolution 자체의 equivariance를 구분했습니다. 완전한 불변성은 보장되지 않습니다. |
 | 32쪽 | 비교 해석 주의 | 11.7%와 7.3%를 단순히 깊이 하나만 바꾼 실험으로 해석하지 않습니다. [VGG 원 논문](https://arxiv.org/abs/1409.1556){:target="_blank" rel="noopener"}은 16–19층 구성과 당시 과제별 순위를 명시합니다. |
 | 45–52쪽 | 도식의 적용 범위 | 축구·게임 attention 비중은 개념 예시입니다. 표준 self-attention의 자기 token 연결은 mask가 없을 때 가능합니다. |
+
+</details>
 
 ## 시험 포인트
 

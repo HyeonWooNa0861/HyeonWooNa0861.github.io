@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 18: Human-Centered AI"
 course: "CS231N"
 topic: "Human-Centered AI"
@@ -26,7 +26,7 @@ Source: [Stanford CS231N Spring 2025 Lecture 18](https://www.youtube.com/watch?v
   <figcaption>Source excerpt: <a href="https://www.youtube.com/watch?v=g8UaBfj6Sh8&t=1493s" target="_blank" rel="noopener">Stanford CS231N Lecture 18 video, 00:24:53</a>. Captions and player controls are omitted from the excerpt; click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Human-centered AI는 정확도 뒤에 윤리 점검표를 붙이는 일이 아닙니다. 인간의 지각 한계를 보완하고 실제 필요를 해결하도록 **문제 선택, sensor, privacy representation, workflow, robot task, 평가 기준을 처음부터 사람 중심으로 설계**하는 접근입니다.
+> **핵심:** 정확도가 높아도 사람에게 쓸모없는 도구가 될 수 있습니다. 도움이 필요한 상황을 먼저 정하면, 그 상황을 알아보는 센서와 꼭 수집해야 할 정보, 사생활을 지키는 방법, 도움의 효과를 판단할 기준도 함께 달라집니다.
 
 병원 camera 모델의 정확도가 높아도 환자를 식별할 필요가 없는 작업에서 얼굴 정보를 그대로 저장하면 설계가 적절하지 않습니다. 사람 중심 평가는 모델 점수뿐 아니라 누구의 문제를 풀고, 어떤 정보를 수집하며, 실제 workflow에서 도움이 되는 결과를 만드는지까지 묻습니다. Privacy와 접근성은 완성 뒤 덧붙이는 제한이 아니라 입력 표현과 평가 기준을 정하는 초기 조건입니다.
 
@@ -82,7 +82,12 @@ Robotics 연구는 model이 수행하기 쉬운 benchmark task를 택하기 쉽�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 하나의 healthcare 또는 home-assistance 사례를 골라 stakeholder, 필요한 signal, 불필요한 identity 정보, failure cost, human override, 실제 outcome을 적습니다. Accuracy가 같아도 이 요소에 따라 어느 system이 더 human-centered한지 비교해 봅니다.
+
+</details>
 
 ## 복습 질문
 

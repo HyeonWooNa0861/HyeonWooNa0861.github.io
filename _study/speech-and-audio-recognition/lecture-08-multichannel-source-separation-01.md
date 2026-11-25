@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-02 23:40:00 +0900
-last_modified_at: 2026-11-05 15:34:50 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 8: Multi-channel Source Separation I"
 course: "Speech and Audio Recognition"
 topic: "Microphone Arrays, Delay-and-Sum Beamforming, and Spatial Aliasing"
@@ -20,9 +20,9 @@ keywords:
 
 Source PDF: `speech-audio-lecture-08-1.pdf`
 
-> **핵심:** 여러 microphone은 같은 소리를 서로 다른 시간 지연과 위상으로 관측합니다. Delay-and-sum(DAS) beamformer는 목표 방향에서 생긴 지연을 되돌린 뒤 평균하여 그 방향의 성분은 같은 위상으로 더하고, 다른 방향의 성분은 덜 일치하게 만듭니다. 이 원리는 steering vector와 복소 가중치로 표현할 수 있지만, far-field plane wave·알려진 array geometry·충분히 작은 microphone 간격 같은 조건이 필요합니다.
+> **핵심:** 왼쪽에서 말하는 사람을 더 잘 듣고 싶다면, 그 사람의 목소리가 두 마이크에 도착하는 시각부터 맞춥니다. 맞춘 녹음을 평균하면 목표 목소리는 보존되고 다른 방향의 소리는 덜 겹쳐 상대적으로 약해질 수 있습니다. 이 방법이 지연합 빔포밍(delay-and-sum, DAS)입니다.
 
-책상 왼쪽의 화자가 말하면 왼쪽 마이크가 오른쪽 마이크보다 같은 파형을 조금 먼저 받습니다. 두 채널을 그대로 더하면 같은 봉우리와 골이 어긋나 일부가 약해질 수 있습니다. DAS는 예상한 도착 시간차만큼 채널을 먼저 맞춘 뒤 더합니다. 목표 방향의 말소리는 겹쳐 커지고, 다른 방향의 소리는 완전히 맞지 않아 상대적으로 줄어듭니다. 따라서 다음의 지연식과 steering vector는 추상적인 행렬을 새로 만드는 것이 아니라, **마이크마다 얼마나 늦게 도착했는지를 주파수별 위상 보정값으로 적는 방법**입니다.
+얼마나 옮겨야 할지는 마이크의 위치와 목표 방향에 따라 다릅니다. 아래 계산에서는 음원이 충분히 멀어서 소리가 거의 평행하게 들어온다고 가정합니다. 마이크 간격이 파장에 비해 너무 크면 서로 다른 방향이 같은 위상차를 만들 수도 있습니다. 이러한 조건에서 목표 소리가 마이크마다 어떤 위상으로 관측될지 적은 값들의 목록이 조향 벡터(steering vector)입니다.
 
 ## 전체 흐름
 
@@ -138,6 +138,9 @@ $$
 
 ### 4.1 LTI system의 출력이 convolution인 이유
 
+<details markdown="block">
+<summary markdown="span">LTI convolution in four illustrated steps</summary>
+
 <img src="/assets/images/study/speech-and-audio-recognition/lecture-08/slide-17.png" alt="입력을 shifted impulse의 합으로 분해하고 LTI 성질로 convolution 출력을 얻는 네 단계" loading="lazy">
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-08-1.pdf#page=17" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 17</a>의 읽는 순서는 분해, time invariance, linearity, 합산입니다.
@@ -154,6 +157,8 @@ y[n]=\sum_k x[k]h[n-k]=(x*h)[n]
 $$
 
 입니다. Fourier domain에서는 전체 convolution이 $$Y(\omega)=H(\omega)X(\omega)$$라는 곱으로 바뀝니다. 다만 원문 p. 17의 `∠H: delay`는 조건을 생략한 축약입니다. $$\angle H(\omega)$$는 **phase response**이고, pure delay일 때만 $$-\omega t_0$$ 형태의 linear phase가 됩니다. 일반 filter의 group delay는 $$-d\angle H/d\omega$$로 구합니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: LTI convolution from the impulse decomposition</summary>
@@ -374,6 +379,9 @@ $$
 
 ### 8.1 Frequency, spacing, and aperture trade-offs
 
+<details markdown="block">
+<summary markdown="span">Array design: side lobes, grating lobes and trade-offs</summary>
+
 - **주파수 $$f$$ 증가:** 파장이 짧아져 main lobe가 좁아집니다. 같은 spacing도 파장 단위로는 더 멀어지므로 spatial aliasing 위험도 커집니다.
 - **Spacing $$d$$ 증가:** microphone 수가 같다면 물리적 aperture가 커져 main lobe가 좁아집니다. 그러나 $$d>\lambda/2$$가 되면 p. 29의 grating lobe가 생길 수 있습니다.
 - **Microphone 수 $$M$$ 증가:** spacing을 유지하면 aperture가 커져 방향 분해능이 좋아집니다. 반면 aperture를 고정하고 microphone만 늘리면 spacing이 줄어 spatial aliasing을 막는 데 유리합니다.
@@ -382,6 +390,8 @@ $$
 원문의 $$\lambda/(Md)$$는 array의 **electrical aperture**를 보여주는 first-null 관계입니다. 실제 첫 microphone과 마지막 microphone 사이의 물리적 aperture는 $$(M-1)d=0.28\,\mathrm{m}$$입니다. 큰 $$M$$에서는 $$Md$$와 $$(M-1)d$$가 비슷하지만, 작은 array에서는 어떤 폭을 말하는지 구분해야 합니다.
 
 Side lobe와 grating lobe도 다릅니다. Side lobe는 유한한 uniform aperture 때문에 생기는 작은 잔여 봉우리입니다. Grating lobe는 microphone 간격이 너무 커서 서로 다른 방향이 같은 sampled phase pattern을 만들 때 생기는 **main lobe와 같은 높이의 복제 봉우리**입니다. P. 28의 4 kHz·4 cm 설정은 $$d<\lambda/2\approx4.29$$ cm이므로 통상 조건 안에 있습니다. P. 29는 spacing을 8 cm로 늘려 이 조건을 깨뜨린 결과를 바로 이어서 보여줍니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: ULA array factor and the main-lobe trade-off</summary>

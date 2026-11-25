@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:55:22 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition: Tokenization and Decoding Lab"
 course: "Speech and Audio Recognition"
 topic: "BPE, CTC Decoding, and RNN-T Inference"
@@ -26,7 +26,7 @@ Source Notebooks:
 - `02_ctc_inference.ipynb`
 - `03_rnnt_inference.ipynb`
 
-> **핵심:** BPE는 자주 함께 등장하는 기호를 학습된 순서대로 묶어 출력 길이 $$U$$를 줄이는 **tokenization 규칙**입니다. CTC는 프레임마다 독립적으로 보이는 경로들을 collapse하고 같은 문자열의 확률을 합쳐 **입력 시간 $$T$$와 출력 길이 $$U$$가 다른 문제**를 풉니다. RNN-T는 음향 위치 $$t$$와 출력 위치 $$u$$를 분리하고, blank에서는 시간만 진행하며 일반 token에서는 Predictor 상태만 갱신합니다. 세 실습을 연결하면 “어떤 단위로 문장을 표현할 것인가”와 “그 단위를 어떤 경로로 생성할 것인가”가 서로 다른 설계 문제임을 확인할 수 있습니다.
+> **핵심:** BPE는 자주 붙어 나오는 글자 조각을 하나의 subword로 묶어 문장을 더 짧은 token열로 표현합니다. CTC는 긴 음성 프레임에서 반복 글자와 blank를 접고, 같은 문장이 되는 여러 경로의 확률을 더합니다. RNN-T는 매 단계에서 **다음 음성 위치로 갈지**, **현재 위치에서 token을 하나 낼지** 선택합니다. 따라서 “문장을 어떤 조각으로 나타낼지”와 “그 조각을 음성에서 어떤 순서로 낼지”는 서로 다른 문제입니다.
 
 이 실습은 세 질문을 차례로 푼다고 보면 됩니다. 먼저 `안녕하세요`를 글자 다섯 개로 낼지, 더 자주 쓰이는 subword 몇 개로 낼지 정합니다. 다음에는 수십 개의 음성 frame에서 나온 반복·blank를 그 짧은 token열로 접습니다. 마지막에는 이미 낸 token도 참고하여 다음 token을 고릅니다. 그래서 **BPE는 출력 단위**, **CTC는 정렬과 경로 합**, **RNN-T는 음향 진행과 출력 이력의 결합**을 맡습니다. 이 구분이 필요한 이유는 token을 잘 만들었다고 정렬 문제가 사라지지 않고, 정렬 규칙을 정했다고 문맥까지 자동으로 사용되는 것도 아니기 때문입니다.
 
@@ -208,6 +208,9 @@ x축은 선택한 clip 안의 시간(s), y축은 정규화된 amplitude입니다
 
 </details>
 
+<details markdown="block">
+<summary>Reproduction details: Audio preprocessing and CTC tensor shape</summary>
+
 이 전처리의 이유는 다음과 같습니다.
 
 - **Mono 평균:** bundle 입력을 한 channel 파형으로 맞춥니다. 두 channel의 위상이 반대라면 단순 평균이 일부 성분을 상쇄할 수 있으므로 일반적인 다채널 beamforming을 대신하는 방법은 아닙니다.
@@ -222,6 +225,8 @@ logits: [B, T, V] = [1, 169, 29]
 ```
 
 여기서 $$B=1$$, $$T=169$$는 Encoder 출력 frame 수, $$V=29$$는 blank `-`, 단어 경계 `|`, 영문 대문자와 apostrophe로 이루어진 class 수입니다. 원 파형은 약 54,400 samples지만 출력은 169 frame이므로, heatmap의 가로 index를 raw sample 또는 millisecond로 직접 읽으면 안 됩니다.
+
+</details>
 
 <img src="{{ "/assets/images/study/speech-asr-lab/ctc-frame-probabilities.png" | relative_url }}" alt="169개 Encoder frame과 29개 CTC class의 확률 heatmap. 대부분의 frame에서 blank가 높고 문자 위치에 좁은 밝은 열이 나타난다" loading="lazy">
 
@@ -430,7 +435,12 @@ x축은 선택 구간의 시간(s), y축은 정규화된 amplitude입니다. 이
 
 </details>
 
-공식 bundle의 feature extractor는 16 kHz 파형에 400-sample FFT window, 160-sample hop, 80 Mel band를 적용하고, piecewise log, 학습 시의 global mean·inverse standard deviation, 오른쪽 context padding을 함께 적용합니다. 이 순서를 checkpoint와 맞추지 않으면 입력 분포와 시간축 길이가 달라집니다.
+<details markdown="block">
+<summary>Feature details: Mel extraction, normalization, and Encoder shape</summary>
+
+이 모델은 파형을 그대로 읽지 않습니다. 16 kHz 파형을 25 ms 길이인 400개 표본씩 보고, 10 ms에 해당하는 160개 표본만큼 이동하며 분석합니다. 각 구간의 주파수 정보를 80개 Mel 대역으로 묶은 뒤 log 변환과 학습 때 정한 정규화를 적용합니다. 마지막에는 모델이 오른쪽 문맥을 볼 수 있도록 padding도 붙입니다. 이 순서와 설정을 checkpoint의 학습 조건과 다르게 쓰면, 모델이 받는 값의 분포와 시간 위치 수가 달라집니다.
+
+공식 feature extractor의 용어로는 `400-sample FFT window`, `160-sample hop`, `80 Mel bands`, `piecewise log`, `global mean·inverse standard deviation`, `right-context padding` 순서입니다.
 
 저장 shape는 다음과 같습니다.
 
@@ -440,6 +450,8 @@ Encoder output f_t : [1, 85, 1024]
 ```
 
 345는 오른쪽 padding이 포함된 Mel frame 축이고, 85는 Emformer transcriber 뒤의 실제 탐색 축입니다. Notebook과 TorchAudio 2.8의 공식 non-streaming decoder 모두 transcribe 결과의 `enc_out.shape[1]`을 탐색합니다. 이 실행은 전체 crop을 한 번에 처리한 **offline full-context inference**이며 streaming demo가 아닙니다.
+
+</details>
 
 <img src="{{ "/assets/images/study/speech-asr-lab/rnnt-saved-inference-path.png" | relative_url }}" alt="85개 Encoder 위치에서 9개 BPE token을 출력한 pretrained RNN-T Greedy 경로" loading="lazy">
 
@@ -477,6 +489,9 @@ Token을 출력하면 $$t$$가 증가하지 않으므로 잘못된 모델 출력
 
 ## 6. Source Check: 저장 코드와 TorchAudio 2.8 대조
 
+<details markdown="block">
+<summary>Source audit: Notebook behavior and TorchAudio 2.8 checks</summary>
+
 | 확인 항목 | Notebook 동작 | 공식 2.8 대조 결과 |
 |---|---|---|
 | Wav2Vec2 sample rate·labels | 16 kHz, 29 class, blank 0 | Bundle source의 16 kHz·29-way head와 일치 |
@@ -498,6 +513,8 @@ TorchAudio 2.8 문서는 프로젝트가 maintenance 단계로 전환되며 일�
 - CTC의 작은 LM과 beam은 원리 관찰용이며 production decoder의 lexicon, pruning 최적화, word-level LM을 대체하지 않습니다.
 - RNN-T Greedy는 공식 beam decoder의 동작 원리를 한 경로로 펼친 것이며 beam search 결과와 같다고 보장하지 않습니다.
 - 실제 full-model 수치는 notebook의 저장 출력이며 이번 검토에서 checkpoint·audio를 다시 실행하지 않았습니다.
+
+</details>
 
 ## 마지막 핵심 정리
 
@@ -589,6 +606,9 @@ BPE의 $$V\uparrow,U\downarrow$$는 표현 단위의 trade-off입니다. CTC의 
 
 ## References
 
+<details markdown="block">
+<summary>References: TorchAudio documentation, source, and sample license</summary>
+
 - <a href="https://docs.pytorch.org/audio/2.8/tutorials/speech_recognition_pipeline_tutorial.html" target="_blank" rel="noopener">TorchAudio 2.8 — Speech Recognition with Wav2Vec2</a>
 - <a href="https://docs.pytorch.org/audio/2.8/tutorials/asr_inference_with_ctc_decoder_tutorial.html" target="_blank" rel="noopener">TorchAudio 2.8 — ASR Inference with CTC Decoder</a>
 - <a href="https://docs.pytorch.org/audio/2.8/generated/torchaudio.pipelines.RNNTBundle.html" target="_blank" rel="noopener">TorchAudio 2.8 — RNNTBundle</a>
@@ -598,6 +618,8 @@ BPE의 $$V\uparrow,U\downarrow$$는 표현 단위의 trade-off입니다. CTC의 
 - <a href="https://raw.githubusercontent.com/pytorch/audio/v2.8.0/src/torchaudio/pipelines/_wav2vec2/impl.py" target="_blank" rel="noopener">TorchAudio v2.8.0 source — Wav2Vec2 bundle definitions</a>
 - <a href="https://github.com/IQTLabs/voices/blob/master/Lab41-SRI-VOiCES_README.md#licensing" target="_blank" rel="noopener">SRI International and Lab41 — VOiCES corpus licensing notice</a>
 - <a href="https://download.pytorch.org/torchaudio/tutorial-assets/Lab41-SRI-VOiCES-src-sp0307-ch127535-sg0042.wav" target="_blank" rel="noopener">PyTorch tutorial sample — Lab41-SRI-VOiCES-src-sp0307-ch127535-sg0042.wav</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>)
+
+</details>
 
 ## Notebooks
 

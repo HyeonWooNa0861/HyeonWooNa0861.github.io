@@ -910,11 +910,16 @@ C++은 어느 함수가 어떤 피연산자를 받는지와 반환 타입을 직
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 먼저 메모리와 객체 수명부터 정리합니다. `new/delete`, RAII, smart pointer, stack/heap을 모르면 뒤쪽 개념도 흔들립니다.
 2. 그다음 클래스 문법을 봅니다. 생성자, 소멸자, 복사 생성자, 복사 대입, `this`, `const` 멤버 함수가 핵심입니다.
 3. 연산자 오버로딩과 함수 포인터는 “코드가 실제로 어떤 함수 호출로 바뀌는가”를 기준으로 읽습니다.
 4. 상속과 다형성은 생성/소멸 순서, 접근 지정자, `virtual`, `override`, 가상 소멸자를 반드시 묶어서 봅니다.
 5. 템플릿과 STL은 시험 직전 코드 패턴을 많이 보는 것이 좋습니다. 특히 iterator 반환값, `end()` 비교, erase-remove 관용구를 손에 익힙니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 5: LLM tuning"
 course: "CME295"
 topic: "Preference tuning, RLHF, PPO, Best-of-N, DPO"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 5](https://www.youtube.com/watch?v=
 
 분모는 두 응답의 상대적인 경쟁을 정규화하고, 마지막 표현은 절대 reward가 아니라 차이 $$r_i-r_j$$만 중요하다는 사실을 드러냅니다. 차이가 0이면 선호 확률은 0.5이고, 선호 응답의 reward가 더 커질수록 확률은 1에 가까워집니다.
 
-> **핵심:** SFT만으로는 응답의 어조, 유용성, 안전성에 대한 사람의 선호를 충분히 반영하기 어렵습니다. 선호 데이터에서 보상 신호를 학습해 정책을 조정하는 RLHF와, 선호 쌍을 직접 최적화하는 DPO는 서로 다른 비용과 한계를 가집니다.
+> **핵심:** 같은 질문에 둘 다 사실인 답을 썼어도 하나가 더 읽기 쉬울 수 있습니다. 이런 차이는 모범 답 하나를 따라 쓰는 연습만으로 전달하기 어렵습니다. 사람이 두 답 중 어느 쪽을 선호했는지 모은 뒤, 선호를 점수로 배워 모델을 조정하거나(RLHF), 두 답을 직접 비교해 조정할 수 있습니다(DPO).
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -52,11 +52,13 @@ SFT를 마친 모델도 어조·친절함·안전성에 대한 사람의 선호�
 
 여기서 선호는 사실 정답을 다시 외우게 하는 신호와 다릅니다. 두 응답이 모두 사실을 포함해도 하나는 질문을 직접 해결하고 근거를 분명히 밝히는 반면, 다른 하나는 장황하거나 위험한 지시를 그대로 따를 수 있습니다. 사람은 같은 prompt에 대한 두 답 중 더 나은 쪽을 고르고, preference tuning은 그 비교를 모델의 출력 확률에 반영합니다. 그래서 SFT가 “이 질문에는 이런 답이 있다”를 보여 준다면, 선호학습은 “가능한 답들 중 어떤 답이 더 바람직한가”를 가르칩니다.
 
-강의의 중심은 RLHF입니다. 전통적인 RL의 agent, state, action, policy, reward를 LLM에 대응시키면 agent는 LLM, state는 지금까지의 input, action은 next token, policy는 next-token probability distribution, reward는 completion에 대한 preference signal입니다. RLHF는 먼저 preference pair로 reward model을 학습하고, 그 frozen reward model을 사용해 SFT model의 policy를 더 높은 reward 쪽으로 조정합니다. Reward model 학습에는 Bradley-Terry formulation이 쓰이며, P(yi > yj) = exp(ri) / (exp(ri) + exp(rj)) = sigma(ri - rj), loss는 -E log sigma(r_w - r_l) 형태로 설명됩니다.
+강의의 중심은 RLHF입니다. LLM이 문장을 만드는 일을 강화학습의 말로 바꾸면, **state**는 지금까지 읽고 생성한 토큰, **action**은 다음에 고를 토큰, **policy**는 다음 토큰별 확률, **reward**는 완성된 답에 대한 선호 점수입니다. 먼저 reward model이 선호 응답과 비선호 응답을 비교해 점수 매기는 법을 배웁니다. 그 뒤 이 reward model은 고정하고, LLM이 더 높은 점수의 답을 만들도록 출력 확률을 조정합니다. Bradley–Terry 식은 두 점수의 차이를 `어느 답을 더 선호할 확률`로 바꾸며, 정확한 식과 loss는 아래 상세 유도에서 다룹니다.
 
 한 응답은 여러 토큰으로 이루어지지만 보상은 대개 완성된 응답에 매겨집니다. Reward model은 선호 쌍을 보고 각 완성본에 점수를 주는 법을 배우고, policy는 높은 점수를 받을 문장을 만들도록 토큰 확률을 조정합니다. 이때 reward만 무작정 높이면 문장이 원래 언어 모델의 자연스러운 분포에서 벗어날 수 있어, 뒤의 KL penalty가 기준 모델과의 거리를 함께 제한합니다.
 
-후반부는 PPO, Best-of-N, DPO의 trade-off를 비교합니다. PPO clipping은 sampling에 사용한 old policy 대비 확률비를 기준으로 큰 update의 목적함수상 이득을 제한합니다. RLHF에서 별도로 사용하는 KL penalty는 고정 reference/SFT policy에서의 과도한 이탈을 억제합니다. 두 기준은 서로 다르며, clipping만으로 reference policy와의 거리가 제한된다고 볼 수 없습니다. Policy, value function, reward model, reference model 등 많은 model component와 hyperparameter가 필요하고 reward hacking, instability, exploration 문제가 남습니다. Best-of-N은 RL training을 건너뛰고 inference에서 여러 completion을 reward model로 score해 최고를 고르지만 latency와 cost가 커집니다. DPO는 Direct Preference Optimization으로, reward model 없이 preference pair에 대한 supervised loss를 직접 최적화해 policy와 reference model 두 개만 쓰지만, 강의에서는 PPO가 보통 더 높은 성능을 줄 수 있고 DPO에는 distribution shift 문제가 있다고 정리합니다.
+후반부는 PPO, Best-of-N, DPO의 trade-off를 비교합니다. PPO는 방금 사용한 policy와 비교해 한 번의 학습으로 토큰 확률이 너무 크게 바뀌지 않게 제한합니다. 별도의 KL penalty는 모델이 원래 SFT/reference model의 말하기 분포에서 지나치게 멀어지지 않게 합니다. 두 제한의 비교 대상이 다르므로 PPO clipping만으로 reference model과 가까움이 보장되지는 않습니다.
+
+Best-of-N은 모델을 다시 학습하지 않고 답을 여러 개 만든 뒤 가장 높은 점수 하나를 고릅니다. 구현은 단순하지만 답을 $$N$$번 생성하므로 시간과 비용이 늘어납니다. DPO는 별도 reward model과 온라인 RL 반복 없이 선호 쌍으로 policy를 직접 학습합니다. 구성은 단순해지지만 선호 데이터와 실제 생성 분포가 달라지는 문제는 남습니다. PPO에는 policy, value function, reward model, reference model 등 구성요소가 많고 reward hacking과 학습 불안정성도 관리해야 합니다.
 
 **Supplementary table — 선호 신호가 policy에 도달하는 경로**
 
@@ -194,11 +196,16 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. Preference tuning이 SFT와 다르게 negative signal을 줄 수 있다는 점을 teddy bear 예시로 설명해 봅니다.
 2. Bradley-Terry probability와 -E log sigma(r_w-r_l) loss가 어떻게 연결되는지 단계별로 다시 써 봅니다.
 3. Reward model은 pairwise로 학습되지만 pointwise로 score한다는 문장을 예시와 함께 외웁니다.
 4. PPO에서 old policy, reference/base model, reward model, value function이 각각 어떤 역할인지 구분합니다.
 5. RLHF, Best-of-N, DPO를 training cost, inference cost, model component 수, stability 관점에서 비교합니다.
+
+</details>
 
 ## 복습 질문
 

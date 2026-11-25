@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 16: Score-Based Diffusion Models"
 course: "CS236"
 topic: "Score-Based Diffusion Models"
@@ -27,7 +27,7 @@ keywords:
 
 > **수식 읽기:** 강의 PPTX의 수식 개체를 기준으로 설명합니다. Slide 41의 단계별 애니메이션은 완성 상태를 보여 주는 slide 45와 함께 읽어야 합니다.
 
-> **핵심:** Lecture 16은 score-based model과 diffusion model을 하나의 관점으로 묶습니다. Density $$p(x)$$ 자체보다 시간별 score field를 학습하고, noise에서 출발한 reverse process로 sample을 만드는 것이 핵심입니다.
+> **핵심:** Diffusion model은 데이터에 noise를 조금씩 더한 과정을 거꾸로 배웁니다. 각 단계의 score는 현재 noisy sample을 어느 방향으로 고쳐야 조금 더 깨끗해지는지 알려 줍니다.
 
 깨끗한 이미지에 noise를 조금씩 더하면 마지막에는 다루기 쉬운 Gaussian에 가까워집니다. 생성은 이 경로를 거꾸로 가야 하지만, 각 시점에 어느 방향으로 noise를 제거할지 알 수 없습니다. 시간 조건부 score는 그 방향을 학습하며, reverse SDE와 probability flow ODE는 같은 분포 변화를 서로 다른 궤적으로 기술합니다.
 
@@ -68,16 +68,18 @@ keywords:
 
 [Lecture 16 slides 12](https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx){:target="_blank" rel="noopener"}
 
-원본 slide 12의 왼쪽 $$q_0$$는 data distribution이고 오른쪽 $$q_T$$는 단순한 기준 분포에 가까워진 상태입니다. 발췌한 분포 그림은 개별 이미지의 픽셀 변화가 아니라 sample 집합 전체의 확률분포 변화를 보여 줍니다. 정적 변환에서는 중간 애니메이션이 빠질 수 있으므로, 단계별 Gaussian 전이는 slides 10–11의 식과 함께 읽습니다.
+원본 slide 12의 왼쪽 $$q_0$$는 깨끗한 데이터가 모여 있는 처음 상태이고, 오른쪽 $$q_T$$는 noise가 충분히 쌓여 단순한 Gaussian 모양에 가까워진 마지막 상태입니다. 그림의 점 하나가 이미지 한 장에 해당한다고 보면 됩니다. 오른쪽으로 갈수록 각 이미지가 흐려지는 동시에, 이미지 묶음 전체의 모양도 단순한 noise 분포로 바뀝니다. 이 그림은 처음과 끝만 보여 주므로 중간 단계는 slides 10–11의 Gaussian 전이식으로 확인합니다.
 
 <figure>
   <a href="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-37-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-16-source-37-excerpt.png" | relative_url }}" alt="CS236 Lecture 16, slide 37: VAE encoder·decoder와 latent-space diffusion 경로. 원본 발췌." loading="lazy"></a>
   <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture16-2023-comp.pptx" target="_blank" rel="noopener">Original slide 37</a> — VAE encoder·decoder와 latent-space diffusion 경로. 필요한 영역만 발췌했습니다. 이미지를 누르면 확대됩니다.</figcaption>
 </figure>
 
-**Slide 37**에서는 왼쪽 encoder가 이미지 $$x$$를 낮은 차원의 latent $$z_0$$로 보냅니다. 오른쪽 위 화살표는 latent에 noise를 넣는 forward diffusion이고, 아래 역방향 화살표는 latent를 복원하는 generative denoising입니다. 완성된 latent는 왼쪽 decoder를 통해 이미지가 됩니다. 매 denoising step마다 원본 pixel 전체를 처리하는 구성과 구분해야 하며, decoder의 복원 오차는 diffusion과 별개로 남을 수 있습니다.
+**Slide 37**에서는 먼저 왼쪽 encoder가 큰 픽셀 배열인 이미지 $$x$$를 더 작은 표현 $$z_0$$로 압축합니다. 오른쪽 위 경로는 이 작은 표현에 noise를 더하고, 아래 경로는 반대로 noise를 지워 $$z_0$$를 복원합니다. 마지막에 decoder가 복원된 $$z_0$$를 다시 이미지로 펼칩니다. 원본 픽셀 전체가 아니라 작은 latent에서 반복 계산하므로 더 빠르지만, 처음 압축할 때 사라진 정보는 diffusion만으로 되찾을 수 없습니다.
 
 ## 핵심 내용
+
+Diffusion model은 깨끗한 데이터에 noise를 조금씩 더해 거의 무작위 상태로 만든 뒤, 이 과정을 거꾸로 푸는 방법을 배웁니다. 각 단계에서 모델이 답해야 할 질문은 "현재의 noisy sample을 어느 방향으로 고쳐야 조금 더 깨끗해지는가"입니다. 시간별 score가 그 방향을 제공합니다.
 
 Lecture 16은 score-based model과 diffusion model을 하나의 관점으로 묶습니다. Score-based model의 기본 아이디어는 density $$p(x)$$ 자체를 직접 정규화해 표현하지 않고, score function
 

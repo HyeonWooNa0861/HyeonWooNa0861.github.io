@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-17 00:05:00 +0900
-last_modified_at: 2026-11-23 16:50:19 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 9: Multi-channel Source Separation I"
 course: "Speech and Audio Recognition"
 topic: "Blind Separation, Spatial Covariance, Multichannel Wiener Filtering, and Mask-based MVDR"
@@ -21,17 +21,17 @@ keywords:
 
 Source PDF: `speech-audio-lecture-09-1.pdf` — *Multi-channel Source Separation 2-1*, 안인규(Inkyu An), 24 slides.
 
-> **핵심:** 여러 마이크가 같은 소리를 다르게 관측한 결과에는 **목표와 잡음의 공간 통계**가 들어 있습니다. ICA·IVA는 독립성을 이용해 source를 나누고, MWF·MVDR는 공분산으로 공간 필터를 계산합니다. Mask는 최종 음성을 직접 자르는 값이 아니라 공분산을 추정할 때 각 관측을 얼마나 믿을지 정하는 가중치입니다.
+> **핵심:** 같은 소리도 마이크 위치에 따라 도착 시각과 위상이 달라집니다. 여러 마이크의 관계를 이용하는 방법은 크게 두 갈래입니다. ICA·IVA는 서로 독립적으로 움직이는 소리를 찾아 나누고, MWF·MVDR는 듣고 싶은 소리는 남기고 잡음은 줄이는 마이크 조합을 계산합니다. 이때 mask는 소리를 바로 잘라 내지 않습니다. 목표나 잡음이 두드러진 시간·주파수 칸을 표시해, 필터가 사용할 통계를 더 정확히 모으도록 돕습니다.
 
 두 마이크의 값이 같은 순간마다 함께 커지고 위상차도 일정하다면, 두 값은 같은 방향의 음원에 의해 함께 움직일 가능성이 높습니다. 공분산 행렬은 이 관계를 모든 마이크 쌍에 대해 모읍니다. MVDR가 이 행렬을 필요로 하는 이유는 단순히 소리가 큰 채널을 고르는 대신, **어떤 채널 조합이 목표의 공간 패턴을 유지하면서 잡음의 공간 패턴을 상쇄하는지** 계산해야 하기 때문입니다. Mask도 음성을 바로 잘라 내는 가위가 아니라, 목표 또는 잡음이 우세해 보이는 시간·주파수 칸을 골라 각각의 공분산을 더 믿을 수 있게 추정하는 표지로 읽으면 됩니다.
 
-아래에서는 frame $$t$$와 주파수 bin $$f$$를 고정했을 때 마이크 수를 $$M$$, 복소 관측 벡터를 $$\mathbf x(t,f)\in\mathbb C^{M}$$로 씁니다. 모든 공분산과 필터는 주파수별로 존재합니다. 식을 짧게 만들 때만 $$(t,f)$$를 생략합니다.
+한 시각과 한 주파수 칸을 고르면 마이크마다 복소 STFT 값이 하나씩 있습니다. 마이크가 $$M$$개라면 이 값 $$M$$개를 세로로 모은 것이 관측 벡터 $$\mathbf x(t,f)\in\mathbb C^{M}$$입니다. $$t$$는 시간 프레임 번호이고 $$f$$는 주파수 칸 번호입니다. 공분산과 필터는 주파수마다 따로 계산하며, 식이 길어질 때만 $$(t,f)$$를 생략합니다.
 
 같은 소리가 두 마이크에 다른 시각에 도착하면 크기뿐 아니라 **위상차**가 생깁니다(pp. 11–12). 이 채널 관계를 공분산에 모으면, DoA를 직접 주지 않아도 목표의 상대 전달 방향을 추정할 수 있습니다(pp. 15–17). MWF와 MVDR는 같은 공간 방향을 선택할 수 있지만 gain 조건이 다르며(p. 18), mask는 최종 출력을 자르는 대신 필터에 필요한 목표·잡음 통계를 추정하는 데 쓰입니다(pp. 23–24).
 
 ## 1. 같은 출력이라도 공간 필터를 얻는 정보가 다르다
 
-강의의 공통 출력은 마이크별 복소 STFT를 한 값으로 합치는
+공간 필터는 같은 시간·주파수 칸에 있는 마이크 값들을 서로 다른 비율로 곱해 하나로 더합니다. 어떤 마이크를 많이 쓰고 각 마이크의 위상을 임의의 각도로 얼마나 회전할지를 정하는 값이 가중치 $$\mathbf w$$입니다. 공통 출력은
 
 $$
 y(t,f)=\mathbf w(f)^H\mathbf x(t,f)
@@ -56,18 +56,21 @@ $$
   <figcaption>Source: Lecture 9 I, <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-09-1.pdf#page=5" | relative_url }}" target="_blank" rel="noopener">slide 5</a>.</figcaption>
 </figure>
 
-주파수영역 ICA는 convolutive mixture를 각 주파수의 instantaneous mixture로 바꿔 다룹니다.
+방의 반사 때문에 한 음원은 짧은 순간 하나가 아니라 앞뒤로 퍼진 형태로 각 마이크에 도착합니다. 시간영역에서는 이를 긴 필터와의 합성곱으로 표현합니다. 주파수영역 ICA는 STFT의 한 주파수 칸 안에서는 이 복잡한 합성곱을 단순한 곱셈으로 근사합니다. 그 결과 각 주파수 칸에서 마이크 혼합을 따로 풀 수 있습니다.
 
 $$
 \mathbf x(t,f)=\mathbf A(f)\mathbf q(t,f),\qquad
 \mathbf y(t,f)=\mathbf W(f)\mathbf x(t,f).
 $$
 
-여기서 $$\mathbf q\in\mathbb C^{K}$$는 $$K$$개 source, $$\mathbf A\in\mathbb C^{M\times K}$$는 mixing matrix, $$\mathbf W\in\mathbb C^{K\times M}$$는 demixing matrix입니다. 강의의 determined 또는 overdetermined 조건 $$M\ge K$$에서는 source 수보다 마이크가 적지 않습니다.
+여기서 $$\mathbf q$$는 원래 음원 $$K$$개의 값, $$\mathbf A$$는 이 음원들이 마이크에 섞이는 규칙, $$\mathbf W$$는 섞인 값을 다시 나누는 규칙입니다. 강의의 조건 $$M\ge K$$는 음원 수보다 마이크 수가 적지 않다는 뜻입니다.
 
 오른쪽 그림은 세로축이 frequency bin이고, 파랑과 주황이 두 화자입니다. Bin마다 ICA를 독립적으로 풀면 `output 1`이 어떤 bin에서는 파랑, 다른 bin에서는 주황을 맡을 수 있습니다. ICA 목적함수는 출력의 독립성만 보므로 **source label을 바꾼 해도 같은 품질의 해**입니다. 역 STFT 전에 bin별 순서를 맞추지 않으면 한 출력에 두 화자의 주파수 성분이 섞입니다. Scale ambiguity도 별도로 남습니다.
 
 ### 2.1 IVA는 한 source의 주파수들을 한 벡터로 묶는다
+
+<details markdown="block">
+<summary markdown="span">How IVA keeps outputs aligned across frequency bins</summary>
 
 IVA(Independent Vector Analysis)는 화자 $$k$$의 모든 주파수 성분을
 
@@ -78,6 +81,8 @@ $$
 처럼 한 벡터로 보고, 서로 다른 source vector는 독립이면서 같은 source 안의 주파수들은 함께 변할 수 있게 모델링합니다. 따라서 각 bin을 완전히 따로 정렬하는 대신 **주파수 전체에서 같은 source index를 공유하도록 결합**합니다.
 
 강의의 “no permutation problem”은 binwise permutation을 모델 안에서 함께 다룬다는 핵심을 압축한 표현입니다. 전역적인 출력 순서까지 `speaker A=output 1`로 식별하는 것은 아니며, 최적화 실패나 모델 mismatch가 절대 없다는 보장도 아닙니다. 또한 `static mixing`은 분석 구간 안에서 전달 경로 $$\mathbf A(f)$$가 충분히 고정되어야 한다는 조건입니다. 화자나 마이크가 빠르게 움직이면 이 가정이 깨질 수 있습니다.
+
+</details>
 
 ## 3. 관측은 목표와 잡음의 합이다
 
@@ -140,6 +145,9 @@ $$R_{ij}=E[X_iX_j^*]$$는 두 채널의 cross-power를 나타냅니다. 크기 $
 
 ### 4.3 위상에서 시간차를 읽을 때는 부호 조건을 고정한다
 
+<details markdown="block">
+<summary markdown="span">Fourier sign conventions at 1 and 2 kHz</summary>
+
 Forward Fourier convention을 $$X(\omega)=\int x(t)e^{-j\omega t}\,dt$$로 두고, $$i$$번째 마이크가 $$x_i(t)=S(t-\tau_i)$$를 받는다고 하겠습니다. 그러면
 
 $$
@@ -165,6 +173,8 @@ $$
 이고, 위상차는 $$2\pi f\Delta\tau\approx20.99^\circ$$입니다. 슬라이드 11에서 **30°는 소리가 오는 방향**, **21°는 1 kHz 성분을 두 마이크에서 비교한 위상차**입니다.
 
 같은 식에 2 kHz를 넣어 보면 두 각도의 차이가 드러납니다. 도래각을 30°로 유지하면 두 마이크 사이의 시간차는 그대로입니다. 그 시간 동안 2 kHz 성분은 두 배만큼 진동하므로 위상차만 약 42°로 바뀝니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Matrix shape, Hermitian symmetry, and positive semidefiniteness</summary>
@@ -213,6 +223,9 @@ Slide 11처럼 대각이 1.05이고 비대각 magnitude가 1.00이면 $$\lvert\g
 
 ### 5.1 혼합 공분산이 목표와 잡음의 합이 되는 조건
 
+<details markdown="block">
+<summary markdown="span">When the covariance cross terms vanish</summary>
+
 $$\mathbf x=\mathbf s+\mathbf n$$을 대입하면
 
 $$
@@ -232,7 +245,12 @@ $$
 
 로 단순히 더해집니다. 여기서는 평균을 빼지 않은 행렬을 썼으므로, 비상관이라는 말은 **평균을 뺀 뒤에만** 교차항이 0이라는 뜻으로 읽으면 안 됩니다. 예를 들어 목표와 잡음이 독립이면 교차항은 두 평균 벡터의 외적입니다. 둘 중 하나의 평균이 0이어야 이 항도 0이 됩니다(두 평균이 모두 0인 경우 포함). 기댓값에서 교차항이 사라져도 유한한 프레임으로 추정한 값은 정확히 0이 아닐 수 있습니다.
 
+</details>
+
 ### 5.2 목표 공분산이 rank one이 되는 정확한 조건
+
+<details markdown="block">
+<summary markdown="span">The rank-one condition in a two-microphone example</summary>
 
 한 주파수에서
 
@@ -256,6 +274,8 @@ $$\sigma_S^2>0$$이고 $$\mathbf a\ne\mathbf0$$이면 rank는 1입니다. 모든
 **보충 예제:** 그림의 차이를 두 마이크로 단순화해 보겠습니다. 두 마이크에 똑같은 목표 신호가 들어오고 각각의 파워가 1이라면, 목표 공분산은 네 칸이 모두 1이어서 고윳값은 2와 0입니다. 두 마이크의 합에는 목표가 남고 차에는 아무것도 남지 않습니다. 반대로 각 마이크에 평균이 0이고 파워가 1인 비상관 센서 잡음만 있다면 대각만 1이고 비대각은 0입니다. 고윳값은 1과 1입니다. **비대각이 0이라는 말은 잡음 파워나 행렬의 rank가 0이라는 뜻이 아닙니다.** 여러 방향에서 오는 확산 잡음도 파워가 여러 패턴에 나뉠 수 있지만, 그 고윳값들이 모두 같아야 하는 것은 아닙니다.
 
 Rank one은 자동으로 성립하지 않습니다. 여러 독립 목표가 하나의 $$\boldsymbol\Phi_S$$에 포함되거나, 화자·마이크가 움직이거나, 전달 경로가 구간 안에서 변하거나, narrowband multiplicative model로 설명되지 않는 reverberant 성분이 크면 rank가 올라갈 수 있습니다. 반대로 고정된 reverberant transfer function은 $$\mathbf a(f)$$에 포함될 수 있습니다.
+
+</details>
 
 ## 6. MWF는 기준 마이크의 목표에 대한 MSE를 최소화한다
 
@@ -434,6 +454,9 @@ $$
 
 ### 8.1 두 마이크 수치 예제
 
+<details markdown="block">
+<summary markdown="span">Worked example: MWF versus MVDR weights</summary>
+
 예를 들어, 다음 값을 사용해 식의 관계를 확인하겠습니다.
 
 $$
@@ -452,6 +475,8 @@ $$
 $$
 
 MVDR는 $$\mathbf w_{\mathrm{MVDR}}^T\mathbf a=1$$로 목표를 보존합니다. 출력 잡음 파워는 약 0.757576, 출력 목표 파워는 2이므로 비는 2.64입니다. MWF의 목표 gain은 $$2.64/3.64\approx0.725275$$입니다. 두 weight의 성분 비는 같고 전체 gain만 다릅니다. 이 숫자는 강의의 성능 측정값이 아니라 식의 관계를 직접 확인한 예제입니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Woodbury identity gives the MWF–MVDR gain relation</summary>
@@ -518,6 +543,9 @@ $$
 
 ### 9.1 두 snapshot의 mask 계산
 
+<details markdown="block">
+<summary markdown="span">Estimating speech and noise covariance from two snapshots</summary>
+
 한 주파수에서
 
 $$
@@ -536,7 +564,12 @@ $$
 
 두 행렬의 대각 파워는 같지만 비대각 부호가 다릅니다. 첫 패턴은 두 마이크가 같은 부호로, 둘째는 반대 부호로 움직이는 snapshot을 더 크게 반영합니다. Mask가 단순한 음량 gate를 넘어 공간 필터에 필요한 채널 관계를 나누는 이유입니다. 두 행렬의 eigenvalue는 각각 0.2와 1.8로 양수이며, mask가 완전한 0/1이 아니어서 둘 다 rank 2입니다.
 
+</details>
+
 ### 9.2 Mask 누출은 target cancellation을 만들 수 있다
+
+<details markdown="block">
+<summary markdown="span">Mask leakage, sample size and PSM limits</summary>
 
 Noise mask가 목표 음성이 강한 frame에 큰 weight를 주면 $$\widehat{\boldsymbol\Phi}_N$$ 안에 목표 방향이 들어갑니다. MVDR는 그 방향을 잡음으로 보고 낮추려 하므로 목표가 손상될 수 있습니다. 반대로 지나치게 많은 frame을 제외하면 유효 snapshot이 줄어 공분산이 불안정해집니다. 따라서 보수적 mask는 누출을 줄이지만, 표본 수와 행렬 conditioning이라는 대가도 함께 봅니다.
 
@@ -547,6 +580,8 @@ m_{\mathrm{PSM}}=\frac{|S|}{|X|}\cos(\angle S-\angle X)
 $$
 
 는 음수가 될 수 있고 $$\lvert X\rvert$$가 작으면 1을 넘을 수도 있습니다. 실제 시스템은 PSM을 truncate하거나 bounded parameterization을 사용할 수 있습니다. 공분산 weight로 음수 mask를 그대로 쓰면 positive-semidefinite 성질이 깨질 수 있으므로, **학습 target mask의 정의와 covariance weight의 허용 범위를 구분해야 합니다.**
+
+</details>
 
 ## 10. ICA·IVA, MWF·MVDR, mask 기반 방법의 연결
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 09 Vector Calculus"
 course: "Machine Learning Basic"
 topic: "Vector Calculus"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-09.pdf`
 
-> **핵심:** Gradient는 loss를 줄이기 위한 업데이트 방향을 정하는 데 쓰입니다. Taylor series는 복잡한 함수를 기준점 근처에서 다항식으로 근사합니다.
+> **핵심:** Gradient는 현재 parameter에서 loss가 가장 빠르게 커지는 방향입니다. 학습은 반대 방향으로 움직여 loss를 줄이며, Taylor 근사는 작은 이동 뒤의 loss가 어떻게 달라질지 주변 기울기로 예상하게 해 줍니다.
 
 ## 전체 흐름
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-25 00:00:07 +0900
-last_modified_at: 2026-11-25 02:29:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 19: Planning and Control III"
 course: "Autonomous Driving"
 topic: "End-to-End Interpretable Neural Motion Planning"
@@ -85,7 +85,7 @@ BEV의 각 anchor는 “이 위치와 방향에 차량이 있을 수 있다”�
 
 ### Cost volume head
 
-Cost volume은 다음 shape을 가집니다.
+Cost volume은 미래 시각마다 BEV 지도를 한 장씩 만들고, 각 칸에 “그때 차량이 이곳을 지나면 얼마나 불리한가”를 적습니다. 예를 들어 같은 교차로 칸도 1초 뒤에는 비어 있어 낮은 비용, 3초 뒤에는 다른 차량이 지나 높을 비용을 가질 수 있습니다. 이 지도 묶음의 shape은 다음과 같습니다.
 
 $$
 \mathbf C\in\mathbb R^{H\times W\times T}

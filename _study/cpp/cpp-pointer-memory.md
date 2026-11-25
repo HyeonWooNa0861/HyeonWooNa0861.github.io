@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 11:50:48 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "C and C++ Pointer Memory"
 course: "C++"
 topic: "Pointers and Dynamic Allocation"
@@ -71,7 +71,7 @@ Source PDFs:
 | Stack | 지역 변수, 함수 호출 정보 저장 |
 | Heap | 실행 중 동적으로 할당한 메모리 저장 |
 
-Stack은 함수 호출에 따라 자동으로 할당/해제됩니다. Heap은 프로그래머가 직접 요청해서 얻는 공간이며, 직접 해제해야 합니다.
+Stack은 함수 호출에 따라 자동으로 생기고 사라집니다. 함수 안의 지역 변수는 보통 함수가 끝날 때 함께 정리됩니다. Heap은 실행 중 필요한 크기의 메모리를 따로 요청하는 공간입니다. 원시 포인터와 `new`를 직접 사용했다면 알맞은 시점에 `delete`해야 하며, 소유권을 스마트 포인터에 맡기면 객체 수명에 맞춰 자동으로 정리할 수 있습니다.
 
 ## 2. 정적 할당과 동적 할당
 
@@ -87,7 +87,9 @@ int arr[10];
 int* arr = malloc(sizeof(int) * n);
 ```
 
-동적 메모리는 바이트 단위로 할당되고, 할당된 메모리 자체에는 타입이 없습니다. 포인터 타입이 그 메모리를 어떻게 해석할지 결정합니다.
+동적 할당이 필요한 대표 상황은 프로그램을 실행하기 전에는 원소 수를 모를 때입니다. 사용자 입력으로 $$n$$을 받은 뒤 $$n$$개를 저장해야 한다면, 실행 중에 필요한 크기를 계산해 메모리를 요청합니다.
+
+C의 `malloc`이 반환하는 메모리는 바이트 묶음입니다. 포인터 타입은 그 바이트를 `int`나 다른 객체로 어떻게 읽을지 정합니다. C++의 `new T`는 메모리만 확보하는 데서 끝나지 않고 `T` 객체를 생성하고 생성자도 호출한다는 차이가 있습니다.
 
 ## 3. `malloc`
 
@@ -427,30 +429,35 @@ auto sp = std::make_shared<T>(args...);
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 이 문서는 메모리 수명 관리를 중심으로 읽어야 합니다. Stack은 함수 호출과 함께 자동으로 관리되고, Heap은 실행 중 필요한 크기만큼 직접 확보하는 영역입니다. C의 `malloc/free`와 C++의 `new/delete`는 모두 Heap을 다루지만, 객체의 생성자와 소멸자 호출 여부에서 큰 차이가 납니다.
 
 포인터 문법은 기호보다 "무엇을 바꿀 수 있는가"로 정리하면 쉽습니다. `const int*`는 가리키는 값을 바꿀 수 없고, `int* const`는 포인터 자체의 목적지를 바꿀 수 없습니다. 이 구분은 함수 인자와 클래스 멤버를 읽을 때 반복해서 등장합니다.
 
 스마트 포인터 부분은 소유권 모델로 외우는 것이 좋습니다. `unique_ptr`는 단독 소유, `shared_ptr`는 공유 소유, `weak_ptr`는 소유하지 않는 관찰자입니다. C++ 메모리 관리의 결론은 "가능하면 소유권을 타입으로 표현하고, 직접 `delete`하지 않는 구조를 만든다"는 것입니다.
 
+</details>
+
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇입니까?</summary>
+<summary markdown="span">1. `malloc/free`와 `new/delete`의 핵심 차이는 무엇입니까?</summary>
 
 답변: `malloc/free`는 단순히 메모리 블록을 할당하고 해제하며 생성자와 소멸자를 호출하지 않습니다. `new/delete`는 메모리 할당과 함께 객체의 생성자/소멸자 호출까지 처리합니다.
 
 </details>
 
 <details markdown="block">
-<summary>2. `const int* p`와 `int* const p`는 어떻게 다르게 읽습니까?</summary>
+<summary markdown="span">2. `const int* p`와 `int* const p`는 어떻게 다르게 읽습니까?</summary>
 
 답변: `const int* p`는 p가 가리키는 int 값을 수정할 수 없다는 뜻입니다. 반면 `int* const p`는 포인터 p 자체가 const라서 다른 주소를 가리키도록 바꿀 수 없다는 뜻입니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결합니까?</summary>
+<summary markdown="span">3. `shared_ptr`끼리 순환 참조가 생기면 왜 문제가 되고, `weak_ptr`는 어떻게 해결합니까?</summary>
 
 답변: `shared_ptr`끼리 서로를 소유하면 참조 카운트가 0이 되지 않아 객체가 해제되지 않을 수 있습니다. `weak_ptr`는 객체를 소유하지 않고 관찰만 하므로 참조 카운트를 증가시키지 않아 순환 소유를 끊을 수 있습니다.
 

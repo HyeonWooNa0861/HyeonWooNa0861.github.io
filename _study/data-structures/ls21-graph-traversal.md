@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-01 12:25:13 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS21 Graph Traversal"
 course: "Data Structures"
 topic: "Graph Traversal"
@@ -95,6 +95,8 @@ BFS에서는 GRAY 정점이 queue에 들어가 있는 정점이라고 보면 됩
 
 BLACK이 되었다는 것은 그 정점에서 확인해야 할 인접 정점들을 모두 확인했다는 뜻입니다.
 
+GRAY가 필요한 이유는 **발견과 처리 완료가 같은 순간이 아니기 때문**입니다. 한 정점을 queue에 넣자마자 GRAY로 표시하면 다른 이웃이 같은 정점을 다시 발견해도 중복으로 넣지 않습니다. BLACK은 그 정점의 이웃 검사까지 끝났다는 별도 기록입니다.
+
 ## 3. BFS의 핵심 아이디어
 
 BFS(Breadth-First Search)는 시작 정점에서 가까운 정점부터 먼 정점 순서로 방문합니다. 여기서 거리는 간선 개수 기준의 거리입니다.
@@ -112,6 +114,8 @@ v.d=u.d+1
 $$
 
 BFS는 이 level 순서를 지키기 위해 queue를 사용합니다. 먼저 발견된 정점이 먼저 처리되는 FIFO 구조 덕분에 가까운 정점들이 먼저 확장됩니다.
+
+예를 들어 `s-a`, `s-b`, `a-c`라는 간선이 있으면 `s` 다음에 `a`, `b`가 queue에 들어갑니다. `c`는 `a`를 처리할 때 그 뒤에 들어가므로, 거리 1인 `b`보다 먼저 처리될 수 없습니다. 이 순서 때문에 처음 기록한 거리가 최소 간선 수가 됩니다.
 
 | 자료구조 | BFS에서의 역할 |
 |---|---|
@@ -435,6 +439,9 @@ BFS는 거리와 level을 알고 싶을 때 강합니다. DFS는 그래프의 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 먼저 BFS와 DFS의 차이를 "자료구조"로 기억하면 좋습니다. BFS는 queue, DFS는 recursion 또는 stack입니다. 이 차이가 곧 방문 순서의 차이를 만듭니다.
 
 두 번째로 색의 의미를 정확히 잡아야 합니다. WHITE는 미발견, GRAY는 발견되었지만 처리 중, BLACK은 완료입니다. BFS에서는 GRAY가 queue 안의 정점이고, DFS에서는 GRAY가 recursion stack 위의 정점입니다.
@@ -450,6 +457,8 @@ BFS는 거리와 level을 알고 싶을 때 강합니다. DFS는 그래프의 �
 | color state | WHITE, GRAY, BLACK의 정확한 의미 |
 | complexity | 정점과 간선을 각각 몇 번 보는지 |
 | edge classification | tree, back, forward, cross edge의 DFS tree 관계와 time interval |
+
+</details>
 
 ## 복습 질문
 

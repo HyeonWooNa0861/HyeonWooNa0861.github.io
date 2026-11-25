@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 13: Generative Models 1"
 course: "CS231N"
 topic: "Generative Models 1"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 13 PDF](https://cs231n.stanford.e
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_13.pdf#page=63" target="_blank" rel="noopener">CS231N Lecture 13, PDF p. 63 (printed slide 63)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 생성 모델의 여러 이름은 결국 데이터 분포 $$p(x)$$를 **직접 계산할 수 있는가**, **근사하는가**, 아니면 **표본만 생성하는가**의 차이입니다. 1부는 tractable likelihood의 autoregressive model과 latent variable likelihood를 lower bound로 학습하는 VAE를 연결합니다.
+> **핵심:** 그럴듯한 사진을 만드는 것과 주어진 사진이 모델에서 얼마나 나올 법한지 계산하는 것은 다른 능력입니다. 픽셀을 순서대로 예측하는 모델은 각 단계의 확률을 합쳐 전체 확률을 계산할 수 있습니다. 변분 오토인코더(VAE)는 직접 계산하기 어려운 값을 대신 학습할 수 있는 하한을 사용합니다.
 
 분류 모델이 주어진 이미지의 class를 묻는다면 생성 모델은 이미지 자체가 어떤 분포에서 나오는지를 다룹니다. Autoregressive model은 pixel이나 token의 순서를 정해 joint probability를 조건부 확률의 곱으로 정확히 계산합니다. VAE는 숨은 변수 $$z$$로 데이터를 설명하지만 $$p(x)$$ 적분이 어려워, 계산 가능한 lower bound를 대신 높입니다.
 
@@ -177,7 +177,12 @@ Gaussian encoder에서 $$z=\mu+\sigma\odot\epsilon$$, $$\epsilon\sim\mathcal N(0
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 먼저 family tree를 직접 그리고 `density 계산 가능 여부 → likelihood 정확성 → sampling 방식`을 표시합니다. VAE는 encoder/decoder의 입력과 출력, ELBO 두 항이 서로 반대 방향으로 작용하는 이유, reparameterization이 gradient path를 만드는 과정을 순서대로 복원합니다.
+
+</details>
 
 ## 복습 질문
 

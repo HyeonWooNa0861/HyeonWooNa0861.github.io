@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 6: Heaps and Heap Sort"
 course: "Algorithms"
 topic: "Max-Heaps, Bottom-Up Construction, and In-Place Sorting"
@@ -19,6 +19,8 @@ keywords:
 # Lecture 6: Heaps and Heap Sort
 
 Source PDF: [6 Sorting (3).pdf](/assets/pdfs/study/algorithms/06-sorting-03.pdf)
+
+배열 `[4, 10, 7]`에서 가장 큰 값 10을 매번 처음부터 다시 찾지 않고, 항상 맨 앞에서 꺼낼 수 있게 배치한다고 생각해 보겠습니다. 최대 힙은 이런 목적에 맞게 **부모가 자식보다 크도록** 배열을 배치한 구조입니다. 전체가 오름차순인 것은 아니지만, 맨 위 값은 언제나 최댓값입니다.
 
 이 강의는 최대 힙의 배열 표현, `siftdown`, 바닥에서 위로 힙을 만드는 방법, 그리고 그 힙으로 제자리 정렬하는 과정을 다룹니다. 핵심은 **힙 내부가 완전히 정렬된 것은 아니지만 루트에는 최대값이 있다**는 성질을 반복 활용하는 것입니다. 아래의 인덱스 공식·불변식·복잡도 증명은 강의의 그림과 코드를 연결하기 위한 작성자 보충입니다.
 
@@ -151,6 +153,9 @@ build에 $$\Theta(n)$$, 최대 $$n-1$$번의 추출과 복구에 각각 $$O(\log
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 슬라이드 위치 | 확인할 점 | 이 글의 처리 |
 |---|---|---|
 | 7–9쪽 | 최대 힙 그림에서 부모·자식 관계만 직접 확인 가능 | 루트가 최대라는 결론은 모든 경로에서 부모 $$\ge$$ 자식 관계를 반복 적용한 결과라고 설명합니다. 형제나 다른 가지까지 정렬된 것으로 해석하지 않습니다. |
@@ -158,6 +163,8 @@ build에 $$\Theta(n)$$, 최대 $$n-1$$번의 추출과 복구에 각각 $$O(\log
 | 12–16쪽 | 바닥부터 `siftdown`을 호출하는 코드·그림 | 각 자식 부분트리가 이미 힙이라는 전제를 루프 불변식으로 명시했습니다. 마지막 내부 노드는 $$\lfloor n/2\rfloor-1$$입니다. |
 | 17쪽 | build의 $$\sum_h \lceil n/2^{h+1}\rceil\Theta(h)$$ 요약 | 단일 `siftdown`의 최악 $$O(\log n)$$을 단순히 횟수로 곱하지 않고 높이별 비용 합으로 $$O(n)$$을 설명했습니다. $$\Theta(n)$$의 하한도 분리해 적었습니다. |
 | 19–24쪽 | 루트를 뒤로 보내고 줄어든 힙에서 복구 | `sift_down(0, arr, i)`의 세 번째 인자는 **마지막 인덱스가 아니라 유효 길이** `i`입니다. 확정된 꼬리 구간을 건드리지 않음을 명시했습니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

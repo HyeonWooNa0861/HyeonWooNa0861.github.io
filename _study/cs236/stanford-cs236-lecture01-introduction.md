@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 1: Introduction"
 course: "CS236"
 topic: "Deep Generative Models Overview"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 1](https://www.youtube.com/watch?v=XZ0PMRWXBEU){:target="_blank" rel="noopener"}
 - Source Slides: [cs236_lecture1_2023.pptx](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture1_2023.pptx){:target="_blank" rel="noopener"}
 
-> **핵심:** 1강은 CS236 전체를 여는 강의로, deep generative model을 단순한 이미지 생성 도구가 아니라 복잡한 데이터 분포를 모델링하는 통계적 방법으로 정의합니다. 강의의 출발점은 computer vision, NLP, robotics, computational speech가 모두 high-dimensional unstructured input을 이해해야 한다는 점입니다.
+> **핵심:** 생성 모델은 많은 사진·문장·음성에서 공통 규칙을 배운 뒤, 그 규칙에 맞는 새 데이터를 만들거나 빠진 부분을 채웁니다. CS236은 이 "그럴듯한 데이터의 규칙"을 확률로 표현하고 학습하는 방법을 다룹니다.
 
 사진 한 장을 입력받았다고 생각해 보겠습니다. 분류 모델은 그 사진의 이름을 맞히는 데 집중하지만, 생성 모델은 비슷한 사진이 어떤 규칙으로 나타나는지까지 설명하려 합니다. 여기서 $$p(x)$$는 정답표가 아니라 가능한 데이터 각각에 얼마나 무게를 둘지를 나타내는 규칙이며, 이후 모델들은 이 규칙을 계산하거나 표본으로 구현하는 서로 다른 방법입니다.
 
@@ -66,6 +66,8 @@ keywords:
 **Slide 5**의 비교 기준은 prior knowledge와 data의 역할입니다. 물리·재질 등 사람이 넣은 지식을 주로 사용하는 graphics와 데이터로 분포를 학습하는 statistical generative model을 비교합니다. 데이터 기반 모델에도 구조·학습 목표 같은 가정은 남으므로, 이 비교를 “사전지식이 전혀 없는 모델”이라는 뜻으로 읽지는 않습니다. 침대와 벽의 큰 구조뿐 아니라 이불의 무늬, 거울의 반사, 식물과 조명의 배치가 함께 관측됩니다. 데이터 기반 모델은 이런 요소가 함께 나타나는 통계적 규칙을 여러 사진에서 학습합니다. 이 사진 한 장은 학습 데이터의 예시이지, 모델의 생성 결과나 품질 평가가 아닙니다. Slide 4의 도형 배치와 전체 애니메이션은 원본 PPTX에서 확인합니다.
 
 ## 핵심 내용
+
+생성 모델은 사진에 이름표를 붙이는 데서 멈추지 않습니다. 수많은 사진에서 공통 규칙을 배운 뒤, 그 규칙에 맞는 새 사진을 만들거나 손상된 부분을 채웁니다. 이때 "그럴듯한 데이터가 나오는 규칙"을 확률분포 $$p(x)$$로 표현합니다.
 
 1강은 CS236 전체를 여는 강의로, deep generative model을 단순한 이미지 생성 도구가 아니라 복잡한 데이터 분포를 모델링하는 통계적 방법으로 정의합니다. 강의의 출발점은 computer vision, NLP, robotics, computational speech가 모두 high-dimensional unstructured input을 이해해야 한다는 점입니다. 이미지가 컴퓨터에는 숫자 행렬이고, 문장이 문자 또는 token sequence라면, "이해"란 그 숫자와 sequence 뒤에 있는 구조를 파악하는 일입니다.
 

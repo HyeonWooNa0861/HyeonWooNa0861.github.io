@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 07 Matrix Decomposition 1"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 1"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-07.pdf`
 
-> **핵심:** Determinant는 선형 변환이 면적이나 부피를 얼마나 바꾸는지 나타냅니다. $$\det(A)=0$$이면 변환이 차원을 압축하므로 행렬은 full rank가 아니며 역행렬도 없습니다.
+> **핵심:** 행렬이 단위 정사각형의 넓이를 세 배로 만들면 determinant의 절댓값은 3입니다. 넓이를 0으로 눌러 선이나 점으로 만들면 원래 모양으로 되돌릴 수 없으므로 역행렬도 없습니다.
 
 ## 전체 흐름
 
@@ -49,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-07.pdf`
 </details>
 
 ## 1. 행렬식 Determinant
+
+단위 정사각형을 행렬로 변환했더니 넓이가 세 배가 되었다면 determinant의 절댓값은 3입니다. 넓이가 0이 되었다면 평면이 선이나 점으로 눌렸다는 뜻이므로 원래 모양으로 되돌릴 수 없습니다. Determinant는 이런 부피 변화와 되돌릴 수 있는지를 숫자 하나로 알려 줍니다.
 
 행렬식은 정사각행렬에 대해 정의되는 값입니다. 선형 변환으로 공간의 부피가 얼마나 변하는지를 나타낸다고 볼 수 있습니다.
 

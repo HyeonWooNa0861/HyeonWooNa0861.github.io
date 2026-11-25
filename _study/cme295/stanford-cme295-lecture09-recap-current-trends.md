@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 9: Recap & Current Trends"
 course: "CME295"
 topic: "CME295 Full Review, 2025 LLM Trends, and Future Study Directions"
@@ -52,7 +52,9 @@ Source: [Stanford CME295 Autumn 2025 Lecture 9](https://www.youtube.com/watch?v=
 
 용어를 시간순 목록으로 외우기보다 한 요청이 처리되는 흐름을 따라가면 전체 수업이 연결됩니다. 입력 문장은 token과 embedding으로 바뀌고, Transformer가 문맥 표현을 계산하며, decoder가 다음 토큰 분포를 만듭니다. Pre-training은 이 기본 능력을 만들고 SFT·preference tuning은 응답 행동을 조정합니다. 모델 내부 지식만으로 부족하면 RAG나 tool을 사용하고, 마지막에는 과제에 맞는 평가가 결과를 판정합니다. 각 기술은 이 흐름의 서로 다른 병목을 해결합니다.
 
-강의는 LLM 학습 과정을 pre-training, SFT, preference tuning으로 다시 정리합니다. preference tuning에서는 LLM을 policy처럼 보고 reward model과 Bradley-Terry formulation을 사용하며, reward hacking을 막기 위해 base model 또는 이전 RL iteration에서 너무 멀어지지 않도록 합니다. Reasoning model에서는 chain of thought 또는 hidden reasoning chain을 만들도록 RL을 사용하고, PPO와 달리 GRPO는 value model 없이 여러 completion의 상대 reward로 advantage를 계산합니다. GRPO Done Right와 DAPO는 length bias를 줄이는 extension으로 언급됩니다. 이어 RAG, tool calling, agentic workflow, LLM-as-a-Judge, 주요 benchmark가 final exam 범위로 묶여 복습됩니다.
+강의는 LLM 학습을 세 단계로 다시 정리합니다. Pre-training은 많은 텍스트에서 다음 토큰 예측 능력을 만들고, SFT는 지시에 답하는 형식을 가르치며, preference tuning은 가능한 답 중 사람이 더 선호하는 답의 확률을 높입니다. 선호학습에서는 reward model로 응답을 평가하되, 높은 점수만 좇다가 원래 모델의 자연스러운 응답에서 너무 멀어지는 reward hacking을 경계합니다.
+
+Reasoning model은 중간 추론을 생성하도록 강화학습할 수 있습니다. GRPO는 같은 문제에 대한 여러 답의 reward를 서로 비교해 학습 방향을 만들며, PPO와 달리 별도 value model이 필요하지 않습니다. GRPO Done Right와 DAPO는 긴 답이 유리해지는 length bias를 줄이려는 수정입니다. 이어 RAG, tool calling, agent workflow, LLM-as-a-Judge, 주요 benchmark가 각각 외부 지식·행동·평가 문제를 다루는 기술로 복습됩니다.
 
 두 번째와 세 번째 부분은 2025년 트렌드와 수업 이후의 방향입니다. Transformer는 Vision Transformer, VLM, LLaVA, Llama 3식 cross-attention, diffusion transformer처럼 non-text 영역으로 확장되었고, 반대로 image diffusion의 아이디어는 text generation에 들어와 masked diffusion model 또는 diffusion-based LLM으로 연구되고 있습니다. LLaDA, Google I/O의 experimental text diffusion model, Inception이 예시로 언급되며, diffusion LLM은 autoregressive decoding보다 훨씬 적은 forward pass로 긴 출력과 fill-in-the-middle task에서 속도 이점을 줄 수 있지만 frontier autoregressive model 수준으로 따라잡는 작업은 진행 중입니다. 마지막으로 DeepSeek OCR, 2D RoPE, Muon과 MuonClip, RMSNorm, data curation, mid-training, model collapse, small language models, hardware specialization, AI-assisted coding, ChatGPT Atlas, continuous learning, hallucination, personalization, interpretability, safety, 그리고 arXiv, NeurIPS, HuggingFace trending papers, X, YouTube, company blogs로 최신 흐름을 따라가는 방법이 소개됩니다.
 
@@ -192,11 +194,16 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. Lecture 1부터 8까지를 architecture, training, alignment, reasoning, external systems, evaluation이라는 축으로 다시 묶어 봅니다.
 2. PPO와 GRPO를 value model 필요 여부, reward source, advantage 계산 방식, reasoning task 적합성으로 비교합니다.
 3. RAG, tool calling, LLM-as-a-Judge가 각각 knowledge cutoff, external action, free-form output evaluation 문제를 어떻게 다루는지 연결합니다.
 4. Vision Transformer와 diffusion LLM을 transformer가 text 밖으로 나간 사례와 diffusion이 text 안으로 들어온 사례로 대비합니다.
 5. 최신 LLM 논문을 읽을 때 architecture, data, optimizer, normalization, inference cost, safety benchmark 중 어떤 축의 기여인지 먼저 표시합니다.
+
+</details>
 
 ## 복습 질문
 

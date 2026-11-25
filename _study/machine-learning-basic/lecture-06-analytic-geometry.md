@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 06 Analytic Geometry"
 course: "Machine Learning Basic"
 topic: "Analytic Geometry"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-06.pdf`
 
-> **핵심:** 모든 내적은 norm을 만들지만, 모든 norm이 내적에서 유도되지는 않습니다. Symmetric positive definite(SPD) 행렬은 내적을 나타내는 데 사용할 수 있습니다.
+> **핵심:** Norm은 벡터의 길이, 내적은 두 벡터가 같은 방향을 얼마나 향하는지 측정합니다. 이 두 도구로 데이터 사이의 거리와 각도, 다른 벡터 위로 내린 projection을 계산할 수 있습니다.
 
 ## 전체 흐름
 
@@ -51,6 +51,8 @@ Source PDF: `machine-learning-basic-lecture-06.pdf`
 </details>
 
 ## 1. Norm
+
+벡터가 원점에서 얼마나 멀리 있는지를 숫자 하나로 요약한 값이 norm입니다. 다만 거리를 재는 규칙에 따라 같은 벡터도 다른 길이를 가질 수 있습니다. $$\ell_1$$은 좌표축을 따라 움직인 총거리, $$\ell_2$$는 원점까지 곧장 잰 직선 거리입니다.
 
 Norm은 벡터를 길이로 보내는 함수입니다.
 

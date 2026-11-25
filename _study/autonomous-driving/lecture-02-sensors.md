@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 10:45:36 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 2: Sensors for Autonomous Driving"
 course: "Autonomous Driving"
 topic: "Camera, LiDAR, RADAR, and Sensor-Stack Trade-offs"
@@ -122,7 +122,7 @@ $$
 
 ### 3.1 작성자 보충: $$Z=fB/d$$의 기하학적 유도
 
-이 식은 **평행 optical axis, 동일한 focal length, rectified image, pinhole projection**을 가정한 정확한 기하 관계입니다. 왼쪽 camera를 원점에 두고 3D 점을 $$(X,Z)$$, 오른쪽 camera를 baseline $$B$$만큼 옮긴 위치에 두면 닮은삼각형으로
+같은 물체가 왼쪽 영상과 오른쪽 영상에서 얼마나 옆으로 어긋나는지 재면 깊이를 구할 수 있습니다. 가까운 물체는 위치 차이 $$d$$가 크고, 먼 물체는 $$d$$가 작습니다. 이를 $$Z=fB/d$$로 계산하려면 두 camera의 광학축이 평행하고, focal length가 같으며, 두 영상이 정렬된 pinhole projection이라는 조건이 필요합니다. 왼쪽 camera를 원점에 두고 3D 점을 $$(X,Z)$$, 오른쪽 camera를 baseline $$B$$만큼 옮긴 위치에 두면 닮은삼각형으로
 
 $$
 x_L=\frac{fX}{Z},\qquad
@@ -367,6 +367,9 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 공개된 `02-sensors.pdf`의 **물리 PDF 32쪽 전체를 시각 대조**했습니다. 원문 슬라이드는 sensor 원리와 장단점을 그림·문장으로 설명하며, 대수적으로 증명해야 할 명시적 수식은 제시하지 않습니다.
 
 | 원문 PDF 쪽 | 원문 핵심 | 본문 반영 및 판정 |
@@ -379,6 +382,8 @@ Zoox 사례는 cameras, LiDARs, RADAR, long-wave infrared sensors를 결합해 3
 | 1–4, 8, 24, 29–32 | 표지·구분·요약·예고·질문 | 별도 증명이 필요한 수식 없음 |
 
 따라서 이 자료의 수식 감사 결과는 “원문 수식의 미증명”이 아니라, 본문에 추가한 두 기하·물리 식의 출처 경계와 가정이 명확한지를 확인하는 문제입니다. 두 식 모두 기호·단위·성립 조건·실패 조건을 해당 절에서 함께 설명합니다.
+
+</details>
 
 ## PDF
 

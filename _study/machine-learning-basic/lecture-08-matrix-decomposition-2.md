@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 08 Matrix Decomposition 2"
 course: "Machine Learning Basic"
 topic: "Matrix Decomposition 2"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-08.pdf`
 
-> **핵심:** Cholesky 분해는 symmetric positive definite(SPD) 행렬에 적용할 수 있습니다. 행렬이 대각화되려면 공간을 이루는 만큼 선형 독립인 고유벡터가 있어야 합니다.
+> **핵심:** 행렬 분해는 큰 계산을 다루기 쉬운 여러 단계로 나눕니다. Cholesky는 연립방정식을 빠르게 풀고, SVD는 데이터에서 영향이 큰 방향만 남겨 압축하거나 잡음을 줄이는 데 사용합니다.
 
 ## 전체 흐름
 
@@ -49,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-08.pdf`
 </details>
 
 ## 1. Cholesky 분해
+
+행렬 분해는 큰 계산 하나를 더 다루기 쉬운 계산 여러 개로 바꾸는 도구입니다. Cholesky 분해에서는 대칭 양의 정부호 행렬을 삼각행렬과 그 전치의 곱으로 바꿉니다. 삼각행렬은 위나 아래가 0으로 채워져 있어, 연립방정식을 한 변수씩 순서대로 풀 수 있습니다.
 
 SPD 행렬은 양의 대각 원소를 가지는 하삼각행렬 $$L$$을 이용해 분해할 수 있습니다.
 
@@ -83,6 +85,8 @@ $$A$$가 $$n$$개의 선형 독립인 고유벡터를 가지면 대각화 가능
 대칭행렬은 항상 대각화 가능합니다. 머신러닝에서 covariance matrix처럼 대칭행렬이 자주 등장하므로 이 성질은 PCA와 직접 연결됩니다.
 
 ## 4. SVD
+
+SVD는 행렬이 데이터를 어떻게 늘리고, 방향을 바꾸고, 다시 놓는지를 세 단계로 나눠 보여 줍니다. $$V^T$$가 입력의 기준 방향을 정렬하고, $$\Sigma$$가 각 방향을 늘리거나 줄이며, $$U$$가 결과를 출력 공간의 방향으로 놓습니다. 큰 singular value가 붙은 방향일수록 출력에 미치는 영향이 큽니다.
 
 SVD(Singular Value Decomposition)는 $$m \times n$$ 행렬에도 적용할 수 있는 강력한 행렬 분해입니다.
 

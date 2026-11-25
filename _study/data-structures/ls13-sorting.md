@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS13 Basic Sorting Algorithms"
 course: "Data Structures"
 topic: "Basic Sorting Algorithms"
@@ -18,6 +18,8 @@ keywords:
 # LS13 Basic Sorting Algorithms
 
 Source PDF: `LS13_sorting.pdf`
+
+배열 `[5, 2, 4]`를 `[2, 4, 5]`로 바꾸는 방법은 여러 가지입니다. 버블 정렬은 이웃끼리 바꾸고, 선택 정렬은 남은 구간의 최솟값을 찾아 옮기며, 삽입 정렬은 앞쪽의 정렬된 구간에 새 값을 끼워 넣습니다. 결과는 같아도 비교·이동 횟수와 중간 과정이 다릅니다.
 
 > **핵심:** 버블 정렬은 한 회전마다 현재 구간의 최댓값을 끝에 확정합니다. 선택 정렬은 한 회전에 최대 한 번만 교환하므로 swap 횟수가 상대적으로 적습니다.
 
@@ -167,7 +169,12 @@ void insertionSort(int[] list) {
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 같은 짧은 배열에 Bubble, Selection, Insertion Sort를 각각 한 pass씩 수행해 비교 위치와 swap·shift 횟수를 기록합니다. 세 알고리즘 모두 최악 O(n²)이지만, 이미 정렬된 입력의 조기 종료·swap 수·거의 정렬된 입력이라는 강점은 서로 다릅니다. 시험표에는 best/average/worst와 stable·in-place 여부를 함께 적어 시간복잡도만 외우는 실수를 막습니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1057,6 +1057,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 템플릿을 공부할 때는 다음 순서로 이해하면 좋습니다.
 
 1. 타입만 다른 함수 중복을 직접 확인합니다.
@@ -1067,6 +1070,8 @@ $$
 6. `cpp_template.cpp`에서 `operator()`, `operator<<`, `using`이 어떻게 함께 쓰이는지 코드 흐름으로 확인합니다.
 7. STL의 `vector<int>`가 클래스 템플릿의 실제 사례임을 연결합니다.
 8. 템플릿은 런타임 다형성이 아니라 컴파일 타임 다형성임을 구분합니다.
+
+</details>
 
 ## 복습 질문
 

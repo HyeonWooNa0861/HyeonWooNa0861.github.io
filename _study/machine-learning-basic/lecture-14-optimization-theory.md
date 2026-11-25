@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 14 Optimization Theory"
 course: "Machine Learning Basic"
 topic: "Optimization Theory"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-14.pdf`
 
-> **핵심:** Gradient descent는 $$x_{i+1}=x_i-\gamma_i\nabla f(x_i)$$에 따라 해를 갱신합니다. Step size $$\gamma_i$$가 너무 작으면 한 번에 이동하는 거리가 짧아져 수렴이 느려집니다.
+> **핵심:** Gradient descent는 현재 위치에서 loss가 내려가는 방향으로 parameter를 조금씩 옮깁니다. 보폭이 너무 작으면 오래 걸리고, 너무 크면 최저점을 지나쳐 흔들리거나 발산할 수 있습니다.
 
 ## 전체 흐름
 
@@ -53,6 +53,8 @@ Source PDF: `machine-learning-basic-lecture-14.pdf`
 </details>
 
 ## 1. 최적화와 머신러닝
+
+모델의 예측이 틀린 정도를 loss라는 숫자로 계산했다고 하겠습니다. 최적화는 수많은 parameter 조합 가운데 이 숫자를 가장 작게 만드는 조합을 찾는 과정입니다. 정답 parameter를 한 번에 알 수 없으므로 현재 위치의 기울기를 보고 조금씩 이동합니다.
 
 머신러닝 모델을 학습시킨다는 것은 모델 parameter 중 목적 함수의 값이 좋은 parameter를 찾는 일입니다. 최소화 문제로 단순화하면 다음과 같이 쓸 수 있습니다.
 

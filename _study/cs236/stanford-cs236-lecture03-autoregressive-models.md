@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 3: Autoregressive Models"
 course: "CS236"
 topic: "Autoregressive Factorization and Neural Density Models"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 3](https://www.youtube.com/watch?v=tRArbBf-AbI){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture3.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** 3강은 첫 번째 실제 모델군인 autoregressive model을 다룹니다. 어떤 joint distribution도 chain rule에 의해 순서가 있는 조건부 확률들의 곱으로 쓸 수 있다는 점이 핵심입니다.
+> **핵심:** Autoregressive model은 문장을 한 번에 만들지 않고, 지금까지 나온 단어를 보고 다음 단어를 하나씩 고릅니다. 복잡한 전체 확률을 작은 다음-값 예측들의 곱으로 바꾸는 방식입니다.
 
 문장을 생성할 때 첫 단어를 고른 뒤 앞선 단어를 보고 다음 단어를 고르는 과정을 떠올리면 됩니다. 전체 문장의 확률을 한 번에 표로 만들 수 없으므로 chain rule로 작은 조건부 확률의 곱으로 바꿉니다. 이 변환은 정확하지만, 변수 순서를 정해야 하고 생성이 앞 단계에 의존한다는 비용이 생깁니다.
 
@@ -75,6 +75,8 @@ keywords:
 [PDF p.31](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture3.pdf#page=31){:target="_blank" rel="noopener"}의 PixelCNN mask는 같은 제한을 픽셀 격자에 적용합니다. 발췌의 1/0 격자는 읽어도 되는 위치와 차단할 위치입니다. 오른쪽 blind spot은 문맥을 제한하는 방식 때문에 일부 과거 픽셀 정보까지 전달되지 않을 수 있음을 보여 줍니다.
 
 ## 핵심 내용
+
+문장을 한꺼번에 만드는 대신 첫 단어를 고르고, 지금까지 나온 단어를 보고 다음 단어를 고른다고 생각하면 됩니다. Autoregressive model은 복잡한 전체 데이터의 확률을 이런 "다음 값 예측"의 연속으로 바꿉니다.
 
 3강은 첫 번째 실제 모델군인 autoregressive model을 다룹니다. 핵심 아이디어는 단순합니다. 어떤 joint distribution도 chain rule에 의해 순서가 있는 조건부 확률들의 곱으로 쓸 수 있습니다.
 

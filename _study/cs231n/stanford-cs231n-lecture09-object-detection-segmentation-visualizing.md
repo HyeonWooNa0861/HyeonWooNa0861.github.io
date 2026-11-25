@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 9: Object Detection, Image Segmentation, Visualizing"
 course: "CS231N"
 topic: "Object Detection, Segmentation, and Visualization"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 9 PDF](https://cs231n.stanford.ed
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_9.pdf#page=66" target="_blank" rel="noopener">CS231N Lecture 9, PDF p. 66 (printed slide 66)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 분류가 이미지 전체의 한 레이블을 예측한다면 segmentation은 픽셀마다, detection은 객체마다 구조화된 출력을 예측합니다. 현대 방법은 CNN/ViT backbone의 feature를 공유하고 task-specific head를 붙이며, Grad-CAM 같은 도구는 예측을 지지한 공간적 근거를 점검하게 합니다.
+> **핵심:** 같은 거리 사진에도 질문은 다를 수 있습니다. ‘차가 있는가?’는 이미지 분류, ‘각 차가 어디 있는가?’는 물체 검출, ‘어느 픽셀이 차인가?’는 분할입니다. 같은 시각적 특징을 활용해도 답을 내는 단위가 다릅니다.
 
 거리 사진 한 장에 자동차와 사람이 함께 있다면 `자동차 사진`이라는 레이블 하나만으로는 위치와 개수를 알 수 없습니다. Detection은 객체마다 class와 bounding box를, semantic segmentation은 각 pixel의 class를 출력합니다. Backbone은 공통 시각 특징을 만들고 head는 필요한 출력 형태로 바꾸며, Grad-CAM은 모델의 내부 근거를 완전히 설명하기보다 어느 영역이 점수에 강하게 기여했는지 점검하는 도구입니다.
 
@@ -224,11 +224,16 @@ IoU는 두 box 영역 $$A,B$$에 대한 **정의** $$\operatorname{IoU}=\lvert A
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 네 vision task의 출력 tensor/객체 구조를 비교합니다.
 2. R-CNN → Fast R-CNN → Faster R-CNN에서 중복 계산과 proposal 생성이 어떻게 바뀌는지 추적합니다.
 3. IoU와 NMS를 작은 box 예제로 직접 계산합니다.
 4. DETR의 object query, cross-attention, Hungarian matching을 한 흐름으로 설명합니다.
 5. saliency와 Grad-CAM이 각각 input gradient와 feature-map gradient를 사용한다는 차이를 구분합니다.
+
+</details>
 
 ## 복습 질문
 

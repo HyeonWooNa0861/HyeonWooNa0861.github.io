@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 2: Transformer-Based Models & Tricks"
 course: "CME295"
 topic: "Transformer Variants, Positional Information, Attention Optimization, and BERT Models"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 
 왼쪽과 오른쪽 벡터는 절대 위치만큼 따로 회전하지만, 두 벡터의 내적에서는 회전각의 차이인 $$(m-n)\theta$$가 남습니다. 이 때문에 별도 위치 벡터를 더하지 않아도 attention score가 상대 거리를 반영합니다.
 
-> **핵심:** Self-attention에는 토큰 순서가 자체적으로 들어 있지 않으므로 위치 정보를 별도로 주어야 합니다. 위치 표현, normalization, attention 계산·메모리 비용을 바꾸는 방법이 Transformer의 여러 모델 계열을 이해하는 열쇠입니다.
+> **핵심:** ‘민지가 준호를 불렀다’에서 이름의 자리를 바꾸면 누가 누구를 불렀는지가 달라집니다. 단어 사이의 관련도만 계산하는 셀프 어텐션에는 자리 자체를 알려 주는 장치가 없습니다. 이 강의에서는 위치를 알려 주는 방법과 긴 글을 더 적은 메모리로 처리하는 방법을 구분해 살핍니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -49,11 +49,13 @@ Source: [Stanford CME295 Autumn 2025 Lecture 2](https://www.youtube.com/watch?v=
 </details>
 ## 핵심 내용
 
-Self-attention은 모든 토큰을 직접 연결하지만 RNN처럼 순서를 자연스럽게 전달하지는 않습니다. 원래 Transformer는 위치별 embedding을 입력 토큰 embedding에 더했고, 학습형과 sinusoidal 방식을 모두 시험했습니다. Sinusoidal 방식은 omega_i = 10000^{-2i/d_model} 꼴의 주파수로 sine/cosine 값을 만들어 서로 다른 위치의 내적에 상대 거리가 반영되게 합니다. 이후 등장한 T5 relative position bias와 ALiBi는 attention score에 거리 정보를 더합니다. 현대 모델에서 널리 쓰이는 RoPE(Rotary Position Embeddings)는 query와 key를 위치별 각도로 회전시켜 QK^T에 상대 거리를 직접 반영합니다.
-
 왜 위치를 따로 넣어야 하는지부터 보면 뒤의 방법들이 정리됩니다. Self-attention만 계산하면 토큰 집합은 알 수 있어도 `개가 사람을 쫓았다`와 `사람이 개를 쫓았다`의 자리 차이를 자동으로 알 수 없습니다. Position embedding은 각 토큰에 “몇 번째인가”라는 표식을 붙이고, relative position 방식은 “두 토큰이 얼마나 떨어졌는가”를 attention 점수에 반영합니다. Sinusoidal, T5 bias, ALiBi, RoPE는 모두 이 순서 문제를 해결하지만 위치 정보를 넣는 지점과 방식이 서로 다릅니다.
 
-다음으로 normalization과 attention 변형을 다룹니다. 원 Transformer의 add and norm은 post-norm 형태였지만 현대 모델은 sublayer 앞에서 normalization을 수행하는 pre-norm을 주로 사용한다고 설명합니다. 또한 LayerNorm은 mean/std와 gamma, beta를 쓰지만, RMSNorm은 root mean square로 x를 normalize하고 gamma만 학습해 비슷한 convergence 특성을 더 적은 parameter로 얻는다고 합니다. Attention은 sequence length n에 대해 O(n^2) complexity를 갖기 때문에 LongFormer와 sliding window attention처럼 local attention을 쓰거나, 일부 layer에서 local/global attention을 섞는 방식이 소개됩니다. Mistral은 sliding window attention 예시로 나오며, KV cache 메모리를 줄이기 위해 key/value projection을 head 사이에 공유하는 MQA와 GQA도 설명됩니다. MQA는 모든 head가 같은 K/V projection을 공유하고, GQA는 group 단위로 K/V를 공유합니다.
+구체적으로 원래 Transformer는 위치별 embedding을 토큰 embedding에 더했고, 학습형과 sinusoidal 방식을 모두 시험했습니다. Sinusoidal 방식은 서로 다른 주기의 sine과 cosine으로 위치마다 고유한 무늬를 만듭니다. T5 relative position bias와 ALiBi는 두 토큰 사이 거리에 따른 값을 attention 점수에 더합니다. RoPE(Rotary Position Embeddings)는 query와 key를 위치별 각도로 회전시켜, 두 벡터를 비교할 때 상대 거리가 드러나게 합니다. 정확한 주파수식과 회전식은 아래 상세 유도에서 확인할 수 있습니다.
+
+다음은 학습 안정성과 긴 입력의 비용 문제입니다. Normalization은 한 층의 숫자 크기가 지나치게 커지거나 작아지지 않도록 맞춥니다. Pre-norm은 이 정리를 sublayer 계산 전에 하고, post-norm은 계산과 residual 덧셈 뒤에 합니다. LayerNorm은 평균과 분산을 사용하고, RMSNorm은 평균을 빼지 않고 제곱평균의 제곱근으로 크기만 맞춥니다.
+
+긴 문장에서는 모든 토큰 쌍을 비교하는 full attention의 계산량이 토큰 수의 제곱으로 증가합니다. Sliding-window attention은 각 토큰이 주변만 보게 해 비교 수를 줄입니다. MQA는 여러 attention head가 같은 key/value를 공유하고, GQA는 몇 개의 head끼리 공유해 KV cache 저장량을 줄입니다. 즉 windowing은 **비교할 위치 수**, MQA·GQA는 **저장할 key/value 묶음 수**를 줄입니다.
 
 여기서 normalization과 효율화는 서로 다른 질문에 답합니다. Pre-norm과 RMSNorm은 깊은 층을 지나도 학습 신호가 안정적으로 흐르게 하는 쪽이고, sliding window·MQA·GQA는 긴 입력을 처리할 때 계산량과 저장 공간이 커지는 문제를 줄이는 쪽입니다. 모델 표에서 이 이름들이 함께 보여도, 하나는 **학습 안정성**, 다른 하나는 **실행 비용**을 조정한다는 기준으로 나누어 읽으면 됩니다.
 
@@ -193,12 +195,17 @@ byte입니다. 2는 key와 value를 뜻합니다. Batch·beam 수와 allocator o
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. Position embedding 방법들을 input에 더하는 방식과 attention 내부에 넣는 방식으로 나눠 비교합니다.
 2. RoPE가 왜 query/key 회전과 relative distance를 연결하는지 QK^T 관점에서 설명합니다.
 3. LayerNorm, RMSNorm, pre-norm, post-norm의 차이를 식의 위치와 학습 parameter 관점에서 정리합니다.
 4. Sliding window attention, MQA, GQA가 각각 계산량 또는 메모리의 어느 부분을 줄이는지 구분합니다.
 5. T5, BERT, GPT-style decoder-only 모델을 encoder-decoder, encoder-only, decoder-only로 분류합니다.
 6. BERT의 MLM/NSP, WordPiece, CLS/SEP/PAD, segment embedding, fine-tuning 절차를 순서대로 복습합니다.
+
+</details>
 
 ## 복습 질문
 

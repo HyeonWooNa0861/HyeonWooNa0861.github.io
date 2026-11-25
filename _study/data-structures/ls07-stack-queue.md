@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS07 Stacks and Queues"
 course: "Data Structures"
 topic: "Stacks and Queues"
@@ -18,6 +18,8 @@ keywords:
 # LS07 Stacks and Queues
 
 Source PDF: `LS07_stack_queue_R1.pdf`
+
+웹 브라우저의 뒤로 가기는 가장 최근에 방문한 페이지부터 꺼내므로 스택과 닮았습니다. 대기표 처리는 먼저 온 사람부터 처리하므로 큐와 닮았습니다. 두 구조는 값을 저장하는 방법보다 **어느 순서로 꺼내는가**가 다릅니다.
 
 > **핵심:** 스택은 나중에 넣은 원소를 먼저 꺼내는 LIFO 구조이고, 큐는 먼저 넣은 원소를 먼저 꺼내는 FIFO 구조입니다. 이 강의의 ArrayStack에서 `top`은 다음 삽입 위치를 가리키므로 실제 맨 위 원소의 인덱스는 `top - 1`입니다.
 
@@ -195,7 +197,12 @@ private int size;
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 스택은 top의 의미를 먼저 정한 뒤 push/pop마다 배열 상태를 쓰고, 큐는 front와 rear를 capacity로 나눈 나머지로 갱신하며 circular wrap-around를 손으로 추적합니다. LIFO와 FIFO의 정의보다 empty/full 조건이 구현마다 어떻게 달라지는지가 더 자주 틀리는 지점입니다. 함수 호출·괄호 검사는 stack, BFS·대기열은 queue인 이유를 제거 순서로 설명합니다.
+
+</details>
 
 ## 복습 질문
 
@@ -320,6 +327,9 @@ $$
 
 ## 강의 수식과 관련 페이지
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 Source PDF 51쪽 전체를 렌더링해 시각적으로 확인했습니다.
 
 | PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
@@ -332,6 +342,8 @@ Source PDF 51쪽 전체를 렌더링해 시각적으로 확인했습니다.
 | 46 | $$(x+1)\bmod C$$ 형태의 index 갱신 코드 | 나머지 범위와 empty/full 불변식으로 유도했습니다. |
 | 47--50 | linked queue와 시간·공간 복잡도 | 끝 참조 유지 시 상수 포인터 갱신임을 위에서 설명했습니다. |
 | 51 | 다음 강의 예고 | 수식이나 증명 대상이 없습니다. |
+
+</details>
 
 ## PDF
 

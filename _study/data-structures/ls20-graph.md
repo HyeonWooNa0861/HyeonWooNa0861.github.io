@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-27 11:31:26 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS20 Graph"
 course: "Data Structures"
 topic: "Graph"
@@ -18,6 +18,8 @@ keywords:
 # LS20 Graph
 
 Source PDF: `LS20_graph.pdf`
+
+지하철 노선에서는 역이 대상이고, 역 사이의 연결이 관계입니다. 그래프는 대상을 정점으로, 관계를 간선으로 바꾸어 이런 연결 구조를 표현합니다. 간선에 방향이나 이동 시간을 붙이면 일방통행과 소요 시간도 함께 나타낼 수 있습니다.
 
 > **핵심:** 그래프 $$G=(V,E)$$는 정점 집합 $$V$$와 간선 집합 $$E$$로 정의됩니다. 무향 그래프에서는 간선에 방향이 없고, 유향 그래프에서는 시작점과 끝점의 순서가 중요합니다.
 
@@ -480,7 +482,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 한 그래프를 vertex/edge set, adjacency matrix, adjacency list 세 형태로 다시 표현해 정보가 보존되는지 확인합니다. matrix의 O(1) edge check와 list의 O(V+E) 공간·빠른 neighbor traversal을 sparse/dense 조건과 연결합니다. path와 simple path, cycle과 simple cycle, acyclic graph와 connected tree, 무향 component와 directed SCC를 반례로 구분하는 것이 시험 핵심입니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 04 Linear Algebra 3"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 3"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-04.pdf`
 
-> **핵심:** 기저는 공간 전체를 생성하면서 선형 독립인 벡터들의 집합입니다. 공간의 차원은 기저를 이루는 벡터의 개수입니다.
+> **핵심:** 기저는 공간의 모든 위치를 만들 수 있는 최소한의 방향 묶음입니다. 평면에는 서로 겹치지 않는 두 방향이 필요하므로 차원이 2이고, 한 방향을 다른 방향으로 만들 수 있다면 기저에 넣지 않습니다.
 
 ## 전체 흐름
 
@@ -49,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-04.pdf`
 </details>
 
 ## 1. REF로 선형 독립 확인
+
+여러 벡터 가운데 하나가 나머지를 섞어 만들 수 있다면 그 벡터는 새 방향을 추가하지 않습니다. REF는 행렬을 단순한 계단 모양으로 바꾸어, 어떤 열이 새 방향을 만들고 어떤 열이 앞선 열의 조합인지 눈에 보이게 합니다.
 
 벡터들을 열로 모아 행렬을 만들고 REF로 바꾸면 pivot column을 확인할 수 있습니다.
 

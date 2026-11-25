@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 7: Agentic LLMs"
 course: "CME295"
 topic: "RAG, Tool Calling, MCP, and Agent Workflows"
@@ -52,7 +52,9 @@ Query와 Chunk는 원문 문자열 그대로 비교되는 것이 아니라 각�
 
 RAG는 모델이 모르는 내용을 영구히 외우게 하는 방법이 아니라, 답할 때 참고할 쪽지를 찾아 건네는 방법에 가깝습니다. 예를 들어 사내 규정을 묻는 질문이 오면 규정 문서 전체를 매번 넣지 않고 관련 조항 몇 개를 검색해 질문 옆에 붙입니다. 모델은 그 근거를 읽고 답하므로 문서가 바뀌면 검색 저장소를 갱신할 수 있고, 어떤 문장을 근거로 썼는지도 추적하기 쉬워집니다.
 
-RAG의 핵심은 검색 품질입니다. 문서를 토큰 수 기준의 chunk로 나누고 임베딩을 만든 뒤, candidate retrieval에서는 bi-encoder와 cosine similarity, approximate nearest neighbor, BM25 또는 하이브리드 검색으로 후보를 줄입니다. 이어 reranking에서는 query와 chunk를 함께 넣는 cross-encoder로 더 정밀한 relevance score를 만들며, NDCG, reciprocal rank, precision@k, recall@k, MTEB 같은 기준으로 retriever를 평가합니다. 강의는 chunk size, overlap, embedding size, context를 붙이는 방법, prompt caching 같은 실무적 선택도 다룹니다.
+RAG의 핵심은 검색 품질입니다. 먼저 긴 문서를 검색하기 쉬운 작은 구간인 **chunk**로 나눕니다. Candidate retrieval은 질문과 관련 있어 보이는 chunk를 빠르게 넓게 모읍니다. 이 단계에서 빠진 문서는 뒤에서 되찾기 어렵습니다. Reranking은 모은 후보만 질문과 더 자세히 비교해 최종 순서를 정합니다. 즉 첫 단계는 `놓치지 않기`, 두 번째 단계는 `정확히 고르기`에 초점을 둡니다.
+
+빠른 후보 검색에는 embedding cosine similarity, BM25 또는 두 방식을 섞은 검색을 사용할 수 있습니다. 더 비싼 cross-encoder는 질문과 후보 chunk를 함께 읽어 reranking 점수를 만듭니다. Precision@$$k$$는 상위 결과가 얼마나 정확한지, recall@$$k$$는 필요한 문서를 얼마나 놓치지 않았는지를 봅니다. NDCG와 reciprocal rank는 관련 문서가 위쪽에 놓였는지도 반영합니다. Chunk 크기와 겹침 정도는 문맥 보존, 저장량, 검색 정밀도 사이의 절충입니다.
 
 후반부는 구조화된 데이터와 외부 행동을 다루는 tool calling으로 이동합니다. LLM은 함수의 API와 설명을 보고 적절한 도구와 인자를 예측하고, 실제 함수 실행 결과를 다시 받아 자연어 응답을 만듭니다. 이 능력은 SFT 예제나 프롬프트 설명 반복으로 유도할 수 있고, 도구가 많아지면 tool selector/router가 필요한 후보 도구만 고릅니다. MCP는 도구 노출 방식을 표준화하는 프로토콜로 소개되고, ReAct 계열 에이전트는 observe, plan, act 같은 반복 루프를 통해 목표를 하위 행동으로 나누며, Agent2Agent와 안전성 문제가 이어서 논의됩니다.
 
@@ -167,11 +169,16 @@ $$f(t,D)$$는 document term frequency, $$\lvert D\rvert$$와 $$\operatorname{avg
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. RAG의 세 단계 retrieve, augment, generate를 각각 한 문장으로 설명하고, 실패가 가장 자주 발생하는 지점을 검색 단계와 연결해 정리합니다.
 2. candidate retrieval과 reranking을 속도, 입력 형태, 모델 구조, 평가 지표 관점에서 표로 비교합니다.
 3. cosine similarity 기반 semantic search와 BM25 기반 keyword search가 서로 다른 실패 사례를 만드는 예를 하나씩 만듭니다.
 4. tool calling의 두 LLM 단계인 tool prediction과 final response synthesis를 SFT 데이터 형식으로 써 봅니다.
 5. MCP, ReAct, Agent2Agent가 각각 tool 노출, 단일 에이전트 루프, 다중 에이전트 통신 중 어디에 해당하는지 구분합니다.
+
+</details>
 
 ## 복습 질문
 

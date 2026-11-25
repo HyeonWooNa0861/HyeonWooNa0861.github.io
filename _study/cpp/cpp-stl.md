@@ -1583,6 +1583,9 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 이 자료는 API를 전부 암기하는 방식보다 **선택 기준과 반복 패턴**을 먼저 잡는 것이 좋습니다.
 
 1. 먼저 `vector`, `list`, `array`의 메모리 구조와 시간 복잡도를 비교합니다.
@@ -1591,6 +1594,8 @@ $$
 4. `sort`/`stable_sort`/`partial_sort`/`nth_element`의 결과 차이를 예제로 구분합니다.
 5. `set::find`와 `std::find`의 차이, `map["key"]`의 자동 삽입, `remove`가 실제 삭제가 아니라는 점을 따로 표시해 둡니다.
 6. `accumulate`의 초기값, `binary_search`의 정렬 전제, `copy_if`와 `back_inserter`의 조합은 시험에 바로 나오기 좋은 부분입니다.
+
+</details>
 
 ## 복습 질문
 

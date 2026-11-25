@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Robotics 2"
 course: "AIX"
 topic: "VLA, World Models, Physical RL"
@@ -23,6 +23,9 @@ Source PDF: `Robotics_2.pdf`
 
 ## 원본 슬라이드 매핑
 
+<details markdown="block">
+<summary markdown="span">Reference: topics by slide</summary>
+
 | 핵심 내용 | PDF 쪽 | 수식·출처 경계 |
 |---|---:|---|
 | LLM–robotics three-phase parallel | 5–9 | Pre-training, alignment/action fine-tuning, RL의 대응은 원본의 중심 비유이며 수학적 동치가 아닙니다. |
@@ -34,6 +37,10 @@ Source PDF: `Robotics_2.pdf`
 | Physical Turing test와 장기 horizon | 41–44 | Milestone과 timeline은 원본의 전망이며 수학적 예측 모델이 아닙니다. |
 
 > **핵심:** Robotics scaling thesis는 LLM의 규모 확장 전략을 로봇 학습에도 적용할 수 있다는 주장입니다. 강의는 이를 pre-training, action fine-tuning, physical RL의 세 단계로 설명합니다.
+
+이 주장의 핵심은 로봇마다 모든 행동을 처음부터 가르치지 않는 것입니다. 먼저 많은 영상으로 세상의 움직임을 넓게 배우고, 특정 로봇의 몸과 명령에 맞게 행동을 조정한 뒤, 실제 시행착오로 더 나은 행동을 찾습니다. 강의는 이 세 단계를 각각 사전학습, 행동 미세조정, 물리적 강화학습으로 설명합니다.
+
+</details>
 
 ## 전체 흐름
 
@@ -66,7 +73,7 @@ Robotics 2는 LLM scaling의 성공 공식이 로보틱스로 확장될 수 있�
 
 위쪽 초록 pipeline은 `Pre-Training`, `Supervised Fine-Tuning`, `Reasoning RL`을 각각 simulation, alignment, surpassing 단계로 읽습니다. 아래쪽 보라 pipeline은 앞의 두 단계를 `World Modeling`, `Action Fine-Tuning`에 대응하며, 강의의 후반부에서 physical RL을 세 번째 단계로 연결합니다. 이 도식은 두 분야가 수학적으로 동일하다는 증명이 아니라, robotics data와 training strategy를 조직하는 강의의 중심 가설입니다.
 
-강의는 로보틱스를 LLM race 이후의 next frontier로 봅니다. LLM에서 대규모 model, data, compute가 성능을 밀어 올렸듯이, robotics도 scale 가능한 architecture와 data engine이 결합될 때 크게 발전할 수 있다는 주장입니다.
+강의는 로보틱스를 LLM 이후 규모 확장의 다음 분야로 봅니다. LLM은 큰 모델만으로 발전한 것이 아니라 많은 데이터와 계산 자원이 함께 필요했습니다. 로봇도 여러 기체와 작업에 재사용할 모델 구조, 충분한 행동 데이터, 반복 학습 체계가 함께 있어야 발전할 수 있다는 주장입니다.
 
 | LLM scaling | Robotics scaling |
 |---|---|
@@ -76,11 +83,11 @@ Robotics 2는 LLM scaling의 성공 공식이 로보틱스로 확장될 수 있�
 | reasoning RL | physical RL |
 | language output | motor action, manipulation, navigation |
 
-DGX-1과 OpenAI의 early scaling anecdote는 modern deep learning의 compute era를 떠올리게 합니다. Robotics 2의 중심 관점은 이 scaling mindset이 physical AI로 이동한다는 것입니다.
+DGX-1과 초기 OpenAI 사례는 계산 자원을 크게 늘리며 딥러닝 성능을 끌어올린 시기를 보여 줍니다. Robotics 2는 같은 규모 확장 관점이 텍스트 모델을 넘어 실제 세계에서 움직이는 AI로 이동한다고 설명합니다.
 
 ## 2. Pre-training as Simulation
 
-강의는 GPT-style pre-training을 internet-scale text 위의 simulation처럼 해석합니다. Text pre-training은 넓은 world knowledge와 pattern을 학습하지만, 그 자체로 instruction following이나 task execution을 완성하지는 않습니다.
+강의는 GPT식 사전학습을 대규모 인터넷 텍스트 안에서 여러 상황을 미리 경험하는 과정으로 해석합니다. 텍스트 사전학습만으로도 넓은 지식과 언어 패턴을 배우지만, 사용자의 지시를 정확히 따르거나 특정 작업을 수행하는 능력까지 자동으로 완성되지는 않습니다.
 
 LLM의 canonical recipe는 다음 세 단계로 정리됩니다.
 
@@ -286,6 +293,9 @@ Near-term milestone은 모든 환경의 general-purpose autonomy가 아닙니다
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 Robotics 2는 LLM과 robotics의 parallel을 먼저 외우면 훨씬 쉽습니다. Pre-training은 world model, instruction tuning은 action fine-tuning, reasoning RL은 physical RL에 대응됩니다.
 
 두 번째로 VLA와 WAM의 차이를 잡아야 합니다. VLA는 vision-language-action mapping이고, WAM은 world modeling을 더 중심에 둔 full robotics recipe입니다.
@@ -302,6 +312,8 @@ Robotics 2는 LLM과 robotics의 parallel을 먼저 외우면 훨씬 쉽습니�
 | teleop 한계 | human labor, robot access, operator fatigue |
 | physical RL | teleoperation을 넘어서는 surpassing phase |
 | Real2Sim2Real | digital twins/cousins로 training universe 확장 |
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 1: Transformer"
 course: "CME295"
 topic: "From NLP Fundamentals to Transformer Architecture"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 1](https://www.youtube.com/watch?v=
 
 아래 토큰 행은 attention의 입력이고, 가운데 세 열은 동일한 입력에서 역할이 다른 Q·K·V를 분기하는 단계입니다. 위 식은 Q와 K로 관계 점수를 만든 뒤 V를 가중합한다는 뜻이므로, 세 벡터를 각각 독립된 정보처럼 읽으면 안 됩니다.
 
-> **핵심:** NLP 문제는 입력 텍스트에서 라벨을 고르는 분류, 여러 위치의 값을 예측하는 다중 분류, 새로운 텍스트를 만드는 생성으로 나눌 수 있습니다. 토큰화와 임베딩으로 문장을 수치화한 뒤 RNN의 순차 처리 한계를 살펴보면, self-attention과 Transformer가 필요한 이유가 드러납니다.
+> **핵심:** ‘긍정 후기인가?’에 답할 때는 정해진 이름표 중 하나를 고릅니다. 반면 ‘후기를 한 문장으로 요약해 줘’에는 새 문장을 만들어야 합니다. 두 경우 모두 모델은 글을 작은 조각(토큰)으로 읽습니다. 트랜스포머는 한 조각을 해석할 때 멀리 떨어진 다른 조각도 직접 참고합니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -52,7 +52,9 @@ LLM을 이해하려면 먼저 NLP 작업의 입력과 출력을 구분해야 합
 
 처음에는 이 작업들을 “텍스트를 넣고 답을 받는 일”로 한데 묶기 쉽습니다. 그러나 영화평 한 문장에 `긍정`을 붙이는 일은 출력이 하나인 분류이고, 문장 안의 사람·장소를 각각 찾는 일은 여러 위치를 판정하는 작업이며, 번역은 길이가 정해지지 않은 새 토큰 열을 만드는 생성입니다. 출력 모양이 달라지면 학습 목표와 평가법도 달라지므로, Transformer 구조에 들어가기 전에 먼저 이 구분을 잡습니다.
 
-그 다음 텍스트를 모델 입력으로 만들기 위한 tokenization과 representation을 다룹니다. word-level, subword-level, character-level tokenizer의 장단점을 비교하며, word-level은 Out Of Vocabulary 위험이 크고 subword는 어근을 활용하지만 sequence length가 길어지며, character-level은 오탈자에 강하지만 sequence가 매우 길어진다고 설명합니다. One-Hot Encoding은 모든 토큰 벡터가 서로 직교하므로 의미적 유사도를 담기 어렵고, Word2vec은 Continuous Bag of Words와 Skip-gram 같은 proxy task를 통해 의미 있는 embedding을 학습합니다. 예시 네트워크에서는 vocabulary size v의 one-hot input을 더 작은 hidden dimension d로 투영하고, cross-entropy loss와 backpropagation으로 다음 단어 예측을 학습한 뒤 hidden representation을 word representation으로 사용합니다.
+모델은 글자를 그대로 읽지 못하므로, 먼저 문장을 작은 조각인 **토큰**으로 나누고 각 토큰을 숫자 벡터로 바꿉니다. 단어 전체를 한 토큰으로 쓰면 처음 보는 단어를 처리하기 어렵고, 글자 단위로 너무 잘게 나누면 입력이 길어집니다. Subword 방식은 `playing`을 `play`와 `ing`처럼 자를 수 있어 두 문제 사이를 절충합니다.
+
+One-Hot Encoding은 토큰마다 서로 겹치지 않는 번호표를 주는 방식이라 `고양이`와 `강아지`가 비슷하다는 정보를 담지 못합니다. Word2vec은 주변 단어를 맞히는 연습을 통해 함께 쓰이는 단어의 벡터가 가까워지게 합니다. 강의의 예시 네트워크는 vocabulary 크기 $$v$$의 one-hot 입력을 더 작은 차원 $$d$$로 바꾸고, 다음 단어 예측 오차를 역전파해 이 벡터를 학습합니다. 여기서 **embedding**은 토큰의 뜻과 사용 문맥을 여러 숫자로 압축한 표현입니다.
 
 후반부는 RNN/LSTM의 한계에서 attention과 Transformer로 이어집니다. RNN은 hidden state로 sequence so far를 유지해 word order를 반영하지만 long-range dependency, vanishing gradient, sequential computation 때문에 긴 문맥과 학습 속도에서 문제가 생깁니다. Attention은 예측하려는 출력과 입력의 관련 부분을 직접 연결하는 방식이고, Transformer는 2017년 Attention is All You Need 논문에서 self-attention을 중심으로 제안되었습니다. Query, key, value는 학습되는 projection으로 만들어지며, scaled dot-product attention은 softmax(QK^T / sqrt(d_k))V로 표현됩니다. Transformer는 encoder와 decoder로 구성되고, encoder self-attention은 입력 토큰들이 서로를 보게 하며, decoder의 masked self-attention은 지금까지 생성된 토큰만 보게 하고, cross-attention은 decoder query가 encoder의 key/value를 참조하게 합니다. Position encoding, multi-head attention, FFN, BOS/EOS token, label smoothing도 함께 소개됩니다.
 
@@ -140,12 +142,17 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 세 NLP 작업 범주를 입력/출력 형태와 예시 작업으로 구분해 암기합니다.
 2. Tokenizer 선택이 OOV, sequence length, inference cost에 어떤 영향을 주는지 비교합니다.
 3. One-hot vector가 왜 cosine similarity 관점에서 의미 표현에 부적합한지 설명해 봅니다.
 4. RNN/LSTM이 해결하려는 문제와 attention이 등장한 이유를 long-range dependency 관점에서 연결합니다.
 5. softmax(QK^T / sqrt(d_k))V의 각 행렬이 무엇을 의미하는지 말로 풀어 씁니다.
 6. Encoder self-attention, decoder masked self-attention, cross-attention을 machine translation 예시로 구분합니다.
+
+</details>
 
 ## 복습 질문
 

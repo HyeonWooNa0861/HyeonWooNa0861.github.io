@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:01:00 +0900
-last_modified_at: 2026-10-16 19:37:33 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Autonomous Driving Computing Assignment 3: LiDAR 3D Object Detection"
 course: "Autonomous Driving"
 topic: "VoxelNet and Point Cloud Detection"
@@ -94,6 +94,8 @@ PointRCNN 설명에서 GT box 안의 point를 foreground로 표시한 결과는 
 
 ### 4.1 Voxel partition
 
+Point cloud의 점 개수와 위치는 장면마다 달라서 그대로는 일정한 크기의 3D tensor로 묶기 어렵습니다. Voxelization은 공간을 작은 상자로 나누고, 각 점을 자신이 들어갈 상자의 정수 주소로 바꿉니다. 같은 상자에 들어간 점은 뒤의 VFE가 하나의 지역 특징으로 요약합니다.
+
 Voxel size는 0.2×0.2×0.4 m로 설정돼 있습니다. 공간 범위 안의 point는 정수 voxel index로 변환됩니다.
 
 $$
@@ -109,6 +111,8 @@ $$
 저장된 한 scene에서는 범위 안 40,950점이 7,236개의 non-empty voxel로 묶였습니다. 전체 655,360 voxel 중 1.10%만 비어 있지 않았습니다. Voxel당 최대 point 수 $$T=32$$를 넘는 103개 voxel은 random sampling으로 줄였습니다.
 
 ### 4.2 Point-wise input and VFE
+
+점의 절대 좌표만 보면 도로 전체에서 어디에 있는지는 알 수 있지만, 같은 voxel 안에서 이웃 점과 어떻게 배치됐는지는 바로 드러나지 않습니다. 그래서 각 점에 **센서 좌표계의 절대 위치**와 **voxel 중심에서 얼마나 떨어졌는지**를 함께 넣습니다.
 
 Voxel 안 point $$p_i$$의 입력은
 

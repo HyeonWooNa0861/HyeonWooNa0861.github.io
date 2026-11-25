@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Autonomous Driving 1"
 course: "AIX"
 topic: "Modular Autonomous Driving and Occupancy Transition"
@@ -23,6 +23,9 @@ Source PDF: `Autonomous_Driving_1.pdf`
 
 ## 원본 슬라이드 매핑
 
+<details markdown="block">
+<summary markdown="span">Reference: topics by slide</summary>
+
 | 핵심 내용 | PDF 쪽 | 수식·출처 경계 |
 |---|---:|---|
 | Modular ADS pipeline | 7–10 | Localization, perception, prediction, planning, control의 분리는 원본 구조 설명입니다. 정량식은 제시되지 않습니다. |
@@ -33,6 +36,10 @@ Source PDF: `Autonomous_Driving_1.pdf`
 | Fleet data engine | 34–36 | Mining → labeling → training → redeployment 폐루프는 원본의 시스템 흐름이며, 성능 향상을 보장하는 수학적 정리는 아닙니다. |
 
 > **핵심:** 모듈형 자율주행 시스템은 localization, perception, prediction, planning, control을 연결해 주행을 결정합니다. RSS는 학습된 주행 정책과 별도로 검증할 수 있는 안전 경계를 제시합니다.
+
+차량은 카메라 영상을 보고 곧바로 핸들을 돌리지 않습니다. 먼저 자기 위치를 찾고, 주변 물체를 알아보고, 다른 차량의 움직임을 예상한 뒤, 경로와 조작 명령을 정합니다. 모듈형 시스템은 이 판단을 여러 단계로 나눈 구조입니다. RSS는 모델의 판단과 별도로 “이 거리와 행동은 안전한가?”를 규칙으로 검사하는 층입니다.
+
+</details>
 
 ## 전체 흐름
 
@@ -54,7 +61,7 @@ Source PDF: `Autonomous_Driving_1.pdf`
 
 ## 1. 자율주행이 AI 문제가 된 이유
 
-운전은 단순히 steering angle과 acceleration을 제어하는 문제가 아닙니다. 실제 도로는 open-world 환경이며, 모델은 사람, 차량, 표지판, 차선, 장애물, 날씨, 예외 상황을 함께 이해해야 합니다.
+운전은 조향각과 가속도만 계산한다고 끝나지 않습니다. 실제 도로에서는 처음 보는 공사 구간이나 예상 밖의 보행자처럼 학습할 때 정해 두지 못한 상황이 계속 나타납니다. 이를 **open-world 환경**이라고 합니다. 모델은 사람, 차량, 표지판, 차선, 장애물, 날씨를 함께 파악하고 불확실한 상황에서도 안전한 행동을 골라야 합니다.
 
 | 어려움 | 설명 |
 |---|---|
@@ -74,7 +81,7 @@ Source PDF: `Autonomous_Driving_1.pdf`
 | DARPA Grand Challenge | off-road autonomous navigation을 목표로 함 |
 | DARPA Urban Challenge | 교통 규칙, 교차로, 움직이는 agent가 포함된 도시 주행 |
 
-Urban Challenge 이후 자율주행은 단순 경로 추종이 아니라 situational awareness와 decision making이 중요한 문제로 자리 잡았습니다.
+Urban Challenge 이후에는 정해진 선을 따라가는 능력만으로 충분하지 않았습니다. 주변 차량과 교차로 상황을 파악하는 **상황 인식(situational awareness)**과, 여러 행동 중 안전한 하나를 고르는 **의사결정(decision making)**이 핵심 문제가 되었습니다.
 
 ## 3. Modular ADS 구조
 
@@ -217,7 +224,12 @@ End-to-end 방향으로 가려면 모델 구조만 바뀌어서는 부족합니�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 복습은 localization에서 control까지 modular pipeline을 먼저 그린 뒤, 앞 모듈의 오차가 뒤 의사결정으로 전파되는 경로를 한 사례로 추적합니다. 다음으로 object list와 occupancy를 unknown obstacle·irregular geometry 관점에서 비교해, 표현 전환의 이유를 설명할 수 있어야 합니다. 시험에서는 RSS의 safety envelope와 fleet data → mining → auto-labeling → retraining → redeployment 폐루프를 우선 재현합니다.
+
+</details>
 
 ## 복습 질문
 

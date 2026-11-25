@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Multi-Layer Perceptron"
 course: "AIX"
 topic: "MLPs and Generalization"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `02_MLP.pdf`
 
 > **핵심:** 선형 층 사이에 비선형 활성화 함수가 없으면 여러 층을 쌓아도 하나의 선형 변환과 같습니다. XOR은 단일 perceptron이 선형 경계만으로는 해결할 수 없는 문제를 보여줍니다.
+
+점들을 직선 하나로 나눌 수 있다면 단일 perceptron으로도 충분합니다. 하지만 XOR처럼 정답 점이 대각선으로 떨어져 있으면 직선 하나로 두 부류를 가를 수 없습니다. MLP는 중간 층에서 입력을 여러 번 나누고 다시 조합해 이런 굽은 경계를 만듭니다. 이때 각 층 사이의 비선형 활성화 함수가 없으면 여러 층도 결국 직선 하나와 같은 계산으로 합쳐집니다.
 
 ## 전체 흐름
 
@@ -52,7 +54,7 @@ Source PDF: `02_MLP.pdf`
 
 ## 1. Feed-forward Neural Network
 
-Feed-forward neural network는 입력이 hidden layer를 지나 output layer로 한 방향으로 흐르는 신경망입니다.
+Feed-forward neural network는 입력이 중간 계산 층(hidden layer)을 지나 출력 층으로 한 방향으로 흐르는 신경망입니다. 이전 출력이 다시 같은 층의 입력으로 돌아오는 순환 연결은 없습니다.
 
 ```text
 input x -> hidden layers -> output o
@@ -67,8 +69,8 @@ $$
 | Layer | 역할 |
 |---|---|
 | Input layer | 숫자 벡터 형태의 입력을 받습니다. |
-| Hidden layer | 입력을 여러 단계의 feature representation으로 변환합니다. |
-| Output layer | classification score, probability, regression value 등을 출력합니다. |
+| Hidden layer | 입력을 문제를 풀기 좋은 중간 특징으로 여러 단계에 걸쳐 바꿉니다. |
+| Output layer | 분류 점수·확률 또는 회귀 예측값처럼 최종 답에 필요한 값을 냅니다. |
 
 ## 2. Activation과 비선형성
 
@@ -301,7 +303,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 먼저 activation이 없는 여러 선형층이 하나의 선형 변환으로 합쳐짐을 확인한 뒤, XOR이 단일 perceptron으로 분리되지 않는 그림을 다시 그립니다. 작은 2-layer network에서 forward 값과 chain rule 기반 gradient를 차례로 추적하면 backpropagation의 계산 순서가 선명해집니다. 마지막에는 training/validation loss 곡선으로 generalization gap을 판별하고 L1, L2, early stopping의 대응 차이를 정리합니다.
+
+</details>
 
 ## 복습 질문
 

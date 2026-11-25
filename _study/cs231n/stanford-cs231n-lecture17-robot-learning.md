@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 17: Robot Learning"
 course: "CS231N"
 topic: "Robot Learning"
@@ -28,7 +28,7 @@ Official slides: [Lecture 17 PDF](https://cs231n.stanford.edu/slides/2025/lectur
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_17.pdf#page=54" target="_blank" rel="noopener">CS231N Lecture 17, PDF p. 54 (printed slide 54)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Robot learning은 perception의 출력에 action을 붙이는 문제가 아닙니다. Action이 다음 observation을 바꾸는 **closed loop**에서 reward, dynamics, demonstration, planning을 함께 다뤄야 하며, 최근 foundation policy도 이 상호작용 data의 한계를 벗어날 수 없습니다.
+> **핵심:** 로봇이 컵을 잡으려고 팔을 움직이면 다음 카메라 영상에서 손과 컵의 위치가 달라집니다. 사진 속 물체를 맞히는 문제와 달리, 선택한 행동이 다음 입력을 바꿉니다. 로봇 학습에서는 한 번의 정답뿐 아니라 여러 행동을 이어서 목표를 달성했는지도 봅니다.
 
 사진 속 컵을 고양이라고 잘못 분류해도 사진은 그대로입니다. 그런데 로봇이 컵을 집으려다 옆으로 밀면 어떻게 될까요? 다음 순간 카메라에는 **원래 자리에서 벗어난 컵**이 보입니다. 로봇은 방금 한 행동 때문에 달라진 장면에서 다시 결정해야 합니다. 사람의 시범으로 배우는 모방학습에서는 ‘시범에 없던 이 장면에서도 컵을 집을 수 있을까?’가 문제가 됩니다. 여러 행동 뒤 받은 보상으로 배우는 강화학습에서는 ‘어떤 행동이 결국 컵을 집는 데 도움이 됐을까?’를 따져야 합니다.
 
@@ -86,7 +86,9 @@ Behavior cloning은 expert demonstration의 $$(s,a)$$ pair로 supervised policy�
 
 이를 줄이려면 실행 중 방문하는 state에서 expert label을 더 모으거나, diverse demonstration과 corrective data를 수집하고, imitation으로 초기화한 뒤 RL 또는 planning으로 보완할 수 있습니다. 강의의 deformable-object manipulation 사례는 perception과 learned dynamics, planning을 결합하는 이유를 보여줍니다.
 
-단순 regression policy는 같은 관찰에서 여러 유효한 행동이 가능한 demonstration을 평균내 어색한 action을 만들 수 있습니다. Energy-based implicit behavior cloning은 observation-action pair에 score를 주고 inference에서 좋은 action을 찾으며, **diffusion policy**는 generative diffusion model을 policy function class로 사용해 multimodal action distribution을 표현합니다. 강의는 butter spreading, scrambled eggs, potato peeling, book sliding처럼 fine-grained manipulation을 demonstration에서 빠르게 학습한 사례를 보여주되, 신뢰성과 초기 조건 generalization에는 반복적인 data collection이 필요하다고 선을 긋습니다.
+같은 장면에서도 로봇이 장애물을 왼쪽이나 오른쪽으로 피하는 두 행동이 모두 정답일 수 있습니다. 단순 regression policy가 두 정답을 평균내면 장애물 쪽으로 곧장 가는 잘못된 행동이 나올 수 있습니다. Energy-based behavior cloning은 관찰과 행동의 조합에 점수를 주고 높은 점수의 행동을 찾습니다. **Diffusion policy**는 여러 가능한 행동 경로의 분포를 생성 과정으로 학습해 한 가지 평균 행동으로 뭉개지는 문제를 줄입니다.
+
+강의는 butter spreading, scrambled eggs, potato peeling, book sliding처럼 세밀한 조작을 demonstration에서 학습한 사례를 보여줍니다. 다만 학습한 시작 상태와 다른 상황에서도 안정적으로 동작하려면 다양한 초기 조건의 data를 반복해 모으고 실제 실행 실패를 다시 학습에 반영해야 합니다.
 
 ## 5. Robot foundation policy와 world model
 
@@ -196,7 +198,12 @@ Probability와 log-probability, discount $$\gamma$$는 무차원입니다. Rewar
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 하나의 manipulation task를 골라 state, observation, action, reward를 직접 정의합니다. 같은 task를 RL, model-based planning, behavior cloning으로 풀 때 필요한 data와 실패 방식을 비교하고, foundation policy가 재사용할 부분과 embodiment-specific 부분을 나눕니다.
+
+</details>
 
 ## 복습 질문
 

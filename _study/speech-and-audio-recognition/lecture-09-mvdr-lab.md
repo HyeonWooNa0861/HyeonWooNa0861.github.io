@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-19 14:56:38 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition: Lecture 9 MVDR Beamforming Lab"
 course: "Speech and Audio Recognition"
 topic: "Direction-Based and Mask-Based Beamforming"
@@ -87,6 +88,9 @@ $$H$$는 켤레전치입니다. 대각 원소에는 해당 마이크 STFT 크기
 
 실제 방에서는 직접음 외에 반사음도 들어옵니다. **상대 전달함수(RTF)** $$\tilde a_m=a_m/a_r$$는 마이크 $$m$$의 전달함수를 기준 마이크의 전달함수로 나눈 무차원 복소 비율입니다. $$a_r\ne0$$이고 한 bin에서 하나의 전달벡터로 표현할 수 있다면 $$\mathbf s=\tilde{\mathbf a}s_r$$입니다. 이때 공분산이 $$\phi_r\tilde{\mathbf a}\tilde{\mathbf a}^{H}$$이고 $$\phi_r=\mathbb E[\lvert s_r\rvert^2]$$이므로, 모든 열이 같은 벡터에 비례합니다. 따라서 목표가 있는 bin에서 rank 1이고 주 고유벡터를 기준 마이크 값으로 나누면 RTF를 얻습니다. 실제 자료의 `rtf(PhiS_or)`는 이 조건이 근사일 때의 추정값입니다.
 
+<details markdown="block">
+<summary markdown="span">Reading the figure: phase wrapping and interchannel phase difference</summary>
+
 설명자료 5쪽 위 그림은 마이크 8의 마이크 1 대비 위상을 그립니다. 가로축은 주파수(Hz), 세로축은 위상(rad)입니다. 주황 선의 중간 점프는 위상을 $$[-\pi,\pi]$$ 범위로 표시한 결과입니다. 전달 지연이 갑자기 바뀐 것은 아닙니다. 파란 점이 선에서 벗어나는 정도가 실제 관측에서 자유음장 가정과 달라진 부분입니다. 반향을 줄이면 직선에 가까워질 수 있지만, 1 m의 유한 거리와 평면파 가정 차이도 남으므로 완전히 겹친다고 보장하지 않습니다.
 
 <figure>
@@ -97,6 +101,8 @@ $$H$$는 켤레전치입니다. 대각 원소에는 해당 마이크 STFT 크기
 파란 선을 왼쪽부터 따라가 보겠습니다. 20° 방향에서 오는 소리는 마이크 8에 마이크 1보다 약 279 µs 늦게 도착합니다. 시간차는 일정하지만 주파수가 높을수록 그 시간에 더 많은 주기를 지나므로 위상은 계속 내려갑니다. 약 1.79 kHz에서 선이 위로 돌아오는 것은 **−π와 +π가 같은 각도**이기 때문입니다. 마이크의 위치나 소리의 방향이 바뀐 것이 아닙니다.
 
 **채널 간 위상차(IPD, Interchannel Phase Difference)**는 같은 시간·주파수 칸에서 두 채널의 위상을 뺀 각도입니다. 예를 들어 마이크 8에서 마이크 1의 위상을 빼려면 $$\angle(X_8X_1^*)$$를 계산합니다. 설명자료 5쪽의 파란 점은 혼합음의 순간 IPD가 아니라 목표 공분산에서 추정한 **RTF의 위상**입니다. 목표 한 화자의 전달 패턴이 고정돼 있고 그 화자가 우세할 때 두 종류의 위상 정보가 가까워집니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Minimum variance with a fixed target response</summary>
@@ -118,7 +124,7 @@ $$
 - **IBM(Ideal Binary Mask):** 기준 마이크에서 $$\lvert S_r\rvert>\lvert N_r\rvert$$면 1, 아니면 0입니다.
 - **IRM(Ideal Ratio Mask):** 목표 진폭 제곱을 $$\lvert S_r\rvert^2+\lvert N_r\rvert^2$$로 나눕니다. 둘 다 0인 경우는 코드의 작은 상수로 처리합니다. 두 마스크 모두 기본 실험의 잡음 쪽 가중치는 $$1-m_S$$입니다.
 
-마이크 1을 고르는 단위벡터를 $$\mathbf u_r$$라 하겠습니다. 같은 혼합 관측 $$\mathbf x$$에 두 마스크를 따로 적용해 $$\widehat{\boldsymbol\Phi}_S,\widehat{\boldsymbol\Phi}_N$$을 만든 뒤, 실습은 아래 두 필터를 계산합니다. 읽기 쉽게 로딩과 분모 안정화 항은 식에서 생략했습니다.
+그림의 마스크들은 소리를 바로 지우는 지우개가 아닙니다. 목표 음성이 강한 칸에 큰 비중을 주어 마이크들이 그 목소리를 어떻게 받았는지 추정하고, 잡음 쪽에서도 같은 일을 합니다. Souden MVDR과 다채널 위너 필터(MWF)는 이렇게 얻은 두 통계로 마이크를 얼마씩 섞을지 정합니다. 아래 식의 $$\mathbf u_r$$는 기준 마이크를 고르는 벡터입니다. 두 행렬 $$\boldsymbol\Phi_S,\boldsymbol\Phi_N$$은 각각 목표와 잡음의 추정 통계이며, 식에서는 수치 계산을 안정시키는 작은 항을 생략했습니다.
 
 $$
 \mathbf G=\boldsymbol\Phi_N^{-1}\boldsymbol\Phi_S,
@@ -130,7 +136,7 @@ $$
 
 `souden()`의 `G[:, :, ref]`는 주파수마다 $$\mathbf G$$의 기준 마이크 **열**을 골라냅니다. 명시적인 방향 각도는 없지만 목표 관측의 채널 간 패턴이 통계에 들어 있습니다. `apply()`는 가중치의 켤레와 모든 마이크 STFT를 곱해 채널 축을 합산합니다. 출력 $$y(t,f)=\mathbf w(f)^H\mathbf x(t,f)$$는 STFT의 513 × 929 배열이며, iSTFT를 적용하면 하나의 파형이 됩니다.
 
-작성자 예시로 목표가 두 마이크에 같은 크기·위상으로 도달하고, 서로 독립인 잡음의 전력이 각각 1과 4라고 하겠습니다. 단순 평균은 두 채널에 0.5씩 주지만 MVDR은 잡음이 작은 마이크에 0.8, 다른 마이크에 0.2를 줍니다. 합이 1이라 목표 응답을 유지하고, 잡음 전력은 1.25에서 0.8로 줄입니다. MWF는 이 출력에 추가 이득을 곱하므로 목표 응답 1을 유지해야 하는 필터와 목적이 다릅니다.
+두 마이크에 목표 목소리가 똑같이 들어오지만 서로 독립인 잡음의 전력은 1과 4인 예를 보겠습니다. 두 녹음을 반씩 섞으면 출력 잡음 전력은 1.25입니다. MVDR은 잡음이 작은 마이크를 80%, 큰 마이크를 20% 반영해 이를 0.8로 낮춥니다. 두 비율의 합은 여전히 100%이므로 목표 목소리의 크기는 유지됩니다. 이 한 화자 예에서 MWF는 잡음을 더 줄이는 대신 목표 음성까지 약하게 만들 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Rank-one Souden identity and the Wiener gain</summary>
@@ -149,7 +155,12 @@ MWF 식의 우변에는 $$\boldsymbol\Phi_S\mathbf u_r=\phi_r\tilde{\mathbf a}$$
 
 </details>
 
+<details markdown="block">
+<summary markdown="span">Reading the directional response at different frequencies</summary>
+
 설명자료 6쪽 그림은 1 kHz와 2 kHz에서 자유음장 신호의 입사각을 바꾸며 $$\lvert\mathbf w^H\mathbf h(\theta)\rvert^2$$를 비교합니다. −40°와 20°의 점선부터 보면 각 필터의 상대 억제 방향을 찾기 쉽습니다. **각 곡선은 자기 최대값을 0 dB로 정규화합니다.** 20°에서 0 dB 근처라는 사실은 그 방향의 상대 응답이 크다는 뜻이지, 실제 방에서 목표 응답이 정확히 1이라는 검증은 아닙니다.
+
+</details>
 
 ## 5. SepFormer 출력은 마스크 추정에만 사용한다
 
@@ -174,9 +185,14 @@ MWF 식의 우변에는 $$\boldsymbol\Phi_S\mathbf u_r=\phi_r\tilde{\mathbf a}$$
 | Souden MVDR, estimated mask | 7.73 | 1.60 | 0.91 | 5.6 |
 | MWF, estimated mask | 7.35 | 1.35 | 0.88 | 13.9 |
 
+<details markdown="block">
+<summary markdown="span">Evaluation metrics and the limits of a single mixture</summary>
+
 SI-SDR은 평균을 제거한 추정 파형을 기준 $$s_r$$에 투영하고, 그 투영 전력과 나머지 오차 전력의 비를 dB로 표시합니다. 전체 이득을 맞출 수 있어도 반향, 위상, 대역별 크기가 다르면 오차가 남습니다. 따라서 SepFormer 출력의 낮은 점수를 반향 제거 하나의 결과로 단정할 수 없습니다. PESQ는 wideband 지각 품질 점수, STOI는 기준에 대한 명료도 지표입니다. WER의 기준 문장은 사람이 작성한 전사가 아니라 **건조한 목표 원음을 Whisper로 인식한 결과**입니다. 정규화 후 36단어라 오류 한 건이 $$100/36\approx2.78$$%p입니다.
 
 이 한 예에서 추정 마스크 Souden MVDR은 DNN 파형을 그대로 쓰는 것보다 두 지표 모두 나았습니다. 반면 oracle IRM은 추정 마스크보다 SI-SDR은 높지만 WER은 더 높습니다. 방향 기반 oracle과 oracle 마스크 방식도 **서로 다른 정답 정보**를 사용하므로 차이 전체를 반향이나 RTF 추정 하나로 돌릴 수 없습니다. 결과는 한 방·한 혼합음의 관찰이지 모델 순위나 통계적으로 검증된 차이가 아닙니다. 노트북 Step 6의 비교 청취에서는 두 지표가 갈리는 출력들의 목표 발음과 남은 간섭을 따로 듣는 편이 유용합니다.
+
+</details>
 
 ## 7. 마스크 문턱값을 바꾸면 무엇이 달라지나
 
@@ -184,12 +200,17 @@ SI-SDR은 평균을 제거한 추정 파형을 기준 $$s_r$$에 투영하고, �
 
 설명자료 9쪽의 두 그래프는 세로축이 SI-SDR(dB), 가로축이 각 마스크의 문턱값(dB)입니다. 점 위 비율은 전체 시간·주파수 칸 중 선택된 비율이며, **모든 주파수에 같은 수의 프레임이 남는다는 뜻은 아닙니다.**
 
+<details markdown="block">
+<summary markdown="span">Experiment: varying speech and noise mask thresholds</summary>
+
 | 실험 | 바꾸는 조건 | 저장 결과를 읽는 방법 |
 |---|---|---|
 | A. 목표 마스크 | $$m_S=\mathbb 1[\mathrm{SNR}>\theta_S]$$, 잡음 쪽은 $$\mathrm{SNR}<0$$으로 고정 | 문턱값을 높이면 깨끗한 목표 칸만 남습니다. 이 예에서는 약 1–4%를 쓰는 지점에서도 성능이 유지됐습니다. |
 | B. 잡음 마스크 | $$m_N=\mathbb 1[\mathrm{SNR}<\theta_N]$$, 목표 쪽은 $$\mathrm{SNR}>0$$으로 고정 | 문턱값을 올릴수록 목표가 우세한 칸도 잡음 통계에 포함됩니다. 60 dB에서는 거의 전체를 골라 $$\widehat{\boldsymbol\Phi}_N\approx\mathbf R_x$$가 되며 SI-SDR이 약 7.7 dB로 내려갔습니다. |
 
 A와 B는 한쪽을 고정하고 다른 쪽을 독립적으로 바꿉니다. 따라서 두 마스크가 빈틈없이 서로 보완된다는 보장은 없습니다. A에서 적은 샘플로 충분했다는 관찰은 이 혼합음에 한정됩니다. 너무 적게 고르면 일부 bin의 공분산이 불안정하거나 0이 될 수 있습니다. B에서는 잘못 선택한 칸이 목표를 억제해야 할 성분처럼 학습시키는 효과를 낼 수 있습니다. 다만 **정확한 조향과 완전한 rank-1 목표 성분**만 잡음 공분산에 들어오면, 제약 때문에 그 성분의 출력 전력은 일정합니다. 실제 자기 상쇄는 목표 응답 오차, 더 복잡한 잔향이나 불완전한 통계 추정과 함께 해석해야 합니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: When target leakage can change the optimum</summary>

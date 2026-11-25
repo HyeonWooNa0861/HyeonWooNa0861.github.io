@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 10 Vector Calculus 2"
 course: "Machine Learning Basic"
 topic: "Vector Calculus 2"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-10.pdf`
 
-> **핵심:** Backpropagation은 chain rule을 이용해 출력에서 입력 방향으로 gradient를 전파합니다. 강의에서 다루는 reverse-mode automatic differentiation은 계산값을 만드는 forward pass와 gradient를 누적하는 backward pass로 이루어집니다.
+> **핵심:** 신경망의 마지막 오차가 각 parameter의 책임만큼 나뉘어 뒤로 전달되는 과정이 backpropagation입니다. 먼저 예측값을 계산하고, 그 계산을 거꾸로 따라가며 각 parameter를 얼마나 바꿀지 구합니다.
 
 ## 전체 흐름
 
@@ -49,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-10.pdf`
 </details>
 
 ## 1. Gradient 복습
+
+Loss를 산의 높이라고 보면 gradient는 현재 위치에서 가장 가파르게 올라가는 방향입니다. 학습은 loss를 줄여야 하므로 그 반대 방향으로 parameter를 움직입니다. 각 parameter를 조금 바꿨을 때 loss가 얼마나 변하는지를 한 묶음으로 모은 값이 gradient입니다.
 
 입력이 `n`차원이고 출력이 1차원인 함수에서 각 입력 변수에 대한 편미분을 모은 것이 gradient입니다.
 

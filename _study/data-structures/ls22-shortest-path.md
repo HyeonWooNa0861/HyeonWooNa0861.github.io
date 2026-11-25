@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-04 13:25:48 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS22 Shortest Path"
 course: "Data Structures"
 topic: "Shortest Path"
@@ -155,6 +155,8 @@ Dijkstra 알고리즘은 SSSP를 푸는 대표 알고리즘입니다. 핵심 직
 
 > 현재까지 알려진 거리 중 가장 작은 미확정 정점은 더 이상 짧아질 수 없다고 보고 확정합니다.
 
+예를 들어 시작점 `s`에서 `a`까지 직접 가는 비용이 7이고, `s-b-a`의 비용이 `2+3=5`라면 `a`의 후보 거리는 7에서 5로 줄어듭니다. Dijkstra는 이런 후보 갱신을 반복한 뒤, 남은 후보 중 가장 작은 값을 하나씩 확정합니다.
+
 이 말이 성립하려면 간선 weight가 음수가 아니어야 합니다.
 
 $$
@@ -211,6 +213,8 @@ s -> c -> b -> d -> g
 ## 6. Relaxation
 
 Relaxation은 Dijkstra 알고리즘의 핵심 갱신 연산입니다. 어떤 정점 $$u$$를 거쳐 이웃 정점 $$v$$로 가는 경로가 현재 알고 있는 $$v$$까지의 거리보다 짧으면, $$D[v]$$를 더 작은 값으로 바꿉니다.
+
+`relaxation`은 어려운 새 계산이 아니라 **더 싼 우회로를 발견했는지 비교하고 기록을 고치는 일**입니다. 앞의 예에서는 `a`의 기존 기록 7과 `b`를 거치는 새 후보 5를 비교해 5를 남깁니다.
 
 간선 $$(u,v)$$의 weight를 $$w(u,v)$$라고 하겠습니다. 그러면 relaxation 조건은 다음과 같습니다.
 
@@ -454,6 +458,9 @@ BFS는 모든 간선 weight가 1인 특수한 최단 경로 문제로 볼 수 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 첫 번째로 최단 경로의 기준을 정확히 잡아야 합니다. LS21의 BFS에서는 간선 개수 기준으로 최단 거리를 구했지만, LS22의 weighted graph에서는 간선 weight의 합이 기준입니다.
 
 두 번째로 relaxation을 반드시 손으로 계산할 수 있어야 합니다. Dijkstra의 모든 갱신은 $$D[v] > D[u] + w(u,v)$$인지 확인하는 데서 출발합니다. 이 조건이 참이면 $$D[v]$$를 줄이고 $$\text{prev}[v]$$를 $$u$$로 바꿉니다.
@@ -472,6 +479,8 @@ BFS는 모든 간선 weight가 1인 특수한 최단 경로 문제로 볼 수 �
 | 음수 간선 주의 | Dijkstra의 greedy 확정 논리가 깨질 수 있음 |
 | 복잡도 비교 | table scan vs min-heap |
 | 경로 복원 | $$\text{prev}$$ 배열을 목적지에서 시작점 방향으로 역추적 |
+
+</details>
 
 ## 복습 질문
 

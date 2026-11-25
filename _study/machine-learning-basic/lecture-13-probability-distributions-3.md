@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 13 Probability Distributions 3"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 3"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-13.pdf`
 
-> **핵심:** Standard normal distribution은 평균이 0이고 분산이 1인 Gaussian입니다. Multivariate Gaussian은 평균 벡터 $$\mu$$와 공분산 행렬 $$\Sigma$$로 정의됩니다.
+> **핵심:** Gaussian은 평균 근처의 값이 자주 나오고 멀어질수록 드물어지는 종 모양 분포입니다. 여러 변수를 함께 다룰 때에는 평균이 중심을, 공분산이 각 방향의 퍼짐과 변수들이 함께 움직이는 정도를 정합니다.
 
 ## 전체 흐름
 
@@ -54,6 +54,8 @@ Source PDF: `machine-learning-basic-lecture-13.pdf`
 </details>
 
 ## 1. Gaussian Distribution
+
+키처럼 평균 근처의 값이 자주 나오고 평균에서 멀수록 드물어지는 데이터를 종 모양으로 나타낸 것이 Gaussian distribution입니다. 평균 $$\mu$$는 종의 중심을, 분산 $$\sigma^2$$는 값이 중심 주변에 얼마나 넓게 퍼지는지를 정합니다.
 
 Gaussian distribution 또는 normal distribution은 실수 공간에서 정의되는 대표적인 연속 확률분포입니다. 일변수 가우시안은 평균 $$\mu$$와 분산 $$\sigma^2$$로 결정됩니다.
 
@@ -194,6 +196,8 @@ $$
 ## 5. Gaussian Sum과 Gaussian Mixture의 차이
 
 강의에서 강조하는 헷갈리는 지점은 가우시안 확률변수의 합과 가우시안 분포의 가중합이 다르다는 것입니다.
+
+두 사람의 키를 각각 뽑아 더하면 **값의 합**을 만든 것입니다. 반면 먼저 두 집단 가운데 하나를 고른 뒤 그 집단에서 키 하나를 뽑으면 **분포의 혼합**을 만든 것입니다. 전자는 한 시행에서 두 값을 더하고, 후자는 한 시행에서 어느 분포를 사용할지 고릅니다. 식에 덧셈 기호가 보인다는 이유만으로 같은 연산으로 보면 안 됩니다.
 
 확률변수의 합은 다음 상황입니다.
 
@@ -393,6 +397,8 @@ $$
 가 됩니다. 실제로는 $$\Sigma$$의 Cholesky decomposition이나 eigen decomposition을 이용해 $$L$$을 구합니다.
 
 ## 9. Change of Variable
+
+변수변환은 같은 표본을 다른 눈금으로 표현할 때 확률이 사라지거나 새로 생기지 않게 밀도를 보정하는 규칙입니다. 예를 들어 센티미터 눈금을 미터 눈금으로 바꾸면 숫자 간격은 100배 달라집니다. 같은 구간의 전체 확률을 유지하려면 확률밀도의 높이도 그 간격 변화에 맞춰 조정해야 합니다.
 
 변수 변환은 확률변수 $$x$$가 있을 때 새로운 확률변수
 

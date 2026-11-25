@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 18:13:14 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "AIX Final Review"
 course: "AIX"
 topic: "Final Exam Preparation Materials"
@@ -27,11 +27,11 @@ Source Materials:
   <li><a href="{{ "/study/aix/robotics-2/" | relative_url }}">Robotics 2</a></li>
 </ul>
 
-기말고사 복습은 `AIX Quiz Review Before Midterm`, `AIX: Midterm Review`, `AIX Quiz Review After Midterm`의 문제를 중심으로 진행합니다. Imitation learning과 robotics scaling의 배경은 `Robotics 1`, `Robotics 2`에서 더 자세히 다룹니다.
+이 글에서는 같은 ‘예측’도 무엇을 맞히느냐에 따라 어떻게 달라지는지 살펴봅니다. 회귀 모델은 숫자를, 언어 모델은 이어질 글 조각을, 모방학습을 한 로봇은 다음 행동을 예측합니다.
 
-중간고사 전 범위에서는 기본 개념과 오답을 가르는 기준을 확인합니다. 중간고사 이후 범위에서는 LLM, 자율주행, imitation learning, robotics scaling의 연결을 더 깊게 살펴봅니다.
+언어 모델은 방금 고른 단어를 읽고 다음 단어를 고릅니다. 로봇도 방금 취한 행동 때문에 다음에 보게 될 장면이 달라집니다. 한 번 잘 맞히는 능력과 여러 번 연속해서 잘 선택하는 능력이 왜 다른지 연결해 볼 수 있습니다.
 
-> **핵심:** 이 강의의 최소제곱 선형 회귀는 $$\hat{y}=w^Tx+b$$로 값을 예측하고, 잔차 $$y-\hat{y}$$의 제곱을 손실로 사용합니다. 로지스틱 회귀는 선형 점수를 sigmoid에 통과시켜 이진 분류 확률로 해석합니다.
+> **핵심:** 먼저 모델이 무엇을 입력받고 어떤 답을 내야 하는지 정합니다. 그다음 예측이 틀렸을 때의 영향을 봅니다. 집값을 높게 예측하면 오차 하나가 남지만, 로봇이 핸들을 잘못 돌리면 다음에 카메라에 잡히는 도로부터 달라집니다.
 
 ## 전체 흐름
 
@@ -70,14 +70,17 @@ Source Materials:
 
 | 축 | 핵심 문장 |
 |---|---|
-| LLM/Transformer | LLM은 decoder-only Transformer가 next token prediction을 반복하는 생성 모델입니다. |
-| Autonomous Driving | modular stack은 해석 가능하지만 앞단 오류가 뒤로 전파되고, Tesla식 접근은 shared world representation으로 이동합니다. |
-| Imitation Learning | behavioral cloning은 supervised learning처럼 보이지만 action이 다음 state distribution을 바꾸는 점이 다릅니다. |
-| Robotics Scaling | VLA와 ego-video, world model, action fine-tuning, physical RL은 로봇용 foundation model 흐름으로 연결됩니다. |
+| LLM/Transformer | GPT 계열 모델은 지금까지 쓴 글을 보고 다음 글 조각 하나를 골라 붙입니다. |
+| Autonomous Driving | 보행자를 보지 못하면 경로 계획도 그 사람을 피할 수 없습니다. 인식과 계획을 나누더라도 오류는 이어집니다. |
+| Imitation Learning | 전문가의 행동을 따라 배워도, 한 번 실수하면 시범에 없던 장면에서 다음 행동을 골라야 합니다. |
+| Robotics Scaling | 사람의 영상에서 물체가 움직이는 법을 배울 수 있지만, 로봇 팔을 얼마나 움직일지는 행동 데이터로 따로 익혀야 합니다. |
 
 ## 핵심 수식 유도 지도
 
-종합 복습에서는 같은 증명을 반복하기보다 아래 논리 사슬을 손으로 재현합니다. 상세 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/), [Large Language Models](/study/aix/large-language-models/), [Robotics 1](/study/aix/robotics-1/)에 있습니다.
+회귀식은 오차가 왜 줄어드는지, 신경망의 식은 어느 매개변수가 오차에 얼마나 영향을 주는지 설명합니다. 아래 표에서 필요한 식만 찾아볼 수 있습니다. 상세 계산은 [Linear and Logistic Regression](/study/aix/linear-logistic-regression/), [Multi-Layer Perceptron](/study/aix/multi-layer-perceptron/), [Transformer Architecture Overview](/study/aix/transformer-architecture-overview/), [Large Language Models](/study/aix/large-language-models/), [Robotics 1](/study/aix/robotics-1/)에 있습니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Model equations and their assumptions</summary>
 
 | 수식 | 성격과 유도 핵심 | 가정·실패 조건 |
 |---|---|---|
@@ -92,6 +95,8 @@ Source Materials:
 
 여기서 $$T$$는 문맥에 따라 temperature 또는 horizon을 뜻하므로 반드시 주변 정의를 확인합니다. 전자는 무차원 양수이고, 후자는 단위 없는 step 수입니다.
 
+</details>
+
 **원문 대응:** after-midterm quiz 5개 PDF는 각 p.1-3에 LLM·autonomous driving·imitation learning·robotics scaling 문항을 제시하지만 별도의 수식 증명은 싣지 않습니다. 위 표의 계산 근거는 `1st_Regression.pdf` p.10-25, `02_MLP.pdf` p.11-24, `2_Overview_TF.pdf` p.10-20, `3_Large_Language_Models.pdf` p.17-48, `Robotics_1.pdf` p.9-15에 대응합니다. 즉 퀴즈 정답 범위를 넘어선 전개는 각 상세 강의 글에서 원문 직접 제시식과 저자 보충을 구분해 검산합니다.
 
 ## 1. Linear Regression과 Optimization
@@ -101,9 +106,9 @@ Source Materials:
   <figcaption><a href="{{ "/assets/pdfs/study/aix/1st_Regression.pdf#page=8" | relative_url }}" target="_blank" rel="noopener"><code>1st_Regression.pdf</code> p.8</a> — 오차 부호 상쇄를 피하려 squared loss를 쓰는 출발점.</figcaption>
 </figure>
 
-원본의 첫 식은 양·음 residual이 상쇄될 수 있고, 둘째 식은 제곱으로 모든 항을 0 이상으로 만듭니다. 이 차이를 먼저 확인하면 gradient descent가 최소화하는 대상이 무엇인지 분명해집니다.
+그림의 첫 식은 오차를 그대로 더합니다. 예를 들어 한 값을 2만큼 높게, 다른 값을 2만큼 낮게 예측하면 두 번 다 틀렸는데도 합은 0입니다. 둘째 식처럼 제곱해서 더하면 4와 4를 더한 8이 남습니다. 이 값을 줄여야 두 예측이 실제 값에 가까워집니다.
 
-Linear Regression은 feature $$x$$로 target $$y$$를 예측하는 지도학습 모델입니다. 가장 기본 형태는 다음 선형 score입니다.
+선형 회귀(linear regression)는 관측한 값으로 다른 수치를 예측합니다. 예를 들어 집의 면적으로 집값을 추정한다면 면적은 입력 특성(feature), 실제 거래 가격은 맞히려는 값(target)입니다. 입력을 $$x$$, 예측값을 $$\hat y$$라고 쓰면 다음과 같습니다.
 
 $$
 \hat{y}=w^Tx+b
@@ -160,7 +165,7 @@ $$
 
 시험에서 logistic regression을 설명할 때는 다음 문장을 잡으면 됩니다.
 
-> linear score 위에 probability link function을 붙여 classification probability로 해석합니다.
+> 점수가 0이면 두 결과를 반반으로 봅니다. 점수가 커질수록 결과가 1일 확률이 높아지지만, 확률이 1을 넘지는 않습니다. 이 변환을 하는 함수가 시그모이드(sigmoid)입니다.
 
 | 비교 | Linear Regression | Logistic Regression |
 |---|---|---|
@@ -194,7 +199,7 @@ Backpropagation과 gradient descent는 같은 말이 아닙니다.
 | backpropagation | gradient를 계산하는 방법 |
 | gradient descent | gradient를 이용해 parameter를 갱신하는 최적화 방법 |
 
-Good learning은 training loss를 낮추는 것만이 아닙니다. 충분한 expressivity를 가지면서도 regularization과 bias-variance 균형을 통해 unseen data에서 generalize해야 합니다.
+훈련에 사용한 사진을 모두 맞혀도 처음 보는 사진을 틀릴 수 있습니다. 목표는 훈련 오차만 줄이는 것이 아니라 새 입력에서도 잘 맞히는 것, 즉 일반화입니다. 모델이 너무 단순하면 반복되는 특징을 놓치고, 너무 복잡하면 우연한 차이까지 외울 수 있습니다.
 
 Deep learning의 발전은 한 가지 요소로 설명하지 않습니다.
 
@@ -210,7 +215,7 @@ $$
 
 ## 4. Computer Vision
 
-Computer Vision의 high-level 목표는 pixel을 meaning으로 연결하는 것입니다. 단순히 이미지 크기를 줄이거나 GPU로 빠르게 계산하는 것이 목표가 아닙니다.
+사진 파일에는 각 위치의 밝기나 색이 숫자로 들어 있습니다. 컴퓨터 비전의 목표는 이 숫자를 보고 ‘횡단보도 위에 사람이 있다’처럼 무엇이 어디에 있는지 알아내는 것입니다.
 
 | 개념 | 시험 기준 |
 |---|---|
@@ -221,7 +226,7 @@ Computer Vision의 high-level 목표는 pixel을 meaning으로 연결하는 것�
 | AlexNet | CNN 기반 딥러닝이 전통적 CV를 넘어선 전환점 |
 | visual reasoning | 객체, 관계, 언어, 문맥을 함께 이해하는 structured understanding |
 
-CNN의 장점은 fully-connected layer처럼 모든 pixel을 독립 weight로 연결하지 않는다는 점입니다. 가까운 pixel들이 만드는 local pattern을 convolution으로 보고, 같은 filter를 여러 위치에 공유합니다.
+사진 왼쪽과 오른쪽에 있는 모서리를 찾는 데 서로 다른 규칙이 필요할까요? CNN은 이웃한 픽셀 몇 개를 보고 모서리 같은 특징을 찾은 뒤, 같은 검출 규칙(필터)을 다른 위치에도 적용합니다. 이 덕분에 위치마다 규칙을 처음부터 배울 필요가 없습니다.
 
 최근 vision에서는 classification만이 아니라 generation과 3D understanding도 중요해집니다.
 
@@ -241,7 +246,7 @@ NLP에서 text는 바로 model에 들어가지 않습니다. 먼저 tokenizer가
 | learned embedding | 의미 관계를 담을 수 있는 dense vector |
 | subword | rare word와 OOV 문제를 줄이는 부분 단어 단위 |
 
-Word2Vec은 단어 의미를 사람이 직접 입력하는 방식이 아닙니다. Proxy task를 학습하는 얕은 신경망을 만들고, hidden layer의 병목 표현을 embedding으로 사용합니다.
+사람이 모든 단어의 뜻을 숫자로 지정하기는 어렵습니다. Word2Vec은 대신 문장에서 어떤 단어들이 함께 나오는지를 학습합니다. 비슷한 문맥에서 쓰이는 단어는 비슷한 예측을 해야 하므로, 학습 후 각 단어를 나타내는 숫자 목록(임베딩)에 쓰임의 차이가 반영됩니다.
 
 Skip-Gram은 중심 단어를 보고 주변 context 단어를 예측합니다.
 
@@ -265,9 +270,9 @@ $$
 h_t=f(x_t,h_{t-1})
 $$
 
-현재 hidden state가 이전 hidden state에 의존하므로 sequential dependency가 생깁니다. 이 구조는 순서 데이터에 적합하지만, 먼 과거 정보가 뒤쪽까지 전달되기 어렵고 병렬 처리에 불리합니다.
+여기서 $$h_t$$는 지금까지 읽은 내용을 다음 단계로 넘기는 값입니다. 세 번째 단어를 처리하려면 두 번째 단어를 읽고 남긴 값이 먼저 필요합니다. 긴 문장일수록 첫 단어의 정보가 마지막까지 여러 단계를 거쳐야 합니다.
 
-Attention은 token 사이의 관계를 직접 계산합니다. 긴 문장이나 긴 대화에서 필요한 이전 token을 직접 참조할 수 있으므로 global relationship을 더 잘 봅니다.
+어텐션(attention)은 지금 해석하는 단어와 관련된 다른 단어를 직접 참조합니다. 예컨대 ‘수진이가 책을 샀고 그것을 읽었다’에서 ‘그것’을 이해하려면 바로 앞 단어보다 멀리 있는 ‘책’이 더 중요합니다.
 
 | 비교 | RNN | Attention |
 |---|---|---|
@@ -283,7 +288,7 @@ Attention은 token 사이의 관계를 직접 계산합니다. 긴 문장이나 
   <figcaption><a href="{{ "/assets/pdfs/study/aix/2_Overview_TF.pdf#page=13" | relative_url }}" target="_blank" rel="noopener"><code>2_Overview_TF.pdf</code> p.13</a> — token 표현이 Q·K·V로 나뉘어 관계 점수와 value 조합을 만드는 과정.</figcaption>
 </figure>
 
-아래 token representation에서 Q, K, V가 만들어지고, $$QK^T/\sqrt{d_k}$$가 어떤 value를 얼마나 섞을지 결정합니다. 시험에서는 세 vector의 이름보다 검색 기준(Q), 비교 표지(K), 가져올 내용(V)의 역할을 구분합니다.
+그림은 단어 하나를 해석할 때 다른 단어들의 정보를 얼마나 가져오는지 보여 줍니다. 먼저 현재 단어가 찾는 정보(Q)를 각 단어의 표지(K)와 비교합니다. 그런 다음 관련도가 높은 단어의 내용(V)에 더 큰 비중을 주어 합칩니다. 관련도를 정하는 값과 실제로 가져오는 값이 다르다는 점이 핵심입니다.
 
 Transformer는 token embedding, self-attention, multi-head attention, positional encoding을 결합합니다.
 
@@ -340,7 +345,7 @@ Decoding 방식도 구분해야 합니다.
 | greedy decoding | 매 step 가장 확률 높은 token 하나 선택 | 빠르고 단순 | 전체 문장 최적 보장 없음 |
 | beam search | 가능성 높은 $$k$$개 후보 sequence 유지 | greedy보다 좋은 전체 후보 탐색 가능 | 비용 증가, 다양성 제한 가능 |
 
-Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식입니다. 모든 token이 모든 expert를 쓰는 것이 아니라, router가 token마다 필요한 expert 일부만 활성화합니다.
+모델 안에 계산을 나누어 맡는 작은 신경망(expert)을 여러 개 두고, 단어 조각마다 그중 일부만 골라 쓸 수 있습니다. 어떤 신경망을 쓸지 정하는 부분이 라우터(router)입니다. 이런 MoE 방식은 매번 모든 신경망을 실행하지 않고도 모델에 더 많은 매개변수를 담을 수 있습니다.
 
 | 개념 | 시험 기준 |
 |---|---|
@@ -356,7 +361,7 @@ Mixture of Experts는 큰 모델 capacity를 효율적으로 쓰는 방식입니
   <figcaption><a href="{{ "/assets/pdfs/study/aix/Autonomous_Driving_2.pdf#page=26" | relative_url }}" target="_blank" rel="noopener"><code>Autonomous_Driving_2.pdf</code> p.26</a> — multi-camera와 temporal feature를 공유 world representation으로 통합하는 중심 구조.</figcaption>
 </figure>
 
-그림은 perception task마다 별도 pipeline을 두는 대신, camera와 시간 정보를 하나의 world representation으로 모은 뒤 필요한 output을 query하는 구조입니다. Representation-level end-to-end의 의미는 이 공유 표현까지 함께 학습한다는 데 있습니다.
+그림 가운데로 들어오는 선은 여러 카메라와 여러 시각에 관측한 정보를 나타냅니다. 이 관측으로 도로 주변의 상태를 한 번 추정해 두면, 서로 다른 기능이 같은 표현에서 ‘어디에 장애물이 있는가?’, ‘어느 공간이 비어 있는가?’에 필요한 정보를 꺼낼 수 있습니다.
 
 자율주행은 단순 제어 문제가 아니라 perception과 uncertainty가 큰 AI 문제입니다. 도로에는 차량, 보행자, 차선, 신호, 날씨, 가려짐, corner case가 섞여 있습니다.
 
@@ -396,7 +401,7 @@ Occupancy는 object 이름만이 아니라 geometry, free space, semantics를 �
 
 Imitation learning은 expert demonstration을 사용해 비싸고 위험한 trial-and-error를 줄입니다. 특히 실제 로봇에서는 시행착오가 비용과 안전 문제를 만들기 때문에 expert trajectory가 중요합니다.
 
-Behavioral Cloning은 expert trajectory를 supervised learning 문제로 바꿉니다.
+행동 복제(behavioral cloning)에서는 전문가가 본 장면과 그때 취한 행동을 한 쌍으로 저장합니다. 예를 들어 카메라 영상이 입력이고, 운전자가 그 순간 선택한 조향각이 정답입니다.
 
 $$
 o\rightarrow a
@@ -404,7 +409,7 @@ $$
 
 즉 observation을 입력으로 받고 expert action을 label로 삼아 policy를 학습합니다.
 
-하지만 imitation learning은 ordinary supervised learning과 다릅니다. Policy가 선택한 action이 다음 state를 바꾸고, 이 때문에 미래 입력 분포 자체가 달라집니다.
+사진을 잘못 분류해도 다음 사진은 바뀌지 않습니다. 반면 차가 왼쪽으로 조금 치우치면 다음 영상에는 차선이 평소와 다른 위치에 잡힙니다. 차선 중앙을 달리는 시범만 보았다면, 이제 필요한 것은 훈련 때 거의 보지 못한 복귀 동작입니다.
 
 | 문제 | 설명 |
 |---|---|
@@ -412,7 +417,7 @@ $$
 | compounding error | 작은 행동 오류가 다음 state를 바꾸고 이후 오류가 누적됨 |
 | state distribution shift | learner의 action 때문에 test-time state distribution이 expert data와 달라짐 |
 
-DAggER는 이 문제를 줄이기 위해 learner가 실제로 방문한 state를 모으고, 그 state에 expert label을 다시 붙여 dataset에 aggregate한 뒤 retrain합니다.
+DAggER는 모델이 실제로 마주친 장면을 학습에 다시 씁니다. 차가 왼쪽으로 치우친 장면을 저장하고, 그 장면에서 어떻게 조향해야 할지 전문가에게 묻습니다. 그 답을 기존 시범에 추가해 학습하면, 중앙을 유지하는 행동뿐 아니라 벗어났을 때 돌아오는 행동도 익힐 수 있습니다.
 
 $$
 \text{run learner}
@@ -426,7 +431,7 @@ $$
 \text{retrain}
 $$
 
-Robotics 1은 이 파트를 가장 직접적으로 보강합니다. 특히 behavioral cloning의 한계가 "모델이 약해서"가 아니라 expert distribution 밖 recovery data가 부족해서 생긴다는 점을 잡아야 합니다.
+따라서 정상 주행 시범을 더 많이 모으는 일과, 실제 실수가 일어난 장면에 복귀 방법을 붙이는 일은 서로 다릅니다.
 
 | Robotics 1 활용 지점 | Final Review에서 연결되는 개념 |
 |---|---|
@@ -456,7 +461,7 @@ VLA는 Vision-Language-Action입니다.
 | Language | 자연어 지시나 목표를 이해 |
 | Action | 실제 로봇 행동을 출력 |
 
-Ego-video나 internet-scale video는 embodied AI에서 중요합니다. 이유는 완벽한 action label이 있어서가 아니라, 사람이 물리 세계와 상호작용하는 dynamics와 affordance 단서를 많이 담고 있기 때문입니다.
+사람 시점의 영상에는 손잡이를 당겼더니 서랍이 열리는 모습이 담길 수 있습니다. 영상만으로도 어떤 동작이 가능한지, 그 뒤 물체가 어떻게 움직이는지 배울 단서가 생깁니다. 다만 영상에는 로봇 관절을 몇 도 움직이라는 정답이 없습니다. 장면 이해와 실제 동작 학습을 구분하는 이유입니다.
 
 | 흐름 | 설명 |
 |---|---|
@@ -504,23 +509,23 @@ Robotics 2는 이 문장을 세 단계로 더 구체화합니다.
 
 ## 마지막 핵심 정리
 
-| 주제 | 반드시 기억할 문장 |
+| 주제 | 무엇을 기억하면 좋을까요? |
 |---|---|
-| Linear Regression | $$\hat{y}=w^Tx+b$$, residual은 $$y-\hat{y}$$, loss는 squared residual 중심입니다. |
-| Logistic Regression | linear score에 sigmoid를 붙여 class probability로 해석합니다. |
-| MLP | hidden layer와 nonlinearity가 복잡한 패턴 표현을 가능하게 합니다. |
-| Backpropagation | chain rule로 gradient를 계산하고, gradient descent가 parameter를 갱신합니다. |
-| Computer Vision | pixel을 meaning으로 연결하는 것이 목표입니다. |
-| NLP | tokenizer는 token 분리, embedding은 dense representation입니다. |
-| Word2Vec | proxy task를 학습하며 hidden layer를 embedding으로 사용합니다. |
-| RNN | sequence를 순서대로 처리하고 이전 hidden state에 의존합니다. |
-| Attention | token 사이 global relationship을 직접 계산합니다. |
-| Transformer | Q/K/V attention, multi-head, positional encoding을 결합합니다. |
-| LLM | decoder-only Transformer가 next token prediction을 반복합니다. |
-| MoE | token마다 필요한 expert 일부만 활성화합니다. |
-| Autonomous Driving | modular stack은 error propagation이 있고, occupancy는 world representation을 강화합니다. |
-| Imitation Learning | action이 다음 state distribution을 바꾸므로 ordinary supervised learning과 다릅니다. |
-| Robotics | VLA, ego-video, world model, action fine-tuning, physical RL이 scaling 흐름을 만듭니다. |
+| 선형 회귀 | 실제 값과 예측값의 차이를 제곱합니다. 너무 높게 예측한 오차와 너무 낮게 예측한 오차가 서로 지워지지 않습니다. |
+| 로지스틱 회귀 | 선형 점수를 두 결과 중 하나일 확률로 바꿉니다. |
+| 다층 퍼셉트론(MLP) | 중간 층의 비선형 함수 덕분에 직선 하나로 나눌 수 없는 사례도 구분할 수 있습니다. |
+| 역전파와 경사 하강법 | 역전파는 각 가중치가 오차에 미치는 영향을 계산합니다. 경사 하강법은 그 계산 결과로 가중치를 바꿉니다. |
+| 컴퓨터 비전 | 픽셀의 밝기와 색에서 사람이 어디에 있고 무엇을 하는지 같은 정보를 읽습니다. |
+| 자연어 처리 | 토크나이저는 문장을 조각으로 나누고, 임베딩은 각 조각을 계산에 쓸 수 있는 숫자 목록으로 나타냅니다. |
+| Word2Vec | 단어가 함께 등장하는 패턴으로 단어의 표현을 배웁니다. |
+| 순환 신경망(RNN) | 앞부분을 읽고 남긴 값을 받아서 다음 단어를 처리합니다. |
+| 어텐션 | 현재 단어를 해석하는 데 도움이 되는 다른 단어에서 정보를 더 많이 가져옵니다. |
+| 트랜스포머 | 어텐션으로 여러 관계를 함께 살피고, 위치 정보로 단어의 순서를 구별합니다. |
+| GPT 계열 언어 모델 | 지금까지의 문맥에서 다음 조각을 예측하고, 고른 조각을 새 문맥에 넣습니다. |
+| MoE | 여러 신경망 중 입력 조각마다 일부만 골라 계산합니다. |
+| 자율주행 | 인식 오류는 경로 계획에도 영향을 줍니다. 공간의 점유 여부를 알면 물체 이름을 몰라도 장애물이 있는 칸을 파악할 수 있습니다. |
+| 모방학습 | 시범을 벗어난 뒤에는 원래 경로로 돌아오는 행동이 필요합니다. DAggER는 그런 장면도 학습 자료에 넣습니다. |
+| 로봇 학습 | 영상에서 장면의 변화를 배우는 일과, 자기 몸으로 그 변화를 만들어 내는 행동을 배우는 일은 다릅니다. |
 
 ## Study Guide
 
@@ -574,14 +579,14 @@ Robotics 2는 이 문장을 세 단계로 더 구체화합니다.
 <details markdown="block">
 <summary>5. Computer Vision의 high-level 목표는 무엇입니까?</summary>
 
-답변: Raw pixel을 object, scene, relation, meaning으로 해석하는 것입니다. 단순 압축이나 저장 효율이 핵심 목표가 아닙니다.
+답변: 밝기와 색으로 기록된 픽셀에서 ‘보행자가 횡단보도를 건넌다’처럼 물체와 장면의 관계를 알아내는 것입니다.
 
 </details>
 
 <details markdown="block">
 <summary>6. CNN이 이미지 처리에 적합한 이유는 무엇입니까?</summary>
 
-답변: Local connectivity와 weight sharing을 통해 이미지의 국소 패턴을 효율적으로 학습할 수 있기 때문입니다.
+답변: 모서리를 찾는 규칙은 사진 왼쪽에서도 오른쪽에서도 쓸 수 있습니다. CNN은 가까운 픽셀을 묶어 보고 같은 필터를 여러 위치에서 쓰므로 위치마다 별도의 규칙을 배울 필요가 없습니다.
 
 </details>
 
@@ -658,7 +663,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화합니다.
 <details markdown="block">
 <summary>17. Tesla식 end-to-end에서 occupancy가 중요한 이유는 무엇입니까?</summary>
 
-답변: Occupancy는 object list보다 geometry, free space, semantics를 함께 표현할 수 있어 planning에 필요한 world representation을 더 잘 제공하기 때문입니다.
+답변: 물체의 이름을 정확히 몰라도 앞쪽 공간이 막혀 있다는 정보는 경로 계획에 유용합니다. 점유 여부를 공간별로 표시하면 알려진 물체 목록에 없는 장애물도 나타낼 수 있습니다.
 
 </details>
 
@@ -672,7 +677,7 @@ Robotics 2는 이 문장을 세 단계로 더 구체화합니다.
 <details markdown="block">
 <summary>19. DAggER는 무엇을 해결하려는 방법입니까?</summary>
 
-답변: Learner가 실제로 방문한 state를 모으고 expert label을 붙여 dataset에 aggregate한 뒤 retrain함으로써 state distribution shift와 compounding error를 줄이려는 방법입니다.
+답변: 모델이 실수한 뒤에 보는 장면은 전문가의 시범에 없을 수 있습니다. DAggER는 모델이 실제로 방문한 장면에서 전문가라면 어떤 행동을 할지 받아 학습 자료에 더합니다. 같은 실수가 다음 실수로 이어지는 것을 줄이려는 방법입니다.
 
 </details>
 

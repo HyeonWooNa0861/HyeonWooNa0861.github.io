@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 10: LiDAR-Based 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Point Clouds, PointNet++, PointRCNN, VoxelNet, and PIXOR"
@@ -77,6 +77,8 @@ $$
 이 구조는 10쪽의 세 조건에 서로 다르게 대응합니다. **가변 점 수는 점 축을 줄이는 pooling으로, 순열 불변성은 shared MLP와 대칭 집계로 처리합니다. 회전에는 T-Net의 학습된 정렬로 대응하지만, 엄밀한 회전 불변성을 보장하지는 않습니다.** 실제 학습 구현에서 batch를 만들기 위해 일정 개수의 점을 sampling하는 것은 구조가 가변 점 수를 처리할 수 있다는 성질과 별개입니다.
 
 슬라이드 11–12쪽의 PointNet은 모든 점에 같은 함수 $$h$$를 적용하고, 점 순서와 무관한 max pooling으로 전역 feature를 만듭니다. 분류용 핵심 구조는 다음처럼 요약할 수 있습니다.
+
+점마다 여러 특징 점수가 있다고 생각하면 됩니다. Max pooling은 점 하나를 통째로 대표로 고르지 않습니다. **각 특징 항목에서 가장 강한 응답을 낸 점의 값만 따로 모아** 물체 전체 요약을 만듭니다. 점의 나열 순서를 바꿔도 항목별 최댓값은 같으므로 순열 불변성이 생깁니다.
 
 $$
 \mathbf{g}=\underset{i=1,\ldots,N}{\operatorname{MAX}}\ h(\mathbf{p}_i),
@@ -581,6 +583,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 판정 | 확인과 이 글의 처리 |
 |---|---|---|
 | 10쪽 `rotation invariant` | 가정이 생략된 목표 표현 | 순열 불변성은 symmetric max로 구조적으로 확보합니다. T-Net의 $$\lVert I-AA^{\top}\rVert_F^2$$는 행들의 orthonormality를 유도하지만 모든 회전에 대한 엄밀한 불변성 증명은 아닙니다. |
@@ -595,7 +600,12 @@ $$
 | PIXOR geometry target | 판본 간 표기 정정 | CVPR 2018 caption의 $$\log d_x,\log d_y$$는 signed offset에 일반적으로 정의되지 않고 별도 규약도 명시하지 않습니다. 2019 확장판의 signed $$d_x,d_y$$와 log-size target을 기준으로 설명했습니다. |
 | 37쪽 `> 28 fps` | 후속 판본에서 확인 | CVPR 2018 CPU digitization/NMS 판본은 93 ms, 2019 확장 GPU pipeline은 1+31+3=35 ms, 약 28.6 FPS입니다. 슬라이드는 후속 저자 판본과 일치합니다. |
 
+</details>
+
 ## 강의 전체 페이지 대응
+
+<details markdown="block">
+<summary markdown="span">Reference: topics by slide</summary>
 
 | 페이지 | 성격 | 본문 반영 |
 |---:|---|---|
@@ -612,6 +622,8 @@ $$
 | 38–39 | Summary | 마지막 핵심 정리에 두 주제를 재통합 |
 | 40 | Next lecture | Multimodal image+LiDAR와 perception dataset은 다음 강의 범위로 구분 |
 | 41 | Questions | 별도 새 개념이 없는 종료 페이지로 확인 |
+
+</details>
 
 ## 복습 포인트
 

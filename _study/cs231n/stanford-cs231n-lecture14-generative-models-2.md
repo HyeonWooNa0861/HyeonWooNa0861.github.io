@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 14: Generative Models 2"
 course: "CS231N"
 topic: "Generative Models 2"
@@ -28,7 +28,7 @@ Official slides: [Lecture 14 PDF](https://cs231n.stanford.edu/slides/2025/lectur
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_14.pdf#page=42" target="_blank" rel="noopener">CS231N Lecture 14, PDF p. 42 (printed slide 42)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** GAN은 확률값 대신 discriminator의 학습 신호로 generator를 훈련하고, diffusion은 데이터에 노이즈를 넣은 뒤 그 과정을 되감는 denoiser를 학습합니다. 현대 생성 시스템은 VAE, adversarial loss, diffusion/Transformer를 **경쟁 모델이 아니라 조합 가능한 부품**으로 사용합니다.
+> **핵심:** GAN은 만든 사진과 실제 사진을 구별하는 판별기의 반응을 이용해 생성기를 훈련합니다. 확산 모델은 다른 문제를 풉니다. 사진에 잡음을 조금씩 섞고, 반대 방향으로 잡음을 줄이는 법을 배워 새 사진을 만듭니다. 실제 시스템에서는 이런 방식들을 결합할 수도 있습니다.
 
 GAN은 생성 결과와 실제 데이터를 구분하는 판별기의 신호로 generator를 고치므로 선명한 표본을 만들 수 있지만 두 모델의 균형이 깨지면 학습이 불안정합니다. Diffusion은 깨끗한 데이터에 noise를 더하는 알려진 과정을 만든 뒤, 각 단계에서 noise를 제거하는 방향을 학습합니다. 두 방법은 같은 `이미지 생성` 결과를 내더라도 학습 신호와 생성 절차가 다릅니다.
 
@@ -188,7 +188,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 GAN과 diffusion을 `학습 신호`, `sampling 단계 수`, `density 평가`, `대표 실패` 네 축으로 비교합니다. 이어서 latent diffusion에서 encoder, denoiser, decoder가 어느 공간에서 무엇을 입력·출력하는지 그림으로 복원합니다.
+
+</details>
 
 ## 복습 질문
 

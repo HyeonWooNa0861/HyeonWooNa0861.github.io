@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 2: Background"
 course: "CS236"
 topic: "Probability, Graphical Models, and Neural Parameterizations"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 2](https://www.youtube.com/watch?v=rNEujZmD2Tg){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture2.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture2.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** 2강은 앞으로 사용할 확률 배경을 압축해서 정리합니다. 생성 모델을 학습한다는 것은 관측 데이터가 어떤 unknown data distribution $$p_{\mathrm{data}}$$에서 샘플되었다고 보고, 그 분포를 근사하는 model family $$\{p_{\theta}(x)\}$$ 안의 한 분포를 찾는 일입니다.
+> **핵심:** 이미지의 모든 픽셀 조합을 확률표로 적으면 경우의 수가 폭발합니다. 2강은 거대한 표 대신 조건부 관계와 함수로 데이터의 확률 규칙을 작게 표현하는 방법을 설명합니다.
 
 동전처럼 경우가 둘뿐이면 각 결과의 확률을 표로 적을 수 있습니다. 그러나 이미지의 모든 픽셀 조합을 같은 방식으로 적으면 경우의 수가 폭발합니다. 그래서 $$p_{\mathrm{data}}$$를 직접 열거하지 않고, 제한된 parameter $$\theta$$로 중요한 의존 관계를 표현하는 $$p_\theta$$를 학습한다는 것이 이 강의의 출발점입니다.
 
@@ -76,7 +76,9 @@ keywords:
 
 ## 핵심 내용
 
-2강은 앞으로 사용할 확률 배경을 압축해서 정리합니다. 생성 모델을 학습한다는 것은 관측 데이터가 어떤 unknown data distribution $$p_{\mathrm{data}}$$에서 샘플되었다고 보고, 그 분포를 근사하는 model family $$\{p_{\theta}(x)\}$$ 안의 한 분포를 찾는 일입니다. 여기에는 세 구성요소가 필요합니다. 첫째, 데이터 sample이 있어야 합니다. 둘째, 가능한 분포들의 집합인 model family를 정해야 합니다. 셋째, $$p_{\mathrm{data}}$$와 $$p_{\theta}$$가 얼마나 가까운지 재는 loss 또는 divergence를 정해야 합니다.
+동전 하나는 앞면 확률 하나만 알면 설명할 수 있습니다. 하지만 이미지에서는 픽셀 조합이 너무 많아 모든 경우의 확률을 표로 적을 수 없습니다. 2강의 핵심은 거대한 확률표를 조건부 관계와 함수로 줄이는 방법입니다.
+
+관측 데이터가 실제 세상에서 나오는 규칙을 $$p_{\mathrm{data}}$$라고 부르지만, 이 규칙의 식을 직접 알 수는 없습니다. 우리가 가진 것은 그 규칙에서 뽑힌 유한한 sample뿐입니다. 그래서 가능한 모델 규칙들의 집합 $$\{p_{\theta}(x)\}$$를 정하고, sample을 가장 잘 설명하는 $$\theta$$를 고릅니다. Loss 또는 divergence는 모델 규칙과 실제 규칙의 차이를 재는 기준입니다.
 
 가장 먼저 부딪히는 문제는 representation입니다. Bernoulli random variable 하나는 parameter 하나로 충분하고, categorical random variable은 가능한 outcome마다 probability를 주면 됩니다. 하지만 이미지의 한 pixel 색상만 해도 RGB channel이 각각 0부터 255까지 값을 가지면 $$256^3 - 1$$개의 자유도가 필요합니다. 흑백 이미지가 $$n$$개의 binary pixel로 구성되면 가능한 image state는 $$2^n$$개이고, 완전한 joint distribution은 $$2^n - 1$$개의 parameter가 필요합니다. 이 exponential growth가 차원의 저주입니다.
 

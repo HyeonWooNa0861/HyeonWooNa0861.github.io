@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:13:13 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS19 Hash Search 2"
 course: "Data Structures"
 topic: "Hash Search 2"
@@ -70,6 +70,8 @@ $$
 
 충돌 해결은 크게 두 방식으로 나뉩니다.
 
+크기 10인 테이블에서 `h(k)=k mod 10`을 사용하면 key 29와 39는 모두 9번 슬롯을 원합니다. 이처럼 **서로 다른 key가 같은 첫 슬롯을 요구하는 상황**이 충돌입니다. 아래 두 방식은 이때 두 번째 key를 어디에 둘지만 다릅니다.
+
 | 방식 | 다른 이름 | 핵심 아이디어 |
 |---|---|---|
 | Open Hashing | Separate Chaining | 슬롯마다 외부 연결 리스트를 둡니다. |
@@ -106,6 +108,8 @@ HT[2] -> (key, value)
 Closed Hashing은 모든 아이템을 해시 테이블 내부에만 저장합니다.
 
 충돌이 나면 다른 빈 슬롯을 탐색합니다. 이 과정을 probing이라고 합니다.
+
+예를 들어 9번 슬롯에 29가 이미 있다면 39는 정해진 규칙에 따라 다음 후보 슬롯을 확인합니다. Linear probing이라면 `9, 0, 1, ...`처럼 이동합니다. 검색할 때도 같은 순서를 재현해야 39를 찾을 수 있습니다.
 
 ```text
 initial slot = h(k)
@@ -421,7 +425,12 @@ probe 횟수 $$X$$의 단위는 `회`이고, $$m,s,e,\alpha$$는 모두 무차�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 같은 충돌 key 집합으로 linear, quadratic, double hashing의 probe sequence를 각각 써서 clustering 차이를 비교합니다. open addressing에서 삭제 slot을 빈칸으로 만들면 탐색 경로가 끊기므로 tombstone이 필요하다는 점을 실제 search 과정으로 확인합니다. chaining과 open addressing의 저장 위치, load factor 상승에 따른 probe 비용, primary·secondary clustering을 한 표에 묶어 복습합니다.
+
+</details>
 
 ## 복습 질문
 

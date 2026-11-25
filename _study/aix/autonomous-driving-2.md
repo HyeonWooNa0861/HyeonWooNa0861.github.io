@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Autonomous Driving 2"
 course: "AIX"
 topic: "Tesla Occupancy and Driving Foundation Models"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `Autonomous_Driving_2.pdf`
 
 > **핵심:** 2022년 Tesla의 occupancy 접근은 객체 목록보다 조밀한 3D 공간 표현을 중심에 둡니다. 이름을 모르는 장애물도 점유 공간으로 나타낼 수 있다는 점이 안전 판단에 유용합니다.
+
+예를 들어 도로에 이름을 붙이기 어려운 낙하물이 있다고 하겠습니다. 객체 검출기가 그 물체의 종류를 맞히지 못해도, 차량 앞 공간이 막혀 있다는 사실은 알아야 멈출 수 있습니다. Occupancy는 물체 이름보다 “어느 3D 공간이 차 있고 비어 있는가?”를 먼저 표현합니다.
 
 ## 전체 흐름
 
@@ -55,7 +57,7 @@ Tesla의 2022 CVPR 발표는 object list 중심 perception에서 occupancy 중�
 | Lane/free-space mask | 어디가 주행 가능합니까? |
 | Occupancy | 3D 공간의 각 cell은 비어 있는가, 차 있는가, 어떤 의미입니까? |
 
-Unknown obstacle이나 불규칙한 geometry는 object ontology로만 다루기 어렵습니다.
+학습한 분류 목록에 없는 장애물이나 모양이 불규칙한 물체는 객체 이름과 사각형만으로 표현하기 어렵습니다. Occupancy는 이런 경우에도 차지한 공간 자체를 남길 수 있습니다.
 
 ## 2. Voxel Intuition
 
@@ -105,13 +107,17 @@ multi-camera images
 | Key/value | camera image feature에서 가져올 정보 |
 | Attention | 어떤 view와 feature가 해당 3D 위치에 중요한지 선택 |
 
+이 연산이 하려는 일부터 잡으면 수식이 쉬워집니다. 차량 주변의 한 3D 칸을 채우려면 여러 카메라 특징 가운데 그 칸을 보여 주는 정보만 모아야 합니다. 공간 query가 “이 칸을 설명할 특징은 무엇인가?”라고 묻고, attention은 각 image feature에 중요도를 매긴 뒤 중요도가 큰 정보를 더 많이 섞습니다.
+
 슬라이드에 제시된 attention 계산을 occupancy 문맥에 맞춰 쓰면 다음과 같습니다.
 
 $$
 O=\operatorname{softmax}\left(\frac{QK^T}{\sqrt{d_k}}+M\right)V
 $$
 
-$$Q\in\mathbb{R}^{n_q\times d_k}$$는 $$n_q$$개 공간 query, $$K\in\mathbb{R}^{n_f\times d_k}$$와 $$V\in\mathbb{R}^{n_f\times d_v}$$는 $$n_f$$개 image feature, $$M$$은 볼 수 없는 위치에 $$-\infty$$를 주는 선택적 mask입니다. 모두 learned representation이므로 물리 단위는 없습니다. 행별 softmax weight $$\alpha_{ij}$$는 합이 1이고, 각 output query는 $$o_i=\sum_j\alpha_{ij}v_j$$라는 value의 가중합이 됩니다. 이는 attention의 **정의**이며, weight가 높은 feature가 인과적으로 중요하다는 증명은 아닙니다.
+여기서 $$Q$$는 확인하려는 3D 칸들의 질문, $$K$$는 각 image feature가 어떤 질문과 관련 있는지 비교할 표지, $$V$$는 실제로 가져올 영상 정보입니다. $$M$$은 가려졌거나 연결하면 안 되는 위치를 후보에서 제외합니다. $$n_q$$와 $$n_f$$는 각각 query와 image feature의 개수이고, $$d_k$$와 $$d_v$$는 한 특징을 표현하는 숫자의 개수입니다. 모두 모델 내부 표현이므로 물리 단위는 없습니다.
+
+행별 softmax weight $$\alpha_{ij}$$의 합은 1입니다. 따라서 각 output query $$o_i=\sum_j\alpha_{ij}v_j$$는 여러 영상 정보 $$v_j$$를 중요도에 따라 섞은 결과가 됩니다. 이는 attention의 **정의**입니다. Weight가 높다는 사실만으로 해당 feature가 현실에서 결과의 원인이라고 증명되지는 않습니다.
 
 Scaling은 query와 key 성분이 독립·평균 0·분산 1이라고 근사할 때 dot product 분산이 $$d_k$$가 되는 데서 나옵니다. $$\sqrt{d_k}$$로 나누면 분산이 약 1이 되어 softmax 포화를 줄입니다. 실제 feature는 상관될 수 있으므로 이는 **근사적 분산 분석**입니다. Camera calibration, positional encoding 또는 query 위치가 틀리면 attention 연산 자체가 정상이어도 잘못된 3D cell에 정보를 모을 수 있습니다.
 
@@ -227,26 +233,31 @@ Modular stack은 문제를 module output으로 나눴고, occupancy는 더 조�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 multi-camera feature가 attention-based lifting을 거쳐 3D voxel occupancy가 되는 2022 구조를 순서대로 그려 봅니다. CNN backbone을 포함한다는 점 때문에 pure ViT와 다르고, representation-level end-to-end가 곧 camera-to-steering을 뜻하지 않는다는 점이 주요 혼동 지점입니다. 마지막에는 temporal alignment가 4D world model을 만드는 과정과 shared representation·fleet learning의 연결을 함께 설명합니다.
+
+</details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Object detector가 높은 정확도를 가져도 occupancy가 필요한 이유는 무엇입니까?</summary>
+<summary markdown="span">1. Object detector가 높은 정확도를 가져도 occupancy가 필요한 이유는 무엇입니까?</summary>
 
 답변: object detector는 정해진 객체 class와 bounding box 중심으로 환경을 봅니다. 그러나 주행에는 도로 위 점유 공간, 비정형 장애물, 가려진 영역, free space도 중요합니다. occupancy는 객체가 무엇인지보다 어디가 차 있는지를 표현하므로 planning에 더 직접적인 정보를 제공합니다.
 
 </details>
 
 <details markdown="block">
-<summary>2. Fixed query와 positional encoding은 3D occupancy attention에서 각각 어떤 역할을 합니까?</summary>
+<summary markdown="span">2. Fixed query와 positional encoding은 3D occupancy attention에서 각각 어떤 역할을 합니까?</summary>
 
 답변: fixed query는 3D 공간의 각 위치나 voxel을 질의하는 기준점 역할을 합니다. positional encoding은 그 query가 공간상 어디에 있는지 모델에 알려줍니다. attention은 이미지 feature와 이 공간 query를 연결해 2D 관측을 3D occupancy 표현으로 끌어올립니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Fleet learning loop가 foundation model for driving의 일부로 봐야 하는 이유는 무엇입니까?</summary>
+<summary markdown="span">3. Fleet learning loop가 foundation model for driving의 일부로 봐야 하는 이유는 무엇입니까?</summary>
 
 답변: 실제 차량 fleet에서 수집되는 데이터는 드문 상황과 실패 사례를 계속 보강합니다. 이 데이터가 labeling, training, validation을 거쳐 모델에 다시 반영되면 주행 모델은 점점 더 넓은 상황을 학습합니다. 그래서 fleet learning loop는 단순 배포 과정이 아니라 driving foundation model을 키우는 핵심 학습 체계입니다.
 

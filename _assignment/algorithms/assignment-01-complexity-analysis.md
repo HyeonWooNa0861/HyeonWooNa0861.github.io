@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-15 00:00:00 +0900
-last_modified_at: 2026-10-16 19:32:34 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Algorithms Assignment 1: Complexity Analysis and Recurrences"
 course: "Algorithms"
 topic: "Asymptotic Analysis and Recurrences"
@@ -20,6 +20,8 @@ keywords: [operation-counting, asymptotic-analysis, recurrence-relations, master
 </figure>
 
 이 과제는 실행시간의 답만 적는 대신, **그 답이 어떻게 나오는지** 확인합니다. 행렬 곱셈에서는 기본 연산을 종류별로 세고, 점근 표기에서는 정의에 맞는 상수와 시작점을 찾습니다. 재귀 함수에서는 코드가 실제로 몇 번 호출되는지부터 확인합니다.
+
+예를 들어 행렬 한 칸을 계산하려면 한 행과 한 열의 값을 차례로 곱하고 더합니다. 행렬 크기가 커질 때 이 작업이 몇 번 반복되는지 세면 실행시간 식을 만들 수 있습니다. 이후의 $$O$$, $$\Omega$$, $$\Theta$$는 각각 그 식의 성장 속도에 대한 상한, 하한, 양쪽이 일치하는 범위를 말합니다.
 
 아래 해설은 원문의 요구 순서를 유지합니다. 그림의 문제 문구를 먼저 읽고, 각 풀이에서 무엇을 1회 연산으로 세는지와 어떤 가정을 사용했는지 대조합니다.
 

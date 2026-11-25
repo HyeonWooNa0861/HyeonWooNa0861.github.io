@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 15: Evaluation of Generative Models"
 course: "CS236"
 topic: "Likelihood, Compression, Sample Quality, Representation Metrics, and Prompt-Based Evaluation"
@@ -24,7 +24,7 @@ keywords:
 - Video: [Stanford CS236 Lecture 15](https://www.youtube.com/watch?v=MJt_ahtO-to){:target="_blank" rel="noopener"}
 - Source PDF: [lecture15.pdf](https://deepgenerativemodels.github.io/assets/slides/lecture15.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룹니다. Discriminative model은 task가 비교적 명확합니다.
+> **핵심:** 좋은 생성 모델의 뜻은 용도에 따라 달라집니다. 사진 생성은 선명함과 다양성을 함께 보고, 압축은 코드 길이를 보며, 조건부 생성은 요청과 결과가 맞는지도 확인해야 합니다.
 
 같은 생성 모델도 압축에 쓸 때는 likelihood가, 사람이 볼 이미지를 만들 때는 fidelity와 diversity가 더 중요할 수 있습니다. 한 지표가 좋아도 다른 목적까지 자동으로 좋아지는 것은 아닙니다. 따라서 평가식부터 고르는 대신 모델을 어디에 쓸지 정하고, 그 목적에서 생길 수 있는 실패를 함께 측정해야 합니다.
 
@@ -77,7 +77,9 @@ keywords:
 
 ## 핵심 내용
 
-Lecture 15는 새로운 model family가 아니라 "좋은 generative model이란 무엇인가"를 다룹니다. Discriminative model은 task가 비교적 명확합니다. Classifier라면 held-out data에서 top-1 accuracy, top-5 accuracy, cross-entropy loss처럼 목적에 맞는 metric을 계산하면 됩니다. Generative model은 다릅니다. 같은 model이라도 density estimation, compression, image generation, representation learning, inverse problem, language model prompting 등 사용 목적이 다르면 좋은 모델의 의미가 바뀝니다. 따라서 강의의 첫 원칙은 metric을 먼저 고르는 것이 아니라 task를 먼저 고르는 것입니다.
+사진 생성 모델을 평가할 때 선명한 사진만 한 장 잘 만들면 충분하지 않습니다. 여러 종류의 자연스러운 사진을 만들고, 요청한 문장과도 맞아야 합니다. 반대로 압축 모델이라면 보기 좋은 표본보다 짧은 코드 길이가 더 중요합니다. 따라서 평가 지표는 모델 이름이 아니라 사용 목적에서 시작해야 합니다.
+
+분류 모델은 정답 label을 맞혔는지 accuracy로 비교하기 쉽습니다. 생성 모델은 같은 기준 하나로 끝나지 않습니다. 이미지 생성에서는 선명함과 다양성이 중요하고, 압축에서는 code length가 중요하며, 문장 조건 생성에서는 요청과 결과가 맞는지도 확인해야 합니다. 따라서 먼저 모델의 사용 목적과 실패 사례를 정한 뒤, 그 목적을 측정하는 metric을 골라야 합니다.
 
 Density estimation을 목표로 한다면 가장 자연스러운 metric은 test log-likelihood입니다.
 

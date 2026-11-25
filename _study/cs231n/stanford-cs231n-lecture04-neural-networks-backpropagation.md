@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 4: Neural Networks and Backpropagation"
 course: "CS231N"
 topic: "Neural Networks and Backpropagation"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 4 PDF](https://cs231n.stanford.ed
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_4.pdf#page=52" target="_blank" rel="noopener">CS231N Lecture 4, PDF p. 52 (printed slide 54)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 신경망의 표현력은 affine transform 사이에 비선형성을 넣는 데서 나오고, 학습 가능성은 계산 그래프의 chain rule을 역순으로 재사용하는 backpropagation에서 나옵니다.
+> **핵심:** 직선 하나로 빨간 점과 파란 점을 나눌 수 없다면, 직선만 계산하는 층을 여러 번 쌓아도 문제가 풀리지 않습니다. 신경망은 층 사이에 비선형 함수를 넣어 더 복잡한 경계를 만듭니다. 틀린 답에 어느 가중치가 얼마나 영향을 주었는지는 출력에서 거꾸로 계산합니다. 이것이 역전파입니다.
 
 선형 변환만 여러 번 이어도 전체는 다시 하나의 선형 변환이므로 굽은 결정 경계를 만들 수 없습니다. Activation function은 이 합쳐짐을 막아 층마다 새로운 표현을 만듭니다. Backpropagation은 최종 loss 변화량을 계산 그래프의 각 연산으로 거꾸로 나누어 보내며, 각 parameter가 오차에 기여한 정도를 한 번의 역방향 계산으로 구합니다.
 
@@ -213,10 +213,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. affine–ReLU–affine network를 계산 그래프로 직접 그립니다.
 2. add, multiply, max, sigmoid gate의 forward/backward를 손으로 계산합니다.
 3. matrix multiplication의 gradient shape을 매번 적어 전치 위치를 확인합니다.
 4. analytical gradient와 numerical gradient가 다를 때 broadcasting, accumulation, non-differentiable point를 점검합니다.
+
+</details>
 
 ## 복습 질문
 

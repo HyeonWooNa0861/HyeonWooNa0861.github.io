@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
-last_modified_at: 2026-10-16 19:32:41 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Smart Pointers and Memory Management"
 course: "C++"
 topic: "Smart Pointer, RAII, Reference Counting"
@@ -25,7 +25,9 @@ C++에서 `new`로 할당한 메모리는 `delete`로 직접 해제해야 합니
 
 ## 2. 스마트 포인터와 RAII
 
-RAII(Resource Acquisition Is Initialization)는 자원의 획득과 해제를 객체 수명에 묶는 방식입니다. C++ 표준 라이브러리의 `std::unique_ptr`와 `std::shared_ptr`는 소유권에 따라 대상 객체를 정리합니다. `std::weak_ptr`는 대상을 소유하지 않으므로, 자신이 소멸해도 대상 객체를 파괴하지 않습니다.
+RAII(Resource Acquisition Is Initialization)는 자원의 획득과 해제를 객체 수명에 묶는 방식입니다. 함수가 정상 종료되거나 예외로 중간에 빠져나가도 지역 객체의 소멸자는 실행됩니다. 메모리나 파일을 이 객체가 소유하게 만들면, 여러 반환 경로마다 `delete`나 `close`를 반복해서 쓰지 않아도 됩니다.
+
+C++ 표준 라이브러리의 `std::unique_ptr`와 `std::shared_ptr`는 이 원리를 소유권에 적용합니다. `std::weak_ptr`는 대상을 소유하지 않으므로 대상의 수명을 연장하지 않습니다.
 
 `std::unique_ptr`는 한 자원에 소유자를 하나만 둡니다. 복사는 불가능하고 `std::move`로 소유권을 넘기면 원래 포인터는 비게 됩니다. 단독 소유가 명확한 자원에 적합합니다.
 

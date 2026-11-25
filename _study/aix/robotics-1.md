@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-06-08 21:44:38 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Robotics 1"
 course: "AIX"
 topic: "Imitation Learning and DAggER"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `Robotics_1.pdf`
 
 > **핵심:** Imitation learning은 전문가의 시연에서 로봇의 행동 정책을 학습합니다. 그중 behavioral cloning은 전문가 궤적의 관측과 행동을 짝지어 지도학습하는 가장 직접적인 방법입니다.
+
+사람이 운전하는 동안 카메라 장면과 조향 명령을 함께 기록하면, 로봇은 “이 장면에서는 이 행동을 한다”는 대응을 배울 수 있습니다. 이것이 imitation learning의 출발점입니다. 문제는 로봇이 한 번 잘못 움직이면 사람이 시연하지 않은 장면에 들어가고, 그 뒤의 오차가 더 커질 수 있다는 점입니다.
 
 ## 전체 흐름
 
@@ -55,7 +57,7 @@ Robotics 1은 imitation learning이 왜 매력적인지에서 시작해, behavio
 
 ## 1. 왜 Imitation Learning인가?
 
-초기 robot learning은 human demonstration을 많이 사용했습니다. 이유는 physical robot에서 trial-and-error가 비싸고 느리며 위험할 수 있기 때문입니다.
+초기 로봇 학습은 사람의 시연을 많이 사용했습니다. 실제 로봇이 시행착오로 행동을 배우면 장비가 부딪히거나 망가질 수 있고, 한 번의 실험에도 시간이 듭니다. 사람이 성공하는 행동을 먼저 보여 주면 안전한 예시에서 학습을 시작할 수 있습니다.
 
 | 학습 방식 | 장점 | 한계 |
 |---|---|---|
@@ -64,15 +66,15 @@ Robotics 1은 imitation learning이 왜 매력적인지에서 시작해, behavio
 
 Imitation learning의 역사적 목표는 단순합니다.
 
-> Expert behavior를 autonomous policy로 변환합니다.
+> 전문가의 행동을 로봇이 스스로 실행할 정책으로 바꿉니다.
 
-자율주행 예시는 이 직관을 잘 보여줍니다. 카메라 observation과 사람이 조향한 steering action을 짝으로 모으면, control 문제를 observation-to-action supervised mapping으로 바꿀 수 있습니다.
+자율주행 예시는 이 직관을 잘 보여줍니다. 카메라 관측과 사람이 선택한 조향 동작을 짝으로 모으면, 로봇은 “이 장면에서 어떤 동작을 해야 하는가?”를 지도학습 문제로 배울 수 있습니다.
 
 $$
 o_t \rightarrow a_t
 $$
 
-여기서 $$o_t$$는 observation, $$a_t$$는 expert action입니다.
+여기서 $$o_t$$는 시각 $$t$$에 로봇이 본 관측, $$a_t$$는 같은 시각에 전문가가 선택한 행동입니다.
 
 ## 2. Imitation은 Ordinary Supervised Learning이 아니다
 
@@ -298,6 +300,9 @@ DAggER는 task-specific imitation을 더 robust하게 만들었지만, 여전히
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 Robotics 1은 behavioral cloning과 DAggER의 차이를 중심으로 읽어야 합니다. 단순히 “expert를 따라 한다”로 끝내지 말고, learner action이 다음 state distribution을 바꾼다는 점을 계속 붙잡아야 합니다.
 
 시험에서는 supervised learning과 imitation learning의 차이를 묻는 선택지가 중요합니다. 정답은 보통 “현재 action이 다음 state와 미래 input distribution을 바꾼다”는 방향입니다.
@@ -310,6 +315,8 @@ Robotics 1은 behavioral cloning과 DAggER의 차이를 중심으로 읽어야 �
 | covariate shift | learner가 자기 state distribution을 유도 |
 | error growth | sequential error는 cascading되어 더 크게 누적 가능 |
 | DAggER | learner-visited states + expert labels + aggregate/retrain |
+
+</details>
 
 ## 복습 질문
 

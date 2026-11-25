@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 12: Self-Supervised Learning"
 course: "CS231N"
 topic: "Self-Supervised Learning"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 12 PDF](https://cs231n.stanford.e
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_12.pdf#page=52" target="_blank" rel="noopener">CS231N Lecture 12, PDF p. 52 (printed slide 52)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 자기지도학습은 레이블을 없애는 마법이 아니라, 데이터 변환과 가림으로 **학습 목표를 자동 생성**하는 설계입니다. 좋은 pretext task는 정답을 맞히는 지름길보다 downstream task에 재사용할 의미 표현을 요구해야 합니다.
+> **핵심:** 사진 일부를 가리고 원래 무엇이 있었는지 맞히게 하면, 사람이 새로 이름표를 붙이지 않아도 학습 문제를 만들 수 있습니다. 이것이 자기지도학습의 한 예입니다. 가려진 곳을 잘 맞히는 것뿐 아니라, 배운 특징이 다른 사진을 이해하는 데도 쓸모가 있는지 확인해야 합니다.
 
 레이블 없는 이미지에서도 일부 patch를 가리고 복원하게 하거나 같은 이미지의 두 변형을 가깝게 만들 수 있습니다. 이때 모델이 배경색 같은 쉬운 단서만 이용하면 pretext loss는 낮아져도 물체 의미는 배우지 못합니다. 자기지도 목표의 역할은 정답 레이블을 흉내 내는 것이 아니라 이후 여러 task에서 재사용할 구조를 입력 자체에서 찾게 하는 데 있습니다.
 
@@ -190,7 +190,12 @@ Dot-product critic $$f=e^{s/\tau}$$를 쓰면 기존 log-softmax loss가 됩니�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 각 pretext task마다 “자동 정답”, “모델이 배워야 하는 정보”, “가능한 지름길”을 세 칸 표로 정리합니다. MAE의 encoder 입력과 decoder 입력을 구분하고, SimCLR과 MoCo가 negative를 확보하는 방법을 비교하면 흐름이 선명해집니다.
+
+</details>
 
 ## 복습 질문
 

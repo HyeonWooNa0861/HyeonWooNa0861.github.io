@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 8: Semantic and Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Dense Pixel Labels, Transposed Convolution, and Mask R-CNN"
@@ -45,6 +45,8 @@ $$
 $$
 
 슬라이드 8쪽의 `3 × H × W → D × H × W → C × H × W → H × W` 흐름은 RGB 입력 채널 3개, 중간 feature channel $$D$$개, 클래스별 score $$C$$개, 최종 class index 한 장을 뜻합니다. 그 옆의 **per-pixel cross-entropy**는 유효한 정답 픽셀 집합 $$\Omega$$에 대해 다음처럼 쓸 수 있습니다. 이는 슬라이드 식을 풀어 쓴 **작성자 보충 정의**입니다.
+
+쉽게 말하면 모델은 픽셀마다 `road`, `car`, `sky` 같은 후보 점수를 하나씩 냅니다. 그중 가장 큰 점수가 화면에 표시할 class가 되고, 학습할 때는 정답 class의 점수가 낮은 픽셀에 더 큰 벌점을 줍니다. 아래 식은 이 작업을 모든 유효 픽셀에 반복한 평균입니다.
 
 $$
 \mathcal{L}_{\mathrm{pixel}}=-\frac{1}{\lvert\Omega\rvert}\sum_{(u,v)\in\Omega}\log p_{Y_{u,v},u,v}
@@ -139,6 +141,9 @@ $$m,i,j,k$$는 무차원 index·크기, 확률과 손실도 무차원입니다. 
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 판정 | 확인과 이 글의 처리 |
 |---|---|---|
 | 9쪽 $$1+2L$$ receptive field | 가정이 생략된 단순화 | 3×3, stride 1, dilation 1의 연속 층에 한정합니다. Pooling/stride 변경 시 그대로 쓰지 않습니다. |
@@ -147,6 +152,8 @@ $$m,i,j,k$$는 무차원 index·크기, 확률과 손실도 무차원입니다. 
 | 18쪽 `trees`를 stuff로 제시 | 데이터셋 관례 | 나무 개체 분리 가능성 자체를 부정하지 않습니다. Thing/stuff는 작업의 label taxonomy에 좌우됩니다. |
 | 26쪽 semantic의 `no objects, just pixels` | 표현상 단순화 | Cow 같은 thing class 픽셀은 존재하지만 **instance ID는 없다**는 뜻으로 고쳐 읽습니다. |
 | 21–23쪽 RoI pooling/Align | 모델 단계 구분 | Faster R-CNN 복습 그림은 pooling, Mask R-CNN mask 경로는 RoIAlign입니다. |
+
+</details>
 
 ## 시험 포인트
 

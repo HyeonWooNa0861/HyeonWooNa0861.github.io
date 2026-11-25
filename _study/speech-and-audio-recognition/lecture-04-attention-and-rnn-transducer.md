@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-01 15:27:08 +0900
-last_modified_at: 2026-10-18 23:46:41 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 4: Automatic Speech Recognition II"
 course: "Speech and Audio Recognition"
 topic: "Attention, LAS, RNN-Transducer, and Language Model Fusion"
@@ -28,7 +28,7 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 [Lecture 3: Automatic Speech Recognition I](/study/speech-and-audio-recognition/lecture-03-automatic-speech-recognition/)에서는 CTC가 정렬을 모르는 음성 프레임과 문자열을 연결하는 과정을 다뤘습니다. 이번 강의는 **이미 출력한 문자를 다음 예측에 어떻게 반영할 것인가**, 그리고 **음성이 들어오는 동안 전사를 어떻게 갱신할 것인가**로 이어집니다. Attention 기반 LAS와 RNN-Transducer는 이 두 질문에 서로 다른 구조로 답합니다.
 
-> **핵심:** LAS는 출력 단계마다 입력 전체에 attention을 적용하고 이전 token을 조건으로 다음 token을 생성합니다. RNN-T는 음향 시간과 출력 token 수를 별도 축으로 두어, blank이면 시간만 진행하고 token이면 출력 이력만 갱신합니다. 학습은 가능한 정렬 경로의 확률을 모두 합하며, streaming 여부는 loss 이름보다 encoder가 미래 음성을 요구하는지에 달려 있습니다.
+> **핵심:** LAS는 녹음 전체에서 지금 읽을 부분을 골라 보고, 이미 쓴 token을 참고해 다음 token을 만듭니다. RNN-T는 현재 음성 위치와 지금까지 출력한 token 수를 따로 관리합니다. `blank`를 고르면 새 token을 쓰지 않고 다음 음성 위치로 넘어가며, 일반 token을 고르면 같은 음성 위치에서 출력만 하나 늘립니다. 학습에서는 정답 문장을 만드는 가능한 이동 경로의 확률을 모두 더합니다. 음성이 들어오는 즉시 처리할 수 있는지는 손실함수 이름이 아니라 encoder가 미래 음성을 미리 봐야 하는지에 달려 있습니다.
 
 아래 페이지 번호는 PDF의 물리적 쪽 번호입니다. Attention의 수치 예제, cross-entropy의 유도, RNN-T forward 계산과 코드는 **작성자 보충 설명**입니다. 원문 표의 조건 누락과 단위 오류는 해당 설명과 마지막 `Source Check`에 기록했습니다.
 
@@ -632,6 +632,9 @@ CTC와 LAS는 모두 음성과 전사만으로 학습할 수 있고, 각 문자�
 
 CTC는 encoder 프레임마다 문자·subword·blank의 분포를 만듭니다. 정답 문자열로 collapse되는 여러 단조 정렬 경로의 확률을 더한 뒤 그 합에 음의 로그를 취합니다. LAS는 출력 단계마다 encoder state에 attention을 적용하고, 정답 prefix에서 다음 token을 예측하도록 cross-entropy를 학습합니다. 표준 LAS의 soft attention은 가중합으로 context를 만드는 연산이지, CTC의 이산 정렬 경로를 열거해 합산하는 loss가 아닙니다.
 
+<details markdown="block">
+<summary>Loss details: CTC path sums, LAS token loss, and repeated labels</summary>
+
 $$
 \mathcal L_{\mathrm{CTC}}=-\log\left[\sum_{\pi:\mathcal B(\pi)=y}\prod_{t=1}^{T}p_t(\pi_t\mid X)\right]
 $$
@@ -643,6 +646,8 @@ $$
 CTC의 합은 정렬 경로에 대한 합이고, LAS의 합은 문장 확률의 곱에 로그를 적용한 출력 단계별 손실의 합입니다. 둘 다 합 기호가 있다는 이유로 같은 학습 계산이라고 볼 수 없습니다. LAS는 정답 prefix를 직접 조건으로 쓰지만, 기본 CTC 프레임 분포에는 이전에 선택한 출력 token이 직접 들어가지 않습니다. CTC encoder가 넓은 음향 문맥을 보거나 별도의 LM을 decoder에 결합할 수 있다는 사실은 이 차이와 별개입니다.
 
 출력 종료도 다릅니다. CTC의 blank는 프레임 경로를 문자열로 바꿀 때 제거되는 기호이며, 기본 CTC는 입력 프레임을 처리한 뒤 collapse 결과를 얻습니다. LAS의 EOS는 decoder가 문장을 끝내는 출력 token입니다. **작성자 예시로** 문자열 `aa`를 보면 CTC에는 `a, blank, a`처럼 같은 글자 두 개를 구분할 중간 blank가 필요합니다. 문자 단위 LAS는 `a`, `a`, EOS를 차례로 생성하면 되며 반복 병합을 하지 않습니다. 이 차이는 서로 다른 loss·출력 규칙의 결과이지 어느 방식의 정확도가 항상 더 높다는 근거는 아닙니다.
+
+</details>
 
 ### 8.2 RNN-T를 포함한 구조와 streaming 조건
 
@@ -659,11 +664,19 @@ CTC의 합은 정렬 경로에 대한 합이고, LAS의 합은 문장 확률의 
 
 ### 8.3 계산량 표에서 무엇을 생략했는가
 
+<details markdown="block">
+<summary markdown="span">Complexity details: What $$T$$, $$U$$, $$K$$, and $$V$$ add</summary>
+
 슬라이드 pp. 19, 20, 44의 `enc`, `dec`, `T`, `bs`는 계산 차이를 보여 주는 약식 표기이며 vocabulary·attention·종료 조건 등이 충분히 정의되지 않았습니다. 이를 보편적인 복잡도 공식으로 그대로 옮길 수는 없습니다.
 
 Encoder 이후 프레임 수를 $$T$$, 출력 길이를 $$U$$라고 고정하면, standard LAS의 full attention은 각 token마다 모든 프레임을 비교해 적어도 score 계산에 $$O(UT)$$의 위치 조합을 사용합니다. Beam 폭 $$K$$와 어휘 크기 $$V$$까지 고려하면 후보 확장·LM 호출·prefix merging 비용도 추가됩니다. RNN-T greedy의 경로는 $$T$$번의 blank와 생성한 $$U$$번의 token 전이로 이루어지므로 joint/prediction 호출도 대체로 그 진행에 맞춰 반복됩니다. 먼저 training의 dense $$T(U+1)$$ grid와 inference에서 선택하는 한 경로를 구분해야 합니다.
 
+</details>
+
 ### 8.4 WER 표는 같은 조건의 순위표가 아니다
+
+<details markdown="block">
+<summary>Evaluation details: WER numbers and mismatched experimental conditions</summary>
 
 원문 pp. 18, 43에는 서로 다른 연구의 수치가 모여 있습니다. 아래는 원 논문의 표로 확인한 **LibriSpeech test-clean / test-other WER(%)**와 중요한 조건입니다.
 
@@ -676,6 +689,8 @@ Encoder 이후 프레임 수를 $$T$$, 출력 길이를 $$U$$라고 고정하면
 | Conformer-L Transducer, no LM | 2.1 | 4.3 | Conformer Table 2, LibriSpeech 960h |
 
 슬라이드의 `RNN-t 2020` 2.1/4.3은 RNN-T라는 loss의 일반 성능이 아니라 **특정 Conformer-L Transducer** 결과입니다. 또한 LAS의 `without SpecAugment`는 LM까지 없다는 뜻이 아닙니다. Encoder, 학습 설정, augmentation, decoding, 외부 LM과 평가 split을 맞추지 않은 채 숫자만으로 구조의 우열을 증명할 수 없습니다. 이 표의 근거는 <a href="https://arxiv.org/abs/1512.02595" target="_blank" rel="noopener">Deep Speech 2</a>, <a href="https://arxiv.org/abs/1904.08779" target="_blank" rel="noopener">SpecAugment</a>, <a href="https://arxiv.org/abs/2005.08100" target="_blank" rel="noopener">Conformer</a> 원 논문입니다.
+
+</details>
 
 ## 9. 외부 language model을 결합하는 방법
 
@@ -693,6 +708,9 @@ N-gram은 제한된 길이의 history를 사용하고 smoothing으로 희소한 
 
 ### 9.2 Second-pass rescoring
 
+<details markdown="block">
+<summary>Method details: Rescoring a fixed candidate list</summary>
+
 첫 ASR 검색으로 $$\mathcal N$$이라는 N-best 후보 집합을 만든 뒤, LM 점수를 추가해 그 안에서 문장을 다시 고릅니다(p. 47).
 
 $$
@@ -703,13 +721,23 @@ $$
 
 Rescoring은 완성된 후보를 평가하므로 상대적으로 큰 LM을 사용할 여지가 있습니다. 하지만 정답 후보가 첫 검색에서 이미 탈락했다면 점수만 바꿔 복구할 수 없습니다.
 
+</details>
+
 ### 9.3 Shallow fusion
+
+<details markdown="block">
+<summary>Method details: Applying LM scores during beam search</summary>
 
 Shallow fusion은 **beam을 확장하는 도중** ASR과 LM의 log score를 더합니다. LM이 중간 prefix 선택에 영향을 주므로, rescoring보다 앞에서 유용한 후보를 남길 수 있습니다. 모델 내부 state를 합치는 방식은 아니며 ASR과 LM을 각각 학습한 뒤 inference에서 결합할 수 있습니다.
 
 Token마다 LM을 평가해야 하므로 모델 크기와 호출 비용이 지연에 영향을 줍니다. 슬라이드 p. 47의 큰 모델·작은 모델 조언은 이 **LM 계산 비용**을 중심으로 읽어야 하며, 괄호의 `ASR`를 LM 크기의 구분과 혼동하지 않습니다. 어느 조합이 유리한지는 후보 수·실제 latency·accuracy를 측정해 판단합니다.
 
+</details>
+
 ### 9.4 Deep fusion과 cold fusion
+
+<details markdown="block">
+<summary>Method details: State-level fusion and training order</summary>
 
 | 방법 | 결합 시점 | 학습 관계 | 결합되는 정보 |
 |---|---|---|---|
@@ -722,11 +750,18 @@ Token마다 LM을 평가해야 하므로 모델 크기와 호출 비용이 지�
 
 Deep Fusion의 근거 논문은 <a href="https://arxiv.org/abs/1503.03535" target="_blank" rel="noopener">On Using Monolingual Corpora in Neural Machine Translation</a>, Cold Fusion의 근거는 <a href="https://arxiv.org/abs/1708.06426" target="_blank" rel="noopener">Cold Fusion: Training Seq2Seq Models Together with Language Models</a>입니다.
 
+</details>
+
 ### 9.5 BERT와 causal LM을 같은 방식으로 붙일 수 있는가
+
+<details markdown="block">
+<summary>Model details: Masked language models versus causal language models</summary>
 
 슬라이드는 neural LM 예로 BERT, GPT, LLaMA를 나열합니다. 하지만 기본 BERT는 양쪽 문맥을 사용하는 masked language model이고, 그대로 다음 token의 $$P(y_u\mid y_{<u})$$를 제공하는 left-to-right LM과 같지 않습니다. GPT 계열 같은 causal LM은 prefix의 다음 token 점수를 바로 사용하는 방식에 더 직접적으로 맞습니다.
 
 BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 다른 방식으로 활용할 수 있습니다. 이 경우 점수의 정의, tokenization과 계산 비용을 따로 명시해야 하며 causal 문장 likelihood와 동일하다고 부를 수 없습니다. 모델 이름 목록보다 **decoder가 요구하는 조건부 확률을 실제 모델이 제공하는가**를 먼저 확인합니다.
+
+</details>
 
 ## 마지막 핵심 정리
 
@@ -823,6 +858,9 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
 
 ## Source Check
 
+<details markdown="block">
+<summary>Source audit: Corrections and added conditions by slide</summary>
+
 48쪽 전체를 시각적으로 대조하고 attention·loss·전이·메모리 수치를 확인했습니다. 아래 보충·정정은 원저자의 공식 정정문이 아니라 원 논문 및 직접 계산에 따른 검토입니다.
 
 | 위치 | 원문 표현 | 본문의 처리·근거 |
@@ -836,6 +874,8 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
 | p. 42 | 메모리 `Gb`, gradient 때문에 두 배 | Bytes·GB·GiB 재계산; empty prefix/blank 차원과 실제 peak 조건 설명 |
 | pp. 45–48 | BERT/GPT/LM 예시, fusion 도식 | Causal 점수와 masked LM 구분; deep/cold 학습 순서를 원 논문과 대조 |
 
+</details>
+
 ## PDF
 
 <ul>
@@ -843,6 +883,9 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
 </ul>
 
 ## References
+
+<details markdown="block">
+<summary>References: Papers and course sources</summary>
 
 <ul>
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a> and <a href="https://github.com/markovka17/dla" target="_blank" rel="noopener">DLA Course Materials</a> — lecture source collections.</li>
@@ -860,3 +903,5 @@ BERT는 완성 후보의 masked-token 점수 등을 이용한 rescoring처럼 �
   <li><a href="https://arxiv.org/abs/1708.06426" target="_blank" rel="noopener">Cold Fusion: Training Seq2Seq Models Together with Language Models</a> — training with a fixed pretrained LM.</li>
   <li><a href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a> — bidirectional masked language modeling.</li>
 </ul>
+
+</details>

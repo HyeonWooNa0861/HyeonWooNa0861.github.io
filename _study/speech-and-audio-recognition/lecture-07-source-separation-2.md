@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:18:00 +0900
-last_modified_at: 2026-11-03 15:48:30 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 7: Blind Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Deep Clustering, PIT, Time-Domain Separation, and Unknown Source Counts"
@@ -26,9 +26,9 @@ keywords:
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture7_v2.pdf</a> — Inkyu An, Kookmin University (26 slides).
 
-한 사람이 말하는 구간에서 잡음을 줄이는 문제와 달리, blind source separation(BSS)은 **누가 섞였는지 미리 모르는 혼합음에서 각 source를 복원**합니다. 가장 먼저 부딪히는 문제는 출력 순서입니다. 정답 화자 A·B와 모델 출력 1·2가 있을 때, 출력 1이 항상 A여야 할 이유는 없습니다. Deep Clustering(DPCL)은 시간–주파수 칸을 화자별로 묶어 이 순서 문제를 피하고, Permutation-Invariant Training(PIT)은 가능한 대응 중 손실이 가장 작은 대응을 선택합니다.
+두 사람이 한 마이크에 동시에 말했습니다. 두 목소리를 각각 복원한 모델이 A의 목소리를 두 번째 출력에, B의 목소리를 첫 번째 출력에 담았다면 틀린 답일까요? 듣기에는 올바른 분리입니다. 혼합음만 듣고 목소리를 나누는 **블라인드 음원 분리**에서는 정해진 정답 순서가 없기 때문에, 학습할 때도 이런 출력을 틀렸다고 벌주지 않아야 합니다.
 
-> **핵심:** 분리 모델은 `표현 만들기 → source별로 나누기 → 파형으로 복원하기`를 수행합니다. DPCL과 PIT는 정답의 이름표 순서가 임의라는 문제를 서로 다른 방식으로 해결합니다. TasNet 이후의 모델은 STFT magnitude가 아니라 학습된 waveform 표현에서도 mask를 추정합니다. 최근 모델은 장거리 문맥, 계산 효율, 알 수 없는 source 수, 실제 녹음과의 차이를 함께 다룹니다.
+> **핵심:** 딥 클러스터링(DPCL)은 같은 사람이 낸 소리 조각끼리 묶습니다. PIT는 목소리를 먼저 출력한 뒤 정답과 짝짓는 방법을 비교해 오차가 가장 작은 짝으로 학습합니다. ‘누구의 소리인지 어떻게 묶는가’와 ‘주파수 성분을 쓸지, 파형에서 특징을 직접 배울지’는 별개의 선택입니다.
 
 페이지 번호는 원본 PDF의 물리적 쪽 번호입니다. 아래 수식·작은 수치 예제·그림 해설은 이해를 위한 보충 설명입니다. 슬라이드의 범위를 벗어나거나 조건이 빠진 표현은 마지막 `Source Check`에서 구분합니다.
 
@@ -343,6 +343,11 @@ Dilation이 1, 2, 4처럼 커지면 kernel 크기를 무작정 늘리지 않아�
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-07-v2.pdf#page=19" | relative_url }}" target="_blank" rel="noopener">원문 PDF p. 19</a>는 왼쪽부터 표현, separator, parameter 수, 개선 점수, causal variant를 나열합니다. 그러나 **TasNet-BLSTM의 23.6M과 10.8 dB는 같은 configuration의 값이 아닙니다.** Causal variant가 존재한다는 오른쪽 표기도 그 행의 점수가 causal 실험이라는 뜻은 아닙니다. 아래 표는 <a href="https://arxiv.org/pdf/1809.07454" target="_blank" rel="noopener">Conv-TasNet 원 논문 Table IV</a>의 WSJ0-2mix, 8 kHz, 두 화자 결과에서 설정을 분리한 것입니다. SI-SNRi는 혼합음 대비 SI-SNR 개선량이며 높을수록 좋습니다. M은 백만 parameters입니다.
 
+핵심 조건은 **미래 입력을 쓰는 non-causal 모델과 현재·과거만 쓰는 causal 모델을 따로 비교하는 것**입니다. 같은 표에 있어도 이 조건이 다르면 점수 차이를 architecture 하나의 효과로 해석할 수 없습니다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Causality settings and Conv-TasNet performance numbers</summary>
+
 | Context | Model | Parameters | SI-SNRi (dB) |
 |---|---|---|---|
 | Non-causal | BLSTM-TasNet | 23.6M | 13.2 |
@@ -356,6 +361,8 @@ Non-causal은 미래 입력도 참조하고, causal은 현재·과거 입력만 
 비인과 비교에서 개선량 차이는 $$15.3-13.2=2.1\,\mathrm{dB}$$입니다. SI-SNR은 에너지 비의 로그이므로 2.1 dB를 정확도 2.1% 상승으로 읽지 않습니다. 반면 인과 비교는 $$10.6-10.8=-0.2\,\mathrm{dB}$$입니다. **Conv-TasNet의 기여는 언제나 더 높은 점수가 아니라, 작은 모델과 효율적인 문맥 처리로 경쟁력 있는 분리를 구현한 데도 있습니다.**
 
 차이를 만드는 설계는 서로 연결됩니다. Dilated convolution은 넓은 시간 범위를 읽고, residual·skip connection은 여러 깊이의 정보를 전달합니다. 시간 위치별 연산을 병렬화할 수 있어 recurrent 상태를 순서대로 갱신하는 부담도 줄입니다. 짧은 encoder window와 normalization도 결과에 영향을 줍니다. 이 표만으로 2.1 dB 전부를 convolution 하나의 효과라고 분해할 수는 없습니다. 두 모델 전체 configuration의 비교이지, 다른 요소를 모두 고정한 단일 요인 실험은 아니기 때문입니다.
+
+</details>
 
 ## 6. 긴 문맥을 다루는 DPRNN과 SepFormer
 
@@ -401,6 +408,9 @@ Segmentation 전 shape는 $$N\times L$$, 후 shape는 $$N\times K\times S$$입�
 
 예를 들어 feature 채널이 $$N=3$$이면 Frame 1은 $$[0.2,0.4,0.7]$$ 같은 세 값의 묶음일 수 있습니다. 표의 `Frame 1`은 이 묶음의 위치를 가리키며 숫자 1 자체를 RNN에 넣는다는 뜻이 아닙니다. Intra가 카드 안의 묶음을 차례로 갱신했다면, inter는 그 갱신된 묶음을 카드 사이에서 연결합니다. 위 숫자는 shape를 설명하기 위한 작성자 예시이지, 원본 그림의 실제 feature 값이 아닙니다.
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: DPRNN block internals, overlap-add, and exact chunk settings</summary>
+
 #### 아래쪽 FC·Layer Norm·더하기 기호는 무엇을 하는가?
 
 원본 `B. DPRNN block`에는 RNN 뒤에 작은 상자들과 우회 연결이 있습니다. 각 경로는 **기존 정보를 통째로 교체하기보다, 문맥을 보고 계산한 보정값을 기존 feature에 더하는 구조**입니다.
@@ -424,6 +434,8 @@ DPRNN의 일반 구조에서는 block을 반복한 뒤 **chunk 내부 위치와 
 > **정정:** 원 논문의 표준 DPRNN은 bidirectional RNN을 포함하므로 기본형을 곧바로 streaming-ready 또는 causal이라고 부를 수 없습니다. 실시간 처리를 하려면 causal inter-chunk path, 제한된 look-ahead, state 관리 등 별도 설계가 필요합니다.
 
 또한 원문 p. 16의 `2 ms chunks`는 encoder window와 DPRNN chunk를 섞은 표현입니다. 16 kHz noisy-reverberant 실험에서 2 ms는 32-sample encoder window이고 DPRNN chunk는 100 encoded frames입니다. WSJ0-2mix의 18.8 dB SI-SNR improvement 설정은 2-sample encoder window와 250-frame chunk를 사용합니다. Sample/window 길이와 encoded-frame chunk 길이는 서로 다른 단위입니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: why dual-path shortens the recurrent path</summary>
@@ -544,9 +556,14 @@ Complex ratio mask도 모든 입력에서 안정적인 것은 아닙니다. $$S_
 | Algorithmic latency | 출력 전에 미래 입력을 얼마나 기다립니까? |
 | Quality | 같은 dataset·speaker 수·metric에서 분리가 얼마나 정확합니까? |
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Efficiency and benchmark claims from recent separators</summary>
+
 TIGER 논문의 비교 설정에서 TIGER-large는 0.82M parameters와 15.27 GMAC/s, 재구현한 TF-GridNet은 14.43M과 323.75 GMAC/s로 보고됩니다. 이 두 행에서 계산한 감소율은 각각 94.3%, 95.3%입니다. 이 비율을 모든 TF-GridNet variant, 입력 길이, 장치, implementation의 속도 향상으로 그대로 읽을 수는 없습니다.
 
 SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아닙니다. Raw-waveform U-Net의 multi-scale stage에 주로 bidirectional Mamba layer를 배치해 Transformer attention 없이 긴 문맥을 모델링합니다. 기본 bidirectional configuration은 미래 문맥을 사용하며 causal variant는 별도 구성입니다. SepReformer-L+DM의 25.4 dB SI-SNR improvement도 synthetic WSJ0-2mix 조건의 보고값입니다. 이를 benchmark의 수학적 포화로 단정하기보다, 정확도와 함께 효율·real-world generalization을 평가할 필요가 커졌다는 신호로 읽습니다.
+
+</details>
 
 ## 9. Source 수를 모를 때
 
@@ -564,7 +581,12 @@ SepMamba는 SepFormer의 attention block 하나만 바꾼 구조가 아닙니다
 
 16쪽의 `2 speakers tried`는 원 DPRNN 논문이 두 화자 WSJ0-2mix에서 실험했다는 뜻입니다. Encoder feature가 $$N$$개라는 사실이나 intra/inter라는 두 경로는 source가 두 명이어야 한다는 조건이 아닙니다. 출력 mask·decoder를 세 source에 맞추고 세 화자 데이터와 PIT로 학습하면 세 출력 구성을 설계할 수 있습니다. **이미 학습된 두 출력 모델이 자동으로 세 화자를 분리한다는 뜻은 아닙니다.**
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: Multi-speaker evidence beyond the two-speaker benchmark</summary>
+
 실제로 <a href="https://arxiv.org/pdf/1809.07454" target="_blank" rel="noopener">Conv-TasNet Table V</a>는 별도의 세 화자 WSJ0-3mix 실험을 보고합니다. 이후 <a href="https://arxiv.org/abs/2011.12022" target="_blank" rel="noopener">Multi-Decoder DPRNN</a>은 source-count head와 여러 decoder를 이용해 최대 다섯 화자를 평가했습니다. 이는 원 DPRNN이 같은 설정에서 다섯 화자를 검증했다는 뜻은 아닙니다. 화자 수가 늘수록 중첩 모호성과 계산 부담도 커지므로 출력 수 변경만으로 품질이 유지된다고 보장할 수 없습니다.
+
+</details>
 
 ### 9.2 출력 수를 정하거나 유동적으로 생성한다
 
@@ -681,11 +703,16 @@ $$
 p(s_1,\ldots,s_K\mid x)
 $$
 
+생성 모델은 심한 degradation에서 한 개의 점 추정에 묶이지 않고, 학습한 speech prior로 여러 후보를 표현할 수 있습니다. 하지만 자연스럽게 들린다는 사실만으로 실제 source에 충실하다고 결론낼 수는 없습니다. Identity drift, content change·drop, 반복 sampling 비용을 함께 확인해야 합니다.
+
+<details markdown="block">
+<summary markdown="span">Figure Analysis: DiffSep, EDSep, and Geneses evidence</summary>
+
 DiffSep과 EDSep은 diffusion/score-based 과정을 이용해 noisy state에서 source estimate를 반복적으로 정제합니다. 원문 p. 26의 왼쪽 pipeline은 EDSep만의 novelty 그림이 아니라 EDSep이 DiffSep에서 이어받아 background로 설명하는 SDE 기반 분리 흐름입니다. EDSep의 고유 기여는 denoiser·training objective와 stochastic sampler이며, 논문은 30 prediction steps를 사용합니다. 저자들도 당시 최고 discriminative separator와의 성능 차이가 남는다고 구분합니다.
 
 원문 p. 26의 Geneses는 2026년 preprint로 소개된 흐름이며, latent flow matching으로 enhancement와 separation을 결합합니다. 실험 범위는 simulated two-speaker LibriTTS-R의 noise-only와 complex-degradation 조건입니다. Complex degradation에서는 비교 mask baseline보다 강한 결과를 보였지만, noise-only의 일부 WER·spectral/cepstral metric에서는 열세였고 content change 또는 drop 위험도 보고합니다. 하나의 표로 모든 환경의 우월성을 일반화하지 않습니다.
 
-생성 모델의 장점은 심한 degradation에서 한 개의 점 추정에 묶이지 않고, 학습한 speech prior를 이용해 지각적으로 자연스러운 후보를 만들 가능성이 있다는 점입니다. 동시에 생성된 세부가 실제 source에 존재했다는 보장은 없습니다. Identity drift, content change·drop, 반복 sampling 비용을 확인해야 하며, perceptual quality와 source fidelity를 따로 평가합니다. 이 trade-off는 model·objective·dataset에 따라 달라집니다.
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: point estimate and conditional distribution</summary>

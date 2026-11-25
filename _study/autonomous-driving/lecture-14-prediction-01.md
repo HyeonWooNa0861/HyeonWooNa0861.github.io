@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-02 23:40:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 14: Prediction I"
 course: "Autonomous Driving"
 topic: "Actor-Centric Rasterization and Uncertainty-Aware Motion Prediction"
@@ -228,6 +228,8 @@ L_{ij}=\sum_{h=1}^{H}
 $$
 
 두 항은 서로 반대 방향으로 작동합니다.
+
+위치 하나만 내는 모델은 틀린 거리만 알려 줍니다. Uncertainty-aware 모델은 여기에 “이 예측을 얼마나 확신하는가”를 나타내는 scale $$\hat\sigma$$도 함께 냅니다. 실제 오차가 큰데 작은 $$\hat\sigma$$를 내면 지나치게 자신한 예측이므로 큰 벌점을 받고, 큰 $$\hat\sigma$$만 반복해서 내도 로그 항 때문에 벌점을 받습니다.
 
 - $$d^2/(2\hat\sigma^2)$$: 같은 오차라면 큰 $$\hat\sigma$$가 비용을 줄입니다.
 - $$\log\hat\sigma$$: 무조건 $$\hat\sigma$$를 크게 내는 방법에 비용을 부과합니다.

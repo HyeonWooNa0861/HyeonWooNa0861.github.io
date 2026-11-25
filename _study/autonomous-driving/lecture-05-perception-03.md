@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 5: Perception (3) - R-CNN Inference and Fast R-CNN"
 course: "Autonomous Driving"
 topic: "Non-Maximum Suppression, Average Precision, Fast R-CNN, and RoI Pooling"
@@ -36,9 +36,9 @@ R-CNN에서는 여러 후보 상자가 한 물체를 가리킬 수 있고, 후�
 
 ## 1. 하나의 물체가 여러 detection을 만드는 이유
 
-R-CNN은 이미지에서 여러 region proposal을 만들고 각 영역을 분류·위치 보정합니다. 서로 조금씩 다른 proposal이 같은 물체를 포함하면 분류기는 모두 같은 class에 높은 점수를 줄 수 있습니다. 원문 6쪽의 두 강아지 그림에서는 한 물체 주위에 confidence 0.9와 0.8, 다른 물체 주위에 0.75와 0.7인 상자가 동시에 남습니다. 여기서 class 선택은 class score의 `argmax`이지만, **class 선택과 중복 상자 제거는 별개 단계**입니다.
+한 강아지 주위에 조금씩 다른 상자를 여러 개 그리면, 모든 상자 안에 같은 강아지가 보일 수 있습니다. R-CNN은 이렇게 물체가 있을 법한 후보 상자, 즉 region proposal을 각각 분류하고 위치를 보정하므로 같은 물체에 여러 detection이 남을 수 있습니다. 원문 6쪽에서도 한 물체 주위에 confidence 0.9와 0.8, 다른 물체 주위에 0.75와 0.7인 상자가 함께 남습니다. 가장 큰 class score를 고르는 일과 중복 상자를 제거하는 일은 별도 단계입니다.
 
-두 상자 $$A,B$$의 겹침 정도인 intersection over union(IoU)은 다음 **정의**입니다.
+두 상자가 같은 물체를 거의 같은 위치에서 둘렀는지 확인하려면, 겹친 넓이를 두 상자가 차지한 전체 넓이와 비교합니다. 완전히 같으면 1, 전혀 겹치지 않으면 0이 됩니다. 이 비율을 intersection over union(IoU)이라고 하며 다음처럼 정의합니다.
 
 $$
 \operatorname{IoU}(A,B)=\frac{\lvert A\cap B\rvert}{\lvert A\cup B\rvert}
@@ -49,7 +49,7 @@ $$
 
 ### 1.1 Class별 non-maximum suppression
 
-원문 7쪽은 NMS의 예시 임계값으로 IoU $$>0.7$$을 사용합니다. 예측한 **같은 class 안에서** confidence가 높은 순서로 정렬하고, 최고 점수 상자를 남긴 뒤 그 상자와 너무 많이 겹치는 낮은 점수 상자를 제거합니다. 남은 상자들에 대해 반복합니다. 이것은 최적 상자 집합을 수학적으로 보장하는 알고리즘이 아니라 **탐욕적 후처리**입니다.
+같은 강아지를 가리키는 상자 네 개가 남았다면 가장 믿을 만한 상자 하나만 남기고 싶습니다. 같은 class의 상자를 confidence 순으로 세운 뒤, 최고 점수 상자와 너무 많이 겹치는 낮은 점수 상자를 지웁니다. 이 과정을 non-maximum suppression(NMS)이라고 합니다. 원문 7쪽은 “너무 많이 겹침”의 예시 기준으로 IoU $$>0.7$$을 사용합니다. 앞에서 고른 결과를 되돌리지 않는 탐욕적 후처리이므로 최적 상자 집합을 보장하지는 않습니다.
 
 ```text
 class별 detection을 confidence 내림차순으로 정렬
@@ -96,7 +96,7 @@ confidence threshold를 높은 값에서 낮은 값으로 이동시키면 예측
 
 ### 2.2 AP와 mAP
 
-한 threshold만 골라 평가하면 threshold 선택에 따라 결론이 달라집니다. class별 예측을 score 순으로 끝까지 훑어 만든 precision–recall(PR) 점들의 면적이 average precision(AP)입니다. 원문 17쪽처럼 흔히 더 높은 recall 구간의 최대 precision을 앞 구간으로 전파한 **보간 precision envelope**를 사용합니다. 다만 정확한 적분·보간 규칙은 VOC, COCO 등 평가 프로토콜마다 다르므로 “AP”만 보고 수치를 직접 비교하면 안 됩니다.
+Confidence 기준을 높이면 확실한 상자만 남고, 낮추면 더 많은 정답과 오탐이 함께 들어옵니다. 따라서 기준 하나에서 나온 precision·recall만으로 모델 전체를 평가하면 선택한 기준에 따라 결론이 달라집니다. Class별 예측을 높은 score부터 하나씩 추가하며 만든 precision–recall 곡선의 면적이 average precision(AP)입니다. 여러 class의 AP를 평균한 값이 mAP입니다. 원문 17쪽은 더 높은 recall 구간의 최대 precision을 앞 구간으로 전파한 보간 방식을 사용합니다. 정확한 적분·보간 규칙은 VOC, COCO 등 평가 규약마다 다릅니다.
 
 이 강의 예제에서 양성 정답 수 $$N_{GT}=3$$이고 TP가 나온 순위는 1, 2, 5입니다. 각 TP 직후 precision은 $$1,1,3/5$$이므로, recall 증가량 $$1/3$$을 곱한 **all-point 방식의 예제 계산**은
 
@@ -151,6 +151,9 @@ RoI pooling은 feature 길이를 맞추지만 좌표를 cell에 snap하므로 �
 
 ## 원문 정확성 검토: Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 원문 위치 | 확인한 내용 | 이 글의 처리 |
 |---|---|---|
 | 7·9쪽 | NMS는 예측끼리 IoU 0.7, TP 매칭은 예측–GT IoU 0.5를 사용합니다. | 두 임계값의 목적과 비교 대상을 분리했습니다. 둘 다 이 강의의 **예시 설정**이지 항상 고정값은 아닙니다. |
@@ -158,6 +161,8 @@ RoI pooling은 feature 길이를 맞추지만 좌표를 cell에 snap하므로 �
 | 17쪽 | Dog AP 0.86, Car/Cat/Dog mAP 0.77이 제시됩니다. | 예제 TP 순위로 AP는 $$13/15\approx0.8667$$을 재계산했습니다. Dog 0.86은 절삭/도식 근사로 표시하고, 원문 수치의 mAP 0.77은 별도로 검산했습니다. |
 
 슬라이드 그림에 없는 구체적인 모델 구현 수치나 보편적인 자율주행 실시간성 보장은 이 예제에서 추론하지 않았습니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

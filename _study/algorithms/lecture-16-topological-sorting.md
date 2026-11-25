@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:01 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 16: Topological Sorting"
 course: "Algorithms"
 topic: "DAG Ordering with Kahn's Algorithm and DFS Postorder"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [lecture-16-topological-sorting.pdf](/assets/pdfs/study/algorithms/lecture-16-topological-sorting.pdf)
 
 여러 작업에 선후 관계가 있으면 단순히 이름이나 소요 시간으로 정렬할 수 없습니다. **모든 의존 관계를 지키면서 실행 가능한 순서를 만드는 문제**가 위상 정렬입니다. 강의는 진입 차수가 0인 정점을 앞에서 제거하는 Kahn 알고리즘과, DFS 종료 순서를 뒤집는 방법을 비교합니다.
+
+예를 들어 반죽을 만든 뒤에만 빵을 구울 수 있고, 빵을 구운 뒤에만 포장할 수 있습니다. 위상 정렬은 `반죽, 굽기, 포장`처럼 모든 선행 조건을 지키는 순서를 찾습니다. 동시에 시작할 수 있는 작업이 있으면 정답 순서는 하나가 아닐 수 있습니다.
 
 > **핵심:** 위상 순서는 DAG에서만 존재합니다. 간선 `u → v`가 있으면 결과에서 `u`가 `v`보다 앞서야 합니다. Kahn은 아직 선행 작업이 없는 정점을 고르고, DFS는 후속 작업을 모두 처리한 정점을 stack에 넣습니다. 두 방법 모두 인접 리스트에서 $$O(\lvert V\rvert+\lvert E\rvert)$$입니다.
 

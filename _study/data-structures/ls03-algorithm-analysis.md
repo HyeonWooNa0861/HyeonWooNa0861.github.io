@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS03 Algorithm Analysis"
 course: "Data Structures"
 topic: "Algorithm Analysis"
@@ -18,6 +18,8 @@ keywords:
 # LS03 Algorithm Analysis
 
 Source PDF: `LS03_algorithm_analysis.pdf`
+
+입력 10개를 처리하는 프로그램이 빠르더라도 입력이 10만 개가 되면 결과가 달라질 수 있습니다. 알고리즘 분석은 특정 컴퓨터에서 걸린 시간만 재지 않고, 입력이 커질 때 비교·덧셈·배열 접근 같은 일이 몇 번 늘어나는지도 셉니다.
 
 > **핵심:** 실험적 분석은 프로그램을 실행해 시간을 측정하고, 이론적 분석은 기본 연산의 수행 횟수를 계산합니다. 기본 연산은 수행 시간이 일정하다고 가정하는 핵심 연산입니다.
 
@@ -214,7 +216,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 의사코드에서 입력 크기와 기본 연산을 먼저 표시한 뒤, 조건문별 경로와 반복 횟수를 세어 T(n)을 만듭니다. n=1과 n>1처럼 실행 횟수가 달라지는 경우는 하나의 평균값으로 덮지 말고 piecewise하게 계산합니다. 마지막에는 실제 실행시간을 재는 실험적 분석과 연산 성장률을 구하는 이론적 분석의 장단점을 비교합니다.
+
+</details>
 
 ## 복습 질문
 
@@ -319,6 +326,9 @@ $$
 
 ## 강의 수식과 관련 페이지
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 Source PDF 25쪽 전체를 렌더링해 시각적으로 확인했습니다.
 
 | PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
@@ -330,6 +340,8 @@ Source PDF 25쪽 전체를 렌더링해 시각적으로 확인했습니다.
 | 25 | 다음 강의 예고 | 수식이나 증명 대상이 없습니다. |
 
 Study Notes의 삼각합은 원문 식이 아니라 중첩 반복 분석을 돕는 작성자 예제이며, 해당 절에서 그 경계를 명시했습니다.
+
+</details>
 
 ## PDF
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 9: Generative Adversarial Networks I"
 course: "CS236"
 topic: "Likelihood-Free Generative Learning"
@@ -22,7 +22,7 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 9](https://www.youtu
 
 Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 9는 지금까지의 likelihood-based generative model에서 벗어나 GAN을 도입합니다. Autoregressive model은 chain rule로 $$p_\theta(x)$$를 직접 계산하고, VAE는 marginal likelihood가 어려워 ELBO를 최적화하며, normalizing flow는 change of variables로 exact likelihood를 계산합니다.
+> **핵심:** GAN은 생성 사진의 확률을 계산하는 대신 실제 사진과 구별하는 시험을 만듭니다. Generator는 시험을 통과하도록 사진을 고치고, discriminator는 가짜의 단서를 더 잘 찾도록 함께 학습합니다.
 
 실제 사진 묶음과 생성 사진 묶음만 있고 각 사진의 정확한 확률은 모른다고 하겠습니다. 두 묶음을 잘 구분하는 classifier를 학습하면 어디에서 생성 분포가 실제 분포와 다른지 신호를 얻을 수 있습니다. GAN의 discriminator는 이 비교 신호를 만들고 generator는 그 구분을 어렵게 만들지만, discriminator의 출력 자체를 $$p_\theta(x)$$로 해석하면 안 됩니다.
 
@@ -76,6 +76,8 @@ Source PDF: [lecture09-generative-adversarial-networks-i.pdf](https://deepgenera
 [PDF p.12](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture9.pdf#page=12){:target="_blank" rel="noopener"}의 $$x$$에서 $$y$$로 향하는 작은 그래프는 discriminator의 이진 분류를 뜻합니다. 여기서 $$y=1$$은 실제 데이터, $$y=0$$은 생성 데이터입니다. 이 판별이 쉬울수록 두 샘플 집합을 구분할 단서가 남아 있습니다. Generator는 그 단서를 줄이도록 학습되지만, 제한된 판별기와 실제 최적화가 모든 mode의 복원을 보장하지는 않습니다.
 
 ## 핵심 내용
+
+GAN은 생성한 사진의 확률값을 직접 계산하는 대신, 실제 사진과 생성 사진을 구별하는 판별 시험을 만듭니다. Generator는 판별기가 가짜를 알아보지 못하도록 사진을 고치고, discriminator는 둘의 차이를 더 잘 찾도록 학습합니다.
 
 Lecture 9는 지금까지의 likelihood-based generative model에서 벗어나 GAN을 도입합니다. Autoregressive model은 chain rule로 $$p_\theta(x)$$를 직접 계산하고, VAE는 marginal likelihood가 어려워 ELBO를 최적화하며, normalizing flow는 change of variables로 exact likelihood를 계산합니다. 세 계열 모두 궁극적으로 $$D_{KL}(p_{data}\|p_\theta)$$를 줄이거나 likelihood를 높이는 방향으로 학습합니다. 강의는 이 기준이 왜 좋은지 먼저 확인합니다. 충분한 model capacity와 적절한 조건이 있으면 maximum likelihood estimator는 통계적으로 효율적이고, 높은 likelihood는 lossless compression 관점에서도 좋은 압축률을 의미합니다.
 

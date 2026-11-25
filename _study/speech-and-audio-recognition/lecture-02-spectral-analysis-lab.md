@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-10-19 14:13:07 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 2: Spectral Analysis Lab"
 course: "Speech and Audio Recognition"
 topic: "FFT, STFT, Mel Spectrograms, and Cepstral Features"
@@ -26,9 +26,9 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 앞선 [Digital Signal Processing I](/study/speech-and-audio-recognition/lecture-02-sound-and-digital-audio/)에서 sampling, Fourier basis, DFT의 출발점을 다뤘습니다. 이 글은 두 번째 강의 PDF의 DFT 실습·STFT·mel·cepstrum을 연결합니다. **원문에 없는 FFT 유도, sampling spectrum, rect/sinc 관계와 ASR 연결은 작성자의 보충 설명**으로 구분합니다. 강의 슬라이드의 Colab 실습 화면(pp.8, 15, 18, 23)은 결과 그림이 무엇을 검사하는지 설명하되, 별도 notebook의 코드와 실행 결과를 이 글에서 재현했다고 주장하지 않습니다.
 
-> **핵심:** FFT는 DFT의 정의를 바꾸지 않고 계산을 재사용합니다. STFT는 유한한 시간 창마다 주파수를 계산해 시간 변화를 드러내지만 창 길이와 모양 때문에 시간·주파수 분해능과 spectral leakage가 함께 결정됩니다. Mel filterbank, log, DCT는 표현을 다시 조직하는 단계이지 인식 정확도를 보장하는 연산이 아닙니다.
+> **핵심:** 녹음 앞부분에는 낮은 음, 뒷부분에는 높은 음이 났다고 해 보겠습니다. 녹음 전체에서 주파수별 크기만 뽑으면 두 음이 있었다는 것은 보이지만 순서는 읽기 어렵습니다. 짧은 구간마다 따로 분석하면 **언제 어떤 음이 강했는지**가 보입니다. 이 계산이 단시간 푸리에 변환(STFT)입니다.
 
-한 번의 FFT로 3초짜리 발화를 분석하면 “어떤 주파수가 있었는가”는 알 수 있지만, 그 주파수가 첫 음절에 있었는지 마지막 음절에 있었는지는 사라집니다. STFT는 발화를 짧게 겹쳐 자르고 각 조각에 FFT를 적용해 이 시간 위치를 남깁니다. Window는 조각 경계가 갑자기 끊겨 가짜 주파수 성분이 생기는 것을 줄이고, Mel filterbank와 log는 사람이 구별하는 주파수·크기 변화에 맞게 많은 값을 묶고 압축합니다. 따라서 각 연산은 장식이 아니라 **시간 위치 보존, 경계 왜곡 완화, 인식에 쓸 크기 범위 정리**라는 서로 다른 이유로 이어집니다.
+각 구간에서 주파수 성분을 빠르게 계산하는 방법이 FFT입니다. 구간 양끝을 부드럽게 줄이는 창 함수는 잘라낸 경계 때문에 에너지가 주변 주파수에 퍼져 보이는 현상을 조절합니다. 그다음 Mel 필터는 주파수 칸을 겹치는 대역으로 모으고, 로그는 각 대역에서 큰 값과 작은 값을 함께 보기 쉽게 바꿉니다. 세 단계가 하는 일은 서로 다릅니다.
 
 ## 전체 흐름
 
@@ -41,7 +41,8 @@ Source Materials: <a href="{{ "/assets/materials/study/speech-spectral-analysis/
 | 16–18 | Mel scale과 filterbank | 선형 Hz bin을 왜 폭이 다른 band로 묶습니까? |
 | 19–23 | F0, harmonic, formant, cepstrum, MFCC | 주기적 미세 구조와 spectral envelope를 어떻게 분리합니까? |
 
-### 기호와 단위
+<details markdown="block">
+<summary markdown="span">Notation: Time, frequency, and amplitude units</summary>
 
 | 기호 | 뜻 | 단위·성격 |
 |---|---|---|
@@ -56,11 +57,13 @@ Source Materials: <a href="{{ "/assets/materials/study/speech-spectral-analysis/
 
 실제 마이크 압력(Pa)이나 전압(V)으로 보정한 $$x[n]$$을 넣으면 변환 계수에도 해당 진폭 단위를 추적할 수 있습니다. 그렇지 않은 일반 PCM·정규화 배열에서 FFT 숫자 5000은 물리적 음압 5000 Pa를 뜻하지 않습니다. 창·FFT의 정규화가 바뀌면 같은 표본의 계수 수치도 달라집니다.
 
+</details>
+
 ## 1. DFT가 계산하는 값과 FFT가 절약하는 계산
 
 ### 1.1 정규화와 단위부터 고정하기
 
-PDF p.2의 convention을 따릅니다. $$x[n]$$은 $$n=0,\ldots,N-1$$의 표본이고, $$N$$은 양의 표본 개수입니다. 표본화율 $$f_s$$의 단위는 Hz, $$n/f_s$$는 초, $$k$$는 무차원 bin index입니다. 이 convention에서 $$X[k]$$는 입력 디지털 진폭의 평균화된 복소 계수이며, 입력이 물리 단위로 보정되지 않았다면 계수도 물리량이 아닙니다.
+짧은 소리 조각 안에 일정한 속도로 되풀이되는 진동이 얼마나 있는지 알아보겠습니다. DFT는 여러 주파수의 기준 진동을 대어 보고, 주파수마다 크기와 위상을 담은 값 하나를 냅니다. 원문 2쪽은 표본 개수로 나눈 값을 쓰므로, 같은 소리를 분석해도 이 나눗셈을 생략하는 프로그램과 숫자 크기가 다를 수 있습니다. 아래에서 $$x[n]$$은 $$n$$번째 표본, $$N$$은 표본 개수, $$X[k]$$는 $$k$$번째 주파수 칸의 결과입니다.
 
 $$
 X[k]=\frac{1}{N}\sum_{n=0}^{N-1}x[n]e^{-j2\pi kn/N},\qquad
@@ -203,13 +206,20 @@ $$
 
 ### 2.2 프레임·hop·주파수 bin의 좌표
 
-전체 녹음의 magnitude spectrum만으로는 각 성분이 **언제** 나타났는지 직접 읽기 어렵습니다. 복소 DFT 전체는 원 표본을 복원할 수 있지만, 시간에 따른 주파수 변화를 한눈에 보여 주는 표현은 아닙니다. PDF pp.9–10은 길이 1024표본의 창을 256표본씩 옮기는 그림으로 STFT를 도입합니다. 아래는 창 길이 $$L$$, hop $$H$$, FFT 길이 $$N_{\mathrm{FFT}}\ge L$$, 창 $$w[r]$$에 대한 작성자 표기입니다.
+원문 9–10쪽 그림에서 첫 창은 0번부터 1023번 표본까지, 다음 창은 256번부터 1279번까지 덮습니다. 두 창은 서로 다른 소리를 뚝뚝 잘라 보는 것이 아니라 768개 표본을 공유합니다. 창을 한 번 옮길 때마다 스펙트로그램에 시간 칸 하나가 생깁니다. 이 이동 간격이 **홉(hop)**이고, 각 시간 칸에 늘어선 세로 눈금 하나하나가 **주파수 칸(bin)**입니다.
 
 $$
 S[m,k]=\sum_{r=0}^{L-1}x[mH+r]w[r]e^{-j2\pi kr/N_{\mathrm{FFT}}}.
 $$
 
-$$m,k,r$$는 무차원 index이고 $$H,L,N_{\mathrm{FFT}}$$는 samples로 센 개수입니다. $$mH/f_s$$는 프레임 시작 시각(초), $$k f_s/N_{\mathrm{FFT}}$$는 bin 중심(Hz)이며, $$L/f_s$$는 창의 시간 폭(초)입니다. $$w$$가 무차원이라면 $$S$$는 입력 디지털 진폭의 가중합이지만, 라이브러리의 STFT scaling/정규화 옵션에 따라 수치 scale이 달라집니다. 무패딩·비중심 프레임에서 $$N_{\mathrm{frame}}=1+\lfloor(N_x-L)/H\rfloor$$, $$N_x\ge L$$입니다. Center padding, 끝 padding, one-sided 출력은 이 개수와 frequency 행 수를 바꿉니다. 실수 입력에 짝수 $$N_{\mathrm{FFT}}$$인 one-sided STFT라면 행 수는 $$N_{\mathrm{FFT}}/2+1$$입니다.
+여기서 $$m$$은 몇 번째 창인지, $$k$$는 어느 주파수 칸인지, $$r$$은 창 안에서 몇 번째 표본인지 나타냅니다. 표본화율이 $$f_s$$이고 창을 $$H$$개 표본씩 옮기면 $$m$$번째 창은 $$mH/f_s$$초에 시작합니다(양끝을 덧붙이지 않고 창 시작을 기준으로 할 때). 창 길이 $$L$$을 시간으로 바꾸면 $$L/f_s$$초이고, 주파수 칸의 중심은 $$k f_s/N_{\mathrm{FFT}}$$ Hz입니다.
+
+<details markdown="block">
+<summary markdown="span">Calculation: Frame count and frequency bins</summary>
+
+프레임 양끝을 0으로 채우지 않으면 녹음에 온전히 들어가는 창만 셉니다. 표본 수 $$N_x\ge L$$일 때 창의 개수는 $$1+\lfloor(N_x-L)/H\rfloor$$입니다. 실수 입력과 짝수 FFT 길이에서 음이 아닌 주파수만 보관하면 주파수 칸은 $$N_{\mathrm{FFT}}/2+1$$개입니다. 양끝을 채우거나 프레임을 중심에 맞추면 시간 칸 수가 달라질 수 있습니다. 계수의 크기도 창의 가중치와 구현의 정규화 방식에 따라 달라집니다.
+
+</details>
 
 창을 길게 하면 가까운 주파수 성분을 가를 시간이 늘지만 급격한 변화의 시각을 넓은 구간에 섞습니다. 짧은 창은 반대로 시간 위치는 좁히되 주파수 peak는 넓어집니다. $$\Delta f=f_s/N_{\mathrm{FFT}}$$는 **그려지는 bin 간격**이고, zero-padding으로 $$N_{\mathrm{FFT}}$$만 키워 간격을 촘촘히 해도 관측 창 $$L/f_s$$가 제공한 물리적 분해능을 새로 만들지는 않습니다. 1024/256 예에서 프레임 중첩률은 $$1-256/1024=75\%$$입니다. 이것이 모든 신호에 최적인 값이라는 뜻은 아닙니다.
 
@@ -349,7 +359,7 @@ M[m,b]=\sum_k H_b[k]P[m,k],\qquad
 L[m,b]=\log\bigl(\max(M[m,b],\epsilon)\bigr)
 $$
 
-입니다. $$b$$는 band index이고 $$M$$은 power에 filter weight를 곱해 더한 값입니다. `log`의 정의역을 위한 $$\epsilon>0$$가 필요합니다. Power 대신 magnitude를 쓰거나 triangle을 peak 1로 둘지 면적 정규화할지에 따라 수치가 달라집니다. <a href="https://librosa.org/doc/main/api/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa mel-spectrogram 문서</a>의 `power`와 `norm='slaney'`는 서로 다른 선택 축입니다. p.18의 원본 Hz spectrogram과 mel 그림은 이런 축·band 변경의 시각적 예이지 정보가 늘었다는 실험 증거는 아닙니다.
+입니다. 첫 식은 주파수별 에너지를 얼마나 반영할지 정해 더합니다. $$b$$는 그렇게 얻은 대역의 번호입니다. 둘째 식은 이미 합친 값에 로그를 취합니다. 에너지가 0일 때 로그를 계산할 수 없으므로 여기서는 작은 양수 $$\epsilon$$ 아래의 값을 그 수로 올립니다. 주파수 크기를 쓸지 그 제곱을 쓸지, 필터의 높이 또는 면적을 어떻게 맞출지에 따라 출력 수치는 달라집니다. <a href="https://librosa.org/doc/main/api/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa mel-spectrogram 문서</a>에서 이를 각각 확인할 수 있습니다. 원문 18쪽의 두 그림은 같은 녹음을 다른 눈금으로 요약한 것이지 새로운 소리가 생겼다는 뜻이 아닙니다.
 
 ### Mel을 사용하는 목적: 세부 bin보다 대역별 음향 패턴을 표현하기
 {: #mel-purpose}
@@ -502,6 +512,9 @@ $$
 
 표기에서 `L = len(y)`는 `librosa.load` 이후의 표본 수이고, `sr`은 로드된 파형의 초당 표본 수입니다. 원본 코드가 실제 표본 수를 출력하지 않으므로 `L`을 추정 숫자로 바꾸지 않습니다. 저장된 파형 그림에서 재생 길이는 약 18초대로 보이지만, 정확한 길이는 `L / sr`로 계산해야 합니다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Cells 0–7 from a known signal to a whole-recording FFT</summary>
+
 ### Cells 0–1: A Known Signal and Its FFT
 
 **Cell 0 — 시간축과 합성파.** `fs=1000 Hz`, `T=1 s`, `N=fsT=1000`이고 `endpoint=False`이므로 `t[n]=n/1000 s` (`n=0,…,999`)입니다. 두 성분을 더해 `f[n]=10 sin(2π·10t[n])+3 sin(2π·100t[n])`을 만듭니다. 10 Hz는 0.1초를 한 주기로 하는 큰 진폭 성분이고, 100 Hz는 그 위에 얹힌 0.01초 주기의 작은 진폭 성분입니다. 1초 동안 각각 정확히 10회·100회 진동하므로 이 예에서는 두 성분이 DFT bin에 정확히 놓입니다. `f`와 `t`의 배열 shape는 모두 `(1000,)`입니다.
@@ -539,6 +552,8 @@ $$
 <img src="{{ "/assets/images/study/speech-spectral-analysis/cell-07-01.png" | relative_url }}" alt="전체 음성 파일의 양측 FFT 막대가 0 Hz 주위에 조밀하게 겹친 그림" loading="lazy">
 
 저장된 `stem` 그림은 수많은 bin이 겹쳐 중앙이 빽빽합니다. 한 번의 FFT는 **전체 구간의 총합**이므로 이 그래프에서 시간별 pitch·formant를 읽거나 가장 큰 막대 하나를 음성 전체의 fundamental이라고 단정할 수 없습니다. 더 작은 분석 구간이 필요한 이유가 다음 STFT 셀입니다.
+
+</details>
 
 ### Cells 8–9: A Hand-Written STFT and Window Comparison
 
@@ -590,13 +605,18 @@ $$
 
 마지막 셀은 직접 만든 STFT와 다른 설정을 사용합니다. `n_fft=2048`, `win_length=1024`, `hop_length=512`, `n_mels=128`, `n_mfcc=13`입니다. 22050 Hz에서 창의 실제 길이는 **약 46.44 ms**, hop은 **약 23.22 ms**, FFT 눈금은 **약 10.77 Hz**입니다. `center=True`이므로 신호 양끝에 기본적으로 0을 채워 `t`번째 프레임을 `y[t·512]` 주위에 정렬합니다. 1024표본 Hann 창은 2048표본 FFT 프레임의 가운데에 0으로 채워집니다. 따라서 이 셀과 셀 8은 `n_fft`만 다른 실험이 아니라 **창 길이·hop·center 처리·창 정의가 모두 다른 계산**입니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.stft.html" target="_blank" rel="noopener">librosa 0.11.0 <code>stft</code> API</a>에서 이 정렬 및 zero-padding을 확인할 수 있습니다.
 
-`S_complex`와 `S_mag=abs(S_complex)`의 shape는 `(1025, 1+floor(L/512))`입니다. `librosa.amplitude_to_db`에 `S_mag`와 `ref=np.max`를 전달한 결과를 `S_db`에 저장합니다. 각 amplitude를 **이 스펙트로그램의 최대 amplitude**와 비교해 `20 log10` 변환하는 연산입니다. 기본 `top_db=80`이 적용되어 최고가 0 dB, 가장 낮은 표시값은 −80 dB가 됩니다. 이는 교정된 dB SPL 또는 절대 음량이 아닙니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.amplitude_to_db.html" target="_blank" rel="noopener">librosa <code>amplitude_to_db</code> 문서</a>가 기준값과 절단 범위를 명시합니다.
+`librosa.feature.melspectrogram`에 `y=y`, `sr=sr`, `power=2.0`과 같은 STFT 설정을 전달한 결과를 `M`에 저장합니다. Magnitude를 **제곱한 power**를 128개 mel 필터로 합치는 연산이며, shape는 `(128, 1+floor(L/512))`입니다. 당시 기본은 `fmin=0`, `fmax=sr/2`, `htk=False`, `norm='slaney'`이며, mel bin은 Hz bin과 1:1 대응하지 않습니다. `M_db=librosa.power_to_db(M, ref=np.max)`는 power에 `10 log10`을 적용하고 0~-80 dB로 자릅니다. 선형 주파수 그림과 Mel 그림은 **각자 자기 배열의 최댓값**을 기준으로 삼으므로 동일한 0 dB가 동일한 물리 에너지를 뜻하지 않습니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa <code>melspectrogram</code> 문서</a>와 <a href="https://librosa.org/doc/0.11.0/generated/librosa.power_to_db.html" target="_blank" rel="noopener">librosa <code>power_to_db</code> 문서</a>가 변환 순서와 기본값을 보여줍니다.
 
-`librosa.feature.melspectrogram`에 `y=y`, `sr=sr`, `power=2.0`과 같은 STFT 설정을 전달한 결과를 `M`에 저장합니다. Magnitude를 **제곱한 power**를 128개 mel 필터로 합치는 연산이며, shape는 `(128, 1+floor(L/512))`입니다. 당시 기본은 `fmin=0`, `fmax=sr/2`, `htk=False`, `norm='slaney'`이며, mel bin은 Hz bin과 1:1 대응하지 않습니다. `M_db=librosa.power_to_db(M, ref=np.max)`는 power에 `10 log10`을 적용하고 0~-80 dB로 자릅니다. 여기서 `S_db`와 `M_db`는 각각 **자기 배열의 서로 다른 최댓값**을 기준으로 삼으므로 동일한 0 dB가 동일한 물리 에너지를 뜻하지 않습니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html" target="_blank" rel="noopener">librosa <code>melspectrogram</code> 문서</a>와 <a href="https://librosa.org/doc/0.11.0/generated/librosa.power_to_db.html" target="_blank" rel="noopener">librosa <code>power_to_db</code> 문서</a>가 변환 순서와 기본값을 보여줍니다.
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Array shapes, MFCC, and whole-recording cepstrum settings</summary>
+
+`S_complex`와 `S_mag=abs(S_complex)`의 shape는 `(1025, 1+floor(L/512))`입니다. `librosa.amplitude_to_db`에 `S_mag`와 `ref=np.max`를 전달한 결과를 `S_db`에 저장합니다. 각 amplitude를 **이 스펙트로그램의 최대 amplitude**와 비교해 `20 log10` 변환하는 연산입니다. 기본 `top_db=80`이 적용되어 최고가 0 dB, 가장 낮은 표시값은 −80 dB가 됩니다. 이는 교정된 dB SPL 또는 절대 음량이 아닙니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.amplitude_to_db.html" target="_blank" rel="noopener">librosa <code>amplitude_to_db</code> 문서</a>가 기준값과 절단 범위를 명시합니다.
 
 `librosa.feature.mfcc`에 `S=M_db`, `n_mfcc=13`을 전달해 `mfcc`에 저장합니다. 여기서 `S`는 **이미 log-power mel spectrogram**이므로 이 전달 방식은 API와 맞습니다. 기본 DCT-II·직교 정규화가 mel 축 정보를 13개 계수로 모으므로 shape는 `(13, 1+floor(L/512))`입니다. MFCC는 새로운 Hz 주파수축이 아니라 **계수 번호 × 시간**의 행렬이며, 정확한 음소 라벨이나 pitch 값 자체가 아닙니다. <a href="https://librosa.org/doc/0.11.0/generated/librosa.feature.mfcc.html" target="_blank" rel="noopener">librosa <code>mfcc</code> 문서</a>는 `S`의 입력 의미와 DCT 기본값을 명시합니다.
 
 별도의 **real cepstrum** 계산은 전체 파일 `N=L`에 `np.hanning(N)`을 곱하고, `scipy.fft.rfft` → `ln(max(abs(Y),10⁻¹²))` → `scipy.fft.irfft`를 적용합니다. 이는 MFCC와 달리 멜 필터·프레임별 DCT를 쓰지 않습니다. 독립변수 **quefrency**는 `q/sr` 초이며, 스펙트럼의 주기적인 harmonic 간격이 있으면 역로그스펙트럼에서 관련 지연에 봉우리가 나타날 수 있습니다. 원본은 `fmin=50`, `fmax=400 Hz`에 대응하는 정수 지연 범위에서 가장 큰 양의 cepstral 값을 골라 `sr/q_peak`를 제목에 넣습니다. 저장 제목의 **약 373.7 Hz는 전체 약 18초 음성에서 한 번 고른 피치 *후보***입니다. 무성 구간·침묵·서로 다른 발화자를 구분하지 않았고, 프레임별 F0 추정이나 진실값 검증도 없으므로 '음성의 피치가 373.7 Hz'라고 말하면 과장입니다. `qmin=int(sr/fmax)`는 올림이 아니고 `qmax`는 슬라이스 끝에서 빠지므로 50~400 Hz의 **정확한 포함 범위**도 아닙니다. 또한 `N`이 홀수면 `irfft`의 기본 출력 길이는 `N−1`입니다. 정확한 길이를 보존하려면 `irfft(log_mag, n=N)`을 명시합니다. <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.irfft.html" target="_blank" rel="noopener">SciPy <code>irfft</code> 문서</a>가 기본 길이 `2(m−1)`과 홀수 길이 주의를 설명합니다.
+
+</details>
 
 **저장 그림 10-1 — 다시 그린 전체 파형.**
 
@@ -632,6 +652,9 @@ $$
 
 원본의 계산을 이해하기 위해 꼭 필요한 보정과, 결과 해석에서 지켜야 할 경계를 분리합니다.
 
+<details markdown="block">
+<summary markdown="span">Code Walkthrough: Notebook corrections and reproducibility checks</summary>
+
 | 위치 | 원본에서 확인된 사실 | 안전한 해석·개선 |
 |---|---|---|
 | 1·7 | FFT 계수에 정규화 없음 | 진폭과 원시 magnitude를 구분하고 양측/단측 기준을 밝힙니다. |
@@ -642,6 +665,8 @@ $$
 | 9 | 식 세 개 중 마지막 평균만 출력됨 | 필요하면 세 통계를 명시적으로 출력합니다. |
 | 10 | whole-record cepstrum을 `peak≈373.7 Hz`로 표시 | 검증되지 않은 전체 파일 피치 후보로만 취급하고, 프레임별 유성 구간에서 별도 평가합니다. |
 | 10 | `irfft(log_mag)` 길이가 암묵적 | 홀수 `N`도 보존하도록 `irfft(log_mag, n=N)`으로 지정합니다. |
+
+</details>
 
 다음 코드는 **원본을 실행한 결과가 아닌 안전한 재작성 예시**입니다. 음원 파일과 `librosa`, `numpy`, `scipy`가 준비되어 있고 `y`가 1차원 실수 배열이라는 전제가 필요합니다. `sliding_window_view`는 프레임을 뽑는 view를 만들며, 이후 `window` 곱셈과 FFT에서 배열이 생성됩니다. 출력은 원본 `as_strided` 함수처럼 `(frequency, frame)`으로 맞추지만, 잘못된 길이·hop을 먼저 거부합니다.
 
@@ -733,6 +758,9 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Figure Analysis: PDF, HTML, and equation source checks</summary>
+
 노트북의 원본 코드 11셀과 저장 그림 15개를 대조했습니다. 합성 신호로 FFT 정규화·radix-2 분해·Dirichlet 응답·dB·N=8 aliasing을 검산했으며, 보강한 `checked_stft`는 개별 프레임 FFT와의 일치 및 잘못된 입력 6종의 거부를 확인했습니다. 이는 원본 WAV 실습의 전체 재실행이나 피치 추정 정확도 검증을 대신하지 않습니다.
 
 원문 PDF 23쪽 전체와 제공된 N=8 HTML의 설명·script를 시각·수식 대조했습니다. 아래는 **확인된 오류**와 **생략된 조건**을 구분한 것입니다. 실습 화면의 실행 코드·데이터 생성 조건은 PDF에 없으므로 그래프의 세부 표본 수까지 단정하지 않습니다.
@@ -747,6 +775,8 @@ pitch_candidate_hz = sr / q_peak  # 전체 신호 후보일 뿐, 검증된 F0가
 | PDF pp.21–22 | 표기·구현 조건 생략 | Real cepstrum은 $$\log\lvert X\rvert$$의 inverse DFT입니다. MFCC에는 magnitude/power, mel filter 합산, log floor, DCT convention을 지정해야 합니다. |
 | N=8 HTML 설명 | **확인된 범위 오류** | $$-N/2<k<N/2$$는 $$N=8$$에서 정수 $$-3,\ldots,3$$의 **7개**만 포함하므로 8개 bin의 유일 대표 범위가 아닙니다. 한 convention은 $$-4\le k<4$$이고, Nyquist 경계 bin은 $$+4$$와 $$-4$$가 같은 나머지류입니다. 반면 원 신호에 $$\lvert f\rvert<f_s/2$$를 요구하는 strict bandlimit는 별개의 복원 조건입니다. |
 | N=8 HTML 초기 화면·script | 해석 주의 | $$t=0.0625$$ s에는 두 회전 위치가 다르며, 동일성은 $$t=n/8$$ s의 8개 sample에서 성립합니다. Spiral은 회전 표식이지 감쇠가 아닙니다. |
+
+</details>
 
 
 ## 7. ASR: 음향 특징에서 전사까지 — 작성자 보충

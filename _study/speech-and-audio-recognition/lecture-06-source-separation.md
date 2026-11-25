@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-08 16:17:00 +0900
-last_modified_at: 2026-10-18 19:26:41 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 6: Source Separation"
 course: "Speech and Audio Recognition"
 topic: "Audio Reconstruction, Masking, Loss Functions, and Phase"
@@ -33,7 +33,8 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 페이지 번호는 원본 PDF의 물리적 쪽 번호입니다. 아래 유도·작은 수치 예제·그림은 이해를 위한 보충 설명입니다. 원문 표기의 정정과 실험 수치의 해석 조건은 마지막 `Source Check`에서 구분합니다.
 
-## 전체 흐름
+<details markdown="block">
+<summary markdown="span">Guide: Slides by topic</summary>
 
 | 원문 | 주제 | 먼저 이해할 질문 |
 |---|---|---|
@@ -45,6 +46,8 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 | pp. 29–32 | DCCRN, MDX-Net, FullSubNet+ | 복소수와 주파수 문맥을 모델에서 어떻게 다룹니까? |
 | pp. 33–44 | Demucs, hybrid models | 파형과 스펙트럼의 정보를 어떻게 결합합니까? |
 | pp. 45–48 | Band-Split RNN | 주파수 대역을 나누면 무엇을 배우기 쉬워집니까? |
+
+</details>
 
 ## 1. 무엇을 분리하는가
 
@@ -131,6 +134,9 @@ $$
 
 </details>
 
+<details markdown="block">
+<summary markdown="span">Reference: STFT symbols and units</summary>
+
 | 기호 | 의미 | 단위·범위 |
 |---|---|---|
 | $$n,r,t,k$$ | sample, window 내부 sample, frame, frequency-bin index | 무차원 정수 |
@@ -142,6 +148,8 @@ $$
 | $$\phi_Y,\phi_S,\hat\phi$$ | 혼합·정답·예측 위상 | rad |
 | $$\hat M,M^\ast$$ | 예측·정답 mask | 무차원; 허용 범위는 mask 정의에 따름 |
 | $$\alpha,c,\beta$$ | 투영 계수, 압축 지수, 혼합 가중치 | 무차원 |
+
+</details>
 
 ### 2.2 모델은 mask를 만들고 decoder가 파형을 만든다
 
@@ -167,6 +175,9 @@ $$F(Y)$$는 network에 넣을 특징입니다. $$\odot$$는 같은 위치끼리 
 
 Binary mask는 한 칸을 남길지 지울지 이진 결정하므로 classification으로 학습할 수 있습니다. Continuous mask는 0.37, 0.82처럼 연속값을 추정하므로 보통 regression입니다. 학습의 핵심은 “어떤 class인가”만이 아니라 **어떤 값을 곱해야 목표 source가 복원되는가**에 있습니다.
 
+<details markdown="block">
+<summary markdown="span">Comparison: Four ways to define a mask</summary>
+
 | Mask | 한 가지 정의 | 의미·주의점 |
 |---|---|---|
 | IBM | $$M^\ast=\mathbf 1[\lvert S\rvert^2>\lvert V\rvert^2]$$ | 목표가 더 큰 칸을 남기는 예; threshold는 변경 가능 |
@@ -176,11 +187,24 @@ Binary mask는 한 칸을 남길지 지울지 이진 결정하므로 classificat
 
 분모가 0인 칸은 별도로 처리하거나 작은 $$\varepsilon$$을 사용해야 합니다. IRM은 문헌마다 power나 지수 관례가 다르며, 위 표의 IRM과 ideal amplitude mask는 일반적으로 같은 값이 아닙니다. 혼합에서 위상 상쇄가 일어나면 $$\lvert Y\rvert<\lvert S\rvert$$이므로 목표를 복원하려면 1보다 큰 mask가 필요할 수 있습니다. Sigmoid로 0–1만 허용한 모델에는 표현 범위의 제약이 생깁니다.
 
+</details>
+
 ## 3. Mel spectrogram은 어디서 정보를 잃는가
 
 ### 3.1 주파수 축의 압축과 로그 압축은 다르다
 
-한 frame에서 linear-frequency power를 $$p_k=\lvert Y_k\rvert^2$$로 두면 Mel power는 filter-bank 행렬 $$W$$로 계산합니다.
+Mel 스펙트로그램은 소리의 짧은 한 구간에서 **어느 주파수 대역이 얼마나 강한지** 보여 줍니다. 가령 512점 FFT로 얻은 주파수 칸 257개를 그대로 보관하는 대신, 이웃한 칸들의 세기를 묶어 80개 대역 값으로 나타낼 수 있습니다.
+
+세 칸의 세기가 `[1, 4, 9]`라고 해 보겠습니다. 가운데 값은 그대로, 양옆 값은 절반씩 더하면 `0.5 + 4 + 4.5 = 9`입니다. 그런데 `[3, 4, 7]`도 `1.5 + 4 + 3.5 = 9`입니다. **이 대역의 값 9만 보고는 어느 쪽이었는지 알 수 없습니다.** 실제 필터들은 일부 칸을 공유하므로 다른 대역에서는 두 입력이 구별될 수도 있습니다.
+
+Mel 대역은 낮은 주파수에서 좁고 높은 주파수에서 넓습니다. 사람의 음높이 구분 경향을 반영한 것이지 잡음을 제거한 것은 아닙니다.
+
+**Mel과 로그는 다른 일을 합니다.** Mel 필터는 여러 주파수 칸을 더 적은 대역으로 묶습니다. 로그는 그 뒤 각 대역의 값을 표시하는 눈금만 바꿉니다. 80개 대역에 로그를 취해도 여전히 80개입니다.
+
+<details markdown="block">
+<summary markdown="span">Calculation: Mel band power and its dB reference</summary>
+
+**대역 값 구하기.** 짧은 한 구간에서 주파수 칸마다 STFT 크기를 제곱한 값이 전력 $$p_k=\lvert Y_k\rvert^2$$입니다. 각 칸에 해당 대역의 가중치를 곱하고 더합니다.
 
 $$
 q_b=\sum_{k=0}^{F-1}W_{b,k}p_k,\qquad q=Wp
@@ -190,7 +214,9 @@ $$
 z_b=10\log_{10}\left(\frac{\max(q_b,\varepsilon)}{q_{\mathrm{ref}}}\right)
 $$
 
-$$b$$는 Mel-band index, $$W_{b,k}$$는 무차원 filter weight입니다. $$q_{\mathrm{ref}}>0$$는 기준 power입니다. 흔히 FFT bin 수 $$F$$보다 Mel band 수 $$B$$가 적습니다. 예를 들어 $$N=512$$인 실수 신호의 one-sided STFT는 257 bins인데, 이를 80 Mel bands로 줄이면 여러 주파수 성분이 하나의 band 값에 합쳐집니다.
+첫 식의 $$b$$는 대역 번호, $$W_{b,k}$$는 각 칸의 전력에 곱하는 가중치입니다. 둘째 식은 대역 값을 기준 전력 $$q_{\mathrm{ref}}>0$$과 비교합니다. 두 값이 같고 최솟값보다 크면 0 dB입니다. $$\varepsilon>0$$는 0에 로그를 취하지 않도록 둔 작은 값입니다.
+
+</details>
 
 세 변환을 구분해야 합니다.
 
@@ -233,11 +259,11 @@ $$
 
 ### 3.3 인식에 유용한 표현이 복원에는 부족할 수 있다
 
-ASR은 특정 waveform을 재현하기보다 어떤 phoneme·word인지 알아내는 것이 목적입니다. 주파수의 세부 차이를 줄인 log-Mel 특징이 그 목적에는 유용할 수 있습니다. 반면 denoising과 separation은 목표 파형의 주파수별 크기와 시간 구조를 다시 만들어야 합니다.
+음성 인식의 질문은 ‘이 사람이 어떤 말을 했는가?’입니다. 그래서 주파수의 세부 차이를 줄인 log-Mel 특징도 유용합니다. 반면 음원 분리의 질문은 ‘다른 사람 목소리를 빼면 이 사람의 목소리가 어떻게 들리는가?’입니다. 여기서는 소리로 돌아가는 데 필요한 세부 정보가 중요합니다.
 
-이 때문에 **단순 mask–iSTFT 경로에서는 linear-frequency STFT나 학습된 waveform representation을 선택하는 이유가 강합니다.** Mel mask를 예측해도 80-band 값을 257-bin 복소 스펙트럼으로 바꾸는 별도 단계가 필요합니다.
+그래서 흔히 원래의 복소 스펙트럼을 남겨 두고, 목표 소리를 살릴 칸에 가중치를 곱한 뒤 파형으로 되돌립니다. 모델이 가중치를 정할 때 Mel 특징을 참고하는 것은 괜찮습니다.
 
-다만 Mel 사용 자체가 금지되는 것은 아닙니다. Mel을 mask network의 입력 특징으로 쓰면서 원래 $$Y$$를 복원 경로에 보존할 수 있고, generative decoder가 Mel을 조건으로 waveform을 합성할 수도 있습니다. 전자는 원래 스펙트럼을 유지하고, 후자는 학습한 prior로 빠진 정보를 추정합니다. Mel만으로 원래 파형이 수학적으로 유일하게 결정된다는 뜻은 아닙니다.
+Mel 정보만 받아 새 파형을 합성하는 방법도 있습니다. 이때 모델은 사라진 세부 정보를 추정합니다. 원래 파형을 그대로 되찾는 것과는 다릅니다.
 
 ## 4. MA·SA·Waveform: 같은 출력의 어디를 비교하는가
 
@@ -629,6 +655,11 @@ $$
 
 ### 7.2 압축한 magnitude에 phase를 결합해 비교한다
 
+크기만 비교하면 위상이 어긋나도 오차가 작게 나올 수 있습니다. 그래서 크기를 압축해서 비교하는 항과, 위상까지 포함해서 비교하는 항을 함께 씁니다.
+
+<details markdown="block">
+<summary markdown="span">Calculation: Combining magnitude and complex error</summary>
+
 보조 표현을
 
 $$
@@ -651,6 +682,8 @@ $$
 정답과 예측이 같을 때 두 loss가 모두 0이 되도록 **양쪽 magnitude에 같은 지수 $$c$$를 사용합니다**. 원문 p. 24의 복소 loss는 한쪽 지수가 2로 인쇄되어 있는데, 이를 그대로 옮기면 이 성질이 깨지므로 여기서는 수정했습니다.
 
 <a href="https://arxiv.org/abs/2009.12286" target="_blank" rel="noopener">Braun and Tashev (2020)</a>의 비교는 magnitude-only objective와 phase-aware objective의 조합을 특정 enhancement 모델에서 평가한 결과입니다. 그림에서 가장 좋았던 $$\beta$$를 다른 model과 dataset에도 보편적으로 적용되는 값으로 사용해서는 안 됩니다. Fixed mixture phase를 사용하는 경우에도 complex loss는 magnitude를 조정하는 학습에 영향을 주지만, 이것이 phase predictor를 추가했다는 뜻은 아닙니다.
+
+</details>
 
 ## 8. Waveform loss와 spectral loss를 결합한다
 
@@ -801,12 +834,17 @@ Source별로 학습한 model이나 stream의 결과를 mixer에서 결합하는 
 
 왼쪽의 magnitude, real, imaginary 세 입력은 각각 MulCA와 full-band extractor를 지납니다. 중심 bin 주변 magnitude는 `Unfold`로 모으고, 세 full-band 특징과 이어 붙여 sub-band LSTM에 보냅니다. 오른쪽의 두 출력은 complex mask의 real·imaginary 성분입니다.
 
+<details markdown="block">
+<summary markdown="span">Figure: FullSubNet+ scores with and without reverberation</summary>
+
 <figure id="speech-06-p32">
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/source-captures/speech-06-p32.png" | relative_url }}" alt="FullSubNet+ 제목과 아이디어 문장 아래에 with reverb와 without reverb 성능을 나눈 비교표" loading="lazy">
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-06.pdf#page=32" | relative_url }}">lecture PDF, p. 32</a>.</figcaption>
 </figure>
 
 표는 with reverb와 without reverb를 나누고 WB-PESQ, NB-PESQ, STOI, SI-SDR를 비교합니다. FullSubNet과 FullSubNet+의 행을 비교할 때는 같은 reverberation 조건과 같은 지표의 열을 맞춥니다. 한 열의 개선이 모든 조건에서 같은 정도의 개선을 뜻하지는 않습니다. 상단의 ‘2-component phase’는 아래에서 구분하는 real·imaginary 표현과 연결해 읽고, 실제 모델의 연결은 p.31 구조도를 기준으로 확인합니다.
+
+</details>
 
 모든 frequency를 함께 보는 full-band branch는 발화 전체의 harmonic과 넓은 spectral pattern을 처리할 수 있습니다. Sub-band branch는 특정 주파수 주변의 변화를 시간 방향으로 추적합니다. 두 branch를 함께 사용해 넓은 구조와 국소적인 noise pattern을 나누어 처리합니다(pp. 31–32).
 
@@ -816,7 +854,8 @@ Source별로 학습한 model이나 stream의 결과를 mixer에서 결합하는 
 
 **문제의식은 복소 mask를 예측하면서 입력에서는 위상 관련 좌표를 버린다는 불일치입니다.** 기존 FullSubNet은 magnitude를 입력받아 complex ideal ratio mask(cIRM)를 추정합니다. FullSubNet+는 real·imaginary 입력을 추가하고, 주파수별 중요도를 조절하는 MulCA와 full-band TCN을 결합합니다. 따라서 새로움은 단순히 “mask를 사용한다”가 아니라, **mask를 결정할 때 어떤 정보를 함께 보고 얼마나 효율적으로 처리하는가**에 있습니다. 다음 설명은 <a href="https://arxiv.org/html/2203.12188v2" target="_blank" rel="noopener">ICASSP 2022 논문 v2</a>의 구조와 실험을 기준으로 합니다.
 
-#### 그림의 세 입력에서 두 출력까지
+<details markdown="block">
+<summary markdown="span">Architecture: Following the three FullSubNet+ inputs</summary>
 
 슬라이드 p. 31의 위쪽 세 입력은 서로 다른 녹음이 아닙니다. **같은 noisy STFT의 magnitude, real, imaginary 표현**입니다. 세 입력을 왼쪽에서 오른쪽으로 따라가면 다음 순서가 됩니다.
 
@@ -829,6 +868,8 @@ Source별로 학습한 model이나 stream의 결과를 mixer에서 결합하는 
 | 두 LSTM과 Linear | 시간 흐름을 처리해 mask의 real·imaginary 두 성분을 출력 | 목표 성분을 복원할 크기 조정과 회전을 함께 추정 |
 
 MulCA의 가중치와 최종 복소 mask는 역할이 다릅니다. **MulCA는 내부 특징의 중요도를 조절하며, 최종 mask는 입력 STFT에 적용해 소리를 복원합니다.** 그림의 모든 곱셈을 noise 제거용 mask로 읽으면 두 단계가 섞입니다. Full-band의 LSTM을 TCN으로 바꿨더라도 sub-band에는 LSTM이 남아 있으므로 전체 모델을 convolution-only 구조라고 부를 수 없습니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Figure Analysis: Full-Band and Sub-Band Tensor Flow</summary>
@@ -892,11 +933,14 @@ $$
 
 <a href="https://github.com/RookieJunChen/FullSubNet-plus/blob/b115416d6e2a983c3724fc77d0cdc3d8896a2855/speech_enhance/fullsubnet_plus/inferencer.py" target="_blank" rel="noopener">공식 추론 코드</a>에서도 network의 두 출력을 역압축한 다음 **보존한 noisy STFT**에 복소 곱셈하고 iSTFT로 돌아옵니다. Full-band 특징에 mask를 곱하는 것이 아닙니다. 학습 때만 clean target으로 정답 cIRM를 만들며, 추론 때 clean target은 입력되지 않습니다. 이 설명은 코드 경로를 대조한 것이며 모델 학습이나 논문 benchmark를 재실행한 결과는 아닙니다.
 
-#### 표가 뒷받침하는 범위
+<details markdown="block">
+<summary markdown="span">Evidence: FullSubNet+ test conditions and ablations</summary>
 
 슬라이드 p. 32와 논문 Table 1의 DNS synthetic test에서는 with/without reverb 조건을 나눠 읽어야 합니다. Without reverb의 WB-PESQ는 FullSubNet 2.813, FullSubNet+ 2.982입니다. 두 모델의 look-ahead는 모두 32 ms입니다. 이 비교는 해당 데이터와 평가 조건에서의 결과이지 모든 잡음에서의 우월성을 증명하지 않습니다. With reverb의 목표는 마이크에서 관측한 reverberant speech를 복원하는 것이므로 이 결과만으로 dereverberation 성능을 주장할 수도 없습니다.
 
 논문 Table 3은 phase-related 입력과 MulCA를 제거한 ablation을 제시합니다. Without reverb의 WB-PESQ는 전체 모델 2.982, phase-related 입력 제거 2.955, MulCA 제거 2.960입니다. 각 구성의 기여를 살펴볼 근거는 되지만 두 효과가 독립적으로 단순 합산된다는 의미는 아닙니다. 슬라이드 표의 연도와 제목이 다르게 보이더라도 모델명과 인용한 논문 버전을 기준으로 구분합니다.
+
+</details>
 
 ### 9.4 DCCRN과 FullSubNet 계열은 같은 문제를 다른 축에서 푼다
 
@@ -1025,7 +1069,8 @@ print(round(abs(projected_magnitude - clean_bin) ** 2, 2))
 
 이 예시에는 STFT overlap, 실제 audio, model inference가 포함되어 있지 않습니다. 실제 음성을 평가할 때는 STFT·iSTFT의 window와 hop, tensor shape, source pairing, gain, alignment 조건을 맞추어야 합니다.
 
-## Source Check
+<details markdown="block">
+<summary markdown="span">Source notes: Slide notation and model versions</summary>
 
 | 위치 | 잘못 해석하기 쉬운 지점 | 본문에서의 처리 |
 |---|---|---|
@@ -1040,6 +1085,8 @@ print(round(abs(projected_magnitude - clean_bin) ** 2, 2))
 | p. 41 | Denoiser 제목 아래에 music Demucs v2 결과표가 있음 | Speech enhancement와 MUSDB18 music separation을 분리해 설명 |
 | p. 44 | HT Demucs 제목 아래의 표가 Hybrid Demucs v3 결과임 | v3 표와 v4 주석을 구분하고 version을 혼합하지 않음 |
 
+</details>
+
 ## 마지막 핵심 정리
 
 - **복원에는 분류에 편리한 특징 이상의 정보가 필요합니다.** Mel의 주파수 집계와 phase discard는 원래 waveform을 유일하게 복원하는 데 필요한 정보를 줄입니다.
@@ -1051,11 +1098,14 @@ print(round(abs(projected_magnitude - clean_bin) ** 2, 2))
 - **음량과 source 순서를 따로 다루어야 합니다.** SI-SNR은 gain을 무시한 shape error를, PIT는 source 대응의 순열 문제를 다룹니다.
 - **DCCRN과 FullSubNet 계열은 같은 계보가 아닙니다.** DCCRN은 complex-valued network 연산을, FullSubNet은 full/sub-band 문맥 결합을 강조하며, FullSubNet+가 FullSubNet을 직접 확장합니다.
 
-## Study Guide
+<details markdown="block">
+<summary markdown="span">Review guide: Revisit the losses and the models</summary>
 
 먼저 2절에서 한 bin에 mask를 적용하는 과정을 따라가고, 4절에서 같은 수치가 MA와 SA에서 어떻게 다르게 비교되는지 계산합니다. 이어서 6절의 complex error 전개와 60도 예시를 읽으면 PSA가 단순한 magnitude target과 다른 이유를 이해할 수 있습니다. 마지막으로 5절의 SI-SNR과 8절의 PIT를 읽으며 각각 무엇에 대한 불변성을 다루는지 구분합니다.
 
 모델을 비교할 때는 입력 표현, 원래 complex spectrum이 보존되는 위치, output이 real mask·complex mask·waveform 중 무엇인지, loss를 어느 위치에 적용하는지를 차례로 확인합니다. 그림 중앙에 masking이라고 적혀 있어도 구현이 명시적인 mask를 예측한다고 단정할 수는 없습니다.
+
+</details>
 
 ## 복습 질문
 

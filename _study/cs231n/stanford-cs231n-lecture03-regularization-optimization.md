@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 3: Regularization and Optimization"
 course: "CS231N"
 topic: "Regularization and Optimization"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 3 PDF](https://cs231n.stanford.ed
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_3.pdf#page=56" target="_blank" rel="noopener">CS231N Lecture 3, PDF p. 56 (printed slide 60)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 정규화는 훈련 오차가 아니라 보지 못한 데이터의 오차를 줄이기 위한 설계이고, 최적화는 그 목적함수의 지형을 기울기로 탐색하는 과정입니다. 좋은 결과는 optimizer 이름 하나보다 학습률, 스케줄, 초기화, 데이터 표현의 조합에서 나옵니다.
+> **핵심:** 훈련 사진을 모두 맞혀도 처음 보는 사진을 틀릴 수 있습니다. 정규화는 훈련 자료에만 맞는 규칙을 덜 배우게 하는 장치이고, 최적화는 정한 기준에 따라 가중치를 조정하는 과정입니다. 둘은 해결하는 문제가 다릅니다.
 
 훈련 사진만 완벽히 외운 분류기는 새 사진의 조명이나 배경이 달라지면 쉽게 틀립니다. Regularization은 가능한 해 가운데 지나치게 복잡하거나 특정 표본에 민감한 해를 덜 선호하게 만듭니다. Gradient는 현재 parameter를 조금 바꿨을 때 loss가 어느 방향으로 커지는지를 뜻하며, optimizer는 반대 방향의 이동량을 정해 loss를 낮춥니다.
 
@@ -209,10 +209,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. data loss와 regularization loss의 역할을 분리해 설명합니다.
 2. SGD, momentum, RMSProp, Adam의 상태 변수가 무엇인지 비교합니다.
 3. `loss 폭증`, `초기 정체`, `후반 진동`을 각각 학습률 관점에서 진단합니다.
 4. train 성능과 validation 성능의 간격으로 과적합 여부를 판단합니다.
+
+</details>
 
 ## 복습 질문
 

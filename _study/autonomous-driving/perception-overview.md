@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Perception Review: From Image Classification to Instance Segmentation"
 course: "Autonomous Driving"
 topic: "Integrated Review of Visual Representations, Detection, and Segmentation"
@@ -65,6 +65,8 @@ Source PDF: [Perception 1]({{ "/assets/pdfs/study/autonomous-driving/lecture-03-
 이미지 $$x$$에서 backbone이 특징 $$F=f_\theta(x)$$를 만들고, head가 필요한 형태의 출력을 계산합니다. 분류에서는 class score, 검출에서는 score와 좌표, 분할에서는 위치별 class score가 나옵니다. 같은 backbone을 쓰더라도 head와 정답의 구조가 다릅니다.
 
 단일 정답 class $$y$$에 대한 softmax와 cross-entropy를 쓰면 다음과 같습니다. $$z_c$$는 logit이고 $$p_c$$는 class 확률로 모델링한 값입니다. 두 값 모두 무차원입니다.
+
+먼저 모델은 각 class에 상대 점수인 logit을 냅니다. Softmax는 이 점수들을 합이 1인 비교 가능한 확률로 바꾸고, cross-entropy는 정답 class에 준 확률이 작을수록 큰 손실을 만듭니다. 식의 기호는 이 세 단계를 짧게 적은 것입니다.
 
 $$
 p_c=\frac{e^{z_c}}{\sum_j e^{z_j}},\qquad L=-\log p_y=-z_y+\log\sum_j e^{z_j}.
@@ -180,7 +182,7 @@ $$
 
 ### 5.1 Focal loss는 왜 쉬운 배경의 비중을 낮추는가
 
-외부 보강: <a href="https://arxiv.org/html/1708.02002v2" target="_blank" rel="noopener">RetinaNet의 focal loss</a>는 dense detector에서 수많은 쉬운 음성 표본이 손실을 지배하는 문제를 다룹니다. 정답에 대한 확률을 $$p_t$$라 하면
+외부 보강: <a href="https://arxiv.org/html/1708.02002v2" target="_blank" rel="noopener">RetinaNet의 focal loss</a>는 dense detector에서 수많은 **쉽게 맞히는 배경 표본**이 손실을 지배하는 문제를 다룹니다. 정답에 대한 확률을 $$p_t$$라 하면
 
 $$
 L_{FL}=-\alpha_t(1-p_t)^\gamma\log p_t,\qquad\gamma\geq0.
@@ -298,6 +300,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 점검 대상 | 통합본의 처리 |
 |---|---|
 | Perception 1의 flatten 설명 | 배열 변환 자체와 공간 inductive bias의 차이를 구분 |
@@ -307,6 +312,8 @@ $$
 | Perception 5, p. 13의 YOLO 45 FPS | 원형 모델의 측정값을 전체 YOLO 계열의 보장 성능으로 확대하지 않음 |
 | Perception 6의 upsampling과 things/stuff | 전치행렬은 역행렬이 아님; 범주 구분은 데이터셋 taxonomy에 의존 |
 | AP 계산 방식 | 교육용 all-points 예제와 COCO의 sampling·matching 설정을 구분 |
+
+</details>
 
 ## 마지막 핵심 정리
 

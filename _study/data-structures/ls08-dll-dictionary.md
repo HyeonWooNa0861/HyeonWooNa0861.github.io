@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS08 Doubly Linked Lists and Dictionaries"
 course: "Data Structures"
 topic: "Doubly Linked Lists and Dictionaries"
@@ -18,6 +18,8 @@ keywords:
 # LS08 Doubly Linked Lists and Dictionaries
 
 Source PDF: `LS08_dll_dictionary.pdf`
+
+단일 연결 리스트는 다음 노드만 기억하므로 이전 노드로 바로 돌아갈 수 없습니다. 이중 연결 리스트는 앞·뒤 주소를 모두 저장해 양쪽으로 이동합니다. 대신 노드 하나를 넣거나 뺄 때 앞쪽 연결과 뒤쪽 연결을 모두 정확히 고쳐야 합니다.
 
 > **핵심:** 이중 연결 리스트는 `next`뿐 아니라 `prev`도 저장하므로 양방향으로 이동할 수 있습니다. 노드를 삽입할 때는 새 노드의 `prev`·`next`와 양옆 노드의 `next`·`prev`를 함께 갱신해야 합니다.
 
@@ -182,7 +184,12 @@ key       value
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 이중 연결 리스트 삽입·삭제는 새 노드와 양쪽 이웃의 prev/next 네 연결을 그림에 표시한 뒤 한 줄씩 코드로 옮깁니다. dictionary는 위치가 아니라 unique key로 value를 찾으며 value 자체는 중복될 수 있다는 점을 리스트와 대비합니다. 해시 기반 평균 O(1)은 충돌이 적다는 조건부 주장이고 최악 O(n)도 가능하다는 문장이 시험 핵심입니다.
+
+</details>
 
 ## 복습 질문
 
@@ -270,6 +277,9 @@ url       -> cachedPage
 
 ## 강의 수식과 관련 페이지
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 Source PDF 40쪽 전체를 렌더링해 시각적으로 확인했습니다.
 
 | PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
@@ -281,6 +291,8 @@ Source PDF 40쪽 전체를 렌더링해 시각적으로 확인했습니다.
 | 32--34 | 사용 예와 dictionary 도입 | 예제 코드·이미지로, proof-level 수식이 없습니다. |
 | 35--38 | dictionary 정의, 평균 $$O(1)$$와 최악 $$O(n)$$ | 균등 분산·낮은 충돌 가정과 한 슬롯 집중 반례를 설명했습니다. |
 | 39--40 | HashMap 예제와 다음 강의 예고 | API 예제이며 추가 증명 대상 식은 없습니다. |
+
+</details>
 
 ## PDF
 

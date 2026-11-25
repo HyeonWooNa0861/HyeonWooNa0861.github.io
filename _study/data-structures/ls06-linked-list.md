@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS06 Linked Lists"
 course: "Data Structures"
 topic: "Linked Lists"
@@ -48,6 +48,8 @@ Source PDF: `LS06_linked_list.pdf`
 ## 1. 연결 리스트의 구조
 
 연결 리스트는 각 원소를 노드로 저장하고, 노드들이 다음 노드를 가리키며 이어지는 구조입니다.
+
+배열처럼 `3번 칸`으로 바로 이동하는 구조는 아닙니다. 첫 노드에서 시작해 `next`를 한 번씩 따라가야 다음 원소를 찾을 수 있습니다. 대신 중간 노드의 앞 위치를 이미 알고 있다면 뒤 원소를 밀지 않고 연결 두 개만 바꿔 삽입할 수 있습니다.
 
 ```java
 class Node<E> {
@@ -198,7 +200,12 @@ return cur.item;
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 빈 리스트, 하나뿐인 노드, 첫·마지막 노드 삭제를 각각 그림으로 그리고 head와 tail의 최종 값을 확인합니다. 노드를 이미 알고 있을 때 연결 변경은 O(1)이지만 그 위치까지 탐색하면 O(n)이라는 비용 분리를 반드시 유지합니다. 코드 복습은 새 노드의 next 설정 → 이전 연결 변경 → size 갱신 순으로 재현하고, 리스트가 비었을 때 tail 처리까지 검사합니다.
+
+</details>
 
 ## 복습 질문
 

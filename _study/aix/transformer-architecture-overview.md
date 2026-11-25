@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Transformer Architecture Overview"
 course: "AIX"
 topic: "Transformer Architecture Overview"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `2_Overview_TF.pdf`
 
 > **핵심:** Self-attention만으로는 토큰의 순서가 드러나지 않아 positional encoding이 필요합니다. Attention에서는 query가 찾는 정보를 나타내고, key는 관련성을 비교할 기준, value는 그 결과에 따라 모을 내용을 담습니다.
+
+Transformer는 문장 속 단어들이 서로 얼마나 관련 있는지 한꺼번에 비교합니다. `개가 사람을 물었다`와 `사람이 개를 물었다`는 같은 단어를 쓰지만 뜻이 다르므로, 관련도만큼 순서도 알아야 합니다. Positional encoding은 각 토큰에 위치 정보를 더하고, attention은 현재 토큰이 참고할 다른 토큰의 정보를 골라 섞습니다.
 
 ## 전체 흐름
 
@@ -53,13 +55,13 @@ Source PDF: `2_Overview_TF.pdf`
 
 ## 1. Tokenization과 Embedding
 
-Transformer는 raw text를 그대로 받지 않습니다. 먼저 text를 token으로 나누고, 각 token을 정수 id로 바꾼 뒤 embedding vector로 변환합니다.
+Transformer는 글자를 그대로 계산하지 않습니다. 먼저 문장을 처리 단위인 token으로 나누고, 각 token을 정수 번호로 바꾼 뒤 모델이 계산할 수 있는 embedding vector로 변환합니다.
 
 ```text
 "I love AI" -> ["I", "love", "AI"] -> [12, 845, 91] -> vectors
 ```
 
-Embedding matrix는 각 token id에 대응하는 dense vector를 저장합니다. 학습이 진행되면서 token vector는 문맥적, 의미적 패턴을 반영하도록 조정됩니다.
+Embedding matrix는 각 token 번호에 대응하는 짧고 밀집된 숫자 벡터를 저장합니다. 학습이 진행되면 비슷한 문맥에 쓰이는 token이 계산에 유용한 관계를 갖도록 이 숫자들이 조정됩니다.
 
 ## 2. Positional Encoding
 
@@ -273,7 +275,12 @@ tokens
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 짧은 token 행렬을 놓고 QKᵀ 계산, √d_k scaling, softmax, V의 weighted sum을 차례로 손으로 따라갑니다. attention은 token 사이 정보를 섞고 FFN은 각 위치의 표현을 변환한다는 역할 차이, positional encoding과 causal mask가 해결하는 문제가 서로 다르다는 점을 분리해 기억합니다. block diagram에는 multi-head, residual, layer normalization까지 표시해 encoder와 decoder의 정보 흐름을 재현합니다.
+
+</details>
 
 ## 복습 질문
 

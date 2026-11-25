@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 12: Graph Basics"
 course: "Algorithms"
 topic: "Graph Definitions, Representations, DFS, and BFS"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [lecture-12-graph-basics.pdf](/assets/pdfs/study/algorithms/lecture-12-graph-basics.pdf)
 
 그래프는 객체를 정점으로, 객체 사이의 관계를 간선으로 바꾸어 표현합니다. 이 강의는 그래프의 기본 용어를 정의한 뒤, 같은 그래프를 인접 행렬과 인접 리스트로 저장하는 방법을 비교하고, DFS와 BFS가 저장된 연결 관계를 어떤 순서로 방문하는지 설명합니다.
+
+도로망에서는 교차로를 정점, 두 교차로를 잇는 도로를 간선으로 볼 수 있습니다. 목적은 그림을 그리는 데 그치지 않습니다. 어떤 교차로가 연결되어 있는지 저장하고, 한 지점에서 갈 수 있는 곳을 체계적으로 찾는 데 그래프를 사용합니다.
 
 > **핵심:** 그래프 문제는 먼저 정점과 간선이 무엇인지 정하고, 방향·가중치·연결성에 맞는 표현을 선택해야 합니다. DFS는 한 경로를 끝까지 따라가고, BFS는 시작점과의 거리가 같은 정점을 한 층씩 방문합니다. 두 탐색 모두 `visited`가 있어야 사이클에서 무한 반복하지 않습니다.
 

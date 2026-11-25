@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS14 Merge Sort"
 course: "Data Structures"
 topic: "Merge Sort"
@@ -66,6 +66,8 @@ Source PDF: `LS14_merge_sort.pdf`
 3. 정렬된 두 배열을 하나의 정렬된 배열로 병합합니다.
 
 핵심은 "정렬은 재귀가 하고, 실제 정렬된 순서를 만드는 작업은 merge가 한다"는 점입니다.
+
+`[4, 1, 3, 2]`를 나누면 `[4, 1]`과 `[3, 2]`가 됩니다. 다시 한 칸씩 나눈 뒤 `[1, 4]`, `[2, 3]`으로 합치고, 마지막에 두 정렬 구간의 앞값을 비교해 `[1, 2, 3, 4]`를 만듭니다. 나누기만 해서는 순서가 바뀌지 않고, **merge가 작은 값을 차례로 꺼내면서 정렬된 결과를 만듭니다.**
 
 ## 3. 두 정렬 배열 병합
 
@@ -175,7 +177,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 배열이 길이 1이 될 때까지 반으로 나누는 recursion tree를 그리고, 각 레벨에서 전체 n개 원소가 병합됨을 표시해 O(n log n)을 유도합니다. merge 코드는 두 pointer 비교 후 한쪽 배열에 남은 원소를 붙이는 마지막 두 반복문까지 직접 재현합니다. 항상 같은 시간 상한과 안정 정렬 가능성은 장점이지만 O(n) 보조 배열이 필요하다는 trade-off를 함께 기억합니다.
+
+</details>
 
 ## 복습 질문
 

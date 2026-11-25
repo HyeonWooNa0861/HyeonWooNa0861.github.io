@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-17 01:14:20 +0900
-last_modified_at: 2026-10-16 19:32:41 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Program Memory Areas"
 course: "C++"
 topic: "Code/Data/Stack/Heap"
@@ -35,9 +35,9 @@ Heap 영역은 `new`나 `malloc`처럼 실행 중 동적으로 할당되는 메�
 
 화살표 방향은 특정 process layout을 설명하는 관례이며 C++ 표준이 모든 OS에서 같은 주소 배치를 보장하는 것은 아닙니다. 핵심은 stack frame의 자동 수명과 heap 객체의 별도 수명, 그리고 stack의 pointer/reference가 heap 객체를 가리킬 수 있다는 구분입니다.
 
-Stack과 Heap은 보통 서로 반대 방향으로 확장됩니다. Stack은 높은 주소에서 낮은 주소 방향으로 커지고, Heap은 낮은 주소에서 높은 주소 방향으로 확장됩니다. 이렇게 설계하면 두 영역이 같은 메모리 공간을 효율적으로 나누어 사용할 수 있습니다.
+강의 그림처럼 Stack과 Heap을 서로 반대 방향으로 그리는 전형적인 process layout이 있습니다. 이 그림에서는 Stack이 높은 주소에서 낮은 주소로, Heap이 낮은 주소에서 높은 주소로 커집니다. 가운데의 비어 있는 주소 범위를 두 영역이 필요에 따라 사용할 수 있다는 생각을 보여 주는 도식입니다.
 
-두 영역이 서로 마주 보며 확장되면 실제 실행 중 필요한 만큼 공간을 사용할 수 있고, 어느 한쪽이 지나치게 커져 충돌할 경우 overflow를 감지할 수 있습니다. 즉, 고정된 크기를 미리 나누기보다 실행 상황에 따라 유연하게 메모리를 활용하기 위한 구조라고 볼 수 있습니다.
+다만 현대 운영체제는 virtual memory, address-space randomization, 별도 memory mapping을 사용하므로 두 영역이 실제로 한 공간에서 계속 자라다가 직접 부딪힌다고 일반화하면 안 됩니다. Stack overflow는 보통 제한된 stack 범위나 guard page를 넘을 때 발생하고, Heap 할당 실패는 allocator와 사용 가능한 virtual memory 조건에 따라 결정됩니다. 기억할 핵심은 화살표 방향보다 **Stack은 호출 수명에 맞춰 자동 관리되고, Heap 객체는 별도 소유권과 수명을 가진다**는 차이입니다.
 
 ## 3. 메모리 단편화
 

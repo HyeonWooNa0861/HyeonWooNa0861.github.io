@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-17 00:05:01 +0900
-last_modified_at: 2026-11-23 16:50:19 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 9: Multi-channel Source Separation II"
 course: "Speech and Audio Recognition"
 topic: "Neural Beamforming and Complex Spectral Mapping"
@@ -21,11 +21,11 @@ keywords:
 
 Source PDF: `speech-audio-lecture-09-2.pdf` — *Multi-channel Source Separation 2-2*, 안인규(Inkyu An), 25 slides.
 
-> **핵심:** 다채널 신경망의 출력은 mask, 공간 필터, 복소 spectrum 중 하나일 수 있습니다. 초기 방법은 mask로 공분산과 beamformer를 계산했고, 이후 방법은 시간영역 필터나 복소 STFT를 직접 추정했습니다. 최근 방법은 직접 추정의 표현력과 선형 필터의 낮은 왜곡을 결합합니다. 성능표는 **입력 채널 수, 데이터셋, 출력 표현, 후단 ASR, 평가 지표**가 같은 조건인지 먼저 확인합니다.
+> **핵심:** 신경망이 최종 음성을 직접 만들 필요는 없습니다. 어떤 시간·주파수 칸이 목표 음성에 가까운지 표시하는 mask를 낼 수도 있고, 여러 마이크를 합칠 필터를 낼 수도 있으며, 복원할 주파수 값 자체를 낼 수도 있습니다. 앞의 두 방식은 관측된 혼합음을 다시 필터링하고, 직접 추정 방식은 출력의 자유도가 더 큽니다. 최근 방법은 두 장점을 함께 쓰기도 합니다. 성능 수치는 마이크 수, 데이터셋, 출력 방식과 평가 기준이 같을 때만 직접 비교합니다.
 
-이 글은 각 주파수 bin의 다채널 STFT snapshot을 $$\mathbf x_{t,f}=[X_{1,t,f},\ldots,X_{M,t,f}]^T\in\mathbb C^M$$로 둡니다. $$M$$은 마이크 수, $$T$$는 frame 수, $$F$$는 주파수 bin 수, $$C$$ 또는 $$P$$는 분리할 화자 수입니다. STFT 값과 그 추정치는 원 신호와 STFT 정규화에 따른 amplitude 단위를 가지며, mask와 attention weight는 무차원입니다.
+한 시각과 한 주파수 칸을 고르면 마이크마다 복소 STFT 값이 하나씩 나옵니다. 이 값들을 하나의 세로 열벡터로 모은 것이 다채널 관측 $$\mathbf x_{t,f}=[X_{1,t,f},\ldots,X_{M,t,f}]^T$$입니다. 여기서 $$t$$는 시간 프레임, $$f$$는 주파수 칸, $$M$$은 마이크 수입니다. 전체 프레임 수는 $$T$$, 주파수 칸 수는 $$F$$, 분리할 화자 수는 $$C$$ 또는 $$P$$로 씁니다. STFT 값은 크기와 위상을 함께 가지며, mask와 attention weight는 어느 값을 얼마나 반영할지 나타내는 단위 없는 가중치입니다.
 
-슬라이드 2–11은 IPD 같은 공간 특징, mask 기반 beamforming, 인식 loss를 앞단까지 전달하는 학습, MIMO-Speech의 출력 할당을 연결합니다. 이후 슬라이드는 시간영역 필터와 직접 complex mapping으로 범위를 넓힙니다. 두 범위를 읽을 때는 mask·공간 필터·최종 분리 출력의 역할을 섞지 않는 것이 핵심입니다.
+슬라이드 2–11은 마이크 사이의 위상차를 입력으로 사용하고, mask로 목표·잡음의 통계를 만든 뒤, 그 통계로 여러 마이크를 합치는 과정을 설명합니다. 음성인식 오류를 이 앞단까지 전달해 함께 학습하는 방법과 여러 화자의 출력 순서를 맞추는 방법도 이어집니다. 후반부는 파형에 적용할 필터나 복소 STFT 값을 신경망이 더 직접적으로 추정하는 방법을 다룹니다. Mask는 **통계를 고르는 값**, 공간 필터는 **마이크를 합치는 규칙**, 최종 출력은 **복원할 음성**이므로 서로 구분해야 합니다.
 
 ## 1. 다채널 ESD에서 신경망이 맡을 수 있는 위치
 
@@ -226,7 +226,12 @@ $$
 
 이 설계는 DNN의 비선형 추정 오차를 평균된 통계로 바꾸고, 마지막 출력은 mixture의 선형 결합으로 제한합니다. 따라서 ASR에 해로운 artificial distortion을 줄일 가능성이 있습니다. 그러나 averaging이 systematic source leakage까지 자동으로 없애지는 않으며, 잘못된 $$\widehat{\mathbf z}_k$$는 PSD와 filter를 함께 오염시킵니다.
 
+<details markdown="block">
+<summary markdown="span">Beam-TasNet: reported scores and iterative variants</summary>
+
 슬라이드 13의 12.7 dB/21.8%는 DNN source estimate, 17.2 dB/14.0%는 **Chen 등의 Interspeech 2022 non-causal MIMSO Beam-TasNet 재구현에서 그 추정으로 만든 MVDR output**입니다. 원 ICASSP 2020 표의 수치가 아닙니다. 같은 row 안에서 두 출력을 비교하면 SDR은 4.5 dB 높고 WER는 7.8%p 낮습니다. 다른 논문의 수치와 직접 합치지 않습니다. 후속 Beam-Guided TasNet은 MVDR 출력을 다시 DNN에 넣는 반복 구조로, 같은 실험 보고에서 baseline보다 4.1 dB 높은 21.5 dB SDR을 제시합니다.
+
+</details>
 
 ## 7. 출력 자유도가 커질수록 위상 수정 범위도 커진다
 
@@ -259,9 +264,14 @@ TF-GridNet은 모든 마이크 STFT의 real/imaginary part를 쌓은 $$2M\times 
 - **Sub-band temporal module:** 한 주파수 주변의 sub-band feature를 시간축으로 처리합니다. 고정 bin에서 채널 관계가 시간에 걸쳐 유지되는 공간 단서를 사용할 수 있습니다.
 - **Cross-frame self-attention:** 멀리 떨어진 frame끼리 직접 정보를 교환합니다.
 
+<details markdown="block">
+<summary markdown="span">DasFormer: comparison with and without MCMFWF</summary>
+
 DasFormer도 시간축과 주파수축 attention을 번갈아 적용하지만, 같은 모델의 단순한 이름 변경은 아닙니다. TF-GridNet은 full/sub-band module과 cross-frame attention의 구체적 결합, complex spectral mapping, 이후 multi-frame Wiener filter 결합을 제안합니다.
 
 TF-GridNet의 2-DNN 구성은 $$\mathrm{DNN}_1\rightarrow\mathrm{MCMFWF}\rightarrow\mathrm{DNN}_2$$입니다. MCMFWF는 DNN1 추정을 이용해 몇 개의 인접 frame을 포함한 multichannel Wiener filter를 만들고, 선형 filter 출력을 DNN2가 다시 보정합니다. 6채널 SMS-WSJ의 슬라이드 19 표에서 1-stage DNN1은 SI-SDR 19.9 dB, WER 7.27%이고, DNN1+MCMFWF+DNN2는 22.8 dB, 6.76%입니다. 같은 표의 unprocessed는 −5.5 dB, 78.40%, oracle direct-path WER는 6.28%입니다. **2-stage 개선에는 beamformer와 두 번째 DNN이 함께 들어가므로 2.9 dB 전체를 beamformer 하나의 효과로 분리해 주장할 수 없습니다.**
+
+</details>
 
 ## 9. SpatialNet은 공간 처리를 narrow-band와 cross-band로 나눈다
 
@@ -288,6 +298,9 @@ TF-GridNet의 2-DNN 구성은 $$\mathrm{DNN}_1\rightarrow\mathrm{MCMFWF}\rightar
 
 왼쪽 head는 비음성 구간에 강한 attention을 보이고, 오른쪽 head는 speaker 1과 speaker 2가 우세한 frame 구간별로 block 구조를 만듭니다. 저자들은 이를 **spatial feature가 비슷한 frame의 speaker clustering**으로 해석합니다. 이는 attention map과 same-position/cross-language 실험이 뒷받침하는 해석이지만, 각 attention head가 항상 사람에게 동일한 의미로 고정된다는 보장은 아닙니다.
 
+<details markdown="block">
+<summary markdown="span">Reading an attention matrix: dimensions and limits</summary>
+
 MHSA의 한 head에서 $$Q,K,V\in\mathbb R^{T\times d}$$라면
 
 $$
@@ -296,6 +309,8 @@ $$
 $$
 
 한 주파수 bin에서 attention matrix는 $$T\times T$$입니다. Speaker가 우세한 frame들의 채널별 complex pattern이 비슷하면 query–key score가 커질 수 있습니다. 그러나 이 수식만으로 화자 분리가 증명되는 것은 아닙니다. 학습 loss와 데이터가 그 similarity를 유용한 clustering으로 만들도록 해야 합니다.
+
+</details>
 
 ## 11. Cross-band 처리는 지연이 주파수에 만드는 위상 기울기를 활용할 수 있다
 
@@ -343,6 +358,9 @@ SpatialNet 최종 논문의 Table III는 2채널과 6채널 SMS-WSJ를 분리합
 
 Oracle direct-path의 SI-SDR·SDR가 $$\infty$$인 이유는 평가 target 자체이기 때문입니다. WER 6.31%는 recognizer의 oracle acoustic input에서도 남는 오류를 뜻합니다. SpatialNet-large 6.70%가 가깝다는 사실은 해당 recognizer·dataset 조건에서의 결과이지 모든 ASR에서의 상한을 뜻하지 않습니다.
 
+<details markdown="block">
+<summary markdown="span">Additional experiments: speaker position and language</summary>
+
 <figure>
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/lecture-09-2/slide-25.png" | relative_url }}" alt="Lecture 9 II slide 25: SpatialNet SDR drops sharply when two speakers share one position, while cross-language training changes SpatialNet performance only slightly" loading="lazy">
   <figcaption>Source: Lecture 9 II, <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-09-2.pdf#page=25" | relative_url }}" target="_blank" rel="noopener">slide 25</a>.</figcaption>
@@ -351,6 +369,8 @@ Oracle direct-path의 SI-SDR·SDR가 $$\infty$$인 이유는 평가 target 자�
 6채널 SMS-WSJ-Plus의 same-position 실험에서 SpatialNet-small SDR은 다른 위치 15.1 dB에서 같은 위치 1.8 dB로 떨어집니다. 공간 패턴이 같아지면 분리가 무너진다는 결과는 model이 공간 정보를 실제로 활용한다는 강한 증거입니다. 동시에 **동일 위치·유사 steering vector가 명확한 실패 조건**임을 보여 줍니다.
 
 강의 슬라이드의 cross-language 그래프에서는 영어 test에 영어로 학습한 SpatialNet-small이 15.1 dB, 중국어로 학습한 model이 14.6 dB입니다. SpatialNet 공개본 version에 따라 15.2/14.4 dB로 보고된 표도 있으므로 이 문단의 수치는 **강의 슬라이드에 표시된 값**으로 한정합니다. 작은 감소는 특정 언어의 spectrum보다 공간 단서에 크게 의존한다는 저자 해석을 지지합니다. 다만 “언어·화자와 완전히 무관하다”는 증명은 아닙니다. 비교한 언어·simulation 조건 밖의 실제 방, 이동 화자, array mismatch는 별도 검증이 필요합니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

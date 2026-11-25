@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 6: LLM Reasoning"
 course: "CME295"
 topic: "Reasoning Models, Benchmarks, GRPO, and the DeepSeek R1 Training Pipeline"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 한 prompt에서 여러 completion을 생성하고 각각 reward $$r_i$$를 얻으면, 슬라이드의 기본 형태는 $$r_i-\operatorname{mean}(r_1,\ldots,r_G)$$입니다. 평균보다 좋은 응답은 양의 advantage, 나쁜 응답은 음의 advantage를 얻어 policy update 방향이 정해집니다. 실제 GRPO에서는 이 차이를 group 표준편차로 나눠 reward scale을 맞춥니다. 실제 목적함수에서는 old policy 대비 급격한 확률비 변화는 clipping으로, reference policy와의 이탈은 KL penalty로 제한합니다.
 
-> **핵심:** 수학·코딩처럼 여러 단계를 거쳐야 하는 문제에서는 최종 답뿐 아니라 추론 과정에 사용할 계산량도 성능을 좌우합니다. 정답을 검증할 수 있는 보상과 그룹 내 상대 보상을 이용하는 GRPO는 이러한 추론 능력을 학습하는 한 방법입니다.
+> **핵심:** 수학 문제의 답이 맞았는지는 확인하기 쉬워도, 어느 풀이 단계가 좋았는지 하나씩 채점하기는 어렵습니다. 같은 문제에서 여러 풀이를 만들어 상대적으로 좋은 답에 더 비중을 주는 것이 GRPO의 핵심입니다. 학습 뒤에 문제 하나를 풀 때 들이는 계산량도 결과에 영향을 줍니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -57,7 +57,9 @@ Source: [Stanford CME295 Autumn 2025 Lecture 6](https://www.youtube.com/watch?v=
 
 `pass@k`와 `consensus@k`는 여러 답을 쓰지만 묻는 내용이 다릅니다. pass@k는 후보 중 하나라도 정답이면 성공으로 보므로 코드 테스트처럼 정답 검증기가 있을 때 유용합니다. Consensus는 가장 자주 나온 답을 고르므로 정답 검증기가 없어도 쓸 수 있지만, 여러 후보가 같은 오답에 모이면 실패합니다. 따라서 숫자만 비교하기 전에 후보 생성 조건과 정답 판정 방식을 확인해야 합니다.
 
-강의의 핵심 학습 알고리즘은 GRPO입니다. Reasoning chain을 사람이 대량 작성하기 어렵고, code/math는 test case나 ground truth answer로 verifiable reward를 만들 수 있기 때문에 SFT보다 RL이 자연스럽다고 설명합니다. GRPO는 PPO처럼 advantage를 maximize하면서 old policy 대비 확률비에 clipping을 적용하고, 고정 reference policy와의 이탈에는 별도 KL penalty를 둡니다. Value function은 학습하지 않고 같은 prompt에서 여러 completion을 sampling해 group reward의 mean/std와 비교해 advantage를 만듭니다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 verifiable reward와 formatting reward를 적용해 reasoning performance를 올렸고, R1은 cold-start SFT, RL, rejection sampling 기반 SFT, final RL을 결합해 language mixing과 syntax 문제를 줄이고 reasoning/non-reasoning 능력을 함께 맞춘 pipeline으로 설명됩니다.
+강의의 핵심 학습 알고리즘은 GRPO입니다. 수학·코드 문제는 정답이나 test case로 결과를 자동 채점할 수 있지만, 사람이 좋은 reasoning chain을 대량 작성하기는 어렵습니다. GRPO는 같은 문제에 답을 여러 개 생성하고 그 묶음 안에서 평균보다 좋은 답의 확률은 높이고 나쁜 답의 확률은 낮춥니다. 예를 들어 reward가 `1, 1, 0, 0`이면 성공한 두 답은 group 평균보다 높고 실패한 두 답은 낮으므로 학습 방향을 구분할 수 있습니다. 절대 점수가 아니라 같은 묶음의 평균과 표준편차를 기준으로 삼기 때문에 별도 value model을 학습하지 않습니다.
+
+GRPO도 한 번에 policy가 너무 크게 바뀌지 않도록 이전 policy 대비 확률비를 제한하고, 고정 reference policy에서 과도하게 멀어지는 변화에는 KL penalty를 둡니다. DeepSeek R1-Zero는 SFT 없이 pre-trained base model에 검증 가능한 reward와 형식 reward를 적용한 사례입니다. R1은 cold-start SFT, RL, rejection-sampling 기반 SFT, final RL을 조합해 언어 혼합과 문법 문제를 줄이고 reasoning과 일반 응답 능력을 함께 맞춥니다.
 
 이 주제들을 기능별로 구분하면 **CoT는 추론 단계를 전개하는 방식, test-time compute는 추론에 투입하는 연산량, pass@k는 여러 후보의 성공 여부를 재는 평가 지표, GRPO는 모델을 갱신하는 학습 방식**입니다. 한 번의 생성으로 복잡한 문제를 놓칠 때 추론 단계를 늘리거나 여러 후보를 만드는 선택을 검토하고, 그 후보들 안에 정답이 있는지는 pass@k로 평가합니다. 반면 GRPO는 검증 가능한 reward를 이용해 좋은 응답을 생성하는 방향으로 모델의 parameter를 학습합니다. 따라서 이 주제들이 하나의 문제를 둘러싸고 연결되더라도 `평가 후 반드시 GRPO 실행`이라는 직렬 pipeline은 아닙니다. GRPO로 학습하지 않은 모델에도 CoT와 pass@k를 사용할 수 있고, GRPO로 학습한 모델도 추론할 때마다 reward group을 만들어 policy를 갱신하는 것은 아닙니다. 강의의 [00:32:17–00:34:44](https://www.youtube.com/watch?v=k5Fh-UgTuCo&t=1937s){:target="_blank" rel="noopener"}는 여러 답을 생성할 계산 여유와 pass@k의 관계를 설명하며, 위 구분은 평가·추론·학습의 역할을 나누어 읽기 위한 정리입니다.
 
@@ -190,12 +192,17 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. Reasoning model이 vanilla LLM과 다른 출력 구조를 'question -> reasoning chain -> answer'로 그려 봅니다.
 2. pass@k 유도에서 'at least one correct = 1 - all incorrect' 전환과 sampling without replacement를 직접 계산합니다.
 3. PPO와 GRPO를 reward, value function, advantage, KL/reference model, train되는 model 수 관점에서 비교합니다.
 4. GRPO에서 같은 prompt에 대해 여러 completion을 sampling하는 이유와 (reward - mean) / std normalization의 의미를 정리합니다.
 5. DeepSeek R1-Zero와 R1의 차이를 cold-start SFT 유무, language consistency reward, rejection sampling, final RL 단계로 구분합니다.
 6. Reasoning token length가 성능 증가와 비용 증가를 동시에 만들 수 있다는 점을 GRPO length issue와 연결해 설명합니다.
+
+</details>
 
 ## 복습 질문
 

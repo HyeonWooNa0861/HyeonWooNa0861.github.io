@@ -334,6 +334,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 판정 | 확인과 이 글의 처리 |
 |---|---|---|
 | 9쪽 `3D IoU & AP` | 평가 규약 생략 | 정의는 설명하되 IoU threshold와 AP interpolation은 benchmark마다 다르다고 명시했습니다. |
@@ -348,7 +351,12 @@ $$
 | 33–36쪽 stereo/mono depth | modality 차이 생략 | Stereo disparity의 metric 식과 monocular metric-scale 조건을 분리했습니다. |
 | 34쪽 pseudo-LiDAR 변환 | 식 생략 | 원 논문과 pinhole model의 back-projection 식, 단위, 좌표계 조건을 보충했습니다. |
 
+</details>
+
 ## 슬라이드 전체 대응표
+
+<details markdown="block">
+<summary markdown="span">Reference: topics by slide</summary>
 
 | 슬라이드 | 역할 | 이 글의 대응 |
 |---:|---|---|
@@ -372,6 +380,8 @@ $$
 | 37–38 | Summary | 마지막 핵심 정리 |
 | 39 | Next lecture | LiDAR detector가 다음 강의 범위임을 명시 |
 | 40 | Questions | 강의 종료 페이지로 확인 |
+
+</details>
 
 ## 복습 포인트
 

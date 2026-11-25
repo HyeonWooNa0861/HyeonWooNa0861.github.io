@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:04:00 +0900
-last_modified_at: 2026-10-16 18:59:51 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Algorithms Assignment 2: Sorting Traces and Dynamic Programming"
 course: "Algorithms"
 topic: "Sorting Traces and Dynamic Programming"
@@ -27,12 +27,12 @@ Source Materials: JUNGOL Problems 1158, 1157, 3518, 3519, 1848, and 1077 with th
 
 **네 정렬의 중간 배열을 읽고, 두 동적 계획법의 상태와 점화식을 직접 세우는 연습입니다.** 정렬 문제는 최종 결과만 맞히는 것이 아니라 어느 인덱스와 구간이 확정됐는지 추적해야 합니다. 동적 계획법 문제는 코드보다 먼저 상태가 답에 필요한 정보를 충분히 담는지 확인해야 합니다.
 
-- Insertion Sort는 정렬된 접두부에 현재 값을 삽입합니다.
-- Bubble Sort는 한 pass가 끝날 때 미정렬 구간의 최댓값 하나를 오른쪽에 확정합니다.
-- Quick Sort는 partition 직후 pivot 하나만 확정됩니다. 양쪽 구간 내부는 아직 정렬되지 않았습니다.
+- Insertion Sort는 배열 앞쪽의 이미 정렬된 구간인 접두부에 현재 값을 삽입합니다.
+- Bubble Sort는 한 회전(pass)이 끝날 때 미정렬 구간의 최댓값 하나를 오른쪽에 확정합니다.
+- Quick Sort는 기준값인 피벗(pivot)을 중심으로 작은 값과 큰 값의 구역을 나누는 분할(partition) 직후 피벗 하나만 확정됩니다. 양쪽 구간 내부는 아직 정렬되지 않았습니다.
 - Merge Sort는 이미 정렬된 두 구간을 합쳐 더 큰 정렬 구간 하나를 확정합니다.
 - Theater Seating은 VIP 좌석이 분리한 독립 구간의 경우의 수를 곱합니다.
-- Knapsack Filling 1은 같은 보석을 다시 선택할 수 있는 unbounded knapsack입니다.
+- Knapsack Filling 1은 같은 보석을 여러 번 선택할 수 있는 무제한 배낭 문제(unbounded knapsack)입니다.
 
 ## References and Source Materials
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-13 17:00:00 +0900
-last_modified_at: 2026-10-16 19:04:07 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Autonomous Driving Computing Assignment 2: Two-Stage vs One-Stage Detection"
 course: "Autonomous Driving"
 topic: "Faster R-CNN and RetinaNet"
@@ -135,6 +135,8 @@ RetinaNet은 P3–P7 각 위치에 3 scales × 3 aspect ratios, 총 9개 anchor�
 Proposal과 RoIAlign이 없는 대신 모든 유효 anchor가 classification loss에 참여합니다. 저장된 label 분포는 positive 77, negative 94,606, ignore 168로, negative가 positive의 약 1,229배였습니다.
 
 ### Focal loss가 필요한 이유
+
+이 이미지에는 보행자보다 배경 anchor가 훨씬 많습니다. 모델이 이미 확실하게 배경이라고 맞힌 anchor까지 같은 비중으로 계속 계산하면, 정말 구분하기 어려운 보행자와 배경의 신호가 묻힐 수 있습니다. Focal loss는 **이미 쉽게 맞힌 사례의 영향만 줄이고, 아직 틀리거나 헷갈리는 사례는 더 남기는 방식**입니다.
 
 Binary focal loss는 정답 class에 부여한 probability $$p_t$$에 대해
 

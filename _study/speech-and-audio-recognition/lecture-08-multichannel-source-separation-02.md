@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-05 15:45:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 8: Multi-channel Source Separation II"
 course: "Speech and Audio Recognition"
 topic: "Side Lobes, Spatial Covariance, and MVDR Beamforming"
@@ -20,7 +21,7 @@ keywords:
 
 Source PDF: `speech-audio-lecture-08-2.pdf` — *Multi-channel Source Separation 1-2*, 안인규(Inkyu An), 17 slides.
 
-> **핵심:** DAS는 목표 방향의 소리를 정렬해 더하지만, 다른 방향의 소리까지 모두 없애지는 못합니다. **MVDR는 목표 음성의 응답을 유지한다는 조건 아래, 관측한 간섭·잡음의 공간적 관계를 이용해 출력 파워를 최소화합니다.** 그 관계를 담는 것이 공분산 행렬입니다. 간섭 방향에 깊은 null을 만드는 능력에는 센서 잡음 증폭과 방향 오차에 대한 민감성이라는 대가가 따릅니다.
+> **핵심:** 여러 마이크의 녹음을 목표 방향에 맞춰 더해도 다른 방향의 소리가 일부 남습니다. DAS는 미리 계산한 시간차만 맞추지만, MVDR는 실제 녹음에서 **어떤 마이크들이 함께 움직였는지**까지 보고 가중치를 정합니다. 마이크 쌍의 관계를 모은 표가 공분산 행렬입니다. MVDR는 목표 음성은 그대로 통과시키면서 나머지 출력 에너지를 줄입니다. 특정 간섭 방향을 강하게 누를 수 있지만, 방향을 잘못 알거나 관측이 부족하면 목표 음성까지 손상할 수 있습니다.
 
 ## 전체 흐름
 
@@ -34,7 +35,7 @@ Source PDF: `speech-audio-lecture-08-2.pdf` — *Multi-channel Source Separation
 | 14–15 | 간섭 억제의 대가 | 깊은 null과 센서 잡음 증폭·모델 오차 사이에 균형이 필요합니다. |
 | 16–17 | 방향 탐색과 남는 문제 | Capon spectrum으로 DoA를 탐색하되, 정확한 공간 모델이 필요합니다. |
 
-아래에서는 far-field 평면파, 동일한 감도의 무지향성 마이크로 이루어진 균일 선형 배열(ULA), 주파수 bin별 narrowband 모델을 기본으로 둡니다. 잔향이 강하거나 음원이 배열에 가까우면 단순한 시간차 steering vector만으로는 전달 경로를 충분히 나타내지 못할 수 있습니다.
+아래 계산은 음원이 마이크 배열에서 충분히 멀고, 같은 감도의 마이크가 일렬로 놓였다고 가정합니다. 또한 한 번에 좁은 주파수 구간을 따로 계산합니다. 이 조건에서는 같은 방향의 소리가 마이크마다 주로 시간차와 위상차를 두고 도착한다고 볼 수 있습니다. 방의 반사가 강하거나 음원이 배열 가까이에 있으면 이 단순한 모델만으로 실제 전달 경로를 충분히 설명하기 어렵습니다.
 
 ## 1. DAS는 목표 방향의 위상을 맞추어 평균한다
 
@@ -96,11 +97,19 @@ Side lobe는 별도의 소리나 반사파가 아닙니다. **같은 필터가 �
 
 ### 2.1 `−13 dB`여도 강한 간섭은 남는다
 
+<details markdown="block">
+<summary markdown="span">Worked example: leakage through a side lobe</summary>
+
 슬라이드의 약 $$-13\ \mathrm{dB}$$는 균일 가중 배열의 첫 side lobe를 설명하는 대표값이지 모든 DAS의 상수가 아닙니다. 이상적인 동일 감도 ULA에서 주파수·간격이 해당 side lobe를 visible angle 안에 놓고, 마이크 수가 충분히 크면 약 $$-13.26\ \mathrm{dB}$$에 가까워집니다. 유한 배열에서는 값이 달라지며, 예를 들어 $$M=5$$이면 약 $$-12.04\ \mathrm{dB}$$입니다.
 
 응답이 $$-13\ \mathrm{dB}$$라면 그 방향 신호의 amplitude는 약 0.224배, 파워는 약 0.050배입니다. 약해졌지만 0은 아닙니다. **입력 간섭이 목표보다 20 dB 강하면, 13 dB 억제한 뒤에도 출력 간섭은 목표보다 약 7 dB 강합니다.** 목표 응답이 0 dB이고 두 입력의 기준 파워가 같게 정의되었다는 설명용 계산입니다.
 
+</details>
+
 ### 2.2 Main lobe·side lobe·grating lobe는 구분한다
+
+<details markdown="block">
+<summary markdown="span">Comparing three lobe types and the effect of tapering</summary>
 
 | 구분 | 방향 응답에서의 의미 | 무엇이 문제입니까? |
 |---|---|---|
@@ -109,6 +118,8 @@ Side lobe는 별도의 소리나 반사파가 아닙니다. **같은 필터가 �
 | Grating lobe | 서로 다른 방향의 채널별 위상이 같아 생기는 공간적 모호성 | 목표와 비슷한 큰 응답이 반복될 수 있습니다. 단순한 작은 누설이 아닙니다. |
 
 균일 가중치를 tapering하면 side lobe를 줄일 수 있지만, 보통 main lobe가 넓어지는 대가가 따릅니다. 이것은 시간 window가 spectral leakage와 분해능 사이에서 하는 조절과 수학적으로 닮았습니다. 다만 여기서 유한 구간은 **시간 sample이 아니라 마이크 위치**, 변하는 축은 **시간 주파수가 아니라 공간 위상차**입니다. Side lobe를 줄였다는 사실만으로 공간 aliasing까지 해결했다고 말할 수는 없습니다. Grating lobe와 배열 geometry의 관계는 <a href="https://www.mathworks.com/help/phased/ref/plotgratinglobediagram.html" target="_blank" rel="noopener">MathWorks의 grating-lobe 설명</a>에서도 확인할 수 있습니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Array response and the origin of side lobes</summary>
@@ -195,6 +206,9 @@ $$
 
 ### 4.2 네 frame으로 직접 계산한다
 
+<details markdown="block">
+<summary markdown="span">Worked example: covariance and output power from four frames</summary>
+
 다음은 계산을 보기 위한 작성자 예제입니다. 한 주파수 bin에서 네 frame의 관측이 아래와 같다고 하겠습니다. 단위는 정규화된 STFT amplitude이며, 이 예제의 값은 모두 실수인 특수한 경우입니다.
 
 <div class="table-caption">Supplementary table: Four snapshots at one frequency bin.</div>
@@ -217,6 +231,8 @@ $$
 첫 대각 원소 2.5는 $$(4+4+1+1)/4$$, 비대각 원소 2는 $$(2+2+2+2)/4$$입니다. 두 채널은 각각 파워 2.5를 가지면서 같은 부호로 함께 움직이는 성분도 강합니다. DAS 가중치 $$\mathbf w=[0.5,0.5]^T$$를 넣으면 $$\mathbf w^H\widehat{\mathbf R}\mathbf w=2.25$$입니다. 출력 네 값의 제곱 평균도 모두 $$1.5^2=2.25$$이므로 일치합니다.
 
 반대로 $$[0.5,-0.5]^T$$로 빼면 출력 파워는 0.25까지 낮아집니다. 그러나 목표 steering vector가 $$[1,1]^T$$라면 목표 응답도 0이 됩니다. **파워가 작다는 사실만으로 좋은 음성 분리가 된 것은 아닙니다.** MVDR가 공분산과 목표 응답 조건을 함께 사용하는 이유입니다.
+
+</details>
 
 ### 4.3 왜 MVDR에 이 행렬이 필요한가
 
@@ -450,7 +466,10 @@ $$
 
 오른쪽 도식은 간섭에 직교하면서 목표와의 내적은 1이어야 하는 가중치를 보여 줍니다. 두 방향 벡터가 거의 평행하면, 간섭을 제외하고 남긴 목표 성분은 매우 작습니다. 그 작은 성분으로 목표 응답 1을 만들려면 큰 계수를 곱해야 합니다. 그림의 긴 빨간 $$\mathbf w$$가 그 상황에 대응합니다. 이는 복소 벡터 공간의 관계를 2차원으로 단순화한 도식이지 실제 마이크의 물리적 방향 벡터를 그대로 그린 것은 아닙니다.
 
-이상적인 **정확한 간섭 null**을 만족하는 최소 norm 해에서는
+이상적인 **정확한 간섭 null**을 만족시키면 두 방향이 비슷할수록 센서 잡음 증폭 비용이 커집니다. 유사도별 수치와 대응 방법은 아래에서 확인할 수 있습니다.
+
+<details markdown="block">
+<summary markdown="span">Noise amplification: examples and practical remedies</summary>
 
 $$
 \frac{\|\mathbf w_{\mathrm{null}}\|^2}{\|\mathbf w_{\mathrm{DAS}}\|^2}
@@ -477,6 +496,8 @@ $$
 따라서 선택 기준은 가장 깊은 골이 아니라 **실제 오차와 센서 잡음까지 포함해 낮은 출력 간섭·잡음 파워를 유지하는가**입니다. 14번의 목표 보존 제약은 유지하되, 15번의 대가를 감당할 수 있는 억제 깊이를 택해야 합니다.
 
 대응 방법도 이 대가와 연결됩니다. Diagonal loading은 큰 가중치를 억제하고, 위치·위상 calibration과 더 정확한 steering 모델은 방향 불일치를 줄입니다. 불확실한 방향 범위를 보존하는 robust beamforming도 확장 방향이 될 수 있습니다. 다만 서로 거의 구분되지 않는 관측 자체를 어떤 설정 하나로 완전히 복구할 수 있는 것은 아닙니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Derivation: Why exact nulling amplifies white sensor noise</summary>

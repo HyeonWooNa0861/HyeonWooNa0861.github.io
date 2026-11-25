@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-21 00:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 6: Perception (4) - Faster R-CNN and Feature Pyramid Networks"
 course: "Autonomous Driving"
 topic: "Region Proposal Networks, Anchor Boxes, and Multiscale Features"
@@ -123,6 +123,8 @@ $$
 
 ### 2.2 Positive·negative·neutral anchor
 
+수많은 anchor를 모두 같은 방식으로 학습시키면, 물체에서 멀리 떨어진 배경 상자가 학습을 압도합니다. 따라서 먼저 **정답과 충분히 겹치는 상자**, **명확한 배경 상자**, **판단이 애매한 상자**로 나눕니다. 이 분류는 모델의 최종 예측이 아니라, 어떤 anchor에 어떤 학습 신호를 줄지 정하는 과정입니다.
+
 원문 15쪽의 학습 규칙은 정답 box(GT)와의 IoU를 사용합니다.
 
 - **Positive:** 어느 GT와 IoU $$>0.7$$이거나, 각 GT에 대해 IoU가 가장 높은 anchor. 최고 IoU anchor 조건 덕분에 0.7에 못 미치는 GT도 적어도 하나의 학습 후보를 얻을 수 있습니다.
@@ -195,12 +197,17 @@ FPN을 Faster R-CNN에 결합할 때 각 pyramid 수준에 RPN head를 두어 �
 
 ## 원문 정확성 검토: Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 원문 위치 | 확인한 내용 | 이 글의 처리 |
 |---|---|---|
 | 7·18쪽 | 시간 그래프는 R-CNN 49초부터 Faster R-CNN 0.2초까지의 역사적 비교를 제시합니다. | 하드웨어·backbone·proposal 설정에 의존하는 실험 수치로만 소개했습니다. 임의의 자율주행 배포 성능으로 확대하지 않았습니다. |
 | 15–16쪽 | 도식은 $$K=6$$, feature 5×6으로 180개 raw anchor를 그린 다음 top 300 proposal이라고 적습니다. | 두 값이 같은 예제 안에서는 양립하지 않음을 계산해 밝히고, `top 300`은 원 논문의 실제 feature map 설정에서의 별도 예시로 분리했습니다. 또한 실제 RPN의 NMS를 원 논문에서 확인해 보충했습니다. |
 | 17쪽 | 네 손실을 “jointly train”이라고 요약합니다. | 손실 항목의 개념적 결합으로 설명하고, 원 논문의 feature 공유 학습은 alternating optimization이었다는 점을 구분했습니다. |
 | 22쪽 | 작은 물체 AP가 낮은 모델별 표가 나옵니다. | 서로 다른 행의 학습 데이터·평가값이 동일 실험조건이라고 전제하지 않고 문제의 방향만 해석했습니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

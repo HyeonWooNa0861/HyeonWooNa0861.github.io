@@ -1,6 +1,7 @@
 ---
 layout: default
 date: 2026-11-18 00:00:03 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 1: Introduction to Robot Audition"
 course: "Speech and Audio Recognition"
 topic: "Robot Audition, Real-World Acoustic Challenges, and Multimodal Spatial Reasoning"
@@ -22,9 +23,9 @@ keywords:
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-01-introduction.pdf" | relative_url }}" target="_blank" rel="noopener">speech-audio-lecture-01-introduction.pdf</a> — Inkyu An, Kookmin University (21 pages).
 
-이 글은 강의의 운영 안내가 아니라 PDF pp. 5–20의 기술 내용을 중심으로 정리한 학습 노트입니다. 출발점은 단순합니다. 로봇이 사람처럼 소리를 듣고 행동하려면 “무슨 소리인가”뿐 아니라 **어디에서, 몇 개의 소리가, 어떤 환경을 거쳐 도착했는가**까지 알아야 합니다. 강의는 이 문제를 robot audition으로 묶고, 이후 multimodal spatial reasoning과 embodied AI로 확장합니다.
+부엌에서 컵이 깨지는 동안 누군가 로봇을 불렀다고 해 보겠습니다. ‘컵이 깨졌다’는 판단만으로는 어느 쪽을 보거나 누구의 말에 답해야 할지 정할 수 없습니다.
 
-> **핵심:** robot audition은 하나의 분류기가 아닙니다. sound event detection, sound source localization, speech separation, speech recognition을 연결해 복잡한 acoustic scene을 해석하고, 그 결과를 navigation과 planning에 전달하는 perception pipeline입니다.
+> **핵심:** 소리를 감지하는 일(무슨 일이 났나요?), 방향을 찾는 일(어디인가요?), 겹친 소리를 분리하는 일, 발화를 문자로 인식하는 일은 서로 다른 문제입니다. 로봇은 필요에 따라 이 기능을 함께 쓰며, 반드시 이 순서로 처리하지는 않습니다.
 
 ## 학습 목표
 
@@ -224,6 +225,9 @@ Vision은 보이는 surface와 object를 풍부하게 표현하지만, camera �
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-01-introduction.pdf#page=16" | relative_url }}">lecture PDF, p. 16</a>. 각 modality가 제공하는 단서와 해결하려는 실패 유형을 함께 읽어야 합니다.</figcaption>
 </figure>
 
+<details markdown="block">
+<summary>Further reading: Four research directions and their limits</summary>
+
 | 연구 방향 | 문제 정의 | 추가되는 단서 | 기대 효과 |
 |---|---|---|---|
 | Audio spatial perception | camera에 보이지 않는 event | arrival time, direction, acoustic class | hidden or distant event awareness |
@@ -232,6 +236,8 @@ Vision은 보이는 surface와 object를 풍부하게 표현하지만, camera �
 | Context-adaptive understanding | 환경이 바뀌면 고정 model의 해석이 어긋남 | room, task, history context | 상황에 맞는 inference |
 
 여기서 “audio가 벽을 통과한다”를 “audio만 있으면 정확한 방 위치를 항상 안다”로 확대하면 안 됩니다. Audio는 visibility gap을 보완하지만 reverberation과 NLOS ambiguity를 함께 가져옵니다. 그래서 map, vision, motion history와의 fusion이 필요합니다.
+
+</details>
 
 ## 6. Multimodal encoder에서 3D semantic perception까지
 
@@ -242,6 +248,9 @@ Vision은 보이는 surface와 object를 풍부하게 표현하지만, camera �
 
 그림의 왼쪽 encoder들은 raw sensor data를 바로 문장으로 바꾸는 단일 block이 아닙니다. 각 modality의 구조를 feature로 요약한 뒤 multimodal reasoning에 전달합니다.
 
+<details markdown="block">
+<summary>Figure details: What each block contributes</summary>
+
 - **Audio encoder:** event, spectral-temporal pattern, direction 단서를 표현합니다.
 - **Tactile encoder:** contact, pressure, slip 같은 local interaction을 표현합니다.
 - **Vision encoder:** object, geometry, appearance를 표현합니다.
@@ -251,6 +260,8 @@ Vision은 보이는 surface와 object를 풍부하게 표현하지만, camera �
 
 이 slide는 *on-going research* 방향을 나타냅니다. 따라서 block diagram 자체는 완료된 system의 accuracy나 latency를 증명하지 않습니다. “어떤 정보가 어느 block으로 흐르는가”와 “어떤 metric으로 검증해야 하는가”를 분리해서 읽어야 합니다.
 
+</details>
+
 ## 7. 시간 문맥은 왜 memory가 되는가
 
 한 시점의 observation만 보면 cup이 table 위에 있다는 사실은 알 수 있지만, 누가 언제 옮겼는지는 알 수 없습니다. Temporal context는 observation sequence를 사건 단위 memory로 바꾸어 현재 장면의 원인을 추적하게 합니다.
@@ -259,6 +270,9 @@ Vision은 보이는 surface와 object를 풍부하게 표현하지만, camera �
   <img src="{{ "/assets/images/study/speech-and-audio-recognition/lecture-01/slide-18.png" | relative_url }}" alt="AV-LLM coarse memory와 LLM-based memory generator가 시간대별 사건을 episodic memory로 구성하는 구조" loading="lazy">
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-01-introduction.pdf#page=18" | relative_url }}">lecture PDF, p. 18</a>. 10 AM, 2 PM, 4 PM observation은 같은 장소의 상태가 시간에 따라 달라짐을 보여 줍니다.</figcaption>
 </figure>
+
+<details markdown="block">
+<summary>Memory example: From observations to an event record</summary>
 
 Coarse memory는 빠르게 요약한 scene-level state이고, episodic or fine memory는 특정 시간의 사건과 관계를 더 자세히 남기는 표현으로 읽을 수 있습니다. Slide의 glass cup example에는 object name과 material label이 서로 맞지 않는 draft-level contradiction이 있으므로 물성 정보로 받아들이지 않습니다. 핵심은 시간, 사건, 위치, object change를 연결하는 memory schema입니다. 예를 들어 다음과 같이 정리할 수 있습니다.
 
@@ -271,6 +285,8 @@ confidence: audio 0.78, vision 0.64
 ```
 
 이런 memory는 “현재 무엇이 보이는가”를 “이전에 무엇이 일어났는가”와 연결합니다. 다만 Introduction slide는 memory generation의 loss function, dataset, hallucination control을 제시하지 않으므로 구현 세부를 확정된 사실처럼 채우지 않습니다.
+
+</details>
 
 ## 8. Perception에서 planning까지
 
@@ -292,7 +308,12 @@ Perception의 출력이 잘못되면 planning은 잘못된 state를 최적화할
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-01-introduction.pdf#page=20" | relative_url }}">lecture PDF, p. 20</a>. Drone example은 perception 결과가 motion planning으로 이어져야 한다는 응용 방향을 보여 줍니다.</figcaption>
 </figure>
 
+<details markdown="block">
+<summary>Evaluation note: What the planning diagram does not prove</summary>
+
 이 그림은 drone planning 응용을 보여 주지만, Lecture 1만으로 앞의 모든 audio and multimodal modules가 해당 drone을 end-to-end로 제어한다고 결론 내릴 수는 없습니다. Slide가 증명하는 범위와 연구 방향을 구분하는 것이 중요합니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

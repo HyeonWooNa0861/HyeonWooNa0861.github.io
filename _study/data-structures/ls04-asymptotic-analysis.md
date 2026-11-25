@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS04 Asymptotic Analysis"
 course: "Data Structures"
 topic: "Asymptotic Analysis"
@@ -49,6 +49,8 @@ Source PDF: `LS04_asymptotic_analysis.pdf`
 
 점근적 성장 함수 `f(n)`은 수행 시간 함수 `T(n)`에서 입력 크기 `n`이 커질 때 지배적인 항만 남긴 것입니다.
 
+쉽게 말하면, 입력이 두 배가 되었을 때 일이 대략 몇 배로 늘어나는지를 보는 방법입니다. 선형식은 약 두 배, 제곱식은 약 네 배가 됩니다. 컴퓨터가 빠른지보다 **입력 증가에 일이 얼마나 민감한지**를 비교하는 데 목적이 있습니다.
+
 $$
 T(n) = 3n^2 + 2n + 5 \quad\Rightarrow\quad f(n)=n^2
 $$
@@ -58,6 +60,8 @@ $$
 ## 2. Big-O
 
 Big-O는 점근적 상한을 표현합니다.
+
+Big-O는 정확한 실행시간의 이름이 아닙니다. 충분히 큰 입력에서 실행량이 넘어가지 않는 성장률의 천장을 정합니다. 따라서 어떤 알고리즘이 `O(n²)`이라는 말만으로 실제 성장률이 반드시 제곱이라고 결론 내릴 수는 없습니다. 정확한 차수를 말하려면 아래의 Big-Theta까지 확인해야 합니다.
 
 $$
 T(n) \in O(f(n))
@@ -186,7 +190,12 @@ Big-Θ는 실행 시간의 정확한 차수를 말할 때 씁니다.
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 T(n)에서 최고차항을 찾고 상수와 낮은 차수 항을 제거하는 과정을 몇 식에 직접 적용합니다. Prefix Average의 중복 합산 구현과 누적합 구현을 반복문 횟수로 풀어 O(n²)와 O(n)의 차이를 재현하는 것이 핵심입니다. Big-O는 상한, Big-Ω는 하한, Big-Θ는 tight bound라는 구분을 실제 부등식 해석과 함께 점검합니다.
+
+</details>
 
 ## 복습 질문
 

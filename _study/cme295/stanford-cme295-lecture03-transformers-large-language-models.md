@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 3: Transformers & Large Language Models"
 course: "CME295"
 topic: "LLM Definitions, MoE, Decoding, Prompting, and Inference Optimization"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 실선은 gate가 만든 routing score의 흐름이고, 점선은 입력이 각 expert 후보와 연결될 수 있음을 나타냅니다. 초록 체크가 선택된 경로이며 빨간 표시는 계산에서 제외된 expert입니다. 이 선택이 token마다 달라져야 모델 용량을 나눠 쓸 수 있습니다. gate가 계속 같은 expert만 고르면 그 경로에 계산과 학습 신호가 몰리는 routing collapse가 생기므로, 아래 auxiliary loss가 expert별 선택 빈도와 평균 routing probability를 함께 균형화합니다.
 
-> **핵심:** 언어 모델은 토큰 시퀀스의 확률을 학습해 다음 토큰을 예측합니다. 큰 모델의 유용성은 파라미터 수뿐 아니라 학습 데이터와 계산 자원, MoE 같은 구조, 디코딩 방식, KV cache를 포함한 추론 설계에 달려 있습니다.
+> **핵심:** 언어 모델은 지금까지 쓴 문장 뒤에 어떤 글 조각이 이어질지 후보별 확률을 냅니다. 같은 확률표에서도 매번 가장 유력한 후보를 고를지, 확률에 따라 뽑을지에 따라 다른 문장이 나옵니다. 답을 생성하는 속도는 이미 읽은 부분의 계산을 얼마나 재사용하는지에도 달려 있습니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -52,7 +52,9 @@ Source: [Stanford CME295 Autumn 2025 Lecture 3](https://www.youtube.com/watch?v=
 
 다음 토큰 예측은 휴대전화 자동완성과 비슷하지만 한 번으로 끝나지 않습니다. 현재 문장 뒤의 후보 확률을 계산해 토큰 하나를 고르고, 그 토큰을 입력 뒤에 붙여 다시 다음 후보를 계산합니다. 이 반복이 문장 전체를 만듭니다. Decoder-only 모델이 `이전 토큰만 보는 mask`를 쓰는 이유도 아직 생성하지 않은 미래 정답을 미리 보지 않은 채 이 과정을 학습하기 위해서입니다.
 
-그 다음은 mixture of experts(MoE)와 generation 방법입니다. MoE는 모든 parameter를 매 forward pass에 활성화하지 않고, gate/router G가 input x에 대해 어떤 expert E_i를 사용할지 정하는 구조입니다. Dense MoE는 모든 expert output에 weight를 두고, sparse MoE는 top-k expert만 선택해 FLOPs를 줄입니다. 현대 LLM에서는 MoE를 주로 FFN 위치에 넣는데, FFN은 d_model에서 더 큰 d_FF로 갔다가 다시 d_model로 돌아가며 많은 parameter와 operation을 차지하기 때문입니다. Expert는 token level로 routing될 수 있고, routing collapse를 막기 위해 expert별 token fraction f_i와 average routing probability p_i가 uniform에 가까워지도록 auxiliary loss를 더합니다. Noisy gating도 언급됩니다. 이어서 next token 선택 방식으로 greedy decoding, beam search, sampling을 비교합니다. Beam search는 k개의 path를 유지하고 sequence log probability를 token log probability의 합으로 보지만 짧은 sequence를 선호하는 문제가 있어 보정항이 필요하고, translation 같은 작업에 더 자주 쓰인다고 합니다. Sampling은 probability distribution에서 token을 뽑는 방식이며 top-k, top-p, temperature가 소개됩니다. Temperature T는 softmax에서 logits를 T로 나누는 hyperparameter이고, low temperature는 spiky distribution, high temperature는 uniform에 가까운 distribution을 만듭니다. T=0은 이론적으로 deterministic하지만 실제 GPU 연산 순서 때문에 non-determinism이 생길 수 있다는 설명도 있습니다. Guided decoding은 JSON 같은 형식을 위해 invalid next token을 generation 중에 필터링하고, finite state machine이나 context grammar가 관련 키워드로 언급됩니다.
+그 다음은 mixture of experts(MoE)와 generation 방법입니다. MoE는 큰 모델의 모든 계산부를 매번 사용하지 않고, 각 토큰에 맞는 일부 **expert**만 고릅니다. Router는 토큰을 어느 expert로 보낼지 결정합니다. Sparse MoE가 상위 $$k$$개 expert만 고르는 이유는 모델의 전체 파라미터 수를 늘리면서도 한 토큰의 실제 계산량은 제한하기 위해서입니다. 다만 router가 몇 개 expert만 계속 고르면 나머지가 학습되지 않으므로, 선택이 한쪽으로 몰리는 routing collapse를 보조 loss로 완화합니다. FFN이 많은 파라미터와 연산을 차지하기 때문에 현대 LLM은 이 위치에 MoE를 주로 넣습니다.
+
+모델이 다음 토큰의 확률을 만든 뒤에는 실제 토큰을 고르는 규칙이 필요합니다. Greedy decoding은 매번 가장 높은 확률 하나를 고릅니다. Beam search는 가능성 높은 문장 후보 $$k$$개를 함께 유지합니다. Sampling은 확률에 따라 토큰을 뽑아 다양한 출력을 만듭니다. Top-k는 후보 개수를, top-p는 후보들의 누적 확률을 제한하고, temperature는 분포가 한 후보에 얼마나 집중되는지를 조절합니다. Guided decoding은 JSON처럼 정해진 형식에서 지금 선택하면 문법이 깨지는 토큰을 제외합니다. 정확한 점수식과 beam의 길이 편향은 아래 수식 해설에서 다룹니다.
 
 MoE와 decoding도 적용 시점이 다릅니다. MoE는 모델 내부에서 이번 토큰을 어느 계산 경로로 보낼지 정해 큰 모델의 일부만 사용하게 합니다. Greedy·beam·sampling은 모델이 이미 만든 확률분포에서 실제 출력 토큰을 어떻게 고를지 정합니다. 따라서 MoE가 같은 모델이라도 temperature나 top-p를 바꾸면 문장 선택 양상은 달라질 수 있습니다.
 
@@ -150,12 +152,17 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. LLM의 정의를 language model, large, decoder-only, text-to-text 조건으로 분해해 설명합니다.
 2. MoE의 dense/sparse 차이, gate/router, active parameters, routing collapse를 하나의 그림으로 정리합니다.
 3. Greedy, beam search, sampling, top-k, top-p, temperature를 inference-time 전략으로 묶어 비교합니다.
 4. Context length가 길어질수록 self-attention complexity와 context rot 문제가 왜 함께 중요해지는지 복습합니다.
 5. Prompt를 context, instructions, inputs, constraints로 나누고 zero-shot/few-shot/COT/self-consistency의 trade-off를 정리합니다.
 6. KV cache부터 speculative decoding까지 inference optimization 기법들이 정확한 계산, memory management, approximate acceleration 중 어디에 속하는지 구분합니다.
+
+</details>
 
 ## 복습 질문
 

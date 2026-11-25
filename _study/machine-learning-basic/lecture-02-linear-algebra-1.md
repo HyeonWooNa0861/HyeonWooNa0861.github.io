@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 02 Linear Algebra 1"
 course: "Machine Learning Basic"
 topic: "Linear Algebra 1"
@@ -18,7 +18,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-02.pdf`
 
-> **핵심:** RREF는 REF보다 조건이 엄격해 각 pivot이 1이고 해당 pivot 열의 다른 값은 모두 0입니다. 행 교환, 행의 상수배, 다른 행의 배수를 더하기가 세 가지 기본 행 연산입니다.
+> **핵심:** 연립방정식은 식을 서로 바꾸거나 같은 수를 곱하고 빼도 해를 보존할 수 있습니다. 이 연산으로 행렬을 계단 모양까지 단순화하면 어떤 변수가 결정되고 어떤 변수가 자유로운지 바로 읽을 수 있습니다.
 
 ## 전체 흐름
 
@@ -48,6 +48,8 @@ Source PDF: `machine-learning-basic-lecture-02.pdf`
 </details>
 
 ## 1. 벡터의 관점
+
+한 학생을 키, 몸무게, 나이라는 세 숫자로 적으면 $$(170,65,20)$$ 같은 한 줄의 데이터가 됩니다. 벡터는 이렇게 여러 값을 순서대로 묶어 하나의 대상으로 계산하게 해 줍니다. 같은 위치의 값끼리 더하고 전체 크기를 한꺼번에 조절할 수 있다는 점이 핵심입니다.
 
 벡터는 덧셈과 스칼라곱이 정의된 대상입니다. 기하학적 화살표뿐 아니라 다항식, 오디오 신호도 같은 연산 구조를 가지면 벡터처럼 다룰 수 있습니다.
 

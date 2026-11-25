@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS18 Hash Search"
 course: "Data Structures"
 topic: "Hash Search"
@@ -18,6 +18,8 @@ keywords:
 # LS18 Hash Search
 
 Source PDF: `LS18_hash_search.pdf`
+
+학생 번호를 찾을 때 목록을 처음부터 훑는 대신, 번호를 계산해 저장된 배열 칸으로 바로 갈 수 있다면 탐색이 빨라집니다. 해싱은 key를 이런 배열 위치로 바꾸는 방법입니다. 서로 다른 key가 같은 칸을 요구할 수 있으므로 충돌 처리도 함께 필요합니다.
 
 > **핵심:** 해싱은 key를 해시 함수로 배열 인덱스에 대응시킵니다. 충돌이 적고 테이블의 부하율을 적절히 유지하면 평균 탐색 시간은 $$O(1)$$입니다.
 
@@ -229,7 +231,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 몇 개의 key를 h(k)=k mod m에 대입해 index를 계산하고, 같은 slot으로 가는 충돌을 직접 표시합니다. 평균 O(1)은 좋은 hash distribution과 낮은 충돌을 전제로 하며 range search에는 정렬 구조보다 불리하다는 조건을 함께 기억합니다. table size가 2의 거듭제곱일 때 하위 bit 편향이 생길 수 있는 이유와 소수 크기를 쓰는 목적을 설명합니다.
+
+</details>
 
 ## 복습 질문
 
@@ -318,6 +325,9 @@ load factor가 너무 커지면 한 슬롯에 몰리는 원소가 많아지고 �
 
 ## 강의 수식과 관련 페이지
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 Source PDF 27쪽 전체를 렌더링해 시각적으로 확인했습니다.
 
 | PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
@@ -332,6 +342,8 @@ Source PDF 27쪽 전체를 렌더링해 시각적으로 확인했습니다.
 | 27 | 다음 강의 예고 | 수식이나 증명 대상이 없습니다. |
 
 Load factor $$\alpha=n/m$$은 원문에 없는 작성자 보충 정의임을 해당 절에 표시했습니다.
+
+</details>
 
 ## PDF
 

@@ -313,7 +313,12 @@ Perceptron은 선형 score 뒤에 step function을 붙인 초기 신경망 단�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 선형 회귀에서는 예측값 → residual → squared error 순으로 손계산하고, closed-form 해와 gradient descent가 같은 목적함수를 다른 방식으로 푼다는 점을 비교합니다. 분류로 넘어가면 linear score 자체와 sigmoid를 지난 확률을 구분하고, binary cross-entropy가 오답 확률을 어떻게 벌하는지 확인합니다. 시험 전에는 binary sigmoid와 multiclass softmax의 출력·손실 역할을 한 표로 대비합니다.
+
+</details>
 
 ## 복습 질문
 

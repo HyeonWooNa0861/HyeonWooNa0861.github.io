@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 13: Score-Based Models"
 course: "CS236"
 topic: "Score Functions, Denoising Score Matching, Sliced Score Matching, and Langevin Sampling"
@@ -24,7 +24,7 @@ keywords:
 
 > **슬라이드 열람:** 원문 PPTX는 `Source Slides`에서 새 탭으로 엽니다. 슬라이드 번호는 원본 파일의 순서를 따르며, 정적 뷰어에서는 애니메이션이나 수식 이미지가 빠질 수 있습니다.
 
-> **핵심:** Lecture 13은 score-based model의 출발점을 정리합니다. 지금까지의 generative model은 크게 세 가지 표현으로 나눌 수 있습니다.
+> **핵심:** Score는 현재 sample을 어느 방향으로 조금 움직여야 실제 데이터가 많은 곳에 가까워지는지 알려 주는 화살표입니다. Score-based model은 이 화살표를 여러 위치에서 배운 뒤 noise sample을 데이터 쪽으로 이동시킵니다.
 
 Score는 분류 점수가 아니라 현재 데이터 점 $$x$$에서 log-density가 가장 빠르게 커지는 방향을 가리키는 vector입니다. 즉 흐릿하거나 noisy한 표본에 작은 화살표를 붙여 더 그럴듯한 데이터 영역으로 이동할 방향을 알려 줍니다. 절대 density를 계산하지 않아도 이 방향장을 학습하고 따라가면 표본 생성에 이용할 수 있습니다.
 
@@ -67,24 +67,26 @@ Score는 분류 점수가 아니라 현재 데이터 점 $$x$$에서 log-density
 
 [Lecture 13 slides 14](https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx){:target="_blank" rel="noopener"}
 
-원본 slide 14는 왼쪽 density, 가운데 i.i.d. sample, 오른쪽 score field를 나란히 둡니다. 모델이 학습할 때 받는 것은 가운데 점들이며, 왼쪽 density의 정답 식을 직접 받는 것이 아닙니다. 오른쪽 화살표는 각 위치에서 log-density가 증가하는 방향을 나타냅니다. 화살표가 하나의 전역 중심을 향해야 하는 것은 아니며, 여러 mode 주변에서 서로 다른 방향을 가질 수 있습니다.
+원본 slide 14는 같은 분포를 세 방식으로 보여 줍니다. 왼쪽은 데이터가 많이 모인 곳을 높게 그린 밀도 지도이고, 가운데는 그 분포에서 실제로 관측한 점들입니다. 모델은 가운데 점들만 보고 오른쪽의 화살표를 배워야 합니다. 각 화살표는 현재 위치에서 데이터가 더 빽빽한 쪽을 가리킵니다. 데이터 덩어리가 여러 개라면 모든 화살표가 한 중심을 향하지 않고, 가까운 덩어리마다 방향이 달라집니다.
 
 <figure>
   <a href="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-42-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-13-source-42-excerpt.png" | relative_url }}" alt="CS236 Lecture 13, slide 42: 서로 분리된 mode에서 혼합 가중치가 score 미분으로 사라지는 식. 원본 발췌." loading="lazy"></a>
   <figcaption><a href="https://deepgenerativemodels.github.io/assets/slides/lecture%2013.pptx" target="_blank" rel="noopener">Original slide 42</a> — 서로 분리된 mode에서 혼합 가중치가 score 미분으로 사라지는 식. 필요한 영역만 발췌했습니다. 이미지를 누르면 확대됩니다.</figcaption>
 </figure>
 
-같은 원문 **slide 42**의 분리된 두 mode 사례에서는 각 영역의 score를 계산하면 혼합 가중치의 로그 상수가 미분으로 사라집니다. 따라서 각 mode 안에서 올바른 방향을 알아도 두 mode를 얼마나 자주 방문해야 하는지까지 그 local score가 알려 주지는 않습니다. 이 차이가 Langevin dynamics의 느린 mixing 설명으로 이어집니다.
+같은 원문 **slide 42**에는 서로 떨어진 데이터 덩어리 두 개가 있습니다. 각 덩어리 안의 화살표는 중심으로 가는 방향을 알려 주지만, 왼쪽 덩어리와 오른쪽 덩어리를 각각 얼마나 자주 골라야 하는지는 알려 주지 않습니다. 두 덩어리 사이에는 데이터가 거의 없어 반대쪽으로 건너갈 화살표도 배우기 어렵습니다. 뒤에서 Langevin sampling이 한 덩어리에 오래 머무를 수 있는 이유가 여기에 있습니다.
 
 ## 핵심 내용
 
-Lecture 13은 score-based model의 출발점을 정리합니다. 지금까지의 generative model은 크게 세 가지 표현으로 나눌 수 있습니다. Autoregressive model, normalizing flow, VAE, EBM은 $$p_\theta(x)$$ 또는 그 근사를 직접 다룹니다. GAN은 density 대신 $$z\sim p(z)$$, $$x=g_\theta(z)$$라는 sampling process를 다룹니다. 이번 강의의 세 번째 표현은 score function입니다.
+Score-based model은 흐트러진 점마다 "어느 쪽으로 움직이면 실제 데이터가 많이 모인 곳에 가까워지는가"를 알려 주는 화살표를 배웁니다. 산의 높이를 모든 위치에서 정확히 재지 않아도 오르막 방향을 따라 정상으로 갈 수 있는 것과 비슷합니다. 여기서 산의 높이에 해당하는 density는 **특정 값 주변에 데이터가 얼마나 빽빽하게 모이는지**를 나타냅니다.
+
+기존 모델은 데이터의 density를 계산하거나, latent noise에서 data sample을 만드는 절차를 배웠습니다. Score-based model은 다음 score function을 직접 배운다는 점이 다릅니다.
 
 $$
 s_p(x)=\nabla_x\log p(x)
 $$
 
-여기서 gradient는 parameter가 아니라 input $$x$$에 대한 미분입니다. Score는 각 위치에서 log density가 가장 빠르게 증가하는 방향을 주는 vector field입니다. Density가 scalar surface라면 score는 그 surface의 방향장입니다. 중요한 점은 score가 normalization constant에 둔감하다는 것입니다. EBM에서 $$p_\theta(x)=\exp(f_\theta(x))/Z(\theta)$$이면 $$\log Z(\theta)$$는 $$x$$에 대해 상수이므로 $$\nabla_x\log p_\theta(x)=\nabla_x f_\theta(x)$$가 됩니다. 따라서 score는 $$Z(\theta)$$를 계산하지 않고도 쓸 수 있습니다.
+여기서 gradient는 parameter가 아니라 input $$x$$에 대한 미분입니다. Score는 현재 위치에서 log-density가 가장 빠르게 커지는 방향입니다. 여러 위치의 score 화살표를 모은 것을 vector field라고 부릅니다. 중요한 점은 score가 normalization constant에 둔감하다는 것입니다. EBM에서 $$p_\theta(x)=\exp(f_\theta(x))/Z(\theta)$$이면 $$\log Z(\theta)$$는 $$x$$에 대해 상수이므로 $$\nabla_x\log p_\theta(x)=\nabla_x f_\theta(x)$$가 됩니다. 따라서 score는 $$Z(\theta)$$를 계산하지 않고도 쓸 수 있습니다.
 
 Score-based model은 여기서 한 걸음 더 갑니다. EBM은 scalar energy를 먼저 만들고 그 gradient를 score로 씁니다. 반면 score-based model은 $$s_\theta(x)$$라는 vector-valued neural network를 직접 학습합니다. 이 vector field가 어떤 scalar potential의 gradient인지 반드시 보장하지 않아도 됩니다. 이상적으로는
 

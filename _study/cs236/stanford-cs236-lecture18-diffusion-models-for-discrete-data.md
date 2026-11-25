@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 18: Diffusion Models for Discrete Data"
 course: "CS236"
 topic: "Diffusion Models for Discrete Data"
@@ -75,6 +75,8 @@ keywords:
 
 ## 핵심 내용
 
+연속 이미지에서는 픽셀값 0.2를 0.21로 조금 움직일 수 있지만, 단어 `cat`과 `dog` 사이에는 0.01만큼 이동한 중간 단어가 없습니다. 이 강의는 "조금 이동한다"를 "허용된 다른 상태로 일정 확률로 뛰어간다"로 바꿉니다. Forward 과정은 단어를 점차 mask나 잡음 상태로 바꾸고, reverse 과정은 어느 단어로 바꾸면 실제 데이터에 가까워지는지를 배워 되돌립니다.
+
 Lecture 18은 diffusion model을 discrete data로 옮기는 문제를 다룹니다. Continuous data에서는 image pixel이나 latent vector를 조금 움직이는 것이 의미 있습니다. 하지만 text token, molecule symbol, DNA sequence, code token 같은 discrete data는 $$x\in\{1,\ldots,n\}^d$$ 형태의 격자 위에 있습니다. "cat" token과 "dog" token 사이의 중간 token을 연속적으로 지나간다는 개념은 원래 공간에 없습니다. 따라서 gradient, divergence, SDE처럼 calculus에 기대는 continuous generative model을 그대로 적용하기 어렵습니다.
 
 Discrete modeling은 언어 모델에서 이미 핵심 문제입니다. Language model pretraining은 large token sequence distribution을 맞추는 discrete probabilistic modeling으로 볼 수 있습니다. VQ-VAE나 MAGVIT류 모델처럼 image/video를 discrete codebook index로 바꾼 뒤 modeling하는 흐름도 있습니다. 즉 discrete generative modeling은 text만의 문제가 아니라, structured object와 compressed representation을 다루는 넓은 문제입니다.
@@ -92,6 +94,8 @@ Lecture 18의 핵심 전환은 "discrete space에서도 score matching을 할 �
 Score Entropy는 이 concrete score를 학습하기 위한 discrete analogue of score matching입니다. 목표는 neural network가 nonnegative ratio-like quantity를 예측하고, true ratio에서 objective가 최소가 되도록 만드는 것입니다. 강의에서는 continuous score matching의 implicit/denoising 변형처럼 discrete에서도 implicit score entropy와 denoising score entropy가 중요하다고 설명합니다. Implicit form은 모든 ratio를 직접 계산하지 않도록 식을 재배열해 scalable하게 만들고, denoising form은 corruption process를 사용해 noisy state에서 clean distribution 방향의 score를 학습합니다.
 
 Sampling은 Continuous-Time Markov Chain으로 구성됩니다. Discrete state는 continuous vector처럼 조금 이동하지 않고, 한 state에서 다른 state로 jump합니다. 강의의 column-vector convention $$\dot p_t=Q_tp_t$$에서는 $$Q_t(j,i)$$가 state $$i\to j$$의 transition rate이고, valid CTMC가 되려면 off-diagonal entries가 nonnegative이며 각 source column의 합이 0이어야 합니다. Forward diffusion은 data token을 점차 mask나 uniform noise 쪽으로 corrupt합니다. Reverse diffusion은 현재 noisy token sequence에서 어떤 token replacement가 더 data-like한지 concrete score를 이용해 transition rate를 조정합니다.
+
+여기서 transition rate는 다음 상태로 곧바로 갈 확률이 아니라, **아주 짧은 시간 동안 그 상태로 바뀌는 빠르기**입니다. 예를 들어 rate가 초당 2이고 시간 간격이 0.01초라면, 그 짧은 구간의 이동 확률은 약 $$2\times0.01=0.02$$입니다. 각 출발 상태의 열에서는 다른 상태로 나가는 rate와 대각 원소에 기록한 확률 감소율을 합해 0으로 만듭니다. 이 뜻을 잡은 뒤 $$Q_t$$의 열 합이 0이라는 조건을 보면 단순한 행렬 규칙이 아니라 전체 확률을 1로 보존하는 조건으로 읽을 수 있습니다.
 
 이 reverse process는 개념적으로 continuous diffusion과 비슷합니다. Forward process는 data를 simple prior로 보내고, reverse process는 learned score를 사용해 prior에서 data로 돌아옵니다. 차이는 trajectory가 continuous curve가 아니라 token jump sequence라는 점입니다. 가장 단순한 CTMC reverse sampler는 한 번에 한 token만 바꿀 수 있어 느릴 수 있습니다. 이를 완화하기 위해 여러 token을 함께 갱신하거나, discretization step을 크게 잡아 sampling을 가속합니다. Masked sequence를 자연스러운 문장으로 infill하는 작업은 discrete diffusion의 conditional generation 예로 볼 수 있습니다.
 

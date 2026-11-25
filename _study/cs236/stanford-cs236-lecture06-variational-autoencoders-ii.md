@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 6: Variational Autoencoders II"
 course: "CS236"
 topic: "Variational Autoencoders"
@@ -21,7 +21,7 @@ Source: [Stanford CS236 Lecture 6](https://www.youtube.com/watch?v=8cO61e_8oPY){
 
 Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 6은 전 강의에서 만든 ELBO를 실제 VAE 학습 알고리즘으로 바꾸는 강의입니다. VAE는 $$z\sim N(0,I)$$를 먼저 뽑고, decoder network가 $$p_{\theta}(x\mid z)$$의 mean과 covariance를 만듭니다.
+> **핵심:** VAE의 encoder는 입력을 작은 latent 표현으로 바꾸고, decoder는 그 표현에서 입력을 복원합니다. 6강은 무작위 sample을 거쳐도 두 network에 gradient가 전달되도록 만드는 학습 방법을 설명합니다.
 
 입력 이미지마다 적절한 latent 위치를 별도로 탐색하면 새 데이터가 올 때마다 최적화를 다시 해야 합니다. Encoder가 $$x$$를 받아 $$\mu$$와 $$\sigma$$를 바로 예측하게 하면 이 추론 비용을 학습 과정 전체에 나눌 수 있습니다. 또한 $$z=\mu+\sigma\epsilon$$으로 표본의 무작위성과 학습할 parameter를 분리해야 gradient가 encoder까지 전달됩니다.
 
@@ -90,6 +90,8 @@ Source PDF: [cs236_lecture6.pdf](https://deepgenerativemodels.github.io/assets/s
 [PDF p.18](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture6.pdf#page=18){:target="_blank" rel="noopener"}의 손글씨 세 이미지는 입력 $$x^i$$마다 다른 posterior가 필요함을 보여 줍니다. 매 이미지마다 $$\phi^i$$를 새로 최적화하는 대신, 공유 함수 $$f_\lambda(x^i)$$가 posterior parameter를 출력합니다. 그림 위 숫자는 latent label을 지도학습으로 제공한다는 뜻이 아니라, 서로 다른 관측 입력의 예입니다.
 
 ## 핵심 내용
+
+VAE의 encoder는 입력을 보고 "이 이미지는 latent 공간의 어느 부근에서 왔는가"를 추정하고, decoder는 그 latent 값으로 이미지를 복원합니다. 6강은 무작위 latent sample을 거치는 이 두 network를 하나의 loss로 함께 학습하는 방법을 설명합니다.
 
 Lecture 6은 전 강의에서 만든 ELBO를 실제 VAE 학습 알고리즘으로 바꾸는 강의입니다. VAE는 $$z\sim N(0,I)$$를 먼저 뽑고, decoder network가 $$p_{\theta}(x\mid z)$$의 mean과 covariance를 만듭니다. Marginal $$p_{\theta}(x)$$는 유연하지만 직접 계산이 어렵습니다. 그래서 임의의 tractable distribution $$q(z;\phi)$$에 대해
 

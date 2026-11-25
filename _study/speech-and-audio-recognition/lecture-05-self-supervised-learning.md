@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-07 10:49:37 +0900
-last_modified_at: 2026-11-23 16:46:10 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 5: Self-Supervised Learning"
 course: "Speech and Audio Recognition"
 topic: "Self-Supervised Speech Representation Learning"
@@ -27,7 +27,7 @@ Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-
 
 [Lecture 4: Automatic Speech Recognition II](/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/)에서는 labeled transcript로 CTC, LAS, RNN-T를 학습하는 방법을 다뤘습니다. 이번 강의는 그보다 앞 단계로 돌아가, transcript가 없는 대규모 음성에서 먼저 유용한 표현을 배우고 적은 labeled speech로 ASR에 적응시키는 방법을 설명합니다.
 
-> **핵심:** Self-supervised learning은 입력 자체에서 예측 target을 만들어 representation을 학습합니다. wav2vec 2.0은 가린 latent position의 **정답 quantized vector를 distractor와 구별**하고, HuBERT는 offline clustering으로 만든 **hidden-unit label을 문맥에서 예측**합니다. 둘 다 이후 CTC 등으로 fine-tuning할 수 있지만 target 생성 방식, collapse 방지 장치, layer별 정보의 변화는 서로 다릅니다.
+> **핵심:** Self-supervised learning은 사람이 전사문을 붙이지 않아도 음성 자체에서 연습 문제와 정답을 만듭니다. 녹음 일부를 가리고 주변 소리를 본 모델이 가려진 부분의 특징을 맞히게 합니다. wav2vec 2.0은 학습한 코드북에서 만든 정답 특징을 여러 오답 후보와 구별합니다. HuBERT는 미리 비슷한 음성 조각끼리 묶어 만든 번호를 맞힙니다. 둘 다 이후 적은 전사 자료로 ASR에 맞게 조정할 수 있지만, 사전학습 정답을 만드는 방식은 다릅니다.
 
 아래 페이지 번호는 PDF의 물리적 쪽 번호입니다. 수식 유도와 수치 예시는 **작성자 보충 설명**입니다. 슬라이드의 축약 표현 가운데 조건이 빠졌거나 일반화하기 어려운 부분은 본문과 마지막 `Source Check`에서 원 논문에 맞춰 구분했습니다.
 
@@ -390,17 +390,30 @@ Quantized code가 그대로 문자 vocabulary가 되는 것은 아닙니다. Pre
 
 ### 6.2 XLS-R은 cross-lingual scale을 키운 wav2vec 2.0이다
 
+<details markdown="block">
+<summary>Research details: XLS-R scale, tasks, and fine-tuning conditions</summary>
+
 XLS-R은 wav2vec 2.0 계열을 128개 언어, 약 436k hours 규모의 public speech로 확장하고 최대 2B parameter model을 학습합니다(p. 34). 그림의 `recognition · translation · classification`은 하나의 frozen encoder가 곧바로 모든 과제를 zero-shot으로 푼다는 뜻이 아닙니다. 원 논문은 labeled downstream data로 과제별 fine-tuning을 수행해 automatic speech recognition, speech translation, language identification, speaker identification을 각각 평가합니다. 예를 들어 speech translation은 XLS-R 위에 Transformer decoder를 쌓고, speaker identification은 XLS-R의 모든 parameter를 fine-tune합니다.
 
 여러 언어가 하나의 pre-trained encoder capacity를 공유해 저자원 언어에 transfer할 수 있지만, downstream head·labeled data·fine-tuning protocol이 과제마다 다르고 언어 간 data imbalance와 model capacity도 결과에 영향을 줍니다. 따라서 `Cross-lingual`이라는 이름이나 p. 34의 과제 그림만으로 zero-shot 지원, 모든 과제의 동일한 성능, 모든 언어에 대한 공정성을 보장한다고 해석해서는 안 됩니다.
 
+</details>
+
 ### 6.3 Layer-wise analysis는 “한 층이 모든 정보를 가진다”가 아님을 보인다
+
+<details markdown="block">
+<summary>Analysis details: What layer-wise similarity does and does not show</summary>
 
 슬라이드 pp. 35, 38의 CCA 그래프는 각 layer representation과 spectrogram, phone label 등 reference feature 사이의 선형 연관을 비교합니다. CCA similarity가 높다는 것은 선택한 metric에서 공유되는 선형 subspace가 크다는 뜻이지, 그 layer가 원본 spectrogram을 완전히 복원한다거나 task causal factor를 증명한다는 뜻은 아닙니다.
 
 연구 결과는 objective에 따라 acoustic·phonetic·word information의 layer trend가 달라지고, 어떤 downstream task에서는 한 layer를 잘 고르는 것이 모든 layer 결합과 비슷하거나 더 나을 수 있음을 보입니다. 슬라이드의 `waveform → spectrogram`은 **raw-waveform CNN representation이 spectrogram과 높은 유사성을 보일 수 있다**는 분석·설계 가설로 읽어야 하며, wav2vec 2.0 입력이 실제 spectrogram으로 바뀌었다는 뜻이 아닙니다.
 
+</details>
+
 ### 6.4 Conformer 관련 슬라이드는 서로 다른 후속 연구다
+
+<details markdown="block">
+<summary>Research details: Conformer and later semi-supervised pipelines</summary>
 
 Conformer는 self-attention의 global interaction과 convolution의 local pattern modeling을 결합합니다(p. 36). 대표 block은 두 feed-forward module 사이에 self-attention과 convolution module을 두는 Macaron형 구조이며, 각 feed-forward residual에는 절반 가중치를 쓰는 설정이 알려져 있습니다.
 
@@ -412,11 +425,18 @@ pp. 36–37에는 세 연구가 함께 등장합니다.
 
 따라서 `Transformer → Conformer`는 wav2vec 2.0의 필수 단계가 아닙니다. 이 연구는 context architecture뿐 아니라 **입력 표현**(waveform → log-mel), **target·objective 구성**(quantizer와 diversity loss 제거), **downstream training recipe**(transducer fine-tuning, SpecAugment, noisy student)까지 함께 바꾼 후속 pipeline입니다. 성능 차이를 Conformer encoder 하나의 효과로 분리할 수 없습니다. 이는 §6.3의 CCA 관찰, 즉 raw-waveform model의 중간 representation이 spectrogram과 선형 상관을 보인다는 분석과도 별개의 주장입니다.
 
+</details>
+
 ### 6.5 Frozen representation 분석을 읽는 조건
+
+<details markdown="block">
+<summary>Analysis details: Frozen probes and autoencoder-like behavior</summary>
 
 p. 38의 c-siam과 wav2vec layer graph는 encoder를 freeze한 뒤 layer별 probing을 비교합니다. Frozen probe가 좋은 layer는 고정 representation이 해당 label과 쉽게 연결된다는 뜻입니다. 전체 fine-tuning 후의 최종 ASR 순위와 같다고 단정할 수 없습니다.
 
 p. 39의 `Frozen Encoder ⇒ Autoencoder-like behavior`는 contrastive 계열의 상위 layer가 입력 acoustic feature와 다시 유사해지는 관찰을 요약한 표현입니다. 실제 waveform reconstruction decoder로 sample-level reconstruction loss를 학습한 autoencoder라는 뜻은 아닙니다. `autoencoder-like`는 layer trend에 대한 해석으로 한정해야 합니다.
+
+</details>
 
 ## 7. HuBERT: offline hidden unit을 예측한다
 
@@ -711,6 +731,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary>Source audit: Corrections and added conditions by slide</summary>
+
 49쪽 전체를 시각적으로 대조하고 architecture, 시간 단위, objective, model 규모와 HuBERT iteration을 원 논문 및 직접 계산으로 확인했습니다. 아래 보충·정정은 원저자의 공식 정정문이 아니라 공개된 일차 문헌과 계산에 따른 검토입니다.
 
 | 위치 | 원문 표현 | 본문의 처리·근거 |
@@ -727,6 +750,8 @@ $$
 | pp. 40–43 | Attention is permutation invariant | Position-free self-attention의 permutation equivariance와 positional mechanism의 필요로 정교화 |
 | pp. 44–49 | HuBERT predictive approach, 6th/9th layer, no collapse | MFCC 100-cluster → layer-6 500-cluster → layer-9 target의 iteration별 역할 확인. Online codebook collapse와 offline clustering 품질 문제를 구분 |
 | pp. 21–49 | wav2vec, wav2vec 2.0, XLS-R, Conformer 계열, HuBERT의 관계 | 원 wav2vec은 선행 맥락으로만 구분하고 강의의 상세 구조는 wav2vec 2.0으로 한정. 각 논문을 representation, pre-training target·objective, supervised ASR adaptation의 역할로 분리 |
+
+</details>
 
 ## Lecture Transcripts
 
@@ -745,6 +770,9 @@ $$
 
 ## References
 
+<details markdown="block">
+<summary>References: Papers and course sources</summary>
+
 <ul>
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a> and <a href="https://github.com/markovka17/dla" target="_blank" rel="noopener">DLA Course Materials</a> — lecture source collections.</li>
   <li><a href="https://arxiv.org/abs/1904.05862" target="_blank" rel="noopener">wav2vec: Unsupervised Pre-training for Speech Recognition</a> — historical context for the original future-latent contrastive method; its architecture is not the wav2vec 2.0 pipeline taught in detail here.</li>
@@ -759,3 +787,5 @@ $$
   <li><a href="https://arxiv.org/abs/2305.13516" target="_blank" rel="noopener">Scaling Speech Technology to 1,000+ Languages</a> — MMS data construction and self-supervised multilingual speech models.</li>
   <li><a href="https://cdn.openai.com/papers/whisper.pdf" target="_blank" rel="noopener">Robust Speech Recognition via Large-Scale Weak Supervision</a> — Whisper data and weakly supervised training.</li>
 </ul>
+
+</details>

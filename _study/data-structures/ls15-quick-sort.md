@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS15 Quick Sort"
 course: "Data Structures"
 topic: "Quick Sort"
@@ -48,6 +48,8 @@ Source PDF: `LS15_quick_sort_R1.pdf`
 ## 1. 퀵 정렬의 핵심 전략
 
 퀵 정렬은 분할 정복 알고리즘입니다. 병합 정렬과 달리 병합 단계가 거의 없습니다.
+
+한 번의 partition은 배열 전체를 정렬하지 않습니다. 기준값인 피벗 하나를 제자리에 놓고, 왼쪽에는 피벗 이하, 오른쪽에는 피벗보다 큰 값이 오게 구역만 나눕니다. 이후 두 구역을 같은 방식으로 다시 나누면 정렬이 완성됩니다.
 
 1. 피벗 pivot을 하나 고릅니다.
 2. 피벗보다 작거나 같은 값은 왼쪽, 큰 값은 오른쪽에 오도록 재배치합니다.
@@ -158,7 +160,12 @@ Partition(A, p, r):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 Lomuto partition에서 pivot=A[r], 경계 i, scan index j를 표에 적고 한 단계마다 배열과 두 index를 갱신합니다. partition 반환값은 pivot의 최종 위치일 뿐 양쪽 부분 배열까지 정렬된 것은 아니라는 점이 대표 혼동 지점입니다. 균형 분할의 O(n log n)과 편향 분할의 O(n²)을 recursion shape로 비교하고 Merge Sort의 메모리·최악 보장과 대비합니다.
+
+</details>
 
 ## 복습 질문
 

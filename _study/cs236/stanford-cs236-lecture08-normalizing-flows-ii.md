@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 8: Normalizing Flows II"
 course: "CS236"
 topic: "Flow Architectures and Tradeoffs"
@@ -22,7 +22,7 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 8](https://www.youtu
 
 Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture8.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 8은 Lecture 7에서 세운 normalizing flow의 조건을 실제 architecture로 구체화합니다. Flow는 simple prior $$p_Z(z)$$에서 시작해 invertible transformation $$x=f_\theta(z)$$를 적용하고, likelihood는 inverse $$z=f_\theta^{-1}(x)$$와 Jacobian determinant로 계산합니다.
+> **핵심:** Flow의 변환은 복잡한 데이터를 만들 만큼 유연하면서도 거꾸로 쉽게 풀려야 합니다. Coupling layer는 좌표 일부를 고정하고 나머지만 바꾸어 역변환과 부피 변화 계산을 모두 빠르게 만듭니다.
 
 일반 neural network는 복잡한 변환을 만들 수 있지만 역함수와 determinant를 싸게 구하기 어렵습니다. Coupling layer는 입력 일부를 그대로 두고 그 값으로 나머지를 변환해 이 문제를 풉니다. 무엇을 순차적으로 계산하도록 설계하느냐에 따라 density 평가와 sampling 중 어느 쪽이 빠른지가 달라집니다.
 
@@ -77,7 +77,9 @@ Source PDF: [lecture08-normalizing-flows-ii.pdf](https://deepgenerativemodels.gi
 
 ## 핵심 내용
 
-Lecture 8은 Lecture 7에서 세운 normalizing flow의 조건을 실제 architecture로 구체화합니다. Flow는 simple prior $$p_Z(z)$$에서 시작해 invertible transformation $$x=f_\theta(z)$$를 적용하고, likelihood는 inverse $$z=f_\theta^{-1}(x)$$와 Jacobian determinant로 계산합니다. 따라서 좋은 flow layer는 세 조건을 동시에 만족해야 합니다. Forward direction은 sampling에 빨라야 하고, inverse direction은 likelihood evaluation에 빨라야 하며, determinant 계산도 high-dimensional data에서 반복 가능해야 합니다.
+모든 좌표를 한꺼번에 복잡하게 바꾸면 역변환과 부피 변화 계산이 어려워집니다. Coupling layer는 좌표 일부를 그대로 두고, 그 값을 이용해 나머지만 바꿉니다. 이 제한 덕분에 변환을 쉽게 되돌리고 Jacobian determinant도 빠르게 계산할 수 있습니다.
+
+Flow는 단순한 시작점 $$z$$를 변환해 복잡한 data $$x$$를 만듭니다. 새 data를 빠르게 만들려면 정방향 $$x=f_\theta(z)$$가 쉬워야 하고, 주어진 data의 likelihood를 계산하려면 역방향 $$z=f_\theta^{-1}(x)$$도 쉬워야 합니다. 변환으로 공간이 얼마나 늘거나 줄었는지는 Jacobian determinant로 보정합니다. 따라서 좋은 flow layer는 정방향, 역방향, 부피 보정의 세 계산이 모두 빨라야 합니다.
 
 첫 번째 구체적 설계는 NICE의 additive coupling layer입니다. 입력 $$z$$를 $$z_{1:d}$$와 $$z_{d+1:n}$$으로 나누고, 앞부분은 그대로 두며 뒷부분만 앞부분의 함수 $$m_\theta(z_{1:d})$$로 shift합니다.
 

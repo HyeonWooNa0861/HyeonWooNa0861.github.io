@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 11: Large Scale Distributed Training"
 course: "CS231N"
 topic: "Large-Scale Distributed Training"
@@ -28,7 +28,7 @@ Official slides: [Lecture 11 PDF](https://cs231n.stanford.edu/slides/2025/lectur
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_11.pdf#page=30" target="_blank" rel="noopener">CS231N Lecture 11, PDF p. 30 (printed slide 30)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 대규모 학습은 GPU 수를 늘리는 문제가 아니라 **연산, 메모리, 통신을 서로 다른 병렬화 축으로 분해하는 시스템 설계 문제**입니다. 가장 느린 데이터 이동 경로가 전체 처리량을 결정합니다.
+> **핵심:** GPU를 두 배로 늘려도 학습 시간이 절반이 되지는 않습니다. 일을 나눠 계산한 뒤 서로의 결과를 기다려야 하기 때문입니다. 이 강의는 무엇을 나눠야 메모리가 절약되고, 그 대가로 어떤 데이터를 주고받아야 하는지 다룹니다.
 
 한 GPU의 메모리에 모델과 activation이 들어가지 않거나 학습 시간이 너무 길면 계산을 여러 장치에 나눕니다. Batch를 나누는 data parallelism은 각 장치가 만든 gradient를 다시 합쳐야 하고, layer나 tensor를 나누는 방식은 중간 activation을 주고받아야 합니다. 따라서 GPU 계산이 빨라도 통신 시간이 더 길면 장치 수를 늘린 만큼 학습이 빨라지지 않습니다.
 
@@ -71,7 +71,7 @@ Data parallelism은 구현이 단순하고 처리량을 잘 늘리지만 각 장
 
 ## 4. FSDP와 HSDP: data parallelism의 memory를 분할한다
 
-Fully Sharded Data Parallelism(FSDP)은 batch만 나누는 데서 더 나아가 각 parameter에 하나의 owner GPU를 정합니다. Forward에서 layer를 계산하기 직전에 shard를 모아 전체 weight를 잠시 복원하고, 계산 뒤 다시 버립니다. Backward에서도 필요한 weight를 다시 모으며, gradient는 reduce-scatter해 각 owner가 자기 shard만 update합니다. 다음 layer weight를 미리 가져오는 prefetch로 통신과 계산을 겹칠 수 있습니다.
+Fully Sharded Data Parallelism(FSDP)은 같은 모델 전체를 모든 GPU에 복사하지 않고, 모델 상태를 조각으로 나눠 보관합니다. 각 GPU는 평소 자기 조각만 가지고 있다가 한 layer를 계산하기 직전에 다른 GPU의 조각을 모아 전체 weight를 잠시 복원합니다. 계산이 끝나면 임시 복사본을 버려 메모리를 돌려줍니다. 역전파에서도 필요한 weight를 다시 모으고, gradient는 reduce-scatter로 나눠 각 owner가 자기 조각만 갱신합니다. 다음 layer의 조각을 미리 가져오면 통신 일부를 현재 계산과 겹칠 수 있습니다.
 
 그 결과 모든 GPU가 model 전체를 상시 보관하지 않아도 되지만, 한 forward-backward 동안 weight를 반복 전송하므로 통신량이 커집니다. 강의의 예에서는 100B parameter가 800GB를 차지해도 80 GPU에 shard하면 GPU당 parameter memory가 약 10GB가 됩니다. 다만 이후에는 activation memory가 다음 병목이 되어 checkpointing이 필요합니다.
 
@@ -118,7 +118,12 @@ All-reduce 평균이 single-device global-batch gradient와 같은 이유를 보
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 각 병렬화 방식에 대해 “무엇을 복제하고, 무엇을 분할하며, 언제 통신하는가”를 표로 직접 그려 봅니다. 모델이 한 GPU에는 들어가지만 batch가 작은 경우와, layer 하나도 들어가지 않는 경우를 구분해 적합한 방식을 선택해 봅니다.
+
+</details>
 
 ## 복습 질문
 

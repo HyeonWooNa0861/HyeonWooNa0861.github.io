@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 01 Models and Data"
 course: "Machine Learning Basic"
 topic: "Models and Data"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-01.pdf`
 
-> **핵심:** Feature vector는 원본 데이터를 모델이 입력받을 수 있는 수치 벡터로 표현한 것입니다. Preprocessing은 feature의 스케일과 품질을 정리해 학습을 안정화합니다.
+> **핵심:** 모델은 이름이나 사진을 그대로 이해하지 못하므로, 각 대상을 일관된 숫자 묶음으로 바꾸어 입력합니다. 전처리는 단위와 범위가 크게 다른 숫자를 조정하고 잘못된 값을 정리해 모델이 비교하기 쉽게 만듭니다.
 
 ## 전체 흐름
 

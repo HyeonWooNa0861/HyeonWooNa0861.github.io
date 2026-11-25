@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 10: Video Understanding"
 course: "CS231N"
 topic: "Video Understanding"
@@ -28,7 +28,7 @@ Official slides: [Lecture 10 PDF](https://cs231n.stanford.edu/slides/2025/lectur
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_10.pdf#page=45" target="_blank" rel="noopener">CS231N Lecture 10, PDF viewer p. 45</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 비디오는 단순히 이미지가 여러 장 모인 입력이 아닙니다. 정적 장면 단서가 강할 때는 프레임별 CNN도 훌륭한 기준선이지만, 행동의 방향과 순서를 구분하려면 특징을 **언제, 어느 깊이에서 시간축으로 결합할지** 설계해야 합니다.
+> **핵심:** 문이 열리는 영상과 닫히는 영상에는 같은 장면들이 나올 수 있습니다. 둘을 가르는 것은 프레임의 순서입니다. 한 장의 배경만 보고도 맞힐 수 있는 과제와 달리, 이런 행동 인식에서는 시간에 따른 변화를 모델이 읽을 수 있어야 합니다.
 
 정지 frame 한 장만 보면 사람이 문을 여는 중인지 닫는 중인지 구분하기 어렵습니다. 연속 frame의 차이는 움직임의 방향과 속도를 제공하지만, 모든 frame을 한꺼번에 처리하면 계산량이 커집니다. Temporal fusion은 공간 특징을 먼저 만든 뒤 합칠지, 초기부터 시간 정보를 함께 계산할지를 정하는 설계이며 optical flow는 pixel 이동을 명시적으로 표현하는 한 방법입니다.
 
@@ -215,7 +215,12 @@ Sports-1M과 Kinetics 같은 대규모 행동 데이터셋은 3D 모델 학습�
 </details>
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 `single frame → fusion → 3D convolution → two-stream/RNN → multisensory` 순으로 비교합니다. 시험에서는 early/late/slow fusion의 결합 위치, 2D와 3D kernel의 차원, clip sampling이 평가 결과에 미치는 영향을 설명할 수 있어야 합니다.
+
+</details>
 
 ## 복습 질문
 

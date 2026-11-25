@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 9: Dynamic Programming I"
 course: "Algorithms"
 topic: "Memoization, Matrix Paths, and Matrix-Chain Order"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [9 Dynamic Programming (1).pdf](/assets/pdfs/study/algorithms/lecture-09-dynamic-programming-01.pdf)
 
 이 강의는 재귀식에 같은 부분 문제가 반복해서 나타날 때, 그 답을 한 번만 계산해 저장하는 동적 계획법을 소개합니다. 피보나치 수로 top-down과 bottom-up의 차이를 확인한 뒤, 격자 최대 경로와 행렬 연쇄 곱셈 순서 문제에서 상태·점화식·계산 순서를 설계합니다. 아래의 최적 부분 구조 증명, 경계 조건 교정, 경로와 괄호 복원은 슬라이드의 전개를 정확히 연결하기 위한 보충 설명입니다.
+
+피보나치 재귀에서 `F(5)`를 구하면 `F(3)` 같은 값이 여러 경로에서 다시 계산됩니다. 동적 계획법은 `F(3)=2`를 처음 계산했을 때 저장하고, 다음 요청에서는 그 값을 그대로 사용합니다. 큰 문제를 작은 문제로 나누는 것뿐 아니라, **작은 답을 어떤 이름으로 저장하고 어떤 순서로 재사용할지** 정하는 방법입니다.
 
 > **핵심:** 동적 계획법은 점화식만 세우는 기법이 아닙니다. **상태가 무엇을 뜻하는지**, **기저 사례가 무엇인지**, **의존 상태가 먼저 계산되는 순서가 무엇인지**, **최적값을 만든 선택을 어떻게 복원할지**까지 함께 설계해야 합니다.
 
@@ -470,6 +472,9 @@ Top-down에서는 표의 순서를 반복문으로 직접 쓰지 않습니다. �
 
 ## Source Formula Map
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 | PDF 쪽 | 원문의 핵심 식·코드 | 본문의 대응 |
 |---|---|---|
 | 4 | 무작위 Quickselect의 평균 재귀 상한 | Previous Lecture Recap의 기대 선형 시간 설명 |
@@ -482,7 +487,12 @@ Top-down에서는 표의 순서를 반복문으로 직접 쓰지 않습니다. �
 | 24 | $$S(s,e)$$ 반열린 구간 점화식 | 차원 일치, 최적 부분 구조 증명 |
 | 26–27 | Matrix Chain bottom-up·top-down 코드 | 구간 너비 순서, 메모, 분할점 복원 |
 
+</details>
+
 ## Source Check
+
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
 
 | 슬라이드 위치 | 확인 결과 | 이 글의 처리 |
 |---|---|---|
@@ -499,6 +509,8 @@ Top-down에서는 표의 순서를 반복문으로 직접 쓰지 않습니다. �
 | 22쪽 | $$a\times b$$와 $$b\times c$$의 곱셈 비용은 $$abc$$회 | 출력 원소 수와 내적 길이로 단위를 유도했습니다. |
 | 23쪽 | 두 순서의 비용은 각각 7,500회와 75,000회 | 각 항을 다시 계산하고 DP 복원 결과 `((A0A1)A2)`와 대조했습니다. |
 | 24·26쪽 | $$S(s,e)$$는 $$A_s\cdots A_{e-1}$$의 반열린 구간 | 결과 차원 $$p_s\times p_e$$와 기저 $$S(s,s+1)=0$$을 일관되게 사용했습니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

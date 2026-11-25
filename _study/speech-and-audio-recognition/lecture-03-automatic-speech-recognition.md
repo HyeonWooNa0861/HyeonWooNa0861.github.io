@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-29 15:23:36 +0900
-last_modified_at: 2026-10-18 23:46:41 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition Lecture 3: Automatic Speech Recognition I"
 course: "Speech and Audio Recognition"
 topic: "ASR Evaluation, CTC, Encoders, and Language Models"
@@ -205,7 +205,9 @@ Forward DP는 값을 여러 번 갱신해 어떤 극한에 가까워지는 **수
 | $$A$$ | 0.6 | 0.3 | 0.2 |
 | $$B$$ | 0.2 | 0.4 | 0.6 |
 
-이 입력에서 목표 `AB`의 전사 확률은 **0.444**, CTC loss는 약 **0.81193**입니다. 같은 값이 다섯 경로의 직접 합과 forward DP의 두 종료 상태 합에서 나옵니다.
+둘째 시각까지 ‘A 하나를 썼다’는 결과는 두 방법으로 만들 수 있습니다. 첫 시각에 아무 글자도 내지 않고 둘째에 A를 낼 확률은 0.2 × 0.3 = 0.06입니다. 첫째와 둘째 모두 A를 내고 연속된 A를 하나로 접을 확률은 0.6 × 0.3 = 0.18입니다. 첫 시각의 선택이 달라 동시에 일어날 수 없으므로 두 값을 **더해 0.24**를 얻습니다. 두 숫자를 더하는 이유는 빈 기호(blank) 자체에 특별한 계산법이 있어서가 아니라, 서로 다른 경로가 같은 상태에 도착했기 때문입니다.
+
+마지막 시각까지 같은 방식으로 모으면 `AB`로 끝나는 다섯 경로의 확률은 합쳐서 **0.444**입니다. 이 확률이 높을수록 작아지는 학습 오차가 필요하므로 음의 로그를 취합니다. 이 예의 CTC 손실은 약 **0.81193**입니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: CTC path enumeration and forward aggregation for AB</summary>
@@ -422,6 +424,9 @@ CTC prefix beam search는 시각마다 후보 전사 prefix를 확장하고, **�
 
 본문 예제에서 첫 프레임의 빈 문자열·`a`·`b`를 모두 남기는 beam width 3을 사용하면, 두 번째 프레임에서 `a`의 blank 종료 확률은 `a,blank`의 **0.20**, non-blank 종료 확률은 `a,a`와 `blank,a`의 **0.16+0.20=0.36**입니다. 두 값을 합친 **0.56**으로 `a`의 순위를 정합니다. 이 예제에서는 최종 가지치기 전에 모든 9개 경로의 기여를 계산하므로 가장 높은 문자열을 찾지만, 긴 입력에서 유한 beam이 언제나 같은 정확성을 보장하지는 않습니다.
 
+<details markdown="block">
+<summary>Detailed beam rules: Repeated tokens, pruning, and streaming limits</summary>
+
 한 프레임을 갱신할 때 blank는 기존 $$p_b+p_{nb}$$에 새 blank 확률을 곱해 **같은 prefix의 $$p_b$$**로 보냅니다. 다른 글자 $$c$$를 붙이면 같은 합에 $$p_t(c)$$를 곱해 **확장 prefix의 $$p_{nb}$$**로 보냅니다. 다만 $$c$$가 현재 prefix의 마지막 글자와 같다면, 직전 non-blank에서 이어지는 경로는 **기존 prefix에 머무르고**, 직전 blank에서 오는 경로만 반복 글자가 추가된 prefix로 갑니다. 이 분기 덕분에 반복 글자를 잃지 않고 같은 전사의 경로 확률을 모을 수 있습니다. 각 프레임에서 $$p_b+p_{nb}$$가 큰 상위 $$K$$개 prefix만 유지하는 것이 beam의 절단 단계입니다.
 
 $$K$$가 작으면 이른 시점에 버린 prefix를 나중에 회복하지 못하고, $$K$$가 커지면 후보별 갱신과 선택 비용이 증가합니다. **유한 beam은 근사**이며 $$K=1$$인 prefix beam도 경로 단위의 프레임별 greedy와 일반적으로 같은 알고리즘은 아닙니다. 언어 모델을 결합할 수 있지만 점수 가중치와 어휘 제약에 따라 결과가 바뀝니다. 탐색을 정확히 하더라도 음향 모델의 확률이 잘못되었다면 전사 자체의 정답을 보장하지 않습니다.
@@ -431,6 +436,8 @@ LAS처럼 이전 출력에 따라 다음 분포가 바뀌는 모델에서는 다
 CTC의 장점은 **프레임-문자 정렬을 주석으로 주지 않아도 학습**할 수 있고, forward DP로 유효 정렬의 확률을 효율적으로 합산한다는 점입니다. 반면 기본 CTC의 경로 확률은 $$X$$를 조건으로 프레임별 출력을 곱하므로 출력 token 사이의 언어적 의존성을 직접 표현하지 않습니다. 반복 token에는 blank 프레임이 필요하고, 시간축을 너무 줄이면 유효 경로 자체가 사라집니다. 외부 언어 모델이나 더 풍부한 decoder가 추론을 보완할 수 있지만 계산량과 지연 비용도 늘어납니다.
 
 슬라이드는 CTC가 streamable하다고 요약합니다(p. 36). 다만 **실시간 처리 가능 여부는 encoder와 decoder가 미래 프레임을 요구하는지에 달려 있습니다.** 양방향 encoder나 긴 look-ahead를 쓰면 CTC loss를 사용하더라도 전체 발화를 기다려야 할 수 있습니다. CTC trellis의 높은 확률 경로는 학습 중 명시 정렬 없이 얻는 *추정 정렬*이지, 사람이 확정한 음소 경계가 아닙니다.
+
+</details>
 
 ## 5. Encoder: Deep Speech 2와 Conformer
 
@@ -520,11 +527,19 @@ Conformer의 차이는 **서로 다른 범위의 문맥을 한 encoder 블록에
 
 ### 6.2 어휘 크기와 ASR decoding의 절충
 
+<details markdown="block">
+<summary>Trade-off details: Sequence length, vocabulary size, and decoding cost</summary>
+
 병합을 많이 할수록 vocabulary는 커지고 자주 등장하는 구간은 더 긴 token 하나가 되므로 목표열 길이 $$U$$는 대체로 짧아집니다. CTC에서는 짧아진 $$U$$와 줄어든 반복 label 수가 유효 경로에 필요한 최소 출력 frame 수를 낮출 수 있습니다. 그러나 CTC prefix beam 자체는 token 수 $$U$$가 아니라 encoder 출력 frame $$T$$를 한 칸씩 진행하므로, tokenization만 바꿨다고 beam의 시간 단계 수 $$T$$가 자동으로 줄어드는 것은 아닙니다. 반면 acoustic model의 마지막 층은 blank를 포함한 각 token의 logit을 내야 하므로, vocabulary가 커지면 각 frame에서 계산·저장할 logit 차원도 커집니다. 드문 긴 subword는 학습 신호가 적어 추정이 불안정할 수도 있습니다.
 
 병합을 적게 하면 출력층은 작고 희귀 단어를 작은 단위로 조합하기 쉽지만, 한 발화를 표현하는 token 수가 늘어납니다. CTC beam에서 후보 prefix를 확장하는 label 단위도 문자, subword, 단어 중 무엇을 쓰는지에 따라 달라지므로, 같은 $$T$$와 beam width라도 frame마다 고려할 vocabulary와 prefix 집합의 비용은 같지 않습니다. Subword beam은 단어 중간 조각도 후보로 유지하며, 단어 경계 복원과 외부 언어 모델 결합 시에는 ASR token과 LM의 점수 단위가 어떻게 대응하는지도 정해야 합니다. Token 수 감소가 직접 decoding step 감소로 이어지는 설명은 LAS나 RNN-T처럼 출력 token 단계가 있는 decoder에 해당하며, frame별 CTC 전체에 일반화할 수 없습니다. 따라서 **큰 vocabulary는 짧은 정답열, 작은 vocabulary는 작은 출력층**이라는 절충을 검증 집합의 오류율·속도·메모리로 함께 선택해야 합니다.
 
+</details>
+
 ### 6.3 문자 BPE와 byte-level BPE의 범위
+
+<details markdown="block">
+<summary>Tokenizer details: Character BPE, byte-level BPE, and subsampling</summary>
 
 이름에 `Byte`가 들어가지만 Sennrich 등의 NLP 적용은 원래 압축 알고리즘을 변형해 **Unicode 문자와 문자열**을 기본 symbol로 병합합니다. 이 방식은 자연스러운 문자 경계를 유지하지만, tokenizer의 초기 문자 vocabulary에 없는 문자가 추론에 나타나면 별도 unknown 처리나 fallback이 필요할 수 있습니다. 반면 byte-level BPE는 UTF-8 텍스트를 byte 단위 symbol로 시작합니다. 256개 byte를 모두 기본 vocabulary에 포함하면 임의의 유효 byte열을 분해해 표현할 수 있지만, 한 글자가 여러 byte token으로 길어질 수 있고 정규화·pretokenization·special token·vocabulary filtering 같은 전체 pipeline의 다른 단계까지 자동으로 해결되는 것은 아닙니다.
 
@@ -535,6 +550,8 @@ Temporal subsampling은 stride convolution, 2-D convolution+projection, frame st
 Conformer 원 논문의 입력단은 이 일반 선택지 가운데 구체적인 한 구현입니다. 25 ms 분석 창에서 10 ms 간격으로 얻은 80채널 filterbank feature를 **3×3 CNN 두 층, 각 층의 시간 stride 2**에 통과시켜 시간축을 대략 4배 줄입니다. 그래서 encoder 블록에 들어가는 출력 간격은 약 **40 ms**입니다. 여기서 40 ms는 새 프레임의 **간격**이지 40 ms 길이의 분석 창을 뜻하지 않습니다. Padding 등에 따라 실제 출력 프레임 수의 반올림 방식은 달라질 수 있습니다. 축소 결과는 선형 투영과 dropout을 거쳐 여러 Conformer 블록으로 들어갑니다.
 
 이 **입력단 subsampling CNN**과 블록 안의 **1D depthwise convolution**은 위치와 목적이 다릅니다. 앞의 것은 시간축 길이를 줄이고, 뒤의 것은 이미 줄어든 시퀀스에서 국소 음향 패턴을 모델링합니다. 강의 p. 48은 일반적인 축소 방식을 비교하고, p. 43은 Conformer의 10 ms → 40 ms 입력 흐름을 보여 줍니다.
+
+</details>
 
 ## 7. 언어 모델을 언제 결합하는가
 
@@ -555,6 +572,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary>Source audit: Corrections and added conditions by slide</summary>
+
 | 원문 위치 | 확인 사항 | 이 글의 처리 |
 |---|---|---|
 | pp. 2, 4–6 | `SST`는 통상 `STT`; `D > S > I`는 평가식의 가중치가 아님 | 약어를 바로잡고 오류의 의미 영향은 조건부로 설명 |
@@ -568,6 +588,8 @@ $$
 | p. 51 | `large/light model (ASR)`의 지칭 대상이 불명확 | 규모 권장에 대한 단정 없이 두 결합 절차만 설명 |
 
 이 해설은 강의 PDF 51쪽의 텍스트·도식·수식과 위 전이 예제를 대상으로 합니다. 오디오 실험이나 모델 학습 결과를 제시하는 글은 아닙니다.
+
+</details>
 
 ## 마지막 핵심 정리
 
@@ -624,6 +646,9 @@ ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보�
 
 ## References
 
+<details markdown="block">
+<summary>References: Papers and official implementations</summary>
+
 <ul>
   <li><a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al., Connectionist Temporal Classification (ICML 2006)</a> — CTC 경로 합과 forward–backward 학습의 원 논문.</li>
   <li><a href="https://arxiv.org/pdf/1408.2873" target="_blank" rel="noopener">Hannun et al., First-Pass Large Vocabulary Continuous Speech Recognition using Bi-Directional Recurrent DNNs (2014)</a> — CTC prefix beam에서 blank/non-blank 종료 확률을 분리하는 절차.</li>
@@ -632,3 +657,5 @@ ASR의 어려움은 오디오가 길고 텍스트가 짧다는 사실 자체보�
   <li><a href="https://arxiv.org/abs/1508.07909" target="_blank" rel="noopener">Sennrich, Haddow, and Birch, Neural Machine Translation of Rare Words with Subword Units (ACL 2016)</a> — 문자 기반 BPE의 빈도 가중 병합, 단어 경계, 추론 시 학습된 병합 적용과 OOV 조건.</li>
   <li><a href="https://github.com/rsennrich/subword-nmt" target="_blank" rel="noopener">Sennrich et al., subword-nmt official implementation</a> — 학습한 code를 재사용하는 절차와 문자 BPE·byte-level BPE 구현 차이.</li>
 </ul>
+
+</details>

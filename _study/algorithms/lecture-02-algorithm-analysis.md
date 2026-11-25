@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 13:34:33 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 2: Algorithm Analysis"
 course: "Algorithms"
 topic: "Efficiency, Case Analysis, and Asymptotic Notation"
@@ -24,6 +24,8 @@ keywords:
 Source PDF: `02-algorithm-analysis.pdf`
 
 알고리즘의 효율을 비교하려면 먼저 입력 크기에 따라 어떤 연산을 몇 번 수행하는지 세어야 합니다. 국민대학교 Youngwook Kim 교수의 *Algorithms* 2강을 바탕으로 이 연산 수를 점근 표기법에 연결합니다. 슬라이드의 빈칸형 예제는 연산 계수 규칙과 가정을 밝힌 뒤 풀이하고, 강의 밖의 증명과 흔한 오해는 **작성자 보충**으로 구분합니다.
+
+예를 들어 입력이 두 배가 될 때 반복 작업도 두 배가 되면 선형 성장이고, 이중 반복문 때문에 약 네 배가 되면 제곱 성장입니다. 알고리즘 분석은 특정 컴퓨터의 초 단위 기록보다 이런 **입력 증가와 작업 증가의 관계**를 비교합니다.
 
 > **핵심:** 알고리즘 분석은 실제 실행 시간을 초 단위로 맞히는 작업이 아니라, **입력 크기 $$n$$이 커질 때 문제 해결에 필요한 기본 연산 수 $$T(n)$$이 어떤 속도로 증가하는지 설명하는 작업**입니다. 같은 문제도 알고리즘에 따라 $$\Theta(1)$$, $$\Theta(n)$$, $$\Theta(n^2)$$처럼 성장률이 달라지며, Big-O·Big-$$\Omega$$·Big-$$\Theta$$는 각각 상한·하한·tight bound를 표현합니다.
 
@@ -596,6 +598,9 @@ $$
 
 ## 원문 페이지 대조와 수식 판정
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 공개된 `02-algorithm-analysis.pdf`의 **물리 PDF 32쪽 전체를 시각 대조**했습니다. 아래 쪽수는 PDF viewer의 1-based page 기준이며, 수식이 없는 표지·구분·요약·질문 슬라이드도 누락 여부를 확인했습니다.
 
 | 원문 PDF 쪽 | 원문 핵심 | 본문 반영 및 판정 |
@@ -610,6 +615,8 @@ $$
 | 1–4, 11, 13, 29–32 | 표지·구분·요약·예고·질문 | 별도 증명이 필요한 수식 없음 |
 
 원문이 정의나 결과만 제시한 부분의 부등식 증명, average-case 확률 가정, 삼각수 증명은 모두 **작성자 보충**입니다. 반대로 원문의 표와 빈칸을 임의의 정답처럼 위장하지 않고, 사용한 cost model과 가정을 본문에 함께 고정했습니다.
+
+</details>
 
 ## Related Notes
 

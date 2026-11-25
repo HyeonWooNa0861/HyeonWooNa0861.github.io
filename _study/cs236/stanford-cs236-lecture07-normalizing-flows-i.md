@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 7: Normalizing Flows I"
 course: "CS236"
 topic: "Normalizing Flow Foundations"
@@ -21,7 +21,7 @@ Source: [Stanford CS236 Deep Generative Models 2023 Lecture 7](https://www.youtu
 
 Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** 이 강의는 먼저 VAE를 autoencoder로 다시 해석하면서 시작합니다. VAE의 encoder $$q_\phi(z \mid x)$$는 입력 $$x$$를 latent variable distribution으로 보내고, decoder $$p_\theta(x \mid z)$$는 그 latent sample에서 원래 입력이 얼마나 잘 설명되는지 평가합니다.
+> **핵심:** Normalizing flow는 단순한 Gaussian 점 구름을 되돌릴 수 있게 접고 늘여 복잡한 데이터 모양으로 바꿉니다. 공간을 늘이거나 줄인 정도까지 보정하므로 새 sample 생성과 정확한 likelihood 계산을 함께 할 수 있습니다.
 
 단순한 Gaussian 표본을 여러 번 휘고 늘려 복잡한 데이터 모양으로 바꾸는 과정을 생각하면 flow의 목적이 보입니다. 다만 변환이 한 영역을 넓히거나 압축하면 같은 점 주변의 확률밀도도 달라집니다. Jacobian determinant는 바로 이 부피 변화를 보정하며, 역변환 가능성은 생성과 likelihood 계산을 모두 정확하게 유지합니다.
 
@@ -75,6 +75,8 @@ Source PDF: [lecture07-normalizing-flows-i.pdf](https://deepgenerativemodels.git
 [PDF p.14](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture7.pdf#page=14){:target="_blank" rel="noopener"}는 이 보정을 여러 가역변환에 적용합니다. 생성할 때는 $$z_0$$에 변환을 차례로 적용하고, 관측 $$x$$의 density를 구할 때는 역변환으로 초기 위치를 찾습니다. 각 단계의 부피 배율을 곱하는 식이 log-density에서는 log-determinant의 합으로 바뀝니다.
 
 ## 핵심 내용
+
+Normalizing flow는 단순한 Gaussian 점 구름을 접고 늘려 복잡한 데이터 모양으로 바꿉니다. 변환을 거꾸로 되돌릴 수 있어야 새 표본을 만들 수 있고, 공간이 늘어난 정도까지 보정해야 변환 뒤의 확률밀도를 정확히 계산할 수 있습니다.
 
 이 강의는 먼저 VAE를 autoencoder로 다시 해석하면서 시작합니다. VAE의 encoder $$q_\phi(z \mid x)$$는 입력 $$x$$를 latent variable distribution으로 보내고, decoder $$p_\theta(x \mid z)$$는 그 latent sample에서 원래 입력이 얼마나 잘 설명되는지 평가합니다. 이때 reconstruction term은 입력을 잘 복원하도록 만들고, KL term은 encoder가 만들어내는 latent distribution이 prior $$p(z)$$와 크게 멀어지지 않도록 압박합니다. 따라서 VAE는 단순한 autoencoder가 아니라, generation time에 $$x$$ 없이 prior에서 $$z$$를 뽑아 decoder에 넣을 수 있도록 latent space를 regularize한 stochastic autoencoder로 볼 수 있습니다.
 

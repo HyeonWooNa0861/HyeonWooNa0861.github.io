@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-06 15:00:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 16: Prediction III"
 course: "Autonomous Driving"
 topic: "Multimodal Motion Prediction with Target-Driven Trajectories"
@@ -341,6 +341,8 @@ $$
 이때 1 m²는 원리를 보여 주기 위한 예시 threshold입니다. 실제로는 좌표 scale, 데이터셋, 선택 정책에 맞춰 정해야 합니다. 원 논문의 선택 방식은 object detection의 **NMS에서 착안**했지만, bounding-box IoU가 아니라 궤적 간 거리로 유사도를 판단합니다.
 
 ### 후보 수가 줄어드는 세 단계
+
+처음부터 경로 여섯 개만 만들면 중요한 가능성을 너무 일찍 버릴 수 있습니다. TNT는 먼저 도착 위치 후보를 넓게 펼치고, 가능성이 큰 후보에 대해서만 전체 경로를 만든 뒤, 마지막에 서로 겹치지 않는 경로를 남깁니다. 아래 $$N,M,K$$는 이 세 번의 압축에서 남는 후보 수입니다.
 
 | 기호 | 대상 | 역할 |
 |---|---|---|

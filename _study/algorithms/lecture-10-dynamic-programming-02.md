@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 10: Dynamic Programming II"
 course: "Algorithms"
 topic: "Longest Common Subsequences, Tiling, and Path Reconstruction"
@@ -19,6 +19,8 @@ keywords:
 # Lecture 10: Dynamic Programming II
 
 Source PDF: [10 Dynamic Programming (2).pdf](/assets/pdfs/study/algorithms/lecture-10-dynamic-programming-02.pdf)
+
+두 문자열에서 공통으로 남길 수 있는 가장 긴 글자 순서를 찾거나, 2×n 보드를 채우는 방법 수를 세거나, 어떤 수를 최소 횟수로 1로 만드는 문제를 생각해 보겠습니다. 세 문제는 겉모습이 다르지만, **작은 입력의 답을 먼저 저장해 두고 더 큰 답을 만드는 방식**으로 풀 수 있습니다. 이때 저장할 작은 문제 하나를 `상태`라고 부릅니다.
 
 이 강의는 동적 계획법의 판단 기준을 세 문제에 적용합니다. 최장 공통 부분 수열에서는 두 문자열의 접두사를 상태로 두고, 2×n 타일링에서는 첫 배치를 두 경우로 분리하며, 1로 만들기에서는 최솟값뿐 아니라 실제 최적 경로까지 복원합니다. 슬라이드의 핵심 질문인 **재귀적 부분 구조가 있는가**, **같은 부분 문제가 반복되는가**를 상태·점화식·기저 사례로 구체화하는 것이 목표입니다.
 
@@ -49,7 +51,7 @@ Source PDF: [10 Dynamic Programming (2).pdf](/assets/pdfs/study/algorithms/lectu
 슬라이드는 각 문제에서 두 질문을 반복합니다(9, 16, 20쪽).
 
 1. **부분 구조를 점화식으로 표현할 수 있습니까?** 현재 상태의 답이 더 작은 상태의 답으로 결정되어야 합니다. 최적화 문제라면 최적해 안의 나머지 부분도 해당 부분 문제의 최적해여야 합니다.
-2. **같은 상태가 반복됩니까?** 순수 재귀가 같은 인자 조합을 여러 번 계산한다면 memoization이나 tabulation으로 한 번만 계산할 가치가 있습니다.
+2. **같은 상태가 반복됩니까?** 순수 재귀가 같은 인자 조합을 여러 번 계산한다면, 계산 결과를 필요할 때 저장하는 메모이제이션(memoization)이나 작은 상태부터 표를 채우는 표 작성(tabulation)으로 한 번만 계산할 가치가 있습니다.
 
 점화식은 결과를 외우기보다 다음 순서로 만듭니다. 각 단계에서 적은 문장이 곧 식의 한 부분이 됩니다.
 
@@ -366,6 +368,9 @@ def make_one_with_path(n):
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 슬라이드 위치 | 확인한 사항 | 이 글의 처리 |
 |---|---|---|
 | 7–8쪽 | 영어 `subsequence`를 한국어로 “부분 문자열”이라 표기 | 연속 구간인 substring과 혼동하지 않도록 **부분 수열**로 바로잡았습니다. 슬라이드 예시 `BCDB`, `BCA`는 순서만 유지하는 subsequence 예시로 해석했습니다. |
@@ -376,6 +381,8 @@ def make_one_with_path(n):
 | 15–17쪽 | 2×n 타일링, 입력 $$n\le1000$$, 출력은 10,007로 나눈 나머지 | $$T[0]=T[1]=1$$과 $$T[n]=T[n-1]+T[n-2]$$를 유도하고 매 단계 모듈러를 적용했습니다. 예제 `n=2 → 2`, `n=9 → 55`를 실행 검산했습니다. |
 | 19–20쪽 | 1로 만들기 연산과 $$D[i]$$의 뜻만 제시 | 나누어떨어지는 후보만 포함하는 정확한 최솟값 점화식, $$D[1]=0$$, bottom-up 계산 순서와 최적 부분 구조 증명을 보충했습니다. |
 | 21–27쪽 | 최소 경로를 위해 값 표와 경로 표를 함께 작성 | $$P[i]$$를 다음 상태로 정의하고 1–8의 최종 값·부모를 독립 실행 결과와 대조했습니다. 동점이면 여러 최적 경로가 가능하다는 조건도 명시했습니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

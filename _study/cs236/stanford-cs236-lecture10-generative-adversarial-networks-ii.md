@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 10: Generative Adversarial Networks II"
 course: "CS236"
 topic: "f-GANs, Wasserstein GANs, BiGANs, and Cycle-Consistent Translation"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 10](https://www.youtube.com/watch?v=M3Fkvu78ZXc){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture10.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 10은 GAN을 단순한 이미지 생성 기법이 아니라 `samples only` 조건에서 분포를 비교하는 방법으로 확장합니다. 지난 강의의 기본 GAN은 generator $$G_\theta$$가 prior $$p(z)$$의 sample을 data space로 보내고, discriminator $$D_\phi$$가 real sample과 fake sample을 구분하는 minimax game입니다.
+> **핵심:** 실제 데이터와 생성 데이터의 확률식은 몰라도 두 sample 묶음은 비교할 수 있습니다. f-GAN과 WGAN은 판별 시험을 이용해 두 묶음의 차이를 재고 generator에 고칠 방향을 알려 줍니다.
 
 실제 표본과 생성 표본이 처음에는 전혀 다른 영역에 놓이면, 어떤 divergence는 두 분포를 더 가깝게 옮길 방향을 충분히 알려 주지 못합니다. Wasserstein 관점은 표본 질량을 옮기는 비용으로 거리를 재어 더 연속적인 학습 신호를 노립니다. 이 강의의 여러 GAN 목적함수는 같은 게임을 반복하는 것이 아니라, 분포 차이를 어떤 기준으로 측정할지 바꾸는 선택지입니다.
 
@@ -73,6 +73,8 @@ keywords:
 [PDF p.22](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture10.pdf#page=22){:target="_blank" rel="noopener"}의 왼쪽은 $$x$$를 $$G$$로 바꾼 뒤 $$F$$로 복원하는 경로, 오른쪽은 반대 방향입니다. $$D_X,D_Y$$는 각 domain의 그럴듯함을 검사하고, 원문 아래의 cycle-consistency 항은 출발점이 보존되는지를 검사합니다. 그럴듯한 변환 결과와 원래 입력의 내용 보존은 서로 다른 요구이므로 두 항이 함께 필요합니다.
 
 ## 핵심 내용
+
+먼저 이 강의가 해결하려는 문제부터 잡아야 합니다. 실제 데이터가 만들어지는 확률식은 모르지만 실제 사진 묶음은 가지고 있고, 생성 모델도 확률값 대신 가짜 사진 묶음만 내놓는 상황입니다. 이때 판별기는 두 묶음을 구별하는 시험을 만들고, 생성기는 그 시험에서 차이가 드러나지 않도록 출력을 고칩니다. f-GAN과 WGAN은 이 "두 묶음이 얼마나 다른가"를 서로 다른 기준으로 재는 방법입니다.
 
 Lecture 10은 GAN을 단순한 이미지 생성 기법이 아니라 `samples only` 조건에서 분포를 비교하는 방법으로 확장합니다. 지난 강의의 기본 GAN은 generator $$G_\theta$$가 prior $$p(z)$$의 sample을 data space로 보내고, discriminator $$D_\phi$$가 real sample과 fake sample을 구분하는 minimax game입니다. 최적 discriminator가 주어졌다고 가정하면 이 objective는 data distribution과 model distribution 사이의 Jensen-Shannon divergence를 shift와 scale만 다르게 최소화하는 형태로 해석됩니다. 중요한 점은 likelihood를 계산하지 않아도 된다는 것입니다. 모델은 $$p_\theta(x)$$를 직접 평가하지 않고 sample만 만들 수 있으면 됩니다.
 

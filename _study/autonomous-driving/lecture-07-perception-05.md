@@ -121,6 +121,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 판정 | 확인과 이 글의 처리 |
 |---|---|---|
 | 8–10쪽 RetinaNet class 출력 `2K*(C+1)` | 원 모델과 불일치 | 원 논문의 위치당 $$AK$$ sigmoid 분류와 $$4A$$ box 출력을 사용합니다. $$A$$는 anchors/location, $$K$$는 전경 클래스입니다. |
@@ -128,6 +131,8 @@ $$
 | 16–17쪽 FCOS `L2 loss` | 원 논문과 불일치 | FCOS 원 논문은 box 회귀에 IoU loss를 씁니다. 정확한 구현에서는 논문/코드 버전을 확인합니다. |
 | 18–19쪽 centerness | 정의 확인 | $$\min/\max$$ 비율의 곱에 **제곱근**이 있습니다. 중심에서 1, 경계에서 0이라는 해석은 유효한 box 내부에서 성립합니다. |
 | 12쪽 속도–AP 그림 | 실험 조건 제한 | COCO 당시 비교 결과입니다. 실시간 주행 성능의 보편적 법칙이 아닙니다. |
+
+</details>
 
 ## 시험 포인트
 

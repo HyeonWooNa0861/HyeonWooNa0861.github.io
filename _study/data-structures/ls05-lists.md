@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS05 Lists"
 course: "Data Structures"
 topic: "Lists"
@@ -18,6 +18,8 @@ keywords:
 # LS05 Lists
 
 Source PDF: `LS05_lists_full.pdf`
+
+리스트는 값들을 순서대로 보관합니다. 배열 기반 리스트는 `3번 위치`처럼 원하는 칸으로 바로 갈 수 있지만, 중간에 값을 넣으면 뒤쪽 값들을 한 칸씩 밀어야 합니다. 빠른 위치 접근과 삽입·삭제 비용 사이의 교환이 이 강의의 중심입니다.
 
 > **핵심:** 배열 기반 리스트는 연속 메모리에서 인덱스로 원소 위치를 계산하므로 빠르게 접근할 수 있습니다. 반면 삽입·삭제에는 원소를 밀거나 당기는 작업이 필요해 최악의 경우 $$O(n)$$이 걸립니다.
 
@@ -149,7 +151,12 @@ insert: [10, 15, 20, 30, 40, _, _, _]  size = 5
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 배열 기반 리스트의 insert와 remove를 작은 배열에 수행하며 어느 원소가 몇 칸 이동하고 size가 언제 바뀌는지 추적합니다. 인덱스 접근 O(1)과 값 탐색 O(n)을 혼동하지 말고, 중간 삽입·삭제가 느린 원인을 재할당보다 shifting에서 먼저 찾습니다. 시험 전에는 접근 빈도, 중간 변경 빈도, 용량 변화에 따라 배열 리스트가 적합한지 판단하는 표를 다시 만듭니다.
+
+</details>
 
 ## 복습 질문
 

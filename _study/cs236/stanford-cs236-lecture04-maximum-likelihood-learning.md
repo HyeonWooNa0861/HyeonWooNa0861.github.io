@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 4: Maximum Likelihood Learning"
 course: "CS236"
 topic: "Maximum Likelihood Learning"
@@ -21,7 +21,7 @@ Source: [Stanford CS236 Lecture 4](https://www.youtube.com/watch?v=bt3dqcbMLa0){
 
 Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 4는 이전 강의의 autoregressive model을 마무리하면서 시작합니다. RNN은 지금까지의 문맥을 하나의 hidden vector에 압축하기 때문에 long-range dependency와 exploding/vanishing gradient 문제가 생깁니다.
+> **핵심:** Maximum likelihood는 훈련 데이터에서 실제로 나온 정답에 모델이 높은 확률을 주도록 조정합니다. 문장에서는 각 위치의 다음 단어 확률을 높이고, 전체 문장에서는 그 확률들을 곱해 학습 기준을 만듭니다.
 
 훈련 문장이 주어졌다면 모델이 그 문장의 각 다음 token에 높은 확률을 주도록 조정하는 것이 maximum likelihood입니다. RNN은 앞선 내용을 hidden state 하나에 계속 담으려 하므로 멀리 떨어진 정보가 약해질 수 있습니다. Attention과 convolution은 이 정보 전달 경로를 바꾸지만, 관측 데이터의 log-likelihood를 높인다는 학습 기준은 그대로 유지됩니다.
 
@@ -74,6 +74,8 @@ Source PDF: [cs236_lecture4.pdf](https://deepgenerativemodels.github.io/assets/s
 [PDF p.22](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf#page=22){:target="_blank" rel="noopener"}의 세 그래프는 같은 점들을 직선, 고차 다항식, 저차 다항식으로 맞춘 경우입니다. 맨 위 직선은 휘어진 경향을 놓치고, 가운데 곡선은 점 사이에서 크게 흔들리며, 아래 곡선은 전체 경향을 따릅니다. 훈련점에 가까워지는 것과 새로운 데이터의 오차가 줄어드는 것을 구분해야 합니다.
 
 ## 핵심 내용
+
+훈련 문장 `나는 학교에 간다`가 주어졌다면 모델은 `나는` 다음에 `학교에`, 그다음에 `간다`가 나올 확률을 높여야 합니다. Maximum likelihood는 관측된 정답들에 모델이 높은 확률을 주도록 parameter를 조정하는 원칙입니다.
 
 Lecture 4는 이전 강의의 autoregressive model을 마무리하면서 시작합니다. RNN은 지금까지의 문맥을 하나의 hidden vector에 압축하기 때문에 long-range dependency와 exploding/vanishing gradient 문제가 생깁니다. Attention은 이전 token들의 hidden vector 전체를 보고, query-key similarity를 softmax로 바꾸어 어느 위치를 참조할지 선택합니다. 이때 autoregressive 성질을 유지하려면 미래 token을 보지 못하게 mask가 필요합니다. Transformer 계열은 recurrent update 없이 여러 attention layer를 feed-forward로 쌓기 때문에 training time에는 각 위치의 loss를 병렬 평가할 수 있습니다. 강의는 이것이 modern autoregressive language model이 GPU에서 크게 확장될 수 있었던 핵심 이유라고 정리합니다.
 

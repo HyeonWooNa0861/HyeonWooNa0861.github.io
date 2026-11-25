@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 11 Probability Distributions 1"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 1"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-11.pdf`
 
-> **핵심:** 확률변수는 표본공간의 결과를 수치에 대응시키는 함수입니다. 이산확률변수의 각 값에 부여된 확률은 PMF로 나타냅니다.
+> **핵심:** 동전을 두 번 던진 결과를 "앞면 개수"라는 숫자로 바꾸면 가능한 값은 0, 1, 2입니다. 확률변수는 결과를 이런 숫자로 바꾸고, PMF는 각 숫자가 나올 확률을 표처럼 알려 줍니다.
 
 ## 전체 흐름
 
@@ -49,6 +49,8 @@ Source PDF: `machine-learning-basic-lecture-11.pdf`
 </details>
 
 ## 1. 확률론이 필요한 이유
+
+같은 입력을 받아도 측정 잡음이나 아직 알지 못한 조건 때문에 결과가 달라질 수 있습니다. 확률은 이런 불확실성을 "가능하다"라는 말로 끝내지 않고 0과 1 사이의 수로 비교하게 해 줍니다. 모델은 가장 가능성 높은 답뿐 아니라 각 답을 얼마나 믿는지도 표현할 수 있습니다.
 
 확률론은 불확실성을 수량적으로 다루는 이론입니다. 머신러닝, 데이터 분석, Bayesian AI, LLM, diffusion model 등에서 핵심 기반이 됩니다.
 

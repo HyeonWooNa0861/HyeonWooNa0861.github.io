@@ -160,12 +160,17 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 분류 | 확인과 정리 |
 |---|---|---|
 | 12쪽 | 표기 관례 차이 | $$(x,y,w,h)$$에서 $$x,y$$가 중심인지 모서리인지 명시되지 않았습니다. 본문에서는 중심 규약을 선언했고 33–34쪽 proposal 식과 일치시켰습니다. |
 | 15쪽 | 가정이 생략된 단순화 | $$L_{\mathrm{cls}}+\lambda L_{\mathrm{reg}}$$는 단일 객체 localization 도식입니다. 이것을 원 R-CNN의 end-to-end 학습식으로 옮기지 않습니다. |
 | 27쪽 | 적용 범위 제한 | 약 2,000 proposals·약 2초/영상은 강의가 제시한 selective-search 예시입니다. 현재 장비의 보편적 실행 시간으로 단정하지 않습니다. |
 | 35–36쪽 | 원문 대비 정정 | 슬라이드의 positive·negative·동시 loss 도식과 [원 R-CNN 논문](https://arxiv.org/pdf/1311.2524){:target="_blank" rel="noopener"}의 CNN fine-tuning, class별 SVM, 별도 box regressor를 구별했습니다. 특히 regressor는 0.6 초과 overlap proposal을 별도로 사용합니다. |
+
+</details>
 
 ## 시험 포인트
 

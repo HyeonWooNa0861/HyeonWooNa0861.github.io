@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-28 12:20:48 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 17 Linear Regression"
 course: "Machine Learning Basic"
 topic: "Linear Regression"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-17.pdf`
 
-> **핵심:** 회귀는 입력 $$x$$에서 연속적인 값 $$y$$를 예측하는 문제입니다. Gaussian noise를 가정하면 관측값은 $$y=f(x)+\epsilon$$, $$\epsilon\sim\mathcal{N}(0,\sigma^2)$$로 표현됩니다.
+> **핵심:** 회귀는 집의 넓이로 가격을 예측하듯 입력에서 연속된 숫자를 예측합니다. 선형 회귀는 데이터의 전체 경향을 선이나 평면으로 설명하고, 실제 관측값이 그 경향에서 벗어난 정도는 noise로 다룹니다.
 
 ## 전체 흐름
 
@@ -57,6 +57,8 @@ Source PDF: `machine-learning-basic-lecture-17.pdf`
 </details>
 
 ## 1. 회귀란?
+
+집의 넓이를 입력하면 가격이라는 연속된 숫자를 예측하는 문제가 회귀입니다. 분류가 `아파트`와 `주택`처럼 범주를 고른다면, 회귀는 3억 2천만 원처럼 수치 자체를 예측합니다. 학습 데이터에만 맞는 선이 아니라 새 집에도 잘 맞는 관계를 찾는 것이 목표입니다.
 
 회귀(regression)는 하나의 종속 변수 $$y$$와 하나 이상의 독립 변수 $$x$$ 사이의 관계를 수학적 모델로 추정하고 예측하는 분석 기법입니다.
 

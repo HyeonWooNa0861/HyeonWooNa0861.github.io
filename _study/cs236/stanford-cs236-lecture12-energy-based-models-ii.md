@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 12: Energy-Based Models II"
 course: "CS236"
 topic: "Score Matching, Noise Contrastive Estimation, and Sampling-Free EBM Training"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 12](https://www.youtube.com/watch?v=Nci1Bepcy0g){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture12.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture12.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 12는 EBM의 가장 큰 병목인 sampling과 likelihood 학습을 우회하는 방법을 다룹니다. MCMC를 복습한 뒤 score matching, noise contrastive estimation, adversarial training처럼 model sampling 의존을 줄이는 학습법을 비교합니다.
+> **핵심:** EBM은 후보의 상대 점수는 알지만 모델이 믿는 sample을 직접 뽑기 어렵습니다. 12강은 후보를 조금씩 고치는 MCMC, 더 그럴듯한 방향을 배우는 score matching, 실제 데이터와 noise를 구별하는 NCE로 이 병목을 풉니다.
 
 EBM의 상대 점수는 두 입력 중 무엇이 더 그럴듯한지는 말해 주지만, 실제 표본을 얻거나 normalized likelihood를 계산하려면 어려운 $$Z(\theta)$$가 다시 나타납니다. Score는 log-density를 입력 방향으로 미분해 $$Z(\theta)$$를 없애고, NCE는 데이터와 알려진 noise를 구분하는 문제로 바꿉니다. 각 방법은 같은 병목을 서로 다른 계산으로 우회합니다.
 
@@ -74,6 +74,8 @@ EBM의 상대 점수는 두 입력 중 무엇이 더 그럴듯한지는 말해 �
 
 ## 핵심 내용
 
+11강에서 EBM은 후보의 상대 점수는 쉽게 비교했지만, 모델이 믿는 후보를 직접 뽑는 과정은 어려웠습니다. 12강은 이 막힌 지점을 세 갈래로 풉니다. Score matching은 데이터 주변에서 점수가 커지는 방향을 맞추고, NCE는 실제 데이터와 미리 정한 잡음을 구별하며, MCMC는 현재 후보를 조금씩 고쳐 모델 분포를 탐색합니다. 세 방법은 모두 계산하기 어려운 전체 정규화 합을 직접 구하지 않는다는 공통점이 있습니다.
+
 Lecture 12는 EBM의 가장 큰 병목인 sampling과 likelihood 학습을 우회하는 방법을 다룹니다. 지난 강의의 기본 형태는
 
 $$
@@ -98,7 +100,9 @@ $$
 
 가 됩니다. 즉 score direction을 따라 likelihood가 증가하는 쪽으로 움직이되, Gaussian noise를 섞어 exploration을 유지합니다. 이 방법은 단순 random walk보다 낫지만, training inner loop에서 수천 step의 chain을 반복해야 한다면 여전히 비쌉니다. 따라서 이후 내용의 목표는 "model에서 sample을 뽑지 않고 학습할 수 있는 objective"를 찾는 것입니다.
 
-Score matching은 likelihood 자체가 아니라 score function을 맞춥니다. Stein score는
+Score matching은 likelihood 자체가 아니라 score function을 맞춥니다. 이 score는 분류 점수가 아닙니다. 현재 점 $$x$$를 아주 조금 움직일 때 어느 방향으로 가야 모델이 더 그럴듯하다고 평가하는지를 나타내는 화살표입니다. 따라서 각 데이터 점에 올바른 화살표를 붙이는 문제로 바꾸면, 모든 공간의 확률을 먼저 합산하지 않고도 분포의 모양을 배울 수 있습니다.
+
+Stein score는
 
 $$
 s_\theta(x)=\nabla_x\log p_\theta(x)=\nabla_x f_\theta(x)

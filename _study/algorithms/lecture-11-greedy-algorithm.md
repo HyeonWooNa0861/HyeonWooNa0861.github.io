@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-14 13:38:33 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 11: Greedy Algorithms"
 course: "Algorithms"
 topic: "Greedy Choice, Change Making, and Activity Selection"
@@ -19,6 +19,8 @@ keywords:
 # Lecture 11: Greedy Algorithms
 
 Source PDF: [11 Greedy Algorithm.pdf](/assets/pdfs/study/algorithms/lecture-11-greedy-algorithm.pdf)
+
+회의실 하나에 여러 회의를 최대한 많이 배치한다고 생각해 보겠습니다. 지금 가장 빨리 끝나는 회의를 고르면 뒤에 다른 회의를 넣을 시간이 가장 많이 남습니다. 다만 이렇게 **당장 좋아 보이는 선택**이 항상 전체 정답이 되는 것은 아니므로, 왜 이 선택을 해도 손해가 없는지 확인해야 합니다.
 
 그리디 알고리즘은 매 단계에서 현재 기준으로 가장 좋은 선택 하나를 확정합니다. 선택을 되돌리지 않으므로 빠르고 단순할 수 있지만, **지역 최선이 전역 최선으로 이어진다는 증명**이 없으면 정답을 보장하지 않습니다. 이 강의는 동전 교환과 회의 배정을 통해 안전한 선택을 찾고, 교환 논증과 최적 부분 구조로 그 선택을 증명하는 방법을 다룹니다.
 
@@ -85,7 +87,7 @@ L head  R head  선택  출력
 1. **Greedy-choice property:** 그리디가 지금 고른 선택을 포함하는 최적해가 존재합니다.
 2. **Optimal substructure:** 그 선택을 고정한 뒤 남은 부분도 해당 부분 문제의 최적해로 채울 수 있습니다.
 
-첫 조건은 보통 **교환 논증(exchange argument)**으로 보입니다. 임의의 최적해가 그리디 선택을 쓰지 않더라도, 그 최적해의 첫 선택을 그리디 선택으로 바꾸어 값이 나빠지지 않음을 증명합니다. 둘째 조건은 남은 해가 최적이 아니라고 가정하고, 더 좋은 부분해로 교체하면 전체 해도 좋아져 원래 해의 최적성과 모순이라는 방식으로 증명합니다.
+첫 조건은 보통 **교환 논증(exchange argument)**으로 보입니다. 이미 가장 좋은 답 하나를 잡고, 그 답의 첫 선택을 그리디 선택으로 바꿔도 회의 수나 동전 수 같은 결과가 나빠지지 않음을 보이는 방법입니다. 둘째 조건은 남은 해가 최적이 아니라고 가정하고, 더 좋은 부분해로 교체하면 전체 해도 좋아져 원래 해의 최적성과 모순이라는 방식으로 증명합니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: A reusable greedy proof template</summary>
@@ -442,6 +444,9 @@ assert select_max_meetings([(1, 1), (0, 1)]) == [(0, 1), (1, 1)]
 
 ## 6. Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 원문 위치 | 확인한 내용 | 이 글의 처리 |
 |---|---|---|
 | p. 11 | Merge function의 local choice | 정렬된 두 입력의 head 최솟값 선택과 Merge Sort 전체의 분할 정복을 구분 |
@@ -453,6 +458,8 @@ assert select_max_meetings([(1, 1), (0, 1)]) == [(0, 1), (1, 1)]
 | p. 25 | 교환 논증과 잔여 집합 | zero-duration 입력을 위해 `(finish, start)` tie-break와 $$A\setminus\{a_1\}$$를 명시 |
 
 29쪽 전체를 화면과 추출 텍스트로 확인했습니다. 수치 예제와 코드는 별도로 실행해 검산했습니다. 원문의 `x > 500` 경계와 선택 회의를 포함할 수 있는 잔여 집합 표현은 원본 파일을 바꾸지 않고 본문에서 정정했습니다. 배수 관계가 없는 모든 체계에서 실패한다는 강한 해석은 사용하지 않고, 보장이 사라진다는 뜻으로 구분했습니다.
+
+</details>
 
 ## 마지막 핵심 정리
 

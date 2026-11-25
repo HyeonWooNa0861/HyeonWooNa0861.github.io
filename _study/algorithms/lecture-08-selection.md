@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 8: Selection Algorithms"
 course: "Algorithms"
 topic: "Order Statistics, Randomized Quickselect, and Median of Medians"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [8 Selection.pdf](/assets/pdfs/study/algorithms/lecture-08-selection.pdf)
 
 정렬되지 않은 배열에서 필요한 순위의 값 하나만 찾는 **selection problem**을 다룹니다. 강의의 `i`는 0부터 세므로, `i=0`은 최솟값이고 `i=n-1`은 최댓값입니다. 전체 정렬에는 $$\Theta(n\log n)$$ 시간이 들지만, Quickselect는 무작위 pivot 아래에서 기대 $$\Theta(n)$$, median of medians는 결정론적으로 최악 $$\Theta(n)$$에 순위 통계량을 찾습니다.
+
+예를 들어 점수 목록에서 세 번째로 작은 값 하나만 필요하다면 전체 순서를 완성할 필요가 없습니다. 피벗보다 작은 값이 몇 개인지 확인하면 목표가 왼쪽과 오른쪽 중 어느 쪽에 있는지 알 수 있고, 반대쪽은 더 보지 않아도 됩니다.
 
 > **핵심:** partition 한 번은 pivot을 최종 순위 구간에 놓고, selection은 목표 순위가 있는 한쪽만 계속 처리합니다. 무작위 pivot은 기대 시간을 선형으로 만들지만 최악의 이차 시간은 남습니다. Median of medians는 pivot 양쪽에서 상수 비율의 원소를 제거하도록 보장해 최악 시간까지 선형으로 낮춥니다.
 
@@ -341,6 +343,9 @@ Randomized Quickselect는 구현이 단순하고 실제 성능이 좋은 반면,
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 슬라이드 위치 | 확인 결과 | 이 글의 처리 |
 |---|---|---|
 | 7쪽 | 입력 조건은 $$0\le i<n$$이고 이후 예시도 0-based이지만, 배열의 강조값 `58`은 1-based 네 번째 값입니다. 0-based $$i=4$$의 실제 답은 `67`입니다. | 순위를 0-based로 고정하고 배열을 직접 정렬해 `67`로 정정했습니다. |
@@ -351,6 +356,8 @@ Randomized Quickselect는 구현이 단순하고 실제 성능이 좋은 반면,
 | 26·28쪽 | 30%–70% 보장은 반올림을 생략한 점근 설명입니다. 26쪽 예시는 그룹 중앙값이 6개인데 `15`를 lower median으로 택합니다. 28쪽의 $$(\lfloor g/2\rfloor+1)\cdot3$$을 양쪽에 동시에 적용하면 이 짝수 그룹 예시와 맞지 않습니다. | 양쪽에 최소 $$3g/2$$개라는 점근 하한과 $$O(1)$$ 반올림 오차만 사용했습니다. 중복값은 단일 위치가 아니라 equal 순위 구간으로 처리했습니다. |
 | 27쪽 | 화면의 첫 단계는 `arr[l:n]`으로 적혀 있어 매개변수 `r`과 불일치합니다. 재귀 호출에는 `i`가 빠져 있고 작은 입력의 base case도 생략되어 있습니다. | 현재 범위를 `[l,r)`로 통일하고, 실행 가능한 보강 코드에는 순위 인자·base case·마지막 불완전 그룹을 모두 포함했습니다. |
 | 29–31쪽 | 점화식은 반올림과 불완전 그룹의 상수 오차를 생략하며 결론은 최악 $$O(n)$$으로 표기합니다. | 일반 점화식에 $$\lceil n/5\rceil$$과 $$O(1)$$을 복원하고, 독립적인 $$\Omega(n)$$ 하한을 더해 최악 $$\Theta(n)$$으로 정리했습니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

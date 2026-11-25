@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS09 Trees"
 course: "Data Structures"
 topic: "Trees"
@@ -18,6 +18,8 @@ keywords:
 # LS09 Trees
 
 Source PDF: `LS09_tree.pdf`
+
+회사 조직도나 컴퓨터 폴더처럼 한 항목 아래에 여러 하위 항목이 이어지는 관계는 한 줄 목록보다 트리로 표현하기 쉽습니다. 가장 위 항목은 root, 바로 아래 항목은 child, 더 내려갈 항목이 없는 끝 노드는 leaf라고 부릅니다.
 
 > **핵심:** 트리는 계층 관계가 있는 데이터를 표현하는 데 적합합니다. 이진 트리의 full·complete·perfect는 각각 자식 수, 마지막 레벨의 채움 방식, 모든 레벨의 포화 여부로 구분합니다.
 
@@ -180,7 +182,12 @@ inorder(v):
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 예제 트리에 root, parent, child, sibling, leaf, depth, height를 직접 표시해 용어 기준을 먼저 맞춥니다. 같은 트리에서 preorder, inorder, postorder를 손으로 써 보고 방문 시점이 root-left-right 중 어디인지 코드와 연결합니다. full, complete, perfect binary tree는 자식 수·마지막 레벨·모든 레벨 포화 조건을 각각 반례 그림으로 구분합니다.
+
+</details>
 
 ## 복습 질문
 
@@ -272,6 +279,9 @@ D
 
 ## 강의 수식과 관련 페이지
 
+<details markdown="block">
+<summary markdown="span">Reference: formulas and their source slides</summary>
+
 Source PDF 29쪽 전체를 렌더링해 시각적으로 확인했습니다. **트리 본론에는 정리 형태의 수식이나 유도해야 할 공식이 없습니다.** 핵심은 계층 관계, 이진 트리 분류, 재귀 순회의 방문 순서입니다.
 
 | PDF 페이지 | 확인한 수식·표현 | 본문 대응과 판단 |
@@ -284,6 +294,8 @@ Source PDF 29쪽 전체를 렌더링해 시각적으로 확인했습니다. **�
 | 28--29 | heap preview와 BST 예고 | 구조 예고이며 증명 대상 수식이 없습니다. |
 
 복습 범위의 DLL 비용도 대상 노드 참조를 이미 알면 상수 개 링크만 바꿔 $$\Theta(1)$$이고, 먼저 찾아야 하면 최대 $$n$$개 노드를 방문해 $$\Theta(n)$$입니다. 여기서 $$n$$은 노드 수를 나타내는 무차원 정수입니다. 이 조건 구분은 복습 복잡도를 설명하기 위한 작성자 보충이며, LS09 트리 본론에 새 공식을 추가한 것은 아닙니다.
+
+</details>
 
 ## PDF
 

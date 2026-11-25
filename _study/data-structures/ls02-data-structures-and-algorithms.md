@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS02 Data Structures and Algorithms"
 course: "Data Structures"
 topic: "Data Structures and Algorithms"
@@ -17,6 +17,8 @@ keywords:
 # LS02 Data Structures and Algorithms
 
 Source PDF: `LS02_data_structures_and_algorithms_R1.pdf`
+
+같은 학생 성적표라도 찾는 방식에 따라 알맞은 저장 구조가 달라집니다. `B0` 학생처럼 정확히 같은 값을 찾을 때는 해시 테이블이 편리하고, GPA가 `1.0`부터 `2.5` 사이인 학생처럼 구간을 찾을 때는 값의 순서를 유지하는 트리가 유리합니다. 자료구조는 데이터 이름이 아니라 **자주 수행할 작업**을 보고 선택합니다.
 
 > **핵심:** ADT는 값과 연산의 명세이고, 자료구조는 그 명세를 구현하는 방법입니다. Exact query에는 해시 테이블이, range query에는 정렬 순서를 유지하는 트리가 유리합니다.
 
@@ -141,7 +143,12 @@ Java에서는 ADT를 `interface`로 표현하고, 실제 자료구조는 `class`
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 ADT는 허용 연산의 명세이고 자료구조는 그 명세의 구현이라는 구분부터 고정합니다. 같은 자료라도 exact query, range query, indexed access의 빈도를 표로 적어 hash·tree·array 선택이 달라지는 이유를 판단해 봅니다. 시험에서는 problem, algorithm, program을 입력·출력 조건, 유한한 절차, 언어 구현 결과로 각각 구별하는 문제가 우선입니다.
+
+</details>
 
 ## 복습 질문
 

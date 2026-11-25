@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-18 11:56:08 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "C++ Polymorphism"
 course: "C++"
 topic: "Virtual Functions and Dynamic Binding"
@@ -383,9 +383,9 @@ class ImmutablePoint final {
 
 ## 8. vtable 개념
 
-강의 자료에는 `vtable`이 등장합니다. `vtable`은 컴파일러가 가상 함수 호출을 구현하기 위해 내부적으로 만드는 함수 포인터 배열이라고 이해할 수 있습니다.
+강의 자료에는 `vtable`이 등장합니다. 먼저 결과부터 보면, 기본 클래스 포인터가 파생 객체를 가리킬 때도 `virtual` 함수는 파생 클래스의 함수를 호출해야 합니다. 프로그램은 실행 중 실제 객체의 타입에 맞는 함수 주소를 찾아 이 동작을 만듭니다.
 
-객체가 가상 함수를 가진 클래스에 속하면, 런타임에 실제 타입의 vtable을 통해 어떤 함수가 호출될지 결정됩니다. 개발자가 직접 vtable을 조작하지는 않지만, 동적 다형성이 런타임 디스패치로 동작한다는 점을 이해하는 데 중요합니다.
+많은 C++ 컴파일러는 이 함수 주소들을 `vtable`이라는 표에 모으고, 객체에는 알맞은 표를 가리키는 숨은 포인터를 둡니다. `base->draw()`를 호출하면 객체의 표에서 `draw` 항목을 찾아 실제 함수를 실행합니다. `vtable`은 널리 쓰이는 구현 방식이지만 C++ 표준이 내부 배치와 이름까지 정한 기능은 아닙니다. 따라서 개발자는 표를 직접 조작하지 않고, `virtual`·`override`라는 언어 기능을 사용합니다.
 
 ## 마지막 핵심 정리
 
@@ -404,30 +404,35 @@ class ImmutablePoint final {
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 다형성은 "같은 호출, 다른 동작"으로 시작하면 이해하기 쉽습니다. 정적 다형성은 컴파일 타임에 함수가 결정되고, 동적 다형성은 런타임에 실제 객체 타입을 보고 함수가 결정됩니다. 이 문서에서는 특히 `virtual`을 통한 동적 다형성이 핵심입니다.
 
 기본 클래스 포인터나 참조로 파생 클래스 객체를 다룰 때 `virtual`이 없으면 기대한 함수가 호출되지 않을 수 있습니다. 다형적으로 사용될 함수를 기본 클래스에서 `virtual`로 선언하고, 파생 클래스에서 `override`를 붙여 정확히 오버라이딩했는지 확인하는 것이 안전합니다.
 
 가상 소멸자는 별도 암기 항목처럼 중요합니다. 기본 클래스 포인터로 파생 객체를 삭제할 가능성이 있다면 기본 클래스 소멸자는 반드시 `virtual`이어야 합니다. 그렇지 않으면 파생 클래스의 정리 코드가 실행되지 않을 수 있습니다.
 
+</details>
+
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. 정적 다형성과 동적 다형성의 차이는 무엇입니까?</summary>
+<summary markdown="span">1. 정적 다형성과 동적 다형성의 차이는 무엇입니까?</summary>
 
 답변: 정적 다형성은 컴파일 타임에 호출될 함수가 결정되며 함수 오버로딩과 템플릿이 대표적입니다. 동적 다형성은 런타임에 실제 객체 타입을 보고 호출될 함수가 결정되며 `virtual` 함수와 기본 클래스 포인터/참조를 사용합니다.
 
 </details>
 
 <details markdown="block">
-<summary>2. 기본 클래스 포인터로 파생 클래스 객체를 삭제할 때 기본 클래스 소멸자가 `virtual`이어야 하는 이유는 무엇입니까?</summary>
+<summary markdown="span">2. 기본 클래스 포인터로 파생 클래스 객체를 삭제할 때 기본 클래스 소멸자가 `virtual`이어야 하는 이유는 무엇입니까?</summary>
 
 답변: 기본 클래스 소멸자가 virtual이 아닌데 기본 클래스 포인터로 파생 객체를 `delete`하면 동작이 정의되지 않습니다. 소멸자를 virtual로 두면 실제 객체 타입의 파생 소멸자부터 기본 소멸자까지 올바른 순서로 호출됩니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. `override`를 붙이는 이유는 무엇입니까?</summary>
+<summary markdown="span">3. `override`를 붙이는 이유는 무엇입니까?</summary>
 
 답변: 파생 클래스 함수가 실제로 기본 클래스의 가상 함수를 오버라이딩하는지 컴파일러가 검사하게 하기 위해서입니다. 함수 이름, 매개변수, `const` 여부가 맞지 않으면 오류를 내므로 실수로 함수 숨김이 발생하는 것을 줄일 수 있습니다.
 

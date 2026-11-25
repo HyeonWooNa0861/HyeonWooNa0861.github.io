@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Computer Vision Overview"
 course: "AIX"
 topic: "Visual Intelligence and Deep Learning Vision"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `03_Computer_Vision.pdf`
 
 > **핵심:** CNN은 국소 연결, 가중치 공유, 공간적 계층 구조를 활용해 이미지의 패턴을 학습합니다. ImageNet은 대규모 데이터와 공통 벤치마크를 제공해 깊은 CNN을 학습하고 비교하는 기반이 되었습니다.
+
+사진은 숫자로 보면 수많은 픽셀의 배열입니다. 컴퓨터 비전은 이 숫자에서 경계와 질감을 찾고, 이를 눈·바퀴·얼굴 같은 부분으로 묶은 뒤, 최종적으로 물체와 장면의 의미를 판단합니다. CNN은 작은 필터를 사진 전체에 반복 적용해 이 과정을 학습합니다. 같은 필터를 여러 위치에서 공유하므로, 물체가 사진 속 어디에 있든 비슷한 무늬를 찾을 수 있습니다.
 
 ## 전체 흐름
 
@@ -51,10 +53,10 @@ image pixels -> objects, scenes, actions, relationships
 
 | 문제 | 예 |
 |---|---|
-| Appearance variation | 같은 물체가 각도와 조명에 따라 다르게 보입니다. |
-| Occlusion | 물체 일부가 가려집니다. |
-| Scale variation | 가까운 물체와 먼 물체의 크기가 다릅니다. |
-| Context reasoning | 픽셀만으로는 관계와 의도를 알기 어렵습니다. |
+| 보이는 모습의 변화 | 같은 물체가 각도와 조명에 따라 다르게 보입니다. |
+| 가림(occlusion) | 물체 일부가 다른 물체 뒤에 가려집니다. |
+| 크기 변화 | 같은 물체도 가까우면 크고 멀면 작게 보입니다. |
+| 문맥 판단 | 픽셀만으로는 물체 사이의 관계와 의도를 알기 어렵습니다. |
 
 ## 2. 고전적 Computer Vision
 
@@ -100,7 +102,9 @@ CNN의 아이디어는 갑자기 등장한 것이 아닙니다.
 
 Neocognitron과 AlexNet은 계층적 구조라는 점에서 닮아 있습니다. 차이는 대규모 데이터, GPU compute, backpropagation을 통한 end-to-end training이 가능해졌다는 점입니다.
 
-Backpropagation은 뒤에서 전달된 error sensitivity, 현재 activation의 local slope, 앞 layer의 activation을 곱해 각 weight의 gradient를 계산합니다. 여러 layer에서는 이 local derivative가 연쇄적으로 곱해지므로 vanishing·exploding gradient 조건도 함께 드러납니다.
+Backpropagation은 최종 오차를 보고 “앞쪽 weight를 조금 바꾸면 이 오차가 얼마나 달라지는가?”를 거꾸로 계산합니다. 한 연결에서는 뒤에서 온 오차 신호, 현재 activation의 기울기, 앞 layer에서 들어온 값을 곱합니다. 이 곱이 해당 weight의 gradient입니다.
+
+예를 들어 뒤에서 온 오차 신호가 $$2$$, activation 기울기가 $$0.5$$, 앞 layer의 입력이 $$3$$이면 gradient는 $$2\times0.5\times3=3$$입니다. 이 값이 양수라는 것은 다른 조건이 같을 때 weight를 늘리면 loss도 늘어나는 방향이라는 뜻입니다. 여러 layer에서는 이런 기울기가 계속 곱해지므로, 곱이 매우 작아지는 vanishing gradient와 매우 커지는 exploding gradient가 생길 수 있습니다.
 
 <details markdown="block">
 <summary markdown="span">Derivation: Backpropagation chain rule and gradient units</summary>
@@ -259,26 +263,31 @@ Computer vision은 의료, 안전, 과학, 보조 기술처럼 큰 가치를 만
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 고전적 hand-crafted feature에서 CNN으로 넘어간 이유를 먼저 잡고, AlexNet의 성과를 구조 하나가 아니라 ImageNet·GPU·학습 기법의 결합으로 정리합니다. classification, detection, segmentation은 출력 단위가 class·box·pixel로 다르므로 같은 정확도 문제로 섞어 외우지 않습니다. 생성 모델의 noise reversal과 함께 robustness·bias·deployment evaluation을 연결하는 문제가 시험 우선순위입니다.
+
+</details>
 
 ## 복습 질문
 
 <details markdown="block">
-<summary>1. Hand-crafted feature 기반 vision과 representation learning 기반 vision에는 어떤 차이가 있습니까?</summary>
+<summary markdown="span">1. Hand-crafted feature 기반 vision과 representation learning 기반 vision에는 어떤 차이가 있습니까?</summary>
 
 답변: hand-crafted feature는 사람이 edge, corner, texture 같은 특징을 설계한 뒤 모델이 이를 사용합니다. representation learning은 CNN이나 Transformer가 데이터에서 필요한 feature를 직접 학습합니다. 후자는 더 큰 데이터와 compute가 필요하지만 복잡한 시각 패턴을 자동으로 포착할 수 있습니다.
 
 </details>
 
 <details markdown="block">
-<summary>2. AlexNet이 과거 CNN 아이디어를 다시 강력하게 만든 조건은 무엇입니까?</summary>
+<summary markdown="span">2. AlexNet이 과거 CNN 아이디어를 다시 강력하게 만든 조건은 무엇입니까?</summary>
 
 답변: CNN 아이디어 자체는 오래전부터 있었지만, AlexNet은 대규모 ImageNet 데이터, GPU 학습, ReLU, dropout 같은 실용적 요소가 결합되면서 성능을 크게 끌어올렸습니다. 즉 모델 구조만이 아니라 데이터와 연산 자원의 성숙이 함께 작용했습니다.
 
 </details>
 
 <details markdown="block">
-<summary>3. Computer vision에서 bias와 robustness를 별도로 평가해야 하는 이유는 무엇입니까?</summary>
+<summary markdown="span">3. Computer vision에서 bias와 robustness를 별도로 평가해야 하는 이유는 무엇입니까?</summary>
 
 답변: 평균 정확도가 높아도 특정 조명, 배경, 인종, 성별, 날씨, 카메라 조건에서 성능이 무너질 수 있습니다. bias는 데이터나 모델이 특정 분포에 치우친 문제이고, robustness는 분포 변화와 노이즈에도 안정적인지의 문제입니다. 실제 서비스에서는 둘 다 안전성과 신뢰성에 직접 영향을 줍니다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS16 Priority Queues and Heaps"
 course: "Data Structures"
 topic: "Priority Queues and Heaps"
@@ -18,6 +18,8 @@ keywords:
 # LS16 Priority Queues and Heaps
 
 Source PDF: `LS16_priority_queue_and_heap.pdf`
+
+응급실에서는 먼저 도착한 순서보다 환자의 긴급도가 중요할 수 있습니다. 우선순위 큐도 같은 원리로, 저장된 항목 중 우선순위가 가장 높은 값을 먼저 꺼냅니다. 힙은 그 값을 매번 전체 검색하지 않고 root에서 빠르게 찾도록 돕습니다.
 
 > **핵심:** 우선순위 큐는 들어온 순서가 아니라 우선순위에 따라 원소를 꺼냅니다. 이를 구현하는 힙은 완전 이진 트리의 모양과 heap property를 함께 만족해야 합니다.
 
@@ -163,7 +165,12 @@ Max Heap에서 최댓값은 루트에 있습니다. 하지만 루트만 제거�
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 배열 index에서 parent와 두 child 위치를 먼저 계산한 뒤, 삽입의 siftUp과 최댓값 삭제의 siftDown을 각각 손으로 수행합니다. siftDown은 존재하는 자식 중 더 큰 쪽과 바꿔야 max-heap property가 유지된다는 점을 코드 조건으로 확인합니다. heap은 root의 최댓값만 강하게 보장하므로 특정 key 탐색과 정렬 순회에 강한 BST와 혼동하지 않습니다.
+
+</details>
 
 ## 복습 질문
 

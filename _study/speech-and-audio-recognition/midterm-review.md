@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-15 15:17:14 +0900
-last_modified_at: 2026-10-19 14:37:03 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Speech and Audio Recognition: Midterm Review"
 course: "Speech and Audio Recognition"
 topic: "Digital Signals, ASR, and Self-Supervised Learning"
@@ -188,6 +188,9 @@ Forward와 inverse의 부호·정규화는 다른 convention도 가능합니다.
 | DTFS | 이산시간 주기 sequence | 한 주기 안의 유한 coefficient | coefficient가 주파수 index에서 주기적 |
 | DFT | 길이 $$N$$인 유한 sample block | $$N$$개 bin | 입력 block을 한 주기의 periodic sequence로 해석 |
 
+<details markdown="block">
+<summary>Derivation details: How CTFS coefficients become DFT bins</summary>
+
 연속시간 주기 신호
 
 $$
@@ -207,6 +210,8 @@ X[r]=N\sum_{q=-\infty}^{\infty}c_{r+qN}.
 $$
 
 즉 CTFS coefficient가 DTFS/DFT의 같은 나머지 class로 **겹쳐 더해지는 것**이 spectral aliasing입니다. CTFS가 $$\lvert k\rvert\le K$$에서만 0이 아니고 $$N>2K$$라면 서로 다른 nonzero harmonic이 같은 나머지 class에 겹치지 않아 $$c_k=X[k\bmod N]/N$$으로 회수할 수 있습니다. 단순히 표본이 $$N$$개라는 사실만으로 가능한 것이 아니라, 한 주기를 균일 sampling했고 원래 harmonic bandwidth가 충분히 제한되었다는 조건이 필요합니다.
+
+</details>
 
 ### 2.3 DFT와 FFT의 관계
 
@@ -240,6 +245,9 @@ $$
 
 긴 창은 주파수를 더 세밀하게 나누기 쉽지만 짧은 변화를 넓게 섞습니다. 짧은 창은 시간 위치를 더 좁게 보지만 주파수 peak가 넓어집니다. Zero-padding으로 $$N_{\mathrm{FFT}}$$만 키우면 표시 bin은 촘촘해져도 관측 시간 $$L/f_s$$가 제공한 물리적 분해능은 늘지 않습니다.
 
+<details markdown="block">
+<summary>Worked settings: Frame count, one-sided bins, and window trade-offs</summary>
+
 예를 들어 1초 길이의 16 kHz 신호에 $$L=400$$, $$H=160$$, $$N_{\mathrm{FFT}}=512$$를 쓰면 창은 25 ms, hop은 10 ms입니다. Center padding 없이 끝을 버리면 frame 수는
 
 $$
@@ -249,6 +257,8 @@ $$
 이고, real input의 one-sided spectrum은 frame마다 $$512/2+1=257$$개 frequency bin을 갖습니다. 따라서 구현의 배열 배치에 따라 shape는 `[257, 98]` 또는 `[98, 257]`입니다. Center padding을 켜면 frame 수가 달라지므로 그림의 축과 코드 tensor shape를 함께 확인해야 합니다.
 
 **Window는 FFT 전에 시간 표본의 기여도를 정합니다.** Rectangular window로 임의 구간을 자르면 반복 경계가 매끄럽지 않을 수 있습니다. Hann window는 가장자리 기여를 낮춰 먼 sidelobe를 줄이지만 main lobe를 넓힙니다. 따라서 window는 leakage를 없애는 버튼이 아니라 **어떤 오차를 줄이고 어떤 분해능을 희생할지 정하는 선택**입니다. 작성자 예제로 입력 [2, 2, 2, 2, 2]에 대칭 Hann [0, 0.5, 1, 0.5, 0]을 곱하면 [0, 1, 2, 1, 0]이 됩니다. 잡음을 식별한 것이 아니라 시간 가중치를 바꾼 결과입니다. [원본 창 비교와 상세 해설]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#window-purpose" | relative_url }})에서 길이·hop·FFT 길이의 역할을 구분합니다.
+
+</details>
 
 <details markdown="block">
 <summary markdown="span">Code Walkthrough: How the STFT notebook builds tensor shapes and plot axes</summary>
@@ -281,6 +291,8 @@ phase = np.angle(X).T
 
 ### 2.5 Log-Mel은 두 번의 서로 다른 압축을 포함한다
 
+Log-Mel은 주파수 칸을 한꺼번에 줄이는 연산이 아닙니다. 먼저 가까운 주파수 여러 칸을 **대역별 에너지 하나**로 합칩니다. 그다음 큰 값과 작은 값을 같은 그림이나 모델에서 다루기 쉽도록 log를 적용합니다. 예를 들어 257개 주파수 칸을 80개 Mel 대역으로 합치면 80개가 되고, 그 80개에 log를 적용해도 개수는 80개 그대로입니다.
+
 Mel spectrogram의 전형적인 계산은 다음 두 단계입니다.
 
 $$
@@ -289,9 +301,9 @@ M[m,b]=\sum_k H_b[k]\lvert S[m,k]\rvert^2,
 L[m,b]=\log(\max(M[m,b],\epsilon)).
 $$
 
-첫 식은 여러 Hz bin을 Mel band로 가중 합해 주파수축을 줄입니다. 둘째 식은 값의 dynamic range를 줄입니다. **주파수 집계와 log 압축은 같은 연산이 아닙니다.** Mel feature는 ASR에서 유용할 수 있지만, 여러 spectrum이 같은 band sum을 만들 수 있으므로 원래 complex STFT를 일반적으로 유일하게 복원할 수 없습니다.
+첫 식은 여러 주파수 칸에 가중치를 곱해 Mel 대역 하나로 합칩니다. 둘째 식은 값의 범위를 줄입니다. **주파수 집계와 log 압축은 같은 연산이 아닙니다.** Mel 특징은 ASR에서 유용할 수 있지만, 서로 다른 주파수 배치가 같은 대역 합계를 만들 수 있습니다. 따라서 Mel 값만으로 원래 복소 STFT를 하나로 정해 복원할 수는 없습니다.
 
-**Window는 시간 가중치, Mel은 주파수 집계, log는 값의 scale 변환입니다.** Mel을 쓰는 목적은 세부 Hz bin을 모두 따로 다루기보다 지각적 주파수 간격에 따른 대역별 패턴을 특징으로 표현하는 데 있습니다. 예제의 257 power bins를 80 bands로 줄인 뒤 log를 취해도 80개 값입니다. 단일 필터의 가중치 [0.5, 1, 0.5]와 power [1, 4, 9]의 내적은 9이며, log는 이 집계값에 나중에 적용합니다. Phase는 이미 magnitude/power를 취할 때 사라지고, Mel은 주파수 세부 구조를 추가로 줄일 수 있습니다. [Mel 원본 그림·계산·정보 손실의 증명]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#mel-purpose" | relative_url }})에서 확인할 수 있습니다.
+**Window는 시간 구간의 가장자리를 부드럽게 하고, Mel은 주파수를 대역별로 묶으며, log는 숫자의 범위를 줄입니다.** Mel을 쓰는 목적은 모든 주파수 칸을 따로 외우게 하기보다, 어느 대역에 에너지가 모였는지를 특징으로 보여 주는 데 있습니다. 단일 필터의 가중치 `[0.5, 1, 0.5]`와 power `[1, 4, 9]`를 곱해 더하면 대역 값은 9가 됩니다. Log는 이 합계에 나중에 적용합니다. 위상은 magnitude나 power를 계산할 때 이미 사라지며, Mel 집계는 주파수의 세부 배치를 추가로 줄입니다. [Mel 원본 그림·계산·정보 손실의 증명]({{ "/study/speech-and-audio-recognition/lecture-02-spectral-analysis-lab/#mel-purpose" | relative_url }})에서 확인할 수 있습니다.
 
 MFCC는 log-Mel 값에 DCT를 적용해 spectral envelope를 낮은 차수에 모읍니다. Harmonic 간격과 vocal-tract envelope를 분리해 읽는 데 유용하지만, phase와 세밀한 bin 정보를 복원하는 표현은 아닙니다.
 
@@ -454,6 +466,9 @@ $$
 
 <a href="{{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#speech-04-p15" | relative_url }}">LAS 원본 그림</a>에서는 Listener가 음향 표현을 만들고, Attend가 현재 출력에 필요한 입력을 모으며, Speller가 이전 token을 받아 다음 token을 냅니다. <a href="{{ "/study/speech-and-audio-recognition/lecture-04-attention-and-rnn-transducer/#speech-04-p37" | relative_url }}">RNN-T lattice</a>에서는 같은 출력 prefix를 유지하며 시간을 넘기는 경로와 새 token을 내는 경로를 구분해 읽습니다. 두 그림 모두 출력 이력을 쓰지만, 정렬을 표현하는 방식은 다릅니다.
 
+<details markdown="block">
+<summary>Model details: LAS sequence probability and RNN-T state moves</summary>
+
 LAS의 autoregressive 확률은 다음처럼 이전 정답 또는 생성 prefix에 조건화됩니다.
 
 $$
@@ -463,6 +478,8 @@ $$
 학습에서는 teacher forcing으로 정답 prefix를 사용할 수 있지만, 추론에서는 모델이 방금 생성한 prefix를 사용합니다. 이 차이는 error accumulation의 원인이 될 수 있습니다.
 
 RNN-T의 상태 $$(t,u)$$에서 blank를 선택하면 $$(t+1,u)$$로 가고, 다음 token을 선택하면 $$(t,u+1)$$로 갑니다. 같은 acoustic frame에서 여러 token을 낼 수 있습니다. RNN-T의 blank는 CTC처럼 collapse할 기호가 아니라 **시간축을 진행시키는 전이**입니다.
+
+</details>
 
 ### 4.4 Deep Speech 2와 Conformer를 구조 역할로 비교한다
 
@@ -530,9 +547,14 @@ HuBERT는 MFCC 같은 기존 feature를 offline clustering해 pseudo-label $$y_t
 
 ### 5.4 사전학습 논문과 ASR 구조는 어떻게 이어지는가
 
+<details markdown="block">
+<summary>Research connection: Pre-training objective, Encoder, and ASR loss</summary>
+
 wav2vec 2.0과 HuBERT는 모두 **전사 라벨 부족**을 다룹니다. wav2vec 2.0은 함께 학습하는 quantizer의 target을 후보 사이에서 구별하고, HuBERT는 별도로 만든 cluster label을 예측합니다. 공통점은 가린 음성의 문맥을 학습한다는 것이며, 차이는 정답을 만드는 방법과 loss에 있습니다. HuBERT를 wav2vec 2.0의 모든 구성 요소를 그대로 둔 개선판으로 읽으면 이 차이가 사라집니다.
 
 그 뒤 ASR fine-tuning에서는 음향 표현을 실제 전사 token에 연결해야 합니다. 이때 CTC 같은 목표를 사용할 수 있습니다. 반면 Conformer는 표현을 계산하는 encoder의 설계에 관한 선택입니다. **사전학습은 무엇으로 먼저 배울지, encoder는 정보를 어떻게 처리할지, ASR 목표는 전사와 어떻게 정렬할지**를 정합니다. 서로 관련되지만 같은 축의 경쟁 방법은 아닙니다.
+
+</details>
 
 ## 6. 혼동하기 쉬운 기호와 표현
 
@@ -662,6 +684,9 @@ Imaginary part는 phase 그 자체가 아닙니다. Complex value $$a+jb$$의 ph
 
 ## References
 
+<details markdown="block">
+<summary>References: Core ASR and self-supervised learning papers</summary>
+
 - <a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf" target="_blank" rel="noopener">Graves et al.: Connectionist Temporal Classification</a>
 - <a href="https://proceedings.mlr.press/v48/amodei16.html" target="_blank" rel="noopener">Amodei et al.: Deep Speech 2</a>
 - <a href="https://arxiv.org/abs/1508.01211" target="_blank" rel="noopener">Chan et al.: Listen, Attend and Spell</a>
@@ -669,3 +694,5 @@ Imaginary part는 phase 그 자체가 아닙니다. Complex value $$a+jb$$의 ph
 - <a href="https://arxiv.org/abs/2005.08100" target="_blank" rel="noopener">Gulati et al.: Conformer</a>
 - <a href="https://arxiv.org/abs/2006.11477" target="_blank" rel="noopener">Baevski et al.: wav2vec 2.0</a>
 - <a href="https://arxiv.org/abs/2106.07447" target="_blank" rel="noopener">Hsu et al.: HuBERT</a>
+
+</details>

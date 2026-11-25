@@ -992,11 +992,16 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 먼저 원문 문제 1번의 Bayes posterior를 손으로 다시 계산합니다. $$P(T=+)$$를 직접 구할 수 있으면 이후 기대값과 이항분포 계산은 훨씬 쉽습니다.
 2. 2번은 gradient를 먼저 일반식으로 구한 뒤 초기값을 대입합니다. 초기값부터 대입하면 $$\theta_1\theta_2$$ 미분을 놓치기 쉽습니다.
 3. Convex 문제는 두 가지 답안 패턴을 외웁니다. Convex임을 보일 때는 정의를 전개하고, non-convex임을 보일 때는 반례를 제시합니다.
 4. 회귀 문제는 항상 $$\phi(x)$$, $$\Phi$$, $$y$$, $$\theta$$의 차원을 먼저 확인합니다. 차원이 맞으면 MLE와 예측분포는 거의 자동으로 따라옵니다.
 5. 변형 문제는 시험 직전 확인용입니다. 음성 posterior, 적어도 1개 확률, stationary point, Newton update, MAP objective를 다시 풀어보면 기존 exam review의 주요 범위와 연결됩니다.
+
+</details>
 
 ## 복습 질문
 

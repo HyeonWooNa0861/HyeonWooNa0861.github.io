@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS10 Binary Search Trees"
 course: "Data Structures"
 topic: "Binary Search Trees"
@@ -18,6 +18,8 @@ keywords:
 # LS10 Binary Search Trees
 
 Source PDF: `LS10_binary_search_tree.pdf`
+
+정렬된 전화번호부에서 가운데 값을 보고 찾는 이름이 더 작으면 왼쪽, 더 크면 오른쪽 범위만 보는 것처럼, 이진 탐색 트리도 비교할 때마다 한쪽 서브트리만 선택합니다. 이 선택이 가능하려면 각 노드의 왼쪽에는 더 작은 key, 오른쪽에는 더 큰 key가 있어야 합니다.
 
 > **핵심:** BST에서는 각 노드의 왼쪽에 더 작은 key, 오른쪽에 더 큰 key가 놓이고 모든 서브트리도 같은 조건을 만족합니다. `findHelper`는 탐색 위치가 `rt == null`이 되거나 원하는 key를 만나면 종료합니다.
 
@@ -212,7 +214,12 @@ BST는 구조가 균형 잡혀 있을 때 빠릅니다. 정렬된 데이터를 �
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 같은 key 집합을 균형에 가까운 순서와 정렬된 순서로 삽입해 높이와 탐색 경로가 어떻게 달라지는지 비교합니다. 재귀 find/insert에서는 null·key 일치 종료 조건과 return rt가 부모 링크를 복원하는 역할을 코드로 추적합니다. BST 연산이 항상 O(log n)이 아니라 높이에 따라 최악 O(n)이 된다는 조건을 최우선으로 확인합니다.
+
+</details>
 
 ## 복습 질문
 

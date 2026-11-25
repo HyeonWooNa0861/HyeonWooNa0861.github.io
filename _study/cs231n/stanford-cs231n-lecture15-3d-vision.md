@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 15: 3D Vision"
 course: "CS231N"
 topic: "3D Vision"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 15 PDF](https://cs231n.stanford.e
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_15.pdf#page=54" target="_blank" rel="noopener">CS231N Lecture 15, PDF viewer p. 54</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** 3D vision에는 pixel처럼 유일한 표준 표현이 없습니다. Point cloud, mesh, voxel, implicit field는 각각 저장, topology, differentiability, rendering 비용이 다르며, **표현 선택이 곧 가능한 network와 loss를 결정합니다.**
+> **핵심:** 컵을 3차원으로 기록할 때 표면의 점만 저장할 수도, 점을 삼각형으로 이어 면을 만들 수도, 공간을 작은 칸으로 나눌 수도 있습니다. 무엇을 저장했는지에 따라 빈 곳과 표면을 구별하는 법, 메모리 사용량, 화면에 그리는 방법이 달라집니다.
 
 같은 3D 물체도 point cloud는 표면의 점 목록, mesh는 점과 면의 연결, voxel은 공간 격자의 점유 여부로 저장합니다. Point cloud는 점 순서가 의미 없고 mesh는 연결 구조가 불규칙하며, voxel은 해상도를 높일수록 빈 공간까지 메모리를 씁니다. 따라서 입력 표현을 고르면 network가 지켜야 할 불변성과 비교에 사용할 loss도 함께 정해집니다.
 
@@ -70,7 +70,7 @@ Voxel grid는 3D 공간을 규칙적인 격자로 나누고 occupancy나 feature
 
 ## 4. Deep implicit function
 
-Implicit representation은 좌표 $$\mathbf{x}=(x,y,z)$$를 network에 넣고 occupancy, signed distance, density 같은 값을 query합니다. 예를 들어 surface를 signed distance field $$f_\theta(\mathbf{x})=0$$의 level set으로 나타낼 수 있습니다. Grid resolution에 고정되지 않고 좌표를 연속적으로 질의할 수 있지만 surface를 보려면 많은 query와 iso-surface extraction이 필요합니다.
+Implicit representation은 3D 물체의 모든 점과 면을 목록으로 저장하는 대신, 좌표를 물어보면 그 위치의 상태를 답하는 함수를 학습합니다. 좌표 $$\mathbf{x}=(x,y,z)$$를 넣었을 때 `물체 안인가`, `표면에서 얼마나 떨어졌는가`, `얼마나 불투명한가`를 반환할 수 있습니다. 예를 들어 signed distance 함수 $$f_\theta(\mathbf{x})$$가 0이 되는 좌표들의 모음이 물체 표면입니다. 격자 해상도에 묶이지 않는 대신, 실제 표면을 그리려면 많은 좌표를 질의하고 0이 되는 경계를 찾아야 합니다.
 
 이 관점은 하나의 network parameter가 한 shape를 표현하는 경우와, latent code를 함께 입력해 여러 shape를 표현하는 경우로 확장됩니다. 좌표 기반 MLP는 복잡한 topology도 고정 mesh connectivity 없이 표현합니다.
 
@@ -152,7 +152,12 @@ Sample 간격이 작아지는 극한에서는 $$T(t)=\exp(-\int_{t_n}^{t}\sigma(
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 각 representation을 `저장 단위`, `규칙성`, `surface 명시 여부`, `rendering`, `대표 network/loss`로 비교합니다. NeRF는 camera ray에서 sample, density·color query, alpha composition, pixel loss로 이어지는 계산 흐름을 설명할 수 있어야 합니다.
+
+</details>
 
 ## 복습 질문
 

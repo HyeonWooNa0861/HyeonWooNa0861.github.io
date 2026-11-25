@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 7: Recurrent Neural Networks"
 course: "CS231N"
 topic: "Recurrent Neural Networks"
@@ -28,7 +28,7 @@ Official slides: [Lecture 7 PDF](https://cs231n.stanford.edu/slides/2025/lecture
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_7.pdf#page=23" target="_blank" rel="noopener">CS231N Lecture 7, PDF viewer p. 23</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** RNN은 같은 transition function을 시간축에 반복 적용해 가변 길이 시퀀스를 처리합니다. 이 공유 구조는 강력하지만 긴 경로에서 같은 Jacobian을 반복 곱하므로 vanishing/exploding gradient가 생기며, LSTM은 additive cell-state path와 gate로 장기 정보 흐름을 개선합니다.
+> **핵심:** 문장을 왼쪽부터 읽으면서 앞에서 읽은 내용을 다음 단어로 넘기는 모델이 순환 신경망(RNN)입니다. 문장이 길면 뒤에서 발견한 오차를 첫 단어까지 거슬러 전달하기 어렵습니다. LSTM은 기억을 얼마나 유지하고 얼마나 바꿀지 조절하는 통로를 둡니다.
 
 문장처럼 길이가 달라지는 입력에서는 현재 단어만 보고 다음 출력을 정할 수 없습니다. RNN의 hidden state는 이전 입력을 요약해 다음 시점으로 넘기지만, 오래전 정보까지 gradient가 가려면 같은 변환을 여러 번 통과해야 합니다. LSTM의 cell state는 정보를 더 직접적으로 전달하고, gate는 무엇을 유지하고 지울지를 값의 범위로 조절합니다.
 
@@ -178,10 +178,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. one-to-many, many-to-one, many-to-many의 computational graph를 그립니다.
 2. RNN이 시간축에서 parameter sharing을 한다는 점과 gradient 합산을 연결합니다.
 3. teacher forcing 훈련과 autoregressive 생성의 입력 차이를 설명합니다.
 4. LSTM 각 gate가 읽기·쓰기·유지 중 어떤 역할인지 수식에서 추적합니다.
+
+</details>
 
 ## 복습 질문
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 12:30:12 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 12 Probability Distributions 2"
 course: "Machine Learning Basic"
 topic: "Probability Distributions 2"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-12.pdf`
 
-> **핵심:** 확률변수들이 독립이면 joint distribution이 각 marginal distribution의 곱으로 분해됩니다. IID 표본은 서로 독립이며 모두 같은 분포를 따릅니다.
+> **핵심:** 두 주사위를 따로 던졌다면 첫 번째 결과를 알아도 두 번째 주사위의 확률은 바뀌지 않습니다. 이것이 독립입니다. 같은 방식의 주사위를 반복해 서로 영향 없이 던진 결과들은 독립이고 같은 분포를 따른다는 뜻에서 IID라고 합니다.
 
 ## 전체 흐름
 

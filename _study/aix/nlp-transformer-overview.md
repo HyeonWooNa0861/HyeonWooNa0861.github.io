@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-20 13:52:05 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "NLP and Transformer Overview"
 course: "AIX"
 topic: "NLP History and Transformers"
@@ -20,6 +20,8 @@ keywords:
 Source PDF: `4_NLP_Transformer.pdf`
 
 > **핵심:** Bag-of-Words는 단어의 순서와 긴 문맥을 충분히 담지 못합니다. RNN은 순차 정보를 처리하지만 장기 의존성에 약할 수 있으며, LSTM은 gate를 사용해 정보를 더 오래 유지하도록 설계되었습니다.
+
+문장을 단어 개수만으로 표현하면 `개가 사람을 물었다`와 `사람이 개를 물었다`가 비슷해 보일 수 있습니다. 자연어 처리에는 어떤 단어가 나왔는지뿐 아니라 순서와 문맥도 필요합니다. RNN은 앞에서 읽은 내용을 hidden state에 이어 전달하고, Transformer는 필요한 앞뒤 단어를 attention으로 직접 찾아 이 관계를 표현합니다.
 
 ## 전체 흐름
 
@@ -52,7 +54,7 @@ Source PDF: `4_NLP_Transformer.pdf`
 
 ## 1. NLP의 기본 문제
 
-Natural Language Processing은 사람이 쓰는 언어를 컴퓨터가 처리할 수 있는 표현으로 바꾸고, 그 표현으로 분류, 생성, 검색, 번역, 요약 같은 문제를 푸는 분야입니다.
+자연어 처리(Natural Language Processing)는 사람이 쓰는 문장을 숫자 표현으로 바꾸고, 그 숫자로 문서 분류·문장 생성·검색·번역·요약 같은 문제를 푸는 분야입니다.
 
 ```text
 text -> tokens -> vectors -> model -> output
@@ -62,7 +64,7 @@ text -> tokens -> vectors -> model -> output
 
 ## 2. Count-based 접근과 n-gram
 
-초기 NLP에서는 단어의 빈도와 co-occurrence를 많이 사용했습니다.
+초기 NLP에서는 단어가 몇 번 나왔는지와 어떤 단어들이 함께 등장했는지를 많이 사용했습니다. 함께 등장하는 관계를 **동시 출현(co-occurrence)**이라고 합니다.
 
 | 방법 | 설명 |
 |---|---|
@@ -70,7 +72,7 @@ text -> tokens -> vectors -> model -> output
 | TF-IDF | 자주 나오지만 문서 구분에 덜 중요한 단어의 영향은 줄입니다. |
 | n-gram | 연속된 `n`개의 token 패턴을 사용합니다. |
 
-이 방식은 단순하고 해석하기 쉽지만, 단어 순서와 긴 문맥을 충분히 반영하기 어렵습니다. 또한 vocabulary가 커지면 vector가 매우 sparse해집니다.
+이 방식은 단순하고 해석하기 쉽지만, 단어 순서와 긴 문맥을 충분히 반영하기 어렵습니다. 또한 어휘 목록이 커지면 벡터 길이는 길어지는데 대부분의 값은 0인 **희소 벡터(sparse vector)**가 됩니다.
 
 ## 3. Word Embedding
 
@@ -210,7 +212,12 @@ Transfer learning은 label이 적은 task에서도 강한 성능을 가능하게
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 BoW·n-gram → embedding → RNN/LSTM → Seq2Seq attention → Transformer 순서로 각 단계가 바로 앞 병목을 어떻게 줄였는지 연결합니다. Seq2Seq의 context bottleneck을 푸는 attention과 recurrence 자체를 없앤 self-attention을 같은 개념으로 뭉뚱그리지 않는 것이 중요합니다. 시험에서는 encoder-only, decoder-only, encoder-decoder의 문맥 가시성과 pretraining·fine-tuning·prompting의 재사용 방식을 함께 비교합니다.
+
+</details>
 
 ## 복습 질문
 

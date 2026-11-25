@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS17 Heap Sort"
 course: "Data Structures"
 topic: "Heap Sort"
@@ -50,6 +50,8 @@ Source PDF: `LS17_heap_sort.pdf`
 힙 정렬은 선택 정렬의 개선 버전으로 볼 수 있습니다.
 
 선택 정렬은 매번 전체 배열에서 최댓값을 찾습니다. 힙 정렬은 Max Heap을 만들어 최댓값을 루트에서 $$O(1)$$에 확인하고, 제거 후 `siftDown`으로 $$O(\log n)$$에 재정렬합니다.
+
+Max Heap은 배열 전체가 정렬된 상태가 아닙니다. 루트가 현재 최댓값이라는 조건만 이용합니다. 루트를 배열 끝으로 보내 확정하고, 남은 구간에서 다시 루트가 최댓값이 되도록 고치는 과정을 반복합니다.
 
 | 항목 | Selection Sort | Heap Sort |
 |---|---|---|
@@ -144,7 +146,12 @@ swap root with last:
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 배열을 Max Heap으로 만든 뒤 root와 마지막 원소를 교환하고 heap size를 줄여 siftDown하는 반복을 끝까지 추적합니다. 오른쪽부터 확정되는 정렬 영역과 아직 heap인 왼쪽 영역의 경계를 매 단계 표시하면 구현 오류를 줄일 수 있습니다. buildHeap은 O(n), 전체 정렬은 O(n log n)이며 in-place지만 일반적으로 stable하지 않다는 조합이 시험 우선순위입니다.
+
+</details>
 
 ## 복습 질문
 

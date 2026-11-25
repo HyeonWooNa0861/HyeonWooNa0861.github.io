@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-26 12:19:51 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 16 Probabilistic Modeling and Model Selection"
 course: "Machine Learning Basic"
 topic: "Probabilistic Modeling and Model Selection"
@@ -19,7 +19,7 @@ keywords:
 
 Source PDF: `machine-learning-basic-lecture-16.pdf`
 
-> **핵심:** ERM은 training data의 평균 loss인 empirical risk를 최소화합니다. 이 평균을 true risk의 근사로 해석하려면 표본이 같은 분포에서 독립적으로 뽑혔다는 i.i.d. 가정이 중요합니다.
+> **핵심:** ERM은 지금 가진 훈련 예제들의 평균 오차가 가장 작은 모델을 고릅니다. 하지만 훈련 표본이 실제 사용 환경을 대표하지 않으면 이 평균이 작아도 새 데이터에서는 잘못될 수 있습니다.
 
 ## 전체 흐름
 
@@ -56,6 +56,8 @@ Source PDF: `machine-learning-basic-lecture-16.pdf`
 </details>
 
 ## 1. ERM 복습: 데이터를 잘 설명하는 함수 찾기
+
+ERM은 훈련 예제마다 생긴 오차를 평균내고, 그 평균이 가장 작은 모델을 고르는 원칙입니다. 예를 들어 세 예측의 오차가 1, 2, 3이면 경험적 위험은 그 평균인 2입니다. 여기서 `empirical`은 실제 세상의 모든 경우가 아니라 **지금 가진 표본에서 계산했다**는 뜻입니다.
 
 지도학습에서는 보통 다음과 같은 학습 데이터를 가집니다.
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-09-03 15:19:50 +0900
-last_modified_at: 2026-10-18 22:46:16 +0900
+last_modified_at: 2026-11-25 16:52:33 +0900
 title: "Speech and Audio Recognition Lecture 2: Digital Signal Processing I"
 course: "Speech and Audio Recognition"
 topic: "Sound, Sampling, Fourier Analysis, and the DFT"
@@ -33,11 +33,11 @@ keywords:
 
 Source PDF: <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf" | relative_url }}" target="_blank" rel="noopener">SpeechAudio_Lecture2.pdf</a> — Inkyu An, Kookmin University (40 pages).
 
-이 글은 국민대학교 안인규 교수의 *Speech And Audio Recognition* 강의 자료 중 *Digital Signal Processing 1*을 바탕으로, 소리가 디지털 표본이 되고 주파수 표현으로 바뀌는 과정을 한 흐름으로 재구성한 학습 노트입니다. 원본 슬라이드의 그림을 그대로 복제하지 않고 핵심 개념·수식·예시를 설명하며, 표기가 잘못되었거나 전제가 생략된 부분은 별도로 바로잡았습니다.
+마이크에 ‘아’라고 길게 말하면 마이크는 공기의 압력 변화를 전압의 변화로 바꿉니다. 컴퓨터가 저장할 것은 글자 ‘아’가 아니라, 그 변화에서 읽은 숫자들입니다.
 
-> **핵심:** 음성 신호 처리는 연속적인 음압 변화를 무작정 저장하는 일이 아닙니다. 시간축에서는 sampling, 진폭축에서는 quantization을 수행해 PCM을 만들고, Fourier basis로 신호를 분해해 pitch·harmonic·spectrum처럼 모델이 다루기 쉬운 구조를 드러내는 과정입니다.
+> **핵심:** 소리를 숫자로 적으려면 **언제 읽을지**와 **읽은 크기를 어느 값으로 기록할지**를 정해야 합니다. 첫 번째가 표본화(sampling), 두 번째가 양자화(quantization)입니다.
 
-마이크에 `아`라고 길게 말하면 컴퓨터가 처음 받는 것은 글자 `아`가 아니라 시간에 따라 위아래로 흔들리는 전압입니다. Sampling은 이 흔들림을 일정한 시각마다 읽고, quantization은 각 읽기값을 저장 가능한 숫자로 바꿉니다. 그러나 숫자열만 보면 어떤 높이의 진동이 섞였는지 알기 어렵습니다. 그래서 다음 단계에서 Fourier basis를 사용해 같은 신호를 **시간별 높이의 목록**에서 **주파수별 성분의 목록**으로 다시 봅니다. 변환은 소리를 바꾸려는 것이 아니라, pitch와 harmonic처럼 시간축에서 바로 읽기 어려운 구조를 드러내기 위해 필요합니다.
+저장한 숫자를 시간 순서로 그리면 공기가 언제 크게 또는 작게 흔들렸는지 보입니다. 여기에 낮은 음과 높은 음이 얼마나 섞였는지는 잘 보이지 않습니다. 푸리에 분석은 같은 기록을 여러 빠르기의 진동으로 나눠 봅니다. 소리를 바꾸는 게 아니라, 소리에 묻는 질문을 바꾸는 셈입니다.
 
 > **Phase를 배우는 이유:** Frequency는 얼마나 자주, amplitude는 얼마나 크게 진동하는지를 말합니다. **Phase는 각 성분이 기준 시각에서 어디에 놓이는지**를 알려 주므로 같은 크기의 frequency 성분들로도 서로 다른 waveform이 만들어지는 이유를 설명합니다. Amplitude-phase 변환은 그 정보를 읽기 쉽게 다시 쓰는 것이지 신호를 바꾸는 필수 전처리가 아닙니다.
 
@@ -220,6 +220,9 @@ $$
 I \propto (\Delta p)^2
 $$
 
+<details markdown="block">
+<summary markdown="span">When squared pressure measures intensity</summary>
+
 ### 3.2 작성자 보충: pressure 제곱과 intensity의 관계
 
 위 비례식은 모든 음장에 무조건 성립하는 항등식이 아닙니다. **lossless한 균일 매질을 진행하는 평면파의 시간 평균**이라는 조건에서 acoustic particle velocity $$u(t)$$와 pressure $$p(t)$$는 $$p(t)=\rho c u(t)$$를 만족하고, instantaneous intensity는 $$i(t)=p(t)u(t)$$입니다. 따라서
@@ -260,6 +263,8 @@ Sound pressure level(SPL)은 별도로 $$L_p=20\log_{10}(p_{\mathrm{rms}}/p_0)$$
 
 > **주의:** 사람이 지각하는 loudness는 frequency, duration, hearing sensitivity의 영향을 받습니다. Decibel은 물리량의 logarithmic ratio이고, 주관적 loudness 자체를 완전히 설명하는 단일 척도는 아닙니다.
 
+</details>
+
 ## 4. 왜 frequency domain이 필요한가
 
 PCM waveform은 sampling과 quantization으로 얻은 digital sample을 시간 순서대로 보존하지만 긴 음성에서 구조를 바로 읽기 어렵습니다. 원래 analog signal까지 손실 없이 보존한다는 뜻은 아닙니다. 수만 개 sample을 시간 순서대로 보는 것만으로는 다음 특성을 쉽게 알기 어렵습니다.
@@ -299,6 +304,9 @@ $$
 
 복소 평면에서 $$e^{j\theta}$$는 unit circle 위의 회전이고, real-axis projection은 cosine, imaginary-axis projection은 sine입니다. 이 표현을 쓰면 differentiation, integration, phase shift를 exponential의 곱으로 다룰 수 있어 Fourier 전개가 간결해집니다.
 
+<details markdown="block">
+<summary markdown="span">Derivation: Euler’s formula</summary>
+
 ### 5.1 작성자 보충: Euler formula의 증명 개요
 
 Euler formula는 경험식이 아니라 complex exponential의 power series에서 얻는 **항등식**입니다. 모든 실수 $$\theta$$에 대해 절대수렴하는 급수를 사용하면
@@ -320,6 +328,8 @@ e^{j\theta}
 $$
 
 여기서 $$j^2=-1$$, $$\theta$$는 radian으로 잰 무차원 angle입니다. 이 증명은 exponential, sine, cosine을 각각 해당 power series로 정의하거나 그 급수 전개를 이미 증명했다는 전제에 의존합니다.
+
+</details>
 
 ### 5.2 작성자 보충: amplitude와 frequency만으로는 왜 부족한가?
 
@@ -402,12 +412,12 @@ Phase 없이 $$A_n\cos(n\omega_0t)$$만 쓰면 모든 성분을 기준 시각에
 
 이 재표현 자체는 필수가 아닙니다. $$a_n,b_n$$ 또는 $$c_n$$를 그대로 사용해도 정확히 분석·복원할 수 있습니다. Amplitude spectrum과 phase spectrum을 나눠 읽거나 각 harmonic의 기여와 정렬을 설명할 때 특히 유용합니다. 두 표현의 동등성과 waveform을 결정하는 coefficient의 역할은 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/3ab918dbe6a0376dbd9216e404fee31b_fourier.pdf" target="_blank" rel="noopener">MIT OCW: Fourier Series Representation of Signals, pp.3-4</a>에서도 확인할 수 있습니다. 이 글의 cosine·minus-phase convention과 다른 교재의 sine·plus-phase convention을 혼용하지 않아야 합니다.
 
+<details markdown="block">
+<summary markdown="span">Worked examples: amplitude, phase and time delay</summary>
+
 #### 6.2.2 작성자 보충: 변환을 계산하고 atan2의 필요성 확인하기
 
 결론은 두 좌표를 함께 사용해 $$A_n=\sqrt{a_n^2+b_n^2}$$와 $$\phi_n=\operatorname{atan2}(b_n,a_n)$$를 구해야 한다는 것입니다. 아래 계산은 이 변환이 정확한 항등식이며 `atan2`가 사분면을 보존하는 이유를 보입니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Amplitude-Phase Conversion and atan2</summary>
 
 $$a_n,b_n$$는 실수이고 $$A_n>0$$이라고 하겠습니다. 앞의 항등식에서 coefficient를 비교하면
 
@@ -451,8 +461,6 @@ $$\alpha=0$$에서 양쪽은 3, $$\alpha=\pi/2$$에서 양쪽은 4입니다. 오
 
 두 angle은 $$\delta\equiv-\phi\pmod{2\pi}$$로 대응합니다. Plus-phase convention과 `atan2`의 사분면 문제는 <a href="https://pordlabs.ucsd.edu/sgille/sioc221a_f20/lecture14_notes.pdf" target="_blank" rel="noopener">UCSD SIOC 221A lecture notes, p.2</a>를 참고했습니다.
 
-</details>
-
 #### 6.2.3 작성자 보충: 실제 phase shift와 time delay는 무엇이 다른가?
 
 앞의 $$3\cos\alpha+4\sin\alpha=5\cos(\alpha-\phi)$$는 **같은 함수를 다시 쓴 것**이므로 새로운 지연을 가하지 않습니다. 반면 실제로 입력을 $$y(t)=x(t-\tau)$$로 바꾸는 연산은 모든 사건을 $$\tau>0$$ seconds만큼 늦춥니다. 한 sinusoid에 적용하면
@@ -474,9 +482,6 @@ $$
 | 2000 Hz | $$-\pi$$ rad | 0.125 ms |
 
 가운데 열은 두 성분을 같은 시간만큼 이동합니다. 오른쪽 열은 angle만 같게 바꿨기 때문에 성분마다 이동 시간이 달라집니다. 따라서 여러 성분을 합친 waveform의 모양도 달라질 수 있습니다. Phase를 modulo $$2\pi$$로만 관찰하면 주기 정수배의 지연은 구분되지 않습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Time Delay as Frequency-Dependent Phase</summary>
 
 1000 Hz의 zero-phase cosine을 0.25 ms 늦추면
 
@@ -501,8 +506,6 @@ $$
 
 곱해지는 복소수의 크기가 1이므로 $$\lvert Y(f)\rvert=\lvert X(f)\rvert$$이고, phase는 주파수에 비례해 변합니다. $$X(f)=0$$인 곳에서는 phase가 정의되지 않습니다. 이 time-shift 성질은 <a href="https://www.seas.upenn.edu/~ese2240/slides/300_fourier_transforms.pdf" target="_blank" rel="noopener">University of Pennsylvania: Fourier Transforms, p.63</a>와 같은 convention입니다. 위 적분 증명의 적용 조건을 만족하지 않는 이상적 periodic tone은 Fourier-series coefficient에 동일한 시간 이동을 대입해 확인하면 됩니다.
 
-</details>
-
 #### 6.2.4 작성자 보충: 복원·신호 합산에서 phase를 보존하는 이유
 
 Fourier 합성은 같은 시각의 component 값을 더하는 작업입니다. 따라서 amplitude만 같아도 phase가 다르면 합산 결과가 달라집니다. **같은 frequency·같은 amplitude**의 두 성분에 대해 삼각함수 합 공식은
@@ -515,9 +518,6 @@ $$
 를 줍니다. 여기서 $$\Delta$$는 두 성분 사이의 상대 phase(rad), $$\theta=\omega t+\delta$$입니다. $$\Delta=0$$이면 같은 값끼리 더해져 amplitude가 $$2A$$가 되고, $$\Delta=\pi$$이면 한 성분의 peak가 다른 성분의 trough와 겹쳐 합이 0이 됩니다. 서로 다른 frequency는 상대 phase가 시간에 따라 변하므로 이 고정 상쇄 조건을 그대로 적용할 수 없습니다.
 
 이 식을 도입하는 이유는 **각 입력의 amplitude를 더하는 것과 실제 합성파의 amplitude를 구하는 것이 다름**을 계산으로 확인하기 위해서입니다. 유도할 때 두 angle의 중간값 $$\beta=\theta+\Delta/2$$, 반간격 $$\gamma=\Delta/2$$를 두면
-
-<details markdown="block">
-<summary markdown="span">Derivation: Phase-Dependent Addition of Two Sinusoids</summary>
 
 $$
 \begin{aligned}
@@ -533,11 +533,11 @@ Sine 항이 상쇄되므로 앞의 합성식이 나오며, nonnegative peak ampl
 
 이는 두 microphone 신호를 합하거나 direct sound와 delayed reflection이 섞일 때 정렬이 중요한 이유를 설명하는 단순 모델입니다. 실제로는 amplitude 차이·여러 지연·noise가 있어 완전 상쇄가 보장되지는 않습니다. Broadband 신호를 같은 시간에 맞추려면 한 주파수의 phase만 조절하는 대신 앞 절의 frequency-dependent delay 관계를 고려해야 합니다.
 
-</details>
-
 정확한 waveform 복원에는 원래 complex coefficient를 유지하거나 동등한 amplitude와 phase를 함께 사용해야 합니다. Magnitude만 남기면 Section 5.2의 cosine과 sine처럼 서로 다른 waveform이 같은 magnitude 설명을 갖기 때문에 일반적으로 원 신호를 유일하게 정할 수 없습니다. Recognition용 feature에서는 필요에 따라 magnitude 중심의 표현을 선택할 수 있지만, 이것이 원본 waveform까지 정확히 복원할 수 있다는 뜻은 아닙니다.
 
 > **정리:** Phase를 다른 형태로 쓰는 이유는 **해석과 계산을 쉽게 하기 위해서**, phase 정보를 보존하는 이유는 **성분의 정렬과 waveform을 잃지 않기 위해서**, 실제 phase·delay를 조절하는 이유는 **정렬·합산 같은 별도의 처리 목적을 달성하기 위해서**입니다. 세 가지를 같은 “phase 전환”으로 섞어 이해하지 않습니다.
+
+</details>
 
 ### 6.3 Complex exponential form
 
@@ -565,12 +565,12 @@ $$
 
 여기서 $$j^2=-1$$이고 $$j,n$$은 무차원, $$\omega_0$$는 rad/s, $$t$$는 seconds입니다. Exponential basis는 무차원이므로 $$c_n$$는 원래 $$x(t)$$와 같은 amplitude 단위를 갖습니다. 입력이 음압이면 $$c_n$$의 실수부·허수부도 Pa 단위를 가지며, 둘은 계산용 좌표이지 별도의 “허수 음압”을 센서가 측정한다는 뜻이 아닙니다.
 
+<details markdown="block">
+<summary markdown="span">Complex Fourier coefficients: negative frequencies and reconstruction</summary>
+
 #### 6.3.2 작성자 보충: sine-cosine form에서 complex 계수를 유도하기
 
 Cosine과 sine을 양·음 방향의 complex exponential 쌍으로 바꾸면 같은 정보를 $$c_n$$과 $$c_{-n}$$에 나누어 담을 수 있습니다. 실제 계수 대응은 아래 유도에서 확인할 수 있습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Complex Fourier-Series Coefficients</summary>
 
 실수 신호의 한 positive harmonic $$n\ge1$$을 고르고 $$\theta=n\omega_0t$$로 두겠습니다. Euler formula에 $$\theta$$와 $$-\theta$$를 대입한 식을 더하고 빼면
 
@@ -602,8 +602,6 @@ $$
 모든 harmonic에 이 치환을 적용하고 DC를 포함해 한 합으로 묶은 것이 $$x(t)=\sum_{n=-\infty}^{\infty}c_ne^{jn\omega_0t}$$입니다. **성분이나 정보를 새로 추가한 것이 아니라 같은 sine·cosine 성분을 다른 basis로 나눈 것입니다.** 유한 합에서는 대수적 항등식이고, 무한 Fourier series의 원 신호에 대한 수렴은 앞서 적은 조건을 별도로 따릅니다.
 
 같은 계수 변환과 conjugate symmetry는 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/3ab918dbe6a0376dbd9216e404fee31b_fourier.pdf" target="_blank" rel="noopener">MIT OCW: Fourier Series Representation of Signals, p.4, Eqs. (7)-(10)</a>에도 제시되어 있습니다. 원본 강의 PDF p.21의 summation index는 $$n$$인데 coefficient가 $$c_k$$로 쓰인 부분은 이 글에서 $$c_n$$로 일치시켰습니다.
-
-</details>
 
 #### 6.3.3 작성자 보충: 음의 주파수가 있어야 실수 신호가 되는 이유
 
@@ -638,9 +636,6 @@ $$
 
 앞의 $$3\cos\alpha+4\sin\alpha$$ 예에서는 $$c_n=1.5-2j$$, $$c_{-n}=1.5+2j$$이고 $$\lvert c_n\rvert=2.5$$입니다. 다시 합성하면
 
-<details markdown="block">
-<summary markdown="span">Derivation: Reconstructing a Real Harmonic from a Conjugate Pair</summary>
-
 $$
 \begin{aligned}
 (1.5-2j)e^{j\alpha}+(1.5+2j)e^{-j\alpha}
@@ -650,8 +645,6 @@ $$
 $$
 
 즉 amplitude는 $$2\times2.5=5$$이고 minus-phase는 $$-\arg(1.5-2j)\approx0.9273$$ rad로 Section 6.2와 일치합니다. “Amplitude 5가 2.5로 줄었다”가 아니라 **같은 waveform을 두 회전 basis에 나누어 표현했다**고 읽어야 합니다.
-
-</details>
 
 #### 6.3.5 작성자 보충: 굳이 complex form을 사용하는 계산상의 이유
 
@@ -674,6 +667,8 @@ $$
 따라서 지연된 신호의 coefficient는 $$c'_n=c_ne^{-jn\omega_0\tau}$$입니다. 크기는 그대로이고 angle만 변한다는 Section 6.2의 결과가 coefficient의 곱셈 하나로 정리됩니다. $$c'_n$$의 prime은 새 coefficient를 구분하는 표기이며 시간 미분 표시가 아닙니다.
 
 다음 Section 7에서는 basis와 conjugate basis의 곱이 $$e^{j(n-m)\omega_0t}$$로 합쳐지는 성질을 이용해 orthogonality와 coefficient 추출을 증명합니다. 이후 sampling하면 $$e^{jn\omega_0t}$$가 discrete index의 $$e^{j2\pi kn/N}$$로 이어집니다. **Complex form은 amplitude와 phase를 함께 보존하면서 미분·시간 이동·projection·DFT를 같은 exponential 계산으로 연결하는 공통 표기**입니다. 새로운 물리적 가정을 추가하거나 원본 audio를 complex-valued로 바꿔 저장해야 한다는 요구가 아닙니다.
+
+</details>
 
 ### 6.4 작성자 보충: harmonic, overtone, partial의 번호와 단위
 
@@ -706,6 +701,9 @@ $$f_0=100\ \mathrm{Hz}$$인 harmonic series를 예로 들면 다음과 같습니
 | $$c_n$$ | complex Fourier-series coefficient | $$x(t)$$와 같은 amplitude 단위 |
 
 $$nf_0t$$는 “반복 횟수”로 무차원이며, $$2\pi nf_0t$$는 그에 대응하는 phase입니다. **Harmonic 번호 $$n$$은 Hz 단위의 측정값이 아닙니다.**
+
+<details markdown="block">
+<summary markdown="span">Harmonics, the missing fundamental and formants</summary>
 
 ### 6.5 작성자 보충: 왜 정수배인가?
 
@@ -808,9 +806,6 @@ Voiced speech를 짧은 구간에서 거의 주기적이라고 근사하면 voca
 
 **왜 filter는 harmonic 위치보다 크기·phase를 바꿉니까?** 짧은 voiced 구간을 harmonic excitation과 LTI vocal-tract filter로 근사하면, 출력의 $$n$$번째 Fourier coefficient는 $$y_n=H_{\mathrm{VT}}(nf_0)s_n$$입니다. 즉 filter는 이미 존재하는 $$nf_0$$ basis의 complex coefficient를 바꾸며, 이 근사 안에서는 새로운 중간 frequency를 만들지 않습니다.
 
-<details markdown="block">
-<summary markdown="span">Derivation: Harmonic Excitation Through an LTI Vocal-Tract Filter</summary>
-
 이를 도출하기 위해 짧은 voiced 구간의 excitation을 유한한 Fourier 합 $$s(t)=\sum_{n=-K}^{K}s_ne^{jn\omega_0t}$$로 모델링하고, vocal tract를 impulse response $$h_{\mathrm{VT}}(\tau)$$인 linear time-invariant(LTI) filter로 근사하겠습니다. $$K$$는 무차원 정수 cutoff, $$\tau$$는 seconds입니다. 이 예에서는 입력·출력을 무차원으로 정규화하여 $$h_{\mathrm{VT}}$$의 단위는 $$\mathrm{s}^{-1}$$, frequency response $$H_{\mathrm{VT}}$$는 무차원 gain이 됩니다. 실제 측정계에서는 입출력 물리량에 맞는 단위를 별도로 적용해야 합니다.
 
 $$h_{\mathrm{VT}}$$가 절대적분 가능하다고 가정하면 convolution에 유한 합을 대입해
@@ -831,8 +826,6 @@ $$
 y_n=H_{\mathrm{VT}}(nf_0)s_n.
 $$
 
-</details>
-
 즉 **기존 harmonic의 complex coefficient에 filter response가 곱해지고, basis의 frequency $$nf_0$$는 그대로입니다.** 550 Hz 부근 공명은 $$H_{\mathrm{VT}}(500)$$와 $$H_{\mathrm{VT}}(600)$$의 크기·phase에 반영됩니다. 입력에 없는 550 Hz 성분을 선형·시간불변 filter가 새로 만들어 내는 것은 아닙니다. 이 유도는 짧은 구간을 정상적인 LTI 응답으로 근사한 결과이며, 급격한 발성 변화·초기 transient·비선형 효과까지 정확히 설명하는 모델은 아닙니다.
 
 또한 harmonic 간격 $$f_0$$와 DFT bin 간격은 구별해야 합니다. Sample rate $$f_s$$로 $$N$$개를 관측하면 DFT의 periodic extension 길이는 $$T_{\mathrm{obs}}=N/f_s$$이고, Section 11의 basis에서 $$k$$와 $$k+1$$의 frequency 차이는
@@ -846,6 +839,8 @@ $$
 $$f_s=16{,}000\ \mathrm{sample/s}$$, $$N=400\ \mathrm{sample}$$이면 $$T_{\mathrm{obs}}=25\ \mathrm{ms}$$, $$\Delta f_{\mathrm{bin}}=40\ \mathrm{Hz}$$입니다. $$f_0=100\ \mathrm{Hz}$$인 harmonic은 100 Hz 간격이므로 모든 harmonic이 DFT bin에 정확히 맞지는 않습니다. 유한 window에서는 leakage까지 고려해야 하며, bin 간격만으로 두 tone의 실제 분리 능력을 단정해서도 안 됩니다.
 
 이 설명은 정확한 periodic signal 또는 짧은 voiced frame의 근사에 적용합니다. Whisper·무성 마찰음·transient처럼 noise나 비주기성이 지배적인 구간의 peak를 모두 harmonic으로 부르면 안 됩니다.
+
+</details>
 
 ## 7. Orthogonal basis와 Fourier coefficient
 
@@ -1123,12 +1118,12 @@ $$
 
 입니다. 일반적으로 적는 무한구간 inverse 식은 이 문맥에서 symmetric cutoff 극한을 뜻합니다. $$X_\omega$$까지 절대적분 가능하면 통상적인 절대수렴 적분으로 읽을 수 있습니다. **$$1/(2\pi)$$는 임의의 보정이 아니라 $$1/P=\Delta\omega/(2\pi)$$에서 남은 정규화입니다.**
 
+<details markdown="block">
+<summary markdown="span">Derivation: Fourier inversion using the sinc kernel</summary>
+
 ### 8.5 작성자 보충: 역변환이 원래 신호를 복원하는 이유
 
 이번 가정 아래 cutoff inverse는 연속점에서 원래 값, jump에서는 좌우 극한의 평균으로 수렴합니다. Sinc형 kernel과 진동적분으로 이 결론을 얻는 증명 개요는 아래에 있습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Fourier Inversion with the Sinc Kernel</summary>
 
 앞 절의 “합이 적분으로 바뀐다”만으로는 복원 증명이 끝나지 않습니다. 이번 유한 support·piecewise $$C^1$$ 범위에서, cutoff inverse를 $$x_\Omega(t)$$라고 두고 forward 정의를 다시 대입하겠습니다.
 
@@ -1227,6 +1222,9 @@ $$
 
 **원본 정정 — PDF p.31 (footer 35):** Hz inverse 식의 마지막 적분 변수가 $$dt$$로 적혀 있지만, frequency를 합성해 고정된 시간 $$t$$의 값을 구하는 식이므로 올바른 변수는 $$df$$입니다. 화면에서 확인한 원문 오기이며 OCR 문제나 정규화 관례 차이가 아닙니다. 위 정정은 강의자의 공식 정정문이 아니라 작성자의 검산 결과입니다.
 
+<details markdown="block">
+<summary markdown="span">Checking the spectrum and inverse transform of a rectangular pulse</summary>
+
 ### 8.7 작성자 예제: rectangular pulse로 정의·정규화·복원을 검산하기
 
 높이 $$B$$, 폭 $$\tau>0$$인 centered pulse를 생각해 보겠습니다. $$B$$는 입력 amplitude 단위, $$\tau$$는 seconds입니다.
@@ -1240,9 +1238,6 @@ B,&\lvert t\rvert<\tau/2,\\
 $$
 
 경계점 값은 transform에 영향을 주지 않습니다. 이 pulse의 transform은 $$X_\omega(\omega)=B\tau\operatorname{sinc}(\omega\tau/2)$$이고, zero-frequency 값 $$X_\omega(0)=B\tau$$는 pulse의 면적입니다. 여기서는 $$\operatorname{sinc}(z)=\sin z/z$$, $$\operatorname{sinc}(0)=1$$을 사용합니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Continuous-Time Rectangular-Pulse Spectrum</summary>
 
 정의에 직접 대입하면 $$\omega\ne0$$에서
 
@@ -1269,8 +1264,6 @@ $$
 X_f(f)=B\tau\,\operatorname{sinc}(\pi f\tau).
 $$
 
-</details>
-
 $$B=1\ \mathrm{V}$$, $$\tau=2\ \mathrm{ms}$$라면 다음과 같이 검산합니다.
 
 | Check | 결과 | 해석 |
@@ -1282,9 +1275,6 @@ $$B=1\ \mathrm{V}$$, $$\tau=2\ \mathrm{ms}$$라면 다음과 같이 검산합니
 | inverse의 $$t=\pm\tau/2$$ | $$B/2=0.5\ \mathrm{V}$$ | jump에서의 평균값 복원 |
 
 시간 중심의 inverse 계산으로 정규화도 독립적으로 확인할 수 있습니다. 올바른 $$1/(2\pi)$$ 계수를 쓰면 $$x(0)=B$$가 복원됩니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Inverse-Transform Normalization at the Pulse Center</summary>
 
 $$
 \begin{aligned}
@@ -1299,17 +1289,20 @@ $$
 
 마지막 치환은 $$z=\omega\tau/2$$입니다. $$1/(2\pi)$$를 빠뜨리면 1 V 대신 $$2\pi$$ V로 복원되므로 정규화 오류를 바로 잡을 수 있습니다.
 
-</details>
-
 이 pulse는 시간에 제한되어 있지만 spectrum은 무한 frequency까지 퍼집니다. 따라서 **시간 제한과 대역 제한은 같은 조건이 아닙니다.** 실제 speech frame의 DFT가 유한 개의 coefficient를 내는 이유는 continuous Fourier transform의 정의가 유한해서가 아니라, Section 11에서 다루는 sampling과 유한 sample 수 때문입니다.
 
 Transform pair·spectrum 단위와 rectangular-pulse 적분은 <a href="https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/b0a5f07216a4153e8f6160178f0ea764_lecture_04.pdf" target="_blank" rel="noopener">MIT 2.161 Lecture 4</a>의 Sections 1, 1.1–1.2 (PDF pp.2–4, printed pp.4–1–4–3)와 대조했습니다. 위 2 ms 수치 검산과 cutoff kernel 전개는 이 글의 보충 계산입니다.
+
+</details>
 
 ### 8.8 복습 시 연결할 결론
 
 강의의 유도는 **Fourier-series coefficient → 주파수 간격을 분리한 spectrum → Riemann sum → inverse integral**입니다. 정의 식은 분석 방법을 정하고, inversion theorem은 그 분석으로 신호를 되찾을 수 있는 조건을 설명합니다. 단순한 표기 변환과 증명을 구별해서 복습해야 합니다.
 
 주기 신호는 discrete harmonic coefficient, 이번 비주기 연속시간 신호는 continuous spectrum으로 표현합니다. 다음 절의 DTFS는 시간을 sampling한 **다른 단계**입니다. $$P\to\infty$$ 자체가 시간을 이산화하거나 DFT를 만드는 것은 아닙니다.
+
+<details markdown="block">
+<summary markdown="span">Derivation: Fourier analysis and synthesis</summary>
 
 ### 8.9 양방향 분석: signal에서 frequency로, frequency에서 signal로
 
@@ -1366,9 +1359,6 @@ $$
 
 이 조건에서는 $$\mathcal{F}(\mathcal{F}^{-1}X_\omega)=X_\omega$$가 성립합니다. 아래 계산은 시간 적분을 유한 구간으로 제한한 뒤 sinc형 kernel의 극한으로 이를 확인합니다.
 
-<details markdown="block">
-<summary markdown="span">Derivation: Spectrum Recovery After Inverse Fourier Synthesis</summary>
-
 합성한 신호를 다시 분석하되, 먼저 시간 적분을 $$[-R,R]$$로 제한하겠습니다. $$R>0$$은 관측 반구간 길이 [s], $$\nu$$는 다시 확인하려는 angular frequency [rad/s], $$Y_R(\nu)$$는 이 유한 시간 분석 결과 [입력 단위 × s]입니다.
 
 $$
@@ -1401,8 +1391,6 @@ $$
 }
 $$
 
-</details>
-
 정리하면 **S → F → S에서는 시간축 kernel이 신호를 되찾고, F → S → F에서는 frequency 축 kernel이 spectrum을 되찾습니다.** 시간과 frequency가 맡는 역할이 서로 바뀌지만 정규화와 conjugate 부호는 일관됩니다. Schwartz class에서의 역변환 조건은 <a href="https://ocw.mit.edu/courses/18-103-fourier-analysis-fall-2013/d95e4644254e96ffe92a970c5ed65b0e_MIT18_103F13_fourierint1.pdf" target="_blank" rel="noopener">MIT 18.103: Fourier Integrals, Theorem 1</a>과도 대조할 수 있습니다.
 
 #### 왕복 과정에서 보존해야 하는 정보
@@ -1425,6 +1413,8 @@ $$
 두 번째 줄은 $$\nu=-\omega$$ 치환입니다. 따라서 복원 신호가 실수가 됩니다. 임의의 complex spectrum을 넣으면 complex 신호가 나올 수 있으며, 이는 역변환의 오류가 아닙니다.
 
 Section 8.7의 예에 적용하면 **1 V·2 ms pulse → 0 Hz 값이 0.002 V·s인 sinc spectrum → 원래 pulse**라는 왕복입니다. 이 0 Hz 값은 시간 신호의 면적이며 spectrum의 면적을 뜻하지 않습니다. Fourier transform을 새로운 음성을 생성하는 과정이나 단순한 단위 변환으로 보지 않고, **같은 정보를 다른 basis에서 분석하고 다시 합성하는 과정**으로 이해하면 phase·정규화·양음 frequency의 필요성이 함께 연결됩니다.
+
+</details>
 
 ## 9. Discrete-Time Fourier Series
 
@@ -1470,14 +1460,14 @@ $$
 
 **주기적인 연속 신호를 아무 간격으로 sampling해도 표본열이 주기적인 것은 아닙니다.** 일반적으로 $$T/P=a/b$$가 서로소 양의 정수 $$a,b$$의 비이면 $$bT=aP$$이므로 $$x[n+b]=x[n]$$입니다. 강의의 $$T/P=1/N$$은 그중 한 연속 주기에 정확히 $$N$$개 표본이 대응하는 경우입니다. 일반적인 $$a/b$$에서는 harmonic index가 $$a\ell\bmod b$$로 대응하므로 아래의 $$k+rN$$ 식을 그대로 쓰지 않습니다. 무리수 비의 반례로 $$T/P=\sqrt{2}$$일 때 $$e^{j2\pi t/P}$$의 표본은 $$e^{j2\pi\sqrt{2}n}$$이며, 주기 $$M>0$$가 있으려면 $$M\sqrt{2}$$가 정수여야 하므로 불가능합니다.
 
+<details markdown="block">
+<summary markdown="span">Four ways to derive DTFS coefficients from a Fourier series</summary>
+
 ### 9.2 CTFS에 sampling 시각을 대입하면 무엇이 바뀌는가?
 
 이제 CTFS가 실제 sample 위치의 신호값을 나타낸다고 가정하겠습니다. 예를 들어 **유한한 harmonic 합으로 이루어진 신호**, 또는 절대합 가능한 계수의 급수로 정의된 연속 주기 신호이면 아래 대입·재배열이 정당합니다. 임의의 $$L^2$$ 등식만으로는 특정 점의 값까지 정해지지 않으므로 그대로 sampling했다고 주장하지 않습니다.
 
 Sampling 뒤에는 index가 $$N$$만큼 다른 exponential들이 같은 표본 basis가 됩니다. 이 때문에 연속시간에서는 달랐던 주파수가 표본만으로는 구별되지 않을 수 있습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Sampling a Continuous-Time Fourier Series</summary>
 
 $$
 \begin{aligned}
@@ -1500,14 +1490,9 @@ $$
 
 연속시간에서는 $$e^{j2\pi rNt/P}$$가 모든 $$t$$에서 1인 것은 아니지만, sample 위치 $$t=nP/N$$에서는 1입니다. **표본 사이에서 달랐던 파형을 표본값만으로는 구별하지 못하게 되는 것**입니다. 따라서 서로 다른 basis는 $$k=0,\ldots,N-1$$의 $$N$$개로 대표할 수 있습니다.
 
-</details>
-
 ### 9.3 왜 모든 N-periodic 표본열을 정확히 표현하는가?
 
 한 주기의 표본열은 $$N$$개의 complex 수로 이루어진 벡터입니다. $$\phi_k[n]=e^{j2\pi kn/N}$$라고 하면 한 주기에서
-
-<details markdown="block">
-<summary markdown="span">Derivation: Orthogonality of the N Discrete Fourier Bases</summary>
 
 $$
 \sum_{n=0}^{N-1}\phi_k[n]\phi_m[n]^*
@@ -1527,8 +1512,6 @@ $$
 $$
 
 이기 때문입니다. 같은 나머지이면 $$N$$개 항이 모두 1입니다.
-
-</details>
 
 따라서 이 $$N$$개 벡터는 서로 직교하고 0이 아니므로 독립이며, $$N$$차원 공간 전체의 basis가 됩니다. **원래 신호가 band-limited인지와 관계없이 모든 N-periodic 표본열에 DTFS가 존재합니다.** CTFS에서 얻지 않은 표본열도 마찬가지입니다.
 
@@ -1550,9 +1533,6 @@ $$
 Section 9.2의 수렴 조건 아래 모든 정수 $$\ell$$을 유일하게 $$\ell=k+rN$$, $$0\le k<N$$로 분해합니다. 같은 나머지의 항을 묶으면
 
 표본에서 같은 basis가 된 CTFS coefficient들은 $$d_k=\sum_r c_{k+rN}$$처럼 **complex 값으로 합쳐집니다**. Magnitude만 더하는 규칙이 아니며 phase에 따라 상쇄될 수도 있습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Folding CTFS Coefficients into DTFS Bins</summary>
 
 $$
 \begin{aligned}
@@ -1577,16 +1557,11 @@ $$
 
 같은 재배열 유도는 <a href="https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/c8dc8096a9d75f8f30b4b97354b48437_ch1_adc.pdf" target="_blank" rel="noopener">MIT HST.582J, Section 1.A.2.3, equations 1.A.21–1.A.26 (PDF p.16, printed p.15)</a>에서도 확인할 수 있습니다. 해당 절은 홀수 $$N$$의 centered index를 쓰며, 이 글은 짝수·홀수에 모두 쓸 수 있는 $$0,\ldots,N-1$$ 대표 index를 사용했습니다.
 
-</details>
-
 ### 9.5 강의의 Riemann sum: 어떤 등호만 근사인가?
 
 원본 PDF p.35 (footer 39)는 CTFS 적분을 직사각형 합으로 **근사**한 뒤 DTFS 식과 연결합니다. 비교할 integrand를 $$g_k(t)=x(t)e^{-j2\pi kt/P}$$라고 두면
 
 근사인 단계는 연속 적분을 유한 합으로 바꾸는 한 줄뿐입니다. $$T/P=1/N$$과 DTFS 정의는 정확하며, alias가 없을 때의 계수 일치는 단순히 Riemann 근사가 좋아서 생기는 결과가 아닙니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: CTFS Integral, Riemann Sum, and DTFS Coefficient</summary>
 
 $$
 \begin{aligned}
@@ -1626,6 +1601,9 @@ $$
 가 정확합니다. 예를 들어 $$N=8$$에서 음의 harmonic $$\ell=-1$$은 $$d_7$$에 들어갑니다. 이때 $$d_7=c_{-1}$$이지, 반드시 $$d_7=c_7$$인 것은 아닙니다. **DTFS의 계수는 N주기지만 원래 CTFS 계수가 N주기라는 뜻은 아닙니다.**
 
 원본 PDF p.39 (footer 43)의 축약된 $$d_k=c_k$$는 이렇게 원래 대역의 signed index 또는 그에 대응하는 bin으로 해석합니다. 이를 $$0,\ldots,N-1$$의 모든 raw index에 조건 없이 적용하지 않습니다. 짝수 $$N$$에서 $$+N/2$$와 $$-N/2$$도 같은 bin이므로 strict Nyquist 조건에서 경계를 제외합니다.
+
+<details markdown="block">
+<summary markdown="span">Checking DTFS and aliasing with eight samples</summary>
 
 ### 9.7 8개 표본으로 직접 검산하기
 
@@ -1671,6 +1649,8 @@ $$
 
 정리하면 **CTFS의 sampling → 표본열의 주기성 → basis의 modulo-N 동일성 → DTFS의 정확한 계수**가 변환을 가능하게 합니다. Nyquist 조건은 그다음에 원래 harmonic들을 구별하기 위한 조건입니다. 실제 녹음의 유한 $$N$$개 표본이 본래 주기적이지 않더라도, 이를 한 주기로 확장하면 Section 11의 DFT를 적용할 수 있습니다. 이때 주기성은 원래 녹음의 성질이 아니라 분석 모델입니다.
 
+</details>
+
 ## 10. Nyquist sampling과 aliasing
 
 > **“is not satisfied”의 의미:** DTFS 계산에 실패했다는 말이 아니라, **표본만으로 원래 연속시간의 frequency를 구별할 조건이 충족되지 않았다**는 뜻입니다. 강의의 7 kHz 신호를 8 kHz로 sampling한 경우에는 $$8<2\times7=14$$이므로 조건을 위반합니다. 그 결과 7 kHz와 1 kHz cosine이 같은 표본을 만듭니다.
@@ -1695,14 +1675,14 @@ $$
 
 **Nyquist frequency와 Nyquist rate를 바꿔 읽지 않습니다.** 8 kHz sampling의 Nyquist frequency는 4 kHz이고, 7 kHz 성분까지 보존하려는 신호의 Nyquist rate는 14 kHz입니다. 여기서는 강의처럼 경계의 sinusoid까지 구별하기 위해 strict inequality를 사용합니다.
 
+<details markdown="block">
+<summary markdown="span">Nyquist sampling: spectral overlap and the boundary case</summary>
+
 ### 10.1 작성자 보충: Nyquist 부등식의 유도와 경계
 
 CTFS가 $$\lvert k\rvert\le K$$에서만 nonzero인 band-limited periodic signal이라고 하겠습니다. Sampling 뒤에는 $$k$$와 $$k+rN$$이 같은 discrete basis가 됩니다. 대역 안의 임의의 서로 다른 두 index $$k_1,k_2$$는 $$N>2K$$일 때
 
 원래 대역의 모든 harmonic을 서로 다른 bin으로 유지하는 조건은 $$N>2K$$이며, 시간 단위로 쓰면 $$f_s>2f_{\max}$$입니다. Index 개수와 단위 변환을 포함한 유도는 아래에 있습니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Nyquist Inequality from Distinct Harmonic Indices</summary>
 
 $$
 0<\lvert k_1-k_2\rvert\le2K<N
@@ -1723,8 +1703,6 @@ $$
 이 조건은 원래 신호가 해당 low-pass 대역에 있다는 가정 아래 harmonic들을 구별하게 합니다. “어떤 frequency의 신호도 표본만으로 알아낸다”는 조건이 아닙니다.
 
 Nyquist 조건과 alias frequency의 주기성은 <a href="https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/c8dc8096a9d75f8f30b4b97354b48437_ch1_adc.pdf" target="_blank" rel="noopener">MIT HST.582J, Analog-to-Digital Conversion, PDF pp.3–5</a>의 대역 제한·sampling theorem 및 aliasing 설명과 대조했습니다.
-
-</details>
 
 #### p.37의 spectrum 그림은 왜 겹칠 수 있는가?
 
@@ -1762,6 +1740,8 @@ $$
 $$\sin(\pi n)=0$$이므로 sine 방향의 성분이 사라집니다. 특히 $$\phi=\pi/2$$이면 **연속시간에서는 0이 아닌 신호인데 모든 표본이 0**입니다. $$A$$와 $$\phi$$도 표본에 남은 곱 $$A\cos\phi$$만으로 각각 결정할 수 없습니다. CTFS 관점에서는 $$+N/2$$와 $$-N/2$$가 같은 bin이 되는 경계 충돌입니다.
 
 이 반례 때문에 임의 phase의 경계 sinusoid를 포함하는 이 글의 신호 범위에서는 strict inequality를 씁니다. 다른 교재의 등호 허용 여부는 대역 경계에 성분이 없는지, 어떤 함수 공간·복원 의미를 쓰는지 등 가정과 함께 비교해야 합니다.
+
+</details>
 
 ### 10.2 p.38: 1 kHz는 조건을 만족하고 7 kHz는 왜 만족하지 않는가?
 
@@ -1847,6 +1827,9 @@ $$
 
 </details>
 
+<details markdown="block">
+<summary markdown="span">Example: spatial aliasing and moiré in images</summary>
+
 ### 10.3 p.38: Spatial aliasing과 moire pattern
 
 슬라이드 아래의 줄무늬·건물 사진은 같은 현상의 공간축 예입니다. 수평 방향으로만 변하는 밝기 pattern을 $$I(u)=I_0+B\cos(2\pi\nu u)$$라고 하겠습니다. $$u$$는 mm, $$\nu$$는 cycles/mm, $$\Delta u$$는 pixel 간격(mm/pixel)이며 $$I_0,B$$는 동일한 밝기 단위입니다. 공간 sampling rate를 $$\nu_s=1/\Delta u$$ (pixels/mm)라고 하면
@@ -1858,6 +1841,8 @@ $$
 $$\nu$$와 $$\nu+r\nu_s$$는 동일한 표본 basis를 만듭니다. 시간축의 $$f_s>2f_{\max}$$에 대응하는 조건은 이 1차원 방향에서 $$\nu_s>2\nu_{\max}$$입니다. 실제 2차원 영상은 두 축의 공간 frequency와 pixel 격자를 함께 확인해야 합니다.
 
 촘촘한 원무늬가 이 조건을 벗어나면 더 느린 밝기 변화로 접혀 **원래 장면에는 없던 넓은 줄무늬, 즉 moire**처럼 보일 수 있습니다. 사진의 정확한 pixel 간격이나 무늬 frequency는 슬라이드에 주어지지 않았으므로 수치 위반량까지 단정하지 않습니다. 이 식은 현상을 설명하는 단순화된 작성자 모델입니다.
+
+</details>
 
 ### 10.4 조건을 만족시키려면 무엇을 바꿔야 하는가?
 
@@ -1876,6 +1861,9 @@ $$\nu$$와 $$\nu+r\nu_s$$는 동일한 표본 basis를 만듭니다. 시간축�
 **Fourier basis는 주어진 신호를 주파수 성분으로 표현하는 기준이고, aliasing은 sampling 때문에 서로 다른 원신호가 같은 표본이 되는 현상입니다.** 두 개념은 분석 방법과 정보 손실이라는 서로 다른 문제를 다룹니다. Fourier coefficient를 정확히 계산해도, 측정 단계에서 사라진 주파수의 구분까지 되찾는 것은 아닙니다.
 
 앞의 p.37 그림에서 spectrum 복사본이 겹치는 이유를 설명할 때 Fourier 표현을 씁니다. 이를 “Fourier basis를 쓰면 겹침을 없앨 수 있다”는 뜻으로 읽으면 안 됩니다. **직교성은 서로 다른 discrete basis의 계수를 분리해 계산하는 성질**입니다. Sampling 후 이미 같은 basis가 된 주파수는 직교하는 두 방향으로 남아 있지 않습니다.
+
+<details markdown="block">
+<summary markdown="span">Why 5 kHz and 3 kHz coincide at an 8 kHz sampling rate</summary>
 
 #### 8 kHz sampling에서 5 kHz와 3 kHz를 비교하기
 
@@ -1896,9 +1884,6 @@ $$\nu$$와 $$\nu+r\nu_s$$는 동일한 표본 basis를 만듭니다. 시간축�
 이 표본 중 연속된 8개에 강의의 $$1/N$$ 정규화 DFT를 적용하면, 두 입력 모두 $$X[3]=X[5]=0.5$$이고 다른 bin은 0입니다. 8 kHz sampling에서 bin 5는 signed frequency로 −3 kHz를 나타냅니다. 실수 3 kHz cosine의 양·음 주파수 쌍이므로, 이 두 peak만으로 원래 analog 신호에 3 kHz와 5 kHz가 각각 있었다고 판단할 수 없습니다.
 
 여기서 **복소 exponential의 +5 kHz는 −3 kHz와 같고, 실수 zero-phase cosine의 5 kHz는 3 kHz와 같습니다.** +3 kHz와 +5 kHz 복소 basis 자체가 같다는 뜻은 아닙니다. 일반 phase를 가진 실수 cosine을 양의 alias frequency로 표현할 때는 phase의 부호도 바뀝니다.
-
-<details markdown="block">
-<summary markdown="span">Derivation: Aliased Frequencies and Orthogonal Fourier Bases</summary>
 
 $$f,f_s$$는 Hz, $$t$$는 s이고, $$n,r,k,m$$은 무차원 정수입니다. $$N$$은 분석 표본 수, $$j^2=-1$$이며 별표는 complex conjugate를 뜻합니다. 균일 sampling 시각 $$t_n=n/f_s$$를 가정합니다.
 
@@ -1940,11 +1925,11 @@ $$
 
 $$N=8$$에서 두 실수 cosine의 표본은 모두 $$\tfrac12\phi_3[n]+\tfrac12\phi_5[n]$$입니다. 이때 $$\phi_3$$과 $$\phi_5$$는 직교하지만, 두 analog 입력이 이미 동일한 벡터로 바뀌었으므로 같은 두 계수 0.5를 얻습니다. DFT/IDFT의 가역성은 이 **표본 벡터**를 복원한다는 성질이며, sampling 이전의 두 파형을 구별한다는 보장이 아닙니다.
 
-</details>
-
 예방은 Fourier 분석 이전의 취득 조건에서 시작합니다. 8 kHz를 유지하면 analog anti-alias low-pass filter로 4 kHz 이상의 성분을 sampling 전에 충분히 감쇠하고, 필요한 통과대역과 4 kHz 사이에 전이 대역을 확보합니다. 이 경우 5 kHz를 제거한 것이지 보존한 것이 아닙니다. 5 kHz까지 보존하려면 low-pass band-limited 신호라는 가정 아래 $$f_s>10$$ kHz로 취득하고 실제 필터의 전이 대역까지 고려합니다. 예를 들어 16 kHz 취득은 5 kHz를 Nyquist frequency 8 kHz 안에 둡니다.
 
 이미 저장된 같은 표본에 FFT, zero-padding, window 변경을 적용해도 두 원신호의 구분은 되살아나지 않습니다. 사후 필터는 원래 3 kHz 성분과 그 위치로 접힌 성분을 일반적으로 분리할 수 없습니다. 더 높은 rate의 디지털 신호를 낮추는 경우에는 **다운샘플링 전에** digital low-pass filter를 적용합니다.
+
+</details>
 
 ## 11. Finite signal과 DFT
 
@@ -2206,6 +2191,9 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어집니다. 같은 지
 답변: 아닙니다. 경계에서 phase가 π/2인 cosine은 $$x[n]=A\cos(\pi n+\pi/2)=0$$이 되어 0 신호와 구별되지 않습니다. 이미 같은 표본으로 겹친 두 입력은 동일한 보간·FFT 처리에도 같은 결과를 내므로, 사후 표본 수 증가만으로 원신호 구분이 돌아오지 않습니다. 대역 가정과 sampling 전 filter가 필요한 이유입니다.
 </details>
 
+<details markdown="block">
+<summary markdown="span">Source notes: corrections, notation and assumptions</summary>
+
 ## Source Check
 
 2026-09-08 검토에서는 **원본 PDF 40쪽의 추출 텍스트와 이 포스트 전체**를 대조하고, 아래 오류 관련 수식·문구가 있는 물리적 PDF pp.8-9, 20-21, 25-28을 원본 화면으로 재확인했습니다. 원문을 그대로 따랐는지와 실제로 맞는지는 별개로 판단했습니다. 표의 page는 물리적 PDF 번호이고 괄호 안은 슬라이드 footer입니다.
@@ -2234,9 +2222,14 @@ Frequency는 1000 Hz 그대로이고 peak만 0.25 ms 늦어집니다. 같은 지
 
 Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-filter의 LTI 가정, DTFS/DFT의 정규화도 정의·재계산과 대조했습니다. **이 검토는 현재 Speech Lecture 2에 한정되며 다른 과목이나 모든 원문 페이지의 시각적 전수 검증 완료를 의미하지 않습니다.** 원본 PDF는 수정하지 않았고, 위 내용은 강의자가 발행한 공식 정정문이 아니라 작성자의 검토·정정 기록입니다.
 
+</details>
+
 ## Source Materials
 
 <a href="{{ "/assets/pdfs/study/speech-and-audio-recognition/speech-audio-lecture-02.pdf" | relative_url }}" target="_blank" rel="noopener">Lecture Slides: Digital Signal Processing 1 — Inkyu An (40 pages)</a>
+
+<details markdown="block">
+<summary markdown="span">Further reading: signal processing references</summary>
 
 <ul>
   <li><a href="https://github.com/yandexdataschool/speech_course" target="_blank" rel="noopener">Yandex Data School Speech Course</a></li>
@@ -2256,6 +2249,11 @@ Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-
   <li><a href="https://en.wikipedia.org/wiki/Moir%C3%A9_pattern" target="_blank" rel="noopener">Moire Pattern</a></li>
   <li><a href="https://www.adobe.com/creativecloud/photography/discover/anti-aliasing.html" target="_blank" rel="noopener">Adobe Anti-Aliasing Guide</a></li>
 </ul>
+
+</details>
+
+<details markdown="block">
+<summary markdown="span">Source notes: revisions and references</summary>
 
 ### Supplementary References
 
@@ -2277,3 +2275,5 @@ Phase 부호·`atan2`, complex coefficient의 factor 2, harmonic 주기, source-
   <li><a href="https://ocw.mit.edu/courses/6-013-electromagnetics-and-applications-spring-2009/50a609ff2cc992401a099bca53801474_MIT6_013S09_chap13.pdf" target="_blank" rel="noopener">MIT OCW: Acoustics</a> — Section 13.1.2의 acoustic pressure, particle velocity와 impedance.</li>
   <li><a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8" target="_blank" rel="noopener">NIST Guide to the SI: Chapter 8</a> — logarithmic quantity와 power/field ratio.</li>
 </ul>
+
+</details>

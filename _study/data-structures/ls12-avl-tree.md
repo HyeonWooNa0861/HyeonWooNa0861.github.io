@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-05-19 12:11:10 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "LS12 AVL Trees"
 course: "Data Structures"
 topic: "AVL Trees"
@@ -18,6 +18,8 @@ keywords:
 # LS12 AVL Trees
 
 Source PDF: `LS12_AVL_tree.pdf`
+
+일반 BST에 증가하는 key를 차례로 넣으면 노드가 한쪽으로만 이어져 목록처럼 느려질 수 있습니다. AVL 트리는 삽입·삭제 뒤 좌우 높이를 확인하고, 한쪽이 두 단계 이상 높아지면 연결을 회전해 다시 균형을 맞춥니다.
 
 > **핵심:** AVL 트리는 회전으로 높이를 $$O(\log n)$$에 유지해 편향된 BST의 최악 성능을 피합니다. 삽입 후에는 새 노드에서 조상으로 올라가며 처음 불균형이 생긴 노드 `z`를 기준으로 회전합니다.
 
@@ -250,7 +252,12 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 삽입한 leaf에서 root 방향으로 높이와 balance factor를 갱신하며 처음 불균형해진 z를 찾습니다. z-y-x 경로로 LL, RR, LR, RL을 결정한 뒤 회전 전후 BST 순서와 높이가 모두 보존되는지 손으로 검산합니다. 삭제는 한 번의 회전 뒤에도 조상 불균형이 남을 수 있다는 점이 삽입과의 핵심 차이입니다.
+
+</details>
 
 ## 복습 질문
 

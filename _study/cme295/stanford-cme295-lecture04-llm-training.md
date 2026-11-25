@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-12 10:07:20 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CME295 Lecture 4: LLM Training"
 course: "CME295"
 topic: "LLM Pretraining, Training Optimization, Supervised Fine-Tuning, and LoRA"
@@ -30,7 +30,7 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 그림의 크기는 저장 용량을, 배치는 연산 장치와의 접근 관계를 직관화합니다. FlashAttention의 핵심은 attention 식을 근사하는 것이 아니라, 작은 block을 SRAM에서 처리해 큰 중간 행렬을 HBM에 반복 저장하고 다시 읽는 횟수를 줄이는 데 있습니다.
 
-> **핵심:** LLM 학습은 대규모 다음 토큰 예측으로 범용 표현을 얻은 뒤, SFT 등으로 특정 사용 목적에 맞춥니다. 사전학습의 규모가 커질수록 데이터·파라미터·계산 자원의 균형뿐 아니라 메모리와 데이터 이동을 줄이는 분산 학습 설계가 중요해집니다.
+> **핵심:** 글의 다음 부분을 맞히는 연습은 언어의 패턴을 가르치지만, 질문에 어떤 형식으로 대답해야 하는지까지 정해 주지는 않습니다. 그래서 대규모 텍스트로 먼저 학습한 뒤, 지시와 모범 답변을 짝지은 예시로 조정합니다. 후자를 지도 미세조정(SFT)이라고 합니다.
 
 <details markdown="block">
 <summary markdown="span">전체 구성 보기</summary>
@@ -52,7 +52,9 @@ Source: [Stanford CME295 Autumn 2025 Lecture 4](https://www.youtube.com/watch?v=
 
 사전학습과 SFT의 차이는 **언어를 폭넓게 익히는 단계**와 **원하는 역할로 답하는 법을 익히는 단계**로 보면 됩니다. 사전학습 모델은 많은 글을 통해 문장과 지식의 패턴을 배우지만, 사용자의 지시를 친절하고 안전하게 따르도록 자동으로 정렬되지는 않습니다. 뒤에서 다루는 SFT는 비교적 적은 고품질 `지시–응답` 예제로 이 응답 방식을 가르칩니다. 이 때문에 두 단계는 데이터의 양뿐 아니라 목적도 다릅니다.
 
-이후에는 실제 대규모 학습을 가능하게 하는 시스템 기법이 이어집니다. forward pass의 activation, backward pass의 gradient, Adam의 first/second moment optimizer state가 GPU 메모리를 차지하므로 data parallelism, ZeRO 1/2/3, expert/tensor/pipeline parallelism 같은 분산 기법이 필요합니다. FlashAttention은 HBM과 SRAM의 속도 차이를 이용해 attention 계산의 HBM read/write를 줄이고, tiling과 recomputation으로 exact attention을 더 빠르고 메모리 효율적으로 만듭니다.
+이후에는 실제 대규모 학습을 가능하게 하는 시스템 기법이 이어집니다. 학습 중 GPU는 모델 가중치만 저장하지 않습니다. 순전파의 중간 결과인 activation, 역전파의 gradient, Adam이 갱신 방향을 계산할 때 쓰는 두 상태값도 함께 저장합니다. 이 값들이 한 GPU 메모리를 넘기 때문에 data parallelism, ZeRO 1/2/3, expert/tensor/pipeline parallelism으로 데이터·상태·계산을 나눕니다.
+
+FlashAttention은 attention의 답을 근사하는 방법이 아닙니다. 같은 결과를 작은 블록 단위로 계산해, 크고 느린 HBM과 작고 빠른 SRAM 사이에서 데이터를 옮기는 횟수를 줄이는 방법입니다. 일부 중간값은 저장하는 대신 필요할 때 다시 계산합니다. 연산이 조금 늘더라도 메모리 이동이 크게 줄면 전체 실행은 더 빨라질 수 있습니다.
 
 분산 기법의 이름은 “무엇을 나누는가”로 구분하면 됩니다. Data parallelism은 같은 모델을 여러 GPU에 두고 서로 다른 데이터를 처리하며, tensor·pipeline parallelism은 한 모델의 계산 자체를 여러 GPU에 나눕니다. ZeRO는 각 GPU에 중복 저장되던 optimizer state, gradient, parameter를 단계적으로 분할합니다. 즉 계산을 더 많이 만드는 기술이 아니라, 한 장의 GPU에 들어가지 않는 학습 상태를 여러 장에 배치하는 기술입니다.
 
@@ -152,11 +154,16 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. Pre-training, SFT, preference tuning이 각각 무엇을 학습시키는지 한 문장씩 구분해 정리합니다.
 2. FLOPs와 FLOPS의 차이를 말로 설명하고, 왜 GPU spec과 LLM training cost discussion에서 둘 다 등장하는지 확인합니다.
 3. Forward pass, backward pass, optimizer update에서 저장해야 하는 activation, gradient, optimizer state를 표로 정리합니다.
 4. Data parallelism, ZeRO, model parallelism이 각각 data, state, layer/tensor/expert 중 무엇을 나누는지 비교합니다.
 5. LoRA 식 W = W0 + BA의 각 항이 freeze되는지 학습되는지, rank R이 parameter 수를 어떻게 줄이는지 직접 계산해 봅니다.
+
+</details>
 
 ## 복습 질문
 

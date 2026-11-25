@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 11: Energy-Based Models I"
 course: "CS236"
 topic: "Partition Functions, Product of Experts, RBMs, and Contrastive Divergence"
@@ -22,7 +22,7 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models Lecture 11](https://www.youtube.com/watch?v=m61KiAMCJ5Q){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture11.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture11.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 11은 energy-based model(EBM)을 통해 생성 모델의 design space를 다시 정리합니다. Autoregressive model은 chain rule로 joint probability를 조건부들의 곱으로 만들기 때문에 likelihood 계산과 sampling이 명확하지만 순서와 factorization 구조가 들어갑니다.
+> **핵심:** EBM은 후보마다 그럴듯함 점수를 붙여 서로 비교합니다. 상대 순위는 쉽게 정하지만, 모든 후보에 정확한 확률을 나누려면 전체 점수의 합이 필요하고 그 계산이 매우 어렵습니다.
 
 EBM은 입력마다 먼저 `얼마나 그럴듯한가`를 나타내는 energy를 매깁니다. 낮은 energy에 높은 확률을 주려면 모든 가능한 입력의 점수를 합친 partition function $$Z(\theta)$$로 정규화해야 합니다. 모델 형태는 자유로워지지만, 고차원에서는 이 전체 합을 계산하기 어렵다는 대가가 생깁니다.
 
@@ -74,6 +74,8 @@ EBM은 입력마다 먼저 `얼마나 그럴듯한가`를 나타내는 energy를
 
 ## 핵심 내용
 
+EBM은 후보마다 "얼마나 그럴듯한가"라는 점수를 붙인 뒤, 점수가 높은 후보를 더 자주 선택하는 모델입니다. 예를 들어 같은 손상 사진을 복원한 후보가 세 장이라면, 먼저 세 후보의 상대 순위만으로 가장 자연스러운 복원을 고를 수 있습니다. 모든 가능한 사진에 확률을 나누어 주려면 전체 점수의 합도 알아야 하는데, 후보가 너무 많아 그 합을 계산하기 어렵다는 것이 EBM의 핵심 병목입니다.
+
 Lecture 11은 energy-based model(EBM)을 통해 생성 모델의 design space를 다시 정리합니다. Autoregressive model은 chain rule로 joint probability를 조건부들의 곱으로 만들기 때문에 likelihood 계산과 sampling이 명확하지만 순서와 factorization 구조가 들어갑니다. Normalizing flow는 invertible mapping과 Jacobian determinant를 통해 likelihood를 계산하지만 invertibility 제약을 받습니다. VAE는 latent variable을 통해 유연성을 얻지만 likelihood는 approximate lower bound로 다룹니다. GAN은 sample generator를 마음대로 설계할 수 있지만 likelihood가 없고 minimax training이 불안정합니다. EBM은 이 사이에서 "임의의 scoring function을 probability distribution으로 정규화하자"는 접근입니다.
 
 확률분포가 되려면 두 조건이 필요합니다. 첫째, $$p(x)\ge 0$$이어야 합니다. 이는 $$f_\theta(x)^2$$, $$\exp(f_\theta(x))$$, $$\lvert f_\theta(x)\rvert$$, softplus처럼 출력 변환을 붙이면 쉽게 만족시킬 수 있습니다. 둘째, 모든 가능한 $$x$$에 대해 합 또는 적분이 1이어야 합니다. 이 sum-to-one 조건이 핵심 난점입니다. Gaussian, exponential distribution, exponential family처럼 단순한 함수족은 normalization constant를 closed form으로 알 수 있지만, high-dimensional image나 text를 arbitrary neural network로 scoring하면 전체 공간에 대한 적분을 계산하기 어렵습니다.
@@ -96,6 +98,8 @@ $$
 이므로 partition function이 cancel됩니다. 따라서 anomaly detection, denoising, object recognition, sequence labeling, image restoration처럼 "어느 configuration이 더 그럴듯한가"를 묻는 문제에서는 절대 likelihood보다 상대 score가 중요합니다. Ising model 예시는 corrupted image $$x$$에서 clean image $$y$$를 복원할 때 pixel fidelity term과 neighboring pixel smoothness term을 더한 energy로 $$p(y,x)$$를 정의하고, $$p(y\mid x)$$를 최대화하는 $$y$$를 찾는 방식입니다.
 
 Product of Experts도 EBM의 중요한 예입니다. 여러 모델 $$q_{\theta_1}(x), r_{\theta_2}(x), t_{\theta_3}(x)$$를 곱하면 각 모델이 동시에 높게 평가하는 영역에 probability mass가 모입니다. 혼합 모델이 OR처럼 작동한다면 product는 AND처럼 작동합니다. 하나의 expert가 거의 불가능하다고 보는 영역은 product에서도 낮은 probability가 됩니다. 하지만 곱한 결과는 normalized distribution이 아니므로 다시 partition function으로 나눠야 하며, 이 지점에서 EBM 형태가 나타납니다.
+
+간단한 예로 첫 expert가 "눈 모양이 자연스럽다", 두 번째 expert가 "얼굴 윤곽이 자연스럽다"를 검사한다고 하겠습니다. Product of Experts는 두 조건을 모두 통과한 얼굴에만 높은 값을 줍니다. 어느 한 조건만 만족하는 후보도 남기는 mixture와 달리, 여러 제약의 공통 영역을 좁혀 가는 방식입니다.
 
 Restricted Boltzmann Machine(RBM)은 visible variable $$x\in\{0,1\}^n$$과 latent variable $$z\in\{0,1\}^m$$를 가진 energy-based latent variable model입니다.
 

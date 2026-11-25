@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-08-19 15:27:32 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS236 Lecture 17: Discrete Latent Variable Models"
 course: "CS236"
 topic: "Discrete Latent Variable Optimization"
@@ -23,7 +23,7 @@ keywords:
 - Video: [Stanford CS236 Deep Generative Models 2023 Lecture 17](https://www.youtube.com/watch?v=vBv7Mf1zsg8){:target="_blank" rel="noopener"}
 - Source PDF: [cs236_lecture17.pdf](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf){:target="_blank" rel="noopener"}
 
-> **핵심:** Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어갑니다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"입니다.
+> **핵심:** 범주 하나를 고르는 선택은 값이 갑자기 바뀌므로 그대로는 미분하기 어렵습니다. 17강은 실제 범주를 뽑은 채 gradient를 추정하는 방법과, 선택을 부드러운 연속값으로 바꾸어 미분하는 방법을 비교합니다.
 
 연속 latent는 값을 조금 바꿨을 때 출력도 조금 변하므로 보통 gradient를 전달할 수 있습니다. 반면 범주 하나를 뽑는 discrete sampling은 선택 결과가 계단처럼 바뀌어 같은 방식의 미분이 막힙니다. Log-derivative estimator는 sampling 경로를 직접 미분하지 않고도 기대값의 gradient를 만들지만, 추정값의 variance가 커지는 문제가 남습니다.
 
@@ -64,7 +64,7 @@ keywords:
 
 [Lecture 17 PDF p. 24](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=24){:target="_blank" rel="noopener"}
 
-원본 위쪽 행은 평균적인 분포, 아래쪽 행은 한 번 뽑은 sample을 보여 줍니다. 작은 $$\tau$$에서는 sample의 한 성분이 1에 가까워지고, 큰 $$\tau$$에서는 여러 성분에 값이 퍼집니다. 이때 sample은 여전히 합이 1인 벡터입니다.
+원본 위쪽 행은 여러 번 뽑았을 때의 평균, 아래쪽 행은 한 번 뽑은 결과입니다. $$\tau$$는 선택의 부드러움을 조절하는 온도입니다. 작은 $$\tau$$에서는 한 막대만 거의 1이 되어 실제 범주 하나를 고른 모습에 가깝고, 큰 $$\tau$$에서는 값이 여러 막대에 퍼집니다. 어느 경우든 막대 높이의 합은 1입니다.
 
 <figure>
   <a href="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-25-excerpt.png" | relative_url }}" target="_blank" rel="noopener"><img src="{{ "/assets/images/study/cs236/source-captures/lecture-17-source-25-excerpt.png" | relative_url }}" alt="CS236 Lecture 17, p. 25: 온도별 simplex 내부의 Gumbel-Softmax 분포. 원본 발췌." loading="lazy"></a>
@@ -74,6 +74,8 @@ keywords:
 **Source Check:** p.24 마지막 문장의 고온 한계를 uniform categorical sample로 읽으면 잘못입니다. $$\tau\to\infty$$이면 각 softmax logit이 0으로 가므로 sample 벡터가 $$(1/k,\ldots,1/k)$$로 수렴합니다. $$k$$개 one-hot 중 하나를 균등하게 뽑는 것과 다릅니다. [PDF p.25](https://deepgenerativemodels.github.io/assets/slides/cs236_lecture17.pdf#page=25){:target="_blank" rel="noopener"}의 아래쪽 삼각형들을 발췌했습니다. 삼각형의 꼭짓점은 one-hot이고 내부는 soft sample입니다. 큰 온도에서 내부 중심으로 모이는 그림을 이 극한과 연결하면 구분하기 쉽습니다.
 
 ## 핵심 내용
+
+이 강의의 어려움은 "선택"과 "미분"이 충돌한다는 데 있습니다. 연속값은 조금 바꾸었을 때 출력이 얼마나 변하는지 추적할 수 있지만, 세 범주 중 하나를 고르는 순간에는 선택 결과가 갑자기 바뀝니다. 그래서 실제 범주를 그대로 뽑되 gradient의 흔들림을 줄이는 방법과, 범주 선택을 부드러운 연속값으로 잠시 바꾸는 방법을 비교합니다.
 
 Lecture 17은 앞부분에서 diffusion model의 SDE/ODE 연결을 마무리한 뒤, discrete latent variable model의 optimization 문제로 넘어갑니다. 연결점은 "sampling process를 가진 model을 어떻게 미분 가능한 학습 문제로 바꾸는가"입니다. Diffusion에서는 score model이 reverse SDE와 probability flow ODE를 정의했습니다. Discrete latent variable에서는 latent state $$z$$가 category, graph, text token, program structure처럼 불연속이기 때문에 continuous reparameterization을 그대로 적용하기 어렵습니다.
 
@@ -106,7 +108,7 @@ $$
 
 로 씁니다. 여기서는 expectation 안의 $$f$$도 $$\phi$$에 의존합니다. 따라서 gradient에는 $$f(z)\nabla_\phi\log q_\phi(z\mid x)$$ 항과 $$\nabla_\phi f(z)$$ 항이 함께 나타납니다. 첫 항이 high-variance score-function estimator이고, 두 번째 항은 entropy나 variational distribution term에서 직접 생기는 gradient입니다.
 
-Control variate는 expectation은 유지하면서 variance를 줄입니다. 가장 단순한 형태는 constant baseline $$B$$를 빼는 것입니다.
+Control variate는 expectation은 유지하면서 variance를 줄입니다. 가장 단순한 형태는 constant baseline $$B$$를 빼는 것입니다. 직관적으로 baseline은 각 결과의 절대 점수 대신 "평소보다 얼마나 좋았는가"만 gradient에 남깁니다. 모든 결과에 공통으로 더해진 높낮이는 선택 간 차이를 설명하지 못하므로 빼도 평균 gradient는 바뀌지 않습니다. 대신 sample마다 gradient 크기가 크게 출렁이는 현상이 줄어듭니다.
 
 $$
 \mathbb{E}_{q_\phi(z)}[B\nabla_\phi\log q_\phi(z)]=0

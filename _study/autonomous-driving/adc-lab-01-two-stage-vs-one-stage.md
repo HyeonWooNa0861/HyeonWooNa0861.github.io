@@ -538,9 +538,14 @@ Penn-Fudan에서 보행자를 잘 검출해도 먼 거리의 작은 물체, 야�
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 검토 범위는 원문 74개 cell 전체, 저장 출력 유무, 모델 구성·target·후처리·평가 코드입니다. Box encode/decode, IoU, focal loss, prior bias, anchor 수와 P/R 예제는 별도 작은 수치 계산으로 대조했습니다. 실제 모델 가중치 다운로드, 추론과 15-epoch 학습은 수행하지 않았습니다.
 
 원문의 “모든 anchor”, “약 12만”, “사람당 박스 하나”, RetinaNet background column 설명은 각각 ignore·regression 구분, 입력 shape 의존성, NMS의 비보장성, 실제 target column에 맞춰 위 본문에서 풀어 썼습니다. 원본 notebook은 수정하지 않았습니다. Runtime 버전이 저장되지 않았으므로 공식 구현 확인은 아래 Torchvision 문서·소스의 확인 시점 기준이며, 실제 실행에서는 첫 cell의 버전 출력과 설정을 함께 확인합니다.
+
+</details>
 
 ## Source Materials
 

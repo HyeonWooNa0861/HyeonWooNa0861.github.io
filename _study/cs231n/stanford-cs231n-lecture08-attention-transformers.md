@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 8: Attention and Transformers"
 course: "CS231N"
 topic: "Attention and Transformers"
@@ -28,7 +28,7 @@ Official slides: [Lecture 8 PDF](https://cs231n.stanford.edu/slides/2025/lecture
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_8.pdf#page=47" target="_blank" rel="noopener">CS231N Lecture 8, PDF p. 47 (printed slide 47)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Attention은 query와 key의 유사도로 value를 가중합하는 연산입니다. Self-attention은 모든 token이 서로 직접 정보를 교환하게 해 RNN의 긴 경로와 순차 계산을 줄이고, Transformer는 이 연산에 residual connection, normalization, MLP를 결합한 범용 구조입니다.
+> **핵심:** “민지는 책을 사서 그것을 읽었다”에서 ‘그것’을 이해하려면 바로 앞 단어보다 ‘책’이 더 유용합니다. 어텐션은 이렇게 현재 단어와 관련된 단어의 정보를 더 많이 가져오는 계산입니다. 같은 문장 안에서 단어끼리 서로 참조하는 방식을 셀프 어텐션이라고 합니다.
 
 문장 속 한 token을 처리할 때 필요한 정보가 바로 옆에만 있지는 않습니다. Query는 현재 token이 찾는 정보, key는 각 token이 가진 검색 표지, value는 실제로 가져올 내용입니다. Query-key 점수에 softmax를 적용한 값은 여러 value를 섞는 가중치이며, self-attention 자체에는 순서 정보가 없으므로 positional encoding을 별도로 더해야 합니다.
 
@@ -195,10 +195,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 작은 Q, K, V 행렬로 score–softmax–weighted sum을 직접 계산합니다.
 2. self-attention과 cross-attention의 입력 출처를 구분합니다.
 3. causal mask 전후 attention matrix를 그려 미래 정보 차단을 확인합니다.
 4. RNN, CNN, Transformer의 path length, 병렬화, inductive bias를 비교합니다.
+
+</details>
 
 ## 복습 질문
 

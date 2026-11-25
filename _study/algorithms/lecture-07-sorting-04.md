@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 12:10:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 7: Counting Sort and Radix Sort"
 course: "Algorithms"
 topic: "Comparison Lower Bounds, Stable Counting Sort, and LSD Radix Sort"
@@ -21,6 +21,8 @@ keywords:
 Source PDF: [7 Sorting (4).pdf](/assets/pdfs/study/algorithms/lecture-07-sorting-04.pdf)
 
 이 강의는 원소끼리 대소를 비교하는 정렬의 한계를 먼저 확인한 뒤, 정수 키의 범위와 자릿수라는 추가 정보를 사용하는 Counting Sort와 LSD Radix Sort를 다룹니다. 핵심은 이 알고리즘들이 비교 정렬의 하한을 깨는 것이 아니라, **비교만 허용하는 모델을 벗어나 제한된 키 영역에 직접 접근한다**는 데 있습니다. Counting Sort의 누적 개수와 역방향 배치는 안정성을 만들고, 그 안정성이 Radix Sort의 자리별 정렬 결과를 다음 단계까지 보존합니다.
+
+값이 `0`부터 `9`까지라는 사실을 안다면 두 값을 매번 비교할 필요가 없습니다. 각 숫자가 몇 번 나왔는지 열 개의 칸에 세어 순서대로 꺼낼 수 있습니다. Counting Sort는 값의 범위를 이용하고, Radix Sort는 큰 수를 일의 자리·십의 자리처럼 나누어 이 아이디어를 반복합니다.
 
 > **핵심:** 비교 정렬에는 최악의 경우 $$\Omega(n\log n)$$번의 비교가 필요합니다. 키가 $$0$$ 이상 $$r-1$$ 이하인 정수라는 조건에서는 Counting Sort가 $$\Theta(n+r)$$ 시간에 안정 정렬할 수 있습니다. 이를 $$k$$개 자릿수에 반복하는 LSD Radix Sort의 시간은 $$\Theta(k(n+r))$$이며, 각 자리 정렬이 반드시 안정적이어야 합니다.
 
@@ -311,6 +313,9 @@ $$
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 슬라이드 위치 | 확인할 점 | 이 글의 처리 |
 |---|---|---|
 | 7–8쪽 | 비교 기반 정렬과 비비교 정렬의 차이 | $$\Omega(n\log n)$$은 비교만으로 순서를 결정하는 모델의 하한임을 결정 트리로 유도했습니다. |
@@ -318,6 +323,8 @@ $$
 | 12–13쪽 | 누적 카운트와 역방향 배치 | 예시의 빈도 `[1, 3, 1, 0, 2, 3]`, 누적값 `[1, 4, 5, 5, 7, 10]`, 최종 정렬 결과를 독립 계산했습니다. 역방향 순회가 안정성을 보장함을 태그가 있는 중복 키로 검산했습니다. |
 | 19–26쪽 | LSD부터 각 자리 안정 정렬 | 네 패스의 중간 배열을 각각 다시 계산했으며 슬라이드의 순서와 일치합니다. 자리별 안정성이 필요한 이유를 루프 불변식으로 증명했습니다. |
 | 27쪽 | “모든 원소가 다르면 $$k=\log_r n$$” | 서로 다른 값 $$n$$개라는 사실은 $$r^k\ge n$$, 즉 $$k\ge\lceil\log_r n\rceil$$만 요구합니다. 실제 $$k$$는 최대 키 $$U$$에 의해 $$\lfloor\log_r U\rfloor+1$$로 정해집니다. equality에는 키 영역이 정확히 그 규모라는 추가 조건이 필요합니다. |
+
+</details>
 
 ## 마지막 핵심 정리
 

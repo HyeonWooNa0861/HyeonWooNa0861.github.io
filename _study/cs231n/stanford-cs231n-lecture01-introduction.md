@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-15 22:57:10 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 1: Introduction"
 course: "CS231N"
 topic: "Foundations of Computer Vision and Deep Learning"
@@ -28,7 +28,7 @@ Official slides: [Part 1](https://cs231n.stanford.edu/slides/2025/lecture_1_part
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_1_part_1.pdf#page=39" target="_blank" rel="noopener">CS231N Lecture 1 Part 1, PDF p. 39 (printed slide 39)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** Computer vision은 픽셀을 의미와 행동 가능한 판단으로 바꾸는 시각 지능 문제입니다. 현대 비전의 도약은 CNN 하나가 아니라 학습 가능한 모델, 대규모 데이터, GPU 계산 자원과 공통 benchmark가 함께 발전한 결과이며, 기술 성능과 사회적 영향도 함께 평가해야 합니다.
+> **핵심:** 사진 속 물체를 알아보려면 픽셀의 밝기와 색에서 ‘사람이 길을 건넌다’ 같은 의미를 읽어야 합니다. 컴퓨터 비전의 발전에는 더 나은 모델뿐 아니라 학습할 사진, 이를 처리할 계산 자원, 여러 모델을 같은 조건에서 비교할 시험이 함께 필요했습니다.
 
 컴퓨터가 받는 것은 `고양이`라는 의미가 아니라 위치마다 색 값이 적힌 배열입니다. 같은 물체도 조명, 시점, 가림에 따라 픽셀이 크게 달라지므로 고정 규칙만으로 의미를 읽기 어렵습니다. Computer vision은 많은 예시에서 어떤 변화는 무시하고 어떤 차이는 구분해야 하는지를 학습해 분류, 위치 추정, 행동 판단으로 이어 갑니다.
 
@@ -177,6 +177,9 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 </details>
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 | 질문 | 확인할 개념 |
 |---|---|
 | 왜 시각을 지능의 핵심 요소로 볼 수 있습니까? | 시각 입력과 환경 이해 |
@@ -184,6 +187,8 @@ Image classification은 이미지 하나에 label을 붙이는 문제지만, 실
 | AlexNet의 성공을 한 가지 이유만으로 설명하면 왜 부족합니까? | data, compute, algorithm |
 | Classification과 detection은 무엇이 다릅니까? | label vs location |
 | Computer vision의 편향 문제는 왜 공학만의 문제가 아닙니까? | 데이터, 사회적 의사결정, 책임 |
+
+</details>
 
 ## 복습 질문
 

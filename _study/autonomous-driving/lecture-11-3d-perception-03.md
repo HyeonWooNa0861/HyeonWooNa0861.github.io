@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-10-06 11:40:00 +0900
-last_modified_at: 2026-11-23 16:50:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Lecture 11: Multimodal 3D Object Detection"
 course: "Autonomous Driving"
 topic: "Frustum PointNets, MV3D, and Perception Datasets"
@@ -20,7 +20,7 @@ keywords:
 
 Source PDF: [11 3D Perception (3).pdf]({{ "/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf" | relative_url }})
 
-국민대학교 Youngwook Kim 교수의 *Automatic Driving Computing* 강의에서 RGB camera와 LiDAR를 결합하는 두 고전적 3D detector인 **Frustum PointNets**와 **MV3D**를 살펴봅니다. 두 방법이 proposal을 만드는 좌표계와 feature를 결합하는 위치가 어떻게 다른지 비교하고, perception dataset의 sensor·split·metric을 읽는 기준까지 연결합니다.
+Camera 사진에는 물체의 색과 윤곽이 촘촘하게 보이지만 거리가 직접 적혀 있지 않습니다. LiDAR 점에는 3D 거리가 있지만 물체 표면이 성기게 보입니다. 이 강의는 두 관측을 같은 물체에 맞춰 사용하는 **Frustum PointNets**와 **MV3D**를 비교하고, 3D detection dataset의 sensor 구성과 평가 범위를 읽는 법까지 다룹니다.
 
 > **핵심:** Camera는 촘촘한 색·질감과 강한 2D 인식 단서를 제공하고, LiDAR는 metric depth와 3D 구조를 제공합니다. 그러나 두 센서의 장점을 합치려면 “feature를 이어 붙인다”는 말보다 먼저 **같은 좌표계·같은 시간·같은 객체 영역**을 만들어야 합니다. Frustum PointNets는 2D box를 3D search frustum으로 들어 올린 뒤 그 안의 점을 직접 처리하고, MV3D는 LiDAR의 BEV·front view와 RGB view에서 같은 3D proposal의 RoI feature를 맞춘 뒤 깊게 융합합니다.
 
@@ -58,7 +58,7 @@ Camera가 “depth를 전혀 알 수 없다”는 말은 **센서가 한 픽셀�
 
 #### 공간 calibration과 projection
 
-**작성자 보충 — 정확한 좌표 변환:** LiDAR 점의 동차좌표를 $$\bar{\mathbf p}_{L}=[X_L,Y_L,Z_L,1]^{\top}$$, LiDAR에서 camera로의 extrinsic을 $$\mathbf T_{C\leftarrow L}\in SE(3)$$라 두겠습니다. $$SE(3)$$는 회전과 평행이동을 결합한 3차원 강체 변환의 집합입니다. 회전행렬 $$\mathbf R$$과 이동벡터 $$\mathbf t$$를 한 번의 행렬곱으로 적용하기 위해
+LiDAR가 본 한 점을 camera 사진 위에 표시하려면, 먼저 두 센서의 원점과 방향 차이를 보정하고, 그 3D 점이 영상의 어느 pixel에 보이는지 계산해야 합니다. 첫 작업이 calibration 좌표 변환이고, 두 번째가 projection입니다. 아래 식은 이 두 작업을 정확한 좌표로 적은 **작성자 보충**입니다. LiDAR 점을 $$\bar{\mathbf p}_{L}=[X_L,Y_L,Z_L,1]^{\top}$$, LiDAR 좌표를 camera 좌표로 옮기는 행렬을 $$\mathbf T_{C\leftarrow L}\in SE(3)$$라 두겠습니다. $$SE(3)$$는 회전과 평행이동을 한 행렬에 담는 표현입니다.
 
 $$
 \mathbf T_{C\leftarrow L}=
@@ -107,7 +107,7 @@ $$\Delta t$$는 s, $$v$$는 m/s, $$\Delta s$$는 m, $$\omega$$는 rad/s, $$\Delt
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=14" | relative_url }}">lecture PDF, p. 14</a>.</figcaption>
 </figure>
 
-RGB에서 얻은 proposal로 depth points를 frustum 안에 모읍니다. Point segmentation이 대상 점을 고르고 T-Net이 중심을 보정한 뒤 box를 추정합니다. Frustum에는 물체뿐 아니라 배경 점도 섞이므로 2D box가 곧 정답 3D box인 것은 아닙니다. 아래의 세 단계가 각각 이 불확실성을 줄입니다.
+사진에서 자동차를 둘러싼 2D 상자를 찾으면, 그 상자 모서리에서 camera 밖으로 뻗는 시선 사이에 3D 쐐기 모양 공간이 생깁니다. 이 공간이 frustum이며, 내부의 LiDAR 점만 모으면 도로 전체가 아니라 자동차가 있을 법한 좁은 범위부터 볼 수 있습니다. 그래도 도로와 뒤쪽 건물 점이 함께 들어오므로 point segmentation으로 대상 점을 고르고, T-Net으로 중심을 보정한 뒤 3D box를 추정합니다.
 
 10–11쪽의 Frustum PointNets는 camera와 depth/LiDAR point cloud를 순차적으로 연결합니다. 넓은 3D 공간 전체에서 먼저 proposal을 만들지 않고, 잘 발달한 2D detector가 낸 image box를 camera ray 방향으로 들어 올려 **절두체(frustum)**를 만듭니다.
 
@@ -187,7 +187,7 @@ $$
   <figcaption>Source: <a href="{{ "/assets/pdfs/study/autonomous-driving/lecture-11-3d-perception-03.pdf#page=21" | relative_url }}">lecture PDF, p. 21</a>.</figcaption>
 </figure>
 
-BEV에서 만든 하나의 3D proposal을 front view와 RGB에도 투영합니다. 각 view의 RoI feature가 보라색 결합 지점에서 교류한 뒤 class와 3D box를 예측합니다. 서로 다른 위치의 물체 feature를 무작정 합치는 것이 아니라 같은 3D 후보를 여러 관측에서 읽는 구조입니다. 그러므로 projection calibration이 어긋나면 fusion의 이점도 줄어듭니다.
+위에서 내려다본 LiDAR 지도에서 자동차 후보 상자 하나를 먼저 고릅니다. 그 상자가 camera 사진과 LiDAR 정면도에서 차지하는 영역을 다시 찾아, **같은 자동차 후보를 세 화면에서 읽은 특징**만 합칩니다. 이 후보 상자를 3D proposal, 각 화면에서 잘라 읽는 영역을 RoI라고 합니다. 좌표 변환이 어긋나면 서로 다른 물체 부분을 합치게 되므로 fusion의 이점도 줄어듭니다.
 
 15쪽의 MV3D는 입력을 세 2D representation으로 만듭니다.
 
@@ -205,7 +205,7 @@ BEV에서 만든 하나의 3D proposal을 front view와 RGB에도 투영합니�
 
 ### 3.2 2단계: 하나의 3D proposal을 각 view의 RoI로 투영
 
-18쪽은 BEV proposal을 BEV, FV, RGB의 각 feature map에 투영하고 RoI pooling을 수행합니다. 3D box의 여덟 corner를 $$\mathbf q_i$$라 하면, image view에서는 앞서 정의한 camera projection으로 $$(u_i,v_i)$$를 구해 다음 axis-aligned RoI를 만들 수 있습니다.
+하나의 3D 후보 상자에는 모서리가 여덟 개 있습니다. 각 모서리를 camera 사진에 표시한 뒤 가장 왼쪽·오른쪽·위·아래 좌표를 잡으면, 그 후보가 사진에서 차지하는 사각형을 얻습니다. 18쪽은 같은 작업을 BEV, front view(FV), RGB feature map에 적용하고 각 영역을 같은 크기로 모읍니다. 3D 모서리를 $$\mathbf q_i$$, 사진에 표시된 좌표를 $$(u_i,v_i)$$라 하면 image RoI는 다음과 같습니다.
 
 $$
 \mathcal R_{\mathrm{img}}
@@ -330,6 +330,9 @@ Dataset 선택에서는 단순히 “더 크다”보다 **sensor suite, calibra
 
 ## Source Check
 
+<details markdown="block">
+<summary markdown="span">Source notes: assumptions and corrections</summary>
+
 | 위치 | 판정 | 확인과 이 글의 처리 |
 |---|---|---|
 | 1쪽 `10. PERCEPTION (8)` | 표지 numbering 불일치 | 제공 파일명은 `11 3D Perception (3).pdf`이고 내용은 multimodal 3D detection 후속 강의입니다. 글 제목은 Lecture 11로 정리하되 원본 PDF는 변경하지 않았습니다. |
@@ -347,6 +350,8 @@ Dataset 선택에서는 단순히 “더 크다”보다 **sensor suite, calibra
 | 25쪽 `7,481 / 7,518` | 범위가 생략된 수치 | KITTI 전체 규모가 아니라 공식 3D object detection benchmark의 train/test image-point-cloud split으로 한정했습니다. |
 | 26쪽 leaderboard | 시간에 따라 변하는 snapshot | 현재 순위나 최신 성능의 증거로 사용하지 않고 benchmark 해석 예로만 다뤘습니다. |
 | 27쪽 dataset 표 | 역사적 survey snapshot | Image-only dataset도 포함합니다. 행의 숫자를 최신 규모로 일반화하지 않고 공식 dataset page의 version·task 확인을 요구했습니다. |
+
+</details>
 
 ## 핵심 복습 포인트
 

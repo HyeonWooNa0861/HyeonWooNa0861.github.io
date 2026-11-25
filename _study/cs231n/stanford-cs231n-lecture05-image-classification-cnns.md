@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-07-16 16:07:00 +0900
-last_modified_at: 2026-11-23 16:46:00 +0900
+last_modified_at: 2026-11-25 16:46:01 +0900
 title: "Stanford CS231N Lecture 5: Image Classification with CNNs"
 course: "CS231N"
 topic: "CNN-Based Image Classification"
@@ -27,7 +27,7 @@ Slides: [Official Stanford CS231N 2025 Lecture 5 PDF](https://cs231n.stanford.ed
   <figcaption>Source excerpt: <a href="https://cs231n.stanford.edu/slides/2025/lecture_5.pdf#page=29" target="_blank" rel="noopener">CS231N Lecture 5, PDF p. 29 (printed slide 29)</a>. Click the image to enlarge.</figcaption>
 </figure>
 
-> **핵심:** CNN은 이미지를 평평한 벡터로만 보지 않고, 지역 연결과 가중치 공유로 공간 구조를 모델에 넣습니다. 필터 하나는 모든 위치에서 같은 패턴을 찾고, 여러 층은 작은 지역 관측을 넓은 receptive field와 계층적 표현으로 확장합니다.
+> **핵심:** 사진의 왼쪽에서 모서리를 찾아낸 규칙은 오른쪽에서도 쓸 수 있습니다. 합성곱 신경망(CNN)은 작은 영역을 살피는 같은 필터를 여러 위치에 적용합니다. 층을 쌓으면 한 지점의 판단에 영향을 주는 영역이 넓어져 작은 무늬들의 조합도 구별할 수 있습니다.
 
 완전연결층은 이미지 왼쪽 위의 선과 오른쪽 아래의 같은 선을 서로 다른 parameter로 배웁니다. Convolution filter는 작은 영역을 보면서 이미지 전체 위치에 같은 가중치를 적용하므로, 패턴이 이동해도 같은 검출기를 재사용합니다. Feature map의 한 값은 특정 위치에서 그 패턴이 얼마나 강한지를 나타내고, 깊은 층은 여러 지역 패턴을 조합해 더 큰 구조를 표현합니다.
 
@@ -180,10 +180,15 @@ $$
 
 ## Study Guide
 
+<details markdown="block">
+<summary markdown="span">Review guide: concepts to revisit in order</summary>
+
 1. 임의의 입력·kernel·stride·padding에서 출력 tensor shape을 계산합니다.
 2. parameter count와 activation memory를 구분해 계산합니다.
 3. translation equivariance와 invariance의 차이를 예로 설명합니다.
 4. 여러 convolution layer를 거친 receptive field를 재귀식으로 추적합니다.
+
+</details>
 
 ## 복습 질문
 
