@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 10 · Sound Source Localization · 2026-11-24</title>
+<style>
+:root {
+  color-scheme: light dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --muted: #4d5c70;
+  --accent: #245ba1;
+  --line: #ccd4de;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --muted: #b8c3d3; --accent: #a7cdff; --line: #465466; }
+}
+* { box-sizing: border-box; }
+body { margin: 0 auto; max-width: 48rem; padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 4rem; line-height: 1.8; overflow-wrap: anywhere; }
+h1, h2 { line-height: 1.4; text-wrap: balance; }
+h1 { font-size: clamp(1.45rem, 4vw, 2rem); }
+h2 { margin-top: 2.3rem; font-size: 1.3rem; }
+p { margin: 0 0 .95rem; }
+.status, .note, .times { color: var(--muted); font-size: .94rem; }
+.note { padding-left: .75rem; border-left: 2px solid var(--line); }
+a, summary { color: var(--accent); }
+summary { cursor: pointer; width: fit-content; }
+summary:focus-visible, a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.times { border-top: 1px solid var(--line); padding-top: .5rem; }
+.times ol { padding: 0; list-style: none; }
+.times li { margin: .7rem 0; }
+.times time { display: block; font-variant-numeric: tabular-nums; }
+@media print { nav, .times { display: none; } }
+</style>
+</head>
+<body><main>
+<h1>음원은 어느 방향에 있을까요? · 10강 읽기용 전사</h1>
+<p class="note">먼저 강의자료와 대조해 정리한 문단을 읽고, 실제 발화를 확인하고 싶을 때 각 절의 시간표시 전사를 펼쳐 보세요. 펼친 발화는 자동 인식 결과로, 용어나 수식이 잘못 인식된 곳이 있습니다.</p>
+<p class="status">2026년 11월 24일 · 녹음 57분 54초. 자동 전사의 강의 설명을 발화 순서대로 문단으로 다시 쓴 편집본입니다. 전문 용어는 강의자료와 대조했습니다. 축어록이나 전 구간 직접 청취 교정본은 아닙니다. 시각은 합친 녹음의 시작 기준이며 초 단위로 표시합니다. 약 32초 지점에서 두 녹음 사이 실제 시간 약 8초가 빠져 있습니다.</p>
+<nav aria-label="강의 목차"><details><summary>강의 목차</summary><ol>
+<li><a href="#part-1">빔포머가 바라볼 방향은 누가 알려 주나요?</a></li>
+<li><a href="#part-2">두 녹음을 얼마나 옮겨야 같은 파형이 겹칠까요?</a></li>
+<li><a href="#part-3">큰 소리가 작은 소리의 시간차를 가릴 때</a></li>
+<li><a href="#part-4">마이크를 움직이지 않고 여러 방향을 들어 보기</a></li>
+<li><a href="#part-5">가까운 두 음원은 왜 한 방향처럼 보일까요?</a></li>
+<li><a href="#part-6">프레임이 부족하면 왜 MVDR 결과가 흔들릴까요?</a></li>
+<li><a href="#part-7">두 음원인데 왜 고유벡터 두 개를 그대로 쓰지 않을까요?</a></li>
+<li><a href="#part-8">MUSIC은 왜 신호가 아니라 잡음 쪽을 볼까요?</a></li>
+<li><a href="#part-9">마지막 질문: 잡음이 있으면 왜 행렬의 랭크가 달라지나요?</a></li>
+</ol></details></nav>
+<section id="part-1"><h2>빔포머가 바라볼 방향은 누가 알려 주나요?</h2>
+<p class="prose" id="p-1-1">앞에서 배운 빔포머는 목표 음원이 어느 방향에 있는지 이미 안다고 놓고 출발했습니다. 마스크로 음성 성분을 추정해 필터를 만드는 방법도 보았습니다. 여기서 한 단계 앞의 질문이 남습니다. 방향을 미리 알려 주지 않으면 두 마이크에 들어온 소리만으로 그 방향을 어떻게 찾을까요? 이번 강의에서 SSL은 자기지도학습이 아니라 음원 위치 추정(Sound Source Localization)을 뜻합니다.</p>
+<p class="prose" id="p-1-2">단일 채널 분리에서 배운 마스크를 다채널 필터에 활용했듯, 지금 찾으려는 방향도 다음 처리의 입력이 됩니다. 특정 방향의 소리를 골라 듣고, 그렇게 얻은 음성을 인식하는 과정까지 연결해 볼 수 있습니다.</p>
+<p class="prose" id="p-1-3">서로 다른 곳에서 두 사람이 말한다고 해 보겠습니다. 그림의 가로축에 후보 각도를 놓고 각도마다 점수를 매깁니다. 점수가 높은 곳이 소리가 온 방향, 즉 DoA(Direction of Arrival)의 후보입니다. 이후 방법들은 이 점수를 무엇으로 정하는지가 다릅니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT00M00S">00:00–01:01</time> · <a href="#p-1-1">앞 강의에서 가정한 방향</a></li>
+<li><time datetime="PT01M01S">01:01–01:58</time> · <a href="#p-1-2">분리·빔포밍·인식의 연결</a></li>
+<li><time datetime="PT01M58S">01:58–03:09</time> · <a href="#p-1-3">두 음원과 방향별 점수</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="1"><time>00:00:00.000–00:00:03.400</time> <span>이 DOA를 그러면은 여기서 알고 있다고 가정을 했는데</span></li>
+<li data-segment="2"><time>00:00:03.400–00:00:06.740</time> <span>요거는 그러면은 어떻게 알고 있다고 할 수가 있는 건가</span></li>
+<li data-segment="3"><time>00:00:06.740–00:00:08.140</time> <span>그걸 말씀드리고요</span></li>
+<li data-segment="4"><time>00:00:08.140–00:00:11.920</time> <span>왜냐면 구장을 얘기할 때는 요 마스크 기반의 MVDM 인품으로 얘기할 때는</span></li>
+<li data-segment="5"><time>00:00:11.920–00:00:15.880</time> <span>요 마스크를 어떻게 추정하는지 바로 이어서 살펴봤었는데</span></li>
+<li data-segment="6"><time>00:00:15.880–00:00:19.440</time> <span>요 DOA를 어떻게 알 수 있는지는 제가 얘기를 안 한 것 같아서</span></li>
+<li data-segment="7"><time>00:00:19.440–00:00:21.680</time> <span>그래서 이걸 가져왔습니다</span></li>
+<li data-segment="8"><time>00:00:21.680–00:00:27.880</time> <span>그래서 요 DOA만 찾는 방법을 우리가 Sound Source Recallation이라고 불러요</span></li>
+<li data-segment="9"><time>00:00:27.880–00:00:29.880</time> <span>SSL이라고 불러요</span></li>
+<li data-segment="10"><time>00:00:29.880–00:00:32.420</time> <span>그래서 이 컨벤션을 하기에는 앞에서</span></li>
+<li data-segment="11"><time>00:00:32.448–00:00:35.448</time> <span>프로젝트를 추적을 하고 이걸 활용을 해서</span></li>
+<li data-segment="12"><time>00:00:35.448–00:00:38.848</time> <span>이 컴퓨터를 디자인하다가 이해하게 될 것 같고요.</span></li>
+<li data-segment="13"><time>00:00:38.848–00:00:42.648</time> <span>그렇게 수업의 프로젝트가 이어지는 거다 라고 보시면 돼요.</span></li>
+<li data-segment="14"><time>00:00:42.648–00:00:46.048</time> <span>그래서 우리가 사실 배우는 내용들이 다 연관이 되어 있고</span></li>
+<li data-segment="15"><time>00:00:46.048–00:00:50.448</time> <span>여기서 이렇게 추적한 이 소스는 우리가 이 뒷단에서</span></li>
+<li data-segment="16"><time>00:00:50.448–00:00:53.848</time> <span>AESR을 우리는 프로젝트에서 하고 있죠.</span></li>
+<li data-segment="17"><time>00:00:53.848–00:00:58.248</time> <span>다 여기서 우리가 배워준 말씀들이 다 연관이, 다 연결이 되어 있다.</span></li>
+<li data-segment="18"><time>00:00:58.248–00:01:01.648</time> <span>그 말씀을 드리면 이해하고 좋을 것 같고</span></li>
+<li data-segment="19"><time>00:01:01.648–00:01:09.568</time> <span>그리고 조금 더 이어서 얘기하면 요가 수를 추적할 때 요 사실 우리가 여기서 했던게 요게 우리가 스피치 아니면은</span></li>
+<li data-segment="20"><time>00:01:09.568–00:01:13.008</time> <span>소스 세퍼레이션이었잖아요.</span></li>
+<li data-segment="21"><time>00:01:13.008–00:01:15.008</time> <span>소스 세퍼레이션이었는데</span></li>
+<li data-segment="22"><time>00:01:15.008–00:01:17.008</time> <span>소스 세퍼레이션이었는데</span></li>
+<li data-segment="23"><time>00:01:17.008–00:01:21.008</time> <span>소스 세퍼레이션을 할 때 멀티 채널을 활용하는 방법이 있었어요.</span></li>
+<li data-segment="24"><time>00:01:21.008–00:01:23.008</time> <span>싱글 채널을 활용하는 방법들이 있었잖아요.</span></li>
+<li data-segment="25"><time>00:01:23.008–00:01:29.008</time> <span>지금 우리는 여기서는 멀티 채널을 활용하는 소스 세퍼레이션을 우리가 살펴보고 있는데</span></li>
+<li data-segment="26"><time>00:01:29.008–00:01:35.588</time> <span>그 전에 배웠던 Single Channel Source Separation은 어디서 활용을 했냐?</span></li>
+<li data-segment="27"><time>00:01:35.588–00:01:38.088</time> <span>여기서 우리가 활용을 했었죠.</span></li>
+<li data-segment="28"><time>00:01:38.088–00:01:40.828</time> <span>여기서 마스크를 수정할 때 그걸 활용을 해서</span></li>
+<li data-segment="29"><time>00:01:40.828–00:01:44.428</time> <span>그 수정한 마스크를 바탕으로 스파셜 필터를 다시 설계하는</span></li>
+<li data-segment="30"><time>00:01:44.428–00:01:46.468</time> <span>그 과정을 했었죠.</span></li>
+<li data-segment="31"><time>00:01:46.468–00:01:51.888</time> <span>그래서 우리가 배웠던 흐름이 지금 다 연결이 되어가고 있는 거죠.</span></li>
+<li data-segment="32"><time>00:01:51.888–00:01:57.368</time> <span>그러면 이번 시간에는 이 SSL을 어떻게 우리가 다루는지 알아내는지를</span></li>
+<li data-segment="33"><time>00:01:57.368–00:01:58.748</time> <span>살펴보려고 합니다.</span></li>
+</ol></details></section>
+<section id="part-2"><h2>두 녹음을 얼마나 옮겨야 같은 파형이 겹칠까요?</h2>
+<p class="prose" id="p-2-1">한쪽에서 소리가 오면 가까운 마이크가 같은 소리를 먼저 받습니다. 두 마이크에 도착한 시각의 차이가 TDOA입니다. 마이크의 배치와 음속을 알면 어떤 방향에서 어느 정도의 시간차가 나야 하는지 예상할 수 있습니다. 도착 시각 자체를 모르더라도 두 녹음 사이의 차이를 찾아 방향 후보를 좁힐 수 있습니다.</p>
+<p class="prose" id="p-2-2">한 녹음을 조금씩 앞뒤로 옮겨 다른 녹음 위에 겹칩니다. 같은 위치의 값을 곱해 모두 더하는 일을 지연마다 반복합니다. 같은 말소리의 굴곡이 겹치는 지연에서 합이 커집니다. 이것이 상호상관(cross-correlation) 그래프의 봉우리입니다. 이 그래프의 가로축은 아직 각도가 아니라 두 녹음의 시간차입니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT03M09S">03:09–04:35</time> · <a href="#p-2-1">도착 시간차와 배열 배치</a></li>
+<li><time datetime="PT04M35S">04:35–06:54</time> · <a href="#p-2-2">파형을 겹쳐 찾는 지연</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="34"><time>00:01:58.748–00:02:05.308</time> <span>사운드 스쿨라인에서 다시 한번 보면은 요 문제입니다. 왼쪽에 보여지는</span></li>
+<li data-segment="35"><time>00:02:05.308–00:02:10.868</time> <span>딱 요 문제입니다. 소스가 여기 1, 2가 있어요.</span></li>
+<li data-segment="36"><time>00:02:10.868–00:02:16.868</time> <span>1, 2가 있을 때 소리가 들리면 당연한 세타 1하고 세타 2로 우리가 표현할 수가 있습니다.</span></li>
+<li data-segment="37"><time>00:02:16.868–00:02:22.708</time> <span>그러면은 요 세타 1하고 세타 2를 알고 싶은 건데</span></li>
+<li data-segment="38"><time>00:02:22.708–00:02:26.708</time> <span>이것을 우리가 어떻게 알아낸 거냐면</span></li>
+<li data-segment="39"><time>00:02:26.708–00:02:30.708</time> <span>이 어떤 필한 펑션 하나를 우리가 만들어내고요.</span></li>
+<li data-segment="40"><time>00:02:31.348–00:02:33.288</time> <span>그리고 세타에 의해서 변하는 어떤 함수입니다.</span></li>
+<li data-segment="41"><time>00:02:34.368–00:02:35.448</time> <span>이 필한 함수가 있고요.</span></li>
+<li data-segment="42"><time>00:02:35.788–00:02:39.108</time> <span>이 필한 함수가 여기 보면 밑에가 세타죠.</span></li>
+<li data-segment="43"><time>00:02:39.908–00:02:41.488</time> <span>세타에 의해서 변하는 어떤 함수인데</span></li>
+<li data-segment="44"><time>00:02:41.488–00:02:47.348</time> <span>이 함수가 맥시멈이 되는 세타를 찾아내게 됩니다.</span></li>
+<li data-segment="45"><time>00:02:47.348–00:02:51.808</time> <span>이 세타를 우리가 DOA라고 취급을 하겠다.</span></li>
+<li data-segment="46"><time>00:02:52.708–00:02:56.708</time> <span>그러면 이 p라는게 뭔지 우리가 알아야겠죠?</span></li>
+<li data-segment="47"><time>00:02:56.708–00:02:59.708</time> <span>p라는게 뭔지 우리가 살펴볼거구요</span></li>
+<li data-segment="48"><time>00:02:59.708–00:03:04.708</time> <span>좀 더 가면은 p라는걸 우리가 살펴보기 전에</span></li>
+<li data-segment="49"><time>00:03:04.708–00:03:09.708</time> <span>그러면은 이 sound supply에서는 어떻게 우리가 이걸 할 수가 있을까?</span></li>
+<li data-segment="50"><time>00:03:09.708–00:03:15.708</time> <span>기본적으로 가장 기본적인 방법은 tdoa를 활용하는 방법입니다</span></li>
+<li data-segment="51"><time>00:03:15.708–00:03:17.708</time> <span>지금도 엄청나게 많이 활용이 됩니다</span></li>
+<li data-segment="52"><time>00:03:17.708–00:03:21.708</time> <span>time difference of arrival의 약자인데</span></li>
+<li data-segment="53"><time>00:03:21.708–00:03:30.408</time> <span>소리가 들려온 시간차에요. 예를 들어 마이크 페어 기준으로 마이크가 1과 2가 있죠.</span></li>
+<li data-segment="54"><time>00:03:31.948–00:03:36.668</time> <span>1과 2가 있을 때 이 두 마이크의 소리가 들려온 시간차가 좀 차이겠죠.</span></li>
+<li data-segment="55"><time>00:03:36.668–00:03:45.428</time> <span>이 바로 우리가 앞에서 배웠던 A라는 전달함수 때문에</span></li>
+<li data-segment="56"><time>00:03:45.428–00:03:49.988</time> <span>이 a라는 함수에 의해서 실제 여기 소스가 여기 있을 때</span></li>
+<li data-segment="57"><time>00:03:49.988–00:03:55.988</time> <span>얘가 각각의 마이크로 전달되는 함수들이 우리가 있다라는 걸 앞에서 확인했잖아요.</span></li>
+<li data-segment="58"><time>00:03:56.168–00:04:00.568</time> <span>그래서 이 a라는 함수는 a1하고 a2로 이루어져 있겠죠.</span></li>
+<li data-segment="59"><time>00:04:01.688–00:04:05.988</time> <span>이 a라는 건 익스포네이션의 딜레이가 계산되는 그런 텀이 있잖아요.</span></li>
+<li data-segment="60"><time>00:04:06.148–00:04:07.808</time> <span>딜레이가 더해지는.</span></li>
+<li data-segment="61"><time>00:04:08.008–00:04:11.068</time> <span>그게 우리가 다른 말로 스티어링 넥터라고도 얘기를 했었고</span></li>
+<li data-segment="62"><time>00:04:11.068–00:04:14.268</time> <span>그게 의해서 마찬가지로 얘도 딜레이가 발생을 하게 될 거예요.</span></li>
+<li data-segment="63"><time>00:04:14.408–00:04:15.108</time> <span>세타에 의해서.</span></li>
+<li data-segment="64"><time>00:04:15.428–00:04:19.608</time> <span>그랬을 때 이런 형태로 소리가 딜레이가 발생해서</span></li>
+<li data-segment="65"><time>00:04:19.608–00:04:21.188</time> <span>이만큼의 딜레이가 발생을 하겠죠.</span></li>
+<li data-segment="66"><time>00:04:22.028–00:04:23.088</time> <span>발생해서 들려올 겁니다.</span></li>
+<li data-segment="67"><time>00:04:24.008–00:04:25.608</time> <span>그러면 여기서 하고 싶은 것은</span></li>
+<li data-segment="68"><time>00:04:25.608–00:04:27.848</time> <span>이 타워를 알아내고 싶은 거예요.</span></li>
+<li data-segment="69"><time>00:04:28.148–00:04:28.708</time> <span>이 키디 위에.</span></li>
+<li data-segment="70"><time>00:04:29.268–00:04:30.568</time> <span>뒤에 더 내용이 나오는지</span></li>
+<li data-segment="71"><time>00:04:30.568–00:04:35.188</time> <span>이 타워를 알아내려면 어떻게 해야 되냐.</span></li>
+<li data-segment="72"><time>00:04:35.668–00:04:36.228</time> <span>어떻게 해야 될까요.</span></li>
+<li data-segment="73"><time>00:04:36.288–00:04:38.108</time> <span>사실 이거 앞에서 한번 얘기하긴 했었습니다.</span></li>
+<li data-segment="74"><time>00:04:38.768–00:04:43.308</time> <span>앞에서 제가 크로스 코리오에이션이라는 방법을 한번 말씀드렸던 것 같아요.</span></li>
+<li data-segment="75"><time>00:04:43.308–00:04:46.548</time> <span>cross라는 것은 서로 다른 두 개의 데이터의</span></li>
+<li data-segment="76"><time>00:04:46.548–00:04:50.548</time> <span>correlation의 상관관계를 알아내는 것입니다.</span></li>
+<li data-segment="77"><time>00:04:50.548–00:04:56.648</time> <span>서로 다른 두 개의 신호의 상관관계를 알아내는 것은 어떻게 했었죠?</span></li>
+<li data-segment="78"><time>00:04:56.648–00:05:00.308</time> <span>바로 이렇게 했었죠.</span></li>
+<li data-segment="79"><time>00:05:00.308–00:05:02.008</time> <span>이걸 곱한 다음에 더하잖아요.</span></li>
+<li data-segment="80"><time>00:05:02.008–00:05:07.608</time> <span>그러니까 inner product를 하는데 그냥 inner product를 하는 것이 아니라</span></li>
+<li data-segment="81"><time>00:05:07.608–00:05:11.168</time> <span>지금 이것은 주파수 도메인에서 이야기하고 있는 것이라서 이렇게 표현이 됐지만</span></li>
+<li data-segment="82"><time>00:05:11.168–00:05:15.008</time> <span>지금 여기 보면은 이게 지금 delay를 나타내는 선이잖아요</span></li>
+<li data-segment="83"><time>00:05:15.008–00:05:20.288</time> <strong>자동 인식 불확실:</strong> <span>사실 얘를 그 time domain으로 바꾸면은</span></li>
+<li data-segment="84"><time>00:05:20.288–00:05:25.248</time> <strong>자동 인식 불확실:</strong> <span>이 두 신호에 아마 이게 정확하게 시기적인 감각은 한데</span></li>
+<li data-segment="85"><time>00:05:25.248–00:05:30.208</time> <strong>자동 인식 불확실:</strong> <span>하나가 이렇게 있고 이거의 컴폴로션 얘를 원인구</span></li>
+<li data-segment="86"><time>00:05:30.208–00:05:32.448</time> <strong>자동 인식 불확실:</strong> <span>얘는 한번 확인해 봐야 될 것 같아요</span></li>
+<li data-segment="87"><time>00:05:32.448–00:05:33.748</time> <strong>자동 인식 불확실:</strong> <span>타우-t였던 것 같아요.</span></li>
+<li data-segment="88"><time>00:05:34.348–00:05:36.688</time> <strong>자동 인식 불확실:</strong> <span>이거를 타우에 대해서</span></li>
+<li data-segment="89"><time>00:05:36.688–00:05:38.188</time> <strong>자동 인식 불확실:</strong> <span>서메이션을 하는 게</span></li>
+<li data-segment="90"><time>00:05:38.188–00:05:40.228</time> <strong>자동 인식 불확실:</strong> <span>이게 크로스코르네이션이라고</span></li>
+<li data-segment="91"><time>00:05:40.228–00:05:41.048</time> <strong>자동 인식 불확실:</strong> <span>얘기를 했잖아요.</span></li>
+<li data-segment="92"><time>00:05:41.268–00:05:42.588</time> <strong>자동 인식 불확실:</strong> <span>이거를 주파수 도메인을 바꾸면</span></li>
+<li data-segment="93"><time>00:05:42.588–00:05:45.828</time> <span>우리가 이거를 이렇게 표현을 할 수가 있게 되는 거고.</span></li>
+<li data-segment="94"><time>00:05:45.828–00:05:46.068</time> <span>그렇죠?</span></li>
+<li data-segment="95"><time>00:05:47.128–00:05:48.568</time> <span>주파수 도메인을 변환만 하는 거예요.</span></li>
+<li data-segment="96"><time>00:05:48.748–00:05:50.628</time> <span>여기 t인데 여기는 오메가를 바꼈잖아요.</span></li>
+<li data-segment="97"><time>00:05:51.488–00:05:53.448</time> <span>이렇게 바뀌게 되면 이렇게 바뀌게 되는 거고</span></li>
+<li data-segment="98"><time>00:05:53.448–00:05:56.088</time> <span>그러면 얘는 지금 뭘 하는 거냐.</span></li>
+<li data-segment="99"><time>00:05:56.508–00:05:57.828</time> <span>어떤 두 신호가 이렇게 있을 때</span></li>
+<li data-segment="100"><time>00:05:57.828–00:05:59.828</time> <span>두 신호 하나를 이렇게 쭉 움직여가면서</span></li>
+<li data-segment="101"><time>00:06:00.428–00:06:02.268</time> <span>이 두 개의</span></li>
+<li data-segment="102"><time>00:06:02.268–00:06:07.868</time> <span>이 이너 프로덕트 값이 최고가 되는 그 지점을 찾는 거예요.</span></li>
+<li data-segment="103"><time>00:06:09.048–00:06:13.048</time> <span>쉽게 얘기하면 이 신호라고 했을 때 내가 어떤 타워가 있잖아요.</span></li>
+<li data-segment="104"><time>00:06:13.048–00:06:19.768</time> <span>그러면 이 마이크 2번 신호를 어떠한 타워만큼 계속 딜레이를 줘가는 겁니다.</span></li>
+<li data-segment="105"><time>00:06:20.068–00:06:22.908</time> <span>타워만큼. 반대방향으로 줘야 되겠죠.</span></li>
+<li data-segment="106"><time>00:06:24.108–00:06:28.208</time> <span>딜레이를 줘가면서 두 개끼리 엘레멘트끼리 곱한 다음에 더하는 거예요.</span></li>
+<li data-segment="107"><time>00:06:29.168–00:06:30.788</time> <span>그러면 언제 최대가 될까요?</span></li>
+<li data-segment="108"><time>00:06:30.788–00:06:36.868</time> <span>이게 딱 얼라인이 맞았을 때 그 값이 최대가 되겠죠.</span></li>
+<li data-segment="109"><time>00:06:37.608–00:06:38.868</time> <span>그 딜레이 타우일 때.</span></li>
+<li data-segment="110"><time>00:06:39.808–00:06:44.308</time> <span>그 타우를 여기서 찾았을 때 바로 이렇게 나온다는 거예요.</span></li>
+<li data-segment="111"><time>00:06:44.588–00:06:45.928</time> <span>이런 그림으로.</span></li>
+<li data-segment="112"><time>00:06:46.888–00:06:47.928</time> <span>이런 그림으로 나온다.</span></li>
+<li data-segment="113"><time>00:06:48.308–00:06:53.788</time> <span>그러면 이 값이 최대가 되는 지점이 바로 우리가 원하는 그 지점일 것이다.</span></li>
+<li data-segment="114"><time>00:06:53.908–00:06:54.688</time> <span>라는 첫 번째입니다.</span></li>
+</ol></details></section>
+<section id="part-3"><h2>큰 소리가 작은 소리의 시간차를 가릴 때</h2>
+<p class="prose" id="p-3-1">서로 다른 두 음원이 있고 한쪽이 훨씬 크면, 잘 맞는 지연을 찾으려던 계산에 음량 차이까지 끼어듭니다. 큰 성분끼리 곱한 값이 합을 지배하기 때문입니다. 그러면 작은 소리의 시간차가 그래프에서 잘 보이지 않을 수 있습니다.</p>
+<p class="prose" id="p-3-2">GCC-PHAT는 각 주파수에서 두 마이크 신호를 비교한 값(교차 스펙트럼)을 그 크기로 나눕니다. 크기가 0이 아닌 곳에서는 두 신호의 위상 차이는 남고 큰 성분이 크다는 이유만으로 받던 가중치는 줄어듭니다. 강의 그림에서는 이 처리 뒤 지연을 가리키는 봉우리가 더 선명합니다. 잡음이나 반사가 사라진다는 뜻은 아닙니다.</p>
+<p class="prose" id="p-3-3">음원이 두 개라면 가장 큰 값 하나만 선택해서는 두 방향을 얻을 수 없습니다. 구별되는 봉우리 두 개를 찾고, 그 지연들을 마이크 배치와 맞춰 해석해야 합니다. 음원 수만큼 봉우리를 찾는다는 설명이지, 두 소리에서 항상 두 봉우리가 나온다는 보장은 아닙니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT07M17S">07:17–08:54</time> · <a href="#p-3-1">음량이 상관값에 미치는 영향</a></li>
+<li><time datetime="PT08M54S">08:54–10:28</time> · <a href="#p-3-2">위상차를 남기는 정규화</a></li>
+<li><time datetime="PT10M28S">10:28–12:17</time> · <a href="#p-3-3">두 음원일 때의 후보 지연</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="124"><time>00:07:17.568–00:07:19.568</time> <span>이것에 문제가 있어요</span></li>
+<li data-segment="125"><time>00:07:19.568–00:07:21.568</time> <span>기본적으로 이 방법의 문제가 뭐냐면은</span></li>
+<li data-segment="126"><time>00:07:23.568–00:07:25.568</time> <span>예를 들어서 지금은 신호가</span></li>
+<li data-segment="127"><time>00:07:25.568–00:07:27.568</time> <span>하나만 있어서 이렇게 표현할 수가 있는데</span></li>
+<li data-segment="128"><time>00:07:27.568–00:07:30.568</time> <span>근데 신호가 만약에 두개라고 생각합시다.</span></li>
+<li data-segment="129"><time>00:07:30.568–00:07:33.568</time> <span>만약에 신호가 두개가 있어요.</span></li>
+<li data-segment="130"><time>00:07:33.568–00:07:38.568</time> <span>하나는 이거구요. 하나는 이렇게 큰 신호가 이렇게 있습니다.</span></li>
+<li data-segment="131"><time>00:07:38.568–00:07:41.568</time> <span>하나는 또 여기서 얘가 이렇게 큰 신호가 이렇게 있구요.</span></li>
+<li data-segment="132"><time>00:07:41.568–00:07:45.568</time> <span>근데 얘를 지금 그 두 신호의 딜레이가 지금 달라요.</span></li>
+<li data-segment="133"><time>00:07:45.568–00:07:54.568</time> <span>얘는 타우 1이고 이 친구는 타우 3,4만큼의 딜레이를 가지고 있다라고 그냥 해볼게요.</span></li>
+<li data-segment="134"><time>00:07:54.568–00:07:59.548</time> <span>근데 이게 지금 다른데 나는 지금 일정한 타워를 계속 주고 있잖아요.</span></li>
+<li data-segment="135"><time>00:08:00.168–00:08:01.548</time> <span>그러면 두 번 얼라인이 맞겠죠.</span></li>
+<li data-segment="136"><time>00:08:01.828–00:08:04.488</time> <span>한 번은 얘랑 맞을 거고 한 번은 얘에 맞겠죠.</span></li>
+<li data-segment="137"><time>00:08:05.408–00:08:09.668</time> <span>근데 지금 우리가 알고 싶은 것은 신호의 얼라인이 맞았는지만 알고 싶은 건데</span></li>
+<li data-segment="138"><time>00:08:09.668–00:08:14.468</time> <span>지금 이렇게 하게 되면 이 오른쪽에 있는 친구의 값이 훨씬 크니까</span></li>
+<li data-segment="139"><time>00:08:14.468–00:08:15.988</time> <span>얘가 훨씬 크죠.</span></li>
+<li data-segment="140"><time>00:08:17.128–00:08:21.248</time> <span>얘가 얼라인이 맞을 때 그 피크가 높게 치겠죠.</span></li>
+<li data-segment="141"><time>00:08:21.248–00:08:29.248</time> <span>쉽게 얘기하면 아까 tau라는 값을 쭉 주었을 때</span></li>
+<li data-segment="142"><time>00:08:29.248–00:08:35.248</time> <span>여기서가 tau1,2고 여기가 tau3,4라고 했을 때</span></li>
+<li data-segment="143"><time>00:08:35.248–00:08:38.248</time> <span>여기서는 QPIC가 이렇게 쳤어요.</span></li>
+<li data-segment="144"><time>00:08:38.248–00:08:41.248</time> <span>근데 여기서는 두 개의 신호가 서로 엄청 크기 때문에</span></li>
+<li data-segment="145"><time>00:08:41.248–00:08:45.248</time> <span>여기서는 이렇게 상식적으로 큰 값을 받겠죠.</span></li>
+<li data-segment="146"><time>00:08:45.248–00:08:49.248</time> <span>근데 우리는 두 신호가 얼마큼 맞았는지만 중요한 거니까</span></li>
+<li data-segment="147"><time>00:08:49.248–00:08:53.468</time> <span>이 매그미트로는 이 친구들한테는 중요한 요소가 아니에요.</span></li>
+<li data-segment="148"><time>00:08:54.568–00:08:56.888</time> <span>이걸 없애주기 위해서 어떻게 하냐?</span></li>
+<li data-segment="149"><time>00:08:57.828–00:08:58.908</time> <span>노모나이지를 하는 겁니다.</span></li>
+<li data-segment="150"><time>00:08:59.788–00:09:04.348</time> <span>이 크기로 양쪽 값을 신호를 다 나눠주는 거예요.</span></li>
+<li data-segment="151"><time>00:09:04.708–00:09:07.088</time> <span>그럼 뭐만 남냐? 페이지만 남겠죠.</span></li>
+<li data-segment="152"><time>00:09:08.688–00:09:13.448</time> <span>예를 들어서 우리가 이 신호를 직관적으로</span></li>
+<li data-segment="153"><time>00:09:13.448–00:09:15.348</time> <span>어떠한 신호를 직관적으로</span></li>
+<li data-segment="154"><time>00:09:15.348–00:09:17.168</time> <span>a 곱하기</span></li>
+<li data-segment="155"><time>00:09:17.168–00:09:19.088</time> <span>j 오메가</span></li>
+<li data-segment="156"><time>00:09:19.088–00:09:20.588</time> <span>예를 들어 타우라는</span></li>
+<li data-segment="157"><time>00:09:20.588–00:09:22.428</time> <span>이렇게 표현을 했다고 해볼게요.</span></li>
+<li data-segment="158"><time>00:09:23.328–00:09:24.628</time> <span>그리고 또 타우1이고</span></li>
+<li data-segment="159"><time>00:09:24.628–00:09:26.548</time> <span>또 다른 신호는 예를 들어서</span></li>
+<li data-segment="160"><time>00:09:26.548–00:09:28.588</time> <span>b고 익스포네셜의</span></li>
+<li data-segment="161"><time>00:09:28.588–00:09:31.068</time> <span>j 오메가 타우2입니다.</span></li>
+<li data-segment="162"><time>00:09:32.208–00:09:32.908</time> <span>그랬을 때</span></li>
+<li data-segment="163"><time>00:09:32.908–00:09:35.388</time> <span>지금 문제가 되는 요소는</span></li>
+<li data-segment="164"><time>00:09:35.388–00:09:36.428</time> <span>이 a가</span></li>
+<li data-segment="165"><time>00:09:36.428–00:09:38.628</time> <span>b보다 훨씬 작을 때</span></li>
+<li data-segment="166"><time>00:09:38.628–00:09:39.688</time> <span>이런 문제가 되는 거잖아요.</span></li>
+<li data-segment="167"><time>00:09:40.428–00:09:42.008</time> <span>그러면 요거를</span></li>
+<li data-segment="168"><time>00:09:42.008–00:09:46.468</time> <span>이 두개를 이 크기로 나눠서 버리는 겁니다.</span></li>
+<li data-segment="169"><time>00:09:46.468–00:09:52.888</time> <span>얘도 마찬가지로 이 크기 각각으로 이 두개를 노멀라이즈로 시켜 버리는</span></li>
+<li data-segment="170"><time>00:09:52.888–00:09:55.008</time> <span>거에요.</span></li>
+<li data-segment="171"><time>00:09:55.008–00:10:01.928</time> <span>그렇게 되면 어떻게 되냐 이런식으로 빨간색 형태의 이런 그런 모양의</span></li>
+<li data-segment="172"><time>00:10:01.928–00:10:05.988</time> <span>어떤 것이 나타나는데 이 친구는 실제 매그니티즈를 노멀라이즈</span></li>
+<li data-segment="173"><time>00:10:05.988–00:10:10.188</time> <span>하게 되기 때문에 페이즈 성분만 이렇게 잘 나타내는 그런 친구가</span></li>
+<li data-segment="174"><time>00:10:10.188–00:10:21.108</time> <span>나오게 되는 거고 우리가 이 값이 최대가 되는 타월을 찾으면 앞에서 이 타월을 찾아낼 수 있다 라는게 바로 이 GCC path라는 친구가</span></li>
+<li data-segment="175"><time>00:10:21.108–00:10:28.948</time> <span>이 분이 1976년도에 제안한 방법에서 이 타월이 처음 나왔어요 그 전까지는 이렇게 보였었거든요</span></li>
+<li data-segment="176"><time>00:10:28.948–00:10:32.068</time> <strong>자동 인식 불확실:</strong> <span>이걸 이렇게</span></li>
+<li data-segment="177"><time>00:10:32.448–00:10:35.448</time> <strong>자동 인식 불확실:</strong> <span>타오 3,4도 같이 가야하는 경우가 있는데</span></li>
+<li data-segment="178"><time>00:10:35.448–00:10:37.448</time> <strong>자동 인식 불확실:</strong> <span>그렇죠 타오 3,4도 같이 가야하는데</span></li>
+<li data-segment="179"><time>00:10:37.448–00:10:41.448</time> <strong>자동 인식 불확실:</strong> <span>여기서는 제가 타오 3,4가 안되어 있으니까 없는거죠</span></li>
+<li data-segment="180"><time>00:10:41.448–00:10:43.448</time> <strong>자동 인식 불확실:</strong> <span>원래 이렇게 되면은</span></li>
+<li data-segment="181"><time>00:10:43.448–00:10:47.448</time> <strong>자동 인식 불확실:</strong> <span>마이크를 하면은 타오 3,4가 나올 수도 있고 타오 1,2가 나올 수도 있겠죠</span></li>
+<li data-segment="182"><time>00:10:47.448–00:10:49.448</time> <strong>자동 인식 불확실:</strong> <span>지금 만약에 이 유기념 풀로 파악이 되면</span></li>
+<li data-segment="183"><time>00:10:49.448–00:10:52.448</time> <strong>자동 인식 불확실:</strong> <span>얘가 만약에 있다라고 치고 하면</span></li>
+<li data-segment="184"><time>00:10:52.448–00:10:56.448</time> <strong>자동 인식 불확실:</strong> <span>지금 이 유기념 풀로 타오 3,4가 없는 상황이니까 1,2가 그냥 나오는거에요</span></li>
+<li data-segment="185"><time>00:10:56.448–00:10:58.448</time> <strong>자동 인식 불확실:</strong> <span>피크가 두개 나와있는 상황이니까</span></li>
+<li data-segment="186"><time>00:10:58.448–00:11:01.448</time> <strong>자동 인식 불확실:</strong> <span>두개가 나오겠죠 타오 3,4가 찍힐 수도 있고 타오 1,2가 찍힐 수도 있고</span></li>
+<li data-segment="187"><time>00:11:01.448–00:11:09.448</time> <strong>자동 인식 불확실:</strong> <span>그 중에 조금이라도 뭔가 더 얼라인이 잘 맞는 친구는 찍히겠죠.</span></li>
+<li data-segment="188"><time>00:11:09.448–00:11:14.448</time> <strong>자동 인식 불확실:</strong> <span>그래서 그럴 때는 2개가 있을 때는 얼굴 맥스를 하면 하나만 찾는 거잖아요.</span></li>
+<li data-segment="189"><time>00:11:14.448–00:11:17.448</time> <strong>자동 인식 불확실:</strong> <span>피크 2개를 찾습니다.</span></li>
+<li data-segment="190"><time>00:11:17.448–00:11:19.448</time> <strong>자동 인식 불확실:</strong> <span>K계의 피크를 찾아야 돼요.</span></li>
+<li data-segment="191"><time>00:11:19.448–00:11:22.448</time> <span>멀티플 소스일 때는.</span></li>
+<li data-segment="192"><time>00:11:22.448–00:11:29.448</time> <span>그러니까 요거일 때는 요게 노벌로 해석되면은 요런 식으로 뭔가 이렇게 될 거라고 하죠.</span></li>
+<li data-segment="193"><time>00:11:29.448–00:11:31.448</time> <span>이런식으로 DC 패스를 하면은</span></li>
+<li data-segment="194"><time>00:11:31.448–00:11:35.448</time> <span>그러면은 아까는 이게 예를 들어 P라는 함수라고 했을 때</span></li>
+<li data-segment="195"><time>00:11:35.448–00:11:36.448</time> <span>스피크 타워라고 했을 때</span></li>
+<li data-segment="196"><time>00:11:36.448–00:11:38.448</time> <span>원래 알고리즘 하나만 했잖아요</span></li>
+<li data-segment="197"><time>00:11:38.448–00:11:40.448</time> <span>max k를 찾는거에요 max 두개를 찾는겁니다</span></li>
+<li data-segment="198"><time>00:11:40.448–00:11:45.448</time> <span>이 k가 max가 되면 타워 두개를 찾으면 되겠죠</span></li>
+<li data-segment="199"><time>00:11:45.448–00:11:47.448</time> <span>쉽게 그렇게 합니다</span></li>
+<li data-segment="200"><time>00:11:47.448–00:11:50.448</time> <span>그게 바로 이 CGU의 기반의 방법인거에요</span></li>
+<li data-segment="201"><time>00:11:50.448–00:11:53.448</time> <span>이거를 활용을 하면은 딜레이를 알아내면은</span></li>
+<li data-segment="202"><time>00:11:53.448–00:11:57.448</time> <span>우리가 마이크 모양을 알고 이 세트도 알아낼 수 있겠죠</span></li>
+<li data-segment="203"><time>00:11:57.448–00:12:01.448</time> <span>지금 이 delay는 이것에 적용됩니다.</span></li>
+<li data-segment="204"><time>00:12:01.448–00:12:05.448</time> <span>이것이 바로 첫 번째 방법입니다. 가장 간단한.</span></li>
+<li data-segment="205"><time>00:12:05.448–00:12:12.448</time> <span>사실 이런 컨셉은 지금도 엄청나게 많이 활용되고 있습니다.</span></li>
+<li data-segment="206"><time>00:12:12.448–00:12:14.448</time> <span>엄청나게 많이 활용되고 있습니다.</span></li>
+</ol></details></section>
+<section id="part-4"><h2>마이크를 움직이지 않고 여러 방향을 들어 보기</h2>
+<p class="prose" id="p-4-1">다음 방법에서는 같은 녹음을 두고 빔포머가 바라보는 방향만 바꿉니다. 후보 방향에 맞는 필터를 적용하면 그 방향의 소리를 강조한 출력 파형이 생깁니다. 한순간의 파형 값만 보면 부호와 진동에 따라 결과가 달라집니다. 그래서 그 크기를 제곱해 시간에 걸쳐 평균한 출력 전력을 방향별 점수로 씁니다. 이것이 SRP(Steered Response Power)입니다.</p>
+<p class="prose" id="p-4-2">한 방향에 맞춰 얻은 파형 하나와, 여러 방향의 결과를 모아 그린 그래프를 구별하면 그림이 읽힙니다. 파형의 가로축은 시간입니다. 반면 각 파형의 평균 전력을 하나씩 모은 그래프의 가로축은 각도입니다. 녹음은 그대로이고 같은 데이터를 어느 방향에 맞춰 합했는지만 바뀝니다.</p>
+<p class="prose" id="p-4-3">가장 큰 봉우리는 출력 전력이 가장 큰 방향을 알려 줍니다. 찾고 싶은 사람이 조용히 말하고 옆에서 더 큰 방해음이 들린다면 어떨까요? 가장 높은 봉우리를 제대로 계산하고도 다른 방향을 가리킬 수 있습니다. ‘가장 강한 방향’과 ‘듣고 싶은 사람의 방향’은 같은 말이 아닙니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT12M17S">12:17–15:25</time> · <a href="#p-4-1">조향 방향마다 출력 얻기</a></li>
+<li><time datetime="PT15M27S">15:27–18:41</time> · <a href="#p-4-2">파형과 방향별 전력 그래프 구별</a></li>
+<li><time datetime="PT18M41S">18:41–20:01</time> · <a href="#p-4-3">더 큰 방해음이 있을 때</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="207"><time>00:12:17.448–00:12:20.448</time> <span>두 번째, 이것은 사실 기본적인 방법인 것이고</span></li>
+<li data-segment="208"><time>00:12:20.448–00:12:24.448</time> <span>그러면 이제 우리가 앞에서 배웠던 그 빈포빈 방법을 활용해서</span></li>
+<li data-segment="209"><time>00:12:24.448–00:12:26.748</time> <span>이 세타를 찾아내는 방법들이 있습니다.</span></li>
+<li data-segment="210"><time>00:12:27.428–00:12:28.208</time> <span>바로 여기서 보면</span></li>
+<li data-segment="211"><time>00:12:28.208–00:12:30.428</time> <span>빔포머를 활용을 해서</span></li>
+<li data-segment="212"><time>00:12:30.428–00:12:31.928</time> <span>세타를 찾는데</span></li>
+<li data-segment="213"><time>00:12:31.928–00:12:33.448</time> <span>뛰어간다는 것은</span></li>
+<li data-segment="214"><time>00:12:33.448–00:12:36.448</time> <span>그거를 가르친다는 거잖아요.</span></li>
+<li data-segment="215"><time>00:12:37.548–00:12:38.648</time> <span>모든 세타를</span></li>
+<li data-segment="216"><time>00:12:38.648–00:12:40.508</time> <span>이 빔포머를 가지고 가르쳐보는 거예요.</span></li>
+<li data-segment="217"><time>00:12:41.928–00:12:42.648</time> <span>이게 무슨 말이냐면</span></li>
+<li data-segment="218"><time>00:12:42.648–00:12:43.768</time> <span>보면</span></li>
+<li data-segment="219"><time>00:12:43.768–00:12:46.988</time> <span>이 밑에를 보면 알 수가 있어요.</span></li>
+<li data-segment="220"><time>00:12:47.088–00:12:48.748</time> <span>결국에 지금 우리가 알아내고 싶은 것은</span></li>
+<li data-segment="221"><time>00:12:48.748–00:12:49.908</time> <span>이건데</span></li>
+<li data-segment="222"><time>00:12:49.908–00:12:51.548</time> <span>이건데</span></li>
+<li data-segment="223"><time>00:12:51.548–00:12:53.668</time> <span>우리가 앞에서 배울 때</span></li>
+<li data-segment="224"><time>00:12:53.668–00:13:08.848</time> <span>빈포밍을 할 때 이 y라는 값은 x로 표현을 했잖아요.</span></li>
+<li data-segment="225"><time>00:13:09.848–00:13:10.588</time> <span>빈포밍을 할 때.</span></li>
+<li data-segment="226"><time>00:13:10.688–00:13:14.528</time> <span>우리가 빈포밍을 할 때는 얘를 어떻게 설계를 해야 되는지를 배웠던 거고.</span></li>
+<li data-segment="227"><time>00:13:15.528–00:13:22.408</time> <span>그런데 이 세타라는 친구는 실제로는 이 세타기에서 정의가 되는 펑턴이죠.</span></li>
+<li data-segment="228"><time>00:13:22.408–00:13:28.068</time> <span>여기서 지금 얘기하고 있는 이 말은 뭐냐면</span></li>
+<li data-segment="229"><time>00:13:28.068–00:13:37.288</time> <span>이 세타를 0부터 360까지 계속 바꿔가면서</span></li>
+<li data-segment="230"><time>00:13:37.288–00:13:40.088</time> <span>이 y를 계속해서 측정을 해본다.</span></li>
+<li data-segment="231"><time>00:13:41.288–00:13:45.028</time> <span>세타를 바꿔가면 이 세타를 바꿀 때마다</span></li>
+<li data-segment="232"><time>00:13:45.028–00:13:46.308</time> <span>이렇게 계산을 해주시겠죠.</span></li>
+<li data-segment="233"><time>00:13:47.068–00:13:50.408</time> <span>그 계산을 받도록 이거는 마이크에서 측정한 값이니까</span></li>
+<li data-segment="234"><time>00:13:50.408–00:13:54.228</time> <span>마이크에서 측정한 이 x에다가 이걸 곱한 다음에</span></li>
+<li data-segment="235"><time>00:13:54.228–00:13:58.808</time> <span>이 y를 구하면은 내가 스티어링하고 있는 그 방향으로 들려온 신호를</span></li>
+<li data-segment="236"><time>00:13:58.808–00:14:00.568</time> <span>그때그때 내가 수집을 한 거겠죠.</span></li>
+<li data-segment="237"><time>00:14:02.008–00:14:03.648</time> <span>그거를 하는 겁니다. y를.</span></li>
+<li data-segment="238"><time>00:14:03.928–00:14:07.988</time> <span>그렇게 해서 어떻게 하는 거냐면은</span></li>
+<li data-segment="239"><time>00:14:07.988–00:14:10.188</time> <span>그거에 파워를 구하는 거예요.</span></li>
+<li data-segment="240"><time>00:14:10.568–00:14:12.708</time> <span>이게 파워를 구하는 식이잖아요.</span></li>
+<li data-segment="241"><time>00:14:12.708–00:14:16.508</time> <span>방금 y 있죠. y가 지금 여기 들어간 거고</span></li>
+<li data-segment="242"><time>00:14:16.508–00:14:19.708</time> <span>파워가 그거의 제법의 평균이잖아요.</span></li>
+<li data-segment="243"><time>00:14:19.708–00:14:23.248</time> <span>파워가 어떤 시그널의 제골 평균이 있잖아요. 그렇죠?</span></li>
+<li data-segment="244"><time>00:14:23.248–00:14:27.828</time> <span>이 신호의 제골 평균을 지금 하는 거죠. 요식 자체가.</span></li>
+<li data-segment="245"><time>00:14:27.828–00:14:31.348</time> <span>그래서 요거를 우리가 빔 포미 파워라고 얘기합니다. 이해를.</span></li>
+<li data-segment="246"><time>00:14:31.348–00:14:33.048</time> <span>아웃 파워라고 하잖아요.</span></li>
+<li data-segment="247"><time>00:14:33.048–00:14:36.948</time> <span>빔 포머의 파워가 되는 건데 이 파워라는 거는</span></li>
+<li data-segment="248"><time>00:14:36.948–00:14:40.748</time> <span>세타에 의해서 바뀌게 된다. 왜냐면은 이 세타는</span></li>
+<li data-segment="249"><time>00:14:40.748–00:14:46.428</time> <span>세타에 따라서 여기 나와 있는 이 스파셜 필터가 그때그때 바뀌게 될 거고</span></li>
+<li data-segment="250"><time>00:14:46.428–00:14:52.208</time> <span>그 이 이 스페인서를 바꿔가면서 y를 측정할 수가 있겠죠.</span></li>
+<li data-segment="251"><time>00:14:52.208–00:15:03.408</time> <span>y를 쭉 측정한 다음에 그거에 파워를 구한 다음에 그 파워의 그 모든 센타 방향에 대한 그 친구를 우리가 빔포밍 파워라고 얘기한다 라고</span></li>
+<li data-segment="252"><time>00:15:03.408–00:15:10.108</time> <span>해주시면 돼요. 이걸 어떻게 하면 될까요? 얘가 최대가 되는 센타를 찾으면 되겠죠.</span></li>
+<li data-segment="253"><time>00:15:10.108–00:15:12.788</time> <span>그렇게 하는 겁니다.</span></li>
+<li data-segment="254"><time>00:15:12.788–00:15:21.848</time> <span>지금 여기 보면 그래서 이 세트가 최대가 되는 요 지점이 소리가 들려온 방향이다 라고</span></li>
+<li data-segment="255"><time>00:15:21.848–00:15:25.168</time> <span>얘가 추정을 할거에요</span></li>
+<li data-segment="256"><time>00:15:27.948–00:15:32.448</time> <span>질문 있어요? 여기서는 어떤 가정 하나가 숨어있어요? 무슨 가정?</span></li>
+<li data-segment="257"><time>00:15:32.448–00:15:43.448</time> <span>지금 이걸 한 번만 생각해 보세요. 지금 제가 물을 흐르듯이 설명을 했는데 사실 제가 설명드린 이면에는 어떠한 과정 하나가 숨어있어요.</span></li>
+<li data-segment="258"><time>00:15:43.448–00:15:58.448</time> <span>X를 알고 X를 알아요. 또 다른 것은 이 섹터방향으로 이걸 바꿔가면서 내가 얘를 빔포밍 했을 때 그게 파워가 최대가 되는 지점을 찾는 거잖아요.</span></li>
+<li data-segment="259"><time>00:15:58.448–00:16:09.848</time> <span>거잖아요 그때 이 파워는 에너지죠 그러면은 이 공간에서 소리가 있을 때 내가 타겟팅하는 소리가 어떤 에너지를 갖겠죠</span></li>
+<li data-segment="260"><time>00:16:09.848–00:16:19.328</time> <span>내가 타겟팅하는 그 소리가 이 공간에서 가장 큰 에너지를 갖는 소리다라는 가정인거에요</span></li>
+<li data-segment="261"><time>00:16:19.328–00:16:27.408</time> <span>내가 이거를 직관적으로 설명을 하면은 우리가 그림을 그리고 설명을 해드리면은 이게 직관적으로 생각하는 것이거든요</span></li>
+<li data-segment="262"><time>00:16:27.408–00:16:36.708</time> <span>내가 여기가 이게 공간이 있다고 볼게요 이게 방입니다 소리가 여기도 있고 여기도 있어요</span></li>
+<li data-segment="263"><time>00:16:36.708–00:16:44.588</time> <span>얘한테는 요게 있고 이렇게 있을 때 얘가 이렇게 있을 때가 세타 1이고 얘가 세타 2라고 해볼게요</span></li>
+<li data-segment="264"><time>00:16:44.588–00:16:55.408</time> <span>이렇게 볼 수가 있겠죠 그러면 지금 뭘 하고 있는 거냐면은 얘를 요 세타를 요거를 요렇게 봤다가 요렇게 봤다가</span></li>
+<li data-segment="265"><time>00:16:55.408–00:17:03.448</time> <span>이 세타를 계속 이동시켜가면서 모든 세타에 대해서 내가 w를 설계할 수가 있겠죠.</span></li>
+<li data-segment="266"><time>00:17:04.708–00:17:11.108</time> <span>그래서 이 y라는 값을 이 w라는 세타를 바꿔가면서</span></li>
+<li data-segment="267"><time>00:17:11.108–00:17:15.408</time> <span>x, 지금 여기서 측정한 신호, 신호.</span></li>
+<li data-segment="268"><time>00:17:16.328–00:17:18.208</time> <span>이거를 지금 다 계산을 해주는 건데</span></li>
+<li data-segment="269"><time>00:17:18.208–00:17:21.228</time> <span>이걸 하게 되면 지금 뭘 하는 건데 결국에?</span></li>
+<li data-segment="270"><time>00:17:21.228–00:17:24.468</time> <span>이쪽 방향을 내가 예를 들어 y0라고 해볼게요.</span></li>
+<li data-segment="271"><time>00:17:25.408–00:17:28.908</time> <span>이 방향을 내가 y1이라고 해놓은거고</span></li>
+<li data-segment="272"><time>00:17:28.908–00:17:33.308</time> <span>이 방향에 대해서 y2, 얘를 y3이라고 해놓겠습니다.</span></li>
+<li data-segment="273"><time>00:17:34.428–00:17:37.068</time> <span>이 y1234, 0123은 뭐냐</span></li>
+<li data-segment="274"><time>00:17:37.068–00:17:41.488</time> <span>y0은 여기서 이 세타가 0일 때</span></li>
+<li data-segment="275"><time>00:17:41.488–00:17:43.568</time> <span>이거인거고</span></li>
+<li data-segment="276"><time>00:17:43.568–00:17:49.908</time> <span>y는 여기서 세타가 1일 때인거고</span></li>
+<li data-segment="277"><time>00:17:49.908–00:17:51.228</time> <span>이 세타를 바꿔가면서</span></li>
+<li data-segment="278"><time>00:17:51.228–00:17:57.288</time> <span>요건 6을 계산을 하고 그걸 화면에서 예를 들어서 구해 나가는 거예요</span></li>
+<li data-segment="279"><time>00:17:57.288–00:18:03.288</time> <span>지금 이거를 지금 요 저기 있는 저 식에 있는 내용이 지금 요거를 하고 있는 거구요</span></li>
+<li data-segment="280"><time>00:18:03.288–00:18:11.988</time> <span>근데 얘는 지금 이 시간에 따른 신호잖아요 얘는 결국에 키에 따른 어떤 신호잖아요</span></li>
+<li data-segment="281"><time>00:18:11.988–00:18:19.428</time> <span>근데 이렇게 아 지금 얘는 이제 y 제로 y 뭐 이거 이렇게 하시는걸</span></li>
+<li data-segment="282"><time>00:18:19.428–00:18:27.108</time> <span>또 다른 식으로 또 볼게 막 이렇게 뽑아 낼 수 있겠죠 근데 그 중에 뭐가 소리가 들려 방향이 있냐는 내가 판단을 해 줘야 되잖아요</span></li>
+<li data-segment="283"><time>00:18:27.108–00:18:38.608</time> <span>이제 여기서 그 가정이 들어가는게 이 공간에서 여기서 발생하는 그 어떤 신호들이 다른 공간에서 있는 노이드보다 에너지가 훨씬</span></li>
+<li data-segment="284"><time>00:18:38.608–00:18:41.208</time> <span>크실 것이다 라는 가정이 있는 거예요.</span></li>
+<li data-segment="285"><time>00:18:41.888–00:18:42.788</time> <span>지금 보면은</span></li>
+<li data-segment="286"><time>00:18:42.788–00:18:45.148</time> <span>소리가 예를 들어 이 공간에서</span></li>
+<li data-segment="287"><time>00:18:45.148–00:18:47.468</time> <span>이런 소음이 계속 존재하고 있는</span></li>
+<li data-segment="288"><time>00:18:47.468–00:18:48.428</time> <span>상황이라고 했을 때</span></li>
+<li data-segment="289"><time>00:18:48.428–00:18:49.748</time> <span>이 소음보다</span></li>
+<li data-segment="290"><time>00:18:49.748–00:18:53.868</time> <span>지금 여기서 발생하는 이 소리의</span></li>
+<li data-segment="291"><time>00:18:53.868–00:18:54.808</time> <span>이 매그니튜드</span></li>
+<li data-segment="292"><time>00:18:54.808–00:18:57.248</time> <span>이 매그니튜드의 결국에 제곱의</span></li>
+<li data-segment="293"><time>00:18:57.248–00:18:58.168</time> <span>평균이 되는 거니까</span></li>
+<li data-segment="294"><time>00:18:58.168–00:19:01.128</time> <span>요거가 훨씬 클 것이다.</span></li>
+<li data-segment="295"><time>00:19:01.908–00:19:03.348</time> <span>그 기대로 지금 이걸 하는 겁니다.</span></li>
+<li data-segment="296"><time>00:19:03.348–00:19:08.608</time> <span>이해가 되죠?</span></li>
+<li data-segment="297"><time>00:19:08.908–00:19:11.028</time> <span>그게 이 비포밍을 활용한</span></li>
+<li data-segment="298"><time>00:19:11.028–00:19:12.528</time> <span>이거를 찾는 방법이에요.</span></li>
+<li data-segment="299"><time>00:19:13.028–00:19:14.868</time> <span>이 어석전이 여기다 숨어있는 겁니다.</span></li>
+<li data-segment="300"><time>00:19:15.668–00:19:17.328</time> <span>그래서 만약에</span></li>
+<li data-segment="301"><time>00:19:17.328–00:19:19.048</time> <span>만약에</span></li>
+<li data-segment="302"><time>00:19:19.048–00:19:21.228</time> <span>내가 노이즈, 얘가 타겟으로 하는 소리가</span></li>
+<li data-segment="303"><time>00:19:21.228–00:19:22.488</time> <span>나는 얘예요.</span></li>
+<li data-segment="304"><time>00:19:23.068–00:19:23.868</time> <span>얘가 타겟인데</span></li>
+<li data-segment="305"><time>00:19:23.868–00:19:25.788</time> <span>얘는 노이즈입니다.</span></li>
+<li data-segment="306"><time>00:19:26.668–00:19:27.188</time> <span>예를 들어서.</span></li>
+<li data-segment="307"><time>00:19:27.948–00:19:30.488</time> <span>노이즈의 신호가 크기가</span></li>
+<li data-segment="308"><time>00:19:30.488–00:19:31.908</time> <span>얘보다 훨씬 커요.</span></li>
+<li data-segment="309"><time>00:19:31.908–00:19:35.908</time> <span>그러면은 DOA를 세트했을 때 이 세트가 잘 안나오겠죠.</span></li>
+<li data-segment="310"><time>00:19:35.908–00:19:39.908</time> <span>DOA를 시험했을 때 이 세트가 잘 안나오게 되요.</span></li>
+<li data-segment="311"><time>00:19:39.908–00:19:41.908</time> <span>왜냐면 얘가 훨씬 크니까.</span></li>
+<li data-segment="312"><time>00:19:41.908–00:19:43.908</time> <span>그래서 내가 요 결국에 하는거는</span></li>
+<li data-segment="313"><time>00:19:43.908–00:19:47.908</time> <span>밑에 보면은 그래서 저 베타가 최대가 되는 세트를 찾고 있잖아요.</span></li>
+<li data-segment="314"><time>00:19:47.908–00:19:49.908</time> <span>저 오른쪽에 그래프를 보면은</span></li>
+<li data-segment="315"><time>00:19:49.908–00:19:53.908</time> <span>근데 저렇게 하게 되면은 얘에 대한 파워가 훨씬 큰</span></li>
+<li data-segment="316"><time>00:19:53.908–00:19:55.908</time> <span>어떤 그래프가 나오게 될거고</span></li>
+<li data-segment="317"><time>00:19:55.908–00:19:58.908</time> <span>얘를 찾기 어려운 상황이 갈 때가 하게 되요.</span></li>
+<li data-segment="318"><time>00:19:58.908–00:20:01.908</time> <span>그런 단어는 지금 여기 속에 있는 거예요.</span></li>
+</ol></details></section>
+<section id="part-5"><h2>가까운 두 음원은 왜 한 방향처럼 보일까요?</h2>
+<p class="prose" id="p-5-1">출력 전력을 계산할 때마다 녹음을 처음부터 다시 비교할 필요는 없습니다. 같은 주파수에서 마이크 신호들이 함께 변하는 정도를 공간 공분산 행렬 R에 모아 둡니다. 후보 각도가 정해지면 필터 w도 정해지므로 그 방향의 출력 전력은 wᴴRw로 쓸 수 있습니다. 입력은 그대로 두고 필터만 바꾸어 두 방법을 비교할 수 있습니다.</p>
+<p class="prose" id="p-5-2">먼저 DAS(delay-and-sum)는 후보 방향에서 온 소리가 서로 겹치도록 마이크별 도착 차이를 맞춰 더합니다. 문제는 그 방향만 통과하는 것이 아니라 주변 방향도 꽤 크게 통과한다는 점입니다. 두 음원이 약 15° 떨어진 예에서 둘 사이로 방향을 돌려도 출력이 여전히 큽니다. 그래서 그래프에서는 두 봉우리 대신 하나의 넓은 봉우리가 보입니다.</p>
+<p class="prose" id="p-5-3">MVDR은 후보 방향의 소리는 그대로 통과시킨다는 제약을 두고 나머지 출력 전력을 가능한 한 낮춥니다. 필터 식을 같은 출력 전력 식에 대입하면, 후보 방향의 조향 벡터 h와 공분산의 역행렬로 점수를 구할 수 있습니다. 결과는 1/(hᴴR⁻¹h)입니다. DAS에까지 역행렬이 필요한 것은 아닙니다.</p>
+<p class="prose" id="p-5-4">그림에서 MVDR은 같은 두 음원을 두 봉우리로 더 잘 구분합니다. 실제 음원에서 조금 벗어난 방향으로 조향해 보면 차이가 드러납니다. DAS에서는 음원이 아직 넓은 통과 범위 안에 있지만, MVDR은 조향 방향의 이득을 유지하면서 실제 음원이 있는 다른 방향에는 소리를 억제하는 지점(null)을 둘 수 있습니다. 그래서 후보 각도를 조금 바꾼 것만으로도 출력 전력이 뚝 떨어집니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT20M01S">20:01–22:17</time> · <a href="#p-5-1">공분산으로 출력 전력 구하기</a></li>
+<li><time datetime="PT22M17S">22:17–23:32</time> · <a href="#p-5-2">15° 떨어진 두 음원의 DAS 결과</a></li>
+<li><time datetime="PT23M32S">23:32–25:47</time> · <a href="#p-5-3">MVDR 식에서 역행렬이 쓰이는 곳</a></li>
+<li><time datetime="PT25M47S">25:47–27:35</time> · <a href="#p-5-4">조향 방향을 벗어날 때의 null</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="319"><time>00:20:03.908–00:20:06.908</time> <span>질문 괜찮아요?</span></li>
+<li data-segment="320"><time>00:20:06.908–00:20:10.908</time> <span>그래서 그 얘기를 지금 여기서 하고 있는 거고</span></li>
+<li data-segment="321"><time>00:20:10.908–00:20:13.908</time> <span>우리가 가장 처음에 배웠던</span></li>
+<li data-segment="322"><time>00:20:13.908–00:20:16.908</time> <span>아 그래서 그러면은</span></li>
+<li data-segment="323"><time>00:20:16.908–00:20:19.908</time> <span>이 타원은 어떻게 계산하는지 지금</span></li>
+<li data-segment="324"><time>00:20:19.908–00:20:22.908</time> <span>밑에 설명을 해놨는데</span></li>
+<li data-segment="325"><time>00:20:22.908–00:20:25.908</time> <span>이건 사실 이게 알지만 그냥 순호입니다.</span></li>
+<li data-segment="326"><time>00:20:25.908–00:20:27.288</time> <span>요거 구하는거</span></li>
+<li data-segment="327"><time>00:20:27.888–00:20:30.728</time> <span>지금 y에다가 얘를 넣으면 되잖아요</span></li>
+<li data-segment="328"><time>00:20:31.228–00:20:32.428</time> <span>그러면 우선</span></li>
+<li data-segment="329"><time>00:20:32.448–00:20:39.768</time> <span>r의 제곱은 요거고 요거고 요거는 넣으면은 얘잖아요. 그쵸?</span></li>
+<li data-segment="330"><time>00:20:41.028–00:20:48.548</time> <span>얘니까 요거를 expectation r에 넣으면은 이 두 지도는 결국에 컨스턴트죠.</span></li>
+<li data-segment="331"><time>00:20:48.628–00:20:50.648</time> <span>세타가 정해지면 얘는 변하지 않는 값이니까</span></li>
+<li data-segment="332"><time>00:20:50.648–00:20:54.508</time> <span>expectation식의 각도로 빠져나갈 수가 있게 되는 거고</span></li>
+<li data-segment="333"><time>00:20:54.508–00:20:56.848</time> <span>x의 제곱 요것만 남게 되죠.</span></li>
+<li data-segment="334"><time>00:20:56.848–00:21:01.968</time> <span>요거는 우리가 앞에서 x의 포기언스 매트리스다라고 우리가 배웠으니까</span></li>
+<li data-segment="335"><time>00:21:01.968–00:21:04.968</time> <span>그래서 결국에 이렇게 표현을 하는 겁니다.</span></li>
+<li data-segment="336"><time>00:21:04.968–00:21:07.968</time> <span>이렇게 하면은 얘를 구할 수 있다.</span></li>
+<li data-segment="337"><time>00:21:07.968–00:21:12.968</time> <span>지금 이 빔포밀 파워는 우리가 이렇게 표현할 수 있다.</span></li>
+<li data-segment="338"><time>00:21:15.968–00:21:17.968</time> <span>사실 얘가 끝이에요.</span></li>
+<li data-segment="339"><time>00:21:17.968–00:21:19.968</time> <span>얘가 끝입니다. 빔포밍에서는 얘가 끝이에요.</span></li>
+<li data-segment="340"><time>00:21:19.968–00:21:22.968</time> <span>그러면 우리가 이걸 가지고 결국에</span></li>
+<li data-segment="341"><time>00:21:22.968–00:21:25.968</time> <span>이 베타라고 했을 때 결국에</span></li>
+<li data-segment="342"><time>00:21:25.968–00:21:32.368</time> <span>이게 지금 맥스, 베타는 찾는 거잖아요. 베타에 대해서.</span></li>
+<li data-segment="343"><time>00:21:32.368–00:21:39.568</time> <span>그쵸. 얘가 우리가 내가 스티어링하고 있는 어떤 베타, DOA가 될 것이고, 이걸 하고 싶은 거잖아요.</span></li>
+<li data-segment="344"><time>00:21:39.568–00:21:41.568</time> <span>그럼 우리가 앞에서 배웠을 때 뭐 배웠죠?</span></li>
+<li data-segment="345"><time>00:21:41.568–00:21:46.768</time> <span>GUI에서 빔포머 배웠죠? 그리고 MVDR 빔포머 배웠잖아요.</span></li>
+<li data-segment="346"><time>00:21:46.768–00:21:50.768</time> <span>그 빔포머에서 배웠던 이 스파이셜 그 식 있잖아요.</span></li>
+<li data-segment="347"><time>00:21:50.768–00:21:53.608</time> <span>그거를 여기다가 우리가 대입을 했을 때</span></li>
+<li data-segment="348"><time>00:21:53.608–00:21:58.048</time> <span>요 결과가 어떻게 나오는지 볼 수 있겠죠</span></li>
+<li data-segment="349"><time>00:21:58.048–00:22:00.448</time> <span>그거를 한번 보자는 겁니다</span></li>
+<li data-segment="350"><time>00:22:00.448–00:22:06.768</time> <span>여기서 처음에는 요 지금 이거를 다른 말로는</span></li>
+<li data-segment="351"><time>00:22:06.768–00:22:09.008</time> <span>Steered Response Power라고 얘기해요</span></li>
+<li data-segment="352"><time>00:22:09.008–00:22:10.768</time> <span>세타에 대해서 스티어링을 했을 때</span></li>
+<li data-segment="353"><time>00:22:10.768–00:22:14.168</time> <span>그 파워값 그래서 SRT라고도 하는데</span></li>
+<li data-segment="354"><time>00:22:14.168–00:22:17.168</time> <span>요거를 우리가 DAS에 대해서 적용을 해보면은</span></li>
+<li data-segment="355"><time>00:22:17.168–00:22:23.168</time> <span>갓은 우리가 delay 인성 빙포문은 이 w 필터가 이렇게 구성이 되어 있으니까</span></li>
+<li data-segment="356"><time>00:22:23.168–00:22:26.768</time> <span>이 h라는 것은 스티어링 벡터잖아요</span></li>
+<li data-segment="357"><time>00:22:26.768–00:22:29.968</time> <span>이거를 그대로 대입하면 대입한 거죠</span></li>
+<li data-segment="358"><time>00:22:29.968–00:22:35.768</time> <span>이렇게 이렇게 되니까 m 상수니까 밑으로 내려오고 이렇게 되죠</span></li>
+<li data-segment="359"><time>00:22:35.768–00:22:41.608</time> <span>그런데 우리 h 알고 있으니까 여기다가 정리하면 이렇게 나왔다</span></li>
+<li data-segment="360"><time>00:22:41.608–00:22:44.088</time> <span>이거 구할 수 있겠죠 이거 어렵지 않고 구할 수 있어요</span></li>
+<li data-segment="361"><time>00:22:44.088–00:22:47.308</time> <span>그러면 이걸 가지고 우리가 오른쪽에 그래프를 그려보는 겁니다.</span></li>
+<li data-segment="362"><time>00:22:47.748–00:22:49.088</time> <span>빔포밍 파워에 대해서</span></li>
+<li data-segment="363"><time>00:22:49.088–00:22:54.908</time> <span>다스 빔포머를 쭉 빔포밍 파워를 그려보면</span></li>
+<li data-segment="364"><time>00:22:54.908–00:22:56.508</time> <span>이렇게 나온다.</span></li>
+<li data-segment="365"><time>00:22:56.508–00:22:57.628</time> <span>이렇게 바로.</span></li>
+<li data-segment="366"><time>00:23:01.068–00:23:05.708</time> <span>언제? 소스가 여기와 두 개가 있을 때.</span></li>
+<li data-segment="367"><time>00:23:06.008–00:23:06.708</time> <span>이 상황일 때.</span></li>
+<li data-segment="368"><time>00:23:07.468–00:23:08.748</time> <span>지금 여기 소스가 두 개가 있죠.</span></li>
+<li data-segment="369"><time>00:23:09.328–00:23:12.308</time> <span>두 개가 있을 때 다스 빔포머라면 이렇게 나온다.</span></li>
+<li data-segment="370"><time>00:23:12.308–00:23:16.308</time> <span>두기가 지금 분리가 안되죠.</span></li>
+<li data-segment="371"><time>00:23:16.308–00:23:20.308</time> <span>다스비포머는 이렇게 한기가 명확하게 보이는 겁니다.</span></li>
+<li data-segment="372"><time>00:23:20.308–00:23:24.308</time> <span>두 음원이 지금 15도 정도 떨어져 있는 거거든요. 그래서 피크가 하나밖에 안나는거에요.</span></li>
+<li data-segment="373"><time>00:23:24.308–00:23:28.308</time> <span>그래서 분해형이 되게 떨어지는거에요.</span></li>
+<li data-segment="374"><time>00:23:28.308–00:23:32.308</time> <span>분리를 못하는 문제가 발생을 하는거고.</span></li>
+<li data-segment="375"><time>00:23:32.308–00:23:36.308</time> <span>그래서 우리가 앞에서 배웠던 MVDM 비포머는</span></li>
+<li data-segment="376"><time>00:23:36.308–00:23:40.308</time> <span>MVDM 비포머는 결국에 컨셉 필터를 더 잘 설계했잖아요.</span></li>
+<li data-segment="377"><time>00:23:40.308–00:23:46.868</time> <span>그 컨트레이트 하고 그 이걸 미니마이즈 할 때 컨트레이트를 주면서</span></li>
+<li data-segment="378"><time>00:23:46.868–00:23:51.068</time> <span>이걸 유지하게끔 내가 이 w 이 친구를 이렇게 내가 구해냈었죠</span></li>
+<li data-segment="379"><time>00:23:51.068–00:23:53.588</time> <span>이거 기억나죠 어떻게 구했는지</span></li>
+<li data-segment="380"><time>00:23:53.588–00:23:56.588</time> <span>이거를 잘 설계한 다음에 얘를 넣어보면 어떻게 되냐</span></li>
+<li data-segment="381"><time>00:23:56.588–00:24:02.028</time> <span>얘를 아까 여기 뒤에 나오나 제가 여기다 넣어놨는지 한번 보세요</span></li>
+<li data-segment="382"><time>00:24:02.028–00:24:08.068</time> <span>아까 이거 이거 넣을거니까 여기다가 이거 지금 앞에서 구했던</span></li>
+<li data-segment="383"><time>00:24:08.068–00:24:16.108</time> <span>얘가 지금 이렇게 나오는데 얘가 왜 이렇게 나오는지 쭉 전개한거에요. 그러면 결국에 정체하면 이렇게 나온다.</span></li>
+<li data-segment="384"><time>00:24:16.108–00:24:26.308</time> <span>이게 왜 이렇게 나오냐면 지금 여기다가 앞에 w가 지금 요거잖아요. w가 지금 요 친구잖아요. 요거는 제가 대입한거에요.</span></li>
+<li data-segment="385"><time>00:24:26.308–00:24:31.788</time> <span>요거 대입한겁니다. 대입하면 전개하면 이렇게 나옵니다.</span></li>
+<li data-segment="386"><time>00:24:31.788–00:24:38.108</time> <span>이렇게 나와요. 또 한번 해볼까요? 여기서 보면 아까 그거에서 w가 지금 이거거든요.</span></li>
+<li data-segment="387"><time>00:24:38.108–00:24:48.628</time> <span>h, 퍼미시안에서 마이너스 1에서 h고, 아래 inverse의 h. 이거거든요. 이거 대입하면 나오죠.</span></li>
+<li data-segment="388"><time>00:24:48.628–00:24:55.368</time> <span>근데 지금 얘가 계산을 해보면 알겠지만 얘는 하나에요. 값이 하나입니다. 그냥 스카다 값이에요.</span></li>
+<li data-segment="389"><time>00:24:55.368–00:25:06.428</time> <span>이게 보면은 얘가 이제 결국에 보면은 우리 벡터 이렇게 이렇게 해서 이렇게 해서 이렇게 해서 2개 곱하면은 이렇게 이렇게 곱해져가지고 각 어떤 각 하나 나오잖아요?</span></li>
+<li data-segment="390"><time>00:25:06.428–00:25:11.808</time> <span>그럼 그 상황이에요. 밑에 있는게. 그래서 얘가 스칼라기 때문에 그냥 스칼라의 제목으로 이렇게 나오는거고</span></li>
+<li data-segment="391"><time>00:25:11.808–00:25:16.528</time> <span>뒤에는 매트릭스기 때문에 그대로 이렇게 나오는거고 그리고 쭉 전개하면은</span></li>
+<li data-segment="392"><time>00:25:16.528–00:25:27.768</time> <span>그래서 이 분모에 있는 것 전개 쭉 하면은 결국에 이 아리라는 매트릭스가 헐니시안이기 때문에 헐니시안이라는 것은 뭐냐면은 얘랑</span></li>
+<li data-segment="393"><time>00:25:27.768–00:25:32.448</time> <span>얘랑 같아요 그렇기 때문에 얘의 인펄스랑</span></li>
+<li data-segment="394"><time>00:25:32.448–00:25:39.768</time> <span>인버스의 퍼미시안도 같습니다. 이런 특성을 가져요. 얘가 다이버너매틱스이기 때문에</span></li>
+<li data-segment="395"><time>00:25:39.768–00:25:47.768</time> <span>다이버너라는 엘리먼트를 기준으로 얘가 데칼포만이잖아요. 그렇기 때문에 이거 하면 이렇게 나오고 그래서 결국 이렇게 나옵니다.</span></li>
+<li data-segment="396"><time>00:25:47.768–00:25:54.648</time> <span>이거를 보면 얘는 조금 더 낮다는 걸 우리가 볼 수가 있어요. 보면은 이 파란색깔이 엠비디안인데</span></li>
+<li data-segment="397"><time>00:25:54.648–00:26:01.388</time> <span>이렇게 지금 보면은 여기서 온갖 조금 분리가 되죠. 다스보단 낮죠.</span></li>
+<li data-segment="398"><time>00:26:02.448–00:26:08.948</time> <span>이게 가능한 이유는 이 친구가 이 내부에서 이 널 위치를 조절해 가면서</span></li>
+<li data-segment="399"><time>00:26:08.948–00:26:13.448</time> <span>이거를 내가 스키링하고 있을 때는 얘를 서프레셔 하는 쪽으로</span></li>
+<li data-segment="400"><time>00:26:13.448–00:26:16.308</time> <span>그게 널 스페이스가 조절이 되잖아요</span></li>
+<li data-segment="401"><time>00:26:16.308–00:26:18.888</time> <span>그렇기 때문에 좀 더 분해가 잘 되는 겁니다</span></li>
+<li data-segment="402"><time>00:26:18.888–00:26:21.248</time> <span>얘는 그래서 뭔가 분리가 되기 시작해요</span></li>
+<li data-segment="403"><time>00:26:21.248–00:26:29.848</time> <span>얘가 nvidia 빔포머나 nvidia 빔포머를 활용을 해서 세트를 찾은 거예요</span></li>
+<li data-segment="404"><time>00:26:29.848–00:26:31.848</time> <span>그 때 이렇게 하는거고</span></li>
+<li data-segment="405"><time>00:26:37.208–00:26:40.208</time> <span>이거는 그 이유를 제가 여기다가 갖다 놓았네</span></li>
+<li data-segment="406"><time>00:26:44.608–00:26:47.768</time> <span>얘를 스페어링 하고 있을 때 여기에 널스펙스가 생기기 때문에</span></li>
+<li data-segment="407"><time>00:26:47.768–00:26:49.768</time> <span>얘가 더 잘 되는구나</span></li>
+<li data-segment="408"><time>00:26:49.768–00:26:51.768</time> <span>그거 우리 앞에서 배웠었죠</span></li>
+<li data-segment="409"><time>00:26:53.288–00:26:55.288</time> <span>그리고 그러면은</span></li>
+<li data-segment="410"><time>00:26:58.088–00:26:59.088</time> <span>이제</span></li>
+<li data-segment="415"><time>00:27:10.648–00:27:12.948</time> <span>여기서 조금 어려워질 거라서 한번 끊고 가세요</span></li>
+<li data-segment="416"><time>00:27:12.948–00:27:13.288</time> <span>조금</span></li>
+<li data-segment="417"><time>00:27:13.288–00:27:17.048</time> <span>이 수업에서는 어려워지진 않는데</span></li>
+<li data-segment="418"><time>00:27:17.048–00:27:17.388</time> <span>좀</span></li>
+<li data-segment="419"><time>00:27:17.388–00:27:18.088</time> <span>그</span></li>
+<li data-segment="420"><time>00:27:18.088–00:27:21.028</time> <span>리니아이프라를</span></li>
+<li data-segment="421"><time>00:27:21.028–00:27:24.408</time> <span>리니아이프라에서</span></li>
+<li data-segment="422"><time>00:27:24.408–00:27:27.248</time> <span>그쪽 내용이 조금 더 나올 거라서</span></li>
+<li data-segment="423"><time>00:27:27.248–00:27:28.928</time> <span>여러분들이 그거 좀 어려워하는 것 같아서</span></li>
+<li data-segment="424"><time>00:27:28.928–00:27:34.528</time> <span>걱정인데 가볼게요 여기서 뭘 얘기하고 있냐면</span></li>
+<li data-segment="425"><time>00:27:34.528–00:27:36.808</time> <span>오케이 여기까지 잘 보여지는 건 알겠어요</span></li>
+</ol></details></section>
+<section id="part-6"><h2>프레임이 부족하면 왜 MVDR 결과가 흔들릴까요?</h2>
+<p class="prose" id="p-6-1">각 마이크의 짧은 한 구간을 주파수별로 나누면 한 주파수에서 마이크 수만큼의 관측값을 얻습니다. 이 값들을 세로로 모은 벡터가 프레임 하나의 관측입니다. 프레임마다 채널끼리의 곱을 행렬로 만든 뒤 평균하면 공간 공분산을 추정할 수 있습니다. MVDR은 이 행렬의 역을 사용하므로, 표본이 적다는 문제는 방향을 계산하는 단계까지 영향을 미칩니다.</p>
+<p class="prose" id="p-6-2">프레임 하나로 만든 행렬은 한 방향의 정보밖에 담지 못해 랭크가 최대 1입니다. 잡음 없이 한 음원만 있고 위치도 그대로라면, 말소리의 세기가 달라져도 마이크 사이의 공간 패턴은 같습니다. 여러 프레임을 더해도 같은 방향의 기여만 커질 수 있습니다. 관측이 T번이면 랭크도 최대 T입니다. 마이크가 M개인데 T가 M보다 작으면 M개 채널의 관계를 독립적으로 채울 수 없어 역행렬이 없습니다.</p>
+<p class="prose" id="p-6-3">그렇다면 프레임을 마이크 수만큼만 모으면 될까요? 역행렬이 존재할 가능성이 생긴 것과 믿을 만한 역행렬이 얻어진 것은 다릅니다. 작은 고유값을 조금만 잘못 추정해도 그 역수는 크게 달라집니다. 두 음원의 예에서 프레임이 10개일 때는 두 번째로 큰 고유값이 충분히 많은 프레임을 썼을 때보다 작게 나타납니다. 두 번째 음원의 공간 패턴을 아직 잘 잡지 못한 것입니다.</p>
+<p class="prose" id="p-6-4">같은 비교에서 40프레임과 4,000프레임 사이의 차이는 앞서만큼 크지 않습니다. 프레임이 늘어도 마이크 수보다 더 많은 독립적인 축이 생기는 것은 아닙니다. 이 그림의 요점은 40이 정답이라는 것이 아니라, 같은 환경에서 관측을 충분히 모을수록 추정값이 안정될 수 있다는 것입니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT27M35S">27:35–30:18</time> · <a href="#p-6-1">프레임으로 공분산 추정</a></li>
+<li><time datetime="PT30M18S">30:18–34:45</time> · <a href="#p-6-2">프레임 수와 랭크의 상한</a></li>
+<li><time datetime="PT34M45S">34:45–37:25</time> · <a href="#p-6-3">작은 고유값과 두 번째 음원</a></li>
+<li><time datetime="PT37M28S">37:28–39:14</time> · <a href="#p-6-4">40프레임과 4,000프레임 비교</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="426"><time>00:27:36.808–00:27:40.648</time> <span>근데 이게 할 때 우리가 조심해야 될 게 뭐냐</span></li>
+<li data-segment="427"><time>00:27:40.648–00:27:44.168</time> <span>조심해야 될 게 하나가 있어요 뭐냐면은 지금 구할 때</span></li>
+<li data-segment="428"><time>00:27:44.168–00:27:46.048</time> <span>지금 이 R식을 보면은 이 위의 식</span></li>
+<li data-segment="429"><time>00:27:46.048–00:27:49.568</time> <span>사실 얘도 마찬가지예요 얘도 마찬가지인데</span></li>
+<li data-segment="430"><time>00:27:49.568–00:27:53.088</time> <span>여기도 보면은 지금 되게 계산하기 불편한 친구가</span></li>
+<li data-segment="431"><time>00:27:53.088–00:27:55.928</time> <span>하나 숨어 있습니다</span></li>
+<li data-segment="432"><time>00:27:55.928–00:27:58.968</time> <span>바로 역함수를 구하기가 생각보다 녹록치 않아요.</span></li>
+<li data-segment="433"><time>00:28:00.408–00:28:05.508</time> <span>역함수 구하는 거 여러분들 2 곱하기 2 매트리스의 역함수 정도나 해봤지?</span></li>
+<li data-segment="434"><time>00:28:05.508–00:28:11.128</time> <span>디터미넌트 한 다음에 그걸로 이렇게 이렇게 가고 이렇게 이렇게 마이너스 해가지고 디터미넌트 곱하잖아요.</span></li>
+<li data-segment="435"><time>00:28:12.648–00:28:20.948</time> <span>그렇게 하는데 이게 지금 만약에 우리는 이 R이라는 매트리스가 마이크의 개수 곱하기 개수만큼 크기가 커질 텐데</span></li>
+<li data-segment="436"><time>00:28:20.948–00:28:25.728</time> <span>이거의 역행렬을 내가 계속 구해야 되는 거죠.</span></li>
+<li data-segment="437"><time>00:28:25.928–00:28:29.928</time> <span>사실 얘를 구하기가 까다로워요.</span></li>
+<li data-segment="438"><time>00:28:29.928–00:28:31.928</time> <span>여기에도 그 얘기가 나오는데</span></li>
+<li data-segment="439"><time>00:28:31.928–00:28:38.928</time> <span>mv를 할 때 보면은 이 역식력이 필요하다 라는게 되게 어려운 점이에요.</span></li>
+<li data-segment="440"><time>00:28:38.928–00:28:40.928</time> <span>사실.</span></li>
+<li data-segment="441"><time>00:28:40.928–00:28:44.928</time> <span>그럼 얘가 어떻게 어렵냐면은 사실 그 결과에서 나옵니다.</span></li>
+<li data-segment="442"><time>00:28:44.928–00:28:48.928</time> <span>결과에서 나오는데 그게 어디서 나오냐면은</span></li>
+<li data-segment="443"><time>00:28:48.928–00:28:56.368</time> <span>이 프레임이 t라는가, 이 r이라는 포뮬러스 매틱스를 구할 때</span></li>
+<li data-segment="444"><time>00:28:56.368–00:28:59.188</time> <span>실제로 이건 무슨 얘기를 하는 거냐면</span></li>
+<li data-segment="445"><time>00:28:59.188–00:29:05.268</time> <span>우리가 stf.t라는 신호를 통해서 이런 신호는 우리가 결국에 만들어내잖아요.</span></li>
+<li data-segment="446"><time>00:29:05.268–00:29:08.688</time> <span>t고 f일 때 이게 stf.t</span></li>
+<li data-segment="447"><time>00:29:08.688–00:29:11.568</time> <span>그 콜비션 테로를 우리가 만들어냈는데</span></li>
+<li data-segment="448"><time>00:29:11.568–00:29:14.928</time> <span>얘가 시간이 쭉 흐르면 시간이 계속해서 들어오겠죠.</span></li>
+<li data-segment="449"><time>00:29:14.928–00:29:16.448</time> <span>t가 계속 무한대로 가도</span></li>
+<li data-segment="450"><time>00:29:16.448–00:29:19.168</time> <span>t가 무한대로 가도</span></li>
+<li data-segment="451"><time>00:29:19.168–00:29:21.168</time> <span>이 mtf tc는 계속 들어오겠죠</span></li>
+<li data-segment="452"><time>00:29:21.168–00:29:22.968</time> <span>그래서 쌓여가는 거예요</span></li>
+<li data-segment="453"><time>00:29:22.968–00:29:24.828</time> <span>근데 그러면은</span></li>
+<li data-segment="454"><time>00:29:24.828–00:29:27.368</time> <span>내가 이번에 그 코베란스 매틱스를 구할 때</span></li>
+<li data-segment="455"><time>00:29:27.368–00:29:29.368</time> <span>결국에 우리가 하는 건</span></li>
+<li data-segment="456"><time>00:29:29.368–00:29:30.928</time> <span>expectation의</span></li>
+<li data-segment="457"><time>00:29:31.748–00:29:32.928</time> <span>요 x의</span></li>
+<li data-segment="458"><time>00:29:33.488–00:29:35.268</time> <span>요 곱하기</span></li>
+<li data-segment="459"><time>00:29:35.268–00:29:36.188</time> <span>x</span></li>
+<li data-segment="460"><time>00:29:36.188–00:29:39.408</time> <span>요 허리시안의 요거 expectation을 구하는 거잖아요</span></li>
+<li data-segment="461"><time>00:29:39.408–00:29:40.448</time> <span>그쵸</span></li>
+<li data-segment="462"><time>00:29:40.448–00:29:42.928</time> <span>근데 이 expectation을</span></li>
+<li data-segment="463"><time>00:29:42.928–00:29:43.568</time> <span>결국에 우리가</span></li>
+<li data-segment="464"><time>00:29:43.568–00:29:48.568</time> <span>이 식을 통해서 구하게 되겠죠.</span></li>
+<li data-segment="465"><time>00:29:48.568–00:29:54.568</time> <span>t라는 프레임을 잡고 t라는 프레임에 이걸 summation을 한 다음에</span></li>
+<li data-segment="466"><time>00:29:54.568–00:29:57.568</time> <span>t로 나눠주게 되면 얘가 나와요.</span></li>
+<li data-segment="467"><time>00:29:57.568–00:30:01.568</time> <span>근데 당연하게도 이 t가 길면 길수록</span></li>
+<li data-segment="468"><time>00:30:01.568–00:30:06.568</time> <span>원래 신호에 이 formularity matrix를 완벽하게 내가 보고를 해 나갈 수가 있어요.</span></li>
+<li data-segment="469"><time>00:30:06.568–00:30:10.568</time> <span>얘가 만약에 짧아요. 내가 조금밖에 넣을 수 있어.</span></li>
+<li data-segment="470"><time>00:30:10.568–00:30:14.068</time> <span>그러면은 뭔가 불안할 것 같죠?</span></li>
+<li data-segment="471"><time>00:30:14.068–00:30:17.728</time> <span>그게 어떤 영향을 주는지 여기서 한번 확인을 해보자는 거예요.</span></li>
+<li data-segment="472"><time>00:30:17.728–00:30:27.068</time> <span>만약에 첫 번째는 뭐고 우선 내가 키를 만약에 1로 했다.</span></li>
+<li data-segment="473"><time>00:30:27.068–00:30:30.588</time> <span>내가 센터 하나만 딱 녹음할 거예요.</span></li>
+<li data-segment="474"><time>00:30:30.588–00:30:32.428</time> <span>그랬을 때 그러면은 이렇게</span></li>
+<li data-segment="475"><time>00:30:32.448–00:30:34.448</time> <span>이렇게 우리가 표현을 하겠죠. 키가 1이니까.</span></li>
+<li data-segment="476"><time>00:30:35.348–00:30:36.428</time> <span>그러면은 요 친구는</span></li>
+<li data-segment="477"><time>00:30:36.428–00:30:36.988</time> <span>랭크가</span></li>
+<li data-segment="478"><time>00:30:36.988–00:30:39.108</time> <span>하나겠죠.</span></li>
+<li data-segment="479"><time>00:30:40.368–00:30:41.928</time> <span>요거를 여러분들이 모르는 것 같아요.</span></li>
+<li data-segment="480"><time>00:30:42.068–00:30:43.188</time> <span>이게 랭크가 하나겠죠.</span></li>
+<li data-segment="481"><time>00:30:45.388–00:30:45.728</time> <span>이렇게</span></li>
+<li data-segment="482"><time>00:30:45.728–00:30:48.448</time> <span>밑에다 쓰는데 얘랑 얘를 곱하면은</span></li>
+<li data-segment="483"><time>00:30:49.128–00:30:50.368</time> <span>어떤 r이라는</span></li>
+<li data-segment="484"><time>00:30:50.368–00:30:51.988</time> <span>코베스 매트리스가</span></li>
+<li data-segment="485"><time>00:30:51.988–00:30:53.028</time> <span>만들어질텐데</span></li>
+<li data-segment="486"><time>00:30:53.028–00:30:55.768</time> <span>얘는 그냥 키가 하나인 친구잖아요.</span></li>
+<li data-segment="487"><time>00:30:56.508–00:30:58.128</time> <span>근데 이 친구의 랭크를</span></li>
+<li data-segment="488"><time>00:30:58.128–00:30:59.928</time> <span>구해보면은</span></li>
+<li data-segment="489"><time>00:30:59.928–00:31:02.128</time> <span>얘는 1이 나오겠죠.</span></li>
+<li data-segment="490"><time>00:31:02.448–00:31:06.448</time> <span>이 length가 1이라는거의 의미가 뭘까요?</span></li>
+<li data-segment="491"><time>00:31:06.448–00:31:10.448</time> <span>length가 1이다. 그쵸?</span></li>
+<li data-segment="492"><time>00:31:10.448–00:31:14.448</time> <span>한 개의 어떤 벡터로 얘를 표현할 수 있다는 얘기죠.</span></li>
+<li data-segment="493"><time>00:31:14.448–00:31:18.448</time> <span>그 한 개의 벡터는 결국 a라는거죠.</span></li>
+<li data-segment="494"><time>00:31:18.448–00:31:23.448</time> <span>그쵸? 이건 무슨 얘기냐? 만약에 그 공간에 소스가 하나밖에 없다고 생각을 해볼게요.</span></li>
+<li data-segment="495"><time>00:31:23.448–00:31:28.448</time> <span>소스가 하나밖에 없다. 그러면 소스가 마이크로 녹음되는 그 과정 우리가</span></li>
+<li data-segment="496"><time>00:31:28.448–00:31:35.148</time> <span>a라는 어떤 그 펑션 곱하기 소스 신호를 우리가 s라고 해볼게요.</span></li>
+<li data-segment="497"><time>00:31:35.588–00:31:36.548</time> <span>우리가 이렇게 표현을 했죠.</span></li>
+<li data-segment="498"><time>00:31:38.828–00:31:41.868</time> <span>이거를 다시 그림을 그리면은</span></li>
+<li data-segment="499"><time>00:31:41.868–00:31:43.688</time> <span>여기 s가 여기 있고요.</span></li>
+<li data-segment="500"><time>00:31:44.088–00:31:45.288</time> <span>내가 여기서 녹음을 했을 때</span></li>
+<li data-segment="501"><time>00:31:45.288–00:31:48.908</time> <span>이게 전파되는 그 펑션을 우리가 a라고 할게요.</span></li>
+<li data-segment="502"><time>00:31:49.568–00:31:52.188</time> <span>여기서는 s가 출력을 했어요.</span></li>
+<li data-segment="503"><time>00:31:52.188–00:31:55.188</time> <span>그러면 내가 여기서 녹음되는 어떤 값은</span></li>
+<li data-segment="504"><time>00:31:55.188–00:31:58.588</time> <span>a 곱하기 s가 x가 되는 거잖아요.</span></li>
+<li data-segment="505"><time>00:31:59.268–00:32:01.248</time> <span>여기서 우리가 노이즈를 추가를 했었던 거고.</span></li>
+<li data-segment="506"><time>00:32:02.208–00:32:02.528</time> <span>그쵸.</span></li>
+<li data-segment="507"><time>00:32:03.048–00:32:04.448</time> <span>근데 지금 노이즈가 없다는 거냐</span></li>
+<li data-segment="508"><time>00:32:04.448–00:32:05.068</time> <span>지금 해볼게요.</span></li>
+<li data-segment="509"><time>00:32:06.608–00:32:08.608</time> <span>그러면 얘는 이거죠.</span></li>
+<li data-segment="510"><time>00:32:09.848–00:32:10.228</time> <span>그쵸.</span></li>
+<li data-segment="511"><time>00:32:11.088–00:32:12.968</time> <span>이 s라는 값은</span></li>
+<li data-segment="512"><time>00:32:12.968–00:32:14.408</time> <span>어떤 하나의 정수한</span></li>
+<li data-segment="513"><time>00:32:14.408–00:32:16.108</time> <span>값 하나니까</span></li>
+<li data-segment="514"><time>00:32:16.108–00:32:17.508</time> <span>결국에 얘는</span></li>
+<li data-segment="515"><time>00:32:17.508–00:32:20.748</time> <span>s 제곱 a 곱하기</span></li>
+<li data-segment="516"><time>00:32:20.748–00:32:21.848</time> <span>a 2t 되는 거죠.</span></li>
+<li data-segment="517"><time>00:32:23.248–00:32:24.408</time> <span>여기서 그 랭크</span></li>
+<li data-segment="518"><time>00:32:24.408–00:32:29.228</time> <span>그 베스터 하나는 여기서 a가 되겠죠.</span></li>
+<li data-segment="519"><time>00:32:29.228–00:32:33.228</time> <span>그쵸? 이해되죠?</span></li>
+<li data-segment="520"><time>00:32:33.228–00:32:35.948</time> <span>그렇기 때문에 램프가 하나밖에 없는거에요.</span></li>
+<li data-segment="521"><time>00:32:35.948–00:32:39.028</time> <span>실제로 여기 노이즈가 추가가 되니까</span></li>
+<li data-segment="522"><time>00:32:39.028–00:32:41.688</time> <span>노이즈가 실제로 추가가 되기 때문에</span></li>
+<li data-segment="523"><time>00:32:41.688–00:32:48.888</time> <span>요거를 이 노이즈는 계속 랜덤하게 샘프링이 되는 친구니까</span></li>
+<li data-segment="524"><time>00:32:48.888–00:32:58.528</time> <span>만약에 내가 이 x라는 친구를 1, 2 이렇게 하나씩 쌓아 나간다고 해볼게요.</span></li>
+<li data-segment="525"><time>00:32:59.428–00:33:01.788</time> <span>쌓아 나간다고 하면은</span></li>
+<li data-segment="526"><time>00:33:01.788–00:33:05.428</time> <span>여기 하나 추가될 때마다 랭크가 플러스 1씩 증가를 하게 돼요.</span></li>
+<li data-segment="527"><time>00:33:05.928–00:33:06.608</time> <span>왜 증가하냐?</span></li>
+<li data-segment="528"><time>00:33:07.948–00:33:09.408</time> <span>이거는 그대로 유지가 될 텐데</span></li>
+<li data-segment="529"><time>00:33:09.408–00:33:12.548</time> <span>얘에 대한 랭크, 이 a에 대한 랭크는 그대로 유지가 될 텐데</span></li>
+<li data-segment="530"><time>00:33:12.548–00:33:14.908</time> <span>뭐가 추가되기 때문에 그런 거냐는</span></li>
+<li data-segment="531"><time>00:33:14.908–00:33:16.528</time> <span>이 n이 추가되기 때문에</span></li>
+<li data-segment="532"><time>00:33:16.528–00:33:24.528</time> <span>이 n은 그때그때 다 여기가 샘플링 되면 값이 다를테니까 얘는 다 랭크가 1이 되겠죠.</span></li>
+<li data-segment="533"><time>00:33:24.528–00:33:28.528</time> <span>그렇기 때문에 여기서 추가되는 이 값은 랭크 1을 올려주는 역할을 하구요.</span></li>
+<li data-segment="534"><time>00:33:28.528–00:33:33.528</time> <span>이해되요?</span></li>
+<li data-segment="535"><time>00:33:33.528–00:33:38.528</time> <span>사실 이게 eigenvalue decomposing이랑 똑같은 얘기를 하는거에요.</span></li>
+<li data-segment="536"><time>00:33:38.528–00:33:43.528</time> <span>지금 여러분들이 linear algebra에서 배웠던 eigenvalue decomposing은 지금 뭘 하고 있는건지는</span></li>
+<li data-segment="537"><time>00:33:43.528–00:33:45.208</time> <span>여기서 우리가 볼 수가 있는 겁니다.</span></li>
+<li data-segment="538"><time>00:33:46.808–00:33:50.348</time> <span>이렇게 해서 지금 이 랭크가 하나만 하게 되면 랭크가 1이에요.</span></li>
+<li data-segment="539"><time>00:33:51.068–00:33:52.748</time> <span>두 개 하게 되면 랭크가 2인 거고.</span></li>
+<li data-segment="540"><time>00:33:54.188–00:33:56.568</time> <span>근데 지금 우리가 인버스를 구하려면</span></li>
+<li data-segment="541"><time>00:33:56.568–00:34:00.468</time> <span>어떤 거의 인버스 매틱스를 구하려면 랭크가</span></li>
+<li data-segment="542"><time>00:34:00.468–00:34:02.788</time> <span>이 m만큼 퍼려야 돼요.</span></li>
+<li data-segment="543"><time>00:34:03.628–00:34:05.748</time> <span>이 m보다 랭크가 작으면 인버스가 안 나옵니다.</span></li>
+<li data-segment="544"><time>00:34:07.028–00:34:08.468</time> <span>이거 여러분들 배웠었어요.</span></li>
+<li data-segment="545"><time>00:34:10.028–00:34:12.548</time> <span>랭크가 없으면 이게 인버스가 나오지 않아요.</span></li>
+<li data-segment="546"><time>00:34:12.548–00:34:15.628</time> <span>왜냐하면 그거의 determinant가 0이 되기 때문에</span></li>
+<li data-segment="547"><time>00:34:15.628–00:34:17.728</time> <span>기억나죠? 대충 기억나죠?</span></li>
+<li data-segment="548"><time>00:34:17.728–00:34:20.488</time> <span>그리고 첫 번째, 첫 번째 요건은</span></li>
+<li data-segment="549"><time>00:34:20.488–00:34:23.928</time> <span>요거 할 때 이 key의 개수가 반드시</span></li>
+<li data-segment="550"><time>00:34:23.928–00:34:26.328</time> <span>이게 이렇게 되면 안 된다는 거예요</span></li>
+<li data-segment="551"><time>00:34:26.328–00:34:27.628</time> <span>이렇게 되면 안 된다</span></li>
+<li data-segment="552"><time>00:34:27.628–00:34:28.528</time> <span>그렇게 얘기해 드릴 수 있어요</span></li>
+<li data-segment="553"><time>00:34:28.528–00:34:30.808</time> <span>이렇게 하면 역심력이 없다</span></li>
+<li data-segment="554"><time>00:34:30.808–00:34:34.148</time> <span>첫 번째, key가 m의 개수보다 작으면 역심력이 없어요</span></li>
+<li data-segment="555"><time>00:34:34.148–00:34:37.528</time> <span>왜냐하면 length가 이 m보다 작기 때문에</span></li>
+<li data-segment="556"><time>00:34:37.528–00:34:43.368</time> <span>이게 첫번째</span></li>
+<li data-segment="557"><time>00:34:43.368–00:34:44.908</time> <span>이해되죠?</span></li>
+<li data-segment="558"><time>00:34:44.908–00:34:49.688</time> <span>두번째는 그러면 내가 이 t의 크기를</span></li>
+<li data-segment="559"><time>00:34:49.688–00:34:53.188</time> <span>n하고 정확하게 똑같이만 맞춰주면 되냐</span></li>
+<li data-segment="560"><time>00:34:53.188–00:34:55.008</time> <span>사실 그것도 충분하지 않다라는게</span></li>
+<li data-segment="561"><time>00:34:55.008–00:34:58.848</time> <span>좀 이대외로 결과가 나오고 있습니다</span></li>
+<li data-segment="562"><time>00:34:58.848–00:35:00.588</time> <span>보면은 지금 뭐라는 거냐면은</span></li>
+<li data-segment="563"><time>00:35:00.588–00:35:05.688</time> <span>지금 eigenvalue 인덱스를 지금 이 eigenvalue의 크기거든요</span></li>
+<li data-segment="564"><time>00:35:05.688–00:35:10.288</time> <span>이게 크게 따라서 키의 갯수를 바꿨을 때</span></li>
+<li data-segment="565"><time>00:35:10.288–00:35:14.288</time> <span>이 ident value가 어떻게 찍히는지를 우리가 본 거예요</span></li>
+<li data-segment="566"><time>00:35:14.288–00:35:16.168</time> <span>만약에 키를 내가 10으로 했습니다</span></li>
+<li data-segment="567"><time>00:35:16.168–00:35:18.528</time> <span>그러면은 첫 번째 값은</span></li>
+<li data-segment="568"><time>00:35:18.528–00:35:21.888</time> <span>여기는 우선 소스가 두 개인 상황이에요</span></li>
+<li data-segment="569"><time>00:35:21.888–00:35:24.288</time> <span>이 상황은 소스가 두 개인 상황입니다</span></li>
+<li data-segment="570"><time>00:35:24.288–00:35:28.588</time> <span>그러면은 rank가 두 개에 대해서</span></li>
+<li data-segment="571"><time>00:35:28.588–00:35:32.068</time> <span>두 개의 ident value가 상대적으로 높은 값을 가져야 되겠죠</span></li>
+<li data-segment="572"><time>00:35:32.068–00:35:32.448</time> <span>걔가</span></li>
+<li data-segment="573"><time>00:35:32.448–00:35:40.348</time> <span>소리가 들려오는 a라는 컴퓨션을 각각 대표하는 아이덴 벡터들이기 때문에</span></li>
+<li data-segment="574"><time>00:35:40.348–00:35:44.048</time> <span>그 아이덴 벡터들에 대해서는 아이덴 밸류가 커야 돼요.</span></li>
+<li data-segment="575"><time>00:35:45.128–00:35:49.408</time> <span>근데 이게 작을 때는 두 번째 친구의 아이덴 밸류가 상대적으로 낮습니다.</span></li>
+<li data-segment="576"><time>00:35:50.828–00:35:53.008</time> <span>이 키를 4천으로 했을 때보다.</span></li>
+<li data-segment="577"><time>00:35:53.008–00:35:53.808</time> <span>그렇죠?</span></li>
+<li data-segment="578"><time>00:35:56.348–00:36:01.428</time> <span>이게 뭘 의미하냐면 내가 만약에 이 키의 개수를 조금만 가져가면</span></li>
+<li data-segment="579"><time>00:36:01.428–00:36:06.528</time> <span>이것을 분해할 수 있는 분석할 수 있는 그 정보량이 한계가 있다는 거예요.</span></li>
+<li data-segment="580"><time>00:36:07.528–00:36:09.988</time> <span>얘가 많으면 많을수록 정보량이 많아진다.</span></li>
+<li data-segment="581"><time>00:36:10.208–00:36:11.928</time> <span>라는 것을 사실 나타내는 그 구역이에요.</span></li>
+<li data-segment="582"><time>00:36:11.928–00:36:16.328</time> <span>그러니까 이게 직관적으로 대충 무슨 말인지 이해가 될 수가 있는데</span></li>
+<li data-segment="583"><time>00:36:16.328–00:36:17.668</time> <span>무슨 말이냐면</span></li>
+<li data-segment="584"><time>00:36:17.668–00:36:22.688</time> <span>내가 만약에 소스가 2개가 되라고 하면</span></li>
+<li data-segment="585"><time>00:36:22.688–00:36:24.388</time> <span>지금 뭐가 추가가 되는 거냐면</span></li>
+<li data-segment="586"><time>00:36:24.388–00:36:26.448</time> <span>여기서</span></li>
+<li data-segment="587"><time>00:36:26.448–00:36:27.868</time> <span>여기서</span></li>
+<li data-segment="588"><time>00:36:27.868–00:36:28.908</time> <span>이걸 다시 그리면</span></li>
+<li data-segment="589"><time>00:36:28.908–00:36:37.508</time> <span>여기서 a1에 대해서 s1이 이렇게 더해지고</span></li>
+<li data-segment="590"><time>00:36:37.508–00:36:41.428</time> <span>더하기 a2에 대해서 s2가 이렇게 있겠죠.</span></li>
+<li data-segment="591"><time>00:36:41.968–00:36:42.668</time> <span>두 개니까.</span></li>
+<li data-segment="592"><time>00:36:43.088–00:36:46.568</time> <span>거기에 noise가 이렇게 더해지는 형태인데</span></li>
+<li data-segment="593"><time>00:36:46.568–00:36:51.188</time> <span>지금 이 값들이 여기에도 들어있을 것이고</span></li>
+<li data-segment="594"><time>00:36:51.188–00:36:52.348</time> <span>여기 계속 들어있을 거예요.</span></li>
+<li data-segment="595"><time>00:36:52.468–00:36:55.208</time> <span>여기도 들어있고 이 뒤에도 들어있을 것이고</span></li>
+<li data-segment="596"><time>00:36:55.208–00:36:58.448</time> <span>그 랭크를 지우면</span></li>
+<li data-segment="597"><time>00:36:59.348–00:37:06.768</time> <span>그래서 이 갯수가 계속 많아지면 많아질수록 더해지는 이 값들이</span></li>
+<li data-segment="598"><time>00:37:06.768–00:37:15.208</time> <span>여기도 들어있겠죠 마찬가지로 얘도 여기도 들어있을거에요 얘가 많아지면 많아질수록 이 정보량이 점점 여기에는 더 증가하겠죠</span></li>
+<li data-segment="599"><time>00:37:15.208–00:37:18.208</time> <span>얘가 더 많아질수록</span></li>
+<li data-segment="600"><time>00:37:18.208–00:37:22.748</time> <span>그랬을 때 얘는 그때그때 여기서 랭크를 하나씩 더 추가를 해주게 되는 거고</span></li>
+<li data-segment="601"><time>00:37:22.748–00:37:25.488</time> <span>랭크는 이 n 이상으로 증가하지는 않겠죠.</span></li>
+<li data-segment="602"><time>00:37:28.008–00:37:31.848</time> <span>하여튼 그래서 우리가 결국에 이 r이라는 거에서</span></li>
+<li data-segment="603"><time>00:37:31.848–00:37:34.888</time> <span>이걸 활용해서 이 두 개를 지금 알아내고 싶은 건데</span></li>
+<li data-segment="604"><time>00:37:34.888–00:37:37.948</time> <span>얘가 많아지면 많아질수록 종구량은 많아진다는 거죠.</span></li>
+<li data-segment="605"><time>00:37:38.048–00:37:40.388</time> <span>근데 그게 어느 순간 세출 해결로 되겠죠.</span></li>
+<li data-segment="606"><time>00:37:40.508–00:37:43.648</time> <span>더 이상 필요 없는 종구량이 필요 없을 때가 오긴 하겠죠.</span></li>
+<li data-segment="607"><time>00:37:43.648–00:37:50.048</time> <span>그게 바로 지금 여기 보면은 40하고 4000이 큰 차이가 안나는 이유가 바로 거기에 있는 거구요.</span></li>
+<li data-segment="608"><time>00:37:50.708–00:37:54.088</time> <span>어느정도 정보량만 충분하면은 내가 그거를 구매할 수 있지만</span></li>
+<li data-segment="609"><time>00:37:54.088–00:37:57.448</time> <span>그게 값이 작으면은 내가 그게 다 분석이 잘 안된다는 거에요.</span></li>
+<li data-segment="610"><time>00:37:57.748–00:37:59.388</time> <span>그걸 여기서 보여주는 얘기입니다.</span></li>
+<li data-segment="611"><time>00:38:01.468–00:38:04.028</time> <span>그래서 그게 이 결과에서도 그대로 나타나게 돼요.</span></li>
+<li data-segment="612"><time>00:38:04.468–00:38:11.648</time> <span>보면은 지금 T가 10일 때 4000일 때 이 빈팩턴을 분석해보면은</span></li>
+<li data-segment="613"><time>00:38:11.648–00:38:18.648</time> <span>이렇게 보면은 지금 target이 여기 있고</span></li>
+<li data-segment="614"><time>00:38:18.648–00:38:30.348</time> <span>target이 여기 있고 여기 조금 차이가 나지만 큰 차이가 없어 보이긴 하지만</span></li>
+<li data-segment="615"><time>00:38:30.348–00:38:34.548</time> <span>지금 얘는 하여튼 좀 안될 것 같긴 하죠</span></li>
+<li data-segment="616"><time>00:38:34.548–00:38:38.548</time> <span>좀 안된다 그 얘기를 하고 있는 거예요</span></li>
+<li data-segment="617"><time>00:38:38.548–00:38:41.048</time> <span>그 얘기를 하고 있다 그렇게 얘기 하시면 됩니다</span></li>
+<li data-segment="618"><time>00:38:41.048–00:38:47.608</time> <span>그래서 이 NVDI 인포머나 다수 인포머를 활용해서 이 방향을 찾을 때는</span></li>
+<li data-segment="619"><time>00:38:47.608–00:38:52.568</time> <span>이 계산에서 반드시 이 I라는 이 인퍼러스가 필요한데</span></li>
+<li data-segment="620"><time>00:38:52.568–00:38:55.128</time> <span>여기도 필요하고 지금 여기도 들어가 있죠</span></li>
+<li data-segment="621"><time>00:38:55.128–00:38:57.048</time> <span>아 여긴가? 여기도 들어가</span></li>
+<li data-segment="622"><time>00:38:57.048–00:38:59.048</time> <span>여긴 안 들어가 있구나</span></li>
+<li data-segment="623"><time>00:38:59.048–00:38:59.888</time> <span>여긴 안 들어가 있지만</span></li>
+<li data-segment="624"><time>00:38:59.888–00:39:01.928</time> <span>하여튼 여기서는 이게 필요하게 되는데</span></li>
+<li data-segment="625"><time>00:39:01.928–00:39:04.088</time> <span>NVDI에서는 이게 필요한데</span></li>
+<li data-segment="626"><time>00:39:04.088–00:39:06.568</time> <span>이걸 구하는 게 좀 따다롭고</span></li>
+<li data-segment="627"><time>00:39:06.568–00:39:12.168</time> <span>이걸 구할 때 조심해야 되는 점은 바로 이런 분들이다 라는 얘기입니다.</span></li>
+</ol></details></section>
+<section id="part-7"><h2>두 음원인데 왜 고유벡터 두 개를 그대로 쓰지 않을까요?</h2>
+<p class="prose" id="p-7-1">고유값 그래프의 가로축과 세로축이 무엇인지 묻는 질문에서 출발합니다. 가로축은 각도가 아니라 고유값을 큰 순서대로 놓은 번호이고, 세로축은 그 값의 크기입니다. 행렬을 고유벡터별 기여로 나누어 쓰는 판서가 이어집니다. 이때 반복 인식된 기호는 식으로 복원하지 않았습니다.</p>
+<p class="prose" id="p-7-2">공분산 행렬을 고유벡터와 고유값으로 나누면, 마이크 신호들이 함께 변하는 패턴과 그 패턴이 차지하는 비중을 따로 볼 수 있습니다. 두 음원이 서로 다른 공간 패턴을 만들어 내는 예에서 고유값을 큰 순서로 그려 봅니다. 첫째와 둘째 값은 높고 셋째부터 낮아집니다. 이 예에서는 앞의 두 축이 음원 신호가 차지하는 공간을 나타내고 나머지 축은 주로 잡음을 나타냅니다.</p>
+<p class="prose" id="p-7-3">그렇다면 가장 큰 두 고유값의 벡터만 읽으면 두 사람의 방향이 바로 나오지 않을까요? 두 벡터에는 분명 두 사람의 정보가 들어 있습니다. 그러나 첫 번째 벡터가 첫 번째 사람의 방향, 두 번째 벡터가 두 번째 사람의 방향인 것은 아닙니다. 두 고유벡터 모두 두 음원의 조향 벡터가 섞인 결과일 수 있습니다. 어느 비율로 섞였는지 모르면 하나씩 떼어 내기 어렵습니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT39M14S">39:14–40:32</time> · <a href="#p-7-1">질문: 고유값 그래프의 두 축</a></li>
+<li><time datetime="PT40M32S">40:32–43:57</time> · <a href="#p-7-2">첫 두 고유값이 큰 이유</a></li>
+<li><time datetime="PT44M07S">44:07–46:39</time> · <a href="#p-7-3">고유벡터와 개별 음원 방향의 차이</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="628"><time>00:39:14.008–00:39:17.368</time> <span>질문 있어요? 질문.</span></li>
+<li data-segment="629"><time>00:39:17.848–00:39:21.068</time> <span>네 질문 있어요 질문.</span></li>
+<li data-segment="630"><time>00:39:26.008–00:39:28.408</time> <span>아 가로축은 뭐냐 세로축은 뭐냐.</span></li>
+<li data-segment="631"><time>00:39:28.408–00:39:33.908</time> <span>요 지금 요 R이라는 매트리스에</span></li>
+<li data-segment="632"><time>00:39:33.908–00:39:39.468</time> <span>이 r이라는 매트리스를 eigenvalue decomposition을 하는 eigenvector와</span></li>
+<li data-segment="633"><time>00:39:39.468–00:39:42.028</time> <span>그러니까 이걸 뭘 하는 거냐면 직관적으로 얘기하면</span></li>
+<li data-segment="634"><time>00:39:42.028–00:39:46.508</time> <span>어떠한 vector, 그러니까 얘를 다르게 표현하면</span></li>
+<li data-segment="635"><time>00:39:46.508–00:39:52.588</time> <span>어떤 eigenvalue, eigenvalue notation을 뭘 쓰지?</span></li>
+<li data-segment="636"><time>00:39:52.588–00:39:54.308</time> <span>알파벳을 쓰자.</span></li>
+<li data-segment="637"><time>00:39:54.308–00:39:55.088</time> <span>2로 할게요.</span></li>
+<li data-segment="638"><time>00:39:55.988–00:39:57.688</time> <span>v1 곱하기</span></li>
+<li data-segment="639"><time>00:39:57.688–00:40:00.008</time> <span>v1</span></li>
+<li data-segment="640"><time>00:40:00.008–00:40:04.288</time> <span>곱하기</span></li>
+<li data-segment="641"><time>00:40:04.288–00:40:06.548</time> <span>그리고 여기에</span></li>
+<li data-segment="642"><time>00:40:06.548–00:40:09.688</time> <span>이렇게 한 게 맞나?</span></li>
+<li data-segment="643"><time>00:40:11.908–00:40:13.628</time> <span>잠깐만요.</span></li>
+<li data-segment="644"><time>00:40:13.628–00:40:14.588</time> <span>이게 되니까</span></li>
+<li data-segment="645"><time>00:40:14.588–00:40:16.948</time> <span>오케이 맞아요.</span></li>
+<li data-segment="646"><time>00:40:17.508–00:40:19.148</time> <span>2원 곱하기</span></li>
+<li data-segment="647"><time>00:40:19.148–00:40:21.108</time> <span>v1에 이거</span></li>
+<li data-segment="648"><time>00:40:21.108–00:40:22.848</time> <strong>자동 인식 불확실:</strong> <span>더하기</span></li>
+<li data-segment="649"><time>00:40:22.848–00:40:32.428</time> <strong>자동 인식 불확실:</strong> <span>2번에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2에 2</span></li>
+<li data-segment="650"><time>00:40:32.448–00:40:39.968</time> <strong>자동 인식 불확실:</strong> <span>뭔가 이게 m, v, n, e, n, v, n, f</span></li>
+<li data-segment="651"><time>00:40:39.968–00:40:43.008</time> <span>이걸로 우리가 이것을 분해하는 겁니다. 쉽게 얘기하면.</span></li>
+<li data-segment="652"><time>00:40:43.008–00:40:46.088</time> <span>이 r이라는 매틱스에 대해서.</span></li>
+<li data-segment="653"><time>00:40:46.088–00:40:47.348</time> <span>지금 이거를 하는 거거든요.</span></li>
+<li data-segment="654"><time>00:40:47.348–00:40:50.828</time> <span>이게 eigenvector decomposing을 하는 거예요. 결과적으로.</span></li>
+<li data-segment="655"><time>00:40:50.828–00:40:54.708</time> <span>그러니까 무슨 말이냐면 어떠한 그 eigenvector들</span></li>
+<li data-segment="656"><time>00:40:54.708–00:40:57.508</time> <span>얘를 표현할 수 있는 근본 vector들이 있잖아요.</span></li>
+<li data-segment="657"><time>00:40:57.508–00:41:01.968</time> <span>근본 vector들을 우리가 지금 이 v라는 이 vector들로 우선은 잡아놓는 거예요.</span></li>
+<li data-segment="658"><time>00:41:01.968–00:41:02.888</time> <span>v라는 벡터들로.</span></li>
+<li data-segment="659"><time>00:41:04.108–00:41:05.908</time> <span>보면 v2가 있고</span></li>
+<li data-segment="660"><time>00:41:05.908–00:41:07.348</time> <span>vn이 있겠죠.</span></li>
+<li data-segment="661"><time>00:41:08.908–00:41:10.468</time> <span>이 아이젠 벡터들이 쭉 있고요.</span></li>
+<li data-segment="662"><time>00:41:11.128–00:41:11.468</time> <span>얘를</span></li>
+<li data-segment="663"><time>00:41:11.468–00:41:13.428</time> <span>weighted sum을 하면은</span></li>
+<li data-segment="664"><time>00:41:13.428–00:41:14.328</time> <span>이 친구가 나온다.</span></li>
+<li data-segment="665"><time>00:41:15.268–00:41:16.088</time> <span>그렇게 표현했었겠죠.</span></li>
+<li data-segment="666"><time>00:41:16.848–00:41:19.448</time> <span>왜냐면 이 랭크가 반드시</span></li>
+<li data-segment="667"><time>00:41:19.448–00:41:21.288</time> <span>m보다는 작거나 같을텐데</span></li>
+<li data-segment="668"><time>00:41:21.288–00:41:22.608</time> <span>랭크가.</span></li>
+<li data-segment="669"><time>00:41:23.348–00:41:25.448</time> <span>이 랭크가 만약에 m이라고 하면은</span></li>
+<li data-segment="670"><time>00:41:26.408–00:41:27.448</time> <span>여기는 아이젠 벡터가</span></li>
+<li data-segment="671"><time>00:41:28.048–00:41:28.808</time> <span>m개가 있겠죠.</span></li>
+<li data-segment="672"><time>00:41:29.528–00:41:31.648</time> <span>그때 이 각각의</span></li>
+<li data-segment="673"><time>00:41:31.648–00:41:34.948</time> <span>아이젠 벡터들이 얼마만큼 얘를 만들 때 기호를 하는지를</span></li>
+<li data-segment="674"><time>00:41:34.948–00:41:37.028</time> <span>아이젠 밸류로 나타내는 겁니다.</span></li>
+<li data-segment="675"><time>00:41:38.608–00:41:41.848</time> <span>얘가 크면은 이 벡터가 더 기호를 많이 하는 건지</span></li>
+<li data-segment="676"><time>00:41:41.848–00:41:42.508</time> <span>얘를 만들 때</span></li>
+<li data-segment="677"><time>00:41:42.508–00:41:47.368</time> <span>만약에 얘가 작으면은</span></li>
+<li data-segment="678"><time>00:41:47.368–00:41:49.188</time> <span>얘는 기호를 덜 하는 친구겠죠.</span></li>
+<li data-segment="679"><time>00:41:49.908–00:41:54.148</time> <span>근데 우리가 다시 이 밑에 식을 보면은</span></li>
+<li data-segment="680"><time>00:41:54.148–00:41:56.068</time> <span>이걸 보면은</span></li>
+<li data-segment="681"><time>00:41:56.068–00:41:57.868</time> <span>이 친구나 이 친구는</span></li>
+<li data-segment="682"><time>00:41:57.868–00:42:01.428</time> <span>이거를 만들 때 모든 액세 다 들어가 있잖아요.</span></li>
+<li data-segment="683"><time>00:42:01.648–00:42:06.108</time> <span>얘는 그때그때 바뀌겠지만 그쵸?</span></li>
+<li data-segment="684"><time>00:42:06.108–00:42:11.628</time> <span>그 말은 이 a1과 a2에 대한 기여는 상당히 크겠죠?</span></li>
+<li data-segment="685"><time>00:42:11.628–00:42:21.068</time> <span>그러면 이 a1하고 a2에 대한 친구가 바로 요거와 요거가 되겠죠?</span></li>
+<li data-segment="686"><time>00:42:21.068–00:42:27.148</time> <span>그거의 eigen value는 상당히 높은 값을 가질 것이고.</span></li>
+<li data-segment="687"><time>00:42:27.148–00:42:29.968</time> <span>무슨 말인지 이해돼요?</span></li>
+<li data-segment="688"><time>00:42:29.968–00:42:32.328</time> <span>이 내용</span></li>
+<li data-segment="689"><time>00:42:33.068–00:42:39.408</time> <strong>자동 인식 불확실:</strong> <span>음 저거 아이젠 대회 크기에 따라서</span></li>
+<li data-segment="690"><time>00:42:39.408–00:42:45.088</time> <strong>자동 인식 불확실:</strong> <span>4 그래서 이 아이들 기품을 할 때도 아이젠 뱀 유에 그 발음에</span></li>
+<li data-segment="691"><time>00:42:45.088–00:42:49.768</time> <strong>자동 인식 불확실:</strong> <span>필수 보면은 위에서 더 큰 값으로 용의 소팅이 대서 출력이 되거든요</span></li>
+<li data-segment="692"><time>00:42:49.768–00:42:52.288</time> <strong>자동 인식 불확실:</strong> <span>그 이유가</span></li>
+<li data-segment="693"><time>00:42:52.288–00:42:57.728</time> <strong>자동 인식 불확실:</strong> <span>예 이거 이 안전이 있다 한다고 생각해</span></li>
+<li data-segment="694"><time>00:42:57.728–00:43:01.908</time> <strong>자동 인식 불확실:</strong> <span>요 얘기를 하고 있거든요 결국에 요거를 찾는 거구요</span></li>
+<li data-segment="695"><time>00:43:01.908–00:43:09.148</time> <span>요거는 여러분들 그 뒤에 나오는 여러가지 제 덕분 아니라 다른 수업에서 이런 얘기가 나오면 이해가 되게 빠를 거에요</span></li>
+<li data-segment="696"><time>00:43:09.148–00:43:17.468</time> <span>그래서 결국에 요 얘기를 하는거고 그래서 요거는 지금 이 친구와 지금 요 친구 지금 다른 색깔로 할게요</span></li>
+<li data-segment="697"><time>00:43:17.468–00:43:23.748</time> <span>요 친구랑 지금 요 친구 아이들 밸류 2개가 값이 상당히 클거 맞죠?</span></li>
+<li data-segment="698"><time>00:43:23.748–00:43:27.348</time> <span>왜냐면 소스가 2개니까. 그쵸?</span></li>
+<li data-segment="699"><time>00:43:27.348–00:43:34.708</time> <span>그렇기 때문에 그걸 기대하고 아이들 밸류 인덱스를 쭉 증가시켜 나가면서 아이들 밸류의 값을 찍어본거에요.</span></li>
+<li data-segment="700"><time>00:43:34.708–00:43:40.988</time> <span>찍어봤을 때 넘버 1과 넘버 2가 역시 높더라. 넘버 3로 가니까 갑자기 작아지더라.</span></li>
+<li data-segment="701"><time>00:43:40.988–00:43:46.388</time> <span>왜냐면은 이때부터는 노이즈에 대한 그런 친구니까.</span></li>
+<li data-segment="702"><time>00:43:46.388–00:43:49.768</time> <span>그 얘기를 지금 하고 있는 거예요</span></li>
+<li data-segment="703"><time>00:43:51.968–00:43:57.348</time> <span>오케이 여기 이해되죠? 이 안내문을 찾아보세요</span></li>
+<li data-segment="704"><time>00:43:57.348–00:44:02.828</time> <span>이게 진짜 중요한 내용이에요 사실 이 수업을 관통하는 내용이라고 볼 수도 있어요</span></li>
+<li data-segment="705"><time>00:44:02.828–00:44:07.708</time> <span>거의 후반부를 관통하는 내용이라고 볼 수 있어요</span></li>
+<li data-segment="706"><time>00:44:07.708–00:44:13.168</time> <span>그러면은 여러분들이 이걸 딱 봤을 때 생각을 할 수가 있어요 그러면은 지금</span></li>
+<li data-segment="707"><time>00:44:13.168–00:44:19.388</time> <span>이제 어렵게 구할 거 없이 지금 요거 보면은 지금 제가 탁상만 팬으로 할게요</span></li>
+<li data-segment="708"><time>00:44:19.388–00:44:21.688</time> <span>여기서</span></li>
+<li data-segment="709"><time>00:44:22.548–00:44:34.928</time> <span>결국에 여기 요 부분들이 요 x 들의 지금 다 지금 포함이 되어 있는 거고 그때 얘는 지금 계속 바뀌고 있는 값이기 때문에 얘를 여기 많이 더하면 더할수록</span></li>
+<li data-segment="710"><time>00:44:34.928–00:44:38.468</time> <span>요 친구들에 대한 그 성분이 강조가 돼서 얘가 만들어진다.</span></li>
+<li data-segment="711"><time>00:44:39.068–00:44:39.588</time> <span>인거잖아요.</span></li>
+<li data-segment="712"><time>00:44:40.248–00:44:42.208</time> <span>그럼 만약에 내가 이 r을 잘 만들었어요.</span></li>
+<li data-segment="713"><time>00:44:43.148–00:44:45.808</time> <span>그러면은 내가 아이덴벨을 디커뮤니언 하면</span></li>
+<li data-segment="714"><time>00:44:45.808–00:44:47.288</time> <span>이런 식으로 뭔가 표현이 될텐데</span></li>
+<li data-segment="715"><time>00:44:47.288–00:44:48.608</time> <span>표현이 될텐데</span></li>
+<li data-segment="716"><time>00:44:48.608–00:44:55.528</time> <span>이 표현이 되는 요 친구들에 대해서</span></li>
+<li data-segment="717"><time>00:44:55.528–00:44:59.628</time> <span>요 벡터 요 친구랑</span></li>
+<li data-segment="718"><time>00:44:59.628–00:45:10.508</time> <span>이 값만 얘가 구하면 결국에 DOE를 알 수 있는 거 아니야 라고 생각할 수 있겠죠.</span></li>
+<li data-segment="719"><time>00:45:12.028–00:45:17.248</time> <span>왜냐하면 이 벡터 1하고 벡터 2는 A1하고 A2로부터 만들어진 친구니까.</span></li>
+<li data-segment="720"><time>00:45:19.088–00:45:21.008</time> <span>그렇죠? 그렇게 생각할 수 있겠죠.</span></li>
+<li data-segment="721"><time>00:45:22.128–00:45:26.808</time> <span>이 두 개의 성분이 지금 여기 반영돼서 얘가 지금 기기가 큰 값을 받는 거라고 했잖아요.</span></li>
+<li data-segment="722"><time>00:45:26.808–00:45:31.068</time> <span>그러면은 얘를 구하면은 그냥 끝난 거 아니야 라고 생각하실 수 있죠</span></li>
+<li data-segment="723"><time>00:45:32.448–00:45:37.628</time> <span>그렇죠? 이거 한번 생각해보세요. 그럴 수 있을 것 같지 않아요?</span></li>
+<li data-segment="724"><time>00:45:37.628–00:45:38.988</time> <span>그렇게 구할 수 있을 것 맞죠?</span></li>
+<li data-segment="725"><time>00:45:38.988–00:45:42.548</time> <span>얘를 구하면 더 구할 수 있을 것 아니냐? 라고 생각할 수 있잖아요.</span></li>
+<li data-segment="726"><time>00:45:42.548–00:45:47.848</time> <span>사실 그게 맞아요. 맞는데 지금 뭐가 빠져 있냐면은</span></li>
+<li data-segment="727"><time>00:45:47.848–00:45:52.688</time> <span>사실 이 V1이라는 친구는 색깔을 조금 다르게 할까?</span></li>
+<li data-segment="728"><time>00:45:52.688–00:45:54.328</time> <span>여기다가 다시 드릴게요.</span></li>
+<li data-segment="729"><time>00:45:54.328–00:46:01.108</time> <span>이 V1이라는 친구는 정확하게 A5하고 이게 안 됩니다.</span></li>
+<li data-segment="730"><time>00:46:01.108–00:46:13.608</time> <span>왜 안되냐? 사실은 얘는 a1 더하기 a2에 대한 어떠한 이 두개가 어떻게 잘 조합이 돼서 사실 얘가 나오는거에요.</span></li>
+<li data-segment="731"><time>00:46:13.608–00:46:17.608</time> <span>사실 어떻게 조합이 되서 얘가 나오는거고</span></li>
+<li data-segment="732"><time>00:46:17.608–00:46:19.608</time> <span>이 v2도</span></li>
+<li data-segment="733"><time>00:46:19.608–00:46:21.608</time> <span>뭐 감마</span></li>
+<li data-segment="734"><time>00:46:21.608–00:46:23.608</time> <span>a1 더하기</span></li>
+<li data-segment="735"><time>00:46:23.608–00:46:25.608</time> <span>감마</span></li>
+<li data-segment="736"><time>00:46:25.608–00:46:27.608</time> <span>뭐라고 할까요</span></li>
+<li data-segment="737"><time>00:46:27.608–00:46:29.608</time> <span>z에 대한</span></li>
+<li data-segment="738"><time>00:46:29.608–00:46:31.608</time> <span>a2</span></li>
+<li data-segment="739"><time>00:46:31.608–00:46:33.608</time> <span>사실 이 두개의</span></li>
+<li data-segment="740"><time>00:46:33.608–00:46:35.608</time> <span>조합으로 표현되기 때문에</span></li>
+<li data-segment="741"><time>00:46:35.608–00:46:37.608</time> <span>정확하게 얘를 통해서 얘를</span></li>
+<li data-segment="742"><time>00:46:37.608–00:46:39.608</time> <span>알아내기가 쉽지가 않아요</span></li>
+</ol></details></section>
+<section id="part-8"><h2>MUSIC은 왜 신호가 아니라 잡음 쪽을 볼까요?</h2>
+<p class="prose" id="p-8-1">MUSIC은 질문을 뒤집습니다. 소리가 있는 공간에서 두 방향을 직접 풀어내는 대신, 소리가 없는 쪽과 겹치지 않는 방향을 찾습니다. 공분산 행렬의 고유벡터들은 서로 직교하도록 고를 수 있습니다. 실제 음원 방향에서 예상되는 마이크 신호의 패턴은 신호 공간에 있으므로 잡음 공간의 어느 축과 내적해도 이상적으로 0입니다. 실제 녹음에서는 정확히 0인지보다 얼마나 작은지를 봅니다.</p>
+<p class="prose" id="p-8-2">먼저 큰 고유값에 해당하는 열과 나머지 열을 구분합니다. 여기서 구분할 것은 고유값을 대각선에 적은 행렬과 고유벡터를 열로 모은 행렬입니다. 후보 방향에서 예상되는 패턴과 비교할 대상은 숫자가 적힌 대각행렬이 아니라, 잡음 공간을 이루는 고유벡터들입니다. 판서 기호를 가리키는 대목은 전사만으로 읽기 어려워 이 구분만 남겼습니다.</p>
+<p class="prose" id="p-8-3">후보 각도를 바꾸어 가면서 그 방향의 패턴이 잡음 공간에 얼마나 남는지 계산합니다. 실제 음원 방향에서는 남는 양이 작아져 그래프가 골을 이룹니다. 그 값의 역수를 그리면 같은 자리가 뾰족한 봉우리로 바뀝니다. 찾을 것은 봉우리의 높이가 아니라 위치, 즉 각도입니다. 마지막 비교 그림에서는 DAS에서 잘 떨어지지 않던 두 방향이 MUSIC에서 더 뚜렷해집니다. 이 그림의 조건에서 본 결과이지, 모든 녹음에서 두 음원을 구분한다는 뜻은 아닙니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT46M39S">46:39–49:32</time> · <a href="#p-8-1">잡음 공간의 직교성</a></li>
+<li><time datetime="PT49M38S">49:38–52:51</time> · <a href="#p-8-2">판서 정정: 고유값과 고유벡터</a></li>
+<li><time datetime="PT53M08S">53:08–55:48</time> · <a href="#p-8-3">역수를 그리는 이유와 결과 비교</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="743"><time>00:46:39.608–00:46:41.608</time> <span>그렇다면은</span></li>
+<li data-segment="744"><time>00:46:41.608–00:46:44.588</time> <span>반대로</span></li>
+<li data-segment="745"><time>00:46:44.588–00:46:45.548</time> <span>반대로</span></li>
+<li data-segment="746"><time>00:46:45.548–00:46:47.748</time> <span>이 노이즈로부터</span></li>
+<li data-segment="747"><time>00:46:47.748–00:46:50.408</time> <span>얘를 추정을 할 수 있지 않을까를</span></li>
+<li data-segment="748"><time>00:46:50.408–00:46:52.308</time> <span>고민을 한 방법이</span></li>
+<li data-segment="749"><time>00:46:52.308–00:46:53.068</time> <span>뒤에 나오는</span></li>
+<li data-segment="750"><time>00:46:53.068–00:46:55.568</time> <span>서피스 기반의 방법입니다.</span></li>
+<li data-segment="751"><time>00:46:57.968–00:46:59.668</time> <span>바로 여기 나옵니다.</span></li>
+<li data-segment="752"><time>00:46:59.988–00:47:00.848</time> <span>뮤직이라고 하는</span></li>
+<li data-segment="753"><time>00:47:00.848–00:47:03.428</time> <span>이름도 되게 멋있죠. 뮤직입니다.</span></li>
+<li data-segment="754"><time>00:47:05.128–00:47:05.428</time> <span>얘는</span></li>
+<li data-segment="755"><time>00:47:05.428–00:47:07.648</time> <span>우리가 봤던 이 그림</span></li>
+<li data-segment="756"><time>00:47:07.648–00:47:08.868</time> <span>방금 봤던 그 그림 있죠.</span></li>
+<li data-segment="757"><time>00:47:08.868–00:47:16.868</time> <span>noise에 대한 value의 값은 상대적으로 작은데 signal에 대한 value의 값은 상대적으로 크죠</span></li>
+<li data-segment="758"><time>00:47:16.868–00:47:18.868</time> <span>이 특성을 이용하겠다는 거예요</span></li>
+<li data-segment="759"><time>00:47:18.868–00:47:26.868</time> <span>즉시 뭘 이용을 하냐? noise를 이용을 해보자 라는게 바로 얘가 하는 역할이에요</span></li>
+<li data-segment="760"><time>00:47:26.868–00:47:33.868</time> <span>그럼 얘로부터 얘를 추적을 하려고 하는데 그럼 하나가 더 필요해요</span></li>
+<li data-segment="761"><time>00:47:33.868–00:47:38.388</time> <span>하나가 어떻게 되었는지 모르겠는데, 첫 번째는</span></li>
+<li data-segment="762"><time>00:47:38.388–00:47:43.068</time> <span>우선은 각각 이 eigenvalue에 해당하는 그 친구들 하나하나가</span></li>
+<li data-segment="763"><time>00:47:43.068–00:47:46.028</time> <span>vector1, vector2로 표현되었죠.</span></li>
+<li data-segment="764"><time>00:47:46.028–00:47:48.668</time> <span>eigenvector1, eigenvector2.</span></li>
+<li data-segment="765"><time>00:47:48.668–00:47:54.628</time> <span>얘도 eigenvector3, eigenvector4에 corresponding이 되겠죠.</span></li>
+<li data-segment="766"><time>00:47:54.628–00:47:57.428</time> <span>그렇죠? 여기까지는 이해 되죠?</span></li>
+<li data-segment="767"><time>00:47:57.428–00:47:59.788</time> <span>그때 한 가지 더 보여야 되는 건 뭐냐면은</span></li>
+<li data-segment="768"><time>00:47:59.788–00:48:04.748</time> <span>요 아이젠 벡터는 뭔가 하는 특성 중요한 특징 하나를 가져요.</span></li>
+<li data-segment="769"><time>00:48:04.748–00:48:07.088</time> <span>뭐까요?</span></li>
+<li data-segment="770"><time>00:48:07.088–00:48:08.968</time> <span>맞아요. 아우 정확하고 똑같은데.</span></li>
+<li data-segment="771"><time>00:48:08.968–00:48:11.608</time> <span>이 벡터들끼리는 오소거나랍니다.</span></li>
+<li data-segment="772"><time>00:48:11.608–00:48:14.408</time> <span>직교예요. 직교한다는 건 뭘까요?</span></li>
+<li data-segment="773"><time>00:48:14.408–00:48:17.148</time> <span>두 개를 곱했을 때</span></li>
+<li data-segment="774"><time>00:48:17.148–00:48:21.508</time> <span>v1 곱하기 v2를 곱하면 0이 된다는 겁니다.</span></li>
+<li data-segment="775"><time>00:48:21.508–00:48:24.208</time> <span>얘가 0의 가성까지 같겠죠. 사실은.</span></li>
+<li data-segment="776"><time>00:48:24.208–00:48:26.168</time> <span>오차가 있을 테니까.</span></li>
+<li data-segment="777"><time>00:48:26.168–00:48:33.908</time> <span>예약시기 요 예 알 수 있다 이게 아예 백서의 엄청나게 중요한 특징 중에 하나야</span></li>
+<li data-segment="778"><time>00:48:33.908–00:48:40.688</time> <span>이 각각의 백서들이 보석은 하나 이걸 어떻게 활용할 수 있을까요</span></li>
+<li data-segment="779"><time>00:48:40.688–00:48:51.128</time> <span>나는 얘를 얘를 잘 몰라요 얘는 지금 알아내 봤자 내가 예로부터 a1 하고 a2 를 추정하기는 사실 쉽지는 않아요</span></li>
+<li data-segment="780"><time>00:48:51.128–00:48:53.928</time> <span>쉽지는 않습니다. 그러면은</span></li>
+<li data-segment="781"><time>00:48:53.928–00:48:57.368</time> <span>왜냐하면 이 알파베타, 감마, 오메가를 다 알아야 되는거에요.</span></li>
+<li data-segment="782"><time>00:48:57.368–00:48:59.548</time> <span>알아야지 얘를 알아낼 수가 있는데</span></li>
+<li data-segment="783"><time>00:48:59.548–00:49:02.488</time> <span>너무 복잡하다는거에요. 오차도 많은거 같고</span></li>
+<li data-segment="784"><time>00:49:02.488–00:49:06.088</time> <span>그러면 이거를 역설적으로 어떻게 하냐면은</span></li>
+<li data-segment="785"><time>00:49:06.088–00:49:10.308</time> <span>이 친구로부터 얘를 알아내는 방법은 뭐가 있을까요?</span></li>
+<li data-segment="786"><time>00:49:10.308–00:49:15.008</time> <span>결국 얘를 아니라 얘가 아니라 얘를 알아내는거죠. 얘.</span></li>
+<li data-segment="787"><time>00:49:15.008–00:49:16.608</time> <span>뭐가 있을까요?</span></li>
+<li data-segment="788"><time>00:49:16.608–00:49:24.888</time> <span>모든 노이즈에 해당하는 eigenvector들의 오소분할한 vector 2개를 찾으면</span></li>
+<li data-segment="789"><time>00:49:24.888–00:49:30.148</time> <span>그 vector가 이거야, 이거가 되지 않을까 라는 겁니다.</span></li>
+<li data-segment="790"><time>00:49:30.148–00:49:32.608</time> <span>이게 아이디어예요.</span></li>
+<li data-segment="791"><time>00:49:32.608–00:49:38.128</time> <span>이게 지금 아이디어입니다.</span></li>
+<li data-segment="792"><time>00:49:38.128–00:49:42.528</time> <span>두 번 따로 요약하자면</span></li>
+<li data-segment="793"><time>00:49:42.528–00:49:46.248</time> <span>i.value를 내가 보니까 피그널이 주의가 있는 것 같아.</span></li>
+<li data-segment="794"><time>00:49:46.248–00:49:47.588</time> <span>알겠어.</span></li>
+<li data-segment="795"><time>00:49:47.588–00:49:52.648</time> <span>그러면 이 나머지는 noise겠구나 라는 것을 내가 예상할 수 있겠다.</span></li>
+<li data-segment="796"><time>00:49:52.648–00:49:57.628</time> <span>그러면 noise로부터 얘를 알고 싶은 것, 소스의 세타파트를.</span></li>
+<li data-segment="797"><time>00:49:57.628–00:49:59.308</time> <span>그랬을 때 뭘 활용하냐?</span></li>
+<li data-segment="798"><time>00:49:59.308–00:50:05.748</time> <span>이 벡터들의 오소거나란 그 어떤 친구 두 개를 찾으면 이걸 알 수 있지 않을까.</span></li>
+<li data-segment="799"><time>00:50:05.748–00:50:10.628</time> <span>라는 거예요.</span></li>
+<li data-segment="800"><time>00:50:10.628–00:50:13.028</time> <span>이해 되죠?</span></li>
+<li data-segment="801"><time>00:50:14.168–00:50:20.808</time> <span>그래서 어떻게 하냐면은 지금 제가 앞에서 했던 그 과정을 똑같이 여기에서 하고 있습니다.</span></li>
+<li data-segment="802"><time>00:50:20.808–00:50:29.748</time> <span>지금 여기 사실 딱 보이죠? 지금 보면은 그거를 제가 풀었지만 이거를 하나로 통 쳐서 표현하면 이렇게 표현할 수 있어요.</span></li>
+<li data-segment="803"><time>00:50:29.748–00:50:32.448</time> <span>그쵸? 이거 지금 뭐 하는 거냐면은 여기서 지금 제가</span></li>
+<li data-segment="804"><time>00:50:32.448–00:50:35.068</time> <span>여기서 길게 풀었었잖아요.</span></li>
+<li data-segment="805"><time>00:50:36.448–00:50:37.748</time> <span>근데 이거 다시 쓰면</span></li>
+<li data-segment="806"><time>00:50:37.748–00:50:40.448</time> <span>이거 가지다가</span></li>
+<li data-segment="807"><time>00:50:40.448–00:50:41.828</time> <span>이거 바르면</span></li>
+<li data-segment="808"><time>00:50:41.828–00:50:43.608</time> <span>이 원에다가</span></li>
+<li data-segment="809"><time>00:50:43.608–00:50:45.688</time> <span>v1 곱하기 v1의</span></li>
+<li data-segment="810"><time>00:50:45.688–00:50:46.528</time> <span>이거죠.</span></li>
+<li data-segment="811"><time>00:50:47.568–00:50:47.748</time> <span>그렇죠.</span></li>
+<li data-segment="812"><time>00:50:48.868–00:50:51.348</time> <span>이거를 다시 쓰면</span></li>
+<li data-segment="813"><time>00:50:51.348–00:50:52.088</time> <span>여기서</span></li>
+<li data-segment="814"><time>00:50:52.088–00:50:54.148</time> <span>이렇게 할 수 있겠죠.</span></li>
+<li data-segment="815"><time>00:50:55.168–00:50:56.728</time> <span>얘는 지금</span></li>
+<li data-segment="816"><time>00:50:56.728–00:50:59.188</time> <span>v1 곱하기 v1의</span></li>
+<li data-segment="817"><time>00:50:59.188–00:51:01.248</time> <span>이 허미시안이 이거예요.</span></li>
+<li data-segment="818"><time>00:51:01.248–00:51:04.248</time> <span>이 얘기를 표현한건 쉽게 얘기해요.</span></li>
+<li data-segment="819"><time>00:51:04.248–00:51:07.248</time> <span>이거를 노이즈나 소스에 나눠서 표현한거구요.</span></li>
+<li data-segment="820"><time>00:51:07.248–00:51:10.248</time> <span>이거를 우리가 Rmax로 다시 얘기해요.</span></li>
+<li data-segment="821"><time>00:51:10.248–00:51:13.248</time> <span>이렇게 나눌 수 있겠죠.</span></li>
+<li data-segment="822"><time>00:51:13.248–00:51:15.248</time> <span>이거 나누는건 사실 어렵지 않죠.</span></li>
+<li data-segment="823"><time>00:51:15.248–00:51:19.248</time> <span>아까 거기서 내가 아이덴 베스트업을 구했으니까 그걸로 이렇게 나누면 되잖아요.</span></li>
+<li data-segment="824"><time>00:51:19.248–00:51:22.248</time> <span>딱 잘라가지고. 밑에 것만 딱 뜯어 주죠.</span></li>
+<li data-segment="825"><time>00:51:22.248–00:51:24.248</time> <span>할 수 있겠죠.</span></li>
+<li data-segment="826"><time>00:51:24.248–00:51:27.248</time> <span>그 다음에 그러면은</span></li>
+<li data-segment="827"><time>00:51:27.248–00:51:30.248</time> <span>이 친구들의 수직인 친구를 찾아보자 라는거에요.</span></li>
+<li data-segment="828"><time>00:51:30.248–00:51:37.848</time> <span>보면 여기가 나왔는데, item vector는 also normal하다.</span></li>
+<li data-segment="829"><time>00:51:37.848–00:51:40.108</time> <span>이게 맞는 표현이에요.</span></li>
+<li data-segment="830"><time>00:51:40.108–00:51:42.868</time> <span>also normal하다.</span></li>
+<li data-segment="831"><time>00:51:42.868–00:51:52.968</time> <span>그렇기 때문에 요거의 normal인 어떠한 요 칭 h를 찾아보자.</span></li>
+<li data-segment="832"><time>00:51:52.968–00:51:54.848</time> <span>이걸 어떻게 찾을 수 있을까요?</span></li>
+<li data-segment="833"><time>00:51:54.848–00:51:56.848</time> <strong>자동 인식 불확실:</strong> <span>쉽게 얘기해서</span></li>
+<li data-segment="834"><time>00:51:56.848–00:51:58.848</time> <strong>자동 인식 불확실:</strong> <span>여기 지금</span></li>
+<li data-segment="835"><time>00:52:02.848–00:52:04.848</time> <strong>자동 인식 불확실:</strong> <span>제가 지금 아! 제가 거꾸로 설명을 했구나</span></li>
+<li data-segment="836"><time>00:52:04.848–00:52:06.848</time> <strong>자동 인식 불확실:</strong> <span>거꾸로 설명을 했는데</span></li>
+<li data-segment="837"><time>00:52:06.848–00:52:08.848</time> <strong>자동 인식 불확실:</strong> <span>아아 오케이</span></li>
+<li data-segment="838"><time>00:52:08.848–00:52:10.848</time> <strong>자동 인식 불확실:</strong> <span>지금 이게 아 제가 좀 설명이 잘못됐네</span></li>
+<li data-segment="839"><time>00:52:12.848–00:52:14.848</time> <strong>자동 인식 불확실:</strong> <span>얘가 eigenvector들에 대한 친구고요</span></li>
+<li data-segment="840"><time>00:52:14.848–00:52:16.848</time> <strong>자동 인식 불확실:</strong> <span>얘가 지금 요렇게 돼가지고</span></li>
+<li data-segment="841"><time>00:52:16.848–00:52:18.848</time> <strong>자동 인식 불확실:</strong> <span>이게 eigenvector들이 쭉</span></li>
+<li data-segment="842"><time>00:52:18.848–00:52:20.848</time> <strong>자동 인식 불확실:</strong> <span>나열되어 있는 그 매틱스에요</span></li>
+<li data-segment="843"><time>00:52:20.848–00:52:22.848</time> <strong>자동 인식 불확실:</strong> <span>제가 좀 잘못 설명을 했는데</span></li>
+<li data-segment="844"><time>00:52:22.848–00:52:28.988</time> <strong>자동 인식 불확실:</strong> <span>이렇게 나뉘어져 있는 거고, 이렇게 이런 것들이 어떤 잡지를 방해, 나머지는 다 0이고,</span></li>
+<li data-segment="845"><time>00:52:28.988–00:52:35.008</time> <strong>자동 인식 불확실:</strong> <span>이 다이아몬드 매트리스가 이거이고, 이게 아이덴 벡터에요.</span></li>
+<li data-segment="846"><time>00:52:35.008–00:52:40.248</time> <strong>자동 인식 불확실:</strong> <span>네 맞아요. 그렇게 되는 거기 때문에 다시 돌아와서,</span></li>
+<li data-segment="847"><time>00:52:40.248–00:52:46.448</time> <strong>자동 인식 불확실:</strong> <span>이거는 사실 조그만 오류인 거고, 큰 틀은 바뀌지 않습니다.</span></li>
+<li data-segment="848"><time>00:52:46.448–00:52:51.248</time> <span>그래서 지금 이 아이덴 벡터의 오소노모란 어떤 벡터를 찾고 싶어요.</span></li>
+<li data-segment="849"><time>00:52:51.248–00:52:56.748</time> <span>그러면 어떻게 하면 찾을 수 있냐 바로 여기 나와 있어요</span></li>
+<li data-segment="850"><time>00:52:56.748–00:53:00.208</time> <span>얘는 한번 읽어보시고요</span></li>
+<li data-segment="851"><time>00:53:00.208–00:53:04.608</time> <span>제가 방금 말로 설명한 거를 쭉 디테일하게 설명을 하고 있는데</span></li>
+<li data-segment="852"><time>00:53:04.608–00:53:08.308</time> <span>결국에 지금 여기 안 나오나?</span></li>
+<li data-segment="853"><time>00:53:08.308–00:53:15.748</time> <span>결국에 여기 나와있다 이렇게 찾습니다</span></li>
+<li data-segment="854"><time>00:53:15.748–00:53:19.108</time> <span>이렇게 찾아요</span></li>
+<li data-segment="855"><time>00:53:19.108–00:53:30.688</time> <span>지금 우리가 알고 싶은 것은 이 스티어링 벡터 세타, 이게 어떠한 세타일 때 이 노이즈 석스페이스에 오소노멀하는지를 알고 싶은 거잖아요.</span></li>
+<li data-segment="856"><time>00:53:30.688–00:53:56.068</time> <span>그 말은 뭐냐면은 내가 요거랑 방금 구한 그 아이젠 벡터 노이즈에 해당하는 아이젠 벡터들 바로 요기 해당하는 친구들 뽑아와서 요거를 구하고 요 두개를 곱했을 때 0으로 만들고 싶은 거란 말이죠.</span></li>
+<li data-segment="857"><time>00:53:56.068–00:53:57.708</time> <span>이 0을 만드는</span></li>
+<li data-segment="858"><time>00:53:57.708–00:53:59.828</time> <span>이 펜, 이거를 찾고 싶은 거예요</span></li>
+<li data-segment="859"><time>00:53:59.828–00:54:02.128</time> <span>여기까지만 하고</span></li>
+<li data-segment="860"><time>00:54:02.128–00:54:03.508</time> <span>다음 시간에 다시 설명을 해줄게요</span></li>
+<li data-segment="861"><time>00:54:03.508–00:54:05.088</time> <span>이걸 찾고 싶은 겁니다</span></li>
+<li data-segment="862"><time>00:54:05.088–00:54:07.388</time> <span>얘를 찾고 싶은 거기 때문에</span></li>
+<li data-segment="863"><time>00:54:07.388–00:54:09.568</time> <span>얘를 0으로 만드는 친구를</span></li>
+<li data-segment="864"><time>00:54:09.568–00:54:11.628</time> <span>잘 찾을 수 있는 방법은 뭐냐면</span></li>
+<li data-segment="865"><time>00:54:11.628–00:54:13.388</time> <span>결국에 이거를</span></li>
+<li data-segment="866"><time>00:54:13.388–00:54:14.688</time> <span>역수를 취하는 거예요</span></li>
+<li data-segment="867"><time>00:54:14.688–00:54:17.028</time> <span>얘를 역수를 취하면</span></li>
+<li data-segment="868"><time>00:54:17.028–00:54:18.808</time> <span>역수를 취하면</span></li>
+<li data-segment="869"><time>00:54:18.808–00:54:20.668</time> <span>0이 분모에 들어가면</span></li>
+<li data-segment="870"><time>00:54:20.668–00:54:22.508</time> <span>얘가 만약에 0분의 1은</span></li>
+<li data-segment="871"><time>00:54:22.508–00:54:24.208</time> <span>무한대죠</span></li>
+<li data-segment="872"><time>00:54:24.208–00:54:27.328</time> <span>그래서 얘가</span></li>
+<li data-segment="873"><time>00:54:27.648–00:54:33.288</time> <span>얼드맥스가 되는 세타를 찾게 되는 겁니다.</span></li>
+<li data-segment="874"><time>00:54:33.288–00:54:39.168</time> <span>사실 얘가 다에요. 사실 얘가 이 뮤직에 갑니다.</span></li>
+<li data-segment="875"><time>00:54:40.128–00:54:45.368</time> <span>그래서 결과까지만 보고 사실 이 뮤직에 대해서는 다음시간에 다시 한번 설명을 해줄게요.</span></li>
+<li data-segment="876"><time>00:54:45.368–00:54:51.248</time> <span>사실 뭔지 대략 이해가 되긴 할텐데 그래서 결국에 이렇게 구하는거에요.</span></li>
+<li data-segment="877"><time>00:54:51.248–00:55:02.548</time> <span>아까 분모에 해당하는 h에 u에 파워를 구했을 때 0이 되고 싶은 거잖아요.</span></li>
+<li data-segment="878"><time>00:55:03.288–00:55:05.028</time> <span>그거는 이 빨간색에 해당하는 친구입니다.</span></li>
+<li data-segment="879"><time>00:55:05.988–00:55:09.568</time> <span>실제로 이 세타 2일 때 얘가 0을 가져요.</span></li>
+<li data-segment="880"><time>00:55:09.568–00:55:14.788</time> <span>이렇게 가진 것보다 얘를 역수를 취해서 이렇게 뾰족하게 만든 다음에</span></li>
+<li data-segment="881"><time>00:55:14.788–00:55:18.708</time> <span>얘가 이렇게 맥시멈이 되는 세탈을 찾아보자</span></li>
+<li data-segment="882"><time>00:55:18.708–00:55:21.828</time> <span>라는 보고 그렇게 했을 때 이렇게 잘 나온다</span></li>
+<li data-segment="883"><time>00:55:21.828–00:55:24.108</time> <span>그래서 결과를 보면 실제로</span></li>
+<li data-segment="884"><time>00:55:24.108–00:55:32.428</time> <span>지금 이 결과가 조금 더 극단적으로 보여주고 있는 건데</span></li>
+<li data-segment="885"><time>00:55:32.448–00:55:38.808</time> <span>이 닷스리 포머는 잘 안되고 엔비아리 포머로 좀 적당히 잘 안되요</span></li>
+<li data-segment="886"><time>00:55:38.808–00:55:42.008</time> <span>그럴 때 뮤직을 하면 더 잘 된다</span></li>
+<li data-segment="887"><time>00:55:42.008–00:55:48.948</time> <span>바로 이렇게 하면 더 잘 된다는 걸 보여주는 결과다 라고 이해해주시면 돼요</span></li>
+<li data-segment="888"><time>00:55:48.948–00:55:51.788</time> <span>그래서</span></li>
+</ol></details></section>
+<section id="part-9"><h2>마지막 질문: 잡음이 있으면 왜 행렬의 랭크가 달라지나요?</h2>
+<p class="prose" id="p-9-1">MUSIC을 다음 시간에 다시 짚기로 한 뒤 질문을 받습니다. 이어지는 설명은 새로운 알고리즘이 아니라, 앞에서 본 공분산 행렬에 신호와 잡음이 어떤 모양으로 들어 있는지에 관한 것입니다.</p>
+<p class="prose" id="p-9-2">한 방향에서 오는 음원 하나는 여러 마이크에 일정한 관계로 도착합니다. 따라서 단일 주파수에서 그 음원만으로 만든 공간 공분산은 이상적으로 랭크 1입니다. 반면 이 예의 잡음은 각 마이크에서 독립적으로 변합니다. 채널마다 잡음 전력이 있고 충분히 다양한 관측이 쌓이면 잡음은 한 방향에만 놓이지 않아 전체 랭크가 될 수 있습니다. 신호와 잡음을 더하면 행렬 전체는 전체 랭크여도, 음원이 만드는 강한 몇 개의 축은 여전히 고유값 그래프에 드러납니다. 이 구분을 확인하고 수업이 끝납니다.</p>
+<details class="times"><summary>이 부분의 시간표시 전사 보기</summary>
+<p>문단별 위치</p><ol>
+<li><time datetime="PT55M51S">55:51–56:36</time> · <a href="#p-9-1">다음 시간 예고와 질의응답</a></li>
+<li><time datetime="PT56M36S">56:36–57:47</time> · <a href="#p-9-2">독립 잡음과 단일 음원의 랭크</a></li>
+</ol>
+<p>아래는 자동 인식 발화입니다. 음성 대조가 끝나지 않은 수식·기호·고유명사와 화자 구분에는 오류가 있을 수 있습니다.</p><ol>
+<li data-segment="889"><time>00:55:51.788–00:55:53.988</time> <span>이것도 사실 리뷰성은 있긴 한데</span></li>
+<li data-segment="890"><time>00:55:53.988–00:55:56.048</time> <span>이거 다음 시간에 제가 할 거고요</span></li>
+<li data-segment="891"><time>00:55:56.048–00:55:59.148</time> <span>이거 이해 안 되신 분들도 꽤 있을 것 같아서</span></li>
+<li data-segment="892"><time>00:55:59.148–00:56:01.548</time> <span>여기까지는 아마 대충 알 것 같아요 여러분들이</span></li>
+<li data-segment="893"><time>00:56:01.548–00:56:02.708</time> <span>흘러왔을 때</span></li>
+<li data-segment="894"><time>00:56:02.708–00:56:06.268</time> <span>여기부터 제가 다시 설명을 해드리겠습니다</span></li>
+<li data-segment="895"><time>00:56:06.268–00:56:14.868</time> <span>질문 있을까요?</span></li>
+<li data-segment="896"><time>00:56:14.868–00:56:16.388</time> <span>맞아요</span></li>
+<li data-segment="897"><time>00:56:16.388–00:56:18.708</time> <span>아 그쵸</span></li>
+<li data-segment="898"><time>00:56:18.708–00:56:21.988</time> <span>이건 사실 그 전에 한번 얘기했던 적이 있을 것 같은데</span></li>
+<li data-segment="899"><time>00:56:21.988–00:56:23.708</time> <span>어디에 있지?</span></li>
+<li data-segment="900"><time>00:56:23.708–00:56:26.468</time> <span>여기서</span></li>
+<li data-segment="901"><time>00:56:26.468–00:56:28.068</time> <span>여기서 얘기했던 것 같은데</span></li>
+<li data-segment="902"><time>00:56:28.068–00:56:30.068</time> <span>뭐 이렇게 붙였나요? 16인가?</span></li>
+<li data-segment="903"><time>00:56:31.068–00:56:33.068</time> <span>이거는 다른 소리고</span></li>
+<li data-segment="904"><time>00:56:34.068–00:56:35.068</time> <span>여기 붙였던 것 같아요.</span></li>
+<li data-segment="905"><time>00:56:35.068–00:56:36.068</time> <span>여기서</span></li>
+<li data-segment="906"><time>00:56:36.068–00:56:39.068</time> <span>이 노이즈의 여기 이 기억나요? 이거</span></li>
+<li data-segment="907"><time>00:56:39.068–00:56:41.068</time> <span>이 그림 밑에</span></li>
+<li data-segment="908"><time>00:56:41.068–00:56:43.068</time> <span>사실 이거랑 똑같은 거거든요?</span></li>
+<li data-segment="909"><time>00:56:44.068–00:56:49.068</time> <span>지금 우리는 지금 이거랑 이거만 보고 있었어요.</span></li>
+<li data-segment="910"><time>00:56:49.068–00:56:50.068</time> <span>그쵸?</span></li>
+<li data-segment="911"><time>00:56:51.068–00:56:55.068</time> <span>노이즈는 모든 노이즈가 서로서로 independent 하죠.</span></li>
+<li data-segment="912"><time>00:56:55.068–00:57:02.188</time> <span>그렇기 때문에 그 노이즈를 계속 더해 나간다는 것은 갑자기 새로운 노이즈가 계속 그때부터 추가가 되는 거잖아요</span></li>
+<li data-segment="913"><time>00:57:02.188–00:57:08.028</time> <span>걔를 내가 충분한 프레임, 키만큼 모으게 되면은 걔는 풀랭크를 갖겠죠</span></li>
+<li data-segment="914"><time>00:57:08.028–00:57:14.168</time> <span>그게 바이오 라고 하는 겁니다. 왜냐면은 그 시간, 시간대 연관 강의의 토렐레이션이 전혀 없기 때문에</span></li>
+<li data-segment="915"><time>00:57:14.168–00:57:18.528</time> <span>전혀, 얘랑 얘랑 토렐레이션이 전혀 없다는 거예요. 비지피스함이 하나도 없다</span></li>
+<li data-segment="916"><time>00:57:18.528–00:57:22.068</time> <span>왜냐면 그때 그냥 랜덤하게 같은 때 뽑는 거니까요. 노이즈는</span></li>
+<li data-segment="917"><time>00:57:22.068–00:57:33.548</time> <span>근데 반대로 상에선 랭크 1을 갖는다. 이 두 개를 더하면은 폴랭크를 갖지만 이렇게 이렇게 이렇게 작은 랭크를 갖고 하나는 이렇게 큰 랭크를 갖는 그림이 나오겠죠.</span></li>
+<li data-segment="918"><time>00:57:33.548–00:57:39.108</time> <span>그 그림이 우리가 여기서 봤던 바로 이 그림이다.</span></li>
+<li data-segment="919"><time>00:57:39.648–00:57:45.248</time> <span>뒤에 여기 나오는 어디 갔지? 이 그림이다. 이 그림이. 이해 되죠?</span></li>
+<li data-segment="920"><time>00:57:47.208–00:57:51.808</time> <span>질문 없으면 여기까지 하겠습니다. 수고하셨습니다.</span></li>
+<li data-segment="921"><time>00:57:52.068–00:57:54.068</time> <span>감사합니다.</span></li>
+</ol></details></section>
+<p class="note"><strong>검수 범위.</strong> 상호상관의 부호를 되짚는 대목과 고유값 전개의 반복 인식 구간은 말한 식을 추정하지 않았습니다. 불분명한 발언·비강의 대화는 옮기지 않았으며 마지막 기술 질문은 화자를 특정하지 않고 정리했습니다. 내용 대조 범위는 자료 2–17쪽입니다. 이는 녹음 당시 화면을 확인한 쪽수가 아닙니다. 18–30쪽의 MUSIC 한계와 광대역 처리, 학습 기반 위치 추정, 음원 분리 응용, SELD는 이번 녹음에서 설명된 것으로 확인되지 않습니다.</p>
+<p><a href="https://hyeonwoona0861.github.io/study/speech-and-audio-recognition/lecture-10-sound-source-localization/">10강 학습 노트로 돌아가기</a></p>
+</main></body></html>

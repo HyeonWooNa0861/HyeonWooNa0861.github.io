@@ -1,7 +1,7 @@
 ---
 layout: default
 date: 2026-11-25 01:02:29 +0900
-last_modified_at: 2026-11-25 16:46:01 +0900
+last_modified_at: 2026-11-26 16:10:35 +0900
 title: "Lecture 10: Sound Source Localization"
 course: "Speech and Audio Recognition"
 topic: "TDOA, GCC-PHAT, SRP, MVDR, MUSIC, and SELD"
@@ -298,9 +298,9 @@ $$
 
 쉽게 비유하면 DAS는 후보 방향을 향한 **넓은 손전등**으로 에너지를 확인합니다. MVDR는 관측된 간섭에 맞춰 빛이 새는 방향을 눌러 **더 좁은 탐색광**을 만듭니다. MUSIC은 직접 밝기를 재기보다 “잡음 공간과 가장 맞지 않는 방향”을 찾습니다. 이 비유는 해석을 돕기 위한 것이며, 실제 계산은 위의 power와 projection 식입니다.
 
-## 7. PDF 후반부가 확장하는 범위
+## 7. 찾은 방향으로 한 사람의 목소리만 골라낼 수 있을까요?
 
-방향을 알면 그쪽의 목소리만 골라 들을 수 있습니다. SELD는 한 걸음 더 나아가 **어떤 소리가, 언제, 어디서** 났는지 함께 찾습니다. 아래는 강의자료 후반부의 응용입니다.
+두 사람이 동시에 말할 때, **방향 추정**의 답은 ‘한 사람은 왼쪽, 다른 사람은 오른쪽’입니다. **분리**의 답은 왼쪽 사람의 목소리만 남긴 파형입니다. 앞에서 찾은 방향을 필터에 알려 주면 첫 번째 답을 두 번째 답에 활용할 수 있습니다. 다만 벽에서 반사된 목소리도 마이크에 닿기 때문에, 봉우리의 개수가 곧 사람 수인 것은 아닙니다.
 
 <details markdown="block">
 <summary markdown="span">Extensions: Reflections, wideband speech and learned direction scores</summary>
@@ -313,7 +313,7 @@ $$
 
 ### 7.2 Learning-based SSL
 
-학습 기반 방법은 GCC-PHAT feature를 입력하고 각 방향의 likelihood를 출력할 수 있습니다. 고전 방법처럼 방향별 공간 spectrum을 만들지만, 점수의 모양을 데이터에서 학습합니다. 임계값을 넘는 peak의 수를 source 수로, peak 위치를 DoA로 해석할 수 있습니다.
+학습 기반 방법도 방향마다 점수를 매깁니다. 강의자료 20쪽의 모델은 마이크 쌍마다 구한 GCC-PHAT 값을 입력받고, 360개 방향 각각에 점수를 줍니다. 학습할 때 정답 각도 한 칸만 켜지 않고 이웃 각도에도 거리에 따라 작은 점수를 줍니다. 그래야 실제 방향을 조금 빗나간 답과 정반대 방향을 고른 답이 같게 취급되지 않습니다. 추론할 때는 임계값을 넘는 봉우리의 **위치**가 방향 후보이고, 구별되는 봉우리의 **개수**가 음원 수의 추정값입니다.
 
 이 방식은 학습 데이터에서 본 방·배열·잡음 조건을 활용할 수 있지만, 보지 못한 환경으로 일반화되는지는 별도로 평가해야 합니다. “신경망을 썼다”는 이유만으로 reverberation이나 array mismatch가 사라지지는 않습니다.
 
@@ -324,7 +324,7 @@ $$
 
 ### 7.3 Localization에서 separation으로
 
-PDF는 DoA를 speech separation에 쓰는 세 흐름을 연결합니다.
+방향을 분리에 쓰는 방법은 세 가지입니다. 차이는 방향이 **필터를 정하는 조건**인지, **모델에 주는 단서**인지, 아니면 **소리를 나누면서 함께 찾아가는 값**인지에 있습니다.
 
 1. **DoA로 speaker별 beamformer를 만듭니다.** LCMV는 한 speaker 방향의 gain을 1로 두고 다른 speaker 방향에는 0의 null 제약을 둘 수 있습니다.
 2. **DoA를 DNN의 입력 feature로 줍니다.** Target 방향에서 예상한 phase difference와 실제 IPD가 비슷한 시간–주파수 bin을 골라 target mask 추정을 돕습니다.
@@ -336,12 +336,9 @@ PDF는 DoA를 speech separation에 쓰는 세 흐름을 연결합니다.
 
 SELD(Sound Event Localization and Detection)는 음성뿐 아니라 일반 sound event로 범위를 넓힙니다.
 
-- SED branch는 frame마다 어떤 class가 활성화되었는지 찾습니다.
-- DoA branch는 활성 event의 방향을 찾습니다.
-- ACCDOA는 class별 vector 하나에 activity와 방향을 함께 담습니다. Vector 길이는 activity, 방향은 DoA를 나타냅니다.
-- Multi-ACCDOA는 같은 class의 소리가 동시에 여러 곳에서 나는 경우를 위해 class마다 여러 track을 둡니다.
+예를 들어 문이 닫히는 소리가 오른쪽에서 났다면 ‘오른쪽’만 맞혀서는 부족합니다. SELDnet은 짧은 시간마다 **무슨 소리가 났는지**와 **그 종류의 소리가 어디서 났는지**를 두 출력으로 나눕니다. 문 닫히는 소리가 검출된 때에만 그 종류의 방향을 읽습니다. 소리가 없는 구간에도 방향 숫자는 나올 수 있지만, 그 숫자는 사건의 위치가 아닙니다.
 
-즉, SELD의 출력은 단순한 각도 하나가 아닙니다. Event class, 활성 시각, 공간 방향을 함께 연결해야 합니다.
+**자료로 더 보기(29–30쪽):** ACCDOA는 소리 종류별로 벡터 하나를 냅니다. 길이는 소리의 활성 정도를, 벡터가 가리키는 쪽은 방향을 뜻합니다. 개 두 마리가 서로 다른 곳에서 동시에 짖는다면 ‘개 짖음’ 벡터 하나로는 두 방향을 담기 어렵습니다. Multi-ACCDOA는 같은 종류에도 여러 출력을 둡니다. 마지막 장은 관련 평가 과제인 DCASE를 소개합니다.
 
 </details>
 
@@ -411,10 +408,19 @@ SELD(Sound Event Localization and Detection)는 음성뿐 아니라 일반 sound
 
 </details>
 
+## Lecture Transcripts
+
+방향을 **어떻게 찾는지** 복습하려면 11월 24일 자료를, **반사음이 있을 때 무엇이 달라지고 찾은 방향을 어디에 쓰는지** 보려면 11월 26일 자료를 읽으면 됩니다. 두 첨부 모두 문단으로 읽을 수 있습니다. 원래 표현을 확인하려면 해당 절의 시간표시 전사를 펼쳐 보세요.
+
+<ul>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-10-2026-11-24-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 10 transcript · 2026-11-24</a></li>
+  <li><a href="{{ "/assets/transcripts/study/speech-and-audio-recognition/lecture-10-2026-11-26-transcript.html" | relative_url }}" target="_blank" rel="noopener">Lecture 10 transcript · 2026-11-26</a></li>
+</ul>
+
 ## Source Materials
 
 - <a href="https://ecampus.kookmin.ac.kr/mod/ubfile/view.php?id=2008131" target="_blank" rel="noopener">Kookmin University eCampus: Sound Source Localization lecture material</a> — 수강 권한이 필요한 강의자료입니다.
-- 2026-11-24 수업 녹음은 PDF와 용어·수식이 일치하는 DoA, GCC-PHAT, SRP, MVDR, MUSIC 기본 설명에만 사용했습니다. 강의자료 후반의 MUSIC 한계·학습 기반 SSL·separation·SELD는 PDF에 근거한 후속 범위입니다.
+- 11월 24일은 방향 추정의 기초부터 MUSIC까지, 11월 26일은 MUSIC 복습부터 반사·광대역 음성, 학습 기반 방향 추정, 음원 분리와 SELDnet까지 다뤘습니다. ACCDOA·Multi-ACCDOA와 DCASE는 녹음에서 확인한 설명이 아니라 강의자료 29–30쪽을 바탕으로 정리했습니다.
 
 ## References
 
